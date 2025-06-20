@@ -48,8 +48,6 @@ func (a *gitCredentialsImpl) Get(ctx context.Context, request GetCredentialsRequ
 	return &getCredentialsResponse, err
 }
 
-// Get Git credentials.
-//
 // Lists the calling user's Git credentials. One credential per user is
 // supported.
 func (a *gitCredentialsImpl) List(ctx context.Context) listing.Iterator[CredentialInfo] {
@@ -71,8 +69,6 @@ func (a *gitCredentialsImpl) List(ctx context.Context) listing.Iterator[Credenti
 	return iterator
 }
 
-// Get Git credentials.
-//
 // Lists the calling user's Git credentials. One credential per user is
 // supported.
 func (a *gitCredentialsImpl) ListAll(ctx context.Context) ([]CredentialInfo, error) {
@@ -157,8 +153,6 @@ func (a *reposImpl) GetPermissions(ctx context.Context, request GetRepoPermissio
 	return &repoPermissions, err
 }
 
-// Get repos.
-//
 // Returns repos that the calling user has Manage permissions on. Use
 // `next_page_token` to iterate through additional pages.
 func (a *reposImpl) List(ctx context.Context, request ListReposRequest) listing.Iterator[RepoInfo] {
@@ -185,8 +179,6 @@ func (a *reposImpl) List(ctx context.Context, request ListReposRequest) listing.
 	return iterator
 }
 
-// Get repos.
-//
 // Returns repos that the calling user has Manage permissions on. Use
 // `next_page_token` to iterate through additional pages.
 func (a *reposImpl) ListAll(ctx context.Context, request ListReposRequest) ([]RepoInfo, error) {
@@ -306,8 +298,6 @@ func (a *secretsImpl) GetSecret(ctx context.Context, request GetSecretRequest) (
 	return &getSecretResponse, err
 }
 
-// Lists ACLs.
-//
 // List the ACLs for a given secret scope. Users must have the `MANAGE`
 // permission to invoke this API.
 //
@@ -332,8 +322,6 @@ func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) lis
 	return iterator
 }
 
-// Lists ACLs.
-//
 // List the ACLs for a given secret scope. Users must have the `MANAGE`
 // permission to invoke this API.
 //
@@ -355,8 +343,6 @@ func (a *secretsImpl) internalListAcls(ctx context.Context, request ListAclsRequ
 	return &listAclsResponse, err
 }
 
-// List all scopes.
-//
 // Lists all secret scopes available in the workspace.
 //
 // Throws `PERMISSION_DENIED` if the user does not have permission to make this
@@ -380,8 +366,6 @@ func (a *secretsImpl) ListScopes(ctx context.Context) listing.Iterator[SecretSco
 	return iterator
 }
 
-// List all scopes.
-//
 // Lists all secret scopes available in the workspace.
 //
 // Throws `PERMISSION_DENIED` if the user does not have permission to make this
@@ -401,8 +385,6 @@ func (a *secretsImpl) internalListScopes(ctx context.Context) (*ListScopesRespon
 	return &listScopesResponse, err
 }
 
-// List secret keys.
-//
 // Lists the secret keys that are stored at this scope. This is a metadata-only
 // operation; secret data cannot be retrieved using this API. Users need the
 // READ permission to make this call.
@@ -429,8 +411,6 @@ func (a *secretsImpl) ListSecrets(ctx context.Context, request ListSecretsReques
 	return iterator
 }
 
-// List secret keys.
-//
 // Lists the secret keys that are stored at this scope. This is a metadata-only
 // operation; secret data cannot be retrieved using this API. Users need the
 // READ permission to make this call.
@@ -543,8 +523,6 @@ func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
 	return err
 }
 
-// List contents.
-//
 // Lists the contents of a directory, or the object if it is not a directory. If
 // the input path does not exist, this call returns an error
 // `RESOURCE_DOES_NOT_EXIST`.
@@ -566,8 +544,6 @@ func (a *workspaceImpl) List(ctx context.Context, request ListWorkspaceRequest) 
 	return iterator
 }
 
-// List contents.
-//
 // Lists the contents of a directory, or the object if it is not a directory. If
 // the input path does not exist, this call returns an error
 // `RESOURCE_DOES_NOT_EXIST`.

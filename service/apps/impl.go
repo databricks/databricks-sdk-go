@@ -93,8 +93,6 @@ func (a *appsImpl) GetPermissions(ctx context.Context, request GetAppPermissions
 	return &appPermissions, err
 }
 
-// List apps.
-//
 // Lists all apps in the workspace.
 func (a *appsImpl) List(ctx context.Context, request ListAppsRequest) listing.Iterator[App] {
 
@@ -120,8 +118,6 @@ func (a *appsImpl) List(ctx context.Context, request ListAppsRequest) listing.It
 	return iterator
 }
 
-// List apps.
-//
 // Lists all apps in the workspace.
 func (a *appsImpl) ListAll(ctx context.Context, request ListAppsRequest) ([]App, error) {
 	iterator := a.List(ctx, request)
@@ -138,8 +134,6 @@ func (a *appsImpl) internalList(ctx context.Context, request ListAppsRequest) (*
 	return &listAppsResponse, err
 }
 
-// List app deployments.
-//
 // Lists all app deployments for the app with the supplied name.
 func (a *appsImpl) ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) listing.Iterator[AppDeployment] {
 
@@ -165,8 +159,6 @@ func (a *appsImpl) ListDeployments(ctx context.Context, request ListAppDeploymen
 	return iterator
 }
 
-// List app deployments.
-//
 // Lists all app deployments for the app with the supplied name.
 func (a *appsImpl) ListDeploymentsAll(ctx context.Context, request ListAppDeploymentsRequest) ([]AppDeployment, error) {
 	iterator := a.ListDeployments(ctx, request)

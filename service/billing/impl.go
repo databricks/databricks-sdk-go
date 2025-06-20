@@ -63,8 +63,6 @@ func (a *budgetPolicyImpl) Get(ctx context.Context, request GetBudgetPolicyReque
 	return &budgetPolicy, err
 }
 
-// List policies.
-//
 // Lists all policies. Policies are returned in the alphabetically ascending
 // order of their names.
 func (a *budgetPolicyImpl) List(ctx context.Context, request ListBudgetPoliciesRequest) listing.Iterator[BudgetPolicy] {
@@ -91,8 +89,6 @@ func (a *budgetPolicyImpl) List(ctx context.Context, request ListBudgetPoliciesR
 	return iterator
 }
 
-// List policies.
-//
 // Lists all policies. Policies are returned in the alphabetically ascending
 // order of their names.
 func (a *budgetPolicyImpl) ListAll(ctx context.Context, request ListBudgetPoliciesRequest) ([]BudgetPolicy, error) {
@@ -160,8 +156,6 @@ func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetConfigurationReq
 	return &getBudgetConfigurationResponse, err
 }
 
-// Get all budgets.
-//
 // Gets all budgets associated with this account.
 func (a *budgetsImpl) List(ctx context.Context, request ListBudgetConfigurationsRequest) listing.Iterator[BudgetConfiguration] {
 
@@ -187,8 +181,6 @@ func (a *budgetsImpl) List(ctx context.Context, request ListBudgetConfigurations
 	return iterator
 }
 
-// Get all budgets.
-//
 // Gets all budgets associated with this account.
 func (a *budgetsImpl) ListAll(ctx context.Context, request ListBudgetConfigurationsRequest) ([]BudgetConfiguration, error) {
 	iterator := a.List(ctx, request)
@@ -242,8 +234,6 @@ func (a *logDeliveryImpl) Get(ctx context.Context, request GetLogDeliveryRequest
 	return &getLogDeliveryConfigurationResponse, err
 }
 
-// Get all log delivery configurations.
-//
 // Gets all Databricks log delivery configurations associated with an account
 // specified by ID.
 func (a *logDeliveryImpl) List(ctx context.Context, request ListLogDeliveryRequest) listing.Iterator[LogDeliveryConfiguration] {
@@ -270,8 +260,6 @@ func (a *logDeliveryImpl) List(ctx context.Context, request ListLogDeliveryReque
 	return iterator
 }
 
-// Get all log delivery configurations.
-//
 // Gets all Databricks log delivery configurations associated with an account
 // specified by ID.
 func (a *logDeliveryImpl) ListAll(ctx context.Context, request ListLogDeliveryRequest) ([]LogDeliveryConfiguration, error) {

@@ -73,8 +73,6 @@ func (a *dbfsImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*Fi
 	return &fileInfo, err
 }
 
-// List directory contents or file details.
-//
 // List the contents of a directory, or details of the file. If the file or
 // directory does not exist, this call throws an exception with
 // `RESOURCE_DOES_NOT_EXIST`.
@@ -104,8 +102,6 @@ func (a *dbfsImpl) List(ctx context.Context, request ListDbfsRequest) listing.It
 	return iterator
 }
 
-// List directory contents or file details.
-//
 // List the contents of a directory, or details of the file. If the file or
 // directory does not exist, this call throws an exception with
 // `RESOURCE_DOES_NOT_EXIST`.
@@ -235,8 +231,6 @@ func (a *filesImpl) GetMetadata(ctx context.Context, request GetMetadataRequest)
 	return &getMetadataResponse, err
 }
 
-// List directory contents.
-//
 // Returns the contents of a directory. If there is no directory at the
 // specified path, the API returns a HTTP 404 error.
 func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) listing.Iterator[DirectoryEntry] {
@@ -263,8 +257,6 @@ func (a *filesImpl) ListDirectoryContents(ctx context.Context, request ListDirec
 	return iterator
 }
 
-// List directory contents.
-//
 // Returns the contents of a directory. If there is no directory at the
 // specified path, the API returns a HTTP 404 error.
 func (a *filesImpl) ListDirectoryContentsAll(ctx context.Context, request ListDirectoryContentsRequest) ([]DirectoryEntry, error) {

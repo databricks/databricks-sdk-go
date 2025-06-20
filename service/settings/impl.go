@@ -47,8 +47,6 @@ func (a *accountIpAccessListsImpl) Get(ctx context.Context, request GetAccountIp
 	return &getIpAccessListResponse, err
 }
 
-// Get access lists.
-//
 // Gets all IP access lists for the specified account.
 func (a *accountIpAccessListsImpl) List(ctx context.Context) listing.Iterator[IpAccessListInfo] {
 	request := struct{}{}
@@ -69,8 +67,6 @@ func (a *accountIpAccessListsImpl) List(ctx context.Context) listing.Iterator[Ip
 	return iterator
 }
 
-// Get access lists.
-//
 // Gets all IP access lists for the specified account.
 func (a *accountIpAccessListsImpl) ListAll(ctx context.Context) ([]IpAccessListInfo, error) {
 	iterator := a.List(ctx)
@@ -659,8 +655,6 @@ func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessListRequ
 	return &fetchIpAccessListResponse, err
 }
 
-// Get access lists.
-//
 // Gets all IP access lists for the specified workspace.
 func (a *ipAccessListsImpl) List(ctx context.Context) listing.Iterator[IpAccessListInfo] {
 	request := struct{}{}
@@ -681,8 +675,6 @@ func (a *ipAccessListsImpl) List(ctx context.Context) listing.Iterator[IpAccessL
 	return iterator
 }
 
-// Get access lists.
-//
 // Gets all IP access lists for the specified workspace.
 func (a *ipAccessListsImpl) ListAll(ctx context.Context) ([]IpAccessListInfo, error) {
 	iterator := a.List(ctx)
@@ -874,8 +866,6 @@ func (a *networkConnectivityImpl) GetPrivateEndpointRule(ctx context.Context, re
 	return &nccPrivateEndpointRule, err
 }
 
-// List network connectivity configurations.
-//
 // Gets an array of network connectivity configurations.
 func (a *networkConnectivityImpl) ListNetworkConnectivityConfigurations(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) listing.Iterator[NetworkConnectivityConfiguration] {
 
@@ -901,8 +891,6 @@ func (a *networkConnectivityImpl) ListNetworkConnectivityConfigurations(ctx cont
 	return iterator
 }
 
-// List network connectivity configurations.
-//
 // Gets an array of network connectivity configurations.
 func (a *networkConnectivityImpl) ListNetworkConnectivityConfigurationsAll(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) ([]NetworkConnectivityConfiguration, error) {
 	iterator := a.ListNetworkConnectivityConfigurations(ctx, request)
@@ -919,8 +907,6 @@ func (a *networkConnectivityImpl) internalListNetworkConnectivityConfigurations(
 	return &listNetworkConnectivityConfigurationsResponse, err
 }
 
-// List private endpoint rules.
-//
 // Gets an array of private endpoint rules.
 func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) listing.Iterator[NccPrivateEndpointRule] {
 
@@ -946,8 +932,6 @@ func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, 
 	return iterator
 }
 
-// List private endpoint rules.
-//
 // Gets an array of private endpoint rules.
 func (a *networkConnectivityImpl) ListPrivateEndpointRulesAll(ctx context.Context, request ListPrivateEndpointRulesRequest) ([]NccPrivateEndpointRule, error) {
 	iterator := a.ListPrivateEndpointRules(ctx, request)
@@ -1014,8 +998,6 @@ func (a *networkPoliciesImpl) GetNetworkPolicyRpc(ctx context.Context, request G
 	return &accountNetworkPolicy, err
 }
 
-// List network policies.
-//
 // Gets an array of network policies.
 func (a *networkPoliciesImpl) ListNetworkPoliciesRpc(ctx context.Context, request ListNetworkPoliciesRequest) listing.Iterator[AccountNetworkPolicy] {
 
@@ -1041,8 +1023,6 @@ func (a *networkPoliciesImpl) ListNetworkPoliciesRpc(ctx context.Context, reques
 	return iterator
 }
 
-// List network policies.
-//
 // Gets an array of network policies.
 func (a *networkPoliciesImpl) ListNetworkPoliciesRpcAll(ctx context.Context, request ListNetworkPoliciesRequest) ([]AccountNetworkPolicy, error) {
 	iterator := a.ListNetworkPoliciesRpc(ctx, request)
@@ -1106,8 +1086,6 @@ func (a *notificationDestinationsImpl) Get(ctx context.Context, request GetNotif
 	return &notificationDestination, err
 }
 
-// List notification destinations.
-//
 // Lists notification destinations.
 func (a *notificationDestinationsImpl) List(ctx context.Context, request ListNotificationDestinationsRequest) listing.Iterator[ListNotificationDestinationsResult] {
 
@@ -1133,8 +1111,6 @@ func (a *notificationDestinationsImpl) List(ctx context.Context, request ListNot
 	return iterator
 }
 
-// List notification destinations.
-//
 // Lists notification destinations.
 func (a *notificationDestinationsImpl) ListAll(ctx context.Context, request ListNotificationDestinationsRequest) ([]ListNotificationDestinationsResult, error) {
 	iterator := a.List(ctx, request)
@@ -1330,8 +1306,6 @@ func (a *tokenManagementImpl) GetPermissions(ctx context.Context) (*TokenPermiss
 	return &tokenPermissions, err
 }
 
-// List all tokens.
-//
 // Lists all tokens associated with the specified workspace or user.
 func (a *tokenManagementImpl) List(ctx context.Context, request ListTokenManagementRequest) listing.Iterator[TokenInfo] {
 
@@ -1351,8 +1325,6 @@ func (a *tokenManagementImpl) List(ctx context.Context, request ListTokenManagem
 	return iterator
 }
 
-// List all tokens.
-//
 // Lists all tokens associated with the specified workspace or user.
 func (a *tokenManagementImpl) ListAll(ctx context.Context, request ListTokenManagementRequest) ([]TokenInfo, error) {
 	iterator := a.List(ctx, request)
@@ -1418,8 +1390,6 @@ func (a *tokensImpl) Delete(ctx context.Context, request RevokeTokenRequest) err
 	return err
 }
 
-// List tokens.
-//
 // Lists all the valid tokens for a user-workspace pair.
 func (a *tokensImpl) List(ctx context.Context) listing.Iterator[PublicTokenInfo] {
 	request := struct{}{}
@@ -1440,8 +1410,6 @@ func (a *tokensImpl) List(ctx context.Context) listing.Iterator[PublicTokenInfo]
 	return iterator
 }
 
-// List tokens.
-//
 // Lists all the valid tokens for a user-workspace pair.
 func (a *tokensImpl) ListAll(ctx context.Context) ([]PublicTokenInfo, error) {
 	iterator := a.List(ctx)

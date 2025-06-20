@@ -59,20 +59,14 @@ import (
 //
 // [SCIM]: https://docs.databricks.com/admin/users-groups/scim/index.html
 type AccountFederationPolicyService interface {
-
-	// Create account federation policy.
 	Create(ctx context.Context, request CreateAccountFederationPolicyRequest) (*FederationPolicy, error)
 
-	// Delete account federation policy.
 	Delete(ctx context.Context, request DeleteAccountFederationPolicyRequest) error
 
-	// Get account federation policy.
 	Get(ctx context.Context, request GetAccountFederationPolicyRequest) (*FederationPolicy, error)
 
-	// List account federation policies.
 	List(ctx context.Context, request ListAccountFederationPoliciesRequest) (*ListFederationPoliciesResponse, error)
 
-	// Update account federation policy.
 	Update(ctx context.Context, request UpdateAccountFederationPolicyRequest) (*FederationPolicy, error)
 }
 
@@ -85,31 +79,21 @@ type CustomAppIntegrationService interface {
 
 	// Create Custom OAuth App Integration.
 	//
-	// Create Custom OAuth App Integration.
-	//
 	// You can retrieve the custom OAuth app integration via
 	// :method:CustomAppIntegration/get.
 	Create(ctx context.Context, request CreateCustomAppIntegration) (*CreateCustomAppIntegrationOutput, error)
 
-	// Delete Custom OAuth App Integration.
-	//
 	// Delete an existing Custom OAuth App Integration. You can retrieve the
 	// custom OAuth app integration via :method:CustomAppIntegration/get.
 	Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error
 
-	// Get OAuth Custom App Integration.
-	//
 	// Gets the Custom OAuth App Integration for the given integration id.
 	Get(ctx context.Context, request GetCustomAppIntegrationRequest) (*GetCustomAppIntegrationOutput, error)
 
-	// Get custom oauth app integrations.
-	//
 	// Get the list of custom OAuth app integrations for the specified
 	// Databricks account
 	List(ctx context.Context, request ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error)
 
-	// Updates Custom OAuth App Integration.
-	//
 	// Updates an existing custom OAuth App Integration. You can retrieve the
 	// custom OAuth app integration via :method:CustomAppIntegration/get.
 	Update(ctx context.Context, request UpdateCustomAppIntegration) error
@@ -123,8 +107,6 @@ type CustomAppIntegrationService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type OAuthPublishedAppsService interface {
 
-	// Get all the published OAuth apps.
-	//
 	// Get all the available published OAuth apps in Databricks.
 	List(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error)
 }
@@ -138,31 +120,21 @@ type PublishedAppIntegrationService interface {
 
 	// Create Published OAuth App Integration.
 	//
-	// Create Published OAuth App Integration.
-	//
 	// You can retrieve the published OAuth app integration via
 	// :method:PublishedAppIntegration/get.
 	Create(ctx context.Context, request CreatePublishedAppIntegration) (*CreatePublishedAppIntegrationOutput, error)
 
-	// Delete Published OAuth App Integration.
-	//
 	// Delete an existing Published OAuth App Integration. You can retrieve the
 	// published OAuth app integration via :method:PublishedAppIntegration/get.
 	Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error
 
-	// Get OAuth Published App Integration.
-	//
 	// Gets the Published OAuth App Integration for the given integration id.
 	Get(ctx context.Context, request GetPublishedAppIntegrationRequest) (*GetPublishedAppIntegrationOutput, error)
 
-	// Get published oauth app integrations.
-	//
 	// Get the list of published OAuth app integrations for the specified
 	// Databricks account
 	List(ctx context.Context, request ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error)
 
-	// Updates Published OAuth App Integration.
-	//
 	// Updates an existing published OAuth App Integration. You can retrieve the
 	// published OAuth app integration via :method:PublishedAppIntegration/get.
 	Update(ctx context.Context, request UpdatePublishedAppIntegration) error
@@ -225,20 +197,14 @@ type PublishedAppIntegrationService interface {
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ServicePrincipalFederationPolicyService interface {
-
-	// Create service principal federation policy.
 	Create(ctx context.Context, request CreateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error)
 
-	// Delete service principal federation policy.
 	Delete(ctx context.Context, request DeleteServicePrincipalFederationPolicyRequest) error
 
-	// Get service principal federation policy.
 	Get(ctx context.Context, request GetServicePrincipalFederationPolicyRequest) (*FederationPolicy, error)
 
-	// List service principal federation policies.
 	List(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) (*ListFederationPoliciesResponse, error)
 
-	// Update service principal federation policy.
 	Update(ctx context.Context, request UpdateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error)
 }
 
@@ -259,18 +225,12 @@ type ServicePrincipalFederationPolicyService interface {
 // [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
 type ServicePrincipalSecretsService interface {
 
-	// Create service principal secret.
-	//
 	// Create a secret for the given service principal.
 	Create(ctx context.Context, request CreateServicePrincipalSecretRequest) (*CreateServicePrincipalSecretResponse, error)
 
-	// Delete service principal secret.
-	//
 	// Delete a secret from the given service principal.
 	Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error
 
-	// List service principal secrets.
-	//
 	// List all secrets associated with the given service principal. This
 	// operation only returns information about the secrets themselves and does
 	// not include the secret values.

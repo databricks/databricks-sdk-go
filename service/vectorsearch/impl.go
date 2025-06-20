@@ -48,8 +48,6 @@ func (a *vectorSearchEndpointsImpl) GetEndpoint(ctx context.Context, request Get
 	return &endpointInfo, err
 }
 
-// List all endpoints.
-//
 // List all vector search endpoints in the workspace.
 func (a *vectorSearchEndpointsImpl) ListEndpoints(ctx context.Context, request ListEndpointsRequest) listing.Iterator[EndpointInfo] {
 
@@ -75,8 +73,6 @@ func (a *vectorSearchEndpointsImpl) ListEndpoints(ctx context.Context, request L
 	return iterator
 }
 
-// List all endpoints.
-//
 // List all vector search endpoints in the workspace.
 func (a *vectorSearchEndpointsImpl) ListEndpointsAll(ctx context.Context, request ListEndpointsRequest) ([]EndpointInfo, error) {
 	iterator := a.ListEndpoints(ctx, request)
@@ -161,8 +157,6 @@ func (a *vectorSearchIndexesImpl) GetIndex(ctx context.Context, request GetIndex
 	return &vectorIndex, err
 }
 
-// List indexes.
-//
 // List all indexes in the given endpoint.
 func (a *vectorSearchIndexesImpl) ListIndexes(ctx context.Context, request ListIndexesRequest) listing.Iterator[MiniVectorIndex] {
 
@@ -188,8 +182,6 @@ func (a *vectorSearchIndexesImpl) ListIndexes(ctx context.Context, request ListI
 	return iterator
 }
 
-// List indexes.
-//
 // List all indexes in the given endpoint.
 func (a *vectorSearchIndexesImpl) ListIndexesAll(ctx context.Context, request ListIndexesRequest) ([]MiniVectorIndex, error) {
 	iterator := a.ListIndexes(ctx, request)

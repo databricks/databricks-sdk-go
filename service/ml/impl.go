@@ -145,8 +145,6 @@ func (a *experimentsImpl) GetExperiment(ctx context.Context, request GetExperime
 	return &getExperimentResponse, err
 }
 
-// Get metric history for a run.
-//
 // Gets a list of all values for the specified metric for a given run.
 func (a *experimentsImpl) GetHistory(ctx context.Context, request GetHistoryRequest) listing.Iterator[Metric] {
 
@@ -172,8 +170,6 @@ func (a *experimentsImpl) GetHistory(ctx context.Context, request GetHistoryRequ
 	return iterator
 }
 
-// Get metric history for a run.
-//
 // Gets a list of all values for the specified metric for a given run.
 func (a *experimentsImpl) GetHistoryAll(ctx context.Context, request GetHistoryRequest) ([]Metric, error) {
 	iterator := a.GetHistory(ctx, request)
@@ -230,8 +226,6 @@ func (a *experimentsImpl) GetRun(ctx context.Context, request GetRunRequest) (*G
 	return &getRunResponse, err
 }
 
-// List artifacts.
-//
 // List artifacts for a run. Takes an optional `artifact_path` prefix which if
 // specified, the response contains only artifacts with the specified prefix. A
 // maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
@@ -262,8 +256,6 @@ func (a *experimentsImpl) ListArtifacts(ctx context.Context, request ListArtifac
 	return iterator
 }
 
-// List artifacts.
-//
 // List artifacts for a run. Takes an optional `artifact_path` prefix which if
 // specified, the response contains only artifacts with the specified prefix. A
 // maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
@@ -285,8 +277,6 @@ func (a *experimentsImpl) internalListArtifacts(ctx context.Context, request Lis
 	return &listArtifactsResponse, err
 }
 
-// List experiments.
-//
 // Gets a list of all experiments.
 func (a *experimentsImpl) ListExperiments(ctx context.Context, request ListExperimentsRequest) listing.Iterator[Experiment] {
 
@@ -312,8 +302,6 @@ func (a *experimentsImpl) ListExperiments(ctx context.Context, request ListExper
 	return iterator
 }
 
-// List experiments.
-//
 // Gets a list of all experiments.
 func (a *experimentsImpl) ListExperimentsAll(ctx context.Context, request ListExperimentsRequest) ([]Experiment, error) {
 	iterator := a.ListExperiments(ctx, request)
@@ -440,8 +428,6 @@ func (a *experimentsImpl) RestoreRuns(ctx context.Context, request RestoreRuns) 
 	return &restoreRunsResponse, err
 }
 
-// Search experiments.
-//
 // Searches for experiments that satisfy specified search criteria.
 func (a *experimentsImpl) SearchExperiments(ctx context.Context, request SearchExperiments) listing.Iterator[Experiment] {
 
@@ -467,8 +453,6 @@ func (a *experimentsImpl) SearchExperiments(ctx context.Context, request SearchE
 	return iterator
 }
 
-// Search experiments.
-//
 // Searches for experiments that satisfy specified search criteria.
 func (a *experimentsImpl) SearchExperimentsAll(ctx context.Context, request SearchExperiments) ([]Experiment, error) {
 	iterator := a.SearchExperiments(ctx, request)
@@ -497,8 +481,6 @@ func (a *experimentsImpl) SearchLoggedModels(ctx context.Context, request Search
 	return &searchLoggedModelsResponse, err
 }
 
-// Search for runs.
-//
 // Searches for runs that satisfy expressions.
 //
 // Search expressions can use `mlflowMetric` and `mlflowParam` keys.
@@ -526,8 +508,6 @@ func (a *experimentsImpl) SearchRuns(ctx context.Context, request SearchRuns) li
 	return iterator
 }
 
-// Search for runs.
-//
 // Searches for runs that satisfy expressions.
 //
 // Search expressions can use `mlflowMetric` and `mlflowParam` keys.
@@ -791,8 +771,6 @@ func (a *modelRegistryImpl) DeleteWebhook(ctx context.Context, request DeleteWeb
 	return err
 }
 
-// Get the latest version.
-//
 // Gets the latest version of a registered model.
 func (a *modelRegistryImpl) GetLatestVersions(ctx context.Context, request GetLatestVersionsRequest) listing.Iterator[ModelVersion] {
 
@@ -812,8 +790,6 @@ func (a *modelRegistryImpl) GetLatestVersions(ctx context.Context, request GetLa
 	return iterator
 }
 
-// Get the latest version.
-//
 // Gets the latest version of a registered model.
 func (a *modelRegistryImpl) GetLatestVersionsAll(ctx context.Context, request GetLatestVersionsRequest) ([]ModelVersion, error) {
 	iterator := a.GetLatestVersions(ctx, request)
@@ -881,8 +857,6 @@ func (a *modelRegistryImpl) GetPermissions(ctx context.Context, request GetRegis
 	return &registeredModelPermissions, err
 }
 
-// List models.
-//
 // Lists all available registered models, up to the limit specified in
 // __max_results__.
 func (a *modelRegistryImpl) ListModels(ctx context.Context, request ListModelsRequest) listing.Iterator[Model] {
@@ -909,8 +883,6 @@ func (a *modelRegistryImpl) ListModels(ctx context.Context, request ListModelsRe
 	return iterator
 }
 
-// List models.
-//
 // Lists all available registered models, up to the limit specified in
 // __max_results__.
 func (a *modelRegistryImpl) ListModelsAll(ctx context.Context, request ListModelsRequest) ([]Model, error) {
@@ -928,8 +900,6 @@ func (a *modelRegistryImpl) internalListModels(ctx context.Context, request List
 	return &listModelsResponse, err
 }
 
-// List transition requests.
-//
 // Gets a list of all open stage transition requests for the model version.
 func (a *modelRegistryImpl) ListTransitionRequests(ctx context.Context, request ListTransitionRequestsRequest) listing.Iterator[Activity] {
 
@@ -949,8 +919,6 @@ func (a *modelRegistryImpl) ListTransitionRequests(ctx context.Context, request 
 	return iterator
 }
 
-// List transition requests.
-//
 // Gets a list of all open stage transition requests for the model version.
 func (a *modelRegistryImpl) ListTransitionRequestsAll(ctx context.Context, request ListTransitionRequestsRequest) ([]Activity, error) {
 	iterator := a.ListTransitionRequests(ctx, request)
@@ -967,8 +935,6 @@ func (a *modelRegistryImpl) internalListTransitionRequests(ctx context.Context, 
 	return &listTransitionRequestsResponse, err
 }
 
-// List registry webhooks.
-//
 // **NOTE:** This endpoint is in Public Preview.
 //
 // Lists all registry webhooks.
@@ -996,8 +962,6 @@ func (a *modelRegistryImpl) ListWebhooks(ctx context.Context, request ListWebhoo
 	return iterator
 }
 
-// List registry webhooks.
-//
 // **NOTE:** This endpoint is in Public Preview.
 //
 // Lists all registry webhooks.
@@ -1038,8 +1002,6 @@ func (a *modelRegistryImpl) RenameModel(ctx context.Context, request RenameModel
 	return &renameModelResponse, err
 }
 
-// Searches model versions.
-//
 // Searches for specific model versions based on the supplied __filter__.
 func (a *modelRegistryImpl) SearchModelVersions(ctx context.Context, request SearchModelVersionsRequest) listing.Iterator[ModelVersion] {
 
@@ -1065,8 +1027,6 @@ func (a *modelRegistryImpl) SearchModelVersions(ctx context.Context, request Sea
 	return iterator
 }
 
-// Searches model versions.
-//
 // Searches for specific model versions based on the supplied __filter__.
 func (a *modelRegistryImpl) SearchModelVersionsAll(ctx context.Context, request SearchModelVersionsRequest) ([]ModelVersion, error) {
 	iterator := a.SearchModelVersions(ctx, request)
@@ -1083,8 +1043,6 @@ func (a *modelRegistryImpl) internalSearchModelVersions(ctx context.Context, req
 	return &searchModelVersionsResponse, err
 }
 
-// Search models.
-//
 // Search for registered models based on the specified __filter__.
 func (a *modelRegistryImpl) SearchModels(ctx context.Context, request SearchModelsRequest) listing.Iterator[Model] {
 
@@ -1110,8 +1068,6 @@ func (a *modelRegistryImpl) SearchModels(ctx context.Context, request SearchMode
 	return iterator
 }
 
-// Search models.
-//
 // Search for registered models based on the specified __filter__.
 func (a *modelRegistryImpl) SearchModelsAll(ctx context.Context, request SearchModelsRequest) ([]Model, error) {
 	iterator := a.SearchModels(ctx, request)

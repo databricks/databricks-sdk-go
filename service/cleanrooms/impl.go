@@ -48,7 +48,6 @@ func (a *cleanRoomAssetsImpl) Get(ctx context.Context, request GetCleanRoomAsset
 	return &cleanRoomAsset, err
 }
 
-// List assets.
 func (a *cleanRoomAssetsImpl) List(ctx context.Context, request ListCleanRoomAssetsRequest) listing.Iterator[CleanRoomAsset] {
 
 	getNextPage := func(ctx context.Context, req ListCleanRoomAssetsRequest) (*ListCleanRoomAssetsResponse, error) {
@@ -73,7 +72,6 @@ func (a *cleanRoomAssetsImpl) List(ctx context.Context, request ListCleanRoomAss
 	return iterator
 }
 
-// List assets.
 func (a *cleanRoomAssetsImpl) ListAll(ctx context.Context, request ListCleanRoomAssetsRequest) ([]CleanRoomAsset, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[CleanRoomAsset](ctx, iterator)
@@ -105,8 +103,6 @@ type cleanRoomTaskRunsImpl struct {
 	client *client.DatabricksClient
 }
 
-// List notebook task runs.
-//
 // List all the historical notebook task runs in a clean room.
 func (a *cleanRoomTaskRunsImpl) List(ctx context.Context, request ListCleanRoomNotebookTaskRunsRequest) listing.Iterator[CleanRoomNotebookTaskRun] {
 
@@ -132,8 +128,6 @@ func (a *cleanRoomTaskRunsImpl) List(ctx context.Context, request ListCleanRoomN
 	return iterator
 }
 
-// List notebook task runs.
-//
 // List all the historical notebook task runs in a clean room.
 func (a *cleanRoomTaskRunsImpl) ListAll(ctx context.Context, request ListCleanRoomNotebookTaskRunsRequest) ([]CleanRoomNotebookTaskRun, error) {
 	iterator := a.List(ctx, request)
@@ -197,8 +191,6 @@ func (a *cleanRoomsImpl) Get(ctx context.Context, request GetCleanRoomRequest) (
 	return &cleanRoom, err
 }
 
-// List clean rooms.
-//
 // Get a list of all clean rooms of the metastore. Only clean rooms the caller
 // has access to are returned.
 func (a *cleanRoomsImpl) List(ctx context.Context, request ListCleanRoomsRequest) listing.Iterator[CleanRoom] {
@@ -225,8 +217,6 @@ func (a *cleanRoomsImpl) List(ctx context.Context, request ListCleanRoomsRequest
 	return iterator
 }
 
-// List clean rooms.
-//
 // Get a list of all clean rooms of the metastore. Only clean rooms the caller
 // has access to are returned.
 func (a *cleanRoomsImpl) ListAll(ctx context.Context, request ListCleanRoomsRequest) ([]CleanRoom, error) {

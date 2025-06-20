@@ -48,8 +48,6 @@ func (a *providersImpl) Get(ctx context.Context, request GetProviderRequest) (*P
 	return &providerInfo, err
 }
 
-// List providers.
-//
 // Gets an array of available authentication providers. The caller must either
 // be a metastore admin or the owner of the providers. Providers not owned by
 // the caller are not included in the response. There is no guarantee of a
@@ -80,8 +78,6 @@ func (a *providersImpl) List(ctx context.Context, request ListProvidersRequest) 
 	return iterator
 }
 
-// List providers.
-//
 // Gets an array of available authentication providers. The caller must either
 // be a metastore admin or the owner of the providers. Providers not owned by
 // the caller are not included in the response. There is no guarantee of a
@@ -111,8 +107,6 @@ func (a *providersImpl) ListProviderShareAssets(ctx context.Context, request Lis
 	return &listProviderShareAssetsResponse, err
 }
 
-// List shares by Provider.
-//
 // Gets an array of a specified provider's shares within the metastore where:
 //
 // * the caller is a metastore admin, or * the caller is the owner.
@@ -142,8 +136,6 @@ func (a *providersImpl) ListShares(ctx context.Context, request ListSharesReques
 	return iterator
 }
 
-// List shares by Provider.
-//
 // Gets an array of a specified provider's shares within the metastore where:
 //
 // * the caller is a metastore admin, or * the caller is the owner.
@@ -234,8 +226,6 @@ func (a *recipientFederationPoliciesImpl) GetFederationPolicy(ctx context.Contex
 	return &federationPolicy, err
 }
 
-// List recipient federation policies.
-//
 // Lists federation policies for an OIDC_FEDERATION recipient for sharing data
 // from Databricks to non-Databricks recipients. The caller must have read
 // access to the recipient.
@@ -263,8 +253,6 @@ func (a *recipientFederationPoliciesImpl) List(ctx context.Context, request List
 	return iterator
 }
 
-// List recipient federation policies.
-//
 // Lists federation policies for an OIDC_FEDERATION recipient for sharing data
 // from Databricks to non-Databricks recipients. The caller must have read
 // access to the recipient.
@@ -332,8 +320,6 @@ func (a *recipientsImpl) Get(ctx context.Context, request GetRecipientRequest) (
 	return &recipientInfo, err
 }
 
-// List share recipients.
-//
 // Gets an array of all share recipients within the current metastore where:
 //
 // * the caller is a metastore admin, or * the caller is the owner. There is no
@@ -364,8 +350,6 @@ func (a *recipientsImpl) List(ctx context.Context, request ListRecipientsRequest
 	return iterator
 }
 
-// List share recipients.
-//
 // Gets an array of all share recipients within the current metastore where:
 //
 // * the caller is a metastore admin, or * the caller is the owner. There is no
@@ -452,8 +436,6 @@ func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*ShareIn
 	return &shareInfo, err
 }
 
-// List shares.
-//
 // Gets an array of data object shares from the metastore. The caller must be a
 // metastore admin or the owner of the share. There is no guarantee of a
 // specific ordering of the elements in the array.
@@ -483,8 +465,6 @@ func (a *sharesImpl) List(ctx context.Context, request ListSharesRequest) listin
 	return iterator
 }
 
-// List shares.
-//
 // Gets an array of data object shares from the metastore. The caller must be a
 // metastore admin or the owner of the share. There is no guarantee of a
 // specific ordering of the elements in the array.

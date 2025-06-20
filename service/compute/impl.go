@@ -80,8 +80,6 @@ func (a *clusterPoliciesImpl) GetPermissions(ctx context.Context, request GetClu
 	return &clusterPolicyPermissions, err
 }
 
-// List cluster policies.
-//
 // Returns a list of policies accessible by the requesting user.
 func (a *clusterPoliciesImpl) List(ctx context.Context, request ListClusterPoliciesRequest) listing.Iterator[Policy] {
 
@@ -101,8 +99,6 @@ func (a *clusterPoliciesImpl) List(ctx context.Context, request ListClusterPolic
 	return iterator
 }
 
-// List cluster policies.
-//
 // Returns a list of policies accessible by the requesting user.
 func (a *clusterPoliciesImpl) ListAll(ctx context.Context, request ListClusterPoliciesRequest) ([]Policy, error) {
 	iterator := a.List(ctx, request)
@@ -190,8 +186,6 @@ func (a *clustersImpl) Edit(ctx context.Context, request EditCluster) error {
 	return err
 }
 
-// List cluster activity events.
-//
 // Retrieves a list of events about the activity of a cluster. This API is
 // paginated. If there are more events to read, the response includes all the
 // parameters necessary to request the next page of events.
@@ -220,8 +214,6 @@ func (a *clustersImpl) Events(ctx context.Context, request GetEvents) listing.It
 	return iterator
 }
 
-// List cluster activity events.
-//
 // Retrieves a list of events about the activity of a cluster. This API is
 // paginated. If there are more events to read, the response includes all the
 // parameters necessary to request the next page of events.
@@ -272,8 +264,6 @@ func (a *clustersImpl) GetPermissions(ctx context.Context, request GetClusterPer
 	return &clusterPermissions, err
 }
 
-// List clusters.
-//
 // Return information about all pinned and active clusters, and all clusters
 // terminated within the last 30 days. Clusters terminated prior to this period
 // are not included.
@@ -301,8 +291,6 @@ func (a *clustersImpl) List(ctx context.Context, request ListClustersRequest) li
 	return iterator
 }
 
-// List clusters.
-//
 // Return information about all pinned and active clusters, and all clusters
 // terminated within the last 30 days. Clusters terminated prior to this period
 // are not included.
@@ -555,8 +543,6 @@ func (a *globalInitScriptsImpl) Get(ctx context.Context, request GetGlobalInitSc
 	return &globalInitScriptDetailsWithContent, err
 }
 
-// Get init scripts.
-//
 // Get a list of all global init scripts for this workspace. This returns all
 // properties for each script but **not** the script contents. To retrieve the
 // contents of a script, use the [get a global init
@@ -580,8 +566,6 @@ func (a *globalInitScriptsImpl) List(ctx context.Context) listing.Iterator[Globa
 	return iterator
 }
 
-// Get init scripts.
-//
 // Get a list of all global init scripts for this workspace. This returns all
 // properties for each script but **not** the script contents. To retrieve the
 // contents of a script, use the [get a global init
@@ -680,8 +664,6 @@ func (a *instancePoolsImpl) GetPermissions(ctx context.Context, request GetInsta
 	return &instancePoolPermissions, err
 }
 
-// List instance pool info.
-//
 // Gets a list of instance pools with their statistics.
 func (a *instancePoolsImpl) List(ctx context.Context) listing.Iterator[InstancePoolAndStats] {
 	request := struct{}{}
@@ -702,8 +684,6 @@ func (a *instancePoolsImpl) List(ctx context.Context) listing.Iterator[InstanceP
 	return iterator
 }
 
-// List instance pool info.
-//
 // Gets a list of instance pools with their statistics.
 func (a *instancePoolsImpl) ListAll(ctx context.Context) ([]InstancePoolAndStats, error) {
 	iterator := a.List(ctx)
@@ -769,8 +749,6 @@ func (a *instanceProfilesImpl) Edit(ctx context.Context, request InstanceProfile
 	return err
 }
 
-// List available instance profiles.
-//
 // List the instance profiles that the calling user can use to launch a cluster.
 //
 // This API is available to all users.
@@ -793,8 +771,6 @@ func (a *instanceProfilesImpl) List(ctx context.Context) listing.Iterator[Instan
 	return iterator
 }
 
-// List available instance profiles.
-//
 // List the instance profiles that the calling user can use to launch a cluster.
 //
 // This API is available to all users.
@@ -829,8 +805,6 @@ type librariesImpl struct {
 	client *client.DatabricksClient
 }
 
-// Get all statuses.
-//
 // Get the status of all libraries on all clusters. A status is returned for all
 // libraries installed on this cluster via the API or the libraries UI.
 func (a *librariesImpl) AllClusterStatuses(ctx context.Context) listing.Iterator[ClusterLibraryStatuses] {
@@ -852,8 +826,6 @@ func (a *librariesImpl) AllClusterStatuses(ctx context.Context) listing.Iterator
 	return iterator
 }
 
-// Get all statuses.
-//
 // Get the status of all libraries on all clusters. A status is returned for all
 // libraries installed on this cluster via the API or the libraries UI.
 func (a *librariesImpl) AllClusterStatusesAll(ctx context.Context) ([]ClusterLibraryStatuses, error) {
@@ -871,8 +843,6 @@ func (a *librariesImpl) internalAllClusterStatuses(ctx context.Context) (*ListAl
 	return &listAllClusterLibraryStatusesResponse, err
 }
 
-// Get status.
-//
 // Get the status of libraries on a cluster. A status is returned for all
 // libraries installed on this cluster via the API or the libraries UI. The
 // order of returned libraries is as follows: 1. Libraries set to be installed
@@ -898,8 +868,6 @@ func (a *librariesImpl) ClusterStatus(ctx context.Context, request ClusterStatus
 	return iterator
 }
 
-// Get status.
-//
 // Get the status of libraries on a cluster. A status is returned for all
 // libraries installed on this cluster via the API or the libraries UI. The
 // order of returned libraries is as follows: 1. Libraries set to be installed
@@ -970,8 +938,6 @@ func (a *policyComplianceForClustersImpl) GetCompliance(ctx context.Context, req
 	return &getClusterComplianceResponse, err
 }
 
-// List cluster policy compliance.
-//
 // Returns the policy compliance status of all clusters that use a given policy.
 // Clusters could be out of compliance if their policy was updated after the
 // cluster was last edited.
@@ -999,8 +965,6 @@ func (a *policyComplianceForClustersImpl) ListCompliance(ctx context.Context, re
 	return iterator
 }
 
-// List cluster policy compliance.
-//
 // Returns the policy compliance status of all clusters that use a given policy.
 // Clusters could be out of compliance if their policy was updated after the
 // cluster was last edited.
@@ -1034,8 +998,6 @@ func (a *policyFamiliesImpl) Get(ctx context.Context, request GetPolicyFamilyReq
 	return &policyFamily, err
 }
 
-// List policy families.
-//
 // Returns the list of policy definition types available to use at their latest
 // version. This API is paginated.
 func (a *policyFamiliesImpl) List(ctx context.Context, request ListPolicyFamiliesRequest) listing.Iterator[PolicyFamily] {
@@ -1062,8 +1024,6 @@ func (a *policyFamiliesImpl) List(ctx context.Context, request ListPolicyFamilie
 	return iterator
 }
 
-// List policy families.
-//
 // Returns the list of policy definition types available to use at their latest
 // version. This API is paginated.
 func (a *policyFamiliesImpl) ListAll(ctx context.Context, request ListPolicyFamiliesRequest) ([]PolicyFamily, error) {

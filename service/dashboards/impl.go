@@ -237,7 +237,6 @@ func (a *lakeviewImpl) GetSubscription(ctx context.Context, request GetSubscript
 	return &subscription, err
 }
 
-// List dashboards.
 func (a *lakeviewImpl) List(ctx context.Context, request ListDashboardsRequest) listing.Iterator[Dashboard] {
 
 	getNextPage := func(ctx context.Context, req ListDashboardsRequest) (*ListDashboardsResponse, error) {
@@ -262,7 +261,6 @@ func (a *lakeviewImpl) List(ctx context.Context, request ListDashboardsRequest) 
 	return iterator
 }
 
-// List dashboards.
 func (a *lakeviewImpl) ListAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[Dashboard](ctx, iterator)
@@ -278,7 +276,6 @@ func (a *lakeviewImpl) internalList(ctx context.Context, request ListDashboardsR
 	return &listDashboardsResponse, err
 }
 
-// List dashboard schedules.
 func (a *lakeviewImpl) ListSchedules(ctx context.Context, request ListSchedulesRequest) listing.Iterator[Schedule] {
 
 	getNextPage := func(ctx context.Context, req ListSchedulesRequest) (*ListSchedulesResponse, error) {
@@ -303,7 +300,6 @@ func (a *lakeviewImpl) ListSchedules(ctx context.Context, request ListSchedulesR
 	return iterator
 }
 
-// List dashboard schedules.
 func (a *lakeviewImpl) ListSchedulesAll(ctx context.Context, request ListSchedulesRequest) ([]Schedule, error) {
 	iterator := a.ListSchedules(ctx, request)
 	return listing.ToSlice[Schedule](ctx, iterator)
@@ -319,7 +315,6 @@ func (a *lakeviewImpl) internalListSchedules(ctx context.Context, request ListSc
 	return &listSchedulesResponse, err
 }
 
-// List schedule subscriptions.
 func (a *lakeviewImpl) ListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) listing.Iterator[Subscription] {
 
 	getNextPage := func(ctx context.Context, req ListSubscriptionsRequest) (*ListSubscriptionsResponse, error) {
@@ -344,7 +339,6 @@ func (a *lakeviewImpl) ListSubscriptions(ctx context.Context, request ListSubscr
 	return iterator
 }
 
-// List schedule subscriptions.
 func (a *lakeviewImpl) ListSubscriptionsAll(ctx context.Context, request ListSubscriptionsRequest) ([]Subscription, error) {
 	iterator := a.ListSubscriptions(ctx, request)
 	return listing.ToSlice[Subscription](ctx, iterator)

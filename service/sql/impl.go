@@ -48,8 +48,6 @@ func (a *alertsImpl) Get(ctx context.Context, request GetAlertRequest) (*Alert, 
 	return &alert, err
 }
 
-// List alerts.
-//
 // Gets a list of alerts accessible to the user, ordered by creation time.
 // **Warning:** Calling this API concurrently 10 or more times could result in
 // throttling, service degradation, or a temporary ban.
@@ -77,8 +75,6 @@ func (a *alertsImpl) List(ctx context.Context, request ListAlertsRequest) listin
 	return iterator
 }
 
-// List alerts.
-//
 // Gets a list of alerts accessible to the user, ordered by creation time.
 // **Warning:** Calling this API concurrently 10 or more times could result in
 // throttling, service degradation, or a temporary ban.
@@ -191,8 +187,6 @@ func (a *alertsV2Impl) GetAlert(ctx context.Context, request GetAlertV2Request) 
 	return &alertV2, err
 }
 
-// List alerts.
-//
 // Gets a list of alerts accessible to the user, ordered by creation time.
 func (a *alertsV2Impl) ListAlerts(ctx context.Context, request ListAlertsV2Request) listing.Iterator[AlertV2] {
 
@@ -218,8 +212,6 @@ func (a *alertsV2Impl) ListAlerts(ctx context.Context, request ListAlertsV2Reque
 	return iterator
 }
 
-// List alerts.
-//
 // Gets a list of alerts accessible to the user, ordered by creation time.
 func (a *alertsV2Impl) ListAlertsAll(ctx context.Context, request ListAlertsV2Request) ([]AlertV2, error) {
 	iterator := a.ListAlerts(ctx, request)
@@ -333,8 +325,6 @@ func (a *dashboardsImpl) Get(ctx context.Context, request GetDashboardRequest) (
 	return &dashboard, err
 }
 
-// Get dashboard objects.
-//
 // Fetch a paginated list of dashboard objects.
 //
 // **Warning**: Calling this API concurrently 10 or more times could result in
@@ -370,8 +360,6 @@ func (a *dashboardsImpl) List(ctx context.Context, request ListDashboardsRequest
 	return dedupedIterator
 }
 
-// Get dashboard objects.
-//
 // Fetch a paginated list of dashboard objects.
 //
 // **Warning**: Calling this API concurrently 10 or more times could result in
@@ -501,8 +489,6 @@ func (a *queriesImpl) Get(ctx context.Context, request GetQueryRequest) (*Query,
 	return &query, err
 }
 
-// List queries.
-//
 // Gets a list of queries accessible to the user, ordered by creation time.
 // **Warning:** Calling this API concurrently 10 or more times could result in
 // throttling, service degradation, or a temporary ban.
@@ -530,8 +516,6 @@ func (a *queriesImpl) List(ctx context.Context, request ListQueriesRequest) list
 	return iterator
 }
 
-// List queries.
-//
 // Gets a list of queries accessible to the user, ordered by creation time.
 // **Warning:** Calling this API concurrently 10 or more times could result in
 // throttling, service degradation, or a temporary ban.
@@ -550,8 +534,6 @@ func (a *queriesImpl) internalList(ctx context.Context, request ListQueriesReque
 	return &listQueryObjectsResponse, err
 }
 
-// List visualizations on a query.
-//
 // Gets a list of visualizations on a query.
 func (a *queriesImpl) ListVisualizations(ctx context.Context, request ListVisualizationsForQueryRequest) listing.Iterator[Visualization] {
 
@@ -577,8 +559,6 @@ func (a *queriesImpl) ListVisualizations(ctx context.Context, request ListVisual
 	return iterator
 }
 
-// List visualizations on a query.
-//
 // Gets a list of visualizations on a query.
 func (a *queriesImpl) ListVisualizationsAll(ctx context.Context, request ListVisualizationsForQueryRequest) ([]Visualization, error) {
 	iterator := a.ListVisualizations(ctx, request)
@@ -642,8 +622,6 @@ func (a *queriesLegacyImpl) Get(ctx context.Context, request GetQueriesLegacyReq
 	return &legacyQuery, err
 }
 
-// Get a list of queries.
-//
 // Gets a list of queries. Optionally, this list can be filtered by a search
 // term.
 //
@@ -685,8 +663,6 @@ func (a *queriesLegacyImpl) List(ctx context.Context, request ListQueriesLegacyR
 	return dedupedIterator
 }
 
-// Get a list of queries.
-//
 // Gets a list of queries. Optionally, this list can be filtered by a search
 // term.
 //
@@ -960,8 +936,6 @@ func (a *warehousesImpl) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetW
 	return &getWorkspaceWarehouseConfigResponse, err
 }
 
-// List warehouses.
-//
 // Lists all SQL warehouses that a user has manager permissions on.
 func (a *warehousesImpl) List(ctx context.Context, request ListWarehousesRequest) listing.Iterator[EndpointInfo] {
 
@@ -981,8 +955,6 @@ func (a *warehousesImpl) List(ctx context.Context, request ListWarehousesRequest
 	return iterator
 }
 
-// List warehouses.
-//
 // Lists all SQL warehouses that a user has manager permissions on.
 func (a *warehousesImpl) ListAll(ctx context.Context, request ListWarehousesRequest) ([]EndpointInfo, error) {
 	iterator := a.List(ctx, request)

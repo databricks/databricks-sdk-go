@@ -17,8 +17,6 @@ type consumerFulfillmentsImpl struct {
 	client *client.DatabricksClient
 }
 
-// Get listing content metadata.
-//
 // Get a high level preview of the metadata of listing installable content.
 func (a *consumerFulfillmentsImpl) Get(ctx context.Context, request GetListingContentMetadataRequest) listing.Iterator[SharedDataObject] {
 
@@ -44,8 +42,6 @@ func (a *consumerFulfillmentsImpl) Get(ctx context.Context, request GetListingCo
 	return iterator
 }
 
-// Get listing content metadata.
-//
 // Get a high level preview of the metadata of listing installable content.
 func (a *consumerFulfillmentsImpl) GetAll(ctx context.Context, request GetListingContentMetadataRequest) ([]SharedDataObject, error) {
 	iterator := a.Get(ctx, request)
@@ -62,8 +58,6 @@ func (a *consumerFulfillmentsImpl) internalGet(ctx context.Context, request GetL
 	return &getListingContentMetadataResponse, err
 }
 
-// List all listing fulfillments.
-//
 // Get all listings fulfillments associated with a listing. A _fulfillment_ is a
 // potential installation. Standard installations contain metadata about the
 // attached share or git repo. Only one of these fields will be present.
@@ -93,8 +87,6 @@ func (a *consumerFulfillmentsImpl) List(ctx context.Context, request ListFulfill
 	return iterator
 }
 
-// List all listing fulfillments.
-//
 // Get all listings fulfillments associated with a listing. A _fulfillment_ is a
 // potential installation. Standard installations contain metadata about the
 // attached share or git repo. Only one of these fields will be present.
@@ -141,8 +133,6 @@ func (a *consumerInstallationsImpl) Delete(ctx context.Context, request DeleteIn
 	return err
 }
 
-// List all installations.
-//
 // List all installations across all listings.
 func (a *consumerInstallationsImpl) List(ctx context.Context, request ListAllInstallationsRequest) listing.Iterator[InstallationDetail] {
 
@@ -168,8 +158,6 @@ func (a *consumerInstallationsImpl) List(ctx context.Context, request ListAllIns
 	return iterator
 }
 
-// List all installations.
-//
 // List all installations across all listings.
 func (a *consumerInstallationsImpl) ListAll(ctx context.Context, request ListAllInstallationsRequest) ([]InstallationDetail, error) {
 	iterator := a.List(ctx, request)
@@ -186,8 +174,6 @@ func (a *consumerInstallationsImpl) internalList(ctx context.Context, request Li
 	return &listAllInstallationsResponse, err
 }
 
-// List installations for a listing.
-//
 // List all installations for a particular listing.
 func (a *consumerInstallationsImpl) ListListingInstallations(ctx context.Context, request ListInstallationsRequest) listing.Iterator[InstallationDetail] {
 
@@ -213,8 +199,6 @@ func (a *consumerInstallationsImpl) ListListingInstallations(ctx context.Context
 	return iterator
 }
 
-// List installations for a listing.
-//
 // List all installations for a particular listing.
 func (a *consumerInstallationsImpl) ListListingInstallationsAll(ctx context.Context, request ListInstallationsRequest) ([]InstallationDetail, error) {
 	iterator := a.ListListingInstallations(ctx, request)
@@ -267,8 +251,6 @@ func (a *consumerListingsImpl) Get(ctx context.Context, request GetListingReques
 	return &getListingResponse, err
 }
 
-// List listings.
-//
 // List all published listings in the Databricks Marketplace that the consumer
 // has access to.
 func (a *consumerListingsImpl) List(ctx context.Context, request ListListingsRequest) listing.Iterator[Listing] {
@@ -295,8 +277,6 @@ func (a *consumerListingsImpl) List(ctx context.Context, request ListListingsReq
 	return iterator
 }
 
-// List listings.
-//
 // List all published listings in the Databricks Marketplace that the consumer
 // has access to.
 func (a *consumerListingsImpl) ListAll(ctx context.Context, request ListListingsRequest) ([]Listing, error) {
@@ -314,8 +294,6 @@ func (a *consumerListingsImpl) internalList(ctx context.Context, request ListLis
 	return &listListingsResponse, err
 }
 
-// Search listings.
-//
 // Search published listings in the Databricks Marketplace that the consumer has
 // access to. This query supports a variety of different search parameters and
 // performs fuzzy matching.
@@ -343,8 +321,6 @@ func (a *consumerListingsImpl) Search(ctx context.Context, request SearchListing
 	return iterator
 }
 
-// Search listings.
-//
 // Search published listings in the Databricks Marketplace that the consumer has
 // access to. This query supports a variety of different search parameters and
 // performs fuzzy matching.
@@ -389,8 +365,6 @@ func (a *consumerPersonalizationRequestsImpl) Get(ctx context.Context, request G
 	return &getPersonalizationRequestResponse, err
 }
 
-// List all personalization requests.
-//
 // List personalization requests for a consumer across all listings.
 func (a *consumerPersonalizationRequestsImpl) List(ctx context.Context, request ListAllPersonalizationRequestsRequest) listing.Iterator[PersonalizationRequest] {
 
@@ -416,8 +390,6 @@ func (a *consumerPersonalizationRequestsImpl) List(ctx context.Context, request 
 	return iterator
 }
 
-// List all personalization requests.
-//
 // List personalization requests for a consumer across all listings.
 func (a *consumerPersonalizationRequestsImpl) ListAll(ctx context.Context, request ListAllPersonalizationRequestsRequest) ([]PersonalizationRequest, error) {
 	iterator := a.List(ctx, request)
@@ -459,8 +431,6 @@ func (a *consumerProvidersImpl) Get(ctx context.Context, request GetProviderRequ
 	return &getProviderResponse, err
 }
 
-// List providers.
-//
 // List all providers in the Databricks Marketplace with at least one visible
 // listing.
 func (a *consumerProvidersImpl) List(ctx context.Context, request ListProvidersRequest) listing.Iterator[ProviderInfo] {
@@ -487,8 +457,6 @@ func (a *consumerProvidersImpl) List(ctx context.Context, request ListProvidersR
 	return iterator
 }
 
-// List providers.
-//
 // List all providers in the Databricks Marketplace with at least one visible
 // listing.
 func (a *consumerProvidersImpl) ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error) {
@@ -532,8 +500,6 @@ func (a *providerExchangeFiltersImpl) Delete(ctx context.Context, request Delete
 	return err
 }
 
-// List exchange filters.
-//
 // List exchange filter
 func (a *providerExchangeFiltersImpl) List(ctx context.Context, request ListExchangeFiltersRequest) listing.Iterator[ExchangeFilter] {
 
@@ -559,8 +525,6 @@ func (a *providerExchangeFiltersImpl) List(ctx context.Context, request ListExch
 	return iterator
 }
 
-// List exchange filters.
-//
 // List exchange filter
 func (a *providerExchangeFiltersImpl) ListAll(ctx context.Context, request ListExchangeFiltersRequest) ([]ExchangeFilter, error) {
 	iterator := a.List(ctx, request)
@@ -645,8 +609,6 @@ func (a *providerExchangesImpl) Get(ctx context.Context, request GetExchangeRequ
 	return &getExchangeResponse, err
 }
 
-// List exchanges.
-//
 // List exchanges visible to provider
 func (a *providerExchangesImpl) List(ctx context.Context, request ListExchangesRequest) listing.Iterator[Exchange] {
 
@@ -672,8 +634,6 @@ func (a *providerExchangesImpl) List(ctx context.Context, request ListExchangesR
 	return iterator
 }
 
-// List exchanges.
-//
 // List exchanges visible to provider
 func (a *providerExchangesImpl) ListAll(ctx context.Context, request ListExchangesRequest) ([]Exchange, error) {
 	iterator := a.List(ctx, request)
@@ -690,8 +650,6 @@ func (a *providerExchangesImpl) internalList(ctx context.Context, request ListEx
 	return &listExchangesResponse, err
 }
 
-// List exchanges for listing.
-//
 // List exchanges associated with a listing
 func (a *providerExchangesImpl) ListExchangesForListing(ctx context.Context, request ListExchangesForListingRequest) listing.Iterator[ExchangeListing] {
 
@@ -717,8 +675,6 @@ func (a *providerExchangesImpl) ListExchangesForListing(ctx context.Context, req
 	return iterator
 }
 
-// List exchanges for listing.
-//
 // List exchanges associated with a listing
 func (a *providerExchangesImpl) ListExchangesForListingAll(ctx context.Context, request ListExchangesForListingRequest) ([]ExchangeListing, error) {
 	iterator := a.ListExchangesForListing(ctx, request)
@@ -735,8 +691,6 @@ func (a *providerExchangesImpl) internalListExchangesForListing(ctx context.Cont
 	return &listExchangesForListingResponse, err
 }
 
-// List listings for exchange.
-//
 // List listings associated with an exchange
 func (a *providerExchangesImpl) ListListingsForExchange(ctx context.Context, request ListListingsForExchangeRequest) listing.Iterator[ExchangeListing] {
 
@@ -762,8 +716,6 @@ func (a *providerExchangesImpl) ListListingsForExchange(ctx context.Context, req
 	return iterator
 }
 
-// List listings for exchange.
-//
 // List listings associated with an exchange
 func (a *providerExchangesImpl) ListListingsForExchangeAll(ctx context.Context, request ListListingsForExchangeRequest) ([]ExchangeListing, error) {
 	iterator := a.ListListingsForExchange(ctx, request)
@@ -827,8 +779,6 @@ func (a *providerFilesImpl) Get(ctx context.Context, request GetFileRequest) (*G
 	return &getFileResponse, err
 }
 
-// List files.
-//
 // List files attached to a parent entity.
 func (a *providerFilesImpl) List(ctx context.Context, request ListFilesRequest) listing.Iterator[FileInfo] {
 
@@ -854,8 +804,6 @@ func (a *providerFilesImpl) List(ctx context.Context, request ListFilesRequest) 
 	return iterator
 }
 
-// List files.
-//
 // List files attached to a parent entity.
 func (a *providerFilesImpl) ListAll(ctx context.Context, request ListFilesRequest) ([]FileInfo, error) {
 	iterator := a.List(ctx, request)
@@ -908,8 +856,6 @@ func (a *providerListingsImpl) Get(ctx context.Context, request GetListingReques
 	return &getListingResponse, err
 }
 
-// List listings.
-//
 // List listings owned by this provider
 func (a *providerListingsImpl) List(ctx context.Context, request GetListingsRequest) listing.Iterator[Listing] {
 
@@ -935,8 +881,6 @@ func (a *providerListingsImpl) List(ctx context.Context, request GetListingsRequ
 	return iterator
 }
 
-// List listings.
-//
 // List listings owned by this provider
 func (a *providerListingsImpl) ListAll(ctx context.Context, request GetListingsRequest) ([]Listing, error) {
 	iterator := a.List(ctx, request)
@@ -969,8 +913,6 @@ type providerPersonalizationRequestsImpl struct {
 	client *client.DatabricksClient
 }
 
-// All personalization requests across all listings.
-//
 // List personalization requests to this provider. This will return all
 // personalization requests, regardless of which listing they are for.
 func (a *providerPersonalizationRequestsImpl) List(ctx context.Context, request ListAllPersonalizationRequestsRequest) listing.Iterator[PersonalizationRequest] {
@@ -997,8 +939,6 @@ func (a *providerPersonalizationRequestsImpl) List(ctx context.Context, request 
 	return iterator
 }
 
-// All personalization requests across all listings.
-//
 // List personalization requests to this provider. This will return all
 // personalization requests, regardless of which listing they are for.
 func (a *providerPersonalizationRequestsImpl) ListAll(ctx context.Context, request ListAllPersonalizationRequestsRequest) ([]PersonalizationRequest, error) {
@@ -1109,8 +1049,6 @@ func (a *providerProvidersImpl) Get(ctx context.Context, request GetProviderRequ
 	return &getProviderResponse, err
 }
 
-// List providers.
-//
 // List provider profiles for account.
 func (a *providerProvidersImpl) List(ctx context.Context, request ListProvidersRequest) listing.Iterator[ProviderInfo] {
 
@@ -1136,8 +1074,6 @@ func (a *providerProvidersImpl) List(ctx context.Context, request ListProvidersR
 	return iterator
 }
 
-// List providers.
-//
 // List provider profiles for account.
 func (a *providerProvidersImpl) ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error) {
 	iterator := a.List(ctx, request)

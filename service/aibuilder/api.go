@@ -10,20 +10,14 @@ import (
 )
 
 type CustomLlmsInterface interface {
-
-	// Cancel a Custom LLM Optimization Run.
 	Cancel(ctx context.Context, request CancelCustomLlmOptimizationRunRequest) error
 
-	// Start a Custom LLM Optimization Run.
 	Create(ctx context.Context, request StartCustomLlmOptimizationRunRequest) (*CustomLlm, error)
 
-	// Get a Custom LLM.
 	Get(ctx context.Context, request GetCustomLlmRequest) (*CustomLlm, error)
 
-	// Get a Custom LLM.
 	GetById(ctx context.Context, id string) (*CustomLlm, error)
 
-	// Update a Custom LLM.
 	Update(ctx context.Context, request UpdateCustomLlmRequest) (*CustomLlm, error)
 }
 
@@ -41,7 +35,6 @@ type CustomLlmsAPI struct {
 	customLlmsImpl
 }
 
-// Get a Custom LLM.
 func (a *CustomLlmsAPI) GetById(ctx context.Context, id string) (*CustomLlm, error) {
 	return a.customLlmsImpl.Get(ctx, GetCustomLlmRequest{
 		Id: id,

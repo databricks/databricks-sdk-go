@@ -123,7 +123,6 @@ func (a *servingEndpointsImpl) HttpRequest(ctx context.Context, request External
 	return &httpRequestResponse, err
 }
 
-// Get all serving endpoints.
 func (a *servingEndpointsImpl) List(ctx context.Context) listing.Iterator[ServingEndpoint] {
 	request := struct{}{}
 
@@ -143,7 +142,6 @@ func (a *servingEndpointsImpl) List(ctx context.Context) listing.Iterator[Servin
 	return iterator
 }
 
-// Get all serving endpoints.
 func (a *servingEndpointsImpl) ListAll(ctx context.Context) ([]ServingEndpoint, error) {
 	iterator := a.List(ctx)
 	return listing.ToSlice[ServingEndpoint](ctx, iterator)

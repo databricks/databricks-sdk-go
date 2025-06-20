@@ -52,7 +52,6 @@ func (a *accountFederationPolicyImpl) Get(ctx context.Context, request GetAccoun
 	return &federationPolicy, err
 }
 
-// List account federation policies.
 func (a *accountFederationPolicyImpl) List(ctx context.Context, request ListAccountFederationPoliciesRequest) listing.Iterator[FederationPolicy] {
 
 	getNextPage := func(ctx context.Context, req ListAccountFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
@@ -77,7 +76,6 @@ func (a *accountFederationPolicyImpl) List(ctx context.Context, request ListAcco
 	return iterator
 }
 
-// List account federation policies.
 func (a *accountFederationPolicyImpl) ListAll(ctx context.Context, request ListAccountFederationPoliciesRequest) ([]FederationPolicy, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[FederationPolicy](ctx, iterator)
@@ -143,8 +141,6 @@ func (a *customAppIntegrationImpl) Get(ctx context.Context, request GetCustomApp
 	return &getCustomAppIntegrationOutput, err
 }
 
-// Get custom oauth app integrations.
-//
 // Get the list of custom OAuth app integrations for the specified Databricks
 // account
 func (a *customAppIntegrationImpl) List(ctx context.Context, request ListCustomAppIntegrationsRequest) listing.Iterator[GetCustomAppIntegrationOutput] {
@@ -171,8 +167,6 @@ func (a *customAppIntegrationImpl) List(ctx context.Context, request ListCustomA
 	return iterator
 }
 
-// Get custom oauth app integrations.
-//
 // Get the list of custom OAuth app integrations for the specified Databricks
 // account
 func (a *customAppIntegrationImpl) ListAll(ctx context.Context, request ListCustomAppIntegrationsRequest) ([]GetCustomAppIntegrationOutput, error) {
@@ -206,8 +200,6 @@ type oAuthPublishedAppsImpl struct {
 	client *client.DatabricksClient
 }
 
-// Get all the published OAuth apps.
-//
 // Get all the available published OAuth apps in Databricks.
 func (a *oAuthPublishedAppsImpl) List(ctx context.Context, request ListOAuthPublishedAppsRequest) listing.Iterator[PublishedAppOutput] {
 
@@ -233,8 +225,6 @@ func (a *oAuthPublishedAppsImpl) List(ctx context.Context, request ListOAuthPubl
 	return iterator
 }
 
-// Get all the published OAuth apps.
-//
 // Get all the available published OAuth apps in Databricks.
 func (a *oAuthPublishedAppsImpl) ListAll(ctx context.Context, request ListOAuthPublishedAppsRequest) ([]PublishedAppOutput, error) {
 	iterator := a.List(ctx, request)
@@ -287,8 +277,6 @@ func (a *publishedAppIntegrationImpl) Get(ctx context.Context, request GetPublis
 	return &getPublishedAppIntegrationOutput, err
 }
 
-// Get published oauth app integrations.
-//
 // Get the list of published OAuth app integrations for the specified Databricks
 // account
 func (a *publishedAppIntegrationImpl) List(ctx context.Context, request ListPublishedAppIntegrationsRequest) listing.Iterator[GetPublishedAppIntegrationOutput] {
@@ -315,8 +303,6 @@ func (a *publishedAppIntegrationImpl) List(ctx context.Context, request ListPubl
 	return iterator
 }
 
-// Get published oauth app integrations.
-//
 // Get the list of published OAuth app integrations for the specified Databricks
 // account
 func (a *publishedAppIntegrationImpl) ListAll(ctx context.Context, request ListPublishedAppIntegrationsRequest) ([]GetPublishedAppIntegrationOutput, error) {
@@ -384,7 +370,6 @@ func (a *servicePrincipalFederationPolicyImpl) Get(ctx context.Context, request 
 	return &federationPolicy, err
 }
 
-// List service principal federation policies.
 func (a *servicePrincipalFederationPolicyImpl) List(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) listing.Iterator[FederationPolicy] {
 
 	getNextPage := func(ctx context.Context, req ListServicePrincipalFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
@@ -409,7 +394,6 @@ func (a *servicePrincipalFederationPolicyImpl) List(ctx context.Context, request
 	return iterator
 }
 
-// List service principal federation policies.
 func (a *servicePrincipalFederationPolicyImpl) ListAll(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) ([]FederationPolicy, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[FederationPolicy](ctx, iterator)
@@ -464,8 +448,6 @@ func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request Delete
 	return err
 }
 
-// List service principal secrets.
-//
 // List all secrets associated with the given service principal. This operation
 // only returns information about the secrets themselves and does not include
 // the secret values.
@@ -493,8 +475,6 @@ func (a *servicePrincipalSecretsImpl) List(ctx context.Context, request ListServ
 	return iterator
 }
 
-// List service principal secrets.
-//
 // List all secrets associated with the given service principal. This operation
 // only returns information about the secrets themselves and does not include
 // the secret values.

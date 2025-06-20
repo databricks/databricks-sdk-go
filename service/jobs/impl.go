@@ -128,8 +128,6 @@ func (a *jobsImpl) GetRunOutput(ctx context.Context, request GetRunOutputRequest
 	return &runOutput, err
 }
 
-// List jobs.
-//
 // Retrieves a list of jobs.
 func (a *jobsImpl) List(ctx context.Context, request ListJobsRequest) listing.Iterator[BaseJob] {
 
@@ -155,8 +153,6 @@ func (a *jobsImpl) List(ctx context.Context, request ListJobsRequest) listing.It
 	return iterator
 }
 
-// List jobs.
-//
 // Retrieves a list of jobs.
 func (a *jobsImpl) ListAll(ctx context.Context, request ListJobsRequest) ([]BaseJob, error) {
 	iterator := a.List(ctx, request)
@@ -173,8 +169,6 @@ func (a *jobsImpl) internalList(ctx context.Context, request ListJobsRequest) (*
 	return &listJobsResponse, err
 }
 
-// List job runs.
-//
 // List runs in descending order by start time.
 func (a *jobsImpl) ListRuns(ctx context.Context, request ListRunsRequest) listing.Iterator[BaseRun] {
 
@@ -200,8 +194,6 @@ func (a *jobsImpl) ListRuns(ctx context.Context, request ListRunsRequest) listin
 	return iterator
 }
 
-// List job runs.
-//
 // List runs in descending order by start time.
 func (a *jobsImpl) ListRunsAll(ctx context.Context, request ListRunsRequest) ([]BaseRun, error) {
 	iterator := a.ListRuns(ctx, request)
@@ -319,8 +311,6 @@ func (a *policyComplianceForJobsImpl) GetCompliance(ctx context.Context, request
 	return &getPolicyComplianceResponse, err
 }
 
-// List job policy compliance.
-//
 // Returns the policy compliance status of all jobs that use a given policy.
 // Jobs could be out of compliance if a cluster policy they use was updated
 // after the job was last edited and its job clusters no longer comply with the
@@ -349,8 +339,6 @@ func (a *policyComplianceForJobsImpl) ListCompliance(ctx context.Context, reques
 	return iterator
 }
 
-// List job policy compliance.
-//
 // Returns the policy compliance status of all jobs that use a given policy.
 // Jobs could be out of compliance if a cluster policy they use was updated
 // after the job was last edited and its job clusters no longer comply with the

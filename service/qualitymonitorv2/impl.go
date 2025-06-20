@@ -48,8 +48,6 @@ func (a *qualityMonitorV2Impl) GetQualityMonitor(ctx context.Context, request Ge
 	return &qualityMonitor, err
 }
 
-// List quality monitors.
-//
 // (Unimplemented) List quality monitors
 func (a *qualityMonitorV2Impl) ListQualityMonitor(ctx context.Context, request ListQualityMonitorRequest) listing.Iterator[QualityMonitor] {
 
@@ -75,8 +73,6 @@ func (a *qualityMonitorV2Impl) ListQualityMonitor(ctx context.Context, request L
 	return iterator
 }
 
-// List quality monitors.
-//
 // (Unimplemented) List quality monitors
 func (a *qualityMonitorV2Impl) ListQualityMonitorAll(ctx context.Context, request ListQualityMonitorRequest) ([]QualityMonitor, error) {
 	iterator := a.ListQualityMonitor(ctx, request)

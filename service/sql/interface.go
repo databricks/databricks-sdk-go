@@ -15,33 +15,23 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AlertsService interface {
 
-	// Create an alert.
-	//
 	// Creates an alert.
 	Create(ctx context.Context, request CreateAlertRequest) (*Alert, error)
 
-	// Delete an alert.
-	//
 	// Moves an alert to the trash. Trashed alerts immediately disappear from
 	// searches and list views, and can no longer trigger. You can restore a
 	// trashed alert through the UI. A trashed alert is permanently deleted
 	// after 30 days.
 	Delete(ctx context.Context, request TrashAlertRequest) error
 
-	// Get an alert.
-	//
 	// Gets an alert.
 	Get(ctx context.Context, request GetAlertRequest) (*Alert, error)
 
-	// List alerts.
-	//
 	// Gets a list of alerts accessible to the user, ordered by creation time.
 	// **Warning:** Calling this API concurrently 10 or more times could result
 	// in throttling, service degradation, or a temporary ban.
 	List(ctx context.Context, request ListAlertsRequest) (*ListAlertsResponse, error)
 
-	// Update an alert.
-	//
 	// Updates an alert.
 	Update(ctx context.Context, request UpdateAlertRequest) (*Alert, error)
 }
@@ -60,8 +50,6 @@ type AlertsService interface {
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type AlertsLegacyService interface {
 
-	// Create an alert.
-	//
 	// Creates an alert. An alert is a Databricks SQL object that periodically
 	// runs a query, evaluates a condition of its result, and notifies users or
 	// notification destinations if the condition was met.
@@ -72,8 +60,6 @@ type AlertsLegacyService interface {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Create(ctx context.Context, request CreateAlert) (*LegacyAlert, error)
 
-	// Delete an alert.
-	//
 	// Deletes an alert. Deleted alerts are no longer accessible and cannot be
 	// restored. **Note**: Unlike queries and dashboards, alerts cannot be moved
 	// to the trash.
@@ -84,8 +70,6 @@ type AlertsLegacyService interface {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Delete(ctx context.Context, request DeleteAlertsLegacyRequest) error
 
-	// Get an alert.
-	//
 	// Gets an alert.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
@@ -94,8 +78,6 @@ type AlertsLegacyService interface {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Get(ctx context.Context, request GetAlertsLegacyRequest) (*LegacyAlert, error)
 
-	// Get alerts.
-	//
 	// Gets a list of alerts.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
@@ -104,8 +86,6 @@ type AlertsLegacyService interface {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	List(ctx context.Context) ([]LegacyAlert, error)
 
-	// Update an alert.
-	//
 	// Updates an alert.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
@@ -120,30 +100,20 @@ type AlertsLegacyService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AlertsV2Service interface {
 
-	// Create an alert.
-	//
 	// Create Alert
 	CreateAlert(ctx context.Context, request CreateAlertV2Request) (*AlertV2, error)
 
-	// Get an alert.
-	//
 	// Gets an alert.
 	GetAlert(ctx context.Context, request GetAlertV2Request) (*AlertV2, error)
 
-	// List alerts.
-	//
 	// Gets a list of alerts accessible to the user, ordered by creation time.
 	ListAlerts(ctx context.Context, request ListAlertsV2Request) (*ListAlertsV2Response, error)
 
-	// Delete an alert.
-	//
 	// Moves an alert to the trash. Trashed alerts immediately disappear from
 	// list views, and can no longer trigger. You can restore a trashed alert
 	// through the UI. A trashed alert is permanently deleted after 30 days.
 	TrashAlert(ctx context.Context, request TrashAlertV2Request) error
 
-	// Update an alert.
-	//
 	// Update alert
 	UpdateAlert(ctx context.Context, request UpdateAlertV2Request) (*AlertV2, error)
 }
@@ -154,14 +124,10 @@ type AlertsV2Service interface {
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type DashboardWidgetsService interface {
-
-	// Add widget to a dashboard.
 	Create(ctx context.Context, request CreateWidget) (*Widget, error)
 
-	// Remove widget.
 	Delete(ctx context.Context, request DeleteDashboardWidgetRequest) error
 
-	// Update existing widget.
 	Update(ctx context.Context, request CreateWidget) (*Widget, error)
 }
 
@@ -174,38 +140,26 @@ type DashboardWidgetsService interface {
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type DashboardsService interface {
-
-	// Create a dashboard object.
 	Create(ctx context.Context, request DashboardPostContent) (*Dashboard, error)
 
-	// Remove a dashboard.
-	//
 	// Moves a dashboard to the trash. Trashed dashboards do not appear in list
 	// views or searches, and cannot be shared.
 	Delete(ctx context.Context, request DeleteDashboardRequest) error
 
-	// Retrieve a definition.
-	//
 	// Returns a JSON representation of a dashboard object, including its
 	// visualization and query objects.
 	Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error)
 
-	// Get dashboard objects.
-	//
 	// Fetch a paginated list of dashboard objects.
 	//
 	// **Warning**: Calling this API concurrently 10 or more times could result
 	// in throttling, service degradation, or a temporary ban.
 	List(ctx context.Context, request ListDashboardsRequest) (*ListResponse, error)
 
-	// Restore a dashboard.
-	//
 	// A restored dashboard appears in list views and searches and can be
 	// shared.
 	Restore(ctx context.Context, request RestoreDashboardRequest) error
 
-	// Change a dashboard definition.
-	//
 	// Modify this dashboard definition. This operation only affects attributes
 	// of the dashboard object. It does not add, modify, or remove widgets.
 	//
@@ -232,8 +186,6 @@ type DashboardsService interface {
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type DataSourcesService interface {
 
-	// Get a list of SQL warehouses.
-	//
 	// Retrieves a full list of SQL warehouses available in this workspace. All
 	// fields that appear in this API response are enumerated for clarity.
 	// However, you need only a SQL warehouse's `id` to create new queries
@@ -268,8 +220,6 @@ type DataSourcesService interface {
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type DbsqlPermissionsService interface {
 
-	// Get object ACL.
-	//
 	// Gets a JSON representation of the access control list (ACL) for a
 	// specified object.
 	//
@@ -279,8 +229,6 @@ type DbsqlPermissionsService interface {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Get(ctx context.Context, request GetDbsqlPermissionRequest) (*GetResponse, error)
 
-	// Set object ACL.
-	//
 	// Sets the access control list (ACL) for a specified object. This operation
 	// will complete rewrite the ACL.
 	//
@@ -290,8 +238,6 @@ type DbsqlPermissionsService interface {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Set(ctx context.Context, request SetRequest) (*SetResponse, error)
 
-	// Transfer object ownership.
-	//
 	// Transfers ownership of a dashboard, query, or alert to an active user.
 	// Requires an admin API key.
 	//
@@ -311,38 +257,26 @@ type DbsqlPermissionsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type QueriesService interface {
 
-	// Create a query.
-	//
 	// Creates a query.
 	Create(ctx context.Context, request CreateQueryRequest) (*Query, error)
 
-	// Delete a query.
-	//
 	// Moves a query to the trash. Trashed queries immediately disappear from
 	// searches and list views, and cannot be used for alerts. You can restore a
 	// trashed query through the UI. A trashed query is permanently deleted
 	// after 30 days.
 	Delete(ctx context.Context, request TrashQueryRequest) error
 
-	// Get a query.
-	//
 	// Gets a query.
 	Get(ctx context.Context, request GetQueryRequest) (*Query, error)
 
-	// List queries.
-	//
 	// Gets a list of queries accessible to the user, ordered by creation time.
 	// **Warning:** Calling this API concurrently 10 or more times could result
 	// in throttling, service degradation, or a temporary ban.
 	List(ctx context.Context, request ListQueriesRequest) (*ListQueryObjectsResponse, error)
 
-	// List visualizations on a query.
-	//
 	// Gets a list of visualizations on a query.
 	ListVisualizations(ctx context.Context, request ListVisualizationsForQueryRequest) (*ListVisualizationsForQueryResponse, error)
 
-	// Update a query.
-	//
 	// Updates a query.
 	Update(ctx context.Context, request UpdateQueryRequest) (*Query, error)
 }
@@ -360,8 +294,6 @@ type QueriesService interface {
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type QueriesLegacyService interface {
 
-	// Create a new query definition.
-	//
 	// Creates a new query definition. Queries created with this endpoint belong
 	// to the authenticated user making the request.
 	//
@@ -378,8 +310,6 @@ type QueriesLegacyService interface {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Create(ctx context.Context, request QueryPostContent) (*LegacyQuery, error)
 
-	// Delete a query.
-	//
 	// Moves a query to the trash. Trashed queries immediately disappear from
 	// searches and list views, and they cannot be used for alerts. The trash is
 	// deleted after 30 days.
@@ -390,8 +320,6 @@ type QueriesLegacyService interface {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Delete(ctx context.Context, request DeleteQueriesLegacyRequest) error
 
-	// Get a query definition.
-	//
 	// Retrieve a query object definition along with contextual permissions
 	// information about the currently authenticated user.
 	//
@@ -401,8 +329,6 @@ type QueriesLegacyService interface {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Get(ctx context.Context, request GetQueriesLegacyRequest) (*LegacyQuery, error)
 
-	// Get a list of queries.
-	//
 	// Gets a list of queries. Optionally, this list can be filtered by a search
 	// term.
 	//
@@ -415,8 +341,6 @@ type QueriesLegacyService interface {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	List(ctx context.Context, request ListQueriesLegacyRequest) (*QueryList, error)
 
-	// Restore a query.
-	//
 	// Restore a query that has been moved to the trash. A restored query
 	// appears in list views and searches. You can use restored queries for
 	// alerts.
@@ -427,8 +351,6 @@ type QueriesLegacyService interface {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Restore(ctx context.Context, request RestoreQueriesLegacyRequest) error
 
-	// Change a query definition.
-	//
 	// Modify this query definition.
 	//
 	// **Note**: You cannot undo this operation.
@@ -446,8 +368,6 @@ type QueriesLegacyService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type QueryHistoryService interface {
 
-	// List Queries.
-	//
 	// List the history of queries through SQL warehouses, and serverless
 	// compute.
 	//
@@ -465,18 +385,12 @@ type QueryHistoryService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type QueryVisualizationsService interface {
 
-	// Add a visualization to a query.
-	//
 	// Adds a visualization to a query.
 	Create(ctx context.Context, request CreateVisualizationRequest) (*Visualization, error)
 
-	// Remove a visualization.
-	//
 	// Removes a visualization.
 	Delete(ctx context.Context, request DeleteVisualizationRequest) error
 
-	// Update a visualization.
-	//
 	// Updates a visualization.
 	Update(ctx context.Context, request UpdateVisualizationRequest) (*Visualization, error)
 }
@@ -493,8 +407,6 @@ type QueryVisualizationsService interface {
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type QueryVisualizationsLegacyService interface {
 
-	// Add visualization to a query.
-	//
 	// Creates visualization in the query.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
@@ -503,8 +415,6 @@ type QueryVisualizationsLegacyService interface {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Create(ctx context.Context, request CreateQueryVisualizationsLegacyRequest) (*LegacyVisualization, error)
 
-	// Remove visualization.
-	//
 	// Removes a visualization from the query.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
@@ -513,8 +423,6 @@ type QueryVisualizationsLegacyService interface {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Delete(ctx context.Context, request DeleteQueryVisualizationsLegacyRequest) error
 
-	// Edit existing visualization.
-	//
 	// Updates visualization in the query.
 	//
 	// **Note**: A new version of the Databricks SQL API is now available.
@@ -528,8 +436,6 @@ type QueryVisualizationsLegacyService interface {
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type RedashConfigService interface {
-
-	// Read workspace configuration for Redash-v2.
 	GetConfig(ctx context.Context) (*ClientConfig, error)
 }
 
@@ -642,17 +548,12 @@ type RedashConfigService interface {
 // [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
 type StatementExecutionService interface {
 
-	// Cancel statement execution.
-	//
 	// Requests that an executing statement be canceled. Callers must poll for
 	// status to see the terminal state.
 	CancelExecution(ctx context.Context, request CancelExecutionRequest) error
 
-	// Execute a SQL statement.
 	ExecuteStatement(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error)
 
-	// Get status, manifest, and result first chunk.
-	//
 	// This request can be used to poll for the statement's status. When the
 	// `status.state` field is `SUCCEEDED` it will also return the result
 	// manifest and the first chunk of the result data. When the statement is in
@@ -665,8 +566,6 @@ type StatementExecutionService interface {
 	// status and result.
 	GetStatement(ctx context.Context, request GetStatementRequest) (*StatementResponse, error)
 
-	// Get result chunk by index.
-	//
 	// After the statement execution has `SUCCEEDED`, this request can be used
 	// to fetch any chunk by index. Whereas the first chunk with `chunk_index=0`
 	// is typically fetched with :method:statementexecution/executeStatement or
@@ -686,73 +585,47 @@ type StatementExecutionService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type WarehousesService interface {
 
-	// Create a warehouse.
-	//
 	// Creates a new SQL warehouse.
 	Create(ctx context.Context, request CreateWarehouseRequest) (*CreateWarehouseResponse, error)
 
-	// Delete a warehouse.
-	//
 	// Deletes a SQL warehouse.
 	Delete(ctx context.Context, request DeleteWarehouseRequest) error
 
-	// Update a warehouse.
-	//
 	// Updates the configuration for a SQL warehouse.
 	Edit(ctx context.Context, request EditWarehouseRequest) error
 
-	// Get warehouse info.
-	//
 	// Gets the information for a single SQL warehouse.
 	Get(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error)
 
-	// Get SQL warehouse permission levels.
-	//
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error)
 
-	// Get SQL warehouse permissions.
-	//
 	// Gets the permissions of a SQL warehouse. SQL warehouses can inherit
 	// permissions from their root object.
 	GetPermissions(ctx context.Context, request GetWarehousePermissionsRequest) (*WarehousePermissions, error)
 
-	// Get the workspace configuration.
-	//
 	// Gets the workspace level configuration that is shared by all SQL
 	// warehouses in a workspace.
 	GetWorkspaceWarehouseConfig(ctx context.Context) (*GetWorkspaceWarehouseConfigResponse, error)
 
-	// List warehouses.
-	//
 	// Lists all SQL warehouses that a user has manager permissions on.
 	List(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error)
 
-	// Set SQL warehouse permissions.
-	//
 	// Sets permissions on an object, replacing existing permissions if they
 	// exist. Deletes all direct permissions if none are specified. Objects can
 	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error)
 
-	// Set the workspace configuration.
-	//
 	// Sets the workspace level configuration that is shared by all SQL
 	// warehouses in a workspace.
 	SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) error
 
-	// Start a warehouse.
-	//
 	// Starts a SQL warehouse.
 	Start(ctx context.Context, request StartRequest) error
 
-	// Stop a warehouse.
-	//
 	// Stops a SQL warehouse.
 	Stop(ctx context.Context, request StopRequest) error
 
-	// Update SQL warehouse permissions.
-	//
 	// Updates the permissions on a SQL warehouse. SQL warehouses can inherit
 	// permissions from their root object.
 	UpdatePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error)

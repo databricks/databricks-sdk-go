@@ -48,8 +48,6 @@ func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAc
 	return &accountsMetastoreAssignment, err
 }
 
-// Get all workspaces assigned to a metastore.
-//
 // Gets a list of all Databricks workspace IDs that have been assigned to given
 // metastore.
 func (a *accountMetastoreAssignmentsImpl) List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) listing.Iterator[int64] {
@@ -70,8 +68,6 @@ func (a *accountMetastoreAssignmentsImpl) List(ctx context.Context, request List
 	return iterator
 }
 
-// Get all workspaces assigned to a metastore.
-//
 // Gets a list of all Databricks workspace IDs that have been assigned to given
 // metastore.
 func (a *accountMetastoreAssignmentsImpl) ListAll(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) ([]int64, error) {
@@ -136,8 +132,6 @@ func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetas
 	return &accountsMetastoreInfo, err
 }
 
-// Get all metastores associated with an account.
-//
 // Gets all Unity Catalog metastores associated with an account specified by ID.
 func (a *accountMetastoresImpl) List(ctx context.Context) listing.Iterator[MetastoreInfo] {
 	request := struct{}{}
@@ -158,8 +152,6 @@ func (a *accountMetastoresImpl) List(ctx context.Context) listing.Iterator[Metas
 	return iterator
 }
 
-// Get all metastores associated with an account.
-//
 // Gets all Unity Catalog metastores associated with an account specified by ID.
 func (a *accountMetastoresImpl) ListAll(ctx context.Context) ([]MetastoreInfo, error) {
 	iterator := a.List(ctx)
@@ -223,8 +215,6 @@ func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAcco
 	return &accountsStorageCredentialInfo, err
 }
 
-// Get all storage credentials assigned to a metastore.
-//
 // Gets a list of all storage credentials that have been assigned to given
 // metastore.
 func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAccountStorageCredentialsRequest) listing.Iterator[StorageCredentialInfo] {
@@ -245,8 +235,6 @@ func (a *accountStorageCredentialsImpl) List(ctx context.Context, request ListAc
 	return iterator
 }
 
-// Get all storage credentials assigned to a metastore.
-//
 // Gets a list of all storage credentials that have been assigned to given
 // metastore.
 func (a *accountStorageCredentialsImpl) ListAll(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error) {
@@ -337,8 +325,6 @@ func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*Cat
 	return &catalogInfo, err
 }
 
-// List catalogs.
-//
 // Gets an array of catalogs in the metastore. If the caller is the metastore
 // admin, all catalogs will be retrieved. Otherwise, only catalogs owned by the
 // caller (or for which the caller has the **USE_CATALOG** privilege) will be
@@ -368,8 +354,6 @@ func (a *catalogsImpl) List(ctx context.Context, request ListCatalogsRequest) li
 	return iterator
 }
 
-// List catalogs.
-//
 // Gets an array of catalogs in the metastore. If the caller is the metastore
 // admin, all catalogs will be retrieved. Otherwise, only catalogs owned by the
 // caller (or for which the caller has the **USE_CATALOG** privilege) will be
@@ -437,8 +421,6 @@ func (a *connectionsImpl) Get(ctx context.Context, request GetConnectionRequest)
 	return &connectionInfo, err
 }
 
-// List connections.
-//
 // List all connections.
 func (a *connectionsImpl) List(ctx context.Context, request ListConnectionsRequest) listing.Iterator[ConnectionInfo] {
 
@@ -464,8 +446,6 @@ func (a *connectionsImpl) List(ctx context.Context, request ListConnectionsReque
 	return iterator
 }
 
-// List connections.
-//
 // List all connections.
 func (a *connectionsImpl) ListAll(ctx context.Context, request ListConnectionsRequest) ([]ConnectionInfo, error) {
 	iterator := a.List(ctx, request)
@@ -540,8 +520,6 @@ func (a *credentialsImpl) GetCredential(ctx context.Context, request GetCredenti
 	return &credentialInfo, err
 }
 
-// List credentials.
-//
 // Gets an array of credentials (as __CredentialInfo__ objects).
 //
 // The array is limited to only the credentials that the caller has permission
@@ -572,8 +550,6 @@ func (a *credentialsImpl) ListCredentials(ctx context.Context, request ListCrede
 	return iterator
 }
 
-// List credentials.
-//
 // Gets an array of credentials (as __CredentialInfo__ objects).
 //
 // The array is limited to only the credentials that the caller has permission
@@ -653,8 +629,6 @@ func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLoca
 	return &externalLocationInfo, err
 }
 
-// List external locations.
-//
 // Gets an array of external locations (__ExternalLocationInfo__ objects) from
 // the metastore. The caller must be a metastore admin, the owner of the
 // external location, or a user that has some privilege on the external
@@ -684,8 +658,6 @@ func (a *externalLocationsImpl) List(ctx context.Context, request ListExternalLo
 	return iterator
 }
 
-// List external locations.
-//
 // Gets an array of external locations (__ExternalLocationInfo__ objects) from
 // the metastore. The caller must be a metastore admin, the owner of the
 // external location, or a user that has some privilege on the external
@@ -753,8 +725,6 @@ func (a *functionsImpl) Get(ctx context.Context, request GetFunctionRequest) (*F
 	return &functionInfo, err
 }
 
-// List functions.
-//
 // List functions within the specified parent catalog and schema. If the user is
 // a metastore admin, all functions are returned in the output list. Otherwise,
 // the user must have the **USE_CATALOG** privilege on the catalog and the
@@ -786,8 +756,6 @@ func (a *functionsImpl) List(ctx context.Context, request ListFunctionsRequest) 
 	return iterator
 }
 
-// List functions.
-//
 // List functions within the specified parent catalog and schema. If the user is
 // a metastore admin, all functions are returned in the output list. Otherwise,
 // the user must have the **USE_CATALOG** privilege on the catalog and the
@@ -914,8 +882,6 @@ func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (
 	return &metastoreInfo, err
 }
 
-// List metastores.
-//
 // Gets an array of the available metastores (as __MetastoreInfo__ objects). The
 // caller must be an admin to retrieve this info. There is no guarantee of a
 // specific ordering of the elements in the array.
@@ -943,8 +909,6 @@ func (a *metastoresImpl) List(ctx context.Context, request ListMetastoresRequest
 	return iterator
 }
 
-// List metastores.
-//
 // Gets an array of the available metastores (as __MetastoreInfo__ objects). The
 // caller must be an admin to retrieve this info. There is no guarantee of a
 // specific ordering of the elements in the array.
@@ -1039,8 +1003,6 @@ func (a *modelVersionsImpl) GetByAlias(ctx context.Context, request GetByAliasRe
 	return &modelVersionInfo, err
 }
 
-// List Model Versions.
-//
 // List model versions. You can list model versions under a particular schema,
 // or list all model versions in the current metastore.
 //
@@ -1078,8 +1040,6 @@ func (a *modelVersionsImpl) List(ctx context.Context, request ListModelVersionsR
 	return iterator
 }
 
-// List Model Versions.
-//
 // List model versions. You can list model versions under a particular schema,
 // or list all model versions in the current metastore.
 //
@@ -1295,8 +1255,6 @@ func (a *registeredModelsImpl) Get(ctx context.Context, request GetRegisteredMod
 	return &registeredModelInfo, err
 }
 
-// List Registered Models.
-//
 // List registered models. You can list registered models under a particular
 // schema, or list all registered models in the current metastore.
 //
@@ -1333,8 +1291,6 @@ func (a *registeredModelsImpl) List(ctx context.Context, request ListRegisteredM
 	return iterator
 }
 
-// List Registered Models.
-//
 // List registered models. You can list registered models under a particular
 // schema, or list all registered models in the current metastore.
 //
@@ -1399,8 +1355,6 @@ func (a *resourceQuotasImpl) GetQuota(ctx context.Context, request GetQuotaReque
 	return &getQuotaResponse, err
 }
 
-// List all resource quotas under a metastore.
-//
 // ListQuotas returns all quota values under the metastore. There are no SLAs on
 // the freshness of the counts returned. This API does not trigger a refresh of
 // quota counts.
@@ -1428,8 +1382,6 @@ func (a *resourceQuotasImpl) ListQuotas(ctx context.Context, request ListQuotasR
 	return iterator
 }
 
-// List all resource quotas under a metastore.
-//
 // ListQuotas returns all quota values under the metastore. There are no SLAs on
 // the freshness of the counts returned. This API does not trigger a refresh of
 // quota counts.
@@ -1484,8 +1436,6 @@ func (a *schemasImpl) Get(ctx context.Context, request GetSchemaRequest) (*Schem
 	return &schemaInfo, err
 }
 
-// List schemas.
-//
 // Gets an array of schemas for a catalog in the metastore. If the caller is the
 // metastore admin or the owner of the parent catalog, all schemas for the
 // catalog will be retrieved. Otherwise, only schemas owned by the caller (or
@@ -1515,8 +1465,6 @@ func (a *schemasImpl) List(ctx context.Context, request ListSchemasRequest) list
 	return iterator
 }
 
-// List schemas.
-//
 // Gets an array of schemas for a catalog in the metastore. If the caller is the
 // metastore admin or the owner of the parent catalog, all schemas for the
 // catalog will be retrieved. Otherwise, only schemas owned by the caller (or
@@ -1584,8 +1532,6 @@ func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCred
 	return &storageCredentialInfo, err
 }
 
-// List credentials.
-//
 // Gets an array of storage credentials (as __StorageCredentialInfo__ objects).
 // The array is limited to only those storage credentials the caller has
 // permission to access. If the caller is a metastore admin, retrieval of
@@ -1617,8 +1563,6 @@ func (a *storageCredentialsImpl) List(ctx context.Context, request ListStorageCr
 	return iterator
 }
 
-// List credentials.
-//
 // Gets an array of storage credentials (as __StorageCredentialInfo__ objects).
 // The array is limited to only those storage credentials the caller has
 // permission to access. If the caller is a metastore admin, retrieval of
@@ -1687,8 +1631,6 @@ func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) e
 	return err
 }
 
-// List system schemas.
-//
 // Gets an array of system schemas for a metastore. The caller must be an
 // account admin or a metastore admin.
 func (a *systemSchemasImpl) List(ctx context.Context, request ListSystemSchemasRequest) listing.Iterator[SystemSchemaInfo] {
@@ -1715,8 +1657,6 @@ func (a *systemSchemasImpl) List(ctx context.Context, request ListSystemSchemasR
 	return iterator
 }
 
-// List system schemas.
-//
 // Gets an array of system schemas for a metastore. The caller must be an
 // account admin or a metastore admin.
 func (a *systemSchemasImpl) ListAll(ctx context.Context, request ListSystemSchemasRequest) ([]SystemSchemaInfo, error) {
@@ -1795,8 +1735,6 @@ func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableIn
 	return &tableInfo, err
 }
 
-// List tables.
-//
 // Gets an array of all tables for the current metastore under the parent
 // catalog and schema. The caller must be a metastore admin or an owner of (or
 // have the **SELECT** privilege on) the table. For the latter case, the caller
@@ -1829,8 +1767,6 @@ func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) listin
 	return iterator
 }
 
-// List tables.
-//
 // Gets an array of all tables for the current metastore under the parent
 // catalog and schema. The caller must be a metastore admin or an owner of (or
 // have the **SELECT** privilege on) the table. For the latter case, the caller
@@ -1852,8 +1788,6 @@ func (a *tablesImpl) internalList(ctx context.Context, request ListTablesRequest
 	return &listTablesResponse, err
 }
 
-// List table summaries.
-//
 // Gets an array of summaries for tables for a schema and catalog within the
 // metastore. The table summaries returned are either:
 //
@@ -1891,8 +1825,6 @@ func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesReq
 	return iterator
 }
 
-// List table summaries.
-//
 // Gets an array of summaries for tables for a schema and catalog within the
 // metastore. The table summaries returned are either:
 //
@@ -1971,8 +1903,6 @@ func (a *volumesImpl) Delete(ctx context.Context, request DeleteVolumeRequest) e
 	return err
 }
 
-// List Volumes.
-//
 // Gets an array of volumes for the current metastore under the parent catalog
 // and schema.
 //
@@ -2008,8 +1938,6 @@ func (a *volumesImpl) List(ctx context.Context, request ListVolumesRequest) list
 	return iterator
 }
 
-// List Volumes.
-//
 // Gets an array of volumes for the current metastore under the parent catalog
 // and schema.
 //
@@ -2072,8 +2000,6 @@ func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBin
 	return &getCatalogWorkspaceBindingsResponse, err
 }
 
-// Get securable workspace bindings.
-//
 // Gets workspace bindings of the securable. The caller must be a metastore
 // admin or an owner of the securable.
 func (a *workspaceBindingsImpl) GetBindings(ctx context.Context, request GetBindingsRequest) listing.Iterator[WorkspaceBinding] {
@@ -2100,8 +2026,6 @@ func (a *workspaceBindingsImpl) GetBindings(ctx context.Context, request GetBind
 	return iterator
 }
 
-// Get securable workspace bindings.
-//
 // Gets workspace bindings of the securable. The caller must be a metastore
 // admin or an owner of the securable.
 func (a *workspaceBindingsImpl) GetBindingsAll(ctx context.Context, request GetBindingsRequest) ([]WorkspaceBinding, error) {

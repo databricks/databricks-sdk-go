@@ -162,7 +162,6 @@ func (a *databaseImpl) GetSyncedDatabaseTable(ctx context.Context, request GetSy
 	return &syncedDatabaseTable, err
 }
 
-// List Database Instances.
 func (a *databaseImpl) ListDatabaseInstances(ctx context.Context, request ListDatabaseInstancesRequest) listing.Iterator[DatabaseInstance] {
 
 	getNextPage := func(ctx context.Context, req ListDatabaseInstancesRequest) (*ListDatabaseInstancesResponse, error) {
@@ -187,7 +186,6 @@ func (a *databaseImpl) ListDatabaseInstances(ctx context.Context, request ListDa
 	return iterator
 }
 
-// List Database Instances.
 func (a *databaseImpl) ListDatabaseInstancesAll(ctx context.Context, request ListDatabaseInstancesRequest) ([]DatabaseInstance, error) {
 	iterator := a.ListDatabaseInstances(ctx, request)
 	return listing.ToSlice[DatabaseInstance](ctx, iterator)

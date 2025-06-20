@@ -134,8 +134,6 @@ func (a *accountGroupsImpl) Get(ctx context.Context, request GetAccountGroupRequ
 	return &group, err
 }
 
-// List group details.
-//
 // Gets all details of the groups associated with the Databricks account.
 func (a *accountGroupsImpl) List(ctx context.Context, request ListAccountGroupsRequest) listing.Iterator[Group] {
 
@@ -170,8 +168,6 @@ func (a *accountGroupsImpl) List(ctx context.Context, request ListAccountGroupsR
 	return dedupedIterator
 }
 
-// List group details.
-//
 // Gets all details of the groups associated with the Databricks account.
 func (a *accountGroupsImpl) ListAll(ctx context.Context, request ListAccountGroupsRequest) ([]Group, error) {
 	iterator := a.List(ctx, request)
@@ -244,8 +240,6 @@ func (a *accountServicePrincipalsImpl) Get(ctx context.Context, request GetAccou
 	return &servicePrincipal, err
 }
 
-// List service principals.
-//
 // Gets the set of service principals associated with a Databricks account.
 func (a *accountServicePrincipalsImpl) List(ctx context.Context, request ListAccountServicePrincipalsRequest) listing.Iterator[ServicePrincipal] {
 
@@ -280,8 +274,6 @@ func (a *accountServicePrincipalsImpl) List(ctx context.Context, request ListAcc
 	return dedupedIterator
 }
 
-// List service principals.
-//
 // Gets the set of service principals associated with a Databricks account.
 func (a *accountServicePrincipalsImpl) ListAll(ctx context.Context, request ListAccountServicePrincipalsRequest) ([]ServicePrincipal, error) {
 	iterator := a.List(ctx, request)
@@ -354,8 +346,6 @@ func (a *accountUsersImpl) Get(ctx context.Context, request GetAccountUserReques
 	return &user, err
 }
 
-// List users.
-//
 // Gets details for all the users associated with a Databricks account.
 func (a *accountUsersImpl) List(ctx context.Context, request ListAccountUsersRequest) listing.Iterator[User] {
 
@@ -390,8 +380,6 @@ func (a *accountUsersImpl) List(ctx context.Context, request ListAccountUsersReq
 	return dedupedIterator
 }
 
-// List users.
-//
 // Gets details for all the users associated with a Databricks account.
 func (a *accountUsersImpl) ListAll(ctx context.Context, request ListAccountUsersRequest) ([]User, error) {
 	iterator := a.List(ctx, request)
@@ -479,8 +467,6 @@ func (a *groupsImpl) Get(ctx context.Context, request GetGroupRequest) (*Group, 
 	return &group, err
 }
 
-// List group details.
-//
 // Gets all details of the groups associated with the Databricks workspace.
 func (a *groupsImpl) List(ctx context.Context, request ListGroupsRequest) listing.Iterator[Group] {
 
@@ -515,8 +501,6 @@ func (a *groupsImpl) List(ctx context.Context, request ListGroupsRequest) listin
 	return dedupedIterator
 }
 
-// List group details.
-//
 // Gets all details of the groups associated with the Databricks workspace.
 func (a *groupsImpl) ListAll(ctx context.Context, request ListGroupsRequest) ([]Group, error) {
 	iterator := a.List(ctx, request)
@@ -652,8 +636,6 @@ func (a *servicePrincipalsImpl) Get(ctx context.Context, request GetServicePrinc
 	return &servicePrincipal, err
 }
 
-// List service principals.
-//
 // Gets the set of service principals associated with a Databricks workspace.
 func (a *servicePrincipalsImpl) List(ctx context.Context, request ListServicePrincipalsRequest) listing.Iterator[ServicePrincipal] {
 
@@ -688,8 +670,6 @@ func (a *servicePrincipalsImpl) List(ctx context.Context, request ListServicePri
 	return dedupedIterator
 }
 
-// List service principals.
-//
 // Gets the set of service principals associated with a Databricks workspace.
 func (a *servicePrincipalsImpl) ListAll(ctx context.Context, request ListServicePrincipalsRequest) ([]ServicePrincipal, error) {
 	iterator := a.List(ctx, request)
@@ -782,8 +762,6 @@ func (a *usersImpl) GetPermissions(ctx context.Context) (*PasswordPermissions, e
 	return &passwordPermissions, err
 }
 
-// List users.
-//
 // Gets details for all the users associated with a Databricks workspace.
 func (a *usersImpl) List(ctx context.Context, request ListUsersRequest) listing.Iterator[User] {
 
@@ -818,8 +796,6 @@ func (a *usersImpl) List(ctx context.Context, request ListUsersRequest) listing.
 	return dedupedIterator
 }
 
-// List users.
-//
 // Gets details for all the users associated with a Databricks workspace.
 func (a *usersImpl) ListAll(ctx context.Context, request ListUsersRequest) ([]User, error) {
 	iterator := a.List(ctx, request)
@@ -904,8 +880,6 @@ func (a *workspaceAssignmentImpl) Get(ctx context.Context, request GetWorkspaceA
 	return &workspacePermissions, err
 }
 
-// Get permission assignments.
-//
 // Get the permission assignments for the specified Databricks account and
 // Databricks workspace.
 func (a *workspaceAssignmentImpl) List(ctx context.Context, request ListWorkspaceAssignmentRequest) listing.Iterator[PermissionAssignment] {
@@ -926,8 +900,6 @@ func (a *workspaceAssignmentImpl) List(ctx context.Context, request ListWorkspac
 	return iterator
 }
 
-// Get permission assignments.
-//
 // Get the permission assignments for the specified Databricks account and
 // Databricks workspace.
 func (a *workspaceAssignmentImpl) ListAll(ctx context.Context, request ListWorkspaceAssignmentRequest) ([]PermissionAssignment, error) {
