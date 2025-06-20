@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.73.1
+
+### Bug Fixes
+* Revert custom serialization which introduced a bug 
+  impacting nested query paramters in v0.73.0
+
+
 ## Release v0.73.0
 
 ### API Changes
