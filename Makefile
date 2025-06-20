@@ -6,7 +6,7 @@ build: vendor
 
 fmt:
 	@echo "✓ Formatting source code with goimports ..."
-	@go run golang.org/x/tools/cmd/goimports@0.34.0 -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
+	@go run golang.org/x/tools/cmd/goimports@v0.34.0 -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 	@echo "✓ Formatting source code with gofmt ..."
 	@gofmt -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 

@@ -3,9 +3,9 @@
 package cleanrooms
 
 import (
-	"encoding/json"
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/settings"
@@ -16,70 +16,43 @@ type CleanRoom struct {
 	// Whether clean room access is restricted due to [CSP]
 	//
 	// [CSP]: https://docs.databricks.com/en/security/privacy/security-profile.html
-	// Wire name: 'access_restricted'
 	AccessRestricted CleanRoomAccessRestricted `json:"access_restricted,omitempty"`
 
-	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// When the clean room was created, in epoch milliseconds.
-	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The alias of the collaborator tied to the local clean room.
-	// Wire name: 'local_collaborator_alias'
 	LocalCollaboratorAlias string `json:"local_collaborator_alias,omitempty"`
 	// The name of the clean room. It should follow [UC securable naming
 	// requirements].
 	//
 	// [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
-	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// Output catalog of the clean room. It is an output only field. Output
 	// catalog is manipulated using the separate CreateCleanRoomOutputCatalog
 	// API.
-	// Wire name: 'output_catalog'
 	OutputCatalog *CleanRoomOutputCatalog `json:"output_catalog,omitempty"`
 	// This is Databricks username of the owner of the local clean room
 	// securable for permission management.
-	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// Central clean room details. During creation, users need to specify
 	// cloud_vendor, region, and collaborators.global_metastore_id. This field
 	// will not be filled in the ListCleanRooms call.
-	// Wire name: 'remote_detailed_info'
 	RemoteDetailedInfo *CleanRoomRemoteDetail `json:"remote_detailed_info,omitempty"`
 	// Clean room status.
-	// Wire name: 'status'
 	Status CleanRoomStatusEnum `json:"status,omitempty"`
 	// When the clean room was last updated, in epoch milliseconds.
-	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CleanRoom) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CleanRoom) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CleanRoom) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CleanRoom) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomAccessRestricted string
@@ -122,22 +95,17 @@ func (f *CleanRoomAccessRestricted) Type() string {
 // Metadata of the clean room asset
 type CleanRoomAsset struct {
 	// When the asset is added to the clean room, in epoch milliseconds.
-	// Wire name: 'added_at'
 	AddedAt int64 `json:"added_at,omitempty"`
 	// The type of the asset.
-	// Wire name: 'asset_type'
 	AssetType CleanRoomAssetAssetType `json:"asset_type,omitempty"`
 	// The name of the clean room this asset belongs to. This is an output-only
 	// field to ensure proper resource identification.
-	// Wire name: 'clean_room_name'
 	CleanRoomName string `json:"clean_room_name,omitempty"`
 	// Foreign table details available to all collaborators of the clean room.
 	// Present if and only if **asset_type** is **FOREIGN_TABLE**
-	// Wire name: 'foreign_table'
 	ForeignTable *CleanRoomAssetForeignTable `json:"foreign_table,omitempty"`
 	// Local details for a foreign that are only available to its owner. Present
 	// if and only if **asset_type** is **FOREIGN_TABLE**
-	// Wire name: 'foreign_table_local_details'
 	ForeignTableLocalDetails *CleanRoomAssetForeignTableLocalDetails `json:"foreign_table_local_details,omitempty"`
 	// A fully qualified name that uniquely identifies the asset within the
 	// clean room. This is also the name displayed in the clean room UI.
@@ -146,65 +114,39 @@ type CleanRoomAsset struct {
 	// *shared_catalog*.*shared_schema*.*asset_name*
 	//
 	// For notebooks, the name is the notebook file name.
-	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// Notebook details available to all collaborators of the clean room.
 	// Present if and only if **asset_type** is **NOTEBOOK_FILE**
-	// Wire name: 'notebook'
 	Notebook *CleanRoomAssetNotebook `json:"notebook,omitempty"`
 	// The alias of the collaborator who owns this asset
-	// Wire name: 'owner_collaborator_alias'
 	OwnerCollaboratorAlias string `json:"owner_collaborator_alias,omitempty"`
 	// Status of the asset
-	// Wire name: 'status'
 	Status CleanRoomAssetStatusEnum `json:"status,omitempty"`
 	// Table details available to all collaborators of the clean room. Present
 	// if and only if **asset_type** is **TABLE**
-	// Wire name: 'table'
 	Table *CleanRoomAssetTable `json:"table,omitempty"`
 	// Local details for a table that are only available to its owner. Present
 	// if and only if **asset_type** is **TABLE**
-	// Wire name: 'table_local_details'
 	TableLocalDetails *CleanRoomAssetTableLocalDetails `json:"table_local_details,omitempty"`
 	// View details available to all collaborators of the clean room. Present if
 	// and only if **asset_type** is **VIEW**
-	// Wire name: 'view'
 	View *CleanRoomAssetView `json:"view,omitempty"`
 	// Local details for a view that are only available to its owner. Present if
 	// and only if **asset_type** is **VIEW**
-	// Wire name: 'view_local_details'
 	ViewLocalDetails *CleanRoomAssetViewLocalDetails `json:"view_local_details,omitempty"`
 	// Local details for a volume that are only available to its owner. Present
 	// if and only if **asset_type** is **VOLUME**
-	// Wire name: 'volume_local_details'
 	VolumeLocalDetails *CleanRoomAssetVolumeLocalDetails `json:"volume_local_details,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CleanRoomAsset) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomAssetPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomAssetFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CleanRoomAsset) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CleanRoomAsset) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomAssetToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CleanRoomAsset) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomAssetAssetType string
@@ -255,113 +197,47 @@ func (f *CleanRoomAssetAssetType) Type() string {
 
 type CleanRoomAssetForeignTable struct {
 	// The metadata information of the columns in the foreign table
-	// Wire name: 'columns'
 	Columns []catalog.ColumnInfo `json:"columns,omitempty"`
-}
-
-func (st *CleanRoomAssetForeignTable) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomAssetForeignTablePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomAssetForeignTableFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st CleanRoomAssetForeignTable) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomAssetForeignTableToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 type CleanRoomAssetForeignTableLocalDetails struct {
 	// The fully qualified name of the foreign table in its owner's local
 	// metastore, in the format of *catalog*.*schema*.*foreign_table_name*
-	// Wire name: 'local_name'
 	LocalName string `json:"local_name,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CleanRoomAssetForeignTableLocalDetails) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomAssetForeignTableLocalDetailsPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomAssetForeignTableLocalDetailsFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CleanRoomAssetForeignTableLocalDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CleanRoomAssetForeignTableLocalDetails) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomAssetForeignTableLocalDetailsToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CleanRoomAssetForeignTableLocalDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomAssetNotebook struct {
 	// Server generated etag that represents the notebook version.
-	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Base 64 representation of the notebook contents. This is the same format
 	// as returned by :method:workspace/export with the format of **HTML**.
-	// Wire name: 'notebook_content'
 	NotebookContent string `json:"notebook_content,omitempty"`
 	// top-level status derived from all reviews
-	// Wire name: 'review_state'
 	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
 	// All existing approvals or rejections
-	// Wire name: 'reviews'
 	Reviews []CleanRoomNotebookReview `json:"reviews,omitempty"`
 	// collaborators that can run the notebook
-	// Wire name: 'runner_collaborator_aliases'
 	RunnerCollaboratorAliases []string `json:"runner_collaborator_aliases,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CleanRoomAssetNotebook) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomAssetNotebookPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomAssetNotebookFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CleanRoomAssetNotebook) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CleanRoomAssetNotebook) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomAssetNotebookToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CleanRoomAssetNotebook) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomAssetStatusEnum string
@@ -406,169 +282,62 @@ func (f *CleanRoomAssetStatusEnum) Type() string {
 
 type CleanRoomAssetTable struct {
 	// The metadata information of the columns in the table
-	// Wire name: 'columns'
 	Columns []catalog.ColumnInfo `json:"columns,omitempty"`
-}
-
-func (st *CleanRoomAssetTable) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomAssetTablePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomAssetTableFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st CleanRoomAssetTable) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomAssetTableToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 type CleanRoomAssetTableLocalDetails struct {
 	// The fully qualified name of the table in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*table_name*
-	// Wire name: 'local_name'
 	LocalName string `json:"local_name,omitempty"`
 	// Partition filtering specification for a shared table.
-	// Wire name: 'partitions'
 	Partitions []sharing.Partition `json:"partitions,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CleanRoomAssetTableLocalDetails) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomAssetTableLocalDetailsPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomAssetTableLocalDetailsFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CleanRoomAssetTableLocalDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CleanRoomAssetTableLocalDetails) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomAssetTableLocalDetailsToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CleanRoomAssetTableLocalDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomAssetView struct {
 	// The metadata information of the columns in the view
-	// Wire name: 'columns'
 	Columns []catalog.ColumnInfo `json:"columns,omitempty"`
-}
-
-func (st *CleanRoomAssetView) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomAssetViewPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomAssetViewFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st CleanRoomAssetView) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomAssetViewToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 type CleanRoomAssetViewLocalDetails struct {
 	// The fully qualified name of the view in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*view_name*
-	// Wire name: 'local_name'
 	LocalName string `json:"local_name,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CleanRoomAssetViewLocalDetails) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomAssetViewLocalDetailsPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomAssetViewLocalDetailsFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CleanRoomAssetViewLocalDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CleanRoomAssetViewLocalDetails) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomAssetViewLocalDetailsToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CleanRoomAssetViewLocalDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomAssetVolumeLocalDetails struct {
 	// The fully qualified name of the volume in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*volume_name*
-	// Wire name: 'local_name'
 	LocalName string `json:"local_name,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CleanRoomAssetVolumeLocalDetails) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomAssetVolumeLocalDetailsPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomAssetVolumeLocalDetailsFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CleanRoomAssetVolumeLocalDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CleanRoomAssetVolumeLocalDetails) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomAssetVolumeLocalDetailsToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CleanRoomAssetVolumeLocalDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Publicly visible clean room collaborator.
@@ -580,106 +349,61 @@ type CleanRoomCollaborator struct {
 	// requirements].
 	//
 	// [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
-	// Wire name: 'collaborator_alias'
 	CollaboratorAlias string `json:"collaborator_alias"`
 	// Generated display name for the collaborator. In the case of a single
 	// metastore clean room, it is the clean room name. For x-metastore clean
 	// rooms, it is the organization name of the metastore. It is not restricted
 	// to these values and could change in the future
-	// Wire name: 'display_name'
 	DisplayName string `json:"display_name,omitempty"`
 	// The global Unity Catalog metastore id of the collaborator. The identifier
 	// is of format cloud:region:metastore-uuid.
-	// Wire name: 'global_metastore_id'
 	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
 	// Email of the user who is receiving the clean room "invitation". It should
 	// be empty for the creator of the clean room, and non-empty for the
 	// invitees of the clean room. It is only returned in the output when clean
 	// room creator calls GET
-	// Wire name: 'invite_recipient_email'
 	InviteRecipientEmail string `json:"invite_recipient_email,omitempty"`
 	// Workspace ID of the user who is receiving the clean room "invitation".
 	// Must be specified if invite_recipient_email is specified. It should be
 	// empty when the collaborator is the creator of the clean room.
-	// Wire name: 'invite_recipient_workspace_id'
 	InviteRecipientWorkspaceId int64 `json:"invite_recipient_workspace_id,omitempty"`
 	// [Organization
 	// name](:method:metastores/list#metastores-delta_sharing_organization_name)
 	// configured in the metastore
-	// Wire name: 'organization_name'
 	OrganizationName string `json:"organization_name,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CleanRoomCollaborator) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomCollaboratorPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomCollaboratorFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CleanRoomCollaborator) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CleanRoomCollaborator) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomCollaboratorToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CleanRoomCollaborator) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomNotebookReview struct {
 	// review comment
-	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// timestamp of when the review was submitted
-	// Wire name: 'created_at_millis'
 	CreatedAtMillis int64 `json:"created_at_millis,omitempty"`
 	// review outcome
-	// Wire name: 'review_state'
 	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
 	// specified when the review was not explicitly made by a user
-	// Wire name: 'review_sub_reason'
 	ReviewSubReason CleanRoomNotebookReviewNotebookReviewSubReason `json:"review_sub_reason,omitempty"`
 	// collaborator alias of the reviewer
-	// Wire name: 'reviewer_collaborator_alias'
 	ReviewerCollaboratorAlias string `json:"reviewer_collaborator_alias,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CleanRoomNotebookReview) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomNotebookReviewPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomNotebookReviewFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CleanRoomNotebookReview) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CleanRoomNotebookReview) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomNotebookReviewToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CleanRoomNotebookReview) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomNotebookReviewNotebookReviewState string
@@ -765,62 +489,36 @@ type CleanRoomNotebookTaskRun struct {
 	// only included in the LIST API. if the task was run within the same
 	// workspace the API is being called. If the task run was in a different
 	// workspace under the same metastore, only the workspace_id is included.
-	// Wire name: 'collaborator_job_run_info'
 	CollaboratorJobRunInfo *CollaboratorJobRunInfo `json:"collaborator_job_run_info,omitempty"`
 	// Etag of the notebook executed in this task run, used to identify the
 	// notebook version.
-	// Wire name: 'notebook_etag'
 	NotebookEtag string `json:"notebook_etag,omitempty"`
 	// State of the task run.
-	// Wire name: 'notebook_job_run_state'
 	NotebookJobRunState *jobs.CleanRoomTaskRunState `json:"notebook_job_run_state,omitempty"`
 	// Asset name of the notebook executed in this task run.
-	// Wire name: 'notebook_name'
 	NotebookName string `json:"notebook_name,omitempty"`
 	// The timestamp of when the notebook was last updated.
-	// Wire name: 'notebook_updated_at'
 	NotebookUpdatedAt int64 `json:"notebook_updated_at,omitempty"`
 	// Expiration time of the output schema of the task run (if any), in epoch
 	// milliseconds.
-	// Wire name: 'output_schema_expiration_time'
 	OutputSchemaExpirationTime int64 `json:"output_schema_expiration_time,omitempty"`
 	// Name of the output schema associated with the clean rooms notebook task
 	// run.
-	// Wire name: 'output_schema_name'
 	OutputSchemaName string `json:"output_schema_name,omitempty"`
 	// Duration of the task run, in milliseconds.
-	// Wire name: 'run_duration'
 	RunDuration int64 `json:"run_duration,omitempty"`
 	// When the task run started, in epoch milliseconds.
-	// Wire name: 'start_time'
 	StartTime int64 `json:"start_time,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CleanRoomNotebookTaskRun) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomNotebookTaskRunPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomNotebookTaskRunFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CleanRoomNotebookTaskRun) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CleanRoomNotebookTaskRun) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomNotebookTaskRunToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CleanRoomNotebookTaskRun) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomOutputCatalog struct {
@@ -828,38 +526,19 @@ type CleanRoomOutputCatalog struct {
 	// naming requirements]. The field will always exist if status is CREATED.
 	//
 	// [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
-	// Wire name: 'catalog_name'
 	CatalogName string `json:"catalog_name,omitempty"`
 
-	// Wire name: 'status'
 	Status CleanRoomOutputCatalogOutputCatalogStatus `json:"status,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CleanRoomOutputCatalog) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomOutputCatalogPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomOutputCatalogFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CleanRoomOutputCatalog) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CleanRoomOutputCatalog) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomOutputCatalogToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CleanRoomOutputCatalog) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomOutputCatalogOutputCatalogStatus string
@@ -905,10 +584,8 @@ func (f *CleanRoomOutputCatalogOutputCatalogStatus) Type() string {
 // Publicly visible central clean room details.
 type CleanRoomRemoteDetail struct {
 	// Central clean room ID.
-	// Wire name: 'central_clean_room_id'
 	CentralCleanRoomId string `json:"central_clean_room_id,omitempty"`
 	// Cloud vendor (aws,azure,gcp) of the central clean room.
-	// Wire name: 'cloud_vendor'
 	CloudVendor string `json:"cloud_vendor,omitempty"`
 	// Collaborators in the central clean room. There should one and only one
 	// collaborator in the list that satisfies the owner condition:
@@ -917,48 +594,26 @@ type CleanRoomRemoteDetail struct {
 	// CreateCleanRoom).
 	//
 	// 2. Its invite_recipient_email is empty.
-	// Wire name: 'collaborators'
 	Collaborators []CleanRoomCollaborator `json:"collaborators,omitempty"`
 	// The compliance security profile used to process regulated data following
 	// compliance standards.
-	// Wire name: 'compliance_security_profile'
 	ComplianceSecurityProfile *ComplianceSecurityProfile `json:"compliance_security_profile,omitempty"`
 	// Collaborator who creates the clean room.
-	// Wire name: 'creator'
 	Creator *CleanRoomCollaborator `json:"creator,omitempty"`
 	// Egress network policy to apply to the central clean room workspace.
-	// Wire name: 'egress_network_policy'
 	EgressNetworkPolicy *settings.EgressNetworkPolicy `json:"egress_network_policy,omitempty"`
 	// Region of the central clean room.
-	// Wire name: 'region'
 	Region string `json:"region,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CleanRoomRemoteDetail) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &cleanRoomRemoteDetailPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := cleanRoomRemoteDetailFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CleanRoomRemoteDetail) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CleanRoomRemoteDetail) MarshalJSON() ([]byte, error) {
-	pb, err := cleanRoomRemoteDetailToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CleanRoomRemoteDetail) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CleanRoomStatusEnum string
@@ -1006,47 +661,25 @@ func (f *CleanRoomStatusEnum) Type() string {
 
 type CollaboratorJobRunInfo struct {
 	// Alias of the collaborator that triggered the task run.
-	// Wire name: 'collaborator_alias'
 	CollaboratorAlias string `json:"collaborator_alias,omitempty"`
 	// Job ID of the task run in the collaborator's workspace.
-	// Wire name: 'collaborator_job_id'
 	CollaboratorJobId int64 `json:"collaborator_job_id,omitempty"`
 	// Job run ID of the task run in the collaborator's workspace.
-	// Wire name: 'collaborator_job_run_id'
 	CollaboratorJobRunId int64 `json:"collaborator_job_run_id,omitempty"`
 	// Task run ID of the task run in the collaborator's workspace.
-	// Wire name: 'collaborator_task_run_id'
 	CollaboratorTaskRunId int64 `json:"collaborator_task_run_id,omitempty"`
 	// ID of the collaborator's workspace that triggered the task run.
-	// Wire name: 'collaborator_workspace_id'
 	CollaboratorWorkspaceId int64 `json:"collaborator_workspace_id,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CollaboratorJobRunInfo) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &collaboratorJobRunInfoPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := collaboratorJobRunInfoFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CollaboratorJobRunInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CollaboratorJobRunInfo) MarshalJSON() ([]byte, error) {
-	pb, err := collaboratorJobRunInfoToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CollaboratorJobRunInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The compliance security profile used to process regulated data following
@@ -1054,205 +687,55 @@ func (st CollaboratorJobRunInfo) MarshalJSON() ([]byte, error) {
 type ComplianceSecurityProfile struct {
 	// The list of compliance standards that the compliance security profile is
 	// configured to enforce.
-	// Wire name: 'compliance_standards'
 	ComplianceStandards []settings.ComplianceStandard `json:"compliance_standards,omitempty"`
 	// Whether the compliance security profile is enabled.
-	// Wire name: 'is_enabled'
 	IsEnabled bool `json:"is_enabled,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ComplianceSecurityProfile) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &complianceSecurityProfilePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := complianceSecurityProfileFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ComplianceSecurityProfile) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
-	pb, err := complianceSecurityProfileToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Create an asset
 type CreateCleanRoomAssetRequest struct {
 	// Metadata of the clean room asset
-	// Wire name: 'asset'
 	Asset CleanRoomAsset `json:"asset"`
 	// Name of the clean room.
-	CleanRoomName string `json:"-" tf:"-"`
-}
-
-func (st *CreateCleanRoomAssetRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &createCleanRoomAssetRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := createCleanRoomAssetRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st CreateCleanRoomAssetRequest) MarshalJSON() ([]byte, error) {
-	pb, err := createCleanRoomAssetRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	CleanRoomName string `json:"-" url:"-"`
 }
 
 // Create an output catalog
 type CreateCleanRoomOutputCatalogRequest struct {
 	// Name of the clean room.
-	CleanRoomName string `json:"-" tf:"-"`
+	CleanRoomName string `json:"-" url:"-"`
 
-	// Wire name: 'output_catalog'
 	OutputCatalog CleanRoomOutputCatalog `json:"output_catalog"`
 }
 
-func (st *CreateCleanRoomOutputCatalogRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &createCleanRoomOutputCatalogRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := createCleanRoomOutputCatalogRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st CreateCleanRoomOutputCatalogRequest) MarshalJSON() ([]byte, error) {
-	pb, err := createCleanRoomOutputCatalogRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
-}
-
 type CreateCleanRoomOutputCatalogResponse struct {
-
-	// Wire name: 'output_catalog'
 	OutputCatalog *CleanRoomOutputCatalog `json:"output_catalog,omitempty"`
-}
-
-func (st *CreateCleanRoomOutputCatalogResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &createCleanRoomOutputCatalogResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := createCleanRoomOutputCatalogResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st CreateCleanRoomOutputCatalogResponse) MarshalJSON() ([]byte, error) {
-	pb, err := createCleanRoomOutputCatalogResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 // Create a clean room
 type CreateCleanRoomRequest struct {
-
-	// Wire name: 'clean_room'
 	CleanRoom CleanRoom `json:"clean_room"`
-}
-
-func (st *CreateCleanRoomRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &createCleanRoomRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := createCleanRoomRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st CreateCleanRoomRequest) MarshalJSON() ([]byte, error) {
-	pb, err := createCleanRoomRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 // Delete an asset
 type DeleteCleanRoomAssetRequest struct {
 	// The type of the asset.
-	AssetType CleanRoomAssetAssetType `json:"-" tf:"-"`
+	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
 	// Name of the clean room.
-	CleanRoomName string `json:"-" tf:"-"`
+	CleanRoomName string `json:"-" url:"-"`
 	// The fully qualified name of the asset, it is same as the name field in
 	// CleanRoomAsset.
-	Name string `json:"-" tf:"-"`
-}
-
-func (st *DeleteCleanRoomAssetRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &deleteCleanRoomAssetRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := deleteCleanRoomAssetRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st DeleteCleanRoomAssetRequest) MarshalJSON() ([]byte, error) {
-	pb, err := deleteCleanRoomAssetRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Name string `json:"-" url:"-"`
 }
 
 // Response for delete clean room request. Using an empty message since the
@@ -1260,390 +743,155 @@ func (st DeleteCleanRoomAssetRequest) MarshalJSON() ([]byte, error) {
 type DeleteCleanRoomAssetResponse struct {
 }
 
-func (st *DeleteCleanRoomAssetResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &deleteCleanRoomAssetResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := deleteCleanRoomAssetResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st DeleteCleanRoomAssetResponse) MarshalJSON() ([]byte, error) {
-	pb, err := deleteCleanRoomAssetResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
-}
-
 // Delete a clean room
 type DeleteCleanRoomRequest struct {
 	// Name of the clean room.
-	Name string `json:"-" tf:"-"`
-}
-
-func (st *DeleteCleanRoomRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &deleteCleanRoomRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := deleteCleanRoomRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st DeleteCleanRoomRequest) MarshalJSON() ([]byte, error) {
-	pb, err := deleteCleanRoomRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Name string `json:"-" url:"-"`
 }
 
 type DeleteResponse struct {
 }
 
-func (st *DeleteResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &deleteResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := deleteResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st DeleteResponse) MarshalJSON() ([]byte, error) {
-	pb, err := deleteResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
-}
-
 // Get an asset
 type GetCleanRoomAssetRequest struct {
 	// The type of the asset.
-	AssetType CleanRoomAssetAssetType `json:"-" tf:"-"`
+	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
 	// Name of the clean room.
-	CleanRoomName string `json:"-" tf:"-"`
+	CleanRoomName string `json:"-" url:"-"`
 	// The fully qualified name of the asset, it is same as the name field in
 	// CleanRoomAsset.
-	Name string `json:"-" tf:"-"`
-}
-
-func (st *GetCleanRoomAssetRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getCleanRoomAssetRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getCleanRoomAssetRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetCleanRoomAssetRequest) MarshalJSON() ([]byte, error) {
-	pb, err := getCleanRoomAssetRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Name string `json:"-" url:"-"`
 }
 
 // Get a clean room
 type GetCleanRoomRequest struct {
-	Name string `json:"-" tf:"-"`
-}
-
-func (st *GetCleanRoomRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getCleanRoomRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getCleanRoomRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetCleanRoomRequest) MarshalJSON() ([]byte, error) {
-	pb, err := getCleanRoomRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Name string `json:"-" url:"-"`
 }
 
 // List assets
 type ListCleanRoomAssetsRequest struct {
 	// Name of the clean room.
-	CleanRoomName string `json:"-" tf:"-"`
+	CleanRoomName string `json:"-" url:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" tf:"-"`
+	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListCleanRoomAssetsRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listCleanRoomAssetsRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listCleanRoomAssetsRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListCleanRoomAssetsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListCleanRoomAssetsRequest) MarshalJSON() ([]byte, error) {
-	pb, err := listCleanRoomAssetsRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListCleanRoomAssetsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListCleanRoomAssetsResponse struct {
 	// Assets in the clean room.
-	// Wire name: 'assets'
 	Assets []CleanRoomAsset `json:"assets,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. page_token should be set to this value for the next request
 	// (for the next page of results).
-	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListCleanRoomAssetsResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listCleanRoomAssetsResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listCleanRoomAssetsResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListCleanRoomAssetsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListCleanRoomAssetsResponse) MarshalJSON() ([]byte, error) {
-	pb, err := listCleanRoomAssetsResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListCleanRoomAssetsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List notebook task runs
 type ListCleanRoomNotebookTaskRunsRequest struct {
 	// Name of the clean room.
-	CleanRoomName string `json:"-" tf:"-"`
+	CleanRoomName string `json:"-" url:"-"`
 	// Notebook name
-	NotebookName string `json:"-" tf:"-"`
+	NotebookName string `json:"-" url:"notebook_name,omitempty"`
 	// The maximum number of task runs to return. Currently ignored - all runs
 	// will be returned.
-	PageSize int `json:"-" tf:"-"`
+	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" tf:"-"`
+	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListCleanRoomNotebookTaskRunsRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listCleanRoomNotebookTaskRunsRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listCleanRoomNotebookTaskRunsRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListCleanRoomNotebookTaskRunsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListCleanRoomNotebookTaskRunsRequest) MarshalJSON() ([]byte, error) {
-	pb, err := listCleanRoomNotebookTaskRunsRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListCleanRoomNotebookTaskRunsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListCleanRoomNotebookTaskRunsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. page_token should be set to this value for the next request
 	// (for the next page of results).
-	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// Name of the clean room.
-	// Wire name: 'runs'
 	Runs []CleanRoomNotebookTaskRun `json:"runs,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListCleanRoomNotebookTaskRunsResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listCleanRoomNotebookTaskRunsResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listCleanRoomNotebookTaskRunsResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListCleanRoomNotebookTaskRunsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListCleanRoomNotebookTaskRunsResponse) MarshalJSON() ([]byte, error) {
-	pb, err := listCleanRoomNotebookTaskRunsResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListCleanRoomNotebookTaskRunsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List clean rooms
 type ListCleanRoomsRequest struct {
 	// Maximum number of clean rooms to return (i.e., the page length). Defaults
 	// to 100.
-	PageSize int `json:"-" tf:"-"`
+	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" tf:"-"`
+	PageToken string `json:"-" url:"page_token,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListCleanRoomsRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listCleanRoomsRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listCleanRoomsRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListCleanRoomsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListCleanRoomsRequest) MarshalJSON() ([]byte, error) {
-	pb, err := listCleanRoomsRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListCleanRoomsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListCleanRoomsResponse struct {
-
-	// Wire name: 'clean_rooms'
 	CleanRooms []CleanRoom `json:"clean_rooms,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. page_token should be set to this value for the next request
 	// (for the next page of results).
-	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListCleanRoomsResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listCleanRoomsResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listCleanRoomsResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListCleanRoomsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
-	pb, err := listCleanRoomsResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Update an asset
 type UpdateCleanRoomAssetRequest struct {
 	// Metadata of the clean room asset
-	// Wire name: 'asset'
 	Asset CleanRoomAsset `json:"asset"`
 	// The type of the asset.
-	AssetType CleanRoomAssetAssetType `json:"-" tf:"-"`
+	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
 	// Name of the clean room.
-	CleanRoomName string `json:"-" tf:"-"`
+	CleanRoomName string `json:"-" url:"-"`
 	// A fully qualified name that uniquely identifies the asset within the
 	// clean room. This is also the name displayed in the clean room UI.
 	//
@@ -1651,63 +899,11 @@ type UpdateCleanRoomAssetRequest struct {
 	// *shared_catalog*.*shared_schema*.*asset_name*
 	//
 	// For notebooks, the name is the notebook file name.
-	Name string `json:"-" tf:"-"`
-}
-
-func (st *UpdateCleanRoomAssetRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &updateCleanRoomAssetRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := updateCleanRoomAssetRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st UpdateCleanRoomAssetRequest) MarshalJSON() ([]byte, error) {
-	pb, err := updateCleanRoomAssetRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Name string `json:"-" url:"-"`
 }
 
 type UpdateCleanRoomRequest struct {
-
-	// Wire name: 'clean_room'
 	CleanRoom *CleanRoom `json:"clean_room,omitempty"`
 	// Name of the clean room.
-	Name string `json:"-" tf:"-"`
-}
-
-func (st *UpdateCleanRoomRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &updateCleanRoomRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := updateCleanRoomRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st UpdateCleanRoomRequest) MarshalJSON() ([]byte, error) {
-	pb, err := updateCleanRoomRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Name string `json:"-" url:"-"`
 }
