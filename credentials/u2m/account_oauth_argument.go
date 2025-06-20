@@ -2,7 +2,6 @@ package u2m
 
 import (
 	"fmt"
-	"strings"
 )
 
 // AccountOAuthArgument is an interface that provides the necessary information
@@ -28,11 +27,8 @@ var _ AccountOAuthArgument = BasicAccountOAuthArgument{}
 
 // NewBasicAccountOAuthArgument creates a new BasicAccountOAuthArgument.
 func NewBasicAccountOAuthArgument(accountsHost, accountID string) (BasicAccountOAuthArgument, error) {
-	if !strings.HasPrefix(accountsHost, "https://") {
-		return BasicAccountOAuthArgument{}, fmt.Errorf("accountsHost must start with 'https://': %s", accountsHost)
-	}
-	if strings.HasSuffix(accountsHost, "/") {
-		return BasicAccountOAuthArgument{}, fmt.Errorf("accountsHost must not have a trailing slash: %s", accountsHost)
+	if err := validateHost(accountsHost); err != nil {
+		return BasicAccountOAuthArgument{}, err
 	}
 	return BasicAccountOAuthArgument{accountHost: accountsHost, accountID: accountID}, nil
 }
