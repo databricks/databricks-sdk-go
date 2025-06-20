@@ -19,232 +19,78 @@ type appsImpl struct {
 }
 
 func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, error) {
-
-	requestPb, pbErr := createAppRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var appPb appPb
+	var app App
 	path := "/api/2.0/apps"
 	queryParams := make(map[string]any)
-	if requestPb.NoCompute != false || slices.Contains(requestPb.ForceSendFields, "NoCompute") {
-		queryParams["no_compute"] = requestPb.NoCompute
+	if request.NoCompute != false || slices.Contains(request.ForceSendFields, "NoCompute") {
+		queryParams["no_compute"] = request.NoCompute
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb).App,
-		&appPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := appFromPb(&appPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.App, &app)
+	return &app, err
 }
 
 func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) (*App, error) {
-
-	requestPb, pbErr := deleteAppRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var appPb appPb
-	path := fmt.Sprintf("/api/2.0/apps/%v", requestPb.Name)
+	var app App
+	path := fmt.Sprintf("/api/2.0/apps/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodDelete,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&appPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := appFromPb(&appPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &app)
+	return &app, err
 }
 
 func (a *appsImpl) Deploy(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error) {
-
-	requestPb, pbErr := createAppDeploymentRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var appDeploymentPb appDeploymentPb
-	path := fmt.Sprintf("/api/2.0/apps/%v/deployments", requestPb.AppName)
+	var appDeployment AppDeployment
+	path := fmt.Sprintf("/api/2.0/apps/%v/deployments", request.AppName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb).AppDeployment,
-		&appDeploymentPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := appDeploymentFromPb(&appDeploymentPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.AppDeployment, &appDeployment)
+	return &appDeployment, err
 }
 
 func (a *appsImpl) Get(ctx context.Context, request GetAppRequest) (*App, error) {
-
-	requestPb, pbErr := getAppRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var appPb appPb
-	path := fmt.Sprintf("/api/2.0/apps/%v", requestPb.Name)
+	var app App
+	path := fmt.Sprintf("/api/2.0/apps/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&appPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := appFromPb(&appPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &app)
+	return &app, err
 }
 
 func (a *appsImpl) GetDeployment(ctx context.Context, request GetAppDeploymentRequest) (*AppDeployment, error) {
-
-	requestPb, pbErr := getAppDeploymentRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var appDeploymentPb appDeploymentPb
-	path := fmt.Sprintf("/api/2.0/apps/%v/deployments/%v", requestPb.AppName, requestPb.DeploymentId)
+	var appDeployment AppDeployment
+	path := fmt.Sprintf("/api/2.0/apps/%v/deployments/%v", request.AppName, request.DeploymentId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&appDeploymentPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := appDeploymentFromPb(&appDeploymentPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &appDeployment)
+	return &appDeployment, err
 }
 
 func (a *appsImpl) GetPermissionLevels(ctx context.Context, request GetAppPermissionLevelsRequest) (*GetAppPermissionLevelsResponse, error) {
-
-	requestPb, pbErr := getAppPermissionLevelsRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var getAppPermissionLevelsResponsePb getAppPermissionLevelsResponsePb
-	path := fmt.Sprintf("/api/2.0/permissions/apps/%v/permissionLevels", requestPb.AppName)
+	var getAppPermissionLevelsResponse GetAppPermissionLevelsResponse
+	path := fmt.Sprintf("/api/2.0/permissions/apps/%v/permissionLevels", request.AppName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&getAppPermissionLevelsResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := getAppPermissionLevelsResponseFromPb(&getAppPermissionLevelsResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getAppPermissionLevelsResponse)
+	return &getAppPermissionLevelsResponse, err
 }
 
 func (a *appsImpl) GetPermissions(ctx context.Context, request GetAppPermissionsRequest) (*AppPermissions, error) {
-
-	requestPb, pbErr := getAppPermissionsRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var appPermissionsPb appPermissionsPb
-	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", requestPb.AppName)
+	var appPermissions AppPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", request.AppName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&appPermissionsPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := appPermissionsFromPb(&appPermissionsPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &appPermissions)
+	return &appPermissions, err
 }
 
 // Lists all apps in the workspace.
@@ -279,35 +125,13 @@ func (a *appsImpl) ListAll(ctx context.Context, request ListAppsRequest) ([]App,
 }
 
 func (a *appsImpl) internalList(ctx context.Context, request ListAppsRequest) (*ListAppsResponse, error) {
-
-	requestPb, pbErr := listAppsRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var listAppsResponsePb listAppsResponsePb
+	var listAppsResponse ListAppsResponse
 	path := "/api/2.0/apps"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&listAppsResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := listAppsResponseFromPb(&listAppsResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAppsResponse)
+	return &listAppsResponse, err
 }
 
 // Lists all app deployments for the app with the supplied name.
@@ -342,198 +166,66 @@ func (a *appsImpl) ListDeploymentsAll(ctx context.Context, request ListAppDeploy
 }
 
 func (a *appsImpl) internalListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error) {
-
-	requestPb, pbErr := listAppDeploymentsRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var listAppDeploymentsResponsePb listAppDeploymentsResponsePb
-	path := fmt.Sprintf("/api/2.0/apps/%v/deployments", requestPb.AppName)
+	var listAppDeploymentsResponse ListAppDeploymentsResponse
+	path := fmt.Sprintf("/api/2.0/apps/%v/deployments", request.AppName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&listAppDeploymentsResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := listAppDeploymentsResponseFromPb(&listAppDeploymentsResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAppDeploymentsResponse)
+	return &listAppDeploymentsResponse, err
 }
 
 func (a *appsImpl) SetPermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error) {
-
-	requestPb, pbErr := appPermissionsRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var appPermissionsPb appPermissionsPb
-	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", requestPb.AppName)
+	var appPermissions AppPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", request.AppName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPut,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&appPermissionsPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := appPermissionsFromPb(&appPermissionsPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &appPermissions)
+	return &appPermissions, err
 }
 
 func (a *appsImpl) Start(ctx context.Context, request StartAppRequest) (*App, error) {
-
-	requestPb, pbErr := startAppRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var appPb appPb
-	path := fmt.Sprintf("/api/2.0/apps/%v/start", requestPb.Name)
+	var app App
+	path := fmt.Sprintf("/api/2.0/apps/%v/start", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&appPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := appFromPb(&appPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &app)
+	return &app, err
 }
 
 func (a *appsImpl) Stop(ctx context.Context, request StopAppRequest) (*App, error) {
-
-	requestPb, pbErr := stopAppRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var appPb appPb
-	path := fmt.Sprintf("/api/2.0/apps/%v/stop", requestPb.Name)
+	var app App
+	path := fmt.Sprintf("/api/2.0/apps/%v/stop", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&appPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := appFromPb(&appPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &app)
+	return &app, err
 }
 
 func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, error) {
-
-	requestPb, pbErr := updateAppRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var appPb appPb
-	path := fmt.Sprintf("/api/2.0/apps/%v", requestPb.Name)
+	var app App
+	path := fmt.Sprintf("/api/2.0/apps/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPatch,
-		path,
-		headers,
-		queryParams,
-		(*requestPb).App,
-		&appPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := appFromPb(&appPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.App, &app)
+	return &app, err
 }
 
 func (a *appsImpl) UpdatePermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error) {
-
-	requestPb, pbErr := appPermissionsRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var appPermissionsPb appPermissionsPb
-	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", requestPb.AppName)
+	var appPermissions AppPermissions
+	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", request.AppName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPatch,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&appPermissionsPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := appPermissionsFromPb(&appPermissionsPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &appPermissions)
+	return &appPermissions, err
 }

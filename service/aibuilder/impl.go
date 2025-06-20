@@ -16,189 +16,65 @@ type aiBuilderImpl struct {
 }
 
 func (a *aiBuilderImpl) CancelOptimize(ctx context.Context, request CancelCustomLlmOptimizationRunRequest) error {
-
-	requestPb, pbErr := cancelCustomLlmOptimizationRunRequestToPb(&request)
-	if pbErr != nil {
-		return pbErr
-	}
-
-	var cancelOptimizeResponsePb cancelOptimizeResponsePb
-	path := fmt.Sprintf("/api/2.0/custom-llms/%v/optimize/cancel", requestPb.Id)
+	var cancelOptimizeResponse CancelOptimizeResponse
+	path := fmt.Sprintf("/api/2.0/custom-llms/%v/optimize/cancel", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&cancelOptimizeResponsePb,
-	)
-	if err != nil {
-		return err
-	}
-
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &cancelOptimizeResponse)
 	return err
 }
 
 func (a *aiBuilderImpl) CreateCustomLlm(ctx context.Context, request CreateCustomLlmRequest) (*CustomLlm, error) {
-
-	requestPb, pbErr := createCustomLlmRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var customLlmPb customLlmPb
+	var customLlm CustomLlm
 	path := "/api/2.0/custom-llms"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&customLlmPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := customLlmFromPb(&customLlmPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &customLlm)
+	return &customLlm, err
 }
 
 func (a *aiBuilderImpl) DeleteCustomLlm(ctx context.Context, request DeleteCustomLlmRequest) error {
-
-	requestPb, pbErr := deleteCustomLlmRequestToPb(&request)
-	if pbErr != nil {
-		return pbErr
-	}
-
-	var deleteCustomLlmResponsePb deleteCustomLlmResponsePb
-	path := fmt.Sprintf("/api/2.0/custom-lms/%v", requestPb.Id)
+	var deleteCustomLlmResponse DeleteCustomLlmResponse
+	path := fmt.Sprintf("/api/2.0/custom-lms/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodDelete,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&deleteCustomLlmResponsePb,
-	)
-	if err != nil {
-		return err
-	}
-
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCustomLlmResponse)
 	return err
 }
 
 func (a *aiBuilderImpl) GetCustomLlm(ctx context.Context, request GetCustomLlmRequest) (*CustomLlm, error) {
-
-	requestPb, pbErr := getCustomLlmRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var customLlmPb customLlmPb
-	path := fmt.Sprintf("/api/2.0/custom-llms/%v", requestPb.Id)
+	var customLlm CustomLlm
+	path := fmt.Sprintf("/api/2.0/custom-llms/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&customLlmPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := customLlmFromPb(&customLlmPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &customLlm)
+	return &customLlm, err
 }
 
 func (a *aiBuilderImpl) StartOptimize(ctx context.Context, request StartCustomLlmOptimizationRunRequest) (*CustomLlm, error) {
-
-	requestPb, pbErr := startCustomLlmOptimizationRunRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var customLlmPb customLlmPb
-	path := fmt.Sprintf("/api/2.0/custom-llms/%v/optimize", requestPb.Id)
+	var customLlm CustomLlm
+	path := fmt.Sprintf("/api/2.0/custom-llms/%v/optimize", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&customLlmPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := customLlmFromPb(&customLlmPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &customLlm)
+	return &customLlm, err
 }
 
 func (a *aiBuilderImpl) UpdateCustomLlm(ctx context.Context, request UpdateCustomLlmRequest) (*CustomLlm, error) {
-
-	requestPb, pbErr := updateCustomLlmRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var customLlmPb customLlmPb
-	path := fmt.Sprintf("/api/2.0/custom-llms/%v", requestPb.Id)
+	var customLlm CustomLlm
+	path := fmt.Sprintf("/api/2.0/custom-llms/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPatch,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&customLlmPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := customLlmFromPb(&customLlmPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &customLlm)
+	return &customLlm, err
 }
