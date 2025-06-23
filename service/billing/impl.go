@@ -18,35 +18,13 @@ type billableUsageImpl struct {
 }
 
 func (a *billableUsageImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
-
-	requestPb, pbErr := downloadRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var downloadResponsePb downloadResponsePb
+	var downloadResponse DownloadResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/usage/download", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&downloadResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := downloadResponseFromPb(&downloadResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &downloadResponse)
+	return &downloadResponse, err
 }
 
 // unexported type that holds implementations of just BudgetPolicy API methods
@@ -55,96 +33,34 @@ type budgetPolicyImpl struct {
 }
 
 func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolicyRequest) (*BudgetPolicy, error) {
-
-	requestPb, pbErr := createBudgetPolicyRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var budgetPolicyPb budgetPolicyPb
+	var budgetPolicy BudgetPolicy
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&budgetPolicyPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := budgetPolicyFromPb(&budgetPolicyPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &budgetPolicy)
+	return &budgetPolicy, err
 }
 
 func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolicyRequest) error {
-
-	requestPb, pbErr := deleteBudgetPolicyRequestToPb(&request)
-	if pbErr != nil {
-		return pbErr
-	}
-
-	var deleteResponsePb deleteResponsePb
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), requestPb.PolicyId)
+	var deleteResponse DeleteResponse
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodDelete,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&deleteResponsePb,
-	)
-	if err != nil {
-		return err
-	}
-
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
 	return err
 }
 
 func (a *budgetPolicyImpl) Get(ctx context.Context, request GetBudgetPolicyRequest) (*BudgetPolicy, error) {
-
-	requestPb, pbErr := getBudgetPolicyRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var budgetPolicyPb budgetPolicyPb
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), requestPb.PolicyId)
+	var budgetPolicy BudgetPolicy
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&budgetPolicyPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := budgetPolicyFromPb(&budgetPolicyPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &budgetPolicy)
+	return &budgetPolicy, err
 }
 
 // Lists all policies. Policies are returned in the alphabetically ascending
@@ -181,71 +97,27 @@ func (a *budgetPolicyImpl) ListAll(ctx context.Context, request ListBudgetPolici
 }
 
 func (a *budgetPolicyImpl) internalList(ctx context.Context, request ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error) {
-
-	requestPb, pbErr := listBudgetPoliciesRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var listBudgetPoliciesResponsePb listBudgetPoliciesResponsePb
+	var listBudgetPoliciesResponse ListBudgetPoliciesResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&listBudgetPoliciesResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := listBudgetPoliciesResponseFromPb(&listBudgetPoliciesResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listBudgetPoliciesResponse)
+	return &listBudgetPoliciesResponse, err
 }
 
 func (a *budgetPolicyImpl) Update(ctx context.Context, request UpdateBudgetPolicyRequest) (*BudgetPolicy, error) {
-
-	requestPb, pbErr := updateBudgetPolicyRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var budgetPolicyPb budgetPolicyPb
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), requestPb.PolicyId)
+	var budgetPolicy BudgetPolicy
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
-	if requestPb.LimitConfig != nil {
-		queryParams["limit_config"] = requestPb.LimitConfig
+	if request.LimitConfig != nil {
+		queryParams["limit_config"] = request.LimitConfig
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPatch,
-		path,
-		headers,
-		queryParams,
-		(*requestPb).Policy,
-		&budgetPolicyPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := budgetPolicyFromPb(&budgetPolicyPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Policy, &budgetPolicy)
+	return &budgetPolicy, err
 }
 
 // unexported type that holds implementations of just budgets API methods
@@ -254,96 +126,34 @@ type budgetsImpl struct {
 }
 
 func (a *budgetsImpl) Create(ctx context.Context, request CreateBudgetConfigurationRequest) (*CreateBudgetConfigurationResponse, error) {
-
-	requestPb, pbErr := createBudgetConfigurationRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var createBudgetConfigurationResponsePb createBudgetConfigurationResponsePb
+	var createBudgetConfigurationResponse CreateBudgetConfigurationResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&createBudgetConfigurationResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := createBudgetConfigurationResponseFromPb(&createBudgetConfigurationResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createBudgetConfigurationResponse)
+	return &createBudgetConfigurationResponse, err
 }
 
 func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) error {
-
-	requestPb, pbErr := deleteBudgetConfigurationRequestToPb(&request)
-	if pbErr != nil {
-		return pbErr
-	}
-
-	var deleteBudgetConfigurationResponsePb deleteBudgetConfigurationResponsePb
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), requestPb.BudgetId)
+	var deleteBudgetConfigurationResponse DeleteBudgetConfigurationResponse
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodDelete,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&deleteBudgetConfigurationResponsePb,
-	)
-	if err != nil {
-		return err
-	}
-
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteBudgetConfigurationResponse)
 	return err
 }
 
 func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetConfigurationRequest) (*GetBudgetConfigurationResponse, error) {
-
-	requestPb, pbErr := getBudgetConfigurationRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var getBudgetConfigurationResponsePb getBudgetConfigurationResponsePb
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), requestPb.BudgetId)
+	var getBudgetConfigurationResponse GetBudgetConfigurationResponse
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&getBudgetConfigurationResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := getBudgetConfigurationResponseFromPb(&getBudgetConfigurationResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getBudgetConfigurationResponse)
+	return &getBudgetConfigurationResponse, err
 }
 
 // Gets all budgets associated with this account.
@@ -378,68 +188,24 @@ func (a *budgetsImpl) ListAll(ctx context.Context, request ListBudgetConfigurati
 }
 
 func (a *budgetsImpl) internalList(ctx context.Context, request ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error) {
-
-	requestPb, pbErr := listBudgetConfigurationsRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var listBudgetConfigurationsResponsePb listBudgetConfigurationsResponsePb
+	var listBudgetConfigurationsResponse ListBudgetConfigurationsResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&listBudgetConfigurationsResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := listBudgetConfigurationsResponseFromPb(&listBudgetConfigurationsResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listBudgetConfigurationsResponse)
+	return &listBudgetConfigurationsResponse, err
 }
 
 func (a *budgetsImpl) Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error) {
-
-	requestPb, pbErr := updateBudgetConfigurationRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var updateBudgetConfigurationResponsePb updateBudgetConfigurationResponsePb
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), requestPb.BudgetId)
+	var updateBudgetConfigurationResponse UpdateBudgetConfigurationResponse
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPut,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&updateBudgetConfigurationResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := updateBudgetConfigurationResponseFromPb(&updateBudgetConfigurationResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateBudgetConfigurationResponse)
+	return &updateBudgetConfigurationResponse, err
 }
 
 // unexported type that holds implementations of just LogDelivery API methods
@@ -448,68 +214,24 @@ type logDeliveryImpl struct {
 }
 
 func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error) {
-
-	requestPb, pbErr := wrappedCreateLogDeliveryConfigurationToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var wrappedLogDeliveryConfigurationPb wrappedLogDeliveryConfigurationPb
+	var wrappedLogDeliveryConfiguration WrappedLogDeliveryConfiguration
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&wrappedLogDeliveryConfigurationPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := wrappedLogDeliveryConfigurationFromPb(&wrappedLogDeliveryConfigurationPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &wrappedLogDeliveryConfiguration)
+	return &wrappedLogDeliveryConfiguration, err
 }
 
 func (a *logDeliveryImpl) Get(ctx context.Context, request GetLogDeliveryRequest) (*GetLogDeliveryConfigurationResponse, error) {
-
-	requestPb, pbErr := getLogDeliveryRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var getLogDeliveryConfigurationResponsePb getLogDeliveryConfigurationResponsePb
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), requestPb.LogDeliveryConfigurationId)
+	var getLogDeliveryConfigurationResponse GetLogDeliveryConfigurationResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&getLogDeliveryConfigurationResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := getLogDeliveryConfigurationResponseFromPb(&getLogDeliveryConfigurationResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getLogDeliveryConfigurationResponse)
+	return &getLogDeliveryConfigurationResponse, err
 }
 
 // Gets all Databricks log delivery configurations associated with an account
@@ -546,63 +268,23 @@ func (a *logDeliveryImpl) ListAll(ctx context.Context, request ListLogDeliveryRe
 }
 
 func (a *logDeliveryImpl) internalList(ctx context.Context, request ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error) {
-
-	requestPb, pbErr := listLogDeliveryRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var wrappedLogDeliveryConfigurationsPb wrappedLogDeliveryConfigurationsPb
+	var wrappedLogDeliveryConfigurations WrappedLogDeliveryConfigurations
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&wrappedLogDeliveryConfigurationsPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := wrappedLogDeliveryConfigurationsFromPb(&wrappedLogDeliveryConfigurationsPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &wrappedLogDeliveryConfigurations)
+	return &wrappedLogDeliveryConfigurations, err
 }
 
 func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
-
-	requestPb, pbErr := updateLogDeliveryConfigurationStatusRequestToPb(&request)
-	if pbErr != nil {
-		return pbErr
-	}
-
-	var patchStatusResponsePb patchStatusResponsePb
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), requestPb.LogDeliveryConfigurationId)
+	var patchStatusResponse PatchStatusResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPatch,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&patchStatusResponsePb,
-	)
-	if err != nil {
-		return err
-	}
-
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &patchStatusResponse)
 	return err
 }
 
@@ -612,66 +294,22 @@ type usageDashboardsImpl struct {
 }
 
 func (a *usageDashboardsImpl) Create(ctx context.Context, request CreateBillingUsageDashboardRequest) (*CreateBillingUsageDashboardResponse, error) {
-
-	requestPb, pbErr := createBillingUsageDashboardRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var createBillingUsageDashboardResponsePb createBillingUsageDashboardResponsePb
+	var createBillingUsageDashboardResponse CreateBillingUsageDashboardResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/dashboard", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&createBillingUsageDashboardResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := createBillingUsageDashboardResponseFromPb(&createBillingUsageDashboardResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createBillingUsageDashboardResponse)
+	return &createBillingUsageDashboardResponse, err
 }
 
 func (a *usageDashboardsImpl) Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error) {
-
-	requestPb, pbErr := getBillingUsageDashboardRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var getBillingUsageDashboardResponsePb getBillingUsageDashboardResponsePb
+	var getBillingUsageDashboardResponse GetBillingUsageDashboardResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/dashboard", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&getBillingUsageDashboardResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := getBillingUsageDashboardResponseFromPb(&getBillingUsageDashboardResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getBillingUsageDashboardResponse)
+	return &getBillingUsageDashboardResponse, err
 }

@@ -18,96 +18,34 @@ type qualityMonitorV2Impl struct {
 }
 
 func (a *qualityMonitorV2Impl) CreateQualityMonitor(ctx context.Context, request CreateQualityMonitorRequest) (*QualityMonitor, error) {
-
-	requestPb, pbErr := createQualityMonitorRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var qualityMonitorPb qualityMonitorPb
+	var qualityMonitor QualityMonitor
 	path := "/api/2.0/quality-monitors"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb).QualityMonitor,
-		&qualityMonitorPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := qualityMonitorFromPb(&qualityMonitorPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.QualityMonitor, &qualityMonitor)
+	return &qualityMonitor, err
 }
 
 func (a *qualityMonitorV2Impl) DeleteQualityMonitor(ctx context.Context, request DeleteQualityMonitorRequest) error {
-
-	requestPb, pbErr := deleteQualityMonitorRequestToPb(&request)
-	if pbErr != nil {
-		return pbErr
-	}
-
-	var deleteQualityMonitorResponsePb deleteQualityMonitorResponsePb
-	path := fmt.Sprintf("/api/2.0/quality-monitors/%v/%v", requestPb.ObjectType, requestPb.ObjectId)
+	var deleteQualityMonitorResponse DeleteQualityMonitorResponse
+	path := fmt.Sprintf("/api/2.0/quality-monitors/%v/%v", request.ObjectType, request.ObjectId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodDelete,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&deleteQualityMonitorResponsePb,
-	)
-	if err != nil {
-		return err
-	}
-
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteQualityMonitorResponse)
 	return err
 }
 
 func (a *qualityMonitorV2Impl) GetQualityMonitor(ctx context.Context, request GetQualityMonitorRequest) (*QualityMonitor, error) {
-
-	requestPb, pbErr := getQualityMonitorRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var qualityMonitorPb qualityMonitorPb
-	path := fmt.Sprintf("/api/2.0/quality-monitors/%v/%v", requestPb.ObjectType, requestPb.ObjectId)
+	var qualityMonitor QualityMonitor
+	path := fmt.Sprintf("/api/2.0/quality-monitors/%v/%v", request.ObjectType, request.ObjectId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&qualityMonitorPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := qualityMonitorFromPb(&qualityMonitorPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &qualityMonitor)
+	return &qualityMonitor, err
 }
 
 // (Unimplemented) List quality monitors
@@ -142,66 +80,22 @@ func (a *qualityMonitorV2Impl) ListQualityMonitorAll(ctx context.Context, reques
 }
 
 func (a *qualityMonitorV2Impl) internalListQualityMonitor(ctx context.Context, request ListQualityMonitorRequest) (*ListQualityMonitorResponse, error) {
-
-	requestPb, pbErr := listQualityMonitorRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var listQualityMonitorResponsePb listQualityMonitorResponsePb
+	var listQualityMonitorResponse ListQualityMonitorResponse
 	path := "/api/2.0/quality-monitors"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&listQualityMonitorResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := listQualityMonitorResponseFromPb(&listQualityMonitorResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listQualityMonitorResponse)
+	return &listQualityMonitorResponse, err
 }
 
 func (a *qualityMonitorV2Impl) UpdateQualityMonitor(ctx context.Context, request UpdateQualityMonitorRequest) (*QualityMonitor, error) {
-
-	requestPb, pbErr := updateQualityMonitorRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var qualityMonitorPb qualityMonitorPb
-	path := fmt.Sprintf("/api/2.0/quality-monitors/%v/%v", requestPb.ObjectType, requestPb.ObjectId)
+	var qualityMonitor QualityMonitor
+	path := fmt.Sprintf("/api/2.0/quality-monitors/%v/%v", request.ObjectType, request.ObjectId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPut,
-		path,
-		headers,
-		queryParams,
-		(*requestPb).QualityMonitor,
-		&qualityMonitorPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := qualityMonitorFromPb(&qualityMonitorPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.QualityMonitor, &qualityMonitor)
+	return &qualityMonitor, err
 }

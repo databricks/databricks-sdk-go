@@ -3,633 +3,202 @@
 package iam
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
 type AccessControlRequest struct {
 	// name of the group
-	// Wire name: 'group_name'
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
-	// Wire name: 'permission_level'
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
-	// Wire name: 'service_principal_name'
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
-	// Wire name: 'user_name'
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *AccessControlRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &accessControlRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := accessControlRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *AccessControlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st AccessControlRequest) MarshalJSON() ([]byte, error) {
-	pb, err := accessControlRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s AccessControlRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type AccessControlResponse struct {
 	// All permissions.
-	// Wire name: 'all_permissions'
 	AllPermissions []Permission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
-	// Wire name: 'display_name'
 	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
-	// Wire name: 'group_name'
 	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
-	// Wire name: 'service_principal_name'
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
-	// Wire name: 'user_name'
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *AccessControlResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &accessControlResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := accessControlResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *AccessControlResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st AccessControlResponse) MarshalJSON() ([]byte, error) {
-	pb, err := accessControlResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s AccessControlResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // represents an identity trying to access a resource - user or a service
 // principal group can be a principal of a permission set assignment but an
 // actor is always a user or a service principal
 type Actor struct {
+	ActorId int64 `json:"actor_id,omitempty" url:"actor_id,omitempty"`
 
-	// Wire name: 'actor_id'
-	ActorId int64 `json:"actor_id,omitempty"`
-
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *Actor) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &actorPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := actorFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *Actor) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st Actor) MarshalJSON() ([]byte, error) {
-	pb, err := actorToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s Actor) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Check access policy to a resource
 type CheckPolicyRequest struct {
-	Actor Actor `json:"-" tf:"-"`
+	Actor Actor `json:"-" url:"actor"`
 
-	AuthzIdentity RequestAuthzIdentity `json:"-" tf:"-"`
+	AuthzIdentity RequestAuthzIdentity `json:"-" url:"authz_identity"`
 
-	ConsistencyToken ConsistencyToken `json:"-" tf:"-"`
+	ConsistencyToken ConsistencyToken `json:"-" url:"consistency_token"`
 
-	Permission string `json:"-" tf:"-"`
+	Permission string `json:"-" url:"permission"`
 	// Ex: (servicePrincipal/use,
 	// accounts/<account-id>/servicePrincipals/<sp-id>) Ex:
 	// (servicePrincipal.ruleSet/update,
 	// accounts/<account-id>/servicePrincipals/<sp-id>/ruleSets/default)
-	Resource string `json:"-" tf:"-"`
+	Resource string `json:"-" url:"resource"`
 
-	ResourceInfo *ResourceInfo `json:"-" tf:"-"`
-}
-
-func (st *CheckPolicyRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &checkPolicyRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := checkPolicyRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st CheckPolicyRequest) MarshalJSON() ([]byte, error) {
-	pb, err := checkPolicyRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	ResourceInfo *ResourceInfo `json:"-" url:"resource_info,omitempty"`
 }
 
 type CheckPolicyResponse struct {
-
-	// Wire name: 'consistency_token'
 	ConsistencyToken ConsistencyToken `json:"consistency_token"`
 
-	// Wire name: 'is_permitted'
 	IsPermitted bool `json:"is_permitted,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *CheckPolicyResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &checkPolicyResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := checkPolicyResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *CheckPolicyResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st CheckPolicyResponse) MarshalJSON() ([]byte, error) {
-	pb, err := checkPolicyResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s CheckPolicyResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ComplexValue struct {
-
-	// Wire name: 'display'
 	Display string `json:"display,omitempty"`
 
-	// Wire name: 'primary'
 	Primary bool `json:"primary,omitempty"`
 
-	// Wire name: '$ref'
 	Ref string `json:"$ref,omitempty"`
 
-	// Wire name: 'type'
 	Type string `json:"type,omitempty"`
 
-	// Wire name: 'value'
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ComplexValue) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &complexValuePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := complexValueFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ComplexValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ComplexValue) MarshalJSON() ([]byte, error) {
-	pb, err := complexValueToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ComplexValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ConsistencyToken struct {
-
-	// Wire name: 'value'
 	Value string `json:"value"`
-}
-
-func (st *ConsistencyToken) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &consistencyTokenPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := consistencyTokenFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st ConsistencyToken) MarshalJSON() ([]byte, error) {
-	pb, err := consistencyTokenToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 // Delete a group.
 type DeleteAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
-	Id string `json:"-" tf:"-"`
-}
-
-func (st *DeleteAccountGroupRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &deleteAccountGroupRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := deleteAccountGroupRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st DeleteAccountGroupRequest) MarshalJSON() ([]byte, error) {
-	pb, err := deleteAccountGroupRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Id string `json:"-" url:"-"`
 }
 
 // Delete a service principal.
 type DeleteAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
-	Id string `json:"-" tf:"-"`
-}
-
-func (st *DeleteAccountServicePrincipalRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &deleteAccountServicePrincipalRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := deleteAccountServicePrincipalRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st DeleteAccountServicePrincipalRequest) MarshalJSON() ([]byte, error) {
-	pb, err := deleteAccountServicePrincipalRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Id string `json:"-" url:"-"`
 }
 
 // Delete a user.
 type DeleteAccountUserRequest struct {
 	// Unique ID for a user in the Databricks account.
-	Id string `json:"-" tf:"-"`
-}
-
-func (st *DeleteAccountUserRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &deleteAccountUserRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := deleteAccountUserRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st DeleteAccountUserRequest) MarshalJSON() ([]byte, error) {
-	pb, err := deleteAccountUserRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Id string `json:"-" url:"-"`
 }
 
 // Delete a group.
 type DeleteGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
-	Id string `json:"-" tf:"-"`
-}
-
-func (st *DeleteGroupRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &deleteGroupRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := deleteGroupRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st DeleteGroupRequest) MarshalJSON() ([]byte, error) {
-	pb, err := deleteGroupRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Id string `json:"-" url:"-"`
 }
 
 type DeleteResponse struct {
 }
 
-func (st *DeleteResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &deleteResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := deleteResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st DeleteResponse) MarshalJSON() ([]byte, error) {
-	pb, err := deleteResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
-}
-
 // Delete a service principal.
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
-	Id string `json:"-" tf:"-"`
-}
-
-func (st *DeleteServicePrincipalRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &deleteServicePrincipalRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := deleteServicePrincipalRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st DeleteServicePrincipalRequest) MarshalJSON() ([]byte, error) {
-	pb, err := deleteServicePrincipalRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Id string `json:"-" url:"-"`
 }
 
 // Delete a user.
 type DeleteUserRequest struct {
 	// Unique ID for a user in the Databricks workspace.
-	Id string `json:"-" tf:"-"`
-}
-
-func (st *DeleteUserRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &deleteUserRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := deleteUserRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st DeleteUserRequest) MarshalJSON() ([]byte, error) {
-	pb, err := deleteUserRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Id string `json:"-" url:"-"`
 }
 
 // Delete permissions assignment
 type DeleteWorkspaceAssignmentRequest struct {
 	// The ID of the user, service principal, or group.
-	PrincipalId int64 `json:"-" tf:"-"`
+	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID for the account.
-	WorkspaceId int64 `json:"-" tf:"-"`
-}
-
-func (st *DeleteWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &deleteWorkspaceAssignmentRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := deleteWorkspaceAssignmentRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st DeleteWorkspaceAssignmentRequest) MarshalJSON() ([]byte, error) {
-	pb, err := deleteWorkspaceAssignmentRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 type DeleteWorkspacePermissionAssignmentResponse struct {
 }
 
-func (st *DeleteWorkspacePermissionAssignmentResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &deleteWorkspacePermissionAssignmentResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := deleteWorkspacePermissionAssignmentResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st DeleteWorkspacePermissionAssignmentResponse) MarshalJSON() ([]byte, error) {
-	pb, err := deleteWorkspacePermissionAssignmentResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
-}
-
 // Get group details.
 type GetAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
-	Id string `json:"-" tf:"-"`
-}
-
-func (st *GetAccountGroupRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getAccountGroupRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getAccountGroupRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetAccountGroupRequest) MarshalJSON() ([]byte, error) {
-	pb, err := getAccountGroupRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Id string `json:"-" url:"-"`
 }
 
 // Get service principal details.
 type GetAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
-	Id string `json:"-" tf:"-"`
-}
-
-func (st *GetAccountServicePrincipalRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getAccountServicePrincipalRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getAccountServicePrincipalRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetAccountServicePrincipalRequest) MarshalJSON() ([]byte, error) {
-	pb, err := getAccountServicePrincipalRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Id string `json:"-" url:"-"`
 }
 
 // Get user details.
 type GetAccountUserRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string `json:"-" tf:"-"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page. Default is 10000.
-	Count int `json:"-" tf:"-"`
+	Count int `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" tf:"-"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -637,43 +206,26 @@ type GetAccountUserRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string `json:"-" tf:"-"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Unique ID for a user in the Databricks account.
-	Id string `json:"-" tf:"-"`
+	Id string `json:"-" url:"-"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string `json:"-" tf:"-"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder GetSortOrder `json:"-" tf:"-"`
+	SortOrder GetSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int `json:"-" tf:"-"`
+	StartIndex int `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *GetAccountUserRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getAccountUserRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getAccountUserRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *GetAccountUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st GetAccountUserRequest) MarshalJSON() ([]byte, error) {
-	pb, err := getAccountUserRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s GetAccountUserRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get assignable roles for a resource
@@ -685,229 +237,50 @@ type GetAssignableRolesForResourceRequest struct {
 	// `resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>` | A resource name for
 	// the group. `resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>` | A
 	// resource name for the service principal.
-	Resource string `json:"-" tf:"-"`
-}
-
-func (st *GetAssignableRolesForResourceRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getAssignableRolesForResourceRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getAssignableRolesForResourceRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetAssignableRolesForResourceRequest) MarshalJSON() ([]byte, error) {
-	pb, err := getAssignableRolesForResourceRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Resource string `json:"-" url:"resource"`
 }
 
 type GetAssignableRolesForResourceResponse struct {
-
-	// Wire name: 'roles'
 	Roles []Role `json:"roles,omitempty"`
-}
-
-func (st *GetAssignableRolesForResourceResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getAssignableRolesForResourceResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getAssignableRolesForResourceResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetAssignableRolesForResourceResponse) MarshalJSON() ([]byte, error) {
-	pb, err := getAssignableRolesForResourceResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 // Get group details.
 type GetGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
-	Id string `json:"-" tf:"-"`
-}
-
-func (st *GetGroupRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getGroupRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getGroupRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetGroupRequest) MarshalJSON() ([]byte, error) {
-	pb, err := getGroupRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Id string `json:"-" url:"-"`
 }
 
 type GetPasswordPermissionLevelsResponse struct {
 	// Specific permission levels
-	// Wire name: 'permission_levels'
 	PermissionLevels []PasswordPermissionsDescription `json:"permission_levels,omitempty"`
-}
-
-func (st *GetPasswordPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getPasswordPermissionLevelsResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getPasswordPermissionLevelsResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetPasswordPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	pb, err := getPasswordPermissionLevelsResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 // Get object permission levels
 type GetPermissionLevelsRequest struct {
-	RequestObjectId string `json:"-" tf:"-"`
+	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
 	// directories, experiments, files, instance-pools, jobs, notebooks,
 	// pipelines, queries, registered-models, repos, serving-endpoints, or
 	// warehouses.
-	RequestObjectType string `json:"-" tf:"-"`
-}
-
-func (st *GetPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getPermissionLevelsRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getPermissionLevelsRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
-	pb, err := getPermissionLevelsRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	RequestObjectType string `json:"-" url:"-"`
 }
 
 type GetPermissionLevelsResponse struct {
 	// Specific permission levels
-	// Wire name: 'permission_levels'
 	PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
-}
-
-func (st *GetPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getPermissionLevelsResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getPermissionLevelsResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
-	pb, err := getPermissionLevelsResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 // Get object permissions
 type GetPermissionRequest struct {
 	// The id of the request object.
-	RequestObjectId string `json:"-" tf:"-"`
+	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
 	// directories, experiments, files, instance-pools, jobs, notebooks,
 	// pipelines, queries, registered-models, repos, serving-endpoints, or
 	// warehouses.
-	RequestObjectType string `json:"-" tf:"-"`
-}
-
-func (st *GetPermissionRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getPermissionRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getPermissionRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetPermissionRequest) MarshalJSON() ([]byte, error) {
-	pb, err := getPermissionRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	RequestObjectType string `json:"-" url:"-"`
 }
 
 // Get a rule set
@@ -925,7 +298,7 @@ type GetRuleSetRequest struct {
 	// in GET to indicate no freshness requirements.
 	// `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==` | An
 	// etag encoded a specific version of the rule set to get or to be updated.
-	Etag string `json:"-" tf:"-"`
+	Etag string `json:"-" url:"etag"`
 	// The ruleset name associated with the request.
 	//
 	// Examples | Summary :--- | :---
@@ -935,63 +308,13 @@ type GetRuleSetRequest struct {
 	// for a rule set on the group.
 	// `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default`
 	// | A name for a rule set on the service principal.
-	Name string `json:"-" tf:"-"`
-}
-
-func (st *GetRuleSetRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getRuleSetRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getRuleSetRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetRuleSetRequest) MarshalJSON() ([]byte, error) {
-	pb, err := getRuleSetRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Name string `json:"-" url:"name"`
 }
 
 // Get service principal details.
 type GetServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
-	Id string `json:"-" tf:"-"`
-}
-
-func (st *GetServicePrincipalRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getServicePrincipalRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getServicePrincipalRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetServicePrincipalRequest) MarshalJSON() ([]byte, error) {
-	pb, err := getServicePrincipalRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	Id string `json:"-" url:"-"`
 }
 
 type GetSortOrder string
@@ -1034,11 +357,11 @@ func (f *GetSortOrder) Type() string {
 // Get user details.
 type GetUserRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string `json:"-" tf:"-"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
-	Count int `json:"-" tf:"-"`
+	Count int `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" tf:"-"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -1046,74 +369,32 @@ type GetUserRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string `json:"-" tf:"-"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Unique ID for a user in the Databricks workspace.
-	Id string `json:"-" tf:"-"`
+	Id string `json:"-" url:"-"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string `json:"-" tf:"-"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder GetSortOrder `json:"-" tf:"-"`
+	SortOrder GetSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int `json:"-" tf:"-"`
+	StartIndex int `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *GetUserRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getUserRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getUserRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *GetUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st GetUserRequest) MarshalJSON() ([]byte, error) {
-	pb, err := getUserRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s GetUserRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List workspace permissions
 type GetWorkspaceAssignmentRequest struct {
 	// The workspace ID.
-	WorkspaceId int64 `json:"-" tf:"-"`
-}
-
-func (st *GetWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &getWorkspaceAssignmentRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := getWorkspaceAssignmentRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GetWorkspaceAssignmentRequest) MarshalJSON() ([]byte, error) {
-	pb, err := getWorkspaceAssignmentRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 type GrantRule struct {
@@ -1122,96 +403,43 @@ type GrantRule struct {
 	// an account group. Each principal has its own identifier format: *
 	// users/<USERNAME> * groups/<GROUP_NAME> *
 	// servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>
-	// Wire name: 'principals'
 	Principals []string `json:"principals,omitempty"`
 	// Role that is assigned to the list of principals.
-	// Wire name: 'role'
 	Role string `json:"role"`
-}
-
-func (st *GrantRule) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &grantRulePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := grantRuleFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st GrantRule) MarshalJSON() ([]byte, error) {
-	pb, err := grantRuleToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 type Group struct {
 	// String that represents a human-readable group name
-	// Wire name: 'displayName'
 	DisplayName string `json:"displayName,omitempty"`
 	// Entitlements assigned to the group. See [assigning entitlements] for a
 	// full list of supported values.
 	//
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
-	// Wire name: 'entitlements'
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
 
-	// Wire name: 'externalId'
 	ExternalId string `json:"externalId,omitempty"`
 
-	// Wire name: 'groups'
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	// Wire name: 'id'
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
-	// Wire name: 'members'
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
-	// Wire name: 'meta'
 	Meta *ResourceMeta `json:"meta,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
-	// Wire name: 'roles'
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the group.
-	// Wire name: 'schemas'
 	Schemas []GroupSchema `json:"schemas,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *Group) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &groupPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := groupFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *Group) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st Group) MarshalJSON() ([]byte, error) {
-	pb, err := groupToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s Group) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GroupSchema string
@@ -1251,11 +479,11 @@ func (f *GroupSchema) Type() string {
 // List group details.
 type ListAccountGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string `json:"-" tf:"-"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page. Default is 10000.
-	Count int64 `json:"-" tf:"-"`
+	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" tf:"-"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -1263,50 +491,33 @@ type ListAccountGroupsRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string `json:"-" tf:"-"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
-	SortBy string `json:"-" tf:"-"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListSortOrder `json:"-" tf:"-"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64 `json:"-" tf:"-"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListAccountGroupsRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listAccountGroupsRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listAccountGroupsRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListAccountGroupsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListAccountGroupsRequest) MarshalJSON() ([]byte, error) {
-	pb, err := listAccountGroupsRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListAccountGroupsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List service principals.
 type ListAccountServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string `json:"-" tf:"-"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page. Default is 10000.
-	Count int64 `json:"-" tf:"-"`
+	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" tf:"-"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -1314,50 +525,33 @@ type ListAccountServicePrincipalsRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string `json:"-" tf:"-"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
-	SortBy string `json:"-" tf:"-"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListSortOrder `json:"-" tf:"-"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64 `json:"-" tf:"-"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListAccountServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listAccountServicePrincipalsRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listAccountServicePrincipalsRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListAccountServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListAccountServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
-	pb, err := listAccountServicePrincipalsRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListAccountServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List users.
 type ListAccountUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string `json:"-" tf:"-"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page. Default is 10000.
-	Count int64 `json:"-" tf:"-"`
+	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" tf:"-"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -1365,51 +559,34 @@ type ListAccountUsersRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string `json:"-" tf:"-"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string `json:"-" tf:"-"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListSortOrder `json:"-" tf:"-"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64 `json:"-" tf:"-"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListAccountUsersRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listAccountUsersRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listAccountUsersRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListAccountUsersRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListAccountUsersRequest) MarshalJSON() ([]byte, error) {
-	pb, err := listAccountUsersRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListAccountUsersRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List group details.
 type ListGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string `json:"-" tf:"-"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
-	Count int64 `json:"-" tf:"-"`
+	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" tf:"-"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -1417,86 +594,47 @@ type ListGroupsRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string `json:"-" tf:"-"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
-	SortBy string `json:"-" tf:"-"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListSortOrder `json:"-" tf:"-"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64 `json:"-" tf:"-"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListGroupsRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listGroupsRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listGroupsRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListGroupsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListGroupsRequest) MarshalJSON() ([]byte, error) {
-	pb, err := listGroupsRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListGroupsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListGroupsResponse struct {
 	// Total results returned in the response.
-	// Wire name: 'itemsPerPage'
 	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
 	// User objects returned in the response.
-	// Wire name: 'Resources'
 	Resources []Group `json:"Resources,omitempty"`
 	// The schema of the service principal.
-	// Wire name: 'schemas'
 	Schemas []ListResponseSchema `json:"schemas,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
-	// Wire name: 'startIndex'
 	StartIndex int64 `json:"startIndex,omitempty"`
 	// Total results that match the request filters.
-	// Wire name: 'totalResults'
 	TotalResults int64 `json:"totalResults,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListGroupsResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listGroupsResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listGroupsResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListGroupsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListGroupsResponse) MarshalJSON() ([]byte, error) {
-	pb, err := listGroupsResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListGroupsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListResponseSchema string
@@ -1535,58 +673,36 @@ func (f *ListResponseSchema) Type() string {
 
 type ListServicePrincipalResponse struct {
 	// Total results returned in the response.
-	// Wire name: 'itemsPerPage'
 	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
 	// User objects returned in the response.
-	// Wire name: 'Resources'
 	Resources []ServicePrincipal `json:"Resources,omitempty"`
 	// The schema of the List response.
-	// Wire name: 'schemas'
 	Schemas []ListResponseSchema `json:"schemas,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
-	// Wire name: 'startIndex'
 	StartIndex int64 `json:"startIndex,omitempty"`
 	// Total results that match the request filters.
-	// Wire name: 'totalResults'
 	TotalResults int64 `json:"totalResults,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListServicePrincipalResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listServicePrincipalResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listServicePrincipalResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListServicePrincipalResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListServicePrincipalResponse) MarshalJSON() ([]byte, error) {
-	pb, err := listServicePrincipalResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListServicePrincipalResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List service principals.
 type ListServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string `json:"-" tf:"-"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
-	Count int64 `json:"-" tf:"-"`
+	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" tf:"-"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -1594,40 +710,23 @@ type ListServicePrincipalsRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string `json:"-" tf:"-"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results.
-	SortBy string `json:"-" tf:"-"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListSortOrder `json:"-" tf:"-"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64 `json:"-" tf:"-"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listServicePrincipalsRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listServicePrincipalsRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
-	pb, err := listServicePrincipalsRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListSortOrder string
@@ -1670,11 +769,11 @@ func (f *ListSortOrder) Type() string {
 // List users.
 type ListUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string `json:"-" tf:"-"`
+	Attributes string `json:"-" url:"attributes,omitempty"`
 	// Desired number of results per page.
-	Count int64 `json:"-" tf:"-"`
+	Count int64 `json:"-" url:"count,omitempty"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string `json:"-" tf:"-"`
+	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -1682,432 +781,198 @@ type ListUsersRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string `json:"-" tf:"-"`
+	Filter string `json:"-" url:"filter,omitempty"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string `json:"-" tf:"-"`
+	SortBy string `json:"-" url:"sortBy,omitempty"`
 	// The order to sort the results.
-	SortOrder ListSortOrder `json:"-" tf:"-"`
+	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64 `json:"-" tf:"-"`
+	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListUsersRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listUsersRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listUsersRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListUsersRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListUsersRequest) MarshalJSON() ([]byte, error) {
-	pb, err := listUsersRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListUsersRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListUsersResponse struct {
 	// Total results returned in the response.
-	// Wire name: 'itemsPerPage'
 	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
 	// User objects returned in the response.
-	// Wire name: 'Resources'
 	Resources []User `json:"Resources,omitempty"`
 	// The schema of the List response.
-	// Wire name: 'schemas'
 	Schemas []ListResponseSchema `json:"schemas,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
-	// Wire name: 'startIndex'
 	StartIndex int64 `json:"startIndex,omitempty"`
 	// Total results that match the request filters.
-	// Wire name: 'totalResults'
 	TotalResults int64 `json:"totalResults,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ListUsersResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listUsersResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listUsersResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ListUsersResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ListUsersResponse) MarshalJSON() ([]byte, error) {
-	pb, err := listUsersResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ListUsersResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get permission assignments
 type ListWorkspaceAssignmentRequest struct {
 	// The workspace ID for the account.
-	WorkspaceId int64 `json:"-" tf:"-"`
-}
-
-func (st *ListWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &listWorkspaceAssignmentRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := listWorkspaceAssignmentRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st ListWorkspaceAssignmentRequest) MarshalJSON() ([]byte, error) {
-	pb, err := listWorkspaceAssignmentRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 type MigratePermissionsRequest struct {
 	// The name of the workspace group that permissions will be migrated from.
-	// Wire name: 'from_workspace_group_name'
 	FromWorkspaceGroupName string `json:"from_workspace_group_name"`
 	// The maximum number of permissions that will be migrated.
-	// Wire name: 'size'
 	Size int `json:"size,omitempty"`
 	// The name of the account group that permissions will be migrated to.
-	// Wire name: 'to_account_group_name'
 	ToAccountGroupName string `json:"to_account_group_name"`
 	// WorkspaceId of the associated workspace where the permission migration
 	// will occur.
-	// Wire name: 'workspace_id'
 	WorkspaceId int64 `json:"workspace_id"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *MigratePermissionsRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &migratePermissionsRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := migratePermissionsRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *MigratePermissionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st MigratePermissionsRequest) MarshalJSON() ([]byte, error) {
-	pb, err := migratePermissionsRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s MigratePermissionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type MigratePermissionsResponse struct {
 	// Number of permissions migrated.
-	// Wire name: 'permissions_migrated'
 	PermissionsMigrated int `json:"permissions_migrated,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *MigratePermissionsResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &migratePermissionsResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := migratePermissionsResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *MigratePermissionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st MigratePermissionsResponse) MarshalJSON() ([]byte, error) {
-	pb, err := migratePermissionsResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s MigratePermissionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Name struct {
 	// Family name of the Databricks user.
-	// Wire name: 'familyName'
 	FamilyName string `json:"familyName,omitempty"`
 	// Given name of the Databricks user.
-	// Wire name: 'givenName'
 	GivenName string `json:"givenName,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *Name) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &namePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := nameFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *Name) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st Name) MarshalJSON() ([]byte, error) {
-	pb, err := nameToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s Name) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ObjectPermissions struct {
-
-	// Wire name: 'access_control_list'
 	AccessControlList []AccessControlResponse `json:"access_control_list,omitempty"`
 
-	// Wire name: 'object_id'
 	ObjectId string `json:"object_id,omitempty"`
 
-	// Wire name: 'object_type'
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ObjectPermissions) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &objectPermissionsPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := objectPermissionsFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ObjectPermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ObjectPermissions) MarshalJSON() ([]byte, error) {
-	pb, err := objectPermissionsToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ObjectPermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PartialUpdate struct {
 	// Unique ID in the Databricks workspace.
-	Id string `json:"-" tf:"-"`
+	Id string `json:"-" url:"-"`
 
-	// Wire name: 'Operations'
 	Operations []Patch `json:"Operations,omitempty"`
 	// The schema of the patch request. Must be
 	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
-	// Wire name: 'schemas'
 	Schemas []PatchSchema `json:"schemas,omitempty"`
-}
-
-func (st *PartialUpdate) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &partialUpdatePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := partialUpdateFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st PartialUpdate) MarshalJSON() ([]byte, error) {
-	pb, err := partialUpdateToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 type PasswordAccessControlRequest struct {
 	// name of the group
-	// Wire name: 'group_name'
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
-	// Wire name: 'permission_level'
 	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
-	// Wire name: 'service_principal_name'
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
-	// Wire name: 'user_name'
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *PasswordAccessControlRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &passwordAccessControlRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := passwordAccessControlRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *PasswordAccessControlRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st PasswordAccessControlRequest) MarshalJSON() ([]byte, error) {
-	pb, err := passwordAccessControlRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s PasswordAccessControlRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PasswordAccessControlResponse struct {
 	// All permissions.
-	// Wire name: 'all_permissions'
 	AllPermissions []PasswordPermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
-	// Wire name: 'display_name'
 	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
-	// Wire name: 'group_name'
 	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
-	// Wire name: 'service_principal_name'
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
-	// Wire name: 'user_name'
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *PasswordAccessControlResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &passwordAccessControlResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := passwordAccessControlResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *PasswordAccessControlResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st PasswordAccessControlResponse) MarshalJSON() ([]byte, error) {
-	pb, err := passwordAccessControlResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s PasswordAccessControlResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PasswordPermission struct {
-
-	// Wire name: 'inherited'
 	Inherited bool `json:"inherited,omitempty"`
 
-	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
-	// Wire name: 'permission_level'
 	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *PasswordPermission) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &passwordPermissionPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := passwordPermissionFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *PasswordPermission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st PasswordPermission) MarshalJSON() ([]byte, error) {
-	pb, err := passwordPermissionToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s PasswordPermission) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Permission level
@@ -2146,148 +1011,60 @@ func (f *PasswordPermissionLevel) Type() string {
 }
 
 type PasswordPermissions struct {
-
-	// Wire name: 'access_control_list'
 	AccessControlList []PasswordAccessControlResponse `json:"access_control_list,omitempty"`
 
-	// Wire name: 'object_id'
 	ObjectId string `json:"object_id,omitempty"`
 
-	// Wire name: 'object_type'
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *PasswordPermissions) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &passwordPermissionsPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := passwordPermissionsFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *PasswordPermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st PasswordPermissions) MarshalJSON() ([]byte, error) {
-	pb, err := passwordPermissionsToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s PasswordPermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PasswordPermissionsDescription struct {
-
-	// Wire name: 'description'
 	Description string `json:"description,omitempty"`
 	// Permission level
-	// Wire name: 'permission_level'
 	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *PasswordPermissionsDescription) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &passwordPermissionsDescriptionPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := passwordPermissionsDescriptionFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *PasswordPermissionsDescription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st PasswordPermissionsDescription) MarshalJSON() ([]byte, error) {
-	pb, err := passwordPermissionsDescriptionToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s PasswordPermissionsDescription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PasswordPermissionsRequest struct {
-
-	// Wire name: 'access_control_list'
 	AccessControlList []PasswordAccessControlRequest `json:"access_control_list,omitempty"`
-}
-
-func (st *PasswordPermissionsRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &passwordPermissionsRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := passwordPermissionsRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st PasswordPermissionsRequest) MarshalJSON() ([]byte, error) {
-	pb, err := passwordPermissionsRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 type Patch struct {
 	// Type of patch operation.
-	// Wire name: 'op'
 	Op PatchOp `json:"op,omitempty"`
 	// Selection of patch operation
-	// Wire name: 'path'
 	Path string `json:"path,omitempty"`
 	// Value to modify
-	// Wire name: 'value'
 	Value any `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *Patch) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &patchPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := patchFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *Patch) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st Patch) MarshalJSON() ([]byte, error) {
-	pb, err := patchToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s Patch) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Type of patch operation.
@@ -2334,31 +1111,6 @@ func (f *PatchOp) Type() string {
 type PatchResponse struct {
 }
 
-func (st *PatchResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &patchResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := patchResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st PatchResponse) MarshalJSON() ([]byte, error) {
-	pb, err := patchResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
-}
-
 type PatchSchema string
 
 const PatchSchemaUrnIetfParamsScimApiMessages20PatchOp PatchSchema = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
@@ -2394,114 +1146,47 @@ func (f *PatchSchema) Type() string {
 }
 
 type Permission struct {
-
-	// Wire name: 'inherited'
 	Inherited bool `json:"inherited,omitempty"`
 
-	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
-	// Wire name: 'permission_level'
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *Permission) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &permissionPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := permissionFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *Permission) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st Permission) MarshalJSON() ([]byte, error) {
-	pb, err := permissionToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s Permission) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The output format for existing workspace PermissionAssignment records, which
 // contains some info for user consumption.
 type PermissionAssignment struct {
 	// Error response associated with a workspace permission assignment, if any.
-	// Wire name: 'error'
 	Error string `json:"error,omitempty"`
 	// The permissions level of the principal.
-	// Wire name: 'permissions'
 	Permissions []WorkspacePermission `json:"permissions,omitempty"`
 	// Information about the principal assigned to the workspace.
-	// Wire name: 'principal'
 	Principal *PrincipalOutput `json:"principal,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *PermissionAssignment) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &permissionAssignmentPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := permissionAssignmentFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *PermissionAssignment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st PermissionAssignment) MarshalJSON() ([]byte, error) {
-	pb, err := permissionAssignmentToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s PermissionAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PermissionAssignments struct {
 	// Array of permissions assignments defined for a workspace.
-	// Wire name: 'permission_assignments'
 	PermissionAssignments []PermissionAssignment `json:"permission_assignments,omitempty"`
-}
-
-func (st *PermissionAssignments) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &permissionAssignmentsPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := permissionAssignmentsFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st PermissionAssignments) MarshalJSON() ([]byte, error) {
-	pb, err := permissionAssignmentsToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 // Permission level
@@ -2595,121 +1280,60 @@ func (f *PermissionLevel) Type() string {
 
 type PermissionOutput struct {
 	// The results of a permissions query.
-	// Wire name: 'description'
 	Description string `json:"description,omitempty"`
 
-	// Wire name: 'permission_level'
 	PermissionLevel WorkspacePermission `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *PermissionOutput) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &permissionOutputPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := permissionOutputFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *PermissionOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st PermissionOutput) MarshalJSON() ([]byte, error) {
-	pb, err := permissionOutputToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s PermissionOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type PermissionsDescription struct {
-
-	// Wire name: 'description'
 	Description string `json:"description,omitempty"`
 	// Permission level
-	// Wire name: 'permission_level'
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *PermissionsDescription) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &permissionsDescriptionPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := permissionsDescriptionFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *PermissionsDescription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st PermissionsDescription) MarshalJSON() ([]byte, error) {
-	pb, err := permissionsDescriptionToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s PermissionsDescription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Information about the principal assigned to the workspace.
 type PrincipalOutput struct {
 	// The display name of the principal.
-	// Wire name: 'display_name'
 	DisplayName string `json:"display_name,omitempty"`
 	// The group name of the group. Present only if the principal is a group.
-	// Wire name: 'group_name'
 	GroupName string `json:"group_name,omitempty"`
 	// The unique, opaque id of the principal.
-	// Wire name: 'principal_id'
 	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The name of the service principal. Present only if the principal is a
 	// service principal.
-	// Wire name: 'service_principal_name'
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// The username of the user. Present only if the principal is a user.
-	// Wire name: 'user_name'
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *PrincipalOutput) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &principalOutputPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := principalOutputFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *PrincipalOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st PrincipalOutput) MarshalJSON() ([]byte, error) {
-	pb, err := principalOutputToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s PrincipalOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Defines the identity to be used for authZ of the request on the server side.
@@ -2753,107 +1377,43 @@ func (f *RequestAuthzIdentity) Type() string {
 
 type ResourceInfo struct {
 	// Id of the current resource.
-	// Wire name: 'id'
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// The legacy acl path of the current resource.
-	// Wire name: 'legacy_acl_path'
-	LegacyAclPath string `json:"legacy_acl_path,omitempty"`
+	LegacyAclPath string `json:"legacy_acl_path,omitempty" url:"legacy_acl_path,omitempty"`
 	// Parent resource info for the current resource. The parent may have
 	// another parent.
-	// Wire name: 'parent_resource_info'
-	ParentResourceInfo *ResourceInfo `json:"parent_resource_info,omitempty"`
+	ParentResourceInfo *ResourceInfo `json:"parent_resource_info,omitempty" url:"parent_resource_info,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ResourceInfo) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &resourceInfoPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := resourceInfoFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ResourceInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ResourceInfo) MarshalJSON() ([]byte, error) {
-	pb, err := resourceInfoToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ResourceInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ResourceMeta struct {
 	// Identifier for group type. Can be local workspace group
 	// (`WorkspaceGroup`) or account group (`Group`).
-	// Wire name: 'resourceType'
 	ResourceType string `json:"resourceType,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ResourceMeta) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &resourceMetaPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := resourceMetaFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ResourceMeta) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ResourceMeta) MarshalJSON() ([]byte, error) {
-	pb, err := resourceMetaToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ResourceMeta) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Role struct {
 	// Role to assign to a principal or a list of principals on a resource.
-	// Wire name: 'name'
 	Name string `json:"name"`
-}
-
-func (st *Role) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &rolePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := roleFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st Role) MarshalJSON() ([]byte, error) {
-	pb, err := roleToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 type RuleSetResponse struct {
@@ -2866,39 +1426,11 @@ type RuleSetResponse struct {
 	// race conditions that is get an etag from a GET rule set request, and pass
 	// it with the PUT update request to identify the rule set version you are
 	// updating.
-	// Wire name: 'etag'
 	Etag string `json:"etag"`
 
-	// Wire name: 'grant_rules'
 	GrantRules []GrantRule `json:"grant_rules,omitempty"`
 	// Name of the rule set.
-	// Wire name: 'name'
 	Name string `json:"name"`
-}
-
-func (st *RuleSetResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &ruleSetResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := ruleSetResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st RuleSetResponse) MarshalJSON() ([]byte, error) {
-	pb, err := ruleSetResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 type RuleSetUpdateRequest struct {
@@ -2911,99 +1443,45 @@ type RuleSetUpdateRequest struct {
 	// race conditions that is get an etag from a GET rule set request, and pass
 	// it with the PUT update request to identify the rule set version you are
 	// updating.
-	// Wire name: 'etag'
 	Etag string `json:"etag"`
 
-	// Wire name: 'grant_rules'
 	GrantRules []GrantRule `json:"grant_rules,omitempty"`
 	// Name of the rule set.
-	// Wire name: 'name'
 	Name string `json:"name"`
-}
-
-func (st *RuleSetUpdateRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &ruleSetUpdateRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := ruleSetUpdateRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st RuleSetUpdateRequest) MarshalJSON() ([]byte, error) {
-	pb, err := ruleSetUpdateRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 type ServicePrincipal struct {
 	// If this user is active
-	// Wire name: 'active'
 	Active bool `json:"active,omitempty"`
 	// UUID relating to the service principal
-	// Wire name: 'applicationId'
 	ApplicationId string `json:"applicationId,omitempty"`
 	// String that represents a concatenation of given and family names.
-	// Wire name: 'displayName'
 	DisplayName string `json:"displayName,omitempty"`
 	// Entitlements assigned to the service principal. See [assigning
 	// entitlements] for a full list of supported values.
 	//
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
-	// Wire name: 'entitlements'
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
 
-	// Wire name: 'externalId'
 	ExternalId string `json:"externalId,omitempty"`
 
-	// Wire name: 'groups'
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	// Wire name: 'id'
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 	// Corresponds to AWS instance profile/arn role.
-	// Wire name: 'roles'
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.
-	// Wire name: 'schemas'
 	Schemas []ServicePrincipalSchema `json:"schemas,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *ServicePrincipal) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &servicePrincipalPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := servicePrincipalFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *ServicePrincipal) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st ServicePrincipal) MarshalJSON() ([]byte, error) {
-	pb, err := servicePrincipalToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s ServicePrincipal) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ServicePrincipalSchema string
@@ -3041,143 +1519,37 @@ func (f *ServicePrincipalSchema) Type() string {
 }
 
 type SetObjectPermissions struct {
-
-	// Wire name: 'access_control_list'
 	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
 	// The id of the request object.
-	RequestObjectId string `json:"-" tf:"-"`
+	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
 	// directories, experiments, files, instance-pools, jobs, notebooks,
 	// pipelines, queries, registered-models, repos, serving-endpoints, or
 	// warehouses.
-	RequestObjectType string `json:"-" tf:"-"`
-}
-
-func (st *SetObjectPermissions) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &setObjectPermissionsPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := setObjectPermissionsFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st SetObjectPermissions) MarshalJSON() ([]byte, error) {
-	pb, err := setObjectPermissionsToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	RequestObjectType string `json:"-" url:"-"`
 }
 
 type UpdateObjectPermissions struct {
-
-	// Wire name: 'access_control_list'
 	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
 	// The id of the request object.
-	RequestObjectId string `json:"-" tf:"-"`
+	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
 	// directories, experiments, files, instance-pools, jobs, notebooks,
 	// pipelines, queries, registered-models, repos, serving-endpoints, or
 	// warehouses.
-	RequestObjectType string `json:"-" tf:"-"`
-}
-
-func (st *UpdateObjectPermissions) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &updateObjectPermissionsPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := updateObjectPermissionsFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st UpdateObjectPermissions) MarshalJSON() ([]byte, error) {
-	pb, err := updateObjectPermissionsToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	RequestObjectType string `json:"-" url:"-"`
 }
 
 type UpdateResponse struct {
 }
 
-func (st *UpdateResponse) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &updateResponsePb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := updateResponseFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st UpdateResponse) MarshalJSON() ([]byte, error) {
-	pb, err := updateResponseToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
-}
-
 type UpdateRuleSetRequest struct {
 	// Name of the rule set.
-	// Wire name: 'name'
 	Name string `json:"name"`
 
-	// Wire name: 'rule_set'
 	RuleSet RuleSetUpdateRequest `json:"rule_set"`
-}
-
-func (st *UpdateRuleSetRequest) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &updateRuleSetRequestPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := updateRuleSetRequestFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st UpdateRuleSetRequest) MarshalJSON() ([]byte, error) {
-	pb, err := updateRuleSetRequestToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }
 
 type UpdateWorkspaceAssignments struct {
@@ -3187,42 +1559,15 @@ type UpdateWorkspaceAssignments struct {
 	// that excluding this field, or providing unsupported values, will have the
 	// same effect as providing an empty list, which will result in the deletion
 	// of all permissions for the principal.
-	// Wire name: 'permissions'
 	Permissions []WorkspacePermission `json:"permissions,omitempty"`
 	// The ID of the user, service principal, or group.
-	PrincipalId int64 `json:"-" tf:"-"`
+	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID.
-	WorkspaceId int64 `json:"-" tf:"-"`
-}
-
-func (st *UpdateWorkspaceAssignments) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &updateWorkspaceAssignmentsPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := updateWorkspaceAssignmentsFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st UpdateWorkspaceAssignments) MarshalJSON() ([]byte, error) {
-	pb, err := updateWorkspaceAssignmentsToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 type User struct {
 	// If this user is active
-	// Wire name: 'active'
 	Active bool `json:"active,omitempty"`
 	// String that represents a concatenation of given and family names. For
 	// example `John Smith`. This field cannot be updated through the Workspace
@@ -3230,65 +1575,38 @@ type User struct {
 	// update `displayName`.
 	//
 	// [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
-	// Wire name: 'displayName'
 	DisplayName string `json:"displayName,omitempty"`
 	// All the emails associated with the Databricks user.
-	// Wire name: 'emails'
 	Emails []ComplexValue `json:"emails,omitempty"`
 	// Entitlements assigned to the user. See [assigning entitlements] for a
 	// full list of supported values.
 	//
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
-	// Wire name: 'entitlements'
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
 	// External ID is not currently supported. It is reserved for future use.
-	// Wire name: 'externalId'
 	ExternalId string `json:"externalId,omitempty"`
 
-	// Wire name: 'groups'
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	// Wire name: 'id'
-	Id string `json:"id,omitempty"`
+	Id string `json:"id,omitempty" url:"-"`
 
-	// Wire name: 'name'
 	Name *Name `json:"name,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
-	// Wire name: 'roles'
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the user.
-	// Wire name: 'schemas'
 	Schemas []UserSchema `json:"schemas,omitempty"`
 	// Email address of the Databricks user.
-	// Wire name: 'userName'
 	UserName string `json:"userName,omitempty"`
 
-	ForceSendFields []string `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (st *User) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &userPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := userFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
+func (s *User) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-func (st User) MarshalJSON() ([]byte, error) {
-	pb, err := userToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
+func (s User) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UserSchema string
@@ -3370,31 +1688,5 @@ func (f *WorkspacePermission) Type() string {
 
 type WorkspacePermissions struct {
 	// Array of permissions defined for a workspace.
-	// Wire name: 'permissions'
 	Permissions []PermissionOutput `json:"permissions,omitempty"`
-}
-
-func (st *WorkspacePermissions) UnmarshalJSON(b []byte) error {
-	if st == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	pb := &workspacePermissionsPb{}
-	err := json.Unmarshal(b, pb)
-	if err != nil {
-		return err
-	}
-	tmp, err := workspacePermissionsFromPb(pb)
-	if err != nil {
-		return err
-	}
-	*st = *tmp
-	return nil
-}
-
-func (st WorkspacePermissions) MarshalJSON() ([]byte, error) {
-	pb, err := workspacePermissionsToPb(&st)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(pb)
 }

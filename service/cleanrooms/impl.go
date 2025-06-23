@@ -18,96 +18,34 @@ type cleanRoomAssetsImpl struct {
 }
 
 func (a *cleanRoomAssetsImpl) Create(ctx context.Context, request CreateCleanRoomAssetRequest) (*CleanRoomAsset, error) {
-
-	requestPb, pbErr := createCleanRoomAssetRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var cleanRoomAssetPb cleanRoomAssetPb
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets", requestPb.CleanRoomName)
+	var cleanRoomAsset CleanRoomAsset
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets", request.CleanRoomName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb).Asset,
-		&cleanRoomAssetPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := cleanRoomAssetFromPb(&cleanRoomAssetPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Asset, &cleanRoomAsset)
+	return &cleanRoomAsset, err
 }
 
 func (a *cleanRoomAssetsImpl) Delete(ctx context.Context, request DeleteCleanRoomAssetRequest) error {
-
-	requestPb, pbErr := deleteCleanRoomAssetRequestToPb(&request)
-	if pbErr != nil {
-		return pbErr
-	}
-
-	var deleteCleanRoomAssetResponsePb deleteCleanRoomAssetResponsePb
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", requestPb.CleanRoomName, requestPb.AssetType, requestPb.Name)
+	var deleteCleanRoomAssetResponse DeleteCleanRoomAssetResponse
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", request.CleanRoomName, request.AssetType, request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodDelete,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&deleteCleanRoomAssetResponsePb,
-	)
-	if err != nil {
-		return err
-	}
-
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCleanRoomAssetResponse)
 	return err
 }
 
 func (a *cleanRoomAssetsImpl) Get(ctx context.Context, request GetCleanRoomAssetRequest) (*CleanRoomAsset, error) {
-
-	requestPb, pbErr := getCleanRoomAssetRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var cleanRoomAssetPb cleanRoomAssetPb
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", requestPb.CleanRoomName, requestPb.AssetType, requestPb.Name)
+	var cleanRoomAsset CleanRoomAsset
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", request.CleanRoomName, request.AssetType, request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&cleanRoomAssetPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := cleanRoomAssetFromPb(&cleanRoomAssetPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &cleanRoomAsset)
+	return &cleanRoomAsset, err
 }
 
 // List assets.
@@ -142,68 +80,24 @@ func (a *cleanRoomAssetsImpl) ListAll(ctx context.Context, request ListCleanRoom
 }
 
 func (a *cleanRoomAssetsImpl) internalList(ctx context.Context, request ListCleanRoomAssetsRequest) (*ListCleanRoomAssetsResponse, error) {
-
-	requestPb, pbErr := listCleanRoomAssetsRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var listCleanRoomAssetsResponsePb listCleanRoomAssetsResponsePb
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets", requestPb.CleanRoomName)
+	var listCleanRoomAssetsResponse ListCleanRoomAssetsResponse
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets", request.CleanRoomName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&listCleanRoomAssetsResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := listCleanRoomAssetsResponseFromPb(&listCleanRoomAssetsResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomAssetsResponse)
+	return &listCleanRoomAssetsResponse, err
 }
 
 func (a *cleanRoomAssetsImpl) Update(ctx context.Context, request UpdateCleanRoomAssetRequest) (*CleanRoomAsset, error) {
-
-	requestPb, pbErr := updateCleanRoomAssetRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var cleanRoomAssetPb cleanRoomAssetPb
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", requestPb.CleanRoomName, requestPb.AssetType, requestPb.Name)
+	var cleanRoomAsset CleanRoomAsset
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", request.CleanRoomName, request.AssetType, request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPatch,
-		path,
-		headers,
-		queryParams,
-		(*requestPb).Asset,
-		&cleanRoomAssetPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := cleanRoomAssetFromPb(&cleanRoomAssetPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Asset, &cleanRoomAsset)
+	return &cleanRoomAsset, err
 }
 
 // unexported type that holds implementations of just CleanRoomTaskRuns API methods
@@ -243,35 +137,13 @@ func (a *cleanRoomTaskRunsImpl) ListAll(ctx context.Context, request ListCleanRo
 }
 
 func (a *cleanRoomTaskRunsImpl) internalList(ctx context.Context, request ListCleanRoomNotebookTaskRunsRequest) (*ListCleanRoomNotebookTaskRunsResponse, error) {
-
-	requestPb, pbErr := listCleanRoomNotebookTaskRunsRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var listCleanRoomNotebookTaskRunsResponsePb listCleanRoomNotebookTaskRunsResponsePb
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/runs", requestPb.CleanRoomName)
+	var listCleanRoomNotebookTaskRunsResponse ListCleanRoomNotebookTaskRunsResponse
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/runs", request.CleanRoomName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&listCleanRoomNotebookTaskRunsResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := listCleanRoomNotebookTaskRunsResponseFromPb(&listCleanRoomNotebookTaskRunsResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomNotebookTaskRunsResponse)
+	return &listCleanRoomNotebookTaskRunsResponse, err
 }
 
 // unexported type that holds implementations of just CleanRooms API methods
@@ -280,129 +152,45 @@ type cleanRoomsImpl struct {
 }
 
 func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoomRequest) (*CleanRoom, error) {
-
-	requestPb, pbErr := createCleanRoomRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var cleanRoomPb cleanRoomPb
+	var cleanRoom CleanRoom
 	path := "/api/2.0/clean-rooms"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb).CleanRoom,
-		&cleanRoomPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := cleanRoomFromPb(&cleanRoomPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.CleanRoom, &cleanRoom)
+	return &cleanRoom, err
 }
 
 func (a *cleanRoomsImpl) CreateOutputCatalog(ctx context.Context, request CreateCleanRoomOutputCatalogRequest) (*CreateCleanRoomOutputCatalogResponse, error) {
-
-	requestPb, pbErr := createCleanRoomOutputCatalogRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var createCleanRoomOutputCatalogResponsePb createCleanRoomOutputCatalogResponsePb
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/output-catalogs", requestPb.CleanRoomName)
+	var createCleanRoomOutputCatalogResponse CreateCleanRoomOutputCatalogResponse
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/output-catalogs", request.CleanRoomName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPost,
-		path,
-		headers,
-		queryParams,
-		(*requestPb).OutputCatalog,
-		&createCleanRoomOutputCatalogResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := createCleanRoomOutputCatalogResponseFromPb(&createCleanRoomOutputCatalogResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.OutputCatalog, &createCleanRoomOutputCatalogResponse)
+	return &createCleanRoomOutputCatalogResponse, err
 }
 
 func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequest) error {
-
-	requestPb, pbErr := deleteCleanRoomRequestToPb(&request)
-	if pbErr != nil {
-		return pbErr
-	}
-
-	var deleteResponsePb deleteResponsePb
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", requestPb.Name)
+	var deleteResponse DeleteResponse
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodDelete,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&deleteResponsePb,
-	)
-	if err != nil {
-		return err
-	}
-
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
 	return err
 }
 
 func (a *cleanRoomsImpl) Get(ctx context.Context, request GetCleanRoomRequest) (*CleanRoom, error) {
-
-	requestPb, pbErr := getCleanRoomRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var cleanRoomPb cleanRoomPb
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", requestPb.Name)
+	var cleanRoom CleanRoom
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&cleanRoomPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := cleanRoomFromPb(&cleanRoomPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &cleanRoom)
+	return &cleanRoom, err
 }
 
 // Get a list of all clean rooms of the metastore. Only clean rooms the caller
@@ -439,66 +227,22 @@ func (a *cleanRoomsImpl) ListAll(ctx context.Context, request ListCleanRoomsRequ
 }
 
 func (a *cleanRoomsImpl) internalList(ctx context.Context, request ListCleanRoomsRequest) (*ListCleanRoomsResponse, error) {
-
-	requestPb, pbErr := listCleanRoomsRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var listCleanRoomsResponsePb listCleanRoomsResponsePb
+	var listCleanRoomsResponse ListCleanRoomsResponse
 	path := "/api/2.0/clean-rooms"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodGet,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&listCleanRoomsResponsePb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := listCleanRoomsResponseFromPb(&listCleanRoomsResponsePb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomsResponse)
+	return &listCleanRoomsResponse, err
 }
 
 func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoomRequest) (*CleanRoom, error) {
-
-	requestPb, pbErr := updateCleanRoomRequestToPb(&request)
-	if pbErr != nil {
-		return nil, pbErr
-	}
-
-	var cleanRoomPb cleanRoomPb
-	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", requestPb.Name)
+	var cleanRoom CleanRoom
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(
-		ctx,
-		http.MethodPatch,
-		path,
-		headers,
-		queryParams,
-		(*requestPb),
-		&cleanRoomPb,
-	)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := cleanRoomFromPb(&cleanRoomPb)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &cleanRoom)
+	return &cleanRoom, err
 }
