@@ -22,13 +22,25 @@ type BasicWorkspaceOAuthArgument struct {
 	host string
 }
 
-// NewBasicWorkspaceOAuthArgument creates a new BasicWorkspaceOAuthArgument.
-func NewBasicWorkspaceOAuthArgument(host string) (BasicWorkspaceOAuthArgument, error) {
+func validateHost(host string) error {
+	// Allow http for localhost. This is necessary for local end to end testing
+	// of the `databricks auth login` command using a test server on localhost.
+	if strings.HasPrefix(host, "http://127.0.0.1") {
+		return nil
+	}
 	if !strings.HasPrefix(host, "https://") {
-		return BasicWorkspaceOAuthArgument{}, fmt.Errorf("host must start with 'https://': %s", host)
+		return fmt.Errorf("host must start with 'https://': %s", host)
 	}
 	if strings.HasSuffix(host, "/") {
-		return BasicWorkspaceOAuthArgument{}, fmt.Errorf("host must not have a trailing slash: %s", host)
+		return fmt.Errorf("host must not have a trailing slash: %s", host)
+	}
+	return nil
+}
+
+// NewBasicWorkspaceOAuthArgument creates a new BasicWorkspaceOAuthArgument.
+func NewBasicWorkspaceOAuthArgument(host string) (BasicWorkspaceOAuthArgument, error) {
+	if err := validateHost(host); err != nil {
+		return BasicWorkspaceOAuthArgument{}, err
 	}
 	return BasicWorkspaceOAuthArgument{host: host}, nil
 }
