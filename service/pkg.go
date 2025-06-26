@@ -260,6 +260,8 @@
 //
 // - [settings.AccountSettingsAPI]: Accounts Settings API allows users to manage settings at the account level.
 //
+// - [settingv2.AccountSettingsV2API]: Settings API allows users to manage settings.
+//
 // - [sharing.SharesAPI]: A share is a container instantiated with :method:shares/create.
 //
 // - [settings.SqlResultsDownloadAPI]: Controls whether users within the workspace are allowed to download results from the SQL Editor and AI/BI Dashboards UIs.
@@ -310,6 +312,8 @@
 //
 // - [settings.WorkspaceNetworkConfigurationAPI]: These APIs allow configuration of network settings for Databricks workspaces by selecting which network policy to associate with the workspace.
 //
+// - [settingv2.WorkspaceSettingsV2API]: Settings API allows users to manage settings.
+//
 // - [provisioning.WorkspacesAPI]: These APIs manage workspaces for this account.
 //
 // - [billing.BudgetsAPI]: These APIs manage budget configurations for this account.
@@ -337,6 +341,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/databricks/databricks-sdk-go/service/settingv2"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
@@ -478,6 +483,7 @@ var (
 	_ *serving.ServingEndpointsDataPlaneAPI               = nil
 	_ *settings.SettingsAPI                               = nil
 	_ *settings.AccountSettingsAPI                        = nil
+	_ *settingv2.AccountSettingsV2API                     = nil
 	_ *sharing.SharesAPI                                  = nil
 	_ *settings.SqlResultsDownloadAPI                     = nil
 	_ *sql.StatementExecutionAPI                          = nil
@@ -503,6 +509,7 @@ var (
 	_ *catalog.WorkspaceBindingsAPI                       = nil
 	_ *settings.WorkspaceConfAPI                          = nil
 	_ *settings.WorkspaceNetworkConfigurationAPI          = nil
+	_ *settingv2.WorkspaceSettingsV2API                   = nil
 	_ *provisioning.WorkspacesAPI                         = nil
 	_ *billing.BudgetsAPI                                 = nil
 	_ *ml.ForecastingAPI                                  = nil

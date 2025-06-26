@@ -24,6 +24,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/serving"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settingv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sharing"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sql"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/vectorsearch"
@@ -148,6 +149,7 @@ func NewMockWorkspaceClient(t interface {
 			Workspace:                           workspace.NewMockWorkspaceInterface(t),
 			WorkspaceBindings:                   catalog.NewMockWorkspaceBindingsInterface(t),
 			WorkspaceConf:                       settings.NewMockWorkspaceConfInterface(t),
+			WorkspaceSettingsV2:                 settingv2.NewMockWorkspaceSettingsV2Interface(t),
 			Forecasting:                         ml.NewMockForecastingInterface(t),
 		},
 	}
@@ -1150,6 +1152,14 @@ func (m *MockWorkspaceClient) GetMockWorkspaceConfAPI() *settings.MockWorkspaceC
 	api, ok := m.WorkspaceClient.WorkspaceConf.(*settings.MockWorkspaceConfInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected WorkspaceConf to be *settings.MockWorkspaceConfInterface, actual was %T", m.WorkspaceClient.WorkspaceConf))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockWorkspaceSettingsV2API() *settingv2.MockWorkspaceSettingsV2Interface {
+	api, ok := m.WorkspaceClient.WorkspaceSettingsV2.(*settingv2.MockWorkspaceSettingsV2Interface)
+	if !ok {
+		panic(fmt.Sprintf("expected WorkspaceSettingsV2 to be *settingv2.MockWorkspaceSettingsV2Interface, actual was %T", m.WorkspaceClient.WorkspaceSettingsV2))
 	}
 	return api
 }

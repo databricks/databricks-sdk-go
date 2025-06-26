@@ -25,6 +25,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/databricks/databricks-sdk-go/service/settingv2"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
@@ -1169,6 +1170,9 @@ type WorkspaceClient struct {
 	// This API allows updating known workspace settings for advanced users.
 	WorkspaceConf settings.WorkspaceConfInterface
 
+	// Settings API allows users to manage settings.
+	WorkspaceSettingsV2 settingv2.WorkspaceSettingsV2Interface
+
 	// The Forecasting API allows you to create and get serverless forecasting
 	// experiments
 	Forecasting ml.ForecastingInterface
@@ -1312,6 +1316,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Workspace:                           workspace.NewWorkspace(databricksClient),
 		WorkspaceBindings:                   catalog.NewWorkspaceBindings(databricksClient),
 		WorkspaceConf:                       settings.NewWorkspaceConf(databricksClient),
+		WorkspaceSettingsV2:                 settingv2.NewWorkspaceSettingsV2(databricksClient),
 		Forecasting:                         ml.NewForecasting(databricksClient),
 	}, nil
 }
