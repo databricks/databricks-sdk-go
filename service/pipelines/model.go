@@ -206,7 +206,6 @@ func (f *DayOfWeek) Type() string {
 	return "DayOfWeek"
 }
 
-// Delete a pipeline
 type DeletePipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
@@ -451,7 +450,6 @@ type Filters struct {
 	Include []string `json:"include,omitempty"`
 }
 
-// Get pipeline permission levels
 type GetPipelinePermissionLevelsRequest struct {
 	// The pipeline for which to get or manage permissions.
 	PipelineId string `json:"-" url:"-"`
@@ -462,13 +460,11 @@ type GetPipelinePermissionLevelsResponse struct {
 	PermissionLevels []PipelinePermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get pipeline permissions
 type GetPipelinePermissionsRequest struct {
 	// The pipeline for which to get or manage permissions.
 	PipelineId string `json:"-" url:"-"`
 }
 
-// Get a pipeline
 type GetPipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
@@ -550,7 +546,6 @@ func (f *GetPipelineResponseHealth) Type() string {
 	return "GetPipelineResponseHealth"
 }
 
-// Get a pipeline update
 type GetUpdateRequest struct {
 	// The ID of the pipeline.
 	PipelineId string `json:"-" url:"-"`
@@ -704,7 +699,6 @@ func (f *IngestionSourceType) Type() string {
 	return "IngestionSourceType"
 }
 
-// List pipeline events
 type ListPipelineEventsRequest struct {
 	// Criteria to select a subset of results, expressed using a SQL-like
 	// syntax. The supported filters are: 1. level='INFO' (or WARN or ERROR) 2.
@@ -760,7 +754,6 @@ func (s ListPipelineEventsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List pipelines
 type ListPipelinesRequest struct {
 	// Select a subset of results based on the specified criteria. The supported
 	// filters are:
@@ -812,7 +805,6 @@ func (s ListPipelinesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List pipeline updates
 type ListUpdatesRequest struct {
 	// Max number of entries to return in a single page.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
@@ -1867,7 +1859,6 @@ func (s StartUpdateResponse) MarshalJSON() ([]byte, error) {
 type StopPipelineResponse struct {
 }
 
-// Stop a pipeline
 type StopRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
@@ -1942,6 +1933,8 @@ func (s TableSpecificConfig) MarshalJSON() ([]byte, error) {
 // The SCD type to use to ingest the table.
 type TableSpecificConfigScdType string
 
+const TableSpecificConfigScdTypeAppendOnly TableSpecificConfigScdType = `APPEND_ONLY`
+
 const TableSpecificConfigScdTypeScdType1 TableSpecificConfigScdType = `SCD_TYPE_1`
 
 const TableSpecificConfigScdTypeScdType2 TableSpecificConfigScdType = `SCD_TYPE_2`
@@ -1954,11 +1947,11 @@ func (f *TableSpecificConfigScdType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TableSpecificConfigScdType) Set(v string) error {
 	switch v {
-	case `SCD_TYPE_1`, `SCD_TYPE_2`:
+	case `APPEND_ONLY`, `SCD_TYPE_1`, `SCD_TYPE_2`:
 		*f = TableSpecificConfigScdType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "SCD_TYPE_1", "SCD_TYPE_2"`, v)
+		return fmt.Errorf(`value "%s" is not one of "APPEND_ONLY", "SCD_TYPE_1", "SCD_TYPE_2"`, v)
 	}
 }
 
@@ -1967,6 +1960,7 @@ func (f *TableSpecificConfigScdType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *TableSpecificConfigScdType) Values() []TableSpecificConfigScdType {
 	return []TableSpecificConfigScdType{
+		TableSpecificConfigScdTypeAppendOnly,
 		TableSpecificConfigScdTypeScdType1,
 		TableSpecificConfigScdTypeScdType2,
 	}

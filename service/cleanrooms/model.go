@@ -702,7 +702,6 @@ func (s ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Create an asset
 type CreateCleanRoomAssetRequest struct {
 	// Metadata of the clean room asset
 	Asset CleanRoomAsset `json:"asset"`
@@ -710,7 +709,6 @@ type CreateCleanRoomAssetRequest struct {
 	CleanRoomName string `json:"-" url:"-"`
 }
 
-// Create an output catalog
 type CreateCleanRoomOutputCatalogRequest struct {
 	// Name of the clean room.
 	CleanRoomName string `json:"-" url:"-"`
@@ -722,12 +720,10 @@ type CreateCleanRoomOutputCatalogResponse struct {
 	OutputCatalog *CleanRoomOutputCatalog `json:"output_catalog,omitempty"`
 }
 
-// Create a clean room
 type CreateCleanRoomRequest struct {
 	CleanRoom CleanRoom `json:"clean_room"`
 }
 
-// Delete an asset
 type DeleteCleanRoomAssetRequest struct {
 	// The type of the asset.
 	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
@@ -743,7 +739,6 @@ type DeleteCleanRoomAssetRequest struct {
 type DeleteCleanRoomAssetResponse struct {
 }
 
-// Delete a clean room
 type DeleteCleanRoomRequest struct {
 	// Name of the clean room.
 	Name string `json:"-" url:"-"`
@@ -752,7 +747,6 @@ type DeleteCleanRoomRequest struct {
 type DeleteResponse struct {
 }
 
-// Get an asset
 type GetCleanRoomAssetRequest struct {
 	// The type of the asset.
 	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
@@ -763,12 +757,10 @@ type GetCleanRoomAssetRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// Get a clean room
 type GetCleanRoomRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// List assets
 type ListCleanRoomAssetsRequest struct {
 	// Name of the clean room.
 	CleanRoomName string `json:"-" url:"-"`
@@ -805,7 +797,6 @@ func (s ListCleanRoomAssetsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List notebook task runs
 type ListCleanRoomNotebookTaskRunsRequest struct {
 	// Name of the clean room.
 	CleanRoomName string `json:"-" url:"-"`
@@ -847,7 +838,6 @@ func (s ListCleanRoomNotebookTaskRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List clean rooms
 type ListCleanRoomsRequest struct {
 	// Maximum number of clean rooms to return (i.e., the page length). Defaults
 	// to 100.
@@ -884,7 +874,6 @@ func (s ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Update an asset
 type UpdateCleanRoomAssetRequest struct {
 	// Metadata of the clean room asset
 	Asset CleanRoomAsset `json:"asset"`

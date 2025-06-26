@@ -83,65 +83,6 @@ func (_c *MockDashboardsInterface_Create_Call) RunAndReturn(run func(context.Con
 	return _c
 }
 
-// DashboardNameToIdMap provides a mock function with given fields: ctx, request
-func (_m *MockDashboardsInterface) DashboardNameToIdMap(ctx context.Context, request sql.ListDashboardsRequest) (map[string]string, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for DashboardNameToIdMap")
-	}
-
-	var r0 map[string]string
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListDashboardsRequest) (map[string]string, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListDashboardsRequest) map[string]string); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(map[string]string)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, sql.ListDashboardsRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockDashboardsInterface_DashboardNameToIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DashboardNameToIdMap'
-type MockDashboardsInterface_DashboardNameToIdMap_Call struct {
-	*mock.Call
-}
-
-// DashboardNameToIdMap is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request sql.ListDashboardsRequest
-func (_e *MockDashboardsInterface_Expecter) DashboardNameToIdMap(ctx interface{}, request interface{}) *MockDashboardsInterface_DashboardNameToIdMap_Call {
-	return &MockDashboardsInterface_DashboardNameToIdMap_Call{Call: _e.mock.On("DashboardNameToIdMap", ctx, request)}
-}
-
-func (_c *MockDashboardsInterface_DashboardNameToIdMap_Call) Run(run func(ctx context.Context, request sql.ListDashboardsRequest)) *MockDashboardsInterface_DashboardNameToIdMap_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sql.ListDashboardsRequest))
-	})
-	return _c
-}
-
-func (_c *MockDashboardsInterface_DashboardNameToIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockDashboardsInterface_DashboardNameToIdMap_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockDashboardsInterface_DashboardNameToIdMap_Call) RunAndReturn(run func(context.Context, sql.ListDashboardsRequest) (map[string]string, error)) *MockDashboardsInterface_DashboardNameToIdMap_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Delete provides a mock function with given fields: ctx, request
 func (_m *MockDashboardsInterface) Delete(ctx context.Context, request sql.DeleteDashboardRequest) error {
 	ret := _m.Called(ctx, request)
@@ -350,65 +291,6 @@ func (_c *MockDashboardsInterface_GetByDashboardId_Call) Return(_a0 *sql.Dashboa
 }
 
 func (_c *MockDashboardsInterface_GetByDashboardId_Call) RunAndReturn(run func(context.Context, string) (*sql.Dashboard, error)) *MockDashboardsInterface_GetByDashboardId_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetByName provides a mock function with given fields: ctx, name
-func (_m *MockDashboardsInterface) GetByName(ctx context.Context, name string) (*sql.Dashboard, error) {
-	ret := _m.Called(ctx, name)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetByName")
-	}
-
-	var r0 *sql.Dashboard
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*sql.Dashboard, error)); ok {
-		return rf(ctx, name)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *sql.Dashboard); ok {
-		r0 = rf(ctx, name)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*sql.Dashboard)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, name)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockDashboardsInterface_GetByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByName'
-type MockDashboardsInterface_GetByName_Call struct {
-	*mock.Call
-}
-
-// GetByName is a helper method to define mock.On call
-//   - ctx context.Context
-//   - name string
-func (_e *MockDashboardsInterface_Expecter) GetByName(ctx interface{}, name interface{}) *MockDashboardsInterface_GetByName_Call {
-	return &MockDashboardsInterface_GetByName_Call{Call: _e.mock.On("GetByName", ctx, name)}
-}
-
-func (_c *MockDashboardsInterface_GetByName_Call) Run(run func(ctx context.Context, name string)) *MockDashboardsInterface_GetByName_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockDashboardsInterface_GetByName_Call) Return(_a0 *sql.Dashboard, _a1 error) *MockDashboardsInterface_GetByName_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockDashboardsInterface_GetByName_Call) RunAndReturn(run func(context.Context, string) (*sql.Dashboard, error)) *MockDashboardsInterface_GetByName_Call {
 	_c.Call.Return(run)
 	return _c
 }

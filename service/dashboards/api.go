@@ -33,45 +33,18 @@ type GenieInterface interface {
 	// Deprecated: use [GenieAPIInterface.CreateMessage].Get() or [GenieAPIInterface.WaitGetMessageGenieCompleted]
 	CreateMessageAndWait(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest, options ...retries.Option[GenieMessage]) (*GenieMessage, error)
 
+	// Delete a conversation.
+	DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error
+
+	// Delete a conversation.
+	DeleteConversationBySpaceIdAndConversationId(ctx context.Context, spaceId string, conversationId string) error
+
 	// Execute the SQL for a message query attachment. Use this API when the query
 	// attachment has expired and needs to be re-executed.
 	ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
 	// Execute the SQL query in the message.
 	ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
-
-	// Initiates a new SQL execution and returns a `download_id` that you can use to
-	// track the progress of the download. The query result is stored in an external
-	// link and can be retrieved using the [Get Download Full Query
-	// Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks
-	// strongly recommends that you protect the URLs that are returned by the
-	// `EXTERNAL_LINKS` disposition. See [Execute
-	// Statement](:method:statementexecution/executestatement) for more details.
-	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
-
-	// After [Generating a Full Query Result
-	// Download](:method:genie/getdownloadfullqueryresult) and successfully
-	// receiving a `download_id`, use this API to poll the download progress. When
-	// the download is complete, the API returns one or more external links to the
-	// query result files. Warning: Databricks strongly recommends that you protect
-	// the URLs that are returned by the `EXTERNAL_LINKS` disposition. You must not
-	// set an Authorization header in download requests. When using the
-	// `EXTERNAL_LINKS` disposition, Databricks returns presigned URLs that grant
-	// temporary access to data. See [Execute
-	// Statement](:method:statementexecution/executestatement) for more details.
-	GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error)
-
-	// After [Generating a Full Query Result
-	// Download](:method:genie/getdownloadfullqueryresult) and successfully
-	// receiving a `download_id`, use this API to poll the download progress. When
-	// the download is complete, the API returns one or more external links to the
-	// query result files. Warning: Databricks strongly recommends that you protect
-	// the URLs that are returned by the `EXTERNAL_LINKS` disposition. You must not
-	// set an Authorization header in download requests. When using the
-	// `EXTERNAL_LINKS` disposition, Databricks returns presigned URLs that grant
-	// temporary access to data. See [Execute
-	// Statement](:method:statementexecution/executestatement) for more details.
-	GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string) (*GenieGetDownloadFullQueryResultResponse, error)
 
 	// Get message from conversation.
 	GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error)
@@ -115,6 +88,12 @@ type GenieInterface interface {
 	// Get details of a Genie Space.
 	GetSpaceBySpaceId(ctx context.Context, spaceId string) (*GenieSpace, error)
 
+	// Get a list of conversations in a Genie Space.
+	ListConversations(ctx context.Context, request GenieListConversationsRequest) (*GenieListConversationsResponse, error)
+
+	// Get a list of conversations in a Genie Space.
+	ListConversationsBySpaceId(ctx context.Context, spaceId string) (*GenieListConversationsResponse, error)
+
 	// Get list of Genie Spaces.
 	ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error)
 
@@ -128,6 +107,12 @@ type GenieInterface interface {
 	//
 	// Deprecated: use [GenieAPIInterface.StartConversation].Get() or [GenieAPIInterface.WaitGetMessageGenieCompleted]
 	StartConversationAndWait(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest, options ...retries.Option[GenieMessage]) (*GenieMessage, error)
+
+	// Trash a Genie Space.
+	TrashSpace(ctx context.Context, request GenieTrashSpaceRequest) error
+
+	// Trash a Genie Space.
+	TrashSpaceBySpaceId(ctx context.Context, spaceId string) error
 }
 
 func NewGenie(client *client.DatabricksClient) *GenieAPI {
@@ -253,23 +238,11 @@ func (a *GenieAPI) CreateMessageAndWait(ctx context.Context, genieCreateConversa
 	return wait.Get()
 }
 
-// After [Generating a Full Query Result
-// Download](:method:genie/getdownloadfullqueryresult) and successfully
-// receiving a `download_id`, use this API to poll the download progress. When
-// the download is complete, the API returns one or more external links to the
-// query result files. Warning: Databricks strongly recommends that you protect
-// the URLs that are returned by the `EXTERNAL_LINKS` disposition. You must not
-// set an Authorization header in download requests. When using the
-// `EXTERNAL_LINKS` disposition, Databricks returns presigned URLs that grant
-// temporary access to data. See [Execute
-// Statement](:method:statementexecution/executestatement) for more details.
-func (a *GenieAPI) GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string) (*GenieGetDownloadFullQueryResultResponse, error) {
-	return a.genieImpl.GetDownloadFullQueryResult(ctx, GenieGetDownloadFullQueryResultRequest{
+// Delete a conversation.
+func (a *GenieAPI) DeleteConversationBySpaceIdAndConversationId(ctx context.Context, spaceId string, conversationId string) error {
+	return a.genieImpl.DeleteConversation(ctx, GenieDeleteConversationRequest{
 		SpaceId:        spaceId,
 		ConversationId: conversationId,
-		MessageId:      messageId,
-		AttachmentId:   attachmentId,
-		DownloadId:     downloadId,
 	})
 }
 
@@ -324,6 +297,13 @@ func (a *GenieAPI) GetSpaceBySpaceId(ctx context.Context, spaceId string) (*Geni
 	})
 }
 
+// Get a list of conversations in a Genie Space.
+func (a *GenieAPI) ListConversationsBySpaceId(ctx context.Context, spaceId string) (*GenieListConversationsResponse, error) {
+	return a.genieImpl.ListConversations(ctx, GenieListConversationsRequest{
+		SpaceId: spaceId,
+	})
+}
+
 // Start a new conversation.
 func (a *GenieAPI) StartConversation(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieStartConversationResponse], error) {
 	genieStartConversationResponse, err := a.genieImpl.StartConversation(ctx, genieStartConversationMessageRequest)
@@ -368,6 +348,13 @@ func (a *GenieAPI) StartConversationAndWait(ctx context.Context, genieStartConve
 		}
 	}
 	return wait.Get()
+}
+
+// Trash a Genie Space.
+func (a *GenieAPI) TrashSpaceBySpaceId(ctx context.Context, spaceId string) error {
+	return a.genieImpl.TrashSpace(ctx, GenieTrashSpaceRequest{
+		SpaceId: spaceId,
+	})
 }
 
 type LakeviewInterface interface {

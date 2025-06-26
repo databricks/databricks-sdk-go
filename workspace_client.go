@@ -491,6 +491,10 @@ type WorkspaceClient struct {
 	// of the uninstalled library appears as Uninstall pending restart.
 	Libraries compute.LibrariesInterface
 
+	// Materialized Features are columns in tables and views that can be
+	// directly used as features to train and serve ML models.
+	MaterializedFeatures ml.MaterializedFeaturesInterface
+
 	// A metastore is the top-level container of objects in Unity Catalog. It
 	// stores data assets (tables and views) and the permissions that govern
 	// access to them. Databricks account admins can create metastores and
@@ -1251,6 +1255,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Lakeview:                            dashboards.NewLakeview(databricksClient),
 		LakeviewEmbedded:                    dashboards.NewLakeviewEmbedded(databricksClient),
 		Libraries:                           compute.NewLibraries(databricksClient),
+		MaterializedFeatures:                ml.NewMaterializedFeatures(databricksClient),
 		Metastores:                          catalog.NewMetastores(databricksClient),
 		ModelRegistry:                       ml.NewModelRegistry(databricksClient),
 		ModelVersions:                       catalog.NewModelVersions(databricksClient),

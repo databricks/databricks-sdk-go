@@ -91,6 +91,7 @@ func NewMockWorkspaceClient(t interface {
 			Lakeview:                            dashboards.NewMockLakeviewInterface(t),
 			LakeviewEmbedded:                    dashboards.NewMockLakeviewEmbeddedInterface(t),
 			Libraries:                           compute.NewMockLibrariesInterface(t),
+			MaterializedFeatures:                ml.NewMockMaterializedFeaturesInterface(t),
 			Metastores:                          catalog.NewMockMetastoresInterface(t),
 			ModelRegistry:                       ml.NewMockModelRegistryInterface(t),
 			ModelVersions:                       catalog.NewMockModelVersionsInterface(t),
@@ -693,6 +694,14 @@ func (m *MockWorkspaceClient) GetMockLibrariesAPI() *compute.MockLibrariesInterf
 	api, ok := m.WorkspaceClient.Libraries.(*compute.MockLibrariesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Libraries to be *compute.MockLibrariesInterface, actual was %T", m.WorkspaceClient.Libraries))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockMaterializedFeaturesAPI() *ml.MockMaterializedFeaturesInterface {
+	api, ok := m.WorkspaceClient.MaterializedFeatures.(*ml.MockMaterializedFeaturesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected MaterializedFeatures to be *ml.MockMaterializedFeaturesInterface, actual was %T", m.WorkspaceClient.MaterializedFeatures))
 	}
 	return api
 }

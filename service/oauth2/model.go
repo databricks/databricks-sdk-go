@@ -6,7 +6,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// Create account federation policy
 type CreateAccountFederationPolicyRequest struct {
 	Policy FederationPolicy `json:"policy"`
 	// The identifier for the federation policy. The identifier must contain
@@ -107,7 +106,6 @@ func (s CreatePublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Create service principal federation policy
 type CreateServicePrincipalFederationPolicyRequest struct {
 	Policy FederationPolicy `json:"policy"`
 	// The identifier for the federation policy. The identifier must contain
@@ -174,7 +172,6 @@ func (s CreateServicePrincipalSecretResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete account federation policy
 type DeleteAccountFederationPolicyRequest struct {
 	// The identifier for the federation policy.
 	PolicyId string `json:"-" url:"-"`
@@ -183,7 +180,6 @@ type DeleteAccountFederationPolicyRequest struct {
 type DeleteCustomAppIntegrationOutput struct {
 }
 
-// Delete Custom OAuth App Integration
 type DeleteCustomAppIntegrationRequest struct {
 	IntegrationId string `json:"-" url:"-"`
 }
@@ -191,7 +187,6 @@ type DeleteCustomAppIntegrationRequest struct {
 type DeletePublishedAppIntegrationOutput struct {
 }
 
-// Delete Published OAuth App Integration
 type DeletePublishedAppIntegrationRequest struct {
 	IntegrationId string `json:"-" url:"-"`
 }
@@ -199,7 +194,6 @@ type DeletePublishedAppIntegrationRequest struct {
 type DeleteResponse struct {
 }
 
-// Delete service principal federation policy
 type DeleteServicePrincipalFederationPolicyRequest struct {
 	// The identifier for the federation policy.
 	PolicyId string `json:"-" url:"-"`
@@ -207,7 +201,6 @@ type DeleteServicePrincipalFederationPolicyRequest struct {
 	ServicePrincipalId int64 `json:"-" url:"-"`
 }
 
-// Delete service principal secret
 type DeleteServicePrincipalSecretRequest struct {
 	// The secret ID.
 	SecretId string `json:"-" url:"-"`
@@ -252,7 +245,6 @@ func (s FederationPolicy) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get account federation policy
 type GetAccountFederationPolicyRequest struct {
 	// The identifier for the federation policy.
 	PolicyId string `json:"-" url:"-"`
@@ -296,7 +288,6 @@ func (s GetCustomAppIntegrationOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get OAuth Custom App Integration
 type GetCustomAppIntegrationRequest struct {
 	// The OAuth app integration ID.
 	IntegrationId string `json:"-" url:"-"`
@@ -344,7 +335,6 @@ func (s GetPublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get OAuth Published App Integration
 type GetPublishedAppIntegrationRequest struct {
 	IntegrationId string `json:"-" url:"-"`
 }
@@ -384,7 +374,6 @@ func (s GetPublishedAppsOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get service principal federation policy
 type GetServicePrincipalFederationPolicyRequest struct {
 	// The identifier for the federation policy.
 	PolicyId string `json:"-" url:"-"`
@@ -392,7 +381,6 @@ type GetServicePrincipalFederationPolicyRequest struct {
 	ServicePrincipalId int64 `json:"-" url:"-"`
 }
 
-// List account federation policies
 type ListAccountFederationPoliciesRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -409,7 +397,6 @@ func (s ListAccountFederationPoliciesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get custom oauth app integrations
 type ListCustomAppIntegrationsRequest struct {
 	IncludeCreatorUsername bool `json:"-" url:"include_creator_username,omitempty"`
 
@@ -444,7 +431,6 @@ func (s ListFederationPoliciesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get all the published OAuth apps
 type ListOAuthPublishedAppsRequest struct {
 	// The max number of OAuth published apps to return in one page.
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -462,7 +448,6 @@ func (s ListOAuthPublishedAppsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get published oauth app integrations
 type ListPublishedAppIntegrationsRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -479,7 +464,6 @@ func (s ListPublishedAppIntegrationsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List service principal federation policies
 type ListServicePrincipalFederationPoliciesRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -498,7 +482,6 @@ func (s ListServicePrincipalFederationPoliciesRequest) MarshalJSON() ([]byte, er
 	return marshal.Marshal(s)
 }
 
-// List service principal secrets
 type ListServicePrincipalSecretsRequest struct {
 	// An opaque page token which was the `next_page_token` in the response of
 	// the previous request to list the secrets for this service principal.
@@ -659,7 +642,6 @@ func (s TokenAccessPolicy) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Update account federation policy
 type UpdateAccountFederationPolicyRequest struct {
 	Policy FederationPolicy `json:"policy"`
 	// The identifier for the federation policy.
@@ -712,7 +694,6 @@ type UpdatePublishedAppIntegration struct {
 type UpdatePublishedAppIntegrationOutput struct {
 }
 
-// Update service principal federation policy
 type UpdateServicePrincipalFederationPolicyRequest struct {
 	Policy FederationPolicy `json:"policy"`
 	// The identifier for the federation policy.

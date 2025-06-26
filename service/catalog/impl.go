@@ -1741,8 +1741,6 @@ func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableIn
 // guarantee of a specific ordering of the elements in the array.
 func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) listing.Iterator[TableInfo] {
 
-	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
-
 	getNextPage := func(ctx context.Context, req ListTablesRequest) (*ListTablesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
@@ -1798,8 +1796,6 @@ func (a *tablesImpl) internalList(ctx context.Context, request ListTablesRequest
 //
 // There is no guarantee of a specific ordering of the elements in the array.
 func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesRequest) listing.Iterator[TableSummary] {
-
-	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
 
 	getNextPage := func(ctx context.Context, req ListSummariesRequest) (*ListTableSummariesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")

@@ -39,6 +39,17 @@ func (a *databaseImpl) CreateDatabaseInstance(ctx context.Context, request Creat
 	return &databaseInstance, err
 }
 
+func (a *databaseImpl) CreateDatabaseInstanceRole(ctx context.Context, request CreateDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error) {
+	var databaseInstanceRole DatabaseInstanceRole
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles", request.InstanceName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.DatabaseInstanceRole, &databaseInstanceRole)
+	return &databaseInstanceRole, err
+}
+
 func (a *databaseImpl) CreateDatabaseTable(ctx context.Context, request CreateDatabaseTableRequest) (*DatabaseTable, error) {
 	var databaseTable DatabaseTable
 	path := "/api/2.0/database/tables"
@@ -78,6 +89,16 @@ func (a *databaseImpl) DeleteDatabaseInstance(ctx context.Context, request Delet
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDatabaseInstanceResponse)
+	return err
+}
+
+func (a *databaseImpl) DeleteDatabaseInstanceRole(ctx context.Context, request DeleteDatabaseInstanceRoleRequest) error {
+	var deleteDatabaseInstanceRoleResponse DeleteDatabaseInstanceRoleResponse
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles/%v", request.InstanceName, request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDatabaseInstanceRoleResponse)
 	return err
 }
 
@@ -142,6 +163,16 @@ func (a *databaseImpl) GetDatabaseInstance(ctx context.Context, request GetDatab
 	return &databaseInstance, err
 }
 
+func (a *databaseImpl) GetDatabaseInstanceRole(ctx context.Context, request GetDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error) {
+	var databaseInstanceRole DatabaseInstanceRole
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles/%v", request.InstanceName, request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseInstanceRole)
+	return &databaseInstanceRole, err
+}
+
 func (a *databaseImpl) GetDatabaseTable(ctx context.Context, request GetDatabaseTableRequest) (*DatabaseTable, error) {
 	var databaseTable DatabaseTable
 	path := fmt.Sprintf("/api/2.0/database/tables/%v", request.Name)
@@ -160,6 +191,47 @@ func (a *databaseImpl) GetSyncedDatabaseTable(ctx context.Context, request GetSy
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &syncedDatabaseTable)
 	return &syncedDatabaseTable, err
+}
+
+// START OF PG ROLE APIs Section
+func (a *databaseImpl) ListDatabaseInstanceRoles(ctx context.Context, request ListDatabaseInstanceRolesRequest) listing.Iterator[DatabaseInstanceRole] {
+
+	getNextPage := func(ctx context.Context, req ListDatabaseInstanceRolesRequest) (*ListDatabaseInstanceRolesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListDatabaseInstanceRoles(ctx, req)
+	}
+	getItems := func(resp *ListDatabaseInstanceRolesResponse) []DatabaseInstanceRole {
+		return resp.DatabaseInstanceRoles
+	}
+	getNextReq := func(resp *ListDatabaseInstanceRolesResponse) *ListDatabaseInstanceRolesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// START OF PG ROLE APIs Section
+func (a *databaseImpl) ListDatabaseInstanceRolesAll(ctx context.Context, request ListDatabaseInstanceRolesRequest) ([]DatabaseInstanceRole, error) {
+	iterator := a.ListDatabaseInstanceRoles(ctx, request)
+	return listing.ToSlice[DatabaseInstanceRole](ctx, iterator)
+}
+
+func (a *databaseImpl) internalListDatabaseInstanceRoles(ctx context.Context, request ListDatabaseInstanceRolesRequest) (*ListDatabaseInstanceRolesResponse, error) {
+	var listDatabaseInstanceRolesResponse ListDatabaseInstanceRolesResponse
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles", request.InstanceName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDatabaseInstanceRolesResponse)
+	return &listDatabaseInstanceRolesResponse, err
 }
 
 // List Database Instances.

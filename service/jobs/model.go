@@ -1205,7 +1205,6 @@ type ExportRunOutput struct {
 	Views []ViewItem `json:"views,omitempty"`
 }
 
-// Export and retrieve a job run
 type ExportRunRequest struct {
 	// The canonical identifier for the run. This field is required.
 	RunId int64 `json:"-" url:"run_id"`
@@ -1410,7 +1409,6 @@ func (s GenAiComputeTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get job permission levels
 type GetJobPermissionLevelsRequest struct {
 	// The job for which to get or manage permissions.
 	JobId string `json:"-" url:"-"`
@@ -1421,13 +1419,11 @@ type GetJobPermissionLevelsResponse struct {
 	PermissionLevels []JobPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get job permissions
 type GetJobPermissionsRequest struct {
 	// The job for which to get or manage permissions.
 	JobId string `json:"-" url:"-"`
 }
 
-// Get a single job
 type GetJobRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
@@ -1447,7 +1443,6 @@ func (s GetJobRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get job policy compliance
 type GetPolicyComplianceRequest struct {
 	// The ID of the job whose compliance status you are requesting.
 	JobId int64 `json:"-" url:"job_id"`
@@ -1477,13 +1472,11 @@ func (s GetPolicyComplianceResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the output for a single run
 type GetRunOutputRequest struct {
 	// The canonical identifier for the run.
 	RunId int64 `json:"-" url:"run_id"`
 }
 
-// Get a single job run
 type GetRunRequest struct {
 	// Whether to include the repair history in the response.
 	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
@@ -2423,7 +2416,6 @@ func (s ListJobComplianceForPolicyResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List job policy compliance
 type ListJobComplianceRequest struct {
 	// Use this field to specify the maximum number of results to be returned by
 	// the server. The server may further constrain the maximum number of
@@ -2446,7 +2438,6 @@ func (s ListJobComplianceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List jobs
 type ListJobsRequest struct {
 	// Whether to include task and cluster details in the response. Note that
 	// only the first 100 elements will be shown. Use :method:jobs/get to
@@ -2501,7 +2492,6 @@ func (s ListJobsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List job runs
 type ListRunsRequest struct {
 	// If active_only is `true`, only active runs are included in the results;
 	// otherwise, lists both active and completed runs. An active run is a run

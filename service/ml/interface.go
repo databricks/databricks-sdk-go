@@ -295,6 +295,31 @@ type ForecastingService interface {
 	GetExperiment(ctx context.Context, request GetForecastingExperimentRequest) (*ForecastingExperiment, error)
 }
 
+// Materialized Features are columns in tables and views that can be directly
+// used as features to train and serve ML models.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type MaterializedFeaturesService interface {
+
+	// Creates a FeatureTag.
+	CreateFeatureTag(ctx context.Context, request CreateFeatureTagRequest) (*FeatureTag, error)
+
+	// Deletes a FeatureTag.
+	DeleteFeatureTag(ctx context.Context, request DeleteFeatureTagRequest) error
+
+	// Get Feature Lineage.
+	GetFeatureLineage(ctx context.Context, request GetFeatureLineageRequest) (*FeatureLineage, error)
+
+	// Gets a FeatureTag.
+	GetFeatureTag(ctx context.Context, request GetFeatureTagRequest) (*FeatureTag, error)
+
+	// Lists FeatureTags.
+	ListFeatureTags(ctx context.Context, request ListFeatureTagsRequest) (*ListFeatureTagsResponse, error)
+
+	// Updates a FeatureTag.
+	UpdateFeatureTag(ctx context.Context, request UpdateFeatureTagRequest) (*FeatureTag, error)
+}
+
 // Note: This API reference documents APIs for the Workspace Model Registry.
 // Databricks recommends using [Models in Unity
 // Catalog](/api/workspace/registeredmodels) instead. Models in Unity Catalog

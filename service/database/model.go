@@ -8,25 +8,28 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// Create a Database Catalog
 type CreateDatabaseCatalogRequest struct {
 	Catalog DatabaseCatalog `json:"catalog"`
 }
 
-// Create a Database Instance
 type CreateDatabaseInstanceRequest struct {
 	// A DatabaseInstance represents a logical Postgres instance, comprised of
 	// both compute and storage.
 	DatabaseInstance DatabaseInstance `json:"database_instance"`
 }
 
-// Create a Database Table
+type CreateDatabaseInstanceRoleRequest struct {
+	// A DatabaseInstanceRole represents a Postgres role in a database instance.
+	DatabaseInstanceRole DatabaseInstanceRole `json:"database_instance_role"`
+
+	InstanceName string `json:"-" url:"-"`
+}
+
 type CreateDatabaseTableRequest struct {
 	// Next field marker: 13
 	Table DatabaseTable `json:"table"`
 }
 
-// Create a Synced Database Table
 type CreateSyncedDatabaseTableRequest struct {
 	// Next field marker: 12
 	SyncedTable SyncedDatabaseTable `json:"synced_table"`
@@ -75,22 +78,63 @@ func (s DatabaseCredential) MarshalJSON() ([]byte, error) {
 type DatabaseInstance struct {
 	// The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4", "CU_8".
 	Capacity string `json:"capacity,omitempty"`
+	// The refs of the child instances. This is only available if the instance
+	// is parent instance.
+	ChildInstanceRefs []DatabaseInstanceRef `json:"child_instance_refs,omitempty"`
 	// The timestamp when the instance was created.
 	CreationTime string `json:"creation_time,omitempty"`
 	// The email of the creator of the instance.
 	Creator string `json:"creator,omitempty"`
+	// xref AIP-129. `enable_readable_secondaries` is owned by the client, while
+	// `effective_enable_readable_secondaries` is owned by the server.
+	// `enable_readable_secondaries` will only be set in Create/Update response
+	// messages if and only if the user provides the field via the request.
+	// `effective_enable_readable_secondaries` on the other hand will always bet
+	// set in all response messages (Create/Update/Get/List).
+	EffectiveEnableReadableSecondaries bool `json:"effective_enable_readable_secondaries,omitempty"`
+	// xref AIP-129. `node_count` is owned by the client, while
+	// `effective_node_count` is owned by the server. `node_count` will only be
+	// set in Create/Update response messages if and only if the user provides
+	// the field via the request. `effective_node_count` on the other hand will
+	// always bet set in all response messages (Create/Update/Get/List).
+	EffectiveNodeCount int `json:"effective_node_count,omitempty"`
+	// xref AIP-129. `retention_window_in_days` is owned by the client, while
+	// `effective_retention_window_in_days` is owned by the server.
+	// `retention_window_in_days` will only be set in Create/Update response
+	// messages if and only if the user provides the field via the request.
+	// `effective_retention_window_in_days` on the other hand will always bet
+	// set in all response messages (Create/Update/Get/List).
+	EffectiveRetentionWindowInDays int `json:"effective_retention_window_in_days,omitempty"`
 	// xref AIP-129. `stopped` is owned by the client, while `effective_stopped`
 	// is owned by the server. `stopped` will only be set in Create/Update
 	// response messages if and only if the user provides the field via the
 	// request. `effective_stopped` on the other hand will always bet set in all
 	// response messages (Create/Update/Get/List).
 	EffectiveStopped bool `json:"effective_stopped,omitempty"`
+	// Whether to enable secondaries to serve read-only traffic. Defaults to
+	// false.
+	EnableReadableSecondaries bool `json:"enable_readable_secondaries,omitempty"`
 	// The name of the instance. This is the unique identifier for the instance.
 	Name string `json:"name"`
+	// The number of nodes in the instance, composed of 1 primary and 0 or more
+	// secondaries. Defaults to 1 primary and 0 secondaries.
+	NodeCount int `json:"node_count,omitempty"`
+	// The ref of the parent instance. This is only available if the instance is
+	// child instance. Input: For specifying the parent instance to create a
+	// child instance. Optional. Output: Only populated if provided as input to
+	// create a child instance.
+	ParentInstanceRef *DatabaseInstanceRef `json:"parent_instance_ref,omitempty"`
 	// The version of Postgres running on the instance.
 	PgVersion string `json:"pg_version,omitempty"`
+	// The DNS endpoint to connect to the instance for read only access. This is
+	// only available if enable_readable_secondaries is true.
+	ReadOnlyDns string `json:"read_only_dns,omitempty"`
 	// The DNS endpoint to connect to the instance for read+write access.
 	ReadWriteDns string `json:"read_write_dns,omitempty"`
+	// The retention window for the instance. This is the time window in days
+	// for which the historical data is retained. The default value is 7 days.
+	// Valid values are 2 to 35 days.
+	RetentionWindowInDays int `json:"retention_window_in_days,omitempty"`
 	// The current state of the instance.
 	State DatabaseInstanceState `json:"state,omitempty"`
 	// Whether the instance is stopped.
@@ -107,6 +151,177 @@ func (s *DatabaseInstance) UnmarshalJSON(b []byte) error {
 
 func (s DatabaseInstance) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// DatabaseInstanceRef is a reference to a database instance. It is used in the
+// DatabaseInstance object to refer to the parent instance of an instance and to
+// refer the child instances of an instance. To specify as a parent instance
+// during creation of an instance, the lsn and branch_time fields are optional.
+// If not specified, the child instance will be created from the latest lsn of
+// the parent. If both lsn and branch_time are specified, the lsn will be used
+// to create the child instance.
+type DatabaseInstanceRef struct {
+	// Branch time of the ref database instance. For a parent ref instance, this
+	// is the point in time on the parent instance from which the instance was
+	// created. For a child ref instance, this is the point in time on the
+	// instance from which the child instance was created. Input: For specifying
+	// the point in time to create a child instance. Optional. Output: Only
+	// populated if provided as input to create a child instance.
+	BranchTime string `json:"branch_time,omitempty"`
+	// xref AIP-129. `lsn` is owned by the client, while `effective_lsn` is
+	// owned by the server. `lsn` will only be set in Create/Update response
+	// messages if and only if the user provides the field via the request.
+	// `effective_lsn` on the other hand will always bet set in all response
+	// messages (Create/Update/Get/List). For a parent ref instance, this is the
+	// LSN on the parent instance from which the instance was created. For a
+	// child ref instance, this is the LSN on the instance from which the child
+	// instance was created.
+	EffectiveLsn string `json:"effective_lsn,omitempty"`
+	// User-specified WAL LSN of the ref database instance.
+	//
+	// Input: For specifying the WAL LSN to create a child instance. Optional.
+	// Output: Only populated if provided as input to create a child instance.
+	Lsn string `json:"lsn,omitempty"`
+	// Name of the ref database instance.
+	Name string `json:"name,omitempty"`
+	// Id of the ref database instance.
+	Uid string `json:"uid,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseInstanceRef) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseInstanceRef) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A DatabaseInstanceRole represents a Postgres role in a database instance.
+type DatabaseInstanceRole struct {
+	// API-exposed Postgres role attributes
+	Attributes *DatabaseInstanceRoleAttributes `json:"attributes,omitempty"`
+	// The type of the role.
+	IdentityType DatabaseInstanceRoleIdentityType `json:"identity_type,omitempty"`
+	// An enum value for a standard role that this role is a member of.
+	MembershipRole DatabaseInstanceRoleMembershipRole `json:"membership_role,omitempty"`
+	// The name of the role. This is the unique identifier for the role in an
+	// instance.
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseInstanceRole) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseInstanceRole) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Attributes that can be granted to a Postgres role. We are only implementing a
+// subset for now, see xref:
+// https://www.postgresql.org/docs/16/sql-createrole.html The values follow
+// Postgres keyword naming e.g. CREATEDB, BYPASSRLS, etc. which is why they
+// don't include typical underscores between words. We were requested to make
+// this a nested object/struct representation since these are knobs from an
+// external spec.
+type DatabaseInstanceRoleAttributes struct {
+	Bypassrls bool `json:"bypassrls,omitempty"`
+
+	Createdb bool `json:"createdb,omitempty"`
+
+	Createrole bool `json:"createrole,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseInstanceRoleAttributes) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseInstanceRoleAttributes) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DatabaseInstanceRoleIdentityType string
+
+const DatabaseInstanceRoleIdentityTypeGroup DatabaseInstanceRoleIdentityType = `GROUP`
+
+const DatabaseInstanceRoleIdentityTypePgOnly DatabaseInstanceRoleIdentityType = `PG_ONLY`
+
+const DatabaseInstanceRoleIdentityTypeServicePrincipal DatabaseInstanceRoleIdentityType = `SERVICE_PRINCIPAL`
+
+const DatabaseInstanceRoleIdentityTypeUser DatabaseInstanceRoleIdentityType = `USER`
+
+// String representation for [fmt.Print]
+func (f *DatabaseInstanceRoleIdentityType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DatabaseInstanceRoleIdentityType) Set(v string) error {
+	switch v {
+	case `GROUP`, `PG_ONLY`, `SERVICE_PRINCIPAL`, `USER`:
+		*f = DatabaseInstanceRoleIdentityType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GROUP", "PG_ONLY", "SERVICE_PRINCIPAL", "USER"`, v)
+	}
+}
+
+// Values returns all possible values for DatabaseInstanceRoleIdentityType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DatabaseInstanceRoleIdentityType) Values() []DatabaseInstanceRoleIdentityType {
+	return []DatabaseInstanceRoleIdentityType{
+		DatabaseInstanceRoleIdentityTypeGroup,
+		DatabaseInstanceRoleIdentityTypePgOnly,
+		DatabaseInstanceRoleIdentityTypeServicePrincipal,
+		DatabaseInstanceRoleIdentityTypeUser,
+	}
+}
+
+// Type always returns DatabaseInstanceRoleIdentityType to satisfy [pflag.Value] interface
+func (f *DatabaseInstanceRoleIdentityType) Type() string {
+	return "DatabaseInstanceRoleIdentityType"
+}
+
+// Roles that the DatabaseInstanceRole can be a member of.
+type DatabaseInstanceRoleMembershipRole string
+
+const DatabaseInstanceRoleMembershipRoleDatabricksSuperuser DatabaseInstanceRoleMembershipRole = `DATABRICKS_SUPERUSER`
+
+// String representation for [fmt.Print]
+func (f *DatabaseInstanceRoleMembershipRole) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DatabaseInstanceRoleMembershipRole) Set(v string) error {
+	switch v {
+	case `DATABRICKS_SUPERUSER`:
+		*f = DatabaseInstanceRoleMembershipRole(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DATABRICKS_SUPERUSER"`, v)
+	}
+}
+
+// Values returns all possible values for DatabaseInstanceRoleMembershipRole.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DatabaseInstanceRoleMembershipRole) Values() []DatabaseInstanceRoleMembershipRole {
+	return []DatabaseInstanceRoleMembershipRole{
+		DatabaseInstanceRoleMembershipRoleDatabricksSuperuser,
+	}
+}
+
+// Type always returns DatabaseInstanceRoleMembershipRole to satisfy [pflag.Value] interface
+func (f *DatabaseInstanceRoleMembershipRole) Type() string {
+	return "DatabaseInstanceRoleMembershipRole"
 }
 
 type DatabaseInstanceState string
@@ -168,7 +383,6 @@ type DatabaseTable struct {
 	// rejected).
 	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
 	// Target Postgres database object (logical database) name for this table.
-	// This field is optional in all scenarios.
 	//
 	// When creating a table in a registered Postgres catalog, the target
 	// Postgres database name is inferred to be that of the registered catalog.
@@ -176,11 +390,9 @@ type DatabaseTable struct {
 	// MUST match that of the registered catalog (or the request will be
 	// rejected).
 	//
-	// When creating a table in a standard catalog, the target database name is
-	// inferred to be that of the standard catalog. In this scenario, specifying
-	// this field will allow targeting an arbitrary postgres database. Note that
-	// this has implications for the `create_database_objects_is_missing` field
-	// in `spec`.
+	// When creating a table in a standard catalog, this field is required. In
+	// this scenario, specifying this field will allow targeting an arbitrary
+	// postgres database.
 	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"name"`
@@ -196,7 +408,6 @@ func (s DatabaseTable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a Database Catalog
 type DeleteDatabaseCatalogRequest struct {
 	Name string `json:"-" url:"-"`
 }
@@ -204,7 +415,6 @@ type DeleteDatabaseCatalogRequest struct {
 type DeleteDatabaseCatalogResponse struct {
 }
 
-// Delete a Database Instance
 type DeleteDatabaseInstanceRequest struct {
 	// By default, a instance cannot be deleted if it has descendant instances
 	// created via PITR. If this flag is specified as true, all descendent
@@ -236,7 +446,31 @@ func (s DeleteDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
 type DeleteDatabaseInstanceResponse struct {
 }
 
-// Delete a Database Table
+type DeleteDatabaseInstanceRoleRequest struct {
+	// This is the AIP standard name for the equivalent of Postgres' `IF EXISTS`
+	// option
+	AllowMissing bool `json:"-" url:"allow_missing,omitempty"`
+
+	InstanceName string `json:"-" url:"-"`
+
+	Name string `json:"-" url:"-"`
+
+	ReassignOwnedTo string `json:"-" url:"reassign_owned_to,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteDatabaseInstanceRoleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DeleteDatabaseInstanceRoleResponse struct {
+}
+
 type DeleteDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
 }
@@ -244,7 +478,6 @@ type DeleteDatabaseTableRequest struct {
 type DeleteDatabaseTableResponse struct {
 }
 
-// Delete a Synced Database Table
 type DeleteSyncedDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
 }
@@ -252,7 +485,25 @@ type DeleteSyncedDatabaseTableRequest struct {
 type DeleteSyncedDatabaseTableResponse struct {
 }
 
-// Find a Database Instance by uid
+type DeltaTableSyncInfo struct {
+	// The timestamp when the above Delta version was committed in the source
+	// Delta table. Note: This is the Delta commit time, not the time the data
+	// was written to the synced table.
+	DeltaCommitTimestamp string `json:"delta_commit_timestamp,omitempty"`
+	// The Delta Lake commit version that was last successfully synced.
+	DeltaCommitVersion int64 `json:"delta_commit_version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeltaTableSyncInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeltaTableSyncInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type FindDatabaseInstanceByUidRequest struct {
 	// UID of the cluster to get.
 	Uid string `json:"-" url:"uid,omitempty"`
@@ -286,28 +537,65 @@ func (s GenerateDatabaseCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a Database Catalog
 type GetDatabaseCatalogRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// Get a Database Instance
 type GetDatabaseInstanceRequest struct {
 	// Name of the cluster to get.
 	Name string `json:"-" url:"-"`
 }
 
-// Get a Database Table
+type GetDatabaseInstanceRoleRequest struct {
+	InstanceName string `json:"-" url:"-"`
+
+	Name string `json:"-" url:"-"`
+}
+
 type GetDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// Get a Synced Database Table
 type GetSyncedDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// List Database Instances
+type ListDatabaseInstanceRolesRequest struct {
+	InstanceName string `json:"-" url:"-"`
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of Database Instances. Requests
+	// first page if absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseInstanceRolesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseInstanceRolesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDatabaseInstanceRolesResponse struct {
+	// List of database instance roles.
+	DatabaseInstanceRoles []DatabaseInstanceRole `json:"database_instance_roles,omitempty"`
+	// Pagination token to request the next page of instances.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseInstanceRolesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseInstanceRolesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListDatabaseInstancesRequest struct {
 	// Upper bound for items returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -428,7 +716,6 @@ type SyncedDatabaseTable struct {
 	// the request will be rejected).
 	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
 	// Target Postgres database object (logical database) name for this table.
-	// This field is optional in all scenarios.
 	//
 	// When creating a synced table in a registered Postgres catalog, the target
 	// Postgres database name is inferred to be that of the registered catalog.
@@ -436,10 +723,10 @@ type SyncedDatabaseTable struct {
 	// MUST match that of the registered catalog (or the request will be
 	// rejected).
 	//
-	// When creating a synced table in a standard catalog, the target database
-	// name is inferred to be that of the standard catalog. In this scenario,
-	// specifying this field will allow targeting an arbitrary postgres
-	// database.
+	// When creating a synced table in a standard catalog, this field is
+	// required. In this scenario, specifying this field will allow targeting an
+	// arbitrary postgres database. Note that this has implications for the
+	// `create_database_objects_is_missing` field in `spec`.
 	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"name"`
@@ -467,12 +754,12 @@ func (s SyncedDatabaseTable) MarshalJSON() ([]byte, error) {
 type SyncedTableContinuousUpdateStatus struct {
 	// Progress of the initial data synchronization.
 	InitialPipelineSyncProgress *SyncedTablePipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
-	// The last source table Delta version that was synced to the synced table.
-	// Note that this Delta version may not be completely synced to the synced
-	// table yet.
+	// The last source table Delta version that was successfully synced to the
+	// synced table.
 	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
-	// The timestamp of the last time any data was synchronized from the source
-	// table to the synced table.
+	// The end timestamp of the last time any data was synchronized from the
+	// source table to the synced table. This is when the data is available in
+	// the synced table.
 	Timestamp string `json:"timestamp,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -489,14 +776,14 @@ func (s SyncedTableContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
 // Detailed status of a synced table. Shown if the synced table is in the
 // OFFLINE_FAILED or the SYNCED_PIPELINE_FAILED state.
 type SyncedTableFailedStatus struct {
-	// The last source table Delta version that was synced to the synced table.
-	// Note that this Delta version may only be partially synced to the synced
-	// table. Only populated if the table is still synced and available for
-	// serving.
+	// The last source table Delta version that was successfully synced to the
+	// synced table. The last source table Delta version that was synced to the
+	// synced table. Only populated if the table is still synced and available
+	// for serving.
 	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
-	// The timestamp of the last time any data was synchronized from the source
-	// table to the synced table. Only populated if the table is still synced
-	// and available for serving.
+	// The end timestamp of the last time any data was synchronized from the
+	// source table to the synced table. Only populated if the table is still
+	// synced and available for serving.
 	Timestamp string `json:"timestamp,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -533,6 +820,28 @@ func (s *SyncedTablePipelineProgress) UnmarshalJSON(b []byte) error {
 }
 
 func (s SyncedTablePipelineProgress) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SyncedTablePosition struct {
+	DeltaTableSyncInfo *DeltaTableSyncInfo `json:"delta_table_sync_info,omitempty"`
+	// The end timestamp of the most recent successful synchronization. This is
+	// the time when the data is available in the synced table.
+	SyncEndTimestamp string `json:"sync_end_timestamp,omitempty"`
+	// The starting timestamp of the most recent successful synchronization from
+	// the source table to the destination (synced) table. Note this is the
+	// starting timestamp of the sync operation, not the end time. E.g., for a
+	// batch, this is the time when the sync operation started.
+	SyncStartTimestamp string `json:"sync_start_timestamp,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SyncedTablePosition) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SyncedTablePosition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -695,6 +1004,20 @@ type SyncedTableStatus struct {
 	// Detailed status of a synced table. Shown if the synced table is in the
 	// OFFLINE_FAILED or the SYNCED_PIPELINE_FAILED state.
 	FailedStatus *SyncedTableFailedStatus `json:"failed_status,omitempty"`
+	// Summary of the last successful synchronization from source to
+	// destination.
+	//
+	// Will always be present if there has been a successful sync. Even if the
+	// most recent syncs have failed.
+	//
+	// Limitation: The only exception is if the synced table is doing a FULL
+	// REFRESH, then the last sync information will not be available until the
+	// full refresh is complete. This limitation will be addressed in a future
+	// version.
+	//
+	// This top-level field is a convenience for consumers who want easy access
+	// to last sync information without having to traverse detailed_status.
+	LastSync *SyncedTablePosition `json:"last_sync,omitempty"`
 	// A text description of the current state of the synced table.
 	Message string `json:"message,omitempty"`
 	// ID of the associated pipeline. The pipeline ID may have been provided by
@@ -723,12 +1046,12 @@ func (s SyncedTableStatus) MarshalJSON() ([]byte, error) {
 // Detailed status of a synced table. Shown if the synced table is in the
 // SYNCED_TRIGGERED_UPDATE or the SYNCED_NO_PENDING_UPDATE state.
 type SyncedTableTriggeredUpdateStatus struct {
-	// The last source table Delta version that was synced to the synced table.
-	// Note that this Delta version may not be completely synced to the synced
-	// table yet.
+	// The last source table Delta version that was successfully synced to the
+	// synced table.
 	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
-	// The timestamp of the last time any data was synchronized from the source
-	// table to the synced table.
+	// The end timestamp of the last time any data was synchronized from the
+	// source table to the synced table. This is when the data is available in
+	// the synced table.
 	Timestamp string `json:"timestamp,omitempty"`
 	// Progress of the active data synchronization pipeline.
 	TriggeredUpdateProgress *SyncedTablePipelineProgress `json:"triggered_update_progress,omitempty"`
@@ -744,7 +1067,6 @@ func (s SyncedTableTriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Update a Database Instance
 type UpdateDatabaseInstanceRequest struct {
 	// A DatabaseInstance represents a logical Postgres instance, comprised of
 	// both compute and storage.

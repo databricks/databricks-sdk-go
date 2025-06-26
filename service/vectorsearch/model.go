@@ -138,7 +138,6 @@ func (f *DeleteDataStatus) Type() string {
 	return "DeleteDataStatus"
 }
 
-// Delete data from index
 type DeleteDataVectorIndexRequest struct {
 	// Name of the vector index where data is to be deleted. Must be a Direct
 	// Vector Access Index.
@@ -154,7 +153,6 @@ type DeleteDataVectorIndexResponse struct {
 	Status DeleteDataStatus `json:"status,omitempty"`
 }
 
-// Delete an endpoint
 type DeleteEndpointRequest struct {
 	// Name of the vector search endpoint
 	EndpointName string `json:"-" url:"-"`
@@ -163,7 +161,6 @@ type DeleteEndpointRequest struct {
 type DeleteEndpointResponse struct {
 }
 
-// Delete an index
 type DeleteIndexRequest struct {
 	// Name of the index
 	IndexName string `json:"-" url:"-"`
@@ -425,13 +422,11 @@ func (f *EndpointType) Type() string {
 	return "EndpointType"
 }
 
-// Get an endpoint
 type GetEndpointRequest struct {
 	// Name of the endpoint
 	EndpointName string `json:"-" url:"-"`
 }
 
-// Get an index
 type GetIndexRequest struct {
 	// Name of the index
 	IndexName string `json:"-" url:"-"`
@@ -455,7 +450,6 @@ func (s ListEndpointResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List all endpoints
 type ListEndpointsRequest struct {
 	// Token for pagination
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -471,7 +465,6 @@ func (s ListEndpointsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List indexes
 type ListIndexesRequest struct {
 	// Name of the endpoint
 	EndpointName string `json:"-" url:"endpoint_name"`
@@ -789,7 +782,6 @@ type Struct struct {
 	Fields []MapStringValueEntry `json:"fields,omitempty"`
 }
 
-// Synchronize an index
 type SyncIndexRequest struct {
 	// Name of the vector index to synchronize. Must be a Delta Sync Index.
 	IndexName string `json:"-" url:"-"`
