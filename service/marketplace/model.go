@@ -70,7 +70,6 @@ func (f *AssetType) Type() string {
 	return "AssetType"
 }
 
-// Get one batch of listings. One may specify up to 50 IDs per request.
 type BatchGetListingsRequest struct {
 	Ids []string `json:"-" url:"ids,omitempty"`
 }
@@ -79,7 +78,6 @@ type BatchGetListingsResponse struct {
 	Listings []Listing `json:"listings,omitempty"`
 }
 
-// Get one batch of providers. One may specify up to 50 IDs per request.
 type BatchGetProvidersRequest struct {
 	Ids []string `json:"-" url:"ids,omitempty"`
 }
@@ -489,7 +487,6 @@ type DataRefreshInfo struct {
 	Unit DataRefresh `json:"unit"`
 }
 
-// Delete an exchange filter
 type DeleteExchangeFilterRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -497,7 +494,6 @@ type DeleteExchangeFilterRequest struct {
 type DeleteExchangeFilterResponse struct {
 }
 
-// Delete an exchange
 type DeleteExchangeRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -505,7 +501,6 @@ type DeleteExchangeRequest struct {
 type DeleteExchangeResponse struct {
 }
 
-// Delete a file
 type DeleteFileRequest struct {
 	FileId string `json:"-" url:"-"`
 }
@@ -513,7 +508,6 @@ type DeleteFileRequest struct {
 type DeleteFileResponse struct {
 }
 
-// Uninstall from a listing
 type DeleteInstallationRequest struct {
 	InstallationId string `json:"-" url:"-"`
 
@@ -523,7 +517,6 @@ type DeleteInstallationRequest struct {
 type DeleteInstallationResponse struct {
 }
 
-// Delete a listing
 type DeleteListingRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -531,7 +524,6 @@ type DeleteListingRequest struct {
 type DeleteListingResponse struct {
 }
 
-// Delete provider
 type DeleteProviderRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -865,7 +857,6 @@ func (f *FulfillmentType) Type() string {
 	return "FulfillmentType"
 }
 
-// Get an exchange
 type GetExchangeRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -874,7 +865,6 @@ type GetExchangeResponse struct {
 	Exchange *Exchange `json:"exchange,omitempty"`
 }
 
-// Get a file
 type GetFileRequest struct {
 	FileId string `json:"-" url:"-"`
 }
@@ -898,7 +888,6 @@ func (s GetLatestVersionProviderAnalyticsDashboardResponse) MarshalJSON() ([]byt
 	return marshal.Marshal(s)
 }
 
-// Get listing content metadata
 type GetListingContentMetadataRequest struct {
 	ListingId string `json:"-" url:"-"`
 
@@ -933,7 +922,6 @@ func (s GetListingContentMetadataResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get listing
 type GetListingRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -942,7 +930,6 @@ type GetListingResponse struct {
 	Listing *Listing `json:"listing,omitempty"`
 }
 
-// List listings
 type GetListingsRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -975,7 +962,6 @@ func (s GetListingsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the personalization request for a listing
 type GetPersonalizationRequestRequest struct {
 	ListingId string `json:"-" url:"-"`
 }
@@ -984,7 +970,6 @@ type GetPersonalizationRequestResponse struct {
 	PersonalizationRequests []PersonalizationRequest `json:"personalization_requests,omitempty"`
 }
 
-// Get a provider
 type GetProviderRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -1072,7 +1057,6 @@ func (f *InstallationStatus) Type() string {
 	return "InstallationStatus"
 }
 
-// List all installations
 type ListAllInstallationsRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -1105,7 +1089,6 @@ func (s ListAllInstallationsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List all personalization requests
 type ListAllPersonalizationRequestsRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -1138,7 +1121,6 @@ func (s ListAllPersonalizationRequestsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List exchange filters
 type ListExchangeFiltersRequest struct {
 	ExchangeId string `json:"-" url:"exchange_id"`
 
@@ -1173,7 +1155,6 @@ func (s ListExchangeFiltersResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List exchanges for listing
 type ListExchangesForListingRequest struct {
 	ListingId string `json:"-" url:"listing_id"`
 
@@ -1208,7 +1189,6 @@ func (s ListExchangesForListingResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List exchanges
 type ListExchangesRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -1241,7 +1221,6 @@ func (s ListExchangesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List files
 type ListFilesRequest struct {
 	FileParent FileParent `json:"-" url:"file_parent"`
 
@@ -1276,7 +1255,6 @@ func (s ListFilesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List all listing fulfillments
 type ListFulfillmentsRequest struct {
 	ListingId string `json:"-" url:"-"`
 
@@ -1311,7 +1289,6 @@ func (s ListFulfillmentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List installations for a listing
 type ListInstallationsRequest struct {
 	ListingId string `json:"-" url:"-"`
 
@@ -1346,7 +1323,6 @@ func (s ListInstallationsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List listings for exchange
 type ListListingsForExchangeRequest struct {
 	ExchangeId string `json:"-" url:"exchange_id"`
 
@@ -1381,7 +1357,6 @@ func (s ListListingsForExchangeResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List listings
 type ListListingsRequest struct {
 	// Matches any of the following asset types
 	Assets []AssetType `json:"-" url:"assets,omitempty"`
@@ -1448,7 +1423,6 @@ func (s ListProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List providers
 type ListProvidersRequest struct {
 	IsFeatured bool `json:"-" url:"is_featured,omitempty"`
 
@@ -1980,7 +1954,6 @@ func (s RegionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Remove an exchange for listing
 type RemoveExchangeForListingRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -2002,7 +1975,6 @@ type RepoInstallation struct {
 	RepoPath string `json:"repo_path"`
 }
 
-// Search listings
 type SearchListingsRequest struct {
 	// Matches any of the following asset types
 	Assets []AssetType `json:"-" url:"assets,omitempty"`

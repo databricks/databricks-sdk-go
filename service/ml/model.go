@@ -355,6 +355,14 @@ func (s CreateExperimentResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateFeatureTagRequest struct {
+	FeatureName string `json:"-" url:"-"`
+	// Represents a tag on a feature in a feature table.
+	FeatureTag FeatureTag `json:"feature_tag"`
+
+	TableName string `json:"-" url:"-"`
+}
+
 type CreateForecastingExperimentRequest struct {
 	// The column in the training table used to customize weights for each time
 	// series.
@@ -528,7 +536,6 @@ type CreateModelVersionResponse struct {
 	ModelVersion *ModelVersion `json:"model_version,omitempty"`
 }
 
-// Create an Online Feature Store
 type CreateOnlineStoreRequest struct {
 	// An OnlineStore is a logical database instance that stores and serves
 	// features online.
@@ -713,7 +720,6 @@ type DatasetInput struct {
 	Tags []InputTag `json:"tags,omitempty"`
 }
 
-// Delete a comment
 type DeleteCommentRequest struct {
 	// Unique identifier of an activity
 	Id string `json:"-" url:"id"`
@@ -730,7 +736,18 @@ type DeleteExperiment struct {
 type DeleteExperimentResponse struct {
 }
 
-// Delete a logged model
+type DeleteFeatureTagRequest struct {
+	// The name of the feature within the feature table.
+	FeatureName string `json:"-" url:"-"`
+	// The key of the tag to delete.
+	Key string `json:"-" url:"-"`
+	// The name of the feature table.
+	TableName string `json:"-" url:"-"`
+}
+
+type DeleteFeatureTagResponse struct {
+}
+
 type DeleteLoggedModelRequest struct {
 	// The ID of the logged model to delete.
 	ModelId string `json:"-" url:"-"`
@@ -739,7 +756,6 @@ type DeleteLoggedModelRequest struct {
 type DeleteLoggedModelResponse struct {
 }
 
-// Delete a tag on a logged model
 type DeleteLoggedModelTagRequest struct {
 	// The ID of the logged model to delete the tag from.
 	ModelId string `json:"-" url:"-"`
@@ -750,7 +766,6 @@ type DeleteLoggedModelTagRequest struct {
 type DeleteLoggedModelTagResponse struct {
 }
 
-// Delete a model
 type DeleteModelRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"-" url:"name"`
@@ -759,7 +774,6 @@ type DeleteModelRequest struct {
 type DeleteModelResponse struct {
 }
 
-// Delete a model tag
 type DeleteModelTagRequest struct {
 	// Name of the tag. The name must be an exact match; wild-card deletion is
 	// not supported. Maximum size is 250 bytes.
@@ -771,7 +785,6 @@ type DeleteModelTagRequest struct {
 type DeleteModelTagResponse struct {
 }
 
-// Delete a model version.
 type DeleteModelVersionRequest struct {
 	// Name of the registered model
 	Name string `json:"-" url:"name"`
@@ -782,7 +795,6 @@ type DeleteModelVersionRequest struct {
 type DeleteModelVersionResponse struct {
 }
 
-// Delete a model version tag
 type DeleteModelVersionTagRequest struct {
 	// Name of the tag. The name must be an exact match; wild-card deletion is
 	// not supported. Maximum size is 250 bytes.
@@ -796,7 +808,6 @@ type DeleteModelVersionTagRequest struct {
 type DeleteModelVersionTagResponse struct {
 }
 
-// Delete an Online Feature Store
 type DeleteOnlineStoreRequest struct {
 	// Name of the online store to delete.
 	Name string `json:"-" url:"-"`
@@ -860,7 +871,6 @@ type DeleteTag struct {
 type DeleteTagResponse struct {
 }
 
-// Delete a transition request
 type DeleteTransitionRequestRequest struct {
 	// User-provided comment on the action.
 	Comment string `json:"-" url:"comment,omitempty"`
@@ -940,7 +950,6 @@ func (f *DeleteTransitionRequestStage) Type() string {
 	return "DeleteTransitionRequestStage"
 }
 
-// Delete a webhook
 type DeleteWebhookRequest struct {
 	// Webhook ID required to delete a registry webhook.
 	Id string `json:"-" url:"id,omitempty"`
@@ -1149,6 +1158,81 @@ func (s ExperimentTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type FeatureLineage struct {
+	// List of feature specs that contain this feature.
+	FeatureSpecs []FeatureLineageFeatureSpec `json:"feature_specs,omitempty"`
+	// List of Unity Catalog models that were trained on this feature.
+	Models []FeatureLineageModel `json:"models,omitempty"`
+	// List of online features that use this feature as source.
+	OnlineFeatures []FeatureLineageOnlineFeature `json:"online_features,omitempty"`
+}
+
+type FeatureLineageFeatureSpec struct {
+	// The full name of the feature spec in Unity Catalog.
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FeatureLineageFeatureSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FeatureLineageFeatureSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type FeatureLineageModel struct {
+	// The full name of the model in Unity Catalog.
+	Name string `json:"name,omitempty"`
+	// The version of the model.
+	Version int64 `json:"version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FeatureLineageModel) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FeatureLineageModel) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type FeatureLineageOnlineFeature struct {
+	// The name of the online feature (column name).
+	FeatureName string `json:"feature_name,omitempty"`
+	// The full name of the online table in Unity Catalog.
+	TableName string `json:"table_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FeatureLineageOnlineFeature) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FeatureLineageOnlineFeature) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Represents a tag on a feature in a feature table.
+type FeatureTag struct {
+	Key string `json:"key,omitempty"`
+
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FeatureTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FeatureTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Metadata of a single artifact file or directory.
 type FileInfo struct {
 	// The size in bytes of the file. Unset for directories.
@@ -1250,7 +1334,6 @@ func (f *ForecastingExperimentState) Type() string {
 	return "ForecastingExperimentState"
 }
 
-// Get an experiment by name
 type GetByNameRequest struct {
 	// Name of the associated experiment.
 	ExperimentName string `json:"-" url:"experiment_name"`
@@ -1261,7 +1344,6 @@ type GetExperimentByNameResponse struct {
 	Experiment *Experiment `json:"experiment,omitempty"`
 }
 
-// Get experiment permission levels
 type GetExperimentPermissionLevelsRequest struct {
 	// The experiment for which to get or manage permissions.
 	ExperimentId string `json:"-" url:"-"`
@@ -1272,13 +1354,11 @@ type GetExperimentPermissionLevelsResponse struct {
 	PermissionLevels []ExperimentPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get experiment permissions
 type GetExperimentPermissionsRequest struct {
 	// The experiment for which to get or manage permissions.
 	ExperimentId string `json:"-" url:"-"`
 }
 
-// Get an experiment
 type GetExperimentRequest struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"-" url:"experiment_id"`
@@ -1289,13 +1369,26 @@ type GetExperimentResponse struct {
 	Experiment *Experiment `json:"experiment,omitempty"`
 }
 
-// Get a forecasting experiment
+type GetFeatureLineageRequest struct {
+	// The name of the feature.
+	FeatureName string `json:"-" url:"-"`
+	// The full name of the feature table in Unity Catalog.
+	TableName string `json:"-" url:"-"`
+}
+
+type GetFeatureTagRequest struct {
+	FeatureName string `json:"-" url:"-"`
+
+	Key string `json:"-" url:"-"`
+
+	TableName string `json:"-" url:"-"`
+}
+
 type GetForecastingExperimentRequest struct {
 	// The unique ID of a forecasting experiment
 	ExperimentId string `json:"-" url:"-"`
 }
 
-// Get metric history for a run
 type GetHistoryRequest struct {
 	// Maximum number of Metric records to return per paginated request. Default
 	// is set to 25,000. If set higher than 25,000, a request Exception will be
@@ -1336,7 +1429,6 @@ type GetLatestVersionsResponse struct {
 	ModelVersions []ModelVersion `json:"model_versions,omitempty"`
 }
 
-// Get a logged model
 type GetLoggedModelRequest struct {
 	// The ID of the logged model to retrieve.
 	ModelId string `json:"-" url:"-"`
@@ -1345,6 +1437,16 @@ type GetLoggedModelRequest struct {
 type GetLoggedModelResponse struct {
 	// The retrieved logged model.
 	Model *LoggedModel `json:"model,omitempty"`
+}
+
+type GetLoggedModelsRequest struct {
+	// The IDs of the logged models to retrieve. Max threshold is 100.
+	ModelIds []string `json:"-" url:"model_ids,omitempty"`
+}
+
+type GetLoggedModelsRequestResponse struct {
+	// The retrieved logged models.
+	Models []LoggedModel `json:"models,omitempty"`
 }
 
 type GetMetricHistoryResponse struct {
@@ -1369,7 +1471,6 @@ func (s GetMetricHistoryResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get model
 type GetModelRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"-" url:"name"`
@@ -1379,7 +1480,6 @@ type GetModelResponse struct {
 	RegisteredModelDatabricks *ModelDatabricks `json:"registered_model_databricks,omitempty"`
 }
 
-// Get a model version URI
 type GetModelVersionDownloadUriRequest struct {
 	// Name of the registered model
 	Name string `json:"-" url:"name"`
@@ -1402,7 +1502,6 @@ func (s GetModelVersionDownloadUriResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a model version
 type GetModelVersionRequest struct {
 	// Name of the registered model
 	Name string `json:"-" url:"name"`
@@ -1414,13 +1513,11 @@ type GetModelVersionResponse struct {
 	ModelVersion *ModelVersion `json:"model_version,omitempty"`
 }
 
-// Get an Online Feature Store
 type GetOnlineStoreRequest struct {
 	// Name of the online store to get.
 	Name string `json:"-" url:"-"`
 }
 
-// Get registered model permission levels
 type GetRegisteredModelPermissionLevelsRequest struct {
 	// The registered model for which to get or manage permissions.
 	RegisteredModelId string `json:"-" url:"-"`
@@ -1431,13 +1528,11 @@ type GetRegisteredModelPermissionLevelsResponse struct {
 	PermissionLevels []RegisteredModelPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get registered model permissions
 type GetRegisteredModelPermissionsRequest struct {
 	// The registered model for which to get or manage permissions.
 	RegisteredModelId string `json:"-" url:"-"`
 }
 
-// Get a run
 type GetRunRequest struct {
 	// ID of the run to fetch. Must be provided.
 	RunId string `json:"-" url:"run_id"`
@@ -1565,7 +1660,6 @@ func (s JobSpecWithoutSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List artifacts
 type ListArtifactsRequest struct {
 	// The token indicating the page of artifact results to fetch. `page_token`
 	// is not supported when listing artifacts in UC Volumes. A maximum of 1000
@@ -1613,7 +1707,6 @@ func (s ListArtifactsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List experiments
 type ListExperimentsRequest struct {
 	// Maximum number of experiments desired. If `max_results` is unspecified,
 	// return all experiments. If `max_results` is too large, it'll be
@@ -1657,7 +1750,43 @@ func (s ListExperimentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List models
+type ListFeatureTagsRequest struct {
+	FeatureName string `json:"-" url:"-"`
+	// The maximum number of results to return.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page based on a previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	TableName string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListFeatureTagsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListFeatureTagsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response message for ListFeatureTag.
+type ListFeatureTagsResponse struct {
+	FeatureTags []FeatureTag `json:"feature_tags,omitempty"`
+	// Pagination token to request the next page of results for this query.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListFeatureTagsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListFeatureTagsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListModelsRequest struct {
 	// Maximum number of registered models desired. Max threshold is 1000.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
@@ -1692,7 +1821,6 @@ func (s ListModelsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List Online Feature Stores
 type ListOnlineStoresRequest struct {
 	// The maximum number of results to return. Defaults to 100 if not
 	// specified.
@@ -1745,7 +1873,6 @@ func (s ListRegistryWebhooks) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List transition requests
 type ListTransitionRequestsRequest struct {
 	// Name of the model.
 	Name string `json:"-" url:"name"`
@@ -1758,7 +1885,6 @@ type ListTransitionRequestsResponse struct {
 	Requests []Activity `json:"requests,omitempty"`
 }
 
-// List registry webhooks
 type ListWebhooksRequest struct {
 	// If `events` is specified, any webhook with one or more of the specified
 	// trigger events is included in the output. If `events` is not specified,
@@ -3291,7 +3417,6 @@ func (s SearchLoggedModelsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Searches model versions
 type SearchModelVersionsRequest struct {
 	// String filter condition, like "name='my-model-name'". Must be a single
 	// boolean condition, with string values wrapped in single quotes.
@@ -3335,7 +3460,6 @@ func (s SearchModelVersionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Search models
 type SearchModelsRequest struct {
 	// String filter condition, like "name LIKE 'my-model-name'". Interpreted in
 	// the backend automatically as "name LIKE '%my-model-name%'". Single
@@ -3763,6 +3887,28 @@ func (s UpdateExperiment) MarshalJSON() ([]byte, error) {
 type UpdateExperimentResponse struct {
 }
 
+type UpdateFeatureTagRequest struct {
+	FeatureName string `json:"-" url:"-"`
+	// Represents a tag on a feature in a feature table.
+	FeatureTag FeatureTag `json:"feature_tag"`
+
+	Key string `json:"-" url:"-"`
+
+	TableName string `json:"-" url:"-"`
+	// The list of fields to update.
+	UpdateMask string `json:"-" url:"update_mask,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateFeatureTagRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateFeatureTagRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type UpdateModelRequest struct {
 	// If provided, updates the description for this `registered_model`.
 	Description string `json:"description,omitempty"`
@@ -3805,7 +3951,6 @@ func (s UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
 type UpdateModelVersionResponse struct {
 }
 
-// Update an Online Feature Store
 type UpdateOnlineStoreRequest struct {
 	// The name of the online store. This is the unique identifier for the
 	// online store.

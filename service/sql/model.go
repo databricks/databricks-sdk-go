@@ -634,7 +634,6 @@ func (s BaseChunkInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Cancel statement execution
 type CancelExecutionRequest struct {
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
@@ -1011,7 +1010,6 @@ func (s CreateAlertRequestAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Create an alert
 type CreateAlertV2Request struct {
 	Alert AlertV2 `json:"alert"`
 }
@@ -1266,8 +1264,6 @@ func (s CreateWarehouseResponse) MarshalJSON() ([]byte, error) {
 type CreateWidget struct {
 	// Dashboard ID returned by :method:dashboards/create.
 	DashboardId string `json:"dashboard_id"`
-	// Widget ID returned by :method:dashboardwidgets/create
-	Id string `json:"-" url:"-"`
 
 	Options WidgetOptions `json:"options"`
 	// If this is a textbox widget, the application displays this text. This
@@ -1688,42 +1684,35 @@ func (f *DateValueDynamicDate) Type() string {
 	return "DateValueDynamicDate"
 }
 
-// Delete an alert
 type DeleteAlertsLegacyRequest struct {
 	AlertId string `json:"-" url:"-"`
 }
 
-// Remove a dashboard
 type DeleteDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 }
 
-// Remove widget
 type DeleteDashboardWidgetRequest struct {
 	// Widget ID returned by :method:dashboardwidgets/create
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a query
 type DeleteQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
-// Remove visualization
 type DeleteQueryVisualizationsLegacyRequest struct {
-	// Widget ID returned by :method:queryvizualisations/create
+	// Widget ID returned by :method:queryvisualizations/create
 	Id string `json:"-" url:"-"`
 }
 
 type DeleteResponse struct {
 }
 
-// Remove a visualization
 type DeleteVisualizationRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a warehouse
 type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
@@ -2438,27 +2427,22 @@ func (f *Format) Type() string {
 	return "Format"
 }
 
-// Get an alert
 type GetAlertRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-// Get an alert
 type GetAlertV2Request struct {
 	Id string `json:"-" url:"-"`
 }
 
-// Get an alert
 type GetAlertsLegacyRequest struct {
 	AlertId string `json:"-" url:"-"`
 }
 
-// Retrieve a definition
 type GetDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 }
 
-// Get object ACL
 type GetDbsqlPermissionRequest struct {
 	// Object ID. An ACL is returned for the object with this UUID.
 	ObjectId string `json:"-" url:"-"`
@@ -2466,12 +2450,10 @@ type GetDbsqlPermissionRequest struct {
 	ObjectType ObjectTypePlural `json:"-" url:"-"`
 }
 
-// Get a query definition.
 type GetQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
-// Get a query
 type GetQueryRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -2494,14 +2476,12 @@ func (s GetResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get status, manifest, and result first chunk
 type GetStatementRequest struct {
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"-" url:"-"`
 }
 
-// Get result chunk by index
 type GetStatementResultChunkNRequest struct {
 	ChunkIndex int `json:"-" url:"-"`
 	// The statement ID is returned upon successfully submitting a SQL
@@ -2509,7 +2489,6 @@ type GetStatementResultChunkNRequest struct {
 	StatementId string `json:"-" url:"-"`
 }
 
-// Get SQL warehouse permission levels
 type GetWarehousePermissionLevelsRequest struct {
 	// The SQL warehouse for which to get or manage permissions.
 	WarehouseId string `json:"-" url:"-"`
@@ -2520,13 +2499,11 @@ type GetWarehousePermissionLevelsResponse struct {
 	PermissionLevels []WarehousePermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get SQL warehouse permissions
 type GetWarehousePermissionsRequest struct {
 	// The SQL warehouse for which to get or manage permissions.
 	WarehouseId string `json:"-" url:"-"`
 }
 
-// Get warehouse info
 type GetWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
@@ -2780,9 +2757,6 @@ func (s LegacyAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// State of the alert. Possible values are: `unknown` (yet to be evaluated),
-// `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated
-// and did not fulfill trigger conditions).
 type LegacyAlertState string
 
 const LegacyAlertStateOk LegacyAlertState = `ok`
@@ -2978,7 +2952,6 @@ func (f *LifecycleState) Type() string {
 	return "LifecycleState"
 }
 
-// List alerts
 type ListAlertsRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -3065,7 +3038,6 @@ func (s ListAlertsResponseAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List alerts
 type ListAlertsV2Request struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -3098,7 +3070,6 @@ func (s ListAlertsV2Response) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get dashboard objects
 type ListDashboardsRequest struct {
 	// Name of dashboard attribute to order by.
 	Order ListOrder `json:"-" url:"order,omitempty"`
@@ -3157,7 +3128,6 @@ func (f *ListOrder) Type() string {
 	return "ListOrder"
 }
 
-// Get a list of queries
 type ListQueriesLegacyRequest struct {
 	// Name of query attribute to order by. Default sort order is ascending.
 	// Append a dash (`-`) to order descending instead.
@@ -3192,7 +3162,6 @@ func (s ListQueriesLegacyRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List queries
 type ListQueriesRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -3228,7 +3197,6 @@ func (s ListQueriesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List Queries
 type ListQueryHistoryRequest struct {
 	// An optional filter object to limit query history results. Accepts
 	// parameters such as user IDs, endpoint IDs, and statuses to narrow the
@@ -3342,7 +3310,6 @@ func (s ListResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List visualizations on a query
 type ListVisualizationsForQueryRequest struct {
 	Id string `json:"-" url:"-"`
 
@@ -3377,7 +3344,6 @@ func (s ListVisualizationsForQueryResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List warehouses
 type ListWarehousesRequest struct {
 	// Service Principal which will be used to fetch the list of warehouses. If
 	// not specified, the user from the session header is used.
@@ -3541,7 +3507,6 @@ func (s OdbcParams) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The singular form of the type of object which can be owned.
 type OwnableObjectType string
 
 const OwnableObjectTypeAlert OwnableObjectType = `alert`
@@ -3613,7 +3578,6 @@ func (s Parameter) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Parameters can have several different types.
 type ParameterType string
 
 const ParameterTypeDatetime ParameterType = `datetime`
@@ -4304,12 +4268,10 @@ type RepeatedEndpointConfPairs struct {
 	ConfigurationPairs []EndpointConfPair `json:"configuration_pairs,omitempty"`
 }
 
-// Restore a dashboard
 type RestoreDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 }
 
-// Restore a query
 type RestoreQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
@@ -4438,9 +4400,6 @@ func (f *RunAsMode) Type() string {
 	return "RunAsMode"
 }
 
-// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
-// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as owner"
-// behavior)
 type RunAsRole string
 
 const RunAsRoleOwner RunAsRole = `owner`
@@ -4755,7 +4714,6 @@ func (f *SpotInstancePolicy) Type() string {
 	return "SpotInstancePolicy"
 }
 
-// Start a warehouse
 type StartRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
@@ -4984,7 +4942,6 @@ func (f *Status) Type() string {
 	return "Status"
 }
 
-// Stop a warehouse
 type StopRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
@@ -5434,7 +5391,6 @@ func (s TransferOwnershipObjectId) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Transfer object ownership
 type TransferOwnershipRequest struct {
 	// Email address for the new owner, who must exist in the workspace.
 	NewOwner string `json:"new_owner,omitempty"`
@@ -5454,17 +5410,14 @@ func (s TransferOwnershipRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete an alert
 type TrashAlertRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-// Delete an alert
 type TrashAlertV2Request struct {
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a query
 type TrashQueryRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -5540,7 +5493,6 @@ func (s UpdateAlertRequestAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Update an alert
 type UpdateAlertV2Request struct {
 	Alert AlertV2 `json:"alert"`
 	// UUID identifying the alert.
@@ -5672,6 +5624,33 @@ func (s *UpdateVisualizationRequestVisualization) UnmarshalJSON(b []byte) error 
 }
 
 func (s UpdateVisualizationRequestVisualization) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type UpdateWidgetRequest struct {
+	// Dashboard ID returned by :method:dashboards/create.
+	DashboardId string `json:"dashboard_id"`
+	// Widget ID returned by :method:dashboardwidgets/create
+	Id string `json:"-" url:"-"`
+
+	Options WidgetOptions `json:"options"`
+	// If this is a textbox widget, the application displays this text. This
+	// field is ignored if the widget contains a visualization in the
+	// `visualization` field.
+	Text string `json:"text,omitempty"`
+	// Query Vizualization ID returned by :method:queryvisualizations/create.
+	VisualizationId string `json:"visualization_id,omitempty"`
+	// Width of a widget
+	Width int `json:"width"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateWidgetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateWidgetRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

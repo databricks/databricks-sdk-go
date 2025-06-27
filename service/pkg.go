@@ -106,7 +106,11 @@
 //
 // - [ml.ExperimentsAPI]: Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment.
 //
+// - [catalog.ExternalLineageAPI]: External Lineage APIs enable defining and managing lineage relationships between Databricks objects and external systems.
+//
 // - [catalog.ExternalLocationsAPI]: An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path.
+//
+// - [catalog.ExternalMetadataAPI]: External Metadata objects enable customers to register and manage metadata about external systems within Unity Catalog.
 //
 // - [ml.FeatureStoreAPI]: A feature store is a centralized repository that enables data scientists to find and share features.
 //
@@ -151,6 +155,8 @@
 // - [settings.LlmProxyPartnerPoweredWorkspaceAPI]: Determines if partner powered models are enabled or not for a specific workspace.
 //
 // - [billing.LogDeliveryAPI]: These APIs manage log delivery configurations for this account.
+//
+// - [ml.MaterializedFeaturesAPI]: Materialized Features are columns in tables and views that can be directly used as features to train and serve ML models.
 //
 // - [catalog.AccountMetastoreAssignmentsAPI]: These APIs manage metastore assignments to a workspace.
 //
@@ -215,6 +221,8 @@
 // - [sql.QueriesAPI]: The queries API can be used to perform CRUD operations on queries.
 //
 // - [sql.QueriesLegacyAPI]: These endpoints are used for CRUD operations on query definitions.
+//
+// - [dashboards.QueryExecutionAPI]: Query execution APIs for AI / BI Dashboards.
 //
 // - [sql.QueryHistoryAPI]: A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute.
 //
@@ -374,8 +382,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *catalog.CredentialsAPI                             = nil
 	_ *provisioning.CredentialsAPI                        = nil
+	_ *catalog.CredentialsAPI                             = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
@@ -399,7 +407,9 @@ var (
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil
 	_ *settings.EsmEnablementAccountAPI                   = nil
 	_ *ml.ExperimentsAPI                                  = nil
+	_ *catalog.ExternalLineageAPI                         = nil
 	_ *catalog.ExternalLocationsAPI                       = nil
+	_ *catalog.ExternalMetadataAPI                        = nil
 	_ *ml.FeatureStoreAPI                                 = nil
 	_ *oauth2.AccountFederationPolicyAPI                  = nil
 	_ *files.FilesAPI                                     = nil
@@ -422,6 +432,7 @@ var (
 	_ *settings.LlmProxyPartnerPoweredEnforceAPI          = nil
 	_ *settings.LlmProxyPartnerPoweredWorkspaceAPI        = nil
 	_ *billing.LogDeliveryAPI                             = nil
+	_ *ml.MaterializedFeaturesAPI                         = nil
 	_ *catalog.AccountMetastoreAssignmentsAPI             = nil
 	_ *catalog.MetastoresAPI                              = nil
 	_ *catalog.AccountMetastoresAPI                       = nil
@@ -454,6 +465,7 @@ var (
 	_ *catalog.QualityMonitorsAPI                         = nil
 	_ *sql.QueriesAPI                                     = nil
 	_ *sql.QueriesLegacyAPI                               = nil
+	_ *dashboards.QueryExecutionAPI                       = nil
 	_ *sql.QueryHistoryAPI                                = nil
 	_ *sql.QueryVisualizationsAPI                         = nil
 	_ *sql.QueryVisualizationsLegacyAPI                   = nil

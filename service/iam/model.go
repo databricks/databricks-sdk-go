@@ -69,7 +69,6 @@ func (s Actor) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Check access policy to a resource
 type CheckPolicyRequest struct {
 	Actor Actor `json:"-" url:"actor"`
 
@@ -129,25 +128,21 @@ type ConsistencyToken struct {
 	Value string `json:"value"`
 }
 
-// Delete a group.
 type DeleteAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a service principal.
 type DeleteAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a user.
 type DeleteAccountUserRequest struct {
 	// Unique ID for a user in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a group.
 type DeleteGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -156,19 +151,16 @@ type DeleteGroupRequest struct {
 type DeleteResponse struct {
 }
 
-// Delete a service principal.
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a user.
 type DeleteUserRequest struct {
 	// Unique ID for a user in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete permissions assignment
 type DeleteWorkspaceAssignmentRequest struct {
 	// The ID of the user, service principal, or group.
 	PrincipalId int64 `json:"-" url:"-"`
@@ -179,19 +171,16 @@ type DeleteWorkspaceAssignmentRequest struct {
 type DeleteWorkspacePermissionAssignmentResponse struct {
 }
 
-// Get group details.
 type GetAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Get service principal details.
 type GetAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Get user details.
 type GetAccountUserRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -228,7 +217,6 @@ func (s GetAccountUserRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get assignable roles for a resource
 type GetAssignableRolesForResourceRequest struct {
 	// The resource name for which assignable roles will be listed.
 	//
@@ -244,7 +232,6 @@ type GetAssignableRolesForResourceResponse struct {
 	Roles []Role `json:"roles,omitempty"`
 }
 
-// Get group details.
 type GetGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -255,7 +242,6 @@ type GetPasswordPermissionLevelsResponse struct {
 	PermissionLevels []PasswordPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get object permission levels
 type GetPermissionLevelsRequest struct {
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
@@ -271,7 +257,6 @@ type GetPermissionLevelsResponse struct {
 	PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get object permissions
 type GetPermissionRequest struct {
 	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
@@ -283,7 +268,6 @@ type GetPermissionRequest struct {
 	RequestObjectType string `json:"-" url:"-"`
 }
 
-// Get a rule set
 type GetRuleSetRequest struct {
 	// Etag used for versioning. The response is at least as fresh as the eTag
 	// provided. Etag is used for optimistic concurrency control as a way to
@@ -311,7 +295,6 @@ type GetRuleSetRequest struct {
 	Name string `json:"-" url:"name"`
 }
 
-// Get service principal details.
 type GetServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -354,7 +337,6 @@ func (f *GetSortOrder) Type() string {
 	return "GetSortOrder"
 }
 
-// Get user details.
 type GetUserRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -391,7 +373,6 @@ func (s GetUserRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List workspace permissions
 type GetWorkspaceAssignmentRequest struct {
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -476,7 +457,6 @@ func (f *GroupSchema) Type() string {
 	return "GroupSchema"
 }
 
-// List group details.
 type ListAccountGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -510,7 +490,6 @@ func (s ListAccountGroupsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List service principals.
 type ListAccountServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -544,7 +523,6 @@ func (s ListAccountServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List users.
 type ListAccountUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -579,7 +557,6 @@ func (s ListAccountUsersRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List group details.
 type ListGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -695,7 +672,6 @@ func (s ListServicePrincipalResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List service principals.
 type ListServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -766,7 +742,6 @@ func (f *ListSortOrder) Type() string {
 	return "ListSortOrder"
 }
 
-// List users.
 type ListUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -825,7 +800,6 @@ func (s ListUsersResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get permission assignments
 type ListWorkspaceAssignmentRequest struct {
 	// The workspace ID for the account.
 	WorkspaceId int64 `json:"-" url:"-"`

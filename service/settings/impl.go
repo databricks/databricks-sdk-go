@@ -29,11 +29,10 @@ func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpA
 }
 
 func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -84,22 +83,20 @@ func (a *accountIpAccessListsImpl) internalList(ctx context.Context) (*GetIpAcce
 }
 
 func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
-	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &replaceResponse)
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
-	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateResponse)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -637,11 +634,10 @@ func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessLi
 }
 
 func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteIpAccessListRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -692,22 +688,20 @@ func (a *ipAccessListsImpl) internalList(ctx context.Context) (*ListIpAccessList
 }
 
 func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
-	var replaceResponse ReplaceResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &replaceResponse)
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
-	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateResponse)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -827,12 +821,11 @@ func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context,
 }
 
 func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error {
-	var deleteNetworkConnectivityConfigurationResponse DeleteNetworkConnectivityConfigurationResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteNetworkConnectivityConfigurationResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -979,12 +972,11 @@ func (a *networkPoliciesImpl) CreateNetworkPolicyRpc(ctx context.Context, reques
 }
 
 func (a *networkPoliciesImpl) DeleteNetworkPolicyRpc(ctx context.Context, request DeleteNetworkPolicyRequest) error {
-	var deleteNetworkPolicyRpcResponse DeleteNetworkPolicyRpcResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-policies/%v", a.client.ConfiguredAccountID(), request.NetworkPolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteNetworkPolicyRpcResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -1067,12 +1059,11 @@ func (a *notificationDestinationsImpl) Create(ctx context.Context, request Creat
 }
 
 func (a *notificationDestinationsImpl) Delete(ctx context.Context, request DeleteNotificationDestinationRequest) error {
-	var empty Empty
 	path := fmt.Sprintf("/api/2.0/notification-destinations/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &empty)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -1268,11 +1259,10 @@ func (a *tokenManagementImpl) CreateOboToken(ctx context.Context, request Create
 }
 
 func (a *tokenManagementImpl) Delete(ctx context.Context, request DeleteTokenManagementRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", request.TokenId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -1380,13 +1370,12 @@ func (a *tokensImpl) Create(ctx context.Context, request CreateTokenRequest) (*C
 }
 
 func (a *tokensImpl) Delete(ctx context.Context, request RevokeTokenRequest) error {
-	var revokeTokenResponse RevokeTokenResponse
 	path := "/api/2.0/token/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &revokeTokenResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -1442,12 +1431,11 @@ func (a *workspaceConfImpl) GetStatus(ctx context.Context, request GetStatusRequ
 }
 
 func (a *workspaceConfImpl) SetStatus(ctx context.Context, request WorkspaceConf) error {
-	var setStatusResponse SetStatusResponse
 	path := "/api/2.0/workspace-conf"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &setStatusResponse)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
 

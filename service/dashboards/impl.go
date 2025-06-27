@@ -28,6 +28,15 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 	return &genieMessage, err
 }
 
+func (a *genieImpl) DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error {
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v", request.SpaceId, request.ConversationId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
 func (a *genieImpl) ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/execute-query", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
@@ -118,6 +127,16 @@ func (a *genieImpl) GetSpace(ctx context.Context, request GenieGetSpaceRequest) 
 	return &genieSpace, err
 }
 
+func (a *genieImpl) ListConversations(ctx context.Context, request GenieListConversationsRequest) (*GenieListConversationsResponse, error) {
+	var genieListConversationsResponse GenieListConversationsResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations", request.SpaceId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListConversationsResponse)
+	return &genieListConversationsResponse, err
+}
+
 func (a *genieImpl) ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error) {
 	var genieListSpacesResponse GenieListSpacesResponse
 	path := "/api/2.0/genie/spaces"
@@ -137,6 +156,15 @@ func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartCon
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieStartConversationResponse)
 	return &genieStartConversationResponse, err
+}
+
+func (a *genieImpl) TrashSpace(ctx context.Context, request GenieTrashSpaceRequest) error {
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v", request.SpaceId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
 }
 
 // unexported type that holds implementations of just Lakeview API methods
@@ -178,22 +206,20 @@ func (a *lakeviewImpl) CreateSubscription(ctx context.Context, request CreateSub
 }
 
 func (a *lakeviewImpl) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error {
-	var deleteScheduleResponse DeleteScheduleResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteScheduleResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *lakeviewImpl) DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) error {
-	var deleteSubscriptionResponse DeleteSubscriptionResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", request.DashboardId, request.ScheduleId, request.SubscriptionId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteSubscriptionResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -383,22 +409,20 @@ func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*Pu
 }
 
 func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest) error {
-	var trashDashboardResponse TrashDashboardResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &trashDashboardResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboardRequest) error {
-	var unpublishDashboardResponse UnpublishDashboardResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &unpublishDashboardResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -429,6 +453,15 @@ type lakeviewEmbeddedImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error {
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/embedded", request.DashboardId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, nil)
+	return err
+}
+
 func (a *lakeviewEmbeddedImpl) GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error) {
 	var getPublishedDashboardTokenInfoResponse GetPublishedDashboardTokenInfoResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/tokeninfo", request.DashboardId)
@@ -437,4 +470,39 @@ func (a *lakeviewEmbeddedImpl) GetPublishedDashboardTokenInfo(ctx context.Contex
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardTokenInfoResponse)
 	return &getPublishedDashboardTokenInfoResponse, err
+}
+
+// unexported type that holds implementations of just QueryExecution API methods
+type queryExecutionImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *queryExecutionImpl) CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error) {
+	var cancelQueryExecutionResponse CancelQueryExecutionResponse
+	path := "/api/2.0/lakeview-query/query/published"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &cancelQueryExecutionResponse)
+	return &cancelQueryExecutionResponse, err
+}
+
+func (a *queryExecutionImpl) ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error {
+	path := "/api/2.0/lakeview-query/query/published"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *queryExecutionImpl) PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error) {
+	var pollQueryStatusResponse PollQueryStatusResponse
+	path := "/api/2.0/lakeview-query/query/published"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &pollQueryStatusResponse)
+	return &pollQueryStatusResponse, err
 }

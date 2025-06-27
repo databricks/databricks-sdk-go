@@ -458,7 +458,6 @@ func (s BearerTokenAuth) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get build logs for a served model
 type BuildLogsRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
@@ -592,6 +591,8 @@ type CreateServingEndpoint struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The core config of the serving endpoint.
 	Config *EndpointCoreConfigInput `json:"config,omitempty"`
+
+	Description string `json:"description,omitempty"`
 	// The name of the serving endpoint. This field is required and must be
 	// unique across a Databricks workspace. An endpoint name can consist of
 	// alphanumeric characters, dashes, and underscores.
@@ -687,7 +688,6 @@ type DataframeSplitInput struct {
 type DeleteResponse struct {
 }
 
-// Delete a serving endpoint
 type DeleteServingEndpointRequest struct {
 	Name string `json:"-" url:"-"`
 }
@@ -946,7 +946,6 @@ type EndpointTags struct {
 	Tags []EndpointTag `json:"tags,omitempty"`
 }
 
-// Get metrics of a serving endpoint
 type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
 	// required.
@@ -1172,7 +1171,6 @@ func (s FoundationModel) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the schema for a serving endpoint
 type GetOpenApiRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
@@ -1183,7 +1181,6 @@ type GetOpenApiResponse struct {
 	Contents io.ReadCloser `json:"-"`
 }
 
-// Get serving endpoint permission levels
 type GetServingEndpointPermissionLevelsRequest struct {
 	// The serving endpoint for which to get or manage permissions.
 	ServingEndpointId string `json:"-" url:"-"`
@@ -1194,13 +1191,11 @@ type GetServingEndpointPermissionLevelsResponse struct {
 	PermissionLevels []ServingEndpointPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get serving endpoint permissions
 type GetServingEndpointPermissionsRequest struct {
 	// The serving endpoint for which to get or manage permissions.
 	ServingEndpointId string `json:"-" url:"-"`
 }
 
-// Get a single serving endpoint
 type GetServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
 	Name string `json:"-" url:"-"`
@@ -1258,7 +1253,6 @@ type ListEndpointsResponse struct {
 	Endpoints []ServingEndpoint `json:"endpoints,omitempty"`
 }
 
-// Get the latest logs for a served model
 type LogsRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
@@ -1713,11 +1707,22 @@ func (f *RateLimitRenewalPeriod) Type() string {
 }
 
 type Route struct {
+	ServedEntityName string `json:"served_entity_name,omitempty"`
 	// The name of the served model this route configures traffic for.
-	ServedModelName string `json:"served_model_name"`
+	ServedModelName string `json:"served_model_name,omitempty"`
 	// The percentage of endpoint traffic to send to this route. It must be an
 	// integer between 0 and 100 inclusive.
 	TrafficPercentage int `json:"traffic_percentage"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Route) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Route) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ServedEntityInput struct {

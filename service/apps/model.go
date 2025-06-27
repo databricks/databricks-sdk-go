@@ -794,14 +794,12 @@ func (s ComputeStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Create an app deployment
 type CreateAppDeploymentRequest struct {
 	AppDeployment AppDeployment `json:"app_deployment"`
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
 }
 
-// Create an app
 type CreateAppRequest struct {
 	App App `json:"app"`
 	// If true, the app will not be started after creation.
@@ -818,13 +816,11 @@ func (s CreateAppRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete an app
 type DeleteAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
 }
 
-// Get an app deployment
 type GetAppDeploymentRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
@@ -832,7 +828,6 @@ type GetAppDeploymentRequest struct {
 	DeploymentId string `json:"-" url:"-"`
 }
 
-// Get app permission levels
 type GetAppPermissionLevelsRequest struct {
 	// The app for which to get or manage permissions.
 	AppName string `json:"-" url:"-"`
@@ -843,19 +838,16 @@ type GetAppPermissionLevelsResponse struct {
 	PermissionLevels []AppPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get app permissions
 type GetAppPermissionsRequest struct {
 	// The app for which to get or manage permissions.
 	AppName string `json:"-" url:"-"`
 }
 
-// Get an app
 type GetAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
 }
 
-// List app deployments
 type ListAppDeploymentsRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
@@ -893,7 +885,6 @@ func (s ListAppDeploymentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List apps
 type ListAppsRequest struct {
 	// Upper bound for items returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -938,7 +929,6 @@ type StopAppRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// Update an app
 type UpdateAppRequest struct {
 	App App `json:"app"`
 	// The name of the app. The name must contain only lowercase alphanumeric

@@ -386,7 +386,6 @@ func (s AzureUserDelegationSas) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Cancel refresh
 type CancelRefreshRequest struct {
 	// ID of the refresh.
 	RefreshId string `json:"-" url:"-"`
@@ -515,8 +514,6 @@ const CatalogTypeManagedOnlineCatalog CatalogType = `MANAGED_ONLINE_CATALOG`
 
 const CatalogTypeSystemCatalog CatalogType = `SYSTEM_CATALOG`
 
-const CatalogTypeUnknownCatalogType CatalogType = `UNKNOWN_CATALOG_TYPE`
-
 // String representation for [fmt.Print]
 func (f *CatalogType) String() string {
 	return string(*f)
@@ -525,11 +522,11 @@ func (f *CatalogType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CatalogType) Set(v string) error {
 	switch v {
-	case `DELTASHARING_CATALOG`, `FOREIGN_CATALOG`, `INTERNAL_CATALOG`, `MANAGED_CATALOG`, `MANAGED_ONLINE_CATALOG`, `SYSTEM_CATALOG`, `UNKNOWN_CATALOG_TYPE`:
+	case `DELTASHARING_CATALOG`, `FOREIGN_CATALOG`, `INTERNAL_CATALOG`, `MANAGED_CATALOG`, `MANAGED_ONLINE_CATALOG`, `SYSTEM_CATALOG`:
 		*f = CatalogType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DELTASHARING_CATALOG", "FOREIGN_CATALOG", "INTERNAL_CATALOG", "MANAGED_CATALOG", "MANAGED_ONLINE_CATALOG", "SYSTEM_CATALOG", "UNKNOWN_CATALOG_TYPE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DELTASHARING_CATALOG", "FOREIGN_CATALOG", "INTERNAL_CATALOG", "MANAGED_CATALOG", "MANAGED_ONLINE_CATALOG", "SYSTEM_CATALOG"`, v)
 	}
 }
 
@@ -544,7 +541,6 @@ func (f *CatalogType) Values() []CatalogType {
 		CatalogTypeManagedCatalog,
 		CatalogTypeManagedOnlineCatalog,
 		CatalogTypeSystemCatalog,
-		CatalogTypeUnknownCatalogType,
 	}
 }
 
@@ -618,6 +614,22 @@ func (s *ColumnMask) UnmarshalJSON(b []byte) error {
 }
 
 func (s ColumnMask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ColumnRelationship struct {
+	Source string `json:"source,omitempty"`
+
+	Target string `json:"target,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ColumnRelationship) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ColumnRelationship) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -724,6 +736,23 @@ func (f *ColumnTypeName) Type() string {
 	return "ColumnTypeName"
 }
 
+// A connection that is dependent on a SQL object.
+type ConnectionDependency struct {
+	// Full name of the dependent connection, in the form of
+	// __connection_name__.
+	ConnectionName string `json:"connection_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ConnectionDependency) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ConnectionDependency) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ConnectionInfo struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -773,7 +802,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 33
+// Next Id: 36
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -980,6 +1009,10 @@ func (s CreateCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateExternalLineageRelationshipRequest struct {
+	ExternalLineageRelationship CreateRequestExternalLineage `json:"external_lineage_relationship"`
+}
+
 type CreateExternalLocation struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -1015,6 +1048,10 @@ func (s *CreateExternalLocation) UnmarshalJSON(b []byte) error {
 
 func (s CreateExternalLocation) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type CreateExternalMetadataRequest struct {
+	ExternalMetadata ExternalMetadata `json:"external_metadata"`
 }
 
 type CreateFunction struct {
@@ -1314,7 +1351,6 @@ func (s CreateMonitor) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Create an Online Table
 type CreateOnlineTableRequest struct {
 	// Online Table information.
 	Table OnlineTable `json:"table"`
@@ -1341,6 +1377,29 @@ func (s *CreateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s CreateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateRequestExternalLineage struct {
+	// List of column relationships between source and target objects.
+	Columns []ColumnRelationship `json:"columns,omitempty"`
+	// Unique identifier of the external lineage relationship.
+	Id string `json:"id,omitempty"`
+	// Key-value properties associated with the external lineage relationship.
+	Properties map[string]string `json:"properties,omitempty"`
+	// Source object of the external lineage relationship.
+	Source ExternalLineageObject `json:"source"`
+	// Target object of the external lineage relationship.
+	Target ExternalLineageObject `json:"target"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateRequestExternalLineage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateRequestExternalLineage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1443,6 +1502,23 @@ func (s CreateVolumeRequestContent) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A credential that is dependent on a SQL object.
+type CredentialDependency struct {
+	// Full name of the dependent credential, in the form of
+	// __credential_name__.
+	CredentialName string `json:"credential_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CredentialDependency) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CredentialDependency) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CredentialInfo struct {
 	// The AWS IAM role configuration.
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
@@ -1533,8 +1609,10 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
-// Next Id: 12
+// Next Id: 13
 type CredentialType string
+
+const CredentialTypeAnyStaticCredential CredentialType = `ANY_STATIC_CREDENTIAL`
 
 const CredentialTypeBearerToken CredentialType = `BEARER_TOKEN`
 
@@ -1568,11 +1646,11 @@ func (f *CredentialType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CredentialType) Set(v string) error {
 	switch v {
-	case `BEARER_TOKEN`, `OAUTH_ACCESS_TOKEN`, `OAUTH_M2M`, `OAUTH_REFRESH_TOKEN`, `OAUTH_RESOURCE_OWNER_PASSWORD`, `OAUTH_U2M`, `OAUTH_U2M_MAPPING`, `OIDC_TOKEN`, `PEM_PRIVATE_KEY`, `SERVICE_CREDENTIAL`, `UNKNOWN_CREDENTIAL_TYPE`, `USERNAME_PASSWORD`:
+	case `ANY_STATIC_CREDENTIAL`, `BEARER_TOKEN`, `OAUTH_ACCESS_TOKEN`, `OAUTH_M2M`, `OAUTH_REFRESH_TOKEN`, `OAUTH_RESOURCE_OWNER_PASSWORD`, `OAUTH_U2M`, `OAUTH_U2M_MAPPING`, `OIDC_TOKEN`, `PEM_PRIVATE_KEY`, `SERVICE_CREDENTIAL`, `UNKNOWN_CREDENTIAL_TYPE`, `USERNAME_PASSWORD`:
 		*f = CredentialType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BEARER_TOKEN", "OAUTH_ACCESS_TOKEN", "OAUTH_M2M", "OAUTH_REFRESH_TOKEN", "OAUTH_RESOURCE_OWNER_PASSWORD", "OAUTH_U2M", "OAUTH_U2M_MAPPING", "OIDC_TOKEN", "PEM_PRIVATE_KEY", "SERVICE_CREDENTIAL", "UNKNOWN_CREDENTIAL_TYPE", "USERNAME_PASSWORD"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ANY_STATIC_CREDENTIAL", "BEARER_TOKEN", "OAUTH_ACCESS_TOKEN", "OAUTH_M2M", "OAUTH_REFRESH_TOKEN", "OAUTH_RESOURCE_OWNER_PASSWORD", "OAUTH_U2M", "OAUTH_U2M_MAPPING", "OIDC_TOKEN", "PEM_PRIVATE_KEY", "SERVICE_CREDENTIAL", "UNKNOWN_CREDENTIAL_TYPE", "USERNAME_PASSWORD"`, v)
 	}
 }
 
@@ -1581,6 +1659,7 @@ func (f *CredentialType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *CredentialType) Values() []CredentialType {
 	return []CredentialType{
+		CredentialTypeAnyStaticCredential,
 		CredentialTypeBearerToken,
 		CredentialTypeOauthAccessToken,
 		CredentialTypeOauthM2m,
@@ -1629,19 +1708,29 @@ const DataSourceFormatCsv DataSourceFormat = `CSV`
 
 const DataSourceFormatDatabricksFormat DataSourceFormat = `DATABRICKS_FORMAT`
 
+const DataSourceFormatDatabricksRowStoreFormat DataSourceFormat = `DATABRICKS_ROW_STORE_FORMAT`
+
 const DataSourceFormatDelta DataSourceFormat = `DELTA`
 
 const DataSourceFormatDeltasharing DataSourceFormat = `DELTASHARING`
 
-const DataSourceFormatHiveCustom DataSourceFormat = `HIVE_CUSTOM`
+const DataSourceFormatDeltaUniformHudi DataSourceFormat = `DELTA_UNIFORM_HUDI`
 
-const DataSourceFormatHiveSerde DataSourceFormat = `HIVE_SERDE`
+const DataSourceFormatDeltaUniformIceberg DataSourceFormat = `DELTA_UNIFORM_ICEBERG`
+
+const DataSourceFormatHive DataSourceFormat = `HIVE`
+
+const DataSourceFormatIceberg DataSourceFormat = `ICEBERG`
 
 const DataSourceFormatJson DataSourceFormat = `JSON`
+
+const DataSourceFormatMongodbFormat DataSourceFormat = `MONGODB_FORMAT`
 
 const DataSourceFormatMysqlFormat DataSourceFormat = `MYSQL_FORMAT`
 
 const DataSourceFormatNetsuiteFormat DataSourceFormat = `NETSUITE_FORMAT`
+
+const DataSourceFormatOracleFormat DataSourceFormat = `ORACLE_FORMAT`
 
 const DataSourceFormatOrc DataSourceFormat = `ORC`
 
@@ -1651,6 +1740,8 @@ const DataSourceFormatPostgresqlFormat DataSourceFormat = `POSTGRESQL_FORMAT`
 
 const DataSourceFormatRedshiftFormat DataSourceFormat = `REDSHIFT_FORMAT`
 
+const DataSourceFormatSalesforceDataCloudFormat DataSourceFormat = `SALESFORCE_DATA_CLOUD_FORMAT`
+
 const DataSourceFormatSalesforceFormat DataSourceFormat = `SALESFORCE_FORMAT`
 
 const DataSourceFormatSnowflakeFormat DataSourceFormat = `SNOWFLAKE_FORMAT`
@@ -1658,6 +1749,8 @@ const DataSourceFormatSnowflakeFormat DataSourceFormat = `SNOWFLAKE_FORMAT`
 const DataSourceFormatSqldwFormat DataSourceFormat = `SQLDW_FORMAT`
 
 const DataSourceFormatSqlserverFormat DataSourceFormat = `SQLSERVER_FORMAT`
+
+const DataSourceFormatTeradataFormat DataSourceFormat = `TERADATA_FORMAT`
 
 const DataSourceFormatText DataSourceFormat = `TEXT`
 
@@ -1675,11 +1768,11 @@ func (f *DataSourceFormat) String() string {
 // Set raw string value and validate it against allowed values
 func (f *DataSourceFormat) Set(v string) error {
 	switch v {
-	case `AVRO`, `BIGQUERY_FORMAT`, `CSV`, `DATABRICKS_FORMAT`, `DELTA`, `DELTASHARING`, `HIVE_CUSTOM`, `HIVE_SERDE`, `JSON`, `MYSQL_FORMAT`, `NETSUITE_FORMAT`, `ORC`, `PARQUET`, `POSTGRESQL_FORMAT`, `REDSHIFT_FORMAT`, `SALESFORCE_FORMAT`, `SNOWFLAKE_FORMAT`, `SQLDW_FORMAT`, `SQLSERVER_FORMAT`, `TEXT`, `UNITY_CATALOG`, `VECTOR_INDEX_FORMAT`, `WORKDAY_RAAS_FORMAT`:
+	case `AVRO`, `BIGQUERY_FORMAT`, `CSV`, `DATABRICKS_FORMAT`, `DATABRICKS_ROW_STORE_FORMAT`, `DELTA`, `DELTASHARING`, `DELTA_UNIFORM_HUDI`, `DELTA_UNIFORM_ICEBERG`, `HIVE`, `ICEBERG`, `JSON`, `MONGODB_FORMAT`, `MYSQL_FORMAT`, `NETSUITE_FORMAT`, `ORACLE_FORMAT`, `ORC`, `PARQUET`, `POSTGRESQL_FORMAT`, `REDSHIFT_FORMAT`, `SALESFORCE_DATA_CLOUD_FORMAT`, `SALESFORCE_FORMAT`, `SNOWFLAKE_FORMAT`, `SQLDW_FORMAT`, `SQLSERVER_FORMAT`, `TERADATA_FORMAT`, `TEXT`, `UNITY_CATALOG`, `VECTOR_INDEX_FORMAT`, `WORKDAY_RAAS_FORMAT`:
 		*f = DataSourceFormat(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AVRO", "BIGQUERY_FORMAT", "CSV", "DATABRICKS_FORMAT", "DELTA", "DELTASHARING", "HIVE_CUSTOM", "HIVE_SERDE", "JSON", "MYSQL_FORMAT", "NETSUITE_FORMAT", "ORC", "PARQUET", "POSTGRESQL_FORMAT", "REDSHIFT_FORMAT", "SALESFORCE_FORMAT", "SNOWFLAKE_FORMAT", "SQLDW_FORMAT", "SQLSERVER_FORMAT", "TEXT", "UNITY_CATALOG", "VECTOR_INDEX_FORMAT", "WORKDAY_RAAS_FORMAT"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AVRO", "BIGQUERY_FORMAT", "CSV", "DATABRICKS_FORMAT", "DATABRICKS_ROW_STORE_FORMAT", "DELTA", "DELTASHARING", "DELTA_UNIFORM_HUDI", "DELTA_UNIFORM_ICEBERG", "HIVE", "ICEBERG", "JSON", "MONGODB_FORMAT", "MYSQL_FORMAT", "NETSUITE_FORMAT", "ORACLE_FORMAT", "ORC", "PARQUET", "POSTGRESQL_FORMAT", "REDSHIFT_FORMAT", "SALESFORCE_DATA_CLOUD_FORMAT", "SALESFORCE_FORMAT", "SNOWFLAKE_FORMAT", "SQLDW_FORMAT", "SQLSERVER_FORMAT", "TERADATA_FORMAT", "TEXT", "UNITY_CATALOG", "VECTOR_INDEX_FORMAT", "WORKDAY_RAAS_FORMAT"`, v)
 	}
 }
 
@@ -1692,21 +1785,28 @@ func (f *DataSourceFormat) Values() []DataSourceFormat {
 		DataSourceFormatBigqueryFormat,
 		DataSourceFormatCsv,
 		DataSourceFormatDatabricksFormat,
+		DataSourceFormatDatabricksRowStoreFormat,
 		DataSourceFormatDelta,
 		DataSourceFormatDeltasharing,
-		DataSourceFormatHiveCustom,
-		DataSourceFormatHiveSerde,
+		DataSourceFormatDeltaUniformHudi,
+		DataSourceFormatDeltaUniformIceberg,
+		DataSourceFormatHive,
+		DataSourceFormatIceberg,
 		DataSourceFormatJson,
+		DataSourceFormatMongodbFormat,
 		DataSourceFormatMysqlFormat,
 		DataSourceFormatNetsuiteFormat,
+		DataSourceFormatOracleFormat,
 		DataSourceFormatOrc,
 		DataSourceFormatParquet,
 		DataSourceFormatPostgresqlFormat,
 		DataSourceFormatRedshiftFormat,
+		DataSourceFormatSalesforceDataCloudFormat,
 		DataSourceFormatSalesforceFormat,
 		DataSourceFormatSnowflakeFormat,
 		DataSourceFormatSqldwFormat,
 		DataSourceFormatSqlserverFormat,
+		DataSourceFormatTeradataFormat,
 		DataSourceFormatText,
 		DataSourceFormatUnityCatalog,
 		DataSourceFormatVectorIndexFormat,
@@ -1764,7 +1864,6 @@ func (s DatabricksGcpServiceAccountResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a metastore assignment
 type DeleteAccountMetastoreAssignmentRequest struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
@@ -1772,7 +1871,6 @@ type DeleteAccountMetastoreAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-// Delete a metastore
 type DeleteAccountMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
 	Force bool `json:"-" url:"force,omitempty"`
@@ -1790,7 +1888,6 @@ func (s DeleteAccountMetastoreRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a storage credential
 type DeleteAccountStorageCredentialRequest struct {
 	// Force deletion even if the Storage Credential is not empty. Default is
 	// false.
@@ -1811,7 +1908,6 @@ func (s DeleteAccountStorageCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a Registered Model Alias
 type DeleteAliasRequest struct {
 	// The name of the alias
 	Alias string `json:"-" url:"-"`
@@ -1822,7 +1918,6 @@ type DeleteAliasRequest struct {
 type DeleteAliasResponse struct {
 }
 
-// Delete a catalog
 type DeleteCatalogRequest struct {
 	// Force deletion even if the catalog is not empty.
 	Force bool `json:"-" url:"force,omitempty"`
@@ -1840,13 +1935,11 @@ func (s DeleteCatalogRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a connection
 type DeleteConnectionRequest struct {
 	// The name of the connection to be deleted.
 	Name string `json:"-" url:"-"`
 }
 
-// Delete a credential
 type DeleteCredentialRequest struct {
 	// Force an update even if there are dependent services (when purpose is
 	// **SERVICE**) or dependent external locations and external tables (when
@@ -1869,7 +1962,13 @@ func (s DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
 type DeleteCredentialResponse struct {
 }
 
-// Delete an external location
+type DeleteExternalLineageRelationshipRequest struct {
+	ExternalLineageRelationship DeleteRequestExternalLineage `json:"-" url:"external_lineage_relationship"`
+}
+
+type DeleteExternalLineageRelationshipResponse struct {
+}
+
 type DeleteExternalLocationRequest struct {
 	// Force deletion even if there are dependent external tables or mounts.
 	Force bool `json:"-" url:"force,omitempty"`
@@ -1887,7 +1986,13 @@ func (s DeleteExternalLocationRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a function
+type DeleteExternalMetadataRequest struct {
+	Name string `json:"-" url:"-"`
+}
+
+type DeleteExternalMetadataResponse struct {
+}
+
 type DeleteFunctionRequest struct {
 	// Force deletion even if the function is notempty.
 	Force bool `json:"-" url:"force,omitempty"`
@@ -1906,7 +2011,6 @@ func (s DeleteFunctionRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a metastore
 type DeleteMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
 	Force bool `json:"-" url:"force,omitempty"`
@@ -1924,7 +2028,6 @@ func (s DeleteMetastoreRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a Model Version
 type DeleteModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
 	FullName string `json:"-" url:"-"`
@@ -1932,28 +2035,43 @@ type DeleteModelVersionRequest struct {
 	Version int `json:"-" url:"-"`
 }
 
-// Delete an Online Table
 type DeleteOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"-" url:"-"`
 }
 
-// Delete a table monitor
 type DeleteQualityMonitorRequest struct {
 	// Full name of the table.
 	TableName string `json:"-" url:"-"`
 }
 
-// Delete a Registered Model
 type DeleteRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
 	FullName string `json:"-" url:"-"`
 }
 
+type DeleteRequestExternalLineage struct {
+	// Unique identifier of the external lineage relationship.
+	Id string `json:"id,omitempty" url:"id,omitempty"`
+	// Source object of the external lineage relationship.
+	Source ExternalLineageObject `json:"source" url:"source"`
+	// Target object of the external lineage relationship.
+	Target ExternalLineageObject `json:"target" url:"target"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteRequestExternalLineage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteRequestExternalLineage) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DeleteResponse struct {
 }
 
-// Delete a schema
 type DeleteSchemaRequest struct {
 	// Force deletion even if the schema is not empty.
 	Force bool `json:"-" url:"force,omitempty"`
@@ -1971,7 +2089,6 @@ func (s DeleteSchemaRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a credential
 type DeleteStorageCredentialRequest struct {
 	// Force an update even if there are dependent external locations or
 	// external tables (when purpose is **STORAGE**) or dependent services (when
@@ -1991,7 +2108,6 @@ func (s DeleteStorageCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a table constraint
 type DeleteTableConstraintRequest struct {
 	// If true, try deleting all child constraints of the current constraint. If
 	// false, reject this operation if the current constraint has any child
@@ -2003,13 +2119,11 @@ type DeleteTableConstraintRequest struct {
 	FullName string `json:"-" url:"-"`
 }
 
-// Delete a table
 type DeleteTableRequest struct {
 	// Full name of the table.
 	FullName string `json:"-" url:"-"`
 }
 
-// Delete a Volume
 type DeleteVolumeRequest struct {
 	// The three-level (fully qualified) name of the volume
 	Name string `json:"-" url:"-"`
@@ -2060,9 +2174,13 @@ func (f *DeltaSharingScopeEnum) Type() string {
 	return "DeltaSharingScopeEnum"
 }
 
-// A dependency of a SQL object. Either the __table__ field or the __function__
-// field must be defined.
+// A dependency of a SQL object. One of the following fields must be defined:
+// __table__, __function__, __connection__, or __credential__.
 type Dependency struct {
+	// A connection that is dependent on a SQL object.
+	Connection *ConnectionDependency `json:"connection,omitempty"`
+	// A credential that is dependent on a SQL object.
+	Credential *CredentialDependency `json:"credential,omitempty"`
 	// A function that is dependent on a SQL object.
 	Function *FunctionDependency `json:"function,omitempty"`
 	// A table that is dependent on a SQL object.
@@ -2075,7 +2193,6 @@ type DependencyList struct {
 	Dependencies []Dependency `json:"dependencies,omitempty"`
 }
 
-// Disable a system schema
 type DisableRequest struct {
 	// The metastore ID under which the system schema lives.
 	MetastoreId string `json:"-" url:"-"`
@@ -2276,10 +2393,225 @@ type EncryptionDetails struct {
 	SseEncryptionDetails *SseEncryptionDetails `json:"sse_encryption_details,omitempty"`
 }
 
-// Get boolean reflecting if table exists
 type ExistsRequest struct {
 	// Full name of the table.
 	FullName string `json:"-" url:"-"`
+}
+
+type ExternalLineageExternalMetadata struct {
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalLineageExternalMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalLineageExternalMetadata) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Represents the external metadata object in the lineage event.
+type ExternalLineageExternalMetadataInfo struct {
+	// Type of entity represented by the external metadata object.
+	EntityType string `json:"entity_type,omitempty"`
+	// Timestamp of the lineage event.
+	EventTime string `json:"event_time,omitempty"`
+	// Name of the external metadata object.
+	Name string `json:"name,omitempty"`
+	// Type of external system.
+	SystemType SystemType `json:"system_type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalLineageExternalMetadataInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalLineageExternalMetadataInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Represents the path information in the lineage event.
+type ExternalLineageFileInfo struct {
+	// Timestamp of the lineage event.
+	EventTime string `json:"event_time,omitempty"`
+	// URL of the path.
+	Path string `json:"path,omitempty"`
+	// The full name of the securable on the path.
+	SecurableName string `json:"securable_name,omitempty"`
+	// The securable type of the securable on the path.
+	SecurableType string `json:"securable_type,omitempty"`
+	// The storage location associated with securable on the path.
+	StorageLocation string `json:"storage_location,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalLineageFileInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalLineageFileInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Lineage response containing lineage information of a data asset.
+type ExternalLineageInfo struct {
+	// Information about the edge metadata of the external lineage relationship.
+	ExternalLineageInfo *ExternalLineageRelationshipInfo `json:"external_lineage_info,omitempty"`
+	// Information about external metadata involved in the lineage relationship.
+	ExternalMetadataInfo *ExternalLineageExternalMetadataInfo `json:"external_metadata_info,omitempty"`
+	// Information about the file involved in the lineage relationship.
+	FileInfo *ExternalLineageFileInfo `json:"file_info,omitempty"`
+	// Information about the model version involved in the lineage relationship.
+	ModelInfo *ExternalLineageModelVersionInfo `json:"model_info,omitempty"`
+	// Information about the table involved in the lineage relationship.
+	TableInfo *ExternalLineageTableInfo `json:"table_info,omitempty"`
+}
+
+type ExternalLineageModelVersion struct {
+	Name string `json:"name,omitempty"`
+
+	Version string `json:"version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalLineageModelVersion) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalLineageModelVersion) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Represents the model version information in the lineage event.
+type ExternalLineageModelVersionInfo struct {
+	// Timestamp of the lineage event.
+	EventTime string `json:"event_time,omitempty"`
+	// Name of the model.
+	ModelName string `json:"model_name,omitempty"`
+	// Version number of the model.
+	Version int64 `json:"version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalLineageModelVersionInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalLineageModelVersionInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ExternalLineageObject struct {
+	ExternalMetadata *ExternalLineageExternalMetadata `json:"external_metadata,omitempty"`
+
+	ModelVersion *ExternalLineageModelVersion `json:"model_version,omitempty"`
+
+	Path *ExternalLineagePath `json:"path,omitempty"`
+
+	Table *ExternalLineageTable `json:"table,omitempty"`
+}
+
+type ExternalLineagePath struct {
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalLineagePath) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalLineagePath) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ExternalLineageRelationship struct {
+	// List of column relationships between source and target objects.
+	Columns []ColumnRelationship `json:"columns,omitempty"`
+	// Unique identifier of the external lineage relationship.
+	Id string `json:"id,omitempty"`
+	// Key-value properties associated with the external lineage relationship.
+	Properties map[string]string `json:"properties,omitempty"`
+	// Source object of the external lineage relationship.
+	Source ExternalLineageObject `json:"source"`
+	// Target object of the external lineage relationship.
+	Target ExternalLineageObject `json:"target"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalLineageRelationship) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalLineageRelationship) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ExternalLineageRelationshipInfo struct {
+	// List of column relationships between source and target objects.
+	Columns []ColumnRelationship `json:"columns,omitempty"`
+	// Unique identifier of the external lineage relationship.
+	Id string `json:"id,omitempty"`
+	// Key-value properties associated with the external lineage relationship.
+	Properties map[string]string `json:"properties,omitempty"`
+	// Source object of the external lineage relationship.
+	Source ExternalLineageObject `json:"source"`
+	// Target object of the external lineage relationship.
+	Target ExternalLineageObject `json:"target"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalLineageRelationshipInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalLineageRelationshipInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ExternalLineageTable struct {
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalLineageTable) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalLineageTable) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Represents the table information in the lineage event.
+type ExternalLineageTableInfo struct {
+	// Name of Catalog.
+	CatalogName string `json:"catalog_name,omitempty"`
+	// Timestamp of the lineage event.
+	EventTime string `json:"event_time,omitempty"`
+	// Name of Table.
+	Name string `json:"name,omitempty"`
+	// Name of Schema.
+	SchemaName string `json:"schema_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalLineageTableInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalLineageTableInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ExternalLocationInfo struct {
@@ -2337,6 +2669,47 @@ func (s ExternalLocationInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ExternalMetadata struct {
+	// List of columns associated with the external metadata object.
+	Columns []string `json:"columns,omitempty"`
+	// Time at which this external metadata object was created.
+	CreateTime string `json:"create_time,omitempty"`
+	// Username of external metadata object creator.
+	CreatedBy string `json:"created_by,omitempty"`
+	// User-provided free-form text description.
+	Description string `json:"description,omitempty"`
+	// Type of entity within the external system.
+	EntityType string `json:"entity_type"`
+	// Unique identifier of the external metadata object.
+	Id string `json:"id,omitempty"`
+	// Unique identifier of parent metastore.
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// Name of the external metadata object.
+	Name string `json:"name"`
+	// Owner of the external metadata object.
+	Owner string `json:"owner,omitempty"`
+	// A map of key-value properties attached to the external metadata object.
+	Properties map[string]string `json:"properties,omitempty"`
+	// Type of external system.
+	SystemType SystemType `json:"system_type"`
+	// Time at which this external metadata object was last modified.
+	UpdateTime string `json:"update_time,omitempty"`
+	// Username of user who last modified external metadata object.
+	UpdatedBy string `json:"updated_by,omitempty"`
+	// URL associated with the external metadata object.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalMetadata) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Detailed status of an online table. Shown if the online table is in the
 // OFFLINE_FAILED or the ONLINE_PIPELINE_FAILED state.
 type FailedStatus struct {
@@ -2384,6 +2757,18 @@ type ForeignKeyConstraint struct {
 	ParentColumns []string `json:"parent_columns"`
 	// The full name of the parent constraint.
 	ParentTable string `json:"parent_table"`
+	// True if the constraint is RELY, false or unset if NORELY.
+	Rely bool `json:"rely,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ForeignKeyConstraint) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ForeignKeyConstraint) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // A function that is dependent on a SQL object.
@@ -2856,19 +3241,16 @@ func (s GenerateTemporaryTableCredentialResponse) MarshalJSON() ([]byte, error) 
 	return marshal.Marshal(s)
 }
 
-// Gets the metastore assignment for a workspace
 type GetAccountMetastoreAssignmentRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-// Get a metastore
 type GetAccountMetastoreRequest struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
 }
 
-// Gets the named storage credential
 type GetAccountStorageCredentialRequest struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
@@ -2876,13 +3258,11 @@ type GetAccountStorageCredentialRequest struct {
 	StorageCredentialName string `json:"-" url:"-"`
 }
 
-// Get an artifact allowlist
 type GetArtifactAllowlistRequest struct {
 	// The artifact type of the allowlist.
 	ArtifactType ArtifactType `json:"-" url:"-"`
 }
 
-// Get securable workspace bindings
 type GetBindingsRequest struct {
 	// Maximum number of workspace bindings to return. - When set to 0, the page
 	// length is set to a server configured value (recommended); - When set to a
@@ -2910,7 +3290,6 @@ func (s GetBindingsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get Model Version By Alias
 type GetByAliasRequest struct {
 	// The name of the alias
 	Alias string `json:"-" url:"-"`
@@ -2931,7 +3310,6 @@ func (s GetByAliasRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a catalog
 type GetCatalogRequest struct {
 	// Whether to include catalogs in the response for which the principal can
 	// only access selective metadata for
@@ -2955,19 +3333,16 @@ type GetCatalogWorkspaceBindingsResponse struct {
 	Workspaces []int64 `json:"workspaces,omitempty"`
 }
 
-// Get a connection
 type GetConnectionRequest struct {
 	// Name of the connection.
 	Name string `json:"-" url:"-"`
 }
 
-// Get a credential
 type GetCredentialRequest struct {
 	// Name of the credential.
 	NameArg string `json:"-" url:"-"`
 }
 
-// Get effective permissions
 type GetEffectiveRequest struct {
 	// Full name of securable.
 	FullName string `json:"-" url:"-"`
@@ -3003,7 +3378,6 @@ func (s GetEffectiveRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get an external location
 type GetExternalLocationRequest struct {
 	// Whether to include external locations in the response for which the
 	// principal can only access selective metadata for
@@ -3022,7 +3396,10 @@ func (s GetExternalLocationRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a function
+type GetExternalMetadataRequest struct {
+	Name string `json:"-" url:"-"`
+}
+
 type GetFunctionRequest struct {
 	// Whether to include functions in the response for which the principal can
 	// only access selective metadata for
@@ -3042,10 +3419,12 @@ func (s GetFunctionRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get permissions
 type GetGrantRequest struct {
 	// Full name of securable.
 	FullName string `json:"-" url:"-"`
+	// Optional. If true, also return privilege assignments whose principals
+	// have been deleted.
+	IncludeDeletedPrincipals bool `json:"-" url:"include_deleted_principals,omitempty"`
 	// Specifies the maximum number of privileges to return (page length). Every
 	// PrivilegeAssignment present in a single page response is guaranteed to
 	// contain all the privileges granted on the requested Securable for the
@@ -3078,7 +3457,6 @@ func (s GetGrantRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a metastore
 type GetMetastoreRequest struct {
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
@@ -3139,7 +3517,6 @@ func (s GetMetastoreSummaryResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a Model Version
 type GetModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
 	FullName string `json:"-" url:"-"`
@@ -3163,7 +3540,6 @@ func (s GetModelVersionRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get an Online Table
 type GetOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"-" url:"-"`
@@ -3188,13 +3564,11 @@ func (s GetPermissionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a table monitor
 type GetQualityMonitorRequest struct {
 	// Full name of the table.
 	TableName string `json:"-" url:"-"`
 }
 
-// Get information for a single resource quota.
 type GetQuotaRequest struct {
 	// Full name of the parent resource. Provide the metastore ID if the parent
 	// is a metastore.
@@ -3211,7 +3585,6 @@ type GetQuotaResponse struct {
 	QuotaInfo *QuotaInfo `json:"quota_info,omitempty"`
 }
 
-// Get refresh
 type GetRefreshRequest struct {
 	// ID of the refresh.
 	RefreshId string `json:"-" url:"-"`
@@ -3219,7 +3592,6 @@ type GetRefreshRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
-// Get a Registered Model
 type GetRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
 	FullName string `json:"-" url:"-"`
@@ -3240,7 +3612,6 @@ func (s GetRegisteredModelRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a schema
 type GetSchemaRequest struct {
 	// Full name of the schema.
 	FullName string `json:"-" url:"-"`
@@ -3259,22 +3630,21 @@ func (s GetSchemaRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a credential
 type GetStorageCredentialRequest struct {
 	// Name of the storage credential.
 	Name string `json:"-" url:"-"`
 }
 
-// Get a table
 type GetTableRequest struct {
 	// Full name of the table.
 	FullName string `json:"-" url:"-"`
 	// Whether to include tables in the response for which the principal can
-	// only access selective metadata for
+	// only access selective metadata for.
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
 	// Whether delta metadata should be included in the response.
 	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
-	// Whether to include a manifest containing capabilities the table has.
+	// Whether to include a manifest containing table capabilities in the
+	// response.
 	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3288,7 +3658,6 @@ func (s GetTableRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get catalog workspace bindings
 type GetWorkspaceBindingRequest struct {
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
@@ -3350,7 +3719,43 @@ func (f *IsolationMode) Type() string {
 	return "IsolationMode"
 }
 
-// Get all workspaces assigned to a metastore
+type LineageDirection string
+
+const LineageDirectionDownstream LineageDirection = `DOWNSTREAM`
+
+const LineageDirectionUpstream LineageDirection = `UPSTREAM`
+
+// String representation for [fmt.Print]
+func (f *LineageDirection) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *LineageDirection) Set(v string) error {
+	switch v {
+	case `DOWNSTREAM`, `UPSTREAM`:
+		*f = LineageDirection(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DOWNSTREAM", "UPSTREAM"`, v)
+	}
+}
+
+// Values returns all possible values for LineageDirection.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LineageDirection) Values() []LineageDirection {
+	return []LineageDirection{
+		LineageDirectionDownstream,
+		LineageDirectionUpstream,
+	}
+}
+
+// Type always returns LineageDirection to satisfy [pflag.Value] interface
+func (f *LineageDirection) Type() string {
+	return "LineageDirection"
+}
+
 type ListAccountMetastoreAssignmentsRequest struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
@@ -3361,7 +3766,6 @@ type ListAccountMetastoreAssignmentsResponse struct {
 	WorkspaceIds []int64 `json:"workspace_ids,omitempty"`
 }
 
-// Get all storage credentials assigned to a metastore
 type ListAccountStorageCredentialsRequest struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
@@ -3372,7 +3776,6 @@ type ListAccountStorageCredentialsResponse struct {
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
 }
 
-// List catalogs
 type ListCatalogsRequest struct {
 	// Whether to include catalogs in the response for which the principal can
 	// only access selective metadata for
@@ -3420,7 +3823,6 @@ func (s ListCatalogsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List connections
 type ListConnectionsRequest struct {
 	// Maximum number of connections to return. - If not set, all connections
 	// are returned (not recommended). - when set to a value greater than 0, the
@@ -3462,7 +3864,6 @@ func (s ListConnectionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List credentials
 type ListCredentialsRequest struct {
 	// Maximum number of credentials to return. - If not set, the default max
 	// page size is used. - When set to a value greater than 0, the page length
@@ -3504,7 +3905,43 @@ func (s ListCredentialsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List external locations
+type ListExternalLineageRelationshipsRequest struct {
+	// The lineage direction to filter on.
+	LineageDirection LineageDirection `json:"-" url:"lineage_direction"`
+	// The object to query external lineage relationship on.
+	ObjectInfo ExternalLineageObject `json:"-" url:"object_info"`
+
+	PageSize int `json:"-" url:"page_size,omitempty"`
+
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListExternalLineageRelationshipsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListExternalLineageRelationshipsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListExternalLineageRelationshipsResponse struct {
+	ExternalLineageRelationships []ExternalLineageInfo `json:"external_lineage_relationships,omitempty"`
+
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListExternalLineageRelationshipsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListExternalLineageRelationshipsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListExternalLocationsRequest struct {
 	// Whether to include external locations in the response for which the
 	// principal can only access selective metadata for
@@ -3549,7 +3986,38 @@ func (s ListExternalLocationsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List functions
+type ListExternalMetadataRequest struct {
+	PageSize int `json:"-" url:"page_size,omitempty"`
+
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListExternalMetadataRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListExternalMetadataRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListExternalMetadataResponse struct {
+	ExternalMetadata []ExternalMetadata `json:"external_metadata,omitempty"`
+
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListExternalMetadataResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListExternalMetadataResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListFunctionsRequest struct {
 	// Name of parent catalog for functions of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
@@ -3598,7 +4066,6 @@ func (s ListFunctionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List metastores
 type ListMetastoresRequest struct {
 	// Maximum number of metastores to return. - when set to a value greater
 	// than 0, the page length is the minimum of this value and a server
@@ -3643,7 +4110,6 @@ func (s ListMetastoresResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List Model Versions
 type ListModelVersionsRequest struct {
 	// The full three-level name of the registered model under which to list
 	// model versions
@@ -3691,7 +4157,6 @@ func (s ListModelVersionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List all resource quotas under a metastore.
 type ListQuotasRequest struct {
 	// The number of quotas to return.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
@@ -3728,13 +4193,11 @@ func (s ListQuotasResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List refreshes
 type ListRefreshesRequest struct {
 	// Full name of the table.
 	TableName string `json:"-" url:"-"`
 }
 
-// List Registered Models
 type ListRegisteredModelsRequest struct {
 	// The identifier of the catalog under which to list registered models. If
 	// specified, schema_name must be specified.
@@ -3795,7 +4258,6 @@ func (s ListRegisteredModelsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List schemas
 type ListSchemasRequest struct {
 	// Parent catalog for schemas of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
@@ -3842,7 +4304,6 @@ func (s ListSchemasResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List credentials
 type ListStorageCredentialsRequest struct {
 	// Maximum number of storage credentials to return. If not set, all the
 	// storage credentials are returned (not recommended). - when set to a value
@@ -3884,11 +4345,11 @@ func (s ListStorageCredentialsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List table summaries
 type ListSummariesRequest struct {
 	// Name of parent catalog for tables of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
-	// Whether to include a manifest containing capabilities the table has.
+	// Whether to include a manifest containing table capabilities in the
+	// response.
 	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
 	// Maximum number of summaries for tables to return. If not set, the page
 	// length is set to a server configured value (10000, as of 1/5/2024). -
@@ -3918,7 +4379,6 @@ func (s ListSummariesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List system schemas
 type ListSystemSchemasRequest struct {
 	// Maximum number of schemas to return. - When set to 0, the page length is
 	// set to a server configured value (recommended); - When set to a value
@@ -3981,16 +4441,14 @@ func (s ListTableSummariesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List tables
 type ListTablesRequest struct {
 	// Name of parent catalog for tables of interest.
 	CatalogName string `json:"-" url:"catalog_name"`
 	// Whether to include tables in the response for which the principal can
-	// only access selective metadata for
+	// only access selective metadata for.
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-	// Whether delta metadata should be included in the response.
-	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
-	// Whether to include a manifest containing capabilities the table has.
+	// Whether to include a manifest containing table capabilities in the
+	// response.
 	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
 	// Maximum number of tables to return. If not set, all the tables are
 	// returned (not recommended). - when set to a value greater than 0, the
@@ -4041,7 +4499,6 @@ func (s ListTablesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List Volumes
 type ListVolumesRequest struct {
 	// The identifier of the catalog
 	CatalogName string `json:"-" url:"catalog_name"`
@@ -4965,6 +5422,158 @@ func (s OnlineTableStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Spec of an allowed option on a securable kind and its attributes. This is
+// mostly used by UI to provide user friendly hints and descriptions in order to
+// facilitate the securable creation process.
+type OptionSpec struct {
+	// For drop down / radio button selections, UI will want to know the
+	// possible input values, it can also be used by other option types to limit
+	// input selections.
+	AllowedValues []string `json:"allowed_values,omitempty"`
+	// The default value of the option, for example, value '443' for 'port'
+	// option.
+	DefaultValue string `json:"default_value,omitempty"`
+	// A concise user facing description of what the input value of this option
+	// should look like.
+	Description string `json:"description,omitempty"`
+	// The hint is used on the UI to suggest what the input value can possibly
+	// be like, for example: example.com for 'host' option. Unlike default
+	// value, it will not be applied automatically without user input.
+	Hint string `json:"hint,omitempty"`
+	// Indicates whether an option should be displayed with copy button on the
+	// UI.
+	IsCopiable bool `json:"is_copiable,omitempty"`
+	// Indicates whether an option can be provided by users in the create/update
+	// path of an entity.
+	IsCreatable bool `json:"is_creatable,omitempty"`
+	// Is the option value not user settable and is thus not shown on the UI.
+	IsHidden bool `json:"is_hidden,omitempty"`
+	// Specifies whether this option is safe to log, i.e. no sensitive
+	// information.
+	IsLoggable bool `json:"is_loggable,omitempty"`
+	// Is the option required.
+	IsRequired bool `json:"is_required,omitempty"`
+	// Is the option value considered secret and thus redacted on the UI.
+	IsSecret bool `json:"is_secret,omitempty"`
+	// Is the option updatable by users.
+	IsUpdatable bool `json:"is_updatable,omitempty"`
+	// The unique name of the option.
+	Name string `json:"name,omitempty"`
+	// Specifies when the option value is displayed on the UI within the OAuth
+	// flow.
+	OauthStage OptionSpecOauthStage `json:"oauth_stage,omitempty"`
+	// The type of the option.
+	Type OptionSpecOptionType `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *OptionSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OptionSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// During the OAuth flow, specifies which stage the option should be displayed
+// in the UI. OAUTH_STAGE_UNSPECIFIED is the default value for options unrelated
+// to the OAuth flow. BEFORE_AUTHORIZATION_CODE corresponds to options necessary
+// to initiate the OAuth process. BEFORE_ACCESS_TOKEN corresponds to options
+// that are necessary to create a foreign connection, but that should be
+// displayed after the authorization code has already been received.
+type OptionSpecOauthStage string
+
+const OptionSpecOauthStageBeforeAccessToken OptionSpecOauthStage = `BEFORE_ACCESS_TOKEN`
+
+const OptionSpecOauthStageBeforeAuthorizationCode OptionSpecOauthStage = `BEFORE_AUTHORIZATION_CODE`
+
+// String representation for [fmt.Print]
+func (f *OptionSpecOauthStage) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *OptionSpecOauthStage) Set(v string) error {
+	switch v {
+	case `BEFORE_ACCESS_TOKEN`, `BEFORE_AUTHORIZATION_CODE`:
+		*f = OptionSpecOauthStage(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "BEFORE_ACCESS_TOKEN", "BEFORE_AUTHORIZATION_CODE"`, v)
+	}
+}
+
+// Values returns all possible values for OptionSpecOauthStage.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *OptionSpecOauthStage) Values() []OptionSpecOauthStage {
+	return []OptionSpecOauthStage{
+		OptionSpecOauthStageBeforeAccessToken,
+		OptionSpecOauthStageBeforeAuthorizationCode,
+	}
+}
+
+// Type always returns OptionSpecOauthStage to satisfy [pflag.Value] interface
+func (f *OptionSpecOauthStage) Type() string {
+	return "OptionSpecOauthStage"
+}
+
+// Type of the option, we purposely follow JavaScript types so that the UI can
+// map the options to JS types. https://www.w3schools.com/js/js_datatypes.asp
+// Enum is a special case that it's just string with selections.
+type OptionSpecOptionType string
+
+const OptionSpecOptionTypeOptionBigint OptionSpecOptionType = `OPTION_BIGINT`
+
+const OptionSpecOptionTypeOptionBoolean OptionSpecOptionType = `OPTION_BOOLEAN`
+
+const OptionSpecOptionTypeOptionEnum OptionSpecOptionType = `OPTION_ENUM`
+
+const OptionSpecOptionTypeOptionMultilineString OptionSpecOptionType = `OPTION_MULTILINE_STRING`
+
+const OptionSpecOptionTypeOptionNumber OptionSpecOptionType = `OPTION_NUMBER`
+
+const OptionSpecOptionTypeOptionServiceCredential OptionSpecOptionType = `OPTION_SERVICE_CREDENTIAL`
+
+const OptionSpecOptionTypeOptionString OptionSpecOptionType = `OPTION_STRING`
+
+// String representation for [fmt.Print]
+func (f *OptionSpecOptionType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *OptionSpecOptionType) Set(v string) error {
+	switch v {
+	case `OPTION_BIGINT`, `OPTION_BOOLEAN`, `OPTION_ENUM`, `OPTION_MULTILINE_STRING`, `OPTION_NUMBER`, `OPTION_SERVICE_CREDENTIAL`, `OPTION_STRING`:
+		*f = OptionSpecOptionType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "OPTION_BIGINT", "OPTION_BOOLEAN", "OPTION_ENUM", "OPTION_MULTILINE_STRING", "OPTION_NUMBER", "OPTION_SERVICE_CREDENTIAL", "OPTION_STRING"`, v)
+	}
+}
+
+// Values returns all possible values for OptionSpecOptionType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *OptionSpecOptionType) Values() []OptionSpecOptionType {
+	return []OptionSpecOptionType{
+		OptionSpecOptionTypeOptionBigint,
+		OptionSpecOptionTypeOptionBoolean,
+		OptionSpecOptionTypeOptionEnum,
+		OptionSpecOptionTypeOptionMultilineString,
+		OptionSpecOptionTypeOptionNumber,
+		OptionSpecOptionTypeOptionServiceCredential,
+		OptionSpecOptionTypeOptionString,
+	}
+}
+
+// Type always returns OptionSpecOptionType to satisfy [pflag.Value] interface
+func (f *OptionSpecOptionType) Type() string {
+	return "OptionSpecOptionType"
+}
+
 type PermissionsChange struct {
 	// The set of privileges to add.
 	Add []Privilege `json:"add,omitempty"`
@@ -5015,8 +5624,20 @@ type PrimaryKeyConstraint struct {
 	ChildColumns []string `json:"child_columns"`
 	// The name of the constraint.
 	Name string `json:"name"`
+	// True if the constraint is RELY, false or unset if NORELY.
+	Rely bool `json:"rely,omitempty"`
 	// Column names that represent a timeseries.
 	TimeseriesColumns []string `json:"timeseries_columns,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PrimaryKeyConstraint) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PrimaryKeyConstraint) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Privilege string
@@ -5198,8 +5819,12 @@ func (f *Privilege) Type() string {
 }
 
 type PrivilegeAssignment struct {
-	// The principal (user email address or group name).
+	// The principal (user email address or group name). For deleted principals,
+	// `principal` is empty while `principal_id` is populated.
 	Principal string `json:"principal,omitempty"`
+	// Unique identifier of the principal. For active principals, both
+	// `principal` and `principal_id` are present.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
 
@@ -5324,7 +5949,6 @@ func (s R2Credentials) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a Volume
 type ReadVolumeRequest struct {
 	// Whether to include volumes in the response for which the principal can
 	// only access selective metadata for
@@ -5442,7 +6066,6 @@ func (s RegisteredModelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Queue a metric refresh for a monitor
 type RunRefreshRequest struct {
 	// Full name of the table.
 	TableName string `json:"-" url:"-"`
@@ -5501,6 +6124,229 @@ func (s SchemaInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Latest kind: CONNECTION_JDBC = 251; Next id:252
+type SecurableKind string
+
+const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
+
+const SecurableKindTableDelta SecurableKind = `TABLE_DELTA`
+
+const SecurableKindTableDeltasharing SecurableKind = `TABLE_DELTASHARING`
+
+const SecurableKindTableDeltasharingMutable SecurableKind = `TABLE_DELTASHARING_MUTABLE`
+
+const SecurableKindTableDeltaExternal SecurableKind = `TABLE_DELTA_EXTERNAL`
+
+const SecurableKindTableDeltaIcebergManaged SecurableKind = `TABLE_DELTA_ICEBERG_MANAGED`
+
+const SecurableKindTableDeltaUniformHudiExternal SecurableKind = `TABLE_DELTA_UNIFORM_HUDI_EXTERNAL`
+
+const SecurableKindTableDeltaUniformIcebergExternal SecurableKind = `TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL`
+
+const SecurableKindTableDeltaUniformIcebergForeignHiveMetastoreExternal SecurableKind = `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL`
+
+const SecurableKindTableDeltaUniformIcebergForeignHiveMetastoreManaged SecurableKind = `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED`
+
+const SecurableKindTableDeltaUniformIcebergForeignSnowflake SecurableKind = `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE`
+
+const SecurableKindTableExternal SecurableKind = `TABLE_EXTERNAL`
+
+const SecurableKindTableFeatureStore SecurableKind = `TABLE_FEATURE_STORE`
+
+const SecurableKindTableFeatureStoreExternal SecurableKind = `TABLE_FEATURE_STORE_EXTERNAL`
+
+const SecurableKindTableForeignBigquery SecurableKind = `TABLE_FOREIGN_BIGQUERY`
+
+const SecurableKindTableForeignDatabricks SecurableKind = `TABLE_FOREIGN_DATABRICKS`
+
+const SecurableKindTableForeignDeltasharing SecurableKind = `TABLE_FOREIGN_DELTASHARING`
+
+const SecurableKindTableForeignHiveMetastore SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE`
+
+const SecurableKindTableForeignHiveMetastoreDbfsExternal SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL`
+
+const SecurableKindTableForeignHiveMetastoreDbfsManaged SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED`
+
+const SecurableKindTableForeignHiveMetastoreDbfsShallowCloneExternal SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL`
+
+const SecurableKindTableForeignHiveMetastoreDbfsShallowCloneManaged SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED`
+
+const SecurableKindTableForeignHiveMetastoreDbfsView SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW`
+
+const SecurableKindTableForeignHiveMetastoreExternal SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL`
+
+const SecurableKindTableForeignHiveMetastoreManaged SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE_MANAGED`
+
+const SecurableKindTableForeignHiveMetastoreShallowCloneExternal SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL`
+
+const SecurableKindTableForeignHiveMetastoreShallowCloneManaged SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED`
+
+const SecurableKindTableForeignHiveMetastoreView SecurableKind = `TABLE_FOREIGN_HIVE_METASTORE_VIEW`
+
+const SecurableKindTableForeignMongodb SecurableKind = `TABLE_FOREIGN_MONGODB`
+
+const SecurableKindTableForeignMysql SecurableKind = `TABLE_FOREIGN_MYSQL`
+
+const SecurableKindTableForeignNetsuite SecurableKind = `TABLE_FOREIGN_NETSUITE`
+
+const SecurableKindTableForeignOracle SecurableKind = `TABLE_FOREIGN_ORACLE`
+
+const SecurableKindTableForeignPostgresql SecurableKind = `TABLE_FOREIGN_POSTGRESQL`
+
+const SecurableKindTableForeignRedshift SecurableKind = `TABLE_FOREIGN_REDSHIFT`
+
+const SecurableKindTableForeignSalesforce SecurableKind = `TABLE_FOREIGN_SALESFORCE`
+
+const SecurableKindTableForeignSalesforceDataCloud SecurableKind = `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD`
+
+const SecurableKindTableForeignSalesforceDataCloudFileSharing SecurableKind = `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING`
+
+const SecurableKindTableForeignSalesforceDataCloudFileSharingView SecurableKind = `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW`
+
+const SecurableKindTableForeignSnowflake SecurableKind = `TABLE_FOREIGN_SNOWFLAKE`
+
+const SecurableKindTableForeignSqldw SecurableKind = `TABLE_FOREIGN_SQLDW`
+
+const SecurableKindTableForeignSqlserver SecurableKind = `TABLE_FOREIGN_SQLSERVER`
+
+const SecurableKindTableForeignTeradata SecurableKind = `TABLE_FOREIGN_TERADATA`
+
+const SecurableKindTableForeignWorkdayRaas SecurableKind = `TABLE_FOREIGN_WORKDAY_RAAS`
+
+const SecurableKindTableIcebergUniformManaged SecurableKind = `TABLE_ICEBERG_UNIFORM_MANAGED`
+
+const SecurableKindTableInternal SecurableKind = `TABLE_INTERNAL`
+
+const SecurableKindTableManagedPostgresql SecurableKind = `TABLE_MANAGED_POSTGRESQL`
+
+const SecurableKindTableMaterializedView SecurableKind = `TABLE_MATERIALIZED_VIEW`
+
+const SecurableKindTableMaterializedViewDeltasharing SecurableKind = `TABLE_MATERIALIZED_VIEW_DELTASHARING`
+
+const SecurableKindTableMetricView SecurableKind = `TABLE_METRIC_VIEW`
+
+const SecurableKindTableOnlineVectorIndexDirect SecurableKind = `TABLE_ONLINE_VECTOR_INDEX_DIRECT`
+
+const SecurableKindTableOnlineVectorIndexReplica SecurableKind = `TABLE_ONLINE_VECTOR_INDEX_REPLICA`
+
+const SecurableKindTableOnlineView SecurableKind = `TABLE_ONLINE_VIEW`
+
+const SecurableKindTableStandard SecurableKind = `TABLE_STANDARD`
+
+const SecurableKindTableStreamingLiveTable SecurableKind = `TABLE_STREAMING_LIVE_TABLE`
+
+const SecurableKindTableStreamingLiveTableDeltasharing SecurableKind = `TABLE_STREAMING_LIVE_TABLE_DELTASHARING`
+
+const SecurableKindTableSystem SecurableKind = `TABLE_SYSTEM`
+
+const SecurableKindTableSystemDeltasharing SecurableKind = `TABLE_SYSTEM_DELTASHARING`
+
+const SecurableKindTableView SecurableKind = `TABLE_VIEW`
+
+const SecurableKindTableViewDeltasharing SecurableKind = `TABLE_VIEW_DELTASHARING`
+
+// String representation for [fmt.Print]
+func (f *SecurableKind) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SecurableKind) Set(v string) error {
+	switch v {
+	case `TABLE_DB_STORAGE`, `TABLE_DELTA`, `TABLE_DELTASHARING`, `TABLE_DELTASHARING_MUTABLE`, `TABLE_DELTA_EXTERNAL`, `TABLE_DELTA_ICEBERG_MANAGED`, `TABLE_DELTA_UNIFORM_HUDI_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE`, `TABLE_EXTERNAL`, `TABLE_FEATURE_STORE`, `TABLE_FEATURE_STORE_EXTERNAL`, `TABLE_FOREIGN_BIGQUERY`, `TABLE_FOREIGN_DATABRICKS`, `TABLE_FOREIGN_DELTASHARING`, `TABLE_FOREIGN_HIVE_METASTORE`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW`, `TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_VIEW`, `TABLE_FOREIGN_MONGODB`, `TABLE_FOREIGN_MYSQL`, `TABLE_FOREIGN_NETSUITE`, `TABLE_FOREIGN_ORACLE`, `TABLE_FOREIGN_POSTGRESQL`, `TABLE_FOREIGN_REDSHIFT`, `TABLE_FOREIGN_SALESFORCE`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW`, `TABLE_FOREIGN_SNOWFLAKE`, `TABLE_FOREIGN_SQLDW`, `TABLE_FOREIGN_SQLSERVER`, `TABLE_FOREIGN_TERADATA`, `TABLE_FOREIGN_WORKDAY_RAAS`, `TABLE_ICEBERG_UNIFORM_MANAGED`, `TABLE_INTERNAL`, `TABLE_MANAGED_POSTGRESQL`, `TABLE_MATERIALIZED_VIEW`, `TABLE_MATERIALIZED_VIEW_DELTASHARING`, `TABLE_METRIC_VIEW`, `TABLE_ONLINE_VECTOR_INDEX_DIRECT`, `TABLE_ONLINE_VECTOR_INDEX_REPLICA`, `TABLE_ONLINE_VIEW`, `TABLE_STANDARD`, `TABLE_STREAMING_LIVE_TABLE`, `TABLE_STREAMING_LIVE_TABLE_DELTASHARING`, `TABLE_SYSTEM`, `TABLE_SYSTEM_DELTASHARING`, `TABLE_VIEW`, `TABLE_VIEW_DELTASHARING`:
+		*f = SecurableKind(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "TABLE_DB_STORAGE", "TABLE_DELTA", "TABLE_DELTASHARING", "TABLE_DELTASHARING_MUTABLE", "TABLE_DELTA_EXTERNAL", "TABLE_DELTA_ICEBERG_MANAGED", "TABLE_DELTA_UNIFORM_HUDI_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE", "TABLE_EXTERNAL", "TABLE_FEATURE_STORE", "TABLE_FEATURE_STORE_EXTERNAL", "TABLE_FOREIGN_BIGQUERY", "TABLE_FOREIGN_DATABRICKS", "TABLE_FOREIGN_DELTASHARING", "TABLE_FOREIGN_HIVE_METASTORE", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW", "TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_VIEW", "TABLE_FOREIGN_MONGODB", "TABLE_FOREIGN_MYSQL", "TABLE_FOREIGN_NETSUITE", "TABLE_FOREIGN_ORACLE", "TABLE_FOREIGN_POSTGRESQL", "TABLE_FOREIGN_REDSHIFT", "TABLE_FOREIGN_SALESFORCE", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW", "TABLE_FOREIGN_SNOWFLAKE", "TABLE_FOREIGN_SQLDW", "TABLE_FOREIGN_SQLSERVER", "TABLE_FOREIGN_TERADATA", "TABLE_FOREIGN_WORKDAY_RAAS", "TABLE_ICEBERG_UNIFORM_MANAGED", "TABLE_INTERNAL", "TABLE_MANAGED_POSTGRESQL", "TABLE_MATERIALIZED_VIEW", "TABLE_MATERIALIZED_VIEW_DELTASHARING", "TABLE_METRIC_VIEW", "TABLE_ONLINE_VECTOR_INDEX_DIRECT", "TABLE_ONLINE_VECTOR_INDEX_REPLICA", "TABLE_ONLINE_VIEW", "TABLE_STANDARD", "TABLE_STREAMING_LIVE_TABLE", "TABLE_STREAMING_LIVE_TABLE_DELTASHARING", "TABLE_SYSTEM", "TABLE_SYSTEM_DELTASHARING", "TABLE_VIEW", "TABLE_VIEW_DELTASHARING"`, v)
+	}
+}
+
+// Values returns all possible values for SecurableKind.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SecurableKind) Values() []SecurableKind {
+	return []SecurableKind{
+		SecurableKindTableDbStorage,
+		SecurableKindTableDelta,
+		SecurableKindTableDeltasharing,
+		SecurableKindTableDeltasharingMutable,
+		SecurableKindTableDeltaExternal,
+		SecurableKindTableDeltaIcebergManaged,
+		SecurableKindTableDeltaUniformHudiExternal,
+		SecurableKindTableDeltaUniformIcebergExternal,
+		SecurableKindTableDeltaUniformIcebergForeignHiveMetastoreExternal,
+		SecurableKindTableDeltaUniformIcebergForeignHiveMetastoreManaged,
+		SecurableKindTableDeltaUniformIcebergForeignSnowflake,
+		SecurableKindTableExternal,
+		SecurableKindTableFeatureStore,
+		SecurableKindTableFeatureStoreExternal,
+		SecurableKindTableForeignBigquery,
+		SecurableKindTableForeignDatabricks,
+		SecurableKindTableForeignDeltasharing,
+		SecurableKindTableForeignHiveMetastore,
+		SecurableKindTableForeignHiveMetastoreDbfsExternal,
+		SecurableKindTableForeignHiveMetastoreDbfsManaged,
+		SecurableKindTableForeignHiveMetastoreDbfsShallowCloneExternal,
+		SecurableKindTableForeignHiveMetastoreDbfsShallowCloneManaged,
+		SecurableKindTableForeignHiveMetastoreDbfsView,
+		SecurableKindTableForeignHiveMetastoreExternal,
+		SecurableKindTableForeignHiveMetastoreManaged,
+		SecurableKindTableForeignHiveMetastoreShallowCloneExternal,
+		SecurableKindTableForeignHiveMetastoreShallowCloneManaged,
+		SecurableKindTableForeignHiveMetastoreView,
+		SecurableKindTableForeignMongodb,
+		SecurableKindTableForeignMysql,
+		SecurableKindTableForeignNetsuite,
+		SecurableKindTableForeignOracle,
+		SecurableKindTableForeignPostgresql,
+		SecurableKindTableForeignRedshift,
+		SecurableKindTableForeignSalesforce,
+		SecurableKindTableForeignSalesforceDataCloud,
+		SecurableKindTableForeignSalesforceDataCloudFileSharing,
+		SecurableKindTableForeignSalesforceDataCloudFileSharingView,
+		SecurableKindTableForeignSnowflake,
+		SecurableKindTableForeignSqldw,
+		SecurableKindTableForeignSqlserver,
+		SecurableKindTableForeignTeradata,
+		SecurableKindTableForeignWorkdayRaas,
+		SecurableKindTableIcebergUniformManaged,
+		SecurableKindTableInternal,
+		SecurableKindTableManagedPostgresql,
+		SecurableKindTableMaterializedView,
+		SecurableKindTableMaterializedViewDeltasharing,
+		SecurableKindTableMetricView,
+		SecurableKindTableOnlineVectorIndexDirect,
+		SecurableKindTableOnlineVectorIndexReplica,
+		SecurableKindTableOnlineView,
+		SecurableKindTableStandard,
+		SecurableKindTableStreamingLiveTable,
+		SecurableKindTableStreamingLiveTableDeltasharing,
+		SecurableKindTableSystem,
+		SecurableKindTableSystemDeltasharing,
+		SecurableKindTableView,
+		SecurableKindTableViewDeltasharing,
+	}
+}
+
+// Type always returns SecurableKind to satisfy [pflag.Value] interface
+func (f *SecurableKind) Type() string {
+	return "SecurableKind"
+}
+
+// Manifest of a specific securable kind.
+type SecurableKindManifest struct {
+	// Privileges that can be assigned to the securable.
+	AssignablePrivileges []string `json:"assignable_privileges,omitempty"`
+	// A list of capabilities in the securable kind.
+	Capabilities []string `json:"capabilities,omitempty"`
+	// Detailed specs of allowed options.
+	Options []OptionSpec `json:"options,omitempty"`
+	// Securable kind to get manifest of.
+	SecurableKind SecurableKind `json:"securable_kind,omitempty"`
+	// Securable Type of the kind.
+	SecurableType SecurableType `json:"securable_type,omitempty"`
+}
+
 // The type of Unity Catalog securable.
 type SecurableType string
 
@@ -5536,8 +6382,6 @@ const SecurableTypeStorageCredential SecurableType = `STORAGE_CREDENTIAL`
 
 const SecurableTypeTable SecurableType = `TABLE`
 
-const SecurableTypeUnknownSecurableType SecurableType = `UNKNOWN_SECURABLE_TYPE`
-
 const SecurableTypeVolume SecurableType = `VOLUME`
 
 // String representation for [fmt.Print]
@@ -5548,11 +6392,11 @@ func (f *SecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableType) Set(v string) error {
 	switch v {
-	case `CATALOG`, `CLEAN_ROOM`, `CONNECTION`, `CREDENTIAL`, `EXTERNAL_LOCATION`, `EXTERNAL_METADATA`, `FUNCTION`, `METASTORE`, `PIPELINE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `STAGING_TABLE`, `STORAGE_CREDENTIAL`, `TABLE`, `UNKNOWN_SECURABLE_TYPE`, `VOLUME`:
+	case `CATALOG`, `CLEAN_ROOM`, `CONNECTION`, `CREDENTIAL`, `EXTERNAL_LOCATION`, `EXTERNAL_METADATA`, `FUNCTION`, `METASTORE`, `PIPELINE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `STAGING_TABLE`, `STORAGE_CREDENTIAL`, `TABLE`, `VOLUME`:
 		*f = SecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CATALOG", "CLEAN_ROOM", "CONNECTION", "CREDENTIAL", "EXTERNAL_LOCATION", "EXTERNAL_METADATA", "FUNCTION", "METASTORE", "PIPELINE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "STAGING_TABLE", "STORAGE_CREDENTIAL", "TABLE", "UNKNOWN_SECURABLE_TYPE", "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CATALOG", "CLEAN_ROOM", "CONNECTION", "CREDENTIAL", "EXTERNAL_LOCATION", "EXTERNAL_METADATA", "FUNCTION", "METASTORE", "PIPELINE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "STAGING_TABLE", "STORAGE_CREDENTIAL", "TABLE", "VOLUME"`, v)
 	}
 }
 
@@ -5577,7 +6421,6 @@ func (f *SecurableType) Values() []SecurableType {
 		SecurableTypeStagingTable,
 		SecurableTypeStorageCredential,
 		SecurableTypeTable,
-		SecurableTypeUnknownSecurableType,
 		SecurableTypeVolume,
 	}
 }
@@ -5740,6 +6583,97 @@ type SystemSchemaInfo struct {
 	State string `json:"state"`
 }
 
+type SystemType string
+
+const SystemTypeAmazonRedshift SystemType = `AMAZON_REDSHIFT`
+
+const SystemTypeAzureSynapse SystemType = `AZURE_SYNAPSE`
+
+const SystemTypeGoogleBigquery SystemType = `GOOGLE_BIGQUERY`
+
+const SystemTypeKafka SystemType = `KAFKA`
+
+const SystemTypeLooker SystemType = `LOOKER`
+
+const SystemTypeMicrosoftFabric SystemType = `MICROSOFT_FABRIC`
+
+const SystemTypeMicrosoftSqlServer SystemType = `MICROSOFT_SQL_SERVER`
+
+const SystemTypeMongodb SystemType = `MONGODB`
+
+const SystemTypeMysql SystemType = `MYSQL`
+
+const SystemTypeOracle SystemType = `ORACLE`
+
+const SystemTypeOther SystemType = `OTHER`
+
+const SystemTypePostgresql SystemType = `POSTGRESQL`
+
+const SystemTypePowerBi SystemType = `POWER_BI`
+
+const SystemTypeSalesforce SystemType = `SALESFORCE`
+
+const SystemTypeSap SystemType = `SAP`
+
+const SystemTypeServicenow SystemType = `SERVICENOW`
+
+const SystemTypeSnowflake SystemType = `SNOWFLAKE`
+
+const SystemTypeTableau SystemType = `TABLEAU`
+
+const SystemTypeTeradata SystemType = `TERADATA`
+
+const SystemTypeWorkday SystemType = `WORKDAY`
+
+// String representation for [fmt.Print]
+func (f *SystemType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SystemType) Set(v string) error {
+	switch v {
+	case `AMAZON_REDSHIFT`, `AZURE_SYNAPSE`, `GOOGLE_BIGQUERY`, `KAFKA`, `LOOKER`, `MICROSOFT_FABRIC`, `MICROSOFT_SQL_SERVER`, `MONGODB`, `MYSQL`, `ORACLE`, `OTHER`, `POSTGRESQL`, `POWER_BI`, `SALESFORCE`, `SAP`, `SERVICENOW`, `SNOWFLAKE`, `TABLEAU`, `TERADATA`, `WORKDAY`:
+		*f = SystemType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AMAZON_REDSHIFT", "AZURE_SYNAPSE", "GOOGLE_BIGQUERY", "KAFKA", "LOOKER", "MICROSOFT_FABRIC", "MICROSOFT_SQL_SERVER", "MONGODB", "MYSQL", "ORACLE", "OTHER", "POSTGRESQL", "POWER_BI", "SALESFORCE", "SAP", "SERVICENOW", "SNOWFLAKE", "TABLEAU", "TERADATA", "WORKDAY"`, v)
+	}
+}
+
+// Values returns all possible values for SystemType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SystemType) Values() []SystemType {
+	return []SystemType{
+		SystemTypeAmazonRedshift,
+		SystemTypeAzureSynapse,
+		SystemTypeGoogleBigquery,
+		SystemTypeKafka,
+		SystemTypeLooker,
+		SystemTypeMicrosoftFabric,
+		SystemTypeMicrosoftSqlServer,
+		SystemTypeMongodb,
+		SystemTypeMysql,
+		SystemTypeOracle,
+		SystemTypeOther,
+		SystemTypePostgresql,
+		SystemTypePowerBi,
+		SystemTypeSalesforce,
+		SystemTypeSap,
+		SystemTypeServicenow,
+		SystemTypeSnowflake,
+		SystemTypeTableau,
+		SystemTypeTeradata,
+		SystemTypeWorkday,
+	}
+}
+
+// Type always returns SystemType to satisfy [pflag.Value] interface
+func (f *SystemType) Type() string {
+	return "SystemType"
+}
+
 // A table constraint, as defined by *one* of the following fields being set:
 // __primary_key_constraint__, __foreign_key_constraint__,
 // __named_table_constraint__.
@@ -5823,12 +6757,14 @@ type TableInfo struct {
 	RowFilter *TableRowFilter `json:"row_filter,omitempty"`
 	// Name of parent schema relative to its parent catalog.
 	SchemaName string `json:"schema_name,omitempty"`
+	// SecurableKindManifest of table, including capabilities the table has.
+	SecurableKindManifest *SecurableKindManifest `json:"securable_kind_manifest,omitempty"`
 	// List of schemes whose objects can be referenced without qualification.
 	SqlPath string `json:"sql_path,omitempty"`
 	// Name of the storage credential, when a storage credential is configured
 	// for use with this table.
 	StorageCredentialName string `json:"storage_credential_name,omitempty"`
-	// Storage root URL for table (for **MANAGED**, **EXTERNAL** tables)
+	// Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
 	StorageLocation string `json:"storage_location,omitempty"`
 	// List of table constraints. Note: this field is not set in the output of
 	// the __listTables__ API.
@@ -5911,6 +6847,8 @@ type TableRowFilter struct {
 type TableSummary struct {
 	// The full name of the table.
 	FullName string `json:"full_name,omitempty"`
+	// SecurableKindManifest of table, including capabilities the table has.
+	SecurableKindManifest *SecurableKindManifest `json:"securable_kind_manifest,omitempty"`
 
 	TableType TableType `json:"table_type,omitempty"`
 
@@ -5939,6 +6877,8 @@ const TableTypeManagedShallowClone TableType = `MANAGED_SHALLOW_CLONE`
 
 const TableTypeMaterializedView TableType = `MATERIALIZED_VIEW`
 
+const TableTypeMetricView TableType = `METRIC_VIEW`
+
 const TableTypeStreamingTable TableType = `STREAMING_TABLE`
 
 const TableTypeView TableType = `VIEW`
@@ -5951,11 +6891,11 @@ func (f *TableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TableType) Set(v string) error {
 	switch v {
-	case `EXTERNAL`, `EXTERNAL_SHALLOW_CLONE`, `FOREIGN`, `MANAGED`, `MANAGED_SHALLOW_CLONE`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
+	case `EXTERNAL`, `EXTERNAL_SHALLOW_CLONE`, `FOREIGN`, `MANAGED`, `MANAGED_SHALLOW_CLONE`, `MATERIALIZED_VIEW`, `METRIC_VIEW`, `STREAMING_TABLE`, `VIEW`:
 		*f = TableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "EXTERNAL_SHALLOW_CLONE", "FOREIGN", "MANAGED", "MANAGED_SHALLOW_CLONE", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
+		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "EXTERNAL_SHALLOW_CLONE", "FOREIGN", "MANAGED", "MANAGED_SHALLOW_CLONE", "MATERIALIZED_VIEW", "METRIC_VIEW", "STREAMING_TABLE", "VIEW"`, v)
 	}
 }
 
@@ -5970,6 +6910,7 @@ func (f *TableType) Values() []TableType {
 		TableTypeManaged,
 		TableTypeManagedShallowClone,
 		TableTypeMaterializedView,
+		TableTypeMetricView,
 		TableTypeStreamingTable,
 		TableTypeView,
 	}
@@ -6047,7 +6988,6 @@ func (s TriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete an assignment
 type UnassignRequest struct {
 	// Query for the ID of the metastore to delete.
 	MetastoreId string `json:"-" url:"metastore_id"`
@@ -6160,6 +7100,22 @@ func (s UpdateCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdateExternalLineageRelationshipRequest struct {
+	ExternalLineageRelationship UpdateRequestExternalLineage `json:"external_lineage_relationship"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
 type UpdateExternalLocation struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -6204,6 +7160,24 @@ func (s *UpdateExternalLocation) UnmarshalJSON(b []byte) error {
 
 func (s UpdateExternalLocation) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateExternalMetadataRequest struct {
+	ExternalMetadata ExternalMetadata `json:"external_metadata"`
+	// Name of the external metadata object.
+	Name string `json:"-" url:"-"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	UpdateMask string `json:"-" url:"update_mask"`
 }
 
 type UpdateFunction struct {
@@ -6376,6 +7350,29 @@ func (s UpdateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdateRequestExternalLineage struct {
+	// List of column relationships between source and target objects.
+	Columns []ColumnRelationship `json:"columns,omitempty"`
+	// Unique identifier of the external lineage relationship.
+	Id string `json:"id,omitempty"`
+	// Key-value properties associated with the external lineage relationship.
+	Properties map[string]string `json:"properties,omitempty"`
+	// Source object of the external lineage relationship.
+	Source ExternalLineageObject `json:"source"`
+	// Target object of the external lineage relationship.
+	Target ExternalLineageObject `json:"target"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateRequestExternalLineage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateRequestExternalLineage) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type UpdateResponse struct {
 }
 
@@ -6448,11 +7445,10 @@ func (s UpdateStorageCredential) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Update a table owner.
 type UpdateTableRequest struct {
 	// Full name of the table.
 	FullName string `json:"-" url:"-"`
-
+	// Username of current owner of table.
 	Owner string `json:"owner,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

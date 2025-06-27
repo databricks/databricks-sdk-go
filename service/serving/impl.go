@@ -54,11 +54,10 @@ func (a *servingEndpointsImpl) CreateProvisionedThroughputEndpoint(ctx context.C
 }
 
 func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServingEndpointRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 

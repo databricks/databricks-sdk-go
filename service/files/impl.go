@@ -20,24 +20,22 @@ type dbfsImpl struct {
 }
 
 func (a *dbfsImpl) AddBlock(ctx context.Context, request AddBlock) error {
-	var addBlockResponse AddBlockResponse
 	path := "/api/2.0/dbfs/add-block"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &addBlockResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *dbfsImpl) Close(ctx context.Context, request Close) error {
-	var closeResponse CloseResponse
 	path := "/api/2.0/dbfs/close"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &closeResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -53,13 +51,12 @@ func (a *dbfsImpl) Create(ctx context.Context, request Create) (*CreateResponse,
 }
 
 func (a *dbfsImpl) Delete(ctx context.Context, request Delete) error {
-	var deleteResponse DeleteResponse
 	path := "/api/2.0/dbfs/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -129,35 +126,32 @@ func (a *dbfsImpl) internalList(ctx context.Context, request ListDbfsRequest) (*
 }
 
 func (a *dbfsImpl) Mkdirs(ctx context.Context, request MkDirs) error {
-	var mkDirsResponse MkDirsResponse
 	path := "/api/2.0/dbfs/mkdirs"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &mkDirsResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *dbfsImpl) Move(ctx context.Context, request Move) error {
-	var moveResponse MoveResponse
 	path := "/api/2.0/dbfs/move"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &moveResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *dbfsImpl) Put(ctx context.Context, request Put) error {
-	var putResponse PutResponse
 	path := "/api/2.0/dbfs/put"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &putResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -177,29 +171,26 @@ type filesImpl struct {
 }
 
 func (a *filesImpl) CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error {
-	var createDirectoryResponse CreateDirectoryResponse
 	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, nil, &createDirectoryResponse)
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, nil, nil)
 	return err
 }
 
 func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *filesImpl) DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error {
-	var deleteDirectoryResponse DeleteDirectoryResponse
 	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDirectoryResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -214,11 +205,10 @@ func (a *filesImpl) Download(ctx context.Context, request DownloadRequest) (*Dow
 }
 
 func (a *filesImpl) GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error {
-	var getDirectoryMetadataResponse GetDirectoryMetadataResponse
 	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodHead, path, headers, queryParams, request, &getDirectoryMetadataResponse)
+	err := a.client.Do(ctx, http.MethodHead, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -275,7 +265,6 @@ func (a *filesImpl) internalListDirectoryContents(ctx context.Context, request L
 }
 
 func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) error {
-	var uploadResponse UploadResponse
 	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
 	queryParams := make(map[string]any)
 	if request.Overwrite != false || slices.Contains(request.ForceSendFields, "Overwrite") {
@@ -283,6 +272,6 @@ func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) error {
 	}
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/octet-stream"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.Contents, &uploadResponse)
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.Contents, nil)
 	return err
 }

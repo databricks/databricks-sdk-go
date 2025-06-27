@@ -176,7 +176,7 @@ func (_c *MockDashboardWidgetsInterface_DeleteById_Call) RunAndReturn(run func(c
 }
 
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockDashboardWidgetsInterface) Update(ctx context.Context, request sql.CreateWidget) (*sql.Widget, error) {
+func (_m *MockDashboardWidgetsInterface) Update(ctx context.Context, request sql.UpdateWidgetRequest) (*sql.Widget, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -185,10 +185,10 @@ func (_m *MockDashboardWidgetsInterface) Update(ctx context.Context, request sql
 
 	var r0 *sql.Widget
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.CreateWidget) (*sql.Widget, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.UpdateWidgetRequest) (*sql.Widget, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.CreateWidget) *sql.Widget); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.UpdateWidgetRequest) *sql.Widget); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -196,7 +196,7 @@ func (_m *MockDashboardWidgetsInterface) Update(ctx context.Context, request sql
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, sql.CreateWidget) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, sql.UpdateWidgetRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -212,14 +212,14 @@ type MockDashboardWidgetsInterface_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request sql.CreateWidget
+//   - request sql.UpdateWidgetRequest
 func (_e *MockDashboardWidgetsInterface_Expecter) Update(ctx interface{}, request interface{}) *MockDashboardWidgetsInterface_Update_Call {
 	return &MockDashboardWidgetsInterface_Update_Call{Call: _e.mock.On("Update", ctx, request)}
 }
 
-func (_c *MockDashboardWidgetsInterface_Update_Call) Run(run func(ctx context.Context, request sql.CreateWidget)) *MockDashboardWidgetsInterface_Update_Call {
+func (_c *MockDashboardWidgetsInterface_Update_Call) Run(run func(ctx context.Context, request sql.UpdateWidgetRequest)) *MockDashboardWidgetsInterface_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sql.CreateWidget))
+		run(args[0].(context.Context), args[1].(sql.UpdateWidgetRequest))
 	})
 	return _c
 }
@@ -229,7 +229,7 @@ func (_c *MockDashboardWidgetsInterface_Update_Call) Return(_a0 *sql.Widget, _a1
 	return _c
 }
 
-func (_c *MockDashboardWidgetsInterface_Update_Call) RunAndReturn(run func(context.Context, sql.CreateWidget) (*sql.Widget, error)) *MockDashboardWidgetsInterface_Update_Call {
+func (_c *MockDashboardWidgetsInterface_Update_Call) RunAndReturn(run func(context.Context, sql.UpdateWidgetRequest) (*sql.Widget, error)) *MockDashboardWidgetsInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }
