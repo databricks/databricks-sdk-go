@@ -369,25 +369,21 @@ func (s CustomerManagedKey) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete credential configuration
 type DeleteCredentialRequest struct {
 	// Databricks Account API credential configuration ID
 	CredentialsId string `json:"-" url:"-"`
 }
 
-// Delete encryption key configuration
 type DeleteEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
 	CustomerManagedKeyId string `json:"-" url:"-"`
 }
 
-// Delete a network configuration
 type DeleteNetworkRequest struct {
 	// Databricks Account API network configuration ID.
 	NetworkId string `json:"-" url:"-"`
 }
 
-// Delete a private access settings object
 type DeletePrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" url:"-"`
@@ -396,19 +392,16 @@ type DeletePrivateAccesRequest struct {
 type DeleteResponse struct {
 }
 
-// Delete storage configuration
 type DeleteStorageRequest struct {
 	// Databricks Account API storage configuration ID.
 	StorageConfigurationId string `json:"-" url:"-"`
 }
 
-// Delete VPC endpoint configuration
 type DeleteVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
 	VpcEndpointId string `json:"-" url:"-"`
 }
 
-// Delete a workspace
 type DeleteWorkspaceRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -621,43 +614,36 @@ func (s GcpVpcEndpointInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get credential configuration
 type GetCredentialRequest struct {
 	// Databricks Account API credential configuration ID
 	CredentialsId string `json:"-" url:"-"`
 }
 
-// Get encryption key configuration
 type GetEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
 	CustomerManagedKeyId string `json:"-" url:"-"`
 }
 
-// Get a network configuration
 type GetNetworkRequest struct {
 	// Databricks Account API network configuration ID.
 	NetworkId string `json:"-" url:"-"`
 }
 
-// Get a private access settings object
 type GetPrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" url:"-"`
 }
 
-// Get storage configuration
 type GetStorageRequest struct {
 	// Databricks Account API storage configuration ID.
 	StorageConfigurationId string `json:"-" url:"-"`
 }
 
-// Get a VPC endpoint configuration
 type GetVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
 	VpcEndpointId string `json:"-" url:"-"`
 }
 
-// Get a workspace
 type GetWorkspaceRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`

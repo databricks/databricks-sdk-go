@@ -536,7 +536,6 @@ type CreateIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
-// Create a network connectivity configuration
 type CreateNetworkConnectivityConfigRequest struct {
 	// Properties of the new network connectivity configuration.
 	NetworkConnectivityConfig CreateNetworkConnectivityConfiguration `json:"network_connectivity_config"`
@@ -555,7 +554,6 @@ type CreateNetworkConnectivityConfiguration struct {
 	Region string `json:"region"`
 }
 
-// Create a network policy
 type CreateNetworkPolicyRequest struct {
 	NetworkPolicy AccountNetworkPolicy `json:"network_policy"`
 }
@@ -654,7 +652,6 @@ func (s CreatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Create a private endpoint rule
 type CreatePrivateEndpointRuleRequest struct {
 	// Your Network Connectivity Configuration ID.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
@@ -928,7 +925,6 @@ func (s DefaultNamespaceSetting) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete the account IP access toggle setting
 type DeleteAccountIpAccessEnableRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -962,13 +958,11 @@ type DeleteAccountIpAccessEnableResponse struct {
 	Etag string `json:"etag"`
 }
 
-// Delete access list
 type DeleteAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
 }
 
-// Delete the AI/BI dashboard embedding access policy
 type DeleteAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1002,7 +996,6 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingResponse struct {
 	Etag string `json:"etag"`
 }
 
-// Delete AI/BI dashboard embedding approved domains
 type DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1036,7 +1029,6 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse struct {
 	Etag string `json:"etag"`
 }
 
-// Delete the Dashboard Email Subscriptions setting
 type DeleteDashboardEmailSubscriptionsRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1070,7 +1062,6 @@ type DeleteDashboardEmailSubscriptionsResponse struct {
 	Etag string `json:"etag"`
 }
 
-// Delete the default namespace setting
 type DeleteDefaultNamespaceSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1104,7 +1095,6 @@ type DeleteDefaultNamespaceSettingResponse struct {
 	Etag string `json:"etag"`
 }
 
-// Delete Legacy Access Disablement Status
 type DeleteDisableLegacyAccessRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1138,7 +1128,6 @@ type DeleteDisableLegacyAccessResponse struct {
 	Etag string `json:"etag"`
 }
 
-// Delete the disable legacy DBFS setting
 type DeleteDisableLegacyDbfsRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1172,7 +1161,6 @@ type DeleteDisableLegacyDbfsResponse struct {
 	Etag string `json:"etag"`
 }
 
-// Delete the disable legacy features setting
 type DeleteDisableLegacyFeaturesRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1206,13 +1194,11 @@ type DeleteDisableLegacyFeaturesResponse struct {
 	Etag string `json:"etag"`
 }
 
-// Delete access list
 type DeleteIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
 }
 
-// Delete the enable partner powered AI features workspace setting
 type DeleteLlmProxyPartnerPoweredWorkspaceRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1246,7 +1232,6 @@ type DeleteLlmProxyPartnerPoweredWorkspaceResponse struct {
 	Etag string `json:"etag"`
 }
 
-// Delete a network connectivity configuration
 type DeleteNetworkConnectivityConfigurationRequest struct {
 	// Your Network Connectivity Configuration ID.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
@@ -1255,7 +1240,6 @@ type DeleteNetworkConnectivityConfigurationRequest struct {
 type DeleteNetworkConnectivityConfigurationResponse struct {
 }
 
-// Delete a network policy
 type DeleteNetworkPolicyRequest struct {
 	// The unique identifier of the network policy to delete.
 	NetworkPolicyId string `json:"-" url:"-"`
@@ -1264,12 +1248,10 @@ type DeleteNetworkPolicyRequest struct {
 type DeleteNetworkPolicyRpcResponse struct {
 }
 
-// Delete a notification destination
 type DeleteNotificationDestinationRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-// Delete Personal Compute setting
 type DeletePersonalComputeSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1303,7 +1285,6 @@ type DeletePersonalComputeSettingResponse struct {
 	Etag string `json:"etag"`
 }
 
-// Delete a private endpoint rule
 type DeletePrivateEndpointRuleRequest struct {
 	// Your Network Connectvity Configuration ID.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
@@ -1314,7 +1295,6 @@ type DeletePrivateEndpointRuleRequest struct {
 type DeleteResponse struct {
 }
 
-// Delete the restrict workspace admins setting
 type DeleteRestrictWorkspaceAdminsSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1348,7 +1328,6 @@ type DeleteRestrictWorkspaceAdminsSettingResponse struct {
 	Etag string `json:"etag"`
 }
 
-// Delete the SQL Results Download setting
 type DeleteSqlResultsDownloadRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1382,7 +1361,6 @@ type DeleteSqlResultsDownloadResponse struct {
 	Etag string `json:"etag"`
 }
 
-// Delete a token
 type DeleteTokenManagementRequest struct {
 	// The ID of the token to revoke.
 	TokenId string `json:"-" url:"-"`
@@ -2366,7 +2344,6 @@ func (s GenericWebhookConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the account IP access toggle setting
 type GetAccountIpAccessEnableRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2388,13 +2365,11 @@ func (s GetAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get IP access list
 type GetAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
 }
 
-// Retrieve the AI/BI dashboard embedding access policy
 type GetAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2416,7 +2391,6 @@ func (s GetAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]by
 	return marshal.Marshal(s)
 }
 
-// Retrieve the list of domains approved to host embedded AI/BI dashboards
 type GetAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2438,7 +2412,6 @@ func (s GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([
 	return marshal.Marshal(s)
 }
 
-// Get the automatic cluster update setting
 type GetAutomaticClusterUpdateSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2460,7 +2433,6 @@ func (s GetAutomaticClusterUpdateSettingRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the compliance security profile setting
 type GetComplianceSecurityProfileSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2482,7 +2454,6 @@ func (s GetComplianceSecurityProfileSettingRequest) MarshalJSON() ([]byte, error
 	return marshal.Marshal(s)
 }
 
-// Get the compliance security profile setting for new workspaces
 type GetCspEnablementAccountSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2504,7 +2475,6 @@ func (s GetCspEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the Dashboard Email Subscriptions setting
 type GetDashboardEmailSubscriptionsRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2526,7 +2496,6 @@ func (s GetDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the default namespace setting
 type GetDefaultNamespaceSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2548,7 +2517,6 @@ func (s GetDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Retrieve Legacy Access Disablement Status
 type GetDisableLegacyAccessRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2570,7 +2538,6 @@ func (s GetDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the disable legacy DBFS setting
 type GetDisableLegacyDbfsRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2592,7 +2559,6 @@ func (s GetDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the disable legacy features setting
 type GetDisableLegacyFeaturesRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2614,7 +2580,6 @@ func (s GetDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the enhanced security monitoring setting
 type GetEnhancedSecurityMonitoringSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2636,7 +2601,6 @@ func (s GetEnhancedSecurityMonitoringSettingRequest) MarshalJSON() ([]byte, erro
 	return marshal.Marshal(s)
 }
 
-// Get the enhanced security monitoring setting for new workspaces
 type GetEsmEnablementAccountSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2658,7 +2622,6 @@ func (s GetEsmEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get access list
 type GetIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
 	IpAccessListId string `json:"-" url:"-"`
@@ -2674,7 +2637,6 @@ type GetIpAccessListsResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
 
-// Get the enable partner powered AI features account setting
 type GetLlmProxyPartnerPoweredAccountRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2696,7 +2658,6 @@ func (s GetLlmProxyPartnerPoweredAccountRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the enforcement status of partner powered AI features account setting
 type GetLlmProxyPartnerPoweredEnforceRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2718,7 +2679,6 @@ func (s GetLlmProxyPartnerPoweredEnforceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the enable partner powered AI features workspace setting
 type GetLlmProxyPartnerPoweredWorkspaceRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2740,24 +2700,20 @@ func (s GetLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error)
 	return marshal.Marshal(s)
 }
 
-// Get a network connectivity configuration
 type GetNetworkConnectivityConfigurationRequest struct {
 	// Your Network Connectivity Configuration ID.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 }
 
-// Get a network policy
 type GetNetworkPolicyRequest struct {
 	// The unique identifier of the network policy to retrieve.
 	NetworkPolicyId string `json:"-" url:"-"`
 }
 
-// Get a notification destination
 type GetNotificationDestinationRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-// Get Personal Compute setting
 type GetPersonalComputeSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2779,7 +2735,6 @@ func (s GetPersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Gets a private endpoint rule
 type GetPrivateEndpointRuleRequest struct {
 	// Your Network Connectvity Configuration ID.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
@@ -2787,7 +2742,6 @@ type GetPrivateEndpointRuleRequest struct {
 	PrivateEndpointRuleId string `json:"-" url:"-"`
 }
 
-// Get the restrict workspace admins setting
 type GetRestrictWorkspaceAdminsSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2809,7 +2763,6 @@ func (s GetRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) 
 	return marshal.Marshal(s)
 }
 
-// Get the SQL Results Download setting
 type GetSqlResultsDownloadRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2831,12 +2784,10 @@ func (s GetSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Check configuration status
 type GetStatusRequest struct {
 	Keys string `json:"-" url:"keys"`
 }
 
-// Get token info
 type GetTokenManagementRequest struct {
 	// The ID of the token to get.
 	TokenId string `json:"-" url:"-"`
@@ -2852,7 +2803,6 @@ type GetTokenResponse struct {
 	TokenInfo *TokenInfo `json:"token_info,omitempty"`
 }
 
-// Get workspace network option
 type GetWorkspaceNetworkOptionRequest struct {
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -2902,7 +2852,6 @@ type ListIpAccessListResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
 
-// List network connectivity configurations
 type ListNetworkConnectivityConfigurationsRequest struct {
 	// Pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -2936,7 +2885,6 @@ func (s ListNetworkConnectivityConfigurationsResponse) MarshalJSON() ([]byte, er
 	return marshal.Marshal(s)
 }
 
-// List network policies
 type ListNetworkPoliciesRequest struct {
 	// Pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -2970,7 +2918,6 @@ func (s ListNetworkPoliciesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List notification destinations
 type ListNotificationDestinationsRequest struct {
 	PageSize int64 `json:"-" url:"page_size,omitempty"`
 
@@ -3024,7 +2971,6 @@ func (s ListNotificationDestinationsResult) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List private endpoint rules
 type ListPrivateEndpointRulesRequest struct {
 	// Your Network Connectvity Configuration ID.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
@@ -3065,7 +3011,6 @@ type ListPublicTokensResponse struct {
 	TokenInfos []PublicTokenInfo `json:"token_infos,omitempty"`
 }
 
-// List all tokens
 type ListTokenManagementRequest struct {
 	// User ID of the user that created the token.
 	CreatedById int64 `json:"-" url:"created_by_id,omitempty"`
@@ -4550,7 +4495,6 @@ type UpdateLlmProxyPartnerPoweredWorkspaceRequest struct {
 	Setting LlmProxyPartnerPoweredWorkspace `json:"setting"`
 }
 
-// Update a private endpoint rule
 type UpdateNccPrivateEndpointRuleRequest struct {
 	// The ID of a network connectivity configuration, which is the parent
 	// resource of this private endpoint rule object.
@@ -4569,7 +4513,6 @@ type UpdateNccPrivateEndpointRuleRequest struct {
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
-// Update a network policy
 type UpdateNetworkPolicyRequest struct {
 	NetworkPolicy AccountNetworkPolicy `json:"network_policy"`
 	// The unique identifier for the network policy.
@@ -4695,7 +4638,6 @@ type UpdateSqlResultsDownloadRequest struct {
 	Setting SqlResultsDownload `json:"setting"`
 }
 
-// Update workspace network option
 type UpdateWorkspaceNetworkOptionRequest struct {
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`

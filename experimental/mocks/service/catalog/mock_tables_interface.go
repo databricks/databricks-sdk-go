@@ -355,65 +355,6 @@ func (_c *MockTablesInterface_GetByFullName_Call) RunAndReturn(run func(context.
 	return _c
 }
 
-// GetByName provides a mock function with given fields: ctx, name
-func (_m *MockTablesInterface) GetByName(ctx context.Context, name string) (*catalog.TableInfo, error) {
-	ret := _m.Called(ctx, name)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetByName")
-	}
-
-	var r0 *catalog.TableInfo
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.TableInfo, error)); ok {
-		return rf(ctx, name)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.TableInfo); ok {
-		r0 = rf(ctx, name)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.TableInfo)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, name)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockTablesInterface_GetByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByName'
-type MockTablesInterface_GetByName_Call struct {
-	*mock.Call
-}
-
-// GetByName is a helper method to define mock.On call
-//   - ctx context.Context
-//   - name string
-func (_e *MockTablesInterface_Expecter) GetByName(ctx interface{}, name interface{}) *MockTablesInterface_GetByName_Call {
-	return &MockTablesInterface_GetByName_Call{Call: _e.mock.On("GetByName", ctx, name)}
-}
-
-func (_c *MockTablesInterface_GetByName_Call) Run(run func(ctx context.Context, name string)) *MockTablesInterface_GetByName_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockTablesInterface_GetByName_Call) Return(_a0 *catalog.TableInfo, _a1 error) *MockTablesInterface_GetByName_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockTablesInterface_GetByName_Call) RunAndReturn(run func(context.Context, string) (*catalog.TableInfo, error)) *MockTablesInterface_GetByName_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockTablesInterface) List(ctx context.Context, request catalog.ListTablesRequest) listing.Iterator[catalog.TableInfo] {
 	ret := _m.Called(ctx, request)
@@ -626,65 +567,6 @@ func (_c *MockTablesInterface_ListSummariesAll_Call) Return(_a0 []catalog.TableS
 }
 
 func (_c *MockTablesInterface_ListSummariesAll_Call) RunAndReturn(run func(context.Context, catalog.ListSummariesRequest) ([]catalog.TableSummary, error)) *MockTablesInterface_ListSummariesAll_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// TableInfoNameToTableIdMap provides a mock function with given fields: ctx, request
-func (_m *MockTablesInterface) TableInfoNameToTableIdMap(ctx context.Context, request catalog.ListTablesRequest) (map[string]string, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for TableInfoNameToTableIdMap")
-	}
-
-	var r0 map[string]string
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListTablesRequest) (map[string]string, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListTablesRequest) map[string]string); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(map[string]string)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListTablesRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockTablesInterface_TableInfoNameToTableIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'TableInfoNameToTableIdMap'
-type MockTablesInterface_TableInfoNameToTableIdMap_Call struct {
-	*mock.Call
-}
-
-// TableInfoNameToTableIdMap is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request catalog.ListTablesRequest
-func (_e *MockTablesInterface_Expecter) TableInfoNameToTableIdMap(ctx interface{}, request interface{}) *MockTablesInterface_TableInfoNameToTableIdMap_Call {
-	return &MockTablesInterface_TableInfoNameToTableIdMap_Call{Call: _e.mock.On("TableInfoNameToTableIdMap", ctx, request)}
-}
-
-func (_c *MockTablesInterface_TableInfoNameToTableIdMap_Call) Run(run func(ctx context.Context, request catalog.ListTablesRequest)) *MockTablesInterface_TableInfoNameToTableIdMap_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(catalog.ListTablesRequest))
-	})
-	return _c
-}
-
-func (_c *MockTablesInterface_TableInfoNameToTableIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockTablesInterface_TableInfoNameToTableIdMap_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockTablesInterface_TableInfoNameToTableIdMap_Call) RunAndReturn(run func(context.Context, catalog.ListTablesRequest) (map[string]string, error)) *MockTablesInterface_TableInfoNameToTableIdMap_Call {
 	_c.Call.Return(run)
 	return _c
 }

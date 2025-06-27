@@ -278,7 +278,7 @@ func (a *dashboardWidgetsImpl) Delete(ctx context.Context, request DeleteDashboa
 	return err
 }
 
-func (a *dashboardWidgetsImpl) Update(ctx context.Context, request CreateWidget) (*Widget, error) {
+func (a *dashboardWidgetsImpl) Update(ctx context.Context, request UpdateWidgetRequest) (*Widget, error) {
 	var widget Widget
 	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -352,12 +352,7 @@ func (a *dashboardsImpl) List(ctx context.Context, request ListDashboardsRequest
 		getNextPage,
 		getItems,
 		getNextReq)
-	dedupedIterator := listing.NewDedupeIterator[Dashboard, string](
-		iterator,
-		func(item Dashboard) string {
-			return item.Id
-		})
-	return dedupedIterator
+	return iterator
 }
 
 // Fetch a paginated list of dashboard objects.
@@ -655,12 +650,7 @@ func (a *queriesLegacyImpl) List(ctx context.Context, request ListQueriesLegacyR
 		getNextPage,
 		getItems,
 		getNextReq)
-	dedupedIterator := listing.NewDedupeIterator[LegacyQuery, string](
-		iterator,
-		func(item LegacyQuery) string {
-			return item.Id
-		})
-	return dedupedIterator
+	return iterator
 }
 
 // Gets a list of queries. Optionally, this list can be filtered by a search

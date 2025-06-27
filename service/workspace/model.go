@@ -246,7 +246,6 @@ type DeleteAcl struct {
 type DeleteAclResponse struct {
 }
 
-// Delete a credential
 type DeleteCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
@@ -255,7 +254,6 @@ type DeleteCredentialsRequest struct {
 type DeleteCredentialsResponse struct {
 }
 
-// Delete a repo
 type DeleteRepoRequest struct {
 	// The ID for the corresponding repo to delete.
 	RepoId int64 `json:"-" url:"-"`
@@ -338,7 +336,6 @@ func (f *ExportFormat) Type() string {
 	return "ExportFormat"
 }
 
-// Export a workspace object
 type ExportRequest struct {
 	// This specifies the format of the exported file. By default, this is
 	// `SOURCE`.
@@ -380,7 +377,6 @@ func (s ExportResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get secret ACL details
 type GetAclRequest struct {
 	// The principal to fetch ACL information for.
 	Principal string `json:"-" url:"principal"`
@@ -388,7 +384,6 @@ type GetAclRequest struct {
 	Scope string `json:"-" url:"scope"`
 }
 
-// Get a credential entry
 type GetCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
@@ -414,7 +409,6 @@ func (s GetCredentialsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get repo permission levels
 type GetRepoPermissionLevelsRequest struct {
 	// The repo for which to get or manage permissions.
 	RepoId string `json:"-" url:"-"`
@@ -425,13 +419,11 @@ type GetRepoPermissionLevelsResponse struct {
 	PermissionLevels []RepoPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get repo permissions
 type GetRepoPermissionsRequest struct {
 	// The repo for which to get or manage permissions.
 	RepoId string `json:"-" url:"-"`
 }
 
-// Get a repo
 type GetRepoRequest struct {
 	// ID of the Git folder (repo) object in the workspace.
 	RepoId int64 `json:"-" url:"-"`
@@ -464,7 +456,6 @@ func (s GetRepoResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a secret
 type GetSecretRequest struct {
 	// The key to fetch secret for.
 	Key string `json:"-" url:"key"`
@@ -489,13 +480,11 @@ func (s GetSecretResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get status
 type GetStatusRequest struct {
 	// The absolute path of the notebook or directory.
 	Path string `json:"-" url:"path"`
 }
 
-// Get workspace object permission levels
 type GetWorkspaceObjectPermissionLevelsRequest struct {
 	// The workspace object for which to get or manage permissions.
 	WorkspaceObjectId string `json:"-" url:"-"`
@@ -508,7 +497,6 @@ type GetWorkspaceObjectPermissionLevelsResponse struct {
 	PermissionLevels []WorkspaceObjectPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get workspace object permissions
 type GetWorkspaceObjectPermissionsRequest struct {
 	// The workspace object for which to get or manage permissions.
 	WorkspaceObjectId string `json:"-" url:"-"`
@@ -659,7 +647,6 @@ func (f *Language) Type() string {
 	return "Language"
 }
 
-// Lists ACLs
 type ListAclsRequest struct {
 	// The name of the scope to fetch ACL information from.
 	Scope string `json:"-" url:"scope"`
@@ -675,7 +662,6 @@ type ListCredentialsResponse struct {
 	Credentials []CredentialInfo `json:"credentials,omitempty"`
 }
 
-// Get repos
 type ListReposRequest struct {
 	// Token used to get the next page of results. If not specified, returns the
 	// first page of results as well as a next page token if there are more
@@ -725,7 +711,6 @@ type ListScopesResponse struct {
 	Scopes []SecretScope `json:"scopes,omitempty"`
 }
 
-// List secret keys
 type ListSecretsRequest struct {
 	// The name of the scope to list secrets within.
 	Scope string `json:"-" url:"scope"`
@@ -736,7 +721,6 @@ type ListSecretsResponse struct {
 	Secrets []SecretMetadata `json:"secrets,omitempty"`
 }
 
-// List contents
 type ListWorkspaceRequest struct {
 	// UTC timestamp in milliseconds
 	NotebooksModifiedAfter int64 `json:"-" url:"notebooks_modified_after,omitempty"`

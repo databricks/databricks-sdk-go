@@ -138,7 +138,6 @@ func (f *DeleteDataStatus) Type() string {
 	return "DeleteDataStatus"
 }
 
-// Delete data from index
 type DeleteDataVectorIndexRequest struct {
 	// Name of the vector index where data is to be deleted. Must be a Direct
 	// Vector Access Index.
@@ -154,7 +153,6 @@ type DeleteDataVectorIndexResponse struct {
 	Status DeleteDataStatus `json:"status,omitempty"`
 }
 
-// Delete an endpoint
 type DeleteEndpointRequest struct {
 	// Name of the vector search endpoint
 	EndpointName string `json:"-" url:"-"`
@@ -163,7 +161,6 @@ type DeleteEndpointRequest struct {
 type DeleteEndpointResponse struct {
 }
 
-// Delete an index
 type DeleteIndexRequest struct {
 	// Name of the index
 	IndexName string `json:"-" url:"-"`
@@ -178,6 +175,8 @@ type DeltaSyncVectorIndexSpecRequest struct {
 	// index. The primary key column and embedding source column or embedding
 	// vector column are always synced.
 	ColumnsToSync []string `json:"columns_to_sync,omitempty"`
+	// The budget policy id applied to the vector search index
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The columns that contain the embedding source.
 	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
 	// The columns that contain the embedding vectors.
@@ -208,6 +207,8 @@ func (s DeltaSyncVectorIndexSpecRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DeltaSyncVectorIndexSpecResponse struct {
+	// The budget policy id applied to the vector search index
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The columns that contain the embedding source.
 	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
 	// The columns that contain the embedding vectors.
@@ -425,16 +426,30 @@ func (f *EndpointType) Type() string {
 	return "EndpointType"
 }
 
-// Get an endpoint
 type GetEndpointRequest struct {
 	// Name of the endpoint
 	EndpointName string `json:"-" url:"-"`
 }
 
-// Get an index
 type GetIndexRequest struct {
+	// If true, the URL returned for the index is guaranteed to be compatible
+	// with the reranker. Currently this means we return the CP URL regardless
+	// of how the index is being accessed. If not set or set to false, the URL
+	// may still be compatible with the reranker depending on what URL we
+	// return.
+	EnsureRerankerCompatible bool `json:"-" url:"ensure_reranker_compatible,omitempty"`
 	// Name of the index
 	IndexName string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetIndexRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetIndexRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListEndpointResponse struct {
@@ -455,7 +470,6 @@ func (s ListEndpointResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List all endpoints
 type ListEndpointsRequest struct {
 	// Token for pagination
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -471,7 +485,6 @@ func (s ListEndpointsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List indexes
 type ListIndexesRequest struct {
 	// Name of the endpoint
 	EndpointName string `json:"-" url:"endpoint_name"`
@@ -675,6 +688,8 @@ type QueryVectorIndexRequest struct {
 	// Query vector. Required for Direct Vector Access Index and Delta Sync
 	// Index using self-managed vectors.
 	QueryVector []float64 `json:"query_vector,omitempty"`
+
+	Reranker *RerankerConfig `json:"reranker,omitempty"`
 	// Threshold for the approximate nearest neighbor search. Defaults to 0.0.
 	ScoreThreshold float64 `json:"score_threshold,omitempty"`
 
@@ -709,6 +724,26 @@ func (s *QueryVectorIndexResponse) UnmarshalJSON(b []byte) error {
 
 func (s QueryVectorIndexResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type RerankerConfig struct {
+	Model string `json:"model,omitempty"`
+
+	Parameters *RerankerConfigRerankerParameters `json:"parameters,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RerankerConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RerankerConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type RerankerConfigRerankerParameters struct {
+	ColumnsToRerank []string `json:"columns_to_rerank,omitempty"`
 }
 
 // Data returned in the query result.
@@ -789,7 +824,6 @@ type Struct struct {
 	Fields []MapStringValueEntry `json:"fields,omitempty"`
 }
 
-// Synchronize an index
 type SyncIndexRequest struct {
 	// Name of the vector index to synchronize. Must be a Delta Sync Index.
 	IndexName string `json:"-" url:"-"`

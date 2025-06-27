@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Genie, Lakeview, Lakeview Embedded, etc.
+// These APIs allow you to manage Genie, Lakeview, Lakeview Embedded, Query Execution, etc.
 package dashboards
 
 import (
@@ -32,6 +32,12 @@ type GenieInterface interface {
 	//
 	// Deprecated: use [GenieAPIInterface.CreateMessage].Get() or [GenieAPIInterface.WaitGetMessageGenieCompleted]
 	CreateMessageAndWait(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest, options ...retries.Option[GenieMessage]) (*GenieMessage, error)
+
+	// Delete a conversation.
+	DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error
+
+	// Delete a conversation.
+	DeleteConversationBySpaceIdAndConversationId(ctx context.Context, spaceId string, conversationId string) error
 
 	// Execute the SQL for a message query attachment. Use this API when the query
 	// attachment has expired and needs to be re-executed.
@@ -115,6 +121,12 @@ type GenieInterface interface {
 	// Get details of a Genie Space.
 	GetSpaceBySpaceId(ctx context.Context, spaceId string) (*GenieSpace, error)
 
+	// Get a list of conversations in a Genie Space.
+	ListConversations(ctx context.Context, request GenieListConversationsRequest) (*GenieListConversationsResponse, error)
+
+	// Get a list of conversations in a Genie Space.
+	ListConversationsBySpaceId(ctx context.Context, spaceId string) (*GenieListConversationsResponse, error)
+
 	// Get list of Genie Spaces.
 	ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error)
 
@@ -128,6 +140,12 @@ type GenieInterface interface {
 	//
 	// Deprecated: use [GenieAPIInterface.StartConversation].Get() or [GenieAPIInterface.WaitGetMessageGenieCompleted]
 	StartConversationAndWait(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest, options ...retries.Option[GenieMessage]) (*GenieMessage, error)
+
+	// Trash a Genie Space.
+	TrashSpace(ctx context.Context, request GenieTrashSpaceRequest) error
+
+	// Trash a Genie Space.
+	TrashSpaceBySpaceId(ctx context.Context, spaceId string) error
 }
 
 func NewGenie(client *client.DatabricksClient) *GenieAPI {
@@ -253,6 +271,14 @@ func (a *GenieAPI) CreateMessageAndWait(ctx context.Context, genieCreateConversa
 	return wait.Get()
 }
 
+// Delete a conversation.
+func (a *GenieAPI) DeleteConversationBySpaceIdAndConversationId(ctx context.Context, spaceId string, conversationId string) error {
+	return a.genieImpl.DeleteConversation(ctx, GenieDeleteConversationRequest{
+		SpaceId:        spaceId,
+		ConversationId: conversationId,
+	})
+}
+
 // After [Generating a Full Query Result
 // Download](:method:genie/getdownloadfullqueryresult) and successfully
 // receiving a `download_id`, use this API to poll the download progress. When
@@ -324,6 +350,13 @@ func (a *GenieAPI) GetSpaceBySpaceId(ctx context.Context, spaceId string) (*Geni
 	})
 }
 
+// Get a list of conversations in a Genie Space.
+func (a *GenieAPI) ListConversationsBySpaceId(ctx context.Context, spaceId string) (*GenieListConversationsResponse, error) {
+	return a.genieImpl.ListConversations(ctx, GenieListConversationsRequest{
+		SpaceId: spaceId,
+	})
+}
+
 // Start a new conversation.
 func (a *GenieAPI) StartConversation(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieStartConversationResponse], error) {
 	genieStartConversationResponse, err := a.genieImpl.StartConversation(ctx, genieStartConversationMessageRequest)
@@ -368,6 +401,13 @@ func (a *GenieAPI) StartConversationAndWait(ctx context.Context, genieStartConve
 		}
 	}
 	return wait.Get()
+}
+
+// Trash a Genie Space.
+func (a *GenieAPI) TrashSpaceBySpaceId(ctx context.Context, spaceId string) error {
+	return a.genieImpl.TrashSpace(ctx, GenieTrashSpaceRequest{
+		SpaceId: spaceId,
+	})
 }
 
 type LakeviewInterface interface {
@@ -572,6 +612,12 @@ func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId st
 
 type LakeviewEmbeddedInterface interface {
 
+	// Get the current published dashboard within an embedded context.
+	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error
+
+	// Get the current published dashboard within an embedded context.
+	GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error
+
 	// Get a required authorization details and scopes of a published dashboard to
 	// mint an OAuth token. The `authorization_details` can be enriched to apply
 	// additional restriction.
@@ -606,6 +652,13 @@ type LakeviewEmbeddedAPI struct {
 	lakeviewEmbeddedImpl
 }
 
+// Get the current published dashboard within an embedded context.
+func (a *LakeviewEmbeddedAPI) GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error {
+	return a.lakeviewEmbeddedImpl.GetPublishedDashboardEmbedded(ctx, GetPublishedDashboardEmbeddedRequest{
+		DashboardId: dashboardId,
+	})
+}
+
 // Get a required authorization details and scopes of a published dashboard to
 // mint an OAuth token. The `authorization_details` can be enriched to apply
 // additional restriction.
@@ -618,4 +671,29 @@ func (a *LakeviewEmbeddedAPI) GetPublishedDashboardTokenInfoByDashboardId(ctx co
 	return a.lakeviewEmbeddedImpl.GetPublishedDashboardTokenInfo(ctx, GetPublishedDashboardTokenInfoRequest{
 		DashboardId: dashboardId,
 	})
+}
+
+type QueryExecutionInterface interface {
+
+	// Cancel the results for the a query for a published, embedded dashboard.
+	CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error)
+
+	// Execute a query for a published dashboard.
+	ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error
+
+	// Poll the results for the a query for a published, embedded dashboard.
+	PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error)
+}
+
+func NewQueryExecution(client *client.DatabricksClient) *QueryExecutionAPI {
+	return &QueryExecutionAPI{
+		queryExecutionImpl: queryExecutionImpl{
+			client: client,
+		},
+	}
+}
+
+// Query execution APIs for AI / BI Dashboards
+type QueryExecutionAPI struct {
+	queryExecutionImpl
 }

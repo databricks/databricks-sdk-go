@@ -593,6 +593,89 @@ func (a *credentialsImpl) ValidateCredential(ctx context.Context, request Valida
 	return &validateCredentialResponse, err
 }
 
+// unexported type that holds implementations of just ExternalLineage API methods
+type externalLineageImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *externalLineageImpl) CreateExternalLineageRelationship(ctx context.Context, request CreateExternalLineageRelationshipRequest) (*ExternalLineageRelationship, error) {
+	var externalLineageRelationship ExternalLineageRelationship
+	path := "/api/2.0/lineage-tracking/external-lineage"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.ExternalLineageRelationship, &externalLineageRelationship)
+	return &externalLineageRelationship, err
+}
+
+func (a *externalLineageImpl) DeleteExternalLineageRelationship(ctx context.Context, request DeleteExternalLineageRelationshipRequest) error {
+	var deleteExternalLineageRelationshipResponse DeleteExternalLineageRelationshipResponse
+	path := "/api/2.0/lineage-tracking/external-lineage"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteExternalLineageRelationshipResponse)
+	return err
+}
+
+// Lists external lineage relationships of a Databricks object or external
+// metadata given a supplied direction.
+func (a *externalLineageImpl) ListExternalLineageRelationships(ctx context.Context, request ListExternalLineageRelationshipsRequest) listing.Iterator[ExternalLineageInfo] {
+
+	getNextPage := func(ctx context.Context, req ListExternalLineageRelationshipsRequest) (*ListExternalLineageRelationshipsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListExternalLineageRelationships(ctx, req)
+	}
+	getItems := func(resp *ListExternalLineageRelationshipsResponse) []ExternalLineageInfo {
+		return resp.ExternalLineageRelationships
+	}
+	getNextReq := func(resp *ListExternalLineageRelationshipsResponse) *ListExternalLineageRelationshipsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists external lineage relationships of a Databricks object or external
+// metadata given a supplied direction.
+func (a *externalLineageImpl) ListExternalLineageRelationshipsAll(ctx context.Context, request ListExternalLineageRelationshipsRequest) ([]ExternalLineageInfo, error) {
+	iterator := a.ListExternalLineageRelationships(ctx, request)
+	return listing.ToSlice[ExternalLineageInfo](ctx, iterator)
+}
+
+func (a *externalLineageImpl) internalListExternalLineageRelationships(ctx context.Context, request ListExternalLineageRelationshipsRequest) (*ListExternalLineageRelationshipsResponse, error) {
+	var listExternalLineageRelationshipsResponse ListExternalLineageRelationshipsResponse
+	path := "/api/2.0/lineage-tracking/external-lineage"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExternalLineageRelationshipsResponse)
+	return &listExternalLineageRelationshipsResponse, err
+}
+
+func (a *externalLineageImpl) UpdateExternalLineageRelationship(ctx context.Context, request UpdateExternalLineageRelationshipRequest) (*ExternalLineageRelationship, error) {
+	var externalLineageRelationship ExternalLineageRelationship
+	path := "/api/2.0/lineage-tracking/external-lineage"
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.ExternalLineageRelationship, &externalLineageRelationship)
+	return &externalLineageRelationship, err
+}
+
 // unexported type that holds implementations of just ExternalLocations API methods
 type externalLocationsImpl struct {
 	client *client.DatabricksClient
@@ -687,6 +770,105 @@ func (a *externalLocationsImpl) Update(ctx context.Context, request UpdateExtern
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &externalLocationInfo)
 	return &externalLocationInfo, err
+}
+
+// unexported type that holds implementations of just ExternalMetadata API methods
+type externalMetadataImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *externalMetadataImpl) CreateExternalMetadata(ctx context.Context, request CreateExternalMetadataRequest) (*ExternalMetadata, error) {
+	var externalMetadata ExternalMetadata
+	path := "/api/2.0/lineage-tracking/external-metadata"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.ExternalMetadata, &externalMetadata)
+	return &externalMetadata, err
+}
+
+func (a *externalMetadataImpl) DeleteExternalMetadata(ctx context.Context, request DeleteExternalMetadataRequest) error {
+	var deleteExternalMetadataResponse DeleteExternalMetadataResponse
+	path := fmt.Sprintf("/api/2.0/lineage-tracking/external-metadata/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteExternalMetadataResponse)
+	return err
+}
+
+func (a *externalMetadataImpl) GetExternalMetadata(ctx context.Context, request GetExternalMetadataRequest) (*ExternalMetadata, error) {
+	var externalMetadata ExternalMetadata
+	path := fmt.Sprintf("/api/2.0/lineage-tracking/external-metadata/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &externalMetadata)
+	return &externalMetadata, err
+}
+
+// Gets an array of external metadata objects in the metastore. If the caller is
+// the metastore admin, all external metadata objects will be retrieved.
+// Otherwise, only external metadata objects that the caller has **BROWSE** on
+// will be retrieved. There is no guarantee of a specific ordering of the
+// elements in the array.
+func (a *externalMetadataImpl) ListExternalMetadata(ctx context.Context, request ListExternalMetadataRequest) listing.Iterator[ExternalMetadata] {
+
+	getNextPage := func(ctx context.Context, req ListExternalMetadataRequest) (*ListExternalMetadataResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListExternalMetadata(ctx, req)
+	}
+	getItems := func(resp *ListExternalMetadataResponse) []ExternalMetadata {
+		return resp.ExternalMetadata
+	}
+	getNextReq := func(resp *ListExternalMetadataResponse) *ListExternalMetadataRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Gets an array of external metadata objects in the metastore. If the caller is
+// the metastore admin, all external metadata objects will be retrieved.
+// Otherwise, only external metadata objects that the caller has **BROWSE** on
+// will be retrieved. There is no guarantee of a specific ordering of the
+// elements in the array.
+func (a *externalMetadataImpl) ListExternalMetadataAll(ctx context.Context, request ListExternalMetadataRequest) ([]ExternalMetadata, error) {
+	iterator := a.ListExternalMetadata(ctx, request)
+	return listing.ToSlice[ExternalMetadata](ctx, iterator)
+}
+
+func (a *externalMetadataImpl) internalListExternalMetadata(ctx context.Context, request ListExternalMetadataRequest) (*ListExternalMetadataResponse, error) {
+	var listExternalMetadataResponse ListExternalMetadataResponse
+	path := "/api/2.0/lineage-tracking/external-metadata"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExternalMetadataResponse)
+	return &listExternalMetadataResponse, err
+}
+
+func (a *externalMetadataImpl) UpdateExternalMetadata(ctx context.Context, request UpdateExternalMetadataRequest) (*ExternalMetadata, error) {
+	var externalMetadata ExternalMetadata
+	path := fmt.Sprintf("/api/2.0/lineage-tracking/external-metadata/%v", request.Name)
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.ExternalMetadata, &externalMetadata)
+	return &externalMetadata, err
 }
 
 // unexported type that holds implementations of just Functions API methods
@@ -1741,8 +1923,6 @@ func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableIn
 // guarantee of a specific ordering of the elements in the array.
 func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) listing.Iterator[TableInfo] {
 
-	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
-
 	getNextPage := func(ctx context.Context, req ListTablesRequest) (*ListTablesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
@@ -1798,8 +1978,6 @@ func (a *tablesImpl) internalList(ctx context.Context, request ListTablesRequest
 //
 // There is no guarantee of a specific ordering of the elements in the array.
 func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesRequest) listing.Iterator[TableSummary] {
-
-	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
 
 	getNextPage := func(ctx context.Context, req ListSummariesRequest) (*ListTableSummariesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")

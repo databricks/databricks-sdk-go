@@ -890,6 +890,27 @@ func (a *librariesImpl) internalClusterStatus(ctx context.Context, request Clust
 	return &clusterLibraryStatuses, err
 }
 
+func (a *librariesImpl) CreateDefaultBaseEnvironment(ctx context.Context, request CreateDefaultBaseEnvironmentRequest) (*DefaultBaseEnvironment, error) {
+	var defaultBaseEnvironment DefaultBaseEnvironment
+	path := "/api/2.0/default-base-environments"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &defaultBaseEnvironment)
+	return &defaultBaseEnvironment, err
+}
+
+func (a *librariesImpl) DeleteDefaultBaseEnvironment(ctx context.Context, request DeleteDefaultBaseEnvironmentRequest) error {
+	var deleteDefaultBaseEnvironmentResponse DeleteDefaultBaseEnvironmentResponse
+	path := fmt.Sprintf("/api/2.0/default-base-environments/%v", request.Id)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDefaultBaseEnvironmentResponse)
+	return err
+}
+
 func (a *librariesImpl) Install(ctx context.Context, request InstallLibraries) error {
 	var installLibrariesResponse InstallLibrariesResponse
 	path := "/api/2.0/libraries/install"
@@ -898,6 +919,60 @@ func (a *librariesImpl) Install(ctx context.Context, request InstallLibraries) e
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &installLibrariesResponse)
+	return err
+}
+
+// List default base environments defined in the workspaces for the requested
+// user.
+func (a *librariesImpl) ListDefaultBaseEnvironments(ctx context.Context, request ListDefaultBaseEnvironmentsRequest) listing.Iterator[DefaultBaseEnvironment] {
+
+	getNextPage := func(ctx context.Context, req ListDefaultBaseEnvironmentsRequest) (*ListDefaultBaseEnvironmentsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListDefaultBaseEnvironments(ctx, req)
+	}
+	getItems := func(resp *ListDefaultBaseEnvironmentsResponse) []DefaultBaseEnvironment {
+		return resp.DefaultBaseEnvironments
+	}
+	getNextReq := func(resp *ListDefaultBaseEnvironmentsResponse) *ListDefaultBaseEnvironmentsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List default base environments defined in the workspaces for the requested
+// user.
+func (a *librariesImpl) ListDefaultBaseEnvironmentsAll(ctx context.Context, request ListDefaultBaseEnvironmentsRequest) ([]DefaultBaseEnvironment, error) {
+	iterator := a.ListDefaultBaseEnvironments(ctx, request)
+	return listing.ToSlice[DefaultBaseEnvironment](ctx, iterator)
+}
+
+func (a *librariesImpl) internalListDefaultBaseEnvironments(ctx context.Context, request ListDefaultBaseEnvironmentsRequest) (*ListDefaultBaseEnvironmentsResponse, error) {
+	var listDefaultBaseEnvironmentsResponse ListDefaultBaseEnvironmentsResponse
+	path := "/api/2.0/default-base-environments"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDefaultBaseEnvironmentsResponse)
+	return &listDefaultBaseEnvironmentsResponse, err
+}
+
+func (a *librariesImpl) RefreshDefaultBaseEnvironments(ctx context.Context, request RefreshDefaultBaseEnvironmentsRequest) error {
+	var refreshDefaultBaseEnvironmentsResponse RefreshDefaultBaseEnvironmentsResponse
+	path := "/api/2.0/default-base-environments/refresh"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &refreshDefaultBaseEnvironmentsResponse)
 	return err
 }
 
@@ -910,6 +985,17 @@ func (a *librariesImpl) Uninstall(ctx context.Context, request UninstallLibrarie
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &uninstallLibrariesResponse)
 	return err
+}
+
+func (a *librariesImpl) UpdateDefaultBaseEnvironment(ctx context.Context, request UpdateDefaultBaseEnvironmentRequest) (*DefaultBaseEnvironment, error) {
+	var defaultBaseEnvironment DefaultBaseEnvironment
+	path := fmt.Sprintf("/api/2.0/default-base-environments/%v", request.Id)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &defaultBaseEnvironment)
+	return &defaultBaseEnvironment, err
 }
 
 // unexported type that holds implementations of just PolicyComplianceForClusters API methods

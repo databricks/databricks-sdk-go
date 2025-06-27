@@ -28,6 +28,16 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 	return &genieMessage, err
 }
 
+func (a *genieImpl) DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error {
+	var deleteConversationResponse DeleteConversationResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v", request.SpaceId, request.ConversationId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteConversationResponse)
+	return err
+}
+
 func (a *genieImpl) ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/execute-query", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
@@ -118,6 +128,16 @@ func (a *genieImpl) GetSpace(ctx context.Context, request GenieGetSpaceRequest) 
 	return &genieSpace, err
 }
 
+func (a *genieImpl) ListConversations(ctx context.Context, request GenieListConversationsRequest) (*GenieListConversationsResponse, error) {
+	var genieListConversationsResponse GenieListConversationsResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations", request.SpaceId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListConversationsResponse)
+	return &genieListConversationsResponse, err
+}
+
 func (a *genieImpl) ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error) {
 	var genieListSpacesResponse GenieListSpacesResponse
 	path := "/api/2.0/genie/spaces"
@@ -137,6 +157,16 @@ func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartCon
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieStartConversationResponse)
 	return &genieStartConversationResponse, err
+}
+
+func (a *genieImpl) TrashSpace(ctx context.Context, request GenieTrashSpaceRequest) error {
+	var trashSpaceResponse TrashSpaceResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v", request.SpaceId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &trashSpaceResponse)
+	return err
 }
 
 // unexported type that holds implementations of just Lakeview API methods
@@ -429,6 +459,16 @@ type lakeviewEmbeddedImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error {
+	var getPublishedDashboardEmbeddedResponse GetPublishedDashboardEmbeddedResponse
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/embedded", request.DashboardId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardEmbeddedResponse)
+	return err
+}
+
 func (a *lakeviewEmbeddedImpl) GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error) {
 	var getPublishedDashboardTokenInfoResponse GetPublishedDashboardTokenInfoResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/tokeninfo", request.DashboardId)
@@ -437,4 +477,40 @@ func (a *lakeviewEmbeddedImpl) GetPublishedDashboardTokenInfo(ctx context.Contex
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardTokenInfoResponse)
 	return &getPublishedDashboardTokenInfoResponse, err
+}
+
+// unexported type that holds implementations of just QueryExecution API methods
+type queryExecutionImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *queryExecutionImpl) CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error) {
+	var cancelQueryExecutionResponse CancelQueryExecutionResponse
+	path := "/api/2.0/lakeview-query/query/published"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &cancelQueryExecutionResponse)
+	return &cancelQueryExecutionResponse, err
+}
+
+func (a *queryExecutionImpl) ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error {
+	var executeQueryResponse ExecuteQueryResponse
+	path := "/api/2.0/lakeview-query/query/published"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &executeQueryResponse)
+	return err
+}
+
+func (a *queryExecutionImpl) PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error) {
+	var pollQueryStatusResponse PollQueryStatusResponse
+	path := "/api/2.0/lakeview-query/query/published"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &pollQueryStatusResponse)
+	return &pollQueryStatusResponse, err
 }

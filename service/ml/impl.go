@@ -10,6 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just Experiments API methods
@@ -194,6 +195,16 @@ func (a *experimentsImpl) GetLoggedModel(ctx context.Context, request GetLoggedM
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getLoggedModelResponse)
 	return &getLoggedModelResponse, err
+}
+
+func (a *experimentsImpl) GetLoggedModels(ctx context.Context, request GetLoggedModelsRequest) (*GetLoggedModelsRequestResponse, error) {
+	var getLoggedModelsRequestResponse GetLoggedModelsRequestResponse
+	path := "/api/2.0/mlflow/logged-models:batchGet"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getLoggedModelsRequestResponse)
+	return &getLoggedModelsRequestResponse, err
 }
 
 func (a *experimentsImpl) GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
@@ -730,6 +741,107 @@ func (a *forecastingImpl) GetExperiment(ctx context.Context, request GetForecast
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &forecastingExperiment)
 	return &forecastingExperiment, err
+}
+
+// unexported type that holds implementations of just MaterializedFeatures API methods
+type materializedFeaturesImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *materializedFeaturesImpl) CreateFeatureTag(ctx context.Context, request CreateFeatureTagRequest) (*FeatureTag, error) {
+	var featureTag FeatureTag
+	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags", request.TableName, request.FeatureName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.FeatureTag, &featureTag)
+	return &featureTag, err
+}
+
+func (a *materializedFeaturesImpl) DeleteFeatureTag(ctx context.Context, request DeleteFeatureTagRequest) error {
+	var deleteFeatureTagResponse DeleteFeatureTagResponse
+	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", request.TableName, request.FeatureName, request.Key)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteFeatureTagResponse)
+	return err
+}
+
+func (a *materializedFeaturesImpl) GetFeatureLineage(ctx context.Context, request GetFeatureLineageRequest) (*FeatureLineage, error) {
+	var featureLineage FeatureLineage
+	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/lineage", request.TableName, request.FeatureName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &featureLineage)
+	return &featureLineage, err
+}
+
+func (a *materializedFeaturesImpl) GetFeatureTag(ctx context.Context, request GetFeatureTagRequest) (*FeatureTag, error) {
+	var featureTag FeatureTag
+	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", request.TableName, request.FeatureName, request.Key)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &featureTag)
+	return &featureTag, err
+}
+
+// Lists FeatureTags.
+func (a *materializedFeaturesImpl) ListFeatureTags(ctx context.Context, request ListFeatureTagsRequest) listing.Iterator[FeatureTag] {
+
+	getNextPage := func(ctx context.Context, req ListFeatureTagsRequest) (*ListFeatureTagsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListFeatureTags(ctx, req)
+	}
+	getItems := func(resp *ListFeatureTagsResponse) []FeatureTag {
+		return resp.FeatureTags
+	}
+	getNextReq := func(resp *ListFeatureTagsResponse) *ListFeatureTagsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists FeatureTags.
+func (a *materializedFeaturesImpl) ListFeatureTagsAll(ctx context.Context, request ListFeatureTagsRequest) ([]FeatureTag, error) {
+	iterator := a.ListFeatureTags(ctx, request)
+	return listing.ToSlice[FeatureTag](ctx, iterator)
+}
+
+func (a *materializedFeaturesImpl) internalListFeatureTags(ctx context.Context, request ListFeatureTagsRequest) (*ListFeatureTagsResponse, error) {
+	var listFeatureTagsResponse ListFeatureTagsResponse
+	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags", request.TableName, request.FeatureName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFeatureTagsResponse)
+	return &listFeatureTagsResponse, err
+}
+
+func (a *materializedFeaturesImpl) UpdateFeatureTag(ctx context.Context, request UpdateFeatureTagRequest) (*FeatureTag, error) {
+	var featureTag FeatureTag
+	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", request.TableName, request.FeatureName, request.Key)
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.FeatureTag, &featureTag)
+	return &featureTag, err
 }
 
 // unexported type that holds implementations of just ModelRegistry API methods

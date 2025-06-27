@@ -51,12 +51,35 @@ func (s AuthorizationDetailsGrantRule) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Create dashboard
+type CancelPublishedQueryExecutionRequest struct {
+	DashboardName string `json:"-" url:"dashboard_name"`
+
+	DashboardRevisionId string `json:"-" url:"dashboard_revision_id"`
+	// Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	Tokens []string `json:"-" url:"tokens,omitempty"`
+}
+
+type CancelQueryExecutionResponse struct {
+	Status []CancelQueryExecutionResponseStatus `json:"status,omitempty"`
+}
+
+type CancelQueryExecutionResponseStatus struct {
+	// The token to poll for result asynchronously Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	DataToken string `json:"data_token"`
+	// Represents an empty message, similar to google.protobuf.Empty, which is
+	// not available in the firm right now.
+	Pending *Empty `json:"pending,omitempty"`
+	// Represents an empty message, similar to google.protobuf.Empty, which is
+	// not available in the firm right now.
+	Success *Empty `json:"success,omitempty"`
+}
+
 type CreateDashboardRequest struct {
 	Dashboard Dashboard `json:"dashboard"`
 }
 
-// Create dashboard schedule
 type CreateScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
 	DashboardId string `json:"-" url:"-"`
@@ -64,7 +87,6 @@ type CreateScheduleRequest struct {
 	Schedule Schedule `json:"schedule"`
 }
 
-// Create schedule subscription
 type CreateSubscriptionRequest struct {
 	// UUID identifying the dashboard to which the subscription belongs.
 	DashboardId string `json:"-" url:"-"`
@@ -167,7 +189,9 @@ func (f *DashboardView) Type() string {
 	return "DashboardView"
 }
 
-// Delete dashboard schedule
+type DeleteConversationResponse struct {
+}
+
 type DeleteScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
 	DashboardId string `json:"-" url:"-"`
@@ -191,7 +215,6 @@ func (s DeleteScheduleRequest) MarshalJSON() ([]byte, error) {
 type DeleteScheduleResponse struct {
 }
 
-// Delete schedule subscription
 type DeleteSubscriptionRequest struct {
 	// UUID identifying the dashboard which the subscription belongs.
 	DashboardId string `json:"-" url:"-"`
@@ -215,6 +238,40 @@ func (s DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DeleteSubscriptionResponse struct {
+}
+
+// Represents an empty message, similar to google.protobuf.Empty, which is not
+// available in the firm right now.
+type Empty struct {
+}
+
+// Execute query request for published Dashboards. Since published dashboards
+// have the option of running as the publisher, the datasets, warehouse_id are
+// excluded from the request and instead read from the source (lakeview-config)
+// via the additional parameters (dashboardName and dashboardRevisionId)
+type ExecutePublishedDashboardQueryRequest struct {
+	// Dashboard name and revision_id is required to retrieve
+	// PublishedDatasetDataModel which contains the list of datasets,
+	// warehouse_id, and embedded_credentials
+	DashboardName string `json:"dashboard_name"`
+
+	DashboardRevisionId string `json:"dashboard_revision_id"`
+	// A dashboard schedule can override the warehouse used as compute for
+	// processing the published dashboard queries
+	OverrideWarehouseId string `json:"override_warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExecutePublishedDashboardQueryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExecutePublishedDashboardQueryRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ExecuteQueryResponse struct {
 }
 
 // Genie AI Response
@@ -264,6 +321,14 @@ func (s GenieConversation) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GenieConversationSummary struct {
+	ConversationId string `json:"conversation_id"`
+
+	CreatedTimestamp int64 `json:"created_timestamp"`
+
+	Title string `json:"title"`
+}
+
 type GenieCreateConversationMessageRequest struct {
 	// User message content.
 	Content string `json:"content"`
@@ -273,7 +338,13 @@ type GenieCreateConversationMessageRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
-// Execute message attachment SQL query
+type GenieDeleteConversationRequest struct {
+	// The ID of the conversation to delete.
+	ConversationId string `json:"-" url:"-"`
+	// The ID associated with the Genie space where the conversation is located.
+	SpaceId string `json:"-" url:"-"`
+}
+
 type GenieExecuteMessageAttachmentQueryRequest struct {
 	// Attachment ID
 	AttachmentId string `json:"-" url:"-"`
@@ -285,7 +356,6 @@ type GenieExecuteMessageAttachmentQueryRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
-// [Deprecated] Execute SQL query in a conversation message
 type GenieExecuteMessageQueryRequest struct {
 	// Conversation ID
 	ConversationId string `json:"-" url:"-"`
@@ -295,7 +365,6 @@ type GenieExecuteMessageQueryRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
-// Generate full query result download
 type GenieGenerateDownloadFullQueryResultRequest struct {
 	// Attachment ID
 	AttachmentId string `json:"-" url:"-"`
@@ -323,7 +392,6 @@ func (s GenieGenerateDownloadFullQueryResultResponse) MarshalJSON() ([]byte, err
 	return marshal.Marshal(s)
 }
 
-// Get conversation message
 type GenieGetConversationMessageRequest struct {
 	// The ID associated with the target conversation.
 	ConversationId string `json:"-" url:"-"`
@@ -335,7 +403,6 @@ type GenieGetConversationMessageRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
-// Get download full query result
 type GenieGetDownloadFullQueryResultRequest struct {
 	// Attachment ID
 	AttachmentId string `json:"-" url:"-"`
@@ -356,7 +423,6 @@ type GenieGetDownloadFullQueryResultResponse struct {
 	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
 }
 
-// Get message attachment SQL query result
 type GenieGetMessageAttachmentQueryResultRequest struct {
 	// Attachment ID
 	AttachmentId string `json:"-" url:"-"`
@@ -368,7 +434,6 @@ type GenieGetMessageAttachmentQueryResultRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
-// [Deprecated] Get conversation message SQL query result
 type GenieGetMessageQueryResultRequest struct {
 	// Conversation ID
 	ConversationId string `json:"-" url:"-"`
@@ -384,7 +449,6 @@ type GenieGetMessageQueryResultResponse struct {
 	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
 }
 
-// [Deprecated] Get conversation message SQL query result
 type GenieGetQueryResultByAttachmentRequest struct {
 	// Attachment ID
 	AttachmentId string `json:"-" url:"-"`
@@ -396,13 +460,47 @@ type GenieGetQueryResultByAttachmentRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
-// Get Genie Space
 type GenieGetSpaceRequest struct {
 	// The ID associated with the Genie space
 	SpaceId string `json:"-" url:"-"`
 }
 
-// List Genie spaces
+type GenieListConversationsRequest struct {
+	// Maximum number of conversations to return per page
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Token to get the next page of results
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The ID associated with the Genie space to list conversations from.
+	SpaceId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieListConversationsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieListConversationsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieListConversationsResponse struct {
+	// List of conversations in the Genie space
+	Conversations []GenieConversationSummary `json:"conversations,omitempty"`
+	// Token to get the next page of results
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieListConversationsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieListConversationsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GenieListSpacesRequest struct {
 	// Maximum number of spaces to return per page
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -575,19 +673,29 @@ type GenieStartConversationResponse struct {
 	MessageId string `json:"message_id"`
 }
 
-// Get dashboard
+type GenieTrashSpaceRequest struct {
+	// The ID associated with the Genie space to be trashed.
+	SpaceId string `json:"-" url:"-"`
+}
+
 type GetDashboardRequest struct {
 	// UUID identifying the dashboard.
 	DashboardId string `json:"-" url:"-"`
 }
 
-// Get published dashboard
+type GetPublishedDashboardEmbeddedRequest struct {
+	// UUID identifying the published dashboard.
+	DashboardId string `json:"-" url:"-"`
+}
+
+type GetPublishedDashboardEmbeddedResponse struct {
+}
+
 type GetPublishedDashboardRequest struct {
 	// UUID identifying the published dashboard.
 	DashboardId string `json:"-" url:"-"`
 }
 
-// Read an information of a published dashboard to mint an OAuth token.
 type GetPublishedDashboardTokenInfoRequest struct {
 	// UUID identifying the published dashboard.
 	DashboardId string `json:"-" url:"-"`
@@ -630,7 +738,6 @@ func (s GetPublishedDashboardTokenInfoResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get dashboard schedule
 type GetScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
 	DashboardId string `json:"-" url:"-"`
@@ -638,7 +745,6 @@ type GetScheduleRequest struct {
 	ScheduleId string `json:"-" url:"-"`
 }
 
-// Get schedule subscription
 type GetSubscriptionRequest struct {
 	// UUID identifying the dashboard which the subscription belongs.
 	DashboardId string `json:"-" url:"-"`
@@ -685,7 +791,6 @@ func (f *LifecycleState) Type() string {
 	return "LifecycleState"
 }
 
-// List dashboards
 type ListDashboardsRequest struct {
 	// The number of dashboards to return per page.
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -726,7 +831,6 @@ func (s ListDashboardsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List dashboard schedules
 type ListSchedulesRequest struct {
 	// UUID identifying the dashboard to which the schedules belongs.
 	DashboardId string `json:"-" url:"-"`
@@ -766,7 +870,6 @@ func (s ListSchedulesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List schedule subscriptions
 type ListSubscriptionsRequest struct {
 	// UUID identifying the dashboard which the subscriptions belongs.
 	DashboardId string `json:"-" url:"-"`
@@ -1133,6 +1236,29 @@ func (s MigrateDashboardRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type PendingStatus struct {
+	// The token to poll for result asynchronously Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	DataToken string `json:"data_token"`
+}
+
+type PollPublishedQueryStatusRequest struct {
+	DashboardName string `json:"-" url:"dashboard_name"`
+
+	DashboardRevisionId string `json:"-" url:"dashboard_revision_id"`
+	// Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	Tokens []string `json:"-" url:"tokens,omitempty"`
+}
+
+type PollQueryStatusResponse struct {
+	Data []PollQueryStatusResponseData `json:"data,omitempty"`
+}
+
+type PollQueryStatusResponseData struct {
+	Status QueryResponseStatus `json:"status"`
+}
+
 type PublishRequest struct {
 	// UUID identifying the dashboard to be published.
 	DashboardId string `json:"-" url:"-"`
@@ -1173,6 +1299,34 @@ func (s *PublishedDashboard) UnmarshalJSON(b []byte) error {
 }
 
 func (s PublishedDashboard) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type QueryResponseStatus struct {
+	// Represents an empty message, similar to google.protobuf.Empty, which is
+	// not available in the firm right now.
+	Canceled *Empty `json:"canceled,omitempty"`
+	// Represents an empty message, similar to google.protobuf.Empty, which is
+	// not available in the firm right now.
+	Closed *Empty `json:"closed,omitempty"`
+
+	Pending *PendingStatus `json:"pending,omitempty"`
+	// The statement id in format(01eef5da-c56e-1f36-bafa-21906587d6ba) The
+	// statement_id should be identical to data_token in SuccessStatus and
+	// PendingStatus. This field is created for audit logging purpose to record
+	// the statement_id of all QueryResponseStatus.
+	StatementId string `json:"statement_id,omitempty"`
+
+	Success *SuccessStatus `json:"success,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *QueryResponseStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryResponseStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1321,6 +1475,24 @@ type SubscriptionSubscriberUser struct {
 	UserId int64 `json:"user_id"`
 }
 
+type SuccessStatus struct {
+	// The token to poll for result asynchronously Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	DataToken string `json:"data_token"`
+	// Whether the query result is truncated (either by byte limit or row limit)
+	Truncated bool `json:"truncated,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SuccessStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SuccessStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type TextAttachment struct {
 	// AI generated message
 	Content string `json:"content,omitempty"`
@@ -1338,7 +1510,6 @@ func (s TextAttachment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Trash dashboard
 type TrashDashboardRequest struct {
 	// UUID identifying the dashboard.
 	DashboardId string `json:"-" url:"-"`
@@ -1347,7 +1518,9 @@ type TrashDashboardRequest struct {
 type TrashDashboardResponse struct {
 }
 
-// Unpublish dashboard
+type TrashSpaceResponse struct {
+}
+
 type UnpublishDashboardRequest struct {
 	// UUID identifying the published dashboard.
 	DashboardId string `json:"-" url:"-"`
@@ -1356,14 +1529,12 @@ type UnpublishDashboardRequest struct {
 type UnpublishDashboardResponse struct {
 }
 
-// Update dashboard
 type UpdateDashboardRequest struct {
 	Dashboard Dashboard `json:"dashboard"`
 	// UUID identifying the dashboard.
 	DashboardId string `json:"-" url:"-"`
 }
 
-// Update dashboard schedule
 type UpdateScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
 	DashboardId string `json:"-" url:"-"`
