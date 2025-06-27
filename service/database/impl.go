@@ -73,52 +73,47 @@ func (a *databaseImpl) CreateSyncedDatabaseTable(ctx context.Context, request Cr
 }
 
 func (a *databaseImpl) DeleteDatabaseCatalog(ctx context.Context, request DeleteDatabaseCatalogRequest) error {
-	var deleteDatabaseCatalogResponse DeleteDatabaseCatalogResponse
 	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDatabaseCatalogResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *databaseImpl) DeleteDatabaseInstance(ctx context.Context, request DeleteDatabaseInstanceRequest) error {
-	var deleteDatabaseInstanceResponse DeleteDatabaseInstanceResponse
 	path := fmt.Sprintf("/api/2.0/database/instances/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDatabaseInstanceResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *databaseImpl) DeleteDatabaseInstanceRole(ctx context.Context, request DeleteDatabaseInstanceRoleRequest) error {
-	var deleteDatabaseInstanceRoleResponse DeleteDatabaseInstanceRoleResponse
 	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles/%v", request.InstanceName, request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDatabaseInstanceRoleResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *databaseImpl) DeleteDatabaseTable(ctx context.Context, request DeleteDatabaseTableRequest) error {
-	var deleteDatabaseTableResponse DeleteDatabaseTableResponse
 	path := fmt.Sprintf("/api/2.0/database/tables/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDatabaseTableResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *databaseImpl) DeleteSyncedDatabaseTable(ctx context.Context, request DeleteSyncedDatabaseTableRequest) error {
-	var deleteSyncedDatabaseTableResponse DeleteSyncedDatabaseTableResponse
 	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteSyncedDatabaseTableResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 

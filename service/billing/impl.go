@@ -44,12 +44,11 @@ func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolic
 }
 
 func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolicyRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -137,12 +136,11 @@ func (a *budgetsImpl) Create(ctx context.Context, request CreateBudgetConfigurat
 }
 
 func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) error {
-	var deleteBudgetConfigurationResponse DeleteBudgetConfigurationResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteBudgetConfigurationResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -278,13 +276,12 @@ func (a *logDeliveryImpl) internalList(ctx context.Context, request ListLogDeliv
 }
 
 func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
-	var patchStatusResponse PatchStatusResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &patchStatusResponse)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
 

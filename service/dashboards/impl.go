@@ -29,12 +29,11 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 }
 
 func (a *genieImpl) DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error {
-	var deleteConversationResponse DeleteConversationResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v", request.SpaceId, request.ConversationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteConversationResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -160,12 +159,11 @@ func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartCon
 }
 
 func (a *genieImpl) TrashSpace(ctx context.Context, request GenieTrashSpaceRequest) error {
-	var trashSpaceResponse TrashSpaceResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v", request.SpaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &trashSpaceResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -208,22 +206,20 @@ func (a *lakeviewImpl) CreateSubscription(ctx context.Context, request CreateSub
 }
 
 func (a *lakeviewImpl) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error {
-	var deleteScheduleResponse DeleteScheduleResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteScheduleResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *lakeviewImpl) DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) error {
-	var deleteSubscriptionResponse DeleteSubscriptionResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", request.DashboardId, request.ScheduleId, request.SubscriptionId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteSubscriptionResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -413,22 +409,20 @@ func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*Pu
 }
 
 func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest) error {
-	var trashDashboardResponse TrashDashboardResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &trashDashboardResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboardRequest) error {
-	var unpublishDashboardResponse UnpublishDashboardResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &unpublishDashboardResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -460,12 +454,11 @@ type lakeviewEmbeddedImpl struct {
 }
 
 func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error {
-	var getPublishedDashboardEmbeddedResponse GetPublishedDashboardEmbeddedResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/embedded", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardEmbeddedResponse)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -495,13 +488,12 @@ func (a *queryExecutionImpl) CancelPublishedQueryExecution(ctx context.Context, 
 }
 
 func (a *queryExecutionImpl) ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error {
-	var executeQueryResponse ExecuteQueryResponse
 	path := "/api/2.0/lakeview-query/query/published"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &executeQueryResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 

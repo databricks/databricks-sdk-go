@@ -16,13 +16,12 @@ type aiBuilderImpl struct {
 }
 
 func (a *aiBuilderImpl) CancelOptimize(ctx context.Context, request CancelCustomLlmOptimizationRunRequest) error {
-	var cancelOptimizeResponse CancelOptimizeResponse
 	path := fmt.Sprintf("/api/2.0/custom-llms/%v/optimize/cancel", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &cancelOptimizeResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -38,12 +37,11 @@ func (a *aiBuilderImpl) CreateCustomLlm(ctx context.Context, request CreateCusto
 }
 
 func (a *aiBuilderImpl) DeleteCustomLlm(ctx context.Context, request DeleteCustomLlmRequest) error {
-	var deleteCustomLlmResponse DeleteCustomLlmResponse
 	path := fmt.Sprintf("/api/2.0/custom-lms/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCustomLlmResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
