@@ -431,7 +431,7 @@ func (f *FilesExt) performResumableUpload(ctx context.Context, targetPath string
 	return nil
 }
 
-// openDownloadStream opens a download stream from given offset
+// openDownloadStream opens a download stream from given offset, performing necessary retries.
 func (f *FilesExt) openDownloadStream(ctx context.Context, filePath string, startByteOffset int64, ifUnmodifiedSinceTimestamp string) (*DownloadResponse, error) {
 	headers := map[string]string{"Accept": "application/octet-stream"}
 
