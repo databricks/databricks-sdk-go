@@ -8,24 +8,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-// Activity recorded for the action.
+// For activities, this contains the activity recorded for the action. For
+// comments, this contains the comment details. For transition requests, this
+// contains the transition request details.
 type Activity struct {
-	// Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied
-	// the corresponding stage transition.
-	//
-	// * `REQUESTED_TRANSITION`: User requested the corresponding stage
-	// transition.
-	//
-	// * `CANCELLED_REQUEST`: User cancelled an existing transition request.
-	//
-	// * `APPROVED_REQUEST`: User approved the corresponding stage transition.
-	//
-	// * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
-	//
-	// * `SYSTEM_TRANSITION`: For events performed as a side effect, such as
-	// archiving existing model versions in a stage.
 	ActivityType ActivityType `json:"activity_type,omitempty"`
-	// User-provided comment associated with the activity.
+	// User-provided comment associated with the activity, comment, or
+	// transition request.
 	Comment string `json:"comment,omitempty"`
 	// Creation time of the object, as a Unix timestamp in milliseconds.
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
@@ -39,7 +28,7 @@ type Activity struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
-	FromStage Stage `json:"from_stage,omitempty"`
+	FromStage string `json:"from_stage,omitempty"`
 	// Unique identifier for the object.
 	Id string `json:"id,omitempty"`
 	// Time of the object at last update, as a Unix timestamp in milliseconds.
@@ -59,7 +48,7 @@ type Activity struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
-	ToStage Stage `json:"to_stage,omitempty"`
+	ToStage string `json:"to_stage,omitempty"`
 	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
 
@@ -74,13 +63,19 @@ func (s Activity) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// An action that a user (with sufficient permissions) could take on an
-// activity. Valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a
+// An action that a user (with sufficient permissions) could take on an activity
+// or comment.
+//
+// For activities, valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a
 // transition request
 //
 // * `REJECT_TRANSITION_REQUEST`: Reject a transition request
 //
 // * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+//
+// For comments, valid values are: * `EDIT_COMMENT`: Edit the comment
+//
+// * `DELETE_COMMENT`: Delete the comment
 type ActivityAction string
 
 // Approve a transition request
@@ -88,6 +83,12 @@ const ActivityActionApproveTransitionRequest ActivityAction = `APPROVE_TRANSITIO
 
 // Cancel (delete) a transition request
 const ActivityActionCancelTransitionRequest ActivityAction = `CANCEL_TRANSITION_REQUEST`
+
+// Delete the comment
+const ActivityActionDeleteComment ActivityAction = `DELETE_COMMENT`
+
+// Edit the comment
+const ActivityActionEditComment ActivityAction = `EDIT_COMMENT`
 
 // Reject a transition request
 const ActivityActionRejectTransitionRequest ActivityAction = `REJECT_TRANSITION_REQUEST`
@@ -100,11 +101,11 @@ func (f *ActivityAction) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ActivityAction) Set(v string) error {
 	switch v {
-	case `APPROVE_TRANSITION_REQUEST`, `CANCEL_TRANSITION_REQUEST`, `REJECT_TRANSITION_REQUEST`:
+	case `APPROVE_TRANSITION_REQUEST`, `CANCEL_TRANSITION_REQUEST`, `DELETE_COMMENT`, `EDIT_COMMENT`, `REJECT_TRANSITION_REQUEST`:
 		*f = ActivityAction(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "APPROVE_TRANSITION_REQUEST", "CANCEL_TRANSITION_REQUEST", "REJECT_TRANSITION_REQUEST"`, v)
+		return fmt.Errorf(`value "%s" is not one of "APPROVE_TRANSITION_REQUEST", "CANCEL_TRANSITION_REQUEST", "DELETE_COMMENT", "EDIT_COMMENT", "REJECT_TRANSITION_REQUEST"`, v)
 	}
 }
 
@@ -115,6 +116,8 @@ func (f *ActivityAction) Values() []ActivityAction {
 	return []ActivityAction{
 		ActivityActionApproveTransitionRequest,
 		ActivityActionCancelTransitionRequest,
+		ActivityActionDeleteComment,
+		ActivityActionEditComment,
 		ActivityActionRejectTransitionRequest,
 	}
 }
@@ -196,6 +199,8 @@ func (f *ActivityType) Type() string {
 	return "ActivityType"
 }
 
+// Details required to identify and approve a model version stage transition
+// request.
 type ApproveTransitionRequest struct {
 	// Specifies whether to archive all current model versions in the target
 	// stage.
@@ -213,7 +218,7 @@ type ApproveTransitionRequest struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
-	Stage Stage `json:"stage"`
+	Stage string `json:"stage"`
 	// Version of the model.
 	Version string `json:"version"`
 
@@ -229,21 +234,39 @@ func (s ApproveTransitionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ApproveTransitionRequestResponse struct {
-	// Activity recorded for the action.
+	// New activity generated as a result of this operation.
 	Activity *Activity `json:"activity,omitempty"`
 }
 
-// An action that a user (with sufficient permissions) could take on a comment.
-// Valid values are: * `EDIT_COMMENT`: Edit the comment
+// An action that a user (with sufficient permissions) could take on an activity
+// or comment.
+//
+// For activities, valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a
+// transition request
+//
+// * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+//
+// * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+//
+// For comments, valid values are: * `EDIT_COMMENT`: Edit the comment
 //
 // * `DELETE_COMMENT`: Delete the comment
 type CommentActivityAction string
+
+// Approve a transition request
+const CommentActivityActionApproveTransitionRequest CommentActivityAction = `APPROVE_TRANSITION_REQUEST`
+
+// Cancel (delete) a transition request
+const CommentActivityActionCancelTransitionRequest CommentActivityAction = `CANCEL_TRANSITION_REQUEST`
 
 // Delete the comment
 const CommentActivityActionDeleteComment CommentActivityAction = `DELETE_COMMENT`
 
 // Edit the comment
 const CommentActivityActionEditComment CommentActivityAction = `EDIT_COMMENT`
+
+// Reject a transition request
+const CommentActivityActionRejectTransitionRequest CommentActivityAction = `REJECT_TRANSITION_REQUEST`
 
 // String representation for [fmt.Print]
 func (f *CommentActivityAction) String() string {
@@ -253,11 +276,11 @@ func (f *CommentActivityAction) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CommentActivityAction) Set(v string) error {
 	switch v {
-	case `DELETE_COMMENT`, `EDIT_COMMENT`:
+	case `APPROVE_TRANSITION_REQUEST`, `CANCEL_TRANSITION_REQUEST`, `DELETE_COMMENT`, `EDIT_COMMENT`, `REJECT_TRANSITION_REQUEST`:
 		*f = CommentActivityAction(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DELETE_COMMENT", "EDIT_COMMENT"`, v)
+		return fmt.Errorf(`value "%s" is not one of "APPROVE_TRANSITION_REQUEST", "CANCEL_TRANSITION_REQUEST", "DELETE_COMMENT", "EDIT_COMMENT", "REJECT_TRANSITION_REQUEST"`, v)
 	}
 }
 
@@ -266,8 +289,11 @@ func (f *CommentActivityAction) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *CommentActivityAction) Values() []CommentActivityAction {
 	return []CommentActivityAction{
+		CommentActivityActionApproveTransitionRequest,
+		CommentActivityActionCancelTransitionRequest,
 		CommentActivityActionDeleteComment,
 		CommentActivityActionEditComment,
+		CommentActivityActionRejectTransitionRequest,
 	}
 }
 
@@ -276,15 +302,18 @@ func (f *CommentActivityAction) Type() string {
 	return "CommentActivityAction"
 }
 
-// Comment details.
+// For activities, this contains the activity recorded for the action. For
+// comments, this contains the comment details. For transition requests, this
+// contains the transition request details.
 type CommentObject struct {
 	// Array of actions on the activity allowed for the current viewer.
 	AvailableActions []CommentActivityAction `json:"available_actions,omitempty"`
-	// User-provided comment on the action.
+	// User-provided comment associated with the activity, comment, or
+	// transition request.
 	Comment string `json:"comment,omitempty"`
 	// Creation time of the object, as a Unix timestamp in milliseconds.
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-	// Comment ID
+	// Unique identifier for the object.
 	Id string `json:"id,omitempty"`
 	// Time of the object at last update, as a Unix timestamp in milliseconds.
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
@@ -302,6 +331,7 @@ func (s CommentObject) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Details required to create a comment on a model version.
 type CreateComment struct {
 	// User-provided comment on the action.
 	Comment string `json:"comment"`
@@ -312,7 +342,7 @@ type CreateComment struct {
 }
 
 type CreateCommentResponse struct {
-	// Comment details.
+	// New comment object
 	Comment *CommentObject `json:"comment,omitempty"`
 }
 
@@ -353,6 +383,14 @@ func (s *CreateExperimentResponse) UnmarshalJSON(b []byte) error {
 
 func (s CreateExperimentResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type CreateFeatureTagRequest struct {
+	FeatureName string `json:"-" url:"-"`
+
+	FeatureTag FeatureTag `json:"feature_tag"`
+
+	TableName string `json:"-" url:"-"`
 }
 
 type CreateForecastingExperimentRequest struct {
@@ -528,13 +566,12 @@ type CreateModelVersionResponse struct {
 	ModelVersion *ModelVersion `json:"model_version,omitempty"`
 }
 
-// Create an Online Feature Store
 type CreateOnlineStoreRequest struct {
-	// An OnlineStore is a logical database instance that stores and serves
-	// features online.
+	// Online store to create.
 	OnlineStore OnlineStore `json:"online_store"`
 }
 
+// Details required to create a registry webhook.
 type CreateRegistryWebhook struct {
 	// User-specified description for the webhook.
 	Description string `json:"description,omitempty"`
@@ -572,9 +609,9 @@ type CreateRegistryWebhook struct {
 	// * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model
 	// version be archived.
 	Events []RegistryWebhookEvent `json:"events"`
-
+	// External HTTPS URL called on event trigger (by using a POST request).
 	HttpUrlSpec *HttpUrlSpec `json:"http_url_spec,omitempty"`
-
+	// ID of the job that the webhook runs.
 	JobSpec *JobSpec `json:"job_spec,omitempty"`
 	// If model name is not specified, a registry-wide webhook is created that
 	// listens for the specified events across all versions of all registered
@@ -631,6 +668,7 @@ type CreateRunResponse struct {
 	Run *Run `json:"run,omitempty"`
 }
 
+// Details required to create a model version stage transition request.
 type CreateTransitionRequest struct {
 	// User-provided comment on the action.
 	Comment string `json:"comment,omitempty"`
@@ -645,7 +683,7 @@ type CreateTransitionRequest struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
-	Stage Stage `json:"stage"`
+	Stage string `json:"stage"`
 	// Version of the model.
 	Version string `json:"version"`
 
@@ -661,7 +699,7 @@ func (s CreateTransitionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type CreateTransitionRequestResponse struct {
-	// Transition request details.
+	// New activity generated for stage transition request.
 	Request *TransitionRequest `json:"request,omitempty"`
 }
 
@@ -713,7 +751,6 @@ type DatasetInput struct {
 	Tags []InputTag `json:"tags,omitempty"`
 }
 
-// Delete a comment
 type DeleteCommentRequest struct {
 	// Unique identifier of an activity
 	Id string `json:"-" url:"id"`
@@ -730,7 +767,18 @@ type DeleteExperiment struct {
 type DeleteExperimentResponse struct {
 }
 
-// Delete a logged model
+type DeleteFeatureTagRequest struct {
+	// The name of the feature within the feature table.
+	FeatureName string `json:"-" url:"-"`
+	// The key of the tag to delete.
+	Key string `json:"-" url:"-"`
+	// The name of the feature table.
+	TableName string `json:"-" url:"-"`
+}
+
+type DeleteFeatureTagResponse struct {
+}
+
 type DeleteLoggedModelRequest struct {
 	// The ID of the logged model to delete.
 	ModelId string `json:"-" url:"-"`
@@ -739,7 +787,6 @@ type DeleteLoggedModelRequest struct {
 type DeleteLoggedModelResponse struct {
 }
 
-// Delete a tag on a logged model
 type DeleteLoggedModelTagRequest struct {
 	// The ID of the logged model to delete the tag from.
 	ModelId string `json:"-" url:"-"`
@@ -750,7 +797,6 @@ type DeleteLoggedModelTagRequest struct {
 type DeleteLoggedModelTagResponse struct {
 }
 
-// Delete a model
 type DeleteModelRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"-" url:"name"`
@@ -759,7 +805,6 @@ type DeleteModelRequest struct {
 type DeleteModelResponse struct {
 }
 
-// Delete a model tag
 type DeleteModelTagRequest struct {
 	// Name of the tag. The name must be an exact match; wild-card deletion is
 	// not supported. Maximum size is 250 bytes.
@@ -771,7 +816,6 @@ type DeleteModelTagRequest struct {
 type DeleteModelTagResponse struct {
 }
 
-// Delete a model version.
 type DeleteModelVersionRequest struct {
 	// Name of the registered model
 	Name string `json:"-" url:"name"`
@@ -782,7 +826,6 @@ type DeleteModelVersionRequest struct {
 type DeleteModelVersionResponse struct {
 }
 
-// Delete a model version tag
 type DeleteModelVersionTagRequest struct {
 	// Name of the tag. The name must be an exact match; wild-card deletion is
 	// not supported. Maximum size is 250 bytes.
@@ -796,7 +839,6 @@ type DeleteModelVersionTagRequest struct {
 type DeleteModelVersionTagResponse struct {
 }
 
-// Delete an Online Feature Store
 type DeleteOnlineStoreRequest struct {
 	// Name of the online store to delete.
 	Name string `json:"-" url:"-"`
@@ -860,7 +902,6 @@ type DeleteTag struct {
 type DeleteTagResponse struct {
 }
 
-// Delete a transition request
 type DeleteTransitionRequestRequest struct {
 	// User-provided comment on the action.
 	Comment string `json:"-" url:"comment,omitempty"`
@@ -879,7 +920,7 @@ type DeleteTransitionRequestRequest struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
-	Stage DeleteTransitionRequestStage `json:"-" url:"stage"`
+	Stage string `json:"-" url:"stage"`
 	// Version of the model.
 	Version string `json:"-" url:"version"`
 
@@ -895,65 +936,13 @@ func (s DeleteTransitionRequestRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DeleteTransitionRequestResponse struct {
+	// New activity generated as a result of this operation.
+	Activity *Activity `json:"activity,omitempty"`
 }
 
-type DeleteTransitionRequestStage string
-
-const DeleteTransitionRequestStageArchived DeleteTransitionRequestStage = `Archived`
-
-const DeleteTransitionRequestStageNone DeleteTransitionRequestStage = `None`
-
-const DeleteTransitionRequestStageProduction DeleteTransitionRequestStage = `Production`
-
-const DeleteTransitionRequestStageStaging DeleteTransitionRequestStage = `Staging`
-
-// String representation for [fmt.Print]
-func (f *DeleteTransitionRequestStage) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *DeleteTransitionRequestStage) Set(v string) error {
-	switch v {
-	case `Archived`, `None`, `Production`, `Staging`:
-		*f = DeleteTransitionRequestStage(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "Archived", "None", "Production", "Staging"`, v)
-	}
-}
-
-// Values returns all possible values for DeleteTransitionRequestStage.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *DeleteTransitionRequestStage) Values() []DeleteTransitionRequestStage {
-	return []DeleteTransitionRequestStage{
-		DeleteTransitionRequestStageArchived,
-		DeleteTransitionRequestStageNone,
-		DeleteTransitionRequestStageProduction,
-		DeleteTransitionRequestStageStaging,
-	}
-}
-
-// Type always returns DeleteTransitionRequestStage to satisfy [pflag.Value] interface
-func (f *DeleteTransitionRequestStage) Type() string {
-	return "DeleteTransitionRequestStage"
-}
-
-// Delete a webhook
 type DeleteWebhookRequest struct {
 	// Webhook ID required to delete a registry webhook.
-	Id string `json:"-" url:"id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *DeleteWebhookRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteWebhookRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	Id string `json:"-" url:"id"`
 }
 
 type DeleteWebhookResponse struct {
@@ -991,7 +980,7 @@ func (s Experiment) MarshalJSON() ([]byte, error) {
 type ExperimentAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// Permission level
+
 	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -1036,7 +1025,7 @@ type ExperimentPermission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-	// Permission level
+
 	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1111,7 +1100,7 @@ func (s ExperimentPermissions) MarshalJSON() ([]byte, error) {
 
 type ExperimentPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
-	// Permission level
+
 	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1146,6 +1135,106 @@ func (s *ExperimentTag) UnmarshalJSON(b []byte) error {
 }
 
 func (s ExperimentTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Feature for model version.
+type Feature struct {
+	// Feature name
+	FeatureName string `json:"feature_name,omitempty"`
+	// Feature table id
+	FeatureTableId string `json:"feature_table_id,omitempty"`
+	// Feature table name
+	FeatureTableName string `json:"feature_table_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Feature) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Feature) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type FeatureLineage struct {
+	// List of feature specs that contain this feature.
+	FeatureSpecs []FeatureLineageFeatureSpec `json:"feature_specs,omitempty"`
+	// List of Unity Catalog models that were trained on this feature.
+	Models []FeatureLineageModel `json:"models,omitempty"`
+	// List of online features that use this feature as source.
+	OnlineFeatures []FeatureLineageOnlineFeature `json:"online_features,omitempty"`
+}
+
+type FeatureLineageFeatureSpec struct {
+	// The full name of the feature spec in Unity Catalog.
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FeatureLineageFeatureSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FeatureLineageFeatureSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type FeatureLineageModel struct {
+	// The full name of the model in Unity Catalog.
+	Name string `json:"name,omitempty"`
+	// The version of the model.
+	Version int64 `json:"version,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FeatureLineageModel) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FeatureLineageModel) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type FeatureLineageOnlineFeature struct {
+	// The name of the online feature (column name).
+	FeatureName string `json:"feature_name,omitempty"`
+	// The full name of the online table in Unity Catalog.
+	TableName string `json:"table_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FeatureLineageOnlineFeature) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FeatureLineageOnlineFeature) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Feature list wrap all the features for a model version
+type FeatureList struct {
+	Features []Feature `json:"features,omitempty"`
+}
+
+// Represents a tag on a feature in a feature table.
+type FeatureTag struct {
+	Key string `json:"key"`
+
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FeatureTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FeatureTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1250,7 +1339,6 @@ func (f *ForecastingExperimentState) Type() string {
 	return "ForecastingExperimentState"
 }
 
-// Get an experiment by name
 type GetByNameRequest struct {
 	// Name of the associated experiment.
 	ExperimentName string `json:"-" url:"experiment_name"`
@@ -1261,7 +1349,6 @@ type GetExperimentByNameResponse struct {
 	Experiment *Experiment `json:"experiment,omitempty"`
 }
 
-// Get experiment permission levels
 type GetExperimentPermissionLevelsRequest struct {
 	// The experiment for which to get or manage permissions.
 	ExperimentId string `json:"-" url:"-"`
@@ -1272,13 +1359,11 @@ type GetExperimentPermissionLevelsResponse struct {
 	PermissionLevels []ExperimentPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get experiment permissions
 type GetExperimentPermissionsRequest struct {
 	// The experiment for which to get or manage permissions.
 	ExperimentId string `json:"-" url:"-"`
 }
 
-// Get an experiment
 type GetExperimentRequest struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"-" url:"experiment_id"`
@@ -1289,13 +1374,26 @@ type GetExperimentResponse struct {
 	Experiment *Experiment `json:"experiment,omitempty"`
 }
 
-// Get a forecasting experiment
+type GetFeatureLineageRequest struct {
+	// The name of the feature.
+	FeatureName string `json:"-" url:"-"`
+	// The full name of the feature table in Unity Catalog.
+	TableName string `json:"-" url:"-"`
+}
+
+type GetFeatureTagRequest struct {
+	FeatureName string `json:"-" url:"-"`
+
+	Key string `json:"-" url:"-"`
+
+	TableName string `json:"-" url:"-"`
+}
+
 type GetForecastingExperimentRequest struct {
 	// The unique ID of a forecasting experiment
 	ExperimentId string `json:"-" url:"-"`
 }
 
-// Get metric history for a run
 type GetHistoryRequest struct {
 	// Maximum number of Metric records to return per paginated request. Default
 	// is set to 25,000. If set higher than 25,000, a request Exception will be
@@ -1336,7 +1434,6 @@ type GetLatestVersionsResponse struct {
 	ModelVersions []ModelVersion `json:"model_versions,omitempty"`
 }
 
-// Get a logged model
 type GetLoggedModelRequest struct {
 	// The ID of the logged model to retrieve.
 	ModelId string `json:"-" url:"-"`
@@ -1369,7 +1466,6 @@ func (s GetMetricHistoryResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get model
 type GetModelRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"-" url:"name"`
@@ -1379,7 +1475,6 @@ type GetModelResponse struct {
 	RegisteredModelDatabricks *ModelDatabricks `json:"registered_model_databricks,omitempty"`
 }
 
-// Get a model version URI
 type GetModelVersionDownloadUriRequest struct {
 	// Name of the registered model
 	Name string `json:"-" url:"name"`
@@ -1402,7 +1497,6 @@ func (s GetModelVersionDownloadUriResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a model version
 type GetModelVersionRequest struct {
 	// Name of the registered model
 	Name string `json:"-" url:"name"`
@@ -1414,13 +1508,11 @@ type GetModelVersionResponse struct {
 	ModelVersion *ModelVersion `json:"model_version,omitempty"`
 }
 
-// Get an Online Feature Store
 type GetOnlineStoreRequest struct {
 	// Name of the online store to get.
 	Name string `json:"-" url:"-"`
 }
 
-// Get registered model permission levels
 type GetRegisteredModelPermissionLevelsRequest struct {
 	// The registered model for which to get or manage permissions.
 	RegisteredModelId string `json:"-" url:"-"`
@@ -1431,13 +1523,11 @@ type GetRegisteredModelPermissionLevelsResponse struct {
 	PermissionLevels []RegisteredModelPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get registered model permissions
 type GetRegisteredModelPermissionsRequest struct {
 	// The registered model for which to get or manage permissions.
 	RegisteredModelId string `json:"-" url:"-"`
 }
 
-// Get a run
 type GetRunRequest struct {
 	// ID of the run to fetch. Must be provided.
 	RunId string `json:"-" url:"run_id"`
@@ -1549,9 +1639,9 @@ func (s JobSpec) MarshalJSON() ([]byte, error) {
 type JobSpecWithoutSecret struct {
 	// ID of the job that the webhook runs.
 	JobId string `json:"job_id,omitempty"`
-	// URL of the workspace containing the job that this webhook runs. Defaults
-	// to the workspace URL in which the webhook is created. If not specified,
-	// the job’s workspace is assumed to be the same as the webhook’s.
+	// URL of the workspace containing the job that this webhook runs. If not
+	// specified, the job’s workspace URL is assumed to be the same as the
+	// workspace where the webhook is created.
 	WorkspaceUrl string `json:"workspace_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1565,7 +1655,6 @@ func (s JobSpecWithoutSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List artifacts
 type ListArtifactsRequest struct {
 	// The token indicating the page of artifact results to fetch. `page_token`
 	// is not supported when listing artifacts in UC Volumes. A maximum of 1000
@@ -1613,7 +1702,6 @@ func (s ListArtifactsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List experiments
 type ListExperimentsRequest struct {
 	// Maximum number of experiments desired. If `max_results` is unspecified,
 	// return all experiments. If `max_results` is too large, it'll be
@@ -1657,10 +1745,46 @@ func (s ListExperimentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List models
+type ListFeatureTagsRequest struct {
+	FeatureName string `json:"-" url:"-"`
+	// The maximum number of results to return.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page based on a previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	TableName string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListFeatureTagsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListFeatureTagsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response message for ListFeatureTag.
+type ListFeatureTagsResponse struct {
+	FeatureTags []FeatureTag `json:"feature_tags,omitempty"`
+	// Pagination token to request the next page of results for this query.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListFeatureTagsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListFeatureTagsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListModelsRequest struct {
 	// Maximum number of registered models desired. Max threshold is 1000.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int64 `json:"-" url:"max_results,omitempty"`
 	// Pagination token to go to the next page based on a previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
@@ -1692,7 +1816,6 @@ func (s ListModelsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List Online Feature Stores
 type ListOnlineStoresRequest struct {
 	// The maximum number of results to return. Defaults to 100 if not
 	// specified.
@@ -1745,9 +1868,8 @@ func (s ListRegistryWebhooks) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List transition requests
 type ListTransitionRequestsRequest struct {
-	// Name of the model.
+	// Name of the registered model.
 	Name string `json:"-" url:"name"`
 	// Version of the model.
 	Version string `json:"-" url:"version"`
@@ -1758,14 +1880,49 @@ type ListTransitionRequestsResponse struct {
 	Requests []Activity `json:"requests,omitempty"`
 }
 
-// List registry webhooks
 type ListWebhooksRequest struct {
+	// Events that trigger the webhook. * `MODEL_VERSION_CREATED`: A new model
+	// version was created for the associated model.
+	//
+	// * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was
+	// changed.
+	//
+	// * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s
+	// stage be transitioned.
+	//
+	// * `COMMENT_CREATED`: A user wrote a comment on a registered model.
+	//
+	// * `REGISTERED_MODEL_CREATED`: A new registered model was created. This
+	// event type can only be specified for a registry-wide webhook, which can
+	// be created by not specifying a model name in the create request.
+	//
+	// * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
+	//
+	// * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was
+	// transitioned to staging.
+	//
+	// * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was
+	// transitioned to production.
+	//
+	// * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
+	//
+	// * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model
+	// version be transitioned to staging.
+	//
+	// * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model
+	// version be transitioned to production.
+	//
+	// * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model
+	// version be archived.
+	//
 	// If `events` is specified, any webhook with one or more of the specified
 	// trigger events is included in the output. If `events` is not specified,
 	// webhooks of all event types are included in the output.
 	Events []RegistryWebhookEvent `json:"-" url:"events,omitempty"`
-	// If not specified, all webhooks associated with the specified events are
-	// listed, regardless of their associated model.
+
+	MaxResults int64 `json:"-" url:"max_results,omitempty"`
+	// Registered model name If not specified, all webhooks associated with the
+	// specified events are listed, regardless of their associated model.
 	ModelName string `json:"-" url:"model_name,omitempty"`
 	// Token indicating the page of artifact results to fetch
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -2128,14 +2285,13 @@ type ModelDatabricks struct {
 	Description string `json:"description,omitempty"`
 	// Unique identifier for the object.
 	Id string `json:"id,omitempty"`
-	// Time of the object at last update, as a Unix timestamp in milliseconds.
+	// Last update time of the object, as a Unix timestamp in milliseconds.
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Array of model versions, each the latest version for its stage.
 	LatestVersions []ModelVersion `json:"latest_versions,omitempty"`
 	// Name of the model.
 	Name string `json:"name,omitempty"`
-	// Permission level of the requesting user on the object. For what is
-	// allowed at each level, see [MLflow Model permissions](..).
+	// Permission level granted for the requesting user on this registered model
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 	// Array of tags associated with the model.
 	Tags []ModelTag `json:"tags,omitempty"`
@@ -2167,6 +2323,7 @@ type ModelOutput struct {
 	Step int64 `json:"step"`
 }
 
+// Tag for a registered model
 type ModelTag struct {
 	// The tag key.
 	Key string `json:"key,omitempty"`
@@ -2229,24 +2386,25 @@ func (s ModelVersion) MarshalJSON() ([]byte, error) {
 type ModelVersionDatabricks struct {
 	// Creation time of the object, as a Unix timestamp in milliseconds.
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-	// Stage of the model version. Valid values are:
-	//
-	// * `None`: The initial stage of a model version.
-	//
-	// * `Staging`: Staging or pre-production stage.
-	//
-	// * `Production`: Production stage.
-	//
-	// * `Archived`: Archived stage.
-	CurrentStage Stage `json:"current_stage,omitempty"`
+
+	CurrentStage string `json:"current_stage,omitempty"`
 	// User-specified description for the object.
 	Description string `json:"description,omitempty"`
+	// Email Subscription Status: This is the subscription status of the user to
+	// the model version Users get subscribed by interacting with the model
+	// version.
+	EmailSubscriptionStatus RegistryEmailSubscriptionType `json:"email_subscription_status,omitempty"`
+	// Feature lineage of `model_version`.
+	FeatureList *FeatureList `json:"feature_list,omitempty"`
 	// Time of the object at last update, as a Unix timestamp in milliseconds.
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Name of the model.
 	Name string `json:"name,omitempty"`
-	// Permission level of the requesting user on the object. For what is
-	// allowed at each level, see [MLflow Model permissions](..).
+	// Open requests for this `model_versions`. Gap in sequence number is
+	// intentional and is done in order to match field sequence numbers of
+	// `ModelVersion` proto message
+	OpenRequests []Activity `json:"open_requests,omitempty"`
+
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 	// Unique identifier for the MLflow tracking run associated with the source
 	// model artifacts.
@@ -2258,14 +2416,7 @@ type ModelVersionDatabricks struct {
 	// URI that indicates the location of the source model artifacts. This is
 	// used when creating the model version.
 	Source string `json:"source,omitempty"`
-	// The status of the model version. Valid values are: *
-	// `PENDING_REGISTRATION`: Request to register a new model version is
-	// pending as server performs background tasks.
-	//
-	// * `FAILED_REGISTRATION`: Request to register a new model version has
-	// failed.
-	//
-	// * `READY`: Model version is ready for use.
+
 	Status Status `json:"status,omitempty"`
 	// Details on the current status, for example why registration failed.
 	StatusMessage string `json:"status_message,omitempty"`
@@ -2287,13 +2438,23 @@ func (s ModelVersionDatabricks) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Current status of `model_version`
+// The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
+// Request to register a new model version is pending as server performs
+// background tasks.
+//
+// * `FAILED_REGISTRATION`: Request to register a new model version has failed.
+//
+// * `READY`: Model version is ready for use.
 type ModelVersionStatus string
 
+// Request to register a new model version has failed.
 const ModelVersionStatusFailedRegistration ModelVersionStatus = `FAILED_REGISTRATION`
 
+// Request to register a new model version is pending as server performs
+// background tasks.
 const ModelVersionStatusPendingRegistration ModelVersionStatus = `PENDING_REGISTRATION`
 
+// Model version is ready for use.
 const ModelVersionStatusReady ModelVersionStatus = `READY`
 
 // String representation for [fmt.Print]
@@ -2350,7 +2511,7 @@ func (s ModelVersionTag) MarshalJSON() ([]byte, error) {
 type OnlineStore struct {
 	// The capacity of the online store. Valid values are "CU_1", "CU_2",
 	// "CU_4", "CU_8".
-	Capacity string `json:"capacity,omitempty"`
+	Capacity string `json:"capacity"`
 	// The timestamp when the online store was created.
 	CreationTime string `json:"creation_time,omitempty"`
 	// The email of the creator of the online store.
@@ -2443,6 +2604,8 @@ func (s Param) MarshalJSON() ([]byte, error) {
 // each level, see [MLflow Model permissions](..).
 type PermissionLevel string
 
+const PermissionLevelCanCreateRegisteredModel PermissionLevel = `CAN_CREATE_REGISTERED_MODEL`
+
 const PermissionLevelCanEdit PermissionLevel = `CAN_EDIT`
 
 const PermissionLevelCanManage PermissionLevel = `CAN_MANAGE`
@@ -2461,11 +2624,11 @@ func (f *PermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`:
+	case `CAN_CREATE_REGISTERED_MODEL`, `CAN_EDIT`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_READ`:
 		*f = PermissionLevel(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_STAGING_VERSIONS", "CAN_READ"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CAN_CREATE_REGISTERED_MODEL", "CAN_EDIT", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_STAGING_VERSIONS", "CAN_READ"`, v)
 	}
 }
 
@@ -2474,6 +2637,7 @@ func (f *PermissionLevel) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *PermissionLevel) Values() []PermissionLevel {
 	return []PermissionLevel{
+		PermissionLevelCanCreateRegisteredModel,
 		PermissionLevelCanEdit,
 		PermissionLevelCanManage,
 		PermissionLevelCanManageProductionVersions,
@@ -2491,22 +2655,11 @@ type PublishSpec struct {
 	// The name of the target online store.
 	OnlineStore string `json:"online_store"`
 	// The full three-part (catalog, schema, table) name of the online table.
-	// Auto-generated if not specified.
-	OnlineTableName string `json:"online_table_name,omitempty"`
+	OnlineTableName string `json:"online_table_name"`
 	// The publish mode of the pipeline that syncs the online table with the
 	// source table. Defaults to TRIGGERED if not specified. All publish modes
 	// require the source table to have Change Data Feed (CDF) enabled.
 	PublishMode PublishSpecPublishMode `json:"publish_mode,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *PublishSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s PublishSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type PublishSpecPublishMode string
@@ -2573,7 +2726,7 @@ func (s PublishTableResponse) MarshalJSON() ([]byte, error) {
 type RegisteredModelAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// Permission level
+
 	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -2618,7 +2771,7 @@ type RegisteredModelPermission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-	// Permission level
+
 	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2699,7 +2852,7 @@ func (s RegisteredModelPermissions) MarshalJSON() ([]byte, error) {
 
 type RegisteredModelPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
-	// Permission level
+
 	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2717,6 +2870,58 @@ type RegisteredModelPermissionsRequest struct {
 	AccessControlList []RegisteredModelAccessControlRequest `json:"access_control_list,omitempty"`
 	// The registered model for which to get or manage permissions.
 	RegisteredModelId string `json:"-" url:"-"`
+}
+
+// .. note:: Experimental: This entity may change or be removed in a future
+// release without warning. Email subscription types for registry notifications:
+// - `ALL_EVENTS`: Subscribed to all events. - `DEFAULT`: Default subscription
+// type. - `SUBSCRIBED`: Subscribed to notifications. - `UNSUBSCRIBED`: Not
+// subscribed to notifications.
+type RegistryEmailSubscriptionType string
+
+// Subscribed to all events.
+const RegistryEmailSubscriptionTypeAllEvents RegistryEmailSubscriptionType = `ALL_EVENTS`
+
+// Default subscription type.
+const RegistryEmailSubscriptionTypeDefault RegistryEmailSubscriptionType = `DEFAULT`
+
+// Subscribed to notifications.
+const RegistryEmailSubscriptionTypeSubscribed RegistryEmailSubscriptionType = `SUBSCRIBED`
+
+// Not subscribed to notifications.
+const RegistryEmailSubscriptionTypeUnsubscribed RegistryEmailSubscriptionType = `UNSUBSCRIBED`
+
+// String representation for [fmt.Print]
+func (f *RegistryEmailSubscriptionType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RegistryEmailSubscriptionType) Set(v string) error {
+	switch v {
+	case `ALL_EVENTS`, `DEFAULT`, `SUBSCRIBED`, `UNSUBSCRIBED`:
+		*f = RegistryEmailSubscriptionType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALL_EVENTS", "DEFAULT", "SUBSCRIBED", "UNSUBSCRIBED"`, v)
+	}
+}
+
+// Values returns all possible values for RegistryEmailSubscriptionType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RegistryEmailSubscriptionType) Values() []RegistryEmailSubscriptionType {
+	return []RegistryEmailSubscriptionType{
+		RegistryEmailSubscriptionTypeAllEvents,
+		RegistryEmailSubscriptionTypeDefault,
+		RegistryEmailSubscriptionTypeSubscribed,
+		RegistryEmailSubscriptionTypeUnsubscribed,
+	}
+}
+
+// Type always returns RegistryEmailSubscriptionType to satisfy [pflag.Value] interface
+func (f *RegistryEmailSubscriptionType) Type() string {
+	return "RegistryEmailSubscriptionType"
 }
 
 type RegistryWebhook struct {
@@ -2768,14 +2973,7 @@ type RegistryWebhook struct {
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Name of the model whose events would trigger this webhook.
 	ModelName string `json:"model_name,omitempty"`
-	// Enable or disable triggering the webhook, or put the webhook into test
-	// mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an
-	// associated event happens.
-	//
-	// * `DISABLED`: Webhook is not triggered.
-	//
-	// * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is
-	// not triggered on a real event.
+
 	Status RegistryWebhookStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2908,6 +3106,8 @@ func (f *RegistryWebhookStatus) Type() string {
 	return "RegistryWebhookStatus"
 }
 
+// Details required to identify and reject a model version stage transition
+// request.
 type RejectTransitionRequest struct {
 	// User-provided comment on the action.
 	Comment string `json:"comment,omitempty"`
@@ -2922,7 +3122,7 @@ type RejectTransitionRequest struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
-	Stage Stage `json:"stage"`
+	Stage string `json:"stage"`
 	// Version of the model.
 	Version string `json:"version"`
 
@@ -2938,7 +3138,7 @@ func (s RejectTransitionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type RejectTransitionRequestResponse struct {
-	// Activity recorded for the action.
+	// New activity generated as a result of this operation.
 	Activity *Activity `json:"activity,omitempty"`
 }
 
@@ -3291,13 +3491,12 @@ func (s SearchLoggedModelsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Searches model versions
 type SearchModelVersionsRequest struct {
 	// String filter condition, like "name='my-model-name'". Must be a single
 	// boolean condition, with string values wrapped in single quotes.
 	Filter string `json:"-" url:"filter,omitempty"`
 	// Maximum number of models desired. Max threshold is 10K.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int64 `json:"-" url:"max_results,omitempty"`
 	// List of columns to be ordered by including model name, version, stage
 	// with an optional "DESC" or "ASC" annotation, where "ASC" is the default.
 	// Tiebreaks are done by latest stage transition timestamp, followed by name
@@ -3335,14 +3534,13 @@ func (s SearchModelVersionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Search models
 type SearchModelsRequest struct {
 	// String filter condition, like "name LIKE 'my-model-name'". Interpreted in
 	// the backend automatically as "name LIKE '%my-model-name%'". Single
 	// boolean condition, with string values wrapped in single quotes.
 	Filter string `json:"-" url:"filter,omitempty"`
 	// Maximum number of models desired. Default is 100. Max threshold is 1000.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int64 `json:"-" url:"max_results,omitempty"`
 	// List of columns for ordering search results, which can include model name
 	// and last updated timestamp with an optional "DESC" or "ASC" annotation,
 	// where "ASC" is the default. Tiebreaks are done by model name ASC.
@@ -3522,62 +3720,6 @@ func (s SetTag) MarshalJSON() ([]byte, error) {
 type SetTagResponse struct {
 }
 
-// Stage of the model version. Valid values are:
-//
-// * `None`: The initial stage of a model version.
-//
-// * `Staging`: Staging or pre-production stage.
-//
-// * `Production`: Production stage.
-//
-// * `Archived`: Archived stage.
-type Stage string
-
-// Archived stage.
-const StageArchived Stage = `Archived`
-
-// The initial stage of a model version.
-const StageNone Stage = `None`
-
-// Production stage.
-const StageProduction Stage = `Production`
-
-// Staging or pre-production stage.
-const StageStaging Stage = `Staging`
-
-// String representation for [fmt.Print]
-func (f *Stage) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *Stage) Set(v string) error {
-	switch v {
-	case `Archived`, `None`, `Production`, `Staging`:
-		*f = Stage(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "Archived", "None", "Production", "Staging"`, v)
-	}
-}
-
-// Values returns all possible values for Stage.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *Stage) Values() []Stage {
-	return []Stage{
-		StageArchived,
-		StageNone,
-		StageProduction,
-		StageStaging,
-	}
-}
-
-// Type always returns Stage to satisfy [pflag.Value] interface
-func (f *Stage) Type() string {
-	return "Stage"
-}
-
 // The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
 // Request to register a new model version is pending as server performs
 // background tasks.
@@ -3629,24 +3771,7 @@ func (f *Status) Type() string {
 	return "Status"
 }
 
-// Test webhook response object.
-type TestRegistryWebhook struct {
-	// Body of the response from the webhook URL
-	Body string `json:"body,omitempty"`
-	// Status code returned by the webhook URL
-	StatusCode int `json:"status_code,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *TestRegistryWebhook) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s TestRegistryWebhook) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
+// Details required to test a registry webhook.
 type TestRegistryWebhookRequest struct {
 	// If `event` is specified, the test trigger uses the specified event. If
 	// `event` is not specified, the test trigger uses a randomly chosen event
@@ -3657,10 +3782,23 @@ type TestRegistryWebhookRequest struct {
 }
 
 type TestRegistryWebhookResponse struct {
-	// Test webhook response object.
-	Webhook *TestRegistryWebhook `json:"webhook,omitempty"`
+	// Body of the response from the webhook URL
+	Body string `json:"body,omitempty"`
+	// Status code returned by the webhook URL
+	StatusCode int `json:"status_code,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
+func (s *TestRegistryWebhookResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TestRegistryWebhookResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Details required to transition a model version's stage.
 type TransitionModelVersionStageDatabricks struct {
 	// Specifies whether to archive all current model versions in the target
 	// stage.
@@ -3678,7 +3816,7 @@ type TransitionModelVersionStageDatabricks struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
-	Stage Stage `json:"stage"`
+	Stage string `json:"stage"`
 	// Version of the model.
 	Version string `json:"version"`
 
@@ -3693,11 +3831,14 @@ func (s TransitionModelVersionStageDatabricks) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Transition request details.
+// For activities, this contains the activity recorded for the action. For
+// comments, this contains the comment details. For transition requests, this
+// contains the transition request details.
 type TransitionRequest struct {
 	// Array of actions on the activity allowed for the current viewer.
 	AvailableActions []ActivityAction `json:"available_actions,omitempty"`
-	// User-provided comment associated with the transition request.
+	// User-provided comment associated with the activity, comment, or
+	// transition request.
 	Comment string `json:"comment,omitempty"`
 	// Creation time of the object, as a Unix timestamp in milliseconds.
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
@@ -3711,7 +3852,7 @@ type TransitionRequest struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
-	ToStage Stage `json:"to_stage,omitempty"`
+	ToStage string `json:"to_stage,omitempty"`
 	// The username of the user that created the object.
 	UserId string `json:"user_id,omitempty"`
 
@@ -3727,9 +3868,11 @@ func (s TransitionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type TransitionStageResponse struct {
-	ModelVersion *ModelVersionDatabricks `json:"model_version,omitempty"`
+	// Updated model version
+	ModelVersionDatabricks *ModelVersionDatabricks `json:"model_version_databricks,omitempty"`
 }
 
+// Details required to edit a comment on a model version.
 type UpdateComment struct {
 	// User-provided comment on the action.
 	Comment string `json:"comment"`
@@ -3738,7 +3881,7 @@ type UpdateComment struct {
 }
 
 type UpdateCommentResponse struct {
-	// Comment details.
+	// Updated comment object
 	Comment *CommentObject `json:"comment,omitempty"`
 }
 
@@ -3763,6 +3906,28 @@ func (s UpdateExperiment) MarshalJSON() ([]byte, error) {
 type UpdateExperimentResponse struct {
 }
 
+type UpdateFeatureTagRequest struct {
+	FeatureName string `json:"-" url:"-"`
+
+	FeatureTag FeatureTag `json:"feature_tag"`
+
+	Key string `json:"-" url:"-"`
+
+	TableName string `json:"-" url:"-"`
+	// The list of fields to update.
+	UpdateMask string `json:"-" url:"update_mask,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateFeatureTagRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateFeatureTagRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type UpdateModelRequest struct {
 	// If provided, updates the description for this `registered_model`.
 	Description string `json:"description,omitempty"`
@@ -3781,6 +3946,7 @@ func (s UpdateModelRequest) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateModelResponse struct {
+	RegisteredModel *Model `json:"registered_model,omitempty"`
 }
 
 type UpdateModelVersionRequest struct {
@@ -3803,20 +3969,23 @@ func (s UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateModelVersionResponse struct {
+	// Return new version number generated for this model in registry.
+	ModelVersion *ModelVersion `json:"model_version,omitempty"`
 }
 
-// Update an Online Feature Store
 type UpdateOnlineStoreRequest struct {
 	// The name of the online store. This is the unique identifier for the
 	// online store.
 	Name string `json:"-" url:"-"`
-	// An OnlineStore is a logical database instance that stores and serves
-	// features online.
+	// Online store to update.
 	OnlineStore OnlineStore `json:"online_store"`
 	// The list of fields to update.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
+// Details required to update a registry webhook. Only the fields that need to
+// be updated should be specified, and both `http_url_spec` and `job_spec`
+// should not be specified in the same request.
 type UpdateRegistryWebhook struct {
 	// User-specified description for the webhook.
 	Description string `json:"description,omitempty"`
@@ -3860,14 +4029,7 @@ type UpdateRegistryWebhook struct {
 	Id string `json:"id"`
 
 	JobSpec *JobSpec `json:"job_spec,omitempty"`
-	// Enable or disable triggering the webhook, or put the webhook into test
-	// mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an
-	// associated event happens.
-	//
-	// * `DISABLED`: Webhook is not triggered.
-	//
-	// * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is
-	// not triggered on a real event.
+
 	Status RegistryWebhookStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3958,6 +4120,7 @@ func (f *UpdateRunStatus) Type() string {
 }
 
 type UpdateWebhookResponse struct {
+	Webhook *RegistryWebhook `json:"webhook,omitempty"`
 }
 
 // Qualifier for the view type.

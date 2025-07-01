@@ -29,12 +29,11 @@ func (a *cleanRoomAssetsImpl) Create(ctx context.Context, request CreateCleanRoo
 }
 
 func (a *cleanRoomAssetsImpl) Delete(ctx context.Context, request DeleteCleanRoomAssetRequest) error {
-	var deleteCleanRoomAssetResponse DeleteCleanRoomAssetResponse
 	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v", request.CleanRoomName, request.AssetType, request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCleanRoomAssetResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -174,12 +173,11 @@ func (a *cleanRoomsImpl) CreateOutputCatalog(ctx context.Context, request Create
 }
 
 func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/clean-rooms/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 

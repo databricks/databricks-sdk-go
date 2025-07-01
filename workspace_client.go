@@ -102,7 +102,7 @@ type WorkspaceClient struct {
 	// A clean room uses Delta Sharing and serverless compute to provide a
 	// secure and privacy-protecting environment where multiple parties can work
 	// together on sensitive enterprise data without direct access to each
-	// other’s data.
+	// other's data.
 	CleanRooms cleanrooms.CleanRoomsInterface
 
 	// You can use cluster policies to control users' ability to configure
@@ -284,6 +284,16 @@ type WorkspaceClient struct {
 	// objects such as folders, notebooks, and libraries.
 	Experiments ml.ExperimentsInterface
 
+	// External Lineage APIs enable defining and managing lineage relationships
+	// between Databricks objects and external systems. These APIs allow users
+	// to capture data flows connecting Databricks tables, models, and file
+	// paths with external metadata objects.
+	//
+	// With these APIs, users can create, update, delete, and list lineage
+	// relationships with support for column-level mappings and custom
+	// properties.
+	ExternalLineage catalog.ExternalLineageInterface
+
 	// An external location is an object that combines a cloud storage path with
 	// a storage credential that authorizes access to the cloud storage path.
 	// Each external location is subject to Unity Catalog access-control
@@ -298,6 +308,15 @@ type WorkspaceClient struct {
 	// To create external locations, you must be a metastore admin or a user
 	// with the **CREATE_EXTERNAL_LOCATION** privilege.
 	ExternalLocations catalog.ExternalLocationsInterface
+
+	// External Metadata objects enable customers to register and manage
+	// metadata about external systems within Unity Catalog.
+	//
+	// These APIs provide a standardized way to create, update, retrieve, list,
+	// and delete external metadata objects. Fine-grained authorization ensures
+	// that only users with appropriate permissions can view and manage external
+	// metadata objects.
+	ExternalMetadata catalog.ExternalMetadataInterface
 
 	// A feature store is a centralized repository that enables data scientists
 	// to find and share features. Using a feature store also ensures that the
@@ -490,6 +509,10 @@ type WorkspaceClient struct {
 	// when you restart the cluster. Until you restart the cluster, the status
 	// of the uninstalled library appears as Uninstall pending restart.
 	Libraries compute.LibrariesInterface
+
+	// Materialized Features are columns in tables and views that can be
+	// directly used as features to train and serve ML models.
+	MaterializedFeatures ml.MaterializedFeaturesInterface
 
 	// A metastore is the top-level container of objects in Unity Catalog. It
 	// stores data assets (tables and views) and the permissions that govern
@@ -1235,7 +1258,9 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Dbfs:                                files.NewDbfs(databricksClient),
 		DbsqlPermissions:                    sql.NewDbsqlPermissions(databricksClient),
 		Experiments:                         ml.NewExperiments(databricksClient),
+		ExternalLineage:                     catalog.NewExternalLineage(databricksClient),
 		ExternalLocations:                   catalog.NewExternalLocations(databricksClient),
+		ExternalMetadata:                    catalog.NewExternalMetadata(databricksClient),
 		FeatureStore:                        ml.NewFeatureStore(databricksClient),
 		Files:                               files.NewFiles(databricksClient),
 		Functions:                           catalog.NewFunctions(databricksClient),
@@ -1251,6 +1276,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Lakeview:                            dashboards.NewLakeview(databricksClient),
 		LakeviewEmbedded:                    dashboards.NewLakeviewEmbedded(databricksClient),
 		Libraries:                           compute.NewLibraries(databricksClient),
+		MaterializedFeatures:                ml.NewMaterializedFeatures(databricksClient),
 		Metastores:                          catalog.NewMetastores(databricksClient),
 		ModelRegistry:                       ml.NewModelRegistry(databricksClient),
 		ModelVersions:                       catalog.NewModelVersions(databricksClient),

@@ -188,7 +188,7 @@ func NewCleanRooms(client *client.DatabricksClient) *CleanRoomsAPI {
 
 // A clean room uses Delta Sharing and serverless compute to provide a secure
 // and privacy-protecting environment where multiple parties can work together
-// on sensitive enterprise data without direct access to each other’s data.
+// on sensitive enterprise data without direct access to each other's data.
 type CleanRoomsAPI struct {
 	cleanRoomsImpl
 }

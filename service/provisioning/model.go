@@ -55,7 +55,6 @@ func (s AzureWorkspaceInfo) MarshalJSON() ([]byte, error) {
 
 // The general workspace configurations that are specific to cloud providers.
 type CloudResourceContainer struct {
-	// The general workspace configurations that are specific to Google Cloud.
 	Gcp *CustomerFacingGcpCloudResourceContainer `json:"gcp,omitempty"`
 }
 
@@ -121,8 +120,6 @@ type CreateGcpKeyInfo struct {
 }
 
 type CreateNetworkRequest struct {
-	// The Google Cloud specific information for this network (for example, the
-	// VPC ID, subnet ID, and secondary IP ranges).
 	GcpNetworkInfo *GcpNetworkInfo `json:"gcp_network_info,omitempty"`
 	// The human-readable name of the network configuration.
 	NetworkName string `json:"network_name"`
@@ -132,10 +129,7 @@ type CreateNetworkRequest struct {
 	// IDs of at least two subnets associated with this network. Subnet IDs
 	// **cannot** be used in multiple network configurations.
 	SubnetIds []string `json:"subnet_ids,omitempty"`
-	// If specified, contains the VPC endpoints used to allow cluster
-	// communication from this VPC over [AWS PrivateLink].
-	//
-	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
+
 	VpcEndpoints *NetworkVpcEndpoints `json:"vpc_endpoints,omitempty"`
 	// The ID of the VPC associated with this network. VPC IDs can be used in
 	// multiple network configurations.
@@ -153,7 +147,6 @@ func (s CreateNetworkRequest) MarshalJSON() ([]byte, error) {
 }
 
 type CreateStorageConfigurationRequest struct {
-	// Root S3 bucket information.
 	RootBucketInfo RootBucketInfo `json:"root_bucket_info"`
 	// The human-readable name of the storage configuration.
 	StorageConfigurationName string `json:"storage_configuration_name"`
@@ -162,8 +155,7 @@ type CreateStorageConfigurationRequest struct {
 type CreateVpcEndpointRequest struct {
 	// The ID of the VPC endpoint object in AWS.
 	AwsVpcEndpointId string `json:"aws_vpc_endpoint_id,omitempty"`
-	// The Google Cloud specific information for this Private Service Connect
-	// endpoint.
+
 	GcpVpcEndpointInfo *GcpVpcEndpointInfo `json:"gcp_vpc_endpoint_info,omitempty"`
 	// The AWS region in which this VPC endpoint object exists.
 	Region string `json:"region,omitempty"`
@@ -187,8 +179,7 @@ type CreateWorkspaceRequest struct {
 	// The cloud provider which the workspace uses. For Google Cloud workspaces,
 	// always set this field to `gcp`.
 	Cloud string `json:"cloud,omitempty"`
-	// The general workspace configurations that are specific to cloud
-	// providers.
+
 	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
 	// ID of the workspace's credential configuration object.
 	CredentialsId string `json:"credentials_id,omitempty"`
@@ -227,31 +218,9 @@ type CreateWorkspaceRequest struct {
 	// If a new workspace omits this property, the server generates a unique
 	// deployment name for you with the pattern `dbc-xxxxxxxx-xxxx`.
 	DeploymentName string `json:"deployment_name,omitempty"`
-	// The network settings for the workspace. The configurations are only for
-	// Databricks-managed VPCs. It is ignored if you specify a customer-managed
-	// VPC in the `network_id` field.", All the IP range configurations must be
-	// mutually exclusive. An attempt to create a workspace fails if Databricks
-	// detects an IP range overlap.
-	//
-	// Specify custom IP ranges in CIDR format. The IP ranges for these fields
-	// must not overlap, and all IP addresses must be entirely within the
-	// following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`,
-	// `192.168.0.0/16`, and `240.0.0.0/4`.
-	//
-	// The sizes of these IP ranges affect the maximum number of nodes for the
-	// workspace.
-	//
-	// **Important**: Confirm the IP ranges used by your Databricks workspace
-	// before creating the workspace. You cannot change them after your
-	// workspace is deployed. If the IP address ranges for your Databricks are
-	// too small, IP exhaustion can occur, causing your Databricks jobs to fail.
-	// To determine the address range sizes that you need, Databricks provides a
-	// calculator as a Microsoft Excel spreadsheet. See [calculate subnet sizes
-	// for a new workspace].
-	//
-	// [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
+
 	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
-	// The configurations for the GKE cluster of a Databricks workspace.
+
 	GkeConfig *GkeConfig `json:"gke_config,omitempty"`
 	// Whether no public IP is enabled for the workspace.
 	IsNoPublicIpEnabled bool `json:"is_no_public_ip_enabled,omitempty"`
@@ -266,10 +235,7 @@ type CreateWorkspaceRequest struct {
 	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
 
 	NetworkId string `json:"network_id,omitempty"`
-	// The pricing tier of the workspace. For pricing tier information, see [AWS
-	// Pricing].
-	//
-	// [AWS Pricing]: https://databricks.com/product/aws-pricing
+
 	PricingTier PricingTier `json:"pricing_tier,omitempty"`
 	// ID of the workspace's private access settings object. Only used for
 	// PrivateLink. This ID must be specified for customers using [AWS
@@ -369,25 +335,21 @@ func (s CustomerManagedKey) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete credential configuration
 type DeleteCredentialRequest struct {
 	// Databricks Account API credential configuration ID
 	CredentialsId string `json:"-" url:"-"`
 }
 
-// Delete encryption key configuration
 type DeleteEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
 	CustomerManagedKeyId string `json:"-" url:"-"`
 }
 
-// Delete a network configuration
 type DeleteNetworkRequest struct {
 	// Databricks Account API network configuration ID.
 	NetworkId string `json:"-" url:"-"`
 }
 
-// Delete a private access settings object
 type DeletePrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" url:"-"`
@@ -396,19 +358,16 @@ type DeletePrivateAccesRequest struct {
 type DeleteResponse struct {
 }
 
-// Delete storage configuration
 type DeleteStorageRequest struct {
 	// Databricks Account API storage configuration ID.
 	StorageConfigurationId string `json:"-" url:"-"`
 }
 
-// Delete VPC endpoint configuration
 type DeleteVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
 	VpcEndpointId string `json:"-" url:"-"`
 }
 
-// Delete a workspace
 type DeleteWorkspaceRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -621,43 +580,36 @@ func (s GcpVpcEndpointInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get credential configuration
 type GetCredentialRequest struct {
 	// Databricks Account API credential configuration ID
 	CredentialsId string `json:"-" url:"-"`
 }
 
-// Get encryption key configuration
 type GetEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
 	CustomerManagedKeyId string `json:"-" url:"-"`
 }
 
-// Get a network configuration
 type GetNetworkRequest struct {
 	// Databricks Account API network configuration ID.
 	NetworkId string `json:"-" url:"-"`
 }
 
-// Get a private access settings object
 type GetPrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" url:"-"`
 }
 
-// Get storage configuration
 type GetStorageRequest struct {
 	// Databricks Account API storage configuration ID.
 	StorageConfigurationId string `json:"-" url:"-"`
 }
 
-// Get a VPC endpoint configuration
 type GetVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
 	VpcEndpointId string `json:"-" url:"-"`
 }
 
-// Get a workspace
 type GetWorkspaceRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -786,8 +738,7 @@ type Network struct {
 	CreationTime int64 `json:"creation_time,omitempty"`
 	// Array of error messages about the network configuration.
 	ErrorMessages []NetworkHealth `json:"error_messages,omitempty"`
-	// The Google Cloud specific information for this network (for example, the
-	// VPC ID, subnet ID, and secondary IP ranges).
+
 	GcpNetworkInfo *GcpNetworkInfo `json:"gcp_network_info,omitempty"`
 	// The Databricks network configuration ID.
 	NetworkId string `json:"network_id,omitempty"`
@@ -797,17 +748,12 @@ type Network struct {
 	SecurityGroupIds []string `json:"security_group_ids,omitempty"`
 
 	SubnetIds []string `json:"subnet_ids,omitempty"`
-	// If specified, contains the VPC endpoints used to allow cluster
-	// communication from this VPC over [AWS PrivateLink].
-	//
-	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
+
 	VpcEndpoints *NetworkVpcEndpoints `json:"vpc_endpoints,omitempty"`
 	// The ID of the VPC associated with this network configuration. VPC IDs can
 	// be used in multiple networks.
 	VpcId string `json:"vpc_id,omitempty"`
-	// The status of this network configuration object in terms of its use in a
-	// workspace: * `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`:
-	// Broken. * `WARNED`: Warned.
+
 	VpcStatus VpcStatus `json:"vpc_status,omitempty"`
 	// Array of warning messages about the network configuration.
 	WarningMessages []NetworkWarning `json:"warning_messages,omitempty"`
@@ -828,8 +774,7 @@ func (s Network) MarshalJSON() ([]byte, error) {
 type NetworkHealth struct {
 	// Details of the error.
 	ErrorMessage string `json:"error_message,omitempty"`
-	// The AWS resource associated with this error: credentials, VPC, subnet,
-	// security group, or network ACL.
+
 	ErrorType ErrorType `json:"error_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -859,8 +804,7 @@ type NetworkVpcEndpoints struct {
 type NetworkWarning struct {
 	// Details of the warning.
 	WarningMessage string `json:"warning_message,omitempty"`
-	// The AWS resource associated with this warning: a subnet or a security
-	// group.
+
 	WarningType WarningType `json:"warning_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -975,12 +919,7 @@ type PrivateAccessSettings struct {
 	AccountId string `json:"account_id,omitempty"`
 	// An array of Databricks VPC endpoint IDs.
 	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
-	// The private access level controls which VPC endpoints can connect to the
-	// UI or API of any workspace that attaches this private access settings
-	// object. * `ACCOUNT` level access (the default) allows only VPC endpoints
-	// that are registered in your Databricks account connect to your workspace.
-	// * `ENDPOINT` level access allows only specified VPC endpoints connect to
-	// your workspace. For details, see `allowed_vpc_endpoint_ids`.
+
 	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
 	// Databricks private access settings ID.
 	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
@@ -1031,7 +970,7 @@ type StorageConfiguration struct {
 	AccountId string `json:"account_id,omitempty"`
 	// Time in epoch milliseconds when the storage configuration was created.
 	CreationTime int64 `json:"creation_time,omitempty"`
-	// Root S3 bucket information.
+
 	RootBucketInfo *RootBucketInfo `json:"root_bucket_info,omitempty"`
 	// Databricks storage configuration ID.
 	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
@@ -1131,12 +1070,7 @@ type UpsertPrivateAccessSettingsRequest struct {
 	//
 	// [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html
 	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
-	// The private access level controls which VPC endpoints can connect to the
-	// UI or API of any workspace that attaches this private access settings
-	// object. * `ACCOUNT` level access (the default) allows only VPC endpoints
-	// that are registered in your Databricks account connect to your workspace.
-	// * `ENDPOINT` level access allows only specified VPC endpoints connect to
-	// your workspace. For details, see `allowed_vpc_endpoint_ids`.
+
 	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
 	// Databricks Account API private access settings ID.
 	PrivateAccessSettingsId string `json:"-" url:"-"`
@@ -1177,8 +1111,7 @@ type VpcEndpoint struct {
 	AwsEndpointServiceId string `json:"aws_endpoint_service_id,omitempty"`
 	// The ID of the VPC endpoint object in AWS.
 	AwsVpcEndpointId string `json:"aws_vpc_endpoint_id,omitempty"`
-	// The Google Cloud specific information for this Private Service Connect
-	// endpoint.
+
 	GcpVpcEndpointInfo *GcpVpcEndpointInfo `json:"gcp_vpc_endpoint_info,omitempty"`
 	// The AWS region in which this VPC endpoint object exists.
 	Region string `json:"region,omitempty"`
@@ -1188,10 +1121,7 @@ type VpcEndpoint struct {
 	//
 	// [AWS DescribeVpcEndpoint documentation]: https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-vpc-endpoints.html
 	State string `json:"state,omitempty"`
-	// This enumeration represents the type of Databricks VPC [endpoint service]
-	// that was used when creating this VPC endpoint.
-	//
-	// [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
+
 	UseCase EndpointUseCase `json:"use_case,omitempty"`
 	// Databricks VPC endpoint ID. This is the Databricks-specific name of the
 	// VPC endpoint. Do not confuse this with the `aws_vpc_endpoint_id`, which
@@ -1308,8 +1238,7 @@ type Workspace struct {
 	AzureWorkspaceInfo *AzureWorkspaceInfo `json:"azure_workspace_info,omitempty"`
 	// The cloud name. This field always has the value `gcp`.
 	Cloud string `json:"cloud,omitempty"`
-	// The general workspace configurations that are specific to cloud
-	// providers.
+
 	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
 	// Time in epoch milliseconds when the workspace was created.
 	CreationTime int64 `json:"creation_time,omitempty"`
@@ -1331,31 +1260,9 @@ type Workspace struct {
 	// is populated. If this workspace is not for a external customer, then
 	// external_customer_info is empty.
 	ExternalCustomerInfo *ExternalCustomerInfo `json:"external_customer_info,omitempty"`
-	// The network settings for the workspace. The configurations are only for
-	// Databricks-managed VPCs. It is ignored if you specify a customer-managed
-	// VPC in the `network_id` field.", All the IP range configurations must be
-	// mutually exclusive. An attempt to create a workspace fails if Databricks
-	// detects an IP range overlap.
-	//
-	// Specify custom IP ranges in CIDR format. The IP ranges for these fields
-	// must not overlap, and all IP addresses must be entirely within the
-	// following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`,
-	// `192.168.0.0/16`, and `240.0.0.0/4`.
-	//
-	// The sizes of these IP ranges affect the maximum number of nodes for the
-	// workspace.
-	//
-	// **Important**: Confirm the IP ranges used by your Databricks workspace
-	// before creating the workspace. You cannot change them after your
-	// workspace is deployed. If the IP address ranges for your Databricks are
-	// too small, IP exhaustion can occur, causing your Databricks jobs to fail.
-	// To determine the address range sizes that you need, Databricks provides a
-	// calculator as a Microsoft Excel spreadsheet. See [calculate subnet sizes
-	// for a new workspace].
-	//
-	// [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
+
 	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
-	// The configurations for the GKE cluster of a Databricks workspace.
+
 	GkeConfig *GkeConfig `json:"gke_config,omitempty"`
 	// Whether no public IP is enabled for the workspace.
 	IsNoPublicIpEnabled bool `json:"is_no_public_ip_enabled,omitempty"`
@@ -1367,10 +1274,7 @@ type Workspace struct {
 	// The network configuration ID that is attached to the workspace. This
 	// field is available only if the network is a customer-managed network.
 	NetworkId string `json:"network_id,omitempty"`
-	// The pricing tier of the workspace. For pricing tier information, see [AWS
-	// Pricing].
-	//
-	// [AWS Pricing]: https://databricks.com/product/aws-pricing
+
 	PricingTier PricingTier `json:"pricing_tier,omitempty"`
 	// ID of the workspace's private access settings object. Only used for
 	// PrivateLink. You must specify this ID if you are using [AWS PrivateLink]
@@ -1391,9 +1295,7 @@ type Workspace struct {
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 	// The human-readable name of the workspace.
 	WorkspaceName string `json:"workspace_name,omitempty"`
-	// The status of the workspace. For workspace creation, usually it is set to
-	// `PROVISIONING` initially. Continue to check the status until the status
-	// is `RUNNING`.
+
 	WorkspaceStatus WorkspaceStatus `json:"workspace_status,omitempty"`
 	// Message describing the current workspace status.
 	WorkspaceStatusMessage string `json:"workspace_status_message,omitempty"`

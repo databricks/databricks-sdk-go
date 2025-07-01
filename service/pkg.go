@@ -34,7 +34,7 @@
 //
 // - [cleanrooms.CleanRoomTaskRunsAPI]: Clean room task runs are the executions of notebooks in a clean room.
 //
-// - [cleanrooms.CleanRoomsAPI]: A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting environment where multiple parties can work together on sensitive enterprise data without direct access to each other’s data.
+// - [cleanrooms.CleanRoomsAPI]: A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting environment where multiple parties can work together on sensitive enterprise data without direct access to each other's data.
 //
 // - [compute.ClusterPoliciesAPI]: You can use cluster policies to control users' ability to configure clusters based on a set of rules.
 //
@@ -106,7 +106,11 @@
 //
 // - [ml.ExperimentsAPI]: Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment.
 //
+// - [catalog.ExternalLineageAPI]: External Lineage APIs enable defining and managing lineage relationships between Databricks objects and external systems.
+//
 // - [catalog.ExternalLocationsAPI]: An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path.
+//
+// - [catalog.ExternalMetadataAPI]: External Metadata objects enable customers to register and manage metadata about external systems within Unity Catalog.
 //
 // - [ml.FeatureStoreAPI]: A feature store is a centralized repository that enables data scientists to find and share features.
 //
@@ -151,6 +155,8 @@
 // - [settings.LlmProxyPartnerPoweredWorkspaceAPI]: Determines if partner powered models are enabled or not for a specific workspace.
 //
 // - [billing.LogDeliveryAPI]: These APIs manage log delivery configurations for this account.
+//
+// - [ml.MaterializedFeaturesAPI]: Materialized Features are columns in tables and views that can be directly used as features to train and serve ML models.
 //
 // - [catalog.AccountMetastoreAssignmentsAPI]: These APIs manage metastore assignments to a workspace.
 //
@@ -399,7 +405,9 @@ var (
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil
 	_ *settings.EsmEnablementAccountAPI                   = nil
 	_ *ml.ExperimentsAPI                                  = nil
+	_ *catalog.ExternalLineageAPI                         = nil
 	_ *catalog.ExternalLocationsAPI                       = nil
+	_ *catalog.ExternalMetadataAPI                        = nil
 	_ *ml.FeatureStoreAPI                                 = nil
 	_ *oauth2.AccountFederationPolicyAPI                  = nil
 	_ *files.FilesAPI                                     = nil
@@ -422,6 +430,7 @@ var (
 	_ *settings.LlmProxyPartnerPoweredEnforceAPI          = nil
 	_ *settings.LlmProxyPartnerPoweredWorkspaceAPI        = nil
 	_ *billing.LogDeliveryAPI                             = nil
+	_ *ml.MaterializedFeaturesAPI                         = nil
 	_ *catalog.AccountMetastoreAssignmentsAPI             = nil
 	_ *catalog.MetastoresAPI                              = nil
 	_ *catalog.AccountMetastoresAPI                       = nil

@@ -81,11 +81,6 @@ func (s AutoScale) MarshalJSON() ([]byte, error) {
 // Attributes set during cluster creation which are related to Amazon Web
 // Services.
 type AwsAttributes struct {
-	// Availability type used for all subsequent nodes past the
-	// `first_on_demand` ones.
-	//
-	// Note: If `first_on_demand` is zero, this availability type will be used
-	// for the entire cluster.
 	Availability AwsAvailability `json:"availability,omitempty"`
 	// The number of volumes launched for each instance. Users can choose up to
 	// 10 volumes. This feature is only enabled for supported node types. Legacy
@@ -392,7 +387,7 @@ func (f *CloudProviderNodeStatus) Type() string {
 type ClusterAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// Permission level
+
 	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -470,35 +465,7 @@ type ClusterAttributes struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Data security mode decides what data governance model to use when
-	// accessing data from a cluster.
-	//
-	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
-	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
-	// access mode depending on your compute configuration. *
-	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
-	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
-	//
-	// The following modes can be used regardless of `kind`. * `NONE`: No
-	// security isolation for multiple users sharing the cluster. Data
-	// governance features are not available in this mode. * `SINGLE_USER`: A
-	// secure cluster that can only be exclusively used by a single user
-	// specified in `single_user_name`. Most programming languages, cluster
-	// features and data governance features are available in this mode. *
-	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
-	// Cluster users are fully isolated so that they cannot see each other's
-	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited.
-	//
-	// The following modes are deprecated starting with Databricks Runtime 15.0
-	// and will be removed for future Databricks Runtime versions:
-	//
-	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
-	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
-	// from legacy Passthrough on high concurrency clusters. *
-	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
-	// mode provides a way that doesn’t have UC nor passthrough enabled.
+
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -537,23 +504,7 @@ type ClusterAttributes struct {
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	IsSingleNode bool `json:"is_single_node,omitempty"`
-	// The kind of compute described by this compute specification.
-	//
-	// Depending on `kind`, different validations and default values will be
-	// applied.
-	//
-	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
-	// whereas clusters with no specified `kind` do not. *
-	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
-	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
-	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
-	// `DATA_SECURITY_MODE_STANDARD`
-	//
-	// By using the [simple form], your clusters are automatically using `kind =
-	// CLASSIC_PREVIEW`.
-	//
-	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -614,7 +565,7 @@ type ClusterAttributes struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-	// Cluster Attributes showing for clusters workload types.
+
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -708,35 +659,7 @@ type ClusterDetails struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Data security mode decides what data governance model to use when
-	// accessing data from a cluster.
-	//
-	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
-	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
-	// access mode depending on your compute configuration. *
-	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
-	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
-	//
-	// The following modes can be used regardless of `kind`. * `NONE`: No
-	// security isolation for multiple users sharing the cluster. Data
-	// governance features are not available in this mode. * `SINGLE_USER`: A
-	// secure cluster that can only be exclusively used by a single user
-	// specified in `single_user_name`. Most programming languages, cluster
-	// features and data governance features are available in this mode. *
-	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
-	// Cluster users are fully isolated so that they cannot see each other's
-	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited.
-	//
-	// The following modes are deprecated starting with Databricks Runtime 15.0
-	// and will be removed for future Databricks Runtime versions:
-	//
-	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
-	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
-	// from legacy Passthrough on high concurrency clusters. *
-	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
-	// mode provides a way that doesn’t have UC nor passthrough enabled.
+
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
@@ -797,23 +720,7 @@ type ClusterDetails struct {
 	// Port on which Spark JDBC server is listening, in the driver nod. No
 	// service will be listeningon on this port in executor nodes.
 	JdbcPort int `json:"jdbc_port,omitempty"`
-	// The kind of compute described by this compute specification.
-	//
-	// Depending on `kind`, different validations and default values will be
-	// applied.
-	//
-	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
-	// whereas clusters with no specified `kind` do not. *
-	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
-	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
-	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
-	// `DATA_SECURITY_MODE_STANDARD`
-	//
-	// By using the [simple form], your clusters are automatically using `kind =
-	// CLASSIC_PREVIEW`.
-	//
-	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+
 	Kind Kind `json:"kind,omitempty"`
 	// the timestamp that the cluster was started/restarted
 	LastRestartedTime int64 `json:"last_restarted_time,omitempty"`
@@ -912,7 +819,7 @@ type ClusterDetails struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-	// Cluster Attributes showing for clusters workload types.
+
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -987,7 +894,7 @@ type ClusterPermission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-	// Permission level
+
 	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1062,7 +969,7 @@ func (s ClusterPermissions) MarshalJSON() ([]byte, error) {
 
 type ClusterPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
-	// Permission level
+
 	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1085,7 +992,7 @@ type ClusterPermissionsRequest struct {
 type ClusterPolicyAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// Permission level
+
 	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -1130,7 +1037,7 @@ type ClusterPolicyPermission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-	// Permission level
+
 	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1199,7 +1106,7 @@ func (s ClusterPolicyPermissions) MarshalJSON() ([]byte, error) {
 
 type ClusterPolicyPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
-	// Permission level
+
 	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1374,35 +1281,7 @@ type ClusterSpec struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Data security mode decides what data governance model to use when
-	// accessing data from a cluster.
-	//
-	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
-	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
-	// access mode depending on your compute configuration. *
-	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
-	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
-	//
-	// The following modes can be used regardless of `kind`. * `NONE`: No
-	// security isolation for multiple users sharing the cluster. Data
-	// governance features are not available in this mode. * `SINGLE_USER`: A
-	// secure cluster that can only be exclusively used by a single user
-	// specified in `single_user_name`. Most programming languages, cluster
-	// features and data governance features are available in this mode. *
-	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
-	// Cluster users are fully isolated so that they cannot see each other's
-	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited.
-	//
-	// The following modes are deprecated starting with Databricks Runtime 15.0
-	// and will be removed for future Databricks Runtime versions:
-	//
-	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
-	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
-	// from legacy Passthrough on high concurrency clusters. *
-	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
-	// mode provides a way that doesn’t have UC nor passthrough enabled.
+
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -1441,23 +1320,7 @@ type ClusterSpec struct {
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	IsSingleNode bool `json:"is_single_node,omitempty"`
-	// The kind of compute described by this compute specification.
-	//
-	// Depending on `kind`, different validations and default values will be
-	// applied.
-	//
-	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
-	// whereas clusters with no specified `kind` do not. *
-	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
-	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
-	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
-	// `DATA_SECURITY_MODE_STANDARD`
-	//
-	// By using the [simple form], your clusters are automatically using `kind =
-	// CLASSIC_PREVIEW`.
-	//
-	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -1529,7 +1392,7 @@ type ClusterSpec struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-	// Cluster Attributes showing for clusters workload types.
+
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1543,7 +1406,6 @@ func (s ClusterSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get status
 type ClusterStatus struct {
 	// Unique identifier of the cluster whose status should be retrieved.
 	ClusterId string `json:"-" url:"cluster_id"`
@@ -1619,7 +1481,6 @@ func (f *CommandStatus) Type() string {
 	return "CommandStatus"
 }
 
-// Get command info
 type CommandStatusRequest struct {
 	ClusterId string `json:"-" url:"clusterId"`
 
@@ -1686,7 +1547,6 @@ func (f *ContextStatus) Type() string {
 	return "ContextStatus"
 }
 
-// Get status
 type ContextStatusRequest struct {
 	ClusterId string `json:"-" url:"clusterId"`
 
@@ -1755,35 +1615,7 @@ type CreateCluster struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Data security mode decides what data governance model to use when
-	// accessing data from a cluster.
-	//
-	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
-	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
-	// access mode depending on your compute configuration. *
-	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
-	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
-	//
-	// The following modes can be used regardless of `kind`. * `NONE`: No
-	// security isolation for multiple users sharing the cluster. Data
-	// governance features are not available in this mode. * `SINGLE_USER`: A
-	// secure cluster that can only be exclusively used by a single user
-	// specified in `single_user_name`. Most programming languages, cluster
-	// features and data governance features are available in this mode. *
-	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
-	// Cluster users are fully isolated so that they cannot see each other's
-	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited.
-	//
-	// The following modes are deprecated starting with Databricks Runtime 15.0
-	// and will be removed for future Databricks Runtime versions:
-	//
-	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
-	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
-	// from legacy Passthrough on high concurrency clusters. *
-	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
-	// mode provides a way that doesn’t have UC nor passthrough enabled.
+
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -1822,23 +1654,7 @@ type CreateCluster struct {
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	IsSingleNode bool `json:"is_single_node,omitempty"`
-	// The kind of compute described by this compute specification.
-	//
-	// Depending on `kind`, different validations and default values will be
-	// applied.
-	//
-	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
-	// whereas clusters with no specified `kind` do not. *
-	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
-	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
-	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
-	// `DATA_SECURITY_MODE_STANDARD`
-	//
-	// By using the [simple form], your clusters are automatically using `kind =
-	// CLASSIC_PREVIEW`.
-	//
-	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -1910,7 +1726,7 @@ type CreateCluster struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-	// Cluster Attributes showing for clusters workload types.
+
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2332,7 +2148,6 @@ type DeleteCluster struct {
 type DeleteClusterResponse struct {
 }
 
-// Delete init script
 type DeleteGlobalInitScriptRequest struct {
 	// The ID of the global init script.
 	ScriptId string `json:"-" url:"-"`
@@ -2417,11 +2232,8 @@ func (s DiskSpec) MarshalJSON() ([]byte, error) {
 
 // Describes the disk type.
 type DiskType struct {
-	// All Azure Disk types that Databricks supports. See
-	// https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks
 	AzureDiskVolumeType DiskTypeAzureDiskVolumeType `json:"azure_disk_volume_type,omitempty"`
-	// All EBS volume types that Databricks supports. See
-	// https://aws.amazon.com/ebs/details/ for details.
+
 	EbsVolumeType DiskTypeEbsVolumeType `json:"ebs_volume_type,omitempty"`
 }
 
@@ -2621,35 +2433,7 @@ type EditCluster struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Data security mode decides what data governance model to use when
-	// accessing data from a cluster.
-	//
-	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
-	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
-	// access mode depending on your compute configuration. *
-	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
-	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
-	//
-	// The following modes can be used regardless of `kind`. * `NONE`: No
-	// security isolation for multiple users sharing the cluster. Data
-	// governance features are not available in this mode. * `SINGLE_USER`: A
-	// secure cluster that can only be exclusively used by a single user
-	// specified in `single_user_name`. Most programming languages, cluster
-	// features and data governance features are available in this mode. *
-	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
-	// Cluster users are fully isolated so that they cannot see each other's
-	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited.
-	//
-	// The following modes are deprecated starting with Databricks Runtime 15.0
-	// and will be removed for future Databricks Runtime versions:
-	//
-	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
-	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
-	// from legacy Passthrough on high concurrency clusters. *
-	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
-	// mode provides a way that doesn’t have UC nor passthrough enabled.
+
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -2688,23 +2472,7 @@ type EditCluster struct {
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	IsSingleNode bool `json:"is_single_node,omitempty"`
-	// The kind of compute described by this compute specification.
-	//
-	// Depending on `kind`, different validations and default values will be
-	// applied.
-	//
-	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
-	// whereas clusters with no specified `kind` do not. *
-	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
-	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
-	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
-	// `DATA_SECURITY_MODE_STANDARD`
-	//
-	// By using the [simple form], your clusters are automatically using `kind =
-	// CLASSIC_PREVIEW`.
-	//
-	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -2776,7 +2544,7 @@ type EditCluster struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-	// Cluster Attributes showing for clusters workload types.
+
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3290,7 +3058,6 @@ type GcsStorageInfo struct {
 	Destination string `json:"destination"`
 }
 
-// Get cluster policy compliance
 type GetClusterComplianceRequest struct {
 	// The ID of the cluster to get the compliance status
 	ClusterId string `json:"-" url:"cluster_id"`
@@ -3318,7 +3085,6 @@ func (s GetClusterComplianceResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get cluster permission levels
 type GetClusterPermissionLevelsRequest struct {
 	// The cluster for which to get or manage permissions.
 	ClusterId string `json:"-" url:"-"`
@@ -3329,13 +3095,11 @@ type GetClusterPermissionLevelsResponse struct {
 	PermissionLevels []ClusterPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get cluster permissions
 type GetClusterPermissionsRequest struct {
 	// The cluster for which to get or manage permissions.
 	ClusterId string `json:"-" url:"-"`
 }
 
-// Get cluster policy permission levels
 type GetClusterPolicyPermissionLevelsRequest struct {
 	// The cluster policy for which to get or manage permissions.
 	ClusterPolicyId string `json:"-" url:"-"`
@@ -3346,19 +3110,16 @@ type GetClusterPolicyPermissionLevelsResponse struct {
 	PermissionLevels []ClusterPolicyPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get cluster policy permissions
 type GetClusterPolicyPermissionsRequest struct {
 	// The cluster policy for which to get or manage permissions.
 	ClusterPolicyId string `json:"-" url:"-"`
 }
 
-// Get a cluster policy
 type GetClusterPolicyRequest struct {
 	// Canonical unique identifier for the Cluster Policy.
 	PolicyId string `json:"-" url:"policy_id"`
 }
 
-// Get cluster info
 type GetClusterRequest struct {
 	// The cluster about which to retrieve information.
 	ClusterId string `json:"-" url:"cluster_id"`
@@ -3480,7 +3241,6 @@ func (s GetEventsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get an init script
 type GetGlobalInitScriptRequest struct {
 	// The ID of the global init script.
 	ScriptId string `json:"-" url:"-"`
@@ -3578,7 +3338,6 @@ func (s GetInstancePool) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get instance pool permission levels
 type GetInstancePoolPermissionLevelsRequest struct {
 	// The instance pool for which to get or manage permissions.
 	InstancePoolId string `json:"-" url:"-"`
@@ -3589,19 +3348,16 @@ type GetInstancePoolPermissionLevelsResponse struct {
 	PermissionLevels []InstancePoolPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get instance pool permissions
 type GetInstancePoolPermissionsRequest struct {
 	// The instance pool for which to get or manage permissions.
 	InstancePoolId string `json:"-" url:"-"`
 }
 
-// Get instance pool information
 type GetInstancePoolRequest struct {
 	// The canonical unique identifier for the instance pool.
 	InstancePoolId string `json:"-" url:"instance_pool_id"`
 }
 
-// Get policy family information
 type GetPolicyFamilyRequest struct {
 	// The family ID about which to retrieve information.
 	PolicyFamilyId string `json:"-" url:"-"`
@@ -3919,7 +3675,7 @@ type InstallLibrariesResponse struct {
 type InstancePoolAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// Permission level
+
 	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -4192,9 +3948,6 @@ func (f *InstancePoolAzureAttributesAvailability) Type() string {
 
 // Attributes set during instance pool creation which are related to GCP.
 type InstancePoolGcpAttributes struct {
-	// This field determines whether the instance pool will contain preemptible
-	// VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs
-	// if the former is unavailable.
 	GcpAvailability GcpAvailability `json:"gcp_availability,omitempty"`
 	// If provided, each node in the instance pool will have this number of
 	// local SSDs attached. Each local SSD is 375GB in size. Refer to [GCP
@@ -4236,7 +3989,7 @@ type InstancePoolPermission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-	// Permission level
+
 	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4308,7 +4061,7 @@ func (s InstancePoolPermissions) MarshalJSON() ([]byte, error) {
 
 type InstancePoolPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
-	// Permission level
+
 	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4676,7 +4429,6 @@ func (s ListAvailableZonesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List cluster policy compliance
 type ListClusterCompliancesRequest struct {
 	// Use this field to specify the maximum number of results to be returned by
 	// the server. The server may further constrain the maximum number of
@@ -4721,7 +4473,6 @@ func (s ListClusterCompliancesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List cluster policies
 type ListClusterPoliciesRequest struct {
 	// The cluster policy attribute to sort by. * `POLICY_CREATION_TIME` - Sort
 	// result list by policy creation time. * `POLICY_NAME` - Sort result list
@@ -4753,7 +4504,6 @@ func (s ListClustersFilterBy) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List clusters
 type ListClustersRequest struct {
 	// Filters to apply to the list of clusters.
 	FilterBy *ListClustersFilterBy `json:"-" url:"filter_by,omitempty"`
@@ -4905,7 +4655,6 @@ type ListPoliciesResponse struct {
 	Policies []Policy `json:"policies,omitempty"`
 }
 
-// List policy families
 type ListPolicyFamiliesRequest struct {
 	// Maximum number of policy families to return.
 	MaxResults int64 `json:"-" url:"max_results,omitempty"`
@@ -5986,6 +5735,8 @@ const TerminationReasonCodeSecretPermissionDenied TerminationReasonCode = `SECRE
 
 const TerminationReasonCodeSecretResolutionError TerminationReasonCode = `SECRET_RESOLUTION_ERROR`
 
+const TerminationReasonCodeSecurityAgentsFailedInitialVerification TerminationReasonCode = `SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION`
+
 const TerminationReasonCodeSecurityDaemonRegistrationException TerminationReasonCode = `SECURITY_DAEMON_REGISTRATION_EXCEPTION`
 
 const TerminationReasonCodeSelfBootstrapFailure TerminationReasonCode = `SELF_BOOTSTRAP_FAILURE`
@@ -6056,11 +5807,11 @@ func (f *TerminationReasonCode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TerminationReasonCode) Set(v string) error {
 	switch v {
-	case `ABUSE_DETECTED`, `ACCESS_TOKEN_FAILURE`, `ALLOCATION_TIMEOUT`, `ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY`, `ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_READY_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INACCESSIBLE_KMS_KEY_FAILURE`, `AWS_INSTANCE_PROFILE_UPDATE_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_INVALID_KEY_PAIR`, `AWS_INVALID_KMS_KEY_STATE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_RESOURCE_QUOTA_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG`, `BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED`, `BUDGET_POLICY_RESOLUTION_FAILURE`, `CLOUD_ACCOUNT_SETUP_FAILURE`, `CLOUD_OPERATION_CANCELLED`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG`, `CLOUD_PROVIDER_SHUTDOWN`, `CLUSTER_OPERATION_THROTTLED`, `CLUSTER_OPERATION_TIMEOUT`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG`, `DATABASE_CONNECTION_FAILURE`, `DATA_ACCESS_CONFIG_CHANGED`, `DBFS_COMPONENT_UNHEALTHY`, `DISASTER_RECOVERY_REPLICATION`, `DNS_RESOLUTION_ERROR`, `DOCKER_CONTAINER_CREATION_EXCEPTION`, `DOCKER_IMAGE_PULL_FAILURE`, `DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION`, `DOCKER_INVALID_OS_EXCEPTION`, `DRIVER_EVICTION`, `DRIVER_LAUNCH_TIMEOUT`, `DRIVER_NODE_UNREACHABLE`, `DRIVER_OUT_OF_DISK`, `DRIVER_OUT_OF_MEMORY`, `DRIVER_POD_CREATION_FAILURE`, `DRIVER_UNEXPECTED_FAILURE`, `DRIVER_UNHEALTHY`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `DYNAMIC_SPARK_CONF_SIZE_EXCEEDED`, `EOS_SPARK_IMAGE`, `EXECUTION_COMPONENT_UNHEALTHY`, `EXECUTOR_POD_UNSCHEDULED`, `GCP_API_RATE_QUOTA_EXCEEDED`, `GCP_DENIED_BY_ORG_POLICY`, `GCP_FORBIDDEN`, `GCP_IAM_TIMEOUT`, `GCP_INACCESSIBLE_KMS_KEY_FAILURE`, `GCP_INSUFFICIENT_CAPACITY`, `GCP_IP_SPACE_EXHAUSTED`, `GCP_KMS_KEY_PERMISSION_DENIED`, `GCP_NOT_FOUND`, `GCP_QUOTA_EXCEEDED`, `GCP_RESOURCE_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_ACCESS_DENIED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GCP_SERVICE_ACCOUNT_NOT_FOUND`, `GCP_SUBNET_NOT_READY`, `GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED`, `GKE_BASED_CLUSTER_TERMINATION`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_CONTAINER_NOT_FINISHED`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_POOL_MAX_CAPACITY_REACHED`, `INSTANCE_POOL_NOT_FOUND`, `INSTANCE_UNREACHABLE`, `INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG`, `INTERNAL_CAPACITY_FAILURE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_AWS_PARAMETER`, `INVALID_INSTANCE_PLACEMENT_PROTOCOL`, `INVALID_SPARK_IMAGE`, `INVALID_WORKER_IMAGE_FAILURE`, `IN_PENALTY_BOX`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `LAZY_ALLOCATION_TIMEOUT`, `MAINTENANCE_MODE`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETVISOR_SETUP_TIMEOUT`, `NETWORK_CHECK_CONTROL_PLANE_FAILURE`, `NETWORK_CHECK_DNS_SERVER_FAILURE`, `NETWORK_CHECK_METADATA_ENDPOINT_FAILURE`, `NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE`, `NETWORK_CHECK_NIC_FAILURE`, `NETWORK_CHECK_STORAGE_FAILURE`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NO_MATCHED_K8S`, `NO_MATCHED_K8S_TESTING_TAG`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `POD_ASSIGNMENT_FAILURE`, `POD_SCHEDULING_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `RESOURCE_USAGE_BLOCKED`, `SECRET_CREATION_FAILURE`, `SECRET_PERMISSION_DENIED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SERVERLESS_LONG_RUNNING_TERMINATED`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_IMAGE_DOWNLOAD_THROTTLED`, `SPARK_IMAGE_NOT_FOUND`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `SSH_BOOTSTRAP_FAILURE`, `STORAGE_DOWNLOAD_FAILURE`, `STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG`, `STORAGE_DOWNLOAD_FAILURE_SLOW`, `STORAGE_DOWNLOAD_FAILURE_THROTTLED`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNEXPECTED_POD_RECREATION`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_INITIATED_VM_TERMINATION`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`, `WORKSPACE_UPDATE`:
+	case `ABUSE_DETECTED`, `ACCESS_TOKEN_FAILURE`, `ALLOCATION_TIMEOUT`, `ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY`, `ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_READY_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INACCESSIBLE_KMS_KEY_FAILURE`, `AWS_INSTANCE_PROFILE_UPDATE_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_INVALID_KEY_PAIR`, `AWS_INVALID_KMS_KEY_STATE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_RESOURCE_QUOTA_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG`, `BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED`, `BUDGET_POLICY_RESOLUTION_FAILURE`, `CLOUD_ACCOUNT_SETUP_FAILURE`, `CLOUD_OPERATION_CANCELLED`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG`, `CLOUD_PROVIDER_SHUTDOWN`, `CLUSTER_OPERATION_THROTTLED`, `CLUSTER_OPERATION_TIMEOUT`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG`, `DATABASE_CONNECTION_FAILURE`, `DATA_ACCESS_CONFIG_CHANGED`, `DBFS_COMPONENT_UNHEALTHY`, `DISASTER_RECOVERY_REPLICATION`, `DNS_RESOLUTION_ERROR`, `DOCKER_CONTAINER_CREATION_EXCEPTION`, `DOCKER_IMAGE_PULL_FAILURE`, `DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION`, `DOCKER_INVALID_OS_EXCEPTION`, `DRIVER_EVICTION`, `DRIVER_LAUNCH_TIMEOUT`, `DRIVER_NODE_UNREACHABLE`, `DRIVER_OUT_OF_DISK`, `DRIVER_OUT_OF_MEMORY`, `DRIVER_POD_CREATION_FAILURE`, `DRIVER_UNEXPECTED_FAILURE`, `DRIVER_UNHEALTHY`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `DYNAMIC_SPARK_CONF_SIZE_EXCEEDED`, `EOS_SPARK_IMAGE`, `EXECUTION_COMPONENT_UNHEALTHY`, `EXECUTOR_POD_UNSCHEDULED`, `GCP_API_RATE_QUOTA_EXCEEDED`, `GCP_DENIED_BY_ORG_POLICY`, `GCP_FORBIDDEN`, `GCP_IAM_TIMEOUT`, `GCP_INACCESSIBLE_KMS_KEY_FAILURE`, `GCP_INSUFFICIENT_CAPACITY`, `GCP_IP_SPACE_EXHAUSTED`, `GCP_KMS_KEY_PERMISSION_DENIED`, `GCP_NOT_FOUND`, `GCP_QUOTA_EXCEEDED`, `GCP_RESOURCE_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_ACCESS_DENIED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GCP_SERVICE_ACCOUNT_NOT_FOUND`, `GCP_SUBNET_NOT_READY`, `GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED`, `GKE_BASED_CLUSTER_TERMINATION`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_CONTAINER_NOT_FINISHED`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_POOL_MAX_CAPACITY_REACHED`, `INSTANCE_POOL_NOT_FOUND`, `INSTANCE_UNREACHABLE`, `INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG`, `INTERNAL_CAPACITY_FAILURE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_AWS_PARAMETER`, `INVALID_INSTANCE_PLACEMENT_PROTOCOL`, `INVALID_SPARK_IMAGE`, `INVALID_WORKER_IMAGE_FAILURE`, `IN_PENALTY_BOX`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `LAZY_ALLOCATION_TIMEOUT`, `MAINTENANCE_MODE`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETVISOR_SETUP_TIMEOUT`, `NETWORK_CHECK_CONTROL_PLANE_FAILURE`, `NETWORK_CHECK_DNS_SERVER_FAILURE`, `NETWORK_CHECK_METADATA_ENDPOINT_FAILURE`, `NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE`, `NETWORK_CHECK_NIC_FAILURE`, `NETWORK_CHECK_STORAGE_FAILURE`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NO_MATCHED_K8S`, `NO_MATCHED_K8S_TESTING_TAG`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `POD_ASSIGNMENT_FAILURE`, `POD_SCHEDULING_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `RESOURCE_USAGE_BLOCKED`, `SECRET_CREATION_FAILURE`, `SECRET_PERMISSION_DENIED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SERVERLESS_LONG_RUNNING_TERMINATED`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_IMAGE_DOWNLOAD_THROTTLED`, `SPARK_IMAGE_NOT_FOUND`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `SSH_BOOTSTRAP_FAILURE`, `STORAGE_DOWNLOAD_FAILURE`, `STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG`, `STORAGE_DOWNLOAD_FAILURE_SLOW`, `STORAGE_DOWNLOAD_FAILURE_THROTTLED`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNEXPECTED_POD_RECREATION`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_INITIATED_VM_TERMINATION`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`, `WORKSPACE_UPDATE`:
 		*f = TerminationReasonCode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ABUSE_DETECTED", "ACCESS_TOKEN_FAILURE", "ALLOCATION_TIMEOUT", "ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY", "ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS", "ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS", "ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS", "ALLOCATION_TIMEOUT_NO_READY_CLUSTERS", "ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS", "ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS", "ATTACH_PROJECT_FAILURE", "AWS_AUTHORIZATION_FAILURE", "AWS_INACCESSIBLE_KMS_KEY_FAILURE", "AWS_INSTANCE_PROFILE_UPDATE_FAILURE", "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE", "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE", "AWS_INVALID_KEY_PAIR", "AWS_INVALID_KMS_KEY_STATE", "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE", "AWS_REQUEST_LIMIT_EXCEEDED", "AWS_RESOURCE_QUOTA_EXCEEDED", "AWS_UNSUPPORTED_FAILURE", "AZURE_BYOK_KEY_PERMISSION_FAILURE", "AZURE_EPHEMERAL_DISK_FAILURE", "AZURE_INVALID_DEPLOYMENT_TEMPLATE", "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION", "AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE", "AZURE_QUOTA_EXCEEDED_EXCEPTION", "AZURE_RESOURCE_MANAGER_THROTTLING", "AZURE_RESOURCE_PROVIDER_THROTTLING", "AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE", "AZURE_VM_EXTENSION_FAILURE", "AZURE_VNET_CONFIGURATION_FAILURE", "BOOTSTRAP_TIMEOUT", "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION", "BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG", "BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED", "BUDGET_POLICY_RESOLUTION_FAILURE", "CLOUD_ACCOUNT_SETUP_FAILURE", "CLOUD_OPERATION_CANCELLED", "CLOUD_PROVIDER_DISK_SETUP_FAILURE", "CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED", "CLOUD_PROVIDER_LAUNCH_FAILURE", "CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG", "CLOUD_PROVIDER_RESOURCE_STOCKOUT", "CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG", "CLOUD_PROVIDER_SHUTDOWN", "CLUSTER_OPERATION_THROTTLED", "CLUSTER_OPERATION_TIMEOUT", "COMMUNICATION_LOST", "CONTAINER_LAUNCH_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG", "DATABASE_CONNECTION_FAILURE", "DATA_ACCESS_CONFIG_CHANGED", "DBFS_COMPONENT_UNHEALTHY", "DISASTER_RECOVERY_REPLICATION", "DNS_RESOLUTION_ERROR", "DOCKER_CONTAINER_CREATION_EXCEPTION", "DOCKER_IMAGE_PULL_FAILURE", "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION", "DOCKER_INVALID_OS_EXCEPTION", "DRIVER_EVICTION", "DRIVER_LAUNCH_TIMEOUT", "DRIVER_NODE_UNREACHABLE", "DRIVER_OUT_OF_DISK", "DRIVER_OUT_OF_MEMORY", "DRIVER_POD_CREATION_FAILURE", "DRIVER_UNEXPECTED_FAILURE", "DRIVER_UNHEALTHY", "DRIVER_UNREACHABLE", "DRIVER_UNRESPONSIVE", "DYNAMIC_SPARK_CONF_SIZE_EXCEEDED", "EOS_SPARK_IMAGE", "EXECUTION_COMPONENT_UNHEALTHY", "EXECUTOR_POD_UNSCHEDULED", "GCP_API_RATE_QUOTA_EXCEEDED", "GCP_DENIED_BY_ORG_POLICY", "GCP_FORBIDDEN", "GCP_IAM_TIMEOUT", "GCP_INACCESSIBLE_KMS_KEY_FAILURE", "GCP_INSUFFICIENT_CAPACITY", "GCP_IP_SPACE_EXHAUSTED", "GCP_KMS_KEY_PERMISSION_DENIED", "GCP_NOT_FOUND", "GCP_QUOTA_EXCEEDED", "GCP_RESOURCE_QUOTA_EXCEEDED", "GCP_SERVICE_ACCOUNT_ACCESS_DENIED", "GCP_SERVICE_ACCOUNT_DELETED", "GCP_SERVICE_ACCOUNT_NOT_FOUND", "GCP_SUBNET_NOT_READY", "GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED", "GKE_BASED_CLUSTER_TERMINATION", "GLOBAL_INIT_SCRIPT_FAILURE", "HIVE_METASTORE_PROVISIONING_FAILURE", "IMAGE_PULL_PERMISSION_DENIED", "INACTIVITY", "INIT_CONTAINER_NOT_FINISHED", "INIT_SCRIPT_FAILURE", "INSTANCE_POOL_CLUSTER_FAILURE", "INSTANCE_POOL_MAX_CAPACITY_REACHED", "INSTANCE_POOL_NOT_FOUND", "INSTANCE_UNREACHABLE", "INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG", "INTERNAL_CAPACITY_FAILURE", "INTERNAL_ERROR", "INVALID_ARGUMENT", "INVALID_AWS_PARAMETER", "INVALID_INSTANCE_PLACEMENT_PROTOCOL", "INVALID_SPARK_IMAGE", "INVALID_WORKER_IMAGE_FAILURE", "IN_PENALTY_BOX", "IP_EXHAUSTION_FAILURE", "JOB_FINISHED", "K8S_AUTOSCALING_FAILURE", "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT", "LAZY_ALLOCATION_TIMEOUT", "MAINTENANCE_MODE", "METASTORE_COMPONENT_UNHEALTHY", "NEPHOS_RESOURCE_MANAGEMENT", "NETVISOR_SETUP_TIMEOUT", "NETWORK_CHECK_CONTROL_PLANE_FAILURE", "NETWORK_CHECK_DNS_SERVER_FAILURE", "NETWORK_CHECK_METADATA_ENDPOINT_FAILURE", "NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE", "NETWORK_CHECK_NIC_FAILURE", "NETWORK_CHECK_STORAGE_FAILURE", "NETWORK_CONFIGURATION_FAILURE", "NFS_MOUNT_FAILURE", "NO_MATCHED_K8S", "NO_MATCHED_K8S_TESTING_TAG", "NPIP_TUNNEL_SETUP_FAILURE", "NPIP_TUNNEL_TOKEN_FAILURE", "POD_ASSIGNMENT_FAILURE", "POD_SCHEDULING_FAILURE", "REQUEST_REJECTED", "REQUEST_THROTTLED", "RESOURCE_USAGE_BLOCKED", "SECRET_CREATION_FAILURE", "SECRET_PERMISSION_DENIED", "SECRET_RESOLUTION_ERROR", "SECURITY_DAEMON_REGISTRATION_EXCEPTION", "SELF_BOOTSTRAP_FAILURE", "SERVERLESS_LONG_RUNNING_TERMINATED", "SKIPPED_SLOW_NODES", "SLOW_IMAGE_DOWNLOAD", "SPARK_ERROR", "SPARK_IMAGE_DOWNLOAD_FAILURE", "SPARK_IMAGE_DOWNLOAD_THROTTLED", "SPARK_IMAGE_NOT_FOUND", "SPARK_STARTUP_FAILURE", "SPOT_INSTANCE_TERMINATION", "SSH_BOOTSTRAP_FAILURE", "STORAGE_DOWNLOAD_FAILURE", "STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG", "STORAGE_DOWNLOAD_FAILURE_SLOW", "STORAGE_DOWNLOAD_FAILURE_THROTTLED", "STS_CLIENT_SETUP_FAILURE", "SUBNET_EXHAUSTED_FAILURE", "TEMPORARILY_UNAVAILABLE", "TRIAL_EXPIRED", "UNEXPECTED_LAUNCH_FAILURE", "UNEXPECTED_POD_RECREATION", "UNKNOWN", "UNSUPPORTED_INSTANCE_TYPE", "UPDATE_INSTANCE_PROFILE_FAILURE", "USER_INITIATED_VM_TERMINATION", "USER_REQUEST", "WORKER_SETUP_FAILURE", "WORKSPACE_CANCELLED_ERROR", "WORKSPACE_CONFIGURATION_ERROR", "WORKSPACE_UPDATE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ABUSE_DETECTED", "ACCESS_TOKEN_FAILURE", "ALLOCATION_TIMEOUT", "ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY", "ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS", "ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS", "ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS", "ALLOCATION_TIMEOUT_NO_READY_CLUSTERS", "ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS", "ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS", "ATTACH_PROJECT_FAILURE", "AWS_AUTHORIZATION_FAILURE", "AWS_INACCESSIBLE_KMS_KEY_FAILURE", "AWS_INSTANCE_PROFILE_UPDATE_FAILURE", "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE", "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE", "AWS_INVALID_KEY_PAIR", "AWS_INVALID_KMS_KEY_STATE", "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE", "AWS_REQUEST_LIMIT_EXCEEDED", "AWS_RESOURCE_QUOTA_EXCEEDED", "AWS_UNSUPPORTED_FAILURE", "AZURE_BYOK_KEY_PERMISSION_FAILURE", "AZURE_EPHEMERAL_DISK_FAILURE", "AZURE_INVALID_DEPLOYMENT_TEMPLATE", "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION", "AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE", "AZURE_QUOTA_EXCEEDED_EXCEPTION", "AZURE_RESOURCE_MANAGER_THROTTLING", "AZURE_RESOURCE_PROVIDER_THROTTLING", "AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE", "AZURE_VM_EXTENSION_FAILURE", "AZURE_VNET_CONFIGURATION_FAILURE", "BOOTSTRAP_TIMEOUT", "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION", "BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG", "BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED", "BUDGET_POLICY_RESOLUTION_FAILURE", "CLOUD_ACCOUNT_SETUP_FAILURE", "CLOUD_OPERATION_CANCELLED", "CLOUD_PROVIDER_DISK_SETUP_FAILURE", "CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED", "CLOUD_PROVIDER_LAUNCH_FAILURE", "CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG", "CLOUD_PROVIDER_RESOURCE_STOCKOUT", "CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG", "CLOUD_PROVIDER_SHUTDOWN", "CLUSTER_OPERATION_THROTTLED", "CLUSTER_OPERATION_TIMEOUT", "COMMUNICATION_LOST", "CONTAINER_LAUNCH_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG", "DATABASE_CONNECTION_FAILURE", "DATA_ACCESS_CONFIG_CHANGED", "DBFS_COMPONENT_UNHEALTHY", "DISASTER_RECOVERY_REPLICATION", "DNS_RESOLUTION_ERROR", "DOCKER_CONTAINER_CREATION_EXCEPTION", "DOCKER_IMAGE_PULL_FAILURE", "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION", "DOCKER_INVALID_OS_EXCEPTION", "DRIVER_EVICTION", "DRIVER_LAUNCH_TIMEOUT", "DRIVER_NODE_UNREACHABLE", "DRIVER_OUT_OF_DISK", "DRIVER_OUT_OF_MEMORY", "DRIVER_POD_CREATION_FAILURE", "DRIVER_UNEXPECTED_FAILURE", "DRIVER_UNHEALTHY", "DRIVER_UNREACHABLE", "DRIVER_UNRESPONSIVE", "DYNAMIC_SPARK_CONF_SIZE_EXCEEDED", "EOS_SPARK_IMAGE", "EXECUTION_COMPONENT_UNHEALTHY", "EXECUTOR_POD_UNSCHEDULED", "GCP_API_RATE_QUOTA_EXCEEDED", "GCP_DENIED_BY_ORG_POLICY", "GCP_FORBIDDEN", "GCP_IAM_TIMEOUT", "GCP_INACCESSIBLE_KMS_KEY_FAILURE", "GCP_INSUFFICIENT_CAPACITY", "GCP_IP_SPACE_EXHAUSTED", "GCP_KMS_KEY_PERMISSION_DENIED", "GCP_NOT_FOUND", "GCP_QUOTA_EXCEEDED", "GCP_RESOURCE_QUOTA_EXCEEDED", "GCP_SERVICE_ACCOUNT_ACCESS_DENIED", "GCP_SERVICE_ACCOUNT_DELETED", "GCP_SERVICE_ACCOUNT_NOT_FOUND", "GCP_SUBNET_NOT_READY", "GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED", "GKE_BASED_CLUSTER_TERMINATION", "GLOBAL_INIT_SCRIPT_FAILURE", "HIVE_METASTORE_PROVISIONING_FAILURE", "IMAGE_PULL_PERMISSION_DENIED", "INACTIVITY", "INIT_CONTAINER_NOT_FINISHED", "INIT_SCRIPT_FAILURE", "INSTANCE_POOL_CLUSTER_FAILURE", "INSTANCE_POOL_MAX_CAPACITY_REACHED", "INSTANCE_POOL_NOT_FOUND", "INSTANCE_UNREACHABLE", "INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG", "INTERNAL_CAPACITY_FAILURE", "INTERNAL_ERROR", "INVALID_ARGUMENT", "INVALID_AWS_PARAMETER", "INVALID_INSTANCE_PLACEMENT_PROTOCOL", "INVALID_SPARK_IMAGE", "INVALID_WORKER_IMAGE_FAILURE", "IN_PENALTY_BOX", "IP_EXHAUSTION_FAILURE", "JOB_FINISHED", "K8S_AUTOSCALING_FAILURE", "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT", "LAZY_ALLOCATION_TIMEOUT", "MAINTENANCE_MODE", "METASTORE_COMPONENT_UNHEALTHY", "NEPHOS_RESOURCE_MANAGEMENT", "NETVISOR_SETUP_TIMEOUT", "NETWORK_CHECK_CONTROL_PLANE_FAILURE", "NETWORK_CHECK_DNS_SERVER_FAILURE", "NETWORK_CHECK_METADATA_ENDPOINT_FAILURE", "NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE", "NETWORK_CHECK_NIC_FAILURE", "NETWORK_CHECK_STORAGE_FAILURE", "NETWORK_CONFIGURATION_FAILURE", "NFS_MOUNT_FAILURE", "NO_MATCHED_K8S", "NO_MATCHED_K8S_TESTING_TAG", "NPIP_TUNNEL_SETUP_FAILURE", "NPIP_TUNNEL_TOKEN_FAILURE", "POD_ASSIGNMENT_FAILURE", "POD_SCHEDULING_FAILURE", "REQUEST_REJECTED", "REQUEST_THROTTLED", "RESOURCE_USAGE_BLOCKED", "SECRET_CREATION_FAILURE", "SECRET_PERMISSION_DENIED", "SECRET_RESOLUTION_ERROR", "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION", "SECURITY_DAEMON_REGISTRATION_EXCEPTION", "SELF_BOOTSTRAP_FAILURE", "SERVERLESS_LONG_RUNNING_TERMINATED", "SKIPPED_SLOW_NODES", "SLOW_IMAGE_DOWNLOAD", "SPARK_ERROR", "SPARK_IMAGE_DOWNLOAD_FAILURE", "SPARK_IMAGE_DOWNLOAD_THROTTLED", "SPARK_IMAGE_NOT_FOUND", "SPARK_STARTUP_FAILURE", "SPOT_INSTANCE_TERMINATION", "SSH_BOOTSTRAP_FAILURE", "STORAGE_DOWNLOAD_FAILURE", "STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG", "STORAGE_DOWNLOAD_FAILURE_SLOW", "STORAGE_DOWNLOAD_FAILURE_THROTTLED", "STS_CLIENT_SETUP_FAILURE", "SUBNET_EXHAUSTED_FAILURE", "TEMPORARILY_UNAVAILABLE", "TRIAL_EXPIRED", "UNEXPECTED_LAUNCH_FAILURE", "UNEXPECTED_POD_RECREATION", "UNKNOWN", "UNSUPPORTED_INSTANCE_TYPE", "UPDATE_INSTANCE_PROFILE_FAILURE", "USER_INITIATED_VM_TERMINATION", "USER_REQUEST", "WORKER_SETUP_FAILURE", "WORKSPACE_CANCELLED_ERROR", "WORKSPACE_CONFIGURATION_ERROR", "WORKSPACE_UPDATE"`, v)
 	}
 }
 
@@ -6210,6 +5961,7 @@ func (f *TerminationReasonCode) Values() []TerminationReasonCode {
 		TerminationReasonCodeSecretCreationFailure,
 		TerminationReasonCodeSecretPermissionDenied,
 		TerminationReasonCodeSecretResolutionError,
+		TerminationReasonCodeSecurityAgentsFailedInitialVerification,
 		TerminationReasonCodeSecurityDaemonRegistrationException,
 		TerminationReasonCodeSelfBootstrapFailure,
 		TerminationReasonCodeServerlessLongRunningTerminated,
@@ -6371,35 +6123,7 @@ type UpdateClusterResource struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
-	// Data security mode decides what data governance model to use when
-	// accessing data from a cluster.
-	//
-	// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
-	// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate
-	// access mode depending on your compute configuration. *
-	// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
-	// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
-	//
-	// The following modes can be used regardless of `kind`. * `NONE`: No
-	// security isolation for multiple users sharing the cluster. Data
-	// governance features are not available in this mode. * `SINGLE_USER`: A
-	// secure cluster that can only be exclusively used by a single user
-	// specified in `single_user_name`. Most programming languages, cluster
-	// features and data governance features are available in this mode. *
-	// `USER_ISOLATION`: A secure cluster that can be shared by multiple users.
-	// Cluster users are fully isolated so that they cannot see each other's
-	// data and credentials. Most data governance features are supported in this
-	// mode. But programming languages and cluster features might be limited.
-	//
-	// The following modes are deprecated starting with Databricks Runtime 15.0
-	// and will be removed for future Databricks Runtime versions:
-	//
-	// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table
-	// ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating
-	// from legacy Passthrough on high concurrency clusters. *
-	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
-	// mode provides a way that doesn’t have UC nor passthrough enabled.
+
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
@@ -6438,23 +6162,7 @@ type UpdateClusterResource struct {
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	IsSingleNode bool `json:"is_single_node,omitempty"`
-	// The kind of compute described by this compute specification.
-	//
-	// Depending on `kind`, different validations and default values will be
-	// applied.
-	//
-	// Clusters with `kind = CLASSIC_PREVIEW` support the following fields,
-	// whereas clusters with no specified `kind` do not. *
-	// [is_single_node](/api/workspace/clusters/create#is_single_node) *
-	// [use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *
-	// [data_security_mode](/api/workspace/clusters/create#data_security_mode)
-	// set to `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or
-	// `DATA_SECURITY_MODE_STANDARD`
-	//
-	// By using the [simple form], your clusters are automatically using `kind =
-	// CLASSIC_PREVIEW`.
-	//
-	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+
 	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
@@ -6526,7 +6234,7 @@ type UpdateClusterResource struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-	// Cluster Attributes showing for clusters workload types.
+
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

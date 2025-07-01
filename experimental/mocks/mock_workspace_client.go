@@ -75,7 +75,9 @@ func NewMockWorkspaceClient(t interface {
 			Dbfs:                                files.NewMockDbfsInterface(t),
 			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
 			Experiments:                         ml.NewMockExperimentsInterface(t),
+			ExternalLineage:                     catalog.NewMockExternalLineageInterface(t),
 			ExternalLocations:                   catalog.NewMockExternalLocationsInterface(t),
+			ExternalMetadata:                    catalog.NewMockExternalMetadataInterface(t),
 			FeatureStore:                        ml.NewMockFeatureStoreInterface(t),
 			Files:                               files.NewMockFilesInterface(t),
 			Functions:                           catalog.NewMockFunctionsInterface(t),
@@ -91,6 +93,7 @@ func NewMockWorkspaceClient(t interface {
 			Lakeview:                            dashboards.NewMockLakeviewInterface(t),
 			LakeviewEmbedded:                    dashboards.NewMockLakeviewEmbeddedInterface(t),
 			Libraries:                           compute.NewMockLibrariesInterface(t),
+			MaterializedFeatures:                ml.NewMockMaterializedFeaturesInterface(t),
 			Metastores:                          catalog.NewMockMetastoresInterface(t),
 			ModelRegistry:                       ml.NewMockModelRegistryInterface(t),
 			ModelVersions:                       catalog.NewMockModelVersionsInterface(t),
@@ -569,10 +572,26 @@ func (m *MockWorkspaceClient) GetMockExperimentsAPI() *ml.MockExperimentsInterfa
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockExternalLineageAPI() *catalog.MockExternalLineageInterface {
+	api, ok := m.WorkspaceClient.ExternalLineage.(*catalog.MockExternalLineageInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ExternalLineage to be *catalog.MockExternalLineageInterface, actual was %T", m.WorkspaceClient.ExternalLineage))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockExternalLocationsAPI() *catalog.MockExternalLocationsInterface {
 	api, ok := m.WorkspaceClient.ExternalLocations.(*catalog.MockExternalLocationsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ExternalLocations to be *catalog.MockExternalLocationsInterface, actual was %T", m.WorkspaceClient.ExternalLocations))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockExternalMetadataAPI() *catalog.MockExternalMetadataInterface {
+	api, ok := m.WorkspaceClient.ExternalMetadata.(*catalog.MockExternalMetadataInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ExternalMetadata to be *catalog.MockExternalMetadataInterface, actual was %T", m.WorkspaceClient.ExternalMetadata))
 	}
 	return api
 }
@@ -693,6 +712,14 @@ func (m *MockWorkspaceClient) GetMockLibrariesAPI() *compute.MockLibrariesInterf
 	api, ok := m.WorkspaceClient.Libraries.(*compute.MockLibrariesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Libraries to be *compute.MockLibrariesInterface, actual was %T", m.WorkspaceClient.Libraries))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockMaterializedFeaturesAPI() *ml.MockMaterializedFeaturesInterface {
+	api, ok := m.WorkspaceClient.MaterializedFeatures.(*ml.MockMaterializedFeaturesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected MaterializedFeatures to be *ml.MockMaterializedFeaturesInterface, actual was %T", m.WorkspaceClient.MaterializedFeatures))
 	}
 	return api
 }

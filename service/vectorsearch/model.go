@@ -51,12 +51,7 @@ type CreateVectorIndexRequest struct {
 	DirectAccessIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_index_spec,omitempty"`
 	// Name of the endpoint to be used for serving the index
 	EndpointName string `json:"endpoint_name"`
-	// There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that
-	// automatically syncs with a source Delta Table, automatically and
-	// incrementally updating the index as the underlying data in the Delta
-	// Table changes. - `DIRECT_ACCESS`: An index that supports direct read and
-	// write of vectors and metadata through our REST and SDK APIs. With this
-	// model, the user manages index updates.
+
 	IndexType VectorIndexType `json:"index_type"`
 	// Name of the index
 	Name string `json:"name"`
@@ -138,7 +133,6 @@ func (f *DeleteDataStatus) Type() string {
 	return "DeleteDataStatus"
 }
 
-// Delete data from index
 type DeleteDataVectorIndexRequest struct {
 	// Name of the vector index where data is to be deleted. Must be a Direct
 	// Vector Access Index.
@@ -154,7 +148,6 @@ type DeleteDataVectorIndexResponse struct {
 	Status DeleteDataStatus `json:"status,omitempty"`
 }
 
-// Delete an endpoint
 type DeleteEndpointRequest struct {
 	// Name of the vector search endpoint
 	EndpointName string `json:"-" url:"-"`
@@ -163,7 +156,6 @@ type DeleteEndpointRequest struct {
 type DeleteEndpointResponse struct {
 }
 
-// Delete an index
 type DeleteIndexRequest struct {
 	// Name of the index
 	IndexName string `json:"-" url:"-"`
@@ -425,13 +417,11 @@ func (f *EndpointType) Type() string {
 	return "EndpointType"
 }
 
-// Get an endpoint
 type GetEndpointRequest struct {
 	// Name of the endpoint
 	EndpointName string `json:"-" url:"-"`
 }
 
-// Get an index
 type GetIndexRequest struct {
 	// Name of the index
 	IndexName string `json:"-" url:"-"`
@@ -455,7 +445,6 @@ func (s ListEndpointResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List all endpoints
 type ListEndpointsRequest struct {
 	// Token for pagination
 	PageToken string `json:"-" url:"page_token,omitempty"`
@@ -471,7 +460,6 @@ func (s ListEndpointsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List indexes
 type ListIndexesRequest struct {
 	// Name of the endpoint
 	EndpointName string `json:"-" url:"endpoint_name"`
@@ -535,12 +523,7 @@ type MiniVectorIndex struct {
 	Creator string `json:"creator,omitempty"`
 	// Name of the endpoint associated with the index
 	EndpointName string `json:"endpoint_name,omitempty"`
-	// There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that
-	// automatically syncs with a source Delta Table, automatically and
-	// incrementally updating the index as the underlying data in the Delta
-	// Table changes. - `DIRECT_ACCESS`: An index that supports direct read and
-	// write of vectors and metadata through our REST and SDK APIs. With this
-	// model, the user manages index updates.
+
 	IndexType VectorIndexType `json:"index_type,omitempty"`
 	// Name of the index
 	Name string `json:"name,omitempty"`
@@ -789,7 +772,6 @@ type Struct struct {
 	Fields []MapStringValueEntry `json:"fields,omitempty"`
 }
 
-// Synchronize an index
 type SyncIndexRequest struct {
 	// Name of the vector index to synchronize. Must be a Delta Sync Index.
 	IndexName string `json:"-" url:"-"`
@@ -925,12 +907,7 @@ type VectorIndex struct {
 	DirectAccessIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_index_spec,omitempty"`
 	// Name of the endpoint associated with the index
 	EndpointName string `json:"endpoint_name,omitempty"`
-	// There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that
-	// automatically syncs with a source Delta Table, automatically and
-	// incrementally updating the index as the underlying data in the Delta
-	// Table changes. - `DIRECT_ACCESS`: An index that supports direct read and
-	// write of vectors and metadata through our REST and SDK APIs. With this
-	// model, the user manages index updates.
+
 	IndexType VectorIndexType `json:"index_type,omitempty"`
 	// Name of the index
 	Name string `json:"name,omitempty"`
