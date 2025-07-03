@@ -1278,9 +1278,6 @@ type DeletePrivateEndpointRuleRequest struct {
 	PrivateEndpointRuleId string `json:"-" url:"-"`
 }
 
-type DeleteResponse struct {
-}
-
 type DeleteRestrictWorkspaceAdminsSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2097,9 +2094,6 @@ func (f *EgressResourceType) Type() string {
 type EmailConfig struct {
 	// Email addresses to notify.
 	Addresses []string `json:"addresses,omitempty"`
-}
-
-type Empty struct {
 }
 
 type EnableExportNotebook struct {
@@ -3650,9 +3644,6 @@ type ReplaceIpAccessList struct {
 	ListType ListType `json:"list_type"`
 }
 
-type ReplaceResponse struct {
-}
-
 type RestrictWorkspaceAdminsMessage struct {
 	Status RestrictWorkspaceAdminsMessageStatus `json:"status"`
 }
@@ -3726,12 +3717,6 @@ func (s RestrictWorkspaceAdminsSetting) MarshalJSON() ([]byte, error) {
 type RevokeTokenRequest struct {
 	// The ID of the token to be revoked.
 	TokenId string `json:"token_id"`
-}
-
-type RevokeTokenResponse struct {
-}
-
-type SetStatusResponse struct {
 }
 
 type SlackConfig struct {
@@ -4529,9 +4514,6 @@ func (s *UpdatePrivateEndpointRule) UnmarshalJSON(b []byte) error {
 
 func (s UpdatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UpdateResponse struct {
 }
 
 // Details required to update a setting.

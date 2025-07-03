@@ -247,15 +247,9 @@ func (s CancelAllRuns) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type CancelAllRunsResponse struct {
-}
-
 type CancelRun struct {
 	// This field is required.
 	RunId int64 `json:"run_id"`
-}
-
-type CancelRunResponse struct {
 }
 
 // Copied from elastic-spark-common/api/messages/runs.proto. Using the original
@@ -1089,15 +1083,9 @@ type DeleteJob struct {
 	JobId int64 `json:"job_id"`
 }
 
-type DeleteResponse struct {
-}
-
 type DeleteRun struct {
 	// ID of the run to delete.
 	RunId int64 `json:"run_id"`
-}
-
-type DeleteRunResponse struct {
 }
 
 // Represents a change to the job cluster's settings that would be required for
@@ -3157,9 +3145,6 @@ type ResetJob struct {
 	// Changes to the field `JobBaseSettings.timeout_seconds` are applied to
 	// active runs. Changes to other fields are applied to future runs only.
 	NewSettings JobSettings `json:"new_settings"`
-}
-
-type ResetResponse struct {
 }
 
 type ResolvedConditionTaskValues struct {
@@ -5823,9 +5808,6 @@ type UpdateJob struct {
 	// Changes to the field `JobSettings.timeout_seconds` are applied to active
 	// runs. Changes to other fields are applied to future runs only.
 	NewSettings *JobSettings `json:"new_settings,omitempty"`
-}
-
-type UpdateResponse struct {
 }
 
 type ViewItem struct {

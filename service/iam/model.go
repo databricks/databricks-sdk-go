@@ -148,9 +148,6 @@ type DeleteGroupRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-type DeleteResponse struct {
-}
-
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -166,9 +163,6 @@ type DeleteWorkspaceAssignmentRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID for the account.
 	WorkspaceId int64 `json:"-" url:"-"`
-}
-
-type DeleteWorkspacePermissionAssignmentResponse struct {
 }
 
 type GetAccountGroupRequest struct {
@@ -1082,9 +1076,6 @@ func (f *PatchOp) Type() string {
 	return "PatchOp"
 }
 
-type PatchResponse struct {
-}
-
 type PatchSchema string
 
 const PatchSchemaUrnIetfParamsScimApiMessages20PatchOp PatchSchema = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
@@ -1514,9 +1505,6 @@ type UpdateObjectPermissions struct {
 	// pipelines, queries, registered-models, repos, serving-endpoints, or
 	// warehouses.
 	RequestObjectType string `json:"-" url:"-"`
-}
-
-type UpdateResponse struct {
 }
 
 type UpdateRuleSetRequest struct {

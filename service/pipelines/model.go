@@ -205,9 +205,6 @@ type DeletePipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
-type DeletePipelineResponse struct {
-}
-
 // The deployment method that manages the pipeline: - BUNDLE: The pipeline is
 // managed by a Databricks Asset Bundle.
 type DeploymentKind string
@@ -332,9 +329,6 @@ func (s *EditPipeline) UnmarshalJSON(b []byte) error {
 
 func (s EditPipeline) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type EditPipelineResponse struct {
 }
 
 type ErrorDetail struct {
@@ -1851,9 +1845,6 @@ func (s *StartUpdateResponse) UnmarshalJSON(b []byte) error {
 
 func (s StartUpdateResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type StopPipelineResponse struct {
 }
 
 type StopRequest struct {

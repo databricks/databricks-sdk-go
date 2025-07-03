@@ -706,9 +706,6 @@ type DataframeSplitInput struct {
 	Index []int `json:"index,omitempty"`
 }
 
-type DeleteResponse struct {
-}
-
 type DeleteServingEndpointRequest struct {
 	Name string `json:"-" url:"-"`
 }

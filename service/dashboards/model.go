@@ -1316,18 +1316,12 @@ type TrashDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 }
 
-type TrashDashboardResponse struct {
-}
-
 type TrashSpaceResponse struct {
 }
 
 type UnpublishDashboardRequest struct {
 	// UUID identifying the published dashboard.
 	DashboardId string `json:"-" url:"-"`
-}
-
-type UnpublishDashboardResponse struct {
 }
 
 type UpdateDashboardRequest struct {

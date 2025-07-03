@@ -255,9 +255,6 @@ type DeleteRecipientRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-type DeleteResponse struct {
-}
-
 type DeleteShareRequest struct {
 	// The name of the share.
 	Name string `json:"-" url:"-"`
@@ -507,9 +504,6 @@ func (f *FunctionParameterType) Type() string {
 type GetActivationUrlInfoRequest struct {
 	// The one time activation url. It also accepts activation token.
 	ActivationUrl string `json:"-" url:"-"`
-}
-
-type GetActivationUrlInfoResponse struct {
 }
 
 type GetFederationPolicyRequest struct {
@@ -1805,6 +1799,8 @@ func (s TableInternalAttributes) MarshalJSON() ([]byte, error) {
 
 type TableInternalAttributesSharedTableType string
 
+const TableInternalAttributesSharedTableTypeDeltaIcebergTable TableInternalAttributesSharedTableType = `DELTA_ICEBERG_TABLE`
+
 const TableInternalAttributesSharedTableTypeDirectoryBasedTable TableInternalAttributesSharedTableType = `DIRECTORY_BASED_TABLE`
 
 const TableInternalAttributesSharedTableTypeFileBasedTable TableInternalAttributesSharedTableType = `FILE_BASED_TABLE`
@@ -1825,11 +1821,11 @@ func (f *TableInternalAttributesSharedTableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TableInternalAttributesSharedTableType) Set(v string) error {
 	switch v {
-	case `DIRECTORY_BASED_TABLE`, `FILE_BASED_TABLE`, `FOREIGN_TABLE`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
+	case `DELTA_ICEBERG_TABLE`, `DIRECTORY_BASED_TABLE`, `FILE_BASED_TABLE`, `FOREIGN_TABLE`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
 		*f = TableInternalAttributesSharedTableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DIRECTORY_BASED_TABLE", "FILE_BASED_TABLE", "FOREIGN_TABLE", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DELTA_ICEBERG_TABLE", "DIRECTORY_BASED_TABLE", "FILE_BASED_TABLE", "FOREIGN_TABLE", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
 	}
 }
 
@@ -1838,6 +1834,7 @@ func (f *TableInternalAttributesSharedTableType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *TableInternalAttributesSharedTableType) Values() []TableInternalAttributesSharedTableType {
 	return []TableInternalAttributesSharedTableType{
+		TableInternalAttributesSharedTableTypeDeltaIcebergTable,
 		TableInternalAttributesSharedTableTypeDirectoryBasedTable,
 		TableInternalAttributesSharedTableTypeFileBasedTable,
 		TableInternalAttributesSharedTableTypeForeignTable,

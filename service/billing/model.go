@@ -544,9 +544,6 @@ type DeleteBudgetConfigurationRequest struct {
 	BudgetId string `json:"-" url:"-"`
 }
 
-type DeleteBudgetConfigurationResponse struct {
-}
-
 type DeleteBudgetPolicyRequest struct {
 	// The Id of the policy.
 	PolicyId string `json:"-" url:"-"`
@@ -1073,9 +1070,6 @@ func (f *OutputFormat) Values() []OutputFormat {
 // Type always returns OutputFormat to satisfy [pflag.Value] interface
 func (f *OutputFormat) Type() string {
 	return "OutputFormat"
-}
-
-type PatchStatusResponse struct {
 }
 
 type SortSpec struct {

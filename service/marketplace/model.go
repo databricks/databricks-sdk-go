@@ -491,21 +491,12 @@ type DeleteExchangeFilterRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-type DeleteExchangeFilterResponse struct {
-}
-
 type DeleteExchangeRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-type DeleteExchangeResponse struct {
-}
-
 type DeleteFileRequest struct {
 	FileId string `json:"-" url:"-"`
-}
-
-type DeleteFileResponse struct {
 }
 
 type DeleteInstallationRequest struct {
@@ -514,21 +505,12 @@ type DeleteInstallationRequest struct {
 	ListingId string `json:"-" url:"-"`
 }
 
-type DeleteInstallationResponse struct {
-}
-
 type DeleteListingRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-type DeleteListingResponse struct {
-}
-
 type DeleteProviderRequest struct {
 	Id string `json:"-" url:"-"`
-}
-
-type DeleteProviderResponse struct {
 }
 
 type DeltaSharingRecipientType string
@@ -1955,9 +1937,6 @@ func (s RegionInfo) MarshalJSON() ([]byte, error) {
 
 type RemoveExchangeForListingRequest struct {
 	Id string `json:"-" url:"-"`
-}
-
-type RemoveExchangeForListingResponse struct {
 }
 
 type RepoInfo struct {

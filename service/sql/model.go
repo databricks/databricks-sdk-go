@@ -643,9 +643,6 @@ type CancelExecutionRequest struct {
 	StatementId string `json:"-" url:"-"`
 }
 
-type CancelExecutionResponse struct {
-}
-
 // Configures the channel name and DBSQL version of the warehouse.
 // CHANNEL_NAME_CUSTOM should be chosen only when `dbsql_version` is specified.
 type Channel struct {
@@ -1707,9 +1704,6 @@ type DeleteQueryVisualizationsLegacyRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-type DeleteResponse struct {
-}
-
 type DeleteVisualizationRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -1717,9 +1711,6 @@ type DeleteVisualizationRequest struct {
 type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
-}
-
-type DeleteWarehouseResponse struct {
 }
 
 type Disposition string
@@ -1896,14 +1887,6 @@ func (f *EditWarehouseRequestWarehouseType) Values() []EditWarehouseRequestWareh
 // Type always returns EditWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
 func (f *EditWarehouseRequestWarehouseType) Type() string {
 	return "EditWarehouseRequestWarehouseType"
-}
-
-type EditWarehouseResponse struct {
-}
-
-// Represents an empty message, similar to google.protobuf.Empty, which is not
-// available in the firm right now.
-type Empty struct {
 }
 
 type EndpointConfPair struct {
@@ -4273,9 +4256,6 @@ type RestoreQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
-type RestoreResponse struct {
-}
-
 type ResultData struct {
 	// The number of bytes in the result chunk. This field is not available when
 	// using `INLINE` disposition.
@@ -4667,9 +4647,6 @@ func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
 	return "SetWorkspaceWarehouseConfigRequestSecurityPolicy"
 }
 
-type SetWorkspaceWarehouseConfigResponse struct {
-}
-
 // Configurations whether the warehouse should use spot instances.
 type SpotInstancePolicy string
 
@@ -4714,9 +4691,6 @@ func (f *SpotInstancePolicy) Type() string {
 type StartRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
-}
-
-type StartWarehouseResponse struct {
 }
 
 // State of the warehouse
@@ -4934,9 +4908,6 @@ func (f *Status) Type() string {
 type StopRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
-}
-
-type StopWarehouseResponse struct {
 }
 
 type Success struct {
@@ -5568,9 +5539,6 @@ func (s *UpdateQueryRequestQuery) UnmarshalJSON(b []byte) error {
 
 func (s UpdateQueryRequestQuery) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UpdateResponse struct {
 }
 
 type UpdateVisualizationRequest struct {

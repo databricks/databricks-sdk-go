@@ -130,9 +130,6 @@ func (f *ArtifactType) Type() string {
 	return "ArtifactType"
 }
 
-type AssignResponse struct {
-}
-
 // AWS temporary credentials for API authentication. Read more at
 // https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
 type AwsCredentials struct {
@@ -391,9 +388,6 @@ type CancelRefreshRequest struct {
 	RefreshId string `json:"-" url:"-"`
 	// Full name of the table.
 	TableName string `json:"-" url:"-"`
-}
-
-type CancelRefreshResponse struct {
 }
 
 type CatalogInfo struct {
@@ -1402,9 +1396,6 @@ func (s CreateRequestExternalLineage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type CreateResponse struct {
-}
-
 type CreateSchema struct {
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name"`
@@ -1906,9 +1897,6 @@ type DeleteAliasRequest struct {
 	FullName string `json:"-" url:"-"`
 }
 
-type DeleteAliasResponse struct {
-}
-
 type DeleteCatalogRequest struct {
 	// Force deletion even if the catalog is not empty.
 	Force bool `json:"-" url:"force,omitempty"`
@@ -1948,9 +1936,6 @@ func (s *DeleteCredentialRequest) UnmarshalJSON(b []byte) error {
 
 func (s DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type DeleteCredentialResponse struct {
 }
 
 type DeleteExternalLineageRelationshipRequest struct {
@@ -2058,9 +2043,6 @@ func (s *DeleteRequestExternalLineage) UnmarshalJSON(b []byte) error {
 
 func (s DeleteRequestExternalLineage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type DeleteResponse struct {
 }
 
 type DeleteSchemaRequest struct {
@@ -2188,9 +2170,6 @@ type DisableRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 	// Full name of the system schema.
 	SchemaName string `json:"-" url:"-"`
-}
-
-type DisableResponse struct {
 }
 
 type EffectivePermissionsList struct {
@@ -2372,9 +2351,6 @@ func (s *EnableRequest) UnmarshalJSON(b []byte) error {
 
 func (s EnableRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type EnableResponse struct {
 }
 
 // Encryption options that apply to clients connecting to cloud storage.
@@ -6965,12 +6941,6 @@ type UnassignRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-type UnassignResponse struct {
-}
-
-type UpdateAssignmentResponse struct {
-}
-
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -7340,9 +7310,6 @@ func (s *UpdateRequestExternalLineage) UnmarshalJSON(b []byte) error {
 
 func (s UpdateRequestExternalLineage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UpdateResponse struct {
 }
 
 type UpdateSchema struct {

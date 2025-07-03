@@ -732,11 +732,6 @@ type DeleteCleanRoomAssetRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// Response for delete clean room request. Using an empty message since the
-// generic Empty proto does not externd UnshadedMessageMarker.
-type DeleteCleanRoomAssetResponse struct {
-}
-
 type DeleteCleanRoomRequest struct {
 	// Name of the clean room.
 	Name string `json:"-" url:"-"`

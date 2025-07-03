@@ -193,9 +193,6 @@ func (s CreateScope) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type CreateScopeResponse struct {
-}
-
 type CredentialInfo struct {
 	// ID of the credential object in the workspace.
 	CredentialId int64 `json:"credential_id"`
@@ -243,15 +240,9 @@ type DeleteAcl struct {
 	Scope string `json:"scope"`
 }
 
-type DeleteAclResponse struct {
-}
-
 type DeleteCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
-}
-
-type DeleteCredentialsResponse struct {
 }
 
 type DeleteRepoRequest struct {
@@ -259,18 +250,9 @@ type DeleteRepoRequest struct {
 	RepoId int64 `json:"-" url:"-"`
 }
 
-type DeleteRepoResponse struct {
-}
-
-type DeleteResponse struct {
-}
-
 type DeleteScope struct {
 	// Name of the scope to delete.
 	Scope string `json:"scope"`
-}
-
-type DeleteScopeResponse struct {
 }
 
 type DeleteSecret struct {
@@ -278,9 +260,6 @@ type DeleteSecret struct {
 	Key string `json:"key"`
 	// The name of the scope that contains the secret to delete.
 	Scope string `json:"scope"`
-}
-
-type DeleteSecretResponse struct {
 }
 
 // The format for workspace import and export.
@@ -600,9 +579,6 @@ func (f *ImportFormat) Type() string {
 	return "ImportFormat"
 }
 
-type ImportResponse struct {
-}
-
 // The language of notebook.
 type Language string
 
@@ -745,9 +721,6 @@ type Mkdirs struct {
 	Path string `json:"path"`
 }
 
-type MkdirsResponse struct {
-}
-
 // The information of the object in workspace. It will be returned by “list“
 // and “get-status“.
 type ObjectInfo struct {
@@ -844,9 +817,6 @@ type PutAcl struct {
 	Scope string `json:"scope"`
 }
 
-type PutAclResponse struct {
-}
-
 type PutSecret struct {
 	// If specified, value will be stored as bytes.
 	BytesValue string `json:"bytes_value,omitempty"`
@@ -866,9 +836,6 @@ func (s *PutSecret) UnmarshalJSON(b []byte) error {
 
 func (s PutSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type PutSecretResponse struct {
 }
 
 type RepoAccessControlRequest struct {
@@ -1170,9 +1137,6 @@ func (s UpdateCredentialsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type UpdateCredentialsResponse struct {
-}
-
 type UpdateRepoRequest struct {
 	// Branch that the local version of the repo is checked out to.
 	Branch string `json:"branch,omitempty"`
@@ -1196,9 +1160,6 @@ func (s *UpdateRepoRequest) UnmarshalJSON(b []byte) error {
 
 func (s UpdateRepoRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UpdateRepoResponse struct {
 }
 
 type WorkspaceObjectAccessControlRequest struct {

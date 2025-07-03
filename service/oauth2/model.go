@@ -177,21 +177,12 @@ type DeleteAccountFederationPolicyRequest struct {
 	PolicyId string `json:"-" url:"-"`
 }
 
-type DeleteCustomAppIntegrationOutput struct {
-}
-
 type DeleteCustomAppIntegrationRequest struct {
 	IntegrationId string `json:"-" url:"-"`
 }
 
-type DeletePublishedAppIntegrationOutput struct {
-}
-
 type DeletePublishedAppIntegrationRequest struct {
 	IntegrationId string `json:"-" url:"-"`
-}
-
-type DeleteResponse struct {
 }
 
 type DeleteServicePrincipalFederationPolicyRequest struct {
@@ -681,16 +672,10 @@ type UpdateCustomAppIntegration struct {
 	UserAuthorizedScopes []string `json:"user_authorized_scopes,omitempty"`
 }
 
-type UpdateCustomAppIntegrationOutput struct {
-}
-
 type UpdatePublishedAppIntegration struct {
 	IntegrationId string `json:"-" url:"-"`
 	// Token access policy to be updated in the published OAuth app integration
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
-}
-
-type UpdatePublishedAppIntegrationOutput struct {
 }
 
 type UpdateServicePrincipalFederationPolicyRequest struct {
