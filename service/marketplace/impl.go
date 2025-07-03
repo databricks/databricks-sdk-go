@@ -124,12 +124,11 @@ func (a *consumerInstallationsImpl) Create(ctx context.Context, request CreateIn
 }
 
 func (a *consumerInstallationsImpl) Delete(ctx context.Context, request DeleteInstallationRequest) error {
-	var deleteInstallationResponse DeleteInstallationResponse
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations/%v", request.ListingId, request.InstallationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteInstallationResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -491,12 +490,11 @@ func (a *providerExchangeFiltersImpl) Create(ctx context.Context, request Create
 }
 
 func (a *providerExchangeFiltersImpl) Delete(ctx context.Context, request DeleteExchangeFilterRequest) error {
-	var deleteExchangeFilterResponse DeleteExchangeFilterResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/filters/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteExchangeFilterResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -580,22 +578,20 @@ func (a *providerExchangesImpl) Create(ctx context.Context, request CreateExchan
 }
 
 func (a *providerExchangesImpl) Delete(ctx context.Context, request DeleteExchangeRequest) error {
-	var deleteExchangeResponse DeleteExchangeResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteExchangeResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *providerExchangesImpl) DeleteListingFromExchange(ctx context.Context, request RemoveExchangeForListingRequest) error {
-	var removeExchangeForListingResponse RemoveExchangeForListingResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges-for-listing/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &removeExchangeForListingResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -760,12 +756,11 @@ func (a *providerFilesImpl) Create(ctx context.Context, request CreateFileReques
 }
 
 func (a *providerFilesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
-	var deleteFileResponse DeleteFileResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/files/%v", request.FileId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteFileResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -837,12 +832,11 @@ func (a *providerListingsImpl) Create(ctx context.Context, request CreateListing
 }
 
 func (a *providerListingsImpl) Delete(ctx context.Context, request DeleteListingRequest) error {
-	var deleteListingResponse DeleteListingResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteListingResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -1030,12 +1024,11 @@ func (a *providerProvidersImpl) Create(ctx context.Context, request CreateProvid
 }
 
 func (a *providerProvidersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
-	var deleteProviderResponse DeleteProviderResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/providers/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteProviderResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 

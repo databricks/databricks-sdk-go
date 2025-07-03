@@ -77,7 +77,6 @@ type Dataset struct {
 	Table Table `json:"table"`
 }
 
-// Delete a Custom LLM
 type DeleteCustomLlmRequest struct {
 	// The id of the custom llm
 	Id string `json:"-" url:"-"`
@@ -86,7 +85,6 @@ type DeleteCustomLlmRequest struct {
 type DeleteCustomLlmResponse struct {
 }
 
-// Get a Custom LLM
 type GetCustomLlmRequest struct {
 	// The id of the custom llm
 	Id string `json:"-" url:"-"`

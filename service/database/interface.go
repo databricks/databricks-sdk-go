@@ -17,7 +17,12 @@ type DatabaseService interface {
 	// Create a Database Instance.
 	CreateDatabaseInstance(ctx context.Context, request CreateDatabaseInstanceRequest) (*DatabaseInstance, error)
 
-	// Create a Database Table.
+	// Create a role for a Database Instance.
+	CreateDatabaseInstanceRole(ctx context.Context, request CreateDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error)
+
+	// Create a Database Table. Useful for registering pre-existing PG tables in
+	// UC. See CreateSyncedDatabaseTable for creating synced tables in PG from a
+	// source table in UC.
 	CreateDatabaseTable(ctx context.Context, request CreateDatabaseTableRequest) (*DatabaseTable, error)
 
 	// Create a Synced Database Table.
@@ -28,6 +33,9 @@ type DatabaseService interface {
 
 	// Delete a Database Instance.
 	DeleteDatabaseInstance(ctx context.Context, request DeleteDatabaseInstanceRequest) error
+
+	// Deletes a role for a Database Instance.
+	DeleteDatabaseInstanceRole(ctx context.Context, request DeleteDatabaseInstanceRoleRequest) error
 
 	// Delete a Database Table.
 	DeleteDatabaseTable(ctx context.Context, request DeleteDatabaseTableRequest) error
@@ -47,11 +55,17 @@ type DatabaseService interface {
 	// Get a Database Instance.
 	GetDatabaseInstance(ctx context.Context, request GetDatabaseInstanceRequest) (*DatabaseInstance, error)
 
+	// Gets a role for a Database Instance.
+	GetDatabaseInstanceRole(ctx context.Context, request GetDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error)
+
 	// Get a Database Table.
 	GetDatabaseTable(ctx context.Context, request GetDatabaseTableRequest) (*DatabaseTable, error)
 
 	// Get a Synced Database Table.
 	GetSyncedDatabaseTable(ctx context.Context, request GetSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
+
+	// START OF PG ROLE APIs Section
+	ListDatabaseInstanceRoles(ctx context.Context, request ListDatabaseInstanceRolesRequest) (*ListDatabaseInstanceRolesResponse, error)
 
 	// List Database Instances.
 	ListDatabaseInstances(ctx context.Context, request ListDatabaseInstancesRequest) (*ListDatabaseInstancesResponse, error)

@@ -251,6 +251,34 @@ type CredentialsService interface {
 	ValidateCredential(ctx context.Context, request ValidateCredentialRequest) (*ValidateCredentialResponse, error)
 }
 
+// External Lineage APIs enable defining and managing lineage relationships
+// between Databricks objects and external systems. These APIs allow users to
+// capture data flows connecting Databricks tables, models, and file paths with
+// external metadata objects.
+//
+// With these APIs, users can create, update, delete, and list lineage
+// relationships with support for column-level mappings and custom properties.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type ExternalLineageService interface {
+
+	// Creates an external lineage relationship between a Databricks or external
+	// metadata object and another external metadata object.
+	CreateExternalLineageRelationship(ctx context.Context, request CreateExternalLineageRelationshipRequest) (*ExternalLineageRelationship, error)
+
+	// Deletes an external lineage relationship between a Databricks or external
+	// metadata object and another external metadata object.
+	DeleteExternalLineageRelationship(ctx context.Context, request DeleteExternalLineageRelationshipRequest) error
+
+	// Lists external lineage relationships of a Databricks object or external
+	// metadata given a supplied direction.
+	ListExternalLineageRelationships(ctx context.Context, request ListExternalLineageRelationshipsRequest) (*ListExternalLineageRelationshipsResponse, error)
+
+	// Updates an external lineage relationship between a Databricks or external
+	// metadata object and another external metadata object.
+	UpdateExternalLineageRelationship(ctx context.Context, request UpdateExternalLineageRelationshipRequest) (*ExternalLineageRelationship, error)
+}
+
 // An external location is an object that combines a cloud storage path with a
 // storage credential that authorizes access to the cloud storage path. Each
 // external location is subject to Unity Catalog access-control policies that
@@ -293,6 +321,49 @@ type ExternalLocationsService interface {
 	// owner of the external location, or be a metastore admin. In the second
 	// case, the admin can only update the name of the external location.
 	Update(ctx context.Context, request UpdateExternalLocation) (*ExternalLocationInfo, error)
+}
+
+// External Metadata objects enable customers to register and manage metadata
+// about external systems within Unity Catalog.
+//
+// These APIs provide a standardized way to create, update, retrieve, list, and
+// delete external metadata objects. Fine-grained authorization ensures that
+// only users with appropriate permissions can view and manage external metadata
+// objects.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type ExternalMetadataService interface {
+
+	// Creates a new external metadata object in the parent metastore if the
+	// caller is a metastore admin or has the **CREATE_EXTERNAL_METADATA**
+	// privilege. Grants **BROWSE** to all account users upon creation by
+	// default.
+	CreateExternalMetadata(ctx context.Context, request CreateExternalMetadataRequest) (*ExternalMetadata, error)
+
+	// Deletes the external metadata object that matches the supplied name. The
+	// caller must be a metastore admin, the owner of the external metadata
+	// object, or a user that has the **MANAGE** privilege.
+	DeleteExternalMetadata(ctx context.Context, request DeleteExternalMetadataRequest) error
+
+	// Gets the specified external metadata object in a metastore. The caller
+	// must be a metastore admin, the owner of the external metadata object, or
+	// a user that has the **BROWSE** privilege.
+	GetExternalMetadata(ctx context.Context, request GetExternalMetadataRequest) (*ExternalMetadata, error)
+
+	// Gets an array of external metadata objects in the metastore. If the
+	// caller is the metastore admin, all external metadata objects will be
+	// retrieved. Otherwise, only external metadata objects that the caller has
+	// **BROWSE** on will be retrieved. There is no guarantee of a specific
+	// ordering of the elements in the array.
+	ListExternalMetadata(ctx context.Context, request ListExternalMetadataRequest) (*ListExternalMetadataResponse, error)
+
+	// Updates the external metadata object that matches the supplied name. The
+	// caller can only update either the owner or other metadata fields in one
+	// request. The caller must be a metastore admin, the owner of the external
+	// metadata object, or a user that has the **MODIFY** privilege. If the
+	// caller is updating the owner, they must also have the **MANAGE**
+	// privilege.
+	UpdateExternalMetadata(ctx context.Context, request UpdateExternalMetadataRequest) (*ExternalMetadata, error)
 }
 
 // Functions implement User-Defined Functions (UDFs) in Unity Catalog.

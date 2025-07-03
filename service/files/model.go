@@ -44,7 +44,6 @@ func (s Create) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Create a directory
 type CreateDirectoryRequest struct {
 	// The absolute path of a directory.
 	DirectoryPath string `json:"-" url:"-"`
@@ -88,7 +87,6 @@ func (s Delete) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a directory
 type DeleteDirectoryRequest struct {
 	// The absolute path of a directory.
 	DirectoryPath string `json:"-" url:"-"`
@@ -97,7 +95,6 @@ type DeleteDirectoryRequest struct {
 type DeleteDirectoryResponse struct {
 }
 
-// Delete a file
 type DeleteFileRequest struct {
 	// The absolute path of the file.
 	FilePath string `json:"-" url:"-"`
@@ -130,7 +127,6 @@ func (s DirectoryEntry) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Download a file
 type DownloadRequest struct {
 	// The absolute path of the file.
 	FilePath string `json:"-" url:"-"`
@@ -178,7 +174,6 @@ func (s FileInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get directory metadata
 type GetDirectoryMetadataRequest struct {
 	// The absolute path of a directory.
 	DirectoryPath string `json:"-" url:"-"`
@@ -187,7 +182,6 @@ type GetDirectoryMetadataRequest struct {
 type GetDirectoryMetadataResponse struct {
 }
 
-// Get file metadata
 type GetMetadataRequest struct {
 	// The absolute path of the file.
 	FilePath string `json:"-" url:"-"`
@@ -212,21 +206,18 @@ func (s GetMetadataResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the information of a file or directory
 type GetStatusRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
 	Path string `json:"-" url:"path"`
 }
 
-// List directory contents or file details
 type ListDbfsRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
 	Path string `json:"-" url:"path"`
 }
 
-// List directory contents
 type ListDirectoryContentsRequest struct {
 	// The absolute path of a directory.
 	DirectoryPath string `json:"-" url:"-"`
@@ -327,7 +318,6 @@ func (s Put) MarshalJSON() ([]byte, error) {
 type PutResponse struct {
 }
 
-// Get the contents of a file
 type ReadDbfsRequest struct {
 	// The number of bytes to read starting from the offset. This has a limit of
 	// 1 MB, and a default value of 0.5 MB.
@@ -367,7 +357,6 @@ func (s ReadResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Upload a file
 type UploadRequest struct {
 	Contents io.ReadCloser `json:"-"`
 	// The absolute path of the file.

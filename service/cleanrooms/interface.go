@@ -45,7 +45,7 @@ type CleanRoomTaskRunsService interface {
 
 // A clean room uses Delta Sharing and serverless compute to provide a secure
 // and privacy-protecting environment where multiple parties can work together
-// on sensitive enterprise data without direct access to each other’s data.
+// on sensitive enterprise data without direct access to each other's data.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CleanRoomsService interface {
