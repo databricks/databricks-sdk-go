@@ -163,8 +163,8 @@ type CreateFederationPolicyRequest struct {
 	RecipientName string `json:"-" tf:"-"`
 }
 
-func (st *CreateFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createFederationPolicyRequestToPb(st)
+func (st CreateFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createFederationPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -223,8 +223,8 @@ type CreateProvider struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateProvider) EncodeValues(key string, v *url.Values) error {
-	pb, err := createProviderToPb(st)
+func (st CreateProvider) EncodeValues(key string, v *url.Values) error {
+	pb, err := createProviderToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -304,8 +304,8 @@ type CreateRecipient struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateRecipient) EncodeValues(key string, v *url.Values) error {
-	pb, err := createRecipientToPb(st)
+func (st CreateRecipient) EncodeValues(key string, v *url.Values) error {
+	pb, err := createRecipientToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -360,8 +360,8 @@ type CreateShare struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateShare) EncodeValues(key string, v *url.Values) error {
-	pb, err := createShareToPb(st)
+func (st CreateShare) EncodeValues(key string, v *url.Values) error {
+	pb, err := createShareToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -410,8 +410,8 @@ type DeleteFederationPolicyRequest struct {
 	RecipientName string `json:"-" tf:"-"`
 }
 
-func (st *DeleteFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteFederationPolicyRequestToPb(st)
+func (st DeleteFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteFederationPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -457,8 +457,8 @@ type DeleteProviderRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *DeleteProviderRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteProviderRequestToPb(st)
+func (st DeleteProviderRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteProviderRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -504,8 +504,8 @@ type DeleteRecipientRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *DeleteRecipientRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteRecipientRequestToPb(st)
+func (st DeleteRecipientRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteRecipientRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -551,8 +551,8 @@ type DeleteShareRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *DeleteShareRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteShareRequestToPb(st)
+func (st DeleteShareRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteShareRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -603,8 +603,8 @@ type DeltaSharingDependency struct {
 	Table *DeltaSharingTableDependency `json:"table,omitempty"`
 }
 
-func (st *DeltaSharingDependency) EncodeValues(key string, v *url.Values) error {
-	pb, err := deltaSharingDependencyToPb(st)
+func (st DeltaSharingDependency) EncodeValues(key string, v *url.Values) error {
+	pb, err := deltaSharingDependencyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -652,8 +652,8 @@ type DeltaSharingDependencyList struct {
 	Dependencies []DeltaSharingDependency `json:"dependencies,omitempty"`
 }
 
-func (st *DeltaSharingDependencyList) EncodeValues(key string, v *url.Values) error {
-	pb, err := deltaSharingDependencyListToPb(st)
+func (st DeltaSharingDependencyList) EncodeValues(key string, v *url.Values) error {
+	pb, err := deltaSharingDependencyListToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -747,8 +747,8 @@ type DeltaSharingFunction struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeltaSharingFunction) EncodeValues(key string, v *url.Values) error {
-	pb, err := deltaSharingFunctionToPb(st)
+func (st DeltaSharingFunction) EncodeValues(key string, v *url.Values) error {
+	pb, err := deltaSharingFunctionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -801,8 +801,8 @@ type DeltaSharingFunctionDependency struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeltaSharingFunctionDependency) EncodeValues(key string, v *url.Values) error {
-	pb, err := deltaSharingFunctionDependencyToPb(st)
+func (st DeltaSharingFunctionDependency) EncodeValues(key string, v *url.Values) error {
+	pb, err := deltaSharingFunctionDependencyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -855,8 +855,8 @@ type DeltaSharingTableDependency struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeltaSharingTableDependency) EncodeValues(key string, v *url.Values) error {
-	pb, err := deltaSharingTableDependencyToPb(st)
+func (st DeltaSharingTableDependency) EncodeValues(key string, v *url.Values) error {
+	pb, err := deltaSharingTableDependencyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -923,8 +923,8 @@ type FederationPolicy struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *FederationPolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := federationPolicyToPb(st)
+func (st FederationPolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := federationPolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1008,8 +1008,8 @@ type FunctionParameterInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *FunctionParameterInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := functionParameterInfoToPb(st)
+func (st FunctionParameterInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := functionParameterInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1056,8 +1056,8 @@ type FunctionParameterInfos struct {
 	Parameters []FunctionParameterInfo `json:"parameters,omitempty"`
 }
 
-func (st *FunctionParameterInfos) EncodeValues(key string, v *url.Values) error {
-	pb, err := functionParameterInfosToPb(st)
+func (st FunctionParameterInfos) EncodeValues(key string, v *url.Values) error {
+	pb, err := functionParameterInfosToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1180,8 +1180,8 @@ type GetActivationUrlInfoRequest struct {
 	ActivationUrl string `json:"-" tf:"-"`
 }
 
-func (st *GetActivationUrlInfoRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getActivationUrlInfoRequestToPb(st)
+func (st GetActivationUrlInfoRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getActivationUrlInfoRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1230,8 +1230,8 @@ type GetFederationPolicyRequest struct {
 	RecipientName string `json:"-" tf:"-"`
 }
 
-func (st *GetFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getFederationPolicyRequestToPb(st)
+func (st GetFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getFederationPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1277,8 +1277,8 @@ type GetProviderRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *GetProviderRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getProviderRequestToPb(st)
+func (st GetProviderRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getProviderRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1324,8 +1324,8 @@ type GetRecipientRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *GetRecipientRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getRecipientRequestToPb(st)
+func (st GetRecipientRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getRecipientRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1379,8 +1379,8 @@ type GetRecipientSharePermissionsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetRecipientSharePermissionsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getRecipientSharePermissionsResponseToPb(st)
+func (st GetRecipientSharePermissionsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getRecipientSharePermissionsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1434,8 +1434,8 @@ type GetSharePermissionsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetSharePermissionsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getSharePermissionsResponseToPb(st)
+func (st GetSharePermissionsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getSharePermissionsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1485,8 +1485,8 @@ type GetShareRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetShareRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getShareRequestToPb(st)
+func (st GetShareRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getShareRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1533,8 +1533,8 @@ type IpAccessList struct {
 	AllowedIpAddresses []string `json:"allowed_ip_addresses,omitempty"`
 }
 
-func (st *IpAccessList) EncodeValues(key string, v *url.Values) error {
-	pb, err := ipAccessListToPb(st)
+func (st IpAccessList) EncodeValues(key string, v *url.Values) error {
+	pb, err := ipAccessListToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1586,8 +1586,8 @@ type ListFederationPoliciesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListFederationPoliciesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listFederationPoliciesRequestToPb(st)
+func (st ListFederationPoliciesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listFederationPoliciesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1639,8 +1639,8 @@ type ListFederationPoliciesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListFederationPoliciesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listFederationPoliciesResponseToPb(st)
+func (st ListFederationPoliciesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listFederationPoliciesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1698,8 +1698,8 @@ type ListProviderShareAssetsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListProviderShareAssetsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listProviderShareAssetsRequestToPb(st)
+func (st ListProviderShareAssetsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listProviderShareAssetsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1757,8 +1757,8 @@ type ListProviderShareAssetsResponse struct {
 	Volumes []Volume `json:"volumes,omitempty"`
 }
 
-func (st *ListProviderShareAssetsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listProviderShareAssetsResponseToPb(st)
+func (st ListProviderShareAssetsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listProviderShareAssetsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1812,8 +1812,8 @@ type ListProviderSharesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListProviderSharesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listProviderSharesResponseToPb(st)
+func (st ListProviderSharesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listProviderSharesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1874,8 +1874,8 @@ type ListProvidersRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListProvidersRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listProvidersRequestToPb(st)
+func (st ListProvidersRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listProvidersRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1929,8 +1929,8 @@ type ListProvidersResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListProvidersResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listProvidersResponseToPb(st)
+func (st ListProvidersResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listProvidersResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1991,8 +1991,8 @@ type ListRecipientsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListRecipientsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listRecipientsRequestToPb(st)
+func (st ListRecipientsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listRecipientsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2046,8 +2046,8 @@ type ListRecipientsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListRecipientsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listRecipientsResponseToPb(st)
+func (st ListRecipientsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listRecipientsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2107,8 +2107,8 @@ type ListSharesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListSharesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listSharesRequestToPb(st)
+func (st ListSharesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listSharesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2162,8 +2162,8 @@ type ListSharesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListSharesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listSharesResponseToPb(st)
+func (st ListSharesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listSharesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2227,8 +2227,8 @@ type NotebookFile struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NotebookFile) EncodeValues(key string, v *url.Values) error {
-	pb, err := notebookFileToPb(st)
+func (st NotebookFile) EncodeValues(key string, v *url.Values) error {
+	pb, err := notebookFileToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2307,8 +2307,8 @@ type OidcFederationPolicy struct {
 	SubjectClaim string `json:"subject_claim"`
 }
 
-func (st *OidcFederationPolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := oidcFederationPolicyToPb(st)
+func (st OidcFederationPolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := oidcFederationPolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2355,8 +2355,8 @@ type Partition struct {
 	Values []PartitionValue `json:"values,omitempty"`
 }
 
-func (st *Partition) EncodeValues(key string, v *url.Values) error {
-	pb, err := partitionToPb(st)
+func (st Partition) EncodeValues(key string, v *url.Values) error {
+	pb, err := partitionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2418,8 +2418,8 @@ type PartitionValue struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PartitionValue) EncodeValues(key string, v *url.Values) error {
-	pb, err := partitionValueToPb(st)
+func (st PartitionValue) EncodeValues(key string, v *url.Values) error {
+	pb, err := partitionValueToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2511,8 +2511,8 @@ type PermissionsChange struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PermissionsChange) EncodeValues(key string, v *url.Values) error {
-	pb, err := permissionsChangeToPb(st)
+func (st PermissionsChange) EncodeValues(key string, v *url.Values) error {
+	pb, err := permissionsChangeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2731,8 +2731,8 @@ type PrivilegeAssignment struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PrivilegeAssignment) EncodeValues(key string, v *url.Values) error {
-	pb, err := privilegeAssignmentToPb(st)
+func (st PrivilegeAssignment) EncodeValues(key string, v *url.Values) error {
+	pb, err := privilegeAssignmentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2827,8 +2827,8 @@ type ProviderInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ProviderInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := providerInfoToPb(st)
+func (st ProviderInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := providerInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2877,8 +2877,8 @@ type ProviderShare struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ProviderShare) EncodeValues(key string, v *url.Values) error {
-	pb, err := providerShareToPb(st)
+func (st ProviderShare) EncodeValues(key string, v *url.Values) error {
+	pb, err := providerShareToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2993,8 +2993,8 @@ type RecipientInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RecipientInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := recipientInfoToPb(st)
+func (st RecipientInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := recipientInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3049,8 +3049,8 @@ type RecipientProfile struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RecipientProfile) EncodeValues(key string, v *url.Values) error {
-	pb, err := recipientProfileToPb(st)
+func (st RecipientProfile) EncodeValues(key string, v *url.Values) error {
+	pb, err := recipientProfileToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3118,8 +3118,8 @@ type RecipientTokenInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RecipientTokenInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := recipientTokenInfoToPb(st)
+func (st RecipientTokenInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := recipientTokenInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3171,8 +3171,8 @@ type RegisteredModelAlias struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RegisteredModelAlias) EncodeValues(key string, v *url.Values) error {
-	pb, err := registeredModelAliasToPb(st)
+func (st RegisteredModelAlias) EncodeValues(key string, v *url.Values) error {
+	pb, err := registeredModelAliasToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3218,8 +3218,8 @@ type RetrieveTokenRequest struct {
 	ActivationUrl string `json:"-" tf:"-"`
 }
 
-func (st *RetrieveTokenRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := retrieveTokenRequestToPb(st)
+func (st RetrieveTokenRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := retrieveTokenRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3277,8 +3277,8 @@ type RetrieveTokenResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RetrieveTokenResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := retrieveTokenResponseToPb(st)
+func (st RetrieveTokenResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := retrieveTokenResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3330,8 +3330,8 @@ type RotateRecipientToken struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *RotateRecipientToken) EncodeValues(key string, v *url.Values) error {
-	pb, err := rotateRecipientTokenToPb(st)
+func (st RotateRecipientToken) EncodeValues(key string, v *url.Values) error {
+	pb, err := rotateRecipientTokenToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3380,8 +3380,8 @@ type SecurablePropertiesKvPairs struct {
 	Properties map[string]string `json:"properties"`
 }
 
-func (st *SecurablePropertiesKvPairs) EncodeValues(key string, v *url.Values) error {
-	pb, err := securablePropertiesKvPairsToPb(st)
+func (st SecurablePropertiesKvPairs) EncodeValues(key string, v *url.Values) error {
+	pb, err := securablePropertiesKvPairsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3457,8 +3457,8 @@ type ShareInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ShareInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := shareInfoToPb(st)
+func (st ShareInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := shareInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3518,8 +3518,8 @@ type SharePermissionsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SharePermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := sharePermissionsRequestToPb(st)
+func (st SharePermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := sharePermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3571,8 +3571,8 @@ type ShareToPrivilegeAssignment struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ShareToPrivilegeAssignment) EncodeValues(key string, v *url.Values) error {
-	pb, err := shareToPrivilegeAssignmentToPb(st)
+func (st ShareToPrivilegeAssignment) EncodeValues(key string, v *url.Values) error {
+	pb, err := shareToPrivilegeAssignmentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3676,8 +3676,8 @@ type SharedDataObject struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SharedDataObject) EncodeValues(key string, v *url.Values) error {
-	pb, err := sharedDataObjectToPb(st)
+func (st SharedDataObject) EncodeValues(key string, v *url.Values) error {
+	pb, err := sharedDataObjectToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3859,8 +3859,8 @@ type SharedDataObjectUpdate struct {
 	DataObject *SharedDataObject `json:"data_object,omitempty"`
 }
 
-func (st *SharedDataObjectUpdate) EncodeValues(key string, v *url.Values) error {
-	pb, err := sharedDataObjectUpdateToPb(st)
+func (st SharedDataObjectUpdate) EncodeValues(key string, v *url.Values) error {
+	pb, err := sharedDataObjectUpdateToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4018,8 +4018,8 @@ type Table struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Table) EncodeValues(key string, v *url.Values) error {
-	pb, err := tableToPb(st)
+func (st Table) EncodeValues(key string, v *url.Values) error {
+	pb, err := tableToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4087,8 +4087,8 @@ type TableInternalAttributes struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TableInternalAttributes) EncodeValues(key string, v *url.Values) error {
-	pb, err := tableInternalAttributesToPb(st)
+func (st TableInternalAttributes) EncodeValues(key string, v *url.Values) error {
+	pb, err := tableInternalAttributesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4201,8 +4201,8 @@ type UpdateFederationPolicyRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateFederationPolicyRequestToPb(st)
+func (st UpdateFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateFederationPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4263,8 +4263,8 @@ type UpdateProvider struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateProvider) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateProviderToPb(st)
+func (st UpdateProvider) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateProviderToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4333,8 +4333,8 @@ type UpdateRecipient struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateRecipient) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateRecipientToPb(st)
+func (st UpdateRecipient) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateRecipientToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4397,8 +4397,8 @@ type UpdateShare struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateShare) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateShareToPb(st)
+func (st UpdateShare) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateShareToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4453,8 +4453,8 @@ type UpdateSharePermissions struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateSharePermissions) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateSharePermissionsToPb(st)
+func (st UpdateSharePermissions) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateSharePermissionsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4501,8 +4501,8 @@ type UpdateSharePermissionsResponse struct {
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
 }
 
-func (st *UpdateSharePermissionsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateSharePermissionsResponseToPb(st)
+func (st UpdateSharePermissionsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateSharePermissionsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4575,8 +4575,8 @@ type Volume struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Volume) EncodeValues(key string, v *url.Values) error {
-	pb, err := volumeToPb(st)
+func (st Volume) EncodeValues(key string, v *url.Values) error {
+	pb, err := volumeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4630,8 +4630,8 @@ type VolumeInternalAttributes struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *VolumeInternalAttributes) EncodeValues(key string, v *url.Values) error {
-	pb, err := volumeInternalAttributesToPb(st)
+func (st VolumeInternalAttributes) EncodeValues(key string, v *url.Values) error {
+	pb, err := volumeInternalAttributesToPb(&st)
 	if err != nil {
 		return err
 	}

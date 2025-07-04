@@ -21,8 +21,8 @@ type AddBlock struct {
 	Handle int64 `json:"handle"`
 }
 
-func (st *AddBlock) EncodeValues(key string, v *url.Values) error {
-	pb, err := addBlockToPb(st)
+func (st AddBlock) EncodeValues(key string, v *url.Values) error {
+	pb, err := addBlockToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -69,8 +69,8 @@ type Close struct {
 	Handle int64 `json:"handle"`
 }
 
-func (st *Close) EncodeValues(key string, v *url.Values) error {
-	pb, err := closeToPb(st)
+func (st Close) EncodeValues(key string, v *url.Values) error {
+	pb, err := closeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -122,8 +122,8 @@ type Create struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Create) EncodeValues(key string, v *url.Values) error {
-	pb, err := createToPb(st)
+func (st Create) EncodeValues(key string, v *url.Values) error {
+	pb, err := createToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -169,8 +169,8 @@ type CreateDirectoryRequest struct {
 	DirectoryPath string `json:"-" tf:"-"`
 }
 
-func (st *CreateDirectoryRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createDirectoryRequestToPb(st)
+func (st CreateDirectoryRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createDirectoryRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -220,8 +220,8 @@ type CreateResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createResponseToPb(st)
+func (st CreateResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -275,8 +275,8 @@ type Delete struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Delete) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteToPb(st)
+func (st Delete) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -322,8 +322,8 @@ type DeleteDirectoryRequest struct {
 	DirectoryPath string `json:"-" tf:"-"`
 }
 
-func (st *DeleteDirectoryRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDirectoryRequestToPb(st)
+func (st DeleteDirectoryRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDirectoryRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -369,8 +369,8 @@ type DeleteFileRequest struct {
 	FilePath string `json:"-" tf:"-"`
 }
 
-func (st *DeleteFileRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteFileRequestToPb(st)
+func (st DeleteFileRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteFileRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -432,8 +432,8 @@ type DirectoryEntry struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DirectoryEntry) EncodeValues(key string, v *url.Values) error {
-	pb, err := directoryEntryToPb(st)
+func (st DirectoryEntry) EncodeValues(key string, v *url.Values) error {
+	pb, err := directoryEntryToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -479,8 +479,8 @@ type DownloadRequest struct {
 	FilePath string `json:"-" tf:"-"`
 }
 
-func (st *DownloadRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := downloadRequestToPb(st)
+func (st DownloadRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := downloadRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -534,8 +534,8 @@ type DownloadResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DownloadResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := downloadResponseToPb(st)
+func (st DownloadResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := downloadResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -593,8 +593,8 @@ type FileInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *FileInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := fileInfoToPb(st)
+func (st FileInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := fileInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -640,8 +640,8 @@ type GetDirectoryMetadataRequest struct {
 	DirectoryPath string `json:"-" tf:"-"`
 }
 
-func (st *GetDirectoryMetadataRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getDirectoryMetadataRequestToPb(st)
+func (st GetDirectoryMetadataRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getDirectoryMetadataRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -687,8 +687,8 @@ type GetMetadataRequest struct {
 	FilePath string `json:"-" tf:"-"`
 }
 
-func (st *GetMetadataRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getMetadataRequestToPb(st)
+func (st GetMetadataRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getMetadataRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -740,8 +740,8 @@ type GetMetadataResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetMetadataResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getMetadataResponseToPb(st)
+func (st GetMetadataResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getMetadataResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -788,8 +788,8 @@ type GetStatusRequest struct {
 	Path string `json:"-" tf:"-"`
 }
 
-func (st *GetStatusRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getStatusRequestToPb(st)
+func (st GetStatusRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getStatusRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -836,8 +836,8 @@ type ListDbfsRequest struct {
 	Path string `json:"-" tf:"-"`
 }
 
-func (st *ListDbfsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listDbfsRequestToPb(st)
+func (st ListDbfsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listDbfsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -905,8 +905,8 @@ type ListDirectoryContentsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListDirectoryContentsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listDirectoryContentsRequestToPb(st)
+func (st ListDirectoryContentsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listDirectoryContentsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -958,8 +958,8 @@ type ListDirectoryResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListDirectoryResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listDirectoryResponseToPb(st)
+func (st ListDirectoryResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listDirectoryResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1007,8 +1007,8 @@ type ListStatusResponse struct {
 	Files []FileInfo `json:"files,omitempty"`
 }
 
-func (st *ListStatusResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listStatusResponseToPb(st)
+func (st ListStatusResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listStatusResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1055,8 +1055,8 @@ type MkDirs struct {
 	Path string `json:"path"`
 }
 
-func (st *MkDirs) EncodeValues(key string, v *url.Values) error {
-	pb, err := mkDirsToPb(st)
+func (st MkDirs) EncodeValues(key string, v *url.Values) error {
+	pb, err := mkDirsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1108,8 +1108,8 @@ type Move struct {
 	SourcePath string `json:"source_path"`
 }
 
-func (st *Move) EncodeValues(key string, v *url.Values) error {
-	pb, err := moveToPb(st)
+func (st Move) EncodeValues(key string, v *url.Values) error {
+	pb, err := moveToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1164,8 +1164,8 @@ type Put struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Put) EncodeValues(key string, v *url.Values) error {
-	pb, err := putToPb(st)
+func (st Put) EncodeValues(key string, v *url.Values) error {
+	pb, err := putToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1218,8 +1218,8 @@ type ReadDbfsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ReadDbfsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := readDbfsRequestToPb(st)
+func (st ReadDbfsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := readDbfsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1273,8 +1273,8 @@ type ReadResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ReadResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := readResponseToPb(st)
+func (st ReadResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := readResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1326,8 +1326,8 @@ type UploadRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UploadRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := uploadRequestToPb(st)
+func (st UploadRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := uploadRequestToPb(&st)
 	if err != nil {
 		return err
 	}

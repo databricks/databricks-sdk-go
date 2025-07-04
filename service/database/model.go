@@ -16,8 +16,8 @@ type CreateDatabaseCatalogRequest struct {
 	Catalog DatabaseCatalog `json:"catalog"`
 }
 
-func (st *CreateDatabaseCatalogRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createDatabaseCatalogRequestToPb(st)
+func (st CreateDatabaseCatalogRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createDatabaseCatalogRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -64,8 +64,8 @@ type CreateDatabaseInstanceRequest struct {
 	DatabaseInstance DatabaseInstance `json:"database_instance"`
 }
 
-func (st *CreateDatabaseInstanceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createDatabaseInstanceRequestToPb(st)
+func (st CreateDatabaseInstanceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createDatabaseInstanceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -114,8 +114,8 @@ type CreateDatabaseInstanceRoleRequest struct {
 	InstanceName string `json:"-" tf:"-"`
 }
 
-func (st *CreateDatabaseInstanceRoleRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createDatabaseInstanceRoleRequestToPb(st)
+func (st CreateDatabaseInstanceRoleRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createDatabaseInstanceRoleRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -162,8 +162,8 @@ type CreateDatabaseTableRequest struct {
 	Table DatabaseTable `json:"table"`
 }
 
-func (st *CreateDatabaseTableRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createDatabaseTableRequestToPb(st)
+func (st CreateDatabaseTableRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createDatabaseTableRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -210,8 +210,8 @@ type CreateSyncedDatabaseTableRequest struct {
 	SyncedTable SyncedDatabaseTable `json:"synced_table"`
 }
 
-func (st *CreateSyncedDatabaseTableRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createSyncedDatabaseTableRequestToPb(st)
+func (st CreateSyncedDatabaseTableRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createSyncedDatabaseTableRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -272,8 +272,8 @@ type DatabaseCatalog struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DatabaseCatalog) EncodeValues(key string, v *url.Values) error {
-	pb, err := databaseCatalogToPb(st)
+func (st DatabaseCatalog) EncodeValues(key string, v *url.Values) error {
+	pb, err := databaseCatalogToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -325,8 +325,8 @@ type DatabaseCredential struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DatabaseCredential) EncodeValues(key string, v *url.Values) error {
-	pb, err := databaseCredentialToPb(st)
+func (st DatabaseCredential) EncodeValues(key string, v *url.Values) error {
+	pb, err := databaseCredentialToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -458,8 +458,8 @@ type DatabaseInstance struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DatabaseInstance) EncodeValues(key string, v *url.Values) error {
-	pb, err := databaseInstanceToPb(st)
+func (st DatabaseInstance) EncodeValues(key string, v *url.Values) error {
+	pb, err := databaseInstanceToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -542,8 +542,8 @@ type DatabaseInstanceRef struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DatabaseInstanceRef) EncodeValues(key string, v *url.Values) error {
-	pb, err := databaseInstanceRefToPb(st)
+func (st DatabaseInstanceRef) EncodeValues(key string, v *url.Values) error {
+	pb, err := databaseInstanceRefToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -603,8 +603,8 @@ type DatabaseInstanceRole struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DatabaseInstanceRole) EncodeValues(key string, v *url.Values) error {
-	pb, err := databaseInstanceRoleToPb(st)
+func (st DatabaseInstanceRole) EncodeValues(key string, v *url.Values) error {
+	pb, err := databaseInstanceRoleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -666,8 +666,8 @@ type DatabaseInstanceRoleAttributes struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DatabaseInstanceRoleAttributes) EncodeValues(key string, v *url.Values) error {
-	pb, err := databaseInstanceRoleAttributesToPb(st)
+func (st DatabaseInstanceRoleAttributes) EncodeValues(key string, v *url.Values) error {
+	pb, err := databaseInstanceRoleAttributesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -865,8 +865,8 @@ type DatabaseTable struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DatabaseTable) EncodeValues(key string, v *url.Values) error {
-	pb, err := databaseTableToPb(st)
+func (st DatabaseTable) EncodeValues(key string, v *url.Values) error {
+	pb, err := databaseTableToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -911,8 +911,8 @@ type DeleteDatabaseCatalogRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *DeleteDatabaseCatalogRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDatabaseCatalogRequestToPb(st)
+func (st DeleteDatabaseCatalogRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDatabaseCatalogRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -956,8 +956,8 @@ func (st DeleteDatabaseCatalogRequest) MarshalJSON() ([]byte, error) {
 type DeleteDatabaseCatalogResponse struct {
 }
 
-func (st *DeleteDatabaseCatalogResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDatabaseCatalogResponseToPb(st)
+func (st DeleteDatabaseCatalogResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDatabaseCatalogResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1018,8 +1018,8 @@ type DeleteDatabaseInstanceRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteDatabaseInstanceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDatabaseInstanceRequestToPb(st)
+func (st DeleteDatabaseInstanceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDatabaseInstanceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1063,8 +1063,8 @@ func (st DeleteDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
 type DeleteDatabaseInstanceResponse struct {
 }
 
-func (st *DeleteDatabaseInstanceResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDatabaseInstanceResponseToPb(st)
+func (st DeleteDatabaseInstanceResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDatabaseInstanceResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1119,8 +1119,8 @@ type DeleteDatabaseInstanceRoleRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteDatabaseInstanceRoleRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDatabaseInstanceRoleRequestToPb(st)
+func (st DeleteDatabaseInstanceRoleRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDatabaseInstanceRoleRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1164,8 +1164,8 @@ func (st DeleteDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
 type DeleteDatabaseInstanceRoleResponse struct {
 }
 
-func (st *DeleteDatabaseInstanceRoleResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDatabaseInstanceRoleResponseToPb(st)
+func (st DeleteDatabaseInstanceRoleResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDatabaseInstanceRoleResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1210,8 +1210,8 @@ type DeleteDatabaseTableRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *DeleteDatabaseTableRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDatabaseTableRequestToPb(st)
+func (st DeleteDatabaseTableRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDatabaseTableRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1255,8 +1255,8 @@ func (st DeleteDatabaseTableRequest) MarshalJSON() ([]byte, error) {
 type DeleteDatabaseTableResponse struct {
 }
 
-func (st *DeleteDatabaseTableResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDatabaseTableResponseToPb(st)
+func (st DeleteDatabaseTableResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDatabaseTableResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1301,8 +1301,8 @@ type DeleteSyncedDatabaseTableRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *DeleteSyncedDatabaseTableRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteSyncedDatabaseTableRequestToPb(st)
+func (st DeleteSyncedDatabaseTableRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteSyncedDatabaseTableRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1346,8 +1346,8 @@ func (st DeleteSyncedDatabaseTableRequest) MarshalJSON() ([]byte, error) {
 type DeleteSyncedDatabaseTableResponse struct {
 }
 
-func (st *DeleteSyncedDatabaseTableResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteSyncedDatabaseTableResponseToPb(st)
+func (st DeleteSyncedDatabaseTableResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteSyncedDatabaseTableResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1401,8 +1401,8 @@ type DeltaTableSyncInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeltaTableSyncInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := deltaTableSyncInfoToPb(st)
+func (st DeltaTableSyncInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := deltaTableSyncInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1450,8 +1450,8 @@ type FindDatabaseInstanceByUidRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *FindDatabaseInstanceByUidRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := findDatabaseInstanceByUidRequestToPb(st)
+func (st FindDatabaseInstanceByUidRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := findDatabaseInstanceByUidRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1509,8 +1509,8 @@ type GenerateDatabaseCredentialRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GenerateDatabaseCredentialRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := generateDatabaseCredentialRequestToPb(st)
+func (st GenerateDatabaseCredentialRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := generateDatabaseCredentialRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1555,8 +1555,8 @@ type GetDatabaseCatalogRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *GetDatabaseCatalogRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getDatabaseCatalogRequestToPb(st)
+func (st GetDatabaseCatalogRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getDatabaseCatalogRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1602,8 +1602,8 @@ type GetDatabaseInstanceRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *GetDatabaseInstanceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getDatabaseInstanceRequestToPb(st)
+func (st GetDatabaseInstanceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getDatabaseInstanceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1650,8 +1650,8 @@ type GetDatabaseInstanceRoleRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *GetDatabaseInstanceRoleRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getDatabaseInstanceRoleRequestToPb(st)
+func (st GetDatabaseInstanceRoleRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getDatabaseInstanceRoleRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1696,8 +1696,8 @@ type GetDatabaseTableRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *GetDatabaseTableRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getDatabaseTableRequestToPb(st)
+func (st GetDatabaseTableRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getDatabaseTableRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1742,8 +1742,8 @@ type GetSyncedDatabaseTableRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *GetSyncedDatabaseTableRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getSyncedDatabaseTableRequestToPb(st)
+func (st GetSyncedDatabaseTableRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getSyncedDatabaseTableRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1795,8 +1795,8 @@ type ListDatabaseInstanceRolesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListDatabaseInstanceRolesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listDatabaseInstanceRolesRequestToPb(st)
+func (st ListDatabaseInstanceRolesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listDatabaseInstanceRolesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1848,8 +1848,8 @@ type ListDatabaseInstanceRolesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListDatabaseInstanceRolesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listDatabaseInstanceRolesResponseToPb(st)
+func (st ListDatabaseInstanceRolesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listDatabaseInstanceRolesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1900,8 +1900,8 @@ type ListDatabaseInstancesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListDatabaseInstancesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listDatabaseInstancesRequestToPb(st)
+func (st ListDatabaseInstancesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listDatabaseInstancesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1953,8 +1953,8 @@ type ListDatabaseInstancesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListDatabaseInstancesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listDatabaseInstancesResponseToPb(st)
+func (st ListDatabaseInstancesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listDatabaseInstancesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2013,8 +2013,8 @@ type NewPipelineSpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NewPipelineSpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := newPipelineSpecToPb(st)
+func (st NewPipelineSpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := newPipelineSpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2113,8 +2113,8 @@ type RequestedClaims struct {
 	Resources []RequestedResource `json:"resources,omitempty"`
 }
 
-func (st *RequestedClaims) EncodeValues(key string, v *url.Values) error {
-	pb, err := requestedClaimsToPb(st)
+func (st RequestedClaims) EncodeValues(key string, v *url.Values) error {
+	pb, err := requestedClaimsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2201,8 +2201,8 @@ type RequestedResource struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RequestedResource) EncodeValues(key string, v *url.Values) error {
-	pb, err := requestedResourceToPb(st)
+func (st RequestedResource) EncodeValues(key string, v *url.Values) error {
+	pb, err := requestedResourceToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2286,8 +2286,8 @@ type SyncedDatabaseTable struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SyncedDatabaseTable) EncodeValues(key string, v *url.Values) error {
-	pb, err := syncedDatabaseTableToPb(st)
+func (st SyncedDatabaseTable) EncodeValues(key string, v *url.Values) error {
+	pb, err := syncedDatabaseTableToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2347,8 +2347,8 @@ type SyncedTableContinuousUpdateStatus struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SyncedTableContinuousUpdateStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := syncedTableContinuousUpdateStatusToPb(st)
+func (st SyncedTableContinuousUpdateStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := syncedTableContinuousUpdateStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2407,8 +2407,8 @@ type SyncedTableFailedStatus struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SyncedTableFailedStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := syncedTableFailedStatusToPb(st)
+func (st SyncedTableFailedStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := syncedTableFailedStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2472,8 +2472,8 @@ type SyncedTablePipelineProgress struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SyncedTablePipelineProgress) EncodeValues(key string, v *url.Values) error {
-	pb, err := syncedTablePipelineProgressToPb(st)
+func (st SyncedTablePipelineProgress) EncodeValues(key string, v *url.Values) error {
+	pb, err := syncedTablePipelineProgressToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2532,8 +2532,8 @@ type SyncedTablePosition struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SyncedTablePosition) EncodeValues(key string, v *url.Values) error {
-	pb, err := syncedTablePositionToPb(st)
+func (st SyncedTablePosition) EncodeValues(key string, v *url.Values) error {
+	pb, err := syncedTablePositionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2583,8 +2583,8 @@ type SyncedTableProvisioningStatus struct {
 	InitialPipelineSyncProgress *SyncedTablePipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
 }
 
-func (st *SyncedTableProvisioningStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := syncedTableProvisioningStatusToPb(st)
+func (st SyncedTableProvisioningStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := syncedTableProvisioningStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2700,8 +2700,8 @@ type SyncedTableSpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SyncedTableSpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := syncedTableSpecToPb(st)
+func (st SyncedTableSpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := syncedTableSpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2851,8 +2851,8 @@ type SyncedTableStatus struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SyncedTableStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := syncedTableStatusToPb(st)
+func (st SyncedTableStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := syncedTableStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2912,8 +2912,8 @@ type SyncedTableTriggeredUpdateStatus struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SyncedTableTriggeredUpdateStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := syncedTableTriggeredUpdateStatusToPb(st)
+func (st SyncedTableTriggeredUpdateStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := syncedTableTriggeredUpdateStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2964,8 +2964,8 @@ type UpdateDatabaseInstanceRequest struct {
 	UpdateMask string `json:"-" tf:"-"`
 }
 
-func (st *UpdateDatabaseInstanceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateDatabaseInstanceRequestToPb(st)
+func (st UpdateDatabaseInstanceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateDatabaseInstanceRequestToPb(&st)
 	if err != nil {
 		return err
 	}

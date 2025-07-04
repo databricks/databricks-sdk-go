@@ -89,8 +89,8 @@ type App struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *App) EncodeValues(key string, v *url.Values) error {
-	pb, err := appToPb(st)
+func (st App) EncodeValues(key string, v *url.Values) error {
+	pb, err := appToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -148,8 +148,8 @@ type AppAccessControlRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AppAccessControlRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := appAccessControlRequestToPb(st)
+func (st AppAccessControlRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := appAccessControlRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -210,8 +210,8 @@ type AppAccessControlResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AppAccessControlResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := appAccessControlResponseToPb(st)
+func (st AppAccessControlResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := appAccessControlResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -287,8 +287,8 @@ type AppDeployment struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AppDeployment) EncodeValues(key string, v *url.Values) error {
-	pb, err := appDeploymentToPb(st)
+func (st AppDeployment) EncodeValues(key string, v *url.Values) error {
+	pb, err := appDeploymentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -338,8 +338,8 @@ type AppDeploymentArtifacts struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AppDeploymentArtifacts) EncodeValues(key string, v *url.Values) error {
-	pb, err := appDeploymentArtifactsToPb(st)
+func (st AppDeploymentArtifacts) EncodeValues(key string, v *url.Values) error {
+	pb, err := appDeploymentArtifactsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -471,8 +471,8 @@ type AppDeploymentStatus struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AppDeploymentStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := appDeploymentStatusToPb(st)
+func (st AppDeploymentStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := appDeploymentStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -527,8 +527,8 @@ type AppPermission struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AppPermission) EncodeValues(key string, v *url.Values) error {
-	pb, err := appPermissionToPb(st)
+func (st AppPermission) EncodeValues(key string, v *url.Values) error {
+	pb, err := appPermissionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -621,8 +621,8 @@ type AppPermissions struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AppPermissions) EncodeValues(key string, v *url.Values) error {
-	pb, err := appPermissionsToPb(st)
+func (st AppPermissions) EncodeValues(key string, v *url.Values) error {
+	pb, err := appPermissionsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -674,8 +674,8 @@ type AppPermissionsDescription struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AppPermissionsDescription) EncodeValues(key string, v *url.Values) error {
-	pb, err := appPermissionsDescriptionToPb(st)
+func (st AppPermissionsDescription) EncodeValues(key string, v *url.Values) error {
+	pb, err := appPermissionsDescriptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -724,8 +724,8 @@ type AppPermissionsRequest struct {
 	AppName string `json:"-" tf:"-"`
 }
 
-func (st *AppPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := appPermissionsRequestToPb(st)
+func (st AppPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := appPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -792,8 +792,8 @@ type AppResource struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AppResource) EncodeValues(key string, v *url.Values) error {
-	pb, err := appResourceToPb(st)
+func (st AppResource) EncodeValues(key string, v *url.Values) error {
+	pb, err := appResourceToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -844,8 +844,8 @@ type AppResourceJob struct {
 	Permission AppResourceJobJobPermission `json:"permission"`
 }
 
-func (st *AppResourceJob) EncodeValues(key string, v *url.Values) error {
-	pb, err := appResourceJobToPb(st)
+func (st AppResourceJob) EncodeValues(key string, v *url.Values) error {
+	pb, err := appResourceJobToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -942,8 +942,8 @@ type AppResourceSecret struct {
 	Scope string `json:"scope"`
 }
 
-func (st *AppResourceSecret) EncodeValues(key string, v *url.Values) error {
-	pb, err := appResourceSecretToPb(st)
+func (st AppResourceSecret) EncodeValues(key string, v *url.Values) error {
+	pb, err := appResourceSecretToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1036,8 +1036,8 @@ type AppResourceServingEndpoint struct {
 	Permission AppResourceServingEndpointServingEndpointPermission `json:"permission"`
 }
 
-func (st *AppResourceServingEndpoint) EncodeValues(key string, v *url.Values) error {
-	pb, err := appResourceServingEndpointToPb(st)
+func (st AppResourceServingEndpoint) EncodeValues(key string, v *url.Values) error {
+	pb, err := appResourceServingEndpointToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1128,8 +1128,8 @@ type AppResourceSqlWarehouse struct {
 	Permission AppResourceSqlWarehouseSqlWarehousePermission `json:"permission"`
 }
 
-func (st *AppResourceSqlWarehouse) EncodeValues(key string, v *url.Values) error {
-	pb, err := appResourceSqlWarehouseToPb(st)
+func (st AppResourceSqlWarehouse) EncodeValues(key string, v *url.Values) error {
+	pb, err := appResourceSqlWarehouseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1222,8 +1222,8 @@ type AppResourceUcSecurable struct {
 	SecurableType AppResourceUcSecurableUcSecurableType `json:"securable_type"`
 }
 
-func (st *AppResourceUcSecurable) EncodeValues(key string, v *url.Values) error {
-	pb, err := appResourceUcSecurableToPb(st)
+func (st AppResourceUcSecurable) EncodeValues(key string, v *url.Values) error {
+	pb, err := appResourceUcSecurableToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1389,8 +1389,8 @@ type ApplicationStatus struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ApplicationStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := applicationStatusToPb(st)
+func (st ApplicationStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := applicationStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1494,8 +1494,8 @@ type ComputeStatus struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ComputeStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := computeStatusToPb(st)
+func (st ComputeStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := computeStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1544,8 +1544,8 @@ type CreateAppDeploymentRequest struct {
 	AppName string `json:"-" tf:"-"`
 }
 
-func (st *CreateAppDeploymentRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createAppDeploymentRequestToPb(st)
+func (st CreateAppDeploymentRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createAppDeploymentRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1596,8 +1596,8 @@ type CreateAppRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateAppRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createAppRequestToPb(st)
+func (st CreateAppRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createAppRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1643,8 +1643,8 @@ type DeleteAppRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *DeleteAppRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteAppRequestToPb(st)
+func (st DeleteAppRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteAppRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1692,8 +1692,8 @@ type GetAppDeploymentRequest struct {
 	DeploymentId string `json:"-" tf:"-"`
 }
 
-func (st *GetAppDeploymentRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getAppDeploymentRequestToPb(st)
+func (st GetAppDeploymentRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getAppDeploymentRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1739,8 +1739,8 @@ type GetAppPermissionLevelsRequest struct {
 	AppName string `json:"-" tf:"-"`
 }
 
-func (st *GetAppPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getAppPermissionLevelsRequestToPb(st)
+func (st GetAppPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getAppPermissionLevelsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1787,8 +1787,8 @@ type GetAppPermissionLevelsResponse struct {
 	PermissionLevels []AppPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-func (st *GetAppPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getAppPermissionLevelsResponseToPb(st)
+func (st GetAppPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getAppPermissionLevelsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1834,8 +1834,8 @@ type GetAppPermissionsRequest struct {
 	AppName string `json:"-" tf:"-"`
 }
 
-func (st *GetAppPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getAppPermissionsRequestToPb(st)
+func (st GetAppPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getAppPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1881,8 +1881,8 @@ type GetAppRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *GetAppRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getAppRequestToPb(st)
+func (st GetAppRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getAppRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1935,8 +1935,8 @@ type ListAppDeploymentsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListAppDeploymentsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listAppDeploymentsRequestToPb(st)
+func (st ListAppDeploymentsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listAppDeploymentsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1988,8 +1988,8 @@ type ListAppDeploymentsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListAppDeploymentsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listAppDeploymentsResponseToPb(st)
+func (st ListAppDeploymentsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listAppDeploymentsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2040,8 +2040,8 @@ type ListAppsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListAppsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listAppsRequestToPb(st)
+func (st ListAppsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listAppsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2093,8 +2093,8 @@ type ListAppsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListAppsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listAppsResponseToPb(st)
+func (st ListAppsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listAppsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2140,8 +2140,8 @@ type StartAppRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *StartAppRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := startAppRequestToPb(st)
+func (st StartAppRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := startAppRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2187,8 +2187,8 @@ type StopAppRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *StopAppRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := stopAppRequestToPb(st)
+func (st StopAppRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := stopAppRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2238,8 +2238,8 @@ type UpdateAppRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *UpdateAppRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateAppRequestToPb(st)
+func (st UpdateAppRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateAppRequestToPb(&st)
 	if err != nil {
 		return err
 	}

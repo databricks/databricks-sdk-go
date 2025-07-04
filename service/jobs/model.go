@@ -77,8 +77,8 @@ type AllWellKnown struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AllWellKnown) EncodeValues(key string, v *url.Values) error {
-	pb, err := allWellKnownToPb(st)
+func (st AllWellKnown) EncodeValues(key string, v *url.Values) error {
+	pb, err := allWellKnownToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -193,8 +193,8 @@ type BaseJob struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *BaseJob) EncodeValues(key string, v *url.Values) error {
-	pb, err := baseJobToPb(st)
+func (st BaseJob) EncodeValues(key string, v *url.Values) error {
+	pb, err := baseJobToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -405,8 +405,8 @@ type BaseRun struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *BaseRun) EncodeValues(key string, v *url.Values) error {
-	pb, err := baseRunToPb(st)
+func (st BaseRun) EncodeValues(key string, v *url.Values) error {
+	pb, err := baseRunToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -459,8 +459,8 @@ type CancelAllRuns struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CancelAllRuns) EncodeValues(key string, v *url.Values) error {
-	pb, err := cancelAllRunsToPb(st)
+func (st CancelAllRuns) EncodeValues(key string, v *url.Values) error {
+	pb, err := cancelAllRunsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -507,8 +507,8 @@ type CancelRun struct {
 	RunId int64 `json:"run_id"`
 }
 
-func (st *CancelRun) EncodeValues(key string, v *url.Values) error {
-	pb, err := cancelRunToPb(st)
+func (st CancelRun) EncodeValues(key string, v *url.Values) error {
+	pb, err := cancelRunToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -698,8 +698,8 @@ type CleanRoomTaskRunState struct {
 	ResultState CleanRoomTaskRunResultState `json:"result_state,omitempty"`
 }
 
-func (st *CleanRoomTaskRunState) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomTaskRunStateToPb(st)
+func (st CleanRoomTaskRunState) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomTaskRunStateToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -759,8 +759,8 @@ type CleanRoomsNotebookTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CleanRoomsNotebookTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomsNotebookTaskToPb(st)
+func (st CleanRoomsNotebookTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomsNotebookTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -813,8 +813,8 @@ type CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput struct {
 	OutputSchemaInfo *OutputSchemaInfo `json:"output_schema_info,omitempty"`
 }
 
-func (st *CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputToPb(st)
+func (st CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -880,8 +880,8 @@ type ClusterInstance struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterInstance) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterInstanceToPb(st)
+func (st ClusterInstance) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterInstanceToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -945,8 +945,8 @@ type ClusterSpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterSpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterSpecToPb(st)
+func (st ClusterSpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterSpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1001,8 +1001,8 @@ type ComputeConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ComputeConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := computeConfigToPb(st)
+func (st ComputeConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := computeConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1103,8 +1103,8 @@ type ConditionTask struct {
 	Right string `json:"right"`
 }
 
-func (st *ConditionTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := conditionTaskToPb(st)
+func (st ConditionTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := conditionTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1211,8 +1211,8 @@ type Continuous struct {
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 }
 
-func (st *Continuous) EncodeValues(key string, v *url.Values) error {
-	pb, err := continuousToPb(st)
+func (st Continuous) EncodeValues(key string, v *url.Values) error {
+	pb, err := continuousToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1400,8 +1400,8 @@ type CreateJob struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateJob) EncodeValues(key string, v *url.Values) error {
-	pb, err := createJobToPb(st)
+func (st CreateJob) EncodeValues(key string, v *url.Values) error {
+	pb, err := createJobToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1451,8 +1451,8 @@ type CreateResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createResponseToPb(st)
+func (st CreateResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1511,8 +1511,8 @@ type CronSchedule struct {
 	TimezoneId string `json:"timezone_id"`
 }
 
-func (st *CronSchedule) EncodeValues(key string, v *url.Values) error {
-	pb, err := cronScheduleToPb(st)
+func (st CronSchedule) EncodeValues(key string, v *url.Values) error {
+	pb, err := cronScheduleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1564,8 +1564,8 @@ type DashboardPageSnapshot struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DashboardPageSnapshot) EncodeValues(key string, v *url.Values) error {
-	pb, err := dashboardPageSnapshotToPb(st)
+func (st DashboardPageSnapshot) EncodeValues(key string, v *url.Values) error {
+	pb, err := dashboardPageSnapshotToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1623,8 +1623,8 @@ type DashboardTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DashboardTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := dashboardTaskToPb(st)
+func (st DashboardTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := dashboardTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1671,8 +1671,8 @@ type DashboardTaskOutput struct {
 	PageSnapshots []DashboardPageSnapshot `json:"page_snapshots,omitempty"`
 }
 
-func (st *DashboardTaskOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := dashboardTaskOutputToPb(st)
+func (st DashboardTaskOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := dashboardTaskOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1732,8 +1732,8 @@ type DbtCloudJobRunStep struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DbtCloudJobRunStep) EncodeValues(key string, v *url.Values) error {
-	pb, err := dbtCloudJobRunStepToPb(st)
+func (st DbtCloudJobRunStep) EncodeValues(key string, v *url.Values) error {
+	pb, err := dbtCloudJobRunStepToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1787,8 +1787,8 @@ type DbtCloudTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DbtCloudTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := dbtCloudTaskToPb(st)
+func (st DbtCloudTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := dbtCloudTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1844,8 +1844,8 @@ type DbtCloudTaskOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DbtCloudTaskOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := dbtCloudTaskOutputToPb(st)
+func (st DbtCloudTaskOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := dbtCloudTaskOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1900,8 +1900,8 @@ type DbtOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DbtOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := dbtOutputToPb(st)
+func (st DbtOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := dbtOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1968,8 +1968,8 @@ type DbtPlatformJobRunStep struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DbtPlatformJobRunStep) EncodeValues(key string, v *url.Values) error {
-	pb, err := dbtPlatformJobRunStepToPb(st)
+func (st DbtPlatformJobRunStep) EncodeValues(key string, v *url.Values) error {
+	pb, err := dbtPlatformJobRunStepToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2074,8 +2074,8 @@ type DbtPlatformTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DbtPlatformTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := dbtPlatformTaskToPb(st)
+func (st DbtPlatformTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := dbtPlatformTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2135,8 +2135,8 @@ type DbtPlatformTaskOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DbtPlatformTaskOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := dbtPlatformTaskOutputToPb(st)
+func (st DbtPlatformTaskOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := dbtPlatformTaskOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2223,8 +2223,8 @@ type DbtTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DbtTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := dbtTaskToPb(st)
+func (st DbtTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := dbtTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2271,8 +2271,8 @@ type DeleteJob struct {
 	JobId int64 `json:"job_id"`
 }
 
-func (st *DeleteJob) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteJobToPb(st)
+func (st DeleteJob) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteJobToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2319,8 +2319,8 @@ type DeleteRun struct {
 	RunId int64 `json:"run_id"`
 }
 
-func (st *DeleteRun) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteRunToPb(st)
+func (st DeleteRun) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteRunToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2384,8 +2384,8 @@ type EnforcePolicyComplianceForJobResponseJobClusterSettingsChange struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EnforcePolicyComplianceForJobResponseJobClusterSettingsChange) EncodeValues(key string, v *url.Values) error {
-	pb, err := enforcePolicyComplianceForJobResponseJobClusterSettingsChangeToPb(st)
+func (st EnforcePolicyComplianceForJobResponseJobClusterSettingsChange) EncodeValues(key string, v *url.Values) error {
+	pb, err := enforcePolicyComplianceForJobResponseJobClusterSettingsChangeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2438,8 +2438,8 @@ type EnforcePolicyComplianceRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EnforcePolicyComplianceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := enforcePolicyComplianceRequestToPb(st)
+func (st EnforcePolicyComplianceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := enforcePolicyComplianceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2502,8 +2502,8 @@ type EnforcePolicyComplianceResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EnforcePolicyComplianceResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := enforcePolicyComplianceResponseToPb(st)
+func (st EnforcePolicyComplianceResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := enforcePolicyComplianceResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2555,8 +2555,8 @@ type ExportRunOutput struct {
 	Views []ViewItem `json:"views,omitempty"`
 }
 
-func (st *ExportRunOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := exportRunOutputToPb(st)
+func (st ExportRunOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := exportRunOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2604,8 +2604,8 @@ type ExportRunRequest struct {
 	ViewsToExport ViewsToExport `json:"-" tf:"-"`
 }
 
-func (st *ExportRunRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := exportRunRequestToPb(st)
+func (st ExportRunRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := exportRunRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2666,8 +2666,8 @@ type FileArrivalTriggerConfiguration struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *FileArrivalTriggerConfiguration) EncodeValues(key string, v *url.Values) error {
-	pb, err := fileArrivalTriggerConfigurationToPb(st)
+func (st FileArrivalTriggerConfiguration) EncodeValues(key string, v *url.Values) error {
+	pb, err := fileArrivalTriggerConfigurationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2717,8 +2717,8 @@ type FileArrivalTriggerState struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *FileArrivalTriggerState) EncodeValues(key string, v *url.Values) error {
-	pb, err := fileArrivalTriggerStateToPb(st)
+func (st FileArrivalTriggerState) EncodeValues(key string, v *url.Values) error {
+	pb, err := fileArrivalTriggerStateToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2768,8 +2768,8 @@ type ForEachStats struct {
 	TaskRunStats *ForEachTaskTaskRunStats `json:"task_run_stats,omitempty"`
 }
 
-func (st *ForEachStats) EncodeValues(key string, v *url.Values) error {
-	pb, err := forEachStatsToPb(st)
+func (st ForEachStats) EncodeValues(key string, v *url.Values) error {
+	pb, err := forEachStatsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2827,8 +2827,8 @@ type ForEachTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ForEachTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := forEachTaskToPb(st)
+func (st ForEachTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := forEachTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2884,8 +2884,8 @@ type ForEachTaskErrorMessageStats struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ForEachTaskErrorMessageStats) EncodeValues(key string, v *url.Values) error {
-	pb, err := forEachTaskErrorMessageStatsToPb(st)
+func (st ForEachTaskErrorMessageStats) EncodeValues(key string, v *url.Values) error {
+	pb, err := forEachTaskErrorMessageStatsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2950,8 +2950,8 @@ type ForEachTaskTaskRunStats struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ForEachTaskTaskRunStats) EncodeValues(key string, v *url.Values) error {
-	pb, err := forEachTaskTaskRunStatsToPb(st)
+func (st ForEachTaskTaskRunStats) EncodeValues(key string, v *url.Values) error {
+	pb, err := forEachTaskTaskRunStatsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3073,8 +3073,8 @@ type GenAiComputeTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GenAiComputeTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := genAiComputeTaskToPb(st)
+func (st GenAiComputeTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := genAiComputeTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3120,8 +3120,8 @@ type GetJobPermissionLevelsRequest struct {
 	JobId string `json:"-" tf:"-"`
 }
 
-func (st *GetJobPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getJobPermissionLevelsRequestToPb(st)
+func (st GetJobPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getJobPermissionLevelsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3168,8 +3168,8 @@ type GetJobPermissionLevelsResponse struct {
 	PermissionLevels []JobPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-func (st *GetJobPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getJobPermissionLevelsResponseToPb(st)
+func (st GetJobPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getJobPermissionLevelsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3215,8 +3215,8 @@ type GetJobPermissionsRequest struct {
 	JobId string `json:"-" tf:"-"`
 }
 
-func (st *GetJobPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getJobPermissionsRequestToPb(st)
+func (st GetJobPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getJobPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3268,8 +3268,8 @@ type GetJobRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetJobRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getJobRequestToPb(st)
+func (st GetJobRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getJobRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3315,8 +3315,8 @@ type GetPolicyComplianceRequest struct {
 	JobId int64 `json:"-" tf:"-"`
 }
 
-func (st *GetPolicyComplianceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPolicyComplianceRequestToPb(st)
+func (st GetPolicyComplianceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPolicyComplianceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3375,8 +3375,8 @@ type GetPolicyComplianceResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetPolicyComplianceResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPolicyComplianceResponseToPb(st)
+func (st GetPolicyComplianceResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPolicyComplianceResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3422,8 +3422,8 @@ type GetRunOutputRequest struct {
 	RunId int64 `json:"-" tf:"-"`
 }
 
-func (st *GetRunOutputRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getRunOutputRequestToPb(st)
+func (st GetRunOutputRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getRunOutputRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3479,8 +3479,8 @@ type GetRunRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetRunRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getRunRequestToPb(st)
+func (st GetRunRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getRunRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3588,8 +3588,8 @@ type GitSnapshot struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GitSnapshot) EncodeValues(key string, v *url.Values) error {
-	pb, err := gitSnapshotToPb(st)
+func (st GitSnapshot) EncodeValues(key string, v *url.Values) error {
+	pb, err := gitSnapshotToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3671,8 +3671,8 @@ type GitSource struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GitSource) EncodeValues(key string, v *url.Values) error {
-	pb, err := gitSourceToPb(st)
+func (st GitSource) EncodeValues(key string, v *url.Values) error {
+	pb, err := gitSourceToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3763,8 +3763,8 @@ type Job struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Job) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobToPb(st)
+func (st Job) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3822,8 +3822,8 @@ type JobAccessControlRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *JobAccessControlRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobAccessControlRequestToPb(st)
+func (st JobAccessControlRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobAccessControlRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3884,8 +3884,8 @@ type JobAccessControlResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *JobAccessControlResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobAccessControlResponseToPb(st)
+func (st JobAccessControlResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobAccessControlResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3937,8 +3937,8 @@ type JobCluster struct {
 	NewCluster compute.ClusterSpec `json:"new_cluster"`
 }
 
-func (st *JobCluster) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobClusterToPb(st)
+func (st JobCluster) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobClusterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3997,8 +3997,8 @@ type JobCompliance struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *JobCompliance) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobComplianceToPb(st)
+func (st JobCompliance) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobComplianceToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4052,8 +4052,8 @@ type JobDeployment struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *JobDeployment) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobDeploymentToPb(st)
+func (st JobDeployment) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobDeploymentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4217,8 +4217,8 @@ type JobEmailNotifications struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *JobEmailNotifications) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobEmailNotificationsToPb(st)
+func (st JobEmailNotifications) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobEmailNotificationsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4268,8 +4268,8 @@ type JobEnvironment struct {
 	Spec *compute.Environment `json:"spec,omitempty"`
 }
 
-func (st *JobEnvironment) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobEnvironmentToPb(st)
+func (st JobEnvironment) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobEnvironmentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4323,8 +4323,8 @@ type JobNotificationSettings struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *JobNotificationSettings) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobNotificationSettingsToPb(st)
+func (st JobNotificationSettings) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobNotificationSettingsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4379,8 +4379,8 @@ type JobParameter struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *JobParameter) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobParameterToPb(st)
+func (st JobParameter) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobParameterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4431,8 +4431,8 @@ type JobParameterDefinition struct {
 	Name string `json:"name"`
 }
 
-func (st *JobParameterDefinition) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobParameterDefinitionToPb(st)
+func (st JobParameterDefinition) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobParameterDefinitionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4487,8 +4487,8 @@ type JobPermission struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *JobPermission) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobPermissionToPb(st)
+func (st JobPermission) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobPermissionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4587,8 +4587,8 @@ type JobPermissions struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *JobPermissions) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobPermissionsToPb(st)
+func (st JobPermissions) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobPermissionsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4640,8 +4640,8 @@ type JobPermissionsDescription struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *JobPermissionsDescription) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobPermissionsDescriptionToPb(st)
+func (st JobPermissionsDescription) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobPermissionsDescriptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4690,8 +4690,8 @@ type JobPermissionsRequest struct {
 	JobId string `json:"-" tf:"-"`
 }
 
-func (st *JobPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobPermissionsRequestToPb(st)
+func (st JobPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4750,8 +4750,8 @@ type JobRunAs struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *JobRunAs) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobRunAsToPb(st)
+func (st JobRunAs) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobRunAsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4930,8 +4930,8 @@ type JobSettings struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *JobSettings) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobSettingsToPb(st)
+func (st JobSettings) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobSettingsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4994,8 +4994,8 @@ type JobSource struct {
 	JobConfigPath string `json:"job_config_path"`
 }
 
-func (st *JobSource) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobSourceToPb(st)
+func (st JobSource) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobSourceToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5202,8 +5202,8 @@ type JobsHealthRule struct {
 	Value int64 `json:"value"`
 }
 
-func (st *JobsHealthRule) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobsHealthRuleToPb(st)
+func (st JobsHealthRule) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobsHealthRuleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5251,8 +5251,8 @@ type JobsHealthRules struct {
 	Rules []JobsHealthRule `json:"rules,omitempty"`
 }
 
-func (st *JobsHealthRules) EncodeValues(key string, v *url.Values) error {
-	pb, err := jobsHealthRulesToPb(st)
+func (st JobsHealthRules) EncodeValues(key string, v *url.Values) error {
+	pb, err := jobsHealthRulesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5311,8 +5311,8 @@ type ListJobComplianceForPolicyResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListJobComplianceForPolicyResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listJobComplianceForPolicyResponseToPb(st)
+func (st ListJobComplianceForPolicyResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listJobComplianceForPolicyResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5367,8 +5367,8 @@ type ListJobComplianceRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListJobComplianceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listJobComplianceRequestToPb(st)
+func (st ListJobComplianceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listJobComplianceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5430,8 +5430,8 @@ type ListJobsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListJobsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listJobsRequestToPb(st)
+func (st ListJobsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listJobsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5493,8 +5493,8 @@ type ListJobsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListJobsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listJobsResponseToPb(st)
+func (st ListJobsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listJobsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5578,8 +5578,8 @@ type ListRunsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListRunsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listRunsRequestToPb(st)
+func (st ListRunsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listRunsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5641,8 +5641,8 @@ type ListRunsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListRunsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listRunsResponseToPb(st)
+func (st ListRunsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listRunsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5699,8 +5699,8 @@ type NotebookOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NotebookOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := notebookOutputToPb(st)
+func (st NotebookOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := notebookOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5788,8 +5788,8 @@ type NotebookTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NotebookTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := notebookTaskToPb(st)
+func (st NotebookTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := notebookTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5847,8 +5847,8 @@ type OutputSchemaInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *OutputSchemaInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := outputSchemaInfoToPb(st)
+func (st OutputSchemaInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := outputSchemaInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5976,8 +5976,8 @@ type PeriodicTriggerConfiguration struct {
 	Unit PeriodicTriggerConfigurationTimeUnit `json:"unit"`
 }
 
-func (st *PeriodicTriggerConfiguration) EncodeValues(key string, v *url.Values) error {
-	pb, err := periodicTriggerConfigurationToPb(st)
+func (st PeriodicTriggerConfiguration) EncodeValues(key string, v *url.Values) error {
+	pb, err := periodicTriggerConfigurationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6066,8 +6066,8 @@ type PipelineParams struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PipelineParams) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelineParamsToPb(st)
+func (st PipelineParams) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelineParamsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6119,8 +6119,8 @@ type PipelineTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PipelineTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelineTaskToPb(st)
+func (st PipelineTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelineTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6181,8 +6181,8 @@ type PowerBiModel struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PowerBiModel) EncodeValues(key string, v *url.Values) error {
-	pb, err := powerBiModelToPb(st)
+func (st PowerBiModel) EncodeValues(key string, v *url.Values) error {
+	pb, err := powerBiModelToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6240,8 +6240,8 @@ type PowerBiTable struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PowerBiTable) EncodeValues(key string, v *url.Values) error {
-	pb, err := powerBiTableToPb(st)
+func (st PowerBiTable) EncodeValues(key string, v *url.Values) error {
+	pb, err := powerBiTableToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6303,8 +6303,8 @@ type PowerBiTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PowerBiTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := powerBiTaskToPb(st)
+func (st PowerBiTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := powerBiTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6365,8 +6365,8 @@ type PythonWheelTask struct {
 	Parameters []string `json:"parameters,omitempty"`
 }
 
-func (st *PythonWheelTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := pythonWheelTaskToPb(st)
+func (st PythonWheelTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := pythonWheelTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6419,8 +6419,8 @@ type QueueDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *QueueDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := queueDetailsToPb(st)
+func (st QueueDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := queueDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6516,8 +6516,8 @@ type QueueSettings struct {
 	Enabled bool `json:"enabled"`
 }
 
-func (st *QueueSettings) EncodeValues(key string, v *url.Values) error {
-	pb, err := queueSettingsToPb(st)
+func (st QueueSettings) EncodeValues(key string, v *url.Values) error {
+	pb, err := queueSettingsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6597,8 +6597,8 @@ type RepairHistoryItem struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RepairHistoryItem) EncodeValues(key string, v *url.Values) error {
-	pb, err := repairHistoryItemToPb(st)
+func (st RepairHistoryItem) EncodeValues(key string, v *url.Values) error {
+	pb, err := repairHistoryItemToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6807,8 +6807,8 @@ type RepairRun struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RepairRun) EncodeValues(key string, v *url.Values) error {
-	pb, err := repairRunToPb(st)
+func (st RepairRun) EncodeValues(key string, v *url.Values) error {
+	pb, err := repairRunToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6859,8 +6859,8 @@ type RepairRunResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RepairRunResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := repairRunResponseToPb(st)
+func (st RepairRunResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := repairRunResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6914,8 +6914,8 @@ type ResetJob struct {
 	NewSettings JobSettings `json:"new_settings"`
 }
 
-func (st *ResetJob) EncodeValues(key string, v *url.Values) error {
-	pb, err := resetJobToPb(st)
+func (st ResetJob) EncodeValues(key string, v *url.Values) error {
+	pb, err := resetJobToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6967,8 +6967,8 @@ type ResolvedConditionTaskValues struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ResolvedConditionTaskValues) EncodeValues(key string, v *url.Values) error {
-	pb, err := resolvedConditionTaskValuesToPb(st)
+func (st ResolvedConditionTaskValues) EncodeValues(key string, v *url.Values) error {
+	pb, err := resolvedConditionTaskValuesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7015,8 +7015,8 @@ type ResolvedDbtTaskValues struct {
 	Commands []string `json:"commands,omitempty"`
 }
 
-func (st *ResolvedDbtTaskValues) EncodeValues(key string, v *url.Values) error {
-	pb, err := resolvedDbtTaskValuesToPb(st)
+func (st ResolvedDbtTaskValues) EncodeValues(key string, v *url.Values) error {
+	pb, err := resolvedDbtTaskValuesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7063,8 +7063,8 @@ type ResolvedNotebookTaskValues struct {
 	BaseParameters map[string]string `json:"base_parameters,omitempty"`
 }
 
-func (st *ResolvedNotebookTaskValues) EncodeValues(key string, v *url.Values) error {
-	pb, err := resolvedNotebookTaskValuesToPb(st)
+func (st ResolvedNotebookTaskValues) EncodeValues(key string, v *url.Values) error {
+	pb, err := resolvedNotebookTaskValuesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7111,8 +7111,8 @@ type ResolvedParamPairValues struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 }
 
-func (st *ResolvedParamPairValues) EncodeValues(key string, v *url.Values) error {
-	pb, err := resolvedParamPairValuesToPb(st)
+func (st ResolvedParamPairValues) EncodeValues(key string, v *url.Values) error {
+	pb, err := resolvedParamPairValuesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7162,8 +7162,8 @@ type ResolvedPythonWheelTaskValues struct {
 	Parameters []string `json:"parameters,omitempty"`
 }
 
-func (st *ResolvedPythonWheelTaskValues) EncodeValues(key string, v *url.Values) error {
-	pb, err := resolvedPythonWheelTaskValuesToPb(st)
+func (st ResolvedPythonWheelTaskValues) EncodeValues(key string, v *url.Values) error {
+	pb, err := resolvedPythonWheelTaskValuesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7213,8 +7213,8 @@ type ResolvedRunJobTaskValues struct {
 	Parameters map[string]string `json:"parameters,omitempty"`
 }
 
-func (st *ResolvedRunJobTaskValues) EncodeValues(key string, v *url.Values) error {
-	pb, err := resolvedRunJobTaskValuesToPb(st)
+func (st ResolvedRunJobTaskValues) EncodeValues(key string, v *url.Values) error {
+	pb, err := resolvedRunJobTaskValuesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7261,8 +7261,8 @@ type ResolvedStringParamsValues struct {
 	Parameters []string `json:"parameters,omitempty"`
 }
 
-func (st *ResolvedStringParamsValues) EncodeValues(key string, v *url.Values) error {
-	pb, err := resolvedStringParamsValuesToPb(st)
+func (st ResolvedStringParamsValues) EncodeValues(key string, v *url.Values) error {
+	pb, err := resolvedStringParamsValuesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7336,8 +7336,8 @@ type ResolvedValues struct {
 	SqlTask *ResolvedParamPairValues `json:"sql_task,omitempty"`
 }
 
-func (st *ResolvedValues) EncodeValues(key string, v *url.Values) error {
-	pb, err := resolvedValuesToPb(st)
+func (st ResolvedValues) EncodeValues(key string, v *url.Values) error {
+	pb, err := resolvedValuesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7556,8 +7556,8 @@ type Run struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Run) EncodeValues(key string, v *url.Values) error {
-	pb, err := runToPb(st)
+func (st Run) EncodeValues(key string, v *url.Values) error {
+	pb, err := runToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7627,8 +7627,8 @@ type RunConditionTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RunConditionTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := runConditionTaskToPb(st)
+func (st RunConditionTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := runConditionTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7690,8 +7690,8 @@ type RunForEachTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RunForEachTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := runForEachTaskToPb(st)
+func (st RunForEachTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := runForEachTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7805,8 +7805,8 @@ type RunJobOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RunJobOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := runJobOutputToPb(st)
+func (st RunJobOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := runJobOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7946,8 +7946,8 @@ type RunJobTask struct {
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
-func (st *RunJobTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := runJobTaskToPb(st)
+func (st RunJobTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := runJobTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8264,8 +8264,8 @@ type RunNow struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RunNow) EncodeValues(key string, v *url.Values) error {
-	pb, err := runNowToPb(st)
+func (st RunNow) EncodeValues(key string, v *url.Values) error {
+	pb, err := runNowToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8319,8 +8319,8 @@ type RunNowResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RunNowResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := runNowResponseToPb(st)
+func (st RunNowResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := runNowResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8425,8 +8425,8 @@ type RunOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RunOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := runOutputToPb(st)
+func (st RunOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := runOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8560,8 +8560,8 @@ type RunParameters struct {
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
-func (st *RunParameters) EncodeValues(key string, v *url.Values) error {
-	pb, err := runParametersToPb(st)
+func (st RunParameters) EncodeValues(key string, v *url.Values) error {
+	pb, err := runParametersToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8713,8 +8713,8 @@ type RunState struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RunState) EncodeValues(key string, v *url.Values) error {
-	pb, err := runStateToPb(st)
+func (st RunState) EncodeValues(key string, v *url.Values) error {
+	pb, err := runStateToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8769,8 +8769,8 @@ type RunStatus struct {
 	TerminationDetails *TerminationDetails `json:"termination_details,omitempty"`
 }
 
-func (st *RunStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := runStatusToPb(st)
+func (st RunStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := runStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9056,8 +9056,8 @@ type RunTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RunTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := runTaskToPb(st)
+func (st RunTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := runTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9223,8 +9223,8 @@ type SparkJarTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SparkJarTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := sparkJarTaskToPb(st)
+func (st SparkJarTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := sparkJarTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9294,8 +9294,8 @@ type SparkPythonTask struct {
 	Source Source `json:"source,omitempty"`
 }
 
-func (st *SparkPythonTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := sparkPythonTaskToPb(st)
+func (st SparkPythonTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := sparkPythonTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9347,8 +9347,8 @@ type SparkSubmitTask struct {
 	Parameters []string `json:"parameters,omitempty"`
 }
 
-func (st *SparkSubmitTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := sparkSubmitTaskToPb(st)
+func (st SparkSubmitTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := sparkSubmitTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9410,8 +9410,8 @@ type SqlAlertOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SqlAlertOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlAlertOutputToPb(st)
+func (st SqlAlertOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlAlertOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9508,8 +9508,8 @@ type SqlDashboardOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SqlDashboardOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlDashboardOutputToPb(st)
+func (st SqlDashboardOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlDashboardOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9576,8 +9576,8 @@ type SqlDashboardWidgetOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SqlDashboardWidgetOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlDashboardWidgetOutputToPb(st)
+func (st SqlDashboardWidgetOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlDashboardWidgetOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9676,8 +9676,8 @@ type SqlOutput struct {
 	QueryOutput *SqlQueryOutput `json:"query_output,omitempty"`
 }
 
-func (st *SqlOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlOutputToPb(st)
+func (st SqlOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9726,8 +9726,8 @@ type SqlOutputError struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SqlOutputError) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlOutputErrorToPb(st)
+func (st SqlOutputError) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlOutputErrorToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9789,8 +9789,8 @@ type SqlQueryOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SqlQueryOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlQueryOutputToPb(st)
+func (st SqlQueryOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlQueryOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9839,8 +9839,8 @@ type SqlStatementOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SqlStatementOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlStatementOutputToPb(st)
+func (st SqlStatementOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlStatementOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9907,8 +9907,8 @@ type SqlTask struct {
 	WarehouseId string `json:"warehouse_id"`
 }
 
-func (st *SqlTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlTaskToPb(st)
+func (st SqlTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9963,8 +9963,8 @@ type SqlTaskAlert struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SqlTaskAlert) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlTaskAlertToPb(st)
+func (st SqlTaskAlert) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlTaskAlertToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10023,8 +10023,8 @@ type SqlTaskDashboard struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SqlTaskDashboard) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlTaskDashboardToPb(st)
+func (st SqlTaskDashboard) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlTaskDashboardToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10082,8 +10082,8 @@ type SqlTaskFile struct {
 	Source Source `json:"source,omitempty"`
 }
 
-func (st *SqlTaskFile) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlTaskFileToPb(st)
+func (st SqlTaskFile) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlTaskFileToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10130,8 +10130,8 @@ type SqlTaskQuery struct {
 	QueryId string `json:"query_id"`
 }
 
-func (st *SqlTaskQuery) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlTaskQueryToPb(st)
+func (st SqlTaskQuery) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlTaskQueryToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10188,8 +10188,8 @@ type SqlTaskSubscription struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SqlTaskSubscription) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlTaskSubscriptionToPb(st)
+func (st SqlTaskSubscription) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlTaskSubscriptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10348,8 +10348,8 @@ type SubmitRun struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SubmitRun) EncodeValues(key string, v *url.Values) error {
-	pb, err := submitRunToPb(st)
+func (st SubmitRun) EncodeValues(key string, v *url.Values) error {
+	pb, err := submitRunToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10399,8 +10399,8 @@ type SubmitRunResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SubmitRunResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := submitRunResponseToPb(st)
+func (st SubmitRunResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := submitRunResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10590,8 +10590,8 @@ type SubmitTask struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SubmitTask) EncodeValues(key string, v *url.Values) error {
-	pb, err := submitTaskToPb(st)
+func (st SubmitTask) EncodeValues(key string, v *url.Values) error {
+	pb, err := submitTaskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10647,8 +10647,8 @@ type Subscription struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Subscription) EncodeValues(key string, v *url.Values) error {
-	pb, err := subscriptionToPb(st)
+func (st Subscription) EncodeValues(key string, v *url.Values) error {
+	pb, err := subscriptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10702,8 +10702,8 @@ type SubscriptionSubscriber struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SubscriptionSubscriber) EncodeValues(key string, v *url.Values) error {
-	pb, err := subscriptionSubscriberToPb(st)
+func (st SubscriptionSubscriber) EncodeValues(key string, v *url.Values) error {
+	pb, err := subscriptionSubscriberToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10767,8 +10767,8 @@ type TableUpdateTriggerConfiguration struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TableUpdateTriggerConfiguration) EncodeValues(key string, v *url.Values) error {
-	pb, err := tableUpdateTriggerConfigurationToPb(st)
+func (st TableUpdateTriggerConfiguration) EncodeValues(key string, v *url.Values) error {
+	pb, err := tableUpdateTriggerConfigurationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10986,8 +10986,8 @@ type Task struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Task) EncodeValues(key string, v *url.Values) error {
-	pb, err := taskToPb(st)
+func (st Task) EncodeValues(key string, v *url.Values) error {
+	pb, err := taskToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11040,8 +11040,8 @@ type TaskDependency struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TaskDependency) EncodeValues(key string, v *url.Values) error {
-	pb, err := taskDependencyToPb(st)
+func (st TaskDependency) EncodeValues(key string, v *url.Values) error {
+	pb, err := taskDependencyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11126,8 +11126,8 @@ type TaskEmailNotifications struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TaskEmailNotifications) EncodeValues(key string, v *url.Values) error {
-	pb, err := taskEmailNotificationsToPb(st)
+func (st TaskEmailNotifications) EncodeValues(key string, v *url.Values) error {
+	pb, err := taskEmailNotificationsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11186,8 +11186,8 @@ type TaskNotificationSettings struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TaskNotificationSettings) EncodeValues(key string, v *url.Values) error {
-	pb, err := taskNotificationSettingsToPb(st)
+func (st TaskNotificationSettings) EncodeValues(key string, v *url.Values) error {
+	pb, err := taskNotificationSettingsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11442,8 +11442,8 @@ type TerminationDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TerminationDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := terminationDetailsToPb(st)
+func (st TerminationDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := terminationDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11645,8 +11645,8 @@ type TestMarshallMessage struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TestMarshallMessage) EncodeValues(key string, v *url.Values) error {
-	pb, err := testMarshallMessageToPb(st)
+func (st TestMarshallMessage) EncodeValues(key string, v *url.Values) error {
+	pb, err := testMarshallMessageToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11719,8 +11719,8 @@ type TestNestedMessage struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TestNestedMessage) EncodeValues(key string, v *url.Values) error {
-	pb, err := testNestedMessageToPb(st)
+func (st TestNestedMessage) EncodeValues(key string, v *url.Values) error {
+	pb, err := testNestedMessageToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11770,8 +11770,8 @@ type TriggerInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TriggerInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := triggerInfoToPb(st)
+func (st TriggerInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := triggerInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11830,8 +11830,8 @@ type TriggerSettings struct {
 	TableUpdate *TableUpdateTriggerConfiguration `json:"table_update,omitempty"`
 }
 
-func (st *TriggerSettings) EncodeValues(key string, v *url.Values) error {
-	pb, err := triggerSettingsToPb(st)
+func (st TriggerSettings) EncodeValues(key string, v *url.Values) error {
+	pb, err := triggerSettingsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11878,8 +11878,8 @@ type TriggerStateProto struct {
 	FileArrival *FileArrivalTriggerState `json:"file_arrival,omitempty"`
 }
 
-func (st *TriggerStateProto) EncodeValues(key string, v *url.Values) error {
-	pb, err := triggerStateProtoToPb(st)
+func (st TriggerStateProto) EncodeValues(key string, v *url.Values) error {
+	pb, err := triggerStateProtoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12023,8 +12023,8 @@ type UpdateJob struct {
 	NewSettings *JobSettings `json:"new_settings,omitempty"`
 }
 
-func (st *UpdateJob) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateJobToPb(st)
+func (st UpdateJob) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateJobToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12081,8 +12081,8 @@ type ViewItem struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ViewItem) EncodeValues(key string, v *url.Values) error {
-	pb, err := viewItemToPb(st)
+func (st ViewItem) EncodeValues(key string, v *url.Values) error {
+	pb, err := viewItemToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12214,8 +12214,8 @@ type Webhook struct {
 	Id string `json:"id"`
 }
 
-func (st *Webhook) EncodeValues(key string, v *url.Values) error {
-	pb, err := webhookToPb(st)
+func (st Webhook) EncodeValues(key string, v *url.Values) error {
+	pb, err := webhookToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12288,8 +12288,8 @@ type WebhookNotifications struct {
 	OnSuccess []Webhook `json:"on_success,omitempty"`
 }
 
-func (st *WebhookNotifications) EncodeValues(key string, v *url.Values) error {
-	pb, err := webhookNotificationsToPb(st)
+func (st WebhookNotifications) EncodeValues(key string, v *url.Values) error {
+	pb, err := webhookNotificationsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12338,8 +12338,8 @@ type WidgetErrorDetail struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *WidgetErrorDetail) EncodeValues(key string, v *url.Values) error {
-	pb, err := widgetErrorDetailToPb(st)
+func (st WidgetErrorDetail) EncodeValues(key string, v *url.Values) error {
+	pb, err := widgetErrorDetailToPb(&st)
 	if err != nil {
 		return err
 	}

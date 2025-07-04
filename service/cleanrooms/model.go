@@ -59,8 +59,8 @@ type CleanRoom struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CleanRoom) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomToPb(st)
+func (st CleanRoom) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -201,8 +201,8 @@ type CleanRoomAsset struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CleanRoomAsset) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomAssetToPb(st)
+func (st CleanRoomAsset) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomAssetToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -295,8 +295,8 @@ type CleanRoomAssetForeignTable struct {
 	Columns []catalog.ColumnInfo `json:"columns,omitempty"`
 }
 
-func (st *CleanRoomAssetForeignTable) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomAssetForeignTableToPb(st)
+func (st CleanRoomAssetForeignTable) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomAssetForeignTableToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -346,8 +346,8 @@ type CleanRoomAssetForeignTableLocalDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CleanRoomAssetForeignTableLocalDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomAssetForeignTableLocalDetailsToPb(st)
+func (st CleanRoomAssetForeignTableLocalDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomAssetForeignTableLocalDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -409,8 +409,8 @@ type CleanRoomAssetNotebook struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CleanRoomAssetNotebook) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomAssetNotebookToPb(st)
+func (st CleanRoomAssetNotebook) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomAssetNotebookToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -497,8 +497,8 @@ type CleanRoomAssetTable struct {
 	Columns []catalog.ColumnInfo `json:"columns,omitempty"`
 }
 
-func (st *CleanRoomAssetTable) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomAssetTableToPb(st)
+func (st CleanRoomAssetTable) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomAssetTableToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -551,8 +551,8 @@ type CleanRoomAssetTableLocalDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CleanRoomAssetTableLocalDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomAssetTableLocalDetailsToPb(st)
+func (st CleanRoomAssetTableLocalDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomAssetTableLocalDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -599,8 +599,8 @@ type CleanRoomAssetView struct {
 	Columns []catalog.ColumnInfo `json:"columns,omitempty"`
 }
 
-func (st *CleanRoomAssetView) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomAssetViewToPb(st)
+func (st CleanRoomAssetView) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomAssetViewToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -650,8 +650,8 @@ type CleanRoomAssetViewLocalDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CleanRoomAssetViewLocalDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomAssetViewLocalDetailsToPb(st)
+func (st CleanRoomAssetViewLocalDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomAssetViewLocalDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -701,8 +701,8 @@ type CleanRoomAssetVolumeLocalDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CleanRoomAssetVolumeLocalDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomAssetVolumeLocalDetailsToPb(st)
+func (st CleanRoomAssetVolumeLocalDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomAssetVolumeLocalDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -784,8 +784,8 @@ type CleanRoomCollaborator struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CleanRoomCollaborator) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomCollaboratorToPb(st)
+func (st CleanRoomCollaborator) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomCollaboratorToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -846,8 +846,8 @@ type CleanRoomNotebookReview struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CleanRoomNotebookReview) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomNotebookReviewToPb(st)
+func (st CleanRoomNotebookReview) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomNotebookReviewToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1004,8 +1004,8 @@ type CleanRoomNotebookTaskRun struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CleanRoomNotebookTaskRun) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomNotebookTaskRunToPb(st)
+func (st CleanRoomNotebookTaskRun) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomNotebookTaskRunToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1060,8 +1060,8 @@ type CleanRoomOutputCatalog struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CleanRoomOutputCatalog) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomOutputCatalogToPb(st)
+func (st CleanRoomOutputCatalog) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomOutputCatalogToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1175,8 +1175,8 @@ type CleanRoomRemoteDetail struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CleanRoomRemoteDetail) EncodeValues(key string, v *url.Values) error {
-	pb, err := cleanRoomRemoteDetailToPb(st)
+func (st CleanRoomRemoteDetail) EncodeValues(key string, v *url.Values) error {
+	pb, err := cleanRoomRemoteDetailToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1280,8 +1280,8 @@ type CollaboratorJobRunInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CollaboratorJobRunInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := collaboratorJobRunInfoToPb(st)
+func (st CollaboratorJobRunInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := collaboratorJobRunInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1336,8 +1336,8 @@ type ComplianceSecurityProfile struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ComplianceSecurityProfile) EncodeValues(key string, v *url.Values) error {
-	pb, err := complianceSecurityProfileToPb(st)
+func (st ComplianceSecurityProfile) EncodeValues(key string, v *url.Values) error {
+	pb, err := complianceSecurityProfileToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1386,8 +1386,8 @@ type CreateCleanRoomAssetRequest struct {
 	CleanRoomName string `json:"-" tf:"-"`
 }
 
-func (st *CreateCleanRoomAssetRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createCleanRoomAssetRequestToPb(st)
+func (st CreateCleanRoomAssetRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createCleanRoomAssetRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1436,8 +1436,8 @@ type CreateCleanRoomOutputCatalogRequest struct {
 	OutputCatalog CleanRoomOutputCatalog `json:"output_catalog"`
 }
 
-func (st *CreateCleanRoomOutputCatalogRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createCleanRoomOutputCatalogRequestToPb(st)
+func (st CreateCleanRoomOutputCatalogRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createCleanRoomOutputCatalogRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1484,8 +1484,8 @@ type CreateCleanRoomOutputCatalogResponse struct {
 	OutputCatalog *CleanRoomOutputCatalog `json:"output_catalog,omitempty"`
 }
 
-func (st *CreateCleanRoomOutputCatalogResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createCleanRoomOutputCatalogResponseToPb(st)
+func (st CreateCleanRoomOutputCatalogResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createCleanRoomOutputCatalogResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1532,8 +1532,8 @@ type CreateCleanRoomRequest struct {
 	CleanRoom CleanRoom `json:"clean_room"`
 }
 
-func (st *CreateCleanRoomRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createCleanRoomRequestToPb(st)
+func (st CreateCleanRoomRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createCleanRoomRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1584,8 +1584,8 @@ type DeleteCleanRoomAssetRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *DeleteCleanRoomAssetRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteCleanRoomAssetRequestToPb(st)
+func (st DeleteCleanRoomAssetRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteCleanRoomAssetRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1631,8 +1631,8 @@ type DeleteCleanRoomRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *DeleteCleanRoomRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteCleanRoomRequestToPb(st)
+func (st DeleteCleanRoomRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteCleanRoomRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1676,8 +1676,8 @@ func (st DeleteCleanRoomRequest) MarshalJSON() ([]byte, error) {
 type DeleteResponse struct {
 }
 
-func (st *DeleteResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteResponseToPb(st)
+func (st DeleteResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1728,8 +1728,8 @@ type GetCleanRoomAssetRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *GetCleanRoomAssetRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getCleanRoomAssetRequestToPb(st)
+func (st GetCleanRoomAssetRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getCleanRoomAssetRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1774,8 +1774,8 @@ type GetCleanRoomRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *GetCleanRoomRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getCleanRoomRequestToPb(st)
+func (st GetCleanRoomRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getCleanRoomRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1825,8 +1825,8 @@ type ListCleanRoomAssetsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListCleanRoomAssetsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listCleanRoomAssetsRequestToPb(st)
+func (st ListCleanRoomAssetsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listCleanRoomAssetsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1880,8 +1880,8 @@ type ListCleanRoomAssetsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListCleanRoomAssetsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listCleanRoomAssetsResponseToPb(st)
+func (st ListCleanRoomAssetsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listCleanRoomAssetsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1936,8 +1936,8 @@ type ListCleanRoomNotebookTaskRunsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListCleanRoomNotebookTaskRunsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listCleanRoomNotebookTaskRunsRequestToPb(st)
+func (st ListCleanRoomNotebookTaskRunsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listCleanRoomNotebookTaskRunsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1991,8 +1991,8 @@ type ListCleanRoomNotebookTaskRunsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListCleanRoomNotebookTaskRunsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listCleanRoomNotebookTaskRunsResponseToPb(st)
+func (st ListCleanRoomNotebookTaskRunsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listCleanRoomNotebookTaskRunsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2043,8 +2043,8 @@ type ListCleanRoomsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListCleanRoomsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listCleanRoomsRequestToPb(st)
+func (st ListCleanRoomsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listCleanRoomsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2098,8 +2098,8 @@ type ListCleanRoomsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListCleanRoomsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listCleanRoomsResponseToPb(st)
+func (st ListCleanRoomsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listCleanRoomsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2159,8 +2159,8 @@ type UpdateCleanRoomAssetRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *UpdateCleanRoomAssetRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateCleanRoomAssetRequestToPb(st)
+func (st UpdateCleanRoomAssetRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateCleanRoomAssetRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2209,8 +2209,8 @@ type UpdateCleanRoomRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *UpdateCleanRoomRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateCleanRoomRequestToPb(st)
+func (st UpdateCleanRoomRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateCleanRoomRequestToPb(&st)
 	if err != nil {
 		return err
 	}

@@ -14,8 +14,8 @@ type CancelCustomLlmOptimizationRunRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *CancelCustomLlmOptimizationRunRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := cancelCustomLlmOptimizationRunRequestToPb(st)
+func (st CancelCustomLlmOptimizationRunRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := cancelCustomLlmOptimizationRunRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -59,8 +59,8 @@ func (st CancelCustomLlmOptimizationRunRequest) MarshalJSON() ([]byte, error) {
 type CancelOptimizeResponse struct {
 }
 
-func (st *CancelOptimizeResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := cancelOptimizeResponseToPb(st)
+func (st CancelOptimizeResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := cancelOptimizeResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -124,8 +124,8 @@ type CreateCustomLlmRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateCustomLlmRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createCustomLlmRequestToPb(st)
+func (st CreateCustomLlmRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createCustomLlmRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -201,8 +201,8 @@ type CustomLlm struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CustomLlm) EncodeValues(key string, v *url.Values) error {
-	pb, err := customLlmToPb(st)
+func (st CustomLlm) EncodeValues(key string, v *url.Values) error {
+	pb, err := customLlmToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -249,8 +249,8 @@ type Dataset struct {
 	Table Table `json:"table"`
 }
 
-func (st *Dataset) EncodeValues(key string, v *url.Values) error {
-	pb, err := datasetToPb(st)
+func (st Dataset) EncodeValues(key string, v *url.Values) error {
+	pb, err := datasetToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -296,8 +296,8 @@ type DeleteCustomLlmRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *DeleteCustomLlmRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteCustomLlmRequestToPb(st)
+func (st DeleteCustomLlmRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteCustomLlmRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -341,8 +341,8 @@ func (st DeleteCustomLlmRequest) MarshalJSON() ([]byte, error) {
 type DeleteCustomLlmResponse struct {
 }
 
-func (st *DeleteCustomLlmResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteCustomLlmResponseToPb(st)
+func (st DeleteCustomLlmResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteCustomLlmResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -388,8 +388,8 @@ type GetCustomLlmRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *GetCustomLlmRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getCustomLlmRequestToPb(st)
+func (st GetCustomLlmRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getCustomLlmRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -435,8 +435,8 @@ type StartCustomLlmOptimizationRunRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *StartCustomLlmOptimizationRunRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := startCustomLlmOptimizationRunRequestToPb(st)
+func (st StartCustomLlmOptimizationRunRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := startCustomLlmOptimizationRunRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -541,8 +541,8 @@ type Table struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Table) EncodeValues(key string, v *url.Values) error {
-	pb, err := tableToPb(st)
+func (st Table) EncodeValues(key string, v *url.Values) error {
+	pb, err := tableToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -607,8 +607,8 @@ type UpdateCustomLlmRequest struct {
 	UpdateMask string `json:"update_mask"`
 }
 
-func (st *UpdateCustomLlmRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateCustomLlmRequestToPb(st)
+func (st UpdateCustomLlmRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateCustomLlmRequestToPb(&st)
 	if err != nil {
 		return err
 	}

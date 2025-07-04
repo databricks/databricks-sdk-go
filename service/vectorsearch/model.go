@@ -18,8 +18,8 @@ type ColumnInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ColumnInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := columnInfoToPb(st)
+func (st ColumnInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := columnInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -74,8 +74,8 @@ type CreateEndpoint struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateEndpoint) EncodeValues(key string, v *url.Values) error {
-	pb, err := createEndpointToPb(st)
+func (st CreateEndpoint) EncodeValues(key string, v *url.Values) error {
+	pb, err := createEndpointToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -139,8 +139,8 @@ type CreateVectorIndexRequest struct {
 	PrimaryKey string `json:"primary_key"`
 }
 
-func (st *CreateVectorIndexRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createVectorIndexRequestToPb(st)
+func (st CreateVectorIndexRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createVectorIndexRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -192,8 +192,8 @@ type CustomTag struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CustomTag) EncodeValues(key string, v *url.Values) error {
-	pb, err := customTagToPb(st)
+func (st CustomTag) EncodeValues(key string, v *url.Values) error {
+	pb, err := customTagToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -245,8 +245,8 @@ type DeleteDataResult struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteDataResult) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDataResultToPb(st)
+func (st DeleteDataResult) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDataResultToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -335,8 +335,8 @@ type DeleteDataVectorIndexRequest struct {
 	PrimaryKeys []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteDataVectorIndexRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDataVectorIndexRequestToPb(st)
+func (st DeleteDataVectorIndexRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDataVectorIndexRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -386,8 +386,8 @@ type DeleteDataVectorIndexResponse struct {
 	Status DeleteDataStatus `json:"status,omitempty"`
 }
 
-func (st *DeleteDataVectorIndexResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDataVectorIndexResponseToPb(st)
+func (st DeleteDataVectorIndexResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDataVectorIndexResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -433,8 +433,8 @@ type DeleteEndpointRequest struct {
 	EndpointName string `json:"-" tf:"-"`
 }
 
-func (st *DeleteEndpointRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteEndpointRequestToPb(st)
+func (st DeleteEndpointRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteEndpointRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -480,8 +480,8 @@ type DeleteIndexRequest struct {
 	IndexName string `json:"-" tf:"-"`
 }
 
-func (st *DeleteIndexRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteIndexRequestToPb(st)
+func (st DeleteIndexRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteIndexRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -555,8 +555,8 @@ type DeltaSyncVectorIndexSpecRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeltaSyncVectorIndexSpecRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deltaSyncVectorIndexSpecRequestToPb(st)
+func (st DeltaSyncVectorIndexSpecRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deltaSyncVectorIndexSpecRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -627,8 +627,8 @@ type DeltaSyncVectorIndexSpecResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeltaSyncVectorIndexSpecResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deltaSyncVectorIndexSpecResponseToPb(st)
+func (st DeltaSyncVectorIndexSpecResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deltaSyncVectorIndexSpecResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -687,8 +687,8 @@ type DirectAccessVectorIndexSpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DirectAccessVectorIndexSpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := directAccessVectorIndexSpecToPb(st)
+func (st DirectAccessVectorIndexSpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := directAccessVectorIndexSpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -740,8 +740,8 @@ type EmbeddingSourceColumn struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EmbeddingSourceColumn) EncodeValues(key string, v *url.Values) error {
-	pb, err := embeddingSourceColumnToPb(st)
+func (st EmbeddingSourceColumn) EncodeValues(key string, v *url.Values) error {
+	pb, err := embeddingSourceColumnToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -793,8 +793,8 @@ type EmbeddingVectorColumn struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EmbeddingVectorColumn) EncodeValues(key string, v *url.Values) error {
-	pb, err := embeddingVectorColumnToPb(st)
+func (st EmbeddingVectorColumn) EncodeValues(key string, v *url.Values) error {
+	pb, err := embeddingVectorColumnToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -873,8 +873,8 @@ type EndpointInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EndpointInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := endpointInfoToPb(st)
+func (st EndpointInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := endpointInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -927,8 +927,8 @@ type EndpointStatus struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EndpointStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := endpointStatusToPb(st)
+func (st EndpointStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := endpointStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1050,8 +1050,8 @@ type GetEndpointRequest struct {
 	EndpointName string `json:"-" tf:"-"`
 }
 
-func (st *GetEndpointRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getEndpointRequestToPb(st)
+func (st GetEndpointRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getEndpointRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1097,8 +1097,8 @@ type GetIndexRequest struct {
 	IndexName string `json:"-" tf:"-"`
 }
 
-func (st *GetIndexRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getIndexRequestToPb(st)
+func (st GetIndexRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getIndexRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1151,8 +1151,8 @@ type ListEndpointResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListEndpointResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listEndpointResponseToPb(st)
+func (st ListEndpointResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listEndpointResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1200,8 +1200,8 @@ type ListEndpointsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListEndpointsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listEndpointsRequestToPb(st)
+func (st ListEndpointsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listEndpointsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1251,8 +1251,8 @@ type ListIndexesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListIndexesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listIndexesRequestToPb(st)
+func (st ListIndexesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listIndexesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1299,8 +1299,8 @@ type ListValue struct {
 	Values []Value `json:"values,omitempty"`
 }
 
-func (st *ListValue) EncodeValues(key string, v *url.Values) error {
-	pb, err := listValueToPb(st)
+func (st ListValue) EncodeValues(key string, v *url.Values) error {
+	pb, err := listValueToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1353,8 +1353,8 @@ type ListVectorIndexesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListVectorIndexesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listVectorIndexesResponseToPb(st)
+func (st ListVectorIndexesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listVectorIndexesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1407,8 +1407,8 @@ type MapStringValueEntry struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *MapStringValueEntry) EncodeValues(key string, v *url.Values) error {
-	pb, err := mapStringValueEntryToPb(st)
+func (st MapStringValueEntry) EncodeValues(key string, v *url.Values) error {
+	pb, err := mapStringValueEntryToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1469,8 +1469,8 @@ type MiniVectorIndex struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *MiniVectorIndex) EncodeValues(key string, v *url.Values) error {
-	pb, err := miniVectorIndexToPb(st)
+func (st MiniVectorIndex) EncodeValues(key string, v *url.Values) error {
+	pb, err := miniVectorIndexToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1519,8 +1519,8 @@ type PatchEndpointBudgetPolicyRequest struct {
 	EndpointName string `json:"-" tf:"-"`
 }
 
-func (st *PatchEndpointBudgetPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := patchEndpointBudgetPolicyRequestToPb(st)
+func (st PatchEndpointBudgetPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := patchEndpointBudgetPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1569,8 +1569,8 @@ type PatchEndpointBudgetPolicyResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PatchEndpointBudgetPolicyResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := patchEndpointBudgetPolicyResponseToPb(st)
+func (st PatchEndpointBudgetPolicyResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := patchEndpointBudgetPolicyResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1675,8 +1675,8 @@ type QueryVectorIndexNextPageRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *QueryVectorIndexNextPageRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := queryVectorIndexNextPageRequestToPb(st)
+func (st QueryVectorIndexNextPageRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := queryVectorIndexNextPageRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1756,8 +1756,8 @@ type QueryVectorIndexRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *QueryVectorIndexRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := queryVectorIndexRequestToPb(st)
+func (st QueryVectorIndexRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := queryVectorIndexRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1815,8 +1815,8 @@ type QueryVectorIndexResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *QueryVectorIndexResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := queryVectorIndexResponseToPb(st)
+func (st QueryVectorIndexResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := queryVectorIndexResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1869,8 +1869,8 @@ type ResultData struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ResultData) EncodeValues(key string, v *url.Values) error {
-	pb, err := resultDataToPb(st)
+func (st ResultData) EncodeValues(key string, v *url.Values) error {
+	pb, err := resultDataToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1923,8 +1923,8 @@ type ResultManifest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ResultManifest) EncodeValues(key string, v *url.Values) error {
-	pb, err := resultManifestToPb(st)
+func (st ResultManifest) EncodeValues(key string, v *url.Values) error {
+	pb, err := resultManifestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1978,8 +1978,8 @@ type ScanVectorIndexRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ScanVectorIndexRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := scanVectorIndexRequestToPb(st)
+func (st ScanVectorIndexRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := scanVectorIndexRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2032,8 +2032,8 @@ type ScanVectorIndexResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ScanVectorIndexResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := scanVectorIndexResponseToPb(st)
+func (st ScanVectorIndexResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := scanVectorIndexResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2080,8 +2080,8 @@ type Struct struct {
 	Fields []MapStringValueEntry `json:"fields,omitempty"`
 }
 
-func (st *Struct) EncodeValues(key string, v *url.Values) error {
-	pb, err := structToPb(st)
+func (st Struct) EncodeValues(key string, v *url.Values) error {
+	pb, err := structToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2127,8 +2127,8 @@ type SyncIndexRequest struct {
 	IndexName string `json:"-" tf:"-"`
 }
 
-func (st *SyncIndexRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := syncIndexRequestToPb(st)
+func (st SyncIndexRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := syncIndexRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2177,8 +2177,8 @@ type UpdateEndpointCustomTagsRequest struct {
 	EndpointName string `json:"-" tf:"-"`
 }
 
-func (st *UpdateEndpointCustomTagsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateEndpointCustomTagsRequestToPb(st)
+func (st UpdateEndpointCustomTagsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateEndpointCustomTagsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2230,8 +2230,8 @@ type UpdateEndpointCustomTagsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateEndpointCustomTagsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateEndpointCustomTagsResponseToPb(st)
+func (st UpdateEndpointCustomTagsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateEndpointCustomTagsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2283,8 +2283,8 @@ type UpsertDataResult struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpsertDataResult) EncodeValues(key string, v *url.Values) error {
-	pb, err := upsertDataResultToPb(st)
+func (st UpsertDataResult) EncodeValues(key string, v *url.Values) error {
+	pb, err := upsertDataResultToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2374,8 +2374,8 @@ type UpsertDataVectorIndexRequest struct {
 	InputsJson string `json:"inputs_json"`
 }
 
-func (st *UpsertDataVectorIndexRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := upsertDataVectorIndexRequestToPb(st)
+func (st UpsertDataVectorIndexRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := upsertDataVectorIndexRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2425,8 +2425,8 @@ type UpsertDataVectorIndexResponse struct {
 	Status UpsertDataStatus `json:"status,omitempty"`
 }
 
-func (st *UpsertDataVectorIndexResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := upsertDataVectorIndexResponseToPb(st)
+func (st UpsertDataVectorIndexResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := upsertDataVectorIndexResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2487,8 +2487,8 @@ type Value struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Value) EncodeValues(key string, v *url.Values) error {
-	pb, err := valueToPb(st)
+func (st Value) EncodeValues(key string, v *url.Values) error {
+	pb, err := valueToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2558,8 +2558,8 @@ type VectorIndex struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *VectorIndex) EncodeValues(key string, v *url.Values) error {
-	pb, err := vectorIndexToPb(st)
+func (st VectorIndex) EncodeValues(key string, v *url.Values) error {
+	pb, err := vectorIndexToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2617,8 +2617,8 @@ type VectorIndexStatus struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *VectorIndexStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := vectorIndexStatusToPb(st)
+func (st VectorIndexStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := vectorIndexStatusToPb(&st)
 	if err != nil {
 		return err
 	}

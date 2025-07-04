@@ -16,8 +16,8 @@ type AwsCredentials struct {
 	StsRole *StsRole `json:"sts_role,omitempty"`
 }
 
-func (st *AwsCredentials) EncodeValues(key string, v *url.Values) error {
-	pb, err := awsCredentialsToPb(st)
+func (st AwsCredentials) EncodeValues(key string, v *url.Values) error {
+	pb, err := awsCredentialsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -78,8 +78,8 @@ type AwsKeyInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AwsKeyInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := awsKeyInfoToPb(st)
+func (st AwsKeyInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := awsKeyInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -131,8 +131,8 @@ type AzureWorkspaceInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AzureWorkspaceInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := azureWorkspaceInfoToPb(st)
+func (st AzureWorkspaceInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := azureWorkspaceInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -180,8 +180,8 @@ type CloudResourceContainer struct {
 	Gcp *CustomerFacingGcpCloudResourceContainer `json:"gcp,omitempty"`
 }
 
-func (st *CloudResourceContainer) EncodeValues(key string, v *url.Values) error {
-	pb, err := cloudResourceContainerToPb(st)
+func (st CloudResourceContainer) EncodeValues(key string, v *url.Values) error {
+	pb, err := cloudResourceContainerToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -240,8 +240,8 @@ type CreateAwsKeyInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateAwsKeyInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := createAwsKeyInfoToPb(st)
+func (st CreateAwsKeyInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := createAwsKeyInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -288,8 +288,8 @@ type CreateCredentialAwsCredentials struct {
 	StsRole *CreateCredentialStsRole `json:"sts_role,omitempty"`
 }
 
-func (st *CreateCredentialAwsCredentials) EncodeValues(key string, v *url.Values) error {
-	pb, err := createCredentialAwsCredentialsToPb(st)
+func (st CreateCredentialAwsCredentials) EncodeValues(key string, v *url.Values) error {
+	pb, err := createCredentialAwsCredentialsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -339,8 +339,8 @@ type CreateCredentialRequest struct {
 	CredentialsName string `json:"credentials_name"`
 }
 
-func (st *CreateCredentialRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createCredentialRequestToPb(st)
+func (st CreateCredentialRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createCredentialRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -389,8 +389,8 @@ type CreateCredentialStsRole struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateCredentialStsRole) EncodeValues(key string, v *url.Values) error {
-	pb, err := createCredentialStsRoleToPb(st)
+func (st CreateCredentialStsRole) EncodeValues(key string, v *url.Values) error {
+	pb, err := createCredentialStsRoleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -443,8 +443,8 @@ type CreateCustomerManagedKeyRequest struct {
 	UseCases []KeyUseCase `json:"use_cases"`
 }
 
-func (st *CreateCustomerManagedKeyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createCustomerManagedKeyRequestToPb(st)
+func (st CreateCustomerManagedKeyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createCustomerManagedKeyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -491,8 +491,8 @@ type CreateGcpKeyInfo struct {
 	KmsKeyId string `json:"kms_key_id"`
 }
 
-func (st *CreateGcpKeyInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := createGcpKeyInfoToPb(st)
+func (st CreateGcpKeyInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := createGcpKeyInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -559,8 +559,8 @@ type CreateNetworkRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateNetworkRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createNetworkRequestToPb(st)
+func (st CreateNetworkRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createNetworkRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -610,8 +610,8 @@ type CreateStorageConfigurationRequest struct {
 	StorageConfigurationName string `json:"storage_configuration_name"`
 }
 
-func (st *CreateStorageConfigurationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createStorageConfigurationRequestToPb(st)
+func (st CreateStorageConfigurationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createStorageConfigurationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -669,8 +669,8 @@ type CreateVpcEndpointRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateVpcEndpointRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createVpcEndpointRequestToPb(st)
+func (st CreateVpcEndpointRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createVpcEndpointRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -817,8 +817,8 @@ type CreateWorkspaceRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createWorkspaceRequestToPb(st)
+func (st CreateWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createWorkspaceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -879,8 +879,8 @@ type Credential struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Credential) EncodeValues(key string, v *url.Values) error {
-	pb, err := credentialToPb(st)
+func (st Credential) EncodeValues(key string, v *url.Values) error {
+	pb, err := credentialToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -931,8 +931,8 @@ type CustomerFacingGcpCloudResourceContainer struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CustomerFacingGcpCloudResourceContainer) EncodeValues(key string, v *url.Values) error {
-	pb, err := customerFacingGcpCloudResourceContainerToPb(st)
+func (st CustomerFacingGcpCloudResourceContainer) EncodeValues(key string, v *url.Values) error {
+	pb, err := customerFacingGcpCloudResourceContainerToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -996,8 +996,8 @@ type CustomerManagedKey struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CustomerManagedKey) EncodeValues(key string, v *url.Values) error {
-	pb, err := customerManagedKeyToPb(st)
+func (st CustomerManagedKey) EncodeValues(key string, v *url.Values) error {
+	pb, err := customerManagedKeyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1043,8 +1043,8 @@ type DeleteCredentialRequest struct {
 	CredentialsId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteCredentialRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteCredentialRequestToPb(st)
+func (st DeleteCredentialRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteCredentialRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1090,8 +1090,8 @@ type DeleteEncryptionKeyRequest struct {
 	CustomerManagedKeyId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteEncryptionKeyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteEncryptionKeyRequestToPb(st)
+func (st DeleteEncryptionKeyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteEncryptionKeyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1137,8 +1137,8 @@ type DeleteNetworkRequest struct {
 	NetworkId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteNetworkRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteNetworkRequestToPb(st)
+func (st DeleteNetworkRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteNetworkRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1184,8 +1184,8 @@ type DeletePrivateAccesRequest struct {
 	PrivateAccessSettingsId string `json:"-" tf:"-"`
 }
 
-func (st *DeletePrivateAccesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deletePrivateAccesRequestToPb(st)
+func (st DeletePrivateAccesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deletePrivateAccesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1231,8 +1231,8 @@ type DeleteStorageRequest struct {
 	StorageConfigurationId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteStorageRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteStorageRequestToPb(st)
+func (st DeleteStorageRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteStorageRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1278,8 +1278,8 @@ type DeleteVpcEndpointRequest struct {
 	VpcEndpointId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteVpcEndpointRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteVpcEndpointRequestToPb(st)
+func (st DeleteVpcEndpointRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteVpcEndpointRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1325,8 +1325,8 @@ type DeleteWorkspaceRequest struct {
 	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
-func (st *DeleteWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteWorkspaceRequestToPb(st)
+func (st DeleteWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteWorkspaceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1470,8 +1470,8 @@ type ExternalCustomerInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ExternalCustomerInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := externalCustomerInfoToPb(st)
+func (st ExternalCustomerInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := externalCustomerInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1518,8 +1518,8 @@ type GcpKeyInfo struct {
 	KmsKeyId string `json:"kms_key_id"`
 }
 
-func (st *GcpKeyInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := gcpKeyInfoToPb(st)
+func (st GcpKeyInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := gcpKeyInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1600,8 +1600,8 @@ type GcpManagedNetworkConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GcpManagedNetworkConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := gcpManagedNetworkConfigToPb(st)
+func (st GcpManagedNetworkConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := gcpManagedNetworkConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1671,8 +1671,8 @@ type GcpNetworkInfo struct {
 	VpcId string `json:"vpc_id"`
 }
 
-func (st *GcpNetworkInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := gcpNetworkInfoToPb(st)
+func (st GcpNetworkInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := gcpNetworkInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1736,8 +1736,8 @@ type GcpVpcEndpointInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GcpVpcEndpointInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := gcpVpcEndpointInfoToPb(st)
+func (st GcpVpcEndpointInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := gcpVpcEndpointInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1783,8 +1783,8 @@ type GetCredentialRequest struct {
 	CredentialsId string `json:"-" tf:"-"`
 }
 
-func (st *GetCredentialRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getCredentialRequestToPb(st)
+func (st GetCredentialRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getCredentialRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1830,8 +1830,8 @@ type GetEncryptionKeyRequest struct {
 	CustomerManagedKeyId string `json:"-" tf:"-"`
 }
 
-func (st *GetEncryptionKeyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getEncryptionKeyRequestToPb(st)
+func (st GetEncryptionKeyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getEncryptionKeyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1877,8 +1877,8 @@ type GetNetworkRequest struct {
 	NetworkId string `json:"-" tf:"-"`
 }
 
-func (st *GetNetworkRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getNetworkRequestToPb(st)
+func (st GetNetworkRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getNetworkRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1924,8 +1924,8 @@ type GetPrivateAccesRequest struct {
 	PrivateAccessSettingsId string `json:"-" tf:"-"`
 }
 
-func (st *GetPrivateAccesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPrivateAccesRequestToPb(st)
+func (st GetPrivateAccesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPrivateAccesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1971,8 +1971,8 @@ type GetStorageRequest struct {
 	StorageConfigurationId string `json:"-" tf:"-"`
 }
 
-func (st *GetStorageRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getStorageRequestToPb(st)
+func (st GetStorageRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getStorageRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2018,8 +2018,8 @@ type GetVpcEndpointRequest struct {
 	VpcEndpointId string `json:"-" tf:"-"`
 }
 
-func (st *GetVpcEndpointRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getVpcEndpointRequestToPb(st)
+func (st GetVpcEndpointRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getVpcEndpointRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2065,8 +2065,8 @@ type GetWorkspaceRequest struct {
 	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
-func (st *GetWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getWorkspaceRequestToPb(st)
+func (st GetWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getWorkspaceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2129,8 +2129,8 @@ type GkeConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GkeConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := gkeConfigToPb(st)
+func (st GkeConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := gkeConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2304,8 +2304,8 @@ type Network struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Network) EncodeValues(key string, v *url.Values) error {
-	pb, err := networkToPb(st)
+func (st Network) EncodeValues(key string, v *url.Values) error {
+	pb, err := networkToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2357,8 +2357,8 @@ type NetworkHealth struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NetworkHealth) EncodeValues(key string, v *url.Values) error {
-	pb, err := networkHealthToPb(st)
+func (st NetworkHealth) EncodeValues(key string, v *url.Values) error {
+	pb, err := networkHealthToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2414,8 +2414,8 @@ type NetworkVpcEndpoints struct {
 	RestApi []string `json:"rest_api"`
 }
 
-func (st *NetworkVpcEndpoints) EncodeValues(key string, v *url.Values) error {
-	pb, err := networkVpcEndpointsToPb(st)
+func (st NetworkVpcEndpoints) EncodeValues(key string, v *url.Values) error {
+	pb, err := networkVpcEndpointsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2467,8 +2467,8 @@ type NetworkWarning struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NetworkWarning) EncodeValues(key string, v *url.Values) error {
-	pb, err := networkWarningToPb(st)
+func (st NetworkWarning) EncodeValues(key string, v *url.Values) error {
+	pb, err := networkWarningToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2636,8 +2636,8 @@ type PrivateAccessSettings struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PrivateAccessSettings) EncodeValues(key string, v *url.Values) error {
-	pb, err := privateAccessSettingsToPb(st)
+func (st PrivateAccessSettings) EncodeValues(key string, v *url.Values) error {
+	pb, err := privateAccessSettingsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2687,8 +2687,8 @@ type RootBucketInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RootBucketInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := rootBucketInfoToPb(st)
+func (st RootBucketInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := rootBucketInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2749,8 +2749,8 @@ type StorageConfiguration struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *StorageConfiguration) EncodeValues(key string, v *url.Values) error {
-	pb, err := storageConfigurationToPb(st)
+func (st StorageConfiguration) EncodeValues(key string, v *url.Values) error {
+	pb, err := storageConfigurationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2803,8 +2803,8 @@ type StsRole struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *StsRole) EncodeValues(key string, v *url.Values) error {
-	pb, err := stsRoleToPb(st)
+func (st StsRole) EncodeValues(key string, v *url.Values) error {
+	pb, err := stsRoleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2891,8 +2891,8 @@ type UpdateWorkspaceRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateWorkspaceRequestToPb(st)
+func (st UpdateWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateWorkspaceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2973,8 +2973,8 @@ type UpsertPrivateAccessSettingsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpsertPrivateAccessSettingsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := upsertPrivateAccessSettingsRequestToPb(st)
+func (st UpsertPrivateAccessSettingsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := upsertPrivateAccessSettingsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3061,8 +3061,8 @@ type VpcEndpoint struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *VpcEndpoint) EncodeValues(key string, v *url.Values) error {
-	pb, err := vpcEndpointToPb(st)
+func (st VpcEndpoint) EncodeValues(key string, v *url.Values) error {
+	pb, err := vpcEndpointToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3289,8 +3289,8 @@ type Workspace struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Workspace) EncodeValues(key string, v *url.Values) error {
-	pb, err := workspaceToPb(st)
+func (st Workspace) EncodeValues(key string, v *url.Values) error {
+	pb, err := workspaceToPb(&st)
 	if err != nil {
 		return err
 	}

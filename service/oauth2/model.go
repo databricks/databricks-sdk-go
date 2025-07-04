@@ -22,8 +22,8 @@ type CreateAccountFederationPolicyRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateAccountFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createAccountFederationPolicyRequestToPb(st)
+func (st CreateAccountFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createAccountFederationPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -91,8 +91,8 @@ type CreateCustomAppIntegration struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateCustomAppIntegration) EncodeValues(key string, v *url.Values) error {
-	pb, err := createCustomAppIntegrationToPb(st)
+func (st CreateCustomAppIntegration) EncodeValues(key string, v *url.Values) error {
+	pb, err := createCustomAppIntegrationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -148,8 +148,8 @@ type CreateCustomAppIntegrationOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateCustomAppIntegrationOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := createCustomAppIntegrationOutputToPb(st)
+func (st CreateCustomAppIntegrationOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := createCustomAppIntegrationOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -202,8 +202,8 @@ type CreatePublishedAppIntegration struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreatePublishedAppIntegration) EncodeValues(key string, v *url.Values) error {
-	pb, err := createPublishedAppIntegrationToPb(st)
+func (st CreatePublishedAppIntegration) EncodeValues(key string, v *url.Values) error {
+	pb, err := createPublishedAppIntegrationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -252,8 +252,8 @@ type CreatePublishedAppIntegrationOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreatePublishedAppIntegrationOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := createPublishedAppIntegrationOutputToPb(st)
+func (st CreatePublishedAppIntegrationOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := createPublishedAppIntegrationOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -308,8 +308,8 @@ type CreateServicePrincipalFederationPolicyRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateServicePrincipalFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createServicePrincipalFederationPolicyRequestToPb(st)
+func (st CreateServicePrincipalFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createServicePrincipalFederationPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -361,8 +361,8 @@ type CreateServicePrincipalSecretRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateServicePrincipalSecretRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createServicePrincipalSecretRequestToPb(st)
+func (st CreateServicePrincipalSecretRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createServicePrincipalSecretRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -430,8 +430,8 @@ type CreateServicePrincipalSecretResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateServicePrincipalSecretResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createServicePrincipalSecretResponseToPb(st)
+func (st CreateServicePrincipalSecretResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createServicePrincipalSecretResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -477,8 +477,8 @@ type DeleteAccountFederationPolicyRequest struct {
 	PolicyId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteAccountFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteAccountFederationPolicyRequestToPb(st)
+func (st DeleteAccountFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteAccountFederationPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -523,8 +523,8 @@ type DeleteCustomAppIntegrationRequest struct {
 	IntegrationId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteCustomAppIntegrationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteCustomAppIntegrationRequestToPb(st)
+func (st DeleteCustomAppIntegrationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteCustomAppIntegrationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -569,8 +569,8 @@ type DeletePublishedAppIntegrationRequest struct {
 	IntegrationId string `json:"-" tf:"-"`
 }
 
-func (st *DeletePublishedAppIntegrationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deletePublishedAppIntegrationRequestToPb(st)
+func (st DeletePublishedAppIntegrationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deletePublishedAppIntegrationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -618,8 +618,8 @@ type DeleteServicePrincipalFederationPolicyRequest struct {
 	ServicePrincipalId int64 `json:"-" tf:"-"`
 }
 
-func (st *DeleteServicePrincipalFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteServicePrincipalFederationPolicyRequestToPb(st)
+func (st DeleteServicePrincipalFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteServicePrincipalFederationPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -667,8 +667,8 @@ type DeleteServicePrincipalSecretRequest struct {
 	ServicePrincipalId int64 `json:"-" tf:"-"`
 }
 
-func (st *DeleteServicePrincipalSecretRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteServicePrincipalSecretRequestToPb(st)
+func (st DeleteServicePrincipalSecretRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteServicePrincipalSecretRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -745,8 +745,8 @@ type FederationPolicy struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *FederationPolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := federationPolicyToPb(st)
+func (st FederationPolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := federationPolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -792,8 +792,8 @@ type GetAccountFederationPolicyRequest struct {
 	PolicyId string `json:"-" tf:"-"`
 }
 
-func (st *GetAccountFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getAccountFederationPolicyRequestToPb(st)
+func (st GetAccountFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getAccountFederationPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -875,8 +875,8 @@ type GetCustomAppIntegrationOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetCustomAppIntegrationOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := getCustomAppIntegrationOutputToPb(st)
+func (st GetCustomAppIntegrationOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := getCustomAppIntegrationOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -922,8 +922,8 @@ type GetCustomAppIntegrationRequest struct {
 	IntegrationId string `json:"-" tf:"-"`
 }
 
-func (st *GetCustomAppIntegrationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getCustomAppIntegrationRequestToPb(st)
+func (st GetCustomAppIntegrationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getCustomAppIntegrationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -975,8 +975,8 @@ type GetCustomAppIntegrationsOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetCustomAppIntegrationsOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := getCustomAppIntegrationsOutputToPb(st)
+func (st GetCustomAppIntegrationsOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := getCustomAppIntegrationsOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1040,8 +1040,8 @@ type GetPublishedAppIntegrationOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetPublishedAppIntegrationOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPublishedAppIntegrationOutputToPb(st)
+func (st GetPublishedAppIntegrationOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPublishedAppIntegrationOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1086,8 +1086,8 @@ type GetPublishedAppIntegrationRequest struct {
 	IntegrationId string `json:"-" tf:"-"`
 }
 
-func (st *GetPublishedAppIntegrationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPublishedAppIntegrationRequestToPb(st)
+func (st GetPublishedAppIntegrationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPublishedAppIntegrationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1139,8 +1139,8 @@ type GetPublishedAppIntegrationsOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetPublishedAppIntegrationsOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPublishedAppIntegrationsOutputToPb(st)
+func (st GetPublishedAppIntegrationsOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPublishedAppIntegrationsOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1193,8 +1193,8 @@ type GetPublishedAppsOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetPublishedAppsOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPublishedAppsOutputToPb(st)
+func (st GetPublishedAppsOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPublishedAppsOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1242,8 +1242,8 @@ type GetServicePrincipalFederationPolicyRequest struct {
 	ServicePrincipalId int64 `json:"-" tf:"-"`
 }
 
-func (st *GetServicePrincipalFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getServicePrincipalFederationPolicyRequestToPb(st)
+func (st GetServicePrincipalFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getServicePrincipalFederationPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1292,8 +1292,8 @@ type ListAccountFederationPoliciesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListAccountFederationPoliciesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listAccountFederationPoliciesRequestToPb(st)
+func (st ListAccountFederationPoliciesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listAccountFederationPoliciesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1344,8 +1344,8 @@ type ListCustomAppIntegrationsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListCustomAppIntegrationsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listCustomAppIntegrationsRequestToPb(st)
+func (st ListCustomAppIntegrationsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listCustomAppIntegrationsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1397,8 +1397,8 @@ type ListFederationPoliciesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListFederationPoliciesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listFederationPoliciesResponseToPb(st)
+func (st ListFederationPoliciesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listFederationPoliciesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1448,8 +1448,8 @@ type ListOAuthPublishedAppsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListOAuthPublishedAppsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listOAuthPublishedAppsRequestToPb(st)
+func (st ListOAuthPublishedAppsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listOAuthPublishedAppsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1498,8 +1498,8 @@ type ListPublishedAppIntegrationsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListPublishedAppIntegrationsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listPublishedAppIntegrationsRequestToPb(st)
+func (st ListPublishedAppIntegrationsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listPublishedAppIntegrationsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1550,8 +1550,8 @@ type ListServicePrincipalFederationPoliciesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListServicePrincipalFederationPoliciesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listServicePrincipalFederationPoliciesRequestToPb(st)
+func (st ListServicePrincipalFederationPoliciesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listServicePrincipalFederationPoliciesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1609,8 +1609,8 @@ type ListServicePrincipalSecretsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListServicePrincipalSecretsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listServicePrincipalSecretsRequestToPb(st)
+func (st ListServicePrincipalSecretsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listServicePrincipalSecretsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1662,8 +1662,8 @@ type ListServicePrincipalSecretsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListServicePrincipalSecretsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listServicePrincipalSecretsResponseToPb(st)
+func (st ListServicePrincipalSecretsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listServicePrincipalSecretsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1748,8 +1748,8 @@ type OidcFederationPolicy struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *OidcFederationPolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := oidcFederationPolicyToPb(st)
+func (st OidcFederationPolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := oidcFederationPolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1818,8 +1818,8 @@ type PublishedAppOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PublishedAppOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := publishedAppOutputToPb(st)
+func (st PublishedAppOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := publishedAppOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1884,8 +1884,8 @@ type SecretInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SecretInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := secretInfoToPb(st)
+func (st SecretInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := secretInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1937,8 +1937,8 @@ type TokenAccessPolicy struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TokenAccessPolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := tokenAccessPolicyToPb(st)
+func (st TokenAccessPolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := tokenAccessPolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1996,8 +1996,8 @@ type UpdateAccountFederationPolicyRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateAccountFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateAccountFederationPolicyRequestToPb(st)
+func (st UpdateAccountFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateAccountFederationPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2059,8 +2059,8 @@ type UpdateCustomAppIntegration struct {
 	UserAuthorizedScopes []string `json:"user_authorized_scopes,omitempty"`
 }
 
-func (st *UpdateCustomAppIntegration) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateCustomAppIntegrationToPb(st)
+func (st UpdateCustomAppIntegration) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateCustomAppIntegrationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2108,8 +2108,8 @@ type UpdatePublishedAppIntegration struct {
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 }
 
-func (st *UpdatePublishedAppIntegration) EncodeValues(key string, v *url.Values) error {
-	pb, err := updatePublishedAppIntegrationToPb(st)
+func (st UpdatePublishedAppIntegration) EncodeValues(key string, v *url.Values) error {
+	pb, err := updatePublishedAppIntegrationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2169,8 +2169,8 @@ type UpdateServicePrincipalFederationPolicyRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateServicePrincipalFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateServicePrincipalFederationPolicyRequestToPb(st)
+func (st UpdateServicePrincipalFederationPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateServicePrincipalFederationPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}

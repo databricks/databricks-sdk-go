@@ -21,8 +21,8 @@ type AnomalyDetectionConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AnomalyDetectionConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := anomalyDetectionConfigToPb(st)
+func (st AnomalyDetectionConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := anomalyDetectionConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -125,8 +125,8 @@ type CreateQualityMonitorRequest struct {
 	QualityMonitor QualityMonitor `json:"quality_monitor"`
 }
 
-func (st *CreateQualityMonitorRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createQualityMonitorRequestToPb(st)
+func (st CreateQualityMonitorRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createQualityMonitorRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -174,8 +174,8 @@ type DeleteQualityMonitorRequest struct {
 	ObjectType string `json:"-" tf:"-"`
 }
 
-func (st *DeleteQualityMonitorRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteQualityMonitorRequestToPb(st)
+func (st DeleteQualityMonitorRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteQualityMonitorRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -219,8 +219,8 @@ func (st DeleteQualityMonitorRequest) MarshalJSON() ([]byte, error) {
 type DeleteQualityMonitorResponse struct {
 }
 
-func (st *DeleteQualityMonitorResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteQualityMonitorResponseToPb(st)
+func (st DeleteQualityMonitorResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteQualityMonitorResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -268,8 +268,8 @@ type GetQualityMonitorRequest struct {
 	ObjectType string `json:"-" tf:"-"`
 }
 
-func (st *GetQualityMonitorRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getQualityMonitorRequestToPb(st)
+func (st GetQualityMonitorRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getQualityMonitorRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -318,8 +318,8 @@ type ListQualityMonitorRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListQualityMonitorRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listQualityMonitorRequestToPb(st)
+func (st ListQualityMonitorRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listQualityMonitorRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -371,8 +371,8 @@ type ListQualityMonitorResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListQualityMonitorResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listQualityMonitorResponseToPb(st)
+func (st ListQualityMonitorResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listQualityMonitorResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -425,8 +425,8 @@ type QualityMonitor struct {
 	ObjectType string `json:"object_type"`
 }
 
-func (st *QualityMonitor) EncodeValues(key string, v *url.Values) error {
-	pb, err := qualityMonitorToPb(st)
+func (st QualityMonitor) EncodeValues(key string, v *url.Values) error {
+	pb, err := qualityMonitorToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -477,8 +477,8 @@ type UpdateQualityMonitorRequest struct {
 	QualityMonitor QualityMonitor `json:"quality_monitor"`
 }
 
-func (st *UpdateQualityMonitorRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateQualityMonitorRequestToPb(st)
+func (st UpdateQualityMonitorRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateQualityMonitorRequestToPb(&st)
 	if err != nil {
 		return err
 	}

@@ -32,8 +32,8 @@ type AuthorizationDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AuthorizationDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := authorizationDetailsToPb(st)
+func (st AuthorizationDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := authorizationDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -84,8 +84,8 @@ type AuthorizationDetailsGrantRule struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AuthorizationDetailsGrantRule) EncodeValues(key string, v *url.Values) error {
-	pb, err := authorizationDetailsGrantRuleToPb(st)
+func (st AuthorizationDetailsGrantRule) EncodeValues(key string, v *url.Values) error {
+	pb, err := authorizationDetailsGrantRuleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -132,8 +132,8 @@ type CreateDashboardRequest struct {
 	Dashboard Dashboard `json:"dashboard"`
 }
 
-func (st *CreateDashboardRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createDashboardRequestToPb(st)
+func (st CreateDashboardRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createDashboardRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -182,8 +182,8 @@ type CreateScheduleRequest struct {
 	Schedule Schedule `json:"schedule"`
 }
 
-func (st *CreateScheduleRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createScheduleRequestToPb(st)
+func (st CreateScheduleRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createScheduleRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -234,8 +234,8 @@ type CreateSubscriptionRequest struct {
 	Subscription Subscription `json:"subscription"`
 }
 
-func (st *CreateSubscriptionRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createSubscriptionRequestToPb(st)
+func (st CreateSubscriptionRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createSubscriptionRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -291,8 +291,8 @@ type CronSchedule struct {
 	TimezoneId string `json:"timezone_id"`
 }
 
-func (st *CronSchedule) EncodeValues(key string, v *url.Values) error {
-	pb, err := cronScheduleToPb(st)
+func (st CronSchedule) EncodeValues(key string, v *url.Values) error {
+	pb, err := cronScheduleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -381,8 +381,8 @@ type Dashboard struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Dashboard) EncodeValues(key string, v *url.Values) error {
-	pb, err := dashboardToPb(st)
+func (st Dashboard) EncodeValues(key string, v *url.Values) error {
+	pb, err := dashboardToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -460,8 +460,8 @@ func (f *DashboardView) Type() string {
 type DeleteConversationResponse struct {
 }
 
-func (st *DeleteConversationResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteConversationResponseToPb(st)
+func (st DeleteConversationResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteConversationResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -514,8 +514,8 @@ type DeleteScheduleRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteScheduleRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteScheduleRequestToPb(st)
+func (st DeleteScheduleRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteScheduleRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -559,8 +559,8 @@ func (st DeleteScheduleRequest) MarshalJSON() ([]byte, error) {
 type DeleteScheduleResponse struct {
 }
 
-func (st *DeleteScheduleResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteScheduleResponseToPb(st)
+func (st DeleteScheduleResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteScheduleResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -615,8 +615,8 @@ type DeleteSubscriptionRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteSubscriptionRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteSubscriptionRequestToPb(st)
+func (st DeleteSubscriptionRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteSubscriptionRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -660,8 +660,8 @@ func (st DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
 type DeleteSubscriptionResponse struct {
 }
 
-func (st *DeleteSubscriptionResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteSubscriptionResponseToPb(st)
+func (st DeleteSubscriptionResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteSubscriptionResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -717,8 +717,8 @@ type GenieAttachment struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GenieAttachment) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieAttachmentToPb(st)
+func (st GenieAttachment) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieAttachmentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -785,8 +785,8 @@ type GenieConversation struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GenieConversation) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieConversationToPb(st)
+func (st GenieConversation) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieConversationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -839,8 +839,8 @@ type GenieConversationSummary struct {
 	Title string `json:"title"`
 }
 
-func (st *GenieConversationSummary) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieConversationSummaryToPb(st)
+func (st GenieConversationSummary) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieConversationSummaryToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -891,8 +891,8 @@ type GenieCreateConversationMessageRequest struct {
 	SpaceId string `json:"-" tf:"-"`
 }
 
-func (st *GenieCreateConversationMessageRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieCreateConversationMessageRequestToPb(st)
+func (st GenieCreateConversationMessageRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieCreateConversationMessageRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -940,8 +940,8 @@ type GenieDeleteConversationRequest struct {
 	SpaceId string `json:"-" tf:"-"`
 }
 
-func (st *GenieDeleteConversationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieDeleteConversationRequestToPb(st)
+func (st GenieDeleteConversationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieDeleteConversationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -993,8 +993,8 @@ type GenieExecuteMessageAttachmentQueryRequest struct {
 	SpaceId string `json:"-" tf:"-"`
 }
 
-func (st *GenieExecuteMessageAttachmentQueryRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieExecuteMessageAttachmentQueryRequestToPb(st)
+func (st GenieExecuteMessageAttachmentQueryRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieExecuteMessageAttachmentQueryRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1044,8 +1044,8 @@ type GenieExecuteMessageQueryRequest struct {
 	SpaceId string `json:"-" tf:"-"`
 }
 
-func (st *GenieExecuteMessageQueryRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieExecuteMessageQueryRequestToPb(st)
+func (st GenieExecuteMessageQueryRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieExecuteMessageQueryRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1097,8 +1097,8 @@ type GenieGetConversationMessageRequest struct {
 	SpaceId string `json:"-" tf:"-"`
 }
 
-func (st *GenieGetConversationMessageRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieGetConversationMessageRequestToPb(st)
+func (st GenieGetConversationMessageRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieGetConversationMessageRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1150,8 +1150,8 @@ type GenieGetMessageAttachmentQueryResultRequest struct {
 	SpaceId string `json:"-" tf:"-"`
 }
 
-func (st *GenieGetMessageAttachmentQueryResultRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieGetMessageAttachmentQueryResultRequestToPb(st)
+func (st GenieGetMessageAttachmentQueryResultRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieGetMessageAttachmentQueryResultRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1201,8 +1201,8 @@ type GenieGetMessageQueryResultRequest struct {
 	SpaceId string `json:"-" tf:"-"`
 }
 
-func (st *GenieGetMessageQueryResultRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieGetMessageQueryResultRequestToPb(st)
+func (st GenieGetMessageQueryResultRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieGetMessageQueryResultRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1250,8 +1250,8 @@ type GenieGetMessageQueryResultResponse struct {
 	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
 }
 
-func (st *GenieGetMessageQueryResultResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieGetMessageQueryResultResponseToPb(st)
+func (st GenieGetMessageQueryResultResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieGetMessageQueryResultResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1303,8 +1303,8 @@ type GenieGetQueryResultByAttachmentRequest struct {
 	SpaceId string `json:"-" tf:"-"`
 }
 
-func (st *GenieGetQueryResultByAttachmentRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieGetQueryResultByAttachmentRequestToPb(st)
+func (st GenieGetQueryResultByAttachmentRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieGetQueryResultByAttachmentRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1350,8 +1350,8 @@ type GenieGetSpaceRequest struct {
 	SpaceId string `json:"-" tf:"-"`
 }
 
-func (st *GenieGetSpaceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieGetSpaceRequestToPb(st)
+func (st GenieGetSpaceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieGetSpaceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1403,8 +1403,8 @@ type GenieListConversationsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GenieListConversationsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieListConversationsRequestToPb(st)
+func (st GenieListConversationsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieListConversationsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1456,8 +1456,8 @@ type GenieListConversationsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GenieListConversationsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieListConversationsResponseToPb(st)
+func (st GenieListConversationsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieListConversationsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1507,8 +1507,8 @@ type GenieListSpacesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GenieListSpacesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieListSpacesRequestToPb(st)
+func (st GenieListSpacesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieListSpacesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1560,8 +1560,8 @@ type GenieListSpacesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GenieListSpacesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieListSpacesResponseToPb(st)
+func (st GenieListSpacesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieListSpacesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1645,8 +1645,8 @@ type GenieMessage struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GenieMessage) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieMessageToPb(st)
+func (st GenieMessage) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieMessageToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1715,8 +1715,8 @@ type GenieQueryAttachment struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GenieQueryAttachment) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieQueryAttachmentToPb(st)
+func (st GenieQueryAttachment) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieQueryAttachmentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1768,8 +1768,8 @@ type GenieResultMetadata struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GenieResultMetadata) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieResultMetadataToPb(st)
+func (st GenieResultMetadata) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieResultMetadataToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1824,8 +1824,8 @@ type GenieSpace struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GenieSpace) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieSpaceToPb(st)
+func (st GenieSpace) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieSpaceToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1875,8 +1875,8 @@ type GenieStartConversationMessageRequest struct {
 	SpaceId string `json:"-" tf:"-"`
 }
 
-func (st *GenieStartConversationMessageRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieStartConversationMessageRequestToPb(st)
+func (st GenieStartConversationMessageRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieStartConversationMessageRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1932,8 +1932,8 @@ type GenieStartConversationResponse struct {
 	MessageId string `json:"message_id"`
 }
 
-func (st *GenieStartConversationResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieStartConversationResponseToPb(st)
+func (st GenieStartConversationResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieStartConversationResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1979,8 +1979,8 @@ type GenieTrashSpaceRequest struct {
 	SpaceId string `json:"-" tf:"-"`
 }
 
-func (st *GenieTrashSpaceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := genieTrashSpaceRequestToPb(st)
+func (st GenieTrashSpaceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := genieTrashSpaceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2026,8 +2026,8 @@ type GetDashboardRequest struct {
 	DashboardId string `json:"-" tf:"-"`
 }
 
-func (st *GetDashboardRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getDashboardRequestToPb(st)
+func (st GetDashboardRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getDashboardRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2073,8 +2073,8 @@ type GetPublishedDashboardRequest struct {
 	DashboardId string `json:"-" tf:"-"`
 }
 
-func (st *GetPublishedDashboardRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPublishedDashboardRequestToPb(st)
+func (st GetPublishedDashboardRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPublishedDashboardRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2126,8 +2126,8 @@ type GetPublishedDashboardTokenInfoRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetPublishedDashboardTokenInfoRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPublishedDashboardTokenInfoRequestToPb(st)
+func (st GetPublishedDashboardTokenInfoRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPublishedDashboardTokenInfoRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2186,8 +2186,8 @@ type GetPublishedDashboardTokenInfoResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetPublishedDashboardTokenInfoResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPublishedDashboardTokenInfoResponseToPb(st)
+func (st GetPublishedDashboardTokenInfoResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPublishedDashboardTokenInfoResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2235,8 +2235,8 @@ type GetScheduleRequest struct {
 	ScheduleId string `json:"-" tf:"-"`
 }
 
-func (st *GetScheduleRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getScheduleRequestToPb(st)
+func (st GetScheduleRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getScheduleRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2286,8 +2286,8 @@ type GetSubscriptionRequest struct {
 	SubscriptionId string `json:"-" tf:"-"`
 }
 
-func (st *GetSubscriptionRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getSubscriptionRequestToPb(st)
+func (st GetSubscriptionRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getSubscriptionRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2380,8 +2380,8 @@ type ListDashboardsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListDashboardsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listDashboardsRequestToPb(st)
+func (st ListDashboardsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listDashboardsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2434,8 +2434,8 @@ type ListDashboardsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListDashboardsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listDashboardsResponseToPb(st)
+func (st ListDashboardsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listDashboardsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2488,8 +2488,8 @@ type ListSchedulesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListSchedulesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listSchedulesRequestToPb(st)
+func (st ListSchedulesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listSchedulesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2543,8 +2543,8 @@ type ListSchedulesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListSchedulesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listSchedulesResponseToPb(st)
+func (st ListSchedulesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listSchedulesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2599,8 +2599,8 @@ type ListSubscriptionsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListSubscriptionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listSubscriptionsRequestToPb(st)
+func (st ListSubscriptionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listSubscriptionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2654,8 +2654,8 @@ type ListSubscriptionsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListSubscriptionsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listSubscriptionsResponseToPb(st)
+func (st ListSubscriptionsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listSubscriptionsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2707,8 +2707,8 @@ type MessageError struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *MessageError) EncodeValues(key string, v *url.Values) error {
-	pb, err := messageErrorToPb(st)
+func (st MessageError) EncodeValues(key string, v *url.Values) error {
+	pb, err := messageErrorToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3054,8 +3054,8 @@ type MigrateDashboardRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *MigrateDashboardRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := migrateDashboardRequestToPb(st)
+func (st MigrateDashboardRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := migrateDashboardRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3112,8 +3112,8 @@ type PublishRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PublishRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := publishRequestToPb(st)
+func (st PublishRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := publishRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3171,8 +3171,8 @@ type PublishedDashboard struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PublishedDashboard) EncodeValues(key string, v *url.Values) error {
-	pb, err := publishedDashboardToPb(st)
+func (st PublishedDashboard) EncodeValues(key string, v *url.Values) error {
+	pb, err := publishedDashboardToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3229,8 +3229,8 @@ type Result struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Result) EncodeValues(key string, v *url.Values) error {
-	pb, err := resultToPb(st)
+func (st Result) EncodeValues(key string, v *url.Values) error {
+	pb, err := resultToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3306,8 +3306,8 @@ type Schedule struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Schedule) EncodeValues(key string, v *url.Values) error {
-	pb, err := scheduleToPb(st)
+func (st Schedule) EncodeValues(key string, v *url.Values) error {
+	pb, err := scheduleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3396,8 +3396,8 @@ type Subscriber struct {
 	UserSubscriber *SubscriptionSubscriberUser `json:"user_subscriber,omitempty"`
 }
 
-func (st *Subscriber) EncodeValues(key string, v *url.Values) error {
-	pb, err := subscriberToPb(st)
+func (st Subscriber) EncodeValues(key string, v *url.Values) error {
+	pb, err := subscriberToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3471,8 +3471,8 @@ type Subscription struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Subscription) EncodeValues(key string, v *url.Values) error {
-	pb, err := subscriptionToPb(st)
+func (st Subscription) EncodeValues(key string, v *url.Values) error {
+	pb, err := subscriptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3520,8 +3520,8 @@ type SubscriptionSubscriberDestination struct {
 	DestinationId string `json:"destination_id"`
 }
 
-func (st *SubscriptionSubscriberDestination) EncodeValues(key string, v *url.Values) error {
-	pb, err := subscriptionSubscriberDestinationToPb(st)
+func (st SubscriptionSubscriberDestination) EncodeValues(key string, v *url.Values) error {
+	pb, err := subscriptionSubscriberDestinationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3568,8 +3568,8 @@ type SubscriptionSubscriberUser struct {
 	UserId int64 `json:"user_id"`
 }
 
-func (st *SubscriptionSubscriberUser) EncodeValues(key string, v *url.Values) error {
-	pb, err := subscriptionSubscriberUserToPb(st)
+func (st SubscriptionSubscriberUser) EncodeValues(key string, v *url.Values) error {
+	pb, err := subscriptionSubscriberUserToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3621,8 +3621,8 @@ type TextAttachment struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TextAttachment) EncodeValues(key string, v *url.Values) error {
-	pb, err := textAttachmentToPb(st)
+func (st TextAttachment) EncodeValues(key string, v *url.Values) error {
+	pb, err := textAttachmentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3668,8 +3668,8 @@ type TrashDashboardRequest struct {
 	DashboardId string `json:"-" tf:"-"`
 }
 
-func (st *TrashDashboardRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := trashDashboardRequestToPb(st)
+func (st TrashDashboardRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := trashDashboardRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3713,8 +3713,8 @@ func (st TrashDashboardRequest) MarshalJSON() ([]byte, error) {
 type TrashSpaceResponse struct {
 }
 
-func (st *TrashSpaceResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := trashSpaceResponseToPb(st)
+func (st TrashSpaceResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := trashSpaceResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3760,8 +3760,8 @@ type UnpublishDashboardRequest struct {
 	DashboardId string `json:"-" tf:"-"`
 }
 
-func (st *UnpublishDashboardRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := unpublishDashboardRequestToPb(st)
+func (st UnpublishDashboardRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := unpublishDashboardRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3810,8 +3810,8 @@ type UpdateDashboardRequest struct {
 	DashboardId string `json:"-" tf:"-"`
 }
 
-func (st *UpdateDashboardRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateDashboardRequestToPb(st)
+func (st UpdateDashboardRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateDashboardRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3862,8 +3862,8 @@ type UpdateScheduleRequest struct {
 	ScheduleId string `json:"-" tf:"-"`
 }
 
-func (st *UpdateScheduleRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateScheduleRequestToPb(st)
+func (st UpdateScheduleRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateScheduleRequestToPb(&st)
 	if err != nil {
 		return err
 	}

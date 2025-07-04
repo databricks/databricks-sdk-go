@@ -45,8 +45,8 @@ type AddInstanceProfile struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AddInstanceProfile) EncodeValues(key string, v *url.Values) error {
-	pb, err := addInstanceProfileToPb(st)
+func (st AddInstanceProfile) EncodeValues(key string, v *url.Values) error {
+	pb, err := addInstanceProfileToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -95,8 +95,8 @@ type Adlsgen2Info struct {
 	Destination string `json:"destination"`
 }
 
-func (st *Adlsgen2Info) EncodeValues(key string, v *url.Values) error {
-	pb, err := adlsgen2InfoToPb(st)
+func (st Adlsgen2Info) EncodeValues(key string, v *url.Values) error {
+	pb, err := adlsgen2InfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -152,8 +152,8 @@ type AutoScale struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AutoScale) EncodeValues(key string, v *url.Values) error {
-	pb, err := autoScaleToPb(st)
+func (st AutoScale) EncodeValues(key string, v *url.Values) error {
+	pb, err := autoScaleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -285,8 +285,8 @@ type AwsAttributes struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AwsAttributes) EncodeValues(key string, v *url.Values) error {
-	pb, err := awsAttributesToPb(st)
+func (st AwsAttributes) EncodeValues(key string, v *url.Values) error {
+	pb, err := awsAttributesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -404,8 +404,8 @@ type AzureAttributes struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AzureAttributes) EncodeValues(key string, v *url.Values) error {
-	pb, err := azureAttributesToPb(st)
+func (st AzureAttributes) EncodeValues(key string, v *url.Values) error {
+	pb, err := azureAttributesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -503,8 +503,8 @@ type CancelCommand struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CancelCommand) EncodeValues(key string, v *url.Values) error {
-	pb, err := cancelCommandToPb(st)
+func (st CancelCommand) EncodeValues(key string, v *url.Values) error {
+	pb, err := cancelCommandToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -554,8 +554,8 @@ type ChangeClusterOwner struct {
 	OwnerUsername string `json:"owner_username"`
 }
 
-func (st *ChangeClusterOwner) EncodeValues(key string, v *url.Values) error {
-	pb, err := changeClusterOwnerToPb(st)
+func (st ChangeClusterOwner) EncodeValues(key string, v *url.Values) error {
+	pb, err := changeClusterOwnerToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -607,8 +607,8 @@ type ClientsTypes struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClientsTypes) EncodeValues(key string, v *url.Values) error {
-	pb, err := clientsTypesToPb(st)
+func (st ClientsTypes) EncodeValues(key string, v *url.Values) error {
+	pb, err := clientsTypesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -655,8 +655,8 @@ type CloneCluster struct {
 	SourceClusterId string `json:"source_cluster_id"`
 }
 
-func (st *CloneCluster) EncodeValues(key string, v *url.Values) error {
-	pb, err := cloneClusterToPb(st)
+func (st CloneCluster) EncodeValues(key string, v *url.Values) error {
+	pb, err := cloneClusterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -703,8 +703,8 @@ type CloudProviderNodeInfo struct {
 	Status []CloudProviderNodeStatus `json:"status,omitempty"`
 }
 
-func (st *CloudProviderNodeInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := cloudProviderNodeInfoToPb(st)
+func (st CloudProviderNodeInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := cloudProviderNodeInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -799,8 +799,8 @@ type ClusterAccessControlRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterAccessControlRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterAccessControlRequestToPb(st)
+func (st ClusterAccessControlRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterAccessControlRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -861,8 +861,8 @@ type ClusterAccessControlResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterAccessControlResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterAccessControlResponseToPb(st)
+func (st ClusterAccessControlResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterAccessControlResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1075,8 +1075,8 @@ type ClusterAttributes struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterAttributes) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterAttributesToPb(st)
+func (st ClusterAttributes) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterAttributesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1135,8 +1135,8 @@ type ClusterCompliance struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterCompliance) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterComplianceToPb(st)
+func (st ClusterCompliance) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterComplianceToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1450,8 +1450,8 @@ type ClusterDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterDetailsToPb(st)
+func (st ClusterDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1514,8 +1514,8 @@ type ClusterEvent struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterEvent) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterEventToPb(st)
+func (st ClusterEvent) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterEventToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1567,8 +1567,8 @@ type ClusterLibraryStatuses struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterLibraryStatuses) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterLibraryStatusesToPb(st)
+func (st ClusterLibraryStatuses) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterLibraryStatusesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1628,8 +1628,8 @@ type ClusterLogConf struct {
 	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
 }
 
-func (st *ClusterLogConf) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterLogConfToPb(st)
+func (st ClusterLogConf) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterLogConfToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1684,8 +1684,8 @@ type ClusterPermission struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterPermission) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterPermissionToPb(st)
+func (st ClusterPermission) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterPermissionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1781,8 +1781,8 @@ type ClusterPermissions struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterPermissions) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterPermissionsToPb(st)
+func (st ClusterPermissions) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterPermissionsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1834,8 +1834,8 @@ type ClusterPermissionsDescription struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterPermissionsDescription) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterPermissionsDescriptionToPb(st)
+func (st ClusterPermissionsDescription) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterPermissionsDescriptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1884,8 +1884,8 @@ type ClusterPermissionsRequest struct {
 	ClusterId string `json:"-" tf:"-"`
 }
 
-func (st *ClusterPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterPermissionsRequestToPb(st)
+func (st ClusterPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1943,8 +1943,8 @@ type ClusterPolicyAccessControlRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterPolicyAccessControlRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterPolicyAccessControlRequestToPb(st)
+func (st ClusterPolicyAccessControlRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterPolicyAccessControlRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2005,8 +2005,8 @@ type ClusterPolicyAccessControlResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterPolicyAccessControlResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterPolicyAccessControlResponseToPb(st)
+func (st ClusterPolicyAccessControlResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterPolicyAccessControlResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2061,8 +2061,8 @@ type ClusterPolicyPermission struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterPolicyPermission) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterPolicyPermissionToPb(st)
+func (st ClusterPolicyPermission) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterPolicyPermissionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2152,8 +2152,8 @@ type ClusterPolicyPermissions struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterPolicyPermissions) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterPolicyPermissionsToPb(st)
+func (st ClusterPolicyPermissions) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterPolicyPermissionsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2205,8 +2205,8 @@ type ClusterPolicyPermissionsDescription struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterPolicyPermissionsDescription) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterPolicyPermissionsDescriptionToPb(st)
+func (st ClusterPolicyPermissionsDescription) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterPolicyPermissionsDescriptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2255,8 +2255,8 @@ type ClusterPolicyPermissionsRequest struct {
 	ClusterPolicyId string `json:"-" tf:"-"`
 }
 
-func (st *ClusterPolicyPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterPolicyPermissionsRequestToPb(st)
+func (st ClusterPolicyPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterPolicyPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2319,8 +2319,8 @@ type ClusterSettingsChange struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterSettingsChange) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterSettingsChangeToPb(st)
+func (st ClusterSettingsChange) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterSettingsChangeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2383,8 +2383,8 @@ type ClusterSize struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterSize) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterSizeToPb(st)
+func (st ClusterSize) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterSizeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2674,8 +2674,8 @@ type ClusterSpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterSpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterSpecToPb(st)
+func (st ClusterSpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterSpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2721,8 +2721,8 @@ type ClusterStatus struct {
 	ClusterId string `json:"-" tf:"-"`
 }
 
-func (st *ClusterStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterStatusToPb(st)
+func (st ClusterStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2780,8 +2780,8 @@ type Command struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Command) EncodeValues(key string, v *url.Values) error {
-	pb, err := commandToPb(st)
+func (st Command) EncodeValues(key string, v *url.Values) error {
+	pb, err := commandToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2879,8 +2879,8 @@ type CommandStatusRequest struct {
 	ContextId string `json:"-" tf:"-"`
 }
 
-func (st *CommandStatusRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := commandStatusRequestToPb(st)
+func (st CommandStatusRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := commandStatusRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2935,8 +2935,8 @@ type CommandStatusResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CommandStatusResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := commandStatusResponseToPb(st)
+func (st CommandStatusResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := commandStatusResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3023,8 +3023,8 @@ type ContextStatusRequest struct {
 	ContextId string `json:"-" tf:"-"`
 }
 
-func (st *ContextStatusRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := contextStatusRequestToPb(st)
+func (st ContextStatusRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := contextStatusRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3076,8 +3076,8 @@ type ContextStatusResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ContextStatusResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := contextStatusResponseToPb(st)
+func (st ContextStatusResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := contextStatusResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3314,8 +3314,8 @@ type CreateCluster struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateCluster) EncodeValues(key string, v *url.Values) error {
-	pb, err := createClusterToPb(st)
+func (st CreateCluster) EncodeValues(key string, v *url.Values) error {
+	pb, err := createClusterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3364,8 +3364,8 @@ type CreateClusterResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateClusterResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createClusterResponseToPb(st)
+func (st CreateClusterResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createClusterResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3417,8 +3417,8 @@ type CreateContext struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateContext) EncodeValues(key string, v *url.Values) error {
-	pb, err := createContextToPb(st)
+func (st CreateContext) EncodeValues(key string, v *url.Values) error {
+	pb, err := createContextToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3539,8 +3539,8 @@ type CreateInstancePool struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateInstancePool) EncodeValues(key string, v *url.Values) error {
-	pb, err := createInstancePoolToPb(st)
+func (st CreateInstancePool) EncodeValues(key string, v *url.Values) error {
+	pb, err := createInstancePoolToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3589,8 +3589,8 @@ type CreateInstancePoolResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateInstancePoolResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createInstancePoolResponseToPb(st)
+func (st CreateInstancePoolResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createInstancePoolResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3676,8 +3676,8 @@ type CreatePolicy struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreatePolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := createPolicyToPb(st)
+func (st CreatePolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := createPolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3726,8 +3726,8 @@ type CreatePolicyResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreatePolicyResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createPolicyResponseToPb(st)
+func (st CreatePolicyResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createPolicyResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3776,8 +3776,8 @@ type CreateResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createResponseToPb(st)
+func (st CreateResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3826,8 +3826,8 @@ type Created struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Created) EncodeValues(key string, v *url.Values) error {
-	pb, err := createdToPb(st)
+func (st Created) EncodeValues(key string, v *url.Values) error {
+	pb, err := createdToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3881,8 +3881,8 @@ type CustomPolicyTag struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CustomPolicyTag) EncodeValues(key string, v *url.Values) error {
-	pb, err := customPolicyTagToPb(st)
+func (st CustomPolicyTag) EncodeValues(key string, v *url.Values) error {
+	pb, err := customPolicyTagToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3940,8 +3940,8 @@ type DataPlaneEventDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DataPlaneEventDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := dataPlaneEventDetailsToPb(st)
+func (st DataPlaneEventDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := dataPlaneEventDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4135,8 +4135,8 @@ type DbfsStorageInfo struct {
 	Destination string `json:"destination"`
 }
 
-func (st *DbfsStorageInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := dbfsStorageInfoToPb(st)
+func (st DbfsStorageInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := dbfsStorageInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4183,8 +4183,8 @@ type DeleteCluster struct {
 	ClusterId string `json:"cluster_id"`
 }
 
-func (st *DeleteCluster) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteClusterToPb(st)
+func (st DeleteCluster) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteClusterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4230,8 +4230,8 @@ type DeleteGlobalInitScriptRequest struct {
 	ScriptId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteGlobalInitScriptRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteGlobalInitScriptRequestToPb(st)
+func (st DeleteGlobalInitScriptRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteGlobalInitScriptRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4278,8 +4278,8 @@ type DeleteInstancePool struct {
 	InstancePoolId string `json:"instance_pool_id"`
 }
 
-func (st *DeleteInstancePool) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteInstancePoolToPb(st)
+func (st DeleteInstancePool) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteInstancePoolToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4326,8 +4326,8 @@ type DeletePolicy struct {
 	PolicyId string `json:"policy_id"`
 }
 
-func (st *DeletePolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := deletePolicyToPb(st)
+func (st DeletePolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := deletePolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4377,8 +4377,8 @@ type DestroyContext struct {
 	ContextId string `json:"contextId"`
 }
 
-func (st *DestroyContext) EncodeValues(key string, v *url.Values) error {
-	pb, err := destroyContextToPb(st)
+func (st DestroyContext) EncodeValues(key string, v *url.Values) error {
+	pb, err := destroyContextToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4465,8 +4465,8 @@ type DiskSpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DiskSpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := diskSpecToPb(st)
+func (st DiskSpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := diskSpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4517,8 +4517,8 @@ type DiskType struct {
 	EbsVolumeType DiskTypeEbsVolumeType `json:"ebs_volume_type,omitempty"`
 }
 
-func (st *DiskType) EncodeValues(key string, v *url.Values) error {
-	pb, err := diskTypeToPb(st)
+func (st DiskType) EncodeValues(key string, v *url.Values) error {
+	pb, err := diskTypeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4648,8 +4648,8 @@ type DockerBasicAuth struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DockerBasicAuth) EncodeValues(key string, v *url.Values) error {
-	pb, err := dockerBasicAuthToPb(st)
+func (st DockerBasicAuth) EncodeValues(key string, v *url.Values) error {
+	pb, err := dockerBasicAuthToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4701,8 +4701,8 @@ type DockerImage struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DockerImage) EncodeValues(key string, v *url.Values) error {
-	pb, err := dockerImageToPb(st)
+func (st DockerImage) EncodeValues(key string, v *url.Values) error {
+	pb, err := dockerImageToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4977,8 +4977,8 @@ type EditCluster struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EditCluster) EncodeValues(key string, v *url.Values) error {
-	pb, err := editClusterToPb(st)
+func (st EditCluster) EncodeValues(key string, v *url.Values) error {
+	pb, err := editClusterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5070,8 +5070,8 @@ type EditInstancePool struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EditInstancePool) EncodeValues(key string, v *url.Values) error {
-	pb, err := editInstancePoolToPb(st)
+func (st EditInstancePool) EncodeValues(key string, v *url.Values) error {
+	pb, err := editInstancePoolToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5160,8 +5160,8 @@ type EditPolicy struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EditPolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := editPolicyToPb(st)
+func (st EditPolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := editPolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5214,8 +5214,8 @@ type EnforceClusterComplianceRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EnforceClusterComplianceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := enforceClusterComplianceRequestToPb(st)
+func (st EnforceClusterComplianceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := enforceClusterComplianceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5269,8 +5269,8 @@ type EnforceClusterComplianceResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EnforceClusterComplianceResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := enforceClusterComplianceResponseToPb(st)
+func (st EnforceClusterComplianceResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := enforceClusterComplianceResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5340,8 +5340,8 @@ type Environment struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Environment) EncodeValues(key string, v *url.Values) error {
-	pb, err := environmentToPb(st)
+func (st Environment) EncodeValues(key string, v *url.Values) error {
+	pb, err := environmentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5455,8 +5455,8 @@ type EventDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EventDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := eventDetailsToPb(st)
+func (st EventDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := eventDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5705,8 +5705,8 @@ type GcpAttributes struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GcpAttributes) EncodeValues(key string, v *url.Values) error {
-	pb, err := gcpAttributesToPb(st)
+func (st GcpAttributes) EncodeValues(key string, v *url.Values) error {
+	pb, err := gcpAttributesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5797,8 +5797,8 @@ type GcsStorageInfo struct {
 	Destination string `json:"destination"`
 }
 
-func (st *GcsStorageInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := gcsStorageInfoToPb(st)
+func (st GcsStorageInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := gcsStorageInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5844,8 +5844,8 @@ type GetClusterComplianceRequest struct {
 	ClusterId string `json:"-" tf:"-"`
 }
 
-func (st *GetClusterComplianceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getClusterComplianceRequestToPb(st)
+func (st GetClusterComplianceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getClusterComplianceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5902,8 +5902,8 @@ type GetClusterComplianceResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetClusterComplianceResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getClusterComplianceResponseToPb(st)
+func (st GetClusterComplianceResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getClusterComplianceResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5949,8 +5949,8 @@ type GetClusterPermissionLevelsRequest struct {
 	ClusterId string `json:"-" tf:"-"`
 }
 
-func (st *GetClusterPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getClusterPermissionLevelsRequestToPb(st)
+func (st GetClusterPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getClusterPermissionLevelsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5997,8 +5997,8 @@ type GetClusterPermissionLevelsResponse struct {
 	PermissionLevels []ClusterPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-func (st *GetClusterPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getClusterPermissionLevelsResponseToPb(st)
+func (st GetClusterPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getClusterPermissionLevelsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6044,8 +6044,8 @@ type GetClusterPermissionsRequest struct {
 	ClusterId string `json:"-" tf:"-"`
 }
 
-func (st *GetClusterPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getClusterPermissionsRequestToPb(st)
+func (st GetClusterPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getClusterPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6091,8 +6091,8 @@ type GetClusterPolicyPermissionLevelsRequest struct {
 	ClusterPolicyId string `json:"-" tf:"-"`
 }
 
-func (st *GetClusterPolicyPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getClusterPolicyPermissionLevelsRequestToPb(st)
+func (st GetClusterPolicyPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getClusterPolicyPermissionLevelsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6139,8 +6139,8 @@ type GetClusterPolicyPermissionLevelsResponse struct {
 	PermissionLevels []ClusterPolicyPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-func (st *GetClusterPolicyPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getClusterPolicyPermissionLevelsResponseToPb(st)
+func (st GetClusterPolicyPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getClusterPolicyPermissionLevelsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6186,8 +6186,8 @@ type GetClusterPolicyPermissionsRequest struct {
 	ClusterPolicyId string `json:"-" tf:"-"`
 }
 
-func (st *GetClusterPolicyPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getClusterPolicyPermissionsRequestToPb(st)
+func (st GetClusterPolicyPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getClusterPolicyPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6233,8 +6233,8 @@ type GetClusterPolicyRequest struct {
 	PolicyId string `json:"-" tf:"-"`
 }
 
-func (st *GetClusterPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getClusterPolicyRequestToPb(st)
+func (st GetClusterPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getClusterPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6280,8 +6280,8 @@ type GetClusterRequest struct {
 	ClusterId string `json:"-" tf:"-"`
 }
 
-func (st *GetClusterRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getClusterRequestToPb(st)
+func (st GetClusterRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getClusterRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6370,8 +6370,8 @@ type GetEvents struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetEvents) EncodeValues(key string, v *url.Values) error {
-	pb, err := getEventsToPb(st)
+func (st GetEvents) EncodeValues(key string, v *url.Values) error {
+	pb, err := getEventsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6479,8 +6479,8 @@ type GetEventsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetEventsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getEventsResponseToPb(st)
+func (st GetEventsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getEventsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6526,8 +6526,8 @@ type GetGlobalInitScriptRequest struct {
 	ScriptId string `json:"-" tf:"-"`
 }
 
-func (st *GetGlobalInitScriptRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getGlobalInitScriptRequestToPb(st)
+func (st GetGlobalInitScriptRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getGlobalInitScriptRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6672,8 +6672,8 @@ type GetInstancePool struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetInstancePool) EncodeValues(key string, v *url.Values) error {
-	pb, err := getInstancePoolToPb(st)
+func (st GetInstancePool) EncodeValues(key string, v *url.Values) error {
+	pb, err := getInstancePoolToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6719,8 +6719,8 @@ type GetInstancePoolPermissionLevelsRequest struct {
 	InstancePoolId string `json:"-" tf:"-"`
 }
 
-func (st *GetInstancePoolPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getInstancePoolPermissionLevelsRequestToPb(st)
+func (st GetInstancePoolPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getInstancePoolPermissionLevelsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6767,8 +6767,8 @@ type GetInstancePoolPermissionLevelsResponse struct {
 	PermissionLevels []InstancePoolPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-func (st *GetInstancePoolPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getInstancePoolPermissionLevelsResponseToPb(st)
+func (st GetInstancePoolPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getInstancePoolPermissionLevelsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6814,8 +6814,8 @@ type GetInstancePoolPermissionsRequest struct {
 	InstancePoolId string `json:"-" tf:"-"`
 }
 
-func (st *GetInstancePoolPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getInstancePoolPermissionsRequestToPb(st)
+func (st GetInstancePoolPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getInstancePoolPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6861,8 +6861,8 @@ type GetInstancePoolRequest struct {
 	InstancePoolId string `json:"-" tf:"-"`
 }
 
-func (st *GetInstancePoolRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getInstancePoolRequestToPb(st)
+func (st GetInstancePoolRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getInstancePoolRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6913,8 +6913,8 @@ type GetPolicyFamilyRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetPolicyFamilyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPolicyFamilyRequestToPb(st)
+func (st GetPolicyFamilyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPolicyFamilyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6961,8 +6961,8 @@ type GetSparkVersionsResponse struct {
 	Versions []SparkVersion `json:"versions,omitempty"`
 }
 
-func (st *GetSparkVersionsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getSparkVersionsResponseToPb(st)
+func (st GetSparkVersionsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getSparkVersionsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7030,8 +7030,8 @@ type GlobalInitScriptCreateRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GlobalInitScriptCreateRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := globalInitScriptCreateRequestToPb(st)
+func (st GlobalInitScriptCreateRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := globalInitScriptCreateRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7104,8 +7104,8 @@ type GlobalInitScriptDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GlobalInitScriptDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := globalInitScriptDetailsToPb(st)
+func (st GlobalInitScriptDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := globalInitScriptDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7181,8 +7181,8 @@ type GlobalInitScriptDetailsWithContent struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GlobalInitScriptDetailsWithContent) EncodeValues(key string, v *url.Values) error {
-	pb, err := globalInitScriptDetailsWithContentToPb(st)
+func (st GlobalInitScriptDetailsWithContent) EncodeValues(key string, v *url.Values) error {
+	pb, err := globalInitScriptDetailsWithContentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7253,8 +7253,8 @@ type GlobalInitScriptUpdateRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GlobalInitScriptUpdateRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := globalInitScriptUpdateRequestToPb(st)
+func (st GlobalInitScriptUpdateRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := globalInitScriptUpdateRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7314,8 +7314,8 @@ type InitScriptEventDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InitScriptEventDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := initScriptEventDetailsToPb(st)
+func (st InitScriptEventDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := initScriptEventDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7444,8 +7444,8 @@ type InitScriptInfo struct {
 	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
 }
 
-func (st *InitScriptInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := initScriptInfoToPb(st)
+func (st InitScriptInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := initScriptInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7533,8 +7533,8 @@ type InitScriptInfoAndExecutionDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InitScriptInfoAndExecutionDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := initScriptInfoAndExecutionDetailsToPb(st)
+func (st InitScriptInfoAndExecutionDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := initScriptInfoAndExecutionDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7584,8 +7584,8 @@ type InstallLibraries struct {
 	Libraries []Library `json:"libraries"`
 }
 
-func (st *InstallLibraries) EncodeValues(key string, v *url.Values) error {
-	pb, err := installLibrariesToPb(st)
+func (st InstallLibraries) EncodeValues(key string, v *url.Values) error {
+	pb, err := installLibrariesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7643,8 +7643,8 @@ type InstancePoolAccessControlRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InstancePoolAccessControlRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := instancePoolAccessControlRequestToPb(st)
+func (st InstancePoolAccessControlRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := instancePoolAccessControlRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7705,8 +7705,8 @@ type InstancePoolAccessControlResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InstancePoolAccessControlResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := instancePoolAccessControlResponseToPb(st)
+func (st InstancePoolAccessControlResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := instancePoolAccessControlResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7851,8 +7851,8 @@ type InstancePoolAndStats struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InstancePoolAndStats) EncodeValues(key string, v *url.Values) error {
-	pb, err := instancePoolAndStatsToPb(st)
+func (st InstancePoolAndStats) EncodeValues(key string, v *url.Values) error {
+	pb, err := instancePoolAndStatsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7925,8 +7925,8 @@ type InstancePoolAwsAttributes struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InstancePoolAwsAttributes) EncodeValues(key string, v *url.Values) error {
-	pb, err := instancePoolAwsAttributesToPb(st)
+func (st InstancePoolAwsAttributes) EncodeValues(key string, v *url.Values) error {
+	pb, err := instancePoolAwsAttributesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8023,8 +8023,8 @@ type InstancePoolAzureAttributes struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InstancePoolAzureAttributes) EncodeValues(key string, v *url.Values) error {
-	pb, err := instancePoolAzureAttributesToPb(st)
+func (st InstancePoolAzureAttributes) EncodeValues(key string, v *url.Values) error {
+	pb, err := instancePoolAzureAttributesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8139,8 +8139,8 @@ type InstancePoolGcpAttributes struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InstancePoolGcpAttributes) EncodeValues(key string, v *url.Values) error {
-	pb, err := instancePoolGcpAttributesToPb(st)
+func (st InstancePoolGcpAttributes) EncodeValues(key string, v *url.Values) error {
+	pb, err := instancePoolGcpAttributesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8195,8 +8195,8 @@ type InstancePoolPermission struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InstancePoolPermission) EncodeValues(key string, v *url.Values) error {
-	pb, err := instancePoolPermissionToPb(st)
+func (st InstancePoolPermission) EncodeValues(key string, v *url.Values) error {
+	pb, err := instancePoolPermissionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8289,8 +8289,8 @@ type InstancePoolPermissions struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InstancePoolPermissions) EncodeValues(key string, v *url.Values) error {
-	pb, err := instancePoolPermissionsToPb(st)
+func (st InstancePoolPermissions) EncodeValues(key string, v *url.Values) error {
+	pb, err := instancePoolPermissionsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8342,8 +8342,8 @@ type InstancePoolPermissionsDescription struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InstancePoolPermissionsDescription) EncodeValues(key string, v *url.Values) error {
-	pb, err := instancePoolPermissionsDescriptionToPb(st)
+func (st InstancePoolPermissionsDescription) EncodeValues(key string, v *url.Values) error {
+	pb, err := instancePoolPermissionsDescriptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8392,8 +8392,8 @@ type InstancePoolPermissionsRequest struct {
 	InstancePoolId string `json:"-" tf:"-"`
 }
 
-func (st *InstancePoolPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := instancePoolPermissionsRequestToPb(st)
+func (st InstancePoolPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := instancePoolPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8496,8 +8496,8 @@ type InstancePoolStats struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InstancePoolStats) EncodeValues(key string, v *url.Values) error {
-	pb, err := instancePoolStatsToPb(st)
+func (st InstancePoolStats) EncodeValues(key string, v *url.Values) error {
+	pb, err := instancePoolStatsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8547,8 +8547,8 @@ type InstancePoolStatus struct {
 	PendingInstanceErrors []PendingInstanceError `json:"pending_instance_errors,omitempty"`
 }
 
-func (st *InstancePoolStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := instancePoolStatusToPb(st)
+func (st InstancePoolStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := instancePoolStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8615,8 +8615,8 @@ type InstanceProfile struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InstanceProfile) EncodeValues(key string, v *url.Values) error {
-	pb, err := instanceProfileToPb(st)
+func (st InstanceProfile) EncodeValues(key string, v *url.Values) error {
+	pb, err := instanceProfileToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8796,8 +8796,8 @@ type Library struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Library) EncodeValues(key string, v *url.Values) error {
-	pb, err := libraryToPb(st)
+func (st Library) EncodeValues(key string, v *url.Values) error {
+	pb, err := libraryToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8858,8 +8858,8 @@ type LibraryFullStatus struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *LibraryFullStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := libraryFullStatusToPb(st)
+func (st LibraryFullStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := libraryFullStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8962,8 +8962,8 @@ type ListAllClusterLibraryStatusesResponse struct {
 	Statuses []ClusterLibraryStatuses `json:"statuses,omitempty"`
 }
 
-func (st *ListAllClusterLibraryStatusesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listAllClusterLibraryStatusesResponseToPb(st)
+func (st ListAllClusterLibraryStatusesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listAllClusterLibraryStatusesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9016,8 +9016,8 @@ type ListAvailableZonesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListAvailableZonesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listAvailableZonesResponseToPb(st)
+func (st ListAvailableZonesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listAvailableZonesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9072,8 +9072,8 @@ type ListClusterCompliancesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListClusterCompliancesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listClusterCompliancesRequestToPb(st)
+func (st ListClusterCompliancesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listClusterCompliancesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9131,8 +9131,8 @@ type ListClusterCompliancesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListClusterCompliancesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listClusterCompliancesResponseToPb(st)
+func (st ListClusterCompliancesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listClusterCompliancesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9183,8 +9183,8 @@ type ListClusterPoliciesRequest struct {
 	SortOrder ListSortOrder `json:"-" tf:"-"`
 }
 
-func (st *ListClusterPoliciesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listClusterPoliciesRequestToPb(st)
+func (st ListClusterPoliciesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listClusterPoliciesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9242,8 +9242,8 @@ type ListClustersFilterBy struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListClustersFilterBy) EncodeValues(key string, v *url.Values) error {
-	pb, err := listClustersFilterByToPb(st)
+func (st ListClustersFilterBy) EncodeValues(key string, v *url.Values) error {
+	pb, err := listClustersFilterByToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9300,8 +9300,8 @@ type ListClustersRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListClustersRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listClustersRequestToPb(st)
+func (st ListClustersRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listClustersRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9359,8 +9359,8 @@ type ListClustersResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListClustersResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listClustersResponseToPb(st)
+func (st ListClustersResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listClustersResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9412,8 +9412,8 @@ type ListClustersSortBy struct {
 	Field ListClustersSortByField `json:"field,omitempty"`
 }
 
-func (st *ListClustersSortBy) EncodeValues(key string, v *url.Values) error {
-	pb, err := listClustersSortByToPb(st)
+func (st ListClustersSortBy) EncodeValues(key string, v *url.Values) error {
+	pb, err := listClustersSortByToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9534,8 +9534,8 @@ type ListGlobalInitScriptsResponse struct {
 	Scripts []GlobalInitScriptDetails `json:"scripts,omitempty"`
 }
 
-func (st *ListGlobalInitScriptsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listGlobalInitScriptsResponseToPb(st)
+func (st ListGlobalInitScriptsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listGlobalInitScriptsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9582,8 +9582,8 @@ type ListInstancePools struct {
 	InstancePools []InstancePoolAndStats `json:"instance_pools,omitempty"`
 }
 
-func (st *ListInstancePools) EncodeValues(key string, v *url.Values) error {
-	pb, err := listInstancePoolsToPb(st)
+func (st ListInstancePools) EncodeValues(key string, v *url.Values) error {
+	pb, err := listInstancePoolsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9630,8 +9630,8 @@ type ListInstanceProfilesResponse struct {
 	InstanceProfiles []InstanceProfile `json:"instance_profiles,omitempty"`
 }
 
-func (st *ListInstanceProfilesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listInstanceProfilesResponseToPb(st)
+func (st ListInstanceProfilesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listInstanceProfilesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9678,8 +9678,8 @@ type ListNodeTypesResponse struct {
 	NodeTypes []NodeType `json:"node_types,omitempty"`
 }
 
-func (st *ListNodeTypesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listNodeTypesResponseToPb(st)
+func (st ListNodeTypesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listNodeTypesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9726,8 +9726,8 @@ type ListPoliciesResponse struct {
 	Policies []Policy `json:"policies,omitempty"`
 }
 
-func (st *ListPoliciesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listPoliciesResponseToPb(st)
+func (st ListPoliciesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listPoliciesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9777,8 +9777,8 @@ type ListPolicyFamiliesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListPolicyFamiliesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listPolicyFamiliesRequestToPb(st)
+func (st ListPolicyFamiliesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listPolicyFamiliesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9831,8 +9831,8 @@ type ListPolicyFamiliesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListPolicyFamiliesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listPolicyFamiliesResponseToPb(st)
+func (st ListPolicyFamiliesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listPolicyFamiliesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9953,8 +9953,8 @@ type LocalFileInfo struct {
 	Destination string `json:"destination"`
 }
 
-func (st *LocalFileInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := localFileInfoToPb(st)
+func (st LocalFileInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := localFileInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10006,8 +10006,8 @@ type LogAnalyticsInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *LogAnalyticsInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := logAnalyticsInfoToPb(st)
+func (st LogAnalyticsInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := logAnalyticsInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10062,8 +10062,8 @@ type LogSyncStatus struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *LogSyncStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := logSyncStatusToPb(st)
+func (st LogSyncStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := logSyncStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10125,8 +10125,8 @@ type MavenLibrary struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *MavenLibrary) EncodeValues(key string, v *url.Values) error {
-	pb, err := mavenLibraryToPb(st)
+func (st MavenLibrary) EncodeValues(key string, v *url.Values) error {
+	pb, err := mavenLibraryToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10192,8 +10192,8 @@ type NodeInstanceType struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NodeInstanceType) EncodeValues(key string, v *url.Values) error {
-	pb, err := nodeInstanceTypeToPb(st)
+func (st NodeInstanceType) EncodeValues(key string, v *url.Values) error {
+	pb, err := nodeInstanceTypeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10310,8 +10310,8 @@ type NodeType struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NodeType) EncodeValues(key string, v *url.Values) error {
-	pb, err := nodeTypeToPb(st)
+func (st NodeType) EncodeValues(key string, v *url.Values) error {
+	pb, err := nodeTypeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10364,8 +10364,8 @@ type PendingInstanceError struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PendingInstanceError) EncodeValues(key string, v *url.Values) error {
-	pb, err := pendingInstanceErrorToPb(st)
+func (st PendingInstanceError) EncodeValues(key string, v *url.Values) error {
+	pb, err := pendingInstanceErrorToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10412,8 +10412,8 @@ type PermanentDeleteCluster struct {
 	ClusterId string `json:"cluster_id"`
 }
 
-func (st *PermanentDeleteCluster) EncodeValues(key string, v *url.Values) error {
-	pb, err := permanentDeleteClusterToPb(st)
+func (st PermanentDeleteCluster) EncodeValues(key string, v *url.Values) error {
+	pb, err := permanentDeleteClusterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10460,8 +10460,8 @@ type PinCluster struct {
 	ClusterId string `json:"cluster_id"`
 }
 
-func (st *PinCluster) EncodeValues(key string, v *url.Values) error {
-	pb, err := pinClusterToPb(st)
+func (st PinCluster) EncodeValues(key string, v *url.Values) error {
+	pb, err := pinClusterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10564,8 +10564,8 @@ type Policy struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Policy) EncodeValues(key string, v *url.Values) error {
-	pb, err := policyToPb(st)
+func (st Policy) EncodeValues(key string, v *url.Values) error {
+	pb, err := policyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10626,8 +10626,8 @@ type PolicyFamily struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PolicyFamily) EncodeValues(key string, v *url.Values) error {
-	pb, err := policyFamilyToPb(st)
+func (st PolicyFamily) EncodeValues(key string, v *url.Values) error {
+	pb, err := policyFamilyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10682,8 +10682,8 @@ type PythonPyPiLibrary struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PythonPyPiLibrary) EncodeValues(key string, v *url.Values) error {
-	pb, err := pythonPyPiLibraryToPb(st)
+func (st PythonPyPiLibrary) EncodeValues(key string, v *url.Values) error {
+	pb, err := pythonPyPiLibraryToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10736,8 +10736,8 @@ type RCranLibrary struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RCranLibrary) EncodeValues(key string, v *url.Values) error {
-	pb, err := rCranLibraryToPb(st)
+func (st RCranLibrary) EncodeValues(key string, v *url.Values) error {
+	pb, err := rCranLibraryToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10784,8 +10784,8 @@ type RemoveInstanceProfile struct {
 	InstanceProfileArn string `json:"instance_profile_arn"`
 }
 
-func (st *RemoveInstanceProfile) EncodeValues(key string, v *url.Values) error {
-	pb, err := removeInstanceProfileToPb(st)
+func (st RemoveInstanceProfile) EncodeValues(key string, v *url.Values) error {
+	pb, err := removeInstanceProfileToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10851,8 +10851,8 @@ type ResizeCluster struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ResizeCluster) EncodeValues(key string, v *url.Values) error {
-	pb, err := resizeClusterToPb(st)
+func (st ResizeCluster) EncodeValues(key string, v *url.Values) error {
+	pb, err := resizeClusterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10904,8 +10904,8 @@ type RestartCluster struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RestartCluster) EncodeValues(key string, v *url.Values) error {
-	pb, err := restartClusterToPb(st)
+func (st RestartCluster) EncodeValues(key string, v *url.Values) error {
+	pb, err := restartClusterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11028,8 +11028,8 @@ type Results struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Results) EncodeValues(key string, v *url.Values) error {
-	pb, err := resultsToPb(st)
+func (st Results) EncodeValues(key string, v *url.Values) error {
+	pb, err := resultsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11153,8 +11153,8 @@ type S3StorageInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *S3StorageInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := s3StorageInfoToPb(st)
+func (st S3StorageInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := s3StorageInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11226,8 +11226,8 @@ type SparkNode struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SparkNode) EncodeValues(key string, v *url.Values) error {
-	pb, err := sparkNodeToPb(st)
+func (st SparkNode) EncodeValues(key string, v *url.Values) error {
+	pb, err := sparkNodeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11277,8 +11277,8 @@ type SparkNodeAwsAttributes struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SparkNodeAwsAttributes) EncodeValues(key string, v *url.Values) error {
-	pb, err := sparkNodeAwsAttributesToPb(st)
+func (st SparkNodeAwsAttributes) EncodeValues(key string, v *url.Values) error {
+	pb, err := sparkNodeAwsAttributesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11334,8 +11334,8 @@ type SparkVersion struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SparkVersion) EncodeValues(key string, v *url.Values) error {
-	pb, err := sparkVersionToPb(st)
+func (st SparkVersion) EncodeValues(key string, v *url.Values) error {
+	pb, err := sparkVersionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11382,8 +11382,8 @@ type StartCluster struct {
 	ClusterId string `json:"cluster_id"`
 }
 
-func (st *StartCluster) EncodeValues(key string, v *url.Values) error {
-	pb, err := startClusterToPb(st)
+func (st StartCluster) EncodeValues(key string, v *url.Values) error {
+	pb, err := startClusterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11499,8 +11499,8 @@ type TerminationReason struct {
 	Type TerminationReasonType `json:"type,omitempty"`
 }
 
-func (st *TerminationReason) EncodeValues(key string, v *url.Values) error {
-	pb, err := terminationReasonToPb(st)
+func (st TerminationReason) EncodeValues(key string, v *url.Values) error {
+	pb, err := terminationReasonToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12145,8 +12145,8 @@ type UninstallLibraries struct {
 	Libraries []Library `json:"libraries"`
 }
 
-func (st *UninstallLibraries) EncodeValues(key string, v *url.Values) error {
-	pb, err := uninstallLibrariesToPb(st)
+func (st UninstallLibraries) EncodeValues(key string, v *url.Values) error {
+	pb, err := uninstallLibrariesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12193,8 +12193,8 @@ type UnpinCluster struct {
 	ClusterId string `json:"cluster_id"`
 }
 
-func (st *UnpinCluster) EncodeValues(key string, v *url.Values) error {
-	pb, err := unpinClusterToPb(st)
+func (st UnpinCluster) EncodeValues(key string, v *url.Values) error {
+	pb, err := unpinClusterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12260,8 +12260,8 @@ type UpdateCluster struct {
 	UpdateMask string `json:"update_mask"`
 }
 
-func (st *UpdateCluster) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateClusterToPb(st)
+func (st UpdateCluster) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateClusterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12489,8 +12489,8 @@ type UpdateClusterResource struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateClusterResource) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateClusterResourceToPb(st)
+func (st UpdateClusterResource) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateClusterResourceToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12540,8 +12540,8 @@ type VolumesStorageInfo struct {
 	Destination string `json:"destination"`
 }
 
-func (st *VolumesStorageInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := volumesStorageInfoToPb(st)
+func (st VolumesStorageInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := volumesStorageInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12589,8 +12589,8 @@ type WorkloadType struct {
 	Clients ClientsTypes `json:"clients"`
 }
 
-func (st *WorkloadType) EncodeValues(key string, v *url.Values) error {
-	pb, err := workloadTypeToPb(st)
+func (st WorkloadType) EncodeValues(key string, v *url.Values) error {
+	pb, err := workloadTypeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12638,8 +12638,8 @@ type WorkspaceStorageInfo struct {
 	Destination string `json:"destination"`
 }
 
-func (st *WorkspaceStorageInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := workspaceStorageInfoToPb(st)
+func (st WorkspaceStorageInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := workspaceStorageInfoToPb(&st)
 	if err != nil {
 		return err
 	}

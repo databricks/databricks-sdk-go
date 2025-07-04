@@ -26,8 +26,8 @@ type ActionConfiguration struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ActionConfiguration) EncodeValues(key string, v *url.Values) error {
-	pb, err := actionConfigurationToPb(st)
+func (st ActionConfiguration) EncodeValues(key string, v *url.Values) error {
+	pb, err := actionConfigurationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -129,8 +129,8 @@ type AlertConfiguration struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AlertConfiguration) EncodeValues(key string, v *url.Values) error {
-	pb, err := alertConfigurationToPb(st)
+func (st AlertConfiguration) EncodeValues(key string, v *url.Values) error {
+	pb, err := alertConfigurationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -303,8 +303,8 @@ type BudgetConfiguration struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *BudgetConfiguration) EncodeValues(key string, v *url.Values) error {
-	pb, err := budgetConfigurationToPb(st)
+func (st BudgetConfiguration) EncodeValues(key string, v *url.Values) error {
+	pb, err := budgetConfigurationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -356,8 +356,8 @@ type BudgetConfigurationFilter struct {
 	WorkspaceId *BudgetConfigurationFilterWorkspaceIdClause `json:"workspace_id,omitempty"`
 }
 
-func (st *BudgetConfigurationFilter) EncodeValues(key string, v *url.Values) error {
-	pb, err := budgetConfigurationFilterToPb(st)
+func (st BudgetConfigurationFilter) EncodeValues(key string, v *url.Values) error {
+	pb, err := budgetConfigurationFilterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -407,8 +407,8 @@ type BudgetConfigurationFilterClause struct {
 	Values []string `json:"values,omitempty"`
 }
 
-func (st *BudgetConfigurationFilterClause) EncodeValues(key string, v *url.Values) error {
-	pb, err := budgetConfigurationFilterClauseToPb(st)
+func (st BudgetConfigurationFilterClause) EncodeValues(key string, v *url.Values) error {
+	pb, err := budgetConfigurationFilterClauseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -494,8 +494,8 @@ type BudgetConfigurationFilterTagClause struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *BudgetConfigurationFilterTagClause) EncodeValues(key string, v *url.Values) error {
-	pb, err := budgetConfigurationFilterTagClauseToPb(st)
+func (st BudgetConfigurationFilterTagClause) EncodeValues(key string, v *url.Values) error {
+	pb, err := budgetConfigurationFilterTagClauseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -545,8 +545,8 @@ type BudgetConfigurationFilterWorkspaceIdClause struct {
 	Values []int64 `json:"values,omitempty"`
 }
 
-func (st *BudgetConfigurationFilterWorkspaceIdClause) EncodeValues(key string, v *url.Values) error {
-	pb, err := budgetConfigurationFilterWorkspaceIdClauseToPb(st)
+func (st BudgetConfigurationFilterWorkspaceIdClause) EncodeValues(key string, v *url.Values) error {
+	pb, err := budgetConfigurationFilterWorkspaceIdClauseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -611,8 +611,8 @@ type BudgetPolicy struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *BudgetPolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := budgetPolicyToPb(st)
+func (st BudgetPolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := budgetPolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -667,8 +667,8 @@ type CreateBillingUsageDashboardRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateBillingUsageDashboardRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createBillingUsageDashboardRequestToPb(st)
+func (st CreateBillingUsageDashboardRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createBillingUsageDashboardRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -717,8 +717,8 @@ type CreateBillingUsageDashboardResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateBillingUsageDashboardResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createBillingUsageDashboardResponseToPb(st)
+func (st CreateBillingUsageDashboardResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createBillingUsageDashboardResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -780,8 +780,8 @@ type CreateBudgetConfigurationBudget struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateBudgetConfigurationBudget) EncodeValues(key string, v *url.Values) error {
-	pb, err := createBudgetConfigurationBudgetToPb(st)
+func (st CreateBudgetConfigurationBudget) EncodeValues(key string, v *url.Values) error {
+	pb, err := createBudgetConfigurationBudgetToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -833,8 +833,8 @@ type CreateBudgetConfigurationBudgetActionConfigurations struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateBudgetConfigurationBudgetActionConfigurations) EncodeValues(key string, v *url.Values) error {
-	pb, err := createBudgetConfigurationBudgetActionConfigurationsToPb(st)
+func (st CreateBudgetConfigurationBudgetActionConfigurations) EncodeValues(key string, v *url.Values) error {
+	pb, err := createBudgetConfigurationBudgetActionConfigurationsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -899,8 +899,8 @@ type CreateBudgetConfigurationBudgetAlertConfigurations struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateBudgetConfigurationBudgetAlertConfigurations) EncodeValues(key string, v *url.Values) error {
-	pb, err := createBudgetConfigurationBudgetAlertConfigurationsToPb(st)
+func (st CreateBudgetConfigurationBudgetAlertConfigurations) EncodeValues(key string, v *url.Values) error {
+	pb, err := createBudgetConfigurationBudgetAlertConfigurationsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -947,8 +947,8 @@ type CreateBudgetConfigurationRequest struct {
 	Budget CreateBudgetConfigurationBudget `json:"budget"`
 }
 
-func (st *CreateBudgetConfigurationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createBudgetConfigurationRequestToPb(st)
+func (st CreateBudgetConfigurationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createBudgetConfigurationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -995,8 +995,8 @@ type CreateBudgetConfigurationResponse struct {
 	Budget *BudgetConfiguration `json:"budget,omitempty"`
 }
 
-func (st *CreateBudgetConfigurationResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createBudgetConfigurationResponseToPb(st)
+func (st CreateBudgetConfigurationResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createBudgetConfigurationResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1053,8 +1053,8 @@ type CreateBudgetPolicyRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateBudgetPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createBudgetPolicyRequestToPb(st)
+func (st CreateBudgetPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createBudgetPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1175,8 +1175,8 @@ type CreateLogDeliveryConfigurationParams struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateLogDeliveryConfigurationParams) EncodeValues(key string, v *url.Values) error {
-	pb, err := createLogDeliveryConfigurationParamsToPb(st)
+func (st CreateLogDeliveryConfigurationParams) EncodeValues(key string, v *url.Values) error {
+	pb, err := createLogDeliveryConfigurationParamsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1222,8 +1222,8 @@ type DeleteBudgetConfigurationRequest struct {
 	BudgetId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteBudgetConfigurationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteBudgetConfigurationRequestToPb(st)
+func (st DeleteBudgetConfigurationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteBudgetConfigurationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1269,8 +1269,8 @@ type DeleteBudgetPolicyRequest struct {
 	PolicyId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteBudgetPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteBudgetPolicyRequestToPb(st)
+func (st DeleteBudgetPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteBudgetPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1314,8 +1314,8 @@ func (st DeleteBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
 type DeleteResponse struct {
 }
 
-func (st *DeleteResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteResponseToPb(st)
+func (st DeleteResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1426,8 +1426,8 @@ type DownloadRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DownloadRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := downloadRequestToPb(st)
+func (st DownloadRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := downloadRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1472,8 +1472,8 @@ type DownloadResponse struct {
 	Contents io.ReadCloser `json:"-" tf:"-"`
 }
 
-func (st *DownloadResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := downloadResponseToPb(st)
+func (st DownloadResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := downloadResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1533,8 +1533,8 @@ type Filter struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Filter) EncodeValues(key string, v *url.Values) error {
-	pb, err := filterToPb(st)
+func (st Filter) EncodeValues(key string, v *url.Values) error {
+	pb, err := filterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1587,8 +1587,8 @@ type GetBillingUsageDashboardRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetBillingUsageDashboardRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getBillingUsageDashboardRequestToPb(st)
+func (st GetBillingUsageDashboardRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getBillingUsageDashboardRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1640,8 +1640,8 @@ type GetBillingUsageDashboardResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetBillingUsageDashboardResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getBillingUsageDashboardResponseToPb(st)
+func (st GetBillingUsageDashboardResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getBillingUsageDashboardResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1687,8 +1687,8 @@ type GetBudgetConfigurationRequest struct {
 	BudgetId string `json:"-" tf:"-"`
 }
 
-func (st *GetBudgetConfigurationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getBudgetConfigurationRequestToPb(st)
+func (st GetBudgetConfigurationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getBudgetConfigurationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1735,8 +1735,8 @@ type GetBudgetConfigurationResponse struct {
 	Budget *BudgetConfiguration `json:"budget,omitempty"`
 }
 
-func (st *GetBudgetConfigurationResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getBudgetConfigurationResponseToPb(st)
+func (st GetBudgetConfigurationResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getBudgetConfigurationResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1782,8 +1782,8 @@ type GetBudgetPolicyRequest struct {
 	PolicyId string `json:"-" tf:"-"`
 }
 
-func (st *GetBudgetPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getBudgetPolicyRequestToPb(st)
+func (st GetBudgetPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getBudgetPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1830,8 +1830,8 @@ type GetLogDeliveryConfigurationResponse struct {
 	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
 }
 
-func (st *GetLogDeliveryConfigurationResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getLogDeliveryConfigurationResponseToPb(st)
+func (st GetLogDeliveryConfigurationResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getLogDeliveryConfigurationResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1877,8 +1877,8 @@ type GetLogDeliveryRequest struct {
 	LogDeliveryConfigurationId string `json:"-" tf:"-"`
 }
 
-func (st *GetLogDeliveryRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getLogDeliveryRequestToPb(st)
+func (st GetLogDeliveryRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getLogDeliveryRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1924,8 +1924,8 @@ func (st GetLogDeliveryRequest) MarshalJSON() ([]byte, error) {
 type LimitConfig struct {
 }
 
-func (st *LimitConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := limitConfigToPb(st)
+func (st LimitConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := limitConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1975,8 +1975,8 @@ type ListBudgetConfigurationsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListBudgetConfigurationsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listBudgetConfigurationsRequestToPb(st)
+func (st ListBudgetConfigurationsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listBudgetConfigurationsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2029,8 +2029,8 @@ type ListBudgetConfigurationsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListBudgetConfigurationsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listBudgetConfigurationsResponseToPb(st)
+func (st ListBudgetConfigurationsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listBudgetConfigurationsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2092,8 +2092,8 @@ type ListBudgetPoliciesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListBudgetPoliciesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listBudgetPoliciesRequestToPb(st)
+func (st ListBudgetPoliciesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listBudgetPoliciesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2151,8 +2151,8 @@ type ListBudgetPoliciesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListBudgetPoliciesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listBudgetPoliciesResponseToPb(st)
+func (st ListBudgetPoliciesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listBudgetPoliciesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2208,8 +2208,8 @@ type ListLogDeliveryRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListLogDeliveryRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listLogDeliveryRequestToPb(st)
+func (st ListLogDeliveryRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listLogDeliveryRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2388,8 +2388,8 @@ type LogDeliveryConfiguration struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *LogDeliveryConfiguration) EncodeValues(key string, v *url.Values) error {
-	pb, err := logDeliveryConfigurationToPb(st)
+func (st LogDeliveryConfiguration) EncodeValues(key string, v *url.Values) error {
+	pb, err := logDeliveryConfigurationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2458,8 +2458,8 @@ type LogDeliveryStatus struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *LogDeliveryStatus) EncodeValues(key string, v *url.Values) error {
-	pb, err := logDeliveryStatusToPb(st)
+func (st LogDeliveryStatus) EncodeValues(key string, v *url.Values) error {
+	pb, err := logDeliveryStatusToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2587,8 +2587,8 @@ type SortSpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SortSpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := sortSpecToPb(st)
+func (st SortSpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := sortSpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2687,8 +2687,8 @@ type UpdateBudgetConfigurationBudget struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateBudgetConfigurationBudget) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateBudgetConfigurationBudgetToPb(st)
+func (st UpdateBudgetConfigurationBudget) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateBudgetConfigurationBudgetToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2738,8 +2738,8 @@ type UpdateBudgetConfigurationRequest struct {
 	BudgetId string `json:"-" tf:"-"`
 }
 
-func (st *UpdateBudgetConfigurationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateBudgetConfigurationRequestToPb(st)
+func (st UpdateBudgetConfigurationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateBudgetConfigurationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2786,8 +2786,8 @@ type UpdateBudgetConfigurationResponse struct {
 	Budget *BudgetConfiguration `json:"budget,omitempty"`
 }
 
-func (st *UpdateBudgetConfigurationResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateBudgetConfigurationResponseToPb(st)
+func (st UpdateBudgetConfigurationResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateBudgetConfigurationResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2842,8 +2842,8 @@ type UpdateBudgetPolicyRequest struct {
 	PolicyId string `json:"-" tf:"-"`
 }
 
-func (st *UpdateBudgetPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateBudgetPolicyRequestToPb(st)
+func (st UpdateBudgetPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateBudgetPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2897,8 +2897,8 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 	Status LogDeliveryConfigStatus `json:"status"`
 }
 
-func (st *UpdateLogDeliveryConfigurationStatusRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateLogDeliveryConfigurationStatusRequestToPb(st)
+func (st UpdateLogDeliveryConfigurationStatusRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateLogDeliveryConfigurationStatusRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2983,8 +2983,8 @@ type WrappedCreateLogDeliveryConfiguration struct {
 	LogDeliveryConfiguration CreateLogDeliveryConfigurationParams `json:"log_delivery_configuration"`
 }
 
-func (st *WrappedCreateLogDeliveryConfiguration) EncodeValues(key string, v *url.Values) error {
-	pb, err := wrappedCreateLogDeliveryConfigurationToPb(st)
+func (st WrappedCreateLogDeliveryConfiguration) EncodeValues(key string, v *url.Values) error {
+	pb, err := wrappedCreateLogDeliveryConfigurationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3031,8 +3031,8 @@ type WrappedLogDeliveryConfiguration struct {
 	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
 }
 
-func (st *WrappedLogDeliveryConfiguration) EncodeValues(key string, v *url.Values) error {
-	pb, err := wrappedLogDeliveryConfigurationToPb(st)
+func (st WrappedLogDeliveryConfiguration) EncodeValues(key string, v *url.Values) error {
+	pb, err := wrappedLogDeliveryConfigurationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3085,8 +3085,8 @@ type WrappedLogDeliveryConfigurations struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *WrappedLogDeliveryConfigurations) EncodeValues(key string, v *url.Values) error {
-	pb, err := wrappedLogDeliveryConfigurationsToPb(st)
+func (st WrappedLogDeliveryConfigurations) EncodeValues(key string, v *url.Values) error {
+	pb, err := wrappedLogDeliveryConfigurationsToPb(&st)
 	if err != nil {
 		return err
 	}

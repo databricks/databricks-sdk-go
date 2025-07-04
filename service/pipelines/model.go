@@ -119,8 +119,8 @@ type CreatePipeline struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreatePipeline) EncodeValues(key string, v *url.Values) error {
-	pb, err := createPipelineToPb(st)
+func (st CreatePipeline) EncodeValues(key string, v *url.Values) error {
+	pb, err := createPipelineToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -173,8 +173,8 @@ type CreatePipelineResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreatePipelineResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createPipelineResponseToPb(st)
+func (st CreatePipelineResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createPipelineResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -226,8 +226,8 @@ type CronTrigger struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CronTrigger) EncodeValues(key string, v *url.Values) error {
-	pb, err := cronTriggerToPb(st)
+func (st CronTrigger) EncodeValues(key string, v *url.Values) error {
+	pb, err := cronTriggerToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -279,8 +279,8 @@ type DataPlaneId struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DataPlaneId) EncodeValues(key string, v *url.Values) error {
-	pb, err := dataPlaneIdToPb(st)
+func (st DataPlaneId) EncodeValues(key string, v *url.Values) error {
+	pb, err := dataPlaneIdToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -380,8 +380,8 @@ type DeletePipelineRequest struct {
 	PipelineId string `json:"-" tf:"-"`
 }
 
-func (st *DeletePipelineRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deletePipelineRequestToPb(st)
+func (st DeletePipelineRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deletePipelineRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -570,8 +570,8 @@ type EditPipeline struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EditPipeline) EncodeValues(key string, v *url.Values) error {
-	pb, err := editPipelineToPb(st)
+func (st EditPipeline) EncodeValues(key string, v *url.Values) error {
+	pb, err := editPipelineToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -623,8 +623,8 @@ type ErrorDetail struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ErrorDetail) EncodeValues(key string, v *url.Values) error {
-	pb, err := errorDetailToPb(st)
+func (st ErrorDetail) EncodeValues(key string, v *url.Values) error {
+	pb, err := errorDetailToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -724,8 +724,8 @@ type EventLogSpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EventLogSpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := eventLogSpecToPb(st)
+func (st EventLogSpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := eventLogSpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -774,8 +774,8 @@ type FileLibrary struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *FileLibrary) EncodeValues(key string, v *url.Values) error {
-	pb, err := fileLibraryToPb(st)
+func (st FileLibrary) EncodeValues(key string, v *url.Values) error {
+	pb, err := fileLibraryToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -825,8 +825,8 @@ type Filters struct {
 	Include []string `json:"include,omitempty"`
 }
 
-func (st *Filters) EncodeValues(key string, v *url.Values) error {
-	pb, err := filtersToPb(st)
+func (st Filters) EncodeValues(key string, v *url.Values) error {
+	pb, err := filtersToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -872,8 +872,8 @@ type GetPipelinePermissionLevelsRequest struct {
 	PipelineId string `json:"-" tf:"-"`
 }
 
-func (st *GetPipelinePermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPipelinePermissionLevelsRequestToPb(st)
+func (st GetPipelinePermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPipelinePermissionLevelsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -920,8 +920,8 @@ type GetPipelinePermissionLevelsResponse struct {
 	PermissionLevels []PipelinePermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-func (st *GetPipelinePermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPipelinePermissionLevelsResponseToPb(st)
+func (st GetPipelinePermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPipelinePermissionLevelsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -967,8 +967,8 @@ type GetPipelinePermissionsRequest struct {
 	PipelineId string `json:"-" tf:"-"`
 }
 
-func (st *GetPipelinePermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPipelinePermissionsRequestToPb(st)
+func (st GetPipelinePermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPipelinePermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1013,8 +1013,8 @@ type GetPipelineRequest struct {
 	PipelineId string `json:"-" tf:"-"`
 }
 
-func (st *GetPipelineRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPipelineRequestToPb(st)
+func (st GetPipelineRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPipelineRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1104,8 +1104,8 @@ type GetPipelineResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetPipelineResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPipelineResponseToPb(st)
+func (st GetPipelineResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPipelineResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1191,8 +1191,8 @@ type GetUpdateRequest struct {
 	UpdateId string `json:"-" tf:"-"`
 }
 
-func (st *GetUpdateRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getUpdateRequestToPb(st)
+func (st GetUpdateRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getUpdateRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1239,8 +1239,8 @@ type GetUpdateResponse struct {
 	Update *UpdateInfo `json:"update,omitempty"`
 }
 
-func (st *GetUpdateResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getUpdateResponseToPb(st)
+func (st GetUpdateResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getUpdateResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1293,8 +1293,8 @@ type IngestionConfig struct {
 	Table *TableSpec `json:"table,omitempty"`
 }
 
-func (st *IngestionConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := ingestionConfigToPb(st)
+func (st IngestionConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := ingestionConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1363,8 +1363,8 @@ type IngestionGatewayPipelineDefinition struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *IngestionGatewayPipelineDefinition) EncodeValues(key string, v *url.Values) error {
-	pb, err := ingestionGatewayPipelineDefinitionToPb(st)
+func (st IngestionGatewayPipelineDefinition) EncodeValues(key string, v *url.Values) error {
+	pb, err := ingestionGatewayPipelineDefinitionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1433,8 +1433,8 @@ type IngestionPipelineDefinition struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *IngestionPipelineDefinition) EncodeValues(key string, v *url.Values) error {
-	pb, err := ingestionPipelineDefinitionToPb(st)
+func (st IngestionPipelineDefinition) EncodeValues(key string, v *url.Values) error {
+	pb, err := ingestionPipelineDefinitionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1576,8 +1576,8 @@ type ListPipelineEventsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListPipelineEventsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listPipelineEventsRequestToPb(st)
+func (st ListPipelineEventsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listPipelineEventsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1632,8 +1632,8 @@ type ListPipelineEventsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListPipelineEventsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listPipelineEventsResponseToPb(st)
+func (st ListPipelineEventsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listPipelineEventsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1700,8 +1700,8 @@ type ListPipelinesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListPipelinesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listPipelinesRequestToPb(st)
+func (st ListPipelinesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listPipelinesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1753,8 +1753,8 @@ type ListPipelinesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListPipelinesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listPipelinesResponseToPb(st)
+func (st ListPipelinesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listPipelinesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1808,8 +1808,8 @@ type ListUpdatesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListUpdatesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listUpdatesRequestToPb(st)
+func (st ListUpdatesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listUpdatesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1866,8 +1866,8 @@ type ListUpdatesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListUpdatesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listUpdatesResponseToPb(st)
+func (st ListUpdatesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listUpdatesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1911,8 +1911,8 @@ func (st ListUpdatesResponse) MarshalJSON() ([]byte, error) {
 type ManualTrigger struct {
 }
 
-func (st *ManualTrigger) EncodeValues(key string, v *url.Values) error {
-	pb, err := manualTriggerToPb(st)
+func (st ManualTrigger) EncodeValues(key string, v *url.Values) error {
+	pb, err := manualTriggerToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2002,8 +2002,8 @@ type NotebookLibrary struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NotebookLibrary) EncodeValues(key string, v *url.Values) error {
-	pb, err := notebookLibraryToPb(st)
+func (st NotebookLibrary) EncodeValues(key string, v *url.Values) error {
+	pb, err := notebookLibraryToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2059,8 +2059,8 @@ type Notifications struct {
 	EmailRecipients []string `json:"email_recipients,omitempty"`
 }
 
-func (st *Notifications) EncodeValues(key string, v *url.Values) error {
-	pb, err := notificationsToPb(st)
+func (st Notifications) EncodeValues(key string, v *url.Values) error {
+	pb, err := notificationsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2158,8 +2158,8 @@ type Origin struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Origin) EncodeValues(key string, v *url.Values) error {
-	pb, err := originToPb(st)
+func (st Origin) EncodeValues(key string, v *url.Values) error {
+	pb, err := originToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2208,8 +2208,8 @@ type PathPattern struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PathPattern) EncodeValues(key string, v *url.Values) error {
-	pb, err := pathPatternToPb(st)
+func (st PathPattern) EncodeValues(key string, v *url.Values) error {
+	pb, err := pathPatternToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2267,8 +2267,8 @@ type PipelineAccessControlRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PipelineAccessControlRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelineAccessControlRequestToPb(st)
+func (st PipelineAccessControlRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelineAccessControlRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2329,8 +2329,8 @@ type PipelineAccessControlResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PipelineAccessControlResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelineAccessControlResponseToPb(st)
+func (st PipelineAccessControlResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelineAccessControlResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2489,8 +2489,8 @@ type PipelineCluster struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PipelineCluster) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelineClusterToPb(st)
+func (st PipelineCluster) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelineClusterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2550,8 +2550,8 @@ type PipelineClusterAutoscale struct {
 	Mode PipelineClusterAutoscaleMode `json:"mode,omitempty"`
 }
 
-func (st *PipelineClusterAutoscale) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelineClusterAutoscaleToPb(st)
+func (st PipelineClusterAutoscale) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelineClusterAutoscaleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2645,8 +2645,8 @@ type PipelineDeployment struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PipelineDeployment) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelineDeploymentToPb(st)
+func (st PipelineDeployment) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelineDeploymentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2719,8 +2719,8 @@ type PipelineEvent struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PipelineEvent) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelineEventToPb(st)
+func (st PipelineEvent) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelineEventToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2788,8 +2788,8 @@ type PipelineLibrary struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PipelineLibrary) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelineLibraryToPb(st)
+func (st PipelineLibrary) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelineLibraryToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2844,8 +2844,8 @@ type PipelinePermission struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PipelinePermission) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelinePermissionToPb(st)
+func (st PipelinePermission) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelinePermissionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2944,8 +2944,8 @@ type PipelinePermissions struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PipelinePermissions) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelinePermissionsToPb(st)
+func (st PipelinePermissions) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelinePermissionsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2997,8 +2997,8 @@ type PipelinePermissionsDescription struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PipelinePermissionsDescription) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelinePermissionsDescriptionToPb(st)
+func (st PipelinePermissionsDescription) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelinePermissionsDescriptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3047,8 +3047,8 @@ type PipelinePermissionsRequest struct {
 	PipelineId string `json:"-" tf:"-"`
 }
 
-func (st *PipelinePermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelinePermissionsRequestToPb(st)
+func (st PipelinePermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelinePermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3187,8 +3187,8 @@ type PipelineSpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PipelineSpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelineSpecToPb(st)
+func (st PipelineSpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelineSpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3319,8 +3319,8 @@ type PipelineStateInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PipelineStateInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelineStateInfoToPb(st)
+func (st PipelineStateInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelineStateInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3408,8 +3408,8 @@ type PipelineTrigger struct {
 	Manual *ManualTrigger `json:"manual,omitempty"`
 }
 
-func (st *PipelineTrigger) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelineTriggerToPb(st)
+func (st PipelineTrigger) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelineTriggerToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3464,8 +3464,8 @@ type PipelinesEnvironment struct {
 	Dependencies []string `json:"dependencies,omitempty"`
 }
 
-func (st *PipelinesEnvironment) EncodeValues(key string, v *url.Values) error {
-	pb, err := pipelinesEnvironmentToPb(st)
+func (st PipelinesEnvironment) EncodeValues(key string, v *url.Values) error {
+	pb, err := pipelinesEnvironmentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3529,8 +3529,8 @@ type ReportSpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ReportSpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := reportSpecToPb(st)
+func (st ReportSpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := reportSpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3591,8 +3591,8 @@ type RestartWindow struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RestartWindow) EncodeValues(key string, v *url.Values) error {
-	pb, err := restartWindowToPb(st)
+func (st RestartWindow) EncodeValues(key string, v *url.Values) error {
+	pb, err := restartWindowToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3652,8 +3652,8 @@ type RunAs struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RunAs) EncodeValues(key string, v *url.Values) error {
-	pb, err := runAsToPb(st)
+func (st RunAs) EncodeValues(key string, v *url.Values) error {
+	pb, err := runAsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3719,8 +3719,8 @@ type SchemaSpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SchemaSpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := schemaSpecToPb(st)
+func (st SchemaSpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := schemaSpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3772,8 +3772,8 @@ type Sequencing struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Sequencing) EncodeValues(key string, v *url.Values) error {
-	pb, err := sequencingToPb(st)
+func (st Sequencing) EncodeValues(key string, v *url.Values) error {
+	pb, err := sequencingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3828,8 +3828,8 @@ type SerializedException struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SerializedException) EncodeValues(key string, v *url.Values) error {
-	pb, err := serializedExceptionToPb(st)
+func (st SerializedException) EncodeValues(key string, v *url.Values) error {
+	pb, err := serializedExceptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3887,8 +3887,8 @@ type StackFrame struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *StackFrame) EncodeValues(key string, v *url.Values) error {
-	pb, err := stackFrameToPb(st)
+func (st StackFrame) EncodeValues(key string, v *url.Values) error {
+	pb, err := stackFrameToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3958,8 +3958,8 @@ type StartUpdate struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *StartUpdate) EncodeValues(key string, v *url.Values) error {
-	pb, err := startUpdateToPb(st)
+func (st StartUpdate) EncodeValues(key string, v *url.Values) error {
+	pb, err := startUpdateToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4061,8 +4061,8 @@ type StartUpdateResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *StartUpdateResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := startUpdateResponseToPb(st)
+func (st StartUpdateResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := startUpdateResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4107,8 +4107,8 @@ type StopRequest struct {
 	PipelineId string `json:"-" tf:"-"`
 }
 
-func (st *StopRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := stopRequestToPb(st)
+func (st StopRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := stopRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4179,8 +4179,8 @@ type TableSpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TableSpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := tableSpecToPb(st)
+func (st TableSpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := tableSpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4255,8 +4255,8 @@ type TableSpecificConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TableSpecificConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := tableSpecificConfigToPb(st)
+func (st TableSpecificConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := tableSpecificConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4384,8 +4384,8 @@ type UpdateInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateInfoToPb(st)
+func (st UpdateInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4558,8 +4558,8 @@ type UpdateStateInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateStateInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateStateInfoToPb(st)
+func (st UpdateStateInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateStateInfoToPb(&st)
 	if err != nil {
 		return err
 	}

@@ -19,8 +19,8 @@ type AddExchangeForListingRequest struct {
 	ListingId string `json:"listing_id"`
 }
 
-func (st *AddExchangeForListingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := addExchangeForListingRequestToPb(st)
+func (st AddExchangeForListingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := addExchangeForListingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -67,8 +67,8 @@ type AddExchangeForListingResponse struct {
 	ExchangeForListing *ExchangeListing `json:"exchange_for_listing,omitempty"`
 }
 
-func (st *AddExchangeForListingResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := addExchangeForListingResponseToPb(st)
+func (st AddExchangeForListingResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := addExchangeForListingResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -165,8 +165,8 @@ type BatchGetListingsRequest struct {
 	Ids []string `json:"-" tf:"-"`
 }
 
-func (st *BatchGetListingsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := batchGetListingsRequestToPb(st)
+func (st BatchGetListingsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := batchGetListingsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -213,8 +213,8 @@ type BatchGetListingsResponse struct {
 	Listings []Listing `json:"listings,omitempty"`
 }
 
-func (st *BatchGetListingsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := batchGetListingsResponseToPb(st)
+func (st BatchGetListingsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := batchGetListingsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -259,8 +259,8 @@ type BatchGetProvidersRequest struct {
 	Ids []string `json:"-" tf:"-"`
 }
 
-func (st *BatchGetProvidersRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := batchGetProvidersRequestToPb(st)
+func (st BatchGetProvidersRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := batchGetProvidersRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -307,8 +307,8 @@ type BatchGetProvidersResponse struct {
 	Providers []ProviderInfo `json:"providers,omitempty"`
 }
 
-func (st *BatchGetProvidersResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := batchGetProvidersResponseToPb(st)
+func (st BatchGetProvidersResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := batchGetProvidersResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -452,8 +452,8 @@ type ConsumerTerms struct {
 	Version string `json:"version"`
 }
 
-func (st *ConsumerTerms) EncodeValues(key string, v *url.Values) error {
-	pb, err := consumerTermsToPb(st)
+func (st ConsumerTerms) EncodeValues(key string, v *url.Values) error {
+	pb, err := consumerTermsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -513,8 +513,8 @@ type ContactInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ContactInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := contactInfoToPb(st)
+func (st ContactInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := contactInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -598,8 +598,8 @@ type CreateExchangeFilterRequest struct {
 	Filter ExchangeFilter `json:"filter"`
 }
 
-func (st *CreateExchangeFilterRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createExchangeFilterRequestToPb(st)
+func (st CreateExchangeFilterRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createExchangeFilterRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -648,8 +648,8 @@ type CreateExchangeFilterResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateExchangeFilterResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createExchangeFilterResponseToPb(st)
+func (st CreateExchangeFilterResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createExchangeFilterResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -696,8 +696,8 @@ type CreateExchangeRequest struct {
 	Exchange Exchange `json:"exchange"`
 }
 
-func (st *CreateExchangeRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createExchangeRequestToPb(st)
+func (st CreateExchangeRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createExchangeRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -746,8 +746,8 @@ type CreateExchangeResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateExchangeResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createExchangeResponseToPb(st)
+func (st CreateExchangeResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createExchangeResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -805,8 +805,8 @@ type CreateFileRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateFileRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createFileRequestToPb(st)
+func (st CreateFileRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createFileRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -858,8 +858,8 @@ type CreateFileResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateFileResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createFileResponseToPb(st)
+func (st CreateFileResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createFileResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -922,8 +922,8 @@ type CreateInstallationRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateInstallationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createInstallationRequestToPb(st)
+func (st CreateInstallationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createInstallationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -970,8 +970,8 @@ type CreateListingRequest struct {
 	Listing Listing `json:"listing"`
 }
 
-func (st *CreateListingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createListingRequestToPb(st)
+func (st CreateListingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createListingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1020,8 +1020,8 @@ type CreateListingResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateListingResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createListingResponseToPb(st)
+func (st CreateListingResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createListingResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1094,8 +1094,8 @@ type CreatePersonalizationRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreatePersonalizationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createPersonalizationRequestToPb(st)
+func (st CreatePersonalizationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createPersonalizationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1144,8 +1144,8 @@ type CreatePersonalizationRequestResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreatePersonalizationRequestResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createPersonalizationRequestResponseToPb(st)
+func (st CreatePersonalizationRequestResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createPersonalizationRequestResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1192,8 +1192,8 @@ type CreateProviderRequest struct {
 	Provider ProviderInfo `json:"provider"`
 }
 
-func (st *CreateProviderRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createProviderRequestToPb(st)
+func (st CreateProviderRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createProviderRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1242,8 +1242,8 @@ type CreateProviderResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateProviderResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createProviderResponseToPb(st)
+func (st CreateProviderResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createProviderResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1351,8 +1351,8 @@ type DataRefreshInfo struct {
 	Unit DataRefresh `json:"unit"`
 }
 
-func (st *DataRefreshInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := dataRefreshInfoToPb(st)
+func (st DataRefreshInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := dataRefreshInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1397,8 +1397,8 @@ type DeleteExchangeFilterRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *DeleteExchangeFilterRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteExchangeFilterRequestToPb(st)
+func (st DeleteExchangeFilterRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteExchangeFilterRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1443,8 +1443,8 @@ type DeleteExchangeRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *DeleteExchangeRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteExchangeRequestToPb(st)
+func (st DeleteExchangeRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteExchangeRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1489,8 +1489,8 @@ type DeleteFileRequest struct {
 	FileId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteFileRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteFileRequestToPb(st)
+func (st DeleteFileRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteFileRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1537,8 +1537,8 @@ type DeleteInstallationRequest struct {
 	ListingId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteInstallationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteInstallationRequestToPb(st)
+func (st DeleteInstallationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteInstallationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1583,8 +1583,8 @@ type DeleteListingRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *DeleteListingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteListingRequestToPb(st)
+func (st DeleteListingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteListingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1629,8 +1629,8 @@ type DeleteProviderRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *DeleteProviderRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteProviderRequestToPb(st)
+func (st DeleteProviderRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteProviderRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1740,8 +1740,8 @@ type Exchange struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Exchange) EncodeValues(key string, v *url.Values) error {
-	pb, err := exchangeToPb(st)
+func (st Exchange) EncodeValues(key string, v *url.Values) error {
+	pb, err := exchangeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1814,8 +1814,8 @@ type ExchangeFilter struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ExchangeFilter) EncodeValues(key string, v *url.Values) error {
-	pb, err := exchangeFilterToPb(st)
+func (st ExchangeFilter) EncodeValues(key string, v *url.Values) error {
+	pb, err := exchangeFilterToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1916,8 +1916,8 @@ type ExchangeListing struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ExchangeListing) EncodeValues(key string, v *url.Values) error {
-	pb, err := exchangeListingToPb(st)
+func (st ExchangeListing) EncodeValues(key string, v *url.Values) error {
+	pb, err := exchangeListingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1994,8 +1994,8 @@ type FileInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *FileInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := fileInfoToPb(st)
+func (st FileInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := fileInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2047,8 +2047,8 @@ type FileParent struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *FileParent) EncodeValues(key string, v *url.Values) error {
-	pb, err := fileParentToPb(st)
+func (st FileParent) EncodeValues(key string, v *url.Values) error {
+	pb, err := fileParentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2213,8 +2213,8 @@ type GetExchangeRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *GetExchangeRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getExchangeRequestToPb(st)
+func (st GetExchangeRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getExchangeRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2261,8 +2261,8 @@ type GetExchangeResponse struct {
 	Exchange *Exchange `json:"exchange,omitempty"`
 }
 
-func (st *GetExchangeResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getExchangeResponseToPb(st)
+func (st GetExchangeResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getExchangeResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2307,8 +2307,8 @@ type GetFileRequest struct {
 	FileId string `json:"-" tf:"-"`
 }
 
-func (st *GetFileRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getFileRequestToPb(st)
+func (st GetFileRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getFileRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2355,8 +2355,8 @@ type GetFileResponse struct {
 	FileInfo *FileInfo `json:"file_info,omitempty"`
 }
 
-func (st *GetFileResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getFileResponseToPb(st)
+func (st GetFileResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getFileResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2405,8 +2405,8 @@ type GetLatestVersionProviderAnalyticsDashboardResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetLatestVersionProviderAnalyticsDashboardResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getLatestVersionProviderAnalyticsDashboardResponseToPb(st)
+func (st GetLatestVersionProviderAnalyticsDashboardResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getLatestVersionProviderAnalyticsDashboardResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2457,8 +2457,8 @@ type GetListingContentMetadataRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetListingContentMetadataRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getListingContentMetadataRequestToPb(st)
+func (st GetListingContentMetadataRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getListingContentMetadataRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2510,8 +2510,8 @@ type GetListingContentMetadataResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetListingContentMetadataResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getListingContentMetadataResponseToPb(st)
+func (st GetListingContentMetadataResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getListingContentMetadataResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2556,8 +2556,8 @@ type GetListingRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *GetListingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getListingRequestToPb(st)
+func (st GetListingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getListingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2604,8 +2604,8 @@ type GetListingResponse struct {
 	Listing *Listing `json:"listing,omitempty"`
 }
 
-func (st *GetListingResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getListingResponseToPb(st)
+func (st GetListingResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getListingResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2654,8 +2654,8 @@ type GetListingsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetListingsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getListingsRequestToPb(st)
+func (st GetListingsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getListingsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2707,8 +2707,8 @@ type GetListingsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetListingsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getListingsResponseToPb(st)
+func (st GetListingsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getListingsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2753,8 +2753,8 @@ type GetPersonalizationRequestRequest struct {
 	ListingId string `json:"-" tf:"-"`
 }
 
-func (st *GetPersonalizationRequestRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPersonalizationRequestRequestToPb(st)
+func (st GetPersonalizationRequestRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPersonalizationRequestRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2801,8 +2801,8 @@ type GetPersonalizationRequestResponse struct {
 	PersonalizationRequests []PersonalizationRequest `json:"personalization_requests,omitempty"`
 }
 
-func (st *GetPersonalizationRequestResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPersonalizationRequestResponseToPb(st)
+func (st GetPersonalizationRequestResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPersonalizationRequestResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2847,8 +2847,8 @@ type GetProviderRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *GetProviderRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getProviderRequestToPb(st)
+func (st GetProviderRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getProviderRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2895,8 +2895,8 @@ type GetProviderResponse struct {
 	Provider *ProviderInfo `json:"provider,omitempty"`
 }
 
-func (st *GetProviderResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getProviderResponseToPb(st)
+func (st GetProviderResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getProviderResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2943,8 +2943,8 @@ type Installation struct {
 	Installation *InstallationDetail `json:"installation,omitempty"`
 }
 
-func (st *Installation) EncodeValues(key string, v *url.Values) error {
-	pb, err := installationToPb(st)
+func (st Installation) EncodeValues(key string, v *url.Values) error {
+	pb, err := installationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3029,8 +3029,8 @@ type InstallationDetail struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *InstallationDetail) EncodeValues(key string, v *url.Values) error {
-	pb, err := installationDetailToPb(st)
+func (st InstallationDetail) EncodeValues(key string, v *url.Values) error {
+	pb, err := installationDetailToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3116,8 +3116,8 @@ type ListAllInstallationsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListAllInstallationsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listAllInstallationsRequestToPb(st)
+func (st ListAllInstallationsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listAllInstallationsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3169,8 +3169,8 @@ type ListAllInstallationsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListAllInstallationsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listAllInstallationsResponseToPb(st)
+func (st ListAllInstallationsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listAllInstallationsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3219,8 +3219,8 @@ type ListAllPersonalizationRequestsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListAllPersonalizationRequestsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listAllPersonalizationRequestsRequestToPb(st)
+func (st ListAllPersonalizationRequestsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listAllPersonalizationRequestsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3272,8 +3272,8 @@ type ListAllPersonalizationRequestsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListAllPersonalizationRequestsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listAllPersonalizationRequestsResponseToPb(st)
+func (st ListAllPersonalizationRequestsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listAllPersonalizationRequestsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3324,8 +3324,8 @@ type ListExchangeFiltersRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListExchangeFiltersRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listExchangeFiltersRequestToPb(st)
+func (st ListExchangeFiltersRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listExchangeFiltersRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3377,8 +3377,8 @@ type ListExchangeFiltersResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListExchangeFiltersResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listExchangeFiltersResponseToPb(st)
+func (st ListExchangeFiltersResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listExchangeFiltersResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3429,8 +3429,8 @@ type ListExchangesForListingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListExchangesForListingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listExchangesForListingRequestToPb(st)
+func (st ListExchangesForListingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listExchangesForListingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3482,8 +3482,8 @@ type ListExchangesForListingResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListExchangesForListingResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listExchangesForListingResponseToPb(st)
+func (st ListExchangesForListingResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listExchangesForListingResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3532,8 +3532,8 @@ type ListExchangesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListExchangesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listExchangesRequestToPb(st)
+func (st ListExchangesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listExchangesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3585,8 +3585,8 @@ type ListExchangesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListExchangesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listExchangesResponseToPb(st)
+func (st ListExchangesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listExchangesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3637,8 +3637,8 @@ type ListFilesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListFilesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listFilesRequestToPb(st)
+func (st ListFilesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listFilesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3690,8 +3690,8 @@ type ListFilesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListFilesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listFilesResponseToPb(st)
+func (st ListFilesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listFilesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3742,8 +3742,8 @@ type ListFulfillmentsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListFulfillmentsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listFulfillmentsRequestToPb(st)
+func (st ListFulfillmentsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listFulfillmentsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3795,8 +3795,8 @@ type ListFulfillmentsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListFulfillmentsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listFulfillmentsResponseToPb(st)
+func (st ListFulfillmentsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listFulfillmentsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3847,8 +3847,8 @@ type ListInstallationsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListInstallationsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listInstallationsRequestToPb(st)
+func (st ListInstallationsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listInstallationsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3900,8 +3900,8 @@ type ListInstallationsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListInstallationsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listInstallationsResponseToPb(st)
+func (st ListInstallationsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listInstallationsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3952,8 +3952,8 @@ type ListListingsForExchangeRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListListingsForExchangeRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listListingsForExchangeRequestToPb(st)
+func (st ListListingsForExchangeRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listListingsForExchangeRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4005,8 +4005,8 @@ type ListListingsForExchangeResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListListingsForExchangeResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listListingsForExchangeResponseToPb(st)
+func (st ListListingsForExchangeResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listListingsForExchangeResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4070,8 +4070,8 @@ type ListListingsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListListingsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listListingsRequestToPb(st)
+func (st ListListingsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listListingsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4123,8 +4123,8 @@ type ListListingsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListListingsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listListingsResponseToPb(st)
+func (st ListListingsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listListingsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4179,8 +4179,8 @@ type ListProviderAnalyticsDashboardResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListProviderAnalyticsDashboardResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listProviderAnalyticsDashboardResponseToPb(st)
+func (st ListProviderAnalyticsDashboardResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listProviderAnalyticsDashboardResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4231,8 +4231,8 @@ type ListProvidersRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListProvidersRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listProvidersRequestToPb(st)
+func (st ListProvidersRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listProvidersRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4284,8 +4284,8 @@ type ListProvidersResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListProvidersResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listProvidersResponseToPb(st)
+func (st ListProvidersResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listProvidersResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4340,8 +4340,8 @@ type Listing struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Listing) EncodeValues(key string, v *url.Values) error {
-	pb, err := listingToPb(st)
+func (st Listing) EncodeValues(key string, v *url.Values) error {
+	pb, err := listingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4454,8 +4454,8 @@ type ListingDetail struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListingDetail) EncodeValues(key string, v *url.Values) error {
-	pb, err := listingDetailToPb(st)
+func (st ListingDetail) EncodeValues(key string, v *url.Values) error {
+	pb, err := listingDetailToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4514,8 +4514,8 @@ type ListingFulfillment struct {
 	ShareInfo *ShareInfo `json:"share_info,omitempty"`
 }
 
-func (st *ListingFulfillment) EncodeValues(key string, v *url.Values) error {
-	pb, err := listingFulfillmentToPb(st)
+func (st ListingFulfillment) EncodeValues(key string, v *url.Values) error {
+	pb, err := listingFulfillmentToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4562,8 +4562,8 @@ type ListingSetting struct {
 	Visibility Visibility `json:"visibility,omitempty"`
 }
 
-func (st *ListingSetting) EncodeValues(key string, v *url.Values) error {
-	pb, err := listingSettingToPb(st)
+func (st ListingSetting) EncodeValues(key string, v *url.Values) error {
+	pb, err := listingSettingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4748,8 +4748,8 @@ type ListingSummary struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListingSummary) EncodeValues(key string, v *url.Values) error {
-	pb, err := listingSummaryToPb(st)
+func (st ListingSummary) EncodeValues(key string, v *url.Values) error {
+	pb, err := listingSummaryToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4800,8 +4800,8 @@ type ListingTag struct {
 	TagValues []string `json:"tag_values,omitempty"`
 }
 
-func (st *ListingTag) EncodeValues(key string, v *url.Values) error {
-	pb, err := listingTagToPb(st)
+func (st ListingTag) EncodeValues(key string, v *url.Values) error {
+	pb, err := listingTagToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5009,8 +5009,8 @@ type PersonalizationRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PersonalizationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := personalizationRequestToPb(st)
+func (st PersonalizationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := personalizationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5100,8 +5100,8 @@ type ProviderAnalyticsDashboard struct {
 	Id string `json:"id"`
 }
 
-func (st *ProviderAnalyticsDashboard) EncodeValues(key string, v *url.Values) error {
-	pb, err := providerAnalyticsDashboardToPb(st)
+func (st ProviderAnalyticsDashboard) EncodeValues(key string, v *url.Values) error {
+	pb, err := providerAnalyticsDashboardToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5189,8 +5189,8 @@ type ProviderInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ProviderInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := providerInfoToPb(st)
+func (st ProviderInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := providerInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5242,8 +5242,8 @@ type RegionInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RegionInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := regionInfoToPb(st)
+func (st RegionInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := regionInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5288,8 +5288,8 @@ type RemoveExchangeForListingRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *RemoveExchangeForListingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := removeExchangeForListingRequestToPb(st)
+func (st RemoveExchangeForListingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := removeExchangeForListingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5336,8 +5336,8 @@ type RepoInfo struct {
 	GitRepoUrl string `json:"git_repo_url"`
 }
 
-func (st *RepoInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := repoInfoToPb(st)
+func (st RepoInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := repoInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5389,8 +5389,8 @@ type RepoInstallation struct {
 	RepoPath string `json:"repo_path"`
 }
 
-func (st *RepoInstallation) EncodeValues(key string, v *url.Values) error {
-	pb, err := repoInstallationToPb(st)
+func (st RepoInstallation) EncodeValues(key string, v *url.Values) error {
+	pb, err := repoInstallationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5452,8 +5452,8 @@ type SearchListingsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SearchListingsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := searchListingsRequestToPb(st)
+func (st SearchListingsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := searchListingsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5505,8 +5505,8 @@ type SearchListingsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SearchListingsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := searchListingsResponseToPb(st)
+func (st SearchListingsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := searchListingsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5556,8 +5556,8 @@ type ShareInfo struct {
 	Type ListingShareType `json:"type"`
 }
 
-func (st *ShareInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := shareInfoToPb(st)
+func (st ShareInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := shareInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5610,8 +5610,8 @@ type SharedDataObject struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SharedDataObject) EncodeValues(key string, v *url.Values) error {
-	pb, err := sharedDataObjectToPb(st)
+func (st SharedDataObject) EncodeValues(key string, v *url.Values) error {
+	pb, err := sharedDataObjectToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5671,8 +5671,8 @@ type TokenDetail struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TokenDetail) EncodeValues(key string, v *url.Values) error {
-	pb, err := tokenDetailToPb(st)
+func (st TokenDetail) EncodeValues(key string, v *url.Values) error {
+	pb, err := tokenDetailToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5740,8 +5740,8 @@ type TokenInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TokenInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := tokenInfoToPb(st)
+func (st TokenInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := tokenInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5790,8 +5790,8 @@ type UpdateExchangeFilterRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *UpdateExchangeFilterRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateExchangeFilterRequestToPb(st)
+func (st UpdateExchangeFilterRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateExchangeFilterRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5838,8 +5838,8 @@ type UpdateExchangeFilterResponse struct {
 	Filter *ExchangeFilter `json:"filter,omitempty"`
 }
 
-func (st *UpdateExchangeFilterResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateExchangeFilterResponseToPb(st)
+func (st UpdateExchangeFilterResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateExchangeFilterResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5888,8 +5888,8 @@ type UpdateExchangeRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *UpdateExchangeRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateExchangeRequestToPb(st)
+func (st UpdateExchangeRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateExchangeRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5936,8 +5936,8 @@ type UpdateExchangeResponse struct {
 	Exchange *Exchange `json:"exchange,omitempty"`
 }
 
-func (st *UpdateExchangeResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateExchangeResponseToPb(st)
+func (st UpdateExchangeResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateExchangeResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5993,8 +5993,8 @@ type UpdateInstallationRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateInstallationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateInstallationRequestToPb(st)
+func (st UpdateInstallationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateInstallationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6041,8 +6041,8 @@ type UpdateInstallationResponse struct {
 	Installation *InstallationDetail `json:"installation,omitempty"`
 }
 
-func (st *UpdateInstallationResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateInstallationResponseToPb(st)
+func (st UpdateInstallationResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateInstallationResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6090,8 +6090,8 @@ type UpdateListingRequest struct {
 	Listing Listing `json:"listing"`
 }
 
-func (st *UpdateListingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateListingRequestToPb(st)
+func (st UpdateListingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateListingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6138,8 +6138,8 @@ type UpdateListingResponse struct {
 	Listing *Listing `json:"listing,omitempty"`
 }
 
-func (st *UpdateListingResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateListingResponseToPb(st)
+func (st UpdateListingResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateListingResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6197,8 +6197,8 @@ type UpdatePersonalizationRequestRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdatePersonalizationRequestRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updatePersonalizationRequestRequestToPb(st)
+func (st UpdatePersonalizationRequestRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updatePersonalizationRequestRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6245,8 +6245,8 @@ type UpdatePersonalizationRequestResponse struct {
 	Request *PersonalizationRequest `json:"request,omitempty"`
 }
 
-func (st *UpdatePersonalizationRequestResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := updatePersonalizationRequestResponseToPb(st)
+func (st UpdatePersonalizationRequestResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := updatePersonalizationRequestResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6299,8 +6299,8 @@ type UpdateProviderAnalyticsDashboardRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateProviderAnalyticsDashboardRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateProviderAnalyticsDashboardRequestToPb(st)
+func (st UpdateProviderAnalyticsDashboardRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateProviderAnalyticsDashboardRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6355,8 +6355,8 @@ type UpdateProviderAnalyticsDashboardResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateProviderAnalyticsDashboardResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateProviderAnalyticsDashboardResponseToPb(st)
+func (st UpdateProviderAnalyticsDashboardResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateProviderAnalyticsDashboardResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6404,8 +6404,8 @@ type UpdateProviderRequest struct {
 	Provider ProviderInfo `json:"provider"`
 }
 
-func (st *UpdateProviderRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateProviderRequestToPb(st)
+func (st UpdateProviderRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateProviderRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6452,8 +6452,8 @@ type UpdateProviderResponse struct {
 	Provider *ProviderInfo `json:"provider,omitempty"`
 }
 
-func (st *UpdateProviderResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateProviderResponseToPb(st)
+func (st UpdateProviderResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateProviderResponseToPb(&st)
 	if err != nil {
 		return err
 	}

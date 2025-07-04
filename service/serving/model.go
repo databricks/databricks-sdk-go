@@ -28,8 +28,8 @@ type Ai21LabsConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Ai21LabsConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := ai21LabsConfigToPb(st)
+func (st Ai21LabsConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := ai21LabsConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -95,8 +95,8 @@ type AiGatewayConfig struct {
 	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
 }
 
-func (st *AiGatewayConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := aiGatewayConfigToPb(st)
+func (st AiGatewayConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := aiGatewayConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -156,8 +156,8 @@ type AiGatewayGuardrailParameters struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AiGatewayGuardrailParameters) EncodeValues(key string, v *url.Values) error {
-	pb, err := aiGatewayGuardrailParametersToPb(st)
+func (st AiGatewayGuardrailParameters) EncodeValues(key string, v *url.Values) error {
+	pb, err := aiGatewayGuardrailParametersToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -204,8 +204,8 @@ type AiGatewayGuardrailPiiBehavior struct {
 	Behavior AiGatewayGuardrailPiiBehaviorBehavior `json:"behavior,omitempty"`
 }
 
-func (st *AiGatewayGuardrailPiiBehavior) EncodeValues(key string, v *url.Values) error {
-	pb, err := aiGatewayGuardrailPiiBehaviorToPb(st)
+func (st AiGatewayGuardrailPiiBehavior) EncodeValues(key string, v *url.Values) error {
+	pb, err := aiGatewayGuardrailPiiBehaviorToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -292,8 +292,8 @@ type AiGatewayGuardrails struct {
 	Output *AiGatewayGuardrailParameters `json:"output,omitempty"`
 }
 
-func (st *AiGatewayGuardrails) EncodeValues(key string, v *url.Values) error {
-	pb, err := aiGatewayGuardrailsToPb(st)
+func (st AiGatewayGuardrails) EncodeValues(key string, v *url.Values) error {
+	pb, err := aiGatewayGuardrailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -356,8 +356,8 @@ type AiGatewayInferenceTableConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AiGatewayInferenceTableConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := aiGatewayInferenceTableConfigToPb(st)
+func (st AiGatewayInferenceTableConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := aiGatewayInferenceTableConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -421,8 +421,8 @@ type AiGatewayRateLimit struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AiGatewayRateLimit) EncodeValues(key string, v *url.Values) error {
-	pb, err := aiGatewayRateLimitToPb(st)
+func (st AiGatewayRateLimit) EncodeValues(key string, v *url.Values) error {
+	pb, err := aiGatewayRateLimitToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -548,8 +548,8 @@ type AiGatewayUsageTrackingConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AiGatewayUsageTrackingConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := aiGatewayUsageTrackingConfigToPb(st)
+func (st AiGatewayUsageTrackingConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := aiGatewayUsageTrackingConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -639,8 +639,8 @@ type AmazonBedrockConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AmazonBedrockConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := amazonBedrockConfigToPb(st)
+func (st AmazonBedrockConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := amazonBedrockConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -741,8 +741,8 @@ type AnthropicConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AnthropicConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := anthropicConfigToPb(st)
+func (st AnthropicConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := anthropicConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -799,8 +799,8 @@ type ApiKeyAuth struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ApiKeyAuth) EncodeValues(key string, v *url.Values) error {
-	pb, err := apiKeyAuthToPb(st)
+func (st ApiKeyAuth) EncodeValues(key string, v *url.Values) error {
+	pb, err := apiKeyAuthToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -861,8 +861,8 @@ type AutoCaptureConfigInput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AutoCaptureConfigInput) EncodeValues(key string, v *url.Values) error {
-	pb, err := autoCaptureConfigInputToPb(st)
+func (st AutoCaptureConfigInput) EncodeValues(key string, v *url.Values) error {
+	pb, err := autoCaptureConfigInputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -926,8 +926,8 @@ type AutoCaptureConfigOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AutoCaptureConfigOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := autoCaptureConfigOutputToPb(st)
+func (st AutoCaptureConfigOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := autoCaptureConfigOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -974,8 +974,8 @@ type AutoCaptureState struct {
 	PayloadTable *PayloadTable `json:"payload_table,omitempty"`
 }
 
-func (st *AutoCaptureState) EncodeValues(key string, v *url.Values) error {
-	pb, err := autoCaptureStateToPb(st)
+func (st AutoCaptureState) EncodeValues(key string, v *url.Values) error {
+	pb, err := autoCaptureStateToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1029,8 +1029,8 @@ type BearerTokenAuth struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *BearerTokenAuth) EncodeValues(key string, v *url.Values) error {
-	pb, err := bearerTokenAuthToPb(st)
+func (st BearerTokenAuth) EncodeValues(key string, v *url.Values) error {
+	pb, err := bearerTokenAuthToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1080,8 +1080,8 @@ type BuildLogsRequest struct {
 	ServedModelName string `json:"-" tf:"-"`
 }
 
-func (st *BuildLogsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := buildLogsRequestToPb(st)
+func (st BuildLogsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := buildLogsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1128,8 +1128,8 @@ type BuildLogsResponse struct {
 	Logs string `json:"logs"`
 }
 
-func (st *BuildLogsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := buildLogsResponseToPb(st)
+func (st BuildLogsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := buildLogsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1181,8 +1181,8 @@ type ChatMessage struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ChatMessage) EncodeValues(key string, v *url.Values) error {
-	pb, err := chatMessageToPb(st)
+func (st ChatMessage) EncodeValues(key string, v *url.Values) error {
+	pb, err := chatMessageToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1285,8 +1285,8 @@ type CohereConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CohereConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := cohereConfigToPb(st)
+func (st CohereConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := cohereConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1350,8 +1350,8 @@ type CreatePtEndpointRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreatePtEndpointRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createPtEndpointRequestToPb(st)
+func (st CreatePtEndpointRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createPtEndpointRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1427,8 +1427,8 @@ type CreateServingEndpoint struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateServingEndpoint) EncodeValues(key string, v *url.Values) error {
-	pb, err := createServingEndpointToPb(st)
+func (st CreateServingEndpoint) EncodeValues(key string, v *url.Values) error {
+	pb, err := createServingEndpointToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1484,8 +1484,8 @@ type CustomProviderConfig struct {
 	CustomProviderUrl string `json:"custom_provider_url"`
 }
 
-func (st *CustomProviderConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := customProviderConfigToPb(st)
+func (st CustomProviderConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := customProviderConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1538,8 +1538,8 @@ type DataPlaneInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DataPlaneInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := dataPlaneInfoToPb(st)
+func (st DataPlaneInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := dataPlaneInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1605,8 +1605,8 @@ type DatabricksModelServingConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DatabricksModelServingConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := databricksModelServingConfigToPb(st)
+func (st DatabricksModelServingConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := databricksModelServingConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1659,8 +1659,8 @@ type DataframeSplitInput struct {
 	Index []int `json:"index,omitempty"`
 }
 
-func (st *DataframeSplitInput) EncodeValues(key string, v *url.Values) error {
-	pb, err := dataframeSplitInputToPb(st)
+func (st DataframeSplitInput) EncodeValues(key string, v *url.Values) error {
+	pb, err := dataframeSplitInputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1705,8 +1705,8 @@ type DeleteServingEndpointRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *DeleteServingEndpointRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteServingEndpointRequestToPb(st)
+func (st DeleteServingEndpointRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteServingEndpointRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1761,8 +1761,8 @@ type EmbeddingsV1ResponseEmbeddingElement struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EmbeddingsV1ResponseEmbeddingElement) EncodeValues(key string, v *url.Values) error {
-	pb, err := embeddingsV1ResponseEmbeddingElementToPb(st)
+func (st EmbeddingsV1ResponseEmbeddingElement) EncodeValues(key string, v *url.Values) error {
+	pb, err := embeddingsV1ResponseEmbeddingElementToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1860,8 +1860,8 @@ type EndpointCoreConfigInput struct {
 	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
 }
 
-func (st *EndpointCoreConfigInput) EncodeValues(key string, v *url.Values) error {
-	pb, err := endpointCoreConfigInputToPb(st)
+func (st EndpointCoreConfigInput) EncodeValues(key string, v *url.Values) error {
+	pb, err := endpointCoreConfigInputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1927,8 +1927,8 @@ type EndpointCoreConfigOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EndpointCoreConfigOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := endpointCoreConfigOutputToPb(st)
+func (st EndpointCoreConfigOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := endpointCoreConfigOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1979,8 +1979,8 @@ type EndpointCoreConfigSummary struct {
 	ServedModels []ServedModelSpec `json:"served_models,omitempty"`
 }
 
-func (st *EndpointCoreConfigSummary) EncodeValues(key string, v *url.Values) error {
-	pb, err := endpointCoreConfigSummaryToPb(st)
+func (st EndpointCoreConfigSummary) EncodeValues(key string, v *url.Values) error {
+	pb, err := endpointCoreConfigSummaryToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2051,8 +2051,8 @@ type EndpointPendingConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EndpointPendingConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := endpointPendingConfigToPb(st)
+func (st EndpointPendingConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := endpointPendingConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2109,8 +2109,8 @@ type EndpointState struct {
 	Ready EndpointStateReady `json:"ready,omitempty"`
 }
 
-func (st *EndpointState) EncodeValues(key string, v *url.Values) error {
-	pb, err := endpointStateToPb(st)
+func (st EndpointState) EncodeValues(key string, v *url.Values) error {
+	pb, err := endpointStateToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2242,8 +2242,8 @@ type EndpointTag struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EndpointTag) EncodeValues(key string, v *url.Values) error {
-	pb, err := endpointTagToPb(st)
+func (st EndpointTag) EncodeValues(key string, v *url.Values) error {
+	pb, err := endpointTagToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2290,8 +2290,8 @@ type EndpointTags struct {
 	Tags []EndpointTag `json:"tags,omitempty"`
 }
 
-func (st *EndpointTags) EncodeValues(key string, v *url.Values) error {
-	pb, err := endpointTagsToPb(st)
+func (st EndpointTags) EncodeValues(key string, v *url.Values) error {
+	pb, err := endpointTagsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2338,8 +2338,8 @@ type ExportMetricsRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *ExportMetricsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := exportMetricsRequestToPb(st)
+func (st ExportMetricsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := exportMetricsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2384,8 +2384,8 @@ type ExportMetricsResponse struct {
 	Contents io.ReadCloser `json:"-" tf:"-"`
 }
 
-func (st *ExportMetricsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := exportMetricsResponseToPb(st)
+func (st ExportMetricsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := exportMetricsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2452,8 +2452,8 @@ type ExternalFunctionRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ExternalFunctionRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := externalFunctionRequestToPb(st)
+func (st ExternalFunctionRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := externalFunctionRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2584,8 +2584,8 @@ type ExternalModel struct {
 	Task string `json:"task"`
 }
 
-func (st *ExternalModel) EncodeValues(key string, v *url.Values) error {
-	pb, err := externalModelToPb(st)
+func (st ExternalModel) EncodeValues(key string, v *url.Values) error {
+	pb, err := externalModelToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2698,8 +2698,8 @@ type ExternalModelUsageElement struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ExternalModelUsageElement) EncodeValues(key string, v *url.Values) error {
-	pb, err := externalModelUsageElementToPb(st)
+func (st ExternalModelUsageElement) EncodeValues(key string, v *url.Values) error {
+	pb, err := externalModelUsageElementToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2751,8 +2751,8 @@ type FallbackConfig struct {
 	Enabled bool `json:"enabled"`
 }
 
-func (st *FallbackConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := fallbackConfigToPb(st)
+func (st FallbackConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := fallbackConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2812,8 +2812,8 @@ type FoundationModel struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *FoundationModel) EncodeValues(key string, v *url.Values) error {
-	pb, err := foundationModelToPb(st)
+func (st FoundationModel) EncodeValues(key string, v *url.Values) error {
+	pb, err := foundationModelToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2860,8 +2860,8 @@ type GetOpenApiRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *GetOpenApiRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getOpenApiRequestToPb(st)
+func (st GetOpenApiRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getOpenApiRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2906,8 +2906,8 @@ type GetOpenApiResponse struct {
 	Contents io.ReadCloser `json:"-" tf:"-"`
 }
 
-func (st *GetOpenApiResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getOpenApiResponseToPb(st)
+func (st GetOpenApiResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getOpenApiResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2953,8 +2953,8 @@ type GetServingEndpointPermissionLevelsRequest struct {
 	ServingEndpointId string `json:"-" tf:"-"`
 }
 
-func (st *GetServingEndpointPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getServingEndpointPermissionLevelsRequestToPb(st)
+func (st GetServingEndpointPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getServingEndpointPermissionLevelsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3001,8 +3001,8 @@ type GetServingEndpointPermissionLevelsResponse struct {
 	PermissionLevels []ServingEndpointPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-func (st *GetServingEndpointPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getServingEndpointPermissionLevelsResponseToPb(st)
+func (st GetServingEndpointPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getServingEndpointPermissionLevelsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3048,8 +3048,8 @@ type GetServingEndpointPermissionsRequest struct {
 	ServingEndpointId string `json:"-" tf:"-"`
 }
 
-func (st *GetServingEndpointPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getServingEndpointPermissionsRequestToPb(st)
+func (st GetServingEndpointPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getServingEndpointPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3095,8 +3095,8 @@ type GetServingEndpointRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *GetServingEndpointRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getServingEndpointRequestToPb(st)
+func (st GetServingEndpointRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getServingEndpointRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3176,8 +3176,8 @@ type GoogleCloudVertexAiConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GoogleCloudVertexAiConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := googleCloudVertexAiConfigToPb(st)
+func (st GoogleCloudVertexAiConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := googleCloudVertexAiConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3222,8 +3222,8 @@ type HttpRequestResponse struct {
 	Contents io.ReadCloser `json:"-" tf:"-"`
 }
 
-func (st *HttpRequestResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := httpRequestResponseToPb(st)
+func (st HttpRequestResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := httpRequestResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3270,8 +3270,8 @@ type ListEndpointsResponse struct {
 	Endpoints []ServingEndpoint `json:"endpoints,omitempty"`
 }
 
-func (st *ListEndpointsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listEndpointsResponseToPb(st)
+func (st ListEndpointsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listEndpointsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3321,8 +3321,8 @@ type LogsRequest struct {
 	ServedModelName string `json:"-" tf:"-"`
 }
 
-func (st *LogsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := logsRequestToPb(st)
+func (st LogsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := logsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3371,8 +3371,8 @@ type ModelDataPlaneInfo struct {
 	QueryInfo *DataPlaneInfo `json:"query_info,omitempty"`
 }
 
-func (st *ModelDataPlaneInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := modelDataPlaneInfoToPb(st)
+func (st ModelDataPlaneInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := modelDataPlaneInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3481,8 +3481,8 @@ type OpenAiConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *OpenAiConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := openAiConfigToPb(st)
+func (st OpenAiConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := openAiConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3540,8 +3540,8 @@ type PaLmConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PaLmConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := paLmConfigToPb(st)
+func (st PaLmConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := paLmConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3594,8 +3594,8 @@ type PatchServingEndpointTags struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *PatchServingEndpointTags) EncodeValues(key string, v *url.Values) error {
-	pb, err := patchServingEndpointTagsToPb(st)
+func (st PatchServingEndpointTags) EncodeValues(key string, v *url.Values) error {
+	pb, err := patchServingEndpointTagsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3650,8 +3650,8 @@ type PayloadTable struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PayloadTable) EncodeValues(key string, v *url.Values) error {
-	pb, err := payloadTableToPb(st)
+func (st PayloadTable) EncodeValues(key string, v *url.Values) error {
+	pb, err := payloadTableToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3701,8 +3701,8 @@ type PtEndpointCoreConfig struct {
 	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
 }
 
-func (st *PtEndpointCoreConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := ptEndpointCoreConfigToPb(st)
+func (st PtEndpointCoreConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := ptEndpointCoreConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3768,8 +3768,8 @@ type PtServedModel struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PtServedModel) EncodeValues(key string, v *url.Values) error {
-	pb, err := ptServedModelToPb(st)
+func (st PtServedModel) EncodeValues(key string, v *url.Values) error {
+	pb, err := ptServedModelToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3838,8 +3838,8 @@ type PutAiGatewayRequest struct {
 	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
 }
 
-func (st *PutAiGatewayRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := putAiGatewayRequestToPb(st)
+func (st PutAiGatewayRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := putAiGatewayRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3905,8 +3905,8 @@ type PutAiGatewayResponse struct {
 	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
 }
 
-func (st *PutAiGatewayResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := putAiGatewayResponseToPb(st)
+func (st PutAiGatewayResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := putAiGatewayResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3956,8 +3956,8 @@ type PutRequest struct {
 	RateLimits []RateLimit `json:"rate_limits,omitempty"`
 }
 
-func (st *PutRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := putRequestToPb(st)
+func (st PutRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := putRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4004,8 +4004,8 @@ type PutResponse struct {
 	RateLimits []RateLimit `json:"rate_limits,omitempty"`
 }
 
-func (st *PutResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := putResponseToPb(st)
+func (st PutResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := putResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4113,8 +4113,8 @@ type QueryEndpointInput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *QueryEndpointInput) EncodeValues(key string, v *url.Values) error {
-	pb, err := queryEndpointInputToPb(st)
+func (st QueryEndpointInput) EncodeValues(key string, v *url.Values) error {
+	pb, err := queryEndpointInputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4196,8 +4196,8 @@ type QueryEndpointResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *QueryEndpointResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := queryEndpointResponseToPb(st)
+func (st QueryEndpointResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := queryEndpointResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4296,8 +4296,8 @@ type RateLimit struct {
 	RenewalPeriod RateLimitRenewalPeriod `json:"renewal_period"`
 }
 
-func (st *RateLimit) EncodeValues(key string, v *url.Values) error {
-	pb, err := rateLimitToPb(st)
+func (st RateLimit) EncodeValues(key string, v *url.Values) error {
+	pb, err := rateLimitToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4424,8 +4424,8 @@ type Route struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Route) EncodeValues(key string, v *url.Values) error {
-	pb, err := routeToPb(st)
+func (st Route) EncodeValues(key string, v *url.Values) error {
+	pb, err := routeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4552,8 +4552,8 @@ type ServedEntityInput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServedEntityInput) EncodeValues(key string, v *url.Values) error {
-	pb, err := servedEntityInputToPb(st)
+func (st ServedEntityInput) EncodeValues(key string, v *url.Values) error {
+	pb, err := servedEntityInputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4692,8 +4692,8 @@ type ServedEntityOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServedEntityOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := servedEntityOutputToPb(st)
+func (st ServedEntityOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := servedEntityOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4754,8 +4754,8 @@ type ServedEntitySpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServedEntitySpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := servedEntitySpecToPb(st)
+func (st ServedEntitySpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := servedEntitySpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4868,8 +4868,8 @@ type ServedModelInput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServedModelInput) EncodeValues(key string, v *url.Values) error {
-	pb, err := servedModelInputToPb(st)
+func (st ServedModelInput) EncodeValues(key string, v *url.Values) error {
+	pb, err := servedModelInputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5033,8 +5033,8 @@ type ServedModelOutput struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServedModelOutput) EncodeValues(key string, v *url.Values) error {
-	pb, err := servedModelOutputToPb(st)
+func (st ServedModelOutput) EncodeValues(key string, v *url.Values) error {
+	pb, err := servedModelOutputToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5089,8 +5089,8 @@ type ServedModelSpec struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServedModelSpec) EncodeValues(key string, v *url.Values) error {
-	pb, err := servedModelSpecToPb(st)
+func (st ServedModelSpec) EncodeValues(key string, v *url.Values) error {
+	pb, err := servedModelSpecToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5142,8 +5142,8 @@ type ServedModelState struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServedModelState) EncodeValues(key string, v *url.Values) error {
-	pb, err := servedModelStateToPb(st)
+func (st ServedModelState) EncodeValues(key string, v *url.Values) error {
+	pb, err := servedModelStateToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5237,8 +5237,8 @@ type ServerLogsResponse struct {
 	Logs string `json:"logs"`
 }
 
-func (st *ServerLogsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := serverLogsResponseToPb(st)
+func (st ServerLogsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := serverLogsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5323,8 +5323,8 @@ type ServingEndpoint struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServingEndpoint) EncodeValues(key string, v *url.Values) error {
-	pb, err := servingEndpointToPb(st)
+func (st ServingEndpoint) EncodeValues(key string, v *url.Values) error {
+	pb, err := servingEndpointToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5382,8 +5382,8 @@ type ServingEndpointAccessControlRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServingEndpointAccessControlRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := servingEndpointAccessControlRequestToPb(st)
+func (st ServingEndpointAccessControlRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := servingEndpointAccessControlRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5444,8 +5444,8 @@ type ServingEndpointAccessControlResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServingEndpointAccessControlResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := servingEndpointAccessControlResponseToPb(st)
+func (st ServingEndpointAccessControlResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := servingEndpointAccessControlResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5546,8 +5546,8 @@ type ServingEndpointDetailed struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServingEndpointDetailed) EncodeValues(key string, v *url.Values) error {
-	pb, err := servingEndpointDetailedToPb(st)
+func (st ServingEndpointDetailed) EncodeValues(key string, v *url.Values) error {
+	pb, err := servingEndpointDetailedToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5642,8 +5642,8 @@ type ServingEndpointPermission struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServingEndpointPermission) EncodeValues(key string, v *url.Values) error {
-	pb, err := servingEndpointPermissionToPb(st)
+func (st ServingEndpointPermission) EncodeValues(key string, v *url.Values) error {
+	pb, err := servingEndpointPermissionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5739,8 +5739,8 @@ type ServingEndpointPermissions struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServingEndpointPermissions) EncodeValues(key string, v *url.Values) error {
-	pb, err := servingEndpointPermissionsToPb(st)
+func (st ServingEndpointPermissions) EncodeValues(key string, v *url.Values) error {
+	pb, err := servingEndpointPermissionsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5792,8 +5792,8 @@ type ServingEndpointPermissionsDescription struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ServingEndpointPermissionsDescription) EncodeValues(key string, v *url.Values) error {
-	pb, err := servingEndpointPermissionsDescriptionToPb(st)
+func (st ServingEndpointPermissionsDescription) EncodeValues(key string, v *url.Values) error {
+	pb, err := servingEndpointPermissionsDescriptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5842,8 +5842,8 @@ type ServingEndpointPermissionsRequest struct {
 	ServingEndpointId string `json:"-" tf:"-"`
 }
 
-func (st *ServingEndpointPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := servingEndpointPermissionsRequestToPb(st)
+func (st ServingEndpointPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := servingEndpointPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5938,8 +5938,8 @@ type TrafficConfig struct {
 	Routes []Route `json:"routes,omitempty"`
 }
 
-func (st *TrafficConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := trafficConfigToPb(st)
+func (st TrafficConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := trafficConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5988,8 +5988,8 @@ type UpdateProvisionedThroughputEndpointConfigRequest struct {
 	Name string `json:"-" tf:"-"`
 }
 
-func (st *UpdateProvisionedThroughputEndpointConfigRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateProvisionedThroughputEndpointConfigRequestToPb(st)
+func (st UpdateProvisionedThroughputEndpointConfigRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateProvisionedThroughputEndpointConfigRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6050,8 +6050,8 @@ type V1ResponseChoiceElement struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *V1ResponseChoiceElement) EncodeValues(key string, v *url.Values) error {
-	pb, err := v1ResponseChoiceElementToPb(st)
+func (st V1ResponseChoiceElement) EncodeValues(key string, v *url.Values) error {
+	pb, err := v1ResponseChoiceElementToPb(&st)
 	if err != nil {
 		return err
 	}

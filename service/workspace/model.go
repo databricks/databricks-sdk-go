@@ -19,8 +19,8 @@ type AclItem struct {
 	Principal string `json:"principal"`
 }
 
-func (st *AclItem) EncodeValues(key string, v *url.Values) error {
-	pb, err := aclItemToPb(st)
+func (st AclItem) EncodeValues(key string, v *url.Values) error {
+	pb, err := aclItemToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -111,8 +111,8 @@ type AzureKeyVaultSecretScopeMetadata struct {
 	ResourceId string `json:"resource_id"`
 }
 
-func (st *AzureKeyVaultSecretScopeMetadata) EncodeValues(key string, v *url.Values) error {
-	pb, err := azureKeyVaultSecretScopeMetadataToPb(st)
+func (st AzureKeyVaultSecretScopeMetadata) EncodeValues(key string, v *url.Values) error {
+	pb, err := azureKeyVaultSecretScopeMetadataToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -180,8 +180,8 @@ type CreateCredentialsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateCredentialsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createCredentialsRequestToPb(st)
+func (st CreateCredentialsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createCredentialsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -237,8 +237,8 @@ type CreateCredentialsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateCredentialsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createCredentialsResponseToPb(st)
+func (st CreateCredentialsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createCredentialsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -302,8 +302,8 @@ type CreateRepoRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateRepoRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createRepoRequestToPb(st)
+func (st CreateRepoRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createRepoRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -371,8 +371,8 @@ type CreateRepoResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateRepoResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createRepoResponseToPb(st)
+func (st CreateRepoResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createRepoResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -432,8 +432,8 @@ type CreateScope struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateScope) EncodeValues(key string, v *url.Values) error {
-	pb, err := createScopeToPb(st)
+func (st CreateScope) EncodeValues(key string, v *url.Values) error {
+	pb, err := createScopeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -489,8 +489,8 @@ type CredentialInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CredentialInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := credentialInfoToPb(st)
+func (st CredentialInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := credentialInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -545,8 +545,8 @@ type Delete struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Delete) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteToPb(st)
+func (st Delete) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -596,8 +596,8 @@ type DeleteAcl struct {
 	Scope string `json:"scope"`
 }
 
-func (st *DeleteAcl) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteAclToPb(st)
+func (st DeleteAcl) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteAclToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -643,8 +643,8 @@ type DeleteCredentialsRequest struct {
 	CredentialId int64 `json:"-" tf:"-"`
 }
 
-func (st *DeleteCredentialsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteCredentialsRequestToPb(st)
+func (st DeleteCredentialsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteCredentialsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -690,8 +690,8 @@ type DeleteRepoRequest struct {
 	RepoId int64 `json:"-" tf:"-"`
 }
 
-func (st *DeleteRepoRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteRepoRequestToPb(st)
+func (st DeleteRepoRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteRepoRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -738,8 +738,8 @@ type DeleteScope struct {
 	Scope string `json:"scope"`
 }
 
-func (st *DeleteScope) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteScopeToPb(st)
+func (st DeleteScope) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteScopeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -789,8 +789,8 @@ type DeleteSecret struct {
 	Scope string `json:"scope"`
 }
 
-func (st *DeleteSecret) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteSecretToPb(st)
+func (st DeleteSecret) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteSecretToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -905,8 +905,8 @@ type ExportRequest struct {
 	Path string `json:"-" tf:"-"`
 }
 
-func (st *ExportRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := exportRequestToPb(st)
+func (st ExportRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := exportRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -961,8 +961,8 @@ type ExportResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ExportResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := exportResponseToPb(st)
+func (st ExportResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := exportResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1010,8 +1010,8 @@ type GetAclRequest struct {
 	Scope string `json:"-" tf:"-"`
 }
 
-func (st *GetAclRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getAclRequestToPb(st)
+func (st GetAclRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getAclRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1057,8 +1057,8 @@ type GetCredentialsRequest struct {
 	CredentialId int64 `json:"-" tf:"-"`
 }
 
-func (st *GetCredentialsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getCredentialsRequestToPb(st)
+func (st GetCredentialsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getCredentialsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1114,8 +1114,8 @@ type GetCredentialsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetCredentialsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getCredentialsResponseToPb(st)
+func (st GetCredentialsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getCredentialsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1161,8 +1161,8 @@ type GetRepoPermissionLevelsRequest struct {
 	RepoId string `json:"-" tf:"-"`
 }
 
-func (st *GetRepoPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getRepoPermissionLevelsRequestToPb(st)
+func (st GetRepoPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getRepoPermissionLevelsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1209,8 +1209,8 @@ type GetRepoPermissionLevelsResponse struct {
 	PermissionLevels []RepoPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-func (st *GetRepoPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getRepoPermissionLevelsResponseToPb(st)
+func (st GetRepoPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getRepoPermissionLevelsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1256,8 +1256,8 @@ type GetRepoPermissionsRequest struct {
 	RepoId string `json:"-" tf:"-"`
 }
 
-func (st *GetRepoPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getRepoPermissionsRequestToPb(st)
+func (st GetRepoPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getRepoPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1303,8 +1303,8 @@ type GetRepoRequest struct {
 	RepoId int64 `json:"-" tf:"-"`
 }
 
-func (st *GetRepoRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getRepoRequestToPb(st)
+func (st GetRepoRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getRepoRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1371,8 +1371,8 @@ type GetRepoResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetRepoResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getRepoResponseToPb(st)
+func (st GetRepoResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getRepoResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1420,8 +1420,8 @@ type GetSecretRequest struct {
 	Scope string `json:"-" tf:"-"`
 }
 
-func (st *GetSecretRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getSecretRequestToPb(st)
+func (st GetSecretRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getSecretRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1473,8 +1473,8 @@ type GetSecretResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetSecretResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getSecretResponseToPb(st)
+func (st GetSecretResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getSecretResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1520,8 +1520,8 @@ type GetStatusRequest struct {
 	Path string `json:"-" tf:"-"`
 }
 
-func (st *GetStatusRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getStatusRequestToPb(st)
+func (st GetStatusRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getStatusRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1569,8 +1569,8 @@ type GetWorkspaceObjectPermissionLevelsRequest struct {
 	WorkspaceObjectType string `json:"-" tf:"-"`
 }
 
-func (st *GetWorkspaceObjectPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getWorkspaceObjectPermissionLevelsRequestToPb(st)
+func (st GetWorkspaceObjectPermissionLevelsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getWorkspaceObjectPermissionLevelsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1617,8 +1617,8 @@ type GetWorkspaceObjectPermissionLevelsResponse struct {
 	PermissionLevels []WorkspaceObjectPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-func (st *GetWorkspaceObjectPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getWorkspaceObjectPermissionLevelsResponseToPb(st)
+func (st GetWorkspaceObjectPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getWorkspaceObjectPermissionLevelsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1666,8 +1666,8 @@ type GetWorkspaceObjectPermissionsRequest struct {
 	WorkspaceObjectType string `json:"-" tf:"-"`
 }
 
-func (st *GetWorkspaceObjectPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getWorkspaceObjectPermissionsRequestToPb(st)
+func (st GetWorkspaceObjectPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getWorkspaceObjectPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1748,8 +1748,8 @@ type Import struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *Import) EncodeValues(key string, v *url.Values) error {
-	pb, err := importToPb(st)
+func (st Import) EncodeValues(key string, v *url.Values) error {
+	pb, err := importToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1892,8 +1892,8 @@ type ListAclsRequest struct {
 	Scope string `json:"-" tf:"-"`
 }
 
-func (st *ListAclsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listAclsRequestToPb(st)
+func (st ListAclsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listAclsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1940,8 +1940,8 @@ type ListAclsResponse struct {
 	Items []AclItem `json:"items,omitempty"`
 }
 
-func (st *ListAclsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listAclsResponseToPb(st)
+func (st ListAclsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listAclsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1988,8 +1988,8 @@ type ListCredentialsResponse struct {
 	Credentials []CredentialInfo `json:"credentials,omitempty"`
 }
 
-func (st *ListCredentialsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listCredentialsResponseToPb(st)
+func (st ListCredentialsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listCredentialsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2043,8 +2043,8 @@ type ListReposRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListReposRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listReposRequestToPb(st)
+func (st ListReposRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listReposRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2097,8 +2097,8 @@ type ListReposResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListReposResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listReposResponseToPb(st)
+func (st ListReposResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listReposResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2145,8 +2145,8 @@ type ListResponse struct {
 	Objects []ObjectInfo `json:"objects,omitempty"`
 }
 
-func (st *ListResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listResponseToPb(st)
+func (st ListResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2193,8 +2193,8 @@ type ListScopesResponse struct {
 	Scopes []SecretScope `json:"scopes,omitempty"`
 }
 
-func (st *ListScopesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listScopesResponseToPb(st)
+func (st ListScopesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listScopesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2240,8 +2240,8 @@ type ListSecretsRequest struct {
 	Scope string `json:"-" tf:"-"`
 }
 
-func (st *ListSecretsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listSecretsRequestToPb(st)
+func (st ListSecretsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listSecretsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2288,8 +2288,8 @@ type ListSecretsResponse struct {
 	Secrets []SecretMetadata `json:"secrets,omitempty"`
 }
 
-func (st *ListSecretsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listSecretsResponseToPb(st)
+func (st ListSecretsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listSecretsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2339,8 +2339,8 @@ type ListWorkspaceRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listWorkspaceRequestToPb(st)
+func (st ListWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listWorkspaceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2389,8 +2389,8 @@ type Mkdirs struct {
 	Path string `json:"path"`
 }
 
-func (st *Mkdirs) EncodeValues(key string, v *url.Values) error {
-	pb, err := mkdirsToPb(st)
+func (st Mkdirs) EncodeValues(key string, v *url.Values) error {
+	pb, err := mkdirsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2468,8 +2468,8 @@ type ObjectInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ObjectInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := objectInfoToPb(st)
+func (st ObjectInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := objectInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2572,8 +2572,8 @@ type PutAcl struct {
 	Scope string `json:"scope"`
 }
 
-func (st *PutAcl) EncodeValues(key string, v *url.Values) error {
-	pb, err := putAclToPb(st)
+func (st PutAcl) EncodeValues(key string, v *url.Values) error {
+	pb, err := putAclToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2631,8 +2631,8 @@ type PutSecret struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PutSecret) EncodeValues(key string, v *url.Values) error {
-	pb, err := putSecretToPb(st)
+func (st PutSecret) EncodeValues(key string, v *url.Values) error {
+	pb, err := putSecretToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2690,8 +2690,8 @@ type RepoAccessControlRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RepoAccessControlRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := repoAccessControlRequestToPb(st)
+func (st RepoAccessControlRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := repoAccessControlRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2752,8 +2752,8 @@ type RepoAccessControlResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RepoAccessControlResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := repoAccessControlResponseToPb(st)
+func (st RepoAccessControlResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := repoAccessControlResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2821,8 +2821,8 @@ type RepoInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RepoInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := repoInfoToPb(st)
+func (st RepoInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := repoInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2877,8 +2877,8 @@ type RepoPermission struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RepoPermission) EncodeValues(key string, v *url.Values) error {
-	pb, err := repoPermissionToPb(st)
+func (st RepoPermission) EncodeValues(key string, v *url.Values) error {
+	pb, err := repoPermissionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2977,8 +2977,8 @@ type RepoPermissions struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RepoPermissions) EncodeValues(key string, v *url.Values) error {
-	pb, err := repoPermissionsToPb(st)
+func (st RepoPermissions) EncodeValues(key string, v *url.Values) error {
+	pb, err := repoPermissionsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3030,8 +3030,8 @@ type RepoPermissionsDescription struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RepoPermissionsDescription) EncodeValues(key string, v *url.Values) error {
-	pb, err := repoPermissionsDescriptionToPb(st)
+func (st RepoPermissionsDescription) EncodeValues(key string, v *url.Values) error {
+	pb, err := repoPermissionsDescriptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3080,8 +3080,8 @@ type RepoPermissionsRequest struct {
 	RepoId string `json:"-" tf:"-"`
 }
 
-func (st *RepoPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := repoPermissionsRequestToPb(st)
+func (st RepoPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := repoPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3170,8 +3170,8 @@ type SecretMetadata struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SecretMetadata) EncodeValues(key string, v *url.Values) error {
-	pb, err := secretMetadataToPb(st)
+func (st SecretMetadata) EncodeValues(key string, v *url.Values) error {
+	pb, err := secretMetadataToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3226,8 +3226,8 @@ type SecretScope struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SecretScope) EncodeValues(key string, v *url.Values) error {
-	pb, err := secretScopeToPb(st)
+func (st SecretScope) EncodeValues(key string, v *url.Values) error {
+	pb, err := secretScopeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3278,8 +3278,8 @@ type SparseCheckout struct {
 	Patterns []string `json:"patterns,omitempty"`
 }
 
-func (st *SparseCheckout) EncodeValues(key string, v *url.Values) error {
-	pb, err := sparseCheckoutToPb(st)
+func (st SparseCheckout) EncodeValues(key string, v *url.Values) error {
+	pb, err := sparseCheckoutToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3330,8 +3330,8 @@ type SparseCheckoutUpdate struct {
 	Patterns []string `json:"patterns,omitempty"`
 }
 
-func (st *SparseCheckoutUpdate) EncodeValues(key string, v *url.Values) error {
-	pb, err := sparseCheckoutUpdateToPb(st)
+func (st SparseCheckoutUpdate) EncodeValues(key string, v *url.Values) error {
+	pb, err := sparseCheckoutUpdateToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3401,8 +3401,8 @@ type UpdateCredentialsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateCredentialsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateCredentialsRequestToPb(st)
+func (st UpdateCredentialsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateCredentialsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3463,8 +3463,8 @@ type UpdateRepoRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateRepoRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateRepoRequestToPb(st)
+func (st UpdateRepoRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateRepoRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3522,8 +3522,8 @@ type WorkspaceObjectAccessControlRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *WorkspaceObjectAccessControlRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := workspaceObjectAccessControlRequestToPb(st)
+func (st WorkspaceObjectAccessControlRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := workspaceObjectAccessControlRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3584,8 +3584,8 @@ type WorkspaceObjectAccessControlResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *WorkspaceObjectAccessControlResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := workspaceObjectAccessControlResponseToPb(st)
+func (st WorkspaceObjectAccessControlResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := workspaceObjectAccessControlResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3640,8 +3640,8 @@ type WorkspaceObjectPermission struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *WorkspaceObjectPermission) EncodeValues(key string, v *url.Values) error {
-	pb, err := workspaceObjectPermissionToPb(st)
+func (st WorkspaceObjectPermission) EncodeValues(key string, v *url.Values) error {
+	pb, err := workspaceObjectPermissionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3740,8 +3740,8 @@ type WorkspaceObjectPermissions struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *WorkspaceObjectPermissions) EncodeValues(key string, v *url.Values) error {
-	pb, err := workspaceObjectPermissionsToPb(st)
+func (st WorkspaceObjectPermissions) EncodeValues(key string, v *url.Values) error {
+	pb, err := workspaceObjectPermissionsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3793,8 +3793,8 @@ type WorkspaceObjectPermissionsDescription struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *WorkspaceObjectPermissionsDescription) EncodeValues(key string, v *url.Values) error {
-	pb, err := workspaceObjectPermissionsDescriptionToPb(st)
+func (st WorkspaceObjectPermissionsDescription) EncodeValues(key string, v *url.Values) error {
+	pb, err := workspaceObjectPermissionsDescriptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3845,8 +3845,8 @@ type WorkspaceObjectPermissionsRequest struct {
 	WorkspaceObjectType string `json:"-" tf:"-"`
 }
 
-func (st *WorkspaceObjectPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := workspaceObjectPermissionsRequestToPb(st)
+func (st WorkspaceObjectPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := workspaceObjectPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}

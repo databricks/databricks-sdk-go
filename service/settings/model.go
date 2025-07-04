@@ -34,8 +34,8 @@ type AccountIpAccessEnable struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AccountIpAccessEnable) EncodeValues(key string, v *url.Values) error {
-	pb, err := accountIpAccessEnableToPb(st)
+func (st AccountIpAccessEnable) EncodeValues(key string, v *url.Values) error {
+	pb, err := accountIpAccessEnableToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -90,8 +90,8 @@ type AccountNetworkPolicy struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AccountNetworkPolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := accountNetworkPolicyToPb(st)
+func (st AccountNetworkPolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := accountNetworkPolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -138,8 +138,8 @@ type AibiDashboardEmbeddingAccessPolicy struct {
 	AccessPolicyType AibiDashboardEmbeddingAccessPolicyAccessPolicyType `json:"access_policy_type"`
 }
 
-func (st *AibiDashboardEmbeddingAccessPolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := aibiDashboardEmbeddingAccessPolicyToPb(st)
+func (st AibiDashboardEmbeddingAccessPolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := aibiDashboardEmbeddingAccessPolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -244,8 +244,8 @@ type AibiDashboardEmbeddingAccessPolicySetting struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AibiDashboardEmbeddingAccessPolicySetting) EncodeValues(key string, v *url.Values) error {
-	pb, err := aibiDashboardEmbeddingAccessPolicySettingToPb(st)
+func (st AibiDashboardEmbeddingAccessPolicySetting) EncodeValues(key string, v *url.Values) error {
+	pb, err := aibiDashboardEmbeddingAccessPolicySettingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -292,8 +292,8 @@ type AibiDashboardEmbeddingApprovedDomains struct {
 	ApprovedDomains []string `json:"approved_domains,omitempty"`
 }
 
-func (st *AibiDashboardEmbeddingApprovedDomains) EncodeValues(key string, v *url.Values) error {
-	pb, err := aibiDashboardEmbeddingApprovedDomainsToPb(st)
+func (st AibiDashboardEmbeddingApprovedDomains) EncodeValues(key string, v *url.Values) error {
+	pb, err := aibiDashboardEmbeddingApprovedDomainsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -358,8 +358,8 @@ type AibiDashboardEmbeddingApprovedDomainsSetting struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AibiDashboardEmbeddingApprovedDomainsSetting) EncodeValues(key string, v *url.Values) error {
-	pb, err := aibiDashboardEmbeddingApprovedDomainsSettingToPb(st)
+func (st AibiDashboardEmbeddingApprovedDomainsSetting) EncodeValues(key string, v *url.Values) error {
+	pb, err := aibiDashboardEmbeddingApprovedDomainsSettingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -424,8 +424,8 @@ type AutomaticClusterUpdateSetting struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *AutomaticClusterUpdateSetting) EncodeValues(key string, v *url.Values) error {
-	pb, err := automaticClusterUpdateSettingToPb(st)
+func (st AutomaticClusterUpdateSetting) EncodeValues(key string, v *url.Values) error {
+	pb, err := automaticClusterUpdateSettingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -474,8 +474,8 @@ type BooleanMessage struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *BooleanMessage) EncodeValues(key string, v *url.Values) error {
-	pb, err := booleanMessageToPb(st)
+func (st BooleanMessage) EncodeValues(key string, v *url.Values) error {
+	pb, err := booleanMessageToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -536,8 +536,8 @@ type ClusterAutoRestartMessage struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterAutoRestartMessage) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterAutoRestartMessageToPb(st)
+func (st ClusterAutoRestartMessage) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterAutoRestartMessageToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -599,8 +599,8 @@ type ClusterAutoRestartMessageEnablementDetails struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterAutoRestartMessageEnablementDetails) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterAutoRestartMessageEnablementDetailsToPb(st)
+func (st ClusterAutoRestartMessageEnablementDetails) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterAutoRestartMessageEnablementDetailsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -647,8 +647,8 @@ type ClusterAutoRestartMessageMaintenanceWindow struct {
 	WeekDayBasedSchedule *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule `json:"week_day_based_schedule,omitempty"`
 }
 
-func (st *ClusterAutoRestartMessageMaintenanceWindow) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterAutoRestartMessageMaintenanceWindowToPb(st)
+func (st ClusterAutoRestartMessageMaintenanceWindow) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterAutoRestartMessageMaintenanceWindowToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -753,8 +753,8 @@ type ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule struct {
 	WindowStartTime *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime `json:"window_start_time,omitempty"`
 }
 
-func (st *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterAutoRestartMessageMaintenanceWindowWeekDayBasedScheduleToPb(st)
+func (st ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterAutoRestartMessageMaintenanceWindowWeekDayBasedScheduleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -858,8 +858,8 @@ type ClusterAutoRestartMessageMaintenanceWindowWindowStartTime struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) EncodeValues(key string, v *url.Values) error {
-	pb, err := clusterAutoRestartMessageMaintenanceWindowWindowStartTimeToPb(st)
+func (st ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) EncodeValues(key string, v *url.Values) error {
+	pb, err := clusterAutoRestartMessageMaintenanceWindowWindowStartTimeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -912,8 +912,8 @@ type ComplianceSecurityProfile struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ComplianceSecurityProfile) EncodeValues(key string, v *url.Values) error {
-	pb, err := complianceSecurityProfileToPb(st)
+func (st ComplianceSecurityProfile) EncodeValues(key string, v *url.Values) error {
+	pb, err := complianceSecurityProfileToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -978,8 +978,8 @@ type ComplianceSecurityProfileSetting struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ComplianceSecurityProfileSetting) EncodeValues(key string, v *url.Values) error {
-	pb, err := complianceSecurityProfileSettingToPb(st)
+func (st ComplianceSecurityProfileSetting) EncodeValues(key string, v *url.Values) error {
+	pb, err := complianceSecurityProfileSettingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1109,8 +1109,8 @@ type Config struct {
 	Slack *SlackConfig `json:"slack,omitempty"`
 }
 
-func (st *Config) EncodeValues(key string, v *url.Values) error {
-	pb, err := configToPb(st)
+func (st Config) EncodeValues(key string, v *url.Values) error {
+	pb, err := configToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1164,8 +1164,8 @@ type CreateIpAccessList struct {
 	ListType ListType `json:"list_type"`
 }
 
-func (st *CreateIpAccessList) EncodeValues(key string, v *url.Values) error {
-	pb, err := createIpAccessListToPb(st)
+func (st CreateIpAccessList) EncodeValues(key string, v *url.Values) error {
+	pb, err := createIpAccessListToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1213,8 +1213,8 @@ type CreateIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
-func (st *CreateIpAccessListResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createIpAccessListResponseToPb(st)
+func (st CreateIpAccessListResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createIpAccessListResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1261,8 +1261,8 @@ type CreateNetworkConnectivityConfigRequest struct {
 	NetworkConnectivityConfig CreateNetworkConnectivityConfiguration `json:"network_connectivity_config"`
 }
 
-func (st *CreateNetworkConnectivityConfigRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createNetworkConnectivityConfigRequestToPb(st)
+func (st CreateNetworkConnectivityConfigRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createNetworkConnectivityConfigRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1318,8 +1318,8 @@ type CreateNetworkConnectivityConfiguration struct {
 	Region string `json:"region"`
 }
 
-func (st *CreateNetworkConnectivityConfiguration) EncodeValues(key string, v *url.Values) error {
-	pb, err := createNetworkConnectivityConfigurationToPb(st)
+func (st CreateNetworkConnectivityConfiguration) EncodeValues(key string, v *url.Values) error {
+	pb, err := createNetworkConnectivityConfigurationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1366,8 +1366,8 @@ type CreateNetworkPolicyRequest struct {
 	NetworkPolicy AccountNetworkPolicy `json:"network_policy"`
 }
 
-func (st *CreateNetworkPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createNetworkPolicyRequestToPb(st)
+func (st CreateNetworkPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createNetworkPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1420,8 +1420,8 @@ type CreateNotificationDestinationRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateNotificationDestinationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createNotificationDestinationRequestToPb(st)
+func (st CreateNotificationDestinationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createNotificationDestinationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1477,8 +1477,8 @@ type CreateOboTokenRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateOboTokenRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createOboTokenRequestToPb(st)
+func (st CreateOboTokenRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createOboTokenRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1531,8 +1531,8 @@ type CreateOboTokenResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateOboTokenResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createOboTokenResponseToPb(st)
+func (st CreateOboTokenResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createOboTokenResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1609,8 +1609,8 @@ type CreatePrivateEndpointRule struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreatePrivateEndpointRule) EncodeValues(key string, v *url.Values) error {
-	pb, err := createPrivateEndpointRuleToPb(st)
+func (st CreatePrivateEndpointRule) EncodeValues(key string, v *url.Values) error {
+	pb, err := createPrivateEndpointRuleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1659,8 +1659,8 @@ type CreatePrivateEndpointRuleRequest struct {
 	PrivateEndpointRule CreatePrivateEndpointRule `json:"private_endpoint_rule"`
 }
 
-func (st *CreatePrivateEndpointRuleRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createPrivateEndpointRuleRequestToPb(st)
+func (st CreatePrivateEndpointRuleRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createPrivateEndpointRuleRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1714,8 +1714,8 @@ type CreateTokenRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateTokenRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := createTokenRequestToPb(st)
+func (st CreateTokenRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := createTokenRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1767,8 +1767,8 @@ type CreateTokenResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CreateTokenResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := createTokenResponseToPb(st)
+func (st CreateTokenResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := createTokenResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1822,8 +1822,8 @@ type CspEnablementAccount struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CspEnablementAccount) EncodeValues(key string, v *url.Values) error {
-	pb, err := cspEnablementAccountToPb(st)
+func (st CspEnablementAccount) EncodeValues(key string, v *url.Values) error {
+	pb, err := cspEnablementAccountToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -1888,8 +1888,8 @@ type CspEnablementAccountSetting struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CspEnablementAccountSetting) EncodeValues(key string, v *url.Values) error {
-	pb, err := cspEnablementAccountSettingToPb(st)
+func (st CspEnablementAccountSetting) EncodeValues(key string, v *url.Values) error {
+	pb, err := cspEnablementAccountSettingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2004,8 +2004,8 @@ type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) EncodeValues(key string, v *url.Values) error {
-	pb, err := customerFacingNetworkConnectivityConfigAwsPrivateEndpointRuleToPb(st)
+func (st CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) EncodeValues(key string, v *url.Values) error {
+	pb, err := customerFacingNetworkConnectivityConfigAwsPrivateEndpointRuleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2116,8 +2116,8 @@ type DashboardEmailSubscriptions struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DashboardEmailSubscriptions) EncodeValues(key string, v *url.Values) error {
-	pb, err := dashboardEmailSubscriptionsToPb(st)
+func (st DashboardEmailSubscriptions) EncodeValues(key string, v *url.Values) error {
+	pb, err := dashboardEmailSubscriptionsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2191,8 +2191,8 @@ type DefaultNamespaceSetting struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DefaultNamespaceSetting) EncodeValues(key string, v *url.Values) error {
-	pb, err := defaultNamespaceSettingToPb(st)
+func (st DefaultNamespaceSetting) EncodeValues(key string, v *url.Values) error {
+	pb, err := defaultNamespaceSettingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2246,8 +2246,8 @@ type DeleteAccountIpAccessEnableRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteAccountIpAccessEnableRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteAccountIpAccessEnableRequestToPb(st)
+func (st DeleteAccountIpAccessEnableRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteAccountIpAccessEnableRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2301,8 +2301,8 @@ type DeleteAccountIpAccessEnableResponse struct {
 	Etag string `json:"etag"`
 }
 
-func (st *DeleteAccountIpAccessEnableResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteAccountIpAccessEnableResponseToPb(st)
+func (st DeleteAccountIpAccessEnableResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteAccountIpAccessEnableResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2348,8 +2348,8 @@ type DeleteAccountIpAccessListRequest struct {
 	IpAccessListId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteAccountIpAccessListRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteAccountIpAccessListRequestToPb(st)
+func (st DeleteAccountIpAccessListRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteAccountIpAccessListRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2403,8 +2403,8 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st)
+func (st DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteAibiDashboardEmbeddingAccessPolicySettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2458,8 +2458,8 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingResponse struct {
 	Etag string `json:"etag"`
 }
 
-func (st *DeleteAibiDashboardEmbeddingAccessPolicySettingResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteAibiDashboardEmbeddingAccessPolicySettingResponseToPb(st)
+func (st DeleteAibiDashboardEmbeddingAccessPolicySettingResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteAibiDashboardEmbeddingAccessPolicySettingResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2513,8 +2513,8 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st)
+func (st DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2568,8 +2568,8 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse struct {
 	Etag string `json:"etag"`
 }
 
-func (st *DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteAibiDashboardEmbeddingApprovedDomainsSettingResponseToPb(st)
+func (st DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteAibiDashboardEmbeddingApprovedDomainsSettingResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2623,8 +2623,8 @@ type DeleteDashboardEmailSubscriptionsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteDashboardEmailSubscriptionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDashboardEmailSubscriptionsRequestToPb(st)
+func (st DeleteDashboardEmailSubscriptionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDashboardEmailSubscriptionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2678,8 +2678,8 @@ type DeleteDashboardEmailSubscriptionsResponse struct {
 	Etag string `json:"etag"`
 }
 
-func (st *DeleteDashboardEmailSubscriptionsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDashboardEmailSubscriptionsResponseToPb(st)
+func (st DeleteDashboardEmailSubscriptionsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDashboardEmailSubscriptionsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2733,8 +2733,8 @@ type DeleteDefaultNamespaceSettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteDefaultNamespaceSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDefaultNamespaceSettingRequestToPb(st)
+func (st DeleteDefaultNamespaceSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDefaultNamespaceSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2788,8 +2788,8 @@ type DeleteDefaultNamespaceSettingResponse struct {
 	Etag string `json:"etag"`
 }
 
-func (st *DeleteDefaultNamespaceSettingResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDefaultNamespaceSettingResponseToPb(st)
+func (st DeleteDefaultNamespaceSettingResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDefaultNamespaceSettingResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2843,8 +2843,8 @@ type DeleteDisableLegacyAccessRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteDisableLegacyAccessRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDisableLegacyAccessRequestToPb(st)
+func (st DeleteDisableLegacyAccessRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDisableLegacyAccessRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2898,8 +2898,8 @@ type DeleteDisableLegacyAccessResponse struct {
 	Etag string `json:"etag"`
 }
 
-func (st *DeleteDisableLegacyAccessResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDisableLegacyAccessResponseToPb(st)
+func (st DeleteDisableLegacyAccessResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDisableLegacyAccessResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -2953,8 +2953,8 @@ type DeleteDisableLegacyDbfsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteDisableLegacyDbfsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDisableLegacyDbfsRequestToPb(st)
+func (st DeleteDisableLegacyDbfsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDisableLegacyDbfsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3008,8 +3008,8 @@ type DeleteDisableLegacyDbfsResponse struct {
 	Etag string `json:"etag"`
 }
 
-func (st *DeleteDisableLegacyDbfsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDisableLegacyDbfsResponseToPb(st)
+func (st DeleteDisableLegacyDbfsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDisableLegacyDbfsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3063,8 +3063,8 @@ type DeleteDisableLegacyFeaturesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteDisableLegacyFeaturesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDisableLegacyFeaturesRequestToPb(st)
+func (st DeleteDisableLegacyFeaturesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDisableLegacyFeaturesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3118,8 +3118,8 @@ type DeleteDisableLegacyFeaturesResponse struct {
 	Etag string `json:"etag"`
 }
 
-func (st *DeleteDisableLegacyFeaturesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteDisableLegacyFeaturesResponseToPb(st)
+func (st DeleteDisableLegacyFeaturesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteDisableLegacyFeaturesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3165,8 +3165,8 @@ type DeleteIpAccessListRequest struct {
 	IpAccessListId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteIpAccessListRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteIpAccessListRequestToPb(st)
+func (st DeleteIpAccessListRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteIpAccessListRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3220,8 +3220,8 @@ type DeleteLlmProxyPartnerPoweredWorkspaceRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteLlmProxyPartnerPoweredWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteLlmProxyPartnerPoweredWorkspaceRequestToPb(st)
+func (st DeleteLlmProxyPartnerPoweredWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteLlmProxyPartnerPoweredWorkspaceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3275,8 +3275,8 @@ type DeleteLlmProxyPartnerPoweredWorkspaceResponse struct {
 	Etag string `json:"etag"`
 }
 
-func (st *DeleteLlmProxyPartnerPoweredWorkspaceResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteLlmProxyPartnerPoweredWorkspaceResponseToPb(st)
+func (st DeleteLlmProxyPartnerPoweredWorkspaceResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteLlmProxyPartnerPoweredWorkspaceResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3322,8 +3322,8 @@ type DeleteNetworkConnectivityConfigurationRequest struct {
 	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteNetworkConnectivityConfigurationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteNetworkConnectivityConfigurationRequestToPb(st)
+func (st DeleteNetworkConnectivityConfigurationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteNetworkConnectivityConfigurationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3367,8 +3367,8 @@ func (st DeleteNetworkConnectivityConfigurationRequest) MarshalJSON() ([]byte, e
 type DeleteNetworkConnectivityConfigurationResponse struct {
 }
 
-func (st *DeleteNetworkConnectivityConfigurationResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteNetworkConnectivityConfigurationResponseToPb(st)
+func (st DeleteNetworkConnectivityConfigurationResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteNetworkConnectivityConfigurationResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3414,8 +3414,8 @@ type DeleteNetworkPolicyRequest struct {
 	NetworkPolicyId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteNetworkPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteNetworkPolicyRequestToPb(st)
+func (st DeleteNetworkPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteNetworkPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3459,8 +3459,8 @@ func (st DeleteNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
 type DeleteNetworkPolicyRpcResponse struct {
 }
 
-func (st *DeleteNetworkPolicyRpcResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteNetworkPolicyRpcResponseToPb(st)
+func (st DeleteNetworkPolicyRpcResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteNetworkPolicyRpcResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3505,8 +3505,8 @@ type DeleteNotificationDestinationRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *DeleteNotificationDestinationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteNotificationDestinationRequestToPb(st)
+func (st DeleteNotificationDestinationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteNotificationDestinationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3560,8 +3560,8 @@ type DeletePersonalComputeSettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeletePersonalComputeSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deletePersonalComputeSettingRequestToPb(st)
+func (st DeletePersonalComputeSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deletePersonalComputeSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3615,8 +3615,8 @@ type DeletePersonalComputeSettingResponse struct {
 	Etag string `json:"etag"`
 }
 
-func (st *DeletePersonalComputeSettingResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deletePersonalComputeSettingResponseToPb(st)
+func (st DeletePersonalComputeSettingResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deletePersonalComputeSettingResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3664,8 +3664,8 @@ type DeletePrivateEndpointRuleRequest struct {
 	PrivateEndpointRuleId string `json:"-" tf:"-"`
 }
 
-func (st *DeletePrivateEndpointRuleRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deletePrivateEndpointRuleRequestToPb(st)
+func (st DeletePrivateEndpointRuleRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deletePrivateEndpointRuleRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3719,8 +3719,8 @@ type DeleteRestrictWorkspaceAdminsSettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteRestrictWorkspaceAdminsSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteRestrictWorkspaceAdminsSettingRequestToPb(st)
+func (st DeleteRestrictWorkspaceAdminsSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteRestrictWorkspaceAdminsSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3774,8 +3774,8 @@ type DeleteRestrictWorkspaceAdminsSettingResponse struct {
 	Etag string `json:"etag"`
 }
 
-func (st *DeleteRestrictWorkspaceAdminsSettingResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteRestrictWorkspaceAdminsSettingResponseToPb(st)
+func (st DeleteRestrictWorkspaceAdminsSettingResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteRestrictWorkspaceAdminsSettingResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3829,8 +3829,8 @@ type DeleteSqlResultsDownloadRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DeleteSqlResultsDownloadRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteSqlResultsDownloadRequestToPb(st)
+func (st DeleteSqlResultsDownloadRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteSqlResultsDownloadRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3884,8 +3884,8 @@ type DeleteSqlResultsDownloadResponse struct {
 	Etag string `json:"etag"`
 }
 
-func (st *DeleteSqlResultsDownloadResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteSqlResultsDownloadResponseToPb(st)
+func (st DeleteSqlResultsDownloadResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteSqlResultsDownloadResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -3931,8 +3931,8 @@ type DeleteTokenManagementRequest struct {
 	TokenId string `json:"-" tf:"-"`
 }
 
-func (st *DeleteTokenManagementRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := deleteTokenManagementRequestToPb(st)
+func (st DeleteTokenManagementRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := deleteTokenManagementRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4043,8 +4043,8 @@ type DisableLegacyAccess struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DisableLegacyAccess) EncodeValues(key string, v *url.Values) error {
-	pb, err := disableLegacyAccessToPb(st)
+func (st DisableLegacyAccess) EncodeValues(key string, v *url.Values) error {
+	pb, err := disableLegacyAccessToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4109,8 +4109,8 @@ type DisableLegacyDbfs struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DisableLegacyDbfs) EncodeValues(key string, v *url.Values) error {
-	pb, err := disableLegacyDbfsToPb(st)
+func (st DisableLegacyDbfs) EncodeValues(key string, v *url.Values) error {
+	pb, err := disableLegacyDbfsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4175,8 +4175,8 @@ type DisableLegacyFeatures struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *DisableLegacyFeatures) EncodeValues(key string, v *url.Values) error {
-	pb, err := disableLegacyFeaturesToPb(st)
+func (st DisableLegacyFeatures) EncodeValues(key string, v *url.Values) error {
+	pb, err := disableLegacyFeaturesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4227,8 +4227,8 @@ type EgressNetworkPolicy struct {
 	InternetAccess *EgressNetworkPolicyInternetAccessPolicy `json:"internet_access,omitempty"`
 }
 
-func (st *EgressNetworkPolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := egressNetworkPolicyToPb(st)
+func (st EgressNetworkPolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := egressNetworkPolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4285,8 +4285,8 @@ type EgressNetworkPolicyInternetAccessPolicy struct {
 	RestrictionMode EgressNetworkPolicyInternetAccessPolicyRestrictionMode `json:"restriction_mode,omitempty"`
 }
 
-func (st *EgressNetworkPolicyInternetAccessPolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := egressNetworkPolicyInternetAccessPolicyToPb(st)
+func (st EgressNetworkPolicyInternetAccessPolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := egressNetworkPolicyInternetAccessPolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4344,8 +4344,8 @@ type EgressNetworkPolicyInternetAccessPolicyInternetDestination struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EgressNetworkPolicyInternetAccessPolicyInternetDestination) EncodeValues(key string, v *url.Values) error {
-	pb, err := egressNetworkPolicyInternetAccessPolicyInternetDestinationToPb(st)
+func (st EgressNetworkPolicyInternetAccessPolicyInternetDestination) EncodeValues(key string, v *url.Values) error {
+	pb, err := egressNetworkPolicyInternetAccessPolicyInternetDestinationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4468,8 +4468,8 @@ type EgressNetworkPolicyInternetAccessPolicyLogOnlyMode struct {
 	Workloads []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType `json:"workloads,omitempty"`
 }
 
-func (st *EgressNetworkPolicyInternetAccessPolicyLogOnlyMode) EncodeValues(key string, v *url.Values) error {
-	pb, err := egressNetworkPolicyInternetAccessPolicyLogOnlyModeToPb(st)
+func (st EgressNetworkPolicyInternetAccessPolicyLogOnlyMode) EncodeValues(key string, v *url.Values) error {
+	pb, err := egressNetworkPolicyInternetAccessPolicyLogOnlyModeToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4661,8 +4661,8 @@ type EgressNetworkPolicyInternetAccessPolicyStorageDestination struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EgressNetworkPolicyInternetAccessPolicyStorageDestination) EncodeValues(key string, v *url.Values) error {
-	pb, err := egressNetworkPolicyInternetAccessPolicyStorageDestinationToPb(st)
+func (st EgressNetworkPolicyInternetAccessPolicyStorageDestination) EncodeValues(key string, v *url.Values) error {
+	pb, err := egressNetworkPolicyInternetAccessPolicyStorageDestinationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4765,8 +4765,8 @@ type EgressNetworkPolicyNetworkAccessPolicy struct {
 	RestrictionMode EgressNetworkPolicyNetworkAccessPolicyRestrictionMode `json:"restriction_mode"`
 }
 
-func (st *EgressNetworkPolicyNetworkAccessPolicy) EncodeValues(key string, v *url.Values) error {
-	pb, err := egressNetworkPolicyNetworkAccessPolicyToPb(st)
+func (st EgressNetworkPolicyNetworkAccessPolicy) EncodeValues(key string, v *url.Values) error {
+	pb, err := egressNetworkPolicyNetworkAccessPolicyToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4822,8 +4822,8 @@ type EgressNetworkPolicyNetworkAccessPolicyInternetDestination struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EgressNetworkPolicyNetworkAccessPolicyInternetDestination) EncodeValues(key string, v *url.Values) error {
-	pb, err := egressNetworkPolicyNetworkAccessPolicyInternetDestinationToPb(st)
+func (st EgressNetworkPolicyNetworkAccessPolicyInternetDestination) EncodeValues(key string, v *url.Values) error {
+	pb, err := egressNetworkPolicyNetworkAccessPolicyInternetDestinationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -4911,8 +4911,8 @@ type EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement struct {
 	EnforcementMode EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode `json:"enforcement_mode,omitempty"`
 }
 
-func (st *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement) EncodeValues(key string, v *url.Values) error {
-	pb, err := egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementToPb(st)
+func (st EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement) EncodeValues(key string, v *url.Values) error {
+	pb, err := egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5090,8 +5090,8 @@ type EgressNetworkPolicyNetworkAccessPolicyStorageDestination struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EgressNetworkPolicyNetworkAccessPolicyStorageDestination) EncodeValues(key string, v *url.Values) error {
-	pb, err := egressNetworkPolicyNetworkAccessPolicyStorageDestinationToPb(st)
+func (st EgressNetworkPolicyNetworkAccessPolicyStorageDestination) EncodeValues(key string, v *url.Values) error {
+	pb, err := egressNetworkPolicyNetworkAccessPolicyStorageDestinationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5216,8 +5216,8 @@ type EmailConfig struct {
 	Addresses []string `json:"addresses,omitempty"`
 }
 
-func (st *EmailConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := emailConfigToPb(st)
+func (st EmailConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := emailConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5273,8 +5273,8 @@ type EnableExportNotebook struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EnableExportNotebook) EncodeValues(key string, v *url.Values) error {
-	pb, err := enableExportNotebookToPb(st)
+func (st EnableExportNotebook) EncodeValues(key string, v *url.Values) error {
+	pb, err := enableExportNotebookToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5330,8 +5330,8 @@ type EnableNotebookTableClipboard struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EnableNotebookTableClipboard) EncodeValues(key string, v *url.Values) error {
-	pb, err := enableNotebookTableClipboardToPb(st)
+func (st EnableNotebookTableClipboard) EncodeValues(key string, v *url.Values) error {
+	pb, err := enableNotebookTableClipboardToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5387,8 +5387,8 @@ type EnableResultsDownloading struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EnableResultsDownloading) EncodeValues(key string, v *url.Values) error {
-	pb, err := enableResultsDownloadingToPb(st)
+func (st EnableResultsDownloading) EncodeValues(key string, v *url.Values) error {
+	pb, err := enableResultsDownloadingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5438,8 +5438,8 @@ type EnhancedSecurityMonitoring struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EnhancedSecurityMonitoring) EncodeValues(key string, v *url.Values) error {
-	pb, err := enhancedSecurityMonitoringToPb(st)
+func (st EnhancedSecurityMonitoring) EncodeValues(key string, v *url.Values) error {
+	pb, err := enhancedSecurityMonitoringToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5504,8 +5504,8 @@ type EnhancedSecurityMonitoringSetting struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EnhancedSecurityMonitoringSetting) EncodeValues(key string, v *url.Values) error {
-	pb, err := enhancedSecurityMonitoringSettingToPb(st)
+func (st EnhancedSecurityMonitoringSetting) EncodeValues(key string, v *url.Values) error {
+	pb, err := enhancedSecurityMonitoringSettingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5555,8 +5555,8 @@ type EsmEnablementAccount struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EsmEnablementAccount) EncodeValues(key string, v *url.Values) error {
-	pb, err := esmEnablementAccountToPb(st)
+func (st EsmEnablementAccount) EncodeValues(key string, v *url.Values) error {
+	pb, err := esmEnablementAccountToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5621,8 +5621,8 @@ type EsmEnablementAccountSetting struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *EsmEnablementAccountSetting) EncodeValues(key string, v *url.Values) error {
-	pb, err := esmEnablementAccountSettingToPb(st)
+func (st EsmEnablementAccountSetting) EncodeValues(key string, v *url.Values) error {
+	pb, err := esmEnablementAccountSettingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5685,8 +5685,8 @@ type ExchangeToken struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ExchangeToken) EncodeValues(key string, v *url.Values) error {
-	pb, err := exchangeTokenToPb(st)
+func (st ExchangeToken) EncodeValues(key string, v *url.Values) error {
+	pb, err := exchangeTokenToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5740,8 +5740,8 @@ type ExchangeTokenRequest struct {
 	TokenType []TokenType `json:"tokenType"`
 }
 
-func (st *ExchangeTokenRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := exchangeTokenRequestToPb(st)
+func (st ExchangeTokenRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := exchangeTokenRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5789,8 +5789,8 @@ type ExchangeTokenResponse struct {
 	Values []ExchangeToken `json:"values,omitempty"`
 }
 
-func (st *ExchangeTokenResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := exchangeTokenResponseToPb(st)
+func (st ExchangeTokenResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := exchangeTokenResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5838,8 +5838,8 @@ type FetchIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
-func (st *FetchIpAccessListResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := fetchIpAccessListResponseToPb(st)
+func (st FetchIpAccessListResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := fetchIpAccessListResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5903,8 +5903,8 @@ type GenericWebhookConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GenericWebhookConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := genericWebhookConfigToPb(st)
+func (st GenericWebhookConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := genericWebhookConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -5958,8 +5958,8 @@ type GetAccountIpAccessEnableRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetAccountIpAccessEnableRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getAccountIpAccessEnableRequestToPb(st)
+func (st GetAccountIpAccessEnableRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getAccountIpAccessEnableRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6005,8 +6005,8 @@ type GetAccountIpAccessListRequest struct {
 	IpAccessListId string `json:"-" tf:"-"`
 }
 
-func (st *GetAccountIpAccessListRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getAccountIpAccessListRequestToPb(st)
+func (st GetAccountIpAccessListRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getAccountIpAccessListRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6060,8 +6060,8 @@ type GetAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetAibiDashboardEmbeddingAccessPolicySettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st)
+func (st GetAibiDashboardEmbeddingAccessPolicySettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getAibiDashboardEmbeddingAccessPolicySettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6115,8 +6115,8 @@ type GetAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st)
+func (st GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6170,8 +6170,8 @@ type GetAutomaticClusterUpdateSettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetAutomaticClusterUpdateSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getAutomaticClusterUpdateSettingRequestToPb(st)
+func (st GetAutomaticClusterUpdateSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getAutomaticClusterUpdateSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6225,8 +6225,8 @@ type GetComplianceSecurityProfileSettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetComplianceSecurityProfileSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getComplianceSecurityProfileSettingRequestToPb(st)
+func (st GetComplianceSecurityProfileSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getComplianceSecurityProfileSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6280,8 +6280,8 @@ type GetCspEnablementAccountSettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetCspEnablementAccountSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getCspEnablementAccountSettingRequestToPb(st)
+func (st GetCspEnablementAccountSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getCspEnablementAccountSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6335,8 +6335,8 @@ type GetDashboardEmailSubscriptionsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetDashboardEmailSubscriptionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getDashboardEmailSubscriptionsRequestToPb(st)
+func (st GetDashboardEmailSubscriptionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getDashboardEmailSubscriptionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6390,8 +6390,8 @@ type GetDefaultNamespaceSettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetDefaultNamespaceSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getDefaultNamespaceSettingRequestToPb(st)
+func (st GetDefaultNamespaceSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getDefaultNamespaceSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6445,8 +6445,8 @@ type GetDisableLegacyAccessRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetDisableLegacyAccessRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getDisableLegacyAccessRequestToPb(st)
+func (st GetDisableLegacyAccessRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getDisableLegacyAccessRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6500,8 +6500,8 @@ type GetDisableLegacyDbfsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetDisableLegacyDbfsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getDisableLegacyDbfsRequestToPb(st)
+func (st GetDisableLegacyDbfsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getDisableLegacyDbfsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6555,8 +6555,8 @@ type GetDisableLegacyFeaturesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetDisableLegacyFeaturesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getDisableLegacyFeaturesRequestToPb(st)
+func (st GetDisableLegacyFeaturesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getDisableLegacyFeaturesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6610,8 +6610,8 @@ type GetEnhancedSecurityMonitoringSettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetEnhancedSecurityMonitoringSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getEnhancedSecurityMonitoringSettingRequestToPb(st)
+func (st GetEnhancedSecurityMonitoringSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getEnhancedSecurityMonitoringSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6665,8 +6665,8 @@ type GetEsmEnablementAccountSettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetEsmEnablementAccountSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getEsmEnablementAccountSettingRequestToPb(st)
+func (st GetEsmEnablementAccountSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getEsmEnablementAccountSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6712,8 +6712,8 @@ type GetIpAccessListRequest struct {
 	IpAccessListId string `json:"-" tf:"-"`
 }
 
-func (st *GetIpAccessListRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getIpAccessListRequestToPb(st)
+func (st GetIpAccessListRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getIpAccessListRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6760,8 +6760,8 @@ type GetIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
-func (st *GetIpAccessListResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getIpAccessListResponseToPb(st)
+func (st GetIpAccessListResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getIpAccessListResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6809,8 +6809,8 @@ type GetIpAccessListsResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
 
-func (st *GetIpAccessListsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getIpAccessListsResponseToPb(st)
+func (st GetIpAccessListsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getIpAccessListsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6864,8 +6864,8 @@ type GetLlmProxyPartnerPoweredAccountRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetLlmProxyPartnerPoweredAccountRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getLlmProxyPartnerPoweredAccountRequestToPb(st)
+func (st GetLlmProxyPartnerPoweredAccountRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getLlmProxyPartnerPoweredAccountRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6919,8 +6919,8 @@ type GetLlmProxyPartnerPoweredEnforceRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetLlmProxyPartnerPoweredEnforceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getLlmProxyPartnerPoweredEnforceRequestToPb(st)
+func (st GetLlmProxyPartnerPoweredEnforceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getLlmProxyPartnerPoweredEnforceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -6974,8 +6974,8 @@ type GetLlmProxyPartnerPoweredWorkspaceRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetLlmProxyPartnerPoweredWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getLlmProxyPartnerPoweredWorkspaceRequestToPb(st)
+func (st GetLlmProxyPartnerPoweredWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getLlmProxyPartnerPoweredWorkspaceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7021,8 +7021,8 @@ type GetNetworkConnectivityConfigurationRequest struct {
 	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 }
 
-func (st *GetNetworkConnectivityConfigurationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getNetworkConnectivityConfigurationRequestToPb(st)
+func (st GetNetworkConnectivityConfigurationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getNetworkConnectivityConfigurationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7068,8 +7068,8 @@ type GetNetworkPolicyRequest struct {
 	NetworkPolicyId string `json:"-" tf:"-"`
 }
 
-func (st *GetNetworkPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getNetworkPolicyRequestToPb(st)
+func (st GetNetworkPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getNetworkPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7114,8 +7114,8 @@ type GetNotificationDestinationRequest struct {
 	Id string `json:"-" tf:"-"`
 }
 
-func (st *GetNotificationDestinationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getNotificationDestinationRequestToPb(st)
+func (st GetNotificationDestinationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getNotificationDestinationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7169,8 +7169,8 @@ type GetPersonalComputeSettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetPersonalComputeSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPersonalComputeSettingRequestToPb(st)
+func (st GetPersonalComputeSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPersonalComputeSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7218,8 +7218,8 @@ type GetPrivateEndpointRuleRequest struct {
 	PrivateEndpointRuleId string `json:"-" tf:"-"`
 }
 
-func (st *GetPrivateEndpointRuleRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getPrivateEndpointRuleRequestToPb(st)
+func (st GetPrivateEndpointRuleRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getPrivateEndpointRuleRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7273,8 +7273,8 @@ type GetRestrictWorkspaceAdminsSettingRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetRestrictWorkspaceAdminsSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getRestrictWorkspaceAdminsSettingRequestToPb(st)
+func (st GetRestrictWorkspaceAdminsSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getRestrictWorkspaceAdminsSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7328,8 +7328,8 @@ type GetSqlResultsDownloadRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *GetSqlResultsDownloadRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getSqlResultsDownloadRequestToPb(st)
+func (st GetSqlResultsDownloadRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getSqlResultsDownloadRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7374,8 +7374,8 @@ type GetStatusRequest struct {
 	Keys string `json:"-" tf:"-"`
 }
 
-func (st *GetStatusRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getStatusRequestToPb(st)
+func (st GetStatusRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getStatusRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7421,8 +7421,8 @@ type GetTokenManagementRequest struct {
 	TokenId string `json:"-" tf:"-"`
 }
 
-func (st *GetTokenManagementRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getTokenManagementRequestToPb(st)
+func (st GetTokenManagementRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getTokenManagementRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7469,8 +7469,8 @@ type GetTokenPermissionLevelsResponse struct {
 	PermissionLevels []TokenPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-func (st *GetTokenPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getTokenPermissionLevelsResponseToPb(st)
+func (st GetTokenPermissionLevelsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getTokenPermissionLevelsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7518,8 +7518,8 @@ type GetTokenResponse struct {
 	TokenInfo *TokenInfo `json:"token_info,omitempty"`
 }
 
-func (st *GetTokenResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := getTokenResponseToPb(st)
+func (st GetTokenResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := getTokenResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7565,8 +7565,8 @@ type GetWorkspaceNetworkOptionRequest struct {
 	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
-func (st *GetWorkspaceNetworkOptionRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := getWorkspaceNetworkOptionRequestToPb(st)
+func (st GetWorkspaceNetworkOptionRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := getWorkspaceNetworkOptionRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7643,8 +7643,8 @@ type IpAccessListInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *IpAccessListInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := ipAccessListInfoToPb(st)
+func (st IpAccessListInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := ipAccessListInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7692,8 +7692,8 @@ type ListIpAccessListResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
 
-func (st *ListIpAccessListResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listIpAccessListResponseToPb(st)
+func (st ListIpAccessListResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listIpAccessListResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7741,8 +7741,8 @@ type ListNetworkConnectivityConfigurationsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListNetworkConnectivityConfigurationsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listNetworkConnectivityConfigurationsRequestToPb(st)
+func (st ListNetworkConnectivityConfigurationsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listNetworkConnectivityConfigurationsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7796,8 +7796,8 @@ type ListNetworkConnectivityConfigurationsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListNetworkConnectivityConfigurationsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listNetworkConnectivityConfigurationsResponseToPb(st)
+func (st ListNetworkConnectivityConfigurationsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listNetworkConnectivityConfigurationsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7845,8 +7845,8 @@ type ListNetworkPoliciesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListNetworkPoliciesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listNetworkPoliciesRequestToPb(st)
+func (st ListNetworkPoliciesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listNetworkPoliciesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7899,8 +7899,8 @@ type ListNetworkPoliciesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListNetworkPoliciesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listNetworkPoliciesResponseToPb(st)
+func (st ListNetworkPoliciesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listNetworkPoliciesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -7949,8 +7949,8 @@ type ListNotificationDestinationsRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListNotificationDestinationsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listNotificationDestinationsRequestToPb(st)
+func (st ListNotificationDestinationsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listNotificationDestinationsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8002,8 +8002,8 @@ type ListNotificationDestinationsResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListNotificationDestinationsResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listNotificationDestinationsResponseToPb(st)
+func (st ListNotificationDestinationsResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listNotificationDestinationsResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8059,8 +8059,8 @@ type ListNotificationDestinationsResult struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListNotificationDestinationsResult) EncodeValues(key string, v *url.Values) error {
-	pb, err := listNotificationDestinationsResultToPb(st)
+func (st ListNotificationDestinationsResult) EncodeValues(key string, v *url.Values) error {
+	pb, err := listNotificationDestinationsResultToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8110,8 +8110,8 @@ type ListPrivateEndpointRulesRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListPrivateEndpointRulesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listPrivateEndpointRulesRequestToPb(st)
+func (st ListPrivateEndpointRulesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listPrivateEndpointRulesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8165,8 +8165,8 @@ type ListPrivateEndpointRulesResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListPrivateEndpointRulesResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listPrivateEndpointRulesResponseToPb(st)
+func (st ListPrivateEndpointRulesResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listPrivateEndpointRulesResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8213,8 +8213,8 @@ type ListPublicTokensResponse struct {
 	TokenInfos []PublicTokenInfo `json:"token_infos,omitempty"`
 }
 
-func (st *ListPublicTokensResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listPublicTokensResponseToPb(st)
+func (st ListPublicTokensResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listPublicTokensResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8264,8 +8264,8 @@ type ListTokenManagementRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *ListTokenManagementRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := listTokenManagementRequestToPb(st)
+func (st ListTokenManagementRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := listTokenManagementRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8313,8 +8313,8 @@ type ListTokensResponse struct {
 	TokenInfos []TokenInfo `json:"token_infos,omitempty"`
 }
 
-func (st *ListTokensResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := listTokensResponseToPb(st)
+func (st ListTokensResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := listTokensResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8424,8 +8424,8 @@ type LlmProxyPartnerPoweredAccount struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *LlmProxyPartnerPoweredAccount) EncodeValues(key string, v *url.Values) error {
-	pb, err := llmProxyPartnerPoweredAccountToPb(st)
+func (st LlmProxyPartnerPoweredAccount) EncodeValues(key string, v *url.Values) error {
+	pb, err := llmProxyPartnerPoweredAccountToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8490,8 +8490,8 @@ type LlmProxyPartnerPoweredEnforce struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *LlmProxyPartnerPoweredEnforce) EncodeValues(key string, v *url.Values) error {
-	pb, err := llmProxyPartnerPoweredEnforceToPb(st)
+func (st LlmProxyPartnerPoweredEnforce) EncodeValues(key string, v *url.Values) error {
+	pb, err := llmProxyPartnerPoweredEnforceToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8556,8 +8556,8 @@ type LlmProxyPartnerPoweredWorkspace struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *LlmProxyPartnerPoweredWorkspace) EncodeValues(key string, v *url.Values) error {
-	pb, err := llmProxyPartnerPoweredWorkspaceToPb(st)
+func (st LlmProxyPartnerPoweredWorkspace) EncodeValues(key string, v *url.Values) error {
+	pb, err := llmProxyPartnerPoweredWorkspaceToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8609,8 +8609,8 @@ type MicrosoftTeamsConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *MicrosoftTeamsConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := microsoftTeamsConfigToPb(st)
+func (st MicrosoftTeamsConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := microsoftTeamsConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8660,8 +8660,8 @@ type NccAwsStableIpRule struct {
 	CidrBlocks []string `json:"cidr_blocks,omitempty"`
 }
 
-func (st *NccAwsStableIpRule) EncodeValues(key string, v *url.Values) error {
-	pb, err := nccAwsStableIpRuleToPb(st)
+func (st NccAwsStableIpRule) EncodeValues(key string, v *url.Values) error {
+	pb, err := nccAwsStableIpRuleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8761,8 +8761,8 @@ type NccAzurePrivateEndpointRule struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NccAzurePrivateEndpointRule) EncodeValues(key string, v *url.Values) error {
-	pb, err := nccAzurePrivateEndpointRuleToPb(st)
+func (st NccAzurePrivateEndpointRule) EncodeValues(key string, v *url.Values) error {
+	pb, err := nccAzurePrivateEndpointRuleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8870,8 +8870,8 @@ type NccAzureServiceEndpointRule struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NccAzureServiceEndpointRule) EncodeValues(key string, v *url.Values) error {
-	pb, err := nccAzureServiceEndpointRuleToPb(st)
+func (st NccAzureServiceEndpointRule) EncodeValues(key string, v *url.Values) error {
+	pb, err := nccAzureServiceEndpointRuleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8924,8 +8924,8 @@ type NccEgressConfig struct {
 	TargetRules *NccEgressTargetRules `json:"target_rules,omitempty"`
 }
 
-func (st *NccEgressConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := nccEgressConfigToPb(st)
+func (st NccEgressConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := nccEgressConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -8976,8 +8976,8 @@ type NccEgressDefaultRules struct {
 	AzureServiceEndpointRule *NccAzureServiceEndpointRule `json:"azure_service_endpoint_rule,omitempty"`
 }
 
-func (st *NccEgressDefaultRules) EncodeValues(key string, v *url.Values) error {
-	pb, err := nccEgressDefaultRulesToPb(st)
+func (st NccEgressDefaultRules) EncodeValues(key string, v *url.Values) error {
+	pb, err := nccEgressDefaultRulesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9030,8 +9030,8 @@ type NccEgressTargetRules struct {
 	AzurePrivateEndpointRules []NccAzurePrivateEndpointRule `json:"azure_private_endpoint_rules,omitempty"`
 }
 
-func (st *NccEgressTargetRules) EncodeValues(key string, v *url.Values) error {
-	pb, err := nccEgressTargetRulesToPb(st)
+func (st NccEgressTargetRules) EncodeValues(key string, v *url.Values) error {
+	pb, err := nccEgressTargetRulesToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9157,8 +9157,8 @@ type NccPrivateEndpointRule struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NccPrivateEndpointRule) EncodeValues(key string, v *url.Values) error {
-	pb, err := nccPrivateEndpointRuleToPb(st)
+func (st NccPrivateEndpointRule) EncodeValues(key string, v *url.Values) error {
+	pb, err := nccPrivateEndpointRuleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9279,8 +9279,8 @@ type NetworkConnectivityConfiguration struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NetworkConnectivityConfiguration) EncodeValues(key string, v *url.Values) error {
-	pb, err := networkConnectivityConfigurationToPb(st)
+func (st NetworkConnectivityConfiguration) EncodeValues(key string, v *url.Values) error {
+	pb, err := networkConnectivityConfigurationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9334,8 +9334,8 @@ type NetworkPolicyEgress struct {
 	NetworkAccess *EgressNetworkPolicyNetworkAccessPolicy `json:"network_access,omitempty"`
 }
 
-func (st *NetworkPolicyEgress) EncodeValues(key string, v *url.Values) error {
-	pb, err := networkPolicyEgressToPb(st)
+func (st NetworkPolicyEgress) EncodeValues(key string, v *url.Values) error {
+	pb, err := networkPolicyEgressToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9396,8 +9396,8 @@ type NotificationDestination struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *NotificationDestination) EncodeValues(key string, v *url.Values) error {
-	pb, err := notificationDestinationToPb(st)
+func (st NotificationDestination) EncodeValues(key string, v *url.Values) error {
+	pb, err := notificationDestinationToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9449,8 +9449,8 @@ type PagerdutyConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PagerdutyConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := pagerdutyConfigToPb(st)
+func (st PagerdutyConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := pagerdutyConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9500,8 +9500,8 @@ type PartitionId struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PartitionId) EncodeValues(key string, v *url.Values) error {
-	pb, err := partitionIdToPb(st)
+func (st PartitionId) EncodeValues(key string, v *url.Values) error {
+	pb, err := partitionIdToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9548,8 +9548,8 @@ type PersonalComputeMessage struct {
 	Value PersonalComputeMessageEnum `json:"value"`
 }
 
-func (st *PersonalComputeMessage) EncodeValues(key string, v *url.Values) error {
-	pb, err := personalComputeMessageToPb(st)
+func (st PersonalComputeMessage) EncodeValues(key string, v *url.Values) error {
+	pb, err := personalComputeMessageToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9657,8 +9657,8 @@ type PersonalComputeSetting struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PersonalComputeSetting) EncodeValues(key string, v *url.Values) error {
-	pb, err := personalComputeSettingToPb(st)
+func (st PersonalComputeSetting) EncodeValues(key string, v *url.Values) error {
+	pb, err := personalComputeSettingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9717,8 +9717,8 @@ type PublicTokenInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *PublicTokenInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := publicTokenInfoToPb(st)
+func (st PublicTokenInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := publicTokenInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9777,8 +9777,8 @@ type ReplaceIpAccessList struct {
 	ListType ListType `json:"list_type"`
 }
 
-func (st *ReplaceIpAccessList) EncodeValues(key string, v *url.Values) error {
-	pb, err := replaceIpAccessListToPb(st)
+func (st ReplaceIpAccessList) EncodeValues(key string, v *url.Values) error {
+	pb, err := replaceIpAccessListToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9825,8 +9825,8 @@ type RestrictWorkspaceAdminsMessage struct {
 	Status RestrictWorkspaceAdminsMessageStatus `json:"status"`
 }
 
-func (st *RestrictWorkspaceAdminsMessage) EncodeValues(key string, v *url.Values) error {
-	pb, err := restrictWorkspaceAdminsMessageToPb(st)
+func (st RestrictWorkspaceAdminsMessage) EncodeValues(key string, v *url.Values) error {
+	pb, err := restrictWorkspaceAdminsMessageToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9928,8 +9928,8 @@ type RestrictWorkspaceAdminsSetting struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *RestrictWorkspaceAdminsSetting) EncodeValues(key string, v *url.Values) error {
-	pb, err := restrictWorkspaceAdminsSettingToPb(st)
+func (st RestrictWorkspaceAdminsSetting) EncodeValues(key string, v *url.Values) error {
+	pb, err := restrictWorkspaceAdminsSettingToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -9976,8 +9976,8 @@ type RevokeTokenRequest struct {
 	TokenId string `json:"token_id"`
 }
 
-func (st *RevokeTokenRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := revokeTokenRequestToPb(st)
+func (st RevokeTokenRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := revokeTokenRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10029,8 +10029,8 @@ type SlackConfig struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SlackConfig) EncodeValues(key string, v *url.Values) error {
-	pb, err := slackConfigToPb(st)
+func (st SlackConfig) EncodeValues(key string, v *url.Values) error {
+	pb, err := slackConfigToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10095,8 +10095,8 @@ type SqlResultsDownload struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *SqlResultsDownload) EncodeValues(key string, v *url.Values) error {
-	pb, err := sqlResultsDownloadToPb(st)
+func (st SqlResultsDownload) EncodeValues(key string, v *url.Values) error {
+	pb, err := sqlResultsDownloadToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10145,8 +10145,8 @@ type StringMessage struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *StringMessage) EncodeValues(key string, v *url.Values) error {
-	pb, err := stringMessageToPb(st)
+func (st StringMessage) EncodeValues(key string, v *url.Values) error {
+	pb, err := stringMessageToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10204,8 +10204,8 @@ type TokenAccessControlRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TokenAccessControlRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := tokenAccessControlRequestToPb(st)
+func (st TokenAccessControlRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := tokenAccessControlRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10266,8 +10266,8 @@ type TokenAccessControlResponse struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TokenAccessControlResponse) EncodeValues(key string, v *url.Values) error {
-	pb, err := tokenAccessControlResponseToPb(st)
+func (st TokenAccessControlResponse) EncodeValues(key string, v *url.Values) error {
+	pb, err := tokenAccessControlResponseToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10342,8 +10342,8 @@ type TokenInfo struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TokenInfo) EncodeValues(key string, v *url.Values) error {
-	pb, err := tokenInfoToPb(st)
+func (st TokenInfo) EncodeValues(key string, v *url.Values) error {
+	pb, err := tokenInfoToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10398,8 +10398,8 @@ type TokenPermission struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TokenPermission) EncodeValues(key string, v *url.Values) error {
-	pb, err := tokenPermissionToPb(st)
+func (st TokenPermission) EncodeValues(key string, v *url.Values) error {
+	pb, err := tokenPermissionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10489,8 +10489,8 @@ type TokenPermissions struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TokenPermissions) EncodeValues(key string, v *url.Values) error {
-	pb, err := tokenPermissionsToPb(st)
+func (st TokenPermissions) EncodeValues(key string, v *url.Values) error {
+	pb, err := tokenPermissionsToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10542,8 +10542,8 @@ type TokenPermissionsDescription struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *TokenPermissionsDescription) EncodeValues(key string, v *url.Values) error {
-	pb, err := tokenPermissionsDescriptionToPb(st)
+func (st TokenPermissionsDescription) EncodeValues(key string, v *url.Values) error {
+	pb, err := tokenPermissionsDescriptionToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10590,8 +10590,8 @@ type TokenPermissionsRequest struct {
 	AccessControlList []TokenAccessControlRequest `json:"access_control_list,omitempty"`
 }
 
-func (st *TokenPermissionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := tokenPermissionsRequestToPb(st)
+func (st TokenPermissionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := tokenPermissionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10704,8 +10704,8 @@ type UpdateAccountIpAccessEnableRequest struct {
 	Setting AccountIpAccessEnable `json:"setting"`
 }
 
-func (st *UpdateAccountIpAccessEnableRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateAccountIpAccessEnableRequestToPb(st)
+func (st UpdateAccountIpAccessEnableRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateAccountIpAccessEnableRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10770,8 +10770,8 @@ type UpdateAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	Setting AibiDashboardEmbeddingAccessPolicySetting `json:"setting"`
 }
 
-func (st *UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st)
+func (st UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateAibiDashboardEmbeddingAccessPolicySettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10836,8 +10836,8 @@ type UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	Setting AibiDashboardEmbeddingApprovedDomainsSetting `json:"setting"`
 }
 
-func (st *UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st)
+func (st UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10902,8 +10902,8 @@ type UpdateAutomaticClusterUpdateSettingRequest struct {
 	Setting AutomaticClusterUpdateSetting `json:"setting"`
 }
 
-func (st *UpdateAutomaticClusterUpdateSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateAutomaticClusterUpdateSettingRequestToPb(st)
+func (st UpdateAutomaticClusterUpdateSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateAutomaticClusterUpdateSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -10968,8 +10968,8 @@ type UpdateComplianceSecurityProfileSettingRequest struct {
 	Setting ComplianceSecurityProfileSetting `json:"setting"`
 }
 
-func (st *UpdateComplianceSecurityProfileSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateComplianceSecurityProfileSettingRequestToPb(st)
+func (st UpdateComplianceSecurityProfileSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateComplianceSecurityProfileSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11034,8 +11034,8 @@ type UpdateCspEnablementAccountSettingRequest struct {
 	Setting CspEnablementAccountSetting `json:"setting"`
 }
 
-func (st *UpdateCspEnablementAccountSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateCspEnablementAccountSettingRequestToPb(st)
+func (st UpdateCspEnablementAccountSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateCspEnablementAccountSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11100,8 +11100,8 @@ type UpdateDashboardEmailSubscriptionsRequest struct {
 	Setting DashboardEmailSubscriptions `json:"setting"`
 }
 
-func (st *UpdateDashboardEmailSubscriptionsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateDashboardEmailSubscriptionsRequestToPb(st)
+func (st UpdateDashboardEmailSubscriptionsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateDashboardEmailSubscriptionsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11166,8 +11166,8 @@ type UpdateDefaultNamespaceSettingRequest struct {
 	Setting DefaultNamespaceSetting `json:"setting"`
 }
 
-func (st *UpdateDefaultNamespaceSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateDefaultNamespaceSettingRequestToPb(st)
+func (st UpdateDefaultNamespaceSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateDefaultNamespaceSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11232,8 +11232,8 @@ type UpdateDisableLegacyAccessRequest struct {
 	Setting DisableLegacyAccess `json:"setting"`
 }
 
-func (st *UpdateDisableLegacyAccessRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateDisableLegacyAccessRequestToPb(st)
+func (st UpdateDisableLegacyAccessRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateDisableLegacyAccessRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11298,8 +11298,8 @@ type UpdateDisableLegacyDbfsRequest struct {
 	Setting DisableLegacyDbfs `json:"setting"`
 }
 
-func (st *UpdateDisableLegacyDbfsRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateDisableLegacyDbfsRequestToPb(st)
+func (st UpdateDisableLegacyDbfsRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateDisableLegacyDbfsRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11364,8 +11364,8 @@ type UpdateDisableLegacyFeaturesRequest struct {
 	Setting DisableLegacyFeatures `json:"setting"`
 }
 
-func (st *UpdateDisableLegacyFeaturesRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateDisableLegacyFeaturesRequestToPb(st)
+func (st UpdateDisableLegacyFeaturesRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateDisableLegacyFeaturesRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11430,8 +11430,8 @@ type UpdateEnableExportNotebookRequest struct {
 	Setting EnableExportNotebook `json:"setting"`
 }
 
-func (st *UpdateEnableExportNotebookRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateEnableExportNotebookRequestToPb(st)
+func (st UpdateEnableExportNotebookRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateEnableExportNotebookRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11496,8 +11496,8 @@ type UpdateEnableNotebookTableClipboardRequest struct {
 	Setting EnableNotebookTableClipboard `json:"setting"`
 }
 
-func (st *UpdateEnableNotebookTableClipboardRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateEnableNotebookTableClipboardRequestToPb(st)
+func (st UpdateEnableNotebookTableClipboardRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateEnableNotebookTableClipboardRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11562,8 +11562,8 @@ type UpdateEnableResultsDownloadingRequest struct {
 	Setting EnableResultsDownloading `json:"setting"`
 }
 
-func (st *UpdateEnableResultsDownloadingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateEnableResultsDownloadingRequestToPb(st)
+func (st UpdateEnableResultsDownloadingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateEnableResultsDownloadingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11628,8 +11628,8 @@ type UpdateEnhancedSecurityMonitoringSettingRequest struct {
 	Setting EnhancedSecurityMonitoringSetting `json:"setting"`
 }
 
-func (st *UpdateEnhancedSecurityMonitoringSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateEnhancedSecurityMonitoringSettingRequestToPb(st)
+func (st UpdateEnhancedSecurityMonitoringSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateEnhancedSecurityMonitoringSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11694,8 +11694,8 @@ type UpdateEsmEnablementAccountSettingRequest struct {
 	Setting EsmEnablementAccountSetting `json:"setting"`
 }
 
-func (st *UpdateEsmEnablementAccountSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateEsmEnablementAccountSettingRequestToPb(st)
+func (st UpdateEsmEnablementAccountSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateEsmEnablementAccountSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11756,8 +11756,8 @@ type UpdateIpAccessList struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateIpAccessList) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateIpAccessListToPb(st)
+func (st UpdateIpAccessList) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateIpAccessListToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11822,8 +11822,8 @@ type UpdateLlmProxyPartnerPoweredAccountRequest struct {
 	Setting LlmProxyPartnerPoweredAccount `json:"setting"`
 }
 
-func (st *UpdateLlmProxyPartnerPoweredAccountRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateLlmProxyPartnerPoweredAccountRequestToPb(st)
+func (st UpdateLlmProxyPartnerPoweredAccountRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateLlmProxyPartnerPoweredAccountRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11888,8 +11888,8 @@ type UpdateLlmProxyPartnerPoweredEnforceRequest struct {
 	Setting LlmProxyPartnerPoweredEnforce `json:"setting"`
 }
 
-func (st *UpdateLlmProxyPartnerPoweredEnforceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateLlmProxyPartnerPoweredEnforceRequestToPb(st)
+func (st UpdateLlmProxyPartnerPoweredEnforceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateLlmProxyPartnerPoweredEnforceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -11954,8 +11954,8 @@ type UpdateLlmProxyPartnerPoweredWorkspaceRequest struct {
 	Setting LlmProxyPartnerPoweredWorkspace `json:"setting"`
 }
 
-func (st *UpdateLlmProxyPartnerPoweredWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateLlmProxyPartnerPoweredWorkspaceRequestToPb(st)
+func (st UpdateLlmProxyPartnerPoweredWorkspaceRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateLlmProxyPartnerPoweredWorkspaceRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12014,8 +12014,8 @@ type UpdateNccPrivateEndpointRuleRequest struct {
 	UpdateMask string `json:"-" tf:"-"`
 }
 
-func (st *UpdateNccPrivateEndpointRuleRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateNccPrivateEndpointRuleRequestToPb(st)
+func (st UpdateNccPrivateEndpointRuleRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateNccPrivateEndpointRuleRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12064,8 +12064,8 @@ type UpdateNetworkPolicyRequest struct {
 	NetworkPolicyId string `json:"-" tf:"-"`
 }
 
-func (st *UpdateNetworkPolicyRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateNetworkPolicyRequestToPb(st)
+func (st UpdateNetworkPolicyRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateNetworkPolicyRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12120,8 +12120,8 @@ type UpdateNotificationDestinationRequest struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdateNotificationDestinationRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateNotificationDestinationRequestToPb(st)
+func (st UpdateNotificationDestinationRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateNotificationDestinationRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12186,8 +12186,8 @@ type UpdatePersonalComputeSettingRequest struct {
 	Setting PersonalComputeSetting `json:"setting"`
 }
 
-func (st *UpdatePersonalComputeSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updatePersonalComputeSettingRequestToPb(st)
+func (st UpdatePersonalComputeSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updatePersonalComputeSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12256,8 +12256,8 @@ type UpdatePrivateEndpointRule struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *UpdatePrivateEndpointRule) EncodeValues(key string, v *url.Values) error {
-	pb, err := updatePrivateEndpointRuleToPb(st)
+func (st UpdatePrivateEndpointRule) EncodeValues(key string, v *url.Values) error {
+	pb, err := updatePrivateEndpointRuleToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12322,8 +12322,8 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	Setting RestrictWorkspaceAdminsSetting `json:"setting"`
 }
 
-func (st *UpdateRestrictWorkspaceAdminsSettingRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateRestrictWorkspaceAdminsSettingRequestToPb(st)
+func (st UpdateRestrictWorkspaceAdminsSettingRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateRestrictWorkspaceAdminsSettingRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12388,8 +12388,8 @@ type UpdateSqlResultsDownloadRequest struct {
 	Setting SqlResultsDownload `json:"setting"`
 }
 
-func (st *UpdateSqlResultsDownloadRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateSqlResultsDownloadRequestToPb(st)
+func (st UpdateSqlResultsDownloadRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateSqlResultsDownloadRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12438,8 +12438,8 @@ type UpdateWorkspaceNetworkOptionRequest struct {
 	WorkspaceNetworkOption WorkspaceNetworkOption `json:"workspace_network_option"`
 }
 
-func (st *UpdateWorkspaceNetworkOptionRequest) EncodeValues(key string, v *url.Values) error {
-	pb, err := updateWorkspaceNetworkOptionRequestToPb(st)
+func (st UpdateWorkspaceNetworkOptionRequest) EncodeValues(key string, v *url.Values) error {
+	pb, err := updateWorkspaceNetworkOptionRequestToPb(&st)
 	if err != nil {
 		return err
 	}
@@ -12497,8 +12497,8 @@ type WorkspaceNetworkOption struct {
 	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (st *WorkspaceNetworkOption) EncodeValues(key string, v *url.Values) error {
-	pb, err := workspaceNetworkOptionToPb(st)
+func (st WorkspaceNetworkOption) EncodeValues(key string, v *url.Values) error {
+	pb, err := workspaceNetworkOptionToPb(&st)
 	if err != nil {
 		return err
 	}
