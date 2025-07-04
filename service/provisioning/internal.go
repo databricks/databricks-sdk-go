@@ -1896,7 +1896,7 @@ func timestampToPb(t *time.Time) (*string, error) {
 	if t == nil {
 		return nil, nil
 	}
-	s := t.Format(time.RFC3339)
+	s := t.Format(time.RFC3339Nano)
 	return &s, nil
 }
 
@@ -1904,7 +1904,7 @@ func timestampFromPb(s *string) (*time.Time, error) {
 	if s == nil {
 		return nil, nil
 	}
-	t, err := time.Parse(time.RFC3339, *s)
+	t, err := time.Parse(time.RFC3339Nano, *s)
 	if err != nil {
 		return nil, err
 	}
@@ -1922,6 +1922,9 @@ func fieldMaskToPb(fm *[]string) (*string, error) {
 func fieldMaskFromPb(s *string) (*[]string, error) {
 	if s == nil {
 		return nil, nil
+	}
+	if *s == "" {
+		return &[]string{}, nil
 	}
 	fm := strings.Split(*s, ",")
 	return &fm, nil

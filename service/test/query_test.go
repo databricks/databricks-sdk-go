@@ -34,16 +34,54 @@ func TestQueryValues(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.Equal(t, vals.Get("all_well_known[duration_pb]"), "1.000000000s")
-	assert.Equal(t, vals.Get("all_well_known[timestamp_pb]"), "2021-01-01T01:01:01Z")
+	assert.Equal(t, vals.Get("all_well_known[timestamp_pb]"), "2021-01-01T01:01:01.000000001Z")
 	assert.Equal(t, vals.Get("all_well_known[field_mask_pb]"), "test,test2")
 	assert.Equal(t, vals.Get("all_well_known_p[duration_pb]"), "1.000000000s")
-	assert.Equal(t, vals.Get("all_well_known_p[timestamp_pb]"), "2021-01-01T01:01:01Z")
+	assert.Equal(t, vals.Get("all_well_known_p[timestamp_pb]"), "2021-01-01T01:01:01.000000001Z")
 	assert.Equal(t, vals.Get("all_well_known_p[field_mask_pb]"), "test3,test4")
 }
 
+func TestJsonMarshal(t *testing.T) {
+	d := time.Duration(1000000000)
+	time := time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC)
+	val := json.RawMessage(`{"test":"test2"}`)
+	st := RequestPb{
+		AllWellKnown: AllWellKnown{
+			Duration:  &d,
+			Timestamp: &time,
+			FieldMask: &[]string{"test", "test2"},
+			Value:     val,
+		},
+		AllWellKnownP: &AllWellKnown{
+			Duration:  &d,
+			Timestamp: &time,
+			FieldMask: &[]string{"test3", "test4"},
+			Value:     val,
+		},
+	}
+	js, err := json.Marshal(st)
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, string(js), `{"all_well_known":{"duration":"1.000000000s","field_mask":"test,test2","required_duration":"0.000000000s","required_field_mask":"","required_list_value":null,"required_timestamp":"0001-01-01T00:00:00Z","required_value":null,"timestamp":"2021-01-01T01:01:01.000000001Z","value":{"test":"test2"}},"all_well_known_p":{"duration":"1.000000000s","field_mask":"test3,test4","required_duration":"0.000000000s","required_field_mask":"","required_list_value":null,"required_timestamp":"0001-01-01T00:00:00Z","required_value":null,"timestamp":"2021-01-01T01:01:01.000000001Z","value":{"test":"test2"}}}`)
+	st2 := RequestPb{}
+	err = json.Unmarshal(js, &st2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, st.AllWellKnown.FieldMask, st2.AllWellKnown.FieldMask)
+	assert.Equal(t, st.AllWellKnownP.FieldMask, st2.AllWellKnownP.FieldMask)
+	assert.Equal(t, st.AllWellKnown.Timestamp, st2.AllWellKnown.Timestamp)
+	assert.Equal(t, st.AllWellKnownP.Timestamp, st2.AllWellKnownP.Timestamp)
+	assert.Equal(t, st.AllWellKnown.Duration, st2.AllWellKnown.Duration)
+	assert.Equal(t, st.AllWellKnownP.Duration, st2.AllWellKnownP.Duration)
+	assert.Equal(t, st.AllWellKnown.Value, st2.AllWellKnown.Value)
+	assert.Equal(t, st.AllWellKnownP.Value, st2.AllWellKnownP.Value)
+}
+
 type RequestPb struct {
-	AllWellKnown  AllWellKnown  `url:"all_well_known"`
-	AllWellKnownP *AllWellKnown `url:"all_well_known_p"`
+	AllWellKnown  AllWellKnown  `json:"all_well_known" url:"all_well_known"`
+	AllWellKnownP *AllWellKnown `json:"all_well_known_p" url:"all_well_known_p"`
 }
 
 // Copied from jobs/model.go
@@ -395,7 +433,7 @@ func timestampToPb(t *time.Time) (*string, error) {
 	if t == nil {
 		return nil, nil
 	}
-	s := t.Format(time.RFC3339)
+	s := t.Format(time.RFC3339Nano)
 	return &s, nil
 }
 
@@ -403,7 +441,7 @@ func timestampFromPb(s *string) (*time.Time, error) {
 	if s == nil {
 		return nil, nil
 	}
-	t, err := time.Parse(time.RFC3339, *s)
+	t, err := time.Parse(time.RFC3339Nano, *s)
 	if err != nil {
 		return nil, err
 	}
@@ -421,6 +459,9 @@ func fieldMaskToPb(fm *[]string) (*string, error) {
 func fieldMaskFromPb(s *string) (*[]string, error) {
 	if s == nil {
 		return nil, nil
+	}
+	if *s == "" {
+		return &[]string{}, nil
 	}
 	fm := strings.Split(*s, ",")
 	return &fm, nil
