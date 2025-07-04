@@ -728,6 +728,7 @@ func createJobToPb(st *CreateJob) (*createJobPb, error) {
 	pb.GitSource = st.GitSource
 	pb.Health = st.Health
 	pb.JobClusters = st.JobClusters
+	pb.Marshal = st.Marshal
 	pb.MaxConcurrentRuns = st.MaxConcurrentRuns
 	pb.Name = st.Name
 	pb.NotificationSettings = st.NotificationSettings
@@ -760,6 +761,7 @@ type createJobPb struct {
 	GitSource            *GitSource                `json:"git_source,omitempty"`
 	Health               *JobsHealthRules          `json:"health,omitempty"`
 	JobClusters          []JobCluster              `json:"job_clusters,omitempty"`
+	Marshal              *TestMarshallMessage      `json:"marshal,omitempty"`
 	MaxConcurrentRuns    int                       `json:"max_concurrent_runs,omitempty"`
 	Name                 string                    `json:"name,omitempty"`
 	NotificationSettings *JobNotificationSettings  `json:"notification_settings,omitempty"`
@@ -795,6 +797,7 @@ func createJobFromPb(pb *createJobPb) (*CreateJob, error) {
 	st.GitSource = pb.GitSource
 	st.Health = pb.Health
 	st.JobClusters = pb.JobClusters
+	st.Marshal = pb.Marshal
 	st.MaxConcurrentRuns = pb.MaxConcurrentRuns
 	st.Name = pb.Name
 	st.NotificationSettings = pb.NotificationSettings
@@ -6288,6 +6291,150 @@ func (st *terminationDetailsPb) UnmarshalJSON(b []byte) error {
 }
 
 func (st terminationDetailsPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
+}
+
+func testMarshallMessageToPb(st *TestMarshallMessage) (*testMarshallMessagePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &testMarshallMessagePb{}
+	pb.Map = st.Map
+	pb.TestEnum = st.TestEnum
+	pb.TestNestedMessage = st.TestNestedMessage
+	pb.TestOptionalBool = st.TestOptionalBool
+	pb.TestOptionalInt = st.TestOptionalInt
+	pb.TestOptionalInt64 = st.TestOptionalInt64
+	pb.TestOptionalString = st.TestOptionalString
+	pb.TestRepeatedBool = st.TestRepeatedBool
+	pb.TestRepeatedEnum = st.TestRepeatedEnum
+	pb.TestRepeatedInt = st.TestRepeatedInt
+	pb.TestRepeatedNestedMessage = st.TestRepeatedNestedMessage
+	pb.TestRepeatedString = st.TestRepeatedString
+	pb.TestRequiredBool = st.TestRequiredBool
+	pb.TestRequiredEnum = st.TestRequiredEnum
+	pb.TestRequiredInt = st.TestRequiredInt
+	pb.TestRequiredInt64 = st.TestRequiredInt64
+	pb.TestRequiredString = st.TestRequiredString
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+type testMarshallMessagePb struct {
+	Map                       map[string]string   `json:"map,omitempty"`
+	TestEnum                  TestEnum            `json:"test_enum,omitempty"`
+	TestNestedMessage         *TestNestedMessage  `json:"test_nested_message,omitempty"`
+	TestOptionalBool          bool                `json:"test_optional_bool,omitempty"`
+	TestOptionalInt           int                 `json:"test_optional_int,omitempty"`
+	TestOptionalInt64         int64               `json:"test_optional_int64,omitempty"`
+	TestOptionalString        string              `json:"test_optional_string,omitempty"`
+	TestRepeatedBool          []bool              `json:"test_repeated_bool,omitempty"`
+	TestRepeatedEnum          []TestEnum          `json:"test_repeated_enum,omitempty"`
+	TestRepeatedInt           []int               `json:"test_repeated_int,omitempty"`
+	TestRepeatedNestedMessage []TestNestedMessage `json:"test_repeated_nested_message,omitempty"`
+	TestRepeatedString        []string            `json:"test_repeated_string,omitempty"`
+	TestRequiredBool          bool                `json:"test_required_bool"`
+	TestRequiredEnum          TestEnum            `json:"test_required_enum"`
+	TestRequiredInt           int                 `json:"test_required_int"`
+	TestRequiredInt64         int64               `json:"test_required_int64"`
+	TestRequiredString        string              `json:"test_required_string"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func testMarshallMessageFromPb(pb *testMarshallMessagePb) (*TestMarshallMessage, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TestMarshallMessage{}
+	st.Map = pb.Map
+	st.TestEnum = pb.TestEnum
+	st.TestNestedMessage = pb.TestNestedMessage
+	st.TestOptionalBool = pb.TestOptionalBool
+	st.TestOptionalInt = pb.TestOptionalInt
+	st.TestOptionalInt64 = pb.TestOptionalInt64
+	st.TestOptionalString = pb.TestOptionalString
+	st.TestRepeatedBool = pb.TestRepeatedBool
+	st.TestRepeatedEnum = pb.TestRepeatedEnum
+	st.TestRepeatedInt = pb.TestRepeatedInt
+	st.TestRepeatedNestedMessage = pb.TestRepeatedNestedMessage
+	st.TestRepeatedString = pb.TestRepeatedString
+	st.TestRequiredBool = pb.TestRequiredBool
+	st.TestRequiredEnum = pb.TestRequiredEnum
+	st.TestRequiredInt = pb.TestRequiredInt
+	st.TestRequiredInt64 = pb.TestRequiredInt64
+	st.TestRequiredString = pb.TestRequiredString
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
+func (st *testMarshallMessagePb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st testMarshallMessagePb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
+}
+
+func testNestedMessageToPb(st *TestNestedMessage) (*testNestedMessagePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &testNestedMessagePb{}
+	pb.Map = st.Map
+	pb.NestedBool = st.NestedBool
+	pb.NestedEnum = st.NestedEnum
+	pb.NestedInt = st.NestedInt
+	pb.NestedRepeatedEnum = st.NestedRepeatedEnum
+	pb.NestedRepeatedString = st.NestedRepeatedString
+	pb.NestedRequiredBool = st.NestedRequiredBool
+	pb.NestedRequiredInt = st.NestedRequiredInt
+	pb.NestedString = st.NestedString
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+type testNestedMessagePb struct {
+	Map                  map[string]string `json:"map,omitempty"`
+	NestedBool           bool              `json:"nested_bool,omitempty"`
+	NestedEnum           TestEnum          `json:"nested_enum,omitempty"`
+	NestedInt            int               `json:"nested_int,omitempty"`
+	NestedRepeatedEnum   []TestEnum        `json:"nested_repeated_enum,omitempty"`
+	NestedRepeatedString []string          `json:"nested_repeated_string,omitempty"`
+	NestedRequiredBool   bool              `json:"nested_required_bool"`
+	NestedRequiredInt    int               `json:"nested_required_int"`
+	NestedString         string            `json:"nested_string,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func testNestedMessageFromPb(pb *testNestedMessagePb) (*TestNestedMessage, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TestNestedMessage{}
+	st.Map = pb.Map
+	st.NestedBool = pb.NestedBool
+	st.NestedEnum = pb.NestedEnum
+	st.NestedInt = pb.NestedInt
+	st.NestedRepeatedEnum = pb.NestedRepeatedEnum
+	st.NestedRepeatedString = pb.NestedRepeatedString
+	st.NestedRequiredBool = pb.NestedRequiredBool
+	st.NestedRequiredInt = pb.NestedRequiredInt
+	st.NestedString = pb.NestedString
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
+func (st *testNestedMessagePb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st testNestedMessagePb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
 }
 

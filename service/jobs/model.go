@@ -1318,6 +1318,9 @@ type CreateJob struct {
 	// You must declare dependent libraries in task settings.
 	// Wire name: 'job_clusters'
 	JobClusters []JobCluster `json:"job_clusters,omitempty"`
+
+	// Wire name: 'marshal'
+	Marshal *TestMarshallMessage `json:"marshal,omitempty"`
 	// An optional maximum allowed number of concurrent runs of the job. Set
 	// this value if you want to be able to execute multiple runs of the same
 	// job concurrently. This is useful for example if you trigger your job on a
@@ -11538,6 +11541,224 @@ func (f *TerminationTypeType) Values() []TerminationTypeType {
 // Type always returns TerminationTypeType to satisfy [pflag.Value] interface
 func (f *TerminationTypeType) Type() string {
 	return "TerminationTypeType"
+}
+
+type TestEnum string
+
+const TestEnumTestEnumFive TestEnum = `TEST_ENUM_FIVE`
+
+const TestEnumTestEnumFour TestEnum = `TEST_ENUM_FOUR`
+
+const TestEnumTestEnumOne TestEnum = `TEST_ENUM_ONE`
+
+const TestEnumTestEnumThree TestEnum = `TEST_ENUM_THREE`
+
+const TestEnumTestEnumTwo TestEnum = `TEST_ENUM_TWO`
+
+// String representation for [fmt.Print]
+func (f *TestEnum) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TestEnum) Set(v string) error {
+	switch v {
+	case `TEST_ENUM_FIVE`, `TEST_ENUM_FOUR`, `TEST_ENUM_ONE`, `TEST_ENUM_THREE`, `TEST_ENUM_TWO`:
+		*f = TestEnum(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "TEST_ENUM_FIVE", "TEST_ENUM_FOUR", "TEST_ENUM_ONE", "TEST_ENUM_THREE", "TEST_ENUM_TWO"`, v)
+	}
+}
+
+// Values returns all possible values for TestEnum.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TestEnum) Values() []TestEnum {
+	return []TestEnum{
+		TestEnumTestEnumFive,
+		TestEnumTestEnumFour,
+		TestEnumTestEnumOne,
+		TestEnumTestEnumThree,
+		TestEnumTestEnumTwo,
+	}
+}
+
+// Type always returns TestEnum to satisfy [pflag.Value] interface
+func (f *TestEnum) Type() string {
+	return "TestEnum"
+}
+
+type TestMarshallMessage struct {
+
+	// Wire name: 'map'
+	Map map[string]string `json:"map,omitempty"`
+
+	// Wire name: 'test_enum'
+	TestEnum TestEnum `json:"test_enum,omitempty"`
+
+	// Wire name: 'test_nested_message'
+	TestNestedMessage *TestNestedMessage `json:"test_nested_message,omitempty"`
+
+	// Wire name: 'test_optional_bool'
+	TestOptionalBool bool `json:"test_optional_bool,omitempty"`
+
+	// Wire name: 'test_optional_int'
+	TestOptionalInt int `json:"test_optional_int,omitempty"`
+
+	// Wire name: 'test_optional_int64'
+	TestOptionalInt64 int64 `json:"test_optional_int64,omitempty"`
+
+	// Wire name: 'test_optional_string'
+	TestOptionalString string `json:"test_optional_string,omitempty"`
+
+	// Wire name: 'test_repeated_bool'
+	TestRepeatedBool []bool `json:"test_repeated_bool,omitempty"`
+
+	// Wire name: 'test_repeated_enum'
+	TestRepeatedEnum []TestEnum `json:"test_repeated_enum,omitempty"`
+
+	// Wire name: 'test_repeated_int'
+	TestRepeatedInt []int `json:"test_repeated_int,omitempty"`
+
+	// Wire name: 'test_repeated_nested_message'
+	TestRepeatedNestedMessage []TestNestedMessage `json:"test_repeated_nested_message,omitempty"`
+
+	// Wire name: 'test_repeated_string'
+	TestRepeatedString []string `json:"test_repeated_string,omitempty"`
+
+	// Wire name: 'test_required_bool'
+	TestRequiredBool bool `json:"test_required_bool"`
+
+	// Wire name: 'test_required_enum'
+	TestRequiredEnum TestEnum `json:"test_required_enum"`
+
+	// Wire name: 'test_required_int'
+	TestRequiredInt int `json:"test_required_int"`
+
+	// Wire name: 'test_required_int64'
+	TestRequiredInt64 int64 `json:"test_required_int64"`
+
+	// Wire name: 'test_required_string'
+	TestRequiredString string `json:"test_required_string"`
+
+	ForceSendFields []string `json:"-" tf:"-"`
+}
+
+func (st *TestMarshallMessage) EncodeValues(key string, v *url.Values) error {
+	pb, err := testMarshallMessageToPb(st)
+	if err != nil {
+		return err
+	}
+	vals, err := query.Values(pb)
+	if err != nil {
+		return err
+	}
+	for k, vs := range vals {
+		for _, val := range vs {
+			v.Add(fmt.Sprintf("%s[%s]", key, k), val)
+		}
+	}
+	return nil
+}
+
+func (st *TestMarshallMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &testMarshallMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := testMarshallMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st TestMarshallMessage) MarshalJSON() ([]byte, error) {
+	pb, err := testMarshallMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type TestNestedMessage struct {
+
+	// Wire name: 'map'
+	Map map[string]string `json:"map,omitempty"`
+
+	// Wire name: 'nested_bool'
+	NestedBool bool `json:"nested_bool,omitempty"`
+
+	// Wire name: 'nested_enum'
+	NestedEnum TestEnum `json:"nested_enum,omitempty"`
+
+	// Wire name: 'nested_int'
+	NestedInt int `json:"nested_int,omitempty"`
+
+	// Wire name: 'nested_repeated_enum'
+	NestedRepeatedEnum []TestEnum `json:"nested_repeated_enum,omitempty"`
+
+	// Wire name: 'nested_repeated_string'
+	NestedRepeatedString []string `json:"nested_repeated_string,omitempty"`
+
+	// Wire name: 'nested_required_bool'
+	NestedRequiredBool bool `json:"nested_required_bool"`
+
+	// Wire name: 'nested_required_int'
+	NestedRequiredInt int `json:"nested_required_int"`
+
+	// Wire name: 'nested_string'
+	NestedString string `json:"nested_string,omitempty"`
+
+	ForceSendFields []string `json:"-" tf:"-"`
+}
+
+func (st *TestNestedMessage) EncodeValues(key string, v *url.Values) error {
+	pb, err := testNestedMessageToPb(st)
+	if err != nil {
+		return err
+	}
+	vals, err := query.Values(pb)
+	if err != nil {
+		return err
+	}
+	for k, vs := range vals {
+		for _, val := range vs {
+			v.Add(fmt.Sprintf("%s[%s]", key, k), val)
+		}
+	}
+	return nil
+}
+
+func (st *TestNestedMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &testNestedMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := testNestedMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st TestNestedMessage) MarshalJSON() ([]byte, error) {
+	pb, err := testNestedMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Additional details about what triggered the run
