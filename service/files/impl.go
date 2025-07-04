@@ -20,54 +20,152 @@ type dbfsImpl struct {
 }
 
 func (a *dbfsImpl) AddBlock(ctx context.Context, request AddBlock) error {
+
+	requestPb, pbErr := addBlockToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/dbfs/add-block"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *dbfsImpl) Close(ctx context.Context, request Close) error {
+
+	requestPb, pbErr := closeToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/dbfs/close"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *dbfsImpl) Create(ctx context.Context, request Create) (*CreateResponse, error) {
-	var createResponse CreateResponse
+
+	requestPb, pbErr := createToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createResponsePb createResponsePb
 	path := "/api/2.0/dbfs/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createResponse)
-	return &createResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := createResponseFromPb(&createResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *dbfsImpl) Delete(ctx context.Context, request Delete) error {
+
+	requestPb, pbErr := deleteToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/dbfs/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *dbfsImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error) {
-	var fileInfo FileInfo
+
+	requestPb, pbErr := getStatusRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var fileInfoPb fileInfoPb
 	path := "/api/2.0/dbfs/get-status"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &fileInfo)
-	return &fileInfo, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&fileInfoPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := fileInfoFromPb(&fileInfoPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List the contents of a directory, or details of the file. If the file or
@@ -116,53 +214,151 @@ func (a *dbfsImpl) ListAll(ctx context.Context, request ListDbfsRequest) ([]File
 }
 
 func (a *dbfsImpl) internalList(ctx context.Context, request ListDbfsRequest) (*ListStatusResponse, error) {
-	var listStatusResponse ListStatusResponse
+
+	requestPb, pbErr := listDbfsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listStatusResponsePb listStatusResponsePb
 	path := "/api/2.0/dbfs/list"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listStatusResponse)
-	return &listStatusResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listStatusResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := listStatusResponseFromPb(&listStatusResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *dbfsImpl) Mkdirs(ctx context.Context, request MkDirs) error {
+
+	requestPb, pbErr := mkDirsToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/dbfs/mkdirs"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *dbfsImpl) Move(ctx context.Context, request Move) error {
+
+	requestPb, pbErr := moveToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/dbfs/move"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *dbfsImpl) Put(ctx context.Context, request Put) error {
+
+	requestPb, pbErr := putToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/dbfs/put"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *dbfsImpl) Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error) {
-	var readResponse ReadResponse
+
+	requestPb, pbErr := readDbfsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var readResponsePb readResponsePb
 	path := "/api/2.0/dbfs/read"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &readResponse)
-	return &readResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&readResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := readResponseFromPb(&readResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just Files API methods
@@ -171,54 +367,170 @@ type filesImpl struct {
 }
 
 func (a *filesImpl) CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error {
-	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
+
+	requestPb, pbErr := createDirectoryRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(requestPb.DirectoryPath))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, nil, nil)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		nil,
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
-	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
+
+	requestPb, pbErr := deleteFileRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(requestPb.FilePath))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *filesImpl) DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error {
-	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
+
+	requestPb, pbErr := deleteDirectoryRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(requestPb.DirectoryPath))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *filesImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
-	var downloadResponse DownloadResponse
-	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
+
+	requestPb, pbErr := downloadRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var downloadResponsePb downloadResponsePb
+	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(requestPb.FilePath))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/octet-stream"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &downloadResponse)
-	return &downloadResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&downloadResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := downloadResponseFromPb(&downloadResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *filesImpl) GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error {
-	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
+
+	requestPb, pbErr := getDirectoryMetadataRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(requestPb.DirectoryPath))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodHead, path, headers, queryParams, request, nil)
+	err := a.client.Do(
+		ctx,
+		http.MethodHead,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *filesImpl) GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error) {
-	var getMetadataResponse GetMetadataResponse
-	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
+
+	requestPb, pbErr := getMetadataRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getMetadataResponsePb getMetadataResponsePb
+	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(requestPb.FilePath))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodHead, path, headers, queryParams, request, &getMetadataResponse)
-	return &getMetadataResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodHead,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getMetadataResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := getMetadataResponseFromPb(&getMetadataResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Returns the contents of a directory. If there is no directory at the
@@ -255,23 +567,63 @@ func (a *filesImpl) ListDirectoryContentsAll(ctx context.Context, request ListDi
 }
 
 func (a *filesImpl) internalListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error) {
-	var listDirectoryResponse ListDirectoryResponse
-	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(request.DirectoryPath))
+
+	requestPb, pbErr := listDirectoryContentsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listDirectoryResponsePb listDirectoryResponsePb
+	path := fmt.Sprintf("/api/2.0/fs/directories%v", httpclient.EncodeMultiSegmentPathParameter(requestPb.DirectoryPath))
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDirectoryResponse)
-	return &listDirectoryResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listDirectoryResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := listDirectoryResponseFromPb(&listDirectoryResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) error {
-	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
+
+	requestPb, pbErr := uploadRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(requestPb.FilePath))
 	queryParams := make(map[string]any)
-	if request.Overwrite != false || slices.Contains(request.ForceSendFields, "Overwrite") {
-		queryParams["overwrite"] = request.Overwrite
+	if requestPb.Overwrite != false || slices.Contains(requestPb.ForceSendFields, "Overwrite") {
+		queryParams["overwrite"] = requestPb.Overwrite
 	}
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/octet-stream"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.Contents, nil)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Contents,
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }

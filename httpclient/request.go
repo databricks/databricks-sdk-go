@@ -124,7 +124,8 @@ func makeQueryString(data interface{}) (string, error) {
 		return strings.Join(s, "&"), nil
 	}
 	if inputType.Kind() == reflect.Struct {
-		params, err := query.Values(data)
+		params, err := query.Values(data) // field[subfield] = value
+		// field = [{value} {value}]
 		if err != nil {
 			return "", fmt.Errorf("cannot create query string: %w", err)
 		}
