@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
-	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/useragent"
@@ -31,7 +30,6 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 	return httpclient.ClientConfig{
 		AccountID:          cfg.AccountID,
 		Host:               cfg.Host,
-		Cloud:              cloudFromConfig(cfg),
 		RetryTimeout:       time.Duration(cfg.RetryTimeoutSeconds) * time.Second,
 		HTTPTimeout:        time.Duration(cfg.HTTPTimeoutSeconds) * time.Second,
 		RateLimitPerSecond: cfg.RateLimitPerSecond,
@@ -91,19 +89,6 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 			return false
 		},
 	}, nil
-}
-
-func cloudFromConfig(cfg *Config) environment.Cloud {
-	switch {
-	case cfg.IsAzure():
-		return environment.CloudAzure
-	case cfg.IsAws():
-		return environment.CloudAWS
-	case cfg.IsGcp():
-		return environment.CloudGCP
-	default:
-		return environment.CloudUnknown
-	}
 }
 
 // noopLoader skips configuration loading
