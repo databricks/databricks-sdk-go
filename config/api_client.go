@@ -28,15 +28,10 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 		return httpclient.ClientConfig{}, err
 	}
 
-	cloud := cloudFromConfig(cfg)
-	if cloud == environment.CloudUnknown {
-		return httpclient.ClientConfig{}, fmt.Errorf("unable to determine cloud from config")
-	}
-
 	return httpclient.ClientConfig{
 		AccountID:          cfg.AccountID,
 		Host:               cfg.Host,
-		Cloud:              cloud,
+		Cloud:              cloudFromConfig(cfg),
 		RetryTimeout:       time.Duration(cfg.RetryTimeoutSeconds) * time.Second,
 		HTTPTimeout:        time.Duration(cfg.HTTPTimeoutSeconds) * time.Second,
 		RateLimitPerSecond: cfg.RateLimitPerSecond,
@@ -99,18 +94,16 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 }
 
 func cloudFromConfig(cfg *Config) environment.Cloud {
-	var cloud environment.Cloud
 	switch {
 	case cfg.IsAzure():
-		cloud = environment.CloudAzure
+		return environment.CloudAzure
 	case cfg.IsAws():
-		cloud = environment.CloudAWS
+		return environment.CloudAWS
 	case cfg.IsGcp():
-		cloud = environment.CloudGCP
+		return environment.CloudGCP
 	default:
 		return environment.CloudUnknown
 	}
-	return cloud
 }
 
 // noopLoader skips configuration loading
