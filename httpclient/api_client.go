@@ -32,12 +32,6 @@ type ClientConfig struct {
 	AccountID string
 	Host      string
 
-	// TODO: Ideally we should not have knowledge of the cloud in the client
-	// config. But `getOrCreateRunningCluster` in `compute/ext_utilities.go`
-	// uses this to determine the cloud. So, we are keeping it for now. But we
-	// should reconsider this in the future.
-	Cloud environment.Cloud
-
 	RetryTimeout       time.Duration
 	HTTPTimeout        time.Duration
 	InsecureSkipVerify bool
