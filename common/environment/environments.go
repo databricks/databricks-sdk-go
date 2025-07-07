@@ -8,9 +8,10 @@ import (
 type Cloud string
 
 const (
-	CloudAWS   Cloud = "AWS"
-	CloudAzure Cloud = "Azure"
-	CloudGCP   Cloud = "GCP"
+	CloudUnknown Cloud = "Unknown"
+	CloudAWS     Cloud = "AWS"
+	CloudAzure   Cloud = "Azure"
+	CloudGCP     Cloud = "GCP"
 )
 
 type DatabricksEnvironment struct {

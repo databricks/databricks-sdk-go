@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/httpclient/traceparent"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/logger/httplog"
@@ -28,6 +29,15 @@ type ClientConfig struct {
 	AuthVisitor RequestVisitor
 	Visitors    []RequestVisitor
 
+	AccountID string
+	Host      string
+
+	// TODO: Ideally we should not have knowledge of the cloud in the client
+	// config. But `getOrCreateRunningCluster` in `compute/v2/ext_utilities.go`
+	// uses this to determine the cloud. So, we are keeping it for now. But we
+	// should reconsider this in the future.
+	Cloud environment.Cloud
+
 	RetryTimeout       time.Duration
 	HTTPTimeout        time.Duration
 	InsecureSkipVerify bool
@@ -40,6 +50,55 @@ type ClientConfig struct {
 	TransientErrors []string
 
 	Transport http.RoundTripper
+}
+
+type DoOption struct {
+	in           RequestVisitor
+	out          func(body *common.ResponseWrapper) error
+	body         any
+	contentType  string
+	isAuthOption bool
+	queryParams  map[string]any
+}
+
+type ApiClient struct {
+	config      ClientConfig
+	rateLimiter *rate.Limiter
+	httpClient  *http.Client
+}
+
+// IsAccountClient returns true if the client is configured for Accounts API.
+func (apic *ApiClient) IsAccountClient() bool {
+	if apic.config.AccountID == "" {
+		return false
+	}
+	if strings.HasPrefix(apic.config.Host, "https://accounts.") {
+		return true
+	}
+	if strings.HasPrefix(apic.config.Host, "https://accounts-dod.") {
+		return true
+	}
+	return false
+}
+
+// AccountID returns the account ID for the client.
+func (apic *ApiClient) AccountID() string {
+	return apic.config.AccountID
+}
+
+// IsAzure returns if the client is configured for Azure Databricks.
+func (apic *ApiClient) IsAzure() bool {
+	return apic.config.Cloud == environment.CloudAzure
+}
+
+// IsGcp returns if the client is configured for Databricks on Google Cloud.
+func (apic *ApiClient) IsGcp() bool {
+	return apic.config.Cloud == environment.CloudGCP
+}
+
+// IsAws returns if the client is configured for Databricks on AWS.
+func (apic *ApiClient) IsAws() bool {
+	return apic.config.Cloud == environment.CloudAWS
 }
 
 var defaultTransport = makeDefaultTransport()
@@ -105,21 +164,6 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 			Transport: transport,
 		},
 	}
-}
-
-type ApiClient struct {
-	config      ClientConfig
-	rateLimiter *rate.Limiter
-	httpClient  *http.Client
-}
-
-type DoOption struct {
-	in           RequestVisitor
-	out          func(body *common.ResponseWrapper) error
-	body         any
-	contentType  string
-	isAuthOption bool
-	queryParams  map[string]any
 }
 
 // Do sends an HTTP request against path.

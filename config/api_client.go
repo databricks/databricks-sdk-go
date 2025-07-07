@@ -9,39 +9,48 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
-	if skippable, ok := c.HTTPTransport.(interface {
+func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
+	if skippable, ok := cfg.HTTPTransport.(interface {
 		SkipRetryOnIO() bool
 	}); ok && skippable.SkipRetryOnIO() {
-		c.Loaders = []Loader{noopLoader{}}
-		c.Credentials = noopAuth{}
+		cfg.Loaders = []Loader{noopLoader{}}
+		cfg.Credentials = noopAuth{}
 	}
-	err := c.EnsureResolved()
+
+	err := cfg.EnsureResolved()
 	if err != nil {
-		return nil, err
+		return httpclient.ClientConfig{}, err
 	}
-	retryTimeout := time.Duration(orDefault(c.RetryTimeoutSeconds, 300)) * time.Second
-	httpTimeout := time.Duration(orDefault(c.HTTPTimeoutSeconds, 60)) * time.Second
-	return httpclient.NewApiClient(httpclient.ClientConfig{
-		RetryTimeout:       retryTimeout,
-		HTTPTimeout:        httpTimeout,
-		RateLimitPerSecond: orDefault(c.RateLimitPerSecond, 15),
-		DebugHeaders:       c.DebugHeaders,
-		DebugTruncateBytes: c.DebugTruncateBytes,
-		InsecureSkipVerify: c.InsecureSkipVerify,
-		Transport:          c.HTTPTransport,
-		AuthVisitor:        c.Authenticate,
+
+	cloud := cloudFromConfig(cfg)
+	if cloud == environment.CloudUnknown {
+		return httpclient.ClientConfig{}, fmt.Errorf("unable to determine cloud from config")
+	}
+
+	return httpclient.ClientConfig{
+		AccountID:          cfg.AccountID,
+		Host:               cfg.Host,
+		Cloud:              cloud,
+		RetryTimeout:       time.Duration(cfg.RetryTimeoutSeconds) * time.Second,
+		HTTPTimeout:        time.Duration(cfg.HTTPTimeoutSeconds) * time.Second,
+		RateLimitPerSecond: cfg.RateLimitPerSecond,
+		DebugHeaders:       cfg.DebugHeaders,
+		DebugTruncateBytes: cfg.DebugTruncateBytes,
+		InsecureSkipVerify: cfg.InsecureSkipVerify,
+		Transport:          cfg.HTTPTransport,
+		AuthVisitor:        cfg.Authenticate,
 		Visitors: []httpclient.RequestVisitor{
 			func(r *http.Request) error {
 				if r.URL == nil {
 					return fmt.Errorf("no URL found in request")
 				}
-				url, err := url.Parse(c.Host)
+				url, err := url.Parse(cfg.Host)
 				if err != nil {
 					return err
 				}
@@ -49,7 +58,7 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 				r.URL.Scheme = url.Scheme
 				return nil
 			},
-			authInUserAgentVisitor(c),
+			authInUserAgentVisitor(cfg),
 			func(r *http.Request) error {
 				// Detect if we are running in a CI/CD environment
 				provider := useragent.CiCdProvider()
@@ -74,7 +83,9 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 			},
 		},
 		TransientErrors: []string{
-			"REQUEST_LIMIT_EXCEEDED", // This is temporary workaround for SCIM API returning 500.  Remove when it's fixed
+			// This is temporary workaround for SCIM API returning 500.
+			// TODO: Remove when it's fixed.
+			"REQUEST_LIMIT_EXCEEDED",
 		},
 		ErrorMapper: apierr.GetAPIError,
 		ErrorRetriable: func(ctx context.Context, err error) bool {
@@ -84,14 +95,22 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 			}
 			return false
 		},
-	}), nil
+	}, nil
 }
 
-func orDefault(configured, _default int) int {
-	if configured == 0 {
-		return _default
+func cloudFromConfig(cfg *Config) environment.Cloud {
+	var cloud environment.Cloud
+	switch {
+	case cfg.IsAzure():
+		cloud = environment.CloudAzure
+	case cfg.IsAws():
+		cloud = environment.CloudAWS
+	case cfg.IsGcp():
+		cloud = environment.CloudGCP
+	default:
+		return environment.CloudUnknown
 	}
-	return configured
+	return cloud
 }
 
 // noopLoader skips configuration loading
@@ -107,4 +126,13 @@ func (noopAuth) Name() string { return "noop" }
 func (noopAuth) Configure(context.Context, *Config) (credentials.CredentialsProvider, error) {
 	visitor := func(r *http.Request) error { return nil }
 	return credentials.CredentialsProviderFn(visitor), nil
+}
+
+// Deprecated: use [HTTPClientConfigFromConfig] with [httpclient.NewApiClient].
+func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
+	cfg, err := HTTPClientConfigFromConfig(c)
+	if err != nil {
+		return nil, err
+	}
+	return httpclient.NewApiClient(cfg), nil
 }
