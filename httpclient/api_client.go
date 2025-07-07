@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/common"
-	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/httpclient/traceparent"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/logger/httplog"
@@ -73,26 +72,6 @@ func (apic *ApiClient) IsAccountClient() bool {
 		return true
 	}
 	return false
-}
-
-// AccountID returns the account ID for the client.
-func (apic *ApiClient) AccountID() string {
-	return apic.config.AccountID
-}
-
-// IsAzure returns if the client is configured for Azure Databricks.
-func (apic *ApiClient) IsAzure() bool {
-	return apic.config.Cloud == environment.CloudAzure
-}
-
-// IsGcp returns if the client is configured for Databricks on Google Cloud.
-func (apic *ApiClient) IsGcp() bool {
-	return apic.config.Cloud == environment.CloudGCP
-}
-
-// IsAws returns if the client is configured for Databricks on AWS.
-func (apic *ApiClient) IsAws() bool {
-	return apic.config.Cloud == environment.CloudAWS
 }
 
 var defaultTransport = makeDefaultTransport()
