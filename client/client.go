@@ -20,6 +20,7 @@ func New(cfg *config.Config) (*DatabricksClient, error) {
 		return nil, err
 	}
 	return &DatabricksClient{
+		Config: cfg,
 		client: httpclient.NewApiClient(clientCfg),
 	}, nil
 }
