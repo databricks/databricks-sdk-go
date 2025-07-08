@@ -6,6 +6,8 @@
 
 ### Bug Fixes
 
+- Default values for `ApiClient` are now properly set in the type constructor rather than in the config constructor. 
+
 ### Documentation
 
 ### Internal Changes
