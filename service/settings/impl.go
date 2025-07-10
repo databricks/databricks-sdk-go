@@ -343,6 +343,42 @@ func (a *defaultNamespaceImpl) Update(ctx context.Context, request UpdateDefault
 	return &defaultNamespaceSetting, err
 }
 
+// unexported type that holds implementations of just DefaultWarehouseId API methods
+type defaultWarehouseIdImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *defaultWarehouseIdImpl) Delete(ctx context.Context, request DeleteDefaultWarehouseIdRequest) (*DeleteDefaultWarehouseIdResponse, error) {
+	var deleteDefaultWarehouseIdResponse DeleteDefaultWarehouseIdResponse
+	path := "/api/2.0/settings/types/default_warehouse_id/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDefaultWarehouseIdResponse)
+	return &deleteDefaultWarehouseIdResponse, err
+}
+
+func (a *defaultWarehouseIdImpl) Get(ctx context.Context, request GetDefaultWarehouseIdRequest) (*DefaultWarehouseId, error) {
+	var defaultWarehouseId DefaultWarehouseId
+	path := "/api/2.0/settings/types/default_warehouse_id/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &defaultWarehouseId)
+	return &defaultWarehouseId, err
+}
+
+func (a *defaultWarehouseIdImpl) Update(ctx context.Context, request UpdateDefaultWarehouseIdRequest) (*DefaultWarehouseId, error) {
+	var defaultWarehouseId DefaultWarehouseId
+	path := "/api/2.0/settings/types/default_warehouse_id/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &defaultWarehouseId)
+	return &defaultWarehouseId, err
+}
+
 // unexported type that holds implementations of just DisableLegacyAccess API methods
 type disableLegacyAccessImpl struct {
 	client *client.DatabricksClient

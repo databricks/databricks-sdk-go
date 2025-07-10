@@ -756,15 +756,9 @@ type DeleteCommentRequest struct {
 	Id string `json:"-" url:"id"`
 }
 
-type DeleteCommentResponse struct {
-}
-
 type DeleteExperiment struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"experiment_id"`
-}
-
-type DeleteExperimentResponse struct {
 }
 
 type DeleteFeatureTagRequest struct {
@@ -776,15 +770,9 @@ type DeleteFeatureTagRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
-type DeleteFeatureTagResponse struct {
-}
-
 type DeleteLoggedModelRequest struct {
 	// The ID of the logged model to delete.
 	ModelId string `json:"-" url:"-"`
-}
-
-type DeleteLoggedModelResponse struct {
 }
 
 type DeleteLoggedModelTagRequest struct {
@@ -794,15 +782,9 @@ type DeleteLoggedModelTagRequest struct {
 	TagKey string `json:"-" url:"-"`
 }
 
-type DeleteLoggedModelTagResponse struct {
-}
-
 type DeleteModelRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"-" url:"name"`
-}
-
-type DeleteModelResponse struct {
 }
 
 type DeleteModelTagRequest struct {
@@ -813,17 +795,11 @@ type DeleteModelTagRequest struct {
 	Name string `json:"-" url:"name"`
 }
 
-type DeleteModelTagResponse struct {
-}
-
 type DeleteModelVersionRequest struct {
 	// Name of the registered model
 	Name string `json:"-" url:"name"`
 	// Model version number
 	Version string `json:"-" url:"version"`
-}
-
-type DeleteModelVersionResponse struct {
 }
 
 type DeleteModelVersionTagRequest struct {
@@ -836,23 +812,14 @@ type DeleteModelVersionTagRequest struct {
 	Version string `json:"-" url:"version"`
 }
 
-type DeleteModelVersionTagResponse struct {
-}
-
 type DeleteOnlineStoreRequest struct {
 	// Name of the online store to delete.
 	Name string `json:"-" url:"-"`
 }
 
-type DeleteOnlineStoreResponse struct {
-}
-
 type DeleteRun struct {
 	// ID of the run to delete.
 	RunId string `json:"run_id"`
-}
-
-type DeleteRunResponse struct {
 }
 
 type DeleteRuns struct {
@@ -899,9 +866,6 @@ type DeleteTag struct {
 	RunId string `json:"run_id"`
 }
 
-type DeleteTagResponse struct {
-}
-
 type DeleteTransitionRequestRequest struct {
 	// User-provided comment on the action.
 	Comment string `json:"-" url:"comment,omitempty"`
@@ -943,9 +907,6 @@ type DeleteTransitionRequestResponse struct {
 type DeleteWebhookRequest struct {
 	// Webhook ID required to delete a registry webhook.
 	Id string `json:"-" url:"id"`
-}
-
-type DeleteWebhookResponse struct {
 }
 
 // An experiment and its metadata.
@@ -1962,9 +1923,6 @@ func (s LogBatch) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type LogBatchResponse struct {
-}
-
 type LogInputs struct {
 	// Dataset inputs
 	Datasets []DatasetInput `json:"datasets,omitempty"`
@@ -1974,17 +1932,11 @@ type LogInputs struct {
 	RunId string `json:"run_id"`
 }
 
-type LogInputsResponse struct {
-}
-
 type LogLoggedModelParamsRequest struct {
 	// The ID of the logged model to log params for.
 	ModelId string `json:"-" url:"-"`
 	// Parameters to attach to the model.
 	Params []LoggedModelParameter `json:"params,omitempty"`
-}
-
-type LogLoggedModelParamsRequestResponse struct {
 }
 
 type LogMetric struct {
@@ -2022,9 +1974,6 @@ func (s LogMetric) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type LogMetricResponse struct {
-}
-
 type LogModel struct {
 	// MLmodel file in json format.
 	ModelJson string `json:"model_json,omitempty"`
@@ -2042,17 +1991,11 @@ func (s LogModel) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type LogModelResponse struct {
-}
-
 type LogOutputsRequest struct {
 	// The model outputs from the Run.
 	Models []ModelOutput `json:"models,omitempty"`
 	// The ID of the Run from which to log outputs.
 	RunId string `json:"run_id"`
-}
-
-type LogOutputsResponse struct {
 }
 
 type LogParam struct {
@@ -2075,9 +2018,6 @@ func (s *LogParam) UnmarshalJSON(b []byte) error {
 
 func (s LogParam) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type LogParamResponse struct {
 }
 
 // A logged model message includes logged model attributes, tags, registration
@@ -2519,6 +2459,8 @@ type OnlineStore struct {
 	// The name of the online store. This is the unique identifier for the
 	// online store.
 	Name string `json:"name"`
+	// The number of read replicas for the online store. Defaults to 0.
+	ReadReplicaCount int `json:"read_replica_count,omitempty"`
 	// The current state of the online store.
 	State OnlineStoreState `json:"state,omitempty"`
 
@@ -3168,15 +3110,9 @@ type RestoreExperiment struct {
 	ExperimentId string `json:"experiment_id"`
 }
 
-type RestoreExperimentResponse struct {
-}
-
 type RestoreRun struct {
 	// ID of the run to restore.
 	RunId string `json:"run_id"`
-}
-
-type RestoreRunResponse struct {
 }
 
 type RestoreRuns struct {
@@ -3645,17 +3581,11 @@ type SetExperimentTag struct {
 	Value string `json:"value"`
 }
 
-type SetExperimentTagResponse struct {
-}
-
 type SetLoggedModelTagsRequest struct {
 	// The ID of the logged model to set the tags on.
 	ModelId string `json:"-" url:"-"`
 	// The tags to set on the logged model.
 	Tags []LoggedModelTag `json:"tags,omitempty"`
-}
-
-type SetLoggedModelTagsResponse struct {
 }
 
 type SetModelTagRequest struct {
@@ -3672,9 +3602,6 @@ type SetModelTagRequest struct {
 	Value string `json:"value"`
 }
 
-type SetModelTagResponse struct {
-}
-
 type SetModelVersionTagRequest struct {
 	// Name of the tag. Maximum size depends on storage backend. If a tag with
 	// this name already exists, its preexisting value will be replaced by the
@@ -3689,9 +3616,6 @@ type SetModelVersionTagRequest struct {
 	Value string `json:"value"`
 	// Model version number.
 	Version string `json:"version"`
-}
-
-type SetModelVersionTagResponse struct {
 }
 
 type SetTag struct {
@@ -3715,9 +3639,6 @@ func (s *SetTag) UnmarshalJSON(b []byte) error {
 
 func (s SetTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type SetTagResponse struct {
 }
 
 // The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
@@ -3901,9 +3822,6 @@ func (s *UpdateExperiment) UnmarshalJSON(b []byte) error {
 
 func (s UpdateExperiment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UpdateExperimentResponse struct {
 }
 
 type UpdateFeatureTagRequest struct {

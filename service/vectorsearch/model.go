@@ -153,15 +153,9 @@ type DeleteEndpointRequest struct {
 	EndpointName string `json:"-" url:"-"`
 }
 
-type DeleteEndpointResponse struct {
-}
-
 type DeleteIndexRequest struct {
 	// Name of the index
 	IndexName string `json:"-" url:"-"`
-}
-
-type DeleteIndexResponse struct {
 }
 
 type DeltaSyncVectorIndexSpecRequest struct {
@@ -775,9 +769,6 @@ type Struct struct {
 type SyncIndexRequest struct {
 	// Name of the vector index to synchronize. Must be a Delta Sync Index.
 	IndexName string `json:"-" url:"-"`
-}
-
-type SyncIndexResponse struct {
 }
 
 type UpdateEndpointCustomTagsRequest struct {

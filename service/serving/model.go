@@ -153,7 +153,7 @@ func (s AiGatewayInferenceTableConfig) MarshalJSON() ([]byte, error) {
 type AiGatewayRateLimit struct {
 	// Used to specify how many calls are allowed for a key within the
 	// renewal_period.
-	Calls int64 `json:"calls"`
+	Calls int64 `json:"calls,omitempty"`
 	// Key field for a rate limit. Currently, 'user', 'user_group,
 	// 'service_principal', and 'endpoint' are supported, with 'endpoint' being
 	// the default if not specified.
@@ -704,9 +704,6 @@ type DataframeSplitInput struct {
 	Data []any `json:"data,omitempty"`
 
 	Index []int `json:"index,omitempty"`
-}
-
-type DeleteResponse struct {
 }
 
 type DeleteServingEndpointRequest struct {

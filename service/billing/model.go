@@ -544,15 +544,9 @@ type DeleteBudgetConfigurationRequest struct {
 	BudgetId string `json:"-" url:"-"`
 }
 
-type DeleteBudgetConfigurationResponse struct {
-}
-
 type DeleteBudgetPolicyRequest struct {
 	// The Id of the policy.
 	PolicyId string `json:"-" url:"-"`
-}
-
-type DeleteResponse struct {
 }
 
 // * The status string for log delivery. Possible values are: `CREATED`: There
@@ -618,8 +612,10 @@ type DownloadRequest struct {
 	// billable usage logs, for example the email addresses of cluster creators.
 	// Handle this information with care. Defaults to false.
 	PersonalData bool `json:"-" url:"personal_data,omitempty"`
-	// Format: `YYYY-MM`. First month to return billable usage logs for. This
-	// field is required.
+	// Format specification for month in the format `YYYY-MM`. This is used to
+	// specify billable usage `start_month` and `end_month` properties.
+	// **Note**: Billable usage logs are unavailable before March 2019
+	// (`2019-03`).
 	StartMonth string `json:"-" url:"start_month"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1073,9 +1069,6 @@ func (f *OutputFormat) Values() []OutputFormat {
 // Type always returns OutputFormat to satisfy [pflag.Value] interface
 func (f *OutputFormat) Type() string {
 	return "OutputFormat"
-}
-
-type PatchStatusResponse struct {
 }
 
 type SortSpec struct {

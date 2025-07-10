@@ -131,7 +131,7 @@ type CreateServicePrincipalSecretRequest struct {
 	// the secret will have a default lifetime of 730 days (63072000s).
 	Lifetime string `json:"lifetime,omitempty"`
 	// The service principal ID.
-	ServicePrincipalId int64 `json:"-" url:"-"`
+	ServicePrincipalId string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -177,21 +177,12 @@ type DeleteAccountFederationPolicyRequest struct {
 	PolicyId string `json:"-" url:"-"`
 }
 
-type DeleteCustomAppIntegrationOutput struct {
-}
-
 type DeleteCustomAppIntegrationRequest struct {
 	IntegrationId string `json:"-" url:"-"`
 }
 
-type DeletePublishedAppIntegrationOutput struct {
-}
-
 type DeletePublishedAppIntegrationRequest struct {
 	IntegrationId string `json:"-" url:"-"`
-}
-
-type DeleteResponse struct {
 }
 
 type DeleteServicePrincipalFederationPolicyRequest struct {
@@ -205,7 +196,7 @@ type DeleteServicePrincipalSecretRequest struct {
 	// The secret ID.
 	SecretId string `json:"-" url:"-"`
 	// The service principal ID.
-	ServicePrincipalId int64 `json:"-" url:"-"`
+	ServicePrincipalId string `json:"-" url:"-"`
 }
 
 type FederationPolicy struct {
@@ -482,6 +473,7 @@ func (s ListServicePrincipalFederationPoliciesRequest) MarshalJSON() ([]byte, er
 }
 
 type ListServicePrincipalSecretsRequest struct {
+	PageSize int `json:"-" url:"page_size,omitempty"`
 	// An opaque page token which was the `next_page_token` in the response of
 	// the previous request to list the secrets for this service principal.
 	// Provide this token to retrieve the next page of secret entries. When
@@ -493,7 +485,7 @@ type ListServicePrincipalSecretsRequest struct {
 	// complete.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The service principal ID.
-	ServicePrincipalId int64 `json:"-" url:"-"`
+	ServicePrincipalId string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -681,16 +673,10 @@ type UpdateCustomAppIntegration struct {
 	UserAuthorizedScopes []string `json:"user_authorized_scopes,omitempty"`
 }
 
-type UpdateCustomAppIntegrationOutput struct {
-}
-
 type UpdatePublishedAppIntegration struct {
 	IntegrationId string `json:"-" url:"-"`
 	// Token access policy to be updated in the published OAuth app integration
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
-}
-
-type UpdatePublishedAppIntegrationOutput struct {
 }
 
 type UpdateServicePrincipalFederationPolicyRequest struct {

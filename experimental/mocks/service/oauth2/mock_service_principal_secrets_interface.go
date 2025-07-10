@@ -130,54 +130,6 @@ func (_c *MockServicePrincipalSecretsInterface_Delete_Call) RunAndReturn(run fun
 	return _c
 }
 
-// DeleteByServicePrincipalIdAndSecretId provides a mock function with given fields: ctx, servicePrincipalId, secretId
-func (_m *MockServicePrincipalSecretsInterface) DeleteByServicePrincipalIdAndSecretId(ctx context.Context, servicePrincipalId int64, secretId string) error {
-	ret := _m.Called(ctx, servicePrincipalId, secretId)
-
-	if len(ret) == 0 {
-		panic("no return value specified for DeleteByServicePrincipalIdAndSecretId")
-	}
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64, string) error); ok {
-		r0 = rf(ctx, servicePrincipalId, secretId)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// MockServicePrincipalSecretsInterface_DeleteByServicePrincipalIdAndSecretId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByServicePrincipalIdAndSecretId'
-type MockServicePrincipalSecretsInterface_DeleteByServicePrincipalIdAndSecretId_Call struct {
-	*mock.Call
-}
-
-// DeleteByServicePrincipalIdAndSecretId is a helper method to define mock.On call
-//   - ctx context.Context
-//   - servicePrincipalId int64
-//   - secretId string
-func (_e *MockServicePrincipalSecretsInterface_Expecter) DeleteByServicePrincipalIdAndSecretId(ctx interface{}, servicePrincipalId interface{}, secretId interface{}) *MockServicePrincipalSecretsInterface_DeleteByServicePrincipalIdAndSecretId_Call {
-	return &MockServicePrincipalSecretsInterface_DeleteByServicePrincipalIdAndSecretId_Call{Call: _e.mock.On("DeleteByServicePrincipalIdAndSecretId", ctx, servicePrincipalId, secretId)}
-}
-
-func (_c *MockServicePrincipalSecretsInterface_DeleteByServicePrincipalIdAndSecretId_Call) Run(run func(ctx context.Context, servicePrincipalId int64, secretId string)) *MockServicePrincipalSecretsInterface_DeleteByServicePrincipalIdAndSecretId_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(int64), args[2].(string))
-	})
-	return _c
-}
-
-func (_c *MockServicePrincipalSecretsInterface_DeleteByServicePrincipalIdAndSecretId_Call) Return(_a0 error) *MockServicePrincipalSecretsInterface_DeleteByServicePrincipalIdAndSecretId_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockServicePrincipalSecretsInterface_DeleteByServicePrincipalIdAndSecretId_Call) RunAndReturn(run func(context.Context, int64, string) error) *MockServicePrincipalSecretsInterface_DeleteByServicePrincipalIdAndSecretId_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockServicePrincipalSecretsInterface) List(ctx context.Context, request oauth2.ListServicePrincipalSecretsRequest) listing.Iterator[oauth2.SecretInfo] {
 	ret := _m.Called(ctx, request)
@@ -282,65 +234,6 @@ func (_c *MockServicePrincipalSecretsInterface_ListAll_Call) Return(_a0 []oauth2
 }
 
 func (_c *MockServicePrincipalSecretsInterface_ListAll_Call) RunAndReturn(run func(context.Context, oauth2.ListServicePrincipalSecretsRequest) ([]oauth2.SecretInfo, error)) *MockServicePrincipalSecretsInterface_ListAll_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ListByServicePrincipalId provides a mock function with given fields: ctx, servicePrincipalId
-func (_m *MockServicePrincipalSecretsInterface) ListByServicePrincipalId(ctx context.Context, servicePrincipalId int64) (*oauth2.ListServicePrincipalSecretsResponse, error) {
-	ret := _m.Called(ctx, servicePrincipalId)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ListByServicePrincipalId")
-	}
-
-	var r0 *oauth2.ListServicePrincipalSecretsResponse
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) (*oauth2.ListServicePrincipalSecretsResponse, error)); ok {
-		return rf(ctx, servicePrincipalId)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, int64) *oauth2.ListServicePrincipalSecretsResponse); ok {
-		r0 = rf(ctx, servicePrincipalId)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*oauth2.ListServicePrincipalSecretsResponse)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
-		r1 = rf(ctx, servicePrincipalId)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockServicePrincipalSecretsInterface_ListByServicePrincipalId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListByServicePrincipalId'
-type MockServicePrincipalSecretsInterface_ListByServicePrincipalId_Call struct {
-	*mock.Call
-}
-
-// ListByServicePrincipalId is a helper method to define mock.On call
-//   - ctx context.Context
-//   - servicePrincipalId int64
-func (_e *MockServicePrincipalSecretsInterface_Expecter) ListByServicePrincipalId(ctx interface{}, servicePrincipalId interface{}) *MockServicePrincipalSecretsInterface_ListByServicePrincipalId_Call {
-	return &MockServicePrincipalSecretsInterface_ListByServicePrincipalId_Call{Call: _e.mock.On("ListByServicePrincipalId", ctx, servicePrincipalId)}
-}
-
-func (_c *MockServicePrincipalSecretsInterface_ListByServicePrincipalId_Call) Run(run func(ctx context.Context, servicePrincipalId int64)) *MockServicePrincipalSecretsInterface_ListByServicePrincipalId_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(int64))
-	})
-	return _c
-}
-
-func (_c *MockServicePrincipalSecretsInterface_ListByServicePrincipalId_Call) Return(_a0 *oauth2.ListServicePrincipalSecretsResponse, _a1 error) *MockServicePrincipalSecretsInterface_ListByServicePrincipalId_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockServicePrincipalSecretsInterface_ListByServicePrincipalId_Call) RunAndReturn(run func(context.Context, int64) (*oauth2.ListServicePrincipalSecretsResponse, error)) *MockServicePrincipalSecretsInterface_ListByServicePrincipalId_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -21,6 +21,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
+	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
@@ -879,6 +880,23 @@ type WorkspaceClient struct {
 	// prevent such users from reading secrets.
 	Secrets workspace.SecretsInterface
 
+	// These APIs enable administrators to manage service principal secrets at
+	// the workspace level. To use these APIs, the service principal must be
+	// first added to the current workspace.
+	//
+	// You can use the generated secrets to obtain OAuth access tokens for a
+	// service principal, which can then be used to access Databricks Accounts
+	// and Workspace APIs. For more information, see [Authentication using OAuth
+	// tokens for service principals].
+	//
+	// In addition, the generated secrets can be used to configure the
+	// Databricks Terraform Providerto authenticate with the service principal.
+	// For more information, see [Databricks Terraform Provider].
+	//
+	// [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
+	// [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
+	ServicePrincipalSecretsProxy oauth2.ServicePrincipalSecretsProxyInterface
+
 	// Identities for use with jobs, automated tools, and systems such as
 	// scripts, apps, and CI/CD platforms. Databricks recommends creating
 	// service principals to run production jobs or modify production data. If
@@ -1312,6 +1330,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ResourceQuotas:                      catalog.NewResourceQuotas(databricksClient),
 		Schemas:                             catalog.NewSchemas(databricksClient),
 		Secrets:                             workspace.NewSecrets(databricksClient),
+		ServicePrincipalSecretsProxy:        oauth2.NewServicePrincipalSecretsProxy(databricksClient),
 		ServicePrincipals:                   iam.NewServicePrincipals(databricksClient),
 		ServingEndpoints:                    servingEndpoints,
 		ServingEndpointsDataPlane:           serving.NewServingEndpointsDataPlane(databricksClient, servingEndpoints),

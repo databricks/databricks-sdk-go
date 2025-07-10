@@ -130,9 +130,6 @@ func (f *ArtifactType) Type() string {
 	return "ArtifactType"
 }
 
-type AssignResponse struct {
-}
-
 // AWS temporary credentials for API authentication. Read more at
 // https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
 type AwsCredentials struct {
@@ -391,9 +388,6 @@ type CancelRefreshRequest struct {
 	RefreshId string `json:"-" url:"-"`
 	// Full name of the table.
 	TableName string `json:"-" url:"-"`
-}
-
-type CancelRefreshResponse struct {
 }
 
 type CatalogInfo struct {
@@ -802,7 +796,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 36
+// Next Id: 37
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -1402,9 +1396,6 @@ func (s CreateRequestExternalLineage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type CreateResponse struct {
-}
-
 type CreateSchema struct {
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name"`
@@ -1906,9 +1897,6 @@ type DeleteAliasRequest struct {
 	FullName string `json:"-" url:"-"`
 }
 
-type DeleteAliasResponse struct {
-}
-
 type DeleteCatalogRequest struct {
 	// Force deletion even if the catalog is not empty.
 	Force bool `json:"-" url:"force,omitempty"`
@@ -1950,14 +1938,8 @@ func (s DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type DeleteCredentialResponse struct {
-}
-
 type DeleteExternalLineageRelationshipRequest struct {
 	ExternalLineageRelationship DeleteRequestExternalLineage `json:"-" url:"external_lineage_relationship"`
-}
-
-type DeleteExternalLineageRelationshipResponse struct {
 }
 
 type DeleteExternalLocationRequest struct {
@@ -1979,9 +1961,6 @@ func (s DeleteExternalLocationRequest) MarshalJSON() ([]byte, error) {
 
 type DeleteExternalMetadataRequest struct {
 	Name string `json:"-" url:"-"`
-}
-
-type DeleteExternalMetadataResponse struct {
 }
 
 type DeleteFunctionRequest struct {
@@ -2058,9 +2037,6 @@ func (s *DeleteRequestExternalLineage) UnmarshalJSON(b []byte) error {
 
 func (s DeleteRequestExternalLineage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type DeleteResponse struct {
 }
 
 type DeleteSchemaRequest struct {
@@ -2188,9 +2164,6 @@ type DisableRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 	// Full name of the system schema.
 	SchemaName string `json:"-" url:"-"`
-}
-
-type DisableResponse struct {
 }
 
 type EffectivePermissionsList struct {
@@ -2372,9 +2345,6 @@ func (s *EnableRequest) UnmarshalJSON(b []byte) error {
 
 func (s EnableRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type EnableResponse struct {
 }
 
 // Encryption options that apply to clients connecting to cloud storage.
@@ -5549,7 +5519,8 @@ func (f *OptionSpecOptionType) Type() string {
 type PermissionsChange struct {
 	// The set of privileges to add.
 	Add []Privilege `json:"add,omitempty"`
-	// The principal whose privileges we are changing.
+	// The principal whose privileges we are changing. Only one of principal or
+	// principal_id should be specified, never both at the same time.
 	Principal string `json:"principal,omitempty"`
 	// The set of privileges to remove.
 	Remove []Privilege `json:"remove,omitempty"`
@@ -6093,7 +6064,6 @@ func (s SchemaInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: TABLE_DELTA_ICEBERG_DELTASHARING = 252; Next id:253
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -6563,6 +6533,8 @@ const SystemTypeAzureSynapse SystemType = `AZURE_SYNAPSE`
 
 const SystemTypeConfluent SystemType = `CONFLUENT`
 
+const SystemTypeDatabricks SystemType = `DATABRICKS`
+
 const SystemTypeGoogleBigquery SystemType = `GOOGLE_BIGQUERY`
 
 const SystemTypeKafka SystemType = `KAFKA`
@@ -6607,11 +6579,11 @@ func (f *SystemType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SystemType) Set(v string) error {
 	switch v {
-	case `AMAZON_REDSHIFT`, `AZURE_SYNAPSE`, `CONFLUENT`, `GOOGLE_BIGQUERY`, `KAFKA`, `LOOKER`, `MICROSOFT_FABRIC`, `MICROSOFT_SQL_SERVER`, `MONGODB`, `MYSQL`, `ORACLE`, `OTHER`, `POSTGRESQL`, `POWER_BI`, `SALESFORCE`, `SAP`, `SERVICENOW`, `SNOWFLAKE`, `TABLEAU`, `TERADATA`, `WORKDAY`:
+	case `AMAZON_REDSHIFT`, `AZURE_SYNAPSE`, `CONFLUENT`, `DATABRICKS`, `GOOGLE_BIGQUERY`, `KAFKA`, `LOOKER`, `MICROSOFT_FABRIC`, `MICROSOFT_SQL_SERVER`, `MONGODB`, `MYSQL`, `ORACLE`, `OTHER`, `POSTGRESQL`, `POWER_BI`, `SALESFORCE`, `SAP`, `SERVICENOW`, `SNOWFLAKE`, `TABLEAU`, `TERADATA`, `WORKDAY`:
 		*f = SystemType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AMAZON_REDSHIFT", "AZURE_SYNAPSE", "CONFLUENT", "GOOGLE_BIGQUERY", "KAFKA", "LOOKER", "MICROSOFT_FABRIC", "MICROSOFT_SQL_SERVER", "MONGODB", "MYSQL", "ORACLE", "OTHER", "POSTGRESQL", "POWER_BI", "SALESFORCE", "SAP", "SERVICENOW", "SNOWFLAKE", "TABLEAU", "TERADATA", "WORKDAY"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AMAZON_REDSHIFT", "AZURE_SYNAPSE", "CONFLUENT", "DATABRICKS", "GOOGLE_BIGQUERY", "KAFKA", "LOOKER", "MICROSOFT_FABRIC", "MICROSOFT_SQL_SERVER", "MONGODB", "MYSQL", "ORACLE", "OTHER", "POSTGRESQL", "POWER_BI", "SALESFORCE", "SAP", "SERVICENOW", "SNOWFLAKE", "TABLEAU", "TERADATA", "WORKDAY"`, v)
 	}
 }
 
@@ -6623,6 +6595,7 @@ func (f *SystemType) Values() []SystemType {
 		SystemTypeAmazonRedshift,
 		SystemTypeAzureSynapse,
 		SystemTypeConfluent,
+		SystemTypeDatabricks,
 		SystemTypeGoogleBigquery,
 		SystemTypeKafka,
 		SystemTypeLooker,
@@ -6963,12 +6936,6 @@ type UnassignRequest struct {
 	MetastoreId string `json:"-" url:"metastore_id"`
 	// A workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
-}
-
-type UnassignResponse struct {
-}
-
-type UpdateAssignmentResponse struct {
 }
 
 type UpdateCatalog struct {
@@ -7340,9 +7307,6 @@ func (s *UpdateRequestExternalLineage) UnmarshalJSON(b []byte) error {
 
 func (s UpdateRequestExternalLineage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UpdateResponse struct {
 }
 
 type UpdateSchema struct {

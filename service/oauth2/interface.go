@@ -225,7 +225,7 @@ type ServicePrincipalFederationPolicyService interface {
 // You can use the generated secrets to obtain OAuth access tokens for a service
 // principal, which can then be used to access Databricks Accounts and Workspace
 // APIs. For more information, see [Authentication using OAuth tokens for
-// service principals],
+// service principals].
 //
 // In addition, the generated secrets can be used to configure the Databricks
 // Terraform Provider to authenticate with the service principal. For more
@@ -236,6 +236,37 @@ type ServicePrincipalFederationPolicyService interface {
 // [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
 // [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
 type ServicePrincipalSecretsService interface {
+
+	// Create a secret for the given service principal.
+	Create(ctx context.Context, request CreateServicePrincipalSecretRequest) (*CreateServicePrincipalSecretResponse, error)
+
+	// Delete a secret from the given service principal.
+	Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error
+
+	// List all secrets associated with the given service principal. This
+	// operation only returns information about the secrets themselves and does
+	// not include the secret values.
+	List(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error)
+}
+
+// These APIs enable administrators to manage service principal secrets at the
+// workspace level. To use these APIs, the service principal must be first added
+// to the current workspace.
+//
+// You can use the generated secrets to obtain OAuth access tokens for a service
+// principal, which can then be used to access Databricks Accounts and Workspace
+// APIs. For more information, see [Authentication using OAuth tokens for
+// service principals].
+//
+// In addition, the generated secrets can be used to configure the Databricks
+// Terraform Providerto authenticate with the service principal. For more
+// information, see [Databricks Terraform Provider].
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+//
+// [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
+// [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
+type ServicePrincipalSecretsProxyService interface {
 
 	// Create a secret for the given service principal.
 	Create(ctx context.Context, request CreateServicePrincipalSecretRequest) (*CreateServicePrincipalSecretResponse, error)

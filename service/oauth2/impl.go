@@ -489,3 +489,72 @@ func (a *servicePrincipalSecretsImpl) internalList(ctx context.Context, request 
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listServicePrincipalSecretsResponse)
 	return &listServicePrincipalSecretsResponse, err
 }
+
+// unexported type that holds implementations of just ServicePrincipalSecretsProxy API methods
+type servicePrincipalSecretsProxyImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *servicePrincipalSecretsProxyImpl) Create(ctx context.Context, request CreateServicePrincipalSecretRequest) (*CreateServicePrincipalSecretResponse, error) {
+	var createServicePrincipalSecretResponse CreateServicePrincipalSecretResponse
+	path := fmt.Sprintf("/api/2.0/accounts/servicePrincipals/%v/credentials/secrets", request.ServicePrincipalId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createServicePrincipalSecretResponse)
+	return &createServicePrincipalSecretResponse, err
+}
+
+func (a *servicePrincipalSecretsProxyImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error {
+	path := fmt.Sprintf("/api/2.0/accounts/servicePrincipals/%v/credentials/secrets/%v", request.ServicePrincipalId, request.SecretId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+// List all secrets associated with the given service principal. This operation
+// only returns information about the secrets themselves and does not include
+// the secret values.
+func (a *servicePrincipalSecretsProxyImpl) List(ctx context.Context, request ListServicePrincipalSecretsRequest) listing.Iterator[SecretInfo] {
+
+	getNextPage := func(ctx context.Context, req ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListServicePrincipalSecretsResponse) []SecretInfo {
+		return resp.Secrets
+	}
+	getNextReq := func(resp *ListServicePrincipalSecretsResponse) *ListServicePrincipalSecretsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List all secrets associated with the given service principal. This operation
+// only returns information about the secrets themselves and does not include
+// the secret values.
+func (a *servicePrincipalSecretsProxyImpl) ListAll(ctx context.Context, request ListServicePrincipalSecretsRequest) ([]SecretInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[SecretInfo](ctx, iterator)
+}
+
+func (a *servicePrincipalSecretsProxyImpl) internalList(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
+	var listServicePrincipalSecretsResponse ListServicePrincipalSecretsResponse
+	path := fmt.Sprintf("/api/2.0/accounts/servicePrincipals/%v/credentials/secrets", request.ServicePrincipalId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listServicePrincipalSecretsResponse)
+	return &listServicePrincipalSecretsResponse, err
+}

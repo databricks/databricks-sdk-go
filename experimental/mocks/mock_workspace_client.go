@@ -20,6 +20,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/jobs"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/ml"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/serving"
@@ -129,6 +130,7 @@ func NewMockWorkspaceClient(t interface {
 			ResourceQuotas:                      catalog.NewMockResourceQuotasInterface(t),
 			Schemas:                             catalog.NewMockSchemasInterface(t),
 			Secrets:                             workspace.NewMockSecretsInterface(t),
+			ServicePrincipalSecretsProxy:        oauth2.NewMockServicePrincipalSecretsProxyInterface(t),
 			ServicePrincipals:                   iam.NewMockServicePrincipalsInterface(t),
 			ServingEndpoints:                    serving.NewMockServingEndpointsInterface(t),
 			ServingEndpointsDataPlane:           serving.NewMockServingEndpointsDataPlaneInterface(t),
@@ -173,6 +175,9 @@ func NewMockWorkspaceClient(t interface {
 
 	mockdefaultNamespace := settings.NewMockDefaultNamespaceInterface(t)
 	mocksettingsAPI.On("DefaultNamespace").Return(mockdefaultNamespace).Maybe()
+
+	mockdefaultWarehouseId := settings.NewMockDefaultWarehouseIdInterface(t)
+	mocksettingsAPI.On("DefaultWarehouseId").Return(mockdefaultWarehouseId).Maybe()
 
 	mockdisableLegacyAccess := settings.NewMockDisableLegacyAccessInterface(t)
 	mocksettingsAPI.On("DisableLegacyAccess").Return(mockdisableLegacyAccess).Maybe()
@@ -248,6 +253,14 @@ func (m *MockWorkspaceClient) GetMockDefaultNamespaceAPI() *settings.MockDefault
 	api, ok := m.GetMockSettingsAPI().DefaultNamespace().(*settings.MockDefaultNamespaceInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected DefaultNamespace to be *settings.MockDefaultNamespaceInterface, actual was %T", m.GetMockSettingsAPI().DefaultNamespace()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockDefaultWarehouseIdAPI() *settings.MockDefaultWarehouseIdInterface {
+	api, ok := m.GetMockSettingsAPI().DefaultWarehouseId().(*settings.MockDefaultWarehouseIdInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DefaultWarehouseId to be *settings.MockDefaultWarehouseIdInterface, actual was %T", m.GetMockSettingsAPI().DefaultWarehouseId()))
 	}
 	return api
 }
@@ -1000,6 +1013,14 @@ func (m *MockWorkspaceClient) GetMockSecretsAPI() *workspace.MockSecretsInterfac
 	api, ok := m.WorkspaceClient.Secrets.(*workspace.MockSecretsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Secrets to be *workspace.MockSecretsInterface, actual was %T", m.WorkspaceClient.Secrets))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockServicePrincipalSecretsProxyAPI() *oauth2.MockServicePrincipalSecretsProxyInterface {
+	api, ok := m.WorkspaceClient.ServicePrincipalSecretsProxy.(*oauth2.MockServicePrincipalSecretsProxyInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ServicePrincipalSecretsProxy to be *oauth2.MockServicePrincipalSecretsProxyInterface, actual was %T", m.WorkspaceClient.ServicePrincipalSecretsProxy))
 	}
 	return api
 }

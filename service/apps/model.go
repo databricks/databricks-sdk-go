@@ -361,6 +361,7 @@ type AppPermissionsRequest struct {
 }
 
 type AppResource struct {
+	Database *AppResourceDatabase `json:"database,omitempty"`
 	// Description of the App Resource.
 	Description string `json:"description,omitempty"`
 
@@ -385,6 +386,48 @@ func (s *AppResource) UnmarshalJSON(b []byte) error {
 
 func (s AppResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type AppResourceDatabase struct {
+	DatabaseName string `json:"database_name"`
+
+	InstanceName string `json:"instance_name"`
+
+	Permission AppResourceDatabaseDatabasePermission `json:"permission"`
+}
+
+type AppResourceDatabaseDatabasePermission string
+
+const AppResourceDatabaseDatabasePermissionCanConnectAndCreate AppResourceDatabaseDatabasePermission = `CAN_CONNECT_AND_CREATE`
+
+// String representation for [fmt.Print]
+func (f *AppResourceDatabaseDatabasePermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceDatabaseDatabasePermission) Set(v string) error {
+	switch v {
+	case `CAN_CONNECT_AND_CREATE`:
+		*f = AppResourceDatabaseDatabasePermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_CONNECT_AND_CREATE"`, v)
+	}
+}
+
+// Values returns all possible values for AppResourceDatabaseDatabasePermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppResourceDatabaseDatabasePermission) Values() []AppResourceDatabaseDatabasePermission {
+	return []AppResourceDatabaseDatabasePermission{
+		AppResourceDatabaseDatabasePermissionCanConnectAndCreate,
+	}
+}
+
+// Type always returns AppResourceDatabaseDatabasePermission to satisfy [pflag.Value] interface
+func (f *AppResourceDatabaseDatabasePermission) Type() string {
+	return "AppResourceDatabaseDatabasePermission"
 }
 
 type AppResourceJob struct {
