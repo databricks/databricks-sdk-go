@@ -911,6 +911,35 @@ func (s DefaultNamespaceSetting) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DefaultWarehouseId struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	StringVal StringMessage `json:"string_val"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DefaultWarehouseId) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DefaultWarehouseId) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DeleteAccountIpAccessEnableRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1081,6 +1110,39 @@ type DeleteDefaultNamespaceSettingResponse struct {
 	Etag string `json:"etag"`
 }
 
+type DeleteDefaultWarehouseIdRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteDefaultWarehouseIdRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteDefaultWarehouseIdRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
+type DeleteDefaultWarehouseIdResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"etag"`
+}
+
 type DeleteDisableLegacyAccessRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1223,15 +1285,9 @@ type DeleteNetworkConnectivityConfigurationRequest struct {
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 }
 
-type DeleteNetworkConnectivityConfigurationResponse struct {
-}
-
 type DeleteNetworkPolicyRequest struct {
 	// The unique identifier of the network policy to delete.
 	NetworkPolicyId string `json:"-" url:"-"`
-}
-
-type DeleteNetworkPolicyRpcResponse struct {
 }
 
 type DeleteNotificationDestinationRequest struct {
@@ -1276,9 +1332,6 @@ type DeletePrivateEndpointRuleRequest struct {
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 	// Your private endpoint rule ID.
 	PrivateEndpointRuleId string `json:"-" url:"-"`
-}
-
-type DeleteResponse struct {
 }
 
 type DeleteRestrictWorkspaceAdminsSettingRequest struct {
@@ -2099,9 +2152,6 @@ type EmailConfig struct {
 	Addresses []string `json:"addresses,omitempty"`
 }
 
-type Empty struct {
-}
-
 type EnableExportNotebook struct {
 	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
@@ -2488,6 +2538,27 @@ func (s *GetDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s GetDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GetDefaultWarehouseIdRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetDefaultWarehouseIdRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetDefaultWarehouseIdRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -3650,9 +3721,6 @@ type ReplaceIpAccessList struct {
 	ListType ListType `json:"list_type"`
 }
 
-type ReplaceResponse struct {
-}
-
 type RestrictWorkspaceAdminsMessage struct {
 	Status RestrictWorkspaceAdminsMessageStatus `json:"status"`
 }
@@ -3726,12 +3794,6 @@ func (s RestrictWorkspaceAdminsSetting) MarshalJSON() ([]byte, error) {
 type RevokeTokenRequest struct {
 	// The ID of the token to be revoked.
 	TokenId string `json:"token_id"`
-}
-
-type RevokeTokenResponse struct {
-}
-
-type SetStatusResponse struct {
 }
 
 type SlackConfig struct {
@@ -4179,6 +4241,27 @@ type UpdateDefaultNamespaceSettingRequest struct {
 }
 
 // Details required to update a setting.
+type UpdateDefaultWarehouseIdRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	FieldMask string `json:"field_mask"`
+
+	Setting DefaultWarehouseId `json:"setting"`
+}
+
+// Details required to update a setting.
 type UpdateDisableLegacyAccessRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
@@ -4529,9 +4612,6 @@ func (s *UpdatePrivateEndpointRule) UnmarshalJSON(b []byte) error {
 
 func (s UpdatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UpdateResponse struct {
 }
 
 // Details required to update a setting.

@@ -8,6 +8,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+// An item representing an ACL rule applied to the given principal (user or
+// group) on the associated scope point.
 type AclItem struct {
 	// The permission level applied to the principal.
 	Permission AclPermission `json:"permission"`
@@ -15,6 +17,7 @@ type AclItem struct {
 	Principal string `json:"principal"`
 }
 
+// The ACL permission levels for Secret ACLs applied to secret scopes.
 type AclPermission string
 
 const AclPermissionManage AclPermission = `MANAGE`
@@ -55,6 +58,8 @@ func (f *AclPermission) Type() string {
 	return "AclPermission"
 }
 
+// The metadata of the Azure KeyVault for a secret scope of type
+// `AZURE_KEYVAULT`
 type AzureKeyVaultSecretScopeMetadata struct {
 	// The DNS of the KeyVault
 	DnsName string `json:"dns_name"`
@@ -77,6 +82,11 @@ type CreateCredentialsRequest struct {
 	// providers please see your provider's Personal Access Token authentication
 	// documentation to see what is supported.
 	GitUsername string `json:"git_username,omitempty"`
+	// if the credential is the default for the given provider
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
+	// the name of the git credential, used for identification and ease of
+	// lookup
+	Name string `json:"name,omitempty"`
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of
 	// scoped access tokens. [Learn more].
@@ -103,6 +113,11 @@ type CreateCredentialsResponse struct {
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
 	GitUsername string `json:"git_username,omitempty"`
+	// if the credential is the default for the given provider
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
+	// the name of the git credential, used for identification and ease of
+	// lookup
+	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -171,15 +186,15 @@ func (s CreateRepoResponse) MarshalJSON() ([]byte, error) {
 }
 
 type CreateScope struct {
-	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
+	// The metadata for the secret scope if the type is ``AZURE_KEYVAULT``
 	BackendAzureKeyvault *AzureKeyVaultSecretScopeMetadata `json:"backend_azure_keyvault,omitempty"`
-	// The principal that is initially granted `MANAGE` permission to the
+	// The principal that is initially granted ``MANAGE`` permission to the
 	// created scope.
 	InitialManagePrincipal string `json:"initial_manage_principal,omitempty"`
 	// Scope name requested by the user. Scope names are unique.
 	Scope string `json:"scope"`
 	// The backend type the scope will be created with. If not specified, will
-	// default to `DATABRICKS`
+	// default to ``DATABRICKS``
 	ScopeBackendType ScopeBackendType `json:"scope_backend_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -193,9 +208,6 @@ func (s CreateScope) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type CreateScopeResponse struct {
-}
-
 type CredentialInfo struct {
 	// ID of the credential object in the workspace.
 	CredentialId int64 `json:"credential_id"`
@@ -204,6 +216,11 @@ type CredentialInfo struct {
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
 	GitUsername string `json:"git_username,omitempty"`
+	// if the credential is the default for the given provider
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
+	// the name of the git credential, used for identification and ease of
+	// lookup
+	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -243,15 +260,9 @@ type DeleteAcl struct {
 	Scope string `json:"scope"`
 }
 
-type DeleteAclResponse struct {
-}
-
 type DeleteCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
-}
-
-type DeleteCredentialsResponse struct {
 }
 
 type DeleteRepoRequest struct {
@@ -259,18 +270,9 @@ type DeleteRepoRequest struct {
 	RepoId int64 `json:"-" url:"-"`
 }
 
-type DeleteRepoResponse struct {
-}
-
-type DeleteResponse struct {
-}
-
 type DeleteScope struct {
 	// Name of the scope to delete.
 	Scope string `json:"scope"`
-}
-
-type DeleteScopeResponse struct {
 }
 
 type DeleteSecret struct {
@@ -278,9 +280,6 @@ type DeleteSecret struct {
 	Key string `json:"key"`
 	// The name of the scope that contains the secret to delete.
 	Scope string `json:"scope"`
-}
-
-type DeleteSecretResponse struct {
 }
 
 // The format for workspace import and export.
@@ -397,6 +396,11 @@ type GetCredentialsResponse struct {
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
 	GitUsername string `json:"git_username,omitempty"`
+	// if the credential is the default for the given provider
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
+	// the name of the git credential, used for identification and ease of
+	// lookup
+	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -457,9 +461,9 @@ func (s GetRepoResponse) MarshalJSON() ([]byte, error) {
 }
 
 type GetSecretRequest struct {
-	// The key to fetch secret for.
+	// Name of the secret to fetch value information.
 	Key string `json:"-" url:"key"`
-	// The name of the scope to fetch secret information from.
+	// The name of the scope that contains the secret.
 	Scope string `json:"-" url:"scope"`
 }
 
@@ -598,9 +602,6 @@ func (f *ImportFormat) Values() []ImportFormat {
 // Type always returns ImportFormat to satisfy [pflag.Value] interface
 func (f *ImportFormat) Type() string {
 	return "ImportFormat"
-}
-
-type ImportResponse struct {
 }
 
 // The language of notebook.
@@ -745,9 +746,6 @@ type Mkdirs struct {
 	Path string `json:"path"`
 }
 
-type MkdirsResponse struct {
-}
-
 // The information of the object in workspace. It will be returned by “list“
 // and “get-status“.
 type ObjectInfo struct {
@@ -844,9 +842,6 @@ type PutAcl struct {
 	Scope string `json:"scope"`
 }
 
-type PutAclResponse struct {
-}
-
 type PutSecret struct {
 	// If specified, value will be stored as bytes.
 	BytesValue string `json:"bytes_value,omitempty"`
@@ -866,9 +861,6 @@ func (s *PutSecret) UnmarshalJSON(b []byte) error {
 
 func (s PutSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type PutSecretResponse struct {
 }
 
 type RepoAccessControlRequest struct {
@@ -1045,6 +1037,8 @@ type RepoPermissionsRequest struct {
 	RepoId string `json:"-" url:"-"`
 }
 
+// The types of secret scope backends in the Secret Manager. Azure KeyVault
+// backed secret scopes will be supported in a later release.
 type ScopeBackendType string
 
 const ScopeBackendTypeAzureKeyvault ScopeBackendType = `AZURE_KEYVAULT`
@@ -1082,6 +1076,8 @@ func (f *ScopeBackendType) Type() string {
 	return "ScopeBackendType"
 }
 
+// The metadata about a secret. Returned when listing secrets. Does not contain
+// the actual secret value.
 type SecretMetadata struct {
 	// A unique name to identify the secret.
 	Key string `json:"key,omitempty"`
@@ -1099,10 +1095,13 @@ func (s SecretMetadata) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// An organizational resource for storing secrets. Secret scopes can be
+// different types (Databricks-managed, Azure KeyVault backed, etc), and ACLs
+// can be applied to control permissions for all secrets within a scope.
 type SecretScope struct {
 	// The type of secret scope backend.
 	BackendType ScopeBackendType `json:"backend_type,omitempty"`
-	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
+	// The metadata for the secret scope if the type is ``AZURE_KEYVAULT``
 	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata `json:"keyvault_metadata,omitempty"`
 	// A unique name to identify the secret scope.
 	Name string `json:"name,omitempty"`
@@ -1152,6 +1151,11 @@ type UpdateCredentialsRequest struct {
 	// providers please see your provider's Personal Access Token authentication
 	// documentation to see what is supported.
 	GitUsername string `json:"git_username,omitempty"`
+	// if the credential is the default for the given provider
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
+	// the name of the git credential, used for identification and ease of
+	// lookup
+	Name string `json:"name,omitempty"`
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of
 	// scoped access tokens. [Learn more].
@@ -1168,9 +1172,6 @@ func (s *UpdateCredentialsRequest) UnmarshalJSON(b []byte) error {
 
 func (s UpdateCredentialsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UpdateCredentialsResponse struct {
 }
 
 type UpdateRepoRequest struct {
@@ -1196,9 +1197,6 @@ func (s *UpdateRepoRequest) UnmarshalJSON(b []byte) error {
 
 func (s UpdateRepoRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UpdateRepoResponse struct {
 }
 
 type WorkspaceObjectAccessControlRequest struct {

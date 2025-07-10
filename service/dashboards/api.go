@@ -560,23 +560,11 @@ func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId st
 type LakeviewEmbeddedInterface interface {
 
 	// Get a required authorization details and scopes of a published dashboard to
-	// mint an OAuth token. The `authorization_details` can be enriched to apply
-	// additional restriction.
-	//
-	// Example: Adding the following `authorization_details` object to downscope the
-	// viewer permission to specific table ``` { type: "unity_catalog_privileges",
-	// privileges: ["SELECT"], object_type: "TABLE", object_full_path:
-	// "main.default.testdata" } ```
+	// mint an OAuth token.
 	GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error)
 
 	// Get a required authorization details and scopes of a published dashboard to
-	// mint an OAuth token. The `authorization_details` can be enriched to apply
-	// additional restriction.
-	//
-	// Example: Adding the following `authorization_details` object to downscope the
-	// viewer permission to specific table ``` { type: "unity_catalog_privileges",
-	// privileges: ["SELECT"], object_type: "TABLE", object_full_path:
-	// "main.default.testdata" } ```
+	// mint an OAuth token.
 	GetPublishedDashboardTokenInfoByDashboardId(ctx context.Context, dashboardId string) (*GetPublishedDashboardTokenInfoResponse, error)
 }
 
@@ -594,13 +582,7 @@ type LakeviewEmbeddedAPI struct {
 }
 
 // Get a required authorization details and scopes of a published dashboard to
-// mint an OAuth token. The `authorization_details` can be enriched to apply
-// additional restriction.
-//
-// Example: Adding the following `authorization_details` object to downscope the
-// viewer permission to specific table ``` { type: "unity_catalog_privileges",
-// privileges: ["SELECT"], object_type: "TABLE", object_full_path:
-// "main.default.testdata" } ```
+// mint an OAuth token.
 func (a *LakeviewEmbeddedAPI) GetPublishedDashboardTokenInfoByDashboardId(ctx context.Context, dashboardId string) (*GetPublishedDashboardTokenInfoResponse, error) {
 	return a.lakeviewEmbeddedImpl.GetPublishedDashboardTokenInfo(ctx, GetPublishedDashboardTokenInfoRequest{
 		DashboardId: dashboardId,

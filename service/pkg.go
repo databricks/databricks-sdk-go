@@ -56,9 +56,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
-//
 // - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
+//
+// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -83,6 +83,8 @@
 // - [sql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/set.
 //
 // - [settings.DefaultNamespaceAPI]: The default namespace setting API allows users to configure the default namespace for a Databricks workspace.
+//
+// - [settings.DefaultWarehouseIdAPI]: Warehouse to be selected by default for users in this workspace.
 //
 // - [settings.DisableLegacyAccessAPI]: 'Disabling legacy access' has the following impacts: 1.
 //
@@ -252,6 +254,8 @@
 //
 // - [oauth2.ServicePrincipalSecretsAPI]: These APIs enable administrators to manage service principal secrets.
 //
+// - [oauth2.ServicePrincipalSecretsProxyAPI]: These APIs enable administrators to manage service principal secrets at the workspace level.
+//
 // - [iam.ServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
 //
 // - [iam.AccountServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
@@ -380,8 +384,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *catalog.CredentialsAPI                             = nil
 	_ *provisioning.CredentialsAPI                        = nil
+	_ *catalog.CredentialsAPI                             = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
@@ -394,6 +398,7 @@ var (
 	_ *files.DbfsAPI                                      = nil
 	_ *sql.DbsqlPermissionsAPI                            = nil
 	_ *settings.DefaultNamespaceAPI                       = nil
+	_ *settings.DefaultWarehouseIdAPI                     = nil
 	_ *settings.DisableLegacyAccessAPI                    = nil
 	_ *settings.DisableLegacyDbfsAPI                      = nil
 	_ *settings.DisableLegacyFeaturesAPI                  = nil
@@ -478,6 +483,7 @@ var (
 	_ *workspace.SecretsAPI                               = nil
 	_ *oauth2.ServicePrincipalFederationPolicyAPI         = nil
 	_ *oauth2.ServicePrincipalSecretsAPI                  = nil
+	_ *oauth2.ServicePrincipalSecretsProxyAPI             = nil
 	_ *iam.ServicePrincipalsAPI                           = nil
 	_ *iam.AccountServicePrincipalsAPI                    = nil
 	_ *serving.ServingEndpointsAPI                        = nil

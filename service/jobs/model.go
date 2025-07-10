@@ -247,15 +247,9 @@ func (s CancelAllRuns) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type CancelAllRunsResponse struct {
-}
-
 type CancelRun struct {
 	// This field is required.
 	RunId int64 `json:"run_id"`
-}
-
-type CancelRunResponse struct {
 }
 
 // Copied from elastic-spark-common/api/messages/runs.proto. Using the original
@@ -719,7 +713,10 @@ type CreateJob struct {
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
-
+	// The user or service principal that the job runs as, if specified in the
+	// request. This field indicates the explicit configuration of `run_as` for
+	// the job. To find the value in all cases, explicit or implicit, use
+	// `run_as_user_name`.
 	RunAs *JobRunAs `json:"run_as,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
@@ -1089,15 +1086,9 @@ type DeleteJob struct {
 	JobId int64 `json:"job_id"`
 }
 
-type DeleteResponse struct {
-}
-
 type DeleteRun struct {
 	// ID of the run to delete.
 	RunId int64 `json:"run_id"`
-}
-
-type DeleteRunResponse struct {
 }
 
 // Represents a change to the job cluster's settings that would be required for
@@ -2123,7 +2114,10 @@ type JobSettings struct {
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
-
+	// The user or service principal that the job runs as, if specified in the
+	// request. This field indicates the explicit configuration of `run_as` for
+	// the job. To find the value in all cases, explicit or implicit, use
+	// `run_as_user_name`.
 	RunAs *JobRunAs `json:"run_as,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
@@ -3157,9 +3151,6 @@ type ResetJob struct {
 	// Changes to the field `JobBaseSettings.timeout_seconds` are applied to
 	// active runs. Changes to other fields are applied to future runs only.
 	NewSettings JobSettings `json:"new_settings"`
-}
-
-type ResetResponse struct {
 }
 
 type ResolvedConditionTaskValues struct {
@@ -5823,9 +5814,6 @@ type UpdateJob struct {
 	// Changes to the field `JobSettings.timeout_seconds` are applied to active
 	// runs. Changes to other fields are applied to future runs only.
 	NewSettings *JobSettings `json:"new_settings,omitempty"`
-}
-
-type UpdateResponse struct {
 }
 
 type ViewItem struct {

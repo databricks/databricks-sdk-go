@@ -16,15 +16,9 @@ type AddBlock struct {
 	Handle int64 `json:"handle"`
 }
 
-type AddBlockResponse struct {
-}
-
 type Close struct {
 	// The handle on an open stream.
 	Handle int64 `json:"handle"`
-}
-
-type CloseResponse struct {
 }
 
 type Create struct {
@@ -47,9 +41,6 @@ func (s Create) MarshalJSON() ([]byte, error) {
 type CreateDirectoryRequest struct {
 	// The absolute path of a directory.
 	DirectoryPath string `json:"-" url:"-"`
-}
-
-type CreateDirectoryResponse struct {
 }
 
 type CreateResponse struct {
@@ -92,15 +83,9 @@ type DeleteDirectoryRequest struct {
 	DirectoryPath string `json:"-" url:"-"`
 }
 
-type DeleteDirectoryResponse struct {
-}
-
 type DeleteFileRequest struct {
 	// The absolute path of the file.
 	FilePath string `json:"-" url:"-"`
-}
-
-type DeleteResponse struct {
 }
 
 type DirectoryEntry struct {
@@ -177,9 +162,6 @@ func (s FileInfo) MarshalJSON() ([]byte, error) {
 type GetDirectoryMetadataRequest struct {
 	// The absolute path of a directory.
 	DirectoryPath string `json:"-" url:"-"`
-}
-
-type GetDirectoryMetadataResponse struct {
 }
 
 type GetMetadataRequest struct {
@@ -281,9 +263,6 @@ type MkDirs struct {
 	Path string `json:"path"`
 }
 
-type MkDirsResponse struct {
-}
-
 type Move struct {
 	// The destination path of the file or directory. The path should be the
 	// absolute DBFS path.
@@ -291,9 +270,6 @@ type Move struct {
 	// The source path of the file or directory. The path should be the absolute
 	// DBFS path.
 	SourcePath string `json:"source_path"`
-}
-
-type MoveResponse struct {
 }
 
 type Put struct {
@@ -313,9 +289,6 @@ func (s *Put) UnmarshalJSON(b []byte) error {
 
 func (s Put) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type PutResponse struct {
 }
 
 type ReadDbfsRequest struct {
@@ -374,7 +347,4 @@ func (s *UploadRequest) UnmarshalJSON(b []byte) error {
 
 func (s UploadRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UploadResponse struct {
 }

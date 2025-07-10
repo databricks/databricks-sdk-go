@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Settings, Aibi Dashboard Embedding Access Policy, Aibi Dashboard Embedding Approved Domains, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Dashboard Email Subscriptions, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enable Export Notebook, Enable Ip Access Lists, Enable Notebook Table Clipboard, Enable Results Downloading, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Llm Proxy Partner Powered Account, Llm Proxy Partner Powered Enforce, Llm Proxy Partner Powered Workspace, Network Connectivity, Network Policies, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Sql Results Download, Token Management, Tokens, Workspace Conf, Workspace Network Configuration, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Aibi Dashboard Embedding Access Policy, Aibi Dashboard Embedding Approved Domains, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Dashboard Email Subscriptions, Default Namespace, Default Warehouse Id, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enable Export Notebook, Enable Ip Access Lists, Enable Notebook Table Clipboard, Enable Results Downloading, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Llm Proxy Partner Powered Account, Llm Proxy Partner Powered Enforce, Llm Proxy Partner Powered Workspace, Network Connectivity, Network Policies, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Sql Results Download, Token Management, Tokens, Workspace Conf, Workspace Network Configuration, etc.
 package settings
 
 import (
@@ -597,6 +597,32 @@ func NewDefaultNamespace(client *client.DatabricksClient) *DefaultNamespaceAPI {
 // Catalog-enabled compute.
 type DefaultNamespaceAPI struct {
 	defaultNamespaceImpl
+}
+
+type DefaultWarehouseIdInterface interface {
+
+	// Reverts the Default Warehouse Id setting to its default value.
+	Delete(ctx context.Context, request DeleteDefaultWarehouseIdRequest) (*DeleteDefaultWarehouseIdResponse, error)
+
+	// Gets the Default Warehouse Id setting.
+	Get(ctx context.Context, request GetDefaultWarehouseIdRequest) (*DefaultWarehouseId, error)
+
+	// Updates the Default Warehouse Id setting.
+	Update(ctx context.Context, request UpdateDefaultWarehouseIdRequest) (*DefaultWarehouseId, error)
+}
+
+func NewDefaultWarehouseId(client *client.DatabricksClient) *DefaultWarehouseIdAPI {
+	return &DefaultWarehouseIdAPI{
+		defaultWarehouseIdImpl: defaultWarehouseIdImpl{
+			client: client,
+		},
+	}
+}
+
+// Warehouse to be selected by default for users in this workspace. Covers SQL
+// workloads only and can be overridden by users.
+type DefaultWarehouseIdAPI struct {
+	defaultWarehouseIdImpl
 }
 
 type DisableLegacyAccessInterface interface {
@@ -1527,6 +1553,10 @@ type SettingsInterface interface {
 	// Catalog-enabled compute.
 	DefaultNamespace() DefaultNamespaceInterface
 
+	// Warehouse to be selected by default for users in this workspace. Covers
+	// SQL workloads only and can be overridden by users.
+	DefaultWarehouseId() DefaultWarehouseIdInterface
+
 	// 'Disabling legacy access' has the following impacts:
 	//
 	// 1. Disables direct access to Hive Metastores from the workspace. However,
@@ -1611,6 +1641,8 @@ func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 
 		defaultNamespace: NewDefaultNamespace(client),
 
+		defaultWarehouseId: NewDefaultWarehouseId(client),
+
 		disableLegacyAccess: NewDisableLegacyAccess(client),
 
 		disableLegacyDbfs: NewDisableLegacyDbfs(client),
@@ -1677,6 +1709,10 @@ type SettingsAPI struct {
 	// effect. Additionally, the default namespace only applies when using Unity
 	// Catalog-enabled compute.
 	defaultNamespace DefaultNamespaceInterface
+
+	// Warehouse to be selected by default for users in this workspace. Covers
+	// SQL workloads only and can be overridden by users.
+	defaultWarehouseId DefaultWarehouseIdInterface
 
 	// 'Disabling legacy access' has the following impacts:
 	//
@@ -1766,6 +1802,10 @@ func (a *SettingsAPI) DashboardEmailSubscriptions() DashboardEmailSubscriptionsI
 
 func (a *SettingsAPI) DefaultNamespace() DefaultNamespaceInterface {
 	return a.defaultNamespace
+}
+
+func (a *SettingsAPI) DefaultWarehouseId() DefaultWarehouseIdInterface {
+	return a.defaultWarehouseId
 }
 
 func (a *SettingsAPI) DisableLegacyAccess() DisableLegacyAccessInterface {

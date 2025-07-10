@@ -205,9 +205,6 @@ type DeletePipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
 
-type DeletePipelineResponse struct {
-}
-
 // The deployment method that manages the pipeline: - BUNDLE: The pipeline is
 // managed by a Databricks Asset Bundle.
 type DeploymentKind string
@@ -332,9 +329,6 @@ func (s *EditPipeline) UnmarshalJSON(b []byte) error {
 
 func (s EditPipeline) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type EditPipelineResponse struct {
 }
 
 type ErrorDetail struct {
@@ -628,6 +622,8 @@ type IngestionSourceType string
 
 const IngestionSourceTypeBigquery IngestionSourceType = `BIGQUERY`
 
+const IngestionSourceTypeConfluence IngestionSourceType = `CONFLUENCE`
+
 const IngestionSourceTypeDynamics365 IngestionSourceType = `DYNAMICS365`
 
 const IngestionSourceTypeGa4RawData IngestionSourceType = `GA4_RAW_DATA`
@@ -662,11 +658,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
+	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
 	}
 }
 
@@ -676,6 +672,7 @@ func (f *IngestionSourceType) Set(v string) error {
 func (f *IngestionSourceType) Values() []IngestionSourceType {
 	return []IngestionSourceType{
 		IngestionSourceTypeBigquery,
+		IngestionSourceTypeConfluence,
 		IngestionSourceTypeDynamics365,
 		IngestionSourceTypeGa4RawData,
 		IngestionSourceTypeManagedPostgresql,
@@ -1851,9 +1848,6 @@ func (s *StartUpdateResponse) UnmarshalJSON(b []byte) error {
 
 func (s StartUpdateResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type StopPipelineResponse struct {
 }
 
 type StopRequest struct {

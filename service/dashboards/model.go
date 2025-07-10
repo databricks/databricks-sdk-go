@@ -164,9 +164,6 @@ func (f *DashboardView) Type() string {
 	return "DashboardView"
 }
 
-type DeleteConversationResponse struct {
-}
-
 type DeleteScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
 	DashboardId string `json:"-" url:"-"`
@@ -185,9 +182,6 @@ func (s *DeleteScheduleRequest) UnmarshalJSON(b []byte) error {
 
 func (s DeleteScheduleRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type DeleteScheduleResponse struct {
 }
 
 type DeleteSubscriptionRequest struct {
@@ -210,9 +204,6 @@ func (s *DeleteSubscriptionRequest) UnmarshalJSON(b []byte) error {
 
 func (s DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type DeleteSubscriptionResponse struct {
 }
 
 // Genie AI Response
@@ -1316,18 +1307,9 @@ type TrashDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 }
 
-type TrashDashboardResponse struct {
-}
-
-type TrashSpaceResponse struct {
-}
-
 type UnpublishDashboardRequest struct {
 	// UUID identifying the published dashboard.
 	DashboardId string `json:"-" url:"-"`
-}
-
-type UnpublishDashboardResponse struct {
 }
 
 type UpdateDashboardRequest struct {

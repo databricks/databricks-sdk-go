@@ -19,7 +19,9 @@ experimental/mocks/service/catalog/mock_artifact_allowlists_interface.go linguis
 experimental/mocks/service/catalog/mock_catalogs_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_connections_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_credentials_interface.go linguist-generated=true
+experimental/mocks/service/catalog/mock_external_lineage_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_external_locations_interface.go linguist-generated=true
+experimental/mocks/service/catalog/mock_external_metadata_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_functions_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_grants_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_metastores_interface.go linguist-generated=true
@@ -84,6 +86,7 @@ experimental/mocks/service/marketplace/mock_provider_providers_interface.go ling
 experimental/mocks/service/ml/mock_experiments_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_feature_store_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_forecasting_interface.go linguist-generated=true
+experimental/mocks/service/ml/mock_materialized_features_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_model_registry_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_account_federation_policy_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_custom_app_integration_interface.go linguist-generated=true

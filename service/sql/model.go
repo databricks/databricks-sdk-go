@@ -482,11 +482,9 @@ type AlertV2 struct {
 	ParentPath string `json:"parent_path,omitempty"`
 	// Text of the query to be run.
 	QueryText string `json:"query_text,omitempty"`
-	// The run as username or application ID of service principal. This field is
-	// set to "Unavailable" if the user has been deleted. On Create and Update,
-	// this field can be set to application ID of an active service principal.
-	// Setting this field requires the servicePrincipal/user role. If not
-	// specified it'll default to be request user.
+	// The run as username or application ID of service principal. On Create and
+	// Update, this field can be set to application ID of an active service
+	// principal. Setting this field requires the servicePrincipal/user role.
 	RunAsUserName string `json:"run_as_user_name,omitempty"`
 
 	Schedule *CronSchedule `json:"schedule,omitempty"`
@@ -641,9 +639,6 @@ type CancelExecutionRequest struct {
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"-" url:"-"`
-}
-
-type CancelExecutionResponse struct {
 }
 
 // Configures the channel name and DBSQL version of the warehouse.
@@ -1707,9 +1702,6 @@ type DeleteQueryVisualizationsLegacyRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-type DeleteResponse struct {
-}
-
 type DeleteVisualizationRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -1717,9 +1709,6 @@ type DeleteVisualizationRequest struct {
 type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
-}
-
-type DeleteWarehouseResponse struct {
 }
 
 type Disposition string
@@ -1896,14 +1885,6 @@ func (f *EditWarehouseRequestWarehouseType) Values() []EditWarehouseRequestWareh
 // Type always returns EditWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
 func (f *EditWarehouseRequestWarehouseType) Type() string {
 	return "EditWarehouseRequestWarehouseType"
-}
-
-type EditWarehouseResponse struct {
-}
-
-// Represents an empty message, similar to google.protobuf.Empty, which is not
-// available in the firm right now.
-type Empty struct {
 }
 
 type EndpointConfPair struct {
@@ -3954,6 +3935,9 @@ type QueryMetrics struct {
 	// Total execution time for all individual Photon query engine tasks in the
 	// query, in milliseconds.
 	PhotonTotalTimeMs int64 `json:"photon_total_time_ms,omitempty"`
+	// projected remaining work to be done aggregated across all stages in the
+	// query, in milliseconds
+	ProjectedRemainingTaskTotalTimeMs int64 `json:"projected_remaining_task_total_time_ms,omitempty"`
 	// Timestamp of when the query was enqueued waiting for a cluster to be
 	// provisioned for the warehouse. This field is optional and will not appear
 	// if the query skipped the provisioning queue.
@@ -3976,6 +3960,9 @@ type QueryMetrics struct {
 	// Size of persistent data read from cloud object storage on your cloud
 	// tenant, in bytes.
 	ReadRemoteBytes int64 `json:"read_remote_bytes,omitempty"`
+	// number of remaining tasks to complete this is based on the current status
+	// and could be bigger or smaller in the future based on future updates
+	RemainingTaskCount int64 `json:"remaining_task_count,omitempty"`
 	// Time spent fetching the query results after the execution finished, in
 	// milliseconds.
 	ResultFetchTimeMs int64 `json:"result_fetch_time_ms,omitempty"`
@@ -3985,6 +3972,9 @@ type QueryMetrics struct {
 	RowsProducedCount int64 `json:"rows_produced_count,omitempty"`
 	// Total number of rows read by the query.
 	RowsReadCount int64 `json:"rows_read_count,omitempty"`
+	// number of remaining tasks to complete, calculated by autoscaler
+	// StatementAnalysis.scala deprecated: use remaining_task_count instead
+	RunnableTasks int64 `json:"runnable_tasks,omitempty"`
 	// Size of data temporarily written to disk while executing the query, in
 	// bytes.
 	SpillToDiskBytes int64 `json:"spill_to_disk_bytes,omitempty"`
@@ -3997,6 +3987,10 @@ type QueryMetrics struct {
 	// Total execution time of the query from the client’s point of view, in
 	// milliseconds.
 	TotalTimeMs int64 `json:"total_time_ms,omitempty"`
+	// remaining work to be done across all stages in the query, calculated by
+	// autoscaler StatementAnalysis.scala, in milliseconds deprecated: using
+	// projected_remaining_task_total_time_ms instead
+	WorkToBeDone int64 `json:"work_to_be_done,omitempty"`
 	// Size pf persistent data written to cloud object storage in your cloud
 	// tenant, in bytes.
 	WriteRemoteBytes int64 `json:"write_remote_bytes,omitempty"`
@@ -4271,9 +4265,6 @@ type RestoreDashboardRequest struct {
 
 type RestoreQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
-}
-
-type RestoreResponse struct {
 }
 
 type ResultData struct {
@@ -4667,9 +4658,6 @@ func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
 	return "SetWorkspaceWarehouseConfigRequestSecurityPolicy"
 }
 
-type SetWorkspaceWarehouseConfigResponse struct {
-}
-
 // Configurations whether the warehouse should use spot instances.
 type SpotInstancePolicy string
 
@@ -4714,9 +4702,6 @@ func (f *SpotInstancePolicy) Type() string {
 type StartRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
-}
-
-type StartWarehouseResponse struct {
 }
 
 // State of the warehouse
@@ -4934,9 +4919,6 @@ func (f *Status) Type() string {
 type StopRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
-}
-
-type StopWarehouseResponse struct {
 }
 
 type Success struct {
@@ -5568,9 +5550,6 @@ func (s *UpdateQueryRequestQuery) UnmarshalJSON(b []byte) error {
 
 func (s UpdateQueryRequestQuery) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UpdateResponse struct {
 }
 
 type UpdateVisualizationRequest struct {

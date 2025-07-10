@@ -92,9 +92,6 @@ type DeleteQualityMonitorRequest struct {
 	ObjectType string `json:"-" url:"-"`
 }
 
-type DeleteQualityMonitorResponse struct {
-}
-
 type GetQualityMonitorRequest struct {
 	// The uuid of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`

@@ -148,9 +148,6 @@ type DeleteGroupRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-type DeleteResponse struct {
-}
-
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -166,9 +163,6 @@ type DeleteWorkspaceAssignmentRequest struct {
 	PrincipalId int64 `json:"-" url:"-"`
 	// The workspace ID for the account.
 	WorkspaceId int64 `json:"-" url:"-"`
-}
-
-type DeleteWorkspacePermissionAssignmentResponse struct {
 }
 
 type GetAccountGroupRequest struct {
@@ -245,10 +239,10 @@ type GetPasswordPermissionLevelsResponse struct {
 type GetPermissionLevelsRequest struct {
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
-	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
-	// directories, experiments, files, instance-pools, jobs, notebooks,
-	// pipelines, queries, registered-models, repos, serving-endpoints, or
-	// warehouses.
+	// alertsv2, authorization, clusters, cluster-policies, dashboards,
+	// dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
+	// notebooks, pipelines, queries, registered-models, repos,
+	// serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -261,10 +255,10 @@ type GetPermissionRequest struct {
 	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
-	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
-	// directories, experiments, files, instance-pools, jobs, notebooks,
-	// pipelines, queries, registered-models, repos, serving-endpoints, or
-	// warehouses.
+	// alertsv2, authorization, clusters, cluster-policies, dashboards,
+	// dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
+	// notebooks, pipelines, queries, registered-models, repos,
+	// serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1082,9 +1076,6 @@ func (f *PatchOp) Type() string {
 	return "PatchOp"
 }
 
-type PatchResponse struct {
-}
-
 type PatchSchema string
 
 const PatchSchemaUrnIetfParamsScimApiMessages20PatchOp PatchSchema = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
@@ -1497,10 +1488,10 @@ type SetObjectPermissions struct {
 	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
-	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
-	// directories, experiments, files, instance-pools, jobs, notebooks,
-	// pipelines, queries, registered-models, repos, serving-endpoints, or
-	// warehouses.
+	// alertsv2, authorization, clusters, cluster-policies, dashboards,
+	// dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
+	// notebooks, pipelines, queries, registered-models, repos,
+	// serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1509,14 +1500,11 @@ type UpdateObjectPermissions struct {
 	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
-	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
-	// directories, experiments, files, instance-pools, jobs, notebooks,
-	// pipelines, queries, registered-models, repos, serving-endpoints, or
-	// warehouses.
+	// alertsv2, authorization, clusters, cluster-policies, dashboards,
+	// dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
+	// notebooks, pipelines, queries, registered-models, repos,
+	// serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
-}
-
-type UpdateResponse struct {
 }
 
 type UpdateRuleSetRequest struct {

@@ -408,9 +408,6 @@ type DeleteDatabaseCatalogRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-type DeleteDatabaseCatalogResponse struct {
-}
-
 type DeleteDatabaseInstanceRequest struct {
 	// By default, a instance cannot be deleted if it has descendant instances
 	// created via PITR. If this flag is specified as true, all descendent
@@ -439,9 +436,6 @@ func (s DeleteDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type DeleteDatabaseInstanceResponse struct {
-}
-
 type DeleteDatabaseInstanceRoleRequest struct {
 	// This is the AIP standard name for the equivalent of Postgres' `IF EXISTS`
 	// option
@@ -464,21 +458,12 @@ func (s DeleteDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type DeleteDatabaseInstanceRoleResponse struct {
-}
-
 type DeleteDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-type DeleteDatabaseTableResponse struct {
-}
-
 type DeleteSyncedDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
-}
-
-type DeleteSyncedDatabaseTableResponse struct {
 }
 
 type DeltaTableSyncInfo struct {
