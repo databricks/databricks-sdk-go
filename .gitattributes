@@ -94,6 +94,7 @@ experimental/mocks/service/oauth2/mock_o_auth_published_apps_interface.go lingui
 experimental/mocks/service/oauth2/mock_published_app_integration_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_service_principal_federation_policy_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_service_principal_secrets_interface.go linguist-generated=true
+experimental/mocks/service/oauth2/mock_service_principal_secrets_proxy_interface.go linguist-generated=true
 experimental/mocks/service/pipelines/mock_pipelines_interface.go linguist-generated=true
 experimental/mocks/service/provisioning/mock_credentials_interface.go linguist-generated=true
 experimental/mocks/service/provisioning/mock_encryption_keys_interface.go linguist-generated=true
@@ -115,6 +116,7 @@ experimental/mocks/service/settings/mock_credentials_manager_interface.go lingui
 experimental/mocks/service/settings/mock_csp_enablement_account_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_dashboard_email_subscriptions_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_default_namespace_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_default_warehouse_id_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_disable_legacy_access_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_disable_legacy_dbfs_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_disable_legacy_features_interface.go linguist-generated=true
@@ -242,6 +244,10 @@ service/settings/api.go linguist-generated=true
 service/settings/impl.go linguist-generated=true
 service/settings/interface.go linguist-generated=true
 service/settings/model.go linguist-generated=true
+service/settingsv2/api.go linguist-generated=true
+service/settingsv2/impl.go linguist-generated=true
+service/settingsv2/interface.go linguist-generated=true
+service/settingsv2/model.go linguist-generated=true
 service/sharing/api.go linguist-generated=true
 service/sharing/impl.go linguist-generated=true
 service/sharing/interface.go linguist-generated=true

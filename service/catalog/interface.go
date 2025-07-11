@@ -841,6 +841,29 @@ type RegisteredModelsService interface {
 	Update(ctx context.Context, request UpdateRegisteredModelRequest) (*RegisteredModelInfo, error)
 }
 
+// Request for Access enables customers to request access to and manage access
+// request destinations for Unity Catalog securables.
+//
+// These APIs provide a standardized way to update, get, and request to access
+// request destinations. Fine-grained authorization ensures that only users with
+// appropriate permissions can manage access request destinations.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type RequestForAccessService interface {
+
+	// Gets an array of access request destinations for the specified securable.
+	// Any caller can see URL destinations or the destinations on the metastore.
+	// Otherwise, only those with **BROWSE** permissions on the securable can
+	// see destinations.
+	GetAccessRequestDestinations(ctx context.Context, request GetAccessRequestDestinationsRequest) (*AccessRequestDestinations, error)
+
+	// Updates the access request destinations for the given securable. The
+	// caller must be a metastore admin, the owner of the securable, or a user
+	// that has the **MANAGE** privilege on the securable in order to assign
+	// destinations.
+	UpdateAccessRequestDestinations(ctx context.Context, request UpdateAccessRequestDestinationsRequest) (*AccessRequestDestinations, error)
+}
+
 // Unity Catalog enforces resource quotas on all securable objects, which limits
 // the number of resources that can be created. Quotas are expressed in terms of
 // a resource type and a parent (for example, tables per metastore or schemas

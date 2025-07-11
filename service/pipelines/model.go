@@ -592,6 +592,12 @@ type IngestionPipelineDefinition struct {
 	// to communicate with the source. This is used with connectors for
 	// applications like Salesforce, Workday, and so on.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Immutable. If set to true, the pipeline will ingest tables from the UC
+	// foreign catalogs directly without the need to specify a UC connection or
+	// ingestion gateway. The `source_catalog` fields in objects of
+	// IngestionConfig are interpreted as the UC foreign catalogs to ingest
+	// from.
+	IngestFromUcForeignCatalog bool `json:"ingest_from_uc_foreign_catalog,omitempty"`
 	// Immutable. Identifier for the gateway that is used by this ingestion
 	// pipeline to communicate with the source database. This is used with
 	// connectors to databases like SQL Server.
@@ -618,6 +624,45 @@ func (s IngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Configurations that are only applicable for query-based ingestion connectors.
+type IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig struct {
+	// The names of the monotonically increasing columns in the source table
+	// that are used to enable the table to be read and ingested incrementally
+	// through structured streaming. The columns are allowed to have repeated
+	// values but have to be non-decreasing. If the source data is merged into
+	// the destination (e.g., using SCD Type 1 or Type 2), these columns will
+	// implicitly define the `sequence_by` behavior. You can still explicitly
+	// set `sequence_by` to override this default.
+	CursorColumns []string `json:"cursor_columns,omitempty"`
+	// Specifies a SQL WHERE condition that specifies that the source row has
+	// been deleted. This is sometimes referred to as "soft-deletes". For
+	// example: "Operation = 'DELETE'" or "is_deleted = true". This field is
+	// orthogonal to `hard_deletion_sync_interval_in_seconds`, one for
+	// soft-deletes and the other for hard-deletes. See also the
+	// hard_deletion_sync_min_interval_in_seconds field for handling of "hard
+	// deletes" where the source rows are physically removed from the table.
+	DeletionCondition string `json:"deletion_condition,omitempty"`
+	// Specifies the minimum interval (in seconds) between snapshots on primary
+	// keys for detecting and synchronizing hard deletions—i.e., rows that
+	// have been physically removed from the source table. This interval acts as
+	// a lower bound. If ingestion runs less frequently than this value, hard
+	// deletion synchronization will align with the actual ingestion frequency
+	// instead of happening more often. If not set, hard deletion
+	// synchronization via snapshots is disabled. This field is mutable and can
+	// be updated without triggering a full snapshot.
+	HardDeletionSyncMinIntervalInSeconds int64 `json:"hard_deletion_sync_min_interval_in_seconds,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type IngestionSourceType string
 
 const IngestionSourceTypeBigquery IngestionSourceType = `BIGQUERY`
@@ -629,6 +674,8 @@ const IngestionSourceTypeDynamics365 IngestionSourceType = `DYNAMICS365`
 const IngestionSourceTypeGa4RawData IngestionSourceType = `GA4_RAW_DATA`
 
 const IngestionSourceTypeManagedPostgresql IngestionSourceType = `MANAGED_POSTGRESQL`
+
+const IngestionSourceTypeMetaMarketing IngestionSourceType = `META_MARKETING`
 
 const IngestionSourceTypeMysql IngestionSourceType = `MYSQL`
 
@@ -658,11 +705,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
+	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
 	}
 }
 
@@ -676,6 +723,7 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypeDynamics365,
 		IngestionSourceTypeGa4RawData,
 		IngestionSourceTypeManagedPostgresql,
+		IngestionSourceTypeMetaMarketing,
 		IngestionSourceTypeMysql,
 		IngestionSourceTypeNetsuite,
 		IngestionSourceTypeOracle,
@@ -1900,6 +1948,12 @@ type TableSpecificConfig struct {
 	IncludeColumns []string `json:"include_columns,omitempty"`
 	// The primary key of the table used to apply changes.
 	PrimaryKeys []string `json:"primary_keys,omitempty"`
+
+	QueryBasedConnectorConfig *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig `json:"query_based_connector_config,omitempty"`
+	// (Optional, Immutable) The row filter condition to be applied to the
+	// table. It must not contain the WHERE keyword, only the actual filter
+	// condition. It must be in DBSQL format.
+	RowFilter string `json:"row_filter,omitempty"`
 	// If true, formula fields defined in the table are included in the
 	// ingestion. This setting is only valid for the Salesforce connector
 	SalesforceIncludeFormulaFields bool `json:"salesforce_include_formula_fields,omitempty"`

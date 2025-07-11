@@ -993,6 +993,65 @@ func (_c *MockExperimentsInterface_GetLoggedModelByModelId_Call) RunAndReturn(ru
 	return _c
 }
 
+// GetLoggedModels provides a mock function with given fields: ctx, request
+func (_m *MockExperimentsInterface) GetLoggedModels(ctx context.Context, request ml.GetLoggedModelsRequest) (*ml.GetLoggedModelsRequestResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetLoggedModels")
+	}
+
+	var r0 *ml.GetLoggedModelsRequestResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetLoggedModelsRequest) (*ml.GetLoggedModelsRequestResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetLoggedModelsRequest) *ml.GetLoggedModelsRequestResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.GetLoggedModelsRequestResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.GetLoggedModelsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockExperimentsInterface_GetLoggedModels_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetLoggedModels'
+type MockExperimentsInterface_GetLoggedModels_Call struct {
+	*mock.Call
+}
+
+// GetLoggedModels is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.GetLoggedModelsRequest
+func (_e *MockExperimentsInterface_Expecter) GetLoggedModels(ctx interface{}, request interface{}) *MockExperimentsInterface_GetLoggedModels_Call {
+	return &MockExperimentsInterface_GetLoggedModels_Call{Call: _e.mock.On("GetLoggedModels", ctx, request)}
+}
+
+func (_c *MockExperimentsInterface_GetLoggedModels_Call) Run(run func(ctx context.Context, request ml.GetLoggedModelsRequest)) *MockExperimentsInterface_GetLoggedModels_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.GetLoggedModelsRequest))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetLoggedModels_Call) Return(_a0 *ml.GetLoggedModelsRequestResponse, _a1 error) *MockExperimentsInterface_GetLoggedModels_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetLoggedModels_Call) RunAndReturn(run func(context.Context, ml.GetLoggedModelsRequest) (*ml.GetLoggedModelsRequestResponse, error)) *MockExperimentsInterface_GetLoggedModels_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetPermissionLevels provides a mock function with given fields: ctx, request
 func (_m *MockExperimentsInterface) GetPermissionLevels(ctx context.Context, request ml.GetExperimentPermissionLevelsRequest) (*ml.GetExperimentPermissionLevelsResponse, error) {
 	ret := _m.Called(ctx, request)

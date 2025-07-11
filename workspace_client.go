@@ -26,6 +26,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/databricks/databricks-sdk-go/service/settingsv2"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
@@ -721,6 +722,9 @@ type WorkspaceClient struct {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueriesLegacy sql.QueriesLegacyInterface
 
+	// Query execution APIs for AI / BI Dashboards
+	QueryExecution dashboards.QueryExecutionInterface
+
 	// A service responsible for storing and retrieving the list of queries run
 	// against SQL endpoints and serverless compute.
 	QueryHistory sql.QueryHistoryInterface
@@ -848,6 +852,15 @@ type WorkspaceClient struct {
 	// data science and engineering code development best practices using Git
 	// for version control, collaboration, and CI/CD.
 	Repos workspace.ReposInterface
+
+	// Request for Access enables customers to request access to and manage
+	// access request destinations for Unity Catalog securables.
+	//
+	// These APIs provide a standardized way to update, get, and request to
+	// access request destinations. Fine-grained authorization ensures that only
+	// users with appropriate permissions can manage access request
+	// destinations.
+	RequestForAccess catalog.RequestForAccessInterface
 
 	// Unity Catalog enforces resource quotas on all securable objects, which
 	// limits the number of resources that can be created. Quotas are expressed
@@ -1206,6 +1219,9 @@ type WorkspaceClient struct {
 	// This API allows updating known workspace settings for advanced users.
 	WorkspaceConf settings.WorkspaceConfInterface
 
+	// APIs to manage workspace level settings
+	WorkspaceSettingsV2 settingsv2.WorkspaceSettingsV2Interface
+
 	// The Forecasting API allows you to create and get serverless forecasting
 	// experiments
 	Forecasting ml.ForecastingInterface
@@ -1318,6 +1334,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		QualityMonitors:                     catalog.NewQualityMonitors(databricksClient),
 		Queries:                             sql.NewQueries(databricksClient),
 		QueriesLegacy:                       sql.NewQueriesLegacy(databricksClient),
+		QueryExecution:                      dashboards.NewQueryExecution(databricksClient),
 		QueryHistory:                        sql.NewQueryHistory(databricksClient),
 		QueryVisualizations:                 sql.NewQueryVisualizations(databricksClient),
 		QueryVisualizationsLegacy:           sql.NewQueryVisualizationsLegacy(databricksClient),
@@ -1327,6 +1344,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		RedashConfig:                        sql.NewRedashConfig(databricksClient),
 		RegisteredModels:                    catalog.NewRegisteredModels(databricksClient),
 		Repos:                               workspace.NewRepos(databricksClient),
+		RequestForAccess:                    catalog.NewRequestForAccess(databricksClient),
 		ResourceQuotas:                      catalog.NewResourceQuotas(databricksClient),
 		Schemas:                             catalog.NewSchemas(databricksClient),
 		Secrets:                             workspace.NewSecrets(databricksClient),
@@ -1352,6 +1370,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Workspace:                           workspace.NewWorkspace(databricksClient),
 		WorkspaceBindings:                   catalog.NewWorkspaceBindings(databricksClient),
 		WorkspaceConf:                       settings.NewWorkspaceConf(databricksClient),
+		WorkspaceSettingsV2:                 settingsv2.NewWorkspaceSettingsV2(databricksClient),
 		Forecasting:                         ml.NewForecasting(databricksClient),
 	}, nil
 }

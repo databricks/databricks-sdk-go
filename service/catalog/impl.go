@@ -1500,6 +1500,35 @@ func (a *registeredModelsImpl) Update(ctx context.Context, request UpdateRegiste
 	return &registeredModelInfo, err
 }
 
+// unexported type that holds implementations of just RequestForAccess API methods
+type requestForAccessImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *requestForAccessImpl) GetAccessRequestDestinations(ctx context.Context, request GetAccessRequestDestinationsRequest) (*AccessRequestDestinations, error) {
+	var accessRequestDestinations AccessRequestDestinations
+	path := fmt.Sprintf("/api/3.0/rfa/destinations/%v/%v", request.SecurableType, request.FullName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accessRequestDestinations)
+	return &accessRequestDestinations, err
+}
+
+func (a *requestForAccessImpl) UpdateAccessRequestDestinations(ctx context.Context, request UpdateAccessRequestDestinationsRequest) (*AccessRequestDestinations, error) {
+	var accessRequestDestinations AccessRequestDestinations
+	path := "/api/3.0/rfa/destinations"
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.AccessRequestDestinations, &accessRequestDestinations)
+	return &accessRequestDestinations, err
+}
+
 // unexported type that holds implementations of just ResourceQuotas API methods
 type resourceQuotasImpl struct {
 	client *client.DatabricksClient

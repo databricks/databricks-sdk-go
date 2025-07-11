@@ -81,6 +81,13 @@ type DatabaseInstance struct {
 	CreationTime string `json:"creation_time,omitempty"`
 	// The email of the creator of the instance.
 	Creator string `json:"creator,omitempty"`
+	// xref AIP-129. `enable_pg_native_login` is owned by the client, while
+	// `effective_enable_pg_native_login` is owned by the server.
+	// `enable_pg_native_login` will only be set in Create/Update response
+	// messages if and only if the user provides the field via the request.
+	// `effective_enable_pg_native_login` on the other hand will always bet set
+	// in all response messages (Create/Update/Get/List).
+	EffectiveEnablePgNativeLogin bool `json:"effective_enable_pg_native_login,omitempty"`
 	// xref AIP-129. `enable_readable_secondaries` is owned by the client, while
 	// `effective_enable_readable_secondaries` is owned by the server.
 	// `enable_readable_secondaries` will only be set in Create/Update response
@@ -107,6 +114,9 @@ type DatabaseInstance struct {
 	// request. `effective_stopped` on the other hand will always bet set in all
 	// response messages (Create/Update/Get/List).
 	EffectiveStopped bool `json:"effective_stopped,omitempty"`
+	// Whether the instance has PG native password login enabled. Defaults to
+	// true.
+	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// Whether to enable secondaries to serve read-only traffic. Defaults to
 	// false.
 	EnableReadableSecondaries bool `json:"enable_readable_secondaries,omitempty"`
@@ -392,6 +402,8 @@ type DatabaseTable struct {
 	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"name"`
+	// Data serving REST API URL for this table
+	TableServingUrl string `json:"table_serving_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -485,6 +497,22 @@ func (s DeltaTableSyncInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type FailoverDatabaseInstanceRequest struct {
+	FailoverTargetDatabaseInstanceName string `json:"failover_target_database_instance_name,omitempty"`
+	// Name of the instance to failover.
+	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FailoverDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FailoverDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type FindDatabaseInstanceByUidRequest struct {
 	// UID of the cluster to get.
 	Uid string `json:"-" url:"uid,omitempty"`
@@ -543,6 +571,42 @@ type GetDatabaseTableRequest struct {
 
 type GetSyncedDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
+}
+
+type ListDatabaseCatalogsRequest struct {
+	// Name of the instance to get database catalogs for.
+	InstanceName string `json:"-" url:"-"`
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of synced database tables.
+	// Requests first page if absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseCatalogsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseCatalogsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDatabaseCatalogsResponse struct {
+	DatabaseCatalogs []DatabaseCatalog `json:"database_catalogs,omitempty"`
+	// Pagination token to request the next page of database catalogs.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseCatalogsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseCatalogsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListDatabaseInstanceRolesRequest struct {
@@ -613,6 +677,43 @@ func (s *ListDatabaseInstancesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListDatabaseInstancesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListSyncedDatabaseTablesRequest struct {
+	// Name of the instance to get synced tables for.
+	InstanceName string `json:"-" url:"-"`
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of synced database tables.
+	// Requests first page if absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSyncedDatabaseTablesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSyncedDatabaseTablesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListSyncedDatabaseTablesResponse struct {
+	// Pagination token to request the next page of synced tables.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	SyncedTables []SyncedDatabaseTable `json:"synced_tables,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSyncedDatabaseTablesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSyncedDatabaseTablesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -774,6 +875,8 @@ type SyncedDatabaseTable struct {
 	Name string `json:"name"`
 
 	Spec *SyncedTableSpec `json:"spec,omitempty"`
+	// Data serving REST API URL for this table
+	TableServingUrl string `json:"table_serving_url,omitempty"`
 	// The provisioning state of the synced table entity in Unity Catalog. This
 	// is distinct from the state of the data synchronization pipeline (i.e. the
 	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
@@ -1103,10 +1206,28 @@ func (s SyncedTableTriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdateDatabaseCatalogRequest struct {
+	// Note that updating a database catalog is not yet supported.
+	DatabaseCatalog DatabaseCatalog `json:"database_catalog"`
+	// The name of the catalog in UC.
+	Name string `json:"-" url:"-"`
+	// The list of fields to update. Setting this field is not yet supported.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
 type UpdateDatabaseInstanceRequest struct {
 	DatabaseInstance DatabaseInstance `json:"database_instance"`
 	// The name of the instance. This is the unique identifier for the instance.
 	Name string `json:"-" url:"-"`
 	// The list of fields to update.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+type UpdateSyncedDatabaseTableRequest struct {
+	// Full three-part (catalog, schema, table) name of the table.
+	Name string `json:"-" url:"-"`
+	// Note that updating a synced database table is not yet supported.
+	SyncedTable SyncedDatabaseTable `json:"synced_table"`
+	// The list of fields to update. Setting this field is not yet supported.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
