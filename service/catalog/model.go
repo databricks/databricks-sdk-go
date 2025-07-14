@@ -769,6 +769,7 @@ func (s ConnectionDependency) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Next ID: 23
 type ConnectionInfo struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -782,6 +783,9 @@ type ConnectionInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// The type of credential.
 	CredentialType CredentialType `json:"credential_type,omitempty"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Full name of connection.
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
@@ -971,6 +975,9 @@ type CreateConnection struct {
 	Comment string `json:"comment,omitempty"`
 	// The type of connection.
 	ConnectionType ConnectionType `json:"connection_type"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -2419,6 +2426,22 @@ func (s EnableRequest) MarshalJSON() ([]byte, error) {
 type EncryptionDetails struct {
 	// Server-Side Encryption properties for clients communicating with AWS s3.
 	SseEncryptionDetails *SseEncryptionDetails `json:"sse_encryption_details,omitempty"`
+}
+
+type EnvironmentSettings struct {
+	EnvironmentVersion string `json:"environment_version,omitempty"`
+
+	JavaDependencies []string `json:"java_dependencies,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnvironmentSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnvironmentSettings) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ExistsRequest struct {
@@ -7181,6 +7204,9 @@ type UpdateCatalogWorkspaceBindingsResponse struct {
 }
 
 type UpdateConnection struct {
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"-" url:"-"`
 	// New name for the connection.
