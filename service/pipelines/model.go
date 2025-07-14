@@ -630,6 +630,8 @@ const IngestionSourceTypeGa4RawData IngestionSourceType = `GA4_RAW_DATA`
 
 const IngestionSourceTypeManagedPostgresql IngestionSourceType = `MANAGED_POSTGRESQL`
 
+const IngestionSourceTypeMetaMarketing IngestionSourceType = `META_MARKETING`
+
 const IngestionSourceTypeMysql IngestionSourceType = `MYSQL`
 
 const IngestionSourceTypeNetsuite IngestionSourceType = `NETSUITE`
@@ -658,11 +660,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
+	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
 	}
 }
 
@@ -676,6 +678,7 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypeDynamics365,
 		IngestionSourceTypeGa4RawData,
 		IngestionSourceTypeManagedPostgresql,
+		IngestionSourceTypeMetaMarketing,
 		IngestionSourceTypeMysql,
 		IngestionSourceTypeNetsuite,
 		IngestionSourceTypeOracle,
