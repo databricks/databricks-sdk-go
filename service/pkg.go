@@ -28,6 +28,8 @@
 //
 // - [billing.BudgetPolicyAPI]: A service serves REST API about Budget policies.
 //
+// - [billing.BudgetsAPI]: These APIs manage budget configurations for this account.
+//
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
 // - [cleanrooms.CleanRoomAssetsAPI]: Clean room assets are data and code objects — Tables, volumes, and notebooks that are shared with the clean room.
@@ -119,6 +121,8 @@
 // - [oauth2.AccountFederationPolicyAPI]: These APIs manage account federation policies.
 //
 // - [files.FilesAPI]: The Files API is a standard HTTP API that allows you to read, write, list, and delete files and directories by referring to their URI.
+//
+// - [ml.ForecastingAPI]: The Forecasting API allows you to create and get serverless forecasting experiments.
 //
 // - [catalog.FunctionsAPI]: Functions implement User-Defined Functions (UDFs) in Unity Catalog.
 //
@@ -327,10 +331,6 @@
 // - [settingsv2.WorkspaceSettingsV2API]: APIs to manage workspace level settings.
 //
 // - [provisioning.WorkspacesAPI]: These APIs manage workspaces for this account.
-//
-// - [billing.BudgetsAPI]: These APIs manage budget configurations for this account.
-//
-// - [ml.ForecastingAPI]: The Forecasting API allows you to create and get serverless forecasting experiments.
 package service
 
 import (
@@ -379,6 +379,7 @@ var (
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
 	_ *billing.BillableUsageAPI                           = nil
 	_ *billing.BudgetPolicyAPI                            = nil
+	_ *billing.BudgetsAPI                                 = nil
 	_ *catalog.CatalogsAPI                                = nil
 	_ *cleanrooms.CleanRoomAssetsAPI                      = nil
 	_ *cleanrooms.CleanRoomTaskRunsAPI                    = nil
@@ -393,8 +394,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *provisioning.CredentialsAPI                        = nil
 	_ *catalog.CredentialsAPI                             = nil
+	_ *provisioning.CredentialsAPI                        = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
@@ -425,6 +426,7 @@ var (
 	_ *ml.FeatureStoreAPI                                 = nil
 	_ *oauth2.AccountFederationPolicyAPI                  = nil
 	_ *files.FilesAPI                                     = nil
+	_ *ml.ForecastingAPI                                  = nil
 	_ *catalog.FunctionsAPI                               = nil
 	_ *dashboards.GenieAPI                                = nil
 	_ *workspace.GitCredentialsAPI                        = nil
@@ -529,6 +531,4 @@ var (
 	_ *settings.WorkspaceNetworkConfigurationAPI          = nil
 	_ *settingsv2.WorkspaceSettingsV2API                  = nil
 	_ *provisioning.WorkspacesAPI                         = nil
-	_ *billing.BudgetsAPI                                 = nil
-	_ *ml.ForecastingAPI                                  = nil
 )

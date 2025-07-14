@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// Manage data quality of UC objects (currently support `schema`).
+// Manage data quality of UC objects (currently support `schema`)
 package qualitymonitorv2
 
 import (

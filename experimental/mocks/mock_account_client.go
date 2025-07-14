@@ -34,6 +34,7 @@ func NewMockAccountClient(t interface {
 			AccessControl:                    iam.NewMockAccountAccessControlInterface(t),
 			BillableUsage:                    billing.NewMockBillableUsageInterface(t),
 			BudgetPolicy:                     billing.NewMockBudgetPolicyInterface(t),
+			Budgets:                          billing.NewMockBudgetsInterface(t),
 			Credentials:                      provisioning.NewMockCredentialsInterface(t),
 			CustomAppIntegration:             oauth2.NewMockCustomAppIntegrationInterface(t),
 			EncryptionKeys:                   provisioning.NewMockEncryptionKeysInterface(t),
@@ -62,7 +63,6 @@ func NewMockAccountClient(t interface {
 			WorkspaceAssignment:              iam.NewMockWorkspaceAssignmentInterface(t),
 			WorkspaceNetworkConfiguration:    settings.NewMockWorkspaceNetworkConfigurationInterface(t),
 			Workspaces:                       provisioning.NewMockWorkspacesInterface(t),
-			Budgets:                          billing.NewMockBudgetsInterface(t),
 		},
 	}
 
@@ -168,6 +168,14 @@ func (m *MockAccountClient) GetMockBudgetPolicyAPI() *billing.MockBudgetPolicyIn
 	api, ok := m.AccountClient.BudgetPolicy.(*billing.MockBudgetPolicyInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected BudgetPolicy to be *billing.MockBudgetPolicyInterface, actual was %T", m.AccountClient.BudgetPolicy))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockBudgetsAPI() *billing.MockBudgetsInterface {
+	api, ok := m.AccountClient.Budgets.(*billing.MockBudgetsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Budgets to be *billing.MockBudgetsInterface, actual was %T", m.AccountClient.Budgets))
 	}
 	return api
 }
@@ -392,14 +400,6 @@ func (m *MockAccountClient) GetMockWorkspacesAPI() *provisioning.MockWorkspacesI
 	api, ok := m.AccountClient.Workspaces.(*provisioning.MockWorkspacesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Workspaces to be *provisioning.MockWorkspacesInterface, actual was %T", m.AccountClient.Workspaces))
-	}
-	return api
-}
-
-func (m *MockAccountClient) GetMockbudgetsAPI() *billing.MockBudgetsInterface {
-	api, ok := m.AccountClient.Budgets.(*billing.MockBudgetsInterface)
-	if !ok {
-		panic(fmt.Sprintf("expected Budgets to be *billing.MockBudgetsInterface, actual was %T", m.AccountClient.Budgets))
 	}
 	return api
 }

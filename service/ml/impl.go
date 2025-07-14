@@ -698,7 +698,7 @@ func (a *featureStoreImpl) UpdateOnlineStore(ctx context.Context, request Update
 	return &onlineStore, err
 }
 
-// unexported type that holds implementations of just forecasting API methods
+// unexported type that holds implementations of just Forecasting API methods
 type forecastingImpl struct {
 	client *client.DatabricksClient
 }

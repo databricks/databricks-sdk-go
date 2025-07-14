@@ -2450,7 +2450,7 @@ type ExistsRequest struct {
 }
 
 type ExternalLineageExternalMetadata struct {
-	Name string `json:"name,omitempty"`
+	Name string `json:"name,omitempty" url:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2524,9 +2524,9 @@ type ExternalLineageInfo struct {
 }
 
 type ExternalLineageModelVersion struct {
-	Name string `json:"name,omitempty"`
+	Name string `json:"name,omitempty" url:"name,omitempty"`
 
-	Version string `json:"version,omitempty"`
+	Version string `json:"version,omitempty" url:"version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2560,17 +2560,17 @@ func (s ExternalLineageModelVersionInfo) MarshalJSON() ([]byte, error) {
 }
 
 type ExternalLineageObject struct {
-	ExternalMetadata *ExternalLineageExternalMetadata `json:"external_metadata,omitempty"`
+	ExternalMetadata *ExternalLineageExternalMetadata `json:"external_metadata,omitempty" url:"external_metadata,omitempty"`
 
-	ModelVersion *ExternalLineageModelVersion `json:"model_version,omitempty"`
+	ModelVersion *ExternalLineageModelVersion `json:"model_version,omitempty" url:"model_version,omitempty"`
 
-	Path *ExternalLineagePath `json:"path,omitempty"`
+	Path *ExternalLineagePath `json:"path,omitempty" url:"path,omitempty"`
 
-	Table *ExternalLineageTable `json:"table,omitempty"`
+	Table *ExternalLineageTable `json:"table,omitempty" url:"table,omitempty"`
 }
 
 type ExternalLineagePath struct {
-	Url string `json:"url,omitempty"`
+	Url string `json:"url,omitempty" url:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2630,7 +2630,7 @@ func (s ExternalLineageRelationshipInfo) MarshalJSON() ([]byte, error) {
 }
 
 type ExternalLineageTable struct {
-	Name string `json:"name,omitempty"`
+	Name string `json:"name,omitempty" url:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6560,9 +6560,9 @@ func (s SetArtifactAllowlist) MarshalJSON() ([]byte, error) {
 
 type SetRegisteredModelAliasRequest struct {
 	// The name of the alias
-	Alias string `json:"alias" url:"-"`
+	Alias string `json:"alias"`
 	// Full name of the registered model
-	FullName string `json:"full_name" url:"-"`
+	FullName string `json:"full_name"`
 	// The version number of the model version to which the alias points
 	VersionNum int `json:"version_num"`
 }
