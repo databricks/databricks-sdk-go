@@ -289,17 +289,6 @@ type dashboardsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *dashboardsImpl) Create(ctx context.Context, request DashboardPostContent) (*Dashboard, error) {
-	var dashboard Dashboard
-	path := "/api/2.0/preview/sql/dashboards"
-	queryParams := make(map[string]any)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &dashboard)
-	return &dashboard, err
-}
-
 func (a *dashboardsImpl) Delete(ctx context.Context, request DeleteDashboardRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)

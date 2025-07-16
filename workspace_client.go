@@ -353,6 +353,10 @@ type WorkspaceClient struct {
 	// [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 	Files files.FilesInterface
 
+	// The Forecasting API allows you to create and get serverless forecasting
+	// experiments
+	Forecasting ml.ForecastingInterface
+
 	// Functions implement User-Defined Functions (UDFs) in Unity Catalog.
 	//
 	// The function implementation can be any SQL expression or Query, and it
@@ -1205,10 +1209,6 @@ type WorkspaceClient struct {
 
 	// This API allows updating known workspace settings for advanced users.
 	WorkspaceConf settings.WorkspaceConfInterface
-
-	// The Forecasting API allows you to create and get serverless forecasting
-	// experiments
-	Forecasting ml.ForecastingInterface
 }
 
 var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration")
@@ -1281,6 +1281,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ExternalMetadata:                    catalog.NewExternalMetadata(databricksClient),
 		FeatureStore:                        ml.NewFeatureStore(databricksClient),
 		Files:                               files.NewFiles(databricksClient),
+		Forecasting:                         ml.NewForecasting(databricksClient),
 		Functions:                           catalog.NewFunctions(databricksClient),
 		Genie:                               dashboards.NewGenie(databricksClient),
 		GitCredentials:                      workspace.NewGitCredentials(databricksClient),
@@ -1352,6 +1353,5 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Workspace:                           workspace.NewWorkspace(databricksClient),
 		WorkspaceBindings:                   catalog.NewWorkspaceBindings(databricksClient),
 		WorkspaceConf:                       settings.NewWorkspaceConf(databricksClient),
-		Forecasting:                         ml.NewForecasting(databricksClient),
 	}, nil
 }

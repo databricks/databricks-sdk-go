@@ -703,7 +703,8 @@ func (s ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
 
 type CreateCleanRoomAssetRequest struct {
 	Asset CleanRoomAsset `json:"asset"`
-	// Name of the clean room.
+	// The name of the clean room this asset belongs to. This is an output-only
+	// field to ensure proper resource identification.
 	CleanRoomName string `json:"-" url:"-"`
 }
 

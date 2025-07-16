@@ -24,65 +24,6 @@ func (_m *MockDashboardsInterface) EXPECT() *MockDashboardsInterface_Expecter {
 	return &MockDashboardsInterface_Expecter{mock: &_m.Mock}
 }
 
-// Create provides a mock function with given fields: ctx, request
-func (_m *MockDashboardsInterface) Create(ctx context.Context, request sql.DashboardPostContent) (*sql.Dashboard, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for Create")
-	}
-
-	var r0 *sql.Dashboard
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.DashboardPostContent) (*sql.Dashboard, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.DashboardPostContent) *sql.Dashboard); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*sql.Dashboard)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, sql.DashboardPostContent) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockDashboardsInterface_Create_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Create'
-type MockDashboardsInterface_Create_Call struct {
-	*mock.Call
-}
-
-// Create is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request sql.DashboardPostContent
-func (_e *MockDashboardsInterface_Expecter) Create(ctx interface{}, request interface{}) *MockDashboardsInterface_Create_Call {
-	return &MockDashboardsInterface_Create_Call{Call: _e.mock.On("Create", ctx, request)}
-}
-
-func (_c *MockDashboardsInterface_Create_Call) Run(run func(ctx context.Context, request sql.DashboardPostContent)) *MockDashboardsInterface_Create_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sql.DashboardPostContent))
-	})
-	return _c
-}
-
-func (_c *MockDashboardsInterface_Create_Call) Return(_a0 *sql.Dashboard, _a1 error) *MockDashboardsInterface_Create_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockDashboardsInterface_Create_Call) RunAndReturn(run func(context.Context, sql.DashboardPostContent) (*sql.Dashboard, error)) *MockDashboardsInterface_Create_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Delete provides a mock function with given fields: ctx, request
 func (_m *MockDashboardsInterface) Delete(ctx context.Context, request sql.DeleteDashboardRequest) error {
 	ret := _m.Called(ctx, request)
