@@ -4,6 +4,8 @@
 
 ### New Features and Improvements
 
+* Use a free port in `u2m` authentication flows rather than 8020.
+
 ### Bug Fixes
 
 ### Documentation
