@@ -20,33 +20,15 @@ type GenieService interface {
 	// to respond.
 	CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error)
 
+	// Delete a conversation.
+	DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error
+
 	// Execute the SQL for a message query attachment. Use this API when the
 	// query attachment has expired and needs to be re-executed.
 	ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
 	// Execute the SQL query in the message.
 	ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
-
-	// Initiates a new SQL execution and returns a `download_id` that you can
-	// use to track the progress of the download. The query result is stored in
-	// an external link and can be retrieved using the [Get Download Full Query
-	// Result](:method:genie/getdownloadfullqueryresult) API. Warning:
-	// Databricks strongly recommends that you protect the URLs that are
-	// returned by the `EXTERNAL_LINKS` disposition. See [Execute
-	// Statement](:method:statementexecution/executestatement) for more details.
-	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
-
-	// After [Generating a Full Query Result
-	// Download](:method:genie/getdownloadfullqueryresult) and successfully
-	// receiving a `download_id`, use this API to poll the download progress.
-	// When the download is complete, the API returns one or more external links
-	// to the query result files. Warning: Databricks strongly recommends that
-	// you protect the URLs that are returned by the `EXTERNAL_LINKS`
-	// disposition. You must not set an Authorization header in download
-	// requests. When using the `EXTERNAL_LINKS` disposition, Databricks returns
-	// presigned URLs that grant temporary access to data. See [Execute
-	// Statement](:method:statementexecution/executestatement) for more details.
-	GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error)
 
 	// Get message from conversation.
 	GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error)
@@ -69,11 +51,17 @@ type GenieService interface {
 	// Get details of a Genie Space.
 	GetSpace(ctx context.Context, request GenieGetSpaceRequest) (*GenieSpace, error)
 
+	// Get a list of conversations in a Genie Space.
+	ListConversations(ctx context.Context, request GenieListConversationsRequest) (*GenieListConversationsResponse, error)
+
 	// Get list of Genie Spaces.
 	ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error)
 
 	// Start a new conversation.
 	StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error)
+
+	// Move a Genie Space to the trash.
+	TrashSpace(ctx context.Context, request GenieTrashSpaceRequest) error
 }
 
 // These APIs provide specific management operations for Lakeview dashboards.
@@ -144,12 +132,6 @@ type LakeviewService interface {
 type LakeviewEmbeddedService interface {
 
 	// Get a required authorization details and scopes of a published dashboard
-	// to mint an OAuth token. The `authorization_details` can be enriched to
-	// apply additional restriction.
-	//
-	// Example: Adding the following `authorization_details` object to downscope
-	// the viewer permission to specific table ``` { type:
-	// "unity_catalog_privileges", privileges: ["SELECT"], object_type: "TABLE",
-	// object_full_path: "main.default.testdata" } ```
+	// to mint an OAuth token.
 	GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error)
 }

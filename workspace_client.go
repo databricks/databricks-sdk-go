@@ -21,6 +21,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
+	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
@@ -102,7 +103,7 @@ type WorkspaceClient struct {
 	// A clean room uses Delta Sharing and serverless compute to provide a
 	// secure and privacy-protecting environment where multiple parties can work
 	// together on sensitive enterprise data without direct access to each
-	// other’s data.
+	// other's data.
 	CleanRooms cleanrooms.CleanRoomsInterface
 
 	// You can use cluster policies to control users' ability to configure
@@ -284,6 +285,16 @@ type WorkspaceClient struct {
 	// objects such as folders, notebooks, and libraries.
 	Experiments ml.ExperimentsInterface
 
+	// External Lineage APIs enable defining and managing lineage relationships
+	// between Databricks objects and external systems. These APIs allow users
+	// to capture data flows connecting Databricks tables, models, and file
+	// paths with external metadata objects.
+	//
+	// With these APIs, users can create, update, delete, and list lineage
+	// relationships with support for column-level mappings and custom
+	// properties.
+	ExternalLineage catalog.ExternalLineageInterface
+
 	// An external location is an object that combines a cloud storage path with
 	// a storage credential that authorizes access to the cloud storage path.
 	// Each external location is subject to Unity Catalog access-control
@@ -298,6 +309,15 @@ type WorkspaceClient struct {
 	// To create external locations, you must be a metastore admin or a user
 	// with the **CREATE_EXTERNAL_LOCATION** privilege.
 	ExternalLocations catalog.ExternalLocationsInterface
+
+	// External Metadata objects enable customers to register and manage
+	// metadata about external systems within Unity Catalog.
+	//
+	// These APIs provide a standardized way to create, update, retrieve, list,
+	// and delete external metadata objects. Fine-grained authorization ensures
+	// that only users with appropriate permissions can view and manage external
+	// metadata objects.
+	ExternalMetadata catalog.ExternalMetadataInterface
 
 	// A feature store is a centralized repository that enables data scientists
 	// to find and share features. Using a feature store also ensures that the
@@ -332,6 +352,10 @@ type WorkspaceClient struct {
 	//
 	// [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 	Files files.FilesInterface
+
+	// The Forecasting API allows you to create and get serverless forecasting
+	// experiments
+	Forecasting ml.ForecastingInterface
 
 	// Functions implement User-Defined Functions (UDFs) in Unity Catalog.
 	//
@@ -490,6 +514,10 @@ type WorkspaceClient struct {
 	// when you restart the cluster. Until you restart the cluster, the status
 	// of the uninstalled library appears as Uninstall pending restart.
 	Libraries compute.LibrariesInterface
+
+	// Materialized Features are columns in tables and views that can be
+	// directly used as features to train and serve ML models.
+	MaterializedFeatures ml.MaterializedFeaturesInterface
 
 	// A metastore is the top-level container of objects in Unity Catalog. It
 	// stores data assets (tables and views) and the permissions that govern
@@ -856,6 +884,23 @@ type WorkspaceClient struct {
 	// prevent such users from reading secrets.
 	Secrets workspace.SecretsInterface
 
+	// These APIs enable administrators to manage service principal secrets at
+	// the workspace level. To use these APIs, the service principal must be
+	// first added to the current workspace.
+	//
+	// You can use the generated secrets to obtain OAuth access tokens for a
+	// service principal, which can then be used to access Databricks Accounts
+	// and Workspace APIs. For more information, see [Authentication using OAuth
+	// tokens for service principals].
+	//
+	// In addition, the generated secrets can be used to configure the
+	// Databricks Terraform Providerto authenticate with the service principal.
+	// For more information, see [Databricks Terraform Provider].
+	//
+	// [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
+	// [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
+	ServicePrincipalSecretsProxy oauth2.ServicePrincipalSecretsProxyInterface
+
 	// Identities for use with jobs, automated tools, and systems such as
 	// scripts, apps, and CI/CD platforms. Databricks recommends creating
 	// service principals to run production jobs or modify production data. If
@@ -1164,10 +1209,6 @@ type WorkspaceClient struct {
 
 	// This API allows updating known workspace settings for advanced users.
 	WorkspaceConf settings.WorkspaceConfInterface
-
-	// The Forecasting API allows you to create and get serverless forecasting
-	// experiments
-	Forecasting ml.ForecastingInterface
 }
 
 var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration")
@@ -1235,9 +1276,12 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Dbfs:                                files.NewDbfs(databricksClient),
 		DbsqlPermissions:                    sql.NewDbsqlPermissions(databricksClient),
 		Experiments:                         ml.NewExperiments(databricksClient),
+		ExternalLineage:                     catalog.NewExternalLineage(databricksClient),
 		ExternalLocations:                   catalog.NewExternalLocations(databricksClient),
+		ExternalMetadata:                    catalog.NewExternalMetadata(databricksClient),
 		FeatureStore:                        ml.NewFeatureStore(databricksClient),
 		Files:                               files.NewFiles(databricksClient),
+		Forecasting:                         ml.NewForecasting(databricksClient),
 		Functions:                           catalog.NewFunctions(databricksClient),
 		Genie:                               dashboards.NewGenie(databricksClient),
 		GitCredentials:                      workspace.NewGitCredentials(databricksClient),
@@ -1251,6 +1295,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Lakeview:                            dashboards.NewLakeview(databricksClient),
 		LakeviewEmbedded:                    dashboards.NewLakeviewEmbedded(databricksClient),
 		Libraries:                           compute.NewLibraries(databricksClient),
+		MaterializedFeatures:                ml.NewMaterializedFeatures(databricksClient),
 		Metastores:                          catalog.NewMetastores(databricksClient),
 		ModelRegistry:                       ml.NewModelRegistry(databricksClient),
 		ModelVersions:                       catalog.NewModelVersions(databricksClient),
@@ -1286,6 +1331,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ResourceQuotas:                      catalog.NewResourceQuotas(databricksClient),
 		Schemas:                             catalog.NewSchemas(databricksClient),
 		Secrets:                             workspace.NewSecrets(databricksClient),
+		ServicePrincipalSecretsProxy:        oauth2.NewServicePrincipalSecretsProxy(databricksClient),
 		ServicePrincipals:                   iam.NewServicePrincipals(databricksClient),
 		ServingEndpoints:                    servingEndpoints,
 		ServingEndpointsDataPlane:           serving.NewServingEndpointsDataPlane(databricksClient, servingEndpoints),
@@ -1307,6 +1353,5 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Workspace:                           workspace.NewWorkspace(databricksClient),
 		WorkspaceBindings:                   catalog.NewWorkspaceBindings(databricksClient),
 		WorkspaceConf:                       settings.NewWorkspaceConf(databricksClient),
-		Forecasting:                         ml.NewForecasting(databricksClient),
 	}, nil
 }

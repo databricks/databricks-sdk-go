@@ -29,12 +29,11 @@ func (a *vectorSearchEndpointsImpl) CreateEndpoint(ctx context.Context, request 
 }
 
 func (a *vectorSearchEndpointsImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error {
-	var deleteEndpointResponse DeleteEndpointResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v", request.EndpointName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteEndpointResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -138,12 +137,11 @@ func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, req
 }
 
 func (a *vectorSearchIndexesImpl) DeleteIndex(ctx context.Context, request DeleteIndexRequest) error {
-	var deleteIndexResponse DeleteIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v", request.IndexName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteIndexResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -232,12 +230,11 @@ func (a *vectorSearchIndexesImpl) ScanIndex(ctx context.Context, request ScanVec
 }
 
 func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncIndexRequest) error {
-	var syncIndexResponse SyncIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/sync", request.IndexName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &syncIndexResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
 	return err
 }
 

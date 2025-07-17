@@ -81,12 +81,10 @@ func (f *AnomalyDetectionRunStatus) Type() string {
 	return "AnomalyDetectionRunStatus"
 }
 
-// Create a quality monitor
 type CreateQualityMonitorRequest struct {
 	QualityMonitor QualityMonitor `json:"quality_monitor"`
 }
 
-// Delete a quality monitor
 type DeleteQualityMonitorRequest struct {
 	// The uuid of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`
@@ -94,10 +92,6 @@ type DeleteQualityMonitorRequest struct {
 	ObjectType string `json:"-" url:"-"`
 }
 
-type DeleteQualityMonitorResponse struct {
-}
-
-// Read a quality monitor
 type GetQualityMonitorRequest struct {
 	// The uuid of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`
@@ -105,7 +99,6 @@ type GetQualityMonitorRequest struct {
 	ObjectType string `json:"-" url:"-"`
 }
 
-// List quality monitors
 type ListQualityMonitorRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -146,7 +139,6 @@ type QualityMonitor struct {
 	ObjectType string `json:"object_type"`
 }
 
-// Update a quality monitor
 type UpdateQualityMonitorRequest struct {
 	// The uuid of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`

@@ -29,12 +29,11 @@ func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentia
 }
 
 func (a *gitCredentialsImpl) Delete(ctx context.Context, request DeleteCredentialsRequest) error {
-	var deleteCredentialsResponse DeleteCredentialsResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCredentialsResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -87,13 +86,12 @@ func (a *gitCredentialsImpl) internalList(ctx context.Context) (*ListCredentials
 }
 
 func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentialsRequest) error {
-	var updateCredentialsResponse UpdateCredentialsResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateCredentialsResponse)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -114,12 +112,11 @@ func (a *reposImpl) Create(ctx context.Context, request CreateRepoRequest) (*Cre
 }
 
 func (a *reposImpl) Delete(ctx context.Context, request DeleteRepoRequest) error {
-	var deleteRepoResponse DeleteRepoResponse
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteRepoResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -208,13 +205,12 @@ func (a *reposImpl) SetPermissions(ctx context.Context, request RepoPermissionsR
 }
 
 func (a *reposImpl) Update(ctx context.Context, request UpdateRepoRequest) error {
-	var updateRepoResponse UpdateRepoResponse
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateRepoResponse)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -235,46 +231,39 @@ type secretsImpl struct {
 }
 
 func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) error {
-	var createScopeResponse CreateScopeResponse
 	path := "/api/2.0/secrets/scopes/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createScopeResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *secretsImpl) DeleteAcl(ctx context.Context, request DeleteAcl) error {
-	var deleteAclResponse DeleteAclResponse
 	path := "/api/2.0/secrets/acls/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteAclResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *secretsImpl) DeleteScope(ctx context.Context, request DeleteScope) error {
-	var deleteScopeResponse DeleteScopeResponse
 	path := "/api/2.0/secrets/scopes/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteScopeResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *secretsImpl) DeleteSecret(ctx context.Context, request DeleteSecret) error {
-	var deleteSecretResponse DeleteSecretResponse
 	path := "/api/2.0/secrets/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteSecretResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -298,11 +287,19 @@ func (a *secretsImpl) GetSecret(ctx context.Context, request GetSecretRequest) (
 	return &getSecretResponse, err
 }
 
-// List the ACLs for a given secret scope. Users must have the `MANAGE`
-// permission to invoke this API.
+// Lists the ACLs set on the given scope.
 //
-// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
-// `PERMISSION_DENIED` if the user does not have permission to make this API
+// Users must have the “MANAGE“ permission to invoke this API.
+//
+// Example response:
+//
+// .. code::
+//
+// { "acls": [{ "principal": "admins", "permission": "MANAGE" },{ "principal":
+// "data-scientists", "permission": "READ" }] }
+//
+// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
+// “PERMISSION_DENIED“ if the user does not have permission to make this API
 // call.
 func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) listing.Iterator[AclItem] {
 
@@ -322,11 +319,19 @@ func (a *secretsImpl) ListAcls(ctx context.Context, request ListAclsRequest) lis
 	return iterator
 }
 
-// List the ACLs for a given secret scope. Users must have the `MANAGE`
-// permission to invoke this API.
+// Lists the ACLs set on the given scope.
 //
-// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
-// `PERMISSION_DENIED` if the user does not have permission to make this API
+// Users must have the “MANAGE“ permission to invoke this API.
+//
+// Example response:
+//
+// .. code::
+//
+// { "acls": [{ "principal": "admins", "permission": "MANAGE" },{ "principal":
+// "data-scientists", "permission": "READ" }] }
+//
+// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
+// “PERMISSION_DENIED“ if the user does not have permission to make this API
 // call.
 func (a *secretsImpl) ListAclsAll(ctx context.Context, request ListAclsRequest) ([]AclItem, error) {
 	iterator := a.ListAcls(ctx, request)
@@ -345,8 +350,15 @@ func (a *secretsImpl) internalListAcls(ctx context.Context, request ListAclsRequ
 
 // Lists all secret scopes available in the workspace.
 //
-// Throws `PERMISSION_DENIED` if the user does not have permission to make this
-// API call.
+// Example response:
+//
+// .. code::
+//
+// { "scopes": [{ "name": "my-databricks-scope", "backend_type": "DATABRICKS"
+// },{ "name": "mount-points", "backend_type": "DATABRICKS" }] }
+//
+// Throws “PERMISSION_DENIED“ if the user does not have permission to make
+// this API call.
 func (a *secretsImpl) ListScopes(ctx context.Context) listing.Iterator[SecretScope] {
 	request := struct{}{}
 
@@ -368,8 +380,15 @@ func (a *secretsImpl) ListScopes(ctx context.Context) listing.Iterator[SecretSco
 
 // Lists all secret scopes available in the workspace.
 //
-// Throws `PERMISSION_DENIED` if the user does not have permission to make this
-// API call.
+// Example response:
+//
+// .. code::
+//
+// { "scopes": [{ "name": "my-databricks-scope", "backend_type": "DATABRICKS"
+// },{ "name": "mount-points", "backend_type": "DATABRICKS" }] }
+//
+// Throws “PERMISSION_DENIED“ if the user does not have permission to make
+// this API call.
 func (a *secretsImpl) ListScopesAll(ctx context.Context) ([]SecretScope, error) {
 	iterator := a.ListScopes(ctx)
 	return listing.ToSlice[SecretScope](ctx, iterator)
@@ -389,9 +408,18 @@ func (a *secretsImpl) internalListScopes(ctx context.Context) (*ListScopesRespon
 // operation; secret data cannot be retrieved using this API. Users need the
 // READ permission to make this call.
 //
-// The lastUpdatedTimestamp returned is in milliseconds since epoch. Throws
-// `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
-// `PERMISSION_DENIED` if the user does not have permission to make this API
+// Example response:
+//
+// .. code::
+//
+// { "secrets": [ { "key": "my-string-key"", "last_updated_timestamp":
+// "1520467595000" }, { "key": "my-byte-key", "last_updated_timestamp":
+// "1520467595000" }, ] }
+//
+// The lastUpdatedTimestamp returned is in milliseconds since epoch.
+//
+// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
+// “PERMISSION_DENIED“ if the user does not have permission to make this API
 // call.
 func (a *secretsImpl) ListSecrets(ctx context.Context, request ListSecretsRequest) listing.Iterator[SecretMetadata] {
 
@@ -415,9 +443,18 @@ func (a *secretsImpl) ListSecrets(ctx context.Context, request ListSecretsReques
 // operation; secret data cannot be retrieved using this API. Users need the
 // READ permission to make this call.
 //
-// The lastUpdatedTimestamp returned is in milliseconds since epoch. Throws
-// `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
-// `PERMISSION_DENIED` if the user does not have permission to make this API
+// Example response:
+//
+// .. code::
+//
+// { "secrets": [ { "key": "my-string-key"", "last_updated_timestamp":
+// "1520467595000" }, { "key": "my-byte-key", "last_updated_timestamp":
+// "1520467595000" }, ] }
+//
+// The lastUpdatedTimestamp returned is in milliseconds since epoch.
+//
+// Throws “RESOURCE_DOES_NOT_EXIST“ if no such secret scope exists. Throws
+// “PERMISSION_DENIED“ if the user does not have permission to make this API
 // call.
 func (a *secretsImpl) ListSecretsAll(ctx context.Context, request ListSecretsRequest) ([]SecretMetadata, error) {
 	iterator := a.ListSecrets(ctx, request)
@@ -435,24 +472,20 @@ func (a *secretsImpl) internalListSecrets(ctx context.Context, request ListSecre
 }
 
 func (a *secretsImpl) PutAcl(ctx context.Context, request PutAcl) error {
-	var putAclResponse PutAclResponse
 	path := "/api/2.0/secrets/acls/put"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &putAclResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
 func (a *secretsImpl) PutSecret(ctx context.Context, request PutSecret) error {
-	var putSecretResponse PutSecretResponse
 	path := "/api/2.0/secrets/put"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &putSecretResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -462,13 +495,12 @@ type workspaceImpl struct {
 }
 
 func (a *workspaceImpl) Delete(ctx context.Context, request Delete) error {
-	var deleteResponse DeleteResponse
 	path := "/api/2.0/workspace/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -513,13 +545,12 @@ func (a *workspaceImpl) GetStatus(ctx context.Context, request GetStatusRequest)
 }
 
 func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
-	var importResponse ImportResponse
 	path := "/api/2.0/workspace/import"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &importResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -563,13 +594,12 @@ func (a *workspaceImpl) internalList(ctx context.Context, request ListWorkspaceR
 }
 
 func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
-	var mkdirsResponse MkdirsResponse
 	path := "/api/2.0/workspace/mkdirs"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &mkdirsResponse)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
 

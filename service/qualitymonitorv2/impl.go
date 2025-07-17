@@ -29,12 +29,11 @@ func (a *qualityMonitorV2Impl) CreateQualityMonitor(ctx context.Context, request
 }
 
 func (a *qualityMonitorV2Impl) DeleteQualityMonitor(ctx context.Context, request DeleteQualityMonitorRequest) error {
-	var deleteQualityMonitorResponse DeleteQualityMonitorResponse
 	path := fmt.Sprintf("/api/2.0/quality-monitors/%v/%v", request.ObjectType, request.ObjectId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteQualityMonitorResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 

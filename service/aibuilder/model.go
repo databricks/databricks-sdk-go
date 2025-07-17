@@ -12,9 +12,6 @@ type CancelCustomLlmOptimizationRunRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-type CancelOptimizeResponse struct {
-}
-
 type CreateCustomLlmRequest struct {
 	// Optional: UC path for agent artifacts. If you are using a dataset that
 	// you only have read permissions, please provide a destination path where
@@ -77,16 +74,11 @@ type Dataset struct {
 	Table Table `json:"table"`
 }
 
-// Delete a Custom LLM
 type DeleteCustomLlmRequest struct {
 	// The id of the custom llm
 	Id string `json:"-" url:"-"`
 }
 
-type DeleteCustomLlmResponse struct {
-}
-
-// Get a Custom LLM
 type GetCustomLlmRequest struct {
 	// The id of the custom llm
 	Id string `json:"-" url:"-"`

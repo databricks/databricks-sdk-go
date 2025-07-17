@@ -20,6 +20,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/jobs"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/ml"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/serving"
@@ -75,9 +76,12 @@ func NewMockWorkspaceClient(t interface {
 			Dbfs:                                files.NewMockDbfsInterface(t),
 			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
 			Experiments:                         ml.NewMockExperimentsInterface(t),
+			ExternalLineage:                     catalog.NewMockExternalLineageInterface(t),
 			ExternalLocations:                   catalog.NewMockExternalLocationsInterface(t),
+			ExternalMetadata:                    catalog.NewMockExternalMetadataInterface(t),
 			FeatureStore:                        ml.NewMockFeatureStoreInterface(t),
 			Files:                               files.NewMockFilesInterface(t),
+			Forecasting:                         ml.NewMockForecastingInterface(t),
 			Functions:                           catalog.NewMockFunctionsInterface(t),
 			Genie:                               dashboards.NewMockGenieInterface(t),
 			GitCredentials:                      workspace.NewMockGitCredentialsInterface(t),
@@ -91,6 +95,7 @@ func NewMockWorkspaceClient(t interface {
 			Lakeview:                            dashboards.NewMockLakeviewInterface(t),
 			LakeviewEmbedded:                    dashboards.NewMockLakeviewEmbeddedInterface(t),
 			Libraries:                           compute.NewMockLibrariesInterface(t),
+			MaterializedFeatures:                ml.NewMockMaterializedFeaturesInterface(t),
 			Metastores:                          catalog.NewMockMetastoresInterface(t),
 			ModelRegistry:                       ml.NewMockModelRegistryInterface(t),
 			ModelVersions:                       catalog.NewMockModelVersionsInterface(t),
@@ -126,6 +131,7 @@ func NewMockWorkspaceClient(t interface {
 			ResourceQuotas:                      catalog.NewMockResourceQuotasInterface(t),
 			Schemas:                             catalog.NewMockSchemasInterface(t),
 			Secrets:                             workspace.NewMockSecretsInterface(t),
+			ServicePrincipalSecretsProxy:        oauth2.NewMockServicePrincipalSecretsProxyInterface(t),
 			ServicePrincipals:                   iam.NewMockServicePrincipalsInterface(t),
 			ServingEndpoints:                    serving.NewMockServingEndpointsInterface(t),
 			ServingEndpointsDataPlane:           serving.NewMockServingEndpointsDataPlaneInterface(t),
@@ -147,7 +153,6 @@ func NewMockWorkspaceClient(t interface {
 			Workspace:                           workspace.NewMockWorkspaceInterface(t),
 			WorkspaceBindings:                   catalog.NewMockWorkspaceBindingsInterface(t),
 			WorkspaceConf:                       settings.NewMockWorkspaceConfInterface(t),
-			Forecasting:                         ml.NewMockForecastingInterface(t),
 		},
 	}
 
@@ -170,6 +175,9 @@ func NewMockWorkspaceClient(t interface {
 
 	mockdefaultNamespace := settings.NewMockDefaultNamespaceInterface(t)
 	mocksettingsAPI.On("DefaultNamespace").Return(mockdefaultNamespace).Maybe()
+
+	mockdefaultWarehouseId := settings.NewMockDefaultWarehouseIdInterface(t)
+	mocksettingsAPI.On("DefaultWarehouseId").Return(mockdefaultWarehouseId).Maybe()
 
 	mockdisableLegacyAccess := settings.NewMockDisableLegacyAccessInterface(t)
 	mocksettingsAPI.On("DisableLegacyAccess").Return(mockdisableLegacyAccess).Maybe()
@@ -245,6 +253,14 @@ func (m *MockWorkspaceClient) GetMockDefaultNamespaceAPI() *settings.MockDefault
 	api, ok := m.GetMockSettingsAPI().DefaultNamespace().(*settings.MockDefaultNamespaceInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected DefaultNamespace to be *settings.MockDefaultNamespaceInterface, actual was %T", m.GetMockSettingsAPI().DefaultNamespace()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockDefaultWarehouseIdAPI() *settings.MockDefaultWarehouseIdInterface {
+	api, ok := m.GetMockSettingsAPI().DefaultWarehouseId().(*settings.MockDefaultWarehouseIdInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DefaultWarehouseId to be *settings.MockDefaultWarehouseIdInterface, actual was %T", m.GetMockSettingsAPI().DefaultWarehouseId()))
 	}
 	return api
 }
@@ -569,10 +585,26 @@ func (m *MockWorkspaceClient) GetMockExperimentsAPI() *ml.MockExperimentsInterfa
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockExternalLineageAPI() *catalog.MockExternalLineageInterface {
+	api, ok := m.WorkspaceClient.ExternalLineage.(*catalog.MockExternalLineageInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ExternalLineage to be *catalog.MockExternalLineageInterface, actual was %T", m.WorkspaceClient.ExternalLineage))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockExternalLocationsAPI() *catalog.MockExternalLocationsInterface {
 	api, ok := m.WorkspaceClient.ExternalLocations.(*catalog.MockExternalLocationsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ExternalLocations to be *catalog.MockExternalLocationsInterface, actual was %T", m.WorkspaceClient.ExternalLocations))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockExternalMetadataAPI() *catalog.MockExternalMetadataInterface {
+	api, ok := m.WorkspaceClient.ExternalMetadata.(*catalog.MockExternalMetadataInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ExternalMetadata to be *catalog.MockExternalMetadataInterface, actual was %T", m.WorkspaceClient.ExternalMetadata))
 	}
 	return api
 }
@@ -589,6 +621,14 @@ func (m *MockWorkspaceClient) GetMockFilesAPI() *files.MockFilesInterface {
 	api, ok := m.WorkspaceClient.Files.(*files.MockFilesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Files to be *files.MockFilesInterface, actual was %T", m.WorkspaceClient.Files))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockForecastingAPI() *ml.MockForecastingInterface {
+	api, ok := m.WorkspaceClient.Forecasting.(*ml.MockForecastingInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Forecasting to be *ml.MockForecastingInterface, actual was %T", m.WorkspaceClient.Forecasting))
 	}
 	return api
 }
@@ -693,6 +733,14 @@ func (m *MockWorkspaceClient) GetMockLibrariesAPI() *compute.MockLibrariesInterf
 	api, ok := m.WorkspaceClient.Libraries.(*compute.MockLibrariesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Libraries to be *compute.MockLibrariesInterface, actual was %T", m.WorkspaceClient.Libraries))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockMaterializedFeaturesAPI() *ml.MockMaterializedFeaturesInterface {
+	api, ok := m.WorkspaceClient.MaterializedFeatures.(*ml.MockMaterializedFeaturesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected MaterializedFeatures to be *ml.MockMaterializedFeaturesInterface, actual was %T", m.WorkspaceClient.MaterializedFeatures))
 	}
 	return api
 }
@@ -977,6 +1025,14 @@ func (m *MockWorkspaceClient) GetMockSecretsAPI() *workspace.MockSecretsInterfac
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockServicePrincipalSecretsProxyAPI() *oauth2.MockServicePrincipalSecretsProxyInterface {
+	api, ok := m.WorkspaceClient.ServicePrincipalSecretsProxy.(*oauth2.MockServicePrincipalSecretsProxyInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ServicePrincipalSecretsProxy to be *oauth2.MockServicePrincipalSecretsProxyInterface, actual was %T", m.WorkspaceClient.ServicePrincipalSecretsProxy))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockServicePrincipalsAPI() *iam.MockServicePrincipalsInterface {
 	api, ok := m.WorkspaceClient.ServicePrincipals.(*iam.MockServicePrincipalsInterface)
 	if !ok {
@@ -1141,14 +1197,6 @@ func (m *MockWorkspaceClient) GetMockWorkspaceConfAPI() *settings.MockWorkspaceC
 	api, ok := m.WorkspaceClient.WorkspaceConf.(*settings.MockWorkspaceConfInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected WorkspaceConf to be *settings.MockWorkspaceConfInterface, actual was %T", m.WorkspaceClient.WorkspaceConf))
-	}
-	return api
-}
-
-func (m *MockWorkspaceClient) GetMockForecastingAPI() *ml.MockForecastingInterface {
-	api, ok := m.WorkspaceClient.Forecasting.(*ml.MockForecastingInterface)
-	if !ok {
-		panic(fmt.Sprintf("expected Forecasting to be *ml.MockForecastingInterface, actual was %T", m.WorkspaceClient.Forecasting))
 	}
 	return api
 }

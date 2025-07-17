@@ -262,6 +262,22 @@ type DefaultNamespaceService interface {
 	Update(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error)
 }
 
+// Warehouse to be selected by default for users in this workspace. Covers SQL
+// workloads only and can be overridden by users.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type DefaultWarehouseIdService interface {
+
+	// Reverts the Default Warehouse Id setting to its default value.
+	Delete(ctx context.Context, request DeleteDefaultWarehouseIdRequest) (*DeleteDefaultWarehouseIdResponse, error)
+
+	// Gets the Default Warehouse Id setting.
+	Get(ctx context.Context, request GetDefaultWarehouseIdRequest) (*DefaultWarehouseId, error)
+
+	// Updates the Default Warehouse Id setting.
+	Update(ctx context.Context, request UpdateDefaultWarehouseIdRequest) (*DefaultWarehouseId, error)
+}
+
 // 'Disabling legacy access' has the following impacts:
 //
 // 1. Disables direct access to Hive Metastores from the workspace. However, you

@@ -322,7 +322,7 @@ func ExampleModelRegistryAPI_UpdateModel_models() {
 	}
 	logger.Infof(ctx, "found %v", model)
 
-	err = w.ModelRegistry.UpdateModel(ctx, ml.UpdateModelRequest{
+	_, err = w.ModelRegistry.UpdateModel(ctx, ml.UpdateModelRequest{
 		Name:        model.RegisteredModelDatabricks.Name,
 		Description: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 	})
@@ -356,7 +356,7 @@ func ExampleModelRegistryAPI_UpdateModelVersion_modelVersions() {
 	}
 	logger.Infof(ctx, "found %v", created)
 
-	err = w.ModelRegistry.UpdateModelVersion(ctx, ml.UpdateModelVersionRequest{
+	_, err = w.ModelRegistry.UpdateModelVersion(ctx, ml.UpdateModelVersionRequest{
 		Description: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		Name:        created.ModelVersion.Name,
 		Version:     created.ModelVersion.Version,
@@ -386,7 +386,7 @@ func ExampleModelRegistryAPI_UpdateWebhook_registryWebhooks() {
 	}
 	logger.Infof(ctx, "found %v", created)
 
-	err = w.ModelRegistry.UpdateWebhook(ctx, ml.UpdateRegistryWebhook{
+	_, err = w.ModelRegistry.UpdateWebhook(ctx, ml.UpdateRegistryWebhook{
 		Id:          created.Webhook.Id,
 		Description: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 	})

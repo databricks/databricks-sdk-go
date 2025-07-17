@@ -482,8 +482,9 @@ type AlertV2 struct {
 	ParentPath string `json:"parent_path,omitempty"`
 	// Text of the query to be run.
 	QueryText string `json:"query_text,omitempty"`
-	// The run as username. This field is set to "Unavailable" if the user has
-	// been deleted.
+	// The run as username or application ID of service principal. On Create and
+	// Update, this field can be set to application ID of an active service
+	// principal. Setting this field requires the servicePrincipal/user role.
 	RunAsUserName string `json:"run_as_user_name,omitempty"`
 
 	Schedule *CronSchedule `json:"schedule,omitempty"`
@@ -634,14 +635,10 @@ func (s BaseChunkInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Cancel statement execution
 type CancelExecutionRequest struct {
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"-" url:"-"`
-}
-
-type CancelExecutionResponse struct {
 }
 
 // Configures the channel name and DBSQL version of the warehouse.
@@ -1011,7 +1008,6 @@ func (s CreateAlertRequestAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Create an alert
 type CreateAlertV2Request struct {
 	Alert AlertV2 `json:"alert"`
 }
@@ -1182,16 +1178,14 @@ type CreateWarehouseRequest struct {
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	Name string `json:"name,omitempty"`
-	// Configurations whether the warehouse should use spot instances.
+
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
-	// compute, you must set to `PRO` and also set the field
-	// `enable_serverless_compute` to `true`.
+
 	WarehouseType CreateWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1266,8 +1260,6 @@ func (s CreateWarehouseResponse) MarshalJSON() ([]byte, error) {
 type CreateWidget struct {
 	// Dashboard ID returned by :method:dashboards/create.
 	DashboardId string `json:"dashboard_id"`
-	// Widget ID returned by :method:dashboardwidgets/create
-	Id string `json:"-" url:"-"`
 
 	Options WidgetOptions `json:"options"`
 	// If this is a textbox widget, the application displays this text. This
@@ -1411,35 +1403,6 @@ func (s *DashboardOptions) UnmarshalJSON(b []byte) error {
 }
 
 func (s DashboardOptions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type DashboardPostContent struct {
-	// Indicates whether the dashboard filters are enabled
-	DashboardFiltersEnabled bool `json:"dashboard_filters_enabled,omitempty"`
-	// Indicates whether this dashboard object should appear in the current
-	// user's favorites list.
-	IsFavorite bool `json:"is_favorite,omitempty"`
-	// The title of this dashboard that appears in list views and at the top of
-	// the dashboard page.
-	Name string `json:"name"`
-	// The identifier of the workspace folder containing the object.
-	Parent string `json:"parent,omitempty"`
-	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
-	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
-	// owner" behavior)
-	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
-
-	Tags []string `json:"tags,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *DashboardPostContent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DashboardPostContent) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1688,48 +1651,35 @@ func (f *DateValueDynamicDate) Type() string {
 	return "DateValueDynamicDate"
 }
 
-// Delete an alert
 type DeleteAlertsLegacyRequest struct {
 	AlertId string `json:"-" url:"-"`
 }
 
-// Remove a dashboard
 type DeleteDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 }
 
-// Remove widget
 type DeleteDashboardWidgetRequest struct {
 	// Widget ID returned by :method:dashboardwidgets/create
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a query
 type DeleteQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
-// Remove visualization
 type DeleteQueryVisualizationsLegacyRequest struct {
-	// Widget ID returned by :method:queryvizualisations/create
+	// Widget ID returned by :method:queryvisualizations/create
 	Id string `json:"-" url:"-"`
 }
 
-type DeleteResponse struct {
-}
-
-// Remove a visualization
 type DeleteVisualizationRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a warehouse
 type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
-}
-
-type DeleteWarehouseResponse struct {
 }
 
 type Disposition string
@@ -1844,16 +1794,14 @@ type EditWarehouseRequest struct {
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	Name string `json:"name,omitempty"`
-	// Configurations whether the warehouse should use spot instances.
+
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
-	// compute, you must set to `PRO` and also set the field
-	// `enable_serverless_compute` to `true`.
+
 	WarehouseType EditWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1910,14 +1858,6 @@ func (f *EditWarehouseRequestWarehouseType) Type() string {
 	return "EditWarehouseRequestWarehouseType"
 }
 
-type EditWarehouseResponse struct {
-}
-
-// Represents an empty message, similar to google.protobuf.Empty, which is not
-// available in the firm right now.
-type Empty struct {
-}
-
 type EndpointConfPair struct {
 	Key string `json:"key,omitempty"`
 
@@ -1942,7 +1882,7 @@ type EndpointHealth struct {
 	FailureReason *TerminationReason `json:"failure_reason,omitempty"`
 	// Deprecated. split into summary and details for security
 	Message string `json:"message,omitempty"`
-	// Health status of the warehouse.
+
 	Status Status `json:"status,omitempty"`
 	// A short summary of the health status in case of degraded/failed
 	// warehouses.
@@ -2021,9 +1961,9 @@ type EndpointInfo struct {
 	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the SQL warehouse
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
-	// Configurations whether the warehouse should use spot instances.
+
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
-	// State of the warehouse
+
 	State State `json:"state,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
@@ -2438,27 +2378,22 @@ func (f *Format) Type() string {
 	return "Format"
 }
 
-// Get an alert
 type GetAlertRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-// Get an alert
 type GetAlertV2Request struct {
 	Id string `json:"-" url:"-"`
 }
 
-// Get an alert
 type GetAlertsLegacyRequest struct {
 	AlertId string `json:"-" url:"-"`
 }
 
-// Retrieve a definition
 type GetDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 }
 
-// Get object ACL
 type GetDbsqlPermissionRequest struct {
 	// Object ID. An ACL is returned for the object with this UUID.
 	ObjectId string `json:"-" url:"-"`
@@ -2466,12 +2401,10 @@ type GetDbsqlPermissionRequest struct {
 	ObjectType ObjectTypePlural `json:"-" url:"-"`
 }
 
-// Get a query definition.
 type GetQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
-// Get a query
 type GetQueryRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -2494,14 +2427,12 @@ func (s GetResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get status, manifest, and result first chunk
 type GetStatementRequest struct {
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"-" url:"-"`
 }
 
-// Get result chunk by index
 type GetStatementResultChunkNRequest struct {
 	ChunkIndex int `json:"-" url:"-"`
 	// The statement ID is returned upon successfully submitting a SQL
@@ -2509,7 +2440,6 @@ type GetStatementResultChunkNRequest struct {
 	StatementId string `json:"-" url:"-"`
 }
 
-// Get SQL warehouse permission levels
 type GetWarehousePermissionLevelsRequest struct {
 	// The SQL warehouse for which to get or manage permissions.
 	WarehouseId string `json:"-" url:"-"`
@@ -2520,13 +2450,11 @@ type GetWarehousePermissionLevelsResponse struct {
 	PermissionLevels []WarehousePermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get SQL warehouse permissions
 type GetWarehousePermissionsRequest struct {
 	// The SQL warehouse for which to get or manage permissions.
 	WarehouseId string `json:"-" url:"-"`
 }
 
-// Get warehouse info
 type GetWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
@@ -2594,18 +2522,16 @@ type GetWarehouseResponse struct {
 	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the SQL warehouse
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
-	// Configurations whether the warehouse should use spot instances.
+
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
-	// State of the warehouse
+
 	State State `json:"state,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
-	// compute, you must set to `PRO` and also set the field
-	// `enable_serverless_compute` to `true`.
+
 	WarehouseType GetWarehouseResponseWarehouseType `json:"warehouse_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2780,9 +2706,6 @@ func (s LegacyAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// State of the alert. Possible values are: `unknown` (yet to be evaluated),
-// `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated
-// and did not fulfill trigger conditions).
 type LegacyAlertState string
 
 const LegacyAlertStateOk LegacyAlertState = `ok`
@@ -2978,7 +2901,6 @@ func (f *LifecycleState) Type() string {
 	return "LifecycleState"
 }
 
-// List alerts
 type ListAlertsRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -3065,7 +2987,6 @@ func (s ListAlertsResponseAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List alerts
 type ListAlertsV2Request struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -3098,7 +3019,6 @@ func (s ListAlertsV2Response) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get dashboard objects
 type ListDashboardsRequest struct {
 	// Name of dashboard attribute to order by.
 	Order ListOrder `json:"-" url:"order,omitempty"`
@@ -3157,7 +3077,6 @@ func (f *ListOrder) Type() string {
 	return "ListOrder"
 }
 
-// Get a list of queries
 type ListQueriesLegacyRequest struct {
 	// Name of query attribute to order by. Default sort order is ascending.
 	// Append a dash (`-`) to order descending instead.
@@ -3192,7 +3111,6 @@ func (s ListQueriesLegacyRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List queries
 type ListQueriesRequest struct {
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
@@ -3228,7 +3146,6 @@ func (s ListQueriesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List Queries
 type ListQueryHistoryRequest struct {
 	// An optional filter object to limit query history results. Accepts
 	// parameters such as user IDs, endpoint IDs, and statuses to narrow the
@@ -3342,7 +3259,6 @@ func (s ListResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List visualizations on a query
 type ListVisualizationsForQueryRequest struct {
 	Id string `json:"-" url:"-"`
 
@@ -3377,7 +3293,6 @@ func (s ListVisualizationsForQueryResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List warehouses
 type ListWarehousesRequest struct {
 	// Service Principal which will be used to fetch the list of warehouses. If
 	// not specified, the user from the session header is used.
@@ -3541,7 +3456,6 @@ func (s OdbcParams) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The singular form of the type of object which can be owned.
 type OwnableObjectType string
 
 const OwnableObjectTypeAlert OwnableObjectType = `alert`
@@ -3613,7 +3527,6 @@ func (s Parameter) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Parameters can have several different types.
 type ParameterType string
 
 const ParameterTypeDatetime ParameterType = `datetime`
@@ -3993,6 +3906,9 @@ type QueryMetrics struct {
 	// Total execution time for all individual Photon query engine tasks in the
 	// query, in milliseconds.
 	PhotonTotalTimeMs int64 `json:"photon_total_time_ms,omitempty"`
+	// projected remaining work to be done aggregated across all stages in the
+	// query, in milliseconds
+	ProjectedRemainingTaskTotalTimeMs int64 `json:"projected_remaining_task_total_time_ms,omitempty"`
 	// Timestamp of when the query was enqueued waiting for a cluster to be
 	// provisioned for the warehouse. This field is optional and will not appear
 	// if the query skipped the provisioning queue.
@@ -4015,6 +3931,9 @@ type QueryMetrics struct {
 	// Size of persistent data read from cloud object storage on your cloud
 	// tenant, in bytes.
 	ReadRemoteBytes int64 `json:"read_remote_bytes,omitempty"`
+	// number of remaining tasks to complete this is based on the current status
+	// and could be bigger or smaller in the future based on future updates
+	RemainingTaskCount int64 `json:"remaining_task_count,omitempty"`
 	// Time spent fetching the query results after the execution finished, in
 	// milliseconds.
 	ResultFetchTimeMs int64 `json:"result_fetch_time_ms,omitempty"`
@@ -4024,6 +3943,9 @@ type QueryMetrics struct {
 	RowsProducedCount int64 `json:"rows_produced_count,omitempty"`
 	// Total number of rows read by the query.
 	RowsReadCount int64 `json:"rows_read_count,omitempty"`
+	// number of remaining tasks to complete, calculated by autoscaler
+	// StatementAnalysis.scala deprecated: use remaining_task_count instead
+	RunnableTasks int64 `json:"runnable_tasks,omitempty"`
 	// Size of data temporarily written to disk while executing the query, in
 	// bytes.
 	SpillToDiskBytes int64 `json:"spill_to_disk_bytes,omitempty"`
@@ -4036,6 +3958,10 @@ type QueryMetrics struct {
 	// Total execution time of the query from the client’s point of view, in
 	// milliseconds.
 	TotalTimeMs int64 `json:"total_time_ms,omitempty"`
+	// remaining work to be done across all stages in the query, calculated by
+	// autoscaler StatementAnalysis.scala, in milliseconds deprecated: using
+	// projected_remaining_task_total_time_ms instead
+	WorkToBeDone int64 `json:"work_to_be_done,omitempty"`
 	// Size pf persistent data written to cloud object storage in your cloud
 	// tenant, in bytes.
 	WriteRemoteBytes int64 `json:"write_remote_bytes,omitempty"`
@@ -4304,17 +4230,12 @@ type RepeatedEndpointConfPairs struct {
 	ConfigurationPairs []EndpointConfPair `json:"configuration_pairs,omitempty"`
 }
 
-// Restore a dashboard
 type RestoreDashboardRequest struct {
 	DashboardId string `json:"-" url:"-"`
 }
 
-// Restore a query
 type RestoreQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
-}
-
-type RestoreResponse struct {
 }
 
 type ResultData struct {
@@ -4360,7 +4281,7 @@ type ResultManifest struct {
 	Chunks []BaseChunkInfo `json:"chunks,omitempty"`
 
 	Format Format `json:"format,omitempty"`
-	// The schema is an ordered list of column descriptions.
+
 	Schema *ResultSchema `json:"schema,omitempty"`
 	// The total number of bytes in the result set. This field is not available
 	// when using `INLINE` disposition.
@@ -4438,9 +4359,6 @@ func (f *RunAsMode) Type() string {
 	return "RunAsMode"
 }
 
-// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
-// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as owner"
-// behavior)
 type RunAsRole string
 
 const RunAsRoleOwner RunAsRole = `owner`
@@ -4711,9 +4629,6 @@ func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
 	return "SetWorkspaceWarehouseConfigRequestSecurityPolicy"
 }
 
-type SetWorkspaceWarehouseConfigResponse struct {
-}
-
 // Configurations whether the warehouse should use spot instances.
 type SpotInstancePolicy string
 
@@ -4755,13 +4670,9 @@ func (f *SpotInstancePolicy) Type() string {
 	return "SpotInstancePolicy"
 }
 
-// Start a warehouse
 type StartRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
-}
-
-type StartWarehouseResponse struct {
 }
 
 // State of the warehouse
@@ -4841,15 +4752,13 @@ func (s StatementParameterListItem) MarshalJSON() ([]byte, error) {
 }
 
 type StatementResponse struct {
-	// The result manifest provides schema and metadata for the result set.
 	Manifest *ResultManifest `json:"manifest,omitempty"`
 
 	Result *ResultData `json:"result,omitempty"`
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
 	StatementId string `json:"statement_id,omitempty"`
-	// The status response includes execution state and if relevant, error
-	// information.
+
 	Status *StatementStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4930,13 +4839,7 @@ func (f *StatementState) Type() string {
 // information.
 type StatementStatus struct {
 	Error *ServiceError `json:"error,omitempty"`
-	// Statement execution state: - `PENDING`: waiting for warehouse -
-	// `RUNNING`: running - `SUCCEEDED`: execution was successful, result data
-	// available for fetch - `FAILED`: execution failed; reason for failure
-	// described in accomanying error message - `CANCELED`: user canceled; can
-	// come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL`
-	// - `CLOSED`: execution successful, and statement closed; result no longer
-	// available for fetch
+
 	State StatementState `json:"state,omitempty"`
 }
 
@@ -4984,13 +4887,9 @@ func (f *Status) Type() string {
 	return "Status"
 }
 
-// Stop a warehouse
 type StopRequest struct {
 	// Required. Id of the SQL warehouse.
 	Id string `json:"-" url:"-"`
-}
-
-type StopWarehouseResponse struct {
 }
 
 type Success struct {
@@ -5434,7 +5333,6 @@ func (s TransferOwnershipObjectId) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Transfer object ownership
 type TransferOwnershipRequest struct {
 	// Email address for the new owner, who must exist in the workspace.
 	NewOwner string `json:"new_owner,omitempty"`
@@ -5454,17 +5352,14 @@ func (s TransferOwnershipRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete an alert
 type TrashAlertRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-// Delete an alert
 type TrashAlertV2Request struct {
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a query
 type TrashQueryRequest struct {
 	Id string `json:"-" url:"-"`
 }
@@ -5540,7 +5435,6 @@ func (s UpdateAlertRequestAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Update an alert
 type UpdateAlertV2Request struct {
 	Alert AlertV2 `json:"alert"`
 	// UUID identifying the alert.
@@ -5629,9 +5523,6 @@ func (s UpdateQueryRequestQuery) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type UpdateResponse struct {
-}
-
 type UpdateVisualizationRequest struct {
 	Id string `json:"-" url:"-"`
 	// The field mask must be a single string, with multiple fields separated by
@@ -5672,6 +5563,33 @@ func (s *UpdateVisualizationRequestVisualization) UnmarshalJSON(b []byte) error 
 }
 
 func (s UpdateVisualizationRequestVisualization) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type UpdateWidgetRequest struct {
+	// Dashboard ID returned by :method:dashboards/create.
+	DashboardId string `json:"dashboard_id"`
+	// Widget ID returned by :method:dashboardwidgets/create
+	Id string `json:"-" url:"-"`
+
+	Options WidgetOptions `json:"options"`
+	// If this is a textbox widget, the application displays this text. This
+	// field is ignored if the widget contains a visualization in the
+	// `visualization` field.
+	Text string `json:"text,omitempty"`
+	// Query Vizualization ID returned by :method:queryvisualizations/create.
+	VisualizationId string `json:"visualization_id,omitempty"`
+	// Width of a widget
+	Width int `json:"width"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateWidgetRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateWidgetRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -5729,7 +5647,7 @@ func (s Visualization) MarshalJSON() ([]byte, error) {
 type WarehouseAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// Permission level
+
 	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -5774,7 +5692,7 @@ type WarehousePermission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-	// Permission level
+
 	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5855,7 +5773,7 @@ func (s WarehousePermissions) MarshalJSON() ([]byte, error) {
 
 type WarehousePermissionsDescription struct {
 	Description string `json:"description,omitempty"`
-	// Permission level
+
 	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

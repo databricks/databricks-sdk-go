@@ -295,6 +295,31 @@ type ForecastingService interface {
 	GetExperiment(ctx context.Context, request GetForecastingExperimentRequest) (*ForecastingExperiment, error)
 }
 
+// Materialized Features are columns in tables and views that can be directly
+// used as features to train and serve ML models.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type MaterializedFeaturesService interface {
+
+	// Creates a FeatureTag.
+	CreateFeatureTag(ctx context.Context, request CreateFeatureTagRequest) (*FeatureTag, error)
+
+	// Deletes a FeatureTag.
+	DeleteFeatureTag(ctx context.Context, request DeleteFeatureTagRequest) error
+
+	// Get Feature Lineage.
+	GetFeatureLineage(ctx context.Context, request GetFeatureLineageRequest) (*FeatureLineage, error)
+
+	// Gets a FeatureTag.
+	GetFeatureTag(ctx context.Context, request GetFeatureTagRequest) (*FeatureTag, error)
+
+	// Lists FeatureTags.
+	ListFeatureTags(ctx context.Context, request ListFeatureTagsRequest) (*ListFeatureTagsResponse, error)
+
+	// Updates a FeatureTag.
+	UpdateFeatureTag(ctx context.Context, request UpdateFeatureTagRequest) (*FeatureTag, error)
+}
+
 // Note: This API reference documents APIs for the Workspace Model Registry.
 // Databricks recommends using [Models in Unity
 // Catalog](/api/workspace/registeredmodels) instead. Models in Unity Catalog
@@ -316,10 +341,8 @@ type ModelRegistryService interface {
 	CreateComment(ctx context.Context, request CreateComment) (*CreateCommentResponse, error)
 
 	// Creates a new registered model with the name specified in the request
-	// body.
-	//
-	// Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given
-	// name exists.
+	// body. Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the
+	// given name exists.
 	CreateModel(ctx context.Context, request CreateModelRequest) (*CreateModelResponse, error)
 
 	// Creates a model version.
@@ -328,9 +351,7 @@ type ModelRegistryService interface {
 	// Creates a model version stage transition request.
 	CreateTransitionRequest(ctx context.Context, request CreateTransitionRequest) (*CreateTransitionRequestResponse, error)
 
-	// **NOTE**: This endpoint is in Public Preview.
-	//
-	// Creates a registry webhook.
+	// **NOTE:** This endpoint is in Public Preview. Creates a registry webhook.
 	CreateWebhook(ctx context.Context, request CreateRegistryWebhook) (*CreateWebhookResponse, error)
 
 	// Deletes a comment on a model version.
@@ -349,11 +370,9 @@ type ModelRegistryService interface {
 	DeleteModelVersionTag(ctx context.Context, request DeleteModelVersionTagRequest) error
 
 	// Cancels a model version stage transition request.
-	DeleteTransitionRequest(ctx context.Context, request DeleteTransitionRequestRequest) error
+	DeleteTransitionRequest(ctx context.Context, request DeleteTransitionRequestRequest) (*DeleteTransitionRequestResponse, error)
 
-	// **NOTE:** This endpoint is in Public Preview.
-	//
-	// Deletes a registry webhook.
+	// **NOTE:** This endpoint is in Public Preview. Deletes a registry webhook.
 	DeleteWebhook(ctx context.Context, request DeleteWebhookRequest) error
 
 	// Gets the latest version of a registered model.
@@ -386,9 +405,8 @@ type ModelRegistryService interface {
 	// Gets a list of all open stage transition requests for the model version.
 	ListTransitionRequests(ctx context.Context, request ListTransitionRequestsRequest) (*ListTransitionRequestsResponse, error)
 
-	// **NOTE:** This endpoint is in Public Preview.
-	//
-	// Lists all registry webhooks.
+	// **NOTE:** This endpoint is in Public Preview. Lists all registry
+	// webhooks.
 	ListWebhooks(ctx context.Context, request ListWebhooksRequest) (*ListRegistryWebhooks, error)
 
 	// Rejects a model version stage transition request.
@@ -414,14 +432,12 @@ type ModelRegistryService interface {
 	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
 
-	// **NOTE:** This endpoint is in Public Preview.
-	//
-	// Tests a registry webhook.
+	// **NOTE:** This endpoint is in Public Preview. Tests a registry webhook.
 	TestRegistryWebhook(ctx context.Context, request TestRegistryWebhookRequest) (*TestRegistryWebhookResponse, error)
 
 	// Transition a model version's stage. This is a Databricks workspace
 	// version of the [MLflow endpoint] that also accepts a comment associated
-	// with the transition to be recorded.",
+	// with the transition to be recorded.
 	//
 	// [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage
 	TransitionStage(ctx context.Context, request TransitionModelVersionStageDatabricks) (*TransitionStageResponse, error)
@@ -430,17 +446,15 @@ type ModelRegistryService interface {
 	UpdateComment(ctx context.Context, request UpdateComment) (*UpdateCommentResponse, error)
 
 	// Updates a registered model.
-	UpdateModel(ctx context.Context, request UpdateModelRequest) error
+	UpdateModel(ctx context.Context, request UpdateModelRequest) (*UpdateModelResponse, error)
 
 	// Updates the model version.
-	UpdateModelVersion(ctx context.Context, request UpdateModelVersionRequest) error
+	UpdateModelVersion(ctx context.Context, request UpdateModelVersionRequest) (*UpdateModelVersionResponse, error)
 
 	// Updates the permissions on a registered model. Registered models can
 	// inherit permissions from their root object.
 	UpdatePermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
 
-	// **NOTE:** This endpoint is in Public Preview.
-	//
-	// Updates a registry webhook.
-	UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) error
+	// **NOTE:** This endpoint is in Public Preview. Updates a registry webhook.
+	UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) (*UpdateWebhookResponse, error)
 }

@@ -153,20 +153,39 @@ func (s AiGatewayInferenceTableConfig) MarshalJSON() ([]byte, error) {
 type AiGatewayRateLimit struct {
 	// Used to specify how many calls are allowed for a key within the
 	// renewal_period.
-	Calls int64 `json:"calls"`
-	// Key field for a rate limit. Currently, only 'user' and 'endpoint' are
-	// supported, with 'endpoint' being the default if not specified.
+	Calls int64 `json:"calls,omitempty"`
+	// Key field for a rate limit. Currently, 'user', 'user_group,
+	// 'service_principal', and 'endpoint' are supported, with 'endpoint' being
+	// the default if not specified.
 	Key AiGatewayRateLimitKey `json:"key,omitempty"`
+	// Principal field for a user, user group, or service principal to apply
+	// rate limiting to. Accepts a user email, group name, or service principal
+	// application ID.
+	Principal string `json:"principal,omitempty"`
 	// Renewal period field for a rate limit. Currently, only 'minute' is
 	// supported.
 	RenewalPeriod AiGatewayRateLimitRenewalPeriod `json:"renewal_period"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AiGatewayRateLimit) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AiGatewayRateLimit) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type AiGatewayRateLimitKey string
 
 const AiGatewayRateLimitKeyEndpoint AiGatewayRateLimitKey = `endpoint`
 
+const AiGatewayRateLimitKeyServicePrincipal AiGatewayRateLimitKey = `service_principal`
+
 const AiGatewayRateLimitKeyUser AiGatewayRateLimitKey = `user`
+
+const AiGatewayRateLimitKeyUserGroup AiGatewayRateLimitKey = `user_group`
 
 // String representation for [fmt.Print]
 func (f *AiGatewayRateLimitKey) String() string {
@@ -176,11 +195,11 @@ func (f *AiGatewayRateLimitKey) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AiGatewayRateLimitKey) Set(v string) error {
 	switch v {
-	case `endpoint`, `user`:
+	case `endpoint`, `service_principal`, `user`, `user_group`:
 		*f = AiGatewayRateLimitKey(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "endpoint", "user"`, v)
+		return fmt.Errorf(`value "%s" is not one of "endpoint", "service_principal", "user", "user_group"`, v)
 	}
 }
 
@@ -190,7 +209,9 @@ func (f *AiGatewayRateLimitKey) Set(v string) error {
 func (f *AiGatewayRateLimitKey) Values() []AiGatewayRateLimitKey {
 	return []AiGatewayRateLimitKey{
 		AiGatewayRateLimitKeyEndpoint,
+		AiGatewayRateLimitKeyServicePrincipal,
 		AiGatewayRateLimitKeyUser,
+		AiGatewayRateLimitKeyUserGroup,
 	}
 }
 
@@ -458,7 +479,6 @@ func (s BearerTokenAuth) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get build logs for a served model
 type BuildLogsRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
@@ -592,6 +612,8 @@ type CreateServingEndpoint struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The core config of the serving endpoint.
 	Config *EndpointCoreConfigInput `json:"config,omitempty"`
+
+	Description string `json:"description,omitempty"`
 	// The name of the serving endpoint. This field is required and must be
 	// unique across a Databricks workspace. An endpoint name can consist of
 	// alphanumeric characters, dashes, and underscores.
@@ -684,10 +706,6 @@ type DataframeSplitInput struct {
 	Index []int `json:"index,omitempty"`
 }
 
-type DeleteResponse struct {
-}
-
-// Delete a serving endpoint
 type DeleteServingEndpointRequest struct {
 	Name string `json:"-" url:"-"`
 }
@@ -946,7 +964,6 @@ type EndpointTags struct {
 	Tags []EndpointTag `json:"tags,omitempty"`
 }
 
-// Get metrics of a serving endpoint
 type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
 	// required.
@@ -1172,7 +1189,6 @@ func (s FoundationModel) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get the schema for a serving endpoint
 type GetOpenApiRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
@@ -1183,7 +1199,6 @@ type GetOpenApiResponse struct {
 	Contents io.ReadCloser `json:"-"`
 }
 
-// Get serving endpoint permission levels
 type GetServingEndpointPermissionLevelsRequest struct {
 	// The serving endpoint for which to get or manage permissions.
 	ServingEndpointId string `json:"-" url:"-"`
@@ -1194,13 +1209,11 @@ type GetServingEndpointPermissionLevelsResponse struct {
 	PermissionLevels []ServingEndpointPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get serving endpoint permissions
 type GetServingEndpointPermissionsRequest struct {
 	// The serving endpoint for which to get or manage permissions.
 	ServingEndpointId string `json:"-" url:"-"`
 }
 
-// Get a single serving endpoint
 type GetServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
 	Name string `json:"-" url:"-"`
@@ -1258,7 +1271,6 @@ type ListEndpointsResponse struct {
 	Endpoints []ServingEndpoint `json:"endpoints,omitempty"`
 }
 
-// Get the latest logs for a served model
 type LogsRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
@@ -1713,11 +1725,22 @@ func (f *RateLimitRenewalPeriod) Type() string {
 }
 
 type Route struct {
+	ServedEntityName string `json:"served_entity_name,omitempty"`
 	// The name of the served model this route configures traffic for.
-	ServedModelName string `json:"served_model_name"`
+	ServedModelName string `json:"served_model_name,omitempty"`
 	// The percentage of endpoint traffic to send to this route. It must be an
 	// integer between 0 and 100 inclusive.
 	TrafficPercentage int `json:"traffic_percentage"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Route) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Route) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ServedEntityInput struct {
@@ -1828,8 +1851,7 @@ type ServedEntityOutput struct {
 	// external_model, users cannot update it to add external_model later. The
 	// task type of all external models within an endpoint must be the same.
 	ExternalModel *ExternalModel `json:"external_model,omitempty"`
-	// All fields are not sensitive as they are hard-coded in the system and
-	// made available to customers.
+
 	FoundationModel *FoundationModel `json:"foundation_model,omitempty"`
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
@@ -1894,8 +1916,7 @@ type ServedEntitySpec struct {
 	EntityVersion string `json:"entity_version,omitempty"`
 
 	ExternalModel *ExternalModel `json:"external_model,omitempty"`
-	// All fields are not sensitive as they are hard-coded in the system and
-	// made available to customers.
+
 	FoundationModel *FoundationModel `json:"foundation_model,omitempty"`
 
 	Name string `json:"name,omitempty"`
@@ -2224,7 +2245,7 @@ func (s ServingEndpoint) MarshalJSON() ([]byte, error) {
 type ServingEndpointAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// Permission level
+
 	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -2360,7 +2381,7 @@ type ServingEndpointPermission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-	// Permission level
+
 	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2435,7 +2456,7 @@ func (s ServingEndpointPermissions) MarshalJSON() ([]byte, error) {
 
 type ServingEndpointPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
-	// Permission level
+
 	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

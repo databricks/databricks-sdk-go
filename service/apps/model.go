@@ -75,7 +75,7 @@ func (s App) MarshalJSON() ([]byte, error) {
 type AppAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// Permission level
+
 	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -268,7 +268,7 @@ type AppPermission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-	// Permission level
+
 	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -340,7 +340,7 @@ func (s AppPermissions) MarshalJSON() ([]byte, error) {
 
 type AppPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
-	// Permission level
+
 	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -361,6 +361,7 @@ type AppPermissionsRequest struct {
 }
 
 type AppResource struct {
+	Database *AppResourceDatabase `json:"database,omitempty"`
 	// Description of the App Resource.
 	Description string `json:"description,omitempty"`
 
@@ -385,6 +386,48 @@ func (s *AppResource) UnmarshalJSON(b []byte) error {
 
 func (s AppResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type AppResourceDatabase struct {
+	DatabaseName string `json:"database_name"`
+
+	InstanceName string `json:"instance_name"`
+
+	Permission AppResourceDatabaseDatabasePermission `json:"permission"`
+}
+
+type AppResourceDatabaseDatabasePermission string
+
+const AppResourceDatabaseDatabasePermissionCanConnectAndCreate AppResourceDatabaseDatabasePermission = `CAN_CONNECT_AND_CREATE`
+
+// String representation for [fmt.Print]
+func (f *AppResourceDatabaseDatabasePermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceDatabaseDatabasePermission) Set(v string) error {
+	switch v {
+	case `CAN_CONNECT_AND_CREATE`:
+		*f = AppResourceDatabaseDatabasePermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_CONNECT_AND_CREATE"`, v)
+	}
+}
+
+// Values returns all possible values for AppResourceDatabaseDatabasePermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppResourceDatabaseDatabasePermission) Values() []AppResourceDatabaseDatabasePermission {
+	return []AppResourceDatabaseDatabasePermission{
+		AppResourceDatabaseDatabasePermissionCanConnectAndCreate,
+	}
+}
+
+// Type always returns AppResourceDatabaseDatabasePermission to satisfy [pflag.Value] interface
+func (f *AppResourceDatabaseDatabasePermission) Type() string {
+	return "AppResourceDatabaseDatabasePermission"
 }
 
 type AppResourceJob struct {
@@ -794,14 +837,13 @@ func (s ComputeStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Create an app deployment
 type CreateAppDeploymentRequest struct {
+	// The app deployment configuration.
 	AppDeployment AppDeployment `json:"app_deployment"`
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
 }
 
-// Create an app
 type CreateAppRequest struct {
 	App App `json:"app"`
 	// If true, the app will not be started after creation.
@@ -818,13 +860,11 @@ func (s CreateAppRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete an app
 type DeleteAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
 }
 
-// Get an app deployment
 type GetAppDeploymentRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
@@ -832,7 +872,6 @@ type GetAppDeploymentRequest struct {
 	DeploymentId string `json:"-" url:"-"`
 }
 
-// Get app permission levels
 type GetAppPermissionLevelsRequest struct {
 	// The app for which to get or manage permissions.
 	AppName string `json:"-" url:"-"`
@@ -843,19 +882,16 @@ type GetAppPermissionLevelsResponse struct {
 	PermissionLevels []AppPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get app permissions
 type GetAppPermissionsRequest struct {
 	// The app for which to get or manage permissions.
 	AppName string `json:"-" url:"-"`
 }
 
-// Get an app
 type GetAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
 }
 
-// List app deployments
 type ListAppDeploymentsRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
@@ -893,7 +929,6 @@ func (s ListAppDeploymentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List apps
 type ListAppsRequest struct {
 	// Upper bound for items returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -938,7 +973,6 @@ type StopAppRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// Update an app
 type UpdateAppRequest struct {
 	App App `json:"app"`
 	// The name of the app. The name must contain only lowercase alphanumeric

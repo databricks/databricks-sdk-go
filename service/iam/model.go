@@ -11,7 +11,7 @@ import (
 type AccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// Permission level
+
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -69,7 +69,6 @@ func (s Actor) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Check access policy to a resource
 type CheckPolicyRequest struct {
 	Actor Actor `json:"-" url:"actor"`
 
@@ -126,49 +125,39 @@ func (s ComplexValue) MarshalJSON() ([]byte, error) {
 }
 
 type ConsistencyToken struct {
-	Value string `json:"value"`
+	Value string `json:"value" url:"value"`
 }
 
-// Delete a group.
 type DeleteAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a service principal.
 type DeleteAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a user.
 type DeleteAccountUserRequest struct {
 	// Unique ID for a user in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a group.
 type DeleteGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 }
 
-type DeleteResponse struct {
-}
-
-// Delete a service principal.
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a user.
 type DeleteUserRequest struct {
 	// Unique ID for a user in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete permissions assignment
 type DeleteWorkspaceAssignmentRequest struct {
 	// The ID of the user, service principal, or group.
 	PrincipalId int64 `json:"-" url:"-"`
@@ -176,22 +165,16 @@ type DeleteWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-type DeleteWorkspacePermissionAssignmentResponse struct {
-}
-
-// Get group details.
 type GetAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Get service principal details.
 type GetAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Get user details.
 type GetAccountUserRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -228,7 +211,6 @@ func (s GetAccountUserRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get assignable roles for a resource
 type GetAssignableRolesForResourceRequest struct {
 	// The resource name for which assignable roles will be listed.
 	//
@@ -244,7 +226,6 @@ type GetAssignableRolesForResourceResponse struct {
 	Roles []Role `json:"roles,omitempty"`
 }
 
-// Get group details.
 type GetGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -255,14 +236,13 @@ type GetPasswordPermissionLevelsResponse struct {
 	PermissionLevels []PasswordPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get object permission levels
 type GetPermissionLevelsRequest struct {
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
-	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
-	// directories, experiments, files, instance-pools, jobs, notebooks,
-	// pipelines, queries, registered-models, repos, serving-endpoints, or
-	// warehouses.
+	// alertsv2, authorization, clusters, cluster-policies, dashboards,
+	// dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
+	// notebooks, pipelines, queries, registered-models, repos,
+	// serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -271,19 +251,17 @@ type GetPermissionLevelsResponse struct {
 	PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get object permissions
 type GetPermissionRequest struct {
 	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
-	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
-	// directories, experiments, files, instance-pools, jobs, notebooks,
-	// pipelines, queries, registered-models, repos, serving-endpoints, or
-	// warehouses.
+	// alertsv2, authorization, clusters, cluster-policies, dashboards,
+	// dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
+	// notebooks, pipelines, queries, registered-models, repos,
+	// serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
-// Get a rule set
 type GetRuleSetRequest struct {
 	// Etag used for versioning. The response is at least as fresh as the eTag
 	// provided. Etag is used for optimistic concurrency control as a way to
@@ -311,7 +289,6 @@ type GetRuleSetRequest struct {
 	Name string `json:"-" url:"name"`
 }
 
-// Get service principal details.
 type GetServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -354,7 +331,6 @@ func (f *GetSortOrder) Type() string {
 	return "GetSortOrder"
 }
 
-// Get user details.
 type GetUserRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -391,7 +367,6 @@ func (s GetUserRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List workspace permissions
 type GetWorkspaceAssignmentRequest struct {
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -421,7 +396,7 @@ type Group struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
@@ -476,7 +451,6 @@ func (f *GroupSchema) Type() string {
 	return "GroupSchema"
 }
 
-// List group details.
 type ListAccountGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -510,7 +484,6 @@ func (s ListAccountGroupsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List service principals.
 type ListAccountServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -544,7 +517,6 @@ func (s ListAccountServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List users.
 type ListAccountUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -579,7 +551,6 @@ func (s ListAccountUsersRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List group details.
 type ListGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -695,7 +666,6 @@ func (s ListServicePrincipalResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List service principals.
 type ListServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -766,7 +736,6 @@ func (f *ListSortOrder) Type() string {
 	return "ListSortOrder"
 }
 
-// List users.
 type ListUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -825,7 +794,6 @@ func (s ListUsersResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get permission assignments
 type ListWorkspaceAssignmentRequest struct {
 	// The workspace ID for the account.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -1108,9 +1076,6 @@ func (f *PatchOp) Type() string {
 	return "PatchOp"
 }
 
-type PatchResponse struct {
-}
-
 type PatchSchema string
 
 const PatchSchemaUrnIetfParamsScimApiMessages20PatchOp PatchSchema = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
@@ -1149,7 +1114,7 @@ type Permission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-	// Permission level
+
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1297,7 +1262,7 @@ func (s PermissionOutput) MarshalJSON() ([]byte, error) {
 
 type PermissionsDescription struct {
 	Description string `json:"description,omitempty"`
-	// Permission level
+
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1467,7 +1432,7 @@ type ServicePrincipal struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
 	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.
@@ -1523,10 +1488,10 @@ type SetObjectPermissions struct {
 	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
-	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
-	// directories, experiments, files, instance-pools, jobs, notebooks,
-	// pipelines, queries, registered-models, repos, serving-endpoints, or
-	// warehouses.
+	// alertsv2, authorization, clusters, cluster-policies, dashboards,
+	// dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
+	// notebooks, pipelines, queries, registered-models, repos,
+	// serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1535,14 +1500,11 @@ type UpdateObjectPermissions struct {
 	// The id of the request object.
 	RequestObjectId string `json:"-" url:"-"`
 	// The type of the request object. Can be one of the following: alerts,
-	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
-	// directories, experiments, files, instance-pools, jobs, notebooks,
-	// pipelines, queries, registered-models, repos, serving-endpoints, or
-	// warehouses.
+	// alertsv2, authorization, clusters, cluster-policies, dashboards,
+	// dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
+	// notebooks, pipelines, queries, registered-models, repos,
+	// serving-endpoints, or warehouses.
 	RequestObjectType string `json:"-" url:"-"`
-}
-
-type UpdateResponse struct {
 }
 
 type UpdateRuleSetRequest struct {
@@ -1588,7 +1550,7 @@ type User struct {
 
 	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
-	Id string `json:"id,omitempty" url:"-"`
+	Id string `json:"id,omitempty"`
 
 	Name *Name `json:"name,omitempty"`
 	// Corresponds to AWS instance profile/arn role.

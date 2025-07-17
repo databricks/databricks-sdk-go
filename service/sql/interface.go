@@ -125,14 +125,14 @@ type AlertsV2Service interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type DashboardWidgetsService interface {
 
-	// Add widget to a dashboard
+	// Adds a widget to a dashboard
 	Create(ctx context.Context, request CreateWidget) (*Widget, error)
 
-	// Remove widget
+	// Removes a widget from a dashboard
 	Delete(ctx context.Context, request DeleteDashboardWidgetRequest) error
 
-	// Update existing widget
-	Update(ctx context.Context, request CreateWidget) (*Widget, error)
+	// Updates an existing widget
+	Update(ctx context.Context, request UpdateWidgetRequest) (*Widget, error)
 }
 
 // In general, there is little need to modify dashboards using the API. However,
@@ -144,9 +144,6 @@ type DashboardWidgetsService interface {
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type DashboardsService interface {
-
-	// Create a dashboard object.
-	Create(ctx context.Context, request DashboardPostContent) (*Dashboard, error)
 
 	// Moves a dashboard to the trash. Trashed dashboards do not appear in list
 	// views or searches, and cannot be shared.

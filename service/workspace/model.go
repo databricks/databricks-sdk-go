@@ -8,6 +8,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+// An item representing an ACL rule applied to the given principal (user or
+// group) on the associated scope point.
 type AclItem struct {
 	// The permission level applied to the principal.
 	Permission AclPermission `json:"permission"`
@@ -15,6 +17,7 @@ type AclItem struct {
 	Principal string `json:"principal"`
 }
 
+// The ACL permission levels for Secret ACLs applied to secret scopes.
 type AclPermission string
 
 const AclPermissionManage AclPermission = `MANAGE`
@@ -55,6 +58,8 @@ func (f *AclPermission) Type() string {
 	return "AclPermission"
 }
 
+// The metadata of the Azure KeyVault for a secret scope of type
+// `AZURE_KEYVAULT`
 type AzureKeyVaultSecretScopeMetadata struct {
 	// The DNS of the KeyVault
 	DnsName string `json:"dns_name"`
@@ -77,6 +82,11 @@ type CreateCredentialsRequest struct {
 	// providers please see your provider's Personal Access Token authentication
 	// documentation to see what is supported.
 	GitUsername string `json:"git_username,omitempty"`
+	// if the credential is the default for the given provider
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
+	// the name of the git credential, used for identification and ease of
+	// lookup
+	Name string `json:"name,omitempty"`
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of
 	// scoped access tokens. [Learn more].
@@ -103,6 +113,11 @@ type CreateCredentialsResponse struct {
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
 	GitUsername string `json:"git_username,omitempty"`
+	// if the credential is the default for the given provider
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
+	// the name of the git credential, used for identification and ease of
+	// lookup
+	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -171,15 +186,15 @@ func (s CreateRepoResponse) MarshalJSON() ([]byte, error) {
 }
 
 type CreateScope struct {
-	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
+	// The metadata for the secret scope if the type is ``AZURE_KEYVAULT``
 	BackendAzureKeyvault *AzureKeyVaultSecretScopeMetadata `json:"backend_azure_keyvault,omitempty"`
-	// The principal that is initially granted `MANAGE` permission to the
+	// The principal that is initially granted ``MANAGE`` permission to the
 	// created scope.
 	InitialManagePrincipal string `json:"initial_manage_principal,omitempty"`
 	// Scope name requested by the user. Scope names are unique.
 	Scope string `json:"scope"`
 	// The backend type the scope will be created with. If not specified, will
-	// default to `DATABRICKS`
+	// default to ``DATABRICKS``
 	ScopeBackendType ScopeBackendType `json:"scope_backend_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -193,9 +208,6 @@ func (s CreateScope) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type CreateScopeResponse struct {
-}
-
 type CredentialInfo struct {
 	// ID of the credential object in the workspace.
 	CredentialId int64 `json:"credential_id"`
@@ -204,6 +216,11 @@ type CredentialInfo struct {
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
 	GitUsername string `json:"git_username,omitempty"`
+	// if the credential is the default for the given provider
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
+	// the name of the git credential, used for identification and ease of
+	// lookup
+	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -243,28 +260,14 @@ type DeleteAcl struct {
 	Scope string `json:"scope"`
 }
 
-type DeleteAclResponse struct {
-}
-
-// Delete a credential
 type DeleteCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
 }
 
-type DeleteCredentialsResponse struct {
-}
-
-// Delete a repo
 type DeleteRepoRequest struct {
 	// The ID for the corresponding repo to delete.
 	RepoId int64 `json:"-" url:"-"`
-}
-
-type DeleteRepoResponse struct {
-}
-
-type DeleteResponse struct {
 }
 
 type DeleteScope struct {
@@ -272,17 +275,11 @@ type DeleteScope struct {
 	Scope string `json:"scope"`
 }
 
-type DeleteScopeResponse struct {
-}
-
 type DeleteSecret struct {
 	// Name of the secret to delete.
 	Key string `json:"key"`
 	// The name of the scope that contains the secret to delete.
 	Scope string `json:"scope"`
-}
-
-type DeleteSecretResponse struct {
 }
 
 // The format for workspace import and export.
@@ -338,7 +335,6 @@ func (f *ExportFormat) Type() string {
 	return "ExportFormat"
 }
 
-// Export a workspace object
 type ExportRequest struct {
 	// This specifies the format of the exported file. By default, this is
 	// `SOURCE`.
@@ -380,7 +376,6 @@ func (s ExportResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get secret ACL details
 type GetAclRequest struct {
 	// The principal to fetch ACL information for.
 	Principal string `json:"-" url:"principal"`
@@ -388,7 +383,6 @@ type GetAclRequest struct {
 	Scope string `json:"-" url:"scope"`
 }
 
-// Get a credential entry
 type GetCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
@@ -402,6 +396,11 @@ type GetCredentialsResponse struct {
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
 	GitUsername string `json:"git_username,omitempty"`
+	// if the credential is the default for the given provider
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
+	// the name of the git credential, used for identification and ease of
+	// lookup
+	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -414,7 +413,6 @@ func (s GetCredentialsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get repo permission levels
 type GetRepoPermissionLevelsRequest struct {
 	// The repo for which to get or manage permissions.
 	RepoId string `json:"-" url:"-"`
@@ -425,13 +423,11 @@ type GetRepoPermissionLevelsResponse struct {
 	PermissionLevels []RepoPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get repo permissions
 type GetRepoPermissionsRequest struct {
 	// The repo for which to get or manage permissions.
 	RepoId string `json:"-" url:"-"`
 }
 
-// Get a repo
 type GetRepoRequest struct {
 	// ID of the Git folder (repo) object in the workspace.
 	RepoId int64 `json:"-" url:"-"`
@@ -464,11 +460,10 @@ func (s GetRepoResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a secret
 type GetSecretRequest struct {
-	// The key to fetch secret for.
+	// Name of the secret to fetch value information.
 	Key string `json:"-" url:"key"`
-	// The name of the scope to fetch secret information from.
+	// The name of the scope that contains the secret.
 	Scope string `json:"-" url:"scope"`
 }
 
@@ -489,13 +484,11 @@ func (s GetSecretResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get status
 type GetStatusRequest struct {
 	// The absolute path of the notebook or directory.
 	Path string `json:"-" url:"path"`
 }
 
-// Get workspace object permission levels
 type GetWorkspaceObjectPermissionLevelsRequest struct {
 	// The workspace object for which to get or manage permissions.
 	WorkspaceObjectId string `json:"-" url:"-"`
@@ -508,7 +501,6 @@ type GetWorkspaceObjectPermissionLevelsResponse struct {
 	PermissionLevels []WorkspaceObjectPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get workspace object permissions
 type GetWorkspaceObjectPermissionsRequest struct {
 	// The workspace object for which to get or manage permissions.
 	WorkspaceObjectId string `json:"-" url:"-"`
@@ -612,9 +604,6 @@ func (f *ImportFormat) Type() string {
 	return "ImportFormat"
 }
 
-type ImportResponse struct {
-}
-
 // The language of notebook.
 type Language string
 
@@ -659,7 +648,6 @@ func (f *Language) Type() string {
 	return "Language"
 }
 
-// Lists ACLs
 type ListAclsRequest struct {
 	// The name of the scope to fetch ACL information from.
 	Scope string `json:"-" url:"scope"`
@@ -675,7 +663,6 @@ type ListCredentialsResponse struct {
 	Credentials []CredentialInfo `json:"credentials,omitempty"`
 }
 
-// Get repos
 type ListReposRequest struct {
 	// Token used to get the next page of results. If not specified, returns the
 	// first page of results as well as a next page token if there are more
@@ -725,7 +712,6 @@ type ListScopesResponse struct {
 	Scopes []SecretScope `json:"scopes,omitempty"`
 }
 
-// List secret keys
 type ListSecretsRequest struct {
 	// The name of the scope to list secrets within.
 	Scope string `json:"-" url:"scope"`
@@ -736,7 +722,6 @@ type ListSecretsResponse struct {
 	Secrets []SecretMetadata `json:"secrets,omitempty"`
 }
 
-// List contents
 type ListWorkspaceRequest struct {
 	// UTC timestamp in milliseconds
 	NotebooksModifiedAfter int64 `json:"-" url:"notebooks_modified_after,omitempty"`
@@ -759,9 +744,6 @@ type Mkdirs struct {
 	// exist, it will also create them. If the directory already exists, this
 	// command will do nothing and succeed.
 	Path string `json:"path"`
-}
-
-type MkdirsResponse struct {
 }
 
 // The information of the object in workspace. It will be returned by “list“
@@ -860,9 +842,6 @@ type PutAcl struct {
 	Scope string `json:"scope"`
 }
 
-type PutAclResponse struct {
-}
-
 type PutSecret struct {
 	// If specified, value will be stored as bytes.
 	BytesValue string `json:"bytes_value,omitempty"`
@@ -884,13 +863,10 @@ func (s PutSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type PutSecretResponse struct {
-}
-
 type RepoAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// Permission level
+
 	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -963,7 +939,7 @@ type RepoPermission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-	// Permission level
+
 	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1041,7 +1017,7 @@ func (s RepoPermissions) MarshalJSON() ([]byte, error) {
 
 type RepoPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
-	// Permission level
+
 	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1061,6 +1037,8 @@ type RepoPermissionsRequest struct {
 	RepoId string `json:"-" url:"-"`
 }
 
+// The types of secret scope backends in the Secret Manager. Azure KeyVault
+// backed secret scopes will be supported in a later release.
 type ScopeBackendType string
 
 const ScopeBackendTypeAzureKeyvault ScopeBackendType = `AZURE_KEYVAULT`
@@ -1098,6 +1076,8 @@ func (f *ScopeBackendType) Type() string {
 	return "ScopeBackendType"
 }
 
+// The metadata about a secret. Returned when listing secrets. Does not contain
+// the actual secret value.
 type SecretMetadata struct {
 	// A unique name to identify the secret.
 	Key string `json:"key,omitempty"`
@@ -1115,10 +1095,13 @@ func (s SecretMetadata) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// An organizational resource for storing secrets. Secret scopes can be
+// different types (Databricks-managed, Azure KeyVault backed, etc), and ACLs
+// can be applied to control permissions for all secrets within a scope.
 type SecretScope struct {
 	// The type of secret scope backend.
 	BackendType ScopeBackendType `json:"backend_type,omitempty"`
-	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
+	// The metadata for the secret scope if the type is ``AZURE_KEYVAULT``
 	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata `json:"keyvault_metadata,omitempty"`
 	// A unique name to identify the secret scope.
 	Name string `json:"name,omitempty"`
@@ -1168,6 +1151,11 @@ type UpdateCredentialsRequest struct {
 	// providers please see your provider's Personal Access Token authentication
 	// documentation to see what is supported.
 	GitUsername string `json:"git_username,omitempty"`
+	// if the credential is the default for the given provider
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
+	// the name of the git credential, used for identification and ease of
+	// lookup
+	Name string `json:"name,omitempty"`
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of
 	// scoped access tokens. [Learn more].
@@ -1184,9 +1172,6 @@ func (s *UpdateCredentialsRequest) UnmarshalJSON(b []byte) error {
 
 func (s UpdateCredentialsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type UpdateCredentialsResponse struct {
 }
 
 type UpdateRepoRequest struct {
@@ -1214,13 +1199,10 @@ func (s UpdateRepoRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type UpdateRepoResponse struct {
-}
-
 type WorkspaceObjectAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// Permission level
+
 	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -1265,7 +1247,7 @@ type WorkspaceObjectPermission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-	// Permission level
+
 	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1343,7 +1325,7 @@ func (s WorkspaceObjectPermissions) MarshalJSON() ([]byte, error) {
 
 type WorkspaceObjectPermissionsDescription struct {
 	Description string `json:"description,omitempty"`
-	// Permission level
+
 	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

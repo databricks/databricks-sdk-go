@@ -28,6 +28,9 @@ type ClientConfig struct {
 	AuthVisitor RequestVisitor
 	Visitors    []RequestVisitor
 
+	AccountID string
+	Host      string
+
 	RetryTimeout       time.Duration
 	HTTPTimeout        time.Duration
 	InsecureSkipVerify bool
@@ -40,6 +43,35 @@ type ClientConfig struct {
 	TransientErrors []string
 
 	Transport http.RoundTripper
+}
+
+type DoOption struct {
+	in           RequestVisitor
+	out          func(body *common.ResponseWrapper) error
+	body         any
+	contentType  string
+	isAuthOption bool
+	queryParams  map[string]any
+}
+
+type ApiClient struct {
+	config      ClientConfig
+	rateLimiter *rate.Limiter
+	httpClient  *http.Client
+}
+
+// IsAccountClient returns true if the client is configured for Accounts API.
+func (apic *ApiClient) IsAccountClient() bool {
+	if apic.config.AccountID == "" {
+		return false
+	}
+	if strings.HasPrefix(apic.config.Host, "https://accounts.") {
+		return true
+	}
+	if strings.HasPrefix(apic.config.Host, "https://accounts-dod.") {
+		return true
+	}
+	return false
 }
 
 var defaultTransport = makeDefaultTransport()
@@ -73,10 +105,13 @@ func (cfg ClientConfig) httpTransport() http.RoundTripper {
 }
 
 func NewApiClient(cfg ClientConfig) *ApiClient {
+	// Set defaults for config values that are not set.
 	cfg.HTTPTimeout = time.Duration(orDefault(int(cfg.HTTPTimeout), int(30*time.Second)))
 	cfg.DebugTruncateBytes = orDefault(cfg.DebugTruncateBytes, 96)
 	cfg.RetryTimeout = time.Duration(orDefault(int(cfg.RetryTimeout), int(5*time.Minute)))
-	cfg.HTTPTimeout = time.Duration(orDefault(int(cfg.HTTPTimeout), int(30*time.Second)))
+	cfg.HTTPTimeout = time.Duration(orDefault(int(cfg.HTTPTimeout), int(60*time.Second)))
+	cfg.RateLimitPerSecond = orDefault(cfg.RateLimitPerSecond, 15)
+
 	if cfg.ErrorMapper == nil {
 		// default generic error mapper
 		cfg.ErrorMapper = DefaultErrorMapper
@@ -105,21 +140,6 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 			Transport: transport,
 		},
 	}
-}
-
-type ApiClient struct {
-	config      ClientConfig
-	rateLimiter *rate.Limiter
-	httpClient  *http.Client
-}
-
-type DoOption struct {
-	in           RequestVisitor
-	out          func(body *common.ResponseWrapper) error
-	body         any
-	contentType  string
-	isAuthOption bool
-	queryParams  map[string]any
 }
 
 // Do sends an HTTP request against path.

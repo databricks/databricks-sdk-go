@@ -28,13 +28,15 @@
 //
 // - [billing.BudgetPolicyAPI]: A service serves REST API about Budget policies.
 //
+// - [billing.BudgetsAPI]: These APIs manage budget configurations for this account.
+//
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
 // - [cleanrooms.CleanRoomAssetsAPI]: Clean room assets are data and code objects — Tables, volumes, and notebooks that are shared with the clean room.
 //
 // - [cleanrooms.CleanRoomTaskRunsAPI]: Clean room task runs are the executions of notebooks in a clean room.
 //
-// - [cleanrooms.CleanRoomsAPI]: A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting environment where multiple parties can work together on sensitive enterprise data without direct access to each other’s data.
+// - [cleanrooms.CleanRoomsAPI]: A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting environment where multiple parties can work together on sensitive enterprise data without direct access to each other's data.
 //
 // - [compute.ClusterPoliciesAPI]: You can use cluster policies to control users' ability to configure clusters based on a set of rules.
 //
@@ -56,9 +58,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
-//
 // - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
+//
+// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -84,6 +86,8 @@
 //
 // - [settings.DefaultNamespaceAPI]: The default namespace setting API allows users to configure the default namespace for a Databricks workspace.
 //
+// - [settings.DefaultWarehouseIdAPI]: Warehouse to be selected by default for users in this workspace.
+//
 // - [settings.DisableLegacyAccessAPI]: 'Disabling legacy access' has the following impacts: 1.
 //
 // - [settings.DisableLegacyDbfsAPI]: Disabling legacy DBFS has the following implications: 1.
@@ -106,13 +110,19 @@
 //
 // - [ml.ExperimentsAPI]: Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment.
 //
+// - [catalog.ExternalLineageAPI]: External Lineage APIs enable defining and managing lineage relationships between Databricks objects and external systems.
+//
 // - [catalog.ExternalLocationsAPI]: An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path.
+//
+// - [catalog.ExternalMetadataAPI]: External Metadata objects enable customers to register and manage metadata about external systems within Unity Catalog.
 //
 // - [ml.FeatureStoreAPI]: A feature store is a centralized repository that enables data scientists to find and share features.
 //
 // - [oauth2.AccountFederationPolicyAPI]: These APIs manage account federation policies.
 //
 // - [files.FilesAPI]: The Files API is a standard HTTP API that allows you to read, write, list, and delete files and directories by referring to their URI.
+//
+// - [ml.ForecastingAPI]: The Forecasting API allows you to create and get serverless forecasting experiments.
 //
 // - [catalog.FunctionsAPI]: Functions implement User-Defined Functions (UDFs) in Unity Catalog.
 //
@@ -151,6 +161,8 @@
 // - [settings.LlmProxyPartnerPoweredWorkspaceAPI]: Determines if partner powered models are enabled or not for a specific workspace.
 //
 // - [billing.LogDeliveryAPI]: These APIs manage log delivery configurations for this account.
+//
+// - [ml.MaterializedFeaturesAPI]: Materialized Features are columns in tables and views that can be directly used as features to train and serve ML models.
 //
 // - [catalog.AccountMetastoreAssignmentsAPI]: These APIs manage metastore assignments to a workspace.
 //
@@ -246,6 +258,8 @@
 //
 // - [oauth2.ServicePrincipalSecretsAPI]: These APIs enable administrators to manage service principal secrets.
 //
+// - [oauth2.ServicePrincipalSecretsProxyAPI]: These APIs enable administrators to manage service principal secrets at the workspace level.
+//
 // - [iam.ServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
 //
 // - [iam.AccountServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
@@ -309,10 +323,6 @@
 // - [settings.WorkspaceNetworkConfigurationAPI]: These APIs allow configuration of network settings for Databricks workspaces by selecting which network policy to associate with the workspace.
 //
 // - [provisioning.WorkspacesAPI]: These APIs manage workspaces for this account.
-//
-// - [billing.BudgetsAPI]: These APIs manage budget configurations for this account.
-//
-// - [ml.ForecastingAPI]: The Forecasting API allows you to create and get serverless forecasting experiments.
 package service
 
 import (
@@ -360,6 +370,7 @@ var (
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
 	_ *billing.BillableUsageAPI                           = nil
 	_ *billing.BudgetPolicyAPI                            = nil
+	_ *billing.BudgetsAPI                                 = nil
 	_ *catalog.CatalogsAPI                                = nil
 	_ *cleanrooms.CleanRoomAssetsAPI                      = nil
 	_ *cleanrooms.CleanRoomTaskRunsAPI                    = nil
@@ -374,8 +385,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *catalog.CredentialsAPI                             = nil
 	_ *provisioning.CredentialsAPI                        = nil
+	_ *catalog.CredentialsAPI                             = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
@@ -388,6 +399,7 @@ var (
 	_ *files.DbfsAPI                                      = nil
 	_ *sql.DbsqlPermissionsAPI                            = nil
 	_ *settings.DefaultNamespaceAPI                       = nil
+	_ *settings.DefaultWarehouseIdAPI                     = nil
 	_ *settings.DisableLegacyAccessAPI                    = nil
 	_ *settings.DisableLegacyDbfsAPI                      = nil
 	_ *settings.DisableLegacyFeaturesAPI                  = nil
@@ -399,10 +411,13 @@ var (
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil
 	_ *settings.EsmEnablementAccountAPI                   = nil
 	_ *ml.ExperimentsAPI                                  = nil
+	_ *catalog.ExternalLineageAPI                         = nil
 	_ *catalog.ExternalLocationsAPI                       = nil
+	_ *catalog.ExternalMetadataAPI                        = nil
 	_ *ml.FeatureStoreAPI                                 = nil
 	_ *oauth2.AccountFederationPolicyAPI                  = nil
 	_ *files.FilesAPI                                     = nil
+	_ *ml.ForecastingAPI                                  = nil
 	_ *catalog.FunctionsAPI                               = nil
 	_ *dashboards.GenieAPI                                = nil
 	_ *workspace.GitCredentialsAPI                        = nil
@@ -422,6 +437,7 @@ var (
 	_ *settings.LlmProxyPartnerPoweredEnforceAPI          = nil
 	_ *settings.LlmProxyPartnerPoweredWorkspaceAPI        = nil
 	_ *billing.LogDeliveryAPI                             = nil
+	_ *ml.MaterializedFeaturesAPI                         = nil
 	_ *catalog.AccountMetastoreAssignmentsAPI             = nil
 	_ *catalog.MetastoresAPI                              = nil
 	_ *catalog.AccountMetastoresAPI                       = nil
@@ -469,6 +485,7 @@ var (
 	_ *workspace.SecretsAPI                               = nil
 	_ *oauth2.ServicePrincipalFederationPolicyAPI         = nil
 	_ *oauth2.ServicePrincipalSecretsAPI                  = nil
+	_ *oauth2.ServicePrincipalSecretsProxyAPI             = nil
 	_ *iam.ServicePrincipalsAPI                           = nil
 	_ *iam.AccountServicePrincipalsAPI                    = nil
 	_ *serving.ServingEndpointsAPI                        = nil
@@ -501,6 +518,4 @@ var (
 	_ *settings.WorkspaceConfAPI                          = nil
 	_ *settings.WorkspaceNetworkConfigurationAPI          = nil
 	_ *provisioning.WorkspacesAPI                         = nil
-	_ *billing.BudgetsAPI                                 = nil
-	_ *ml.ForecastingAPI                                  = nil
 )

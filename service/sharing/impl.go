@@ -30,11 +30,10 @@ func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*Pr
 }
 
 func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -171,12 +170,11 @@ type recipientActivationImpl struct {
 }
 
 func (a *recipientActivationImpl) GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) error {
-	var getActivationUrlInfoResponse GetActivationUrlInfoResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/public/data_sharing_activation_info/%v", request.ActivationUrl)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getActivationUrlInfoResponse)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -207,12 +205,11 @@ func (a *recipientFederationPoliciesImpl) Create(ctx context.Context, request Cr
 }
 
 func (a *recipientFederationPoliciesImpl) Delete(ctx context.Context, request DeleteFederationPolicyRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies/%v", request.RecipientName, request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -302,11 +299,10 @@ func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*
 }
 
 func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -418,11 +414,10 @@ func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*ShareInf
 }
 
 func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 

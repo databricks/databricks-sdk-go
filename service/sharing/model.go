@@ -152,8 +152,8 @@ func (f *ColumnTypeName) Type() string {
 	return "ColumnTypeName"
 }
 
-// Create recipient federation policy
 type CreateFederationPolicyRequest struct {
+	// Name of the policy. This is the name of the policy to be created.
 	Policy FederationPolicy `json:"policy"`
 	// Name of the recipient. This is the name of the recipient for which the
 	// policy is being created.
@@ -161,7 +161,6 @@ type CreateFederationPolicyRequest struct {
 }
 
 type CreateProvider struct {
-	// The delta sharing authentication type.
 	AuthenticationType AuthenticationType `json:"authentication_type"`
 	// Description about the provider.
 	Comment string `json:"comment,omitempty"`
@@ -183,7 +182,6 @@ func (s CreateProvider) MarshalJSON() ([]byte, error) {
 }
 
 type CreateRecipient struct {
-	// The delta sharing authentication type.
 	AuthenticationType AuthenticationType `json:"authentication_type"`
 	// Description about the recipient.
 	Comment string `json:"comment,omitempty"`
@@ -239,7 +237,6 @@ func (s CreateShare) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete recipient federation policy
 type DeleteFederationPolicyRequest struct {
 	// Name of the policy. This is the name of the policy to be deleted.
 	Name string `json:"-" url:"-"`
@@ -248,22 +245,16 @@ type DeleteFederationPolicyRequest struct {
 	RecipientName string `json:"-" url:"-"`
 }
 
-// Delete a provider
 type DeleteProviderRequest struct {
 	// Name of the provider.
 	Name string `json:"-" url:"-"`
 }
 
-// Delete a share recipient
 type DeleteRecipientRequest struct {
 	// Name of the recipient.
 	Name string `json:"-" url:"-"`
 }
 
-type DeleteResponse struct {
-}
-
-// Delete a share
 type DeleteShareRequest struct {
 	// The name of the share.
 	Name string `json:"-" url:"-"`
@@ -271,9 +262,8 @@ type DeleteShareRequest struct {
 
 // Represents a UC dependency.
 type DeltaSharingDependency struct {
-	// A Function in UC as a dependency.
 	Function *DeltaSharingFunctionDependency `json:"function,omitempty"`
-	// A Table in UC as a dependency.
+
 	Table *DeltaSharingTableDependency `json:"table,omitempty"`
 }
 
@@ -511,16 +501,11 @@ func (f *FunctionParameterType) Type() string {
 	return "FunctionParameterType"
 }
 
-// Get a share activation URL
 type GetActivationUrlInfoRequest struct {
 	// The one time activation url. It also accepts activation token.
 	ActivationUrl string `json:"-" url:"-"`
 }
 
-type GetActivationUrlInfoResponse struct {
-}
-
-// Get recipient federation policy
 type GetFederationPolicyRequest struct {
 	// Name of the policy. This is the name of the policy to be retrieved.
 	Name string `json:"-" url:"-"`
@@ -529,13 +514,11 @@ type GetFederationPolicyRequest struct {
 	RecipientName string `json:"-" url:"-"`
 }
 
-// Get a provider
 type GetProviderRequest struct {
 	// Name of the provider.
 	Name string `json:"-" url:"-"`
 }
 
-// Get a share recipient
 type GetRecipientRequest struct {
 	// Name of the recipient.
 	Name string `json:"-" url:"-"`
@@ -579,7 +562,6 @@ func (s GetSharePermissionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a share
 type GetShareRequest struct {
 	// Query for data to include in the share.
 	IncludeSharedData bool `json:"-" url:"include_shared_data,omitempty"`
@@ -602,7 +584,6 @@ type IpAccessList struct {
 	AllowedIpAddresses []string `json:"allowed_ip_addresses,omitempty"`
 }
 
-// List recipient federation policies
 type ListFederationPoliciesRequest struct {
 	MaxResults int `json:"-" url:"max_results,omitempty"`
 
@@ -638,7 +619,6 @@ func (s ListFederationPoliciesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List assets by provider share
 type ListProviderShareAssetsRequest struct {
 	// Maximum number of functions to return.
 	FunctionMaxResults int `json:"-" url:"function_max_results,omitempty"`
@@ -696,7 +676,6 @@ func (s ListProviderSharesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List providers
 type ListProvidersRequest struct {
 	// If not provided, all providers will be returned. If no providers exist
 	// with this ID, no results will be returned.
@@ -744,7 +723,6 @@ func (s ListProvidersResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List share recipients
 type ListRecipientsRequest struct {
 	// If not provided, all recipients will be returned. If no recipients exist
 	// with this ID, no results will be returned.
@@ -792,7 +770,6 @@ func (s ListRecipientsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List shares by Provider
 type ListSharesRequest struct {
 	// Maximum number of shares to return. - when set to 0, the page length is
 	// set to a server configured value (recommended); - when set to a value
@@ -968,7 +945,8 @@ func (f *PartitionValueOp) Type() string {
 type PermissionsChange struct {
 	// The set of privileges to add.
 	Add []string `json:"add,omitempty"`
-	// The principal whose privileges we are changing.
+	// The principal whose privileges we are changing. Only one of principal or
+	// principal_id should be specified, never both at the same time.
 	Principal string `json:"principal,omitempty"`
 	// The set of privileges to remove.
 	Remove []string `json:"remove,omitempty"`
@@ -1151,7 +1129,8 @@ func (f *Privilege) Type() string {
 }
 
 type PrivilegeAssignment struct {
-	// The principal (user email address or group name).
+	// The principal (user email address or group name). For deleted principals,
+	// `principal` is empty while `principal_id` is populated.
 	Principal string `json:"principal,omitempty"`
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
@@ -1168,7 +1147,6 @@ func (s PrivilegeAssignment) MarshalJSON() ([]byte, error) {
 }
 
 type ProviderInfo struct {
-	// The delta sharing authentication type.
 	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
 	// Cloud vendor of the provider's UC metastore. This field is only present
 	// when the __authentication_type__ is **DATABRICKS**.
@@ -1237,7 +1215,7 @@ type RecipientInfo struct {
 	// Full activation url to retrieve the access token. It will be empty if the
 	// token is already retrieved.
 	ActivationUrl string `json:"activation_url,omitempty"`
-	// The delta sharing authentication type.
+
 	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
 	// Cloud vendor of the recipient's Unity Catalog Metastore. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
@@ -1357,7 +1335,6 @@ func (s RegisteredModelAlias) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get an access token
 type RetrieveTokenRequest struct {
 	// The one time activation url. It also accepts activation token.
 	ActivationUrl string `json:"-" url:"-"`
@@ -1434,7 +1411,6 @@ func (s ShareInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get recipient share permissions
 type SharePermissionsRequest struct {
 	// Maximum number of permissions to return. - when set to 0, the page length
 	// is set to a server configured value (recommended); - when set to a value
@@ -1824,6 +1800,8 @@ func (s TableInternalAttributes) MarshalJSON() ([]byte, error) {
 
 type TableInternalAttributesSharedTableType string
 
+const TableInternalAttributesSharedTableTypeDeltaIcebergTable TableInternalAttributesSharedTableType = `DELTA_ICEBERG_TABLE`
+
 const TableInternalAttributesSharedTableTypeDirectoryBasedTable TableInternalAttributesSharedTableType = `DIRECTORY_BASED_TABLE`
 
 const TableInternalAttributesSharedTableTypeFileBasedTable TableInternalAttributesSharedTableType = `FILE_BASED_TABLE`
@@ -1844,11 +1822,11 @@ func (f *TableInternalAttributesSharedTableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TableInternalAttributesSharedTableType) Set(v string) error {
 	switch v {
-	case `DIRECTORY_BASED_TABLE`, `FILE_BASED_TABLE`, `FOREIGN_TABLE`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
+	case `DELTA_ICEBERG_TABLE`, `DIRECTORY_BASED_TABLE`, `FILE_BASED_TABLE`, `FOREIGN_TABLE`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
 		*f = TableInternalAttributesSharedTableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DIRECTORY_BASED_TABLE", "FILE_BASED_TABLE", "FOREIGN_TABLE", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DELTA_ICEBERG_TABLE", "DIRECTORY_BASED_TABLE", "FILE_BASED_TABLE", "FOREIGN_TABLE", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
 	}
 }
 
@@ -1857,6 +1835,7 @@ func (f *TableInternalAttributesSharedTableType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *TableInternalAttributesSharedTableType) Values() []TableInternalAttributesSharedTableType {
 	return []TableInternalAttributesSharedTableType{
+		TableInternalAttributesSharedTableTypeDeltaIcebergTable,
 		TableInternalAttributesSharedTableTypeDirectoryBasedTable,
 		TableInternalAttributesSharedTableTypeFileBasedTable,
 		TableInternalAttributesSharedTableTypeForeignTable,
@@ -1871,7 +1850,6 @@ func (f *TableInternalAttributesSharedTableType) Type() string {
 	return "TableInternalAttributesSharedTableType"
 }
 
-// Update recipient federation policy
 type UpdateFederationPolicyRequest struct {
 	// Name of the policy. This is the name of the current name of the policy.
 	Name string `json:"-" url:"-"`

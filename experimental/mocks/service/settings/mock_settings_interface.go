@@ -302,6 +302,53 @@ func (_c *MockSettingsInterface_DefaultNamespace_Call) RunAndReturn(run func() s
 	return _c
 }
 
+// DefaultWarehouseId provides a mock function with no fields
+func (_m *MockSettingsInterface) DefaultWarehouseId() settings.DefaultWarehouseIdInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for DefaultWarehouseId")
+	}
+
+	var r0 settings.DefaultWarehouseIdInterface
+	if rf, ok := ret.Get(0).(func() settings.DefaultWarehouseIdInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.DefaultWarehouseIdInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockSettingsInterface_DefaultWarehouseId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DefaultWarehouseId'
+type MockSettingsInterface_DefaultWarehouseId_Call struct {
+	*mock.Call
+}
+
+// DefaultWarehouseId is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) DefaultWarehouseId() *MockSettingsInterface_DefaultWarehouseId_Call {
+	return &MockSettingsInterface_DefaultWarehouseId_Call{Call: _e.mock.On("DefaultWarehouseId")}
+}
+
+func (_c *MockSettingsInterface_DefaultWarehouseId_Call) Run(run func()) *MockSettingsInterface_DefaultWarehouseId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_DefaultWarehouseId_Call) Return(_a0 settings.DefaultWarehouseIdInterface) *MockSettingsInterface_DefaultWarehouseId_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSettingsInterface_DefaultWarehouseId_Call) RunAndReturn(run func() settings.DefaultWarehouseIdInterface) *MockSettingsInterface_DefaultWarehouseId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DisableLegacyAccess provides a mock function with no fields
 func (_m *MockSettingsInterface) DisableLegacyAccess() settings.DisableLegacyAccessInterface {
 	ret := _m.Called()

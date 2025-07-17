@@ -236,65 +236,6 @@ func (_c *MockQueriesLegacyInterface_Get_Call) RunAndReturn(run func(context.Con
 	return _c
 }
 
-// GetByName provides a mock function with given fields: ctx, name
-func (_m *MockQueriesLegacyInterface) GetByName(ctx context.Context, name string) (*sql.LegacyQuery, error) {
-	ret := _m.Called(ctx, name)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetByName")
-	}
-
-	var r0 *sql.LegacyQuery
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*sql.LegacyQuery, error)); ok {
-		return rf(ctx, name)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *sql.LegacyQuery); ok {
-		r0 = rf(ctx, name)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*sql.LegacyQuery)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, name)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockQueriesLegacyInterface_GetByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByName'
-type MockQueriesLegacyInterface_GetByName_Call struct {
-	*mock.Call
-}
-
-// GetByName is a helper method to define mock.On call
-//   - ctx context.Context
-//   - name string
-func (_e *MockQueriesLegacyInterface_Expecter) GetByName(ctx interface{}, name interface{}) *MockQueriesLegacyInterface_GetByName_Call {
-	return &MockQueriesLegacyInterface_GetByName_Call{Call: _e.mock.On("GetByName", ctx, name)}
-}
-
-func (_c *MockQueriesLegacyInterface_GetByName_Call) Run(run func(ctx context.Context, name string)) *MockQueriesLegacyInterface_GetByName_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockQueriesLegacyInterface_GetByName_Call) Return(_a0 *sql.LegacyQuery, _a1 error) *MockQueriesLegacyInterface_GetByName_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockQueriesLegacyInterface_GetByName_Call) RunAndReturn(run func(context.Context, string) (*sql.LegacyQuery, error)) *MockQueriesLegacyInterface_GetByName_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // GetByQueryId provides a mock function with given fields: ctx, queryId
 func (_m *MockQueriesLegacyInterface) GetByQueryId(ctx context.Context, queryId string) (*sql.LegacyQuery, error) {
 	ret := _m.Called(ctx, queryId)
@@ -350,65 +291,6 @@ func (_c *MockQueriesLegacyInterface_GetByQueryId_Call) Return(_a0 *sql.LegacyQu
 }
 
 func (_c *MockQueriesLegacyInterface_GetByQueryId_Call) RunAndReturn(run func(context.Context, string) (*sql.LegacyQuery, error)) *MockQueriesLegacyInterface_GetByQueryId_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// LegacyQueryNameToIdMap provides a mock function with given fields: ctx, request
-func (_m *MockQueriesLegacyInterface) LegacyQueryNameToIdMap(ctx context.Context, request sql.ListQueriesLegacyRequest) (map[string]string, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for LegacyQueryNameToIdMap")
-	}
-
-	var r0 map[string]string
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListQueriesLegacyRequest) (map[string]string, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListQueriesLegacyRequest) map[string]string); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(map[string]string)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, sql.ListQueriesLegacyRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockQueriesLegacyInterface_LegacyQueryNameToIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'LegacyQueryNameToIdMap'
-type MockQueriesLegacyInterface_LegacyQueryNameToIdMap_Call struct {
-	*mock.Call
-}
-
-// LegacyQueryNameToIdMap is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request sql.ListQueriesLegacyRequest
-func (_e *MockQueriesLegacyInterface_Expecter) LegacyQueryNameToIdMap(ctx interface{}, request interface{}) *MockQueriesLegacyInterface_LegacyQueryNameToIdMap_Call {
-	return &MockQueriesLegacyInterface_LegacyQueryNameToIdMap_Call{Call: _e.mock.On("LegacyQueryNameToIdMap", ctx, request)}
-}
-
-func (_c *MockQueriesLegacyInterface_LegacyQueryNameToIdMap_Call) Run(run func(ctx context.Context, request sql.ListQueriesLegacyRequest)) *MockQueriesLegacyInterface_LegacyQueryNameToIdMap_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sql.ListQueriesLegacyRequest))
-	})
-	return _c
-}
-
-func (_c *MockQueriesLegacyInterface_LegacyQueryNameToIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockQueriesLegacyInterface_LegacyQueryNameToIdMap_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockQueriesLegacyInterface_LegacyQueryNameToIdMap_Call) RunAndReturn(run func(context.Context, sql.ListQueriesLegacyRequest) (map[string]string, error)) *MockQueriesLegacyInterface_LegacyQueryNameToIdMap_Call {
 	_c.Call.Return(run)
 	return _c
 }

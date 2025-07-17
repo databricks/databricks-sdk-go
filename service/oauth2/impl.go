@@ -33,12 +33,11 @@ func (a *accountFederationPolicyImpl) Create(ctx context.Context, request Create
 }
 
 func (a *accountFederationPolicyImpl) Delete(ctx context.Context, request DeleteAccountFederationPolicyRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -124,12 +123,11 @@ func (a *customAppIntegrationImpl) Create(ctx context.Context, request CreateCus
 }
 
 func (a *customAppIntegrationImpl) Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error {
-	var deleteCustomAppIntegrationOutput DeleteCustomAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCustomAppIntegrationOutput)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -187,13 +185,12 @@ func (a *customAppIntegrationImpl) internalList(ctx context.Context, request Lis
 }
 
 func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCustomAppIntegration) error {
-	var updateCustomAppIntegrationOutput UpdateCustomAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateCustomAppIntegrationOutput)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -260,12 +257,11 @@ func (a *publishedAppIntegrationImpl) Create(ctx context.Context, request Create
 }
 
 func (a *publishedAppIntegrationImpl) Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error {
-	var deletePublishedAppIntegrationOutput DeletePublishedAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deletePublishedAppIntegrationOutput)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -323,13 +319,12 @@ func (a *publishedAppIntegrationImpl) internalList(ctx context.Context, request 
 }
 
 func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request UpdatePublishedAppIntegration) error {
-	var updatePublishedAppIntegrationOutput UpdatePublishedAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updatePublishedAppIntegrationOutput)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -353,12 +348,11 @@ func (a *servicePrincipalFederationPolicyImpl) Create(ctx context.Context, reque
 }
 
 func (a *servicePrincipalFederationPolicyImpl) Delete(ctx context.Context, request DeleteServicePrincipalFederationPolicyRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -444,11 +438,10 @@ func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request Create
 }
 
 func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error {
-	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.SecretId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
 
@@ -490,6 +483,75 @@ func (a *servicePrincipalSecretsImpl) ListAll(ctx context.Context, request ListS
 func (a *servicePrincipalSecretsImpl) internalList(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
 	var listServicePrincipalSecretsResponse ListServicePrincipalSecretsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listServicePrincipalSecretsResponse)
+	return &listServicePrincipalSecretsResponse, err
+}
+
+// unexported type that holds implementations of just ServicePrincipalSecretsProxy API methods
+type servicePrincipalSecretsProxyImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *servicePrincipalSecretsProxyImpl) Create(ctx context.Context, request CreateServicePrincipalSecretRequest) (*CreateServicePrincipalSecretResponse, error) {
+	var createServicePrincipalSecretResponse CreateServicePrincipalSecretResponse
+	path := fmt.Sprintf("/api/2.0/accounts/servicePrincipals/%v/credentials/secrets", request.ServicePrincipalId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createServicePrincipalSecretResponse)
+	return &createServicePrincipalSecretResponse, err
+}
+
+func (a *servicePrincipalSecretsProxyImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error {
+	path := fmt.Sprintf("/api/2.0/accounts/servicePrincipals/%v/credentials/secrets/%v", request.ServicePrincipalId, request.SecretId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+// List all secrets associated with the given service principal. This operation
+// only returns information about the secrets themselves and does not include
+// the secret values.
+func (a *servicePrincipalSecretsProxyImpl) List(ctx context.Context, request ListServicePrincipalSecretsRequest) listing.Iterator[SecretInfo] {
+
+	getNextPage := func(ctx context.Context, req ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListServicePrincipalSecretsResponse) []SecretInfo {
+		return resp.Secrets
+	}
+	getNextReq := func(resp *ListServicePrincipalSecretsResponse) *ListServicePrincipalSecretsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List all secrets associated with the given service principal. This operation
+// only returns information about the secrets themselves and does not include
+// the secret values.
+func (a *servicePrincipalSecretsProxyImpl) ListAll(ctx context.Context, request ListServicePrincipalSecretsRequest) ([]SecretInfo, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[SecretInfo](ctx, iterator)
+}
+
+func (a *servicePrincipalSecretsProxyImpl) internalList(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
+	var listServicePrincipalSecretsResponse ListServicePrincipalSecretsResponse
+	path := fmt.Sprintf("/api/2.0/accounts/servicePrincipals/%v/credentials/secrets", request.ServicePrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

@@ -64,12 +64,7 @@ type CreatePipeline struct {
 	// editing the pipeline in the Databricks user interface and it is added to
 	// sys.path when executing Python sources during pipeline execution.
 	RootPath string `json:"root_path,omitempty"`
-	// Write-only setting, available only in Create/Update calls. Specifies the
-	// user or service principal that the pipeline runs as. If not specified,
-	// the pipeline runs as the user who created the pipeline.
-	//
-	// Only `user_name` or `service_principal_name` can be specified. If both
-	// are specified, an error is thrown.
+
 	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	Schema string `json:"schema,omitempty"`
@@ -206,12 +201,8 @@ func (f *DayOfWeek) Type() string {
 	return "DayOfWeek"
 }
 
-// Delete a pipeline
 type DeletePipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
-}
-
-type DeletePipelineResponse struct {
 }
 
 // The deployment method that manages the pipeline: - BUNDLE: The pipeline is
@@ -309,12 +300,7 @@ type EditPipeline struct {
 	// editing the pipeline in the Databricks user interface and it is added to
 	// sys.path when executing Python sources during pipeline execution.
 	RootPath string `json:"root_path,omitempty"`
-	// Write-only setting, available only in Create/Update calls. Specifies the
-	// user or service principal that the pipeline runs as. If not specified,
-	// the pipeline runs as the user who created the pipeline.
-	//
-	// Only `user_name` or `service_principal_name` can be specified. If both
-	// are specified, an error is thrown.
+
 	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	Schema string `json:"schema,omitempty"`
@@ -343,9 +329,6 @@ func (s *EditPipeline) UnmarshalJSON(b []byte) error {
 
 func (s EditPipeline) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type EditPipelineResponse struct {
 }
 
 type ErrorDetail struct {
@@ -451,7 +434,6 @@ type Filters struct {
 	Include []string `json:"include,omitempty"`
 }
 
-// Get pipeline permission levels
 type GetPipelinePermissionLevelsRequest struct {
 	// The pipeline for which to get or manage permissions.
 	PipelineId string `json:"-" url:"-"`
@@ -462,13 +444,11 @@ type GetPipelinePermissionLevelsResponse struct {
 	PermissionLevels []PipelinePermissionsDescription `json:"permission_levels,omitempty"`
 }
 
-// Get pipeline permissions
 type GetPipelinePermissionsRequest struct {
 	// The pipeline for which to get or manage permissions.
 	PipelineId string `json:"-" url:"-"`
 }
 
-// Get a pipeline
 type GetPipelineRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
@@ -493,6 +473,11 @@ type GetPipelineResponse struct {
 	Name string `json:"name,omitempty"`
 	// The ID of the pipeline.
 	PipelineId string `json:"pipeline_id,omitempty"`
+	// The user or service principal that the pipeline runs as, if specified in
+	// the request. This field indicates the explicit configuration of `run_as`
+	// for the pipeline. To find the value in all cases, explicit or implicit,
+	// use `run_as_user_name`.
+	RunAs *RunAs `json:"run_as,omitempty"`
 	// Username of the user that the pipeline will run on behalf of.
 	RunAsUserName string `json:"run_as_user_name,omitempty"`
 	// The pipeline specification. This field is not returned when called by
@@ -550,7 +535,6 @@ func (f *GetPipelineResponseHealth) Type() string {
 	return "GetPipelineResponseHealth"
 }
 
-// Get a pipeline update
 type GetUpdateRequest struct {
 	// The ID of the pipeline.
 	PipelineId string `json:"-" url:"-"`
@@ -634,13 +618,58 @@ func (s IngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Configurations that are only applicable for query-based ingestion connectors.
+type IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig struct {
+	// The names of the monotonically increasing columns in the source table
+	// that are used to enable the table to be read and ingested incrementally
+	// through structured streaming. The columns are allowed to have repeated
+	// values but have to be non-decreasing. If the source data is merged into
+	// the destination (e.g., using SCD Type 1 or Type 2), these columns will
+	// implicitly define the `sequence_by` behavior. You can still explicitly
+	// set `sequence_by` to override this default.
+	CursorColumns []string `json:"cursor_columns,omitempty"`
+	// Specifies a SQL WHERE condition that specifies that the source row has
+	// been deleted. This is sometimes referred to as "soft-deletes". For
+	// example: "Operation = 'DELETE'" or "is_deleted = true". This field is
+	// orthogonal to `hard_deletion_sync_interval_in_seconds`, one for
+	// soft-deletes and the other for hard-deletes. See also the
+	// hard_deletion_sync_min_interval_in_seconds field for handling of "hard
+	// deletes" where the source rows are physically removed from the table.
+	DeletionCondition string `json:"deletion_condition,omitempty"`
+	// Specifies the minimum interval (in seconds) between snapshots on primary
+	// keys for detecting and synchronizing hard deletions—i.e., rows that
+	// have been physically removed from the source table. This interval acts as
+	// a lower bound. If ingestion runs less frequently than this value, hard
+	// deletion synchronization will align with the actual ingestion frequency
+	// instead of happening more often. If not set, hard deletion
+	// synchronization via snapshots is disabled. This field is mutable and can
+	// be updated without triggering a full snapshot.
+	HardDeletionSyncMinIntervalInSeconds int64 `json:"hard_deletion_sync_min_interval_in_seconds,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type IngestionSourceType string
+
+const IngestionSourceTypeBigquery IngestionSourceType = `BIGQUERY`
+
+const IngestionSourceTypeConfluence IngestionSourceType = `CONFLUENCE`
 
 const IngestionSourceTypeDynamics365 IngestionSourceType = `DYNAMICS365`
 
 const IngestionSourceTypeGa4RawData IngestionSourceType = `GA4_RAW_DATA`
 
 const IngestionSourceTypeManagedPostgresql IngestionSourceType = `MANAGED_POSTGRESQL`
+
+const IngestionSourceTypeMetaMarketing IngestionSourceType = `META_MARKETING`
 
 const IngestionSourceTypeMysql IngestionSourceType = `MYSQL`
 
@@ -670,11 +699,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
+	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
 	}
 }
 
@@ -683,9 +712,12 @@ func (f *IngestionSourceType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *IngestionSourceType) Values() []IngestionSourceType {
 	return []IngestionSourceType{
+		IngestionSourceTypeBigquery,
+		IngestionSourceTypeConfluence,
 		IngestionSourceTypeDynamics365,
 		IngestionSourceTypeGa4RawData,
 		IngestionSourceTypeManagedPostgresql,
+		IngestionSourceTypeMetaMarketing,
 		IngestionSourceTypeMysql,
 		IngestionSourceTypeNetsuite,
 		IngestionSourceTypeOracle,
@@ -704,7 +736,6 @@ func (f *IngestionSourceType) Type() string {
 	return "IngestionSourceType"
 }
 
-// List pipeline events
 type ListPipelineEventsRequest struct {
 	// Criteria to select a subset of results, expressed using a SQL-like
 	// syntax. The supported filters are: 1. level='INFO' (or WARN or ERROR) 2.
@@ -760,7 +791,6 @@ func (s ListPipelineEventsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List pipelines
 type ListPipelinesRequest struct {
 	// Select a subset of results based on the specified criteria. The supported
 	// filters are:
@@ -812,7 +842,6 @@ func (s ListPipelinesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List pipeline updates
 type ListUpdatesRequest struct {
 	// Max number of entries to return in a single page.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
@@ -993,7 +1022,7 @@ func (s PathPattern) MarshalJSON() ([]byte, error) {
 type PipelineAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
-	// Permission level
+
 	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
@@ -1280,7 +1309,7 @@ type PipelinePermission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-	// Permission level
+
 	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1358,7 +1387,7 @@ func (s PipelinePermissions) MarshalJSON() ([]byte, error) {
 
 type PipelinePermissionsDescription struct {
 	Description string `json:"description,omitempty"`
-	// Permission level
+
 	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1533,7 +1562,7 @@ type PipelineStateInfo struct {
 	// The username that the pipeline runs as. This is a read only value derived
 	// from the pipeline owner.
 	RunAsUserName string `json:"run_as_user_name,omitempty"`
-	// The pipeline state.
+
 	State PipelineState `json:"state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1766,7 +1795,6 @@ func (s StackFrame) MarshalJSON() ([]byte, error) {
 }
 
 type StartUpdate struct {
-	// What triggered this update.
 	Cause StartUpdateCause `json:"cause,omitempty"`
 	// If true, this update will reset all tables before running.
 	FullRefresh bool `json:"full_refresh,omitempty"`
@@ -1864,10 +1892,6 @@ func (s StartUpdateResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type StopPipelineResponse struct {
-}
-
-// Stop a pipeline
 type StopRequest struct {
 	PipelineId string `json:"-" url:"-"`
 }
@@ -1918,6 +1942,8 @@ type TableSpecificConfig struct {
 	IncludeColumns []string `json:"include_columns,omitempty"`
 	// The primary key of the table used to apply changes.
 	PrimaryKeys []string `json:"primary_keys,omitempty"`
+
+	QueryBasedConnectorConfig *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig `json:"query_based_connector_config,omitempty"`
 	// If true, formula fields defined in the table are included in the
 	// ingestion. This setting is only valid for the Salesforce connector
 	SalesforceIncludeFormulaFields bool `json:"salesforce_include_formula_fields,omitempty"`
@@ -1942,6 +1968,8 @@ func (s TableSpecificConfig) MarshalJSON() ([]byte, error) {
 // The SCD type to use to ingest the table.
 type TableSpecificConfigScdType string
 
+const TableSpecificConfigScdTypeAppendOnly TableSpecificConfigScdType = `APPEND_ONLY`
+
 const TableSpecificConfigScdTypeScdType1 TableSpecificConfigScdType = `SCD_TYPE_1`
 
 const TableSpecificConfigScdTypeScdType2 TableSpecificConfigScdType = `SCD_TYPE_2`
@@ -1954,11 +1982,11 @@ func (f *TableSpecificConfigScdType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TableSpecificConfigScdType) Set(v string) error {
 	switch v {
-	case `SCD_TYPE_1`, `SCD_TYPE_2`:
+	case `APPEND_ONLY`, `SCD_TYPE_1`, `SCD_TYPE_2`:
 		*f = TableSpecificConfigScdType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "SCD_TYPE_1", "SCD_TYPE_2"`, v)
+		return fmt.Errorf(`value "%s" is not one of "APPEND_ONLY", "SCD_TYPE_1", "SCD_TYPE_2"`, v)
 	}
 }
 
@@ -1967,6 +1995,7 @@ func (f *TableSpecificConfigScdType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *TableSpecificConfigScdType) Values() []TableSpecificConfigScdType {
 	return []TableSpecificConfigScdType{
+		TableSpecificConfigScdTypeAppendOnly,
 		TableSpecificConfigScdTypeScdType1,
 		TableSpecificConfigScdTypeScdType2,
 	}
@@ -2140,7 +2169,7 @@ func (f *UpdateInfoState) Type() string {
 
 type UpdateStateInfo struct {
 	CreationTime string `json:"creation_time,omitempty"`
-	// The update state.
+
 	State UpdateStateInfoState `json:"state,omitempty"`
 
 	UpdateId string `json:"update_id,omitempty"`

@@ -595,8 +595,7 @@ type CleanRoomRemoteDetail struct {
 	//
 	// 2. Its invite_recipient_email is empty.
 	Collaborators []CleanRoomCollaborator `json:"collaborators,omitempty"`
-	// The compliance security profile used to process regulated data following
-	// compliance standards.
+
 	ComplianceSecurityProfile *ComplianceSecurityProfile `json:"compliance_security_profile,omitempty"`
 	// Collaborator who creates the clean room.
 	Creator *CleanRoomCollaborator `json:"creator,omitempty"`
@@ -702,15 +701,13 @@ func (s ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Create an asset
 type CreateCleanRoomAssetRequest struct {
-	// Metadata of the clean room asset
 	Asset CleanRoomAsset `json:"asset"`
-	// Name of the clean room.
+	// The name of the clean room this asset belongs to. This is an output-only
+	// field to ensure proper resource identification.
 	CleanRoomName string `json:"-" url:"-"`
 }
 
-// Create an output catalog
 type CreateCleanRoomOutputCatalogRequest struct {
 	// Name of the clean room.
 	CleanRoomName string `json:"-" url:"-"`
@@ -722,12 +719,10 @@ type CreateCleanRoomOutputCatalogResponse struct {
 	OutputCatalog *CleanRoomOutputCatalog `json:"output_catalog,omitempty"`
 }
 
-// Create a clean room
 type CreateCleanRoomRequest struct {
 	CleanRoom CleanRoom `json:"clean_room"`
 }
 
-// Delete an asset
 type DeleteCleanRoomAssetRequest struct {
 	// The type of the asset.
 	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
@@ -738,21 +733,11 @@ type DeleteCleanRoomAssetRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// Response for delete clean room request. Using an empty message since the
-// generic Empty proto does not externd UnshadedMessageMarker.
-type DeleteCleanRoomAssetResponse struct {
-}
-
-// Delete a clean room
 type DeleteCleanRoomRequest struct {
 	// Name of the clean room.
 	Name string `json:"-" url:"-"`
 }
 
-type DeleteResponse struct {
-}
-
-// Get an asset
 type GetCleanRoomAssetRequest struct {
 	// The type of the asset.
 	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
@@ -763,12 +748,10 @@ type GetCleanRoomAssetRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// Get a clean room
 type GetCleanRoomRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// List assets
 type ListCleanRoomAssetsRequest struct {
 	// Name of the clean room.
 	CleanRoomName string `json:"-" url:"-"`
@@ -805,7 +788,6 @@ func (s ListCleanRoomAssetsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List notebook task runs
 type ListCleanRoomNotebookTaskRunsRequest struct {
 	// Name of the clean room.
 	CleanRoomName string `json:"-" url:"-"`
@@ -847,7 +829,6 @@ func (s ListCleanRoomNotebookTaskRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List clean rooms
 type ListCleanRoomsRequest struct {
 	// Maximum number of clean rooms to return (i.e., the page length). Defaults
 	// to 100.
@@ -884,9 +865,9 @@ func (s ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Update an asset
 type UpdateCleanRoomAssetRequest struct {
-	// Metadata of the clean room asset
+	// The asset to update. The asset's `name` and `asset_type` fields are used
+	// to identify the asset to update.
 	Asset CleanRoomAsset `json:"asset"`
 	// The type of the asset.
 	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`

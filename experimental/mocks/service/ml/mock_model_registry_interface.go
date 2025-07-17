@@ -614,21 +614,33 @@ func (_c *MockModelRegistryInterface_DeleteModelVersionTag_Call) RunAndReturn(ru
 }
 
 // DeleteTransitionRequest provides a mock function with given fields: ctx, request
-func (_m *MockModelRegistryInterface) DeleteTransitionRequest(ctx context.Context, request ml.DeleteTransitionRequestRequest) error {
+func (_m *MockModelRegistryInterface) DeleteTransitionRequest(ctx context.Context, request ml.DeleteTransitionRequestRequest) (*ml.DeleteTransitionRequestResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteTransitionRequest")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, ml.DeleteTransitionRequestRequest) error); ok {
+	var r0 *ml.DeleteTransitionRequestResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.DeleteTransitionRequestRequest) (*ml.DeleteTransitionRequestResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.DeleteTransitionRequestRequest) *ml.DeleteTransitionRequestResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.DeleteTransitionRequestResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, ml.DeleteTransitionRequestRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockModelRegistryInterface_DeleteTransitionRequest_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteTransitionRequest'
@@ -650,12 +662,12 @@ func (_c *MockModelRegistryInterface_DeleteTransitionRequest_Call) Run(run func(
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_DeleteTransitionRequest_Call) Return(_a0 error) *MockModelRegistryInterface_DeleteTransitionRequest_Call {
-	_c.Call.Return(_a0)
+func (_c *MockModelRegistryInterface_DeleteTransitionRequest_Call) Return(_a0 *ml.DeleteTransitionRequestResponse, _a1 error) *MockModelRegistryInterface_DeleteTransitionRequest_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_DeleteTransitionRequest_Call) RunAndReturn(run func(context.Context, ml.DeleteTransitionRequestRequest) error) *MockModelRegistryInterface_DeleteTransitionRequest_Call {
+func (_c *MockModelRegistryInterface_DeleteTransitionRequest_Call) RunAndReturn(run func(context.Context, ml.DeleteTransitionRequestRequest) (*ml.DeleteTransitionRequestResponse, error)) *MockModelRegistryInterface_DeleteTransitionRequest_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2217,21 +2229,33 @@ func (_c *MockModelRegistryInterface_UpdateComment_Call) RunAndReturn(run func(c
 }
 
 // UpdateModel provides a mock function with given fields: ctx, request
-func (_m *MockModelRegistryInterface) UpdateModel(ctx context.Context, request ml.UpdateModelRequest) error {
+func (_m *MockModelRegistryInterface) UpdateModel(ctx context.Context, request ml.UpdateModelRequest) (*ml.UpdateModelResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for UpdateModel")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateModelRequest) error); ok {
+	var r0 *ml.UpdateModelResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateModelRequest) (*ml.UpdateModelResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateModelRequest) *ml.UpdateModelResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.UpdateModelResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, ml.UpdateModelRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockModelRegistryInterface_UpdateModel_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateModel'
@@ -2253,32 +2277,44 @@ func (_c *MockModelRegistryInterface_UpdateModel_Call) Run(run func(ctx context.
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_UpdateModel_Call) Return(_a0 error) *MockModelRegistryInterface_UpdateModel_Call {
-	_c.Call.Return(_a0)
+func (_c *MockModelRegistryInterface_UpdateModel_Call) Return(_a0 *ml.UpdateModelResponse, _a1 error) *MockModelRegistryInterface_UpdateModel_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_UpdateModel_Call) RunAndReturn(run func(context.Context, ml.UpdateModelRequest) error) *MockModelRegistryInterface_UpdateModel_Call {
+func (_c *MockModelRegistryInterface_UpdateModel_Call) RunAndReturn(run func(context.Context, ml.UpdateModelRequest) (*ml.UpdateModelResponse, error)) *MockModelRegistryInterface_UpdateModel_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // UpdateModelVersion provides a mock function with given fields: ctx, request
-func (_m *MockModelRegistryInterface) UpdateModelVersion(ctx context.Context, request ml.UpdateModelVersionRequest) error {
+func (_m *MockModelRegistryInterface) UpdateModelVersion(ctx context.Context, request ml.UpdateModelVersionRequest) (*ml.UpdateModelVersionResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for UpdateModelVersion")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateModelVersionRequest) error); ok {
+	var r0 *ml.UpdateModelVersionResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateModelVersionRequest) (*ml.UpdateModelVersionResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateModelVersionRequest) *ml.UpdateModelVersionResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.UpdateModelVersionResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, ml.UpdateModelVersionRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockModelRegistryInterface_UpdateModelVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateModelVersion'
@@ -2300,12 +2336,12 @@ func (_c *MockModelRegistryInterface_UpdateModelVersion_Call) Run(run func(ctx c
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_UpdateModelVersion_Call) Return(_a0 error) *MockModelRegistryInterface_UpdateModelVersion_Call {
-	_c.Call.Return(_a0)
+func (_c *MockModelRegistryInterface_UpdateModelVersion_Call) Return(_a0 *ml.UpdateModelVersionResponse, _a1 error) *MockModelRegistryInterface_UpdateModelVersion_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_UpdateModelVersion_Call) RunAndReturn(run func(context.Context, ml.UpdateModelVersionRequest) error) *MockModelRegistryInterface_UpdateModelVersion_Call {
+func (_c *MockModelRegistryInterface_UpdateModelVersion_Call) RunAndReturn(run func(context.Context, ml.UpdateModelVersionRequest) (*ml.UpdateModelVersionResponse, error)) *MockModelRegistryInterface_UpdateModelVersion_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -2370,21 +2406,33 @@ func (_c *MockModelRegistryInterface_UpdatePermissions_Call) RunAndReturn(run fu
 }
 
 // UpdateWebhook provides a mock function with given fields: ctx, request
-func (_m *MockModelRegistryInterface) UpdateWebhook(ctx context.Context, request ml.UpdateRegistryWebhook) error {
+func (_m *MockModelRegistryInterface) UpdateWebhook(ctx context.Context, request ml.UpdateRegistryWebhook) (*ml.UpdateWebhookResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for UpdateWebhook")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateRegistryWebhook) error); ok {
+	var r0 *ml.UpdateWebhookResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateRegistryWebhook) (*ml.UpdateWebhookResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateRegistryWebhook) *ml.UpdateWebhookResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.UpdateWebhookResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, ml.UpdateRegistryWebhook) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockModelRegistryInterface_UpdateWebhook_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateWebhook'
@@ -2406,12 +2454,12 @@ func (_c *MockModelRegistryInterface_UpdateWebhook_Call) Run(run func(ctx contex
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_UpdateWebhook_Call) Return(_a0 error) *MockModelRegistryInterface_UpdateWebhook_Call {
-	_c.Call.Return(_a0)
+func (_c *MockModelRegistryInterface_UpdateWebhook_Call) Return(_a0 *ml.UpdateWebhookResponse, _a1 error) *MockModelRegistryInterface_UpdateWebhook_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockModelRegistryInterface_UpdateWebhook_Call) RunAndReturn(run func(context.Context, ml.UpdateRegistryWebhook) error) *MockModelRegistryInterface_UpdateWebhook_Call {
+func (_c *MockModelRegistryInterface_UpdateWebhook_Call) RunAndReturn(run func(context.Context, ml.UpdateRegistryWebhook) (*ml.UpdateWebhookResponse, error)) *MockModelRegistryInterface_UpdateWebhook_Call {
 	_c.Call.Return(run)
 	return _c
 }

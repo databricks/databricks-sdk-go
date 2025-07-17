@@ -96,7 +96,7 @@ func TestAccModels(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	err = w.ModelRegistry.UpdateModel(ctx, ml.UpdateModelRequest{
+	_, err = w.ModelRegistry.UpdateModel(ctx, ml.UpdateModelRequest{
 		Name:        model.RegisteredModelDatabricks.Name,
 		Description: RandomName("comment "),
 	})
@@ -131,7 +131,7 @@ func TestAccRegistryWebhooks(t *testing.T) {
 		})
 		require.NoError(t, err)
 	})
-	err = w.ModelRegistry.UpdateWebhook(ctx, ml.UpdateRegistryWebhook{
+	_, err = w.ModelRegistry.UpdateWebhook(ctx, ml.UpdateRegistryWebhook{
 		Id:          created.Webhook.Id,
 		Description: RandomName("updated "),
 	})
@@ -193,7 +193,7 @@ func TestAccModelVersions(t *testing.T) {
 		deleteModelVersion(t, w, ctx, created)
 	})
 
-	err = w.ModelRegistry.UpdateModelVersion(ctx, ml.UpdateModelVersionRequest{
+	_, err = w.ModelRegistry.UpdateModelVersion(ctx, ml.UpdateModelVersionRequest{
 		Description: RandomName("description "),
 		Name:        created.ModelVersion.Name,
 		Version:     created.ModelVersion.Version,

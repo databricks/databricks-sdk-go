@@ -32,6 +32,12 @@ type AccountClient struct {
 	// A service serves REST API about Budget policies
 	BudgetPolicy billing.BudgetPolicyInterface
 
+	// These APIs manage budget configurations for this account. Budgets enable
+	// you to monitor usage across your account. You can set up budgets to
+	// either track account-wide spending, or apply filters to track the
+	// spending of specific teams, projects, or workspaces.
+	Budgets billing.BudgetsInterface
+
 	// These APIs manage credential configurations for this workspace.
 	// Databricks needs access to a cross-account service IAM role in your AWS
 	// account so that Databricks can deploy clusters in the appropriate VPC for
@@ -329,7 +335,7 @@ type AccountClient struct {
 	// You can use the generated secrets to obtain OAuth access tokens for a
 	// service principal, which can then be used to access Databricks Accounts
 	// and Workspace APIs. For more information, see [Authentication using OAuth
-	// tokens for service principals],
+	// tokens for service principals].
 	//
 	// In addition, the generated secrets can be used to configure the
 	// Databricks Terraform Provider to authenticate with the service principal.
@@ -410,12 +416,6 @@ type AccountClient struct {
 	// platform or on a select custom plan that allows multiple workspaces per
 	// account.
 	Workspaces provisioning.WorkspacesInterface
-
-	// These APIs manage budget configurations for this account. Budgets enable
-	// you to monitor usage across your account. You can set up budgets to
-	// either track account-wide spending, or apply filters to track the
-	// spending of specific teams, projects, or workspaces.
-	Budgets billing.BudgetsInterface
 }
 
 var ErrNotAccountClient = errors.New("invalid Databricks Account configuration")
@@ -449,6 +449,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		AccessControl:                    iam.NewAccountAccessControl(apiClient),
 		BillableUsage:                    billing.NewBillableUsage(apiClient),
 		BudgetPolicy:                     billing.NewBudgetPolicy(apiClient),
+		Budgets:                          billing.NewBudgets(apiClient),
 		Credentials:                      provisioning.NewCredentials(apiClient),
 		CustomAppIntegration:             oauth2.NewCustomAppIntegration(apiClient),
 		EncryptionKeys:                   provisioning.NewEncryptionKeys(apiClient),
@@ -476,6 +477,5 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		WorkspaceAssignment:              iam.NewWorkspaceAssignment(apiClient),
 		WorkspaceNetworkConfiguration:    settings.NewWorkspaceNetworkConfiguration(apiClient),
 		Workspaces:                       provisioning.NewWorkspaces(apiClient),
-		Budgets:                          billing.NewBudgets(apiClient),
 	}, nil
 }
