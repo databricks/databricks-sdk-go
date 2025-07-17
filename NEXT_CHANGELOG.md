@@ -4,6 +4,8 @@
 
 ### New Features and Improvements
 
+- Return more detailed error messages when OAuth endpoints cannot be resolved.
+
 ### Bug Fixes
 
 ### Documentation
