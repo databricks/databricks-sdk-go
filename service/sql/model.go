@@ -1406,35 +1406,6 @@ func (s DashboardOptions) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type DashboardPostContent struct {
-	// Indicates whether the dashboard filters are enabled
-	DashboardFiltersEnabled bool `json:"dashboard_filters_enabled,omitempty"`
-	// Indicates whether this dashboard object should appear in the current
-	// user's favorites list.
-	IsFavorite bool `json:"is_favorite,omitempty"`
-	// The title of this dashboard that appears in list views and at the top of
-	// the dashboard page.
-	Name string `json:"name"`
-	// The identifier of the workspace folder containing the object.
-	Parent string `json:"parent,omitempty"`
-	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
-	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
-	// owner" behavior)
-	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
-
-	Tags []string `json:"tags,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *DashboardPostContent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DashboardPostContent) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 // A JSON object representing a DBSQL data source / SQL warehouse.
 type DataSource struct {
 	// Data source ID maps to the ID of the data source used by the resource and

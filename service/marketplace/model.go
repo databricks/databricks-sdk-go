@@ -704,9 +704,9 @@ func (s FileInfo) MarshalJSON() ([]byte, error) {
 }
 
 type FileParent struct {
-	FileParentType FileParentType `json:"file_parent_type,omitempty"`
+	FileParentType FileParentType `json:"file_parent_type,omitempty" url:"file_parent_type,omitempty"`
 	// TODO make the following fields required
-	ParentId string `json:"parent_id,omitempty"`
+	ParentId string `json:"parent_id,omitempty" url:"parent_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1668,10 +1668,10 @@ func (s ListingSummary) MarshalJSON() ([]byte, error) {
 
 type ListingTag struct {
 	// Tag name (enum)
-	TagName ListingTagType `json:"tag_name,omitempty"`
+	TagName ListingTagType `json:"tag_name,omitempty" url:"tag_name,omitempty"`
 	// String representation of the tag value. Values should be string literals
 	// (no complex types)
-	TagValues []string `json:"tag_values,omitempty"`
+	TagValues []string `json:"tag_values,omitempty" url:"tag_values,omitempty"`
 }
 
 type ListingTagType string

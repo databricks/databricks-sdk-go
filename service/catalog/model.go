@@ -747,6 +747,7 @@ func (s ConnectionDependency) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Next ID: 23
 type ConnectionInfo struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -760,6 +761,9 @@ type ConnectionInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// The type of credential.
 	CredentialType CredentialType `json:"credential_type,omitempty"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Full name of connection.
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
@@ -949,6 +953,9 @@ type CreateConnection struct {
 	Comment string `json:"comment,omitempty"`
 	// The type of connection.
 	ConnectionType ConnectionType `json:"connection_type"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -2353,13 +2360,29 @@ type EncryptionDetails struct {
 	SseEncryptionDetails *SseEncryptionDetails `json:"sse_encryption_details,omitempty"`
 }
 
+type EnvironmentSettings struct {
+	EnvironmentVersion string `json:"environment_version,omitempty"`
+
+	JavaDependencies []string `json:"java_dependencies,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnvironmentSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnvironmentSettings) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ExistsRequest struct {
 	// Full name of the table.
 	FullName string `json:"-" url:"-"`
 }
 
 type ExternalLineageExternalMetadata struct {
-	Name string `json:"name,omitempty"`
+	Name string `json:"name,omitempty" url:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2433,9 +2456,9 @@ type ExternalLineageInfo struct {
 }
 
 type ExternalLineageModelVersion struct {
-	Name string `json:"name,omitempty"`
+	Name string `json:"name,omitempty" url:"name,omitempty"`
 
-	Version string `json:"version,omitempty"`
+	Version string `json:"version,omitempty" url:"version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2469,17 +2492,17 @@ func (s ExternalLineageModelVersionInfo) MarshalJSON() ([]byte, error) {
 }
 
 type ExternalLineageObject struct {
-	ExternalMetadata *ExternalLineageExternalMetadata `json:"external_metadata,omitempty"`
+	ExternalMetadata *ExternalLineageExternalMetadata `json:"external_metadata,omitempty" url:"external_metadata,omitempty"`
 
-	ModelVersion *ExternalLineageModelVersion `json:"model_version,omitempty"`
+	ModelVersion *ExternalLineageModelVersion `json:"model_version,omitempty" url:"model_version,omitempty"`
 
-	Path *ExternalLineagePath `json:"path,omitempty"`
+	Path *ExternalLineagePath `json:"path,omitempty" url:"path,omitempty"`
 
-	Table *ExternalLineageTable `json:"table,omitempty"`
+	Table *ExternalLineageTable `json:"table,omitempty" url:"table,omitempty"`
 }
 
 type ExternalLineagePath struct {
-	Url string `json:"url,omitempty"`
+	Url string `json:"url,omitempty" url:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2539,7 +2562,7 @@ func (s ExternalLineageRelationshipInfo) MarshalJSON() ([]byte, error) {
 }
 
 type ExternalLineageTable struct {
-	Name string `json:"name,omitempty"`
+	Name string `json:"name,omitempty" url:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3856,11 +3879,15 @@ func (s ListCredentialsResponse) MarshalJSON() ([]byte, error) {
 type ListExternalLineageRelationshipsRequest struct {
 	// The lineage direction to filter on.
 	LineageDirection LineageDirection `json:"-" url:"lineage_direction"`
-	// The object to query external lineage relationship on.
+	// The object to query external lineage relationships for. Since this field
+	// is a query parameter, please flatten the nested fields. For example, if
+	// the object is a table, the query parameter should look like:
+	// `object_info.table.name=main.sales.customers`
 	ObjectInfo ExternalLineageObject `json:"-" url:"object_info"`
-
+	// Specifies the maximum number of external lineage relationships to return
+	// in a single response. The value must be less than or equal to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3935,8 +3962,10 @@ func (s ListExternalLocationsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListExternalMetadataRequest struct {
+	// Specifies the maximum number of external metadata objects to return in a
+	// single response. The value must be less than or equal to 1000.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	// Opaque pagination token to go to next page based on previous query.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6397,9 +6426,9 @@ func (s SetArtifactAllowlist) MarshalJSON() ([]byte, error) {
 
 type SetRegisteredModelAliasRequest struct {
 	// The name of the alias
-	Alias string `json:"alias" url:"-"`
+	Alias string `json:"alias"`
 	// Full name of the registered model
-	FullName string `json:"full_name" url:"-"`
+	FullName string `json:"full_name"`
 	// The version number of the model version to which the alias points
 	VersionNum int `json:"version_num"`
 }
@@ -6975,6 +7004,9 @@ type UpdateCatalogWorkspaceBindingsResponse struct {
 }
 
 type UpdateConnection struct {
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"-" url:"-"`
 	// New name for the connection.

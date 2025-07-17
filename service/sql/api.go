@@ -444,12 +444,6 @@ func (a *DashboardWidgetsAPI) DeleteById(ctx context.Context, id string) error {
 
 type DashboardsInterface interface {
 
-	// Creates a new dashboard object. Only the name parameter is required in the
-	// POST request JSON body. Other fields can be included when duplicating
-	// dashboards with this API. Databricks does not recommend designing dashboards
-	// exclusively using this API.',
-	Create(ctx context.Context, request DashboardPostContent) (*Dashboard, error)
-
 	// Moves a dashboard to the trash. Trashed dashboards do not appear in list
 	// views or searches, and cannot be shared.
 	Delete(ctx context.Context, request DeleteDashboardRequest) error

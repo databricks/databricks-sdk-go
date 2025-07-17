@@ -1,6 +1,7 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// The Custom LLMs service manages state and powers the UI for the Custom LLM product.
+// The Custom LLMs service manages state and powers the UI for the Custom LLM
+// product.
 package aibuilder
 
 import (

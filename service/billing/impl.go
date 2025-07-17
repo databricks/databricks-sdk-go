@@ -119,7 +119,7 @@ func (a *budgetPolicyImpl) Update(ctx context.Context, request UpdateBudgetPolic
 	return &budgetPolicy, err
 }
 
-// unexported type that holds implementations of just budgets API methods
+// unexported type that holds implementations of just Budgets API methods
 type budgetsImpl struct {
 	client *client.DatabricksClient
 }
