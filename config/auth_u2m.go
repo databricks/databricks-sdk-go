@@ -82,7 +82,7 @@ func (u u2mCredentials) makeVisitor(auth oauth2.TokenSource) func(*http.Request)
 func (u u2mCredentials) errorHandler(ctx context.Context, cfg *Config, arg u2m.OAuthArgument, err error) error {
 	// If the current OAuth argument doesn't have a corresponding session
 	// token, fall back to the next credentials strategy.
-	if errors.Is(err, cache.ErrNotConfigured) {
+	if errors.Is(err, cache.ErrNotFound) {
 		return nil
 	}
 	// If there is an existing token but the refresh token is invalid,

@@ -33,14 +33,14 @@ func TestStoreAndLookup(t *testing.T) {
 	assert.Equal(t, "abc", tok.AccessToken)
 
 	_, err = c.Lookup("z")
-	assert.Equal(t, ErrNotConfigured, err)
+	assert.Equal(t, ErrNotFound, err)
 }
 
 func TestNoCacheFileReturnsErrNotConfigured(t *testing.T) {
 	l, err := NewFileTokenCache(WithFileLocation(setup(t)))
 	require.NoError(t, err)
 	_, err = l.Lookup("x")
-	assert.Equal(t, ErrNotConfigured, err)
+	assert.Equal(t, ErrNotFound, err)
 }
 
 func TestLoadCorruptFile(t *testing.T) {

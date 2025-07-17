@@ -5,8 +5,11 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 )
+
+var ErrOAuthNotSupported = errors.New("databricks OAuth is not supported for this host")
 
 // OAuthEndpointSupplier provides the http functionality needed for interacting with the
 // Databricks OAuth APIs.
@@ -31,7 +34,10 @@ func (c *BasicOAuthEndpointSupplier) GetWorkspaceOAuthEndpoints(ctx context.Cont
 	oidc := fmt.Sprintf("%s/oidc/.well-known/oauth-authorization-server", workspaceHost)
 	var oauthEndpoints OAuthAuthorizationServer
 	if err := c.Client.Do(ctx, "GET", oidc, httpclient.WithResponseUnmarshal(&oauthEndpoints)); err != nil {
-		return nil, ErrOAuthNotSupported
+		if errors.Is(err, apierr.ErrNotFound) {
+			return nil, ErrOAuthNotSupported
+		}
+		return nil, fmt.Errorf("failed to get OAuth endpoints: %w", err)
 	}
 	return &oauthEndpoints, nil
 }
@@ -44,8 +50,6 @@ func (c *BasicOAuthEndpointSupplier) GetAccountOAuthEndpoints(ctx context.Contex
 		TokenEndpoint:         fmt.Sprintf("%s/oidc/accounts/%s/v1/token", accountHost, accountId),
 	}, nil
 }
-
-var ErrOAuthNotSupported = errors.New("databricks OAuth is not supported for this host")
 
 // OAuthAuthorizationServer contains the OAuth endpoints for a Databricks account
 // or workspace.

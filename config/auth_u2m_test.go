@@ -99,7 +99,7 @@ func TestDatabricksCli_ErrorHandler(t *testing.T) {
 		{
 			name: "not configured is ignored",
 			arg:  workspaceArg,
-			err:  cache.ErrNotConfigured,
+			err:  cache.ErrNotFound,
 			want: nil,
 		},
 		{
