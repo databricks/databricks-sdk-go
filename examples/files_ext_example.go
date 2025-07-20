@@ -119,20 +119,37 @@ func main() {
 
 	// Example 6: Configuration demonstration
 	fmt.Println("\n--- Configuration ---")
-	config := files.DefaultUploadConfig()
-	fmt.Printf("Default configuration:\n")
+	uploadConfig := files.DefaultUploadConfig()
+	fmt.Printf("Default configuration (for reference):\n")
 	fmt.Printf("  Min stream size: %d bytes (%d MB)\n",
-		config.MultipartUploadMinStreamSize,
-		config.MultipartUploadMinStreamSize/(1024*1024))
+		uploadConfig.MultipartUploadMinStreamSize,
+		uploadConfig.MultipartUploadMinStreamSize/(1024*1024))
 	fmt.Printf("  Chunk size: %d bytes (%d MB)\n",
-		config.MultipartUploadChunkSize,
-		config.MultipartUploadChunkSize/(1024*1024))
-	fmt.Printf("  Batch URL count: %d\n", config.MultipartUploadBatchURLCount)
-	fmt.Printf("  Max retries: %d\n", config.MultipartUploadMaxRetries)
-	fmt.Printf("  Download max recovers: %d\n", config.FilesAPIClientDownloadMaxTotalRecovers)
+		uploadConfig.MultipartUploadChunkSize,
+		uploadConfig.MultipartUploadChunkSize/(1024*1024))
+	fmt.Printf("  Batch URL count: %d\n", uploadConfig.MultipartUploadBatchURLCount)
+	fmt.Printf("  Max retries: %d\n", uploadConfig.MultipartUploadMaxRetries)
+	fmt.Printf("  Download max recovers: %d\n", uploadConfig.FilesAPIClientDownloadMaxTotalRecovers)
+
+	// Example 6.1: Client configuration demonstration (with automatic defaults)
+	fmt.Println("\n--- Client Configuration (with automatic defaults) ---")
+	clientConfig := filesExt.GetUploadConfig()
+	fmt.Printf("Client configuration (defaults automatically applied):\n")
+	fmt.Printf("  Min stream size: %d bytes (%d MB)\n",
+		clientConfig.MultipartUploadMinStreamSize,
+		clientConfig.MultipartUploadMinStreamSize/(1024*1024))
+	fmt.Printf("  Chunk size: %d bytes (%d MB)\n",
+		clientConfig.MultipartUploadChunkSize,
+		clientConfig.MultipartUploadChunkSize/(1024*1024))
+	fmt.Printf("  Batch URL count: %d\n", clientConfig.MultipartUploadBatchURLCount)
+	fmt.Printf("  Max retries: %d\n", clientConfig.MultipartUploadMaxRetries)
+	fmt.Printf("  Download max recovers: %d\n", clientConfig.FilesAPIClientDownloadMaxTotalRecovers)
 
 	// Example 7: Custom configuration
 	demonstrateCustomConfig()
+
+	// Example 8: Client with custom Files API configuration
+	demonstrateCustomClientConfig()
 
 	fmt.Println("\n=== Example completed ===")
 }
@@ -162,4 +179,49 @@ func demonstrateCustomConfig() {
 	fmt.Printf("  Batch URL count: %d\n", customConfig.MultipartUploadBatchURLCount)
 	fmt.Printf("  Max retries: %d\n", customConfig.MultipartUploadMaxRetries)
 	fmt.Printf("  Download max recovers: %d\n", customConfig.FilesAPIClientDownloadMaxTotalRecovers)
+}
+
+// Helper function to demonstrate custom client configuration
+func demonstrateCustomClientConfig() {
+	fmt.Println("\n--- Custom Client Configuration Example ---")
+
+	// Create configuration with custom Files API settings
+	customCfg := &config.Config{
+		Host:  os.Getenv("DATABRICKS_HOST"),
+		Token: os.Getenv("DATABRICKS_TOKEN"),
+
+		// Custom Files API configuration
+		FilesAPIMultipartUploadMinStreamSize:                     25 * 1024 * 1024, // 25MB
+		FilesAPIMultipartUploadChunkSize:                         25 * 1024 * 1024, // 25MB
+		FilesAPIMultipartUploadBatchURLCount:                     3,
+		FilesAPIMultipartUploadMaxRetries:                        7,
+		FilesAPIMultipartUploadSingleChunkUploadTimeoutSeconds:   900,
+		FilesAPIMultipartUploadURLExpirationDurationSeconds:      7200, // 2 hours
+		FilesAPIClientDownloadMaxTotalRecovers:                   20,
+		FilesAPIClientDownloadMaxTotalRecoversWithoutProgressing: 7,
+	}
+
+	// Create client with custom configuration
+	databricksClient, err := client.New(customCfg)
+	if err != nil {
+		log.Printf("Failed to create client with custom config: %v", err)
+		return
+	}
+
+	// Create enhanced Files API with custom configuration
+	filesExt := files.NewFilesExt(databricksClient)
+
+	// Get the configuration (should reflect custom values)
+	clientConfig := filesExt.GetUploadConfig()
+
+	fmt.Printf("Custom client configuration:\n")
+	fmt.Printf("  Min stream size: %d bytes (%d MB)\n",
+		clientConfig.MultipartUploadMinStreamSize,
+		clientConfig.MultipartUploadMinStreamSize/(1024*1024))
+	fmt.Printf("  Chunk size: %d bytes (%d MB)\n",
+		clientConfig.MultipartUploadChunkSize,
+		clientConfig.MultipartUploadChunkSize/(1024*1024))
+	fmt.Printf("  Batch URL count: %d\n", clientConfig.MultipartUploadBatchURLCount)
+	fmt.Printf("  Max retries: %d\n", clientConfig.MultipartUploadMaxRetries)
+	fmt.Printf("  Download max recovers: %d\n", clientConfig.FilesAPIClientDownloadMaxTotalRecovers)
 }

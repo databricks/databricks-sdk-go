@@ -143,39 +143,87 @@ for {
 
 ## Configuration
 
-### Default Configuration
+The enhanced Files API supports configuration through the client configuration, similar to the Python SDK. Configuration parameters are automatically read from the client config and can be set via environment variables or programmatically.
 
-The enhanced Files API uses sensible defaults:
+### Client Configuration
+
+Configuration is integrated with the Databricks client configuration system:
 
 ```go
-config := files.DefaultUploadConfig()
-// Returns:
-// - MultipartUploadMinStreamSize: 100MB
-// - MultipartUploadChunkSize: 100MB
-// - MultipartUploadBatchURLCount: 10
-// - MultipartUploadMaxRetries: 3
-// - MultipartUploadSingleChunkUploadTimeoutSeconds: 300
-// - MultipartUploadURLExpirationDuration: 1 hour
+// Create configuration with custom Files API settings
+cfg := &config.Config{
+    Host:  "https://your-workspace.cloud.databricks.com",
+    Token: "your-token",
+    
+    // Files API configuration
+    FilesAPIMultipartUploadMinStreamSize:                             50 * 1024 * 1024, // 50MB
+    FilesAPIMultipartUploadChunkSize:                                 50 * 1024 * 1024, // 50MB
+    FilesAPIMultipartUploadBatchURLCount:                             5,
+    FilesAPIMultipartUploadMaxRetries:                                5,
+    FilesAPIMultipartUploadSingleChunkUploadTimeoutSeconds:           600,
+    FilesAPIMultipartUploadURLExpirationDurationSeconds:              7200, // 2 hours
+    FilesAPIClientDownloadMaxTotalRecovers:                           15,
+    FilesAPIClientDownloadMaxTotalRecoversWithoutProgressing:         5,
+}
+
+// Create client
+databricksClient, err := client.New(cfg)
+if err != nil {
+    panic(err)
+}
+
+// Create enhanced Files API
+filesExt := files.NewFilesExt(databricksClient)
+
+// Get current configuration
+currentConfig := filesExt.GetUploadConfig()
+```
+
+### Environment Variables
+
+You can also configure the Files API using environment variables:
+
+```bash
+export DATABRICKS_FILES_API_MULTIPART_UPLOAD_MIN_STREAM_SIZE=52428800  # 50MB
+export DATABRICKS_FILES_API_MULTIPART_UPLOAD_CHUNK_SIZE=52428800       # 50MB
+export DATABRICKS_FILES_API_MULTIPART_UPLOAD_BATCH_URL_COUNT=5
+export DATABRICKS_FILES_API_MULTIPART_UPLOAD_MAX_RETRIES=5
+export DATABRICKS_FILES_API_MULTIPART_UPLOAD_SINGLE_CHUNK_UPLOAD_TIMEOUT_SECONDS=600
+export DATABRICKS_FILES_API_MULTIPART_UPLOAD_URL_EXPIRATION_DURATION_SECONDS=7200
+export DATABRICKS_FILES_API_CLIENT_DOWNLOAD_MAX_TOTAL_RECOVERS=15
+export DATABRICKS_FILES_API_CLIENT_DOWNLOAD_MAX_TOTAL_RECOVERS_WITHOUT_PROGRESSING=5
+```
+
+### Default Configuration
+
+The enhanced Files API automatically sets sensible defaults in the config object when no configuration is provided. These defaults are applied during client initialization:
+
+```go
+// Default values automatically set in config object
+// - FilesAPIMultipartUploadMinStreamSize: 100MB
+// - FilesAPIMultipartUploadChunkSize: 100MB
+// - FilesAPIMultipartUploadBatchURLCount: 10
+// - FilesAPIMultipartUploadMaxRetries: 3
+// - FilesAPIMultipartUploadSingleChunkUploadTimeoutSeconds: 300
+// - FilesAPIMultipartUploadURLExpirationDurationSeconds: 3600 (1 hour)
 // - FilesAPIClientDownloadMaxTotalRecovers: 10
 // - FilesAPIClientDownloadMaxTotalRecoversWithoutProgressing: 3
 ```
 
-### Custom Configuration
+The defaults are applied automatically when you create a client, so you don't need to set them manually unless you want to override them.
 
-You can customize the upload behavior:
+### Configuration Parameters
 
-```go
-customConfig := &files.UploadConfig{
-    MultipartUploadMinStreamSize:                       50 * 1024 * 1024,  // 50MB
-    MultipartUploadChunkSize:                           50 * 1024 * 1024,  // 50MB
-    MultipartUploadBatchURLCount:                       5,
-    MultipartUploadMaxRetries:                          5,
-    MultipartUploadSingleChunkUploadTimeoutSeconds:     600,
-    MultipartUploadURLExpirationDuration:               time.Hour * 2,
-    FilesAPIClientDownloadMaxTotalRecovers:             15,
-    FilesAPIClientDownloadMaxTotalRecoversWithoutProgressing: 5,
-}
-```
+| Parameter | Environment Variable | Default | Description |
+|-----------|---------------------|---------|-------------|
+| `FilesAPIMultipartUploadMinStreamSize` | `DATABRICKS_FILES_API_MULTIPART_UPLOAD_MIN_STREAM_SIZE` | 100MB | Minimum stream size to trigger multipart upload |
+| `FilesAPIMultipartUploadChunkSize` | `DATABRICKS_FILES_API_MULTIPART_UPLOAD_CHUNK_SIZE` | 100MB | Chunk size for multipart uploads |
+| `FilesAPIMultipartUploadBatchURLCount` | `DATABRICKS_FILES_API_MULTIPART_UPLOAD_BATCH_URL_COUNT` | 10 | Number of upload URLs to request in a batch |
+| `FilesAPIMultipartUploadMaxRetries` | `DATABRICKS_FILES_API_MULTIPART_UPLOAD_MAX_RETRIES` | 3 | Maximum number of retries for multipart upload |
+| `FilesAPIMultipartUploadSingleChunkUploadTimeoutSeconds` | `DATABRICKS_FILES_API_MULTIPART_UPLOAD_SINGLE_CHUNK_UPLOAD_TIMEOUT_SECONDS` | 300 | Timeout for single chunk upload in seconds |
+| `FilesAPIMultipartUploadURLExpirationDurationSeconds` | `DATABRICKS_FILES_API_MULTIPART_UPLOAD_URL_EXPIRATION_DURATION_SECONDS` | 3600 | URL expiration duration in seconds |
+| `FilesAPIClientDownloadMaxTotalRecovers` | `DATABRICKS_FILES_API_CLIENT_DOWNLOAD_MAX_TOTAL_RECOVERS` | 10 | Maximum total recovers for downloads |
+| `FilesAPIClientDownloadMaxTotalRecoversWithoutProgressing` | `DATABRICKS_FILES_API_CLIENT_DOWNLOAD_MAX_TOTAL_RECOVERS_WITHOUT_PROGRESSING` | 3 | Maximum recovers without progressing for downloads |
 
 ## Architecture
 

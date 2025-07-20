@@ -52,7 +52,21 @@ type UploadConfig struct {
 	FilesAPIClientDownloadMaxTotalRecoversWithoutProgressing int64
 }
 
-// DefaultUploadConfig returns default configuration for uploads
+// GetUploadConfig returns configuration for uploads based on client config
+func (f *FilesExt) GetUploadConfig() *UploadConfig {
+	return &UploadConfig{
+		MultipartUploadMinStreamSize:                             f.config.FilesAPIMultipartUploadMinStreamSize,
+		MultipartUploadChunkSize:                                 f.config.FilesAPIMultipartUploadChunkSize,
+		MultipartUploadBatchURLCount:                             f.config.FilesAPIMultipartUploadBatchURLCount,
+		MultipartUploadMaxRetries:                                f.config.FilesAPIMultipartUploadMaxRetries,
+		MultipartUploadSingleChunkUploadTimeoutSeconds:           f.config.FilesAPIMultipartUploadSingleChunkUploadTimeoutSeconds,
+		MultipartUploadURLExpirationDuration:                     time.Duration(f.config.FilesAPIMultipartUploadURLExpirationDurationSeconds) * time.Second,
+		FilesAPIClientDownloadMaxTotalRecovers:                   f.config.FilesAPIClientDownloadMaxTotalRecovers,
+		FilesAPIClientDownloadMaxTotalRecoversWithoutProgressing: f.config.FilesAPIClientDownloadMaxTotalRecoversWithoutProgressing,
+	}
+}
+
+// DefaultUploadConfig returns default configuration for uploads (for backward compatibility)
 func DefaultUploadConfig() *UploadConfig {
 	return &UploadConfig{
 		MultipartUploadMinStreamSize:                             100 * 1024 * 1024, // 100MB
@@ -68,7 +82,14 @@ func DefaultUploadConfig() *UploadConfig {
 
 // Upload uploads a file with enhanced multipart upload support
 func (f *FilesExt) Upload(ctx context.Context, request UploadRequest) error {
-	config := DefaultUploadConfig()
+	err := f.FilesAPI.Upload(ctx, request)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+	config := f.GetUploadConfig()
 
 	// Read a small buffer to determine if we should use multipart upload
 	preReadBuffer := make([]byte, config.MultipartUploadMinStreamSize)
@@ -141,12 +162,14 @@ func (f *FilesExt) Upload(ctx context.Context, request UploadRequest) error {
 
 // Download downloads a file with enhanced resilient download support
 func (f *FilesExt) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
+	logger.Infof(ctx, "experimental download is enabled")
+	config := f.GetUploadConfig()
 	initialResponse, err := f.openDownloadStream(ctx, request.FilePath, 0, "")
 	if err != nil {
 		return nil, err
 	}
 
-	wrappedResponse := f.wrapStream(ctx, request.FilePath, initialResponse)
+	wrappedResponse := f.wrapStream(ctx, request.FilePath, initialResponse, config)
 	initialResponse.Contents = wrappedResponse
 	return initialResponse, nil
 }
@@ -448,8 +471,9 @@ func (f *FilesExt) openDownloadStream(ctx context.Context, filePath string, star
 	}
 
 	var response DownloadResponse
-	err := f.client.Do(ctx, "GET", fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(filePath)),
-		headers, nil, nil, &response)
+	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(filePath))
+	logger.Debugf(ctx, "Downloading file: %s", path)
+	err := f.client.Do(ctx, "GET", path, headers, nil, nil, &response)
 	if err != nil {
 		return nil, err
 	}
@@ -458,13 +482,14 @@ func (f *FilesExt) openDownloadStream(ctx context.Context, filePath string, star
 }
 
 // wrapStream wraps the download response with resilient functionality
-func (f *FilesExt) wrapStream(ctx context.Context, filePath string, downloadResponse *DownloadResponse) io.ReadCloser {
+func (f *FilesExt) wrapStream(ctx context.Context, filePath string, downloadResponse *DownloadResponse, config *UploadConfig) io.ReadCloser {
 	return &ResilientResponse{
 		api:                f,
 		filePath:           filePath,
 		fileLastModified:   downloadResponse.LastModified,
 		offset:             0,
 		underlyingResponse: downloadResponse.Contents,
+		config:             config,
 	}
 }
 
@@ -604,6 +629,7 @@ func (f *FilesExt) abortMultipartUpload(ctx context.Context, targetPath string, 
 
 // createCloudProviderSession creates a separate session for cloud provider requests
 func (f *FilesExt) createCloudProviderSession() *http.Client {
+	config := f.GetUploadConfig()
 	transport := &http.Transport{
 		MaxIdleConns:        20,
 		MaxIdleConnsPerHost: 20,
@@ -612,7 +638,7 @@ func (f *FilesExt) createCloudProviderSession() *http.Client {
 
 	return &http.Client{
 		Transport: transport,
-		Timeout:   time.Duration(DefaultUploadConfig().MultipartUploadSingleChunkUploadTimeoutSeconds) * time.Second,
+		Timeout:   time.Duration(config.MultipartUploadSingleChunkUploadTimeoutSeconds) * time.Second,
 	}
 }
 
@@ -673,6 +699,7 @@ type ResilientResponse struct {
 	offset             int64
 	underlyingResponse io.ReadCloser
 	iterator           *ResilientIterator
+	config             *UploadConfig
 }
 
 func (r *ResilientResponse) Read(p []byte) (int, error) {
@@ -684,7 +711,7 @@ func (r *ResilientResponse) Read(p []byte) (int, error) {
 			fileLastModified:   r.fileLastModified,
 			offset:             r.offset,
 			chunkSize:          len(p),
-			config:             DefaultUploadConfig(),
+			config:             r.config,
 		}
 	}
 
@@ -701,10 +728,18 @@ func (r *ResilientResponse) Close() error {
 	return nil
 }
 
+// filesExtAPI is an interface for openDownloadStream, for use in ResilientIterator
+// This allows us to mock openDownloadStream in tests
+//go:generate mockgen -destination=mock_files_ext_api.go -package=files github.com/databricks/databricks-sdk-go/service/files filesExtAPI
+
+type filesExtAPI interface {
+	openDownloadStream(ctx context.Context, filePath string, startByteOffset int64, ifUnmodifiedSinceTimestamp string) (*DownloadResponse, error)
+}
+
 // ResilientIterator provides resilient iteration over the response content
 type ResilientIterator struct {
 	underlyingIterator io.ReadCloser
-	api                *FilesExt
+	api                filesExtAPI
 	filePath           string
 	fileLastModified   string
 	offset             int64
@@ -781,10 +816,13 @@ func (r *ResilientIterator) recover() bool {
 }
 
 func (r *ResilientIterator) Close() error {
+	if r.closed {
+		return nil
+	}
+	r.closed = true
 	if r.underlyingIterator != nil {
 		return r.underlyingIterator.Close()
 	}
-	r.closed = true
 	return nil
 }
 

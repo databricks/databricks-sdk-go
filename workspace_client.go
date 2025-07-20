@@ -1237,7 +1237,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Experiments:                         ml.NewExperiments(databricksClient),
 		ExternalLocations:                   catalog.NewExternalLocations(databricksClient),
 		FeatureStore:                        ml.NewFeatureStore(databricksClient),
-		Files:                               files.NewFiles(databricksClient),
+		Files:                               files.NewFilesExt(databricksClient),
 		Functions:                           catalog.NewFunctions(databricksClient),
 		Genie:                               dashboards.NewGenie(databricksClient),
 		GitCredentials:                      workspace.NewGitCredentials(databricksClient),

@@ -27,6 +27,32 @@ func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
 	}
 	retryTimeout := time.Duration(orDefault(c.RetryTimeoutSeconds, 300)) * time.Second
 	httpTimeout := time.Duration(orDefault(c.HTTPTimeoutSeconds, 60)) * time.Second
+
+	// Set Files API defaults if not configured
+	if c.FilesAPIMultipartUploadMinStreamSize == 0 {
+		c.FilesAPIMultipartUploadMinStreamSize = 100 * 1024 * 1024 // 100MB
+	}
+	if c.FilesAPIMultipartUploadChunkSize == 0 {
+		c.FilesAPIMultipartUploadChunkSize = 100 * 1024 * 1024 // 100MB
+	}
+	if c.FilesAPIMultipartUploadBatchURLCount == 0 {
+		c.FilesAPIMultipartUploadBatchURLCount = 10
+	}
+	if c.FilesAPIMultipartUploadMaxRetries == 0 {
+		c.FilesAPIMultipartUploadMaxRetries = 3
+	}
+	if c.FilesAPIMultipartUploadSingleChunkUploadTimeoutSeconds == 0 {
+		c.FilesAPIMultipartUploadSingleChunkUploadTimeoutSeconds = 300
+	}
+	if c.FilesAPIMultipartUploadURLExpirationDurationSeconds == 0 {
+		c.FilesAPIMultipartUploadURLExpirationDurationSeconds = 3600 // 1 hour
+	}
+	if c.FilesAPIClientDownloadMaxTotalRecovers == 0 {
+		c.FilesAPIClientDownloadMaxTotalRecovers = 10
+	}
+	if c.FilesAPIClientDownloadMaxTotalRecoversWithoutProgressing == 0 {
+		c.FilesAPIClientDownloadMaxTotalRecoversWithoutProgressing = 3
+	}
 	return httpclient.NewApiClient(httpclient.ClientConfig{
 		RetryTimeout:       retryTimeout,
 		HTTPTimeout:        httpTimeout,

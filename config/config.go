@@ -133,6 +133,24 @@ type Config struct {
 	// If negative, the client will retry on retriable errors indefinitely.
 	RetryTimeoutSeconds int `name:"retry_timeout_seconds" auth:"-"`
 
+	// Files API configuration for enhanced upload/download functionality
+	// Minimum stream size to trigger multipart upload (default: 100MB)
+	FilesAPIMultipartUploadMinStreamSize int64 `name:"files_api_multipart_upload_min_stream_size" env:"DATABRICKS_FILES_API_MULTIPART_UPLOAD_MIN_STREAM_SIZE" auth:"-"`
+	// Chunk size for multipart uploads (default: 100MB)
+	FilesAPIMultipartUploadChunkSize int64 `name:"files_api_multipart_upload_chunk_size" env:"DATABRICKS_FILES_API_MULTIPART_UPLOAD_CHUNK_SIZE" auth:"-"`
+	// Number of upload URLs to request in a batch (default: 10)
+	FilesAPIMultipartUploadBatchURLCount int64 `name:"files_api_multipart_upload_batch_url_count" env:"DATABRICKS_FILES_API_MULTIPART_UPLOAD_BATCH_URL_COUNT" auth:"-"`
+	// Maximum number of retries for multipart upload (default: 3)
+	FilesAPIMultipartUploadMaxRetries int64 `name:"files_api_multipart_upload_max_retries" env:"DATABRICKS_FILES_API_MULTIPART_UPLOAD_MAX_RETRIES" auth:"-"`
+	// Timeout for single chunk upload in seconds (default: 300)
+	FilesAPIMultipartUploadSingleChunkUploadTimeoutSeconds int64 `name:"files_api_multipart_upload_single_chunk_upload_timeout_seconds" env:"DATABRICKS_FILES_API_MULTIPART_UPLOAD_SINGLE_CHUNK_UPLOAD_TIMEOUT_SECONDS" auth:"-"`
+	// URL expiration duration in seconds (default: 3600)
+	FilesAPIMultipartUploadURLExpirationDurationSeconds int64 `name:"files_api_multipart_upload_url_expiration_duration_seconds" env:"DATABRICKS_FILES_API_MULTIPART_UPLOAD_URL_EXPIRATION_DURATION_SECONDS" auth:"-"`
+	// Maximum total recovers for downloads (default: 10)
+	FilesAPIClientDownloadMaxTotalRecovers int64 `name:"files_api_client_download_max_total_recovers" env:"DATABRICKS_FILES_API_CLIENT_DOWNLOAD_MAX_TOTAL_RECOVERS" auth:"-"`
+	// Maximum recovers without progressing for downloads (default: 3)
+	FilesAPIClientDownloadMaxTotalRecoversWithoutProgressing int64 `name:"files_api_client_download_max_total_recovers_without_progressing" env:"DATABRICKS_FILES_API_CLIENT_DOWNLOAD_MAX_TOTAL_RECOVERS_WITHOUT_PROGRESSING" auth:"-"`
+
 	// HTTPTransport can be overriden for unit testing and together with tooling like https://github.com/google/go-replayers
 	HTTPTransport http.RoundTripper
 
