@@ -116,7 +116,7 @@ func (c *fileTokenCache) Lookup(key string) (*oauth2.Token, error) {
 	}
 	t, ok := f.Tokens[key]
 	if !ok {
-		return nil, ErrNotConfigured
+		return nil, ErrNotFound
 	}
 	return t, nil
 }
