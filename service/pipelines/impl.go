@@ -169,6 +169,16 @@ func (a *pipelinesImpl) ListUpdates(ctx context.Context, request ListUpdatesRequ
 	return &listUpdatesResponse, err
 }
 
+func (a *pipelinesImpl) RestorePipeline(ctx context.Context, request RestorePipelineRequest) (*RestorePipelineRequestResponse, error) {
+	var restorePipelineRequestResponse RestorePipelineRequestResponse
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/restore", request.PipelineId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &restorePipelineRequestResponse)
+	return &restorePipelineRequestResponse, err
+}
+
 func (a *pipelinesImpl) SetPermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {
 	var pipelinePermissions PipelinePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/pipelines/%v", request.PipelineId)

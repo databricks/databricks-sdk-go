@@ -228,6 +228,8 @@
 //
 // - [sql.QueriesLegacyAPI]: These endpoints are used for CRUD operations on query definitions.
 //
+// - [dashboards.QueryExecutionAPI]: Query execution APIs for AI / BI Dashboards.
+//
 // - [sql.QueryHistoryAPI]: A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute.
 //
 // - [sql.QueryVisualizationsAPI]: This is an evolving API that facilitates the addition and removal of visualizations from existing queries in the Databricks Workspace.
@@ -245,6 +247,8 @@
 // - [catalog.RegisteredModelsAPI]: Databricks provides a hosted version of MLflow Model Registry in Unity Catalog.
 //
 // - [workspace.ReposAPI]: The Repos API allows users to manage their git repos.
+//
+// - [catalog.RequestForAccessAPI]: Request for Access enables customers to request access to and manage access request destinations for Unity Catalog securables.
 //
 // - [catalog.ResourceQuotasAPI]: Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that can be created.
 //
@@ -271,6 +275,8 @@
 // - [settings.SettingsAPI]: Workspace Settings API allows users to manage settings at the workspace level.
 //
 // - [settings.AccountSettingsAPI]: Accounts Settings API allows users to manage settings at the account level.
+//
+// - [settingsv2.AccountSettingsV2API]: APIs to manage account level settings.
 //
 // - [sharing.SharesAPI]: A share is a container instantiated with :method:shares/create.
 //
@@ -322,6 +328,8 @@
 //
 // - [settings.WorkspaceNetworkConfigurationAPI]: These APIs allow configuration of network settings for Databricks workspaces by selecting which network policy to associate with the workspace.
 //
+// - [settingsv2.WorkspaceSettingsV2API]: APIs to manage workspace level settings.
+//
 // - [provisioning.WorkspacesAPI]: These APIs manage workspaces for this account.
 package service
 
@@ -345,6 +353,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/databricks/databricks-sdk-go/service/settingsv2"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
@@ -470,6 +479,7 @@ var (
 	_ *catalog.QualityMonitorsAPI                         = nil
 	_ *sql.QueriesAPI                                     = nil
 	_ *sql.QueriesLegacyAPI                               = nil
+	_ *dashboards.QueryExecutionAPI                       = nil
 	_ *sql.QueryHistoryAPI                                = nil
 	_ *sql.QueryVisualizationsAPI                         = nil
 	_ *sql.QueryVisualizationsLegacyAPI                   = nil
@@ -479,6 +489,7 @@ var (
 	_ *sql.RedashConfigAPI                                = nil
 	_ *catalog.RegisteredModelsAPI                        = nil
 	_ *workspace.ReposAPI                                 = nil
+	_ *catalog.RequestForAccessAPI                        = nil
 	_ *catalog.ResourceQuotasAPI                          = nil
 	_ *settings.RestrictWorkspaceAdminsAPI                = nil
 	_ *catalog.SchemasAPI                                 = nil
@@ -492,6 +503,7 @@ var (
 	_ *serving.ServingEndpointsDataPlaneAPI               = nil
 	_ *settings.SettingsAPI                               = nil
 	_ *settings.AccountSettingsAPI                        = nil
+	_ *settingsv2.AccountSettingsV2API                    = nil
 	_ *sharing.SharesAPI                                  = nil
 	_ *settings.SqlResultsDownloadAPI                     = nil
 	_ *sql.StatementExecutionAPI                          = nil
@@ -517,5 +529,6 @@ var (
 	_ *catalog.WorkspaceBindingsAPI                       = nil
 	_ *settings.WorkspaceConfAPI                          = nil
 	_ *settings.WorkspaceNetworkConfigurationAPI          = nil
+	_ *settingsv2.WorkspaceSettingsV2API                  = nil
 	_ *provisioning.WorkspacesAPI                         = nil
 )
