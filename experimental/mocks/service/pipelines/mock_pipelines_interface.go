@@ -1165,6 +1165,65 @@ func (_c *MockPipelinesInterface_PipelineStateInfoNameToPipelineIdMap_Call) RunA
 	return _c
 }
 
+// RestorePipeline provides a mock function with given fields: ctx, request
+func (_m *MockPipelinesInterface) RestorePipeline(ctx context.Context, request pipelines.RestorePipelineRequest) (*pipelines.RestorePipelineRequestResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RestorePipeline")
+	}
+
+	var r0 *pipelines.RestorePipelineRequestResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, pipelines.RestorePipelineRequest) (*pipelines.RestorePipelineRequestResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, pipelines.RestorePipelineRequest) *pipelines.RestorePipelineRequestResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pipelines.RestorePipelineRequestResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, pipelines.RestorePipelineRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPipelinesInterface_RestorePipeline_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RestorePipeline'
+type MockPipelinesInterface_RestorePipeline_Call struct {
+	*mock.Call
+}
+
+// RestorePipeline is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request pipelines.RestorePipelineRequest
+func (_e *MockPipelinesInterface_Expecter) RestorePipeline(ctx interface{}, request interface{}) *MockPipelinesInterface_RestorePipeline_Call {
+	return &MockPipelinesInterface_RestorePipeline_Call{Call: _e.mock.On("RestorePipeline", ctx, request)}
+}
+
+func (_c *MockPipelinesInterface_RestorePipeline_Call) Run(run func(ctx context.Context, request pipelines.RestorePipelineRequest)) *MockPipelinesInterface_RestorePipeline_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(pipelines.RestorePipelineRequest))
+	})
+	return _c
+}
+
+func (_c *MockPipelinesInterface_RestorePipeline_Call) Return(_a0 *pipelines.RestorePipelineRequestResponse, _a1 error) *MockPipelinesInterface_RestorePipeline_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPipelinesInterface_RestorePipeline_Call) RunAndReturn(run func(context.Context, pipelines.RestorePipelineRequest) (*pipelines.RestorePipelineRequestResponse, error)) *MockPipelinesInterface_RestorePipeline_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SetPermissions provides a mock function with given fields: ctx, request
 func (_m *MockPipelinesInterface) SetPermissions(ctx context.Context, request pipelines.PipelinePermissionsRequest) (*pipelines.PipelinePermissions, error) {
 	ret := _m.Called(ctx, request)

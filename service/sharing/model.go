@@ -948,6 +948,16 @@ type PermissionsChange struct {
 	// The principal whose privileges we are changing. Only one of principal or
 	// principal_id should be specified, never both at the same time.
 	Principal string `json:"principal,omitempty"`
+	// An opaque internal ID that identifies the principal whose privileges
+	// should be removed.
+	//
+	// This field is intended for removing privileges associated with a deleted
+	// user. When set, only the entries specified in the remove field are
+	// processed; any entries in the add field will be rejected.
+	//
+	// Only one of principal or principal_id should be specified, never both at
+	// the same time.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The set of privileges to remove.
 	Remove []string `json:"remove,omitempty"`
 
@@ -1132,6 +1142,9 @@ type PrivilegeAssignment struct {
 	// The principal (user email address or group name). For deleted principals,
 	// `principal` is empty while `principal_id` is populated.
 	Principal string `json:"principal,omitempty"`
+	// Unique identifier of the principal. For active principals, both
+	// `principal` and `principal_id` are present.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
 

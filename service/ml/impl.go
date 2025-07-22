@@ -192,6 +192,16 @@ func (a *experimentsImpl) GetLoggedModel(ctx context.Context, request GetLoggedM
 	return &getLoggedModelResponse, err
 }
 
+func (a *experimentsImpl) GetLoggedModels(ctx context.Context, request GetLoggedModelsRequest) (*GetLoggedModelsRequestResponse, error) {
+	var getLoggedModelsRequestResponse GetLoggedModelsRequestResponse
+	path := "/api/2.0/mlflow/logged-models:batchGet"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getLoggedModelsRequestResponse)
+	return &getLoggedModelsRequestResponse, err
+}
+
 func (a *experimentsImpl) GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
 	var getExperimentPermissionLevelsResponse GetExperimentPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v/permissionLevels", request.ExperimentId)

@@ -9,6 +9,8 @@ import (
 )
 
 type AnomalyDetectionConfig struct {
+	// The type of the last run of the workflow.
+	JobType AnomalyDetectionJobType `json:"job_type,omitempty"`
 	// Run id of the last run of the workflow
 	LastRunId string `json:"last_run_id,omitempty"`
 	// The status of the last run of the workflow.
@@ -23,6 +25,43 @@ func (s *AnomalyDetectionConfig) UnmarshalJSON(b []byte) error {
 
 func (s AnomalyDetectionConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type AnomalyDetectionJobType string
+
+const AnomalyDetectionJobTypeAnomalyDetectionJobTypeInternalHidden AnomalyDetectionJobType = `ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN`
+
+const AnomalyDetectionJobTypeAnomalyDetectionJobTypeNormal AnomalyDetectionJobType = `ANOMALY_DETECTION_JOB_TYPE_NORMAL`
+
+// String representation for [fmt.Print]
+func (f *AnomalyDetectionJobType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AnomalyDetectionJobType) Set(v string) error {
+	switch v {
+	case `ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN`, `ANOMALY_DETECTION_JOB_TYPE_NORMAL`:
+		*f = AnomalyDetectionJobType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN", "ANOMALY_DETECTION_JOB_TYPE_NORMAL"`, v)
+	}
+}
+
+// Values returns all possible values for AnomalyDetectionJobType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AnomalyDetectionJobType) Values() []AnomalyDetectionJobType {
+	return []AnomalyDetectionJobType{
+		AnomalyDetectionJobTypeAnomalyDetectionJobTypeInternalHidden,
+		AnomalyDetectionJobTypeAnomalyDetectionJobTypeNormal,
+	}
+}
+
+// Type always returns AnomalyDetectionJobType to satisfy [pflag.Value] interface
+func (f *AnomalyDetectionJobType) Type() string {
+	return "AnomalyDetectionJobType"
 }
 
 // Status of Anomaly Detection Job Run

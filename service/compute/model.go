@@ -1762,6 +1762,23 @@ func (s CreateContext) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateDefaultBaseEnvironmentRequest struct {
+	DefaultBaseEnvironment DefaultBaseEnvironment `json:"default_base_environment"`
+	// A unique identifier for this request. A random UUID is recommended. This
+	// request is only idempotent if a `request_id` is provided.
+	RequestId string `json:"request_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateDefaultBaseEnvironmentRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateDefaultBaseEnvironmentRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateInstancePool struct {
 	// Attributes related to instance pools running on Amazon Web Services. If
 	// not specified at pool creation, a set of default values will be used.
@@ -1778,6 +1795,10 @@ type CreateInstancePool struct {
 	// Defines the specification of the disks that will be attached to all spark
 	// containers.
 	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
+	// For pools with node type flexibility (Fleet-V2), whether auto generated
+	// alternate node type ids are enabled. This field should not be true if
+	// node_type_flexibility is set.
+	EnableAutoAlternateNodeTypes bool `json:"enable_auto_alternate_node_types,omitempty"`
 	// Autoscaling Local Storage: when enabled, this instances in this pool will
 	// dynamically acquire additional disk space when its Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
@@ -1804,6 +1825,11 @@ type CreateInstancePool struct {
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
+	// For pools with node type flexibility (Fleet-V2), this object contains the
+	// information about the alternate node type ids to use when attempting to
+	// launch a cluster if the node type id is not available. This field should
+	// not be set if enable_auto_alternate_node_types is true.
+	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -2131,9 +2157,119 @@ type DbfsStorageInfo struct {
 	Destination string `json:"destination"`
 }
 
+type DefaultBaseEnvironment struct {
+	BaseEnvironmentCache []DefaultBaseEnvironmentCache `json:"base_environment_cache,omitempty"`
+
+	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
+
+	CreatorUserId int64 `json:"creator_user_id,omitempty"`
+	// Note: we made `environment` non-internal because we need to expose its
+	// `client` field. All other fields should be treated as internal.
+	Environment *Environment `json:"environment,omitempty"`
+
+	Filepath string `json:"filepath,omitempty"`
+
+	Id string `json:"id,omitempty"`
+
+	IsDefault bool `json:"is_default,omitempty"`
+
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+
+	LastUpdatedUserId int64 `json:"last_updated_user_id,omitempty"`
+
+	Message string `json:"message,omitempty"`
+
+	Name string `json:"name,omitempty"`
+
+	PrincipalIds []int64 `json:"principal_ids,omitempty"`
+
+	Status DefaultBaseEnvironmentCacheStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DefaultBaseEnvironment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DefaultBaseEnvironment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DefaultBaseEnvironmentCache struct {
+	MaterializedEnvironment *MaterializedEnvironment `json:"materialized_environment,omitempty"`
+
+	Message string `json:"message,omitempty"`
+
+	Status DefaultBaseEnvironmentCacheStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DefaultBaseEnvironmentCache) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DefaultBaseEnvironmentCache) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DefaultBaseEnvironmentCacheStatus string
+
+const DefaultBaseEnvironmentCacheStatusCreated DefaultBaseEnvironmentCacheStatus = `CREATED`
+
+const DefaultBaseEnvironmentCacheStatusExpired DefaultBaseEnvironmentCacheStatus = `EXPIRED`
+
+const DefaultBaseEnvironmentCacheStatusFailed DefaultBaseEnvironmentCacheStatus = `FAILED`
+
+const DefaultBaseEnvironmentCacheStatusInvalid DefaultBaseEnvironmentCacheStatus = `INVALID`
+
+const DefaultBaseEnvironmentCacheStatusPending DefaultBaseEnvironmentCacheStatus = `PENDING`
+
+const DefaultBaseEnvironmentCacheStatusRefreshing DefaultBaseEnvironmentCacheStatus = `REFRESHING`
+
+// String representation for [fmt.Print]
+func (f *DefaultBaseEnvironmentCacheStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DefaultBaseEnvironmentCacheStatus) Set(v string) error {
+	switch v {
+	case `CREATED`, `EXPIRED`, `FAILED`, `INVALID`, `PENDING`, `REFRESHING`:
+		*f = DefaultBaseEnvironmentCacheStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CREATED", "EXPIRED", "FAILED", "INVALID", "PENDING", "REFRESHING"`, v)
+	}
+}
+
+// Values returns all possible values for DefaultBaseEnvironmentCacheStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DefaultBaseEnvironmentCacheStatus) Values() []DefaultBaseEnvironmentCacheStatus {
+	return []DefaultBaseEnvironmentCacheStatus{
+		DefaultBaseEnvironmentCacheStatusCreated,
+		DefaultBaseEnvironmentCacheStatusExpired,
+		DefaultBaseEnvironmentCacheStatusFailed,
+		DefaultBaseEnvironmentCacheStatusInvalid,
+		DefaultBaseEnvironmentCacheStatusPending,
+		DefaultBaseEnvironmentCacheStatusRefreshing,
+	}
+}
+
+// Type always returns DefaultBaseEnvironmentCacheStatus to satisfy [pflag.Value] interface
+func (f *DefaultBaseEnvironmentCacheStatus) Type() string {
+	return "DefaultBaseEnvironmentCacheStatus"
+}
+
 type DeleteCluster struct {
 	// The cluster to be terminated.
 	ClusterId string `json:"cluster_id"`
+}
+
+type DeleteDefaultBaseEnvironmentRequest struct {
+	Id string `json:"-" url:"-"`
 }
 
 type DeleteGlobalInitScriptRequest struct {
@@ -2541,6 +2677,10 @@ type EditInstancePool struct {
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
+	// For pools with node type flexibility (Fleet-V2), whether auto generated
+	// alternate node type ids are enabled. This field should not be true if
+	// node_type_flexibility is set.
+	EnableAutoAlternateNodeTypes bool `json:"enable_auto_alternate_node_types,omitempty"`
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
 	// is already met. If not set, the extra pool instances will be
@@ -2560,6 +2700,11 @@ type EditInstancePool struct {
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
+	// For pools with node type flexibility (Fleet-V2), this object contains the
+	// information about the alternate node type ids to use when attempting to
+	// launch a cluster if the node type id is not available. This field should
+	// not be set if enable_auto_alternate_node_types is true.
+	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -3237,6 +3382,10 @@ type GetInstancePool struct {
 	// Defines the specification of the disks that will be attached to all spark
 	// containers.
 	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
+	// For pools with node type flexibility (Fleet-V2), whether auto generated
+	// alternate node type ids are enabled. This field should not be true if
+	// node_type_flexibility is set.
+	EnableAutoAlternateNodeTypes bool `json:"enable_auto_alternate_node_types,omitempty"`
 	// Autoscaling Local Storage: when enabled, this instances in this pool will
 	// dynamically acquire additional disk space when its Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
@@ -3265,6 +3414,11 @@ type GetInstancePool struct {
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
+	// For pools with node type flexibility (Fleet-V2), this object contains the
+	// information about the alternate node type ids to use when attempting to
+	// launch a cluster if the node type id is not available. This field should
+	// not be set if enable_auto_alternate_node_types is true.
+	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -3704,6 +3858,10 @@ type InstancePoolAndStats struct {
 	// Defines the specification of the disks that will be attached to all spark
 	// containers.
 	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
+	// For pools with node type flexibility (Fleet-V2), whether auto generated
+	// alternate node type ids are enabled. This field should not be true if
+	// node_type_flexibility is set.
+	EnableAutoAlternateNodeTypes bool `json:"enable_auto_alternate_node_types,omitempty"`
 	// Autoscaling Local Storage: when enabled, this instances in this pool will
 	// dynamically acquire additional disk space when its Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
@@ -3732,6 +3890,11 @@ type InstancePoolAndStats struct {
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
+	// For pools with node type flexibility (Fleet-V2), this object contains the
+	// information about the alternate node type ids to use when attempting to
+	// launch a cluster if the node type id is not available. This field should
+	// not be set if enable_auto_alternate_node_types is true.
+	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -4593,6 +4756,38 @@ func (f *ListClustersSortByField) Type() string {
 	return "ListClustersSortByField"
 }
 
+type ListDefaultBaseEnvironmentsRequest struct {
+	PageSize int `json:"-" url:"page_size,omitempty"`
+
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDefaultBaseEnvironmentsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDefaultBaseEnvironmentsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDefaultBaseEnvironmentsResponse struct {
+	DefaultBaseEnvironments []DefaultBaseEnvironment `json:"default_base_environments,omitempty"`
+
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDefaultBaseEnvironmentsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDefaultBaseEnvironmentsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListGlobalInitScriptsResponse struct {
 	Scripts []GlobalInitScriptDetails `json:"scripts,omitempty"`
 }
@@ -4768,6 +4963,36 @@ func (s LogSyncStatus) MarshalJSON() ([]byte, error) {
 
 type MapAny map[string]any
 
+// Materialized Environment information enables environment sharing and reuse
+// via Environment Caching during library installations. Currently this feature
+// is only supported for Python libraries.
+//
+// - If the env cache entry in LMv2 DB doesn't exist or invalid, library
+// installations and environment materialization will occur. A new Materialized
+// Environment metadata will be sent from DP upon successful library
+// installations and env materialization, and is persisted into database by
+// LMv2. - If the env cache entry in LMv2 DB is valid, the Materialized
+// Environment will be sent to DP by LMv2, and DP will restore the cached
+// environment from a store instead of reinstalling libraries from scratch.
+//
+// If changed, also update
+// estore/namespaces/defaultbaseenvironments/latest.proto with new version
+type MaterializedEnvironment struct {
+	// The timestamp (in epoch milliseconds) when the materialized env is
+	// updated.
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MaterializedEnvironment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MaterializedEnvironment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type MavenLibrary struct {
 	// Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2".
 	Coordinates string `json:"coordinates"`
@@ -4882,6 +5107,12 @@ func (s *NodeType) UnmarshalJSON(b []byte) error {
 
 func (s NodeType) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// For Fleet-V2 using classic clusters, this object contains the information
+// about the alternate node type ids to use when attempting to launch a cluster.
+// It can be used with both the driver and worker node types.
+type NodeTypeFlexibility struct {
 }
 
 // Error message of a failed pending instances
@@ -5029,6 +5260,10 @@ func (s *RCranLibrary) UnmarshalJSON(b []byte) error {
 
 func (s RCranLibrary) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type RefreshDefaultBaseEnvironmentsRequest struct {
+	Ids []string `json:"ids"`
 }
 
 type RemoveInstanceProfile struct {
@@ -6186,6 +6421,12 @@ func (s *UpdateClusterResource) UnmarshalJSON(b []byte) error {
 
 func (s UpdateClusterResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateDefaultBaseEnvironmentRequest struct {
+	DefaultBaseEnvironment *DefaultBaseEnvironment `json:"default_base_environment,omitempty"`
+
+	Id string `json:"-" url:"-"`
 }
 
 // A storage location back by UC Volumes.

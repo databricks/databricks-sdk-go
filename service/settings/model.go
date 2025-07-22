@@ -40,7 +40,7 @@ type AccountNetworkPolicy struct {
 	// The associated account ID for this Network Policy object.
 	AccountId string `json:"account_id,omitempty"`
 	// The network policies applying for egress traffic.
-	Egress *NetworkPolicyEgress `json:"egress,omitempty"`
+	Egress NetworkPolicyEgress `json:"egress"`
 	// The unique identifier for the network policy.
 	NetworkPolicyId string `json:"network_policy_id,omitempty"`
 
@@ -3549,7 +3549,7 @@ func (s NetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
 // https://docs.google.com/document/d/1DKWO_FpZMCY4cF2O62LpwII1lx8gsnDGG-qgE3t3TOA/
 type NetworkPolicyEgress struct {
 	// The access policy enforced for egress traffic to the internet.
-	NetworkAccess *EgressNetworkPolicyNetworkAccessPolicy `json:"network_access,omitempty"`
+	NetworkAccess EgressNetworkPolicyNetworkAccessPolicy `json:"network_access"`
 }
 
 type NotificationDestination struct {
