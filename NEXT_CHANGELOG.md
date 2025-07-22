@@ -4,6 +4,9 @@
 
 ### New Features and Improvements
 
+- Add new error value `ErrHTMLContent` to differentiate parsing errors caused by
+  HTML content from other parsing errors.
+
 ### Bug Fixes
 
 ### Documentation
