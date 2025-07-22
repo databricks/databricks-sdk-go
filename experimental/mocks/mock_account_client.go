@@ -14,6 +14,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settingsv2"
 )
 
 type MockAccountClient struct {
@@ -53,6 +54,7 @@ func NewMockAccountClient(t interface {
 			ServicePrincipalSecrets:          oauth2.NewMockServicePrincipalSecretsInterface(t),
 			ServicePrincipals:                iam.NewMockAccountServicePrincipalsInterface(t),
 			Settings:                         settings.NewMockAccountSettingsInterface(t),
+			SettingsV2:                       settingsv2.NewMockAccountSettingsV2Interface(t),
 			Storage:                          provisioning.NewMockStorageInterface(t),
 			StorageCredentials:               catalog.NewMockAccountStorageCredentialsInterface(t),
 			UsageDashboards:                  billing.NewMockUsageDashboardsInterface(t),
@@ -326,6 +328,14 @@ func (m *MockAccountClient) GetMockAccountSettingsAPI() *settings.MockAccountSet
 	api, ok := m.AccountClient.Settings.(*settings.MockAccountSettingsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Settings to be *settings.MockAccountSettingsInterface, actual was %T", m.AccountClient.Settings))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockAccountSettingsV2API() *settingsv2.MockAccountSettingsV2Interface {
+	api, ok := m.AccountClient.SettingsV2.(*settingsv2.MockAccountSettingsV2Interface)
+	if !ok {
+		panic(fmt.Sprintf("expected SettingsV2 to be *settingsv2.MockAccountSettingsV2Interface, actual was %T", m.AccountClient.SettingsV2))
 	}
 	return api
 }

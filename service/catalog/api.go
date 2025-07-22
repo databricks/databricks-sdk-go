@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, Credentials, External Lineage, External Locations, External Metadata, Functions, Grants, Metastores, Model Versions, Online Tables, Quality Monitors, Registered Models, Resource Quotas, Schemas, Storage Credentials, System Schemas, Table Constraints, Tables, Temporary Table Credentials, Volumes, Workspace Bindings, etc.
+// These APIs allow you to manage Account Metastore Assignments, Account Metastores, Account Storage Credentials, Artifact Allowlists, Catalogs, Connections, Credentials, External Lineage, External Locations, External Metadata, Functions, Grants, Metastores, Model Versions, Online Tables, Quality Monitors, Registered Models, Request For Access, Resource Quotas, Schemas, Storage Credentials, System Schemas, Table Constraints, Tables, Temporary Table Credentials, Volumes, Workspace Bindings, etc.
 package catalog
 
 import (
@@ -2044,6 +2044,44 @@ func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*Regi
 		return nil, fmt.Errorf("there are %d instances of RegisteredModelInfo named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
+}
+
+type RequestForAccessInterface interface {
+
+	// Creates an access request for a Unity Catalog permissions for a specified
+	// principal on a securable object. This Batch API can take in multiple
+	// principals, securable objects, and permissions as the input and returns the
+	// access request destinations for each.
+	BatchCreateAccessRequests(ctx context.Context, request BatchCreateAccessRequestsRequest) (*BatchCreateAccessRequestsResponse, error)
+
+	// Gets an array of access request destinations for the specified securable. Any
+	// caller can see URL destinations or the destinations on the metastore.
+	// Otherwise, only those with **BROWSE** permissions on the securable can see
+	// destinations.
+	GetAccessRequestDestinations(ctx context.Context, request GetAccessRequestDestinationsRequest) (*AccessRequestDestinations, error)
+
+	// Updates the access request destinations for the given securable. The caller
+	// must be a metastore admin, the owner of the securable, or a user that has the
+	// **MANAGE** privilege on the securable in order to assign destinations.
+	UpdateAccessRequestDestinations(ctx context.Context, request UpdateAccessRequestDestinationsRequest) (*AccessRequestDestinations, error)
+}
+
+func NewRequestForAccess(client *client.DatabricksClient) *RequestForAccessAPI {
+	return &RequestForAccessAPI{
+		requestForAccessImpl: requestForAccessImpl{
+			client: client,
+		},
+	}
+}
+
+// Request for Access enables customers to request access to and manage access
+// request destinations for Unity Catalog securables.
+//
+// These APIs provide a standardized way to update, get, and request to access
+// request destinations. Fine-grained authorization ensures that only users with
+// appropriate permissions can manage access request destinations.
+type RequestForAccessAPI struct {
+	requestForAccessImpl
 }
 
 type ResourceQuotasInterface interface {

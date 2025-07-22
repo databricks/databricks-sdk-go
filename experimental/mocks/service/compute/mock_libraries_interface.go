@@ -300,6 +300,159 @@ func (_c *MockLibrariesInterface_ClusterStatusByClusterId_Call) RunAndReturn(run
 	return _c
 }
 
+// CreateDefaultBaseEnvironment provides a mock function with given fields: ctx, request
+func (_m *MockLibrariesInterface) CreateDefaultBaseEnvironment(ctx context.Context, request compute.CreateDefaultBaseEnvironmentRequest) (*compute.DefaultBaseEnvironment, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateDefaultBaseEnvironment")
+	}
+
+	var r0 *compute.DefaultBaseEnvironment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, compute.CreateDefaultBaseEnvironmentRequest) (*compute.DefaultBaseEnvironment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, compute.CreateDefaultBaseEnvironmentRequest) *compute.DefaultBaseEnvironment); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*compute.DefaultBaseEnvironment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, compute.CreateDefaultBaseEnvironmentRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLibrariesInterface_CreateDefaultBaseEnvironment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateDefaultBaseEnvironment'
+type MockLibrariesInterface_CreateDefaultBaseEnvironment_Call struct {
+	*mock.Call
+}
+
+// CreateDefaultBaseEnvironment is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request compute.CreateDefaultBaseEnvironmentRequest
+func (_e *MockLibrariesInterface_Expecter) CreateDefaultBaseEnvironment(ctx interface{}, request interface{}) *MockLibrariesInterface_CreateDefaultBaseEnvironment_Call {
+	return &MockLibrariesInterface_CreateDefaultBaseEnvironment_Call{Call: _e.mock.On("CreateDefaultBaseEnvironment", ctx, request)}
+}
+
+func (_c *MockLibrariesInterface_CreateDefaultBaseEnvironment_Call) Run(run func(ctx context.Context, request compute.CreateDefaultBaseEnvironmentRequest)) *MockLibrariesInterface_CreateDefaultBaseEnvironment_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(compute.CreateDefaultBaseEnvironmentRequest))
+	})
+	return _c
+}
+
+func (_c *MockLibrariesInterface_CreateDefaultBaseEnvironment_Call) Return(_a0 *compute.DefaultBaseEnvironment, _a1 error) *MockLibrariesInterface_CreateDefaultBaseEnvironment_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLibrariesInterface_CreateDefaultBaseEnvironment_Call) RunAndReturn(run func(context.Context, compute.CreateDefaultBaseEnvironmentRequest) (*compute.DefaultBaseEnvironment, error)) *MockLibrariesInterface_CreateDefaultBaseEnvironment_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteDefaultBaseEnvironment provides a mock function with given fields: ctx, request
+func (_m *MockLibrariesInterface) DeleteDefaultBaseEnvironment(ctx context.Context, request compute.DeleteDefaultBaseEnvironmentRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteDefaultBaseEnvironment")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, compute.DeleteDefaultBaseEnvironmentRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockLibrariesInterface_DeleteDefaultBaseEnvironment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDefaultBaseEnvironment'
+type MockLibrariesInterface_DeleteDefaultBaseEnvironment_Call struct {
+	*mock.Call
+}
+
+// DeleteDefaultBaseEnvironment is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request compute.DeleteDefaultBaseEnvironmentRequest
+func (_e *MockLibrariesInterface_Expecter) DeleteDefaultBaseEnvironment(ctx interface{}, request interface{}) *MockLibrariesInterface_DeleteDefaultBaseEnvironment_Call {
+	return &MockLibrariesInterface_DeleteDefaultBaseEnvironment_Call{Call: _e.mock.On("DeleteDefaultBaseEnvironment", ctx, request)}
+}
+
+func (_c *MockLibrariesInterface_DeleteDefaultBaseEnvironment_Call) Run(run func(ctx context.Context, request compute.DeleteDefaultBaseEnvironmentRequest)) *MockLibrariesInterface_DeleteDefaultBaseEnvironment_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(compute.DeleteDefaultBaseEnvironmentRequest))
+	})
+	return _c
+}
+
+func (_c *MockLibrariesInterface_DeleteDefaultBaseEnvironment_Call) Return(_a0 error) *MockLibrariesInterface_DeleteDefaultBaseEnvironment_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLibrariesInterface_DeleteDefaultBaseEnvironment_Call) RunAndReturn(run func(context.Context, compute.DeleteDefaultBaseEnvironmentRequest) error) *MockLibrariesInterface_DeleteDefaultBaseEnvironment_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteDefaultBaseEnvironmentById provides a mock function with given fields: ctx, id
+func (_m *MockLibrariesInterface) DeleteDefaultBaseEnvironmentById(ctx context.Context, id string) error {
+	ret := _m.Called(ctx, id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteDefaultBaseEnvironmentById")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockLibrariesInterface_DeleteDefaultBaseEnvironmentById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDefaultBaseEnvironmentById'
+type MockLibrariesInterface_DeleteDefaultBaseEnvironmentById_Call struct {
+	*mock.Call
+}
+
+// DeleteDefaultBaseEnvironmentById is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id string
+func (_e *MockLibrariesInterface_Expecter) DeleteDefaultBaseEnvironmentById(ctx interface{}, id interface{}) *MockLibrariesInterface_DeleteDefaultBaseEnvironmentById_Call {
+	return &MockLibrariesInterface_DeleteDefaultBaseEnvironmentById_Call{Call: _e.mock.On("DeleteDefaultBaseEnvironmentById", ctx, id)}
+}
+
+func (_c *MockLibrariesInterface_DeleteDefaultBaseEnvironmentById_Call) Run(run func(ctx context.Context, id string)) *MockLibrariesInterface_DeleteDefaultBaseEnvironmentById_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockLibrariesInterface_DeleteDefaultBaseEnvironmentById_Call) Return(_a0 error) *MockLibrariesInterface_DeleteDefaultBaseEnvironmentById_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLibrariesInterface_DeleteDefaultBaseEnvironmentById_Call) RunAndReturn(run func(context.Context, string) error) *MockLibrariesInterface_DeleteDefaultBaseEnvironmentById_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Install provides a mock function with given fields: ctx, request
 func (_m *MockLibrariesInterface) Install(ctx context.Context, request compute.InstallLibraries) error {
 	ret := _m.Called(ctx, request)
@@ -343,6 +496,208 @@ func (_c *MockLibrariesInterface_Install_Call) Return(_a0 error) *MockLibrariesI
 }
 
 func (_c *MockLibrariesInterface_Install_Call) RunAndReturn(run func(context.Context, compute.InstallLibraries) error) *MockLibrariesInterface_Install_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListDefaultBaseEnvironments provides a mock function with given fields: ctx, request
+func (_m *MockLibrariesInterface) ListDefaultBaseEnvironments(ctx context.Context, request compute.ListDefaultBaseEnvironmentsRequest) listing.Iterator[compute.DefaultBaseEnvironment] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDefaultBaseEnvironments")
+	}
+
+	var r0 listing.Iterator[compute.DefaultBaseEnvironment]
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ListDefaultBaseEnvironmentsRequest) listing.Iterator[compute.DefaultBaseEnvironment]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[compute.DefaultBaseEnvironment])
+		}
+	}
+
+	return r0
+}
+
+// MockLibrariesInterface_ListDefaultBaseEnvironments_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDefaultBaseEnvironments'
+type MockLibrariesInterface_ListDefaultBaseEnvironments_Call struct {
+	*mock.Call
+}
+
+// ListDefaultBaseEnvironments is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request compute.ListDefaultBaseEnvironmentsRequest
+func (_e *MockLibrariesInterface_Expecter) ListDefaultBaseEnvironments(ctx interface{}, request interface{}) *MockLibrariesInterface_ListDefaultBaseEnvironments_Call {
+	return &MockLibrariesInterface_ListDefaultBaseEnvironments_Call{Call: _e.mock.On("ListDefaultBaseEnvironments", ctx, request)}
+}
+
+func (_c *MockLibrariesInterface_ListDefaultBaseEnvironments_Call) Run(run func(ctx context.Context, request compute.ListDefaultBaseEnvironmentsRequest)) *MockLibrariesInterface_ListDefaultBaseEnvironments_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(compute.ListDefaultBaseEnvironmentsRequest))
+	})
+	return _c
+}
+
+func (_c *MockLibrariesInterface_ListDefaultBaseEnvironments_Call) Return(_a0 listing.Iterator[compute.DefaultBaseEnvironment]) *MockLibrariesInterface_ListDefaultBaseEnvironments_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLibrariesInterface_ListDefaultBaseEnvironments_Call) RunAndReturn(run func(context.Context, compute.ListDefaultBaseEnvironmentsRequest) listing.Iterator[compute.DefaultBaseEnvironment]) *MockLibrariesInterface_ListDefaultBaseEnvironments_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListDefaultBaseEnvironmentsAll provides a mock function with given fields: ctx, request
+func (_m *MockLibrariesInterface) ListDefaultBaseEnvironmentsAll(ctx context.Context, request compute.ListDefaultBaseEnvironmentsRequest) ([]compute.DefaultBaseEnvironment, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDefaultBaseEnvironmentsAll")
+	}
+
+	var r0 []compute.DefaultBaseEnvironment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ListDefaultBaseEnvironmentsRequest) ([]compute.DefaultBaseEnvironment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, compute.ListDefaultBaseEnvironmentsRequest) []compute.DefaultBaseEnvironment); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]compute.DefaultBaseEnvironment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, compute.ListDefaultBaseEnvironmentsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLibrariesInterface_ListDefaultBaseEnvironmentsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDefaultBaseEnvironmentsAll'
+type MockLibrariesInterface_ListDefaultBaseEnvironmentsAll_Call struct {
+	*mock.Call
+}
+
+// ListDefaultBaseEnvironmentsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request compute.ListDefaultBaseEnvironmentsRequest
+func (_e *MockLibrariesInterface_Expecter) ListDefaultBaseEnvironmentsAll(ctx interface{}, request interface{}) *MockLibrariesInterface_ListDefaultBaseEnvironmentsAll_Call {
+	return &MockLibrariesInterface_ListDefaultBaseEnvironmentsAll_Call{Call: _e.mock.On("ListDefaultBaseEnvironmentsAll", ctx, request)}
+}
+
+func (_c *MockLibrariesInterface_ListDefaultBaseEnvironmentsAll_Call) Run(run func(ctx context.Context, request compute.ListDefaultBaseEnvironmentsRequest)) *MockLibrariesInterface_ListDefaultBaseEnvironmentsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(compute.ListDefaultBaseEnvironmentsRequest))
+	})
+	return _c
+}
+
+func (_c *MockLibrariesInterface_ListDefaultBaseEnvironmentsAll_Call) Return(_a0 []compute.DefaultBaseEnvironment, _a1 error) *MockLibrariesInterface_ListDefaultBaseEnvironmentsAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLibrariesInterface_ListDefaultBaseEnvironmentsAll_Call) RunAndReturn(run func(context.Context, compute.ListDefaultBaseEnvironmentsRequest) ([]compute.DefaultBaseEnvironment, error)) *MockLibrariesInterface_ListDefaultBaseEnvironmentsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// RefreshDefaultBaseEnvironments provides a mock function with given fields: ctx, request
+func (_m *MockLibrariesInterface) RefreshDefaultBaseEnvironments(ctx context.Context, request compute.RefreshDefaultBaseEnvironmentsRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RefreshDefaultBaseEnvironments")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, compute.RefreshDefaultBaseEnvironmentsRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockLibrariesInterface_RefreshDefaultBaseEnvironments_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RefreshDefaultBaseEnvironments'
+type MockLibrariesInterface_RefreshDefaultBaseEnvironments_Call struct {
+	*mock.Call
+}
+
+// RefreshDefaultBaseEnvironments is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request compute.RefreshDefaultBaseEnvironmentsRequest
+func (_e *MockLibrariesInterface_Expecter) RefreshDefaultBaseEnvironments(ctx interface{}, request interface{}) *MockLibrariesInterface_RefreshDefaultBaseEnvironments_Call {
+	return &MockLibrariesInterface_RefreshDefaultBaseEnvironments_Call{Call: _e.mock.On("RefreshDefaultBaseEnvironments", ctx, request)}
+}
+
+func (_c *MockLibrariesInterface_RefreshDefaultBaseEnvironments_Call) Run(run func(ctx context.Context, request compute.RefreshDefaultBaseEnvironmentsRequest)) *MockLibrariesInterface_RefreshDefaultBaseEnvironments_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(compute.RefreshDefaultBaseEnvironmentsRequest))
+	})
+	return _c
+}
+
+func (_c *MockLibrariesInterface_RefreshDefaultBaseEnvironments_Call) Return(_a0 error) *MockLibrariesInterface_RefreshDefaultBaseEnvironments_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLibrariesInterface_RefreshDefaultBaseEnvironments_Call) RunAndReturn(run func(context.Context, compute.RefreshDefaultBaseEnvironmentsRequest) error) *MockLibrariesInterface_RefreshDefaultBaseEnvironments_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// RefreshDefaultBaseEnvironmentsByIds provides a mock function with given fields: ctx, ids
+func (_m *MockLibrariesInterface) RefreshDefaultBaseEnvironmentsByIds(ctx context.Context, ids []string) error {
+	ret := _m.Called(ctx, ids)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RefreshDefaultBaseEnvironmentsByIds")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, []string) error); ok {
+		r0 = rf(ctx, ids)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockLibrariesInterface_RefreshDefaultBaseEnvironmentsByIds_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RefreshDefaultBaseEnvironmentsByIds'
+type MockLibrariesInterface_RefreshDefaultBaseEnvironmentsByIds_Call struct {
+	*mock.Call
+}
+
+// RefreshDefaultBaseEnvironmentsByIds is a helper method to define mock.On call
+//   - ctx context.Context
+//   - ids []string
+func (_e *MockLibrariesInterface_Expecter) RefreshDefaultBaseEnvironmentsByIds(ctx interface{}, ids interface{}) *MockLibrariesInterface_RefreshDefaultBaseEnvironmentsByIds_Call {
+	return &MockLibrariesInterface_RefreshDefaultBaseEnvironmentsByIds_Call{Call: _e.mock.On("RefreshDefaultBaseEnvironmentsByIds", ctx, ids)}
+}
+
+func (_c *MockLibrariesInterface_RefreshDefaultBaseEnvironmentsByIds_Call) Run(run func(ctx context.Context, ids []string)) *MockLibrariesInterface_RefreshDefaultBaseEnvironmentsByIds_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].([]string))
+	})
+	return _c
+}
+
+func (_c *MockLibrariesInterface_RefreshDefaultBaseEnvironmentsByIds_Call) Return(_a0 error) *MockLibrariesInterface_RefreshDefaultBaseEnvironmentsByIds_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockLibrariesInterface_RefreshDefaultBaseEnvironmentsByIds_Call) RunAndReturn(run func(context.Context, []string) error) *MockLibrariesInterface_RefreshDefaultBaseEnvironmentsByIds_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -452,6 +807,65 @@ func (_c *MockLibrariesInterface_UpdateAndWait_Call) Return(_a0 error) *MockLibr
 }
 
 func (_c *MockLibrariesInterface_UpdateAndWait_Call) RunAndReturn(run func(context.Context, compute.Update, ...retries.Option[compute.ClusterLibraryStatuses]) error) *MockLibrariesInterface_UpdateAndWait_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateDefaultBaseEnvironment provides a mock function with given fields: ctx, request
+func (_m *MockLibrariesInterface) UpdateDefaultBaseEnvironment(ctx context.Context, request compute.UpdateDefaultBaseEnvironmentRequest) (*compute.DefaultBaseEnvironment, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateDefaultBaseEnvironment")
+	}
+
+	var r0 *compute.DefaultBaseEnvironment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, compute.UpdateDefaultBaseEnvironmentRequest) (*compute.DefaultBaseEnvironment, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, compute.UpdateDefaultBaseEnvironmentRequest) *compute.DefaultBaseEnvironment); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*compute.DefaultBaseEnvironment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, compute.UpdateDefaultBaseEnvironmentRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLibrariesInterface_UpdateDefaultBaseEnvironment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateDefaultBaseEnvironment'
+type MockLibrariesInterface_UpdateDefaultBaseEnvironment_Call struct {
+	*mock.Call
+}
+
+// UpdateDefaultBaseEnvironment is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request compute.UpdateDefaultBaseEnvironmentRequest
+func (_e *MockLibrariesInterface_Expecter) UpdateDefaultBaseEnvironment(ctx interface{}, request interface{}) *MockLibrariesInterface_UpdateDefaultBaseEnvironment_Call {
+	return &MockLibrariesInterface_UpdateDefaultBaseEnvironment_Call{Call: _e.mock.On("UpdateDefaultBaseEnvironment", ctx, request)}
+}
+
+func (_c *MockLibrariesInterface_UpdateDefaultBaseEnvironment_Call) Run(run func(ctx context.Context, request compute.UpdateDefaultBaseEnvironmentRequest)) *MockLibrariesInterface_UpdateDefaultBaseEnvironment_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(compute.UpdateDefaultBaseEnvironmentRequest))
+	})
+	return _c
+}
+
+func (_c *MockLibrariesInterface_UpdateDefaultBaseEnvironment_Call) Return(_a0 *compute.DefaultBaseEnvironment, _a1 error) *MockLibrariesInterface_UpdateDefaultBaseEnvironment_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLibrariesInterface_UpdateDefaultBaseEnvironment_Call) RunAndReturn(run func(context.Context, compute.UpdateDefaultBaseEnvironmentRequest) (*compute.DefaultBaseEnvironment, error)) *MockLibrariesInterface_UpdateDefaultBaseEnvironment_Call {
 	_c.Call.Return(run)
 	return _c
 }
