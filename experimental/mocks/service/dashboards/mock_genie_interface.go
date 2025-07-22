@@ -372,6 +372,187 @@ func (_c *MockGenieInterface_ExecuteMessageQuery_Call) RunAndReturn(run func(con
 	return _c
 }
 
+// GenerateDownloadFullQueryResult provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) GenerateDownloadFullQueryResult(ctx context.Context, request dashboards.GenieGenerateDownloadFullQueryResultRequest) (*dashboards.GenieGenerateDownloadFullQueryResultResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GenerateDownloadFullQueryResult")
+	}
+
+	var r0 *dashboards.GenieGenerateDownloadFullQueryResultResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieGenerateDownloadFullQueryResultRequest) (*dashboards.GenieGenerateDownloadFullQueryResultResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieGenerateDownloadFullQueryResultRequest) *dashboards.GenieGenerateDownloadFullQueryResultResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieGenerateDownloadFullQueryResultResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GenieGenerateDownloadFullQueryResultRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_GenerateDownloadFullQueryResult_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GenerateDownloadFullQueryResult'
+type MockGenieInterface_GenerateDownloadFullQueryResult_Call struct {
+	*mock.Call
+}
+
+// GenerateDownloadFullQueryResult is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieGenerateDownloadFullQueryResultRequest
+func (_e *MockGenieInterface_Expecter) GenerateDownloadFullQueryResult(ctx interface{}, request interface{}) *MockGenieInterface_GenerateDownloadFullQueryResult_Call {
+	return &MockGenieInterface_GenerateDownloadFullQueryResult_Call{Call: _e.mock.On("GenerateDownloadFullQueryResult", ctx, request)}
+}
+
+func (_c *MockGenieInterface_GenerateDownloadFullQueryResult_Call) Run(run func(ctx context.Context, request dashboards.GenieGenerateDownloadFullQueryResultRequest)) *MockGenieInterface_GenerateDownloadFullQueryResult_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieGenerateDownloadFullQueryResultRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_GenerateDownloadFullQueryResult_Call) Return(_a0 *dashboards.GenieGenerateDownloadFullQueryResultResponse, _a1 error) *MockGenieInterface_GenerateDownloadFullQueryResult_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_GenerateDownloadFullQueryResult_Call) RunAndReturn(run func(context.Context, dashboards.GenieGenerateDownloadFullQueryResultRequest) (*dashboards.GenieGenerateDownloadFullQueryResultResponse, error)) *MockGenieInterface_GenerateDownloadFullQueryResult_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetDownloadFullQueryResult provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) GetDownloadFullQueryResult(ctx context.Context, request dashboards.GenieGetDownloadFullQueryResultRequest) (*dashboards.GenieGetDownloadFullQueryResultResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetDownloadFullQueryResult")
+	}
+
+	var r0 *dashboards.GenieGetDownloadFullQueryResultResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieGetDownloadFullQueryResultRequest) (*dashboards.GenieGetDownloadFullQueryResultResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieGetDownloadFullQueryResultRequest) *dashboards.GenieGetDownloadFullQueryResultResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieGetDownloadFullQueryResultResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GenieGetDownloadFullQueryResultRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_GetDownloadFullQueryResult_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDownloadFullQueryResult'
+type MockGenieInterface_GetDownloadFullQueryResult_Call struct {
+	*mock.Call
+}
+
+// GetDownloadFullQueryResult is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieGetDownloadFullQueryResultRequest
+func (_e *MockGenieInterface_Expecter) GetDownloadFullQueryResult(ctx interface{}, request interface{}) *MockGenieInterface_GetDownloadFullQueryResult_Call {
+	return &MockGenieInterface_GetDownloadFullQueryResult_Call{Call: _e.mock.On("GetDownloadFullQueryResult", ctx, request)}
+}
+
+func (_c *MockGenieInterface_GetDownloadFullQueryResult_Call) Run(run func(ctx context.Context, request dashboards.GenieGetDownloadFullQueryResultRequest)) *MockGenieInterface_GetDownloadFullQueryResult_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieGetDownloadFullQueryResultRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_GetDownloadFullQueryResult_Call) Return(_a0 *dashboards.GenieGetDownloadFullQueryResultResponse, _a1 error) *MockGenieInterface_GetDownloadFullQueryResult_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_GetDownloadFullQueryResult_Call) RunAndReturn(run func(context.Context, dashboards.GenieGetDownloadFullQueryResultRequest) (*dashboards.GenieGetDownloadFullQueryResultResponse, error)) *MockGenieInterface_GetDownloadFullQueryResult_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId provides a mock function with given fields: ctx, spaceId, conversationId, messageId, attachmentId, downloadId
+func (_m *MockGenieInterface) GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string) (*dashboards.GenieGetDownloadFullQueryResultResponse, error) {
+	ret := _m.Called(ctx, spaceId, conversationId, messageId, attachmentId, downloadId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId")
+	}
+
+	var r0 *dashboards.GenieGetDownloadFullQueryResultResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string, string) (*dashboards.GenieGetDownloadFullQueryResultResponse, error)); ok {
+		return rf(ctx, spaceId, conversationId, messageId, attachmentId, downloadId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string, string) *dashboards.GenieGetDownloadFullQueryResultResponse); ok {
+		r0 = rf(ctx, spaceId, conversationId, messageId, attachmentId, downloadId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieGetDownloadFullQueryResultResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, string, string, string, string) error); ok {
+		r1 = rf(ctx, spaceId, conversationId, messageId, attachmentId, downloadId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId'
+type MockGenieInterface_GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId_Call struct {
+	*mock.Call
+}
+
+// GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - spaceId string
+//   - conversationId string
+//   - messageId string
+//   - attachmentId string
+//   - downloadId string
+func (_e *MockGenieInterface_Expecter) GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx interface{}, spaceId interface{}, conversationId interface{}, messageId interface{}, attachmentId interface{}, downloadId interface{}) *MockGenieInterface_GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId_Call {
+	return &MockGenieInterface_GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId_Call{Call: _e.mock.On("GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId", ctx, spaceId, conversationId, messageId, attachmentId, downloadId)}
+}
+
+func (_c *MockGenieInterface_GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId_Call) Run(run func(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string)) *MockGenieInterface_GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(string), args[4].(string), args[5].(string))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId_Call) Return(_a0 *dashboards.GenieGetDownloadFullQueryResultResponse, _a1 error) *MockGenieInterface_GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId_Call) RunAndReturn(run func(context.Context, string, string, string, string, string) (*dashboards.GenieGetDownloadFullQueryResultResponse, error)) *MockGenieInterface_GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetMessage provides a mock function with given fields: ctx, request
 func (_m *MockGenieInterface) GetMessage(ctx context.Context, request dashboards.GenieGetConversationMessageRequest) (*dashboards.GenieMessage, error) {
 	ret := _m.Called(ctx, request)

@@ -118,6 +118,10 @@ type PipelinesInterface interface {
 	// List updates for an active pipeline.
 	ListUpdatesByPipelineId(ctx context.Context, pipelineId string) (*ListUpdatesResponse, error)
 
+	// * Restores a pipeline that was previously deleted, if within the restoration
+	// window. All tables deleted at pipeline deletion will be undropped as well.
+	RestorePipeline(ctx context.Context, request RestorePipelineRequest) (*RestorePipelineRequestResponse, error)
+
 	// Sets permissions on an object, replacing existing permissions if they exist.
 	// Deletes all direct permissions if none are specified. Objects can inherit
 	// permissions from their root object.
