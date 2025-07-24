@@ -695,6 +695,46 @@ func (f *ProvisioningInfoState) Type() string {
 	return "ProvisioningInfoState"
 }
 
+type ProvisioningPhase string
+
+const ProvisioningPhaseProvisioningPhaseIndexScan ProvisioningPhase = `PROVISIONING_PHASE_INDEX_SCAN`
+
+const ProvisioningPhaseProvisioningPhaseIndexSort ProvisioningPhase = `PROVISIONING_PHASE_INDEX_SORT`
+
+const ProvisioningPhaseProvisioningPhaseMain ProvisioningPhase = `PROVISIONING_PHASE_MAIN`
+
+// String representation for [fmt.Print]
+func (f *ProvisioningPhase) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ProvisioningPhase) Set(v string) error {
+	switch v {
+	case `PROVISIONING_PHASE_INDEX_SCAN`, `PROVISIONING_PHASE_INDEX_SORT`, `PROVISIONING_PHASE_MAIN`:
+		*f = ProvisioningPhase(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PROVISIONING_PHASE_INDEX_SCAN", "PROVISIONING_PHASE_INDEX_SORT", "PROVISIONING_PHASE_MAIN"`, v)
+	}
+}
+
+// Values returns all possible values for ProvisioningPhase.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ProvisioningPhase) Values() []ProvisioningPhase {
+	return []ProvisioningPhase{
+		ProvisioningPhaseProvisioningPhaseIndexScan,
+		ProvisioningPhaseProvisioningPhaseIndexSort,
+		ProvisioningPhaseProvisioningPhaseMain,
+	}
+}
+
+// Type always returns ProvisioningPhase to satisfy [pflag.Value] interface
+func (f *ProvisioningPhase) Type() string {
+	return "ProvisioningPhase"
+}
+
 type RequestedClaims struct {
 	PermissionSet RequestedClaimsPermissionSet `json:"permission_set,omitempty"`
 
@@ -852,6 +892,8 @@ type SyncedTablePipelineProgress struct {
 	// The source table Delta version that was last processed by the pipeline.
 	// The pipeline may not have completely processed this version yet.
 	LatestVersionCurrentlyProcessing int64 `json:"latest_version_currently_processing,omitempty"`
+	// The current phase of the data synchronization pipeline.
+	ProvisioningPhase ProvisioningPhase `json:"provisioning_phase,omitempty"`
 	// The completion ratio of this update. This is a number between 0 and 1.
 	SyncProgressCompletion float64 `json:"sync_progress_completion,omitempty"`
 	// The number of rows that have been synced in this update.
@@ -1122,6 +1164,7 @@ type UpdateDatabaseInstanceRequest struct {
 	DatabaseInstance DatabaseInstance `json:"database_instance"`
 	// The name of the instance. This is the unique identifier for the instance.
 	Name string `json:"-" url:"-"`
-	// The list of fields to update.
+	// The list of fields to update. This field is not yet supported, and is
+	// ignored by the server.
 	UpdateMask string `json:"-" url:"update_mask"`
 }

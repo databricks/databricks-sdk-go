@@ -1648,7 +1648,8 @@ func (f *SharedDataObjectStatus) Type() string {
 type SharedDataObjectUpdate struct {
 	// One of: **ADD**, **REMOVE**, **UPDATE**.
 	Action SharedDataObjectUpdateAction `json:"action,omitempty"`
-	// The data object that is being added, removed, or updated.
+	// The data object that is being added, removed, or updated. The maximum
+	// number update data objects allowed is a 100.
 	DataObject *SharedDataObject `json:"data_object,omitempty"`
 }
 

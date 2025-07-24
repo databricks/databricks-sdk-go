@@ -1511,16 +1511,7 @@ func (a *OnlineTablesAPI) GetByName(ctx context.Context, name string) (*OnlineTa
 
 type QualityMonitorsInterface interface {
 
-	// Cancel an active monitor refresh for the given refresh ID.
-	//
-	// The caller must either: 1. be an owner of the table's parent catalog 2. have
-	// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
-	// parent schema 3. have the following permissions: - **USE_CATALOG** on the
-	// table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-	// owner of the table
-	//
-	// Additionally, the call must be made from the workspace where the monitor was
-	// created.
+	// Cancels an already-initiated refresh job.
 	CancelRefresh(ctx context.Context, request CancelRefreshRequest) error
 
 	// Creates a new monitor for the specified table.
@@ -1550,22 +1541,7 @@ type QualityMonitorsInterface interface {
 	//
 	// Note that the metric tables and dashboard will not be deleted as part of this
 	// call; those assets must be manually cleaned up (if desired).
-	Delete(ctx context.Context, request DeleteQualityMonitorRequest) error
-
-	// Deletes a monitor for the specified table.
-	//
-	// The caller must either: 1. be an owner of the table's parent catalog 2. have
-	// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
-	// parent schema 3. have the following permissions: - **USE_CATALOG** on the
-	// table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-	// owner of the table.
-	//
-	// Additionally, the call must be made from the workspace where the monitor was
-	// created.
-	//
-	// Note that the metric tables and dashboard will not be deleted as part of this
-	// call; those assets must be manually cleaned up (if desired).
-	DeleteByTableName(ctx context.Context, tableName string) error
+	Delete(ctx context.Context, request DeleteQualityMonitorRequest) (*DeleteMonitorResponse, error)
 
 	// Gets a monitor for the specified table.
 	//
@@ -1581,20 +1557,6 @@ type QualityMonitorsInterface interface {
 	// where the monitor was created.
 	Get(ctx context.Context, request GetQualityMonitorRequest) (*MonitorInfo, error)
 
-	// Gets a monitor for the specified table.
-	//
-	// The caller must either: 1. be an owner of the table's parent catalog 2. have
-	// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
-	// parent schema. 3. have the following permissions: - **USE_CATALOG** on the
-	// table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-	// **SELECT** privilege on the table.
-	//
-	// The returned information includes configuration values, as well as
-	// information on assets created by the monitor. Some information (e.g.,
-	// dashboard) may be filtered out if the caller is in a different workspace than
-	// where the monitor was created.
-	GetByTableName(ctx context.Context, tableName string) (*MonitorInfo, error)
-
 	// Gets info about a specific monitor refresh using the given refresh ID.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2. have
@@ -1606,18 +1568,6 @@ type QualityMonitorsInterface interface {
 	// Additionally, the call must be made from the workspace where the monitor was
 	// created.
 	GetRefresh(ctx context.Context, request GetRefreshRequest) (*MonitorRefreshInfo, error)
-
-	// Gets info about a specific monitor refresh using the given refresh ID.
-	//
-	// The caller must either: 1. be an owner of the table's parent catalog 2. have
-	// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
-	// parent schema 3. have the following permissions: - **USE_CATALOG** on the
-	// table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-	// **SELECT** privilege on the table.
-	//
-	// Additionally, the call must be made from the workspace where the monitor was
-	// created.
-	GetRefreshByTableNameAndRefreshId(ctx context.Context, tableName string, refreshId string) (*MonitorRefreshInfo, error)
 
 	// Gets an array containing the history of the most recent refreshes (up to 25)
 	// for this table.
@@ -1631,19 +1581,6 @@ type QualityMonitorsInterface interface {
 	// Additionally, the call must be made from the workspace where the monitor was
 	// created.
 	ListRefreshes(ctx context.Context, request ListRefreshesRequest) (*MonitorRefreshListResponse, error)
-
-	// Gets an array containing the history of the most recent refreshes (up to 25)
-	// for this table.
-	//
-	// The caller must either: 1. be an owner of the table's parent catalog 2. have
-	// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
-	// parent schema 3. have the following permissions: - **USE_CATALOG** on the
-	// table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-	// **SELECT** privilege on the table.
-	//
-	// Additionally, the call must be made from the workspace where the monitor was
-	// created.
-	ListRefreshesByTableName(ctx context.Context, tableName string) (*MonitorRefreshListResponse, error)
 
 	// Regenerates the monitoring dashboard for the specified table.
 	//
@@ -1697,85 +1634,13 @@ func NewQualityMonitors(client *client.DatabricksClient) *QualityMonitorsAPI {
 
 // A monitor computes and monitors data or model quality metrics for a table
 // over time. It generates metrics tables and a dashboard that you can use to
-// monitor table health and set alerts.
-//
-// Most write operations require the user to be the owner of the table (or its
-// parent schema or parent catalog). Viewing the dashboard, computed metrics, or
-// monitor configuration only requires the user to have **SELECT** privileges on
-// the table (along with **USE_SCHEMA** and **USE_CATALOG**).
+// monitor table health and set alerts. Most write operations require the user
+// to be the owner of the table (or its parent schema or parent catalog).
+// Viewing the dashboard, computed metrics, or monitor configuration only
+// requires the user to have **SELECT** privileges on the table (along with
+// **USE_SCHEMA** and **USE_CATALOG**).
 type QualityMonitorsAPI struct {
 	qualityMonitorsImpl
-}
-
-// Deletes a monitor for the specified table.
-//
-// The caller must either: 1. be an owner of the table's parent catalog 2. have
-// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
-// parent schema 3. have the following permissions: - **USE_CATALOG** on the
-// table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-// owner of the table.
-//
-// Additionally, the call must be made from the workspace where the monitor was
-// created.
-//
-// Note that the metric tables and dashboard will not be deleted as part of this
-// call; those assets must be manually cleaned up (if desired).
-func (a *QualityMonitorsAPI) DeleteByTableName(ctx context.Context, tableName string) error {
-	return a.qualityMonitorsImpl.Delete(ctx, DeleteQualityMonitorRequest{
-		TableName: tableName,
-	})
-}
-
-// Gets a monitor for the specified table.
-//
-// The caller must either: 1. be an owner of the table's parent catalog 2. have
-// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
-// parent schema. 3. have the following permissions: - **USE_CATALOG** on the
-// table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-// **SELECT** privilege on the table.
-//
-// The returned information includes configuration values, as well as
-// information on assets created by the monitor. Some information (e.g.,
-// dashboard) may be filtered out if the caller is in a different workspace than
-// where the monitor was created.
-func (a *QualityMonitorsAPI) GetByTableName(ctx context.Context, tableName string) (*MonitorInfo, error) {
-	return a.qualityMonitorsImpl.Get(ctx, GetQualityMonitorRequest{
-		TableName: tableName,
-	})
-}
-
-// Gets info about a specific monitor refresh using the given refresh ID.
-//
-// The caller must either: 1. be an owner of the table's parent catalog 2. have
-// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
-// parent schema 3. have the following permissions: - **USE_CATALOG** on the
-// table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-// **SELECT** privilege on the table.
-//
-// Additionally, the call must be made from the workspace where the monitor was
-// created.
-func (a *QualityMonitorsAPI) GetRefreshByTableNameAndRefreshId(ctx context.Context, tableName string, refreshId string) (*MonitorRefreshInfo, error) {
-	return a.qualityMonitorsImpl.GetRefresh(ctx, GetRefreshRequest{
-		TableName: tableName,
-		RefreshId: refreshId,
-	})
-}
-
-// Gets an array containing the history of the most recent refreshes (up to 25)
-// for this table.
-//
-// The caller must either: 1. be an owner of the table's parent catalog 2. have
-// **USE_CATALOG** on the table's parent catalog and be an owner of the table's
-// parent schema 3. have the following permissions: - **USE_CATALOG** on the
-// table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-// **SELECT** privilege on the table.
-//
-// Additionally, the call must be made from the workspace where the monitor was
-// created.
-func (a *QualityMonitorsAPI) ListRefreshesByTableName(ctx context.Context, tableName string) (*MonitorRefreshListResponse, error) {
-	return a.qualityMonitorsImpl.ListRefreshes(ctx, ListRefreshesRequest{
-		TableName: tableName,
-	})
 }
 
 type RegisteredModelsInterface interface {
@@ -2054,12 +1919,6 @@ type ResourceQuotasInterface interface {
 	// might not be returned in the first call.
 	GetQuota(ctx context.Context, request GetQuotaRequest) (*GetQuotaResponse, error)
 
-	// The GetQuota API returns usage information for a single resource quota,
-	// defined as a child-parent pair. This API also refreshes the quota count if it
-	// is out of date. Refreshes are triggered asynchronously. The updated count
-	// might not be returned in the first call.
-	GetQuotaByParentSecurableTypeAndParentFullNameAndQuotaName(ctx context.Context, parentSecurableType string, parentFullName string, quotaName string) (*GetQuotaResponse, error)
-
 	// ListQuotas returns all quota values under the metastore. There are no SLAs on
 	// the freshness of the counts returned. This API does not trigger a refresh of
 	// quota counts.
@@ -2093,18 +1952,6 @@ func NewResourceQuotas(client *client.DatabricksClient) *ResourceQuotasAPI {
 // [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
 type ResourceQuotasAPI struct {
 	resourceQuotasImpl
-}
-
-// The GetQuota API returns usage information for a single resource quota,
-// defined as a child-parent pair. This API also refreshes the quota count if it
-// is out of date. Refreshes are triggered asynchronously. The updated count
-// might not be returned in the first call.
-func (a *ResourceQuotasAPI) GetQuotaByParentSecurableTypeAndParentFullNameAndQuotaName(ctx context.Context, parentSecurableType string, parentFullName string, quotaName string) (*GetQuotaResponse, error) {
-	return a.resourceQuotasImpl.GetQuota(ctx, GetQuotaRequest{
-		ParentSecurableType: parentSecurableType,
-		ParentFullName:      parentFullName,
-		QuotaName:           quotaName,
-	})
 }
 
 type SchemasInterface interface {

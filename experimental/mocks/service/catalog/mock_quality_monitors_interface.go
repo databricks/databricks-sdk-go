@@ -130,21 +130,33 @@ func (_c *MockQualityMonitorsInterface_Create_Call) RunAndReturn(run func(contex
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockQualityMonitorsInterface) Delete(ctx context.Context, request catalog.DeleteQualityMonitorRequest) error {
+func (_m *MockQualityMonitorsInterface) Delete(ctx context.Context, request catalog.DeleteQualityMonitorRequest) (*catalog.DeleteMonitorResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.DeleteQualityMonitorRequest) error); ok {
+	var r0 *catalog.DeleteMonitorResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.DeleteQualityMonitorRequest) (*catalog.DeleteMonitorResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.DeleteQualityMonitorRequest) *catalog.DeleteMonitorResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.DeleteMonitorResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.DeleteQualityMonitorRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockQualityMonitorsInterface_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
@@ -166,59 +178,12 @@ func (_c *MockQualityMonitorsInterface_Delete_Call) Run(run func(ctx context.Con
 	return _c
 }
 
-func (_c *MockQualityMonitorsInterface_Delete_Call) Return(_a0 error) *MockQualityMonitorsInterface_Delete_Call {
-	_c.Call.Return(_a0)
+func (_c *MockQualityMonitorsInterface_Delete_Call) Return(_a0 *catalog.DeleteMonitorResponse, _a1 error) *MockQualityMonitorsInterface_Delete_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockQualityMonitorsInterface_Delete_Call) RunAndReturn(run func(context.Context, catalog.DeleteQualityMonitorRequest) error) *MockQualityMonitorsInterface_Delete_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// DeleteByTableName provides a mock function with given fields: ctx, tableName
-func (_m *MockQualityMonitorsInterface) DeleteByTableName(ctx context.Context, tableName string) error {
-	ret := _m.Called(ctx, tableName)
-
-	if len(ret) == 0 {
-		panic("no return value specified for DeleteByTableName")
-	}
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
-		r0 = rf(ctx, tableName)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// MockQualityMonitorsInterface_DeleteByTableName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByTableName'
-type MockQualityMonitorsInterface_DeleteByTableName_Call struct {
-	*mock.Call
-}
-
-// DeleteByTableName is a helper method to define mock.On call
-//   - ctx context.Context
-//   - tableName string
-func (_e *MockQualityMonitorsInterface_Expecter) DeleteByTableName(ctx interface{}, tableName interface{}) *MockQualityMonitorsInterface_DeleteByTableName_Call {
-	return &MockQualityMonitorsInterface_DeleteByTableName_Call{Call: _e.mock.On("DeleteByTableName", ctx, tableName)}
-}
-
-func (_c *MockQualityMonitorsInterface_DeleteByTableName_Call) Run(run func(ctx context.Context, tableName string)) *MockQualityMonitorsInterface_DeleteByTableName_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockQualityMonitorsInterface_DeleteByTableName_Call) Return(_a0 error) *MockQualityMonitorsInterface_DeleteByTableName_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockQualityMonitorsInterface_DeleteByTableName_Call) RunAndReturn(run func(context.Context, string) error) *MockQualityMonitorsInterface_DeleteByTableName_Call {
+func (_c *MockQualityMonitorsInterface_Delete_Call) RunAndReturn(run func(context.Context, catalog.DeleteQualityMonitorRequest) (*catalog.DeleteMonitorResponse, error)) *MockQualityMonitorsInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -282,65 +247,6 @@ func (_c *MockQualityMonitorsInterface_Get_Call) RunAndReturn(run func(context.C
 	return _c
 }
 
-// GetByTableName provides a mock function with given fields: ctx, tableName
-func (_m *MockQualityMonitorsInterface) GetByTableName(ctx context.Context, tableName string) (*catalog.MonitorInfo, error) {
-	ret := _m.Called(ctx, tableName)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetByTableName")
-	}
-
-	var r0 *catalog.MonitorInfo
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.MonitorInfo, error)); ok {
-		return rf(ctx, tableName)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.MonitorInfo); ok {
-		r0 = rf(ctx, tableName)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.MonitorInfo)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, tableName)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockQualityMonitorsInterface_GetByTableName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByTableName'
-type MockQualityMonitorsInterface_GetByTableName_Call struct {
-	*mock.Call
-}
-
-// GetByTableName is a helper method to define mock.On call
-//   - ctx context.Context
-//   - tableName string
-func (_e *MockQualityMonitorsInterface_Expecter) GetByTableName(ctx interface{}, tableName interface{}) *MockQualityMonitorsInterface_GetByTableName_Call {
-	return &MockQualityMonitorsInterface_GetByTableName_Call{Call: _e.mock.On("GetByTableName", ctx, tableName)}
-}
-
-func (_c *MockQualityMonitorsInterface_GetByTableName_Call) Run(run func(ctx context.Context, tableName string)) *MockQualityMonitorsInterface_GetByTableName_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockQualityMonitorsInterface_GetByTableName_Call) Return(_a0 *catalog.MonitorInfo, _a1 error) *MockQualityMonitorsInterface_GetByTableName_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockQualityMonitorsInterface_GetByTableName_Call) RunAndReturn(run func(context.Context, string) (*catalog.MonitorInfo, error)) *MockQualityMonitorsInterface_GetByTableName_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // GetRefresh provides a mock function with given fields: ctx, request
 func (_m *MockQualityMonitorsInterface) GetRefresh(ctx context.Context, request catalog.GetRefreshRequest) (*catalog.MonitorRefreshInfo, error) {
 	ret := _m.Called(ctx, request)
@@ -400,66 +306,6 @@ func (_c *MockQualityMonitorsInterface_GetRefresh_Call) RunAndReturn(run func(co
 	return _c
 }
 
-// GetRefreshByTableNameAndRefreshId provides a mock function with given fields: ctx, tableName, refreshId
-func (_m *MockQualityMonitorsInterface) GetRefreshByTableNameAndRefreshId(ctx context.Context, tableName string, refreshId string) (*catalog.MonitorRefreshInfo, error) {
-	ret := _m.Called(ctx, tableName, refreshId)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetRefreshByTableNameAndRefreshId")
-	}
-
-	var r0 *catalog.MonitorRefreshInfo
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*catalog.MonitorRefreshInfo, error)); ok {
-		return rf(ctx, tableName, refreshId)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) *catalog.MonitorRefreshInfo); ok {
-		r0 = rf(ctx, tableName, refreshId)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.MonitorRefreshInfo)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
-		r1 = rf(ctx, tableName, refreshId)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockQualityMonitorsInterface_GetRefreshByTableNameAndRefreshId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetRefreshByTableNameAndRefreshId'
-type MockQualityMonitorsInterface_GetRefreshByTableNameAndRefreshId_Call struct {
-	*mock.Call
-}
-
-// GetRefreshByTableNameAndRefreshId is a helper method to define mock.On call
-//   - ctx context.Context
-//   - tableName string
-//   - refreshId string
-func (_e *MockQualityMonitorsInterface_Expecter) GetRefreshByTableNameAndRefreshId(ctx interface{}, tableName interface{}, refreshId interface{}) *MockQualityMonitorsInterface_GetRefreshByTableNameAndRefreshId_Call {
-	return &MockQualityMonitorsInterface_GetRefreshByTableNameAndRefreshId_Call{Call: _e.mock.On("GetRefreshByTableNameAndRefreshId", ctx, tableName, refreshId)}
-}
-
-func (_c *MockQualityMonitorsInterface_GetRefreshByTableNameAndRefreshId_Call) Run(run func(ctx context.Context, tableName string, refreshId string)) *MockQualityMonitorsInterface_GetRefreshByTableNameAndRefreshId_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(string))
-	})
-	return _c
-}
-
-func (_c *MockQualityMonitorsInterface_GetRefreshByTableNameAndRefreshId_Call) Return(_a0 *catalog.MonitorRefreshInfo, _a1 error) *MockQualityMonitorsInterface_GetRefreshByTableNameAndRefreshId_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockQualityMonitorsInterface_GetRefreshByTableNameAndRefreshId_Call) RunAndReturn(run func(context.Context, string, string) (*catalog.MonitorRefreshInfo, error)) *MockQualityMonitorsInterface_GetRefreshByTableNameAndRefreshId_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // ListRefreshes provides a mock function with given fields: ctx, request
 func (_m *MockQualityMonitorsInterface) ListRefreshes(ctx context.Context, request catalog.ListRefreshesRequest) (*catalog.MonitorRefreshListResponse, error) {
 	ret := _m.Called(ctx, request)
@@ -515,65 +361,6 @@ func (_c *MockQualityMonitorsInterface_ListRefreshes_Call) Return(_a0 *catalog.M
 }
 
 func (_c *MockQualityMonitorsInterface_ListRefreshes_Call) RunAndReturn(run func(context.Context, catalog.ListRefreshesRequest) (*catalog.MonitorRefreshListResponse, error)) *MockQualityMonitorsInterface_ListRefreshes_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ListRefreshesByTableName provides a mock function with given fields: ctx, tableName
-func (_m *MockQualityMonitorsInterface) ListRefreshesByTableName(ctx context.Context, tableName string) (*catalog.MonitorRefreshListResponse, error) {
-	ret := _m.Called(ctx, tableName)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ListRefreshesByTableName")
-	}
-
-	var r0 *catalog.MonitorRefreshListResponse
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.MonitorRefreshListResponse, error)); ok {
-		return rf(ctx, tableName)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.MonitorRefreshListResponse); ok {
-		r0 = rf(ctx, tableName)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.MonitorRefreshListResponse)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, tableName)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockQualityMonitorsInterface_ListRefreshesByTableName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListRefreshesByTableName'
-type MockQualityMonitorsInterface_ListRefreshesByTableName_Call struct {
-	*mock.Call
-}
-
-// ListRefreshesByTableName is a helper method to define mock.On call
-//   - ctx context.Context
-//   - tableName string
-func (_e *MockQualityMonitorsInterface_Expecter) ListRefreshesByTableName(ctx interface{}, tableName interface{}) *MockQualityMonitorsInterface_ListRefreshesByTableName_Call {
-	return &MockQualityMonitorsInterface_ListRefreshesByTableName_Call{Call: _e.mock.On("ListRefreshesByTableName", ctx, tableName)}
-}
-
-func (_c *MockQualityMonitorsInterface_ListRefreshesByTableName_Call) Run(run func(ctx context.Context, tableName string)) *MockQualityMonitorsInterface_ListRefreshesByTableName_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockQualityMonitorsInterface_ListRefreshesByTableName_Call) Return(_a0 *catalog.MonitorRefreshListResponse, _a1 error) *MockQualityMonitorsInterface_ListRefreshesByTableName_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockQualityMonitorsInterface_ListRefreshesByTableName_Call) RunAndReturn(run func(context.Context, string) (*catalog.MonitorRefreshListResponse, error)) *MockQualityMonitorsInterface_ListRefreshesByTableName_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -1288,6 +1288,7 @@ func (a *qualityMonitorsImpl) CancelRefresh(ctx context.Context, request CancelR
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v/cancel", request.TableName, request.RefreshId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
 	return err
 }
@@ -1303,12 +1304,14 @@ func (a *qualityMonitorsImpl) Create(ctx context.Context, request CreateMonitor)
 	return &monitorInfo, err
 }
 
-func (a *qualityMonitorsImpl) Delete(ctx context.Context, request DeleteQualityMonitorRequest) error {
+func (a *qualityMonitorsImpl) Delete(ctx context.Context, request DeleteQualityMonitorRequest) (*DeleteMonitorResponse, error) {
+	var deleteMonitorResponse DeleteMonitorResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
-	return err
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteMonitorResponse)
+	return &deleteMonitorResponse, err
 }
 
 func (a *qualityMonitorsImpl) Get(ctx context.Context, request GetQualityMonitorRequest) (*MonitorInfo, error) {

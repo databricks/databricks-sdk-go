@@ -6,7 +6,7 @@
 //
 // - [iam.AccountAccessControlProxyAPI]: These APIs manage access rules on resources in an account.
 //
-// - [aibuilder.AiBuilderAPI]: The Custom LLMs service manages state and powers the UI for the Custom LLM product.
+// - [agentbricks.AgentBricksAPI]: The Custom LLMs service manages state and powers the UI for the Custom LLM product.
 //
 // - [settings.AibiDashboardEmbeddingAccessPolicyAPI]: Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the workspace level.
 //
@@ -32,7 +32,11 @@
 //
 // - [catalog.CatalogsAPI]: A catalog is the first layer of Unity Catalog’s three-level namespace.
 //
+// - [cleanrooms.CleanRoomAssetRevisionsAPI]: Clean Room Asset Revisions denote new versions of uploaded assets (e.g.
+//
 // - [cleanrooms.CleanRoomAssetsAPI]: Clean room assets are data and code objects — Tables, volumes, and notebooks that are shared with the clean room.
+//
+// - [cleanrooms.CleanRoomAutoApprovalRulesAPI]: Clean room auto-approval rules automatically create an approval on your behalf when an asset (e.g.
 //
 // - [cleanrooms.CleanRoomTaskRunsAPI]: Clean room task runs are the executions of notebooks in a clean room.
 //
@@ -326,7 +330,7 @@
 package service
 
 import (
-	"github.com/databricks/databricks-sdk-go/service/aibuilder"
+	"github.com/databricks/databricks-sdk-go/service/agentbricks"
 	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
@@ -359,7 +363,7 @@ var (
 	_ *iam.AccessControlAPI                               = nil
 	_ *iam.AccountAccessControlAPI                        = nil
 	_ *iam.AccountAccessControlProxyAPI                   = nil
-	_ *aibuilder.AiBuilderAPI                             = nil
+	_ *agentbricks.AgentBricksAPI                         = nil
 	_ *settings.AibiDashboardEmbeddingAccessPolicyAPI     = nil
 	_ *settings.AibiDashboardEmbeddingApprovedDomainsAPI  = nil
 	_ *sql.AlertsAPI                                      = nil
@@ -372,7 +376,9 @@ var (
 	_ *billing.BudgetPolicyAPI                            = nil
 	_ *billing.BudgetsAPI                                 = nil
 	_ *catalog.CatalogsAPI                                = nil
+	_ *cleanrooms.CleanRoomAssetRevisionsAPI              = nil
 	_ *cleanrooms.CleanRoomAssetsAPI                      = nil
+	_ *cleanrooms.CleanRoomAutoApprovalRulesAPI           = nil
 	_ *cleanrooms.CleanRoomTaskRunsAPI                    = nil
 	_ *cleanrooms.CleanRoomsAPI                           = nil
 	_ *compute.ClusterPoliciesAPI                         = nil
@@ -385,8 +391,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *provisioning.CredentialsAPI                        = nil
 	_ *catalog.CredentialsAPI                             = nil
+	_ *provisioning.CredentialsAPI                        = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil

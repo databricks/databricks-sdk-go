@@ -84,6 +84,65 @@ func (_c *MockCleanRoomAssetsInterface_Create_Call) RunAndReturn(run func(contex
 	return _c
 }
 
+// CreateCleanRoomAssetReview provides a mock function with given fields: ctx, request
+func (_m *MockCleanRoomAssetsInterface) CreateCleanRoomAssetReview(ctx context.Context, request cleanrooms.CreateCleanRoomAssetReviewRequest) (*cleanrooms.CreateCleanRoomAssetReviewResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateCleanRoomAssetReview")
+	}
+
+	var r0 *cleanrooms.CreateCleanRoomAssetReviewResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, cleanrooms.CreateCleanRoomAssetReviewRequest) (*cleanrooms.CreateCleanRoomAssetReviewResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, cleanrooms.CreateCleanRoomAssetReviewRequest) *cleanrooms.CreateCleanRoomAssetReviewResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*cleanrooms.CreateCleanRoomAssetReviewResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, cleanrooms.CreateCleanRoomAssetReviewRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockCleanRoomAssetsInterface_CreateCleanRoomAssetReview_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateCleanRoomAssetReview'
+type MockCleanRoomAssetsInterface_CreateCleanRoomAssetReview_Call struct {
+	*mock.Call
+}
+
+// CreateCleanRoomAssetReview is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request cleanrooms.CreateCleanRoomAssetReviewRequest
+func (_e *MockCleanRoomAssetsInterface_Expecter) CreateCleanRoomAssetReview(ctx interface{}, request interface{}) *MockCleanRoomAssetsInterface_CreateCleanRoomAssetReview_Call {
+	return &MockCleanRoomAssetsInterface_CreateCleanRoomAssetReview_Call{Call: _e.mock.On("CreateCleanRoomAssetReview", ctx, request)}
+}
+
+func (_c *MockCleanRoomAssetsInterface_CreateCleanRoomAssetReview_Call) Run(run func(ctx context.Context, request cleanrooms.CreateCleanRoomAssetReviewRequest)) *MockCleanRoomAssetsInterface_CreateCleanRoomAssetReview_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(cleanrooms.CreateCleanRoomAssetReviewRequest))
+	})
+	return _c
+}
+
+func (_c *MockCleanRoomAssetsInterface_CreateCleanRoomAssetReview_Call) Return(_a0 *cleanrooms.CreateCleanRoomAssetReviewResponse, _a1 error) *MockCleanRoomAssetsInterface_CreateCleanRoomAssetReview_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockCleanRoomAssetsInterface_CreateCleanRoomAssetReview_Call) RunAndReturn(run func(context.Context, cleanrooms.CreateCleanRoomAssetReviewRequest) (*cleanrooms.CreateCleanRoomAssetReviewResponse, error)) *MockCleanRoomAssetsInterface_CreateCleanRoomAssetReview_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Delete provides a mock function with given fields: ctx, request
 func (_m *MockCleanRoomAssetsInterface) Delete(ctx context.Context, request cleanrooms.DeleteCleanRoomAssetRequest) error {
 	ret := _m.Called(ctx, request)
