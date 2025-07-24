@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -15,6 +16,29 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/logger/httplog"
 )
+
+// ErrHTMLContent is returned when the response body is HTML instead of JSON.
+//
+// This almost always indicates an issue with your authentication configuration.
+// If you encounter this error, please verify the following:
+//
+//   - Databricks Host: Ensure your host is set correctly.
+//   - Permissions: Confirm that the authentication method has the required
+//     permissions for the API operation you are trying to perform.
+//   - Network/Proxy: If you are behind a corporate firewall, ensure it is not
+//     blocking or redirecting API traffic.
+//
+// A common cause of this error is Private Link redirecting the SDK to a login
+// page, which the SDK cannot process. This usually happens when trying to
+// access a Private Link-enabled workspace configured with no public internet
+// access from a different network than the VPC endpoint belongs to.
+//
+// For more details, please refer to the [Unified Auth] documentation and
+// [Private Link Authentication Troubleshooting].
+//
+// [Unified Auth]: https://docs.databricks.com/aws/en/dev-tools/auth/unified-auth
+// [Private Link Authentication Troubleshooting]: https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/private-link-standard#authentication-troubleshooting
+var ErrHTMLContent = errors.New("received HTML response instead of JSON")
 
 func WithResponseHeader(key string, value *string) DoOption {
 	return DoOption{
@@ -91,12 +115,19 @@ func WithResponseUnmarshal(response any) DoOption {
 				*bs = bodyBytes
 				return nil
 			}
-			if err = json.Unmarshal(bodyBytes, &response); err != nil {
+			if err := json.Unmarshal(bodyBytes, &response); err != nil {
+				if _, ok := err.(*json.SyntaxError); ok && isHTMLContent(bodyBytes) {
+					return ErrHTMLContent
+				}
 				return fmt.Errorf("failed to unmarshal response body: %w. %s", err, makeUnexpectedResponse(body.Response, body.RequestBody.DebugBytes, bodyBytes))
 			}
 			return nil
 		},
 	}
+}
+
+func isHTMLContent(bodyBytes []byte) bool {
+	return strings.HasPrefix(string(bodyBytes), "<")
 }
 
 func findContentsField(response any) (*reflect.Value, bool) {
