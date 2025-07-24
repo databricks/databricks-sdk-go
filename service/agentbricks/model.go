@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package aibuilder
+package agentbricks
 
 import (
 	"fmt"
@@ -57,7 +57,7 @@ type CustomLlm struct {
 	// Name of the custom LLM
 	Name string `json:"name"`
 	// If optimization is kicked off, tracks the state of the custom LLM
-	OptimizationState State `json:"optimization_state"`
+	OptimizationState State `json:"optimization_state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

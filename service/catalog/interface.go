@@ -602,26 +602,16 @@ type OnlineTablesService interface {
 
 // A monitor computes and monitors data or model quality metrics for a table
 // over time. It generates metrics tables and a dashboard that you can use to
-// monitor table health and set alerts.
-//
-// Most write operations require the user to be the owner of the table (or its
-// parent schema or parent catalog). Viewing the dashboard, computed metrics, or
-// monitor configuration only requires the user to have **SELECT** privileges on
-// the table (along with **USE_SCHEMA** and **USE_CATALOG**).
+// monitor table health and set alerts. Most write operations require the user
+// to be the owner of the table (or its parent schema or parent catalog).
+// Viewing the dashboard, computed metrics, or monitor configuration only
+// requires the user to have **SELECT** privileges on the table (along with
+// **USE_SCHEMA** and **USE_CATALOG**).
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type QualityMonitorsService interface {
 
-	// Cancel an active monitor refresh for the given refresh ID.
-	//
-	// The caller must either: 1. be an owner of the table's parent catalog 2.
-	// have **USE_CATALOG** on the table's parent catalog and be an owner of the
-	// table's parent schema 3. have the following permissions: -
-	// **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the
-	// table's parent schema - be an owner of the table
-	//
-	// Additionally, the call must be made from the workspace where the monitor
-	// was created.
+	// Cancels an already-initiated refresh job.
 	CancelRefresh(ctx context.Context, request CancelRefreshRequest) error
 
 	// Creates a new monitor for the specified table.
@@ -651,7 +641,7 @@ type QualityMonitorsService interface {
 	//
 	// Note that the metric tables and dashboard will not be deleted as part of
 	// this call; those assets must be manually cleaned up (if desired).
-	Delete(ctx context.Context, request DeleteQualityMonitorRequest) error
+	Delete(ctx context.Context, request DeleteQualityMonitorRequest) (*DeleteMonitorResponse, error)
 
 	// Gets a monitor for the specified table.
 	//

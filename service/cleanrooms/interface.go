@@ -6,6 +6,19 @@ import (
 	"context"
 )
 
+// Clean Room Asset Revisions denote new versions of uploaded assets (e.g.
+// notebooks) in the clean room.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type CleanRoomAssetRevisionsService interface {
+
+	// Get a specific revision of an asset
+	Get(ctx context.Context, request GetCleanRoomAssetRevisionRequest) (*CleanRoomAsset, error)
+
+	// List revisions for an asset
+	List(ctx context.Context, request ListCleanRoomAssetRevisionsRequest) (*ListCleanRoomAssetRevisionsResponse, error)
+}
+
 // Clean room assets are data and code objects — Tables, volumes, and
 // notebooks that are shared with the clean room.
 //
@@ -20,6 +33,9 @@ type CleanRoomAssetsService interface {
 	// clean room owner.
 	Create(ctx context.Context, request CreateCleanRoomAssetRequest) (*CleanRoomAsset, error)
 
+	// submit an asset review
+	CreateCleanRoomAssetReview(ctx context.Context, request CreateCleanRoomAssetReviewRequest) (*CreateCleanRoomAssetReviewResponse, error)
+
 	// Delete a clean room asset - unshare/remove the asset from the clean room
 	Delete(ctx context.Context, request DeleteCleanRoomAssetRequest) error
 
@@ -32,6 +48,29 @@ type CleanRoomAssetsService interface {
 	// Update a clean room asset. For example, updating the content of a
 	// notebook; changing the shared partitions of a table; etc.
 	Update(ctx context.Context, request UpdateCleanRoomAssetRequest) (*CleanRoomAsset, error)
+}
+
+// Clean room auto-approval rules automatically create an approval on your
+// behalf when an asset (e.g. notebook) meeting specific criteria is shared in a
+// clean room.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type CleanRoomAutoApprovalRulesService interface {
+
+	// Create an auto-approval rule
+	Create(ctx context.Context, request CreateCleanRoomAutoApprovalRuleRequest) (*CleanRoomAutoApprovalRule, error)
+
+	// Delete a auto-approval rule by rule ID
+	Delete(ctx context.Context, request DeleteCleanRoomAutoApprovalRuleRequest) error
+
+	// Get a auto-approval rule by rule ID
+	Get(ctx context.Context, request GetCleanRoomAutoApprovalRuleRequest) (*CleanRoomAutoApprovalRule, error)
+
+	// List all auto-approval rules for the caller
+	List(ctx context.Context, request ListCleanRoomAutoApprovalRulesRequest) (*ListCleanRoomAutoApprovalRulesResponse, error)
+
+	// Update a auto-approval rule by rule ID
+	Update(ctx context.Context, request UpdateCleanRoomAutoApprovalRuleRequest) (*CleanRoomAutoApprovalRule, error)
 }
 
 // Clean room task runs are the executions of notebooks in a clean room.

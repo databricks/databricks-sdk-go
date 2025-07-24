@@ -679,11 +679,15 @@ const IngestionSourceTypeOracle IngestionSourceType = `ORACLE`
 
 const IngestionSourceTypePostgresql IngestionSourceType = `POSTGRESQL`
 
+const IngestionSourceTypeRedshift IngestionSourceType = `REDSHIFT`
+
 const IngestionSourceTypeSalesforce IngestionSourceType = `SALESFORCE`
 
 const IngestionSourceTypeServicenow IngestionSourceType = `SERVICENOW`
 
 const IngestionSourceTypeSharepoint IngestionSourceType = `SHAREPOINT`
+
+const IngestionSourceTypeSqldw IngestionSourceType = `SQLDW`
 
 const IngestionSourceTypeSqlserver IngestionSourceType = `SQLSERVER`
 
@@ -699,11 +703,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
+	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `REDSHIFT`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLDW`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "REDSHIFT", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLDW", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
 	}
 }
 
@@ -722,9 +726,11 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypeNetsuite,
 		IngestionSourceTypeOracle,
 		IngestionSourceTypePostgresql,
+		IngestionSourceTypeRedshift,
 		IngestionSourceTypeSalesforce,
 		IngestionSourceTypeServicenow,
 		IngestionSourceTypeSharepoint,
+		IngestionSourceTypeSqldw,
 		IngestionSourceTypeSqlserver,
 		IngestionSourceTypeTeradata,
 		IngestionSourceTypeWorkdayRaas,

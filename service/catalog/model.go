@@ -384,9 +384,9 @@ func (s AzureUserDelegationSas) MarshalJSON() ([]byte, error) {
 }
 
 type CancelRefreshRequest struct {
-	// ID of the refresh.
-	RefreshId string `json:"-" url:"-"`
-	// Full name of the table.
+	RefreshId int64 `json:"-" url:"-"`
+	// UC table name in format `catalog.schema.table_name`. table_name is case
+	// insensitive and spaces are disallowed.
 	TableName string `json:"-" url:"-"`
 }
 
@@ -1301,38 +1301,44 @@ type CreateMetastoreAssignment struct {
 }
 
 type CreateMonitor struct {
-	// The directory to store monitoring assets (e.g. dashboard, metric tables).
+	// [Create:REQ Update:IGN] Field for specifying the absolute path to a
+	// custom directory to store data-monitoring assets. Normally prepopulated
+	// to a default user location via UI and Python APIs.
 	AssetsDir string `json:"assets_dir"`
-	// Name of the baseline table from which drift metrics are computed from.
-	// Columns in the monitored table should also be present in the baseline
-	// table.
+	// [Create:OPT Update:OPT] Baseline table name. Baseline data is used to
+	// compute drift from the data in the monitored `table_name`. The baseline
+	// table and the monitored table shall have the same schema.
 	BaselineTableName string `json:"baseline_table_name,omitempty"`
-	// Custom metrics to compute on the monitored table. These can be aggregate
-	// metrics, derived metrics (from already computed aggregate metrics), or
-	// drift metrics (comparing metrics across time windows).
+	// [Create:OPT Update:OPT] Custom metrics.
 	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
-	// The data classification config for the monitor.
+	// [Create:OPT Update:OPT] Data classification related config.
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
-	// Configuration for monitoring inference logs.
+
 	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
-	// The notification settings for the monitor.
+	// [Create:ERR Update:IGN] The latest error message for a monitor failure.
+	LatestMonitorFailureMsg string `json:"latest_monitor_failure_msg,omitempty"`
+	// [Create:OPT Update:OPT] Field for specifying notification settings.
 	Notifications *MonitorNotifications `json:"notifications,omitempty"`
-	// Schema where output metric tables are created.
+	// [Create:REQ Update:REQ] Schema where output tables are created. Needs to
+	// be in 2-level format {catalog}.{schema}
 	OutputSchemaName string `json:"output_schema_name"`
-	// The schedule for automatically updating and refreshing metric tables.
+	// [Create:OPT Update:OPT] The monitor schedule.
 	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
 	// Whether to skip creating a default dashboard summarizing data quality
 	// metrics.
 	SkipBuiltinDashboard bool `json:"skip_builtin_dashboard,omitempty"`
-	// List of column expressions to slice data with for targeted analysis. The
-	// data is grouped by each expression independently, resulting in a separate
-	// slice for each predicate and its complements. For high-cardinality
-	// columns, only the top 100 unique values by frequency will generate
-	// slices.
+	// [Create:OPT Update:OPT] List of column expressions to slice data with for
+	// targeted analysis. The data is grouped by each expression independently,
+	// resulting in a separate slice for each predicate and its complements. For
+	// example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
+	// following slices: two slices for `col_2 > 10` (True and False), and one
+	// slice per unique value in `col1`. For high-cardinality columns, only the
+	// top 100 unique values by frequency will generate slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
 	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
-	// Full name of the table.
+	// UC table name in format `catalog.schema.table_name`. This field
+	// corresponds to the {full_table_name_arg} arg in the endpoint path.
 	TableName string `json:"-" url:"-"`
 	// Configuration for monitoring time series tables.
 	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
@@ -2012,13 +2018,17 @@ type DeleteModelVersionRequest struct {
 	Version int `json:"-" url:"-"`
 }
 
+type DeleteMonitorResponse struct {
+}
+
 type DeleteOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"-" url:"-"`
 }
 
 type DeleteQualityMonitorRequest struct {
-	// Full name of the table.
+	// UC table name in format `catalog.schema.table_name`. This field
+	// corresponds to the {full_table_name_arg} arg in the endpoint path.
 	TableName string `json:"-" url:"-"`
 }
 
@@ -3536,7 +3546,8 @@ func (s GetPermissionsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type GetQualityMonitorRequest struct {
-	// Full name of the table.
+	// UC table name in format `catalog.schema.table_name`. This field
+	// corresponds to the {full_table_name_arg} arg in the endpoint path.
 	TableName string `json:"-" url:"-"`
 }
 
@@ -3558,7 +3569,7 @@ type GetQuotaResponse struct {
 
 type GetRefreshRequest struct {
 	// ID of the refresh.
-	RefreshId string `json:"-" url:"-"`
+	RefreshId int64 `json:"-" url:"-"`
 	// Full name of the table.
 	TableName string `json:"-" url:"-"`
 }
@@ -4171,7 +4182,8 @@ func (s ListQuotasResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListRefreshesRequest struct {
-	// Full name of the table.
+	// UC table name in format `catalog.schema.table_name`. table_name is case
+	// insensitive and spaces are disallowed.
 	TableName string `json:"-" url:"-"`
 }
 
@@ -4754,17 +4766,21 @@ type MonitorCronSchedule struct {
 	//
 	// [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
 	QuartzCronExpression string `json:"quartz_cron_expression"`
-	// The timezone id (e.g., ``"PST"``) in which to evaluate the quartz
+	// The timezone id (e.g., ``PST``) in which to evaluate the quartz
 	// expression.
 	TimezoneId string `json:"timezone_id"`
 }
 
-// Read only field that indicates whether a schedule is paused or not.
+// Source link:
+// https://src.dev.databricks.com/databricks/universe/-/blob/elastic-spark-common/api/messages/schedule.proto
+// Monitoring workflow schedule pause status.
 type MonitorCronSchedulePauseStatus string
 
 const MonitorCronSchedulePauseStatusPaused MonitorCronSchedulePauseStatus = `PAUSED`
 
 const MonitorCronSchedulePauseStatusUnpaused MonitorCronSchedulePauseStatus = `UNPAUSED`
+
+const MonitorCronSchedulePauseStatusUnspecified MonitorCronSchedulePauseStatus = `UNSPECIFIED`
 
 // String representation for [fmt.Print]
 func (f *MonitorCronSchedulePauseStatus) String() string {
@@ -4774,11 +4790,11 @@ func (f *MonitorCronSchedulePauseStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MonitorCronSchedulePauseStatus) Set(v string) error {
 	switch v {
-	case `PAUSED`, `UNPAUSED`:
+	case `PAUSED`, `UNPAUSED`, `UNSPECIFIED`:
 		*f = MonitorCronSchedulePauseStatus(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED", "UNSPECIFIED"`, v)
 	}
 }
 
@@ -4789,6 +4805,7 @@ func (f *MonitorCronSchedulePauseStatus) Values() []MonitorCronSchedulePauseStat
 	return []MonitorCronSchedulePauseStatus{
 		MonitorCronSchedulePauseStatusPaused,
 		MonitorCronSchedulePauseStatusUnpaused,
+		MonitorCronSchedulePauseStatusUnspecified,
 	}
 }
 
@@ -4797,8 +4814,9 @@ func (f *MonitorCronSchedulePauseStatus) Type() string {
 	return "MonitorCronSchedulePauseStatus"
 }
 
+// Data classification related configuration.
 type MonitorDataClassificationConfig struct {
-	// Whether data classification is enabled.
+	// Whether to enable data classification.
 	Enabled bool `json:"enabled,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4819,33 +4837,20 @@ type MonitorDestination struct {
 }
 
 type MonitorInferenceLog struct {
-	// Granularities for aggregating data into time windows based on their
-	// timestamp. Currently the following static granularities are supported:
-	// {``"5 minutes"``, ``"30 minutes"``, ``"1 hour"``, ``"1 day"``, ``"<n>
-	// week(s)"``, ``"1 month"``, ``"1 year"``}.
+	// List of granularities to use when aggregating data into time windows
+	// based on their timestamp.
 	Granularities []string `json:"granularities"`
-	// Optional column that contains the ground truth for the prediction.
+	// Column for the label.
 	LabelCol string `json:"label_col,omitempty"`
-	// Column that contains the id of the model generating the predictions.
-	// Metrics will be computed per model id by default, and also across all
-	// model ids.
+	// Column for the model identifier.
 	ModelIdCol string `json:"model_id_col"`
-	// Column that contains the output/prediction from the model.
+	// Column for the prediction.
 	PredictionCol string `json:"prediction_col"`
-	// Optional column that contains the prediction probabilities for each class
-	// in a classification problem type. The values in this column should be a
-	// map, mapping each class label to the prediction probability for a given
-	// sample. The map should be of PySpark MapType().
+	// Column for prediction probabilities
 	PredictionProbaCol string `json:"prediction_proba_col,omitempty"`
-	// Problem type the model aims to solve. Determines the type of
-	// model-quality metrics that will be computed.
+	// Problem type the model aims to solve.
 	ProblemType MonitorInferenceLogProblemType `json:"problem_type"`
-	// Column that contains the timestamps of requests. The column must be one
-	// of the following: - A ``TimestampType`` column - A column whose values
-	// can be converted to timestamps through the pyspark ``to_timestamp``
-	// [function].
-	//
-	// [function]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html
+	// Column for the timestamp.
 	TimestampCol string `json:"timestamp_col"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4859,8 +4864,6 @@ func (s MonitorInferenceLog) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Problem type the model aims to solve. Determines the type of model-quality
-// metrics that will be computed.
 type MonitorInferenceLogProblemType string
 
 const MonitorInferenceLogProblemTypeProblemTypeClassification MonitorInferenceLogProblemType = `PROBLEM_TYPE_CLASSIFICATION`
@@ -4899,52 +4902,57 @@ func (f *MonitorInferenceLogProblemType) Type() string {
 }
 
 type MonitorInfo struct {
-	// The directory to store monitoring assets (e.g. dashboard, metric tables).
+	// [Create:REQ Update:IGN] Field for specifying the absolute path to a
+	// custom directory to store data-monitoring assets. Normally prepopulated
+	// to a default user location via UI and Python APIs.
 	AssetsDir string `json:"assets_dir,omitempty"`
-	// Name of the baseline table from which drift metrics are computed from.
-	// Columns in the monitored table should also be present in the baseline
-	// table.
+	// [Create:OPT Update:OPT] Baseline table name. Baseline data is used to
+	// compute drift from the data in the monitored `table_name`. The baseline
+	// table and the monitored table shall have the same schema.
 	BaselineTableName string `json:"baseline_table_name,omitempty"`
-	// Custom metrics to compute on the monitored table. These can be aggregate
-	// metrics, derived metrics (from already computed aggregate metrics), or
-	// drift metrics (comparing metrics across time windows).
+	// [Create:OPT Update:OPT] Custom metrics.
 	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
-	// Id of dashboard that visualizes the computed metrics. This can be empty
-	// if the monitor is in PENDING state.
+	// [Create:ERR Update:OPT] Id of dashboard that visualizes the computed
+	// metrics. This can be empty if the monitor is in PENDING state.
 	DashboardId string `json:"dashboard_id,omitempty"`
-	// The data classification config for the monitor.
+	// [Create:OPT Update:OPT] Data classification related config.
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
-	// The full name of the drift metrics table. Format:
-	// __catalog_name__.__schema_name__.__table_name__.
+	// [Create:ERR Update:IGN] Table that stores drift metrics data. Format:
+	// `catalog.schema.table_name`.
 	DriftMetricsTableName string `json:"drift_metrics_table_name"`
-	// Configuration for monitoring inference logs.
+
 	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
-	// The latest failure message of the monitor (if any).
+	// [Create:ERR Update:IGN] The latest error message for a monitor failure.
 	LatestMonitorFailureMsg string `json:"latest_monitor_failure_msg,omitempty"`
-	// The version of the monitor config (e.g. 1,2,3). If negative, the monitor
-	// may be corrupted.
-	MonitorVersion string `json:"monitor_version"`
-	// The notification settings for the monitor.
+	// [Create:ERR Update:IGN] Represents the current monitor configuration
+	// version in use. The version will be represented in a numeric fashion
+	// (1,2,3...). The field has flexibility to take on negative values, which
+	// can indicate corrupted monitor_version numbers.
+	MonitorVersion int64 `json:"monitor_version"`
+	// [Create:OPT Update:OPT] Field for specifying notification settings.
 	Notifications *MonitorNotifications `json:"notifications,omitempty"`
-	// Schema where output metric tables are created.
-	OutputSchemaName string `json:"output_schema_name,omitempty"`
-	// The full name of the profile metrics table. Format:
-	// __catalog_name__.__schema_name__.__table_name__.
+	// [Create:REQ Update:REQ] Schema where output tables are created. Needs to
+	// be in 2-level format {catalog}.{schema}
+	OutputSchemaName string `json:"output_schema_name"`
+	// [Create:ERR Update:IGN] Table that stores profile metrics data. Format:
+	// `catalog.schema.table_name`.
 	ProfileMetricsTableName string `json:"profile_metrics_table_name"`
-	// The schedule for automatically updating and refreshing metric tables.
+	// [Create:OPT Update:OPT] The monitor schedule.
 	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
-	// List of column expressions to slice data with for targeted analysis. The
-	// data is grouped by each expression independently, resulting in a separate
-	// slice for each predicate and its complements. For high-cardinality
-	// columns, only the top 100 unique values by frequency will generate
-	// slices.
+	// [Create:OPT Update:OPT] List of column expressions to slice data with for
+	// targeted analysis. The data is grouped by each expression independently,
+	// resulting in a separate slice for each predicate and its complements. For
+	// example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
+	// following slices: two slices for `col_2 > 10` (True and False), and one
+	// slice per unique value in `col1`. For high-cardinality columns, only the
+	// top 100 unique values by frequency will generate slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
 	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
-
+	// [Create:ERR Update:IGN] The monitor status.
 	Status MonitorInfoStatus `json:"status"`
-	// The full name of the table to monitor. Format:
-	// __catalog_name__.__schema_name__.__table_name__.
+	// [Create:ERR Update:IGN] UC table to monitor. Format:
+	// `catalog.schema.table_name`
 	TableName string `json:"table_name"`
 	// Configuration for monitoring time series tables.
 	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
@@ -4960,7 +4968,6 @@ func (s MonitorInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The status of the monitor.
 type MonitorInfoStatus string
 
 const MonitorInfoStatusMonitorStatusActive MonitorInfoStatus = `MONITOR_STATUS_ACTIVE`
@@ -5007,6 +5014,7 @@ func (f *MonitorInfoStatus) Type() string {
 	return "MonitorInfoStatus"
 }
 
+// Custom metric definition.
 type MonitorMetric struct {
 	// Jinja template for a SQL expression that specifies how to compute the
 	// metric. See [create metric definition].
@@ -5034,11 +5042,11 @@ type MonitorMetric struct {
 	Type MonitorMetricType `json:"type"`
 }
 
-// Can only be one of “"CUSTOM_METRIC_TYPE_AGGREGATE"“,
-// “"CUSTOM_METRIC_TYPE_DERIVED"“, or “"CUSTOM_METRIC_TYPE_DRIFT"“. The
-// “"CUSTOM_METRIC_TYPE_AGGREGATE"“ and “"CUSTOM_METRIC_TYPE_DERIVED"“
+// Can only be one of “\"CUSTOM_METRIC_TYPE_AGGREGATE\"“,
+// “\"CUSTOM_METRIC_TYPE_DERIVED\"“, or “\"CUSTOM_METRIC_TYPE_DRIFT\"“. The
+// “\"CUSTOM_METRIC_TYPE_AGGREGATE\"“ and “\"CUSTOM_METRIC_TYPE_DERIVED\"“
 // metrics are computed on a single table, whereas the
-// “"CUSTOM_METRIC_TYPE_DRIFT"“ compare metrics across baseline and input
+// “\"CUSTOM_METRIC_TYPE_DRIFT\"“ compare metrics across baseline and input
 // table, or across the two consecutive time windows. -
 // CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your
 // table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate
@@ -5085,10 +5093,9 @@ func (f *MonitorMetricType) Type() string {
 }
 
 type MonitorNotifications struct {
-	// Who to send notifications to on monitor failure.
+	// Destinations to send notifications on failure/timeout.
 	OnFailure *MonitorDestination `json:"on_failure,omitempty"`
-	// Who to send notifications to when new data classification tags are
-	// detected.
+	// Destinations to send notifications on new classification tag detected.
 	OnNewClassificationTagDetected *MonitorDestination `json:"on_new_classification_tag_detected,omitempty"`
 }
 
@@ -5133,6 +5140,8 @@ const MonitorRefreshInfoStateRunning MonitorRefreshInfoState = `RUNNING`
 
 const MonitorRefreshInfoStateSuccess MonitorRefreshInfoState = `SUCCESS`
 
+const MonitorRefreshInfoStateUnknown MonitorRefreshInfoState = `UNKNOWN`
+
 // String representation for [fmt.Print]
 func (f *MonitorRefreshInfoState) String() string {
 	return string(*f)
@@ -5141,11 +5150,11 @@ func (f *MonitorRefreshInfoState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MonitorRefreshInfoState) Set(v string) error {
 	switch v {
-	case `CANCELED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCESS`:
+	case `CANCELED`, `FAILED`, `PENDING`, `RUNNING`, `SUCCESS`, `UNKNOWN`:
 		*f = MonitorRefreshInfoState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANCELED", "FAILED", "PENDING", "RUNNING", "SUCCESS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANCELED", "FAILED", "PENDING", "RUNNING", "SUCCESS", "UNKNOWN"`, v)
 	}
 }
 
@@ -5159,6 +5168,7 @@ func (f *MonitorRefreshInfoState) Values() []MonitorRefreshInfoState {
 		MonitorRefreshInfoStatePending,
 		MonitorRefreshInfoStateRunning,
 		MonitorRefreshInfoStateSuccess,
+		MonitorRefreshInfoStateUnknown,
 	}
 }
 
@@ -5167,12 +5177,13 @@ func (f *MonitorRefreshInfoState) Type() string {
 	return "MonitorRefreshInfoState"
 }
 
-// The method by which the refresh was triggered.
 type MonitorRefreshInfoTrigger string
 
 const MonitorRefreshInfoTriggerManual MonitorRefreshInfoTrigger = `MANUAL`
 
 const MonitorRefreshInfoTriggerSchedule MonitorRefreshInfoTrigger = `SCHEDULE`
+
+const MonitorRefreshInfoTriggerUnknownTrigger MonitorRefreshInfoTrigger = `UNKNOWN_TRIGGER`
 
 // String representation for [fmt.Print]
 func (f *MonitorRefreshInfoTrigger) String() string {
@@ -5182,11 +5193,11 @@ func (f *MonitorRefreshInfoTrigger) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MonitorRefreshInfoTrigger) Set(v string) error {
 	switch v {
-	case `MANUAL`, `SCHEDULE`:
+	case `MANUAL`, `SCHEDULE`, `UNKNOWN_TRIGGER`:
 		*f = MonitorRefreshInfoTrigger(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "MANUAL", "SCHEDULE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "MANUAL", "SCHEDULE", "UNKNOWN_TRIGGER"`, v)
 	}
 }
 
@@ -5197,6 +5208,7 @@ func (f *MonitorRefreshInfoTrigger) Values() []MonitorRefreshInfoTrigger {
 	return []MonitorRefreshInfoTrigger{
 		MonitorRefreshInfoTriggerManual,
 		MonitorRefreshInfoTriggerSchedule,
+		MonitorRefreshInfoTriggerUnknownTrigger,
 	}
 }
 
@@ -5210,21 +5222,18 @@ type MonitorRefreshListResponse struct {
 	Refreshes []MonitorRefreshInfo `json:"refreshes,omitempty"`
 }
 
+// Snapshot analysis configuration
 type MonitorSnapshot struct {
 }
 
+// Time series analysis configuration.
 type MonitorTimeSeries struct {
 	// Granularities for aggregating data into time windows based on their
 	// timestamp. Currently the following static granularities are supported:
-	// {``"5 minutes"``, ``"30 minutes"``, ``"1 hour"``, ``"1 day"``, ``"<n>
-	// week(s)"``, ``"1 month"``, ``"1 year"``}.
+	// {``\"5 minutes\"``, ``\"30 minutes\"``, ``\"1 hour\"``, ``\"1 day\"``,
+	// ``\"\u003cn\u003e week(s)\"``, ``\"1 month\"``, ``\"1 year\"``}.
 	Granularities []string `json:"granularities"`
-	// Column that contains the timestamps of requests. The column must be one
-	// of the following: - A ``TimestampType`` column - A column whose values
-	// can be converted to timestamps through the pyspark ``to_timestamp``
-	// [function].
-	//
-	// [function]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html
+	// Column for the timestamp.
 	TimestampCol string `json:"timestamp_col"`
 }
 
@@ -5937,7 +5946,8 @@ func (s ReadVolumeRequest) MarshalJSON() ([]byte, error) {
 }
 
 type RegenerateDashboardRequest struct {
-	// Full name of the table.
+	// UC table name in format `catalog.schema.table_name`. This field
+	// corresponds to the {full_table_name_arg} arg in the endpoint path.
 	TableName string `json:"-" url:"-"`
 	// Optional argument to specify the warehouse for dashboard regeneration. If
 	// not specified, the first running warehouse will be used.
@@ -5955,9 +5965,8 @@ func (s RegenerateDashboardRequest) MarshalJSON() ([]byte, error) {
 }
 
 type RegenerateDashboardResponse struct {
-	// Id of the regenerated monitoring dashboard.
 	DashboardId string `json:"dashboard_id,omitempty"`
-	// The directory where the regenerated dashboard is stored.
+	// Parent folder is equivalent to {assets_dir}/{tableName}
 	ParentFolder string `json:"parent_folder,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6036,7 +6045,8 @@ func (s RegisteredModelInfo) MarshalJSON() ([]byte, error) {
 }
 
 type RunRefreshRequest struct {
-	// Full name of the table.
+	// UC table name in format `catalog.schema.table_name`. table_name is case
+	// insensitive and spaces are disallowed.
 	TableName string `json:"-" url:"-"`
 }
 
@@ -6093,6 +6103,7 @@ func (s SchemaInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Latest kind: CONNECTION_SQLSERVER_OAUTH_M2M = 254; Next id:255
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -7238,36 +7249,40 @@ func (s UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateMonitor struct {
-	// Name of the baseline table from which drift metrics are computed from.
-	// Columns in the monitored table should also be present in the baseline
-	// table.
+	// [Create:OPT Update:OPT] Baseline table name. Baseline data is used to
+	// compute drift from the data in the monitored `table_name`. The baseline
+	// table and the monitored table shall have the same schema.
 	BaselineTableName string `json:"baseline_table_name,omitempty"`
-	// Custom metrics to compute on the monitored table. These can be aggregate
-	// metrics, derived metrics (from already computed aggregate metrics), or
-	// drift metrics (comparing metrics across time windows).
+	// [Create:OPT Update:OPT] Custom metrics.
 	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
-	// Id of dashboard that visualizes the computed metrics. This can be empty
-	// if the monitor is in PENDING state.
+	// [Create:ERR Update:OPT] Id of dashboard that visualizes the computed
+	// metrics. This can be empty if the monitor is in PENDING state.
 	DashboardId string `json:"dashboard_id,omitempty"`
-	// The data classification config for the monitor.
+	// [Create:OPT Update:OPT] Data classification related config.
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
-	// Configuration for monitoring inference logs.
+
 	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
-	// The notification settings for the monitor.
+	// [Create:ERR Update:IGN] The latest error message for a monitor failure.
+	LatestMonitorFailureMsg string `json:"latest_monitor_failure_msg,omitempty"`
+	// [Create:OPT Update:OPT] Field for specifying notification settings.
 	Notifications *MonitorNotifications `json:"notifications,omitempty"`
-	// Schema where output metric tables are created.
+	// [Create:REQ Update:REQ] Schema where output tables are created. Needs to
+	// be in 2-level format {catalog}.{schema}
 	OutputSchemaName string `json:"output_schema_name"`
-	// The schedule for automatically updating and refreshing metric tables.
+	// [Create:OPT Update:OPT] The monitor schedule.
 	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
-	// List of column expressions to slice data with for targeted analysis. The
-	// data is grouped by each expression independently, resulting in a separate
-	// slice for each predicate and its complements. For high-cardinality
-	// columns, only the top 100 unique values by frequency will generate
-	// slices.
+	// [Create:OPT Update:OPT] List of column expressions to slice data with for
+	// targeted analysis. The data is grouped by each expression independently,
+	// resulting in a separate slice for each predicate and its complements. For
+	// example `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the
+	// following slices: two slices for `col_2 > 10` (True and False), and one
+	// slice per unique value in `col1`. For high-cardinality columns, only the
+	// top 100 unique values by frequency will generate slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
 	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
-	// Full name of the table.
+	// UC table name in format `catalog.schema.table_name`. This field
+	// corresponds to the {full_table_name_arg} arg in the endpoint path.
 	TableName string `json:"-" url:"-"`
 	// Configuration for monitoring time series tables.
 	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`

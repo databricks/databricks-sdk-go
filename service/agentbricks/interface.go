@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package aibuilder
+package agentbricks
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 // product.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
-type AiBuilderService interface {
+type AgentBricksService interface {
 
 	// Cancel a Custom LLM Optimization Run.
 	CancelOptimize(ctx context.Context, request CancelCustomLlmOptimizationRunRequest) error

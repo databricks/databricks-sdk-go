@@ -2,7 +2,7 @@
 
 // The Custom LLMs service manages state and powers the UI for the Custom LLM
 // product.
-package aibuilder
+package agentbricks
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 )
 
-type AiBuilderInterface interface {
+type AgentBricksInterface interface {
 
 	// Cancel a Custom LLM Optimization Run.
 	CancelOptimize(ctx context.Context, request CancelCustomLlmOptimizationRunRequest) error
@@ -21,14 +21,8 @@ type AiBuilderInterface interface {
 	// Delete a Custom LLM.
 	DeleteCustomLlm(ctx context.Context, request DeleteCustomLlmRequest) error
 
-	// Delete a Custom LLM.
-	DeleteCustomLlmById(ctx context.Context, id string) error
-
 	// Get a Custom LLM.
 	GetCustomLlm(ctx context.Context, request GetCustomLlmRequest) (*CustomLlm, error)
-
-	// Get a Custom LLM.
-	GetCustomLlmById(ctx context.Context, id string) (*CustomLlm, error)
 
 	// Start a Custom LLM Optimization Run.
 	StartOptimize(ctx context.Context, request StartCustomLlmOptimizationRunRequest) (*CustomLlm, error)
@@ -37,9 +31,9 @@ type AiBuilderInterface interface {
 	UpdateCustomLlm(ctx context.Context, request UpdateCustomLlmRequest) (*CustomLlm, error)
 }
 
-func NewAiBuilder(client *client.DatabricksClient) *AiBuilderAPI {
-	return &AiBuilderAPI{
-		aiBuilderImpl: aiBuilderImpl{
+func NewAgentBricks(client *client.DatabricksClient) *AgentBricksAPI {
+	return &AgentBricksAPI{
+		agentBricksImpl: agentBricksImpl{
 			client: client,
 		},
 	}
@@ -47,20 +41,6 @@ func NewAiBuilder(client *client.DatabricksClient) *AiBuilderAPI {
 
 // The Custom LLMs service manages state and powers the UI for the Custom LLM
 // product.
-type AiBuilderAPI struct {
-	aiBuilderImpl
-}
-
-// Delete a Custom LLM.
-func (a *AiBuilderAPI) DeleteCustomLlmById(ctx context.Context, id string) error {
-	return a.aiBuilderImpl.DeleteCustomLlm(ctx, DeleteCustomLlmRequest{
-		Id: id,
-	})
-}
-
-// Get a Custom LLM.
-func (a *AiBuilderAPI) GetCustomLlmById(ctx context.Context, id string) (*CustomLlm, error) {
-	return a.aiBuilderImpl.GetCustomLlm(ctx, GetCustomLlmRequest{
-		Id: id,
-	})
+type AgentBricksAPI struct {
+	agentBricksImpl
 }

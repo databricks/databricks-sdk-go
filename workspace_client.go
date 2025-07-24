@@ -9,7 +9,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 
-	"github.com/databricks/databricks-sdk-go/service/aibuilder"
+	"github.com/databricks/databricks-sdk-go/service/agentbricks"
 	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/cleanrooms"
@@ -47,7 +47,7 @@ type WorkspaceClient struct {
 
 	// The Custom LLMs service manages state and powers the UI for the Custom
 	// LLM product.
-	AiBuilder aibuilder.AiBuilderInterface
+	AgentBricks agentbricks.AgentBricksInterface
 
 	// The alerts API can be used to perform CRUD operations on alerts. An alert
 	// is a Databricks SQL object that periodically runs a query, evaluates a
@@ -93,9 +93,18 @@ type WorkspaceClient struct {
 	// depending on privileges granted centrally in Unity Catalog.
 	Catalogs catalog.CatalogsInterface
 
+	// Clean Room Asset Revisions denote new versions of uploaded assets (e.g.
+	// notebooks) in the clean room.
+	CleanRoomAssetRevisions cleanrooms.CleanRoomAssetRevisionsInterface
+
 	// Clean room assets are data and code objects — Tables, volumes, and
 	// notebooks that are shared with the clean room.
 	CleanRoomAssets cleanrooms.CleanRoomAssetsInterface
+
+	// Clean room auto-approval rules automatically create an approval on your
+	// behalf when an asset (e.g. notebook) meeting specific criteria is shared
+	// in a clean room.
+	CleanRoomAutoApprovalRules cleanrooms.CleanRoomAutoApprovalRulesInterface
 
 	// Clean room task runs are the executions of notebooks in a clean room.
 	CleanRoomTaskRuns cleanrooms.CleanRoomTaskRunsInterface
@@ -697,13 +706,11 @@ type WorkspaceClient struct {
 
 	// A monitor computes and monitors data or model quality metrics for a table
 	// over time. It generates metrics tables and a dashboard that you can use
-	// to monitor table health and set alerts.
-	//
-	// Most write operations require the user to be the owner of the table (or
-	// its parent schema or parent catalog). Viewing the dashboard, computed
-	// metrics, or monitor configuration only requires the user to have
-	// **SELECT** privileges on the table (along with **USE_SCHEMA** and
-	// **USE_CATALOG**).
+	// to monitor table health and set alerts. Most write operations require the
+	// user to be the owner of the table (or its parent schema or parent
+	// catalog). Viewing the dashboard, computed metrics, or monitor
+	// configuration only requires the user to have **SELECT** privileges on the
+	// table (along with **USE_SCHEMA** and **USE_CATALOG**).
 	QualityMonitors catalog.QualityMonitorsInterface
 
 	// The queries API can be used to perform CRUD operations on queries. A
@@ -1247,14 +1254,16 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 
 		AccessControl:                       iam.NewAccessControl(databricksClient),
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
-		AiBuilder:                           aibuilder.NewAiBuilder(databricksClient),
+		AgentBricks:                         agentbricks.NewAgentBricks(databricksClient),
 		Alerts:                              sql.NewAlerts(databricksClient),
 		AlertsLegacy:                        sql.NewAlertsLegacy(databricksClient),
 		AlertsV2:                            sql.NewAlertsV2(databricksClient),
 		Apps:                                apps.NewApps(databricksClient),
 		ArtifactAllowlists:                  catalog.NewArtifactAllowlists(databricksClient),
 		Catalogs:                            catalog.NewCatalogs(databricksClient),
+		CleanRoomAssetRevisions:             cleanrooms.NewCleanRoomAssetRevisions(databricksClient),
 		CleanRoomAssets:                     cleanrooms.NewCleanRoomAssets(databricksClient),
+		CleanRoomAutoApprovalRules:          cleanrooms.NewCleanRoomAutoApprovalRules(databricksClient),
 		CleanRoomTaskRuns:                   cleanrooms.NewCleanRoomTaskRuns(databricksClient),
 		CleanRooms:                          cleanrooms.NewCleanRooms(databricksClient),
 		ClusterPolicies:                     compute.NewClusterPolicies(databricksClient),

@@ -12,6 +12,62 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
+// unexported type that holds implementations of just CleanRoomAssetRevisions API methods
+type cleanRoomAssetRevisionsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *cleanRoomAssetRevisionsImpl) Get(ctx context.Context, request GetCleanRoomAssetRevisionRequest) (*CleanRoomAsset, error) {
+	var cleanRoomAsset CleanRoomAsset
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v/revisions/%v", request.CleanRoomName, request.AssetType, request.Name, request.Etag)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &cleanRoomAsset)
+	return &cleanRoomAsset, err
+}
+
+// List revisions for an asset
+func (a *cleanRoomAssetRevisionsImpl) List(ctx context.Context, request ListCleanRoomAssetRevisionsRequest) listing.Iterator[CleanRoomAsset] {
+
+	getNextPage := func(ctx context.Context, req ListCleanRoomAssetRevisionsRequest) (*ListCleanRoomAssetRevisionsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListCleanRoomAssetRevisionsResponse) []CleanRoomAsset {
+		return resp.Revisions
+	}
+	getNextReq := func(resp *ListCleanRoomAssetRevisionsResponse) *ListCleanRoomAssetRevisionsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List revisions for an asset
+func (a *cleanRoomAssetRevisionsImpl) ListAll(ctx context.Context, request ListCleanRoomAssetRevisionsRequest) ([]CleanRoomAsset, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[CleanRoomAsset](ctx, iterator)
+}
+
+func (a *cleanRoomAssetRevisionsImpl) internalList(ctx context.Context, request ListCleanRoomAssetRevisionsRequest) (*ListCleanRoomAssetRevisionsResponse, error) {
+	var listCleanRoomAssetRevisionsResponse ListCleanRoomAssetRevisionsResponse
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v/revisions", request.CleanRoomName, request.AssetType, request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomAssetRevisionsResponse)
+	return &listCleanRoomAssetRevisionsResponse, err
+}
+
 // unexported type that holds implementations of just CleanRoomAssets API methods
 type cleanRoomAssetsImpl struct {
 	client *client.DatabricksClient
@@ -26,6 +82,17 @@ func (a *cleanRoomAssetsImpl) Create(ctx context.Context, request CreateCleanRoo
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Asset, &cleanRoomAsset)
 	return &cleanRoomAsset, err
+}
+
+func (a *cleanRoomAssetsImpl) CreateCleanRoomAssetReview(ctx context.Context, request CreateCleanRoomAssetReviewRequest) (*CreateCleanRoomAssetReviewResponse, error) {
+	var createCleanRoomAssetReviewResponse CreateCleanRoomAssetReviewResponse
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/assets/%v/%v/reviews", request.CleanRoomName, request.AssetType, request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createCleanRoomAssetReviewResponse)
+	return &createCleanRoomAssetReviewResponse, err
 }
 
 func (a *cleanRoomAssetsImpl) Delete(ctx context.Context, request DeleteCleanRoomAssetRequest) error {
@@ -97,6 +164,93 @@ func (a *cleanRoomAssetsImpl) Update(ctx context.Context, request UpdateCleanRoo
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Asset, &cleanRoomAsset)
 	return &cleanRoomAsset, err
+}
+
+// unexported type that holds implementations of just CleanRoomAutoApprovalRules API methods
+type cleanRoomAutoApprovalRulesImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *cleanRoomAutoApprovalRulesImpl) Create(ctx context.Context, request CreateCleanRoomAutoApprovalRuleRequest) (*CleanRoomAutoApprovalRule, error) {
+	var cleanRoomAutoApprovalRule CleanRoomAutoApprovalRule
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules", request.CleanRoomName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &cleanRoomAutoApprovalRule)
+	return &cleanRoomAutoApprovalRule, err
+}
+
+func (a *cleanRoomAutoApprovalRulesImpl) Delete(ctx context.Context, request DeleteCleanRoomAutoApprovalRuleRequest) error {
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules/%v", request.CleanRoomName, request.RuleId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *cleanRoomAutoApprovalRulesImpl) Get(ctx context.Context, request GetCleanRoomAutoApprovalRuleRequest) (*CleanRoomAutoApprovalRule, error) {
+	var cleanRoomAutoApprovalRule CleanRoomAutoApprovalRule
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules/%v", request.CleanRoomName, request.RuleId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &cleanRoomAutoApprovalRule)
+	return &cleanRoomAutoApprovalRule, err
+}
+
+// List all auto-approval rules for the caller
+func (a *cleanRoomAutoApprovalRulesImpl) List(ctx context.Context, request ListCleanRoomAutoApprovalRulesRequest) listing.Iterator[CleanRoomAutoApprovalRule] {
+
+	getNextPage := func(ctx context.Context, req ListCleanRoomAutoApprovalRulesRequest) (*ListCleanRoomAutoApprovalRulesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListCleanRoomAutoApprovalRulesResponse) []CleanRoomAutoApprovalRule {
+		return resp.Rules
+	}
+	getNextReq := func(resp *ListCleanRoomAutoApprovalRulesResponse) *ListCleanRoomAutoApprovalRulesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List all auto-approval rules for the caller
+func (a *cleanRoomAutoApprovalRulesImpl) ListAll(ctx context.Context, request ListCleanRoomAutoApprovalRulesRequest) ([]CleanRoomAutoApprovalRule, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[CleanRoomAutoApprovalRule](ctx, iterator)
+}
+
+func (a *cleanRoomAutoApprovalRulesImpl) internalList(ctx context.Context, request ListCleanRoomAutoApprovalRulesRequest) (*ListCleanRoomAutoApprovalRulesResponse, error) {
+	var listCleanRoomAutoApprovalRulesResponse ListCleanRoomAutoApprovalRulesResponse
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules", request.CleanRoomName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCleanRoomAutoApprovalRulesResponse)
+	return &listCleanRoomAutoApprovalRulesResponse, err
+}
+
+func (a *cleanRoomAutoApprovalRulesImpl) Update(ctx context.Context, request UpdateCleanRoomAutoApprovalRuleRequest) (*CleanRoomAutoApprovalRule, error) {
+	var cleanRoomAutoApprovalRule CleanRoomAutoApprovalRule
+	path := fmt.Sprintf("/api/2.0/clean-rooms/%v/auto-approval-rules/%v", request.CleanRoomName, request.RuleId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.AutoApprovalRule, &cleanRoomAutoApprovalRule)
+	return &cleanRoomAutoApprovalRule, err
 }
 
 // unexported type that holds implementations of just CleanRoomTaskRuns API methods

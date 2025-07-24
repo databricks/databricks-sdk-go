@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-package aibuilder
+package agentbricks
 
 import (
 	"context"
@@ -10,12 +10,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 )
 
-// unexported type that holds implementations of just AiBuilder API methods
-type aiBuilderImpl struct {
+// unexported type that holds implementations of just AgentBricks API methods
+type agentBricksImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *aiBuilderImpl) CancelOptimize(ctx context.Context, request CancelCustomLlmOptimizationRunRequest) error {
+func (a *agentBricksImpl) CancelOptimize(ctx context.Context, request CancelCustomLlmOptimizationRunRequest) error {
 	path := fmt.Sprintf("/api/2.0/custom-llms/%v/optimize/cancel", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
@@ -25,7 +25,7 @@ func (a *aiBuilderImpl) CancelOptimize(ctx context.Context, request CancelCustom
 	return err
 }
 
-func (a *aiBuilderImpl) CreateCustomLlm(ctx context.Context, request CreateCustomLlmRequest) (*CustomLlm, error) {
+func (a *agentBricksImpl) CreateCustomLlm(ctx context.Context, request CreateCustomLlmRequest) (*CustomLlm, error) {
 	var customLlm CustomLlm
 	path := "/api/2.0/custom-llms"
 	queryParams := make(map[string]any)
@@ -36,8 +36,8 @@ func (a *aiBuilderImpl) CreateCustomLlm(ctx context.Context, request CreateCusto
 	return &customLlm, err
 }
 
-func (a *aiBuilderImpl) DeleteCustomLlm(ctx context.Context, request DeleteCustomLlmRequest) error {
-	path := fmt.Sprintf("/api/2.0/custom-lms/%v", request.Id)
+func (a *agentBricksImpl) DeleteCustomLlm(ctx context.Context, request DeleteCustomLlmRequest) error {
+	path := fmt.Sprintf("/api/2.0/custom-llms/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -45,7 +45,7 @@ func (a *aiBuilderImpl) DeleteCustomLlm(ctx context.Context, request DeleteCusto
 	return err
 }
 
-func (a *aiBuilderImpl) GetCustomLlm(ctx context.Context, request GetCustomLlmRequest) (*CustomLlm, error) {
+func (a *agentBricksImpl) GetCustomLlm(ctx context.Context, request GetCustomLlmRequest) (*CustomLlm, error) {
 	var customLlm CustomLlm
 	path := fmt.Sprintf("/api/2.0/custom-llms/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -55,7 +55,7 @@ func (a *aiBuilderImpl) GetCustomLlm(ctx context.Context, request GetCustomLlmRe
 	return &customLlm, err
 }
 
-func (a *aiBuilderImpl) StartOptimize(ctx context.Context, request StartCustomLlmOptimizationRunRequest) (*CustomLlm, error) {
+func (a *agentBricksImpl) StartOptimize(ctx context.Context, request StartCustomLlmOptimizationRunRequest) (*CustomLlm, error) {
 	var customLlm CustomLlm
 	path := fmt.Sprintf("/api/2.0/custom-llms/%v/optimize", request.Id)
 	queryParams := make(map[string]any)
@@ -66,7 +66,7 @@ func (a *aiBuilderImpl) StartOptimize(ctx context.Context, request StartCustomLl
 	return &customLlm, err
 }
 
-func (a *aiBuilderImpl) UpdateCustomLlm(ctx context.Context, request UpdateCustomLlmRequest) (*CustomLlm, error) {
+func (a *agentBricksImpl) UpdateCustomLlm(ctx context.Context, request UpdateCustomLlmRequest) (*CustomLlm, error) {
 	var customLlm CustomLlm
 	path := fmt.Sprintf("/api/2.0/custom-llms/%v", request.Id)
 	queryParams := make(map[string]any)

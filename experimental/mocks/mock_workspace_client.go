@@ -8,7 +8,7 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/aibuilder"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/agentbricks"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/apps"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/cleanrooms"
@@ -47,14 +47,16 @@ func NewMockWorkspaceClient(t interface {
 
 			AccessControl:                       iam.NewMockAccessControlInterface(t),
 			AccountAccessControlProxy:           iam.NewMockAccountAccessControlProxyInterface(t),
-			AiBuilder:                           aibuilder.NewMockAiBuilderInterface(t),
+			AgentBricks:                         agentbricks.NewMockAgentBricksInterface(t),
 			Alerts:                              sql.NewMockAlertsInterface(t),
 			AlertsLegacy:                        sql.NewMockAlertsLegacyInterface(t),
 			AlertsV2:                            sql.NewMockAlertsV2Interface(t),
 			Apps:                                apps.NewMockAppsInterface(t),
 			ArtifactAllowlists:                  catalog.NewMockArtifactAllowlistsInterface(t),
 			Catalogs:                            catalog.NewMockCatalogsInterface(t),
+			CleanRoomAssetRevisions:             cleanrooms.NewMockCleanRoomAssetRevisionsInterface(t),
 			CleanRoomAssets:                     cleanrooms.NewMockCleanRoomAssetsInterface(t),
+			CleanRoomAutoApprovalRules:          cleanrooms.NewMockCleanRoomAutoApprovalRulesInterface(t),
 			CleanRoomTaskRuns:                   cleanrooms.NewMockCleanRoomTaskRunsInterface(t),
 			CleanRooms:                          cleanrooms.NewMockCleanRoomsInterface(t),
 			ClusterPolicies:                     compute.NewMockClusterPoliciesInterface(t),
@@ -353,10 +355,10 @@ func (m *MockWorkspaceClient) GetMockAccountAccessControlProxyAPI() *iam.MockAcc
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockAiBuilderAPI() *aibuilder.MockAiBuilderInterface {
-	api, ok := m.WorkspaceClient.AiBuilder.(*aibuilder.MockAiBuilderInterface)
+func (m *MockWorkspaceClient) GetMockAgentBricksAPI() *agentbricks.MockAgentBricksInterface {
+	api, ok := m.WorkspaceClient.AgentBricks.(*agentbricks.MockAgentBricksInterface)
 	if !ok {
-		panic(fmt.Sprintf("expected AiBuilder to be *aibuilder.MockAiBuilderInterface, actual was %T", m.WorkspaceClient.AiBuilder))
+		panic(fmt.Sprintf("expected AgentBricks to be *agentbricks.MockAgentBricksInterface, actual was %T", m.WorkspaceClient.AgentBricks))
 	}
 	return api
 }
@@ -409,10 +411,26 @@ func (m *MockWorkspaceClient) GetMockCatalogsAPI() *catalog.MockCatalogsInterfac
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockCleanRoomAssetRevisionsAPI() *cleanrooms.MockCleanRoomAssetRevisionsInterface {
+	api, ok := m.WorkspaceClient.CleanRoomAssetRevisions.(*cleanrooms.MockCleanRoomAssetRevisionsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected CleanRoomAssetRevisions to be *cleanrooms.MockCleanRoomAssetRevisionsInterface, actual was %T", m.WorkspaceClient.CleanRoomAssetRevisions))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockCleanRoomAssetsAPI() *cleanrooms.MockCleanRoomAssetsInterface {
 	api, ok := m.WorkspaceClient.CleanRoomAssets.(*cleanrooms.MockCleanRoomAssetsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected CleanRoomAssets to be *cleanrooms.MockCleanRoomAssetsInterface, actual was %T", m.WorkspaceClient.CleanRoomAssets))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockCleanRoomAutoApprovalRulesAPI() *cleanrooms.MockCleanRoomAutoApprovalRulesInterface {
+	api, ok := m.WorkspaceClient.CleanRoomAutoApprovalRules.(*cleanrooms.MockCleanRoomAutoApprovalRulesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected CleanRoomAutoApprovalRules to be *cleanrooms.MockCleanRoomAutoApprovalRulesInterface, actual was %T", m.WorkspaceClient.CleanRoomAutoApprovalRules))
 	}
 	return api
 }

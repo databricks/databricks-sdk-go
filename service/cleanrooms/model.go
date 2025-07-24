@@ -97,9 +97,9 @@ type CleanRoomAsset struct {
 	// When the asset is added to the clean room, in epoch milliseconds.
 	AddedAt int64 `json:"added_at,omitempty"`
 	// The type of the asset.
-	AssetType CleanRoomAssetAssetType `json:"asset_type,omitempty"`
-	// The name of the clean room this asset belongs to. This is an output-only
-	// field to ensure proper resource identification.
+	AssetType CleanRoomAssetAssetType `json:"asset_type"`
+	// The name of the clean room this asset belongs to. This field is required
+	// for create operations and populated by the server for responses.
 	CleanRoomName string `json:"clean_room_name,omitempty"`
 	// Foreign table details available to all collaborators of the clean room.
 	// Present if and only if **asset_type** is **FOREIGN_TABLE**
@@ -114,7 +114,7 @@ type CleanRoomAsset struct {
 	// *shared_catalog*.*shared_schema*.*asset_name*
 	//
 	// For notebooks, the name is the notebook file name.
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// Notebook details available to all collaborators of the clean room.
 	// Present if and only if **asset_type** is **NOTEBOOK_FILE**
 	Notebook *CleanRoomAssetNotebook `json:"notebook,omitempty"`
@@ -203,17 +203,7 @@ type CleanRoomAssetForeignTable struct {
 type CleanRoomAssetForeignTableLocalDetails struct {
 	// The fully qualified name of the foreign table in its owner's local
 	// metastore, in the format of *catalog*.*schema*.*foreign_table_name*
-	LocalName string `json:"local_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *CleanRoomAssetForeignTableLocalDetails) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CleanRoomAssetForeignTableLocalDetails) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	LocalName string `json:"local_name"`
 }
 
 type CleanRoomAssetNotebook struct {
@@ -221,7 +211,7 @@ type CleanRoomAssetNotebook struct {
 	Etag string `json:"etag,omitempty"`
 	// Base 64 representation of the notebook contents. This is the same format
 	// as returned by :method:workspace/export with the format of **HTML**.
-	NotebookContent string `json:"notebook_content,omitempty"`
+	NotebookContent string `json:"notebook_content"`
 	// top-level status derived from all reviews
 	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
 	// All existing approvals or rejections
@@ -288,19 +278,9 @@ type CleanRoomAssetTable struct {
 type CleanRoomAssetTableLocalDetails struct {
 	// The fully qualified name of the table in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*table_name*
-	LocalName string `json:"local_name,omitempty"`
+	LocalName string `json:"local_name"`
 	// Partition filtering specification for a shared table.
 	Partitions []sharing.Partition `json:"partitions,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *CleanRoomAssetTableLocalDetails) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CleanRoomAssetTableLocalDetails) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CleanRoomAssetView struct {
@@ -311,33 +291,73 @@ type CleanRoomAssetView struct {
 type CleanRoomAssetViewLocalDetails struct {
 	// The fully qualified name of the view in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*view_name*
-	LocalName string `json:"local_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *CleanRoomAssetViewLocalDetails) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CleanRoomAssetViewLocalDetails) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	LocalName string `json:"local_name"`
 }
 
 type CleanRoomAssetVolumeLocalDetails struct {
 	// The fully qualified name of the volume in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*volume_name*
-	LocalName string `json:"local_name,omitempty"`
+	LocalName string `json:"local_name"`
+}
+
+type CleanRoomAutoApprovalRule struct {
+	AuthorCollaboratorAlias string `json:"author_collaborator_alias,omitempty"`
+
+	AuthorScope CleanRoomAutoApprovalRuleAuthorScope `json:"author_scope,omitempty"`
+	// The name of the clean room this auto-approval rule belongs to.
+	CleanRoomName string `json:"clean_room_name,omitempty"`
+	// Timestamp of when the rule was created, in epoch milliseconds.
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// A generated UUID identifying the rule.
+	RuleId string `json:"rule_id,omitempty"`
+	// The owner of the rule to whom the rule applies.
+	RuleOwnerCollaboratorAlias string `json:"rule_owner_collaborator_alias,omitempty"`
+
+	RunnerCollaboratorAlias string `json:"runner_collaborator_alias,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *CleanRoomAssetVolumeLocalDetails) UnmarshalJSON(b []byte) error {
+func (s *CleanRoomAutoApprovalRule) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s CleanRoomAssetVolumeLocalDetails) MarshalJSON() ([]byte, error) {
+func (s CleanRoomAutoApprovalRule) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type CleanRoomAutoApprovalRuleAuthorScope string
+
+const CleanRoomAutoApprovalRuleAuthorScopeAnyAuthor CleanRoomAutoApprovalRuleAuthorScope = `ANY_AUTHOR`
+
+// String representation for [fmt.Print]
+func (f *CleanRoomAutoApprovalRuleAuthorScope) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CleanRoomAutoApprovalRuleAuthorScope) Set(v string) error {
+	switch v {
+	case `ANY_AUTHOR`:
+		*f = CleanRoomAutoApprovalRuleAuthorScope(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ANY_AUTHOR"`, v)
+	}
+}
+
+// Values returns all possible values for CleanRoomAutoApprovalRuleAuthorScope.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CleanRoomAutoApprovalRuleAuthorScope) Values() []CleanRoomAutoApprovalRuleAuthorScope {
+	return []CleanRoomAutoApprovalRuleAuthorScope{
+		CleanRoomAutoApprovalRuleAuthorScopeAnyAuthor,
+	}
+}
+
+// Type always returns CleanRoomAutoApprovalRuleAuthorScope to satisfy [pflag.Value] interface
+func (f *CleanRoomAutoApprovalRuleAuthorScope) Type() string {
+	return "CleanRoomAutoApprovalRuleAuthorScope"
 }
 
 // Publicly visible clean room collaborator.
@@ -703,8 +723,32 @@ func (s ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
 
 type CreateCleanRoomAssetRequest struct {
 	Asset CleanRoomAsset `json:"asset"`
-	// The name of the clean room this asset belongs to. This is an output-only
-	// field to ensure proper resource identification.
+	// The name of the clean room this asset belongs to. This field is required
+	// for create operations and populated by the server for responses.
+	CleanRoomName string `json:"-" url:"-"`
+}
+
+type CreateCleanRoomAssetReviewRequest struct {
+	// can only be NOTEBOOK_FILE for now
+	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
+	// Name of the clean room
+	CleanRoomName string `json:"-" url:"-"`
+	// Name of the asset
+	Name string `json:"-" url:"-"`
+
+	NotebookReview NotebookVersionReview `json:"notebook_review"`
+}
+
+type CreateCleanRoomAssetReviewResponse struct {
+	// top-level status derived from all reviews
+	NotebookReviewState CleanRoomNotebookReviewNotebookReviewState `json:"notebook_review_state,omitempty"`
+	// All existing notebook approvals or rejections
+	NotebookReviews []CleanRoomNotebookReview `json:"notebook_reviews,omitempty"`
+}
+
+type CreateCleanRoomAutoApprovalRuleRequest struct {
+	AutoApprovalRule CleanRoomAutoApprovalRule `json:"auto_approval_rule"`
+	// The name of the clean room this auto-approval rule belongs to.
 	CleanRoomName string `json:"-" url:"-"`
 }
 
@@ -733,6 +777,12 @@ type DeleteCleanRoomAssetRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type DeleteCleanRoomAutoApprovalRuleRequest struct {
+	CleanRoomName string `json:"-" url:"-"`
+
+	RuleId string `json:"-" url:"-"`
+}
+
 type DeleteCleanRoomRequest struct {
 	// Name of the clean room.
 	Name string `json:"-" url:"-"`
@@ -748,8 +798,65 @@ type GetCleanRoomAssetRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type GetCleanRoomAssetRevisionRequest struct {
+	// Asset type. Only NOTEBOOK_FILE is supported.
+	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
+	// Name of the clean room.
+	CleanRoomName string `json:"-" url:"-"`
+	// Revision etag to fetch. If not provided, the latest revision will be
+	// returned.
+	Etag string `json:"-" url:"-"`
+	// Name of the asset.
+	Name string `json:"-" url:"-"`
+}
+
+type GetCleanRoomAutoApprovalRuleRequest struct {
+	CleanRoomName string `json:"-" url:"-"`
+
+	RuleId string `json:"-" url:"-"`
+}
+
 type GetCleanRoomRequest struct {
 	Name string `json:"-" url:"-"`
+}
+
+type ListCleanRoomAssetRevisionsRequest struct {
+	// Asset type. Only NOTEBOOK_FILE is supported.
+	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
+	// Name of the clean room.
+	CleanRoomName string `json:"-" url:"-"`
+	// Name of the asset.
+	Name string `json:"-" url:"-"`
+	// Maximum number of asset revisions to return. Defaults to 10.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Opaque pagination token to go to next page based on the previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCleanRoomAssetRevisionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCleanRoomAssetRevisionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListCleanRoomAssetRevisionsResponse struct {
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Revisions []CleanRoomAsset `json:"revisions,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCleanRoomAssetRevisionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCleanRoomAssetRevisionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListCleanRoomAssetsRequest struct {
@@ -785,6 +892,43 @@ func (s *ListCleanRoomAssetsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListCleanRoomAssetsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListCleanRoomAutoApprovalRulesRequest struct {
+	CleanRoomName string `json:"-" url:"-"`
+	// Maximum number of auto-approval rules to return. Defaults to 100.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCleanRoomAutoApprovalRulesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCleanRoomAutoApprovalRulesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListCleanRoomAutoApprovalRulesResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. page_token should be set to this value for the next request
+	// (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Rules []CleanRoomAutoApprovalRule `json:"rules,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCleanRoomAutoApprovalRulesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCleanRoomAutoApprovalRulesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -865,6 +1009,25 @@ func (s ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type NotebookVersionReview struct {
+	// review comment
+	Comment string `json:"comment,omitempty"`
+	// etag that identifies the notebook version
+	Etag string `json:"etag"`
+	// review outcome
+	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *NotebookVersionReview) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s NotebookVersionReview) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type UpdateCleanRoomAssetRequest struct {
 	// The asset to update. The asset's `name` and `asset_type` fields are used
 	// to identify the asset to update.
@@ -881,6 +1044,16 @@ type UpdateCleanRoomAssetRequest struct {
 	//
 	// For notebooks, the name is the notebook file name.
 	Name string `json:"-" url:"-"`
+}
+
+type UpdateCleanRoomAutoApprovalRuleRequest struct {
+	// The auto-approval rule to update. The rule_id field is used to identify
+	// the rule to update.
+	AutoApprovalRule CleanRoomAutoApprovalRule `json:"auto_approval_rule"`
+	// The name of the clean room this auto-approval rule belongs to.
+	CleanRoomName string `json:"-" url:"-"`
+	// A generated UUID identifying the rule.
+	RuleId string `json:"-" url:"-"`
 }
 
 type UpdateCleanRoomRequest struct {
