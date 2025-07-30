@@ -41,7 +41,8 @@ type OptionalFields struct {
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
 	FieldMask string `json:"field_mask,omitempty" url:"field_mask,omitempty"`
-
+	// Lint disable reason: This is a dummy field used to test SDK Generation
+	// logic.
 	Map map[string]string `json:"map,omitempty" url:"map,omitempty"`
 
 	OptionalBool bool `json:"optional_bool,omitempty" url:"optional_bool,omitempty"`

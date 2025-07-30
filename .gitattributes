@@ -168,7 +168,11 @@ experimental/mocks/service/workspace/mock_git_credentials_interface.go linguist-
 experimental/mocks/service/workspace/mock_repos_interface.go linguist-generated=true
 experimental/mocks/service/workspace/mock_secrets_interface.go linguist-generated=true
 experimental/mocks/service/workspace/mock_workspace_interface.go linguist-generated=true
+internal/generatedtests/http_call_test.go linguist-generated=true
 internal/generatedtests/json_marshall_test.go linguist-generated=true
+internal/testspecs/service/httpcallv2/api.go linguist-generated=true
+internal/testspecs/service/httpcallv2/impl.go linguist-generated=true
+internal/testspecs/service/httpcallv2/model.go linguist-generated=true
 internal/testspecs/service/jsonmarshallv2/api.go linguist-generated=true
 internal/testspecs/service/jsonmarshallv2/impl.go linguist-generated=true
 internal/testspecs/service/jsonmarshallv2/model.go linguist-generated=true
