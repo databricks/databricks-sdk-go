@@ -3909,6 +3909,9 @@ type QueryMetrics struct {
 	// projected remaining work to be done aggregated across all stages in the
 	// query, in milliseconds
 	ProjectedRemainingTaskTotalTimeMs int64 `json:"projected_remaining_task_total_time_ms,omitempty"`
+	// projected lower bound on remaining total task time based on
+	// projected_remaining_task_total_time_ms / maximum concurrency
+	ProjectedRemainingWallclockTimeMs int64 `json:"projected_remaining_wallclock_time_ms,omitempty"`
 	// Timestamp of when the query was enqueued waiting for a cluster to be
 	// provisioned for the warehouse. This field is optional and will not appear
 	// if the query skipped the provisioning queue.

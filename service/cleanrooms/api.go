@@ -5,9 +5,13 @@ package cleanrooms
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 type CleanRoomAssetRevisionsInterface interface {
@@ -199,6 +203,10 @@ func (a *CleanRoomTaskRunsAPI) ListByCleanRoomName(ctx context.Context, cleanRoo
 
 type CleanRoomsInterface interface {
 
+	// WaitGetCleanRoomActive repeatedly calls [CleanRoomsAPI.Get] and waits to reach ACTIVE state
+	WaitGetCleanRoomActive(ctx context.Context, name string,
+		timeout time.Duration, callback func(*CleanRoom)) (*CleanRoom, error)
+
 	// Create a new clean room with the specified collaborators. This method is
 	// asynchronous; the returned name field inside the clean_room field can be used
 	// to poll the clean room status, using the :method:cleanrooms/get method. When
@@ -208,7 +216,15 @@ type CleanRoomsInterface interface {
 	//
 	// The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM**
 	// privilege on the metastore.
-	Create(ctx context.Context, request CreateCleanRoomRequest) (*CleanRoom, error)
+	Create(ctx context.Context, createCleanRoomRequest CreateCleanRoomRequest) (*WaitGetCleanRoomActive[CleanRoom], error)
+
+	// Calls [CleanRoomsAPIInterface.Create] and waits to reach ACTIVE state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[CleanRoom](60*time.Minute) functional option.
+	//
+	// Deprecated: use [CleanRoomsAPIInterface.Create].Get() or [CleanRoomsAPIInterface.WaitGetCleanRoomActive]
+	CreateAndWait(ctx context.Context, createCleanRoomRequest CreateCleanRoomRequest, options ...retries.Option[CleanRoom]) (*CleanRoom, error)
 
 	// Create the output catalog of the clean room.
 	CreateOutputCatalog(ctx context.Context, request CreateCleanRoomOutputCatalogRequest) (*CreateCleanRoomOutputCatalogResponse, error)
@@ -264,6 +280,108 @@ func NewCleanRooms(client *client.DatabricksClient) *CleanRoomsAPI {
 // on sensitive enterprise data without direct access to each other's data.
 type CleanRoomsAPI struct {
 	cleanRoomsImpl
+}
+
+// WaitGetCleanRoomActive repeatedly calls [CleanRoomsAPI.Get] and waits to reach ACTIVE state
+func (a *CleanRoomsAPI) WaitGetCleanRoomActive(ctx context.Context, name string,
+	timeout time.Duration, callback func(*CleanRoom)) (*CleanRoom, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[CleanRoom](ctx, timeout, func() (*CleanRoom, *retries.Err) {
+		cleanRoom, err := a.Get(ctx, GetCleanRoomRequest{
+			Name: name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(cleanRoom)
+		}
+		status := cleanRoom.Status
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case CleanRoomStatusEnumActive: // target state
+			return cleanRoom, nil
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitGetCleanRoomActive is a wrapper that calls [CleanRoomsAPI.WaitGetCleanRoomActive] and waits to reach ACTIVE state.
+type WaitGetCleanRoomActive[R any] struct {
+	Response *R
+	Name     string `json:"name"`
+	Poll     func(time.Duration, func(*CleanRoom)) (*CleanRoom, error)
+	callback func(*CleanRoom)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetCleanRoomActive[R]) OnProgress(callback func(*CleanRoom)) *WaitGetCleanRoomActive[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the CleanRoom with the default timeout of 20 minutes.
+func (w *WaitGetCleanRoomActive[R]) Get() (*CleanRoom, error) {
+	return w.Poll(w.timeout, w.callback)
+}
+
+// Get the CleanRoom with custom timeout.
+func (w *WaitGetCleanRoomActive[R]) GetWithTimeout(timeout time.Duration) (*CleanRoom, error) {
+	return w.Poll(timeout, w.callback)
+}
+
+// Create a new clean room with the specified collaborators. This method is
+// asynchronous; the returned name field inside the clean_room field can be used
+// to poll the clean room status, using the :method:cleanrooms/get method. When
+// this method returns, the clean room will be in a PROVISIONING state, with
+// only name, owner, comment, created_at and status populated. The clean room
+// will be usable once it enters an ACTIVE state.
+//
+// The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM**
+// privilege on the metastore.
+func (a *CleanRoomsAPI) Create(ctx context.Context, createCleanRoomRequest CreateCleanRoomRequest) (*WaitGetCleanRoomActive[CleanRoom], error) {
+	cleanRoom, err := a.cleanRoomsImpl.Create(ctx, createCleanRoomRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetCleanRoomActive[CleanRoom]{
+		Response: cleanRoom,
+		Name:     cleanRoom.Name,
+		Poll: func(timeout time.Duration, callback func(*CleanRoom)) (*CleanRoom, error) {
+			return a.WaitGetCleanRoomActive(ctx, cleanRoom.Name, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [CleanRoomsAPI.Create] and waits to reach ACTIVE state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[CleanRoom](60*time.Minute) functional option.
+//
+// Deprecated: use [CleanRoomsAPI.Create].Get() or [CleanRoomsAPI.WaitGetCleanRoomActive]
+func (a *CleanRoomsAPI) CreateAndWait(ctx context.Context, createCleanRoomRequest CreateCleanRoomRequest, options ...retries.Option[CleanRoom]) (*CleanRoom, error) {
+	wait, err := a.Create(ctx, createCleanRoomRequest)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[CleanRoom]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *CleanRoom) {
+		for _, o := range options {
+			o(&retries.Info[CleanRoom]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
 }
 
 // Delete a clean room. After deletion, the clean room will be removed from the

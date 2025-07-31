@@ -5,18 +5,34 @@ package database
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
 type DatabaseInterface interface {
+
+	// WaitGetDatabaseInstanceDatabaseAvailable repeatedly calls [DatabaseAPI.GetDatabaseInstance] and waits to reach AVAILABLE state
+	WaitGetDatabaseInstanceDatabaseAvailable(ctx context.Context, name string,
+		timeout time.Duration, callback func(*DatabaseInstance)) (*DatabaseInstance, error)
 
 	// Create a Database Catalog.
 	CreateDatabaseCatalog(ctx context.Context, request CreateDatabaseCatalogRequest) (*DatabaseCatalog, error)
 
 	// Create a Database Instance.
-	CreateDatabaseInstance(ctx context.Context, request CreateDatabaseInstanceRequest) (*DatabaseInstance, error)
+	CreateDatabaseInstance(ctx context.Context, createDatabaseInstanceRequest CreateDatabaseInstanceRequest) (*WaitGetDatabaseInstanceDatabaseAvailable[DatabaseInstance], error)
+
+	// Calls [DatabaseAPIInterface.CreateDatabaseInstance] and waits to reach AVAILABLE state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[DatabaseInstance](60*time.Minute) functional option.
+	//
+	// Deprecated: use [DatabaseAPIInterface.CreateDatabaseInstance].Get() or [DatabaseAPIInterface.WaitGetDatabaseInstanceDatabaseAvailable]
+	CreateDatabaseInstanceAndWait(ctx context.Context, createDatabaseInstanceRequest CreateDatabaseInstanceRequest, options ...retries.Option[DatabaseInstance]) (*DatabaseInstance, error)
 
 	// Create a role for a Database Instance.
 	CreateDatabaseInstanceRole(ctx context.Context, request CreateDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error)
@@ -133,6 +149,100 @@ func NewDatabase(client *client.DatabricksClient) *DatabaseAPI {
 // Database Instances provide access to a database via REST API or direct SQL.
 type DatabaseAPI struct {
 	databaseImpl
+}
+
+// WaitGetDatabaseInstanceDatabaseAvailable repeatedly calls [DatabaseAPI.GetDatabaseInstance] and waits to reach AVAILABLE state
+func (a *DatabaseAPI) WaitGetDatabaseInstanceDatabaseAvailable(ctx context.Context, name string,
+	timeout time.Duration, callback func(*DatabaseInstance)) (*DatabaseInstance, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[DatabaseInstance](ctx, timeout, func() (*DatabaseInstance, *retries.Err) {
+		databaseInstance, err := a.GetDatabaseInstance(ctx, GetDatabaseInstanceRequest{
+			Name: name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(databaseInstance)
+		}
+		status := databaseInstance.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case DatabaseInstanceStateAvailable: // target state
+			return databaseInstance, nil
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitGetDatabaseInstanceDatabaseAvailable is a wrapper that calls [DatabaseAPI.WaitGetDatabaseInstanceDatabaseAvailable] and waits to reach AVAILABLE state.
+type WaitGetDatabaseInstanceDatabaseAvailable[R any] struct {
+	Response *R
+	Name     string `json:"name"`
+	Poll     func(time.Duration, func(*DatabaseInstance)) (*DatabaseInstance, error)
+	callback func(*DatabaseInstance)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetDatabaseInstanceDatabaseAvailable[R]) OnProgress(callback func(*DatabaseInstance)) *WaitGetDatabaseInstanceDatabaseAvailable[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the DatabaseInstance with the default timeout of 20 minutes.
+func (w *WaitGetDatabaseInstanceDatabaseAvailable[R]) Get() (*DatabaseInstance, error) {
+	return w.Poll(w.timeout, w.callback)
+}
+
+// Get the DatabaseInstance with custom timeout.
+func (w *WaitGetDatabaseInstanceDatabaseAvailable[R]) GetWithTimeout(timeout time.Duration) (*DatabaseInstance, error) {
+	return w.Poll(timeout, w.callback)
+}
+
+// Create a Database Instance.
+func (a *DatabaseAPI) CreateDatabaseInstance(ctx context.Context, createDatabaseInstanceRequest CreateDatabaseInstanceRequest) (*WaitGetDatabaseInstanceDatabaseAvailable[DatabaseInstance], error) {
+	databaseInstance, err := a.databaseImpl.CreateDatabaseInstance(ctx, createDatabaseInstanceRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetDatabaseInstanceDatabaseAvailable[DatabaseInstance]{
+		Response: databaseInstance,
+		Name:     databaseInstance.Name,
+		Poll: func(timeout time.Duration, callback func(*DatabaseInstance)) (*DatabaseInstance, error) {
+			return a.WaitGetDatabaseInstanceDatabaseAvailable(ctx, databaseInstance.Name, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [DatabaseAPI.CreateDatabaseInstance] and waits to reach AVAILABLE state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[DatabaseInstance](60*time.Minute) functional option.
+//
+// Deprecated: use [DatabaseAPI.CreateDatabaseInstance].Get() or [DatabaseAPI.WaitGetDatabaseInstanceDatabaseAvailable]
+func (a *DatabaseAPI) CreateDatabaseInstanceAndWait(ctx context.Context, createDatabaseInstanceRequest CreateDatabaseInstanceRequest, options ...retries.Option[DatabaseInstance]) (*DatabaseInstance, error) {
+	wait, err := a.CreateDatabaseInstance(ctx, createDatabaseInstanceRequest)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[DatabaseInstance]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *DatabaseInstance) {
+		for _, o := range options {
+			o(&retries.Info[DatabaseInstance]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
 }
 
 // Delete a Database Catalog.
