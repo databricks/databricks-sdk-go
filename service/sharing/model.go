@@ -651,6 +651,8 @@ type ListProviderShareAssetsResponse struct {
 	Functions []DeltaSharingFunction `json:"functions,omitempty"`
 	// The list of notebooks in the share.
 	Notebooks []NotebookFile `json:"notebooks,omitempty"`
+	// The metadata of the share.
+	Share *Share `json:"share,omitempty"`
 	// The list of tables in the share.
 	Tables []Table `json:"tables,omitempty"`
 	// The list of volumes in the share.
@@ -1376,6 +1378,29 @@ type RotateRecipientToken struct {
 type SecurablePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties"`
+}
+
+type Share struct {
+	// The comment of the share.
+	Comment string `json:"comment,omitempty"`
+	// The display name of the share. If defined, it will be shown in the UI.
+	DisplayName string `json:"display_name,omitempty"`
+
+	Id string `json:"id,omitempty"`
+
+	Name string `json:"name,omitempty"`
+	// The tags of the share.
+	Tags []catalog.TagKeyValue `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Share) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Share) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ShareInfo struct {

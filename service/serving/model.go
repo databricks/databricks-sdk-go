@@ -84,6 +84,8 @@ type AiGatewayGuardrailPiiBehaviorBehavior string
 
 const AiGatewayGuardrailPiiBehaviorBehaviorBlock AiGatewayGuardrailPiiBehaviorBehavior = `BLOCK`
 
+const AiGatewayGuardrailPiiBehaviorBehaviorMask AiGatewayGuardrailPiiBehaviorBehavior = `MASK`
+
 const AiGatewayGuardrailPiiBehaviorBehaviorNone AiGatewayGuardrailPiiBehaviorBehavior = `NONE`
 
 // String representation for [fmt.Print]
@@ -94,11 +96,11 @@ func (f *AiGatewayGuardrailPiiBehaviorBehavior) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AiGatewayGuardrailPiiBehaviorBehavior) Set(v string) error {
 	switch v {
-	case `BLOCK`, `NONE`:
+	case `BLOCK`, `MASK`, `NONE`:
 		*f = AiGatewayGuardrailPiiBehaviorBehavior(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BLOCK", "NONE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BLOCK", "MASK", "NONE"`, v)
 	}
 }
 
@@ -108,6 +110,7 @@ func (f *AiGatewayGuardrailPiiBehaviorBehavior) Set(v string) error {
 func (f *AiGatewayGuardrailPiiBehaviorBehavior) Values() []AiGatewayGuardrailPiiBehaviorBehavior {
 	return []AiGatewayGuardrailPiiBehaviorBehavior{
 		AiGatewayGuardrailPiiBehaviorBehaviorBlock,
+		AiGatewayGuardrailPiiBehaviorBehaviorMask,
 		AiGatewayGuardrailPiiBehaviorBehaviorNone,
 	}
 }
