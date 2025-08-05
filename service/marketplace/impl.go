@@ -432,16 +432,16 @@ func (a *consumerProvidersImpl) Get(ctx context.Context, request GetProviderRequ
 
 // List all providers in the Databricks Marketplace with at least one visible
 // listing.
-func (a *consumerProvidersImpl) List(ctx context.Context, request ListProvidersRequest) listing.Iterator[ProviderInfo] {
+func (a *consumerProvidersImpl) List(ctx context.Context, request ListConsumerProvidersRequest) listing.Iterator[ProviderInfo] {
 
-	getNextPage := func(ctx context.Context, req ListProvidersRequest) (*ListProvidersResponse, error) {
+	getNextPage := func(ctx context.Context, req ListConsumerProvidersRequest) (*ListProvidersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
 	}
 	getItems := func(resp *ListProvidersResponse) []ProviderInfo {
 		return resp.Providers
 	}
-	getNextReq := func(resp *ListProvidersResponse) *ListProvidersRequest {
+	getNextReq := func(resp *ListProvidersResponse) *ListConsumerProvidersRequest {
 		if resp.NextPageToken == "" {
 			return nil
 		}
@@ -458,12 +458,12 @@ func (a *consumerProvidersImpl) List(ctx context.Context, request ListProvidersR
 
 // List all providers in the Databricks Marketplace with at least one visible
 // listing.
-func (a *consumerProvidersImpl) ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error) {
+func (a *consumerProvidersImpl) ListAll(ctx context.Context, request ListConsumerProvidersRequest) ([]ProviderInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ProviderInfo](ctx, iterator)
 }
 
-func (a *consumerProvidersImpl) internalList(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error) {
+func (a *consumerProvidersImpl) internalList(ctx context.Context, request ListConsumerProvidersRequest) (*ListProvidersResponse, error) {
 	var listProvidersResponse ListProvidersResponse
 	path := "/api/2.1/marketplace-consumer/providers"
 	queryParams := make(map[string]any)

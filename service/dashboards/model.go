@@ -1152,6 +1152,8 @@ type Result struct {
 	// result first chunk](:method:statementexecution/getstatement) to get the
 	// full result data.
 	StatementId string `json:"statement_id,omitempty"`
+	// JWT corresponding to the statement contained in this result
+	StatementIdSignature string `json:"statement_id_signature,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

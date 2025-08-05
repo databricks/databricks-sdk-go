@@ -150,7 +150,7 @@ type privateAccessImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *privateAccessImpl) Create(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
+func (a *privateAccessImpl) Create(ctx context.Context, request CreatePrivateAccessSettingsRequest) (*PrivateAccessSettings, error) {
 	var privateAccessSettings PrivateAccessSettings
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
@@ -190,7 +190,7 @@ func (a *privateAccessImpl) List(ctx context.Context) ([]PrivateAccessSettings, 
 	return privateAccessSettingsList, err
 }
 
-func (a *privateAccessImpl) Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error {
+func (a *privateAccessImpl) Replace(ctx context.Context, request ReplacePrivateAccessSettingsRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/private-access-settings/%v", a.client.ConfiguredAccountID(), request.PrivateAccessSettingsId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
