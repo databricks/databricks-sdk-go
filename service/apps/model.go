@@ -14,7 +14,9 @@ type App struct {
 	ActiveDeployment *AppDeployment `json:"active_deployment,omitempty"`
 
 	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
-
+	// TODO: Deprecate this field after serverless entitlements are released to
+	// all prod stages and the new usage_policy_id is properly populated and
+	// used.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 
 	ComputeStatus *ComputeStatus `json:"compute_status,omitempty"`
@@ -28,7 +30,9 @@ type App struct {
 	DefaultSourceCodePath string `json:"default_source_code_path,omitempty"`
 	// The description of the app.
 	Description string `json:"description,omitempty"`
-
+	// TODO: Deprecate this field after serverless entitlements are released to
+	// all prod stages and the new usage_policy_id is properly populated and
+	// used.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The effective api scopes granted to the user access token.
 	EffectiveUserApiScopes []string `json:"effective_user_api_scopes,omitempty"`

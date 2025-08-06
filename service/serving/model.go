@@ -587,6 +587,8 @@ type CreatePtEndpointRequest struct {
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// The core config of the serving endpoint.
 	Config PtEndpointCoreConfig `json:"config"`
+	// Email notification settings.
+	EmailNotifications *EmailNotifications `json:"email_notifications,omitempty"`
 	// The name of the serving endpoint. This field is required and must be
 	// unique across a Databricks workspace. An endpoint name can consist of
 	// alphanumeric characters, dashes, and underscores.
@@ -617,6 +619,8 @@ type CreateServingEndpoint struct {
 	Config *EndpointCoreConfigInput `json:"config,omitempty"`
 
 	Description string `json:"description,omitempty"`
+	// Email notification settings.
+	EmailNotifications *EmailNotifications `json:"email_notifications,omitempty"`
 	// The name of the serving endpoint. This field is required and must be
 	// unique across a Databricks workspace. An endpoint name can consist of
 	// alphanumeric characters, dashes, and underscores.
@@ -702,10 +706,11 @@ func (s DatabricksModelServingConfig) MarshalJSON() ([]byte, error) {
 }
 
 type DataframeSplitInput struct {
+	// Columns array for the dataframe
 	Columns []any `json:"columns,omitempty"`
-
+	// Data array for the dataframe
 	Data []any `json:"data,omitempty"`
-
+	// Index array for the dataframe
 	Index []int `json:"index,omitempty"`
 }
 
@@ -713,7 +718,17 @@ type DeleteServingEndpointRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type EmailNotifications struct {
+	// A list of email addresses to be notified when an endpoint fails to update
+	// its configuration or state.
+	OnUpdateFailure []string `json:"on_update_failure,omitempty"`
+	// A list of email addresses to be notified when an endpoint successfully
+	// updates its configuration or state.
+	OnUpdateSuccess []string `json:"on_update_success,omitempty"`
+}
+
 type EmbeddingsV1ResponseEmbeddingElement struct {
+	// The embedding vector
 	Embedding []float64 `json:"embedding,omitempty"`
 	// The index of the embedding in the response.
 	Index int `json:"index,omitempty"`
@@ -1521,15 +1536,16 @@ type QueryEndpointInput struct {
 	// be used with other chat/completions query fields.
 	MaxTokens int `json:"max_tokens,omitempty"`
 	// The messages field used ONLY for __chat external & foundation model__
-	// serving endpoints. This is a map of strings and should only be used with
-	// other chat query fields.
+	// serving endpoints. This is an array of ChatMessage objects and should
+	// only be used with other chat query fields.
 	Messages []ChatMessage `json:"messages,omitempty"`
 	// The n (number of candidates) field used ONLY for __completions__ and
 	// __chat external & foundation model__ serving endpoints. This is an
 	// integer between 1 and 5 with a default of 1 and should only be used with
 	// other chat/completions query fields.
 	N int `json:"n,omitempty"`
-	// The name of the serving endpoint. This field is required.
+	// The name of the serving endpoint. This field is required and is provided
+	// via the path parameter.
 	Name string `json:"-" url:"-"`
 	// The prompt string (or array of strings) field used ONLY for __completions
 	// external & foundation model__ serving endpoints and should only be used
@@ -2155,15 +2171,15 @@ func (s ServedModelState) MarshalJSON() ([]byte, error) {
 
 type ServedModelStateDeployment string
 
-const ServedModelStateDeploymentAborted ServedModelStateDeployment = `DEPLOYMENT_ABORTED`
+const ServedModelStateDeploymentDeploymentAborted ServedModelStateDeployment = `DEPLOYMENT_ABORTED`
 
-const ServedModelStateDeploymentCreating ServedModelStateDeployment = `DEPLOYMENT_CREATING`
+const ServedModelStateDeploymentDeploymentCreating ServedModelStateDeployment = `DEPLOYMENT_CREATING`
 
-const ServedModelStateDeploymentFailed ServedModelStateDeployment = `DEPLOYMENT_FAILED`
+const ServedModelStateDeploymentDeploymentFailed ServedModelStateDeployment = `DEPLOYMENT_FAILED`
 
-const ServedModelStateDeploymentReady ServedModelStateDeployment = `DEPLOYMENT_READY`
+const ServedModelStateDeploymentDeploymentReady ServedModelStateDeployment = `DEPLOYMENT_READY`
 
-const ServedModelStateDeploymentRecovering ServedModelStateDeployment = `DEPLOYMENT_RECOVERING`
+const ServedModelStateDeploymentDeploymentRecovering ServedModelStateDeployment = `DEPLOYMENT_RECOVERING`
 
 // String representation for [fmt.Print]
 func (f *ServedModelStateDeployment) String() string {
@@ -2186,11 +2202,11 @@ func (f *ServedModelStateDeployment) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *ServedModelStateDeployment) Values() []ServedModelStateDeployment {
 	return []ServedModelStateDeployment{
-		ServedModelStateDeploymentAborted,
-		ServedModelStateDeploymentCreating,
-		ServedModelStateDeploymentFailed,
-		ServedModelStateDeploymentReady,
-		ServedModelStateDeploymentRecovering,
+		ServedModelStateDeploymentDeploymentAborted,
+		ServedModelStateDeploymentDeploymentCreating,
+		ServedModelStateDeploymentDeploymentFailed,
+		ServedModelStateDeploymentDeploymentReady,
+		ServedModelStateDeploymentDeploymentRecovering,
 	}
 }
 
@@ -2306,6 +2322,8 @@ type ServingEndpointDetailed struct {
 	DataPlaneInfo *ModelDataPlaneInfo `json:"data_plane_info,omitempty"`
 	// Description of the serving model
 	Description string `json:"description,omitempty"`
+	// Email notification settings.
+	EmailNotifications *EmailNotifications `json:"email_notifications,omitempty"`
 	// Endpoint invocation url if route optimization is enabled for endpoint
 	EndpointUrl string `json:"endpoint_url,omitempty"`
 	// System-generated ID of the endpoint. This is used to refer to the

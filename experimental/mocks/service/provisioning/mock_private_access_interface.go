@@ -23,7 +23,7 @@ func (_m *MockPrivateAccessInterface) EXPECT() *MockPrivateAccessInterface_Expec
 }
 
 // Create provides a mock function with given fields: ctx, request
-func (_m *MockPrivateAccessInterface) Create(ctx context.Context, request provisioning.UpsertPrivateAccessSettingsRequest) (*provisioning.PrivateAccessSettings, error) {
+func (_m *MockPrivateAccessInterface) Create(ctx context.Context, request provisioning.CreatePrivateAccessSettingsRequest) (*provisioning.PrivateAccessSettings, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -32,10 +32,10 @@ func (_m *MockPrivateAccessInterface) Create(ctx context.Context, request provis
 
 	var r0 *provisioning.PrivateAccessSettings
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.UpsertPrivateAccessSettingsRequest) (*provisioning.PrivateAccessSettings, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.CreatePrivateAccessSettingsRequest) (*provisioning.PrivateAccessSettings, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.UpsertPrivateAccessSettingsRequest) *provisioning.PrivateAccessSettings); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.CreatePrivateAccessSettingsRequest) *provisioning.PrivateAccessSettings); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -43,7 +43,7 @@ func (_m *MockPrivateAccessInterface) Create(ctx context.Context, request provis
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, provisioning.UpsertPrivateAccessSettingsRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, provisioning.CreatePrivateAccessSettingsRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -59,14 +59,14 @@ type MockPrivateAccessInterface_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request provisioning.UpsertPrivateAccessSettingsRequest
+//   - request provisioning.CreatePrivateAccessSettingsRequest
 func (_e *MockPrivateAccessInterface_Expecter) Create(ctx interface{}, request interface{}) *MockPrivateAccessInterface_Create_Call {
 	return &MockPrivateAccessInterface_Create_Call{Call: _e.mock.On("Create", ctx, request)}
 }
 
-func (_c *MockPrivateAccessInterface_Create_Call) Run(run func(ctx context.Context, request provisioning.UpsertPrivateAccessSettingsRequest)) *MockPrivateAccessInterface_Create_Call {
+func (_c *MockPrivateAccessInterface_Create_Call) Run(run func(ctx context.Context, request provisioning.CreatePrivateAccessSettingsRequest)) *MockPrivateAccessInterface_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(provisioning.UpsertPrivateAccessSettingsRequest))
+		run(args[0].(context.Context), args[1].(provisioning.CreatePrivateAccessSettingsRequest))
 	})
 	return _c
 }
@@ -76,7 +76,7 @@ func (_c *MockPrivateAccessInterface_Create_Call) Return(_a0 *provisioning.Priva
 	return _c
 }
 
-func (_c *MockPrivateAccessInterface_Create_Call) RunAndReturn(run func(context.Context, provisioning.UpsertPrivateAccessSettingsRequest) (*provisioning.PrivateAccessSettings, error)) *MockPrivateAccessInterface_Create_Call {
+func (_c *MockPrivateAccessInterface_Create_Call) RunAndReturn(run func(context.Context, provisioning.CreatePrivateAccessSettingsRequest) (*provisioning.PrivateAccessSettings, error)) *MockPrivateAccessInterface_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -469,7 +469,7 @@ func (_c *MockPrivateAccessInterface_PrivateAccessSettingsPrivateAccessSettingsN
 }
 
 // Replace provides a mock function with given fields: ctx, request
-func (_m *MockPrivateAccessInterface) Replace(ctx context.Context, request provisioning.UpsertPrivateAccessSettingsRequest) error {
+func (_m *MockPrivateAccessInterface) Replace(ctx context.Context, request provisioning.ReplacePrivateAccessSettingsRequest) error {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -477,7 +477,7 @@ func (_m *MockPrivateAccessInterface) Replace(ctx context.Context, request provi
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.UpsertPrivateAccessSettingsRequest) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.ReplacePrivateAccessSettingsRequest) error); ok {
 		r0 = rf(ctx, request)
 	} else {
 		r0 = ret.Error(0)
@@ -493,14 +493,14 @@ type MockPrivateAccessInterface_Replace_Call struct {
 
 // Replace is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request provisioning.UpsertPrivateAccessSettingsRequest
+//   - request provisioning.ReplacePrivateAccessSettingsRequest
 func (_e *MockPrivateAccessInterface_Expecter) Replace(ctx interface{}, request interface{}) *MockPrivateAccessInterface_Replace_Call {
 	return &MockPrivateAccessInterface_Replace_Call{Call: _e.mock.On("Replace", ctx, request)}
 }
 
-func (_c *MockPrivateAccessInterface_Replace_Call) Run(run func(ctx context.Context, request provisioning.UpsertPrivateAccessSettingsRequest)) *MockPrivateAccessInterface_Replace_Call {
+func (_c *MockPrivateAccessInterface_Replace_Call) Run(run func(ctx context.Context, request provisioning.ReplacePrivateAccessSettingsRequest)) *MockPrivateAccessInterface_Replace_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(provisioning.UpsertPrivateAccessSettingsRequest))
+		run(args[0].(context.Context), args[1].(provisioning.ReplacePrivateAccessSettingsRequest))
 	})
 	return _c
 }
@@ -510,7 +510,7 @@ func (_c *MockPrivateAccessInterface_Replace_Call) Return(_a0 error) *MockPrivat
 	return _c
 }
 
-func (_c *MockPrivateAccessInterface_Replace_Call) RunAndReturn(run func(context.Context, provisioning.UpsertPrivateAccessSettingsRequest) error) *MockPrivateAccessInterface_Replace_Call {
+func (_c *MockPrivateAccessInterface_Replace_Call) RunAndReturn(run func(context.Context, provisioning.ReplacePrivateAccessSettingsRequest) error) *MockPrivateAccessInterface_Replace_Call {
 	_c.Call.Return(run)
 	return _c
 }

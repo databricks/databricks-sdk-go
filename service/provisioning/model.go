@@ -146,6 +146,47 @@ func (s CreateNetworkRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreatePrivateAccessSettingsRequest struct {
+	// An array of Databricks VPC endpoint IDs. This is the Databricks ID that
+	// is returned when registering the VPC endpoint configuration in your
+	// Databricks account. This is not the ID of the VPC endpoint in AWS.
+	//
+	// Only used when `private_access_level` is set to `ENDPOINT`. This is an
+	// allow list of VPC endpoints that in your account that can connect to your
+	// workspace over AWS PrivateLink.
+	//
+	// If hybrid access to your workspace is enabled by setting
+	// `public_access_enabled` to `true`, this control only works for
+	// PrivateLink connections. To control how your workspace is accessed via
+	// public internet, see [IP access lists].
+	//
+	// [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html
+	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
+
+	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
+	// The human-readable name of the private access settings object.
+	PrivateAccessSettingsName string `json:"private_access_settings_name"`
+	// Determines if the workspace can be accessed over public internet. For
+	// fully private workspaces, you can optionally specify `false`, but only if
+	// you implement both the front-end and the back-end PrivateLink
+	// connections. Otherwise, specify `true`, which means that public access is
+	// enabled.
+	PublicAccessEnabled bool `json:"public_access_enabled,omitempty"`
+	// The cloud region for workspaces associated with this private access
+	// settings object.
+	Region string `json:"region"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreatePrivateAccessSettingsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreatePrivateAccessSettingsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateStorageConfigurationRequest struct {
 	RootBucketInfo RootBucketInfo `json:"root_bucket_info"`
 	// The human-readable name of the storage configuration.
@@ -943,6 +984,49 @@ func (s PrivateAccessSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ReplacePrivateAccessSettingsRequest struct {
+	// An array of Databricks VPC endpoint IDs. This is the Databricks ID that
+	// is returned when registering the VPC endpoint configuration in your
+	// Databricks account. This is not the ID of the VPC endpoint in AWS.
+	//
+	// Only used when `private_access_level` is set to `ENDPOINT`. This is an
+	// allow list of VPC endpoints that in your account that can connect to your
+	// workspace over AWS PrivateLink.
+	//
+	// If hybrid access to your workspace is enabled by setting
+	// `public_access_enabled` to `true`, this control only works for
+	// PrivateLink connections. To control how your workspace is accessed via
+	// public internet, see [IP access lists].
+	//
+	// [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html
+	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
+
+	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
+	// Databricks Account API private access settings ID.
+	PrivateAccessSettingsId string `json:"-" url:"-"`
+	// The human-readable name of the private access settings object.
+	PrivateAccessSettingsName string `json:"private_access_settings_name"`
+	// Determines if the workspace can be accessed over public internet. For
+	// fully private workspaces, you can optionally specify `false`, but only if
+	// you implement both the front-end and the back-end PrivateLink
+	// connections. Otherwise, specify `true`, which means that public access is
+	// enabled.
+	PublicAccessEnabled bool `json:"public_access_enabled,omitempty"`
+	// The cloud region for workspaces associated with this private access
+	// settings object.
+	Region string `json:"region"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ReplacePrivateAccessSettingsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ReplacePrivateAccessSettingsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Root S3 bucket information.
 type RootBucketInfo struct {
 	// The name of the S3 bucket.
@@ -1042,49 +1126,6 @@ func (s *UpdateWorkspaceRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s UpdateWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type UpsertPrivateAccessSettingsRequest struct {
-	// An array of Databricks VPC endpoint IDs. This is the Databricks ID that
-	// is returned when registering the VPC endpoint configuration in your
-	// Databricks account. This is not the ID of the VPC endpoint in AWS.
-	//
-	// Only used when `private_access_level` is set to `ENDPOINT`. This is an
-	// allow list of VPC endpoints that in your account that can connect to your
-	// workspace over AWS PrivateLink.
-	//
-	// If hybrid access to your workspace is enabled by setting
-	// `public_access_enabled` to `true`, this control only works for
-	// PrivateLink connections. To control how your workspace is accessed via
-	// public internet, see [IP access lists].
-	//
-	// [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html
-	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
-
-	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
-	// Databricks Account API private access settings ID.
-	PrivateAccessSettingsId string `json:"-" url:"-"`
-	// The human-readable name of the private access settings object.
-	PrivateAccessSettingsName string `json:"private_access_settings_name"`
-	// Determines if the workspace can be accessed over public internet. For
-	// fully private workspaces, you can optionally specify `false`, but only if
-	// you implement both the front-end and the back-end PrivateLink
-	// connections. Otherwise, specify `true`, which means that public access is
-	// enabled.
-	PublicAccessEnabled bool `json:"public_access_enabled,omitempty"`
-	// The cloud region for workspaces associated with this private access
-	// settings object.
-	Region string `json:"region"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *UpsertPrivateAccessSettingsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpsertPrivateAccessSettingsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

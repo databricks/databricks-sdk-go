@@ -21,7 +21,7 @@ func ExamplePrivateAccessAPI_Create_privateAccess() {
 		panic(err)
 	}
 
-	created, err := a.PrivateAccess.Create(ctx, provisioning.UpsertPrivateAccessSettingsRequest{
+	created, err := a.PrivateAccess.Create(ctx, provisioning.CreatePrivateAccessSettingsRequest{
 		PrivateAccessSettingsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		Region:                    os.Getenv("AWS_REGION"),
 	})
@@ -46,7 +46,7 @@ func ExamplePrivateAccessAPI_Get_privateAccess() {
 		panic(err)
 	}
 
-	created, err := a.PrivateAccess.Create(ctx, provisioning.UpsertPrivateAccessSettingsRequest{
+	created, err := a.PrivateAccess.Create(ctx, provisioning.CreatePrivateAccessSettingsRequest{
 		PrivateAccessSettingsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		Region:                    os.Getenv("AWS_REGION"),
 	})
@@ -92,7 +92,7 @@ func ExamplePrivateAccessAPI_Replace_privateAccess() {
 		panic(err)
 	}
 
-	created, err := a.PrivateAccess.Create(ctx, provisioning.UpsertPrivateAccessSettingsRequest{
+	created, err := a.PrivateAccess.Create(ctx, provisioning.CreatePrivateAccessSettingsRequest{
 		PrivateAccessSettingsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		Region:                    os.Getenv("AWS_REGION"),
 	})
@@ -101,7 +101,7 @@ func ExamplePrivateAccessAPI_Replace_privateAccess() {
 	}
 	logger.Infof(ctx, "found %v", created)
 
-	err = a.PrivateAccess.Replace(ctx, provisioning.UpsertPrivateAccessSettingsRequest{
+	err = a.PrivateAccess.Replace(ctx, provisioning.ReplacePrivateAccessSettingsRequest{
 		PrivateAccessSettingsId:   created.PrivateAccessSettingsId,
 		PrivateAccessSettingsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		Region:                    os.Getenv("AWS_REGION"),
