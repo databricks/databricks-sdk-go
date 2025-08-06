@@ -32,7 +32,7 @@ func (c CredentialsProviderFn) SetHeaders(r *http.Request) error {
 
 // FromCredentials returns a new CredentialsProvider that uses the given
 // Credentials to set headers on the request.
-func FromCredentials(c auth.Credentials) (CredentialsProvider, error) {
+func FromCredentials(c auth.Credentials) CredentialsProvider {
 	return CredentialsProviderFn(func(r *http.Request) error {
 		headers, err := c.AuthHeaders(context.Background())
 		if err != nil {
@@ -42,7 +42,7 @@ func FromCredentials(c auth.Credentials) (CredentialsProvider, error) {
 			r.Header.Set(k, v)
 		}
 		return nil
-	}), nil
+	})
 }
 
 // NewCredentialsProvider returns a new CredentialsProvider that uses the

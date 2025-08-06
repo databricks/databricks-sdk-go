@@ -26,5 +26,5 @@ func (c PatCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	if err != nil {
 		return nil, err
 	}
-	return credentials.FromCredentials(creds)
+	return credentials.FromCredentials(creds), nil
 }
