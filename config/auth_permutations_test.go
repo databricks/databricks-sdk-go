@@ -317,6 +317,17 @@ func TestConfig_PatFromDatabricksCfg_DotProfile(t *testing.T) {
 	}.apply(t)
 }
 
+func TestConfig_PatFromDatabricksCfg_NohostProfile(t *testing.T) {
+	configFixture{
+		// loading with nohost profile in databrickscfs
+		Env: map[string]string{
+			"HOME":                      "testdata",
+			"DATABRICKS_CONFIG_PROFILE": "nohost",
+		},
+		AssertError: fmt.Sprintf("%s. Config: token=***, profile=nohost. Env: DATABRICKS_CONFIG_PROFILE", defaultAuthBaseErrorMessage),
+	}.apply(t)
+}
+
 func TestConfig_ConfigProfileAndToken(t *testing.T) {
 	configFixture{
 		Env: map[string]string{
