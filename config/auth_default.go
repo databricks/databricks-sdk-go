@@ -3,8 +3,11 @@ package config
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
+	authcred "github.com/databricks/databricks-sdk-go/config/experimental/auth/credentials"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
@@ -41,7 +44,7 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (creden
 	// current priority for tie-breaking. While arguably an anti-pattern, this
 	// order is maintained for backward compatibility.
 	strategies := []CredentialsStrategy{
-		PatCredentials{},
+		pat(),
 		BasicCredentials{},
 		M2mCredentials{},
 		u2mCredentials{},
@@ -88,6 +91,44 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (creden
 	}
 
 	return nil, ErrCannotConfigureDefault
+}
+
+type credStrategy struct {
+	name      string
+	configure func(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error)
+}
+
+func (c *credStrategy) Name() string {
+	return c.name
+}
+
+func (c *credStrategy) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+	return c.configure(ctx, cfg)
+}
+
+func fromCredentials(c auth.Credentials, err error) (credentials.CredentialsProvider, error) {
+	if err != nil {
+		return nil, err
+	}
+	return credentials.CredentialsProviderFn(func(r *http.Request) error {
+		headers, err := c.AuthHeaders(context.Background())
+		if err != nil {
+			return err
+		}
+		for k, v := range headers {
+			r.Header.Set(k, v)
+		}
+		return nil
+	}), nil
+}
+
+func pat() CredentialsStrategy {
+	return &credStrategy{
+		name: "pat",
+		configure: func(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+			return fromCredentials(authcred.NewPATCredentials(cfg.Token))
+		},
+	}
 }
 
 func githubOIDC(cfg *Config) CredentialsStrategy {
