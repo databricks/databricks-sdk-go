@@ -11,9 +11,11 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/iam"
+	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/databricks/databricks-sdk-go/service/settingsv2"
 )
 
 type AccountClient struct {
@@ -132,6 +134,10 @@ type AccountClient struct {
 	// All Databricks account identities can be assigned as members of groups,
 	// and members inherit permissions that are assigned to their group.
 	Groups iam.AccountGroupsInterface
+
+	// These APIs are used to manage identities and the workspace access of
+	// these identities in <Databricks>.
+	IamV2 iamv2.AccountIamV2Interface
 
 	// The Accounts IP Access List API enables account admins to configure IP
 	// access lists for access to the account console.
@@ -358,6 +364,9 @@ type AccountClient struct {
 	// level.
 	Settings settings.AccountSettingsInterface
 
+	// APIs to manage account level settings
+	SettingsV2 settingsv2.AccountSettingsV2Interface
+
 	// These APIs manage storage configurations for this workspace. A root
 	// storage S3 bucket in your account is required to store objects like
 	// cluster logs, notebook revisions, and job results. You can also use the
@@ -455,6 +464,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		EncryptionKeys:                   provisioning.NewEncryptionKeys(apiClient),
 		FederationPolicy:                 oauth2.NewAccountFederationPolicy(apiClient),
 		Groups:                           iam.NewAccountGroups(apiClient),
+		IamV2:                            iamv2.NewAccountIamV2(apiClient),
 		IpAccessLists:                    settings.NewAccountIpAccessLists(apiClient),
 		LogDelivery:                      billing.NewLogDelivery(apiClient),
 		MetastoreAssignments:             catalog.NewAccountMetastoreAssignments(apiClient),
@@ -469,6 +479,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		ServicePrincipalSecrets:          oauth2.NewServicePrincipalSecrets(apiClient),
 		ServicePrincipals:                iam.NewAccountServicePrincipals(apiClient),
 		Settings:                         settings.NewAccountSettings(apiClient),
+		SettingsV2:                       settingsv2.NewAccountSettingsV2(apiClient),
 		Storage:                          provisioning.NewStorage(apiClient),
 		StorageCredentials:               catalog.NewAccountStorageCredentials(apiClient),
 		UsageDashboards:                  billing.NewUsageDashboards(apiClient),

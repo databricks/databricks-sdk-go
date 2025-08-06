@@ -8,6 +8,28 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+type AccessRequestDestinations struct {
+	// Indicates whether any destinations are hidden from the caller due to a
+	// lack of permissions. This value is true if the caller does not have
+	// permission to see all destinations.
+	AreAnyDestinationsHidden bool `json:"are_any_destinations_hidden,omitempty"`
+	// The access request destinations for the securable.
+	Destinations []NotificationDestination `json:"destinations"`
+	// The securable for which the access request destinations are being
+	// retrieved.
+	Securable Securable `json:"securable"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AccessRequestDestinations) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AccessRequestDestinations) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AccountsCreateMetastore struct {
 	MetastoreInfo *CreateMetastore `json:"metastore_info,omitempty"`
 }
@@ -381,6 +403,21 @@ func (s *AzureUserDelegationSas) UnmarshalJSON(b []byte) error {
 
 func (s AzureUserDelegationSas) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type BatchCreateAccessRequestsRequest struct {
+	// A list of individual access requests, where each request corresponds to a
+	// set of permissions being requested on a list of securables for a
+	// specified principal.
+	//
+	// At most 30 requests per API call.
+	Requests []CreateAccessRequest `json:"requests,omitempty"`
+}
+
+type BatchCreateAccessRequestsResponse struct {
+	// The access request destinations for each securable object the principal
+	// requested.
+	Responses []CreateAccessRequestResponse `json:"responses,omitempty"`
 }
 
 type CancelRefreshRequest struct {
@@ -916,6 +953,42 @@ func (s ContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateAccessRequest struct {
+	// Optional. The principal this request is for. Empty `behalf_of` defaults
+	// to the requester's identity.
+	//
+	// Principals must be unique across the API call.
+	BehalfOf *Principal `json:"behalf_of,omitempty"`
+	// Optional. Comment associated with the request.
+	//
+	// At most 200 characters, can only contain lowercase/uppercase letters
+	// (a-z, A-Z), numbers (0-9), punctuation, and spaces.
+	Comment string `json:"comment,omitempty"`
+	// List of securables and their corresponding requested UC privileges.
+	//
+	// At most 30 securables can be requested for a principal per batched call.
+	// Each securable can only be requested once per principal.
+	SecurablePermissions []SecurablePermissions `json:"securable_permissions,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateAccessRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAccessRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateAccessRequestResponse struct {
+	// The principal the request was made on behalf of.
+	BehalfOf *Principal `json:"behalf_of,omitempty"`
+	// The access request destinations for all the securables the principal
+	// requested.
+	RequestDestinations []AccessRequestDestinations `json:"request_destinations,omitempty"`
+}
+
 type CreateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -1008,6 +1081,10 @@ func (s *CreateCredentialRequest) UnmarshalJSON(b []byte) error {
 
 func (s CreateCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type CreateEntityTagAssignmentRequest struct {
+	TagAssignment EntityTagAssignment `json:"tag_assignment"`
 }
 
 type CreateExternalLineageRelationshipRequest struct {
@@ -1951,6 +2028,19 @@ func (s DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DeleteEntityTagAssignmentRequest struct {
+	// Required. The fully qualified structured name of the entity to which the
+	// tag is assigned. The entity name should follow the format of:
+	// entity_type/fully_qualified_entity_name. eg. catalogs/my_catalog,
+	// schemas/my_catalog.my_schema,
+	// columns/my_catalog.my_schema.my_table.my_column. When containing segments
+	// with special characters (e.g. '/'), the whole segment must be wrapped
+	// with backticks. For example, columns/catalog.schema.table.\`column/a\`
+	EntityName string `json:"-" url:"-"`
+	// Required. The key of the tag to delete
+	TagKey string `json:"-" url:"-"`
+}
+
 type DeleteExternalLineageRelationshipRequest struct {
 	ExternalLineageRelationship DeleteRequestExternalLineage `json:"-" url:"external_lineage_relationship"`
 }
@@ -2176,6 +2266,52 @@ type DependencyList struct {
 	Dependencies []Dependency `json:"dependencies,omitempty"`
 }
 
+type DestinationType string
+
+const DestinationTypeEmail DestinationType = `EMAIL`
+
+const DestinationTypeGenericWebhook DestinationType = `GENERIC_WEBHOOK`
+
+const DestinationTypeMicrosoftTeams DestinationType = `MICROSOFT_TEAMS`
+
+const DestinationTypeSlack DestinationType = `SLACK`
+
+const DestinationTypeUrl DestinationType = `URL`
+
+// String representation for [fmt.Print]
+func (f *DestinationType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DestinationType) Set(v string) error {
+	switch v {
+	case `EMAIL`, `GENERIC_WEBHOOK`, `MICROSOFT_TEAMS`, `SLACK`, `URL`:
+		*f = DestinationType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EMAIL", "GENERIC_WEBHOOK", "MICROSOFT_TEAMS", "SLACK", "URL"`, v)
+	}
+}
+
+// Values returns all possible values for DestinationType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DestinationType) Values() []DestinationType {
+	return []DestinationType{
+		DestinationTypeEmail,
+		DestinationTypeGenericWebhook,
+		DestinationTypeMicrosoftTeams,
+		DestinationTypeSlack,
+		DestinationTypeUrl,
+	}
+}
+
+// Type always returns DestinationType to satisfy [pflag.Value] interface
+func (f *DestinationType) Type() string {
+	return "DestinationType"
+}
+
 type DisableRequest struct {
 	// The metastore ID under which the system schema lives.
 	MetastoreId string `json:"-" url:"-"`
@@ -2368,6 +2504,32 @@ func (s EnableRequest) MarshalJSON() ([]byte, error) {
 type EncryptionDetails struct {
 	// Server-Side Encryption properties for clients communicating with AWS s3.
 	SseEncryptionDetails *SseEncryptionDetails `json:"sse_encryption_details,omitempty"`
+}
+
+// Represents a tag assignment to an entity
+type EntityTagAssignment struct {
+	// Required. The fully qualified structured name of the entity to which the
+	// tag is assigned. The entity name should follow the format of:
+	// entity_type/fully_qualified_entity_name. eg. catalogs/my_catalog,
+	// schemas/my_catalog.my_schema,
+	// columns/my_catalog.my_schema.my_table.my_column. When containing segments
+	// with special characters (e.g. '/'), the whole segment must be wrapped
+	// with backticks. For example, columns/catalog.schema.table.\`column/a\`
+	EntityName string `json:"entity_name"`
+	// The key of the tag
+	TagKey string `json:"tag_key"`
+	// The value of the tag
+	TagValue string `json:"tag_value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EntityTagAssignment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EntityTagAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type EnvironmentSettings struct {
@@ -3225,6 +3387,13 @@ func (s GenerateTemporaryTableCredentialResponse) MarshalJSON() ([]byte, error) 
 	return marshal.Marshal(s)
 }
 
+type GetAccessRequestDestinationsRequest struct {
+	// The full name of the securable.
+	FullName string `json:"-" url:"-"`
+	// The type of the securable.
+	SecurableType string `json:"-" url:"-"`
+}
+
 type GetAccountMetastoreAssignmentRequest struct {
 	// Workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -3362,6 +3531,19 @@ func (s GetEffectiveRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GetEntityTagAssignmentRequest struct {
+	// Required. The fully qualified structured name of the entity to which the
+	// tag is assigned. The entity name should follow the format of:
+	// entity_type/fully_qualified_entity_name. eg. catalogs/my_catalog,
+	// schemas/my_catalog.my_schema,
+	// columns/my_catalog.my_schema.my_table.my_column. When containing segments
+	// with special characters (e.g. '/'), the whole segment must be wrapped
+	// with backticks. For example, columns/catalog.schema.table.\`column/a\`
+	EntityName string `json:"-" url:"-"`
+	// Required. The key of the tag
+	TagKey string `json:"-" url:"-"`
+}
+
 type GetExternalLocationRequest struct {
 	// Whether to include external locations in the response for which the
 	// principal can only access selective metadata for
@@ -3406,6 +3588,9 @@ func (s GetFunctionRequest) MarshalJSON() ([]byte, error) {
 type GetGrantRequest struct {
 	// Full name of securable.
 	FullName string `json:"-" url:"-"`
+	// Optional. If true, also return privilege assignments whose principals
+	// have been deleted.
+	IncludeDeletedPrincipals bool `json:"-" url:"include_deleted_principals,omitempty"`
 	// Specifies the maximum number of privileges to return (page length). Every
 	// PrivilegeAssignment present in a single page response is guaranteed to
 	// contain all the privileges granted on the requested Securable for the
@@ -3884,6 +4069,48 @@ func (s *ListCredentialsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListCredentialsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListEntityTagAssignmentsRequest struct {
+	// Required. The fully qualified structured name of the entity to which the
+	// tag is assigned. The entity name should follow the format of:
+	// entity_type/fully_qualified_entity_name. eg. catalogs/my_catalog,
+	// schemas/my_catalog.my_schema,
+	// columns/my_catalog.my_schema.my_table.my_column. When containing segments
+	// with special characters (e.g. '/'), the whole segment must be wrapped
+	// with backticks. For example, columns/catalog.schema.table.\`column/a\`
+	EntityName string `json:"-" url:"-"`
+	// Optional. Maximum number of tag assignments to return in a single page
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Optional. Pagination token to retrieve the next page of results
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListEntityTagAssignmentsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListEntityTagAssignmentsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListEntityTagAssignmentsResponse struct {
+	// Optional. Pagination token for retrieving the next page of results
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// The list of tag assignments
+	TagAssignments []EntityTagAssignment `json:"tag_assignments,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListEntityTagAssignmentsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListEntityTagAssignmentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -5242,6 +5469,33 @@ type NamedTableConstraint struct {
 	Name string `json:"name"`
 }
 
+type NotificationDestination struct {
+	// The identifier for the destination. This is the email address for EMAIL
+	// destinations, the URL for URL destinations, or the unique Databricks
+	// notification destination ID for all other external destinations.
+	DestinationId string `json:"destination_id,omitempty"`
+	// The type of the destination.
+	DestinationType DestinationType `json:"destination_type,omitempty"`
+	// This field is used to denote whether the destination is the email of the
+	// owner of the securable object. The special destination cannot be assigned
+	// to a securable and only represents the default destination of the
+	// securable. The securable types that support default special destinations
+	// are: "catalog", "external_location", "connection", "credential", and
+	// "metastore". The **destination_type** of a **special_destination** is
+	// always EMAIL.
+	SpecialDestination SpecialDestination `json:"special_destination,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *NotificationDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s NotificationDestination) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Online Table information.
 type OnlineTable struct {
 	// Full three-part (catalog, schema, table) name of the table.
@@ -5560,6 +5814,16 @@ type PermissionsChange struct {
 	// The principal whose privileges we are changing. Only one of principal or
 	// principal_id should be specified, never both at the same time.
 	Principal string `json:"principal,omitempty"`
+	// An opaque internal ID that identifies the principal whose privileges
+	// should be removed.
+	//
+	// This field is intended for removing privileges associated with a deleted
+	// user. When set, only the entries specified in the remove field are
+	// processed; any entries in the add field will be rejected.
+	//
+	// Only one of principal or principal_id should be specified, never both at
+	// the same time.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The set of privileges to remove.
 	Remove []Privilege `json:"remove,omitempty"`
 
@@ -5619,6 +5883,63 @@ func (s *PrimaryKeyConstraint) UnmarshalJSON(b []byte) error {
 
 func (s PrimaryKeyConstraint) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type Principal struct {
+	// Databricks user, group or service principal ID.
+	Id string `json:"id,omitempty"`
+
+	PrincipalType PrincipalType `json:"principal_type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Principal) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Principal) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type PrincipalType string
+
+const PrincipalTypeGroupPrincipal PrincipalType = `GROUP_PRINCIPAL`
+
+const PrincipalTypeServicePrincipal PrincipalType = `SERVICE_PRINCIPAL`
+
+const PrincipalTypeUserPrincipal PrincipalType = `USER_PRINCIPAL`
+
+// String representation for [fmt.Print]
+func (f *PrincipalType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PrincipalType) Set(v string) error {
+	switch v {
+	case `GROUP_PRINCIPAL`, `SERVICE_PRINCIPAL`, `USER_PRINCIPAL`:
+		*f = PrincipalType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GROUP_PRINCIPAL", "SERVICE_PRINCIPAL", "USER_PRINCIPAL"`, v)
+	}
+}
+
+// Values returns all possible values for PrincipalType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PrincipalType) Values() []PrincipalType {
+	return []PrincipalType{
+		PrincipalTypeGroupPrincipal,
+		PrincipalTypeServicePrincipal,
+		PrincipalTypeUserPrincipal,
+	}
+}
+
+// Type always returns PrincipalType to satisfy [pflag.Value] interface
+func (f *PrincipalType) Type() string {
+	return "PrincipalType"
 }
 
 type Privilege string
@@ -5803,6 +6124,9 @@ type PrivilegeAssignment struct {
 	// The principal (user email address or group name). For deleted principals,
 	// `principal` is empty while `principal_id` is populated.
 	Principal string `json:"principal,omitempty"`
+	// Unique identifier of the principal. For active principals, both
+	// `principal` and `principal_id` are present.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
 
@@ -6103,6 +6427,30 @@ func (s SchemaInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Generic definition of a securable, which is uniquely defined in a metastore
+// by its type and full name.
+type Securable struct {
+	// Required. The full name of the catalog/schema/table. Optional if
+	// resource_name is present.
+	FullName string `json:"full_name,omitempty"`
+	// Optional. The name of the Share object that contains the securable when
+	// the securable is getting shared in D2D Delta Sharing.
+	ProviderShare string `json:"provider_share,omitempty"`
+	// Required. The type of securable (catalog/schema/table). Optional if
+	// resource_name is present.
+	Type SecurableType `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Securable) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Securable) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -6328,6 +6676,14 @@ type SecurableKindManifest struct {
 	SecurableType SecurableType `json:"securable_type,omitempty"`
 }
 
+type SecurablePermissions struct {
+	// List of requested Unity Catalog permissions.
+	Permissions []string `json:"permissions,omitempty"`
+	// The securable for which the access request destinations are being
+	// requested.
+	Securable *Securable `json:"securable,omitempty"`
+}
+
 // The type of Unity Catalog securable.
 type SecurableType string
 
@@ -6441,6 +6797,52 @@ type SetRegisteredModelAliasRequest struct {
 	FullName string `json:"full_name"`
 	// The version number of the model version to which the alias points
 	VersionNum int `json:"version_num"`
+}
+
+type SpecialDestination string
+
+const SpecialDestinationSpecialDestinationCatalogOwner SpecialDestination = `SPECIAL_DESTINATION_CATALOG_OWNER`
+
+const SpecialDestinationSpecialDestinationConnectionOwner SpecialDestination = `SPECIAL_DESTINATION_CONNECTION_OWNER`
+
+const SpecialDestinationSpecialDestinationCredentialOwner SpecialDestination = `SPECIAL_DESTINATION_CREDENTIAL_OWNER`
+
+const SpecialDestinationSpecialDestinationExternalLocationOwner SpecialDestination = `SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER`
+
+const SpecialDestinationSpecialDestinationMetastoreOwner SpecialDestination = `SPECIAL_DESTINATION_METASTORE_OWNER`
+
+// String representation for [fmt.Print]
+func (f *SpecialDestination) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SpecialDestination) Set(v string) error {
+	switch v {
+	case `SPECIAL_DESTINATION_CATALOG_OWNER`, `SPECIAL_DESTINATION_CONNECTION_OWNER`, `SPECIAL_DESTINATION_CREDENTIAL_OWNER`, `SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER`, `SPECIAL_DESTINATION_METASTORE_OWNER`:
+		*f = SpecialDestination(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "SPECIAL_DESTINATION_CATALOG_OWNER", "SPECIAL_DESTINATION_CONNECTION_OWNER", "SPECIAL_DESTINATION_CREDENTIAL_OWNER", "SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER", "SPECIAL_DESTINATION_METASTORE_OWNER"`, v)
+	}
+}
+
+// Values returns all possible values for SpecialDestination.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SpecialDestination) Values() []SpecialDestination {
+	return []SpecialDestination{
+		SpecialDestinationSpecialDestinationCatalogOwner,
+		SpecialDestinationSpecialDestinationConnectionOwner,
+		SpecialDestinationSpecialDestinationCredentialOwner,
+		SpecialDestinationSpecialDestinationExternalLocationOwner,
+		SpecialDestinationSpecialDestinationMetastoreOwner,
+	}
+}
+
+// Type always returns SpecialDestination to satisfy [pflag.Value] interface
+func (f *SpecialDestination) Type() string {
+	return "SpecialDestination"
 }
 
 // Server-Side Encryption properties for clients communicating with AWS s3.
@@ -6977,6 +7379,25 @@ type UnassignRequest struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+type UpdateAccessRequestDestinationsRequest struct {
+	// The access request destinations to assign to the securable. For each
+	// destination, a **destination_id** and **destination_type** must be
+	// defined.
+	AccessRequestDestinations AccessRequestDestinations `json:"access_request_destinations"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -7077,6 +7498,33 @@ func (s *UpdateCredentialRequest) UnmarshalJSON(b []byte) error {
 
 func (s UpdateCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateEntityTagAssignmentRequest struct {
+	// Required. The fully qualified structured name of the entity to which the
+	// tag is assigned. The entity name should follow the format of:
+	// entity_type/fully_qualified_entity_name. eg. catalogs/my_catalog,
+	// schemas/my_catalog.my_schema,
+	// columns/my_catalog.my_schema.my_table.my_column. When containing segments
+	// with special characters (e.g. '/'), the whole segment must be wrapped
+	// with backticks. For example, columns/catalog.schema.table.\`column/a\`
+	EntityName string `json:"-" url:"-"`
+
+	TagAssignment EntityTagAssignment `json:"tag_assignment"`
+	// The key of the tag
+	TagKey string `json:"-" url:"-"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	UpdateMask string `json:"-" url:"update_mask"`
 }
 
 type UpdateExternalLineageRelationshipRequest struct {

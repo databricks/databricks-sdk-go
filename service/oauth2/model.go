@@ -617,8 +617,13 @@ func (s SecretInfo) MarshalJSON() ([]byte, error) {
 }
 
 type TokenAccessPolicy struct {
+	// absolute OAuth session TTL in minutes when single-use refresh tokens are
+	// enabled
+	AbsoluteSessionLifetimeInMinutes int `json:"absolute_session_lifetime_in_minutes,omitempty"`
 	// access token time to live in minutes
 	AccessTokenTtlInMinutes int `json:"access_token_ttl_in_minutes,omitempty"`
+	// whether to enable single-use refresh tokens
+	EnableSingleUseRefreshTokens bool `json:"enable_single_use_refresh_tokens,omitempty"`
 	// refresh token time to live in minutes
 	RefreshTokenTtlInMinutes int `json:"refresh_token_ttl_in_minutes,omitempty"`
 

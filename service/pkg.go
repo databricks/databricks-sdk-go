@@ -110,6 +110,8 @@
 //
 // - [settings.EnhancedSecurityMonitoringAPI]: Controls whether enhanced security monitoring is enabled for the current workspace.
 //
+// - [catalog.EntityTagAssignmentsAPI]: Entity Tag Assignments provide a unified interface for managing tag assignments on Unity Catalog entities.
+//
 // - [settings.EsmEnablementAccountAPI]: The enhanced security monitoring setting at the account level controls whether to enable the feature on new workspaces.
 //
 // - [ml.ExperimentsAPI]: Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment.
@@ -141,6 +143,8 @@
 // - [iam.GroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks workspace, data, and other securable objects.
 //
 // - [iam.AccountGroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks account, data, and other securable objects.
+//
+// - [iamv2.AccountIamV2API]: These APIs are used to manage identities and the workspace access of these identities in <Databricks>.
 //
 // - [compute.InstancePoolsAPI]: Instance Pools API are used to create, edit, delete and list instance pools by using ready-to-use cloud instances which reduces a cluster start and auto-scaling times.
 //
@@ -232,6 +236,8 @@
 //
 // - [sql.QueriesLegacyAPI]: These endpoints are used for CRUD operations on query definitions.
 //
+// - [dashboards.QueryExecutionAPI]: Query execution APIs for AI / BI Dashboards.
+//
 // - [sql.QueryHistoryAPI]: A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute.
 //
 // - [sql.QueryVisualizationsAPI]: This is an evolving API that facilitates the addition and removal of visualizations from existing queries in the Databricks Workspace.
@@ -249,6 +255,8 @@
 // - [catalog.RegisteredModelsAPI]: Databricks provides a hosted version of MLflow Model Registry in Unity Catalog.
 //
 // - [workspace.ReposAPI]: The Repos API allows users to manage their git repos.
+//
+// - [catalog.RequestForAccessAPI]: Request for Access enables customers to request access to and manage access request destinations for Unity Catalog securables.
 //
 // - [catalog.ResourceQuotasAPI]: Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that can be created.
 //
@@ -276,6 +284,8 @@
 //
 // - [settings.AccountSettingsAPI]: Accounts Settings API allows users to manage settings at the account level.
 //
+// - [settingsv2.AccountSettingsV2API]: APIs to manage account level settings.
+//
 // - [sharing.SharesAPI]: A share is a container instantiated with :method:shares/create.
 //
 // - [settings.SqlResultsDownloadAPI]: Controls whether users within the workspace are allowed to download results from the SQL Editor and AI/BI Dashboards UIs.
@@ -293,6 +303,10 @@
 // - [catalog.TableConstraintsAPI]: Primary key and foreign key constraints encode relationships between fields in tables.
 //
 // - [catalog.TablesAPI]: A table resides in the third layer of Unity Catalog’s three-level namespace.
+//
+// - [tags.TagAssignmentsAPI]: Manage tag assignments on workspace-scoped objects.
+//
+// - [tags.TagPoliciesAPI]: The Tag Policy API allows you to manage tag policies in Databricks.
 //
 // - [catalog.TemporaryTableCredentialsAPI]: Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locationswhere table data is stored in Databricks.
 //
@@ -324,7 +338,11 @@
 //
 // - [settings.WorkspaceConfAPI]: This API allows updating known workspace settings for advanced users.
 //
+// - [iamv2.WorkspaceIamV2API]: These APIs are used to manage identities and the workspace access of these identities in <Databricks>.
+//
 // - [settings.WorkspaceNetworkConfigurationAPI]: These APIs allow configuration of network settings for Databricks workspaces by selecting which network policy to associate with the workspace.
+//
+// - [settingsv2.WorkspaceSettingsV2API]: APIs to manage workspace level settings.
 //
 // - [provisioning.WorkspacesAPI]: These APIs manage workspaces for this account.
 package service
@@ -340,6 +358,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/database"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
+	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
@@ -349,8 +368,10 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/databricks/databricks-sdk-go/service/settingsv2"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
+	"github.com/databricks/databricks-sdk-go/service/tags"
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
@@ -415,6 +436,7 @@ var (
 	_ *settings.EnableResultsDownloadingAPI               = nil
 	_ *provisioning.EncryptionKeysAPI                     = nil
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil
+	_ *catalog.EntityTagAssignmentsAPI                    = nil
 	_ *settings.EsmEnablementAccountAPI                   = nil
 	_ *ml.ExperimentsAPI                                  = nil
 	_ *catalog.ExternalLineageAPI                         = nil
@@ -431,6 +453,7 @@ var (
 	_ *catalog.GrantsAPI                                  = nil
 	_ *iam.GroupsAPI                                      = nil
 	_ *iam.AccountGroupsAPI                               = nil
+	_ *iamv2.AccountIamV2API                              = nil
 	_ *compute.InstancePoolsAPI                           = nil
 	_ *compute.InstanceProfilesAPI                        = nil
 	_ *settings.IpAccessListsAPI                          = nil
@@ -476,6 +499,7 @@ var (
 	_ *catalog.QualityMonitorsAPI                         = nil
 	_ *sql.QueriesAPI                                     = nil
 	_ *sql.QueriesLegacyAPI                               = nil
+	_ *dashboards.QueryExecutionAPI                       = nil
 	_ *sql.QueryHistoryAPI                                = nil
 	_ *sql.QueryVisualizationsAPI                         = nil
 	_ *sql.QueryVisualizationsLegacyAPI                   = nil
@@ -485,6 +509,7 @@ var (
 	_ *sql.RedashConfigAPI                                = nil
 	_ *catalog.RegisteredModelsAPI                        = nil
 	_ *workspace.ReposAPI                                 = nil
+	_ *catalog.RequestForAccessAPI                        = nil
 	_ *catalog.ResourceQuotasAPI                          = nil
 	_ *settings.RestrictWorkspaceAdminsAPI                = nil
 	_ *catalog.SchemasAPI                                 = nil
@@ -498,6 +523,7 @@ var (
 	_ *serving.ServingEndpointsDataPlaneAPI               = nil
 	_ *settings.SettingsAPI                               = nil
 	_ *settings.AccountSettingsAPI                        = nil
+	_ *settingsv2.AccountSettingsV2API                    = nil
 	_ *sharing.SharesAPI                                  = nil
 	_ *settings.SqlResultsDownloadAPI                     = nil
 	_ *sql.StatementExecutionAPI                          = nil
@@ -507,6 +533,8 @@ var (
 	_ *catalog.SystemSchemasAPI                           = nil
 	_ *catalog.TableConstraintsAPI                        = nil
 	_ *catalog.TablesAPI                                  = nil
+	_ *tags.TagAssignmentsAPI                             = nil
+	_ *tags.TagPoliciesAPI                                = nil
 	_ *catalog.TemporaryTableCredentialsAPI               = nil
 	_ *settings.TokenManagementAPI                        = nil
 	_ *settings.TokensAPI                                 = nil
@@ -522,6 +550,8 @@ var (
 	_ *iam.WorkspaceAssignmentAPI                         = nil
 	_ *catalog.WorkspaceBindingsAPI                       = nil
 	_ *settings.WorkspaceConfAPI                          = nil
+	_ *iamv2.WorkspaceIamV2API                            = nil
 	_ *settings.WorkspaceNetworkConfigurationAPI          = nil
+	_ *settingsv2.WorkspaceSettingsV2API                  = nil
 	_ *provisioning.WorkspacesAPI                         = nil
 )

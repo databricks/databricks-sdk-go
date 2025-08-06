@@ -251,6 +251,28 @@ type CredentialsService interface {
 	ValidateCredential(ctx context.Context, request ValidateCredentialRequest) (*ValidateCredentialResponse, error)
 }
 
+// Entity Tag Assignments provide a unified interface for managing tag
+// assignments on Unity Catalog entities.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type EntityTagAssignmentsService interface {
+
+	// Create an tag assignment for an Unity Catalog entity.
+	Create(ctx context.Context, request CreateEntityTagAssignmentRequest) (*EntityTagAssignment, error)
+
+	// Delete a tag assignment for an Unity Catalog entity.
+	Delete(ctx context.Context, request DeleteEntityTagAssignmentRequest) error
+
+	// Get a tag assignment for an Unity Catalog entity.
+	Get(ctx context.Context, request GetEntityTagAssignmentRequest) (*EntityTagAssignment, error)
+
+	// List tag assignments for an Unity Catalog entity
+	List(ctx context.Context, request ListEntityTagAssignmentsRequest) (*ListEntityTagAssignmentsResponse, error)
+
+	// Update a tag assignment for an Unity Catalog entity
+	Update(ctx context.Context, request UpdateEntityTagAssignmentRequest) (*EntityTagAssignment, error)
+}
+
 // External Lineage APIs enable defining and managing lineage relationships
 // between Databricks objects and external systems. These APIs allow users to
 // capture data flows connecting Databricks tables, models, and file paths with
@@ -829,6 +851,53 @@ type RegisteredModelsService interface {
 	// Currently only the name, the owner or the comment of the registered model
 	// can be updated.
 	Update(ctx context.Context, request UpdateRegisteredModelRequest) (*RegisteredModelInfo, error)
+}
+
+// Request for Access enables customers to request access to and manage access
+// request destinations for Unity Catalog securables.
+//
+// These APIs provide a standardized way to update, get, and request to access
+// request destinations. Fine-grained authorization ensures that only users with
+// appropriate permissions can manage access request destinations.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type RequestForAccessService interface {
+
+	// Creates access requests for Unity Catalog permissions for a specified
+	// principal on a securable object. This Batch API can take in multiple
+	// principals, securable objects, and permissions as the input and returns
+	// the access request destinations for each. Principals must be unique
+	// across the API call.
+	//
+	// The supported securable types are: "metastore", "catalog", "schema",
+	// "table", "external_location", "connection", "credential", "function",
+	// "registered_model", and "volume".
+	BatchCreateAccessRequests(ctx context.Context, request BatchCreateAccessRequestsRequest) (*BatchCreateAccessRequestsResponse, error)
+
+	// Gets an array of access request destinations for the specified securable.
+	// Any caller can see URL destinations or the destinations on the metastore.
+	// Otherwise, only those with **BROWSE** permissions on the securable can
+	// see destinations.
+	//
+	// The supported securable types are: "metastore", "catalog", "schema",
+	// "table", "external_location", "connection", "credential", "function",
+	// "registered_model", and "volume".
+	GetAccessRequestDestinations(ctx context.Context, request GetAccessRequestDestinationsRequest) (*AccessRequestDestinations, error)
+
+	// Updates the access request destinations for the given securable. The
+	// caller must be a metastore admin, the owner of the securable, or a user
+	// that has the **MANAGE** privilege on the securable in order to assign
+	// destinations. Destinations cannot be updated for securables underneath
+	// schemas (tables, volumes, functions, and models). For these securable
+	// types, destinations are inherited from the parent securable. A maximum of
+	// 5 emails and 5 external notification destinations (Slack, Microsoft
+	// Teams, and Generic Webhook destinations) can be assigned to a securable.
+	// If a URL destination is assigned, no other destinations can be set.
+	//
+	// The supported securable types are: "metastore", "catalog", "schema",
+	// "table", "external_location", "connection", "credential", "function",
+	// "registered_model", and "volume".
+	UpdateAccessRequestDestinations(ctx context.Context, request UpdateAccessRequestDestinationsRequest) (*AccessRequestDestinations, error)
 }
 
 // Unity Catalog enforces resource quotas on all securable objects, which limits

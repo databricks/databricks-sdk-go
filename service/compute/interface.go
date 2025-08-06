@@ -442,14 +442,43 @@ type LibrariesService interface {
 	// removal, in no particular order, are returned last.
 	ClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error)
 
+	// Create a default base environment within workspaces to define the
+	// environment version and a list of dependencies to be used in serverless
+	// notebooks and jobs. This process will asynchronously generate a cache to
+	// optimize dependency resolution.
+	CreateDefaultBaseEnvironment(ctx context.Context, request CreateDefaultBaseEnvironmentRequest) (*DefaultBaseEnvironment, error)
+
+	// Delete the default base environment given an ID. The default base
+	// environment may be used by downstream workloads. Please ensure that the
+	// deletion is intentional.
+	DeleteDefaultBaseEnvironment(ctx context.Context, request DeleteDefaultBaseEnvironmentRequest) error
+
 	// Add libraries to install on a cluster. The installation is asynchronous;
 	// it happens in the background after the completion of this request.
 	Install(ctx context.Context, request InstallLibraries) error
+
+	// List default base environments defined in the workspaces for the
+	// requested user.
+	ListDefaultBaseEnvironments(ctx context.Context, request ListDefaultBaseEnvironmentsRequest) (*ListDefaultBaseEnvironmentsResponse, error)
+
+	// Refresh the cached default base environments for the given IDs. This
+	// process will asynchronously regenerate the caches. The existing caches
+	// remains available until it expires.
+	RefreshDefaultBaseEnvironments(ctx context.Context, request RefreshDefaultBaseEnvironmentsRequest) error
 
 	// Set libraries to uninstall from a cluster. The libraries won't be
 	// uninstalled until the cluster is restarted. A request to uninstall a
 	// library that is not currently installed is ignored.
 	Uninstall(ctx context.Context, request UninstallLibraries) error
+
+	// Update the default base environment for the given ID. This process will
+	// asynchronously regenerate the cache. The existing cache remains available
+	// until it expires.
+	UpdateDefaultBaseEnvironment(ctx context.Context, request UpdateDefaultBaseEnvironmentRequest) (*DefaultBaseEnvironment, error)
+
+	// Set the default base environment for the workspace. This marks the
+	// specified DBE as the workspace default.
+	UpdateDefaultDefaultBaseEnvironment(ctx context.Context, request UpdateDefaultDefaultBaseEnvironmentRequest) (*DefaultBaseEnvironment, error)
 }
 
 // The policy compliance APIs allow you to view and manage the policy compliance

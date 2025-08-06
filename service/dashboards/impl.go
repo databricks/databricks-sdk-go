@@ -57,6 +57,26 @@ func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecut
 	return &genieGetMessageQueryResultResponse, err
 }
 
+func (a *genieImpl) GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error) {
+	var genieGenerateDownloadFullQueryResultResponse GenieGenerateDownloadFullQueryResultResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/downloads", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGenerateDownloadFullQueryResultResponse)
+	return &genieGenerateDownloadFullQueryResultResponse, err
+}
+
+func (a *genieImpl) GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error) {
+	var genieGetDownloadFullQueryResultResponse GenieGetDownloadFullQueryResultResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/downloads/%v", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId, request.DownloadId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetDownloadFullQueryResultResponse)
+	return &genieGetDownloadFullQueryResultResponse, err
+}
+
 func (a *genieImpl) GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error) {
 	var genieMessage GenieMessage
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v", request.SpaceId, request.ConversationId, request.MessageId)
@@ -107,6 +127,16 @@ func (a *genieImpl) GetSpace(ctx context.Context, request GenieGetSpaceRequest) 
 	return &genieSpace, err
 }
 
+func (a *genieImpl) ListConversationMessages(ctx context.Context, request GenieListConversationMessagesRequest) (*GenieListConversationMessagesResponse, error) {
+	var genieListConversationMessagesResponse GenieListConversationMessagesResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages", request.SpaceId, request.ConversationId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListConversationMessagesResponse)
+	return &genieListConversationMessagesResponse, err
+}
+
 func (a *genieImpl) ListConversations(ctx context.Context, request GenieListConversationsRequest) (*GenieListConversationsResponse, error) {
 	var genieListConversationsResponse GenieListConversationsResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations", request.SpaceId)
@@ -125,6 +155,16 @@ func (a *genieImpl) ListSpaces(ctx context.Context, request GenieListSpacesReque
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListSpacesResponse)
 	return &genieListSpacesResponse, err
+}
+
+func (a *genieImpl) SendMessageFeedback(ctx context.Context, request GenieSendMessageFeedbackRequest) error {
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/feedback", request.SpaceId, request.ConversationId, request.MessageId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	return err
 }
 
 func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error) {
@@ -433,6 +473,15 @@ type lakeviewEmbeddedImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error {
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/embedded", request.DashboardId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, nil)
+	return err
+}
+
 func (a *lakeviewEmbeddedImpl) GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error) {
 	var getPublishedDashboardTokenInfoResponse GetPublishedDashboardTokenInfoResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/tokeninfo", request.DashboardId)
@@ -441,4 +490,39 @@ func (a *lakeviewEmbeddedImpl) GetPublishedDashboardTokenInfo(ctx context.Contex
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardTokenInfoResponse)
 	return &getPublishedDashboardTokenInfoResponse, err
+}
+
+// unexported type that holds implementations of just QueryExecution API methods
+type queryExecutionImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *queryExecutionImpl) CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error) {
+	var cancelQueryExecutionResponse CancelQueryExecutionResponse
+	path := "/api/2.0/lakeview-query/query/published"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &cancelQueryExecutionResponse)
+	return &cancelQueryExecutionResponse, err
+}
+
+func (a *queryExecutionImpl) ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error {
+	path := "/api/2.0/lakeview-query/query/published"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *queryExecutionImpl) PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error) {
+	var pollQueryStatusResponse PollQueryStatusResponse
+	path := "/api/2.0/lakeview-query/query/published"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &pollQueryStatusResponse)
+	return &pollQueryStatusResponse, err
 }

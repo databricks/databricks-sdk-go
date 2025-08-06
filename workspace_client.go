@@ -18,6 +18,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/database"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
+	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
@@ -26,8 +27,10 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/databricks/databricks-sdk-go/service/settingsv2"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
+	"github.com/databricks/databricks-sdk-go/service/tags"
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
@@ -282,6 +285,10 @@ type WorkspaceClient struct {
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	DbsqlPermissions sql.DbsqlPermissionsInterface
+
+	// Entity Tag Assignments provide a unified interface for managing tag
+	// assignments on Unity Catalog entities.
+	EntityTagAssignments catalog.EntityTagAssignmentsInterface
 
 	// Experiments are the primary unit of organization in MLflow; all MLflow
 	// runs belong to an experiment. Each experiment lets you visualize, search,
@@ -732,6 +739,9 @@ type WorkspaceClient struct {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueriesLegacy sql.QueriesLegacyInterface
 
+	// Query execution APIs for AI / BI Dashboards
+	QueryExecution dashboards.QueryExecutionInterface
+
 	// A service responsible for storing and retrieving the list of queries run
 	// against SQL endpoints and serverless compute.
 	QueryHistory sql.QueryHistoryInterface
@@ -859,6 +869,15 @@ type WorkspaceClient struct {
 	// data science and engineering code development best practices using Git
 	// for version control, collaboration, and CI/CD.
 	Repos workspace.ReposInterface
+
+	// Request for Access enables customers to request access to and manage
+	// access request destinations for Unity Catalog securables.
+	//
+	// These APIs provide a standardized way to update, get, and request to
+	// access request destinations. Fine-grained authorization ensures that only
+	// users with appropriate permissions can manage access request
+	// destinations.
+	RequestForAccess catalog.RequestForAccessInterface
 
 	// Unity Catalog enforces resource quotas on all securable objects, which
 	// limits the number of resources that can be created. Quotas are expressed
@@ -1109,6 +1128,12 @@ type WorkspaceClient struct {
 	// is a particular kind of table (rather than a managed or external table).
 	Tables catalog.TablesInterface
 
+	// Manage tag assignments on workspace-scoped objects.
+	TagAssignments tags.TagAssignmentsInterface
+
+	// The Tag Policy API allows you to manage tag policies in Databricks.
+	TagPolicies tags.TagPoliciesInterface
+
 	// Temporary Table Credentials refer to short-lived, downscoped credentials
 	// used to access cloud storage locationswhere table data is stored in
 	// Databricks. These credentials are employed to provide secure and
@@ -1216,6 +1241,13 @@ type WorkspaceClient struct {
 
 	// This API allows updating known workspace settings for advanced users.
 	WorkspaceConf settings.WorkspaceConfInterface
+
+	// These APIs are used to manage identities and the workspace access of
+	// these identities in <Databricks>.
+	WorkspaceIamV2 iamv2.WorkspaceIamV2Interface
+
+	// APIs to manage workspace level settings
+	WorkspaceSettingsV2 settingsv2.WorkspaceSettingsV2Interface
 }
 
 var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration")
@@ -1284,6 +1316,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Database:                            database.NewDatabase(databricksClient),
 		Dbfs:                                files.NewDbfs(databricksClient),
 		DbsqlPermissions:                    sql.NewDbsqlPermissions(databricksClient),
+		EntityTagAssignments:                catalog.NewEntityTagAssignments(databricksClient),
 		Experiments:                         ml.NewExperiments(databricksClient),
 		ExternalLineage:                     catalog.NewExternalLineage(databricksClient),
 		ExternalLocations:                   catalog.NewExternalLocations(databricksClient),
@@ -1328,6 +1361,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		QualityMonitors:                     catalog.NewQualityMonitors(databricksClient),
 		Queries:                             sql.NewQueries(databricksClient),
 		QueriesLegacy:                       sql.NewQueriesLegacy(databricksClient),
+		QueryExecution:                      dashboards.NewQueryExecution(databricksClient),
 		QueryHistory:                        sql.NewQueryHistory(databricksClient),
 		QueryVisualizations:                 sql.NewQueryVisualizations(databricksClient),
 		QueryVisualizationsLegacy:           sql.NewQueryVisualizationsLegacy(databricksClient),
@@ -1337,6 +1371,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		RedashConfig:                        sql.NewRedashConfig(databricksClient),
 		RegisteredModels:                    catalog.NewRegisteredModels(databricksClient),
 		Repos:                               workspace.NewRepos(databricksClient),
+		RequestForAccess:                    catalog.NewRequestForAccess(databricksClient),
 		ResourceQuotas:                      catalog.NewResourceQuotas(databricksClient),
 		Schemas:                             catalog.NewSchemas(databricksClient),
 		Secrets:                             workspace.NewSecrets(databricksClient),
@@ -1351,6 +1386,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		SystemSchemas:                       catalog.NewSystemSchemas(databricksClient),
 		TableConstraints:                    catalog.NewTableConstraints(databricksClient),
 		Tables:                              catalog.NewTables(databricksClient),
+		TagAssignments:                      tags.NewTagAssignments(databricksClient),
+		TagPolicies:                         tags.NewTagPolicies(databricksClient),
 		TemporaryTableCredentials:           catalog.NewTemporaryTableCredentials(databricksClient),
 		TokenManagement:                     settings.NewTokenManagement(databricksClient),
 		Tokens:                              settings.NewTokens(databricksClient),
@@ -1362,5 +1399,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Workspace:                           workspace.NewWorkspace(databricksClient),
 		WorkspaceBindings:                   catalog.NewWorkspaceBindings(databricksClient),
 		WorkspaceConf:                       settings.NewWorkspaceConf(databricksClient),
+		WorkspaceIamV2:                      iamv2.NewWorkspaceIamV2(databricksClient),
+		WorkspaceSettingsV2:                 settingsv2.NewWorkspaceSettingsV2(databricksClient),
 	}, nil
 }

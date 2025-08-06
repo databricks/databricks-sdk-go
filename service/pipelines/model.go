@@ -9,6 +9,24 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+type ConnectionParameters struct {
+	// Source catalog for initial connection. This is necessary for schema
+	// exploration in some database systems like Oracle, and optional but
+	// nice-to-have in some other database systems like Postgres. For Oracle
+	// databases, this maps to a service name.
+	SourceCatalog string `json:"source_catalog,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ConnectionParameters) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ConnectionParameters) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
@@ -564,6 +582,9 @@ type IngestionGatewayPipelineDefinition struct {
 	// Immutable. The Unity Catalog connection that this gateway pipeline uses
 	// to communicate with the source.
 	ConnectionName string `json:"connection_name"`
+	// Optional, Internal. Parameters required to establish an initial
+	// connection with the source.
+	ConnectionParameters *ConnectionParameters `json:"connection_parameters,omitempty"`
 	// Required, Immutable. The name of the catalog for the gateway pipeline's
 	// storage location.
 	GatewayStorageCatalog string `json:"gateway_storage_catalog"`
@@ -592,6 +613,12 @@ type IngestionPipelineDefinition struct {
 	// to communicate with the source. This is used with connectors for
 	// applications like Salesforce, Workday, and so on.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Immutable. If set to true, the pipeline will ingest tables from the UC
+	// foreign catalogs directly without the need to specify a UC connection or
+	// ingestion gateway. The `source_catalog` fields in objects of
+	// IngestionConfig are interpreted as the UC foreign catalogs to ingest
+	// from.
+	IngestFromUcForeignCatalog bool `json:"ingest_from_uc_foreign_catalog,omitempty"`
 	// Immutable. Identifier for the gateway that is used by this ingestion
 	// pipeline to communicate with the source database. This is used with
 	// connectors to databases like SQL Server.
@@ -599,6 +626,8 @@ type IngestionPipelineDefinition struct {
 	// Required. Settings specifying tables to replicate and the destination for
 	// the replicated tables.
 	Objects []IngestionConfig `json:"objects,omitempty"`
+	// Top-level source configurations
+	SourceConfigurations []SourceConfig `json:"source_configurations,omitempty"`
 	// The type of the foreign source. The source type will be inferred from the
 	// source connection or ingestion gateway. This field is output only and
 	// will be ignored if provided.
@@ -1639,6 +1668,31 @@ type PipelinesEnvironment struct {
 	Dependencies []string `json:"dependencies,omitempty"`
 }
 
+// PG-specific catalog-level configuration parameters
+type PostgresCatalogConfig struct {
+	// Optional. The Postgres slot configuration to use for logical replication
+	SlotConfig *PostgresSlotConfig `json:"slot_config,omitempty"`
+}
+
+// PostgresSlotConfig contains the configuration for a Postgres logical
+// replication slot
+type PostgresSlotConfig struct {
+	// The name of the publication to use for the Postgres source
+	PublicationName string `json:"publication_name,omitempty"`
+	// The name of the logical replication slot to use for the Postgres source
+	SlotName string `json:"slot_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PostgresSlotConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PostgresSlotConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ReportSpec struct {
 	// Required. Destination catalog to store table.
 	DestinationCatalog string `json:"destination_catalog"`
@@ -1688,6 +1742,14 @@ func (s *RestartWindow) UnmarshalJSON(b []byte) error {
 
 func (s RestartWindow) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type RestorePipelineRequest struct {
+	// The ID of the pipeline to restore
+	PipelineId string `json:"-" url:"-"`
+}
+
+type RestorePipelineRequestResponse struct {
 }
 
 // Write-only setting, available only in Create/Update calls. Specifies the user
@@ -1777,6 +1839,30 @@ func (s *SerializedException) UnmarshalJSON(b []byte) error {
 
 func (s SerializedException) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// SourceCatalogConfig contains catalog-level custom configuration parameters
+// for each source
+type SourceCatalogConfig struct {
+	// Postgres-specific catalog-level configuration parameters
+	Postgres *PostgresCatalogConfig `json:"postgres,omitempty"`
+	// Source catalog name
+	SourceCatalog string `json:"source_catalog,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SourceCatalogConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SourceCatalogConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SourceConfig struct {
+	// Catalog-level source configuration parameters
+	Catalog *SourceCatalogConfig `json:"catalog,omitempty"`
 }
 
 type StackFrame struct {
@@ -1950,6 +2036,10 @@ type TableSpecificConfig struct {
 	PrimaryKeys []string `json:"primary_keys,omitempty"`
 
 	QueryBasedConnectorConfig *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig `json:"query_based_connector_config,omitempty"`
+	// (Optional, Immutable) The row filter condition to be applied to the
+	// table. It must not contain the WHERE keyword, only the actual filter
+	// condition. It must be in DBSQL format.
+	RowFilter string `json:"row_filter,omitempty"`
 	// If true, formula fields defined in the table are included in the
 	// ingestion. This setting is only valid for the Salesforce connector
 	SalesforceIncludeFormulaFields bool `json:"salesforce_include_formula_fields,omitempty"`

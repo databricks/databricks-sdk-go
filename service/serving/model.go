@@ -168,6 +168,9 @@ type AiGatewayRateLimit struct {
 	// Renewal period field for a rate limit. Currently, only 'minute' is
 	// supported.
 	RenewalPeriod AiGatewayRateLimitRenewalPeriod `json:"renewal_period"`
+	// Used to specify how many tokens are allowed for a key within the
+	// renewal_period.
+	Tokens int64 `json:"tokens,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

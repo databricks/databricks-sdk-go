@@ -628,6 +628,9 @@ type Continuous struct {
 	// Indicate whether the continuous execution of the job is paused or not.
 	// Defaults to UNPAUSED.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
+	// Indicate whether the continuous job is applying task level retries or
+	// not. Defaults to NEVER.
+	TaskRetryMode TaskRetryMode `json:"task_retry_mode,omitempty"`
 }
 
 type CreateJob struct {
@@ -742,6 +745,11 @@ type CreateJob struct {
 	// default behavior is that the job runs only when triggered by clicking
 	// “Run Now” in the Jobs UI or sending an API request to `runNow`.
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
+	// The id of the user specified usage policy to use for this job. If not
+	// specified, a default usage policy may be applied when creating or
+	// modifying the job. See `effective_budget_policy_id` for the budget policy
+	// used by this workload.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 	// A collection of system notification IDs to notify when runs of this job
 	// begin or complete.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
@@ -2143,6 +2151,11 @@ type JobSettings struct {
 	// default behavior is that the job runs only when triggered by clicking
 	// “Run Now” in the Jobs UI or sending an API request to `runNow`.
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
+	// The id of the user specified usage policy to use for this job. If not
+	// specified, a default usage policy may be applied when creating or
+	// modifying the job. See `effective_budget_policy_id` for the budget policy
+	// used by this workload.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 	// A collection of system notification IDs to notify when runs of this job
 	// begin or complete.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
@@ -2517,6 +2530,77 @@ func (s *ListRunsResponse) UnmarshalJSON(b []byte) error {
 
 func (s ListRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ModelTriggerConfiguration struct {
+	// Aliases of the model versions to monitor. Can only be used in conjunction
+	// with condition MODEL_ALIAS_SET.
+	Aliases []string `json:"aliases,omitempty"`
+	// The condition based on which to trigger a job run.
+	Condition ModelTriggerConfigurationCondition `json:"condition"`
+	// If set, the trigger starts a run only after the specified amount of time
+	// has passed since the last time the trigger fired. The minimum allowed
+	// value is 60 seconds.
+	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
+	// Name of the securable to monitor ("mycatalog.myschema.mymodel" in the
+	// case of model-level triggers, "mycatalog.myschema" in the case of
+	// schema-level triggers) or empty in the case of metastore-level triggers.
+	SecurableName string `json:"securable_name,omitempty"`
+	// If set, the trigger starts a run only after no model updates have
+	// occurred for the specified time and can be used to wait for a series of
+	// model updates before triggering a run. The minimum allowed value is 60
+	// seconds.
+	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ModelTriggerConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ModelTriggerConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ModelTriggerConfigurationCondition string
+
+const ModelTriggerConfigurationConditionModelAliasSet ModelTriggerConfigurationCondition = `MODEL_ALIAS_SET`
+
+const ModelTriggerConfigurationConditionModelCreated ModelTriggerConfigurationCondition = `MODEL_CREATED`
+
+const ModelTriggerConfigurationConditionModelVersionReady ModelTriggerConfigurationCondition = `MODEL_VERSION_READY`
+
+// String representation for [fmt.Print]
+func (f *ModelTriggerConfigurationCondition) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ModelTriggerConfigurationCondition) Set(v string) error {
+	switch v {
+	case `MODEL_ALIAS_SET`, `MODEL_CREATED`, `MODEL_VERSION_READY`:
+		*f = ModelTriggerConfigurationCondition(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MODEL_ALIAS_SET", "MODEL_CREATED", "MODEL_VERSION_READY"`, v)
+	}
+}
+
+// Values returns all possible values for ModelTriggerConfigurationCondition.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ModelTriggerConfigurationCondition) Values() []ModelTriggerConfigurationCondition {
+	return []ModelTriggerConfigurationCondition{
+		ModelTriggerConfigurationConditionModelAliasSet,
+		ModelTriggerConfigurationConditionModelCreated,
+		ModelTriggerConfigurationConditionModelVersionReady,
+	}
+}
+
+// Type always returns ModelTriggerConfigurationCondition to satisfy [pflag.Value] interface
+func (f *ModelTriggerConfigurationCondition) Type() string {
+	return "ModelTriggerConfigurationCondition"
 }
 
 type NotebookOutput struct {
@@ -4945,6 +5029,10 @@ type SubmitRun struct {
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// The user specified id of the usage policy to use for this one-time run.
+	// If not specified, a default usage policy may be applied when creating or
+	// modifying the job.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 	// A collection of system notification IDs to notify when the run begins or
 	// completes.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
@@ -5235,6 +5323,9 @@ type Task struct {
 	Description string `json:"description,omitempty"`
 	// An option to disable auto optimization in serverless
 	DisableAutoOptimization bool `json:"disable_auto_optimization,omitempty"`
+	// An optional flag to disable the task. If set to true, the task will not
+	// run even if it is part of a job.
+	Disabled bool `json:"disabled,omitempty"`
 	// An optional set of email addresses that is notified when runs of this
 	// task begin or complete as well as when this task is deleted. The default
 	// behavior is to not send any emails.
@@ -5439,6 +5530,48 @@ func (s *TaskNotificationSettings) UnmarshalJSON(b []byte) error {
 
 func (s TaskNotificationSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// task retry mode of the continuous job * NEVER: The failed task will not be
+// retried. * ON_FAILURE: Retry a failed task if at least one other task in the
+// job is still running its first attempt. When this condition is no longer met
+// or the retry limit is reached, the job run is cancelled and a new run is
+// started.
+type TaskRetryMode string
+
+const TaskRetryModeNever TaskRetryMode = `NEVER`
+
+const TaskRetryModeOnFailure TaskRetryMode = `ON_FAILURE`
+
+// String representation for [fmt.Print]
+func (f *TaskRetryMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TaskRetryMode) Set(v string) error {
+	switch v {
+	case `NEVER`, `ON_FAILURE`:
+		*f = TaskRetryMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "NEVER", "ON_FAILURE"`, v)
+	}
+}
+
+// Values returns all possible values for TaskRetryMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TaskRetryMode) Values() []TaskRetryMode {
+	return []TaskRetryMode{
+		TaskRetryModeNever,
+		TaskRetryModeOnFailure,
+	}
+}
+
+// Type always returns TaskRetryMode to satisfy [pflag.Value] interface
+func (f *TaskRetryMode) Type() string {
+	return "TaskRetryMode"
 }
 
 // The code indicates why the run was terminated. Additional codes might be
@@ -5737,6 +5870,8 @@ func (s TriggerInfo) MarshalJSON() ([]byte, error) {
 type TriggerSettings struct {
 	// File arrival trigger settings.
 	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
+
+	Model *ModelTriggerConfiguration `json:"model,omitempty"`
 	// Whether this trigger is paused or not.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 	// Periodic trigger settings.
