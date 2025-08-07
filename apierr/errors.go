@@ -28,6 +28,9 @@ type APIError struct {
 	Message    string
 	StatusCode int
 
+	// ResponseWrapper contains request/response for the error
+	ResponseWrapper *common.ResponseWrapper
+
 	errorDetails ErrorDetails
 
 	// If non-nil, the underlying error that should be returned by calling
@@ -114,6 +117,7 @@ func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 	if resp.Response.StatusCode >= 400 {
 		apiError := parseErrorFromResponse(ctx, resp)
 		applyOverrides(ctx, apiError, resp.Response)
+		apiError.ResponseWrapper = &resp
 		return apiError
 	}
 
@@ -121,7 +125,9 @@ func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 	// access a private link workspace without proper access.
 	requestUrl := resp.Response.Request.URL
 	if isPrivateLinkRedirect(requestUrl) {
-		return privateLinkValidationError(requestUrl)
+		apiError := privateLinkValidationError(requestUrl)
+		apiError.ResponseWrapper = &resp
+		return apiError
 	}
 
 	return nil // not an error
