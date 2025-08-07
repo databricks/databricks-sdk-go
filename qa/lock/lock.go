@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/qa/lock/core"
-	"github.com/databricks/databricks-sdk-go/qa/lock/databricks"
 	"github.com/google/uuid"
 )
 
@@ -33,9 +32,6 @@ func Acquire(ctx context.Context, lockable core.Lockable, os ...LockOption) (*Lo
 	opts := LockOptions{}
 	for _, o := range os {
 		o(&opts)
-	}
-	if opts.Backend == nil {
-		opts.Backend = &databricks.Backend{}
 	}
 	if opts.LeaseDuration == 0 {
 		opts.LeaseDuration = time.Minute
