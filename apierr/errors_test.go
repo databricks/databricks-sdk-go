@@ -477,11 +477,20 @@ func TestGetAPIError(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			tc.want.ResponseWrapper = &tc.resp
+
 			got := GetAPIError(context.Background(), tc.resp)
 
 			opts := cmp.Options{
 				cmp.AllowUnexported(APIError{}),            // to check ErrorDetails
 				cmpopts.IgnoreFields(APIError{}, "unwrap"), // tested via wantErrorIs
+
+				//  Skip values that implement io.ReadCloser (Body, etc.)
+				cmpopts.IgnoreInterfaces(struct{ io.ReadCloser }{}),
+
+				// Ignore unexported fields of http.Response and http.Request
+				// so we don’t walk into ctx and other private internals.
+				cmpopts.IgnoreUnexported(http.Response{}, http.Request{}),
 			}
 			if diff := cmp.Diff(tc.want, got, opts); diff != "" {
 				t.Errorf("unexpected error (-want +got):\n%s", diff)
