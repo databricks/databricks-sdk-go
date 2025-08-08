@@ -33,9 +33,12 @@ func (a *credentialsImpl) Create(ctx context.Context, request CreateCredentialRe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&credentialPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CredentialFromPb(&credentialPb)
 	if err != nil {
 		return nil, err
@@ -59,9 +62,12 @@ func (a *credentialsImpl) Delete(ctx context.Context, request DeleteCredentialRe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -82,9 +88,12 @@ func (a *credentialsImpl) Get(ctx context.Context, request GetCredentialRequest)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&credentialPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CredentialFromPb(&credentialPb)
 	if err != nil {
 		return nil, err
@@ -108,6 +117,9 @@ func (a *credentialsImpl) List(ctx context.Context) ([]Credential, error) {
 		nil,
 		&credentialListPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	var resp []Credential
 	for _, item := range credentialListPb {
 		itemResp, err := CredentialFromPb(&item)
@@ -142,9 +154,12 @@ func (a *encryptionKeysImpl) Create(ctx context.Context, request CreateCustomerM
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&customerManagedKeyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CustomerManagedKeyFromPb(&customerManagedKeyPb)
 	if err != nil {
 		return nil, err
@@ -168,9 +183,12 @@ func (a *encryptionKeysImpl) Delete(ctx context.Context, request DeleteEncryptio
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -191,9 +209,12 @@ func (a *encryptionKeysImpl) Get(ctx context.Context, request GetEncryptionKeyRe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&customerManagedKeyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CustomerManagedKeyFromPb(&customerManagedKeyPb)
 	if err != nil {
 		return nil, err
@@ -217,6 +238,9 @@ func (a *encryptionKeysImpl) List(ctx context.Context) ([]CustomerManagedKey, er
 		nil,
 		&customerManagedKeyListPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	var resp []CustomerManagedKey
 	for _, item := range customerManagedKeyListPb {
 		itemResp, err := CustomerManagedKeyFromPb(&item)
@@ -251,9 +275,12 @@ func (a *networksImpl) Create(ctx context.Context, request CreateNetworkRequest)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&networkPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := NetworkFromPb(&networkPb)
 	if err != nil {
 		return nil, err
@@ -277,9 +304,12 @@ func (a *networksImpl) Delete(ctx context.Context, request DeleteNetworkRequest)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -300,9 +330,12 @@ func (a *networksImpl) Get(ctx context.Context, request GetNetworkRequest) (*Net
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&networkPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := NetworkFromPb(&networkPb)
 	if err != nil {
 		return nil, err
@@ -326,6 +359,9 @@ func (a *networksImpl) List(ctx context.Context) ([]Network, error) {
 		nil,
 		&networkListPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	var resp []Network
 	for _, item := range networkListPb {
 		itemResp, err := NetworkFromPb(&item)
@@ -360,9 +396,12 @@ func (a *privateAccessImpl) Create(ctx context.Context, request UpsertPrivateAcc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&privateAccessSettingsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PrivateAccessSettingsFromPb(&privateAccessSettingsPb)
 	if err != nil {
 		return nil, err
@@ -386,9 +425,12 @@ func (a *privateAccessImpl) Delete(ctx context.Context, request DeletePrivateAcc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -409,9 +451,12 @@ func (a *privateAccessImpl) Get(ctx context.Context, request GetPrivateAccesRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&privateAccessSettingsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PrivateAccessSettingsFromPb(&privateAccessSettingsPb)
 	if err != nil {
 		return nil, err
@@ -435,6 +480,9 @@ func (a *privateAccessImpl) List(ctx context.Context) ([]PrivateAccessSettings, 
 		nil,
 		&privateAccessSettingsListPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	var resp []PrivateAccessSettings
 	for _, item := range privateAccessSettingsListPb {
 		itemResp, err := PrivateAccessSettingsFromPb(&item)
@@ -463,9 +511,12 @@ func (a *privateAccessImpl) Replace(ctx context.Context, request UpsertPrivateAc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -492,9 +543,12 @@ func (a *storageImpl) Create(ctx context.Context, request CreateStorageConfigura
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&storageConfigurationPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := StorageConfigurationFromPb(&storageConfigurationPb)
 	if err != nil {
 		return nil, err
@@ -518,9 +572,12 @@ func (a *storageImpl) Delete(ctx context.Context, request DeleteStorageRequest) 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -541,9 +598,12 @@ func (a *storageImpl) Get(ctx context.Context, request GetStorageRequest) (*Stor
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&storageConfigurationPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := StorageConfigurationFromPb(&storageConfigurationPb)
 	if err != nil {
 		return nil, err
@@ -567,6 +627,9 @@ func (a *storageImpl) List(ctx context.Context) ([]StorageConfiguration, error) 
 		nil,
 		&storageConfigurationListPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	var resp []StorageConfiguration
 	for _, item := range storageConfigurationListPb {
 		itemResp, err := StorageConfigurationFromPb(&item)
@@ -601,9 +664,12 @@ func (a *vpcEndpointsImpl) Create(ctx context.Context, request CreateVpcEndpoint
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&vpcEndpointPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := VpcEndpointFromPb(&vpcEndpointPb)
 	if err != nil {
 		return nil, err
@@ -627,9 +693,12 @@ func (a *vpcEndpointsImpl) Delete(ctx context.Context, request DeleteVpcEndpoint
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -650,9 +719,12 @@ func (a *vpcEndpointsImpl) Get(ctx context.Context, request GetVpcEndpointReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&vpcEndpointPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := VpcEndpointFromPb(&vpcEndpointPb)
 	if err != nil {
 		return nil, err
@@ -676,6 +748,9 @@ func (a *vpcEndpointsImpl) List(ctx context.Context) ([]VpcEndpoint, error) {
 		nil,
 		&vpcEndpointListPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	var resp []VpcEndpoint
 	for _, item := range vpcEndpointListPb {
 		itemResp, err := VpcEndpointFromPb(&item)
@@ -710,9 +785,12 @@ func (a *workspacesImpl) Create(ctx context.Context, request CreateWorkspaceRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&workspacePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WorkspaceFromPb(&workspacePb)
 	if err != nil {
 		return nil, err
@@ -736,9 +814,12 @@ func (a *workspacesImpl) Delete(ctx context.Context, request DeleteWorkspaceRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -759,9 +840,12 @@ func (a *workspacesImpl) Get(ctx context.Context, request GetWorkspaceRequest) (
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&workspacePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WorkspaceFromPb(&workspacePb)
 	if err != nil {
 		return nil, err
@@ -785,6 +869,9 @@ func (a *workspacesImpl) List(ctx context.Context) ([]Workspace, error) {
 		nil,
 		&workspaceListPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	var resp []Workspace
 	for _, item := range workspaceListPb {
 		itemResp, err := WorkspaceFromPb(&item)
@@ -813,9 +900,12 @@ func (a *workspacesImpl) Update(ctx context.Context, request UpdateWorkspaceRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }

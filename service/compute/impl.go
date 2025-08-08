@@ -35,9 +35,12 @@ func (a *clusterPoliciesImpl) Create(ctx context.Context, request CreatePolicy) 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createPolicyResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreatePolicyResponseFromPb(&createPolicyResponsePb)
 	if err != nil {
 		return nil, err
@@ -62,9 +65,12 @@ func (a *clusterPoliciesImpl) Delete(ctx context.Context, request DeletePolicy) 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -85,9 +91,12 @@ func (a *clusterPoliciesImpl) Edit(ctx context.Context, request EditPolicy) erro
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -108,9 +117,12 @@ func (a *clusterPoliciesImpl) Get(ctx context.Context, request GetClusterPolicyR
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&policyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PolicyFromPb(&policyPb)
 	if err != nil {
 		return nil, err
@@ -135,9 +147,12 @@ func (a *clusterPoliciesImpl) GetPermissionLevels(ctx context.Context, request G
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getClusterPolicyPermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetClusterPolicyPermissionLevelsResponseFromPb(&getClusterPolicyPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -162,9 +177,12 @@ func (a *clusterPoliciesImpl) GetPermissions(ctx context.Context, request GetClu
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&clusterPolicyPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ClusterPolicyPermissionsFromPb(&clusterPolicyPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -214,7 +232,7 @@ func (a *clusterPoliciesImpl) internalList(ctx context.Context, request ListClus
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listPoliciesResponsePb,
 	)
 	if err != nil {
@@ -245,9 +263,12 @@ func (a *clusterPoliciesImpl) SetPermissions(ctx context.Context, request Cluste
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&clusterPolicyPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ClusterPolicyPermissionsFromPb(&clusterPolicyPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -273,9 +294,12 @@ func (a *clusterPoliciesImpl) UpdatePermissions(ctx context.Context, request Clu
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&clusterPolicyPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ClusterPolicyPermissionsFromPb(&clusterPolicyPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -305,9 +329,12 @@ func (a *clustersImpl) ChangeOwner(ctx context.Context, request ChangeClusterOwn
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -329,9 +356,12 @@ func (a *clustersImpl) Create(ctx context.Context, request CreateCluster) (*Crea
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createClusterResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateClusterResponseFromPb(&createClusterResponsePb)
 	if err != nil {
 		return nil, err
@@ -356,9 +386,12 @@ func (a *clustersImpl) Delete(ctx context.Context, request DeleteCluster) error 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -379,9 +412,12 @@ func (a *clustersImpl) Edit(ctx context.Context, request EditCluster) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -440,7 +476,7 @@ func (a *clustersImpl) internalEvents(ctx context.Context, request GetEvents) (*
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getEventsResponsePb,
 	)
 	if err != nil {
@@ -470,9 +506,12 @@ func (a *clustersImpl) Get(ctx context.Context, request GetClusterRequest) (*Clu
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&clusterDetailsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ClusterDetailsFromPb(&clusterDetailsPb)
 	if err != nil {
 		return nil, err
@@ -497,9 +536,12 @@ func (a *clustersImpl) GetPermissionLevels(ctx context.Context, request GetClust
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getClusterPermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetClusterPermissionLevelsResponseFromPb(&getClusterPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -524,9 +566,12 @@ func (a *clustersImpl) GetPermissions(ctx context.Context, request GetClusterPer
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&clusterPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ClusterPermissionsFromPb(&clusterPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -586,7 +631,7 @@ func (a *clustersImpl) internalList(ctx context.Context, request ListClustersReq
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listClustersResponsePb,
 	)
 	if err != nil {
@@ -615,6 +660,9 @@ func (a *clustersImpl) ListNodeTypes(ctx context.Context) (*ListNodeTypesRespons
 		nil,
 		&listNodeTypesResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ListNodeTypesResponseFromPb(&listNodeTypesResponsePb)
 	if err != nil {
 		return nil, err
@@ -638,6 +686,9 @@ func (a *clustersImpl) ListZones(ctx context.Context) (*ListAvailableZonesRespon
 		nil,
 		&listAvailableZonesResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ListAvailableZonesResponseFromPb(&listAvailableZonesResponsePb)
 	if err != nil {
 		return nil, err
@@ -662,9 +713,12 @@ func (a *clustersImpl) PermanentDelete(ctx context.Context, request PermanentDel
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -685,9 +739,12 @@ func (a *clustersImpl) Pin(ctx context.Context, request PinCluster) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -708,9 +765,12 @@ func (a *clustersImpl) Resize(ctx context.Context, request ResizeCluster) error 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -731,9 +791,12 @@ func (a *clustersImpl) Restart(ctx context.Context, request RestartCluster) erro
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -755,9 +818,12 @@ func (a *clustersImpl) SetPermissions(ctx context.Context, request ClusterPermis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&clusterPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ClusterPermissionsFromPb(&clusterPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -781,6 +847,9 @@ func (a *clustersImpl) SparkVersions(ctx context.Context) (*GetSparkVersionsResp
 		nil,
 		&getSparkVersionsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetSparkVersionsResponseFromPb(&getSparkVersionsResponsePb)
 	if err != nil {
 		return nil, err
@@ -805,9 +874,12 @@ func (a *clustersImpl) Start(ctx context.Context, request StartCluster) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -828,9 +900,12 @@ func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -851,9 +926,12 @@ func (a *clustersImpl) Update(ctx context.Context, request UpdateCluster) error 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -875,9 +953,12 @@ func (a *clustersImpl) UpdatePermissions(ctx context.Context, request ClusterPer
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&clusterPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ClusterPermissionsFromPb(&clusterPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -907,9 +988,12 @@ func (a *commandExecutionImpl) Cancel(ctx context.Context, request CancelCommand
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -930,9 +1014,12 @@ func (a *commandExecutionImpl) CommandStatus(ctx context.Context, request Comman
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&commandStatusResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CommandStatusResponseFromPb(&commandStatusResponsePb)
 	if err != nil {
 		return nil, err
@@ -957,9 +1044,12 @@ func (a *commandExecutionImpl) ContextStatus(ctx context.Context, request Contex
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&contextStatusResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ContextStatusResponseFromPb(&contextStatusResponsePb)
 	if err != nil {
 		return nil, err
@@ -985,9 +1075,12 @@ func (a *commandExecutionImpl) Create(ctx context.Context, request CreateContext
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createdPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreatedFromPb(&createdPb)
 	if err != nil {
 		return nil, err
@@ -1012,9 +1105,12 @@ func (a *commandExecutionImpl) Destroy(ctx context.Context, request DestroyConte
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1036,9 +1132,12 @@ func (a *commandExecutionImpl) Execute(ctx context.Context, request Command) (*C
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createdPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreatedFromPb(&createdPb)
 	if err != nil {
 		return nil, err
@@ -1069,9 +1168,12 @@ func (a *globalInitScriptsImpl) Create(ctx context.Context, request GlobalInitSc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateResponseFromPb(&createResponsePb)
 	if err != nil {
 		return nil, err
@@ -1095,9 +1197,12 @@ func (a *globalInitScriptsImpl) Delete(ctx context.Context, request DeleteGlobal
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1118,9 +1223,12 @@ func (a *globalInitScriptsImpl) Get(ctx context.Context, request GetGlobalInitSc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&globalInitScriptDetailsWithContentPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GlobalInitScriptDetailsWithContentFromPb(&globalInitScriptDetailsWithContentPb)
 	if err != nil {
 		return nil, err
@@ -1203,9 +1311,12 @@ func (a *globalInitScriptsImpl) Update(ctx context.Context, request GlobalInitSc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1232,9 +1343,12 @@ func (a *instancePoolsImpl) Create(ctx context.Context, request CreateInstancePo
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createInstancePoolResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateInstancePoolResponseFromPb(&createInstancePoolResponsePb)
 	if err != nil {
 		return nil, err
@@ -1259,9 +1373,12 @@ func (a *instancePoolsImpl) Delete(ctx context.Context, request DeleteInstancePo
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1282,9 +1399,12 @@ func (a *instancePoolsImpl) Edit(ctx context.Context, request EditInstancePool) 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1305,9 +1425,12 @@ func (a *instancePoolsImpl) Get(ctx context.Context, request GetInstancePoolRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getInstancePoolPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetInstancePoolFromPb(&getInstancePoolPb)
 	if err != nil {
 		return nil, err
@@ -1332,9 +1455,12 @@ func (a *instancePoolsImpl) GetPermissionLevels(ctx context.Context, request Get
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getInstancePoolPermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetInstancePoolPermissionLevelsResponseFromPb(&getInstancePoolPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -1359,9 +1485,12 @@ func (a *instancePoolsImpl) GetPermissions(ctx context.Context, request GetInsta
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&instancePoolPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := InstancePoolPermissionsFromPb(&instancePoolPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1439,9 +1568,12 @@ func (a *instancePoolsImpl) SetPermissions(ctx context.Context, request Instance
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&instancePoolPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := InstancePoolPermissionsFromPb(&instancePoolPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1467,9 +1599,12 @@ func (a *instancePoolsImpl) UpdatePermissions(ctx context.Context, request Insta
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&instancePoolPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := InstancePoolPermissionsFromPb(&instancePoolPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1499,9 +1634,12 @@ func (a *instanceProfilesImpl) Add(ctx context.Context, request AddInstanceProfi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1522,9 +1660,12 @@ func (a *instanceProfilesImpl) Edit(ctx context.Context, request InstanceProfile
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1601,9 +1742,12 @@ func (a *instanceProfilesImpl) Remove(ctx context.Context, request RemoveInstanc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1720,7 +1864,7 @@ func (a *librariesImpl) internalClusterStatus(ctx context.Context, request Clust
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&clusterLibraryStatusesPb,
 	)
 	if err != nil {
@@ -1750,9 +1894,12 @@ func (a *librariesImpl) Install(ctx context.Context, request InstallLibraries) e
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1773,9 +1920,12 @@ func (a *librariesImpl) Uninstall(ctx context.Context, request UninstallLibrarie
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1802,9 +1952,12 @@ func (a *policyComplianceForClustersImpl) EnforceCompliance(ctx context.Context,
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&enforceClusterComplianceResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EnforceClusterComplianceResponseFromPb(&enforceClusterComplianceResponsePb)
 	if err != nil {
 		return nil, err
@@ -1829,9 +1982,12 @@ func (a *policyComplianceForClustersImpl) GetCompliance(ctx context.Context, req
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getClusterComplianceResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetClusterComplianceResponseFromPb(&getClusterComplianceResponsePb)
 	if err != nil {
 		return nil, err
@@ -1891,7 +2047,7 @@ func (a *policyComplianceForClustersImpl) internalListCompliance(ctx context.Con
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listClusterCompliancesResponsePb,
 	)
 	if err != nil {
@@ -1926,9 +2082,12 @@ func (a *policyFamiliesImpl) Get(ctx context.Context, request GetPolicyFamilyReq
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&policyFamilyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PolicyFamilyFromPb(&policyFamilyPb)
 	if err != nil {
 		return nil, err
@@ -1986,7 +2145,7 @@ func (a *policyFamiliesImpl) internalList(ctx context.Context, request ListPolic
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listPolicyFamiliesResponsePb,
 	)
 	if err != nil {

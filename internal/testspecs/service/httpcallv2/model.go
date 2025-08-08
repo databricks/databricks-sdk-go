@@ -3,12 +3,12 @@
 package httpcallv2
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/internal/testspecs/service/httpcallv2/httpcallv2pb"
-	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
 type ComplexQueryParam struct {
@@ -21,12 +21,29 @@ type ComplexQueryParam struct {
 	ForceSendFields          []string `tf:"-"`
 }
 
-func (s *ComplexQueryParam) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ComplexQueryParam) MarshalJSON() ([]byte, error) {
+	pb, err := ComplexQueryParamToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ComplexQueryParam) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ComplexQueryParam) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &httpcallv2pb.ComplexQueryParamPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ComplexQueryParamFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ComplexQueryParamToPb(st *ComplexQueryParam) (*httpcallv2pb.ComplexQueryParamPb, error) {
@@ -37,7 +54,9 @@ func ComplexQueryParamToPb(st *ComplexQueryParam) (*httpcallv2pb.ComplexQueryPar
 	pb.NestedOptionalQueryParam = st.NestedOptionalQueryParam
 	pb.NestedRepeatedQueryParam = st.NestedRepeatedQueryParam
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -49,7 +68,9 @@ func ComplexQueryParamFromPb(pb *httpcallv2pb.ComplexQueryParamPb) (*ComplexQuer
 	st.NestedOptionalQueryParam = pb.NestedOptionalQueryParam
 	st.NestedRepeatedQueryParam = pb.NestedRepeatedQueryParam
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -70,12 +91,29 @@ type CreateResourceRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateResourceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateResourceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateResourceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateResourceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateResourceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &httpcallv2pb.CreateResourceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateResourceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateResourceRequestToPb(st *CreateResourceRequest) (*httpcallv2pb.CreateResourceRequestPb, error) {
@@ -88,7 +126,9 @@ func CreateResourceRequestToPb(st *CreateResourceRequest) (*httpcallv2pb.CreateR
 	pb.PathParamInt = st.PathParamInt
 	pb.PathParamString = st.PathParamString
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -102,7 +142,9 @@ func CreateResourceRequestFromPb(pb *httpcallv2pb.CreateResourceRequestPb) (*Cre
 	st.PathParamInt = pb.PathParamInt
 	st.PathParamString = pb.PathParamString
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -114,7 +156,7 @@ type GetResourceRequest struct {
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
 	// Wire name: 'field_mask'
-	FieldMask *[]string `tf:"-"`
+	FieldMask []string `tf:"-"`
 
 	// Wire name: 'optional_complex_query_param'
 	OptionalComplexQueryParam *ComplexQueryParam `tf:"-"`
@@ -145,12 +187,29 @@ type GetResourceRequest struct {
 	ForceSendFields    []string `tf:"-"`
 }
 
-func (s *GetResourceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetResourceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetResourceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetResourceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetResourceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &httpcallv2pb.GetResourceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetResourceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetResourceRequestToPb(st *GetResourceRequest) (*httpcallv2pb.GetResourceRequestPb, error) {
@@ -158,7 +217,7 @@ func GetResourceRequestToPb(st *GetResourceRequest) (*httpcallv2pb.GetResourceRe
 		return nil, nil
 	}
 	pb := &httpcallv2pb.GetResourceRequestPb{}
-	fieldMaskPb, err := fieldMaskToPb(st.FieldMask)
+	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
 	if err != nil {
 		return nil, err
 	}
@@ -192,7 +251,9 @@ func GetResourceRequestToPb(st *GetResourceRequest) (*httpcallv2pb.GetResourceRe
 	pb.RepeatedComplexQueryParam = repeatedComplexQueryParamPb
 	pb.RepeatedQueryParam = st.RepeatedQueryParam
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -206,7 +267,7 @@ func GetResourceRequestFromPb(pb *httpcallv2pb.GetResourceRequestPb) (*GetResour
 		return nil, err
 	}
 	if fieldMaskField != nil {
-		st.FieldMask = fieldMaskField
+		st.FieldMask = *fieldMaskField
 	}
 	optionalComplexQueryParamField, err := ComplexQueryParamFromPb(pb.OptionalComplexQueryParam)
 	if err != nil {
@@ -235,7 +296,9 @@ func GetResourceRequestFromPb(pb *httpcallv2pb.GetResourceRequestPb) (*GetResour
 	st.RepeatedComplexQueryParam = repeatedComplexQueryParamField
 	st.RepeatedQueryParam = pb.RepeatedQueryParam
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -255,12 +318,29 @@ type Resource struct {
 	ForceSendFields       []string `tf:"-"`
 }
 
-func (s *Resource) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Resource) MarshalJSON() ([]byte, error) {
+	pb, err := ResourceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Resource) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Resource) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &httpcallv2pb.ResourcePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ResourceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ResourceToPb(st *Resource) (*httpcallv2pb.ResourcePb, error) {
@@ -273,7 +353,9 @@ func ResourceToPb(st *Resource) (*httpcallv2pb.ResourcePb, error) {
 	pb.NestedPathParamInt = st.NestedPathParamInt
 	pb.NestedPathParamString = st.NestedPathParamString
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -287,7 +369,9 @@ func ResourceFromPb(pb *httpcallv2pb.ResourcePb) (*Resource, error) {
 	st.NestedPathParamInt = pb.NestedPathParamInt
 	st.NestedPathParamString = pb.NestedPathParamString
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -299,7 +383,7 @@ type UpdateResourceRequest struct {
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
 	// Wire name: 'field_mask'
-	FieldMask *[]string `tf:"-"`
+	FieldMask []string `tf:"-"`
 
 	// Wire name: 'nested_path_param_bool'
 	NestedPathParamBool bool `tf:"-"`
@@ -333,12 +417,29 @@ type UpdateResourceRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateResourceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateResourceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateResourceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateResourceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateResourceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &httpcallv2pb.UpdateResourceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateResourceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateResourceRequestToPb(st *UpdateResourceRequest) (*httpcallv2pb.UpdateResourceRequestPb, error) {
@@ -346,7 +447,7 @@ func UpdateResourceRequestToPb(st *UpdateResourceRequest) (*httpcallv2pb.UpdateR
 		return nil, nil
 	}
 	pb := &httpcallv2pb.UpdateResourceRequestPb{}
-	fieldMaskPb, err := fieldMaskToPb(st.FieldMask)
+	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
 	if err != nil {
 		return nil, err
 	}
@@ -387,7 +488,9 @@ func UpdateResourceRequestToPb(st *UpdateResourceRequest) (*httpcallv2pb.UpdateR
 		pb.Resource = *resourcePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -401,7 +504,7 @@ func UpdateResourceRequestFromPb(pb *httpcallv2pb.UpdateResourceRequestPb) (*Upd
 		return nil, err
 	}
 	if fieldMaskField != nil {
-		st.FieldMask = fieldMaskField
+		st.FieldMask = *fieldMaskField
 	}
 	st.NestedPathParamBool = pb.NestedPathParamBool
 	st.NestedPathParamInt = pb.NestedPathParamInt
@@ -437,7 +540,9 @@ func UpdateResourceRequestFromPb(pb *httpcallv2pb.UpdateResourceRequestPb) (*Upd
 		st.Resource = *resourceField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 

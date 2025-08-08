@@ -36,9 +36,12 @@ func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*Pr
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&providerInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ProviderInfoFromPb(&providerInfoPb)
 	if err != nil {
 		return nil, err
@@ -61,9 +64,12 @@ func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -84,9 +90,12 @@ func (a *providersImpl) Get(ctx context.Context, request GetProviderRequest) (*P
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&providerInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ProviderInfoFromPb(&providerInfoPb)
 	if err != nil {
 		return nil, err
@@ -150,7 +159,7 @@ func (a *providersImpl) internalList(ctx context.Context, request ListProvidersR
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listProvidersResponsePb,
 	)
 	if err != nil {
@@ -180,9 +189,12 @@ func (a *providersImpl) ListProviderShareAssets(ctx context.Context, request Lis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listProviderShareAssetsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ListProviderShareAssetsResponseFromPb(&listProviderShareAssetsResponsePb)
 	if err != nil {
 		return nil, err
@@ -244,7 +256,7 @@ func (a *providersImpl) internalListShares(ctx context.Context, request ListShar
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listProviderSharesResponsePb,
 	)
 	if err != nil {
@@ -275,9 +287,12 @@ func (a *providersImpl) Update(ctx context.Context, request UpdateProvider) (*Pr
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&providerInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ProviderInfoFromPb(&providerInfoPb)
 	if err != nil {
 		return nil, err
@@ -306,9 +321,12 @@ func (a *recipientActivationImpl) GetActivationUrlInfo(ctx context.Context, requ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -329,9 +347,12 @@ func (a *recipientActivationImpl) RetrieveToken(ctx context.Context, request Ret
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&retrieveTokenResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RetrieveTokenResponseFromPb(&retrieveTokenResponsePb)
 	if err != nil {
 		return nil, err
@@ -362,9 +383,12 @@ func (a *recipientFederationPoliciesImpl) Create(ctx context.Context, request Cr
 		path,
 		headers,
 		queryParams,
-		requestPb.Policy,
+		(*requestPb).Policy,
 		&federationPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FederationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
@@ -388,9 +412,12 @@ func (a *recipientFederationPoliciesImpl) Delete(ctx context.Context, request De
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -411,9 +438,12 @@ func (a *recipientFederationPoliciesImpl) GetFederationPolicy(ctx context.Contex
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&federationPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FederationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
@@ -473,7 +503,7 @@ func (a *recipientFederationPoliciesImpl) internalList(ctx context.Context, requ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listFederationPoliciesResponsePb,
 	)
 	if err != nil {
@@ -507,9 +537,12 @@ func (a *recipientFederationPoliciesImpl) Update(ctx context.Context, request Up
 		path,
 		headers,
 		queryParams,
-		requestPb.Policy,
+		(*requestPb).Policy,
 		&federationPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FederationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
@@ -540,9 +573,12 @@ func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&recipientInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RecipientInfoFromPb(&recipientInfoPb)
 	if err != nil {
 		return nil, err
@@ -565,9 +601,12 @@ func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -588,9 +627,12 @@ func (a *recipientsImpl) Get(ctx context.Context, request GetRecipientRequest) (
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&recipientInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RecipientInfoFromPb(&recipientInfoPb)
 	if err != nil {
 		return nil, err
@@ -654,7 +696,7 @@ func (a *recipientsImpl) internalList(ctx context.Context, request ListRecipient
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listRecipientsResponsePb,
 	)
 	if err != nil {
@@ -685,9 +727,12 @@ func (a *recipientsImpl) RotateToken(ctx context.Context, request RotateRecipien
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&recipientInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RecipientInfoFromPb(&recipientInfoPb)
 	if err != nil {
 		return nil, err
@@ -712,9 +757,12 @@ func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePerm
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getRecipientSharePermissionsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetRecipientSharePermissionsResponseFromPb(&getRecipientSharePermissionsResponsePb)
 	if err != nil {
 		return nil, err
@@ -740,9 +788,12 @@ func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) (*
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&recipientInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RecipientInfoFromPb(&recipientInfoPb)
 	if err != nil {
 		return nil, err
@@ -773,9 +824,12 @@ func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*ShareInf
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&shareInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ShareInfoFromPb(&shareInfoPb)
 	if err != nil {
 		return nil, err
@@ -798,9 +852,12 @@ func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) err
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -821,9 +878,12 @@ func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*ShareIn
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&shareInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ShareInfoFromPb(&shareInfoPb)
 	if err != nil {
 		return nil, err
@@ -885,7 +945,7 @@ func (a *sharesImpl) internalList(ctx context.Context, request ListSharesRequest
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listSharesResponsePb,
 	)
 	if err != nil {
@@ -915,9 +975,12 @@ func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getSharePermissionsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetSharePermissionsResponseFromPb(&getSharePermissionsResponsePb)
 	if err != nil {
 		return nil, err
@@ -943,9 +1006,12 @@ func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInf
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&shareInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ShareInfoFromPb(&shareInfoPb)
 	if err != nil {
 		return nil, err
@@ -971,9 +1037,12 @@ func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateShareP
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateSharePermissionsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateSharePermissionsResponseFromPb(&updateSharePermissionsResponsePb)
 	if err != nil {
 		return nil, err

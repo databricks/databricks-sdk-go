@@ -3,11 +3,11 @@
 package marketplace
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/marketplace/marketplacepb"
 )
 
@@ -18,6 +18,31 @@ type AddExchangeForListingRequest struct {
 
 	// Wire name: 'listing_id'
 	ListingId string ``
+}
+
+func (st AddExchangeForListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := AddExchangeForListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AddExchangeForListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.AddExchangeForListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AddExchangeForListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AddExchangeForListingRequestToPb(st *AddExchangeForListingRequest) (*marketplacepb.AddExchangeForListingRequestPb, error) {
@@ -46,6 +71,31 @@ type AddExchangeForListingResponse struct {
 
 	// Wire name: 'exchange_for_listing'
 	ExchangeForListing *ExchangeListing ``
+}
+
+func (st AddExchangeForListingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := AddExchangeForListingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AddExchangeForListingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.AddExchangeForListingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AddExchangeForListingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AddExchangeForListingResponseToPb(st *AddExchangeForListingResponse) (*marketplacepb.AddExchangeForListingResponsePb, error) {
@@ -154,6 +204,31 @@ type BatchGetListingsRequest struct {
 	Ids []string `tf:"-"`
 }
 
+func (st BatchGetListingsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := BatchGetListingsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *BatchGetListingsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.BatchGetListingsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BatchGetListingsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func BatchGetListingsRequestToPb(st *BatchGetListingsRequest) (*marketplacepb.BatchGetListingsRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -178,6 +253,31 @@ type BatchGetListingsResponse struct {
 
 	// Wire name: 'listings'
 	Listings []Listing ``
+}
+
+func (st BatchGetListingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := BatchGetListingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *BatchGetListingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.BatchGetListingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BatchGetListingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func BatchGetListingsResponseToPb(st *BatchGetListingsResponse) (*marketplacepb.BatchGetListingsResponsePb, error) {
@@ -228,6 +328,31 @@ type BatchGetProvidersRequest struct {
 	Ids []string `tf:"-"`
 }
 
+func (st BatchGetProvidersRequest) MarshalJSON() ([]byte, error) {
+	pb, err := BatchGetProvidersRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *BatchGetProvidersRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.BatchGetProvidersRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BatchGetProvidersRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func BatchGetProvidersRequestToPb(st *BatchGetProvidersRequest) (*marketplacepb.BatchGetProvidersRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -252,6 +377,31 @@ type BatchGetProvidersResponse struct {
 
 	// Wire name: 'providers'
 	Providers []ProviderInfo ``
+}
+
+func (st BatchGetProvidersResponse) MarshalJSON() ([]byte, error) {
+	pb, err := BatchGetProvidersResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *BatchGetProvidersResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.BatchGetProvidersResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BatchGetProvidersResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func BatchGetProvidersResponseToPb(st *BatchGetProvidersResponse) (*marketplacepb.BatchGetProvidersResponsePb, error) {
@@ -415,6 +565,31 @@ type ConsumerTerms struct {
 	Version string ``
 }
 
+func (st ConsumerTerms) MarshalJSON() ([]byte, error) {
+	pb, err := ConsumerTermsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ConsumerTerms) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ConsumerTermsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ConsumerTermsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func ConsumerTermsToPb(st *ConsumerTerms) (*marketplacepb.ConsumerTermsPb, error) {
 	if st == nil {
 		return nil, nil
@@ -453,12 +628,29 @@ type ContactInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ContactInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ContactInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ContactInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ContactInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ContactInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ContactInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ContactInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ContactInfoToPb(st *ContactInfo) (*marketplacepb.ContactInfoPb, error) {
@@ -471,7 +663,9 @@ func ContactInfoToPb(st *ContactInfo) (*marketplacepb.ContactInfoPb, error) {
 	pb.FirstName = st.FirstName
 	pb.LastName = st.LastName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -485,7 +679,9 @@ func ContactInfoFromPb(pb *marketplacepb.ContactInfoPb) (*ContactInfo, error) {
 	st.FirstName = pb.FirstName
 	st.LastName = pb.LastName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -548,6 +744,31 @@ type CreateExchangeFilterRequest struct {
 	Filter ExchangeFilter ``
 }
 
+func (st CreateExchangeFilterRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateExchangeFilterRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateExchangeFilterRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.CreateExchangeFilterRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateExchangeFilterRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CreateExchangeFilterRequestToPb(st *CreateExchangeFilterRequest) (*marketplacepb.CreateExchangeFilterRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -587,12 +808,29 @@ type CreateExchangeFilterResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateExchangeFilterResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateExchangeFilterResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateExchangeFilterResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateExchangeFilterResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateExchangeFilterResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.CreateExchangeFilterResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateExchangeFilterResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateExchangeFilterResponseToPb(st *CreateExchangeFilterResponse) (*marketplacepb.CreateExchangeFilterResponsePb, error) {
@@ -602,7 +840,9 @@ func CreateExchangeFilterResponseToPb(st *CreateExchangeFilterResponse) (*market
 	pb := &marketplacepb.CreateExchangeFilterResponsePb{}
 	pb.FilterId = st.FilterId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -613,7 +853,9 @@ func CreateExchangeFilterResponseFromPb(pb *marketplacepb.CreateExchangeFilterRe
 	st := &CreateExchangeFilterResponse{}
 	st.FilterId = pb.FilterId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -621,6 +863,31 @@ type CreateExchangeRequest struct {
 
 	// Wire name: 'exchange'
 	Exchange Exchange ``
+}
+
+func (st CreateExchangeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateExchangeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateExchangeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.CreateExchangeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateExchangeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateExchangeRequestToPb(st *CreateExchangeRequest) (*marketplacepb.CreateExchangeRequestPb, error) {
@@ -662,12 +929,29 @@ type CreateExchangeResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateExchangeResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateExchangeResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateExchangeResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateExchangeResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateExchangeResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.CreateExchangeResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateExchangeResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateExchangeResponseToPb(st *CreateExchangeResponse) (*marketplacepb.CreateExchangeResponsePb, error) {
@@ -677,7 +961,9 @@ func CreateExchangeResponseToPb(st *CreateExchangeResponse) (*marketplacepb.Crea
 	pb := &marketplacepb.CreateExchangeResponsePb{}
 	pb.ExchangeId = st.ExchangeId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -688,7 +974,9 @@ func CreateExchangeResponseFromPb(pb *marketplacepb.CreateExchangeResponsePb) (*
 	st := &CreateExchangeResponse{}
 	st.ExchangeId = pb.ExchangeId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -708,12 +996,29 @@ type CreateFileRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateFileRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateFileRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateFileRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateFileRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateFileRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.CreateFileRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateFileRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateFileRequestToPb(st *CreateFileRequest) (*marketplacepb.CreateFileRequestPb, error) {
@@ -738,7 +1043,9 @@ func CreateFileRequestToPb(st *CreateFileRequest) (*marketplacepb.CreateFileRequ
 	}
 	pb.MimeType = st.MimeType
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -764,7 +1071,9 @@ func CreateFileRequestFromPb(pb *marketplacepb.CreateFileRequestPb) (*CreateFile
 	}
 	st.MimeType = pb.MimeType
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -778,12 +1087,29 @@ type CreateFileResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateFileResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateFileResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateFileResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateFileResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateFileResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.CreateFileResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateFileResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateFileResponseToPb(st *CreateFileResponse) (*marketplacepb.CreateFileResponsePb, error) {
@@ -800,7 +1126,9 @@ func CreateFileResponseToPb(st *CreateFileResponse) (*marketplacepb.CreateFileRe
 	}
 	pb.UploadUrl = st.UploadUrl
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -818,7 +1146,9 @@ func CreateFileResponseFromPb(pb *marketplacepb.CreateFileResponsePb) (*CreateFi
 	}
 	st.UploadUrl = pb.UploadUrl
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -844,12 +1174,29 @@ type CreateInstallationRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateInstallationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateInstallationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateInstallationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateInstallationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateInstallationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.CreateInstallationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateInstallationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateInstallationRequestToPb(st *CreateInstallationRequest) (*marketplacepb.CreateInstallationRequestPb, error) {
@@ -882,7 +1229,9 @@ func CreateInstallationRequestToPb(st *CreateInstallationRequest) (*marketplacep
 	}
 	pb.ShareName = st.ShareName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -916,7 +1265,9 @@ func CreateInstallationRequestFromPb(pb *marketplacepb.CreateInstallationRequest
 	}
 	st.ShareName = pb.ShareName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -924,6 +1275,31 @@ type CreateListingRequest struct {
 
 	// Wire name: 'listing'
 	Listing Listing ``
+}
+
+func (st CreateListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.CreateListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateListingRequestToPb(st *CreateListingRequest) (*marketplacepb.CreateListingRequestPb, error) {
@@ -965,12 +1341,29 @@ type CreateListingResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateListingResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateListingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateListingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateListingResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateListingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.CreateListingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateListingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateListingResponseToPb(st *CreateListingResponse) (*marketplacepb.CreateListingResponsePb, error) {
@@ -980,7 +1373,9 @@ func CreateListingResponseToPb(st *CreateListingResponse) (*marketplacepb.Create
 	pb := &marketplacepb.CreateListingResponsePb{}
 	pb.ListingId = st.ListingId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -991,7 +1386,9 @@ func CreateListingResponseFromPb(pb *marketplacepb.CreateListingResponsePb) (*Cr
 	st := &CreateListingResponse{}
 	st.ListingId = pb.ListingId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1027,12 +1424,29 @@ type CreatePersonalizationRequest struct {
 	ForceSendFields []string                  `tf:"-"`
 }
 
-func (s *CreatePersonalizationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreatePersonalizationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreatePersonalizationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreatePersonalizationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreatePersonalizationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.CreatePersonalizationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreatePersonalizationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreatePersonalizationRequestToPb(st *CreatePersonalizationRequest) (*marketplacepb.CreatePersonalizationRequestPb, error) {
@@ -1062,7 +1476,9 @@ func CreatePersonalizationRequestToPb(st *CreatePersonalizationRequest) (*market
 		pb.RecipientType = *recipientTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1093,7 +1509,9 @@ func CreatePersonalizationRequestFromPb(pb *marketplacepb.CreatePersonalizationR
 		st.RecipientType = *recipientTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1104,12 +1522,29 @@ type CreatePersonalizationRequestResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreatePersonalizationRequestResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreatePersonalizationRequestResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreatePersonalizationRequestResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreatePersonalizationRequestResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreatePersonalizationRequestResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.CreatePersonalizationRequestResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreatePersonalizationRequestResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreatePersonalizationRequestResponseToPb(st *CreatePersonalizationRequestResponse) (*marketplacepb.CreatePersonalizationRequestResponsePb, error) {
@@ -1119,7 +1554,9 @@ func CreatePersonalizationRequestResponseToPb(st *CreatePersonalizationRequestRe
 	pb := &marketplacepb.CreatePersonalizationRequestResponsePb{}
 	pb.Id = st.Id
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1130,7 +1567,9 @@ func CreatePersonalizationRequestResponseFromPb(pb *marketplacepb.CreatePersonal
 	st := &CreatePersonalizationRequestResponse{}
 	st.Id = pb.Id
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1138,6 +1577,31 @@ type CreateProviderRequest struct {
 
 	// Wire name: 'provider'
 	Provider ProviderInfo ``
+}
+
+func (st CreateProviderRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateProviderRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateProviderRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.CreateProviderRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateProviderRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateProviderRequestToPb(st *CreateProviderRequest) (*marketplacepb.CreateProviderRequestPb, error) {
@@ -1179,12 +1643,29 @@ type CreateProviderResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateProviderResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateProviderResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateProviderResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateProviderResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateProviderResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.CreateProviderResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateProviderResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateProviderResponseToPb(st *CreateProviderResponse) (*marketplacepb.CreateProviderResponsePb, error) {
@@ -1194,7 +1675,9 @@ func CreateProviderResponseToPb(st *CreateProviderResponse) (*marketplacepb.Crea
 	pb := &marketplacepb.CreateProviderResponsePb{}
 	pb.Id = st.Id
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1205,7 +1688,9 @@ func CreateProviderResponseFromPb(pb *marketplacepb.CreateProviderResponsePb) (*
 	st := &CreateProviderResponse{}
 	st.Id = pb.Id
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1292,6 +1777,31 @@ type DataRefreshInfo struct {
 	Unit DataRefresh ``
 }
 
+func (st DataRefreshInfo) MarshalJSON() ([]byte, error) {
+	pb, err := DataRefreshInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DataRefreshInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.DataRefreshInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DataRefreshInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DataRefreshInfoToPb(st *DataRefreshInfo) (*marketplacepb.DataRefreshInfoPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1332,6 +1842,31 @@ type DeleteExchangeFilterRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st DeleteExchangeFilterRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteExchangeFilterRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteExchangeFilterRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.DeleteExchangeFilterRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteExchangeFilterRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteExchangeFilterRequestToPb(st *DeleteExchangeFilterRequest) (*marketplacepb.DeleteExchangeFilterRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1358,6 +1893,31 @@ type DeleteExchangeRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st DeleteExchangeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteExchangeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteExchangeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.DeleteExchangeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteExchangeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteExchangeRequestToPb(st *DeleteExchangeRequest) (*marketplacepb.DeleteExchangeRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1382,6 +1942,31 @@ type DeleteFileRequest struct {
 
 	// Wire name: 'file_id'
 	FileId string `tf:"-"`
+}
+
+func (st DeleteFileRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteFileRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteFileRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.DeleteFileRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteFileRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteFileRequestToPb(st *DeleteFileRequest) (*marketplacepb.DeleteFileRequestPb, error) {
@@ -1413,6 +1998,31 @@ type DeleteInstallationRequest struct {
 	ListingId string `tf:"-"`
 }
 
+func (st DeleteInstallationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteInstallationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteInstallationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.DeleteInstallationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteInstallationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteInstallationRequestToPb(st *DeleteInstallationRequest) (*marketplacepb.DeleteInstallationRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1441,6 +2051,31 @@ type DeleteListingRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st DeleteListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.DeleteListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteListingRequestToPb(st *DeleteListingRequest) (*marketplacepb.DeleteListingRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1465,6 +2100,31 @@ type DeleteProviderRequest struct {
 
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st DeleteProviderRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteProviderRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteProviderRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.DeleteProviderRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteProviderRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteProviderRequestToPb(st *DeleteProviderRequest) (*marketplacepb.DeleteProviderRequestPb, error) {
@@ -1571,12 +2231,29 @@ type Exchange struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Exchange) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Exchange) MarshalJSON() ([]byte, error) {
+	pb, err := ExchangeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Exchange) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Exchange) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ExchangePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExchangeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ExchangeToPb(st *Exchange) (*marketplacepb.ExchangePb, error) {
@@ -1616,7 +2293,9 @@ func ExchangeToPb(st *Exchange) (*marketplacepb.ExchangePb, error) {
 	pb.UpdatedAt = st.UpdatedAt
 	pb.UpdatedBy = st.UpdatedBy
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1657,7 +2336,9 @@ func ExchangeFromPb(pb *marketplacepb.ExchangePb) (*Exchange, error) {
 	st.UpdatedAt = pb.UpdatedAt
 	st.UpdatedBy = pb.UpdatedBy
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1692,12 +2373,29 @@ type ExchangeFilter struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExchangeFilter) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExchangeFilter) MarshalJSON() ([]byte, error) {
+	pb, err := ExchangeFilterToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExchangeFilter) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExchangeFilter) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ExchangeFilterPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExchangeFilterFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ExchangeFilterToPb(st *ExchangeFilter) (*marketplacepb.ExchangeFilterPb, error) {
@@ -1721,7 +2419,9 @@ func ExchangeFilterToPb(st *ExchangeFilter) (*marketplacepb.ExchangeFilterPb, er
 	pb.UpdatedAt = st.UpdatedAt
 	pb.UpdatedBy = st.UpdatedBy
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1746,7 +2446,9 @@ func ExchangeFilterFromPb(pb *marketplacepb.ExchangeFilterPb) (*ExchangeFilter, 
 	st.UpdatedAt = pb.UpdatedAt
 	st.UpdatedBy = pb.UpdatedBy
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1825,12 +2527,29 @@ type ExchangeListing struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExchangeListing) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExchangeListing) MarshalJSON() ([]byte, error) {
+	pb, err := ExchangeListingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExchangeListing) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExchangeListing) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ExchangeListingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExchangeListingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ExchangeListingToPb(st *ExchangeListing) (*marketplacepb.ExchangeListingPb, error) {
@@ -1846,7 +2565,9 @@ func ExchangeListingToPb(st *ExchangeListing) (*marketplacepb.ExchangeListingPb,
 	pb.ListingId = st.ListingId
 	pb.ListingName = st.ListingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1863,7 +2584,9 @@ func ExchangeListingFromPb(pb *marketplacepb.ExchangeListingPb) (*ExchangeListin
 	st.ListingId = pb.ListingId
 	st.ListingName = pb.ListingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1902,12 +2625,29 @@ type FileInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FileInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st FileInfo) MarshalJSON() ([]byte, error) {
+	pb, err := FileInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s FileInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *FileInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.FileInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FileInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FileInfoToPb(st *FileInfo) (*marketplacepb.FileInfoPb, error) {
@@ -1944,7 +2684,9 @@ func FileInfoToPb(st *FileInfo) (*marketplacepb.FileInfoPb, error) {
 	pb.StatusMessage = st.StatusMessage
 	pb.UpdatedAt = st.UpdatedAt
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1982,7 +2724,9 @@ func FileInfoFromPb(pb *marketplacepb.FileInfoPb) (*FileInfo, error) {
 	st.StatusMessage = pb.StatusMessage
 	st.UpdatedAt = pb.UpdatedAt
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1996,12 +2740,29 @@ type FileParent struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FileParent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st FileParent) MarshalJSON() ([]byte, error) {
+	pb, err := FileParentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s FileParent) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *FileParent) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.FileParentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FileParentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FileParentToPb(st *FileParent) (*marketplacepb.FileParentPb, error) {
@@ -2018,7 +2779,9 @@ func FileParentToPb(st *FileParent) (*marketplacepb.FileParentPb, error) {
 	}
 	pb.ParentId = st.ParentId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2036,7 +2799,9 @@ func FileParentFromPb(pb *marketplacepb.FileParentPb) (*FileParent, error) {
 	}
 	st.ParentId = pb.ParentId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2214,6 +2979,31 @@ type GetExchangeRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st GetExchangeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetExchangeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetExchangeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetExchangeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetExchangeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetExchangeRequestToPb(st *GetExchangeRequest) (*marketplacepb.GetExchangeRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2238,6 +3028,31 @@ type GetExchangeResponse struct {
 
 	// Wire name: 'exchange'
 	Exchange *Exchange ``
+}
+
+func (st GetExchangeResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetExchangeResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetExchangeResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetExchangeResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetExchangeResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetExchangeResponseToPb(st *GetExchangeResponse) (*marketplacepb.GetExchangeResponsePb, error) {
@@ -2278,6 +3093,31 @@ type GetFileRequest struct {
 	FileId string `tf:"-"`
 }
 
+func (st GetFileRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetFileRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetFileRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetFileRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetFileRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetFileRequestToPb(st *GetFileRequest) (*marketplacepb.GetFileRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2302,6 +3142,31 @@ type GetFileResponse struct {
 
 	// Wire name: 'file_info'
 	FileInfo *FileInfo ``
+}
+
+func (st GetFileResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetFileResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetFileResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetFileResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetFileResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetFileResponseToPb(st *GetFileResponse) (*marketplacepb.GetFileResponsePb, error) {
@@ -2343,12 +3208,29 @@ type GetLatestVersionProviderAnalyticsDashboardResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetLatestVersionProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetLatestVersionProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetLatestVersionProviderAnalyticsDashboardResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetLatestVersionProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetLatestVersionProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetLatestVersionProviderAnalyticsDashboardResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetLatestVersionProviderAnalyticsDashboardResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetLatestVersionProviderAnalyticsDashboardResponseToPb(st *GetLatestVersionProviderAnalyticsDashboardResponse) (*marketplacepb.GetLatestVersionProviderAnalyticsDashboardResponsePb, error) {
@@ -2358,7 +3240,9 @@ func GetLatestVersionProviderAnalyticsDashboardResponseToPb(st *GetLatestVersion
 	pb := &marketplacepb.GetLatestVersionProviderAnalyticsDashboardResponsePb{}
 	pb.Version = st.Version
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2369,7 +3253,9 @@ func GetLatestVersionProviderAnalyticsDashboardResponseFromPb(pb *marketplacepb.
 	st := &GetLatestVersionProviderAnalyticsDashboardResponse{}
 	st.Version = pb.Version
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2386,12 +3272,29 @@ type GetListingContentMetadataRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetListingContentMetadataRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetListingContentMetadataRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetListingContentMetadataRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetListingContentMetadataRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetListingContentMetadataRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetListingContentMetadataRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetListingContentMetadataRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetListingContentMetadataRequestToPb(st *GetListingContentMetadataRequest) (*marketplacepb.GetListingContentMetadataRequestPb, error) {
@@ -2403,7 +3306,9 @@ func GetListingContentMetadataRequestToPb(st *GetListingContentMetadataRequest) 
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2416,7 +3321,9 @@ func GetListingContentMetadataRequestFromPb(pb *marketplacepb.GetListingContentM
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2430,12 +3337,29 @@ type GetListingContentMetadataResponse struct {
 	ForceSendFields   []string           `tf:"-"`
 }
 
-func (s *GetListingContentMetadataResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetListingContentMetadataResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetListingContentMetadataResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetListingContentMetadataResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetListingContentMetadataResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetListingContentMetadataResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetListingContentMetadataResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetListingContentMetadataResponseToPb(st *GetListingContentMetadataResponse) (*marketplacepb.GetListingContentMetadataResponsePb, error) {
@@ -2457,7 +3381,9 @@ func GetListingContentMetadataResponseToPb(st *GetListingContentMetadataResponse
 	}
 	pb.SharedDataObjects = sharedDataObjectsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2480,7 +3406,9 @@ func GetListingContentMetadataResponseFromPb(pb *marketplacepb.GetListingContent
 	}
 	st.SharedDataObjects = sharedDataObjectsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2488,6 +3416,31 @@ type GetListingRequest struct {
 
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st GetListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetListingRequestToPb(st *GetListingRequest) (*marketplacepb.GetListingRequestPb, error) {
@@ -2514,6 +3467,31 @@ type GetListingResponse struct {
 
 	// Wire name: 'listing'
 	Listing *Listing ``
+}
+
+func (st GetListingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetListingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetListingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetListingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetListingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetListingResponseToPb(st *GetListingResponse) (*marketplacepb.GetListingResponsePb, error) {
@@ -2558,12 +3536,29 @@ type GetListingsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetListingsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetListingsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetListingsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetListingsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetListingsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetListingsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetListingsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetListingsRequestToPb(st *GetListingsRequest) (*marketplacepb.GetListingsRequestPb, error) {
@@ -2574,7 +3569,9 @@ func GetListingsRequestToPb(st *GetListingsRequest) (*marketplacepb.GetListingsR
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2586,7 +3583,9 @@ func GetListingsRequestFromPb(pb *marketplacepb.GetListingsRequestPb) (*GetListi
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2600,12 +3599,29 @@ type GetListingsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetListingsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetListingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetListingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetListingsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetListingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetListingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetListingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetListingsResponseToPb(st *GetListingsResponse) (*marketplacepb.GetListingsResponsePb, error) {
@@ -2627,7 +3643,9 @@ func GetListingsResponseToPb(st *GetListingsResponse) (*marketplacepb.GetListing
 	pb.Listings = listingsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2650,7 +3668,9 @@ func GetListingsResponseFromPb(pb *marketplacepb.GetListingsResponsePb) (*GetLis
 	st.Listings = listingsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2658,6 +3678,31 @@ type GetPersonalizationRequestRequest struct {
 
 	// Wire name: 'listing_id'
 	ListingId string `tf:"-"`
+}
+
+func (st GetPersonalizationRequestRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetPersonalizationRequestRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetPersonalizationRequestRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetPersonalizationRequestRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPersonalizationRequestRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPersonalizationRequestRequestToPb(st *GetPersonalizationRequestRequest) (*marketplacepb.GetPersonalizationRequestRequestPb, error) {
@@ -2684,6 +3729,31 @@ type GetPersonalizationRequestResponse struct {
 
 	// Wire name: 'personalization_requests'
 	PersonalizationRequests []PersonalizationRequest ``
+}
+
+func (st GetPersonalizationRequestResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetPersonalizationRequestResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetPersonalizationRequestResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetPersonalizationRequestResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPersonalizationRequestResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPersonalizationRequestResponseToPb(st *GetPersonalizationRequestResponse) (*marketplacepb.GetPersonalizationRequestResponsePb, error) {
@@ -2734,6 +3804,31 @@ type GetProviderRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st GetProviderRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetProviderRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetProviderRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetProviderRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetProviderRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetProviderRequestToPb(st *GetProviderRequest) (*marketplacepb.GetProviderRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2758,6 +3853,31 @@ type GetProviderResponse struct {
 
 	// Wire name: 'provider'
 	Provider *ProviderInfo ``
+}
+
+func (st GetProviderResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetProviderResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetProviderResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.GetProviderResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetProviderResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetProviderResponseToPb(st *GetProviderResponse) (*marketplacepb.GetProviderResponsePb, error) {
@@ -2796,6 +3916,31 @@ type Installation struct {
 
 	// Wire name: 'installation'
 	Installation *InstallationDetail ``
+}
+
+func (st Installation) MarshalJSON() ([]byte, error) {
+	pb, err := InstallationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Installation) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.InstallationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := InstallationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func InstallationToPb(st *Installation) (*marketplacepb.InstallationPb, error) {
@@ -2873,12 +4018,29 @@ type InstallationDetail struct {
 	ForceSendFields []string    `tf:"-"`
 }
 
-func (s *InstallationDetail) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st InstallationDetail) MarshalJSON() ([]byte, error) {
+	pb, err := InstallationDetailToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s InstallationDetail) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *InstallationDetail) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.InstallationDetailPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := InstallationDetailFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func InstallationDetailToPb(st *InstallationDetail) (*marketplacepb.InstallationDetailPb, error) {
@@ -2929,7 +4091,9 @@ func InstallationDetailToPb(st *InstallationDetail) (*marketplacepb.Installation
 	}
 	pb.Tokens = tokensPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2981,7 +4145,9 @@ func InstallationDetailFromPb(pb *marketplacepb.InstallationDetailPb) (*Installa
 	}
 	st.Tokens = tokensField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3048,12 +4214,29 @@ type ListAllInstallationsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAllInstallationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAllInstallationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListAllInstallationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAllInstallationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAllInstallationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListAllInstallationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAllInstallationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAllInstallationsRequestToPb(st *ListAllInstallationsRequest) (*marketplacepb.ListAllInstallationsRequestPb, error) {
@@ -3064,7 +4247,9 @@ func ListAllInstallationsRequestToPb(st *ListAllInstallationsRequest) (*marketpl
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3076,7 +4261,9 @@ func ListAllInstallationsRequestFromPb(pb *marketplacepb.ListAllInstallationsReq
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3090,12 +4277,29 @@ type ListAllInstallationsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAllInstallationsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAllInstallationsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListAllInstallationsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAllInstallationsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAllInstallationsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListAllInstallationsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAllInstallationsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAllInstallationsResponseToPb(st *ListAllInstallationsResponse) (*marketplacepb.ListAllInstallationsResponsePb, error) {
@@ -3117,7 +4321,9 @@ func ListAllInstallationsResponseToPb(st *ListAllInstallationsResponse) (*market
 	pb.Installations = installationsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3140,7 +4346,9 @@ func ListAllInstallationsResponseFromPb(pb *marketplacepb.ListAllInstallationsRe
 	st.Installations = installationsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3154,12 +4362,29 @@ type ListAllPersonalizationRequestsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAllPersonalizationRequestsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAllPersonalizationRequestsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListAllPersonalizationRequestsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAllPersonalizationRequestsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAllPersonalizationRequestsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListAllPersonalizationRequestsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAllPersonalizationRequestsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAllPersonalizationRequestsRequestToPb(st *ListAllPersonalizationRequestsRequest) (*marketplacepb.ListAllPersonalizationRequestsRequestPb, error) {
@@ -3170,7 +4395,9 @@ func ListAllPersonalizationRequestsRequestToPb(st *ListAllPersonalizationRequest
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3182,7 +4409,9 @@ func ListAllPersonalizationRequestsRequestFromPb(pb *marketplacepb.ListAllPerson
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3196,12 +4425,29 @@ type ListAllPersonalizationRequestsResponse struct {
 	ForceSendFields         []string                 `tf:"-"`
 }
 
-func (s *ListAllPersonalizationRequestsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAllPersonalizationRequestsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListAllPersonalizationRequestsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAllPersonalizationRequestsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAllPersonalizationRequestsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListAllPersonalizationRequestsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAllPersonalizationRequestsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAllPersonalizationRequestsResponseToPb(st *ListAllPersonalizationRequestsResponse) (*marketplacepb.ListAllPersonalizationRequestsResponsePb, error) {
@@ -3223,7 +4469,9 @@ func ListAllPersonalizationRequestsResponseToPb(st *ListAllPersonalizationReques
 	}
 	pb.PersonalizationRequests = personalizationRequestsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3246,7 +4494,9 @@ func ListAllPersonalizationRequestsResponseFromPb(pb *marketplacepb.ListAllPerso
 	}
 	st.PersonalizationRequests = personalizationRequestsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3263,12 +4513,29 @@ type ListExchangeFiltersRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExchangeFiltersRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListExchangeFiltersRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListExchangeFiltersRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListExchangeFiltersRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListExchangeFiltersRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListExchangeFiltersRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListExchangeFiltersRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListExchangeFiltersRequestToPb(st *ListExchangeFiltersRequest) (*marketplacepb.ListExchangeFiltersRequestPb, error) {
@@ -3280,7 +4547,9 @@ func ListExchangeFiltersRequestToPb(st *ListExchangeFiltersRequest) (*marketplac
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3293,7 +4562,9 @@ func ListExchangeFiltersRequestFromPb(pb *marketplacepb.ListExchangeFiltersReque
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3307,12 +4578,29 @@ type ListExchangeFiltersResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExchangeFiltersResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListExchangeFiltersResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListExchangeFiltersResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListExchangeFiltersResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListExchangeFiltersResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListExchangeFiltersResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListExchangeFiltersResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListExchangeFiltersResponseToPb(st *ListExchangeFiltersResponse) (*marketplacepb.ListExchangeFiltersResponsePb, error) {
@@ -3334,7 +4622,9 @@ func ListExchangeFiltersResponseToPb(st *ListExchangeFiltersResponse) (*marketpl
 	pb.Filters = filtersPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3357,7 +4647,9 @@ func ListExchangeFiltersResponseFromPb(pb *marketplacepb.ListExchangeFiltersResp
 	st.Filters = filtersField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3374,12 +4666,29 @@ type ListExchangesForListingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExchangesForListingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListExchangesForListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListExchangesForListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListExchangesForListingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListExchangesForListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListExchangesForListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListExchangesForListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListExchangesForListingRequestToPb(st *ListExchangesForListingRequest) (*marketplacepb.ListExchangesForListingRequestPb, error) {
@@ -3391,7 +4700,9 @@ func ListExchangesForListingRequestToPb(st *ListExchangesForListingRequest) (*ma
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3404,7 +4715,9 @@ func ListExchangesForListingRequestFromPb(pb *marketplacepb.ListExchangesForList
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3418,12 +4731,29 @@ type ListExchangesForListingResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExchangesForListingResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListExchangesForListingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListExchangesForListingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListExchangesForListingResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListExchangesForListingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListExchangesForListingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListExchangesForListingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListExchangesForListingResponseToPb(st *ListExchangesForListingResponse) (*marketplacepb.ListExchangesForListingResponsePb, error) {
@@ -3445,7 +4775,9 @@ func ListExchangesForListingResponseToPb(st *ListExchangesForListingResponse) (*
 	pb.ExchangeListing = exchangeListingPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3468,7 +4800,9 @@ func ListExchangesForListingResponseFromPb(pb *marketplacepb.ListExchangesForLis
 	st.ExchangeListing = exchangeListingField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3482,12 +4816,29 @@ type ListExchangesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExchangesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListExchangesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListExchangesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListExchangesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListExchangesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListExchangesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListExchangesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListExchangesRequestToPb(st *ListExchangesRequest) (*marketplacepb.ListExchangesRequestPb, error) {
@@ -3498,7 +4849,9 @@ func ListExchangesRequestToPb(st *ListExchangesRequest) (*marketplacepb.ListExch
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3510,7 +4863,9 @@ func ListExchangesRequestFromPb(pb *marketplacepb.ListExchangesRequestPb) (*List
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3524,12 +4879,29 @@ type ListExchangesResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExchangesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListExchangesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListExchangesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListExchangesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListExchangesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListExchangesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListExchangesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListExchangesResponseToPb(st *ListExchangesResponse) (*marketplacepb.ListExchangesResponsePb, error) {
@@ -3551,7 +4923,9 @@ func ListExchangesResponseToPb(st *ListExchangesResponse) (*marketplacepb.ListEx
 	pb.Exchanges = exchangesPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3574,7 +4948,9 @@ func ListExchangesResponseFromPb(pb *marketplacepb.ListExchangesResponsePb) (*Li
 	st.Exchanges = exchangesField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3591,12 +4967,29 @@ type ListFilesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListFilesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListFilesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListFilesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListFilesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListFilesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListFilesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListFilesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListFilesRequestToPb(st *ListFilesRequest) (*marketplacepb.ListFilesRequestPb, error) {
@@ -3614,7 +5007,9 @@ func ListFilesRequestToPb(st *ListFilesRequest) (*marketplacepb.ListFilesRequest
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3633,7 +5028,9 @@ func ListFilesRequestFromPb(pb *marketplacepb.ListFilesRequestPb) (*ListFilesReq
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3647,12 +5044,29 @@ type ListFilesResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListFilesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListFilesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListFilesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListFilesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListFilesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListFilesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListFilesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListFilesResponseToPb(st *ListFilesResponse) (*marketplacepb.ListFilesResponsePb, error) {
@@ -3674,7 +5088,9 @@ func ListFilesResponseToPb(st *ListFilesResponse) (*marketplacepb.ListFilesRespo
 	pb.FileInfos = fileInfosPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3697,7 +5113,9 @@ func ListFilesResponseFromPb(pb *marketplacepb.ListFilesResponsePb) (*ListFilesR
 	st.FileInfos = fileInfosField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3714,12 +5132,29 @@ type ListFulfillmentsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListFulfillmentsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListFulfillmentsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListFulfillmentsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListFulfillmentsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListFulfillmentsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListFulfillmentsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListFulfillmentsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListFulfillmentsRequestToPb(st *ListFulfillmentsRequest) (*marketplacepb.ListFulfillmentsRequestPb, error) {
@@ -3731,7 +5166,9 @@ func ListFulfillmentsRequestToPb(st *ListFulfillmentsRequest) (*marketplacepb.Li
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3744,7 +5181,9 @@ func ListFulfillmentsRequestFromPb(pb *marketplacepb.ListFulfillmentsRequestPb) 
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3758,12 +5197,29 @@ type ListFulfillmentsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListFulfillmentsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListFulfillmentsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListFulfillmentsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListFulfillmentsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListFulfillmentsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListFulfillmentsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListFulfillmentsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListFulfillmentsResponseToPb(st *ListFulfillmentsResponse) (*marketplacepb.ListFulfillmentsResponsePb, error) {
@@ -3785,7 +5241,9 @@ func ListFulfillmentsResponseToPb(st *ListFulfillmentsResponse) (*marketplacepb.
 	pb.Fulfillments = fulfillmentsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3808,7 +5266,9 @@ func ListFulfillmentsResponseFromPb(pb *marketplacepb.ListFulfillmentsResponsePb
 	st.Fulfillments = fulfillmentsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3825,12 +5285,29 @@ type ListInstallationsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListInstallationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListInstallationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListInstallationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListInstallationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListInstallationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListInstallationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListInstallationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListInstallationsRequestToPb(st *ListInstallationsRequest) (*marketplacepb.ListInstallationsRequestPb, error) {
@@ -3842,7 +5319,9 @@ func ListInstallationsRequestToPb(st *ListInstallationsRequest) (*marketplacepb.
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3855,7 +5334,9 @@ func ListInstallationsRequestFromPb(pb *marketplacepb.ListInstallationsRequestPb
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3869,12 +5350,29 @@ type ListInstallationsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListInstallationsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListInstallationsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListInstallationsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListInstallationsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListInstallationsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListInstallationsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListInstallationsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListInstallationsResponseToPb(st *ListInstallationsResponse) (*marketplacepb.ListInstallationsResponsePb, error) {
@@ -3896,7 +5394,9 @@ func ListInstallationsResponseToPb(st *ListInstallationsResponse) (*marketplacep
 	pb.Installations = installationsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3919,7 +5419,9 @@ func ListInstallationsResponseFromPb(pb *marketplacepb.ListInstallationsResponse
 	st.Installations = installationsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3936,12 +5438,29 @@ type ListListingsForExchangeRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListListingsForExchangeRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListListingsForExchangeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListListingsForExchangeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListListingsForExchangeRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListListingsForExchangeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListListingsForExchangeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListListingsForExchangeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListListingsForExchangeRequestToPb(st *ListListingsForExchangeRequest) (*marketplacepb.ListListingsForExchangeRequestPb, error) {
@@ -3953,7 +5472,9 @@ func ListListingsForExchangeRequestToPb(st *ListListingsForExchangeRequest) (*ma
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3966,7 +5487,9 @@ func ListListingsForExchangeRequestFromPb(pb *marketplacepb.ListListingsForExcha
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3980,12 +5503,29 @@ type ListListingsForExchangeResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListListingsForExchangeResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListListingsForExchangeResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListListingsForExchangeResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListListingsForExchangeResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListListingsForExchangeResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListListingsForExchangeResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListListingsForExchangeResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListListingsForExchangeResponseToPb(st *ListListingsForExchangeResponse) (*marketplacepb.ListListingsForExchangeResponsePb, error) {
@@ -4007,7 +5547,9 @@ func ListListingsForExchangeResponseToPb(st *ListListingsForExchangeResponse) (*
 	pb.ExchangeListings = exchangeListingsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4030,7 +5572,9 @@ func ListListingsForExchangeResponseFromPb(pb *marketplacepb.ListListingsForExch
 	st.ExchangeListings = exchangeListingsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4065,12 +5609,29 @@ type ListListingsRequest struct {
 	ForceSendFields []string     `tf:"-"`
 }
 
-func (s *ListListingsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListListingsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListListingsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListListingsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListListingsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListListingsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListListingsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListListingsRequestToPb(st *ListListingsRequest) (*marketplacepb.ListListingsRequestPb, error) {
@@ -4121,7 +5682,9 @@ func ListListingsRequestToPb(st *ListListingsRequest) (*marketplacepb.ListListin
 	}
 	pb.Tags = tagsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4173,7 +5736,9 @@ func ListListingsRequestFromPb(pb *marketplacepb.ListListingsRequestPb) (*ListLi
 	}
 	st.Tags = tagsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4187,12 +5752,29 @@ type ListListingsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListListingsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListListingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListListingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListListingsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListListingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListListingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListListingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListListingsResponseToPb(st *ListListingsResponse) (*marketplacepb.ListListingsResponsePb, error) {
@@ -4214,7 +5796,9 @@ func ListListingsResponseToPb(st *ListListingsResponse) (*marketplacepb.ListList
 	pb.Listings = listingsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4237,7 +5821,9 @@ func ListListingsResponseFromPb(pb *marketplacepb.ListListingsResponsePb) (*List
 	st.Listings = listingsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4254,12 +5840,29 @@ type ListProviderAnalyticsDashboardResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListProviderAnalyticsDashboardResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListProviderAnalyticsDashboardResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListProviderAnalyticsDashboardResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListProviderAnalyticsDashboardResponseToPb(st *ListProviderAnalyticsDashboardResponse) (*marketplacepb.ListProviderAnalyticsDashboardResponsePb, error) {
@@ -4271,7 +5874,9 @@ func ListProviderAnalyticsDashboardResponseToPb(st *ListProviderAnalyticsDashboa
 	pb.Id = st.Id
 	pb.Version = st.Version
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4284,7 +5889,9 @@ func ListProviderAnalyticsDashboardResponseFromPb(pb *marketplacepb.ListProvider
 	st.Id = pb.Id
 	st.Version = pb.Version
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4301,12 +5908,29 @@ type ListProvidersRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListProvidersRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListProvidersRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListProvidersRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListProvidersRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListProvidersRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListProvidersRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListProvidersRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListProvidersRequestToPb(st *ListProvidersRequest) (*marketplacepb.ListProvidersRequestPb, error) {
@@ -4318,7 +5942,9 @@ func ListProvidersRequestToPb(st *ListProvidersRequest) (*marketplacepb.ListProv
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4331,7 +5957,9 @@ func ListProvidersRequestFromPb(pb *marketplacepb.ListProvidersRequestPb) (*List
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4345,12 +5973,29 @@ type ListProvidersResponse struct {
 	ForceSendFields []string       `tf:"-"`
 }
 
-func (s *ListProvidersResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListProvidersResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListProvidersResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListProvidersResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListProvidersResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListProvidersResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListProvidersResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListProvidersResponseToPb(st *ListProvidersResponse) (*marketplacepb.ListProvidersResponsePb, error) {
@@ -4372,7 +6017,9 @@ func ListProvidersResponseToPb(st *ListProvidersResponse) (*marketplacepb.ListPr
 	}
 	pb.Providers = providersPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4395,7 +6042,9 @@ func ListProvidersResponseFromPb(pb *marketplacepb.ListProvidersResponsePb) (*Li
 	}
 	st.Providers = providersField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4412,12 +6061,29 @@ type Listing struct {
 	ForceSendFields []string       `tf:"-"`
 }
 
-func (s *Listing) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Listing) MarshalJSON() ([]byte, error) {
+	pb, err := ListingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Listing) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Listing) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListingToPb(st *Listing) (*marketplacepb.ListingPb, error) {
@@ -4441,7 +6107,9 @@ func ListingToPb(st *Listing) (*marketplacepb.ListingPb, error) {
 		pb.Summary = *summaryPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4466,7 +6134,9 @@ func ListingFromPb(pb *marketplacepb.ListingPb) (*Listing, error) {
 		st.Summary = *summaryField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4541,12 +6211,29 @@ type ListingDetail struct {
 	ForceSendFields []string         `tf:"-"`
 }
 
-func (s *ListingDetail) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListingDetail) MarshalJSON() ([]byte, error) {
+	pb, err := ListingDetailToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListingDetail) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListingDetail) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListingDetailPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListingDetailFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListingDetailToPb(st *ListingDetail) (*marketplacepb.ListingDetailPb, error) {
@@ -4625,7 +6312,9 @@ func ListingDetailToPb(st *ListingDetail) (*marketplacepb.ListingDetailPb, error
 		pb.UpdateFrequency = updateFrequencyPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4705,7 +6394,9 @@ func ListingDetailFromPb(pb *marketplacepb.ListingDetailPb) (*ListingDetail, err
 		st.UpdateFrequency = updateFrequencyField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4725,6 +6416,31 @@ type ListingFulfillment struct {
 
 	// Wire name: 'share_info'
 	ShareInfo *ShareInfo ``
+}
+
+func (st ListingFulfillment) MarshalJSON() ([]byte, error) {
+	pb, err := ListingFulfillmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListingFulfillment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListingFulfillmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListingFulfillmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListingFulfillmentToPb(st *ListingFulfillment) (*marketplacepb.ListingFulfillmentPb, error) {
@@ -4807,6 +6523,31 @@ type ListingSetting struct {
 
 	// Wire name: 'visibility'
 	Visibility Visibility ``
+}
+
+func (st ListingSetting) MarshalJSON() ([]byte, error) {
+	pb, err := ListingSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListingSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListingSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListingSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListingSettingToPb(st *ListingSetting) (*marketplacepb.ListingSettingPb, error) {
@@ -5016,12 +6757,29 @@ type ListingSummary struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListingSummary) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListingSummary) MarshalJSON() ([]byte, error) {
+	pb, err := ListingSummaryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListingSummary) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListingSummary) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListingSummaryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListingSummaryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListingSummaryToPb(st *ListingSummary) (*marketplacepb.ListingSummaryPb, error) {
@@ -5096,7 +6854,9 @@ func ListingSummaryToPb(st *ListingSummary) (*marketplacepb.ListingSummaryPb, er
 	pb.UpdatedBy = st.UpdatedBy
 	pb.UpdatedById = st.UpdatedById
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5172,7 +6932,9 @@ func ListingSummaryFromPb(pb *marketplacepb.ListingSummaryPb) (*ListingSummary, 
 	st.UpdatedBy = pb.UpdatedBy
 	st.UpdatedById = pb.UpdatedById
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5184,6 +6946,31 @@ type ListingTag struct {
 	// (no complex types)
 	// Wire name: 'tag_values'
 	TagValues []string ``
+}
+
+func (st ListingTag) MarshalJSON() ([]byte, error) {
+	pb, err := ListingTagToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListingTag) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ListingTagPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListingTagFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListingTagToPb(st *ListingTag) (*marketplacepb.ListingTagPb, error) {
@@ -5434,12 +7221,29 @@ type PersonalizationRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PersonalizationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PersonalizationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := PersonalizationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PersonalizationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PersonalizationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.PersonalizationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PersonalizationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PersonalizationRequestToPb(st *PersonalizationRequest) (*marketplacepb.PersonalizationRequestPb, error) {
@@ -5494,7 +7298,9 @@ func PersonalizationRequestToPb(st *PersonalizationRequest) (*marketplacepb.Pers
 	pb.StatusMessage = st.StatusMessage
 	pb.UpdatedAt = st.UpdatedAt
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5550,7 +7356,9 @@ func PersonalizationRequestFromPb(pb *marketplacepb.PersonalizationRequestPb) (*
 	st.StatusMessage = pb.StatusMessage
 	st.UpdatedAt = pb.UpdatedAt
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5619,6 +7427,31 @@ type ProviderAnalyticsDashboard struct {
 	Id string ``
 }
 
+func (st ProviderAnalyticsDashboard) MarshalJSON() ([]byte, error) {
+	pb, err := ProviderAnalyticsDashboardToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ProviderAnalyticsDashboard) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ProviderAnalyticsDashboardPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ProviderAnalyticsDashboardFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func ProviderAnalyticsDashboardToPb(st *ProviderAnalyticsDashboard) (*marketplacepb.ProviderAnalyticsDashboardPb, error) {
 	if st == nil {
 		return nil, nil
@@ -5685,12 +7518,29 @@ type ProviderInfo struct {
 	ForceSendFields   []string `tf:"-"`
 }
 
-func (s *ProviderInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ProviderInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ProviderInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ProviderInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ProviderInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ProviderInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ProviderInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ProviderInfoToPb(st *ProviderInfo) (*marketplacepb.ProviderInfoPb, error) {
@@ -5713,7 +7563,9 @@ func ProviderInfoToPb(st *ProviderInfo) (*marketplacepb.ProviderInfoPb, error) {
 	pb.SupportContactEmail = st.SupportContactEmail
 	pb.TermOfServiceLink = st.TermOfServiceLink
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5737,7 +7589,9 @@ func ProviderInfoFromPb(pb *marketplacepb.ProviderInfoPb) (*ProviderInfo, error)
 	st.SupportContactEmail = pb.SupportContactEmail
 	st.TermOfServiceLink = pb.TermOfServiceLink
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5751,12 +7605,29 @@ type RegionInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RegionInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RegionInfo) MarshalJSON() ([]byte, error) {
+	pb, err := RegionInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RegionInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RegionInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.RegionInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RegionInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RegionInfoToPb(st *RegionInfo) (*marketplacepb.RegionInfoPb, error) {
@@ -5767,7 +7638,9 @@ func RegionInfoToPb(st *RegionInfo) (*marketplacepb.RegionInfoPb, error) {
 	pb.Cloud = st.Cloud
 	pb.Region = st.Region
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5779,7 +7652,9 @@ func RegionInfoFromPb(pb *marketplacepb.RegionInfoPb) (*RegionInfo, error) {
 	st.Cloud = pb.Cloud
 	st.Region = pb.Region
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5787,6 +7662,31 @@ type RemoveExchangeForListingRequest struct {
 
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st RemoveExchangeForListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := RemoveExchangeForListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RemoveExchangeForListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.RemoveExchangeForListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RemoveExchangeForListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RemoveExchangeForListingRequestToPb(st *RemoveExchangeForListingRequest) (*marketplacepb.RemoveExchangeForListingRequestPb, error) {
@@ -5813,6 +7713,31 @@ type RepoInfo struct {
 	// the git repo url e.g. https://github.com/databrickslabs/dolly.git
 	// Wire name: 'git_repo_url'
 	GitRepoUrl string ``
+}
+
+func (st RepoInfo) MarshalJSON() ([]byte, error) {
+	pb, err := RepoInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RepoInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.RepoInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RepoInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RepoInfoToPb(st *RepoInfo) (*marketplacepb.RepoInfoPb, error) {
@@ -5844,6 +7769,31 @@ type RepoInstallation struct {
 	// UI) should just be a relative path
 	// Wire name: 'repo_path'
 	RepoPath string ``
+}
+
+func (st RepoInstallation) MarshalJSON() ([]byte, error) {
+	pb, err := RepoInstallationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RepoInstallation) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.RepoInstallationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RepoInstallationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RepoInstallationToPb(st *RepoInstallation) (*marketplacepb.RepoInstallationPb, error) {
@@ -5896,12 +7846,29 @@ type SearchListingsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SearchListingsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SearchListingsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := SearchListingsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SearchListingsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SearchListingsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.SearchListingsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SearchListingsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SearchListingsRequestToPb(st *SearchListingsRequest) (*marketplacepb.SearchListingsRequestPb, error) {
@@ -5940,7 +7907,9 @@ func SearchListingsRequestToPb(st *SearchListingsRequest) (*marketplacepb.Search
 	pb.ProviderIds = st.ProviderIds
 	pb.Query = st.Query
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5980,7 +7949,9 @@ func SearchListingsRequestFromPb(pb *marketplacepb.SearchListingsRequestPb) (*Se
 	st.ProviderIds = pb.ProviderIds
 	st.Query = pb.Query
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5994,12 +7965,29 @@ type SearchListingsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SearchListingsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SearchListingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := SearchListingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SearchListingsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SearchListingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.SearchListingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SearchListingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SearchListingsResponseToPb(st *SearchListingsResponse) (*marketplacepb.SearchListingsResponsePb, error) {
@@ -6021,7 +8009,9 @@ func SearchListingsResponseToPb(st *SearchListingsResponse) (*marketplacepb.Sear
 	pb.Listings = listingsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6044,7 +8034,9 @@ func SearchListingsResponseFromPb(pb *marketplacepb.SearchListingsResponsePb) (*
 	st.Listings = listingsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6055,6 +8047,31 @@ type ShareInfo struct {
 
 	// Wire name: 'type'
 	Type ListingShareType ``
+}
+
+func (st ShareInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ShareInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ShareInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.ShareInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ShareInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ShareInfoToPb(st *ShareInfo) (*marketplacepb.ShareInfoPb, error) {
@@ -6102,12 +8119,29 @@ type SharedDataObject struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SharedDataObject) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SharedDataObject) MarshalJSON() ([]byte, error) {
+	pb, err := SharedDataObjectToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SharedDataObject) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SharedDataObject) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.SharedDataObjectPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SharedDataObjectFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SharedDataObjectToPb(st *SharedDataObject) (*marketplacepb.SharedDataObjectPb, error) {
@@ -6118,7 +8152,9 @@ func SharedDataObjectToPb(st *SharedDataObject) (*marketplacepb.SharedDataObject
 	pb.DataObjectType = st.DataObjectType
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6130,7 +8166,9 @@ func SharedDataObjectFromPb(pb *marketplacepb.SharedDataObjectPb) (*SharedDataOb
 	st.DataObjectType = pb.DataObjectType
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6152,12 +8190,29 @@ type TokenDetail struct {
 	ForceSendFields         []string `tf:"-"`
 }
 
-func (s *TokenDetail) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TokenDetail) MarshalJSON() ([]byte, error) {
+	pb, err := TokenDetailToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TokenDetail) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TokenDetail) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.TokenDetailPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TokenDetailFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TokenDetailToPb(st *TokenDetail) (*marketplacepb.TokenDetailPb, error) {
@@ -6170,7 +8225,9 @@ func TokenDetailToPb(st *TokenDetail) (*marketplacepb.TokenDetailPb, error) {
 	pb.ExpirationTime = st.ExpirationTime
 	pb.ShareCredentialsVersion = st.ShareCredentialsVersion
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6184,7 +8241,9 @@ func TokenDetailFromPb(pb *marketplacepb.TokenDetailPb) (*TokenDetail, error) {
 	st.ExpirationTime = pb.ExpirationTime
 	st.ShareCredentialsVersion = pb.ShareCredentialsVersion
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6214,12 +8273,29 @@ type TokenInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TokenInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TokenInfo) MarshalJSON() ([]byte, error) {
+	pb, err := TokenInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TokenInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TokenInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.TokenInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TokenInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TokenInfoToPb(st *TokenInfo) (*marketplacepb.TokenInfoPb, error) {
@@ -6235,7 +8311,9 @@ func TokenInfoToPb(st *TokenInfo) (*marketplacepb.TokenInfoPb, error) {
 	pb.UpdatedAt = st.UpdatedAt
 	pb.UpdatedBy = st.UpdatedBy
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6252,7 +8330,9 @@ func TokenInfoFromPb(pb *marketplacepb.TokenInfoPb) (*TokenInfo, error) {
 	st.UpdatedAt = pb.UpdatedAt
 	st.UpdatedBy = pb.UpdatedBy
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6263,6 +8343,31 @@ type UpdateExchangeFilterRequest struct {
 
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st UpdateExchangeFilterRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateExchangeFilterRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateExchangeFilterRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdateExchangeFilterRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateExchangeFilterRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateExchangeFilterRequestToPb(st *UpdateExchangeFilterRequest) (*marketplacepb.UpdateExchangeFilterRequestPb, error) {
@@ -6303,6 +8408,31 @@ type UpdateExchangeFilterResponse struct {
 
 	// Wire name: 'filter'
 	Filter *ExchangeFilter ``
+}
+
+func (st UpdateExchangeFilterResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateExchangeFilterResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateExchangeFilterResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdateExchangeFilterResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateExchangeFilterResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateExchangeFilterResponseToPb(st *UpdateExchangeFilterResponse) (*marketplacepb.UpdateExchangeFilterResponsePb, error) {
@@ -6346,6 +8476,31 @@ type UpdateExchangeRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st UpdateExchangeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateExchangeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateExchangeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdateExchangeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateExchangeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func UpdateExchangeRequestToPb(st *UpdateExchangeRequest) (*marketplacepb.UpdateExchangeRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -6384,6 +8539,31 @@ type UpdateExchangeResponse struct {
 
 	// Wire name: 'exchange'
 	Exchange *Exchange ``
+}
+
+func (st UpdateExchangeResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateExchangeResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateExchangeResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdateExchangeResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateExchangeResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateExchangeResponseToPb(st *UpdateExchangeResponse) (*marketplacepb.UpdateExchangeResponsePb, error) {
@@ -6434,12 +8614,29 @@ type UpdateInstallationRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateInstallationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateInstallationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateInstallationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateInstallationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateInstallationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdateInstallationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateInstallationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateInstallationRequestToPb(st *UpdateInstallationRequest) (*marketplacepb.UpdateInstallationRequestPb, error) {
@@ -6458,7 +8655,9 @@ func UpdateInstallationRequestToPb(st *UpdateInstallationRequest) (*marketplacep
 	pb.ListingId = st.ListingId
 	pb.RotateToken = st.RotateToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6478,7 +8677,9 @@ func UpdateInstallationRequestFromPb(pb *marketplacepb.UpdateInstallationRequest
 	st.ListingId = pb.ListingId
 	st.RotateToken = pb.RotateToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6486,6 +8687,31 @@ type UpdateInstallationResponse struct {
 
 	// Wire name: 'installation'
 	Installation *InstallationDetail ``
+}
+
+func (st UpdateInstallationResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateInstallationResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateInstallationResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdateInstallationResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateInstallationResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateInstallationResponseToPb(st *UpdateInstallationResponse) (*marketplacepb.UpdateInstallationResponsePb, error) {
@@ -6529,6 +8755,31 @@ type UpdateListingRequest struct {
 	Listing Listing ``
 }
 
+func (st UpdateListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdateListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func UpdateListingRequestToPb(st *UpdateListingRequest) (*marketplacepb.UpdateListingRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -6567,6 +8818,31 @@ type UpdateListingResponse struct {
 
 	// Wire name: 'listing'
 	Listing *Listing ``
+}
+
+func (st UpdateListingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateListingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateListingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdateListingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateListingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateListingResponseToPb(st *UpdateListingResponse) (*marketplacepb.UpdateListingResponsePb, error) {
@@ -6620,12 +8896,29 @@ type UpdatePersonalizationRequestRequest struct {
 	ForceSendFields []string                     `tf:"-"`
 }
 
-func (s *UpdatePersonalizationRequestRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdatePersonalizationRequestRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdatePersonalizationRequestRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdatePersonalizationRequestRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdatePersonalizationRequestRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdatePersonalizationRequestRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdatePersonalizationRequestRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdatePersonalizationRequestRequestToPb(st *UpdatePersonalizationRequestRequest) (*marketplacepb.UpdatePersonalizationRequestRequestPb, error) {
@@ -6651,7 +8944,9 @@ func UpdatePersonalizationRequestRequestToPb(st *UpdatePersonalizationRequestReq
 		pb.Status = *statusPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6678,7 +8973,9 @@ func UpdatePersonalizationRequestRequestFromPb(pb *marketplacepb.UpdatePersonali
 		st.Status = *statusField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6686,6 +8983,31 @@ type UpdatePersonalizationRequestResponse struct {
 
 	// Wire name: 'request'
 	Request *PersonalizationRequest ``
+}
+
+func (st UpdatePersonalizationRequestResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpdatePersonalizationRequestResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdatePersonalizationRequestResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdatePersonalizationRequestResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdatePersonalizationRequestResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdatePersonalizationRequestResponseToPb(st *UpdatePersonalizationRequestResponse) (*marketplacepb.UpdatePersonalizationRequestResponsePb, error) {
@@ -6732,12 +9054,29 @@ type UpdateProviderAnalyticsDashboardRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateProviderAnalyticsDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateProviderAnalyticsDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateProviderAnalyticsDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateProviderAnalyticsDashboardRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateProviderAnalyticsDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdateProviderAnalyticsDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateProviderAnalyticsDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateProviderAnalyticsDashboardRequestToPb(st *UpdateProviderAnalyticsDashboardRequest) (*marketplacepb.UpdateProviderAnalyticsDashboardRequestPb, error) {
@@ -6748,7 +9087,9 @@ func UpdateProviderAnalyticsDashboardRequestToPb(st *UpdateProviderAnalyticsDash
 	pb.Id = st.Id
 	pb.Version = st.Version
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6760,7 +9101,9 @@ func UpdateProviderAnalyticsDashboardRequestFromPb(pb *marketplacepb.UpdateProvi
 	st.Id = pb.Id
 	st.Version = pb.Version
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6777,12 +9120,29 @@ type UpdateProviderAnalyticsDashboardResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateProviderAnalyticsDashboardResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdateProviderAnalyticsDashboardResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateProviderAnalyticsDashboardResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateProviderAnalyticsDashboardResponseToPb(st *UpdateProviderAnalyticsDashboardResponse) (*marketplacepb.UpdateProviderAnalyticsDashboardResponsePb, error) {
@@ -6794,7 +9154,9 @@ func UpdateProviderAnalyticsDashboardResponseToPb(st *UpdateProviderAnalyticsDas
 	pb.Id = st.Id
 	pb.Version = st.Version
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6807,7 +9169,9 @@ func UpdateProviderAnalyticsDashboardResponseFromPb(pb *marketplacepb.UpdateProv
 	st.Id = pb.Id
 	st.Version = pb.Version
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6818,6 +9182,31 @@ type UpdateProviderRequest struct {
 
 	// Wire name: 'provider'
 	Provider ProviderInfo ``
+}
+
+func (st UpdateProviderRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateProviderRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateProviderRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdateProviderRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateProviderRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateProviderRequestToPb(st *UpdateProviderRequest) (*marketplacepb.UpdateProviderRequestPb, error) {
@@ -6858,6 +9247,31 @@ type UpdateProviderResponse struct {
 
 	// Wire name: 'provider'
 	Provider *ProviderInfo ``
+}
+
+func (st UpdateProviderResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateProviderResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateProviderResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &marketplacepb.UpdateProviderResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateProviderResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateProviderResponseToPb(st *UpdateProviderResponse) (*marketplacepb.UpdateProviderResponsePb, error) {

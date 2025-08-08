@@ -38,9 +38,12 @@ func (a *servingEndpointsImpl) BuildLogs(ctx context.Context, request BuildLogsR
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&buildLogsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := BuildLogsResponseFromPb(&buildLogsResponsePb)
 	if err != nil {
 		return nil, err
@@ -66,9 +69,12 @@ func (a *servingEndpointsImpl) Create(ctx context.Context, request CreateServing
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&servingEndpointDetailedPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ServingEndpointDetailedFromPb(&servingEndpointDetailedPb)
 	if err != nil {
 		return nil, err
@@ -94,9 +100,12 @@ func (a *servingEndpointsImpl) CreateProvisionedThroughputEndpoint(ctx context.C
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&servingEndpointDetailedPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ServingEndpointDetailedFromPb(&servingEndpointDetailedPb)
 	if err != nil {
 		return nil, err
@@ -119,9 +128,12 @@ func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServing
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -142,9 +154,12 @@ func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request Export
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&exportMetricsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExportMetricsResponseFromPb(&exportMetricsResponsePb)
 	if err != nil {
 		return nil, err
@@ -169,9 +184,12 @@ func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpoi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&servingEndpointDetailedPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ServingEndpointDetailedFromPb(&servingEndpointDetailedPb)
 	if err != nil {
 		return nil, err
@@ -196,9 +214,12 @@ func (a *servingEndpointsImpl) GetOpenApi(ctx context.Context, request GetOpenAp
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getOpenApiResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetOpenApiResponseFromPb(&getOpenApiResponsePb)
 	if err != nil {
 		return nil, err
@@ -223,9 +244,12 @@ func (a *servingEndpointsImpl) GetPermissionLevels(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getServingEndpointPermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetServingEndpointPermissionLevelsResponseFromPb(&getServingEndpointPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -250,9 +274,12 @@ func (a *servingEndpointsImpl) GetPermissions(ctx context.Context, request GetSe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&servingEndpointPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ServingEndpointPermissionsFromPb(&servingEndpointPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -278,9 +305,12 @@ func (a *servingEndpointsImpl) HttpRequest(ctx context.Context, request External
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&httpRequestResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := HttpRequestResponseFromPb(&httpRequestResponsePb)
 	if err != nil {
 		return nil, err
@@ -357,9 +387,12 @@ func (a *servingEndpointsImpl) Logs(ctx context.Context, request LogsRequest) (*
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&serverLogsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ServerLogsResponseFromPb(&serverLogsResponsePb)
 	if err != nil {
 		return nil, err
@@ -385,9 +418,12 @@ func (a *servingEndpointsImpl) Patch(ctx context.Context, request PatchServingEn
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&endpointTagsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EndpointTagsFromPb(&endpointTagsPb)
 	if err != nil {
 		return nil, err
@@ -413,9 +449,12 @@ func (a *servingEndpointsImpl) Put(ctx context.Context, request PutRequest) (*Pu
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&putResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PutResponseFromPb(&putResponsePb)
 	if err != nil {
 		return nil, err
@@ -441,9 +480,12 @@ func (a *servingEndpointsImpl) PutAiGateway(ctx context.Context, request PutAiGa
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&putAiGatewayResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PutAiGatewayResponseFromPb(&putAiGatewayResponsePb)
 	if err != nil {
 		return nil, err
@@ -469,9 +511,12 @@ func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryEndpointI
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&queryEndpointResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := QueryEndpointResponseFromPb(&queryEndpointResponsePb)
 	if err != nil {
 		return nil, err
@@ -497,9 +542,12 @@ func (a *servingEndpointsImpl) SetPermissions(ctx context.Context, request Servi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&servingEndpointPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ServingEndpointPermissionsFromPb(&servingEndpointPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -525,9 +573,12 @@ func (a *servingEndpointsImpl) UpdateConfig(ctx context.Context, request Endpoin
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&servingEndpointDetailedPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ServingEndpointDetailedFromPb(&servingEndpointDetailedPb)
 	if err != nil {
 		return nil, err
@@ -553,9 +604,12 @@ func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request Se
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&servingEndpointPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ServingEndpointPermissionsFromPb(&servingEndpointPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -581,9 +635,12 @@ func (a *servingEndpointsImpl) UpdateProvisionedThroughputEndpointConfig(ctx con
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&servingEndpointDetailedPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ServingEndpointDetailedFromPb(&servingEndpointDetailedPb)
 	if err != nil {
 		return nil, err

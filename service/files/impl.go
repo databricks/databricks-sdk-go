@@ -36,9 +36,12 @@ func (a *dbfsImpl) AddBlock(ctx context.Context, request AddBlock) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -59,9 +62,12 @@ func (a *dbfsImpl) Close(ctx context.Context, request Close) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -83,9 +89,12 @@ func (a *dbfsImpl) Create(ctx context.Context, request Create) (*CreateResponse,
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateResponseFromPb(&createResponsePb)
 	if err != nil {
 		return nil, err
@@ -110,9 +119,12 @@ func (a *dbfsImpl) Delete(ctx context.Context, request Delete) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -133,9 +145,12 @@ func (a *dbfsImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*Fi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&fileInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FileInfoFromPb(&fileInfoPb)
 	if err != nil {
 		return nil, err
@@ -205,7 +220,7 @@ func (a *dbfsImpl) internalList(ctx context.Context, request ListDbfsRequest) (*
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listStatusResponsePb,
 	)
 	if err != nil {
@@ -235,9 +250,12 @@ func (a *dbfsImpl) Mkdirs(ctx context.Context, request MkDirs) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -258,9 +276,12 @@ func (a *dbfsImpl) Move(ctx context.Context, request Move) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -281,9 +302,12 @@ func (a *dbfsImpl) Put(ctx context.Context, request Put) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -304,9 +328,12 @@ func (a *dbfsImpl) Read(ctx context.Context, request ReadDbfsRequest) (*ReadResp
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&readResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ReadResponseFromPb(&readResponsePb)
 	if err != nil {
 		return nil, err
@@ -333,6 +360,9 @@ func (a *filesImpl) CreateDirectory(ctx context.Context, request CreateDirectory
 		nil,
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -351,9 +381,12 @@ func (a *filesImpl) Delete(ctx context.Context, request DeleteFileRequest) error
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -372,9 +405,12 @@ func (a *filesImpl) DeleteDirectory(ctx context.Context, request DeleteDirectory
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -395,9 +431,12 @@ func (a *filesImpl) Download(ctx context.Context, request DownloadRequest) (*Dow
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&downloadResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DownloadResponseFromPb(&downloadResponsePb)
 	if err != nil {
 		return nil, err
@@ -420,9 +459,12 @@ func (a *filesImpl) GetDirectoryMetadata(ctx context.Context, request GetDirecto
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -442,9 +484,12 @@ func (a *filesImpl) GetMetadata(ctx context.Context, request GetMetadataRequest)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getMetadataResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetMetadataResponseFromPb(&getMetadataResponsePb)
 	if err != nil {
 		return nil, err
@@ -502,7 +547,7 @@ func (a *filesImpl) internalListDirectoryContents(ctx context.Context, request L
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listDirectoryResponsePb,
 	)
 	if err != nil {
@@ -534,9 +579,12 @@ func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) error {
 		path,
 		headers,
 		queryParams,
-		requestPb.Contents,
+		(*requestPb).Contents,
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }

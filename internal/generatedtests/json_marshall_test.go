@@ -4,10 +4,28 @@ package generated_tests
 import (
 	"encoding/json"
 	"testing"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/internal/testspecs/service/jsonmarshallv2"
 	"github.com/google/go-cmp/cmp"
 )
+
+// Helper functions to simplify test generation.
+func toPointerDuration(d time.Duration) *time.Duration {
+	return &d
+}
+
+func timeFromString(s string) time.Time {
+	t, err := time.Parse(time.RFC3339, s)
+	if err != nil {
+		panic(err)
+	}
+	return t
+}
+
+func toPointerTime(t time.Time) *time.Time {
+	return &t
+}
 
 func TestJsonMarshall(t *testing.T) {
 	testCases := []struct {
@@ -88,16 +106,16 @@ func TestJsonMarshall(t *testing.T) {
 		{
 			name: "OptionalDuration",
 			value: jsonmarshallv2.OptionalFields{
-				Duration: "3600s",
+				Duration: toPointerDuration(time.Duration(3600 * time.Second)),
 			},
 			want: `{
-				"duration": "3600s"
+				"duration": "3600.000000000s"
 			}`,
 		},
 		{
 			name: "OptionalFieldMask",
 			value: jsonmarshallv2.OptionalFields{
-				FieldMask: "optional_string,optional_int32",
+				FieldMask: []string{"optional_string", "optional_int32"},
 			},
 			want: `{
 				"field_mask": "optional_string,optional_int32"
@@ -106,7 +124,7 @@ func TestJsonMarshall(t *testing.T) {
 		{
 			name: "OptionalTimestamp",
 			value: jsonmarshallv2.OptionalFields{
-				Timestamp: "2023-01-01T00:00:00Z",
+				Timestamp: toPointerTime(timeFromString("2023-01-01T00:00:00Z")),
 			},
 			want: `{
 				"timestamp": "2023-01-01T00:00:00Z"
@@ -135,9 +153,9 @@ func TestJsonMarshall(t *testing.T) {
 				"required_bool": false,
 				"required_message": {},
 				"test_required_enum": "",
-				"required_duration": "",
+				"required_duration": "0.000000000s",
 				"required_field_mask": "",
-				"required_timestamp": ""
+				"required_timestamp": "0001-01-01T00:00:00Z"
 			}`,
 		},
 		{
@@ -156,21 +174,21 @@ func TestJsonMarshall(t *testing.T) {
 				"required_bool": false,
 				"required_message": {},
 				"test_required_enum": "TEST_ENUM_ONE",
-				"required_duration": "",
+				"required_duration": "0.000000000s",
 				"required_field_mask": "",
-				"required_timestamp": ""
+				"required_timestamp": "0001-01-01T00:00:00Z"
 			}`,
 		},
 		{
 			name: "RequiredFieldsNonDefaults",
 			value: jsonmarshallv2.RequiredFields{
 				RequiredBool:      true,
-				RequiredDuration:  "7200s",
-				RequiredFieldMask: "required_string,required_int32",
+				RequiredDuration:  time.Duration(7200 * time.Second),
+				RequiredFieldMask: []string{"required_string", "required_int32"},
 				RequiredInt32:     42,
 				RequiredInt64:     1234567890123456789,
 				RequiredString:    "non_default_string",
-				RequiredTimestamp: "2023-12-31T23:59:59Z",
+				RequiredTimestamp: timeFromString("2023-12-31T23:59:59Z"),
 				TestRequiredEnum:  jsonmarshallv2.TestEnumTestEnumTwo,
 			},
 			want: `{
@@ -180,7 +198,7 @@ func TestJsonMarshall(t *testing.T) {
 				"required_bool": true,
 				"required_message": {},
 				"test_required_enum": "TEST_ENUM_TWO",
-				"required_duration": "7200s",
+				"required_duration": "7200.000000000s",
 				"required_field_mask": "required_string,required_int32",
 				"required_timestamp": "2023-12-31T23:59:59Z"
 			}`,
@@ -201,9 +219,9 @@ func TestJsonMarshall(t *testing.T) {
 					"optional_string": "nested_value"
 				},
 				"test_required_enum": "",
-				"required_duration": "",
+				"required_duration": "0.000000000s",
 				"required_field_mask": "",
-				"required_timestamp": ""
+				"required_timestamp": "0001-01-01T00:00:00Z"
 			}`,
 		},
 		{
@@ -274,16 +292,16 @@ func TestJsonMarshall(t *testing.T) {
 		{
 			name: "RepeatedDuration",
 			value: jsonmarshallv2.RepeatedFields{
-				RepeatedDuration: []string{"60s", "120s", "180s"},
+				RepeatedDuration: []time.Duration{time.Duration(60 * time.Second), time.Duration(120 * time.Second), time.Duration(180 * time.Second)},
 			},
 			want: `{
-				"repeated_duration": ["60s", "120s", "180s"]
+				"repeated_duration": ["60.000000000s", "120.000000000s", "180.000000000s"]
 			}`,
 		},
 		{
 			name: "RepeatedFieldMask",
 			value: jsonmarshallv2.RepeatedFields{
-				RepeatedFieldMask: []string{"field1", "field2,field3"},
+				RepeatedFieldMask: [][]string{[]string{"field1"}, []string{"field2", "field3"}},
 			},
 			want: `{
 				"repeated_field_mask": ["field1", "field2,field3"]
@@ -292,7 +310,7 @@ func TestJsonMarshall(t *testing.T) {
 		{
 			name: "RepeatedTimestamp",
 			value: jsonmarshallv2.RepeatedFields{
-				RepeatedTimestamp: []string{"2023-01-01T00:00:00Z", "2023-01-02T00:00:00Z"},
+				RepeatedTimestamp: []time.Time{timeFromString("2023-01-01T00:00:00Z"), timeFromString("2023-01-02T00:00:00Z")},
 			},
 			want: `{
 				"repeated_timestamp": ["2023-01-01T00:00:00Z", "2023-01-02T00:00:00Z"]

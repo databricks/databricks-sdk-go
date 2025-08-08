@@ -3,11 +3,11 @@
 package vectorsearch
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch/vectorsearchpb"
 )
 
@@ -18,12 +18,29 @@ type ColumnInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ColumnInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ColumnInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ColumnInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ColumnInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.ColumnInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ColumnInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ColumnInfoToPb(st *ColumnInfo) (*vectorsearchpb.ColumnInfoPb, error) {
@@ -33,7 +50,9 @@ func ColumnInfoToPb(st *ColumnInfo) (*vectorsearchpb.ColumnInfoPb, error) {
 	pb := &vectorsearchpb.ColumnInfoPb{}
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -44,7 +63,9 @@ func ColumnInfoFromPb(pb *vectorsearchpb.ColumnInfoPb) (*ColumnInfo, error) {
 	st := &ColumnInfo{}
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -61,12 +82,29 @@ type CreateEndpoint struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateEndpoint) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateEndpoint) MarshalJSON() ([]byte, error) {
+	pb, err := CreateEndpointToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateEndpoint) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateEndpoint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.CreateEndpointPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateEndpointFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateEndpointToPb(st *CreateEndpoint) (*vectorsearchpb.CreateEndpointPb, error) {
@@ -84,7 +122,9 @@ func CreateEndpointToPb(st *CreateEndpoint) (*vectorsearchpb.CreateEndpointPb, e
 	}
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -103,7 +143,9 @@ func CreateEndpointFromPb(pb *vectorsearchpb.CreateEndpointPb) (*CreateEndpoint,
 	}
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -128,6 +170,31 @@ type CreateVectorIndexRequest struct {
 	// Primary key of the index
 	// Wire name: 'primary_key'
 	PrimaryKey string ``
+}
+
+func (st CreateVectorIndexRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateVectorIndexRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateVectorIndexRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.CreateVectorIndexRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateVectorIndexRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateVectorIndexRequestToPb(st *CreateVectorIndexRequest) (*vectorsearchpb.CreateVectorIndexRequestPb, error) {
@@ -206,12 +273,29 @@ type CustomTag struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CustomTag) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CustomTag) MarshalJSON() ([]byte, error) {
+	pb, err := CustomTagToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CustomTag) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CustomTag) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.CustomTagPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CustomTagFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CustomTagToPb(st *CustomTag) (*vectorsearchpb.CustomTagPb, error) {
@@ -222,7 +306,9 @@ func CustomTagToPb(st *CustomTag) (*vectorsearchpb.CustomTagPb, error) {
 	pb.Key = st.Key
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -234,7 +320,9 @@ func CustomTagFromPb(pb *vectorsearchpb.CustomTagPb) (*CustomTag, error) {
 	st.Key = pb.Key
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -248,12 +336,29 @@ type DeleteDataResult struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteDataResult) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteDataResult) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDataResultToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteDataResult) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteDataResult) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.DeleteDataResultPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDataResultFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDataResultToPb(st *DeleteDataResult) (*vectorsearchpb.DeleteDataResultPb, error) {
@@ -264,7 +369,9 @@ func DeleteDataResultToPb(st *DeleteDataResult) (*vectorsearchpb.DeleteDataResul
 	pb.FailedPrimaryKeys = st.FailedPrimaryKeys
 	pb.SuccessRowCount = st.SuccessRowCount
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -276,7 +383,9 @@ func DeleteDataResultFromPb(pb *vectorsearchpb.DeleteDataResultPb) (*DeleteDataR
 	st.FailedPrimaryKeys = pb.FailedPrimaryKeys
 	st.SuccessRowCount = pb.SuccessRowCount
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -346,6 +455,31 @@ type DeleteDataVectorIndexRequest struct {
 	PrimaryKeys []string `tf:"-"`
 }
 
+func (st DeleteDataVectorIndexRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDataVectorIndexRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteDataVectorIndexRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.DeleteDataVectorIndexRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDataVectorIndexRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteDataVectorIndexRequestToPb(st *DeleteDataVectorIndexRequest) (*vectorsearchpb.DeleteDataVectorIndexRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -375,6 +509,31 @@ type DeleteDataVectorIndexResponse struct {
 	// Status of the delete operation.
 	// Wire name: 'status'
 	Status DeleteDataStatus ``
+}
+
+func (st DeleteDataVectorIndexResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDataVectorIndexResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteDataVectorIndexResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.DeleteDataVectorIndexResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDataVectorIndexResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDataVectorIndexResponseToPb(st *DeleteDataVectorIndexResponse) (*vectorsearchpb.DeleteDataVectorIndexResponsePb, error) {
@@ -429,6 +588,31 @@ type DeleteEndpointRequest struct {
 	EndpointName string `tf:"-"`
 }
 
+func (st DeleteEndpointRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteEndpointRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteEndpointRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.DeleteEndpointRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteEndpointRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteEndpointRequestToPb(st *DeleteEndpointRequest) (*vectorsearchpb.DeleteEndpointRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -453,6 +637,31 @@ type DeleteIndexRequest struct {
 	// Name of the index
 	// Wire name: 'index_name'
 	IndexName string `tf:"-"`
+}
+
+func (st DeleteIndexRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteIndexRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteIndexRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.DeleteIndexRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteIndexRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteIndexRequestToPb(st *DeleteIndexRequest) (*vectorsearchpb.DeleteIndexRequestPb, error) {
@@ -507,12 +716,29 @@ type DeltaSyncVectorIndexSpecRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeltaSyncVectorIndexSpecRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeltaSyncVectorIndexSpecRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeltaSyncVectorIndexSpecRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeltaSyncVectorIndexSpecRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeltaSyncVectorIndexSpecRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.DeltaSyncVectorIndexSpecRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeltaSyncVectorIndexSpecRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeltaSyncVectorIndexSpecRequestToPb(st *DeltaSyncVectorIndexSpecRequest) (*vectorsearchpb.DeltaSyncVectorIndexSpecRequestPb, error) {
@@ -555,7 +781,9 @@ func DeltaSyncVectorIndexSpecRequestToPb(st *DeltaSyncVectorIndexSpecRequest) (*
 	}
 	pb.SourceTable = st.SourceTable
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -599,7 +827,9 @@ func DeltaSyncVectorIndexSpecRequestFromPb(pb *vectorsearchpb.DeltaSyncVectorInd
 	}
 	st.SourceTable = pb.SourceTable
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -632,12 +862,29 @@ type DeltaSyncVectorIndexSpecResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeltaSyncVectorIndexSpecResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeltaSyncVectorIndexSpecResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeltaSyncVectorIndexSpecResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeltaSyncVectorIndexSpecResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeltaSyncVectorIndexSpecResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.DeltaSyncVectorIndexSpecResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeltaSyncVectorIndexSpecResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeltaSyncVectorIndexSpecResponseToPb(st *DeltaSyncVectorIndexSpecResponse) (*vectorsearchpb.DeltaSyncVectorIndexSpecResponsePb, error) {
@@ -680,7 +927,9 @@ func DeltaSyncVectorIndexSpecResponseToPb(st *DeltaSyncVectorIndexSpecResponse) 
 	}
 	pb.SourceTable = st.SourceTable
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -724,7 +973,9 @@ func DeltaSyncVectorIndexSpecResponseFromPb(pb *vectorsearchpb.DeltaSyncVectorIn
 	}
 	st.SourceTable = pb.SourceTable
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -745,12 +996,29 @@ type DirectAccessVectorIndexSpec struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DirectAccessVectorIndexSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DirectAccessVectorIndexSpec) MarshalJSON() ([]byte, error) {
+	pb, err := DirectAccessVectorIndexSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DirectAccessVectorIndexSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DirectAccessVectorIndexSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.DirectAccessVectorIndexSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DirectAccessVectorIndexSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DirectAccessVectorIndexSpecToPb(st *DirectAccessVectorIndexSpec) (*vectorsearchpb.DirectAccessVectorIndexSpecPb, error) {
@@ -784,7 +1052,9 @@ func DirectAccessVectorIndexSpecToPb(st *DirectAccessVectorIndexSpec) (*vectorse
 	pb.EmbeddingVectorColumns = embeddingVectorColumnsPb
 	pb.SchemaJson = st.SchemaJson
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -819,7 +1089,9 @@ func DirectAccessVectorIndexSpecFromPb(pb *vectorsearchpb.DirectAccessVectorInde
 	st.EmbeddingVectorColumns = embeddingVectorColumnsField
 	st.SchemaJson = pb.SchemaJson
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -833,12 +1105,29 @@ type EmbeddingSourceColumn struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EmbeddingSourceColumn) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EmbeddingSourceColumn) MarshalJSON() ([]byte, error) {
+	pb, err := EmbeddingSourceColumnToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EmbeddingSourceColumn) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EmbeddingSourceColumn) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.EmbeddingSourceColumnPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EmbeddingSourceColumnFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EmbeddingSourceColumnToPb(st *EmbeddingSourceColumn) (*vectorsearchpb.EmbeddingSourceColumnPb, error) {
@@ -849,7 +1138,9 @@ func EmbeddingSourceColumnToPb(st *EmbeddingSourceColumn) (*vectorsearchpb.Embed
 	pb.EmbeddingModelEndpointName = st.EmbeddingModelEndpointName
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -861,7 +1152,9 @@ func EmbeddingSourceColumnFromPb(pb *vectorsearchpb.EmbeddingSourceColumnPb) (*E
 	st.EmbeddingModelEndpointName = pb.EmbeddingModelEndpointName
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -875,12 +1168,29 @@ type EmbeddingVectorColumn struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EmbeddingVectorColumn) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EmbeddingVectorColumn) MarshalJSON() ([]byte, error) {
+	pb, err := EmbeddingVectorColumnToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EmbeddingVectorColumn) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EmbeddingVectorColumn) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.EmbeddingVectorColumnPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EmbeddingVectorColumnFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EmbeddingVectorColumnToPb(st *EmbeddingVectorColumn) (*vectorsearchpb.EmbeddingVectorColumnPb, error) {
@@ -891,7 +1201,9 @@ func EmbeddingVectorColumnToPb(st *EmbeddingVectorColumn) (*vectorsearchpb.Embed
 	pb.EmbeddingDimension = st.EmbeddingDimension
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -903,7 +1215,9 @@ func EmbeddingVectorColumnFromPb(pb *vectorsearchpb.EmbeddingVectorColumnPb) (*E
 	st.EmbeddingDimension = pb.EmbeddingDimension
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -944,12 +1258,29 @@ type EndpointInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EndpointInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EndpointInfo) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EndpointInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EndpointInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.EndpointInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointInfoToPb(st *EndpointInfo) (*vectorsearchpb.EndpointInfoPb, error) {
@@ -992,7 +1323,9 @@ func EndpointInfoToPb(st *EndpointInfo) (*vectorsearchpb.EndpointInfoPb, error) 
 	pb.Name = st.Name
 	pb.NumIndexes = st.NumIndexes
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1036,7 +1369,9 @@ func EndpointInfoFromPb(pb *vectorsearchpb.EndpointInfoPb) (*EndpointInfo, error
 	st.Name = pb.Name
 	st.NumIndexes = pb.NumIndexes
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1051,12 +1386,29 @@ type EndpointStatus struct {
 	ForceSendFields []string            `tf:"-"`
 }
 
-func (s *EndpointStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EndpointStatus) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EndpointStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EndpointStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.EndpointStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointStatusToPb(st *EndpointStatus) (*vectorsearchpb.EndpointStatusPb, error) {
@@ -1073,7 +1425,9 @@ func EndpointStatusToPb(st *EndpointStatus) (*vectorsearchpb.EndpointStatusPb, e
 		pb.State = *statePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1091,7 +1445,9 @@ func EndpointStatusFromPb(pb *vectorsearchpb.EndpointStatusPb) (*EndpointStatus,
 		st.State = *stateField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1209,6 +1565,31 @@ type GetEndpointRequest struct {
 	EndpointName string `tf:"-"`
 }
 
+func (st GetEndpointRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetEndpointRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetEndpointRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.GetEndpointRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetEndpointRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetEndpointRequestToPb(st *GetEndpointRequest) (*vectorsearchpb.GetEndpointRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1233,6 +1614,31 @@ type GetIndexRequest struct {
 	// Name of the index
 	// Wire name: 'index_name'
 	IndexName string `tf:"-"`
+}
+
+func (st GetIndexRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetIndexRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetIndexRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.GetIndexRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetIndexRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetIndexRequestToPb(st *GetIndexRequest) (*vectorsearchpb.GetIndexRequestPb, error) {
@@ -1266,12 +1672,29 @@ type ListEndpointResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListEndpointResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListEndpointResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListEndpointResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListEndpointResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListEndpointResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.ListEndpointResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListEndpointResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListEndpointResponseToPb(st *ListEndpointResponse) (*vectorsearchpb.ListEndpointResponsePb, error) {
@@ -1293,7 +1716,9 @@ func ListEndpointResponseToPb(st *ListEndpointResponse) (*vectorsearchpb.ListEnd
 	pb.Endpoints = endpointsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1316,7 +1741,9 @@ func ListEndpointResponseFromPb(pb *vectorsearchpb.ListEndpointResponsePb) (*Lis
 	st.Endpoints = endpointsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1327,12 +1754,29 @@ type ListEndpointsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListEndpointsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListEndpointsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListEndpointsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListEndpointsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListEndpointsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.ListEndpointsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListEndpointsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListEndpointsRequestToPb(st *ListEndpointsRequest) (*vectorsearchpb.ListEndpointsRequestPb, error) {
@@ -1342,7 +1786,9 @@ func ListEndpointsRequestToPb(st *ListEndpointsRequest) (*vectorsearchpb.ListEnd
 	pb := &vectorsearchpb.ListEndpointsRequestPb{}
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1353,7 +1799,9 @@ func ListEndpointsRequestFromPb(pb *vectorsearchpb.ListEndpointsRequestPb) (*Lis
 	st := &ListEndpointsRequest{}
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1367,12 +1815,29 @@ type ListIndexesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListIndexesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListIndexesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListIndexesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListIndexesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListIndexesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.ListIndexesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListIndexesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListIndexesRequestToPb(st *ListIndexesRequest) (*vectorsearchpb.ListIndexesRequestPb, error) {
@@ -1383,7 +1848,9 @@ func ListIndexesRequestToPb(st *ListIndexesRequest) (*vectorsearchpb.ListIndexes
 	pb.EndpointName = st.EndpointName
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1395,7 +1862,9 @@ func ListIndexesRequestFromPb(pb *vectorsearchpb.ListIndexesRequestPb) (*ListInd
 	st.EndpointName = pb.EndpointName
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1403,6 +1872,31 @@ type ListValue struct {
 	// Repeated field of dynamically typed values.
 	// Wire name: 'values'
 	Values []Value ``
+}
+
+func (st ListValue) MarshalJSON() ([]byte, error) {
+	pb, err := ListValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListValue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.ListValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListValueToPb(st *ListValue) (*vectorsearchpb.ListValuePb, error) {
@@ -1458,12 +1952,29 @@ type ListVectorIndexesResponse struct {
 	ForceSendFields []string          `tf:"-"`
 }
 
-func (s *ListVectorIndexesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListVectorIndexesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListVectorIndexesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListVectorIndexesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListVectorIndexesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.ListVectorIndexesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListVectorIndexesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListVectorIndexesResponseToPb(st *ListVectorIndexesResponse) (*vectorsearchpb.ListVectorIndexesResponsePb, error) {
@@ -1485,7 +1996,9 @@ func ListVectorIndexesResponseToPb(st *ListVectorIndexesResponse) (*vectorsearch
 	}
 	pb.VectorIndexes = vectorIndexesPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1508,7 +2021,9 @@ func ListVectorIndexesResponseFromPb(pb *vectorsearchpb.ListVectorIndexesRespons
 	}
 	st.VectorIndexes = vectorIndexesField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1523,12 +2038,29 @@ type MapStringValueEntry struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *MapStringValueEntry) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MapStringValueEntry) MarshalJSON() ([]byte, error) {
+	pb, err := MapStringValueEntryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MapStringValueEntry) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MapStringValueEntry) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.MapStringValueEntryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MapStringValueEntryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func MapStringValueEntryToPb(st *MapStringValueEntry) (*vectorsearchpb.MapStringValueEntryPb, error) {
@@ -1545,7 +2077,9 @@ func MapStringValueEntryToPb(st *MapStringValueEntry) (*vectorsearchpb.MapString
 		pb.Value = valuePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1563,7 +2097,9 @@ func MapStringValueEntryFromPb(pb *vectorsearchpb.MapStringValueEntryPb) (*MapSt
 		st.Value = valueField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1586,12 +2122,29 @@ type MiniVectorIndex struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *MiniVectorIndex) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MiniVectorIndex) MarshalJSON() ([]byte, error) {
+	pb, err := MiniVectorIndexToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MiniVectorIndex) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MiniVectorIndex) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.MiniVectorIndexPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MiniVectorIndexFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func MiniVectorIndexToPb(st *MiniVectorIndex) (*vectorsearchpb.MiniVectorIndexPb, error) {
@@ -1611,7 +2164,9 @@ func MiniVectorIndexToPb(st *MiniVectorIndex) (*vectorsearchpb.MiniVectorIndexPb
 	pb.Name = st.Name
 	pb.PrimaryKey = st.PrimaryKey
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1632,7 +2187,9 @@ func MiniVectorIndexFromPb(pb *vectorsearchpb.MiniVectorIndexPb) (*MiniVectorInd
 	st.Name = pb.Name
 	st.PrimaryKey = pb.PrimaryKey
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1643,6 +2200,31 @@ type PatchEndpointBudgetPolicyRequest struct {
 	// Name of the vector search endpoint
 	// Wire name: 'endpoint_name'
 	EndpointName string `tf:"-"`
+}
+
+func (st PatchEndpointBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := PatchEndpointBudgetPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PatchEndpointBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.PatchEndpointBudgetPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PatchEndpointBudgetPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PatchEndpointBudgetPolicyRequestToPb(st *PatchEndpointBudgetPolicyRequest) (*vectorsearchpb.PatchEndpointBudgetPolicyRequestPb, error) {
@@ -1674,12 +2256,29 @@ type PatchEndpointBudgetPolicyResponse struct {
 	ForceSendFields         []string `tf:"-"`
 }
 
-func (s *PatchEndpointBudgetPolicyResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PatchEndpointBudgetPolicyResponse) MarshalJSON() ([]byte, error) {
+	pb, err := PatchEndpointBudgetPolicyResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PatchEndpointBudgetPolicyResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PatchEndpointBudgetPolicyResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.PatchEndpointBudgetPolicyResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PatchEndpointBudgetPolicyResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PatchEndpointBudgetPolicyResponseToPb(st *PatchEndpointBudgetPolicyResponse) (*vectorsearchpb.PatchEndpointBudgetPolicyResponsePb, error) {
@@ -1689,7 +2288,9 @@ func PatchEndpointBudgetPolicyResponseToPb(st *PatchEndpointBudgetPolicyResponse
 	pb := &vectorsearchpb.PatchEndpointBudgetPolicyResponsePb{}
 	pb.EffectiveBudgetPolicyId = st.EffectiveBudgetPolicyId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1700,7 +2301,9 @@ func PatchEndpointBudgetPolicyResponseFromPb(pb *vectorsearchpb.PatchEndpointBud
 	st := &PatchEndpointBudgetPolicyResponse{}
 	st.EffectiveBudgetPolicyId = pb.EffectiveBudgetPolicyId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1784,12 +2387,29 @@ type QueryVectorIndexNextPageRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *QueryVectorIndexNextPageRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QueryVectorIndexNextPageRequest) MarshalJSON() ([]byte, error) {
+	pb, err := QueryVectorIndexNextPageRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QueryVectorIndexNextPageRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QueryVectorIndexNextPageRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.QueryVectorIndexNextPageRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryVectorIndexNextPageRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryVectorIndexNextPageRequestToPb(st *QueryVectorIndexNextPageRequest) (*vectorsearchpb.QueryVectorIndexNextPageRequestPb, error) {
@@ -1801,7 +2421,9 @@ func QueryVectorIndexNextPageRequestToPb(st *QueryVectorIndexNextPageRequest) (*
 	pb.IndexName = st.IndexName
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1814,7 +2436,9 @@ func QueryVectorIndexNextPageRequestFromPb(pb *vectorsearchpb.QueryVectorIndexNe
 	st.IndexName = pb.IndexName
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1857,12 +2481,29 @@ type QueryVectorIndexRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *QueryVectorIndexRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QueryVectorIndexRequest) MarshalJSON() ([]byte, error) {
+	pb, err := QueryVectorIndexRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QueryVectorIndexRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QueryVectorIndexRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.QueryVectorIndexRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryVectorIndexRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryVectorIndexRequestToPb(st *QueryVectorIndexRequest) (*vectorsearchpb.QueryVectorIndexRequestPb, error) {
@@ -1880,7 +2521,9 @@ func QueryVectorIndexRequestToPb(st *QueryVectorIndexRequest) (*vectorsearchpb.Q
 	pb.QueryVector = st.QueryVector
 	pb.ScoreThreshold = st.ScoreThreshold
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1899,7 +2542,9 @@ func QueryVectorIndexRequestFromPb(pb *vectorsearchpb.QueryVectorIndexRequestPb)
 	st.QueryVector = pb.QueryVector
 	st.ScoreThreshold = pb.ScoreThreshold
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1919,12 +2564,29 @@ type QueryVectorIndexResponse struct {
 	ForceSendFields []string    `tf:"-"`
 }
 
-func (s *QueryVectorIndexResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QueryVectorIndexResponse) MarshalJSON() ([]byte, error) {
+	pb, err := QueryVectorIndexResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QueryVectorIndexResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QueryVectorIndexResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.QueryVectorIndexResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryVectorIndexResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryVectorIndexResponseToPb(st *QueryVectorIndexResponse) (*vectorsearchpb.QueryVectorIndexResponsePb, error) {
@@ -1948,7 +2610,9 @@ func QueryVectorIndexResponseToPb(st *QueryVectorIndexResponse) (*vectorsearchpb
 		pb.Result = resultPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1973,7 +2637,9 @@ func QueryVectorIndexResponseFromPb(pb *vectorsearchpb.QueryVectorIndexResponseP
 		st.Result = resultField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1988,12 +2654,29 @@ type ResultData struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ResultData) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ResultData) MarshalJSON() ([]byte, error) {
+	pb, err := ResultDataToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ResultData) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ResultData) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.ResultDataPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ResultDataFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ResultDataToPb(st *ResultData) (*vectorsearchpb.ResultDataPb, error) {
@@ -2004,7 +2687,9 @@ func ResultDataToPb(st *ResultData) (*vectorsearchpb.ResultDataPb, error) {
 	pb.DataArray = st.DataArray
 	pb.RowCount = st.RowCount
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2016,7 +2701,9 @@ func ResultDataFromPb(pb *vectorsearchpb.ResultDataPb) (*ResultData, error) {
 	st.DataArray = pb.DataArray
 	st.RowCount = pb.RowCount
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2031,12 +2718,29 @@ type ResultManifest struct {
 	ForceSendFields []string     `tf:"-"`
 }
 
-func (s *ResultManifest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ResultManifest) MarshalJSON() ([]byte, error) {
+	pb, err := ResultManifestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ResultManifest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ResultManifest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.ResultManifestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ResultManifestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ResultManifestToPb(st *ResultManifest) (*vectorsearchpb.ResultManifestPb, error) {
@@ -2058,7 +2762,9 @@ func ResultManifestToPb(st *ResultManifest) (*vectorsearchpb.ResultManifestPb, e
 	}
 	pb.Columns = columnsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2081,7 +2787,9 @@ func ResultManifestFromPb(pb *vectorsearchpb.ResultManifestPb) (*ResultManifest,
 	}
 	st.Columns = columnsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2098,12 +2806,29 @@ type ScanVectorIndexRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ScanVectorIndexRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ScanVectorIndexRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ScanVectorIndexRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ScanVectorIndexRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ScanVectorIndexRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.ScanVectorIndexRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ScanVectorIndexRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ScanVectorIndexRequestToPb(st *ScanVectorIndexRequest) (*vectorsearchpb.ScanVectorIndexRequestPb, error) {
@@ -2115,7 +2840,9 @@ func ScanVectorIndexRequestToPb(st *ScanVectorIndexRequest) (*vectorsearchpb.Sca
 	pb.LastPrimaryKey = st.LastPrimaryKey
 	pb.NumResults = st.NumResults
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2128,7 +2855,9 @@ func ScanVectorIndexRequestFromPb(pb *vectorsearchpb.ScanVectorIndexRequestPb) (
 	st.LastPrimaryKey = pb.LastPrimaryKey
 	st.NumResults = pb.NumResults
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2143,12 +2872,29 @@ type ScanVectorIndexResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ScanVectorIndexResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ScanVectorIndexResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ScanVectorIndexResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ScanVectorIndexResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ScanVectorIndexResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.ScanVectorIndexResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ScanVectorIndexResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ScanVectorIndexResponseToPb(st *ScanVectorIndexResponse) (*vectorsearchpb.ScanVectorIndexResponsePb, error) {
@@ -2170,7 +2916,9 @@ func ScanVectorIndexResponseToPb(st *ScanVectorIndexResponse) (*vectorsearchpb.S
 	pb.Data = dataPb
 	pb.LastPrimaryKey = st.LastPrimaryKey
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2193,7 +2941,9 @@ func ScanVectorIndexResponseFromPb(pb *vectorsearchpb.ScanVectorIndexResponsePb)
 	st.Data = dataField
 	st.LastPrimaryKey = pb.LastPrimaryKey
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2201,6 +2951,31 @@ type Struct struct {
 	// Data entry, corresponding to a row in a vector index.
 	// Wire name: 'fields'
 	Fields []MapStringValueEntry ``
+}
+
+func (st Struct) MarshalJSON() ([]byte, error) {
+	pb, err := StructToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Struct) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.StructPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StructFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func StructToPb(st *Struct) (*vectorsearchpb.StructPb, error) {
@@ -2251,6 +3026,31 @@ type SyncIndexRequest struct {
 	IndexName string `tf:"-"`
 }
 
+func (st SyncIndexRequest) MarshalJSON() ([]byte, error) {
+	pb, err := SyncIndexRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *SyncIndexRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.SyncIndexRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SyncIndexRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func SyncIndexRequestToPb(st *SyncIndexRequest) (*vectorsearchpb.SyncIndexRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2278,6 +3078,31 @@ type UpdateEndpointCustomTagsRequest struct {
 	// Name of the vector search endpoint
 	// Wire name: 'endpoint_name'
 	EndpointName string `tf:"-"`
+}
+
+func (st UpdateEndpointCustomTagsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateEndpointCustomTagsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateEndpointCustomTagsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.UpdateEndpointCustomTagsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateEndpointCustomTagsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateEndpointCustomTagsRequestToPb(st *UpdateEndpointCustomTagsRequest) (*vectorsearchpb.UpdateEndpointCustomTagsRequestPb, error) {
@@ -2334,12 +3159,29 @@ type UpdateEndpointCustomTagsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateEndpointCustomTagsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateEndpointCustomTagsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateEndpointCustomTagsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateEndpointCustomTagsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateEndpointCustomTagsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.UpdateEndpointCustomTagsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateEndpointCustomTagsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateEndpointCustomTagsResponseToPb(st *UpdateEndpointCustomTagsResponse) (*vectorsearchpb.UpdateEndpointCustomTagsResponsePb, error) {
@@ -2361,7 +3203,9 @@ func UpdateEndpointCustomTagsResponseToPb(st *UpdateEndpointCustomTagsResponse) 
 	pb.CustomTags = customTagsPb
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2384,7 +3228,9 @@ func UpdateEndpointCustomTagsResponseFromPb(pb *vectorsearchpb.UpdateEndpointCus
 	st.CustomTags = customTagsField
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2398,12 +3244,29 @@ type UpsertDataResult struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpsertDataResult) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpsertDataResult) MarshalJSON() ([]byte, error) {
+	pb, err := UpsertDataResultToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpsertDataResult) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpsertDataResult) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.UpsertDataResultPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpsertDataResultFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpsertDataResultToPb(st *UpsertDataResult) (*vectorsearchpb.UpsertDataResultPb, error) {
@@ -2414,7 +3277,9 @@ func UpsertDataResultToPb(st *UpsertDataResult) (*vectorsearchpb.UpsertDataResul
 	pb.FailedPrimaryKeys = st.FailedPrimaryKeys
 	pb.SuccessRowCount = st.SuccessRowCount
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2426,7 +3291,9 @@ func UpsertDataResultFromPb(pb *vectorsearchpb.UpsertDataResultPb) (*UpsertDataR
 	st.FailedPrimaryKeys = pb.FailedPrimaryKeys
 	st.SuccessRowCount = pb.SuccessRowCount
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2496,6 +3363,31 @@ type UpsertDataVectorIndexRequest struct {
 	InputsJson string ``
 }
 
+func (st UpsertDataVectorIndexRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpsertDataVectorIndexRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpsertDataVectorIndexRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.UpsertDataVectorIndexRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpsertDataVectorIndexRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func UpsertDataVectorIndexRequestToPb(st *UpsertDataVectorIndexRequest) (*vectorsearchpb.UpsertDataVectorIndexRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2525,6 +3417,31 @@ type UpsertDataVectorIndexResponse struct {
 	// Status of the upsert operation.
 	// Wire name: 'status'
 	Status UpsertDataStatus ``
+}
+
+func (st UpsertDataVectorIndexResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpsertDataVectorIndexResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpsertDataVectorIndexResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.UpsertDataVectorIndexResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpsertDataVectorIndexResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpsertDataVectorIndexResponseToPb(st *UpsertDataVectorIndexResponse) (*vectorsearchpb.UpsertDataVectorIndexResponsePb, error) {
@@ -2592,12 +3509,29 @@ type Value struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Value) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Value) MarshalJSON() ([]byte, error) {
+	pb, err := ValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Value) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Value) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.ValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ValueToPb(st *Value) (*vectorsearchpb.ValuePb, error) {
@@ -2623,7 +3557,9 @@ func ValueToPb(st *Value) (*vectorsearchpb.ValuePb, error) {
 		pb.StructValue = structValuePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2650,7 +3586,9 @@ func ValueFromPb(pb *vectorsearchpb.ValuePb) (*Value, error) {
 		st.StructValue = structValueField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2682,12 +3620,29 @@ type VectorIndex struct {
 	ForceSendFields []string           `tf:"-"`
 }
 
-func (s *VectorIndex) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st VectorIndex) MarshalJSON() ([]byte, error) {
+	pb, err := VectorIndexToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s VectorIndex) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *VectorIndex) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.VectorIndexPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := VectorIndexFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func VectorIndexToPb(st *VectorIndex) (*vectorsearchpb.VectorIndexPb, error) {
@@ -2728,7 +3683,9 @@ func VectorIndexToPb(st *VectorIndex) (*vectorsearchpb.VectorIndexPb, error) {
 		pb.Status = statusPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2770,7 +3727,9 @@ func VectorIndexFromPb(pb *vectorsearchpb.VectorIndexPb) (*VectorIndex, error) {
 		st.Status = statusField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2790,12 +3749,29 @@ type VectorIndexStatus struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *VectorIndexStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st VectorIndexStatus) MarshalJSON() ([]byte, error) {
+	pb, err := VectorIndexStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s VectorIndexStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *VectorIndexStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vectorsearchpb.VectorIndexStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := VectorIndexStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func VectorIndexStatusToPb(st *VectorIndexStatus) (*vectorsearchpb.VectorIndexStatusPb, error) {
@@ -2808,7 +3784,9 @@ func VectorIndexStatusToPb(st *VectorIndexStatus) (*vectorsearchpb.VectorIndexSt
 	pb.Message = st.Message
 	pb.Ready = st.Ready
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2822,7 +3800,9 @@ func VectorIndexStatusFromPb(pb *vectorsearchpb.VectorIndexStatusPb) (*VectorInd
 	st.Message = pb.Message
 	st.Ready = pb.Ready
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 

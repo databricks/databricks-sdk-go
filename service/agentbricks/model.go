@@ -3,11 +3,11 @@
 package agentbricks
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/agentbricks/agentbrickspb"
 )
 
@@ -15,6 +15,31 @@ type CancelCustomLlmOptimizationRunRequest struct {
 
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st CancelCustomLlmOptimizationRunRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CancelCustomLlmOptimizationRunRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CancelCustomLlmOptimizationRunRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &agentbrickspb.CancelCustomLlmOptimizationRunRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CancelCustomLlmOptimizationRunRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CancelCustomLlmOptimizationRunRequestToPb(st *CancelCustomLlmOptimizationRunRequest) (*agentbrickspb.CancelCustomLlmOptimizationRunRequestPb, error) {
@@ -59,12 +84,29 @@ type CreateCustomLlmRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateCustomLlmRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateCustomLlmRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateCustomLlmRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateCustomLlmRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateCustomLlmRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &agentbrickspb.CreateCustomLlmRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateCustomLlmRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateCustomLlmRequestToPb(st *CreateCustomLlmRequest) (*agentbrickspb.CreateCustomLlmRequestPb, error) {
@@ -89,7 +131,9 @@ func CreateCustomLlmRequestToPb(st *CreateCustomLlmRequest) (*agentbrickspb.Crea
 	pb.Instructions = st.Instructions
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -115,7 +159,9 @@ func CreateCustomLlmRequestFromPb(pb *agentbrickspb.CreateCustomLlmRequestPb) (*
 	st.Instructions = pb.Instructions
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -125,7 +171,7 @@ type CustomLlm struct {
 	AgentArtifactPath string ``
 	// Creation timestamp of the custom LLM
 	// Wire name: 'creation_time'
-	CreationTime *time.Time ``
+	CreationTime string `` //legacy
 	// Creator of the custom LLM
 	// Wire name: 'creator'
 	Creator string ``
@@ -153,12 +199,29 @@ type CustomLlm struct {
 	ForceSendFields   []string `tf:"-"`
 }
 
-func (s *CustomLlm) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CustomLlm) MarshalJSON() ([]byte, error) {
+	pb, err := CustomLlmToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CustomLlm) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CustomLlm) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &agentbrickspb.CustomLlmPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CustomLlmFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CustomLlmToPb(st *CustomLlm) (*agentbrickspb.CustomLlmPb, error) {
@@ -167,13 +230,7 @@ func CustomLlmToPb(st *CustomLlm) (*agentbrickspb.CustomLlmPb, error) {
 	}
 	pb := &agentbrickspb.CustomLlmPb{}
 	pb.AgentArtifactPath = st.AgentArtifactPath
-	creationTimePb, err := timestampToPb(st.CreationTime)
-	if err != nil {
-		return nil, err
-	}
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 	pb.Creator = st.Creator
 
 	var datasetsPb []agentbrickspb.DatasetPb
@@ -200,7 +257,9 @@ func CustomLlmToPb(st *CustomLlm) (*agentbrickspb.CustomLlmPb, error) {
 		pb.OptimizationState = *optimizationStatePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -210,13 +269,7 @@ func CustomLlmFromPb(pb *agentbrickspb.CustomLlmPb) (*CustomLlm, error) {
 	}
 	st := &CustomLlm{}
 	st.AgentArtifactPath = pb.AgentArtifactPath
-	creationTimeField, err := timestampFromPb(&pb.CreationTime)
-	if err != nil {
-		return nil, err
-	}
-	if creationTimeField != nil {
-		st.CreationTime = creationTimeField
-	}
+	st.CreationTime = pb.CreationTime
 	st.Creator = pb.Creator
 
 	var datasetsField []Dataset
@@ -243,7 +296,9 @@ func CustomLlmFromPb(pb *agentbrickspb.CustomLlmPb) (*CustomLlm, error) {
 		st.OptimizationState = *optimizationStateField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -251,6 +306,31 @@ type Dataset struct {
 
 	// Wire name: 'table'
 	Table Table ``
+}
+
+func (st Dataset) MarshalJSON() ([]byte, error) {
+	pb, err := DatasetToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Dataset) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &agentbrickspb.DatasetPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DatasetFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DatasetToPb(st *Dataset) (*agentbrickspb.DatasetPb, error) {
@@ -291,6 +371,31 @@ type DeleteCustomLlmRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st DeleteCustomLlmRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteCustomLlmRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteCustomLlmRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &agentbrickspb.DeleteCustomLlmRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteCustomLlmRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteCustomLlmRequestToPb(st *DeleteCustomLlmRequest) (*agentbrickspb.DeleteCustomLlmRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -317,6 +422,31 @@ type GetCustomLlmRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st GetCustomLlmRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetCustomLlmRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetCustomLlmRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &agentbrickspb.GetCustomLlmRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetCustomLlmRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetCustomLlmRequestToPb(st *GetCustomLlmRequest) (*agentbrickspb.GetCustomLlmRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -341,6 +471,31 @@ type StartCustomLlmOptimizationRunRequest struct {
 	// The Id of the tile.
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st StartCustomLlmOptimizationRunRequest) MarshalJSON() ([]byte, error) {
+	pb, err := StartCustomLlmOptimizationRunRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *StartCustomLlmOptimizationRunRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &agentbrickspb.StartCustomLlmOptimizationRunRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StartCustomLlmOptimizationRunRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func StartCustomLlmOptimizationRunRequestToPb(st *StartCustomLlmOptimizationRunRequest) (*agentbrickspb.StartCustomLlmOptimizationRunRequestPb, error) {
@@ -442,12 +597,29 @@ type Table struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Table) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Table) MarshalJSON() ([]byte, error) {
+	pb, err := TableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Table) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Table) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &agentbrickspb.TablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TableToPb(st *Table) (*agentbrickspb.TablePb, error) {
@@ -459,7 +631,9 @@ func TableToPb(st *Table) (*agentbrickspb.TablePb, error) {
 	pb.ResponseCol = st.ResponseCol
 	pb.TablePath = st.TablePath
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -472,7 +646,9 @@ func TableFromPb(pb *agentbrickspb.TablePb) (*Table, error) {
 	st.ResponseCol = pb.ResponseCol
 	st.TablePath = pb.TablePath
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -498,7 +674,33 @@ type UpdateCustomLlmRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'update_mask'
-	UpdateMask []string ``
+	UpdateMask string `` //legacy
+
+}
+
+func (st UpdateCustomLlmRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateCustomLlmRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateCustomLlmRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &agentbrickspb.UpdateCustomLlmRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateCustomLlmRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateCustomLlmRequestToPb(st *UpdateCustomLlmRequest) (*agentbrickspb.UpdateCustomLlmRequestPb, error) {
@@ -514,13 +716,7 @@ func UpdateCustomLlmRequestToPb(st *UpdateCustomLlmRequest) (*agentbrickspb.Upda
 		pb.CustomLlm = *customLlmPb
 	}
 	pb.Id = st.Id
-	updateMaskPb, err := fieldMaskToPb(&st.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
 	return pb, nil
 }
@@ -538,13 +734,7 @@ func UpdateCustomLlmRequestFromPb(pb *agentbrickspb.UpdateCustomLlmRequestPb) (*
 		st.CustomLlm = *customLlmField
 	}
 	st.Id = pb.Id
-	updateMaskField, err := fieldMaskFromPb(&pb.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.UpdateMask = pb.UpdateMask
 
 	return st, nil
 }

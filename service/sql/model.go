@@ -3,11 +3,11 @@
 package sql
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/sql/sqlpb"
 )
 
@@ -25,12 +25,29 @@ type AccessControl struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AccessControl) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AccessControl) MarshalJSON() ([]byte, error) {
+	pb, err := AccessControlToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AccessControl) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AccessControl) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AccessControlPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccessControlFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AccessControlToPb(st *AccessControl) (*sqlpb.AccessControlPb, error) {
@@ -48,7 +65,9 @@ func AccessControlToPb(st *AccessControl) (*sqlpb.AccessControlPb, error) {
 	}
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -67,7 +86,9 @@ func AccessControlFromPb(pb *sqlpb.AccessControlPb) (*AccessControl, error) {
 	}
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -148,7 +169,7 @@ type Alert struct {
 	Condition *AlertCondition ``
 	// The timestamp indicating when the alert was created.
 	// Wire name: 'create_time'
-	CreateTime *time.Time ``
+	CreateTime string `` //legacy
 	// Custom body of alert notification, if it exists. See [here] for custom
 	// templating instructions.
 	//
@@ -197,19 +218,36 @@ type Alert struct {
 	// Timestamp when the alert was last triggered, if the alert has been
 	// triggered before.
 	// Wire name: 'trigger_time'
-	TriggerTime *time.Time ``
+	TriggerTime string `` //legacy
 	// The timestamp indicating when the alert was updated.
 	// Wire name: 'update_time'
-	UpdateTime      *time.Time ``
-	ForceSendFields []string   `tf:"-"`
+	UpdateTime      string   `` //legacy
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Alert) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Alert) MarshalJSON() ([]byte, error) {
+	pb, err := AlertToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Alert) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Alert) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertToPb(st *Alert) (*sqlpb.AlertPb, error) {
@@ -224,13 +262,7 @@ func AlertToPb(st *Alert) (*sqlpb.AlertPb, error) {
 	if conditionPb != nil {
 		pb.Condition = conditionPb
 	}
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 	pb.CustomBody = st.CustomBody
 	pb.CustomSubject = st.CustomSubject
 	pb.DisplayName = st.DisplayName
@@ -254,22 +286,12 @@ func AlertToPb(st *Alert) (*sqlpb.AlertPb, error) {
 	if statePb != nil {
 		pb.State = *statePb
 	}
-	triggerTimePb, err := timestampToPb(st.TriggerTime)
-	if err != nil {
-		return nil, err
-	}
-	if triggerTimePb != nil {
-		pb.TriggerTime = *triggerTimePb
-	}
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.TriggerTime = st.TriggerTime
+	pb.UpdateTime = st.UpdateTime
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -285,13 +307,7 @@ func AlertFromPb(pb *sqlpb.AlertPb) (*Alert, error) {
 	if conditionField != nil {
 		st.Condition = conditionField
 	}
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	st.CustomBody = pb.CustomBody
 	st.CustomSubject = pb.CustomSubject
 	st.DisplayName = pb.DisplayName
@@ -315,22 +331,12 @@ func AlertFromPb(pb *sqlpb.AlertPb) (*Alert, error) {
 	if stateField != nil {
 		st.State = *stateField
 	}
-	triggerTimeField, err := timestampFromPb(&pb.TriggerTime)
-	if err != nil {
-		return nil, err
-	}
-	if triggerTimeField != nil {
-		st.TriggerTime = triggerTimeField
-	}
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
+	st.TriggerTime = pb.TriggerTime
+	st.UpdateTime = pb.UpdateTime
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -348,6 +354,31 @@ type AlertCondition struct {
 	// Threshold value used for comparison in alert evaluation.
 	// Wire name: 'threshold'
 	Threshold *AlertConditionThreshold ``
+}
+
+func (st AlertCondition) MarshalJSON() ([]byte, error) {
+	pb, err := AlertConditionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AlertCondition) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertConditionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertConditionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertConditionToPb(st *AlertCondition) (*sqlpb.AlertConditionPb, error) {
@@ -430,6 +461,31 @@ type AlertConditionOperand struct {
 	Column *AlertOperandColumn ``
 }
 
+func (st AlertConditionOperand) MarshalJSON() ([]byte, error) {
+	pb, err := AlertConditionOperandToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AlertConditionOperand) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertConditionOperandPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertConditionOperandFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func AlertConditionOperandToPb(st *AlertConditionOperand) (*sqlpb.AlertConditionOperandPb, error) {
 	if st == nil {
 		return nil, nil
@@ -466,6 +522,31 @@ type AlertConditionThreshold struct {
 
 	// Wire name: 'value'
 	Value *AlertOperandValue ``
+}
+
+func (st AlertConditionThreshold) MarshalJSON() ([]byte, error) {
+	pb, err := AlertConditionThresholdToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AlertConditionThreshold) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertConditionThresholdPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertConditionThresholdFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertConditionThresholdToPb(st *AlertConditionThreshold) (*sqlpb.AlertConditionThresholdPb, error) {
@@ -569,12 +650,29 @@ type AlertOperandColumn struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AlertOperandColumn) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AlertOperandColumn) MarshalJSON() ([]byte, error) {
+	pb, err := AlertOperandColumnToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AlertOperandColumn) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AlertOperandColumn) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertOperandColumnPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertOperandColumnFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertOperandColumnToPb(st *AlertOperandColumn) (*sqlpb.AlertOperandColumnPb, error) {
@@ -584,7 +682,9 @@ func AlertOperandColumnToPb(st *AlertOperandColumn) (*sqlpb.AlertOperandColumnPb
 	pb := &sqlpb.AlertOperandColumnPb{}
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -595,7 +695,9 @@ func AlertOperandColumnFromPb(pb *sqlpb.AlertOperandColumnPb) (*AlertOperandColu
 	st := &AlertOperandColumn{}
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -612,12 +714,29 @@ type AlertOperandValue struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AlertOperandValue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AlertOperandValue) MarshalJSON() ([]byte, error) {
+	pb, err := AlertOperandValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AlertOperandValue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AlertOperandValue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertOperandValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertOperandValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertOperandValueToPb(st *AlertOperandValue) (*sqlpb.AlertOperandValuePb, error) {
@@ -629,7 +748,9 @@ func AlertOperandValueToPb(st *AlertOperandValue) (*sqlpb.AlertOperandValuePb, e
 	pb.DoubleValue = st.DoubleValue
 	pb.StringValue = st.StringValue
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -642,7 +763,9 @@ func AlertOperandValueFromPb(pb *sqlpb.AlertOperandValuePb) (*AlertOperandValue,
 	st.DoubleValue = pb.DoubleValue
 	st.StringValue = pb.StringValue
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -750,12 +873,29 @@ type AlertOptions struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AlertOptions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AlertOptions) MarshalJSON() ([]byte, error) {
+	pb, err := AlertOptionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AlertOptions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AlertOptions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertOptionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertOptionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertOptionsToPb(st *AlertOptions) (*sqlpb.AlertOptionsPb, error) {
@@ -777,7 +917,9 @@ func AlertOptionsToPb(st *AlertOptions) (*sqlpb.AlertOptionsPb, error) {
 	pb.Op = st.Op
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -800,7 +942,9 @@ func AlertOptionsFromPb(pb *sqlpb.AlertOptionsPb) (*AlertOptions, error) {
 	st.Op = pb.Op
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -917,12 +1061,29 @@ type AlertQuery struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AlertQuery) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AlertQuery) MarshalJSON() ([]byte, error) {
+	pb, err := AlertQueryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AlertQuery) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AlertQuery) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertQueryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertQueryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertQueryToPb(st *AlertQuery) (*sqlpb.AlertQueryPb, error) {
@@ -950,7 +1111,9 @@ func AlertQueryToPb(st *AlertQuery) (*sqlpb.AlertQueryPb, error) {
 	pb.UpdatedAt = st.UpdatedAt
 	pb.UserId = st.UserId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -979,7 +1142,9 @@ func AlertQueryFromPb(pb *sqlpb.AlertQueryPb) (*AlertQuery, error) {
 	st.UpdatedAt = pb.UpdatedAt
 	st.UserId = pb.UserId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1042,7 +1207,7 @@ func AlertStateFromPb(pb *sqlpb.AlertStatePb) (*AlertState, error) {
 type AlertV2 struct {
 	// The timestamp indicating when the alert was created.
 	// Wire name: 'create_time'
-	CreateTime *time.Time ``
+	CreateTime string `` //legacy
 	// Custom description for the alert. support mustache template.
 	// Wire name: 'custom_description'
 	CustomDescription string ``
@@ -1082,19 +1247,36 @@ type AlertV2 struct {
 	Schedule *CronSchedule ``
 	// The timestamp indicating when the alert was updated.
 	// Wire name: 'update_time'
-	UpdateTime *time.Time ``
+	UpdateTime string `` //legacy
 	// ID of the SQL warehouse attached to the alert.
 	// Wire name: 'warehouse_id'
 	WarehouseId     string   ``
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AlertV2) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AlertV2) MarshalJSON() ([]byte, error) {
+	pb, err := AlertV2ToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AlertV2) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AlertV2) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertV2Pb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertV2FromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertV2ToPb(st *AlertV2) (*sqlpb.AlertV2Pb, error) {
@@ -1102,13 +1284,7 @@ func AlertV2ToPb(st *AlertV2) (*sqlpb.AlertV2Pb, error) {
 		return nil, nil
 	}
 	pb := &sqlpb.AlertV2Pb{}
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 	pb.CustomDescription = st.CustomDescription
 	pb.CustomSummary = st.CustomSummary
 	pb.DisplayName = st.DisplayName
@@ -1138,16 +1314,12 @@ func AlertV2ToPb(st *AlertV2) (*sqlpb.AlertV2Pb, error) {
 	if schedulePb != nil {
 		pb.Schedule = schedulePb
 	}
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 	pb.WarehouseId = st.WarehouseId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1156,13 +1328,7 @@ func AlertV2FromPb(pb *sqlpb.AlertV2Pb) (*AlertV2, error) {
 		return nil, nil
 	}
 	st := &AlertV2{}
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	st.CustomDescription = pb.CustomDescription
 	st.CustomSummary = pb.CustomSummary
 	st.DisplayName = pb.DisplayName
@@ -1192,16 +1358,12 @@ func AlertV2FromPb(pb *sqlpb.AlertV2Pb) (*AlertV2, error) {
 	if scheduleField != nil {
 		st.Schedule = scheduleField
 	}
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
+	st.UpdateTime = pb.UpdateTime
 	st.WarehouseId = pb.WarehouseId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1214,7 +1376,7 @@ type AlertV2Evaluation struct {
 	EmptyResultState AlertEvaluationState ``
 	// Timestamp of the last evaluation.
 	// Wire name: 'last_evaluated_at'
-	LastEvaluatedAt *time.Time ``
+	LastEvaluatedAt string `` //legacy
 	// User or Notification Destination to notify when alert is triggered.
 	// Wire name: 'notification'
 	Notification *AlertV2Notification ``
@@ -1230,12 +1392,29 @@ type AlertV2Evaluation struct {
 	ForceSendFields []string        `tf:"-"`
 }
 
-func (s *AlertV2Evaluation) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AlertV2Evaluation) MarshalJSON() ([]byte, error) {
+	pb, err := AlertV2EvaluationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AlertV2Evaluation) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AlertV2Evaluation) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertV2EvaluationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertV2EvaluationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertV2EvaluationToPb(st *AlertV2Evaluation) (*sqlpb.AlertV2EvaluationPb, error) {
@@ -1257,13 +1436,7 @@ func AlertV2EvaluationToPb(st *AlertV2Evaluation) (*sqlpb.AlertV2EvaluationPb, e
 	if emptyResultStatePb != nil {
 		pb.EmptyResultState = *emptyResultStatePb
 	}
-	lastEvaluatedAtPb, err := timestampToPb(st.LastEvaluatedAt)
-	if err != nil {
-		return nil, err
-	}
-	if lastEvaluatedAtPb != nil {
-		pb.LastEvaluatedAt = *lastEvaluatedAtPb
-	}
+	pb.LastEvaluatedAt = st.LastEvaluatedAt
 	notificationPb, err := AlertV2NotificationToPb(st.Notification)
 	if err != nil {
 		return nil, err
@@ -1293,7 +1466,9 @@ func AlertV2EvaluationToPb(st *AlertV2Evaluation) (*sqlpb.AlertV2EvaluationPb, e
 		pb.Threshold = thresholdPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1316,13 +1491,7 @@ func AlertV2EvaluationFromPb(pb *sqlpb.AlertV2EvaluationPb) (*AlertV2Evaluation,
 	if emptyResultStateField != nil {
 		st.EmptyResultState = *emptyResultStateField
 	}
-	lastEvaluatedAtField, err := timestampFromPb(&pb.LastEvaluatedAt)
-	if err != nil {
-		return nil, err
-	}
-	if lastEvaluatedAtField != nil {
-		st.LastEvaluatedAt = lastEvaluatedAtField
-	}
+	st.LastEvaluatedAt = pb.LastEvaluatedAt
 	notificationField, err := AlertV2NotificationFromPb(pb.Notification)
 	if err != nil {
 		return nil, err
@@ -1352,7 +1521,9 @@ func AlertV2EvaluationFromPb(pb *sqlpb.AlertV2EvaluationPb) (*AlertV2Evaluation,
 		st.Threshold = thresholdField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1371,12 +1542,29 @@ type AlertV2Notification struct {
 	ForceSendFields []string              `tf:"-"`
 }
 
-func (s *AlertV2Notification) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AlertV2Notification) MarshalJSON() ([]byte, error) {
+	pb, err := AlertV2NotificationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AlertV2Notification) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AlertV2Notification) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertV2NotificationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertV2NotificationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertV2NotificationToPb(st *AlertV2Notification) (*sqlpb.AlertV2NotificationPb, error) {
@@ -1399,7 +1587,9 @@ func AlertV2NotificationToPb(st *AlertV2Notification) (*sqlpb.AlertV2Notificatio
 	}
 	pb.Subscriptions = subscriptionsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1423,7 +1613,9 @@ func AlertV2NotificationFromPb(pb *sqlpb.AlertV2NotificationPb) (*AlertV2Notific
 	}
 	st.Subscriptions = subscriptionsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1434,6 +1626,31 @@ type AlertV2Operand struct {
 
 	// Wire name: 'value'
 	Value *AlertV2OperandValue ``
+}
+
+func (st AlertV2Operand) MarshalJSON() ([]byte, error) {
+	pb, err := AlertV2OperandToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AlertV2Operand) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertV2OperandPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertV2OperandFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertV2OperandToPb(st *AlertV2Operand) (*sqlpb.AlertV2OperandPb, error) {
@@ -1495,12 +1712,29 @@ type AlertV2OperandColumn struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AlertV2OperandColumn) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AlertV2OperandColumn) MarshalJSON() ([]byte, error) {
+	pb, err := AlertV2OperandColumnToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AlertV2OperandColumn) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AlertV2OperandColumn) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertV2OperandColumnPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertV2OperandColumnFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertV2OperandColumnToPb(st *AlertV2OperandColumn) (*sqlpb.AlertV2OperandColumnPb, error) {
@@ -1518,7 +1752,9 @@ func AlertV2OperandColumnToPb(st *AlertV2OperandColumn) (*sqlpb.AlertV2OperandCo
 	pb.Display = st.Display
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1537,7 +1773,9 @@ func AlertV2OperandColumnFromPb(pb *sqlpb.AlertV2OperandColumnPb) (*AlertV2Opera
 	st.Display = pb.Display
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1554,12 +1792,29 @@ type AlertV2OperandValue struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AlertV2OperandValue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AlertV2OperandValue) MarshalJSON() ([]byte, error) {
+	pb, err := AlertV2OperandValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AlertV2OperandValue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AlertV2OperandValue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertV2OperandValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertV2OperandValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertV2OperandValueToPb(st *AlertV2OperandValue) (*sqlpb.AlertV2OperandValuePb, error) {
@@ -1571,7 +1826,9 @@ func AlertV2OperandValueToPb(st *AlertV2OperandValue) (*sqlpb.AlertV2OperandValu
 	pb.DoubleValue = st.DoubleValue
 	pb.StringValue = st.StringValue
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1584,7 +1841,9 @@ func AlertV2OperandValueFromPb(pb *sqlpb.AlertV2OperandValuePb) (*AlertV2Operand
 	st.DoubleValue = pb.DoubleValue
 	st.StringValue = pb.StringValue
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1598,12 +1857,29 @@ type AlertV2Subscription struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AlertV2Subscription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AlertV2Subscription) MarshalJSON() ([]byte, error) {
+	pb, err := AlertV2SubscriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AlertV2Subscription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AlertV2Subscription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.AlertV2SubscriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertV2SubscriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertV2SubscriptionToPb(st *AlertV2Subscription) (*sqlpb.AlertV2SubscriptionPb, error) {
@@ -1614,7 +1890,9 @@ func AlertV2SubscriptionToPb(st *AlertV2Subscription) (*sqlpb.AlertV2Subscriptio
 	pb.DestinationId = st.DestinationId
 	pb.UserEmail = st.UserEmail
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1626,7 +1904,9 @@ func AlertV2SubscriptionFromPb(pb *sqlpb.AlertV2SubscriptionPb) (*AlertV2Subscri
 	st.DestinationId = pb.DestinationId
 	st.UserEmail = pb.UserEmail
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1650,12 +1930,29 @@ type BaseChunkInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *BaseChunkInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st BaseChunkInfo) MarshalJSON() ([]byte, error) {
+	pb, err := BaseChunkInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s BaseChunkInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *BaseChunkInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.BaseChunkInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BaseChunkInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func BaseChunkInfoToPb(st *BaseChunkInfo) (*sqlpb.BaseChunkInfoPb, error) {
@@ -1668,7 +1965,9 @@ func BaseChunkInfoToPb(st *BaseChunkInfo) (*sqlpb.BaseChunkInfoPb, error) {
 	pb.RowCount = st.RowCount
 	pb.RowOffset = st.RowOffset
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1682,7 +1981,9 @@ func BaseChunkInfoFromPb(pb *sqlpb.BaseChunkInfoPb) (*BaseChunkInfo, error) {
 	st.RowCount = pb.RowCount
 	st.RowOffset = pb.RowOffset
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1691,6 +1992,31 @@ type CancelExecutionRequest struct {
 	// statement, and is a required reference for all subsequent calls.
 	// Wire name: 'statement_id'
 	StatementId string `tf:"-"`
+}
+
+func (st CancelExecutionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CancelExecutionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CancelExecutionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CancelExecutionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CancelExecutionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CancelExecutionRequestToPb(st *CancelExecutionRequest) (*sqlpb.CancelExecutionRequestPb, error) {
@@ -1725,12 +2051,29 @@ type Channel struct {
 	ForceSendFields []string    `tf:"-"`
 }
 
-func (s *Channel) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Channel) MarshalJSON() ([]byte, error) {
+	pb, err := ChannelToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Channel) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Channel) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ChannelPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ChannelFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ChannelToPb(st *Channel) (*sqlpb.ChannelPb, error) {
@@ -1747,7 +2090,9 @@ func ChannelToPb(st *Channel) (*sqlpb.ChannelPb, error) {
 		pb.Name = *namePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1765,7 +2110,9 @@ func ChannelFromPb(pb *sqlpb.ChannelPb) (*Channel, error) {
 		st.Name = *nameField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1780,12 +2127,29 @@ type ChannelInfo struct {
 	ForceSendFields []string    `tf:"-"`
 }
 
-func (s *ChannelInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ChannelInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ChannelInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ChannelInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ChannelInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ChannelInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ChannelInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ChannelInfoToPb(st *ChannelInfo) (*sqlpb.ChannelInfoPb, error) {
@@ -1802,7 +2166,9 @@ func ChannelInfoToPb(st *ChannelInfo) (*sqlpb.ChannelInfoPb, error) {
 		pb.Name = *namePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1820,7 +2186,9 @@ func ChannelInfoFromPb(pb *sqlpb.ChannelInfoPb) (*ChannelInfo, error) {
 		st.Name = *nameField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1917,12 +2285,29 @@ type ClientConfig struct {
 	ForceSendFields   []string `tf:"-"`
 }
 
-func (s *ClientConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ClientConfig) MarshalJSON() ([]byte, error) {
+	pb, err := ClientConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ClientConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ClientConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ClientConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ClientConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ClientConfigToPb(st *ClientConfig) (*sqlpb.ClientConfigPb, error) {
@@ -1941,7 +2326,9 @@ func ClientConfigToPb(st *ClientConfig) (*sqlpb.ClientConfigPb, error) {
 	pb.FeatureShowPermissionsControl = st.FeatureShowPermissionsControl
 	pb.HidePlotlyModeBar = st.HidePlotlyModeBar
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1961,7 +2348,9 @@ func ClientConfigFromPb(pb *sqlpb.ClientConfigPb) (*ClientConfig, error) {
 	st.FeatureShowPermissionsControl = pb.FeatureShowPermissionsControl
 	st.HidePlotlyModeBar = pb.HidePlotlyModeBar
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1993,12 +2382,29 @@ type ColumnInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ColumnInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ColumnInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ColumnInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ColumnInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ColumnInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ColumnInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ColumnInfoToPb(st *ColumnInfo) (*sqlpb.ColumnInfoPb, error) {
@@ -2020,7 +2426,9 @@ func ColumnInfoToPb(st *ColumnInfo) (*sqlpb.ColumnInfoPb, error) {
 	pb.TypeScale = st.TypeScale
 	pb.TypeText = st.TypeText
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2043,7 +2451,9 @@ func ColumnInfoFromPb(pb *sqlpb.ColumnInfoPb) (*ColumnInfo, error) {
 	st.TypeScale = pb.TypeScale
 	st.TypeText = pb.TypeText
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2245,12 +2655,29 @@ type CreateAlert struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateAlert) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateAlert) MarshalJSON() ([]byte, error) {
+	pb, err := CreateAlertToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateAlert) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateAlert) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CreateAlertPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateAlertFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateAlertToPb(st *CreateAlert) (*sqlpb.CreateAlertPb, error) {
@@ -2270,7 +2697,9 @@ func CreateAlertToPb(st *CreateAlert) (*sqlpb.CreateAlertPb, error) {
 	pb.QueryId = st.QueryId
 	pb.Rearm = st.Rearm
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2291,7 +2720,9 @@ func CreateAlertFromPb(pb *sqlpb.CreateAlertPb) (*CreateAlert, error) {
 	st.QueryId = pb.QueryId
 	st.Rearm = pb.Rearm
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2307,12 +2738,29 @@ type CreateAlertRequest struct {
 	ForceSendFields        []string `tf:"-"`
 }
 
-func (s *CreateAlertRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateAlertRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateAlertRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateAlertRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateAlertRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CreateAlertRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateAlertRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateAlertRequestToPb(st *CreateAlertRequest) (*sqlpb.CreateAlertRequestPb, error) {
@@ -2329,7 +2777,9 @@ func CreateAlertRequestToPb(st *CreateAlertRequest) (*sqlpb.CreateAlertRequestPb
 	}
 	pb.AutoResolveDisplayName = st.AutoResolveDisplayName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2347,7 +2797,9 @@ func CreateAlertRequestFromPb(pb *sqlpb.CreateAlertRequestPb) (*CreateAlertReque
 	}
 	st.AutoResolveDisplayName = pb.AutoResolveDisplayName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2388,12 +2840,29 @@ type CreateAlertRequestAlert struct {
 	ForceSendFields    []string `tf:"-"`
 }
 
-func (s *CreateAlertRequestAlert) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateAlertRequestAlert) MarshalJSON() ([]byte, error) {
+	pb, err := CreateAlertRequestAlertToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateAlertRequestAlert) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateAlertRequestAlert) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CreateAlertRequestAlertPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateAlertRequestAlertFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateAlertRequestAlertToPb(st *CreateAlertRequestAlert) (*sqlpb.CreateAlertRequestAlertPb, error) {
@@ -2416,7 +2885,9 @@ func CreateAlertRequestAlertToPb(st *CreateAlertRequestAlert) (*sqlpb.CreateAler
 	pb.QueryId = st.QueryId
 	pb.SecondsToRetrigger = st.SecondsToRetrigger
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2440,7 +2911,9 @@ func CreateAlertRequestAlertFromPb(pb *sqlpb.CreateAlertRequestAlertPb) (*Create
 	st.QueryId = pb.QueryId
 	st.SecondsToRetrigger = pb.SecondsToRetrigger
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2448,6 +2921,31 @@ type CreateAlertV2Request struct {
 
 	// Wire name: 'alert'
 	Alert AlertV2 ``
+}
+
+func (st CreateAlertV2Request) MarshalJSON() ([]byte, error) {
+	pb, err := CreateAlertV2RequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateAlertV2Request) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CreateAlertV2RequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateAlertV2RequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateAlertV2RequestToPb(st *CreateAlertV2Request) (*sqlpb.CreateAlertV2RequestPb, error) {
@@ -2494,12 +2992,29 @@ type CreateQueryRequest struct {
 	ForceSendFields []string                 `tf:"-"`
 }
 
-func (s *CreateQueryRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateQueryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateQueryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateQueryRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateQueryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CreateQueryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateQueryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateQueryRequestToPb(st *CreateQueryRequest) (*sqlpb.CreateQueryRequestPb, error) {
@@ -2516,7 +3031,9 @@ func CreateQueryRequestToPb(st *CreateQueryRequest) (*sqlpb.CreateQueryRequestPb
 		pb.Query = queryPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2534,7 +3051,9 @@ func CreateQueryRequestFromPb(pb *sqlpb.CreateQueryRequestPb) (*CreateQueryReque
 		st.Query = queryField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2577,12 +3096,29 @@ type CreateQueryRequestQuery struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateQueryRequestQuery) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateQueryRequestQuery) MarshalJSON() ([]byte, error) {
+	pb, err := CreateQueryRequestQueryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateQueryRequestQuery) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateQueryRequestQuery) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CreateQueryRequestQueryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateQueryRequestQueryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateQueryRequestQueryToPb(st *CreateQueryRequestQuery) (*sqlpb.CreateQueryRequestQueryPb, error) {
@@ -2619,7 +3155,9 @@ func CreateQueryRequestQueryToPb(st *CreateQueryRequestQuery) (*sqlpb.CreateQuer
 	pb.Tags = st.Tags
 	pb.WarehouseId = st.WarehouseId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2657,7 +3195,9 @@ func CreateQueryRequestQueryFromPb(pb *sqlpb.CreateQueryRequestQueryPb) (*Create
 	st.Tags = pb.Tags
 	st.WarehouseId = pb.WarehouseId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2685,12 +3225,29 @@ type CreateQueryVisualizationsLegacyRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateQueryVisualizationsLegacyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateQueryVisualizationsLegacyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateQueryVisualizationsLegacyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateQueryVisualizationsLegacyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateQueryVisualizationsLegacyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CreateQueryVisualizationsLegacyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateQueryVisualizationsLegacyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateQueryVisualizationsLegacyRequestToPb(st *CreateQueryVisualizationsLegacyRequest) (*sqlpb.CreateQueryVisualizationsLegacyRequestPb, error) {
@@ -2704,7 +3261,9 @@ func CreateQueryVisualizationsLegacyRequestToPb(st *CreateQueryVisualizationsLeg
 	pb.QueryId = st.QueryId
 	pb.Type = st.Type
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2719,7 +3278,9 @@ func CreateQueryVisualizationsLegacyRequestFromPb(pb *sqlpb.CreateQueryVisualiza
 	st.QueryId = pb.QueryId
 	st.Type = pb.Type
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2727,6 +3288,31 @@ type CreateVisualizationRequest struct {
 
 	// Wire name: 'visualization'
 	Visualization *CreateVisualizationRequestVisualization ``
+}
+
+func (st CreateVisualizationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateVisualizationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateVisualizationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CreateVisualizationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateVisualizationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateVisualizationRequestToPb(st *CreateVisualizationRequest) (*sqlpb.CreateVisualizationRequestPb, error) {
@@ -2784,12 +3370,29 @@ type CreateVisualizationRequestVisualization struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateVisualizationRequestVisualization) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateVisualizationRequestVisualization) MarshalJSON() ([]byte, error) {
+	pb, err := CreateVisualizationRequestVisualizationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateVisualizationRequestVisualization) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateVisualizationRequestVisualization) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CreateVisualizationRequestVisualizationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateVisualizationRequestVisualizationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateVisualizationRequestVisualizationToPb(st *CreateVisualizationRequestVisualization) (*sqlpb.CreateVisualizationRequestVisualizationPb, error) {
@@ -2803,7 +3406,9 @@ func CreateVisualizationRequestVisualizationToPb(st *CreateVisualizationRequestV
 	pb.SerializedQueryPlan = st.SerializedQueryPlan
 	pb.Type = st.Type
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2818,7 +3423,9 @@ func CreateVisualizationRequestVisualizationFromPb(pb *sqlpb.CreateVisualization
 	st.SerializedQueryPlan = pb.SerializedQueryPlan
 	st.Type = pb.Type
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2898,12 +3505,29 @@ type CreateWarehouseRequest struct {
 	ForceSendFields []string                            `tf:"-"`
 }
 
-func (s *CreateWarehouseRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateWarehouseRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateWarehouseRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateWarehouseRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateWarehouseRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CreateWarehouseRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateWarehouseRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateWarehouseRequestToPb(st *CreateWarehouseRequest) (*sqlpb.CreateWarehouseRequestPb, error) {
@@ -2949,7 +3573,9 @@ func CreateWarehouseRequestToPb(st *CreateWarehouseRequest) (*sqlpb.CreateWareho
 		pb.WarehouseType = *warehouseTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2996,7 +3622,9 @@ func CreateWarehouseRequestFromPb(pb *sqlpb.CreateWarehouseRequestPb) (*CreateWa
 		st.WarehouseType = *warehouseTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3066,12 +3694,29 @@ type CreateWarehouseResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateWarehouseResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateWarehouseResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateWarehouseResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateWarehouseResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateWarehouseResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CreateWarehouseResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateWarehouseResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateWarehouseResponseToPb(st *CreateWarehouseResponse) (*sqlpb.CreateWarehouseResponsePb, error) {
@@ -3081,7 +3726,9 @@ func CreateWarehouseResponseToPb(st *CreateWarehouseResponse) (*sqlpb.CreateWare
 	pb := &sqlpb.CreateWarehouseResponsePb{}
 	pb.Id = st.Id
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3092,7 +3739,9 @@ func CreateWarehouseResponseFromPb(pb *sqlpb.CreateWarehouseResponsePb) (*Create
 	st := &CreateWarehouseResponse{}
 	st.Id = pb.Id
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3117,12 +3766,29 @@ type CreateWidget struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateWidget) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateWidget) MarshalJSON() ([]byte, error) {
+	pb, err := CreateWidgetToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateWidget) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateWidget) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CreateWidgetPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateWidgetFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateWidgetToPb(st *CreateWidget) (*sqlpb.CreateWidgetPb, error) {
@@ -3142,7 +3808,9 @@ func CreateWidgetToPb(st *CreateWidget) (*sqlpb.CreateWidgetPb, error) {
 	pb.VisualizationId = st.VisualizationId
 	pb.Width = st.Width
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3163,7 +3831,9 @@ func CreateWidgetFromPb(pb *sqlpb.CreateWidgetPb) (*CreateWidget, error) {
 	st.VisualizationId = pb.VisualizationId
 	st.Width = pb.Width
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3186,12 +3856,29 @@ type CronSchedule struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CronSchedule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CronSchedule) MarshalJSON() ([]byte, error) {
+	pb, err := CronScheduleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CronSchedule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CronSchedule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.CronSchedulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CronScheduleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CronScheduleToPb(st *CronSchedule) (*sqlpb.CronSchedulePb, error) {
@@ -3209,7 +3896,9 @@ func CronScheduleToPb(st *CronSchedule) (*sqlpb.CronSchedulePb, error) {
 	pb.QuartzCronSchedule = st.QuartzCronSchedule
 	pb.TimezoneId = st.TimezoneId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3228,7 +3917,9 @@ func CronScheduleFromPb(pb *sqlpb.CronSchedulePb) (*CronSchedule, error) {
 	st.QuartzCronSchedule = pb.QuartzCronSchedule
 	st.TimezoneId = pb.TimezoneId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3299,12 +3990,29 @@ type Dashboard struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Dashboard) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Dashboard) MarshalJSON() ([]byte, error) {
+	pb, err := DashboardToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Dashboard) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Dashboard) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DashboardPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DashboardFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DashboardToPb(st *Dashboard) (*sqlpb.DashboardPb, error) {
@@ -3359,7 +4067,9 @@ func DashboardToPb(st *Dashboard) (*sqlpb.DashboardPb, error) {
 	}
 	pb.Widgets = widgetsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3415,7 +4125,9 @@ func DashboardFromPb(pb *sqlpb.DashboardPb) (*Dashboard, error) {
 	}
 	st.Widgets = widgetsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3438,12 +4150,29 @@ type DashboardEditContent struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DashboardEditContent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DashboardEditContent) MarshalJSON() ([]byte, error) {
+	pb, err := DashboardEditContentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DashboardEditContent) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DashboardEditContent) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DashboardEditContentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DashboardEditContentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DashboardEditContentToPb(st *DashboardEditContent) (*sqlpb.DashboardEditContentPb, error) {
@@ -3462,7 +4191,9 @@ func DashboardEditContentToPb(st *DashboardEditContent) (*sqlpb.DashboardEditCon
 	}
 	pb.Tags = st.Tags
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3482,7 +4213,9 @@ func DashboardEditContentFromPb(pb *sqlpb.DashboardEditContentPb) (*DashboardEdi
 	}
 	st.Tags = pb.Tags
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3495,12 +4228,29 @@ type DashboardOptions struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DashboardOptions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DashboardOptions) MarshalJSON() ([]byte, error) {
+	pb, err := DashboardOptionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DashboardOptions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DashboardOptions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DashboardOptionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DashboardOptionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DashboardOptionsToPb(st *DashboardOptions) (*sqlpb.DashboardOptionsPb, error) {
@@ -3510,7 +4260,9 @@ func DashboardOptionsToPb(st *DashboardOptions) (*sqlpb.DashboardOptionsPb, erro
 	pb := &sqlpb.DashboardOptionsPb{}
 	pb.MovedToTrashAt = st.MovedToTrashAt
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3521,7 +4273,9 @@ func DashboardOptionsFromPb(pb *sqlpb.DashboardOptionsPb) (*DashboardOptions, er
 	st := &DashboardOptions{}
 	st.MovedToTrashAt = pb.MovedToTrashAt
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3563,12 +4317,29 @@ type DataSource struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DataSource) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DataSource) MarshalJSON() ([]byte, error) {
+	pb, err := DataSourceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DataSource) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DataSource) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DataSourcePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DataSourceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DataSourceToPb(st *DataSource) (*sqlpb.DataSourcePb, error) {
@@ -3586,7 +4357,9 @@ func DataSourceToPb(st *DataSource) (*sqlpb.DataSourcePb, error) {
 	pb.ViewOnly = st.ViewOnly
 	pb.WarehouseId = st.WarehouseId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3605,7 +4378,9 @@ func DataSourceFromPb(pb *sqlpb.DataSourcePb) (*DataSource, error) {
 	st.ViewOnly = pb.ViewOnly
 	st.WarehouseId = pb.WarehouseId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3674,6 +4449,31 @@ type DateRange struct {
 	Start string ``
 }
 
+func (st DateRange) MarshalJSON() ([]byte, error) {
+	pb, err := DateRangeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DateRange) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DateRangePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DateRangeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DateRangeToPb(st *DateRange) (*sqlpb.DateRangePb, error) {
 	if st == nil {
 		return nil, nil
@@ -3713,12 +4513,29 @@ type DateRangeValue struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DateRangeValue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DateRangeValue) MarshalJSON() ([]byte, error) {
+	pb, err := DateRangeValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DateRangeValue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DateRangeValue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DateRangeValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DateRangeValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DateRangeValueToPb(st *DateRangeValue) (*sqlpb.DateRangeValuePb, error) {
@@ -3749,7 +4566,9 @@ func DateRangeValueToPb(st *DateRangeValue) (*sqlpb.DateRangeValuePb, error) {
 	}
 	pb.StartDayOfWeek = st.StartDayOfWeek
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3781,7 +4600,9 @@ func DateRangeValueFromPb(pb *sqlpb.DateRangeValuePb) (*DateRangeValue, error) {
 	}
 	st.StartDayOfWeek = pb.StartDayOfWeek
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3897,12 +4718,29 @@ type DateValue struct {
 	ForceSendFields []string      `tf:"-"`
 }
 
-func (s *DateValue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DateValue) MarshalJSON() ([]byte, error) {
+	pb, err := DateValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DateValue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DateValue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DateValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DateValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DateValueToPb(st *DateValue) (*sqlpb.DateValuePb, error) {
@@ -3926,7 +4764,9 @@ func DateValueToPb(st *DateValue) (*sqlpb.DateValuePb, error) {
 		pb.Precision = *precisionPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3951,7 +4791,9 @@ func DateValueFromPb(pb *sqlpb.DateValuePb) (*DateValue, error) {
 		st.Precision = *precisionField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4014,6 +4856,31 @@ type DeleteAlertsLegacyRequest struct {
 	AlertId string `tf:"-"`
 }
 
+func (st DeleteAlertsLegacyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAlertsLegacyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteAlertsLegacyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DeleteAlertsLegacyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAlertsLegacyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteAlertsLegacyRequestToPb(st *DeleteAlertsLegacyRequest) (*sqlpb.DeleteAlertsLegacyRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -4038,6 +4905,31 @@ type DeleteDashboardRequest struct {
 
 	// Wire name: 'dashboard_id'
 	DashboardId string `tf:"-"`
+}
+
+func (st DeleteDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DeleteDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDashboardRequestToPb(st *DeleteDashboardRequest) (*sqlpb.DeleteDashboardRequestPb, error) {
@@ -4066,6 +4958,31 @@ type DeleteDashboardWidgetRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st DeleteDashboardWidgetRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDashboardWidgetRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteDashboardWidgetRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DeleteDashboardWidgetRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDashboardWidgetRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteDashboardWidgetRequestToPb(st *DeleteDashboardWidgetRequest) (*sqlpb.DeleteDashboardWidgetRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -4090,6 +5007,31 @@ type DeleteQueriesLegacyRequest struct {
 
 	// Wire name: 'query_id'
 	QueryId string `tf:"-"`
+}
+
+func (st DeleteQueriesLegacyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteQueriesLegacyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteQueriesLegacyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DeleteQueriesLegacyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteQueriesLegacyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteQueriesLegacyRequestToPb(st *DeleteQueriesLegacyRequest) (*sqlpb.DeleteQueriesLegacyRequestPb, error) {
@@ -4118,6 +5060,31 @@ type DeleteQueryVisualizationsLegacyRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st DeleteQueryVisualizationsLegacyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteQueryVisualizationsLegacyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteQueryVisualizationsLegacyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DeleteQueryVisualizationsLegacyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteQueryVisualizationsLegacyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteQueryVisualizationsLegacyRequestToPb(st *DeleteQueryVisualizationsLegacyRequest) (*sqlpb.DeleteQueryVisualizationsLegacyRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -4144,6 +5111,31 @@ type DeleteVisualizationRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st DeleteVisualizationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteVisualizationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteVisualizationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DeleteVisualizationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteVisualizationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteVisualizationRequestToPb(st *DeleteVisualizationRequest) (*sqlpb.DeleteVisualizationRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -4168,6 +5160,31 @@ type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st DeleteWarehouseRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteWarehouseRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteWarehouseRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.DeleteWarehouseRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteWarehouseRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteWarehouseRequestToPb(st *DeleteWarehouseRequest) (*sqlpb.DeleteWarehouseRequestPb, error) {
@@ -4264,12 +5281,29 @@ type EditAlert struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EditAlert) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EditAlert) MarshalJSON() ([]byte, error) {
+	pb, err := EditAlertToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EditAlert) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EditAlert) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.EditAlertPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EditAlertFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EditAlertToPb(st *EditAlert) (*sqlpb.EditAlertPb, error) {
@@ -4289,7 +5323,9 @@ func EditAlertToPb(st *EditAlert) (*sqlpb.EditAlertPb, error) {
 	pb.QueryId = st.QueryId
 	pb.Rearm = st.Rearm
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4310,7 +5346,9 @@ func EditAlertFromPb(pb *sqlpb.EditAlertPb) (*EditAlert, error) {
 	st.QueryId = pb.QueryId
 	st.Rearm = pb.Rearm
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4391,12 +5429,29 @@ type EditWarehouseRequest struct {
 	ForceSendFields []string                          `tf:"-"`
 }
 
-func (s *EditWarehouseRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EditWarehouseRequest) MarshalJSON() ([]byte, error) {
+	pb, err := EditWarehouseRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EditWarehouseRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EditWarehouseRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.EditWarehouseRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EditWarehouseRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EditWarehouseRequestToPb(st *EditWarehouseRequest) (*sqlpb.EditWarehouseRequestPb, error) {
@@ -4443,7 +5498,9 @@ func EditWarehouseRequestToPb(st *EditWarehouseRequest) (*sqlpb.EditWarehouseReq
 		pb.WarehouseType = *warehouseTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4491,7 +5548,9 @@ func EditWarehouseRequestFromPb(pb *sqlpb.EditWarehouseRequestPb) (*EditWarehous
 		st.WarehouseType = *warehouseTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4564,12 +5623,29 @@ type EndpointConfPair struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EndpointConfPair) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EndpointConfPair) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointConfPairToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EndpointConfPair) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EndpointConfPair) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.EndpointConfPairPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointConfPairFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointConfPairToPb(st *EndpointConfPair) (*sqlpb.EndpointConfPairPb, error) {
@@ -4580,7 +5656,9 @@ func EndpointConfPairToPb(st *EndpointConfPair) (*sqlpb.EndpointConfPairPb, erro
 	pb.Key = st.Key
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4592,7 +5670,9 @@ func EndpointConfPairFromPb(pb *sqlpb.EndpointConfPairPb) (*EndpointConfPair, er
 	st.Key = pb.Key
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4617,12 +5697,29 @@ type EndpointHealth struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EndpointHealth) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EndpointHealth) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointHealthToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EndpointHealth) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EndpointHealth) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.EndpointHealthPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointHealthFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointHealthToPb(st *EndpointHealth) (*sqlpb.EndpointHealthPb, error) {
@@ -4648,7 +5745,9 @@ func EndpointHealthToPb(st *EndpointHealth) (*sqlpb.EndpointHealthPb, error) {
 	}
 	pb.Summary = st.Summary
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4675,7 +5774,9 @@ func EndpointHealthFromPb(pb *sqlpb.EndpointHealthPb) (*EndpointHealth, error) {
 	}
 	st.Summary = pb.Summary
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4777,12 +5878,29 @@ type EndpointInfo struct {
 	ForceSendFields []string                  `tf:"-"`
 }
 
-func (s *EndpointInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EndpointInfo) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EndpointInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EndpointInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.EndpointInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointInfoToPb(st *EndpointInfo) (*sqlpb.EndpointInfoPb, error) {
@@ -4853,7 +5971,9 @@ func EndpointInfoToPb(st *EndpointInfo) (*sqlpb.EndpointInfoPb, error) {
 		pb.WarehouseType = *warehouseTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4925,7 +6045,9 @@ func EndpointInfoFromPb(pb *sqlpb.EndpointInfoPb) (*EndpointInfo, error) {
 		st.WarehouseType = *warehouseTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4998,12 +6120,29 @@ type EndpointTagPair struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EndpointTagPair) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EndpointTagPair) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointTagPairToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EndpointTagPair) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EndpointTagPair) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.EndpointTagPairPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointTagPairFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointTagPairToPb(st *EndpointTagPair) (*sqlpb.EndpointTagPairPb, error) {
@@ -5014,7 +6153,9 @@ func EndpointTagPairToPb(st *EndpointTagPair) (*sqlpb.EndpointTagPairPb, error) 
 	pb.Key = st.Key
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5026,7 +6167,9 @@ func EndpointTagPairFromPb(pb *sqlpb.EndpointTagPairPb) (*EndpointTagPair, error
 	st.Key = pb.Key
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5034,6 +6177,31 @@ type EndpointTags struct {
 
 	// Wire name: 'custom_tags'
 	CustomTags []EndpointTagPair ``
+}
+
+func (st EndpointTags) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointTagsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *EndpointTags) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.EndpointTagsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointTagsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointTagsToPb(st *EndpointTags) (*sqlpb.EndpointTagsPb, error) {
@@ -5091,12 +6259,29 @@ type EnumValue struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EnumValue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EnumValue) MarshalJSON() ([]byte, error) {
+	pb, err := EnumValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EnumValue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EnumValue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.EnumValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EnumValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EnumValueToPb(st *EnumValue) (*sqlpb.EnumValuePb, error) {
@@ -5114,7 +6299,9 @@ func EnumValueToPb(st *EnumValue) (*sqlpb.EnumValuePb, error) {
 	}
 	pb.Values = st.Values
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5133,7 +6320,9 @@ func EnumValueFromPb(pb *sqlpb.EnumValuePb) (*EnumValue, error) {
 	}
 	st.Values = pb.Values
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5275,12 +6464,29 @@ type ExecuteStatementRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExecuteStatementRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExecuteStatementRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ExecuteStatementRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExecuteStatementRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExecuteStatementRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ExecuteStatementRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExecuteStatementRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ExecuteStatementRequestToPb(st *ExecuteStatementRequest) (*sqlpb.ExecuteStatementRequestPb, error) {
@@ -5329,7 +6535,9 @@ func ExecuteStatementRequestToPb(st *ExecuteStatementRequest) (*sqlpb.ExecuteSta
 	pb.WaitTimeout = st.WaitTimeout
 	pb.WarehouseId = st.WarehouseId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5379,7 +6587,9 @@ func ExecuteStatementRequestFromPb(pb *sqlpb.ExecuteStatementRequestPb) (*Execut
 	st.WaitTimeout = pb.WaitTimeout
 	st.WarehouseId = pb.WarehouseId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5486,12 +6696,29 @@ type ExternalLink struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExternalLink) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalLink) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLinkToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalLink) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalLink) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ExternalLinkPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLinkFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ExternalLinkToPb(st *ExternalLink) (*sqlpb.ExternalLinkPb, error) {
@@ -5509,7 +6736,9 @@ func ExternalLinkToPb(st *ExternalLink) (*sqlpb.ExternalLinkPb, error) {
 	pb.RowCount = st.RowCount
 	pb.RowOffset = st.RowOffset
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5528,7 +6757,9 @@ func ExternalLinkFromPb(pb *sqlpb.ExternalLinkPb) (*ExternalLink, error) {
 	st.RowCount = pb.RowCount
 	st.RowOffset = pb.RowOffset
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5557,12 +6788,29 @@ type ExternalQuerySource struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExternalQuerySource) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalQuerySource) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalQuerySourceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalQuerySource) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalQuerySource) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ExternalQuerySourcePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalQuerySourceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ExternalQuerySourceToPb(st *ExternalQuerySource) (*sqlpb.ExternalQuerySourcePb, error) {
@@ -5584,7 +6832,9 @@ func ExternalQuerySourceToPb(st *ExternalQuerySource) (*sqlpb.ExternalQuerySourc
 	pb.NotebookId = st.NotebookId
 	pb.SqlQueryId = st.SqlQueryId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5607,7 +6857,9 @@ func ExternalQuerySourceFromPb(pb *sqlpb.ExternalQuerySourcePb) (*ExternalQueryS
 	st.NotebookId = pb.NotebookId
 	st.SqlQueryId = pb.SqlQueryId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5625,12 +6877,29 @@ type ExternalQuerySourceJobInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExternalQuerySourceJobInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalQuerySourceJobInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalQuerySourceJobInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalQuerySourceJobInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalQuerySourceJobInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ExternalQuerySourceJobInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalQuerySourceJobInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ExternalQuerySourceJobInfoToPb(st *ExternalQuerySourceJobInfo) (*sqlpb.ExternalQuerySourceJobInfoPb, error) {
@@ -5642,7 +6911,9 @@ func ExternalQuerySourceJobInfoToPb(st *ExternalQuerySourceJobInfo) (*sqlpb.Exte
 	pb.JobRunId = st.JobRunId
 	pb.JobTaskRunId = st.JobTaskRunId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5655,7 +6926,9 @@ func ExternalQuerySourceJobInfoFromPb(pb *sqlpb.ExternalQuerySourceJobInfoPb) (*
 	st.JobRunId = pb.JobRunId
 	st.JobTaskRunId = pb.JobTaskRunId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5721,6 +6994,31 @@ type GetAlertRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st GetAlertRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAlertRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAlertRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetAlertRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAlertRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetAlertRequestToPb(st *GetAlertRequest) (*sqlpb.GetAlertRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -5745,6 +7043,31 @@ type GetAlertV2Request struct {
 
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st GetAlertV2Request) MarshalJSON() ([]byte, error) {
+	pb, err := GetAlertV2RequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAlertV2Request) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetAlertV2RequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAlertV2RequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetAlertV2RequestToPb(st *GetAlertV2Request) (*sqlpb.GetAlertV2RequestPb, error) {
@@ -5773,6 +7096,31 @@ type GetAlertsLegacyRequest struct {
 	AlertId string `tf:"-"`
 }
 
+func (st GetAlertsLegacyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAlertsLegacyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAlertsLegacyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetAlertsLegacyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAlertsLegacyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetAlertsLegacyRequestToPb(st *GetAlertsLegacyRequest) (*sqlpb.GetAlertsLegacyRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -5797,6 +7145,31 @@ type GetDashboardRequest struct {
 
 	// Wire name: 'dashboard_id'
 	DashboardId string `tf:"-"`
+}
+
+func (st GetDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetDashboardRequestToPb(st *GetDashboardRequest) (*sqlpb.GetDashboardRequestPb, error) {
@@ -5826,6 +7199,31 @@ type GetDbsqlPermissionRequest struct {
 	// The type of object permissions to check.
 	// Wire name: 'objectType'
 	ObjectType ObjectTypePlural `tf:"-"`
+}
+
+func (st GetDbsqlPermissionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDbsqlPermissionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetDbsqlPermissionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetDbsqlPermissionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDbsqlPermissionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetDbsqlPermissionRequestToPb(st *GetDbsqlPermissionRequest) (*sqlpb.GetDbsqlPermissionRequestPb, error) {
@@ -5868,6 +7266,31 @@ type GetQueriesLegacyRequest struct {
 	QueryId string `tf:"-"`
 }
 
+func (st GetQueriesLegacyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetQueriesLegacyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetQueriesLegacyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetQueriesLegacyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetQueriesLegacyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetQueriesLegacyRequestToPb(st *GetQueriesLegacyRequest) (*sqlpb.GetQueriesLegacyRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -5892,6 +7315,31 @@ type GetQueryRequest struct {
 
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st GetQueryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetQueryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetQueryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetQueryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetQueryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetQueryRequestToPb(st *GetQueryRequest) (*sqlpb.GetQueryRequestPb, error) {
@@ -5927,12 +7375,29 @@ type GetResponse struct {
 	ForceSendFields []string   `tf:"-"`
 }
 
-func (s *GetResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetResponseToPb(st *GetResponse) (*sqlpb.GetResponsePb, error) {
@@ -5961,7 +7426,9 @@ func GetResponseToPb(st *GetResponse) (*sqlpb.GetResponsePb, error) {
 		pb.ObjectType = *objectTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5991,7 +7458,9 @@ func GetResponseFromPb(pb *sqlpb.GetResponsePb) (*GetResponse, error) {
 		st.ObjectType = *objectTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6000,6 +7469,31 @@ type GetStatementRequest struct {
 	// statement, and is a required reference for all subsequent calls.
 	// Wire name: 'statement_id'
 	StatementId string `tf:"-"`
+}
+
+func (st GetStatementRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetStatementRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetStatementRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetStatementRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetStatementRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetStatementRequestToPb(st *GetStatementRequest) (*sqlpb.GetStatementRequestPb, error) {
@@ -6032,6 +7526,31 @@ type GetStatementResultChunkNRequest struct {
 	StatementId string `tf:"-"`
 }
 
+func (st GetStatementResultChunkNRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetStatementResultChunkNRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetStatementResultChunkNRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetStatementResultChunkNRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetStatementResultChunkNRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetStatementResultChunkNRequestToPb(st *GetStatementResultChunkNRequest) (*sqlpb.GetStatementResultChunkNRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -6060,6 +7579,31 @@ type GetWarehousePermissionLevelsRequest struct {
 	WarehouseId string `tf:"-"`
 }
 
+func (st GetWarehousePermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetWarehousePermissionLevelsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetWarehousePermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetWarehousePermissionLevelsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetWarehousePermissionLevelsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetWarehousePermissionLevelsRequestToPb(st *GetWarehousePermissionLevelsRequest) (*sqlpb.GetWarehousePermissionLevelsRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -6084,6 +7628,31 @@ type GetWarehousePermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
 	PermissionLevels []WarehousePermissionsDescription ``
+}
+
+func (st GetWarehousePermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetWarehousePermissionLevelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetWarehousePermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetWarehousePermissionLevelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetWarehousePermissionLevelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetWarehousePermissionLevelsResponseToPb(st *GetWarehousePermissionLevelsResponse) (*sqlpb.GetWarehousePermissionLevelsResponsePb, error) {
@@ -6134,6 +7703,31 @@ type GetWarehousePermissionsRequest struct {
 	WarehouseId string `tf:"-"`
 }
 
+func (st GetWarehousePermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetWarehousePermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetWarehousePermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetWarehousePermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetWarehousePermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetWarehousePermissionsRequestToPb(st *GetWarehousePermissionsRequest) (*sqlpb.GetWarehousePermissionsRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -6158,6 +7752,31 @@ type GetWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st GetWarehouseRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetWarehouseRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetWarehouseRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetWarehouseRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetWarehouseRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetWarehouseRequestToPb(st *GetWarehouseRequest) (*sqlpb.GetWarehouseRequestPb, error) {
@@ -6276,12 +7895,29 @@ type GetWarehouseResponse struct {
 	ForceSendFields []string                          `tf:"-"`
 }
 
-func (s *GetWarehouseResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetWarehouseResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetWarehouseResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetWarehouseResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetWarehouseResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetWarehouseResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetWarehouseResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetWarehouseResponseToPb(st *GetWarehouseResponse) (*sqlpb.GetWarehouseResponsePb, error) {
@@ -6352,7 +7988,9 @@ func GetWarehouseResponseToPb(st *GetWarehouseResponse) (*sqlpb.GetWarehouseResp
 		pb.WarehouseType = *warehouseTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6424,7 +8062,9 @@ func GetWarehouseResponseFromPb(pb *sqlpb.GetWarehouseResponsePb) (*GetWarehouse
 		st.WarehouseType = *warehouseTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6525,12 +8165,29 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	ForceSendFields            []string                   `tf:"-"`
 }
 
-func (s *GetWorkspaceWarehouseConfigResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetWorkspaceWarehouseConfigResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetWorkspaceWarehouseConfigResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetWorkspaceWarehouseConfigResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetWorkspaceWarehouseConfigResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.GetWorkspaceWarehouseConfigResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetWorkspaceWarehouseConfigResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetWorkspaceWarehouseConfigResponseToPb(st *GetWorkspaceWarehouseConfigResponse) (*sqlpb.GetWorkspaceWarehouseConfigResponsePb, error) {
@@ -6600,7 +8257,9 @@ func GetWorkspaceWarehouseConfigResponseToPb(st *GetWorkspaceWarehouseConfigResp
 		pb.SqlConfigurationParameters = sqlConfigurationParametersPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6671,7 +8330,9 @@ func GetWorkspaceWarehouseConfigResponseFromPb(pb *sqlpb.GetWorkspaceWarehouseCo
 		st.SqlConfigurationParameters = sqlConfigurationParametersField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6773,12 +8434,29 @@ type LegacyAlert struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *LegacyAlert) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st LegacyAlert) MarshalJSON() ([]byte, error) {
+	pb, err := LegacyAlertToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s LegacyAlert) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *LegacyAlert) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.LegacyAlertPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := LegacyAlertFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func LegacyAlertToPb(st *LegacyAlert) (*sqlpb.LegacyAlertPb, error) {
@@ -6822,7 +8500,9 @@ func LegacyAlertToPb(st *LegacyAlert) (*sqlpb.LegacyAlertPb, error) {
 		pb.User = userPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6867,7 +8547,9 @@ func LegacyAlertFromPb(pb *sqlpb.LegacyAlertPb) (*LegacyAlert, error) {
 		st.User = userField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7023,12 +8705,29 @@ type LegacyQuery struct {
 	ForceSendFields []string              `tf:"-"`
 }
 
-func (s *LegacyQuery) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st LegacyQuery) MarshalJSON() ([]byte, error) {
+	pb, err := LegacyQueryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s LegacyQuery) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *LegacyQuery) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.LegacyQueryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := LegacyQueryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func LegacyQueryToPb(st *LegacyQuery) (*sqlpb.LegacyQueryPb, error) {
@@ -7102,7 +8801,9 @@ func LegacyQueryToPb(st *LegacyQuery) (*sqlpb.LegacyQueryPb, error) {
 	}
 	pb.Visualizations = visualizationsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7177,7 +8878,9 @@ func LegacyQueryFromPb(pb *sqlpb.LegacyQueryPb) (*LegacyQuery, error) {
 	}
 	st.Visualizations = visualizationsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7218,12 +8921,29 @@ type LegacyVisualization struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *LegacyVisualization) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st LegacyVisualization) MarshalJSON() ([]byte, error) {
+	pb, err := LegacyVisualizationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s LegacyVisualization) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *LegacyVisualization) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.LegacyVisualizationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := LegacyVisualizationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func LegacyVisualizationToPb(st *LegacyVisualization) (*sqlpb.LegacyVisualizationPb, error) {
@@ -7246,7 +8966,9 @@ func LegacyVisualizationToPb(st *LegacyVisualization) (*sqlpb.LegacyVisualizatio
 	pb.Type = st.Type
 	pb.UpdatedAt = st.UpdatedAt
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7270,7 +8992,9 @@ func LegacyVisualizationFromPb(pb *sqlpb.LegacyVisualizationPb) (*LegacyVisualiz
 	st.Type = pb.Type
 	st.UpdatedAt = pb.UpdatedAt
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7337,12 +9061,29 @@ type ListAlertsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAlertsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAlertsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListAlertsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAlertsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAlertsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListAlertsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAlertsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAlertsRequestToPb(st *ListAlertsRequest) (*sqlpb.ListAlertsRequestPb, error) {
@@ -7353,7 +9094,9 @@ func ListAlertsRequestToPb(st *ListAlertsRequest) (*sqlpb.ListAlertsRequestPb, e
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7365,7 +9108,9 @@ func ListAlertsRequestFromPb(pb *sqlpb.ListAlertsRequestPb) (*ListAlertsRequest,
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7379,12 +9124,29 @@ type ListAlertsResponse struct {
 	ForceSendFields []string                  `tf:"-"`
 }
 
-func (s *ListAlertsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAlertsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListAlertsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAlertsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAlertsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListAlertsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAlertsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAlertsResponseToPb(st *ListAlertsResponse) (*sqlpb.ListAlertsResponsePb, error) {
@@ -7406,7 +9168,9 @@ func ListAlertsResponseToPb(st *ListAlertsResponse) (*sqlpb.ListAlertsResponsePb
 	}
 	pb.Results = resultsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7429,7 +9193,9 @@ func ListAlertsResponseFromPb(pb *sqlpb.ListAlertsResponsePb) (*ListAlertsRespon
 	}
 	st.Results = resultsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7439,7 +9205,7 @@ type ListAlertsResponseAlert struct {
 	Condition *AlertCondition ``
 	// The timestamp indicating when the alert was created.
 	// Wire name: 'create_time'
-	CreateTime *time.Time ``
+	CreateTime string `` //legacy
 	// Custom body of alert notification, if it exists. See [here] for custom
 	// templating instructions.
 	//
@@ -7485,19 +9251,36 @@ type ListAlertsResponseAlert struct {
 	// Timestamp when the alert was last triggered, if the alert has been
 	// triggered before.
 	// Wire name: 'trigger_time'
-	TriggerTime *time.Time ``
+	TriggerTime string `` //legacy
 	// The timestamp indicating when the alert was updated.
 	// Wire name: 'update_time'
-	UpdateTime      *time.Time ``
-	ForceSendFields []string   `tf:"-"`
+	UpdateTime      string   `` //legacy
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAlertsResponseAlert) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAlertsResponseAlert) MarshalJSON() ([]byte, error) {
+	pb, err := ListAlertsResponseAlertToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAlertsResponseAlert) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAlertsResponseAlert) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListAlertsResponseAlertPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAlertsResponseAlertFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAlertsResponseAlertToPb(st *ListAlertsResponseAlert) (*sqlpb.ListAlertsResponseAlertPb, error) {
@@ -7512,13 +9295,7 @@ func ListAlertsResponseAlertToPb(st *ListAlertsResponseAlert) (*sqlpb.ListAlerts
 	if conditionPb != nil {
 		pb.Condition = conditionPb
 	}
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 	pb.CustomBody = st.CustomBody
 	pb.CustomSubject = st.CustomSubject
 	pb.DisplayName = st.DisplayName
@@ -7541,22 +9318,12 @@ func ListAlertsResponseAlertToPb(st *ListAlertsResponseAlert) (*sqlpb.ListAlerts
 	if statePb != nil {
 		pb.State = *statePb
 	}
-	triggerTimePb, err := timestampToPb(st.TriggerTime)
-	if err != nil {
-		return nil, err
-	}
-	if triggerTimePb != nil {
-		pb.TriggerTime = *triggerTimePb
-	}
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.TriggerTime = st.TriggerTime
+	pb.UpdateTime = st.UpdateTime
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7572,13 +9339,7 @@ func ListAlertsResponseAlertFromPb(pb *sqlpb.ListAlertsResponseAlertPb) (*ListAl
 	if conditionField != nil {
 		st.Condition = conditionField
 	}
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	st.CustomBody = pb.CustomBody
 	st.CustomSubject = pb.CustomSubject
 	st.DisplayName = pb.DisplayName
@@ -7601,22 +9362,12 @@ func ListAlertsResponseAlertFromPb(pb *sqlpb.ListAlertsResponseAlertPb) (*ListAl
 	if stateField != nil {
 		st.State = *stateField
 	}
-	triggerTimeField, err := timestampFromPb(&pb.TriggerTime)
-	if err != nil {
-		return nil, err
-	}
-	if triggerTimeField != nil {
-		st.TriggerTime = triggerTimeField
-	}
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
+	st.TriggerTime = pb.TriggerTime
+	st.UpdateTime = pb.UpdateTime
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7630,12 +9381,29 @@ type ListAlertsV2Request struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAlertsV2Request) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAlertsV2Request) MarshalJSON() ([]byte, error) {
+	pb, err := ListAlertsV2RequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAlertsV2Request) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAlertsV2Request) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListAlertsV2RequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAlertsV2RequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAlertsV2RequestToPb(st *ListAlertsV2Request) (*sqlpb.ListAlertsV2RequestPb, error) {
@@ -7646,7 +9414,9 @@ func ListAlertsV2RequestToPb(st *ListAlertsV2Request) (*sqlpb.ListAlertsV2Reques
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7658,7 +9428,9 @@ func ListAlertsV2RequestFromPb(pb *sqlpb.ListAlertsV2RequestPb) (*ListAlertsV2Re
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7672,12 +9444,29 @@ type ListAlertsV2Response struct {
 	ForceSendFields []string  `tf:"-"`
 }
 
-func (s *ListAlertsV2Response) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAlertsV2Response) MarshalJSON() ([]byte, error) {
+	pb, err := ListAlertsV2ResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAlertsV2Response) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAlertsV2Response) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListAlertsV2ResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAlertsV2ResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAlertsV2ResponseToPb(st *ListAlertsV2Response) (*sqlpb.ListAlertsV2ResponsePb, error) {
@@ -7699,7 +9488,9 @@ func ListAlertsV2ResponseToPb(st *ListAlertsV2Response) (*sqlpb.ListAlertsV2Resp
 	}
 	pb.Results = resultsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7722,7 +9513,9 @@ func ListAlertsV2ResponseFromPb(pb *sqlpb.ListAlertsV2ResponsePb) (*ListAlertsV2
 	}
 	st.Results = resultsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7742,12 +9535,29 @@ type ListDashboardsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListDashboardsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListDashboardsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListDashboardsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListDashboardsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListDashboardsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListDashboardsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListDashboardsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListDashboardsRequestToPb(st *ListDashboardsRequest) (*sqlpb.ListDashboardsRequestPb, error) {
@@ -7766,7 +9576,9 @@ func ListDashboardsRequestToPb(st *ListDashboardsRequest) (*sqlpb.ListDashboards
 	pb.PageSize = st.PageSize
 	pb.Q = st.Q
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7786,7 +9598,9 @@ func ListDashboardsRequestFromPb(pb *sqlpb.ListDashboardsRequestPb) (*ListDashbo
 	st.PageSize = pb.PageSize
 	st.Q = pb.Q
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7872,12 +9686,29 @@ type ListQueriesLegacyRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListQueriesLegacyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListQueriesLegacyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListQueriesLegacyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListQueriesLegacyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListQueriesLegacyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListQueriesLegacyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListQueriesLegacyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListQueriesLegacyRequestToPb(st *ListQueriesLegacyRequest) (*sqlpb.ListQueriesLegacyRequestPb, error) {
@@ -7890,7 +9721,9 @@ func ListQueriesLegacyRequestToPb(st *ListQueriesLegacyRequest) (*sqlpb.ListQuer
 	pb.PageSize = st.PageSize
 	pb.Q = st.Q
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7904,7 +9737,9 @@ func ListQueriesLegacyRequestFromPb(pb *sqlpb.ListQueriesLegacyRequestPb) (*List
 	st.PageSize = pb.PageSize
 	st.Q = pb.Q
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7918,12 +9753,29 @@ type ListQueriesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListQueriesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListQueriesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListQueriesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListQueriesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListQueriesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListQueriesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListQueriesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListQueriesRequestToPb(st *ListQueriesRequest) (*sqlpb.ListQueriesRequestPb, error) {
@@ -7934,7 +9786,9 @@ func ListQueriesRequestToPb(st *ListQueriesRequest) (*sqlpb.ListQueriesRequestPb
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7946,7 +9800,9 @@ func ListQueriesRequestFromPb(pb *sqlpb.ListQueriesRequestPb) (*ListQueriesReque
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7963,12 +9819,29 @@ type ListQueriesResponse struct {
 	ForceSendFields []string    `tf:"-"`
 }
 
-func (s *ListQueriesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListQueriesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListQueriesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListQueriesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListQueriesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListQueriesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListQueriesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListQueriesResponseToPb(st *ListQueriesResponse) (*sqlpb.ListQueriesResponsePb, error) {
@@ -7991,7 +9864,9 @@ func ListQueriesResponseToPb(st *ListQueriesResponse) (*sqlpb.ListQueriesRespons
 	}
 	pb.Res = resPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8015,7 +9890,9 @@ func ListQueriesResponseFromPb(pb *sqlpb.ListQueriesResponsePb) (*ListQueriesRes
 	}
 	st.Res = resField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8043,12 +9920,29 @@ type ListQueryHistoryRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListQueryHistoryRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListQueryHistoryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListQueryHistoryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListQueryHistoryRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListQueryHistoryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListQueryHistoryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListQueryHistoryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListQueryHistoryRequestToPb(st *ListQueryHistoryRequest) (*sqlpb.ListQueryHistoryRequestPb, error) {
@@ -8067,7 +9961,9 @@ func ListQueryHistoryRequestToPb(st *ListQueryHistoryRequest) (*sqlpb.ListQueryH
 	pb.MaxResults = st.MaxResults
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8087,7 +9983,9 @@ func ListQueryHistoryRequestFromPb(pb *sqlpb.ListQueryHistoryRequestPb) (*ListQu
 	st.MaxResults = pb.MaxResults
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8101,12 +9999,29 @@ type ListQueryObjectsResponse struct {
 	ForceSendFields []string                        `tf:"-"`
 }
 
-func (s *ListQueryObjectsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListQueryObjectsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListQueryObjectsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListQueryObjectsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListQueryObjectsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListQueryObjectsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListQueryObjectsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListQueryObjectsResponseToPb(st *ListQueryObjectsResponse) (*sqlpb.ListQueryObjectsResponsePb, error) {
@@ -8128,7 +10043,9 @@ func ListQueryObjectsResponseToPb(st *ListQueryObjectsResponse) (*sqlpb.ListQuer
 	}
 	pb.Results = resultsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8151,7 +10068,9 @@ func ListQueryObjectsResponseFromPb(pb *sqlpb.ListQueryObjectsResponsePb) (*List
 	}
 	st.Results = resultsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8164,7 +10083,7 @@ type ListQueryObjectsResponseQuery struct {
 	Catalog string ``
 	// Timestamp when this query was created.
 	// Wire name: 'create_time'
-	CreateTime *time.Time ``
+	CreateTime string `` //legacy
 	// General description that conveys additional information about this query
 	// such as usage notes.
 	// Wire name: 'description'
@@ -8202,19 +10121,36 @@ type ListQueryObjectsResponseQuery struct {
 	Tags []string ``
 	// Timestamp when this query was last updated.
 	// Wire name: 'update_time'
-	UpdateTime *time.Time ``
+	UpdateTime string `` //legacy
 	// ID of the SQL warehouse attached to the query.
 	// Wire name: 'warehouse_id'
 	WarehouseId     string   ``
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListQueryObjectsResponseQuery) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListQueryObjectsResponseQuery) MarshalJSON() ([]byte, error) {
+	pb, err := ListQueryObjectsResponseQueryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListQueryObjectsResponseQuery) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListQueryObjectsResponseQuery) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListQueryObjectsResponseQueryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListQueryObjectsResponseQueryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListQueryObjectsResponseQueryToPb(st *ListQueryObjectsResponseQuery) (*sqlpb.ListQueryObjectsResponseQueryPb, error) {
@@ -8224,13 +10160,7 @@ func ListQueryObjectsResponseQueryToPb(st *ListQueryObjectsResponseQuery) (*sqlp
 	pb := &sqlpb.ListQueryObjectsResponseQueryPb{}
 	pb.ApplyAutoLimit = st.ApplyAutoLimit
 	pb.Catalog = st.Catalog
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 	pb.Description = st.Description
 	pb.DisplayName = st.DisplayName
 	pb.Id = st.Id
@@ -8265,16 +10195,12 @@ func ListQueryObjectsResponseQueryToPb(st *ListQueryObjectsResponseQuery) (*sqlp
 	}
 	pb.Schema = st.Schema
 	pb.Tags = st.Tags
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 	pb.WarehouseId = st.WarehouseId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8285,13 +10211,7 @@ func ListQueryObjectsResponseQueryFromPb(pb *sqlpb.ListQueryObjectsResponseQuery
 	st := &ListQueryObjectsResponseQuery{}
 	st.ApplyAutoLimit = pb.ApplyAutoLimit
 	st.Catalog = pb.Catalog
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	st.Description = pb.Description
 	st.DisplayName = pb.DisplayName
 	st.Id = pb.Id
@@ -8326,16 +10246,12 @@ func ListQueryObjectsResponseQueryFromPb(pb *sqlpb.ListQueryObjectsResponseQuery
 	}
 	st.Schema = pb.Schema
 	st.Tags = pb.Tags
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
+	st.UpdateTime = pb.UpdateTime
 	st.WarehouseId = pb.WarehouseId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8355,12 +10271,29 @@ type ListResponse struct {
 	ForceSendFields []string    `tf:"-"`
 }
 
-func (s *ListResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListResponseToPb(st *ListResponse) (*sqlpb.ListResponsePb, error) {
@@ -8384,7 +10317,9 @@ func ListResponseToPb(st *ListResponse) (*sqlpb.ListResponsePb, error) {
 	}
 	pb.Results = resultsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8409,7 +10344,9 @@ func ListResponseFromPb(pb *sqlpb.ListResponsePb) (*ListResponse, error) {
 	}
 	st.Results = resultsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8426,12 +10363,29 @@ type ListVisualizationsForQueryRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListVisualizationsForQueryRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListVisualizationsForQueryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListVisualizationsForQueryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListVisualizationsForQueryRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListVisualizationsForQueryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListVisualizationsForQueryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListVisualizationsForQueryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListVisualizationsForQueryRequestToPb(st *ListVisualizationsForQueryRequest) (*sqlpb.ListVisualizationsForQueryRequestPb, error) {
@@ -8443,7 +10397,9 @@ func ListVisualizationsForQueryRequestToPb(st *ListVisualizationsForQueryRequest
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8456,7 +10412,9 @@ func ListVisualizationsForQueryRequestFromPb(pb *sqlpb.ListVisualizationsForQuer
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8470,12 +10428,29 @@ type ListVisualizationsForQueryResponse struct {
 	ForceSendFields []string        `tf:"-"`
 }
 
-func (s *ListVisualizationsForQueryResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListVisualizationsForQueryResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListVisualizationsForQueryResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListVisualizationsForQueryResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListVisualizationsForQueryResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListVisualizationsForQueryResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListVisualizationsForQueryResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListVisualizationsForQueryResponseToPb(st *ListVisualizationsForQueryResponse) (*sqlpb.ListVisualizationsForQueryResponsePb, error) {
@@ -8497,7 +10472,9 @@ func ListVisualizationsForQueryResponseToPb(st *ListVisualizationsForQueryRespon
 	}
 	pb.Results = resultsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8520,7 +10497,9 @@ func ListVisualizationsForQueryResponseFromPb(pb *sqlpb.ListVisualizationsForQue
 	}
 	st.Results = resultsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8532,12 +10511,29 @@ type ListWarehousesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListWarehousesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListWarehousesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListWarehousesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListWarehousesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListWarehousesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListWarehousesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListWarehousesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListWarehousesRequestToPb(st *ListWarehousesRequest) (*sqlpb.ListWarehousesRequestPb, error) {
@@ -8547,7 +10543,9 @@ func ListWarehousesRequestToPb(st *ListWarehousesRequest) (*sqlpb.ListWarehouses
 	pb := &sqlpb.ListWarehousesRequestPb{}
 	pb.RunAsUserId = st.RunAsUserId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8558,7 +10556,9 @@ func ListWarehousesRequestFromPb(pb *sqlpb.ListWarehousesRequestPb) (*ListWareho
 	st := &ListWarehousesRequest{}
 	st.RunAsUserId = pb.RunAsUserId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8566,6 +10566,31 @@ type ListWarehousesResponse struct {
 	// A list of warehouses and their configurations.
 	// Wire name: 'warehouses'
 	Warehouses []EndpointInfo ``
+}
+
+func (st ListWarehousesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListWarehousesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListWarehousesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ListWarehousesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListWarehousesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListWarehousesResponseToPb(st *ListWarehousesResponse) (*sqlpb.ListWarehousesResponsePb, error) {
@@ -8624,12 +10649,29 @@ type MultiValuesOptions struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *MultiValuesOptions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MultiValuesOptions) MarshalJSON() ([]byte, error) {
+	pb, err := MultiValuesOptionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MultiValuesOptions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MultiValuesOptions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.MultiValuesOptionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MultiValuesOptionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func MultiValuesOptionsToPb(st *MultiValuesOptions) (*sqlpb.MultiValuesOptionsPb, error) {
@@ -8641,7 +10683,9 @@ func MultiValuesOptionsToPb(st *MultiValuesOptions) (*sqlpb.MultiValuesOptionsPb
 	pb.Separator = st.Separator
 	pb.Suffix = st.Suffix
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8654,7 +10698,9 @@ func MultiValuesOptionsFromPb(pb *sqlpb.MultiValuesOptionsPb) (*MultiValuesOptio
 	st.Separator = pb.Separator
 	st.Suffix = pb.Suffix
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8665,12 +10711,29 @@ type NumericValue struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *NumericValue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st NumericValue) MarshalJSON() ([]byte, error) {
+	pb, err := NumericValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s NumericValue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *NumericValue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.NumericValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NumericValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NumericValueToPb(st *NumericValue) (*sqlpb.NumericValuePb, error) {
@@ -8680,7 +10743,9 @@ func NumericValueToPb(st *NumericValue) (*sqlpb.NumericValuePb, error) {
 	pb := &sqlpb.NumericValuePb{}
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8691,7 +10756,9 @@ func NumericValueFromPb(pb *sqlpb.NumericValuePb) (*NumericValue, error) {
 	st := &NumericValue{}
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8831,12 +10898,29 @@ type OdbcParams struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *OdbcParams) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st OdbcParams) MarshalJSON() ([]byte, error) {
+	pb, err := OdbcParamsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s OdbcParams) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *OdbcParams) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.OdbcParamsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := OdbcParamsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func OdbcParamsToPb(st *OdbcParams) (*sqlpb.OdbcParamsPb, error) {
@@ -8849,7 +10933,9 @@ func OdbcParamsToPb(st *OdbcParams) (*sqlpb.OdbcParamsPb, error) {
 	pb.Port = st.Port
 	pb.Protocol = st.Protocol
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8863,7 +10949,9 @@ func OdbcParamsFromPb(pb *sqlpb.OdbcParamsPb) (*OdbcParams, error) {
 	st.Port = pb.Port
 	st.Protocol = pb.Protocol
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8952,12 +11040,29 @@ type Parameter struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Parameter) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Parameter) MarshalJSON() ([]byte, error) {
+	pb, err := ParameterToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Parameter) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Parameter) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ParameterPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ParameterFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ParameterToPb(st *Parameter) (*sqlpb.ParameterPb, error) {
@@ -8985,7 +11090,9 @@ func ParameterToPb(st *Parameter) (*sqlpb.ParameterPb, error) {
 	}
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9014,7 +11121,9 @@ func ParameterFromPb(pb *sqlpb.ParameterPb) (*Parameter, error) {
 	}
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9220,7 +11329,7 @@ type Query struct {
 	Catalog string ``
 	// Timestamp when this query was created.
 	// Wire name: 'create_time'
-	CreateTime *time.Time ``
+	CreateTime string `` //legacy
 	// General description that conveys additional information about this query
 	// such as usage notes.
 	// Wire name: 'description'
@@ -9261,19 +11370,36 @@ type Query struct {
 	Tags []string ``
 	// Timestamp when this query was last updated.
 	// Wire name: 'update_time'
-	UpdateTime *time.Time ``
+	UpdateTime string `` //legacy
 	// ID of the SQL warehouse attached to the query.
 	// Wire name: 'warehouse_id'
 	WarehouseId     string   ``
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Query) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Query) MarshalJSON() ([]byte, error) {
+	pb, err := QueryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Query) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Query) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.QueryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryToPb(st *Query) (*sqlpb.QueryPb, error) {
@@ -9283,13 +11409,7 @@ func QueryToPb(st *Query) (*sqlpb.QueryPb, error) {
 	pb := &sqlpb.QueryPb{}
 	pb.ApplyAutoLimit = st.ApplyAutoLimit
 	pb.Catalog = st.Catalog
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 	pb.Description = st.Description
 	pb.DisplayName = st.DisplayName
 	pb.Id = st.Id
@@ -9325,16 +11445,12 @@ func QueryToPb(st *Query) (*sqlpb.QueryPb, error) {
 	}
 	pb.Schema = st.Schema
 	pb.Tags = st.Tags
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 	pb.WarehouseId = st.WarehouseId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9345,13 +11461,7 @@ func QueryFromPb(pb *sqlpb.QueryPb) (*Query, error) {
 	st := &Query{}
 	st.ApplyAutoLimit = pb.ApplyAutoLimit
 	st.Catalog = pb.Catalog
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	st.Description = pb.Description
 	st.DisplayName = pb.DisplayName
 	st.Id = pb.Id
@@ -9387,16 +11497,12 @@ func QueryFromPb(pb *sqlpb.QueryPb) (*Query, error) {
 	}
 	st.Schema = pb.Schema
 	st.Tags = pb.Tags
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
+	st.UpdateTime = pb.UpdateTime
 	st.WarehouseId = pb.WarehouseId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9413,12 +11519,29 @@ type QueryBackedValue struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *QueryBackedValue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QueryBackedValue) MarshalJSON() ([]byte, error) {
+	pb, err := QueryBackedValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QueryBackedValue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QueryBackedValue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.QueryBackedValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryBackedValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryBackedValueToPb(st *QueryBackedValue) (*sqlpb.QueryBackedValuePb, error) {
@@ -9436,7 +11559,9 @@ func QueryBackedValueToPb(st *QueryBackedValue) (*sqlpb.QueryBackedValuePb, erro
 	pb.QueryId = st.QueryId
 	pb.Values = st.Values
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9455,7 +11580,9 @@ func QueryBackedValueFromPb(pb *sqlpb.QueryBackedValuePb) (*QueryBackedValue, er
 	st.QueryId = pb.QueryId
 	st.Values = pb.Values
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9496,12 +11623,29 @@ type QueryEditContent struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *QueryEditContent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QueryEditContent) MarshalJSON() ([]byte, error) {
+	pb, err := QueryEditContentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QueryEditContent) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QueryEditContent) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.QueryEditContentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryEditContentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryEditContentToPb(st *QueryEditContent) (*sqlpb.QueryEditContentPb, error) {
@@ -9524,7 +11668,9 @@ func QueryEditContentToPb(st *QueryEditContent) (*sqlpb.QueryEditContentPb, erro
 	}
 	pb.Tags = st.Tags
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9548,7 +11694,9 @@ func QueryEditContentFromPb(pb *sqlpb.QueryEditContentPb) (*QueryEditContent, er
 	}
 	st.Tags = pb.Tags
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9572,6 +11720,31 @@ type QueryFilter struct {
 	// A list of warehouse IDs.
 	// Wire name: 'warehouse_ids'
 	WarehouseIds []string ``
+}
+
+func (st QueryFilter) MarshalJSON() ([]byte, error) {
+	pb, err := QueryFilterToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *QueryFilter) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.QueryFilterPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryFilterFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryFilterToPb(st *QueryFilter) (*sqlpb.QueryFilterPb, error) {
@@ -9724,12 +11897,29 @@ type QueryInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *QueryInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QueryInfo) MarshalJSON() ([]byte, error) {
+	pb, err := QueryInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QueryInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QueryInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.QueryInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryInfoToPb(st *QueryInfo) (*sqlpb.QueryInfoPb, error) {
@@ -9798,7 +11988,9 @@ func QueryInfoToPb(st *QueryInfo) (*sqlpb.QueryInfoPb, error) {
 	pb.UserName = st.UserName
 	pb.WarehouseId = st.WarehouseId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9868,7 +12060,9 @@ func QueryInfoFromPb(pb *sqlpb.QueryInfoPb) (*QueryInfo, error) {
 	st.UserName = pb.UserName
 	st.WarehouseId = pb.WarehouseId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9888,12 +12082,29 @@ type QueryList struct {
 	ForceSendFields []string      `tf:"-"`
 }
 
-func (s *QueryList) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QueryList) MarshalJSON() ([]byte, error) {
+	pb, err := QueryListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QueryList) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QueryList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.QueryListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryListToPb(st *QueryList) (*sqlpb.QueryListPb, error) {
@@ -9917,7 +12128,9 @@ func QueryListToPb(st *QueryList) (*sqlpb.QueryListPb, error) {
 	}
 	pb.Results = resultsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9942,7 +12155,9 @@ func QueryListFromPb(pb *sqlpb.QueryListPb) (*QueryList, error) {
 	}
 	st.Results = resultsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -10052,12 +12267,29 @@ type QueryMetrics struct {
 	ForceSendFields  []string `tf:"-"`
 }
 
-func (s *QueryMetrics) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QueryMetrics) MarshalJSON() ([]byte, error) {
+	pb, err := QueryMetricsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QueryMetrics) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QueryMetrics) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.QueryMetricsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryMetricsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryMetricsToPb(st *QueryMetrics) (*sqlpb.QueryMetricsPb, error) {
@@ -10099,7 +12331,9 @@ func QueryMetricsToPb(st *QueryMetrics) (*sqlpb.QueryMetricsPb, error) {
 	pb.WorkToBeDone = st.WorkToBeDone
 	pb.WriteRemoteBytes = st.WriteRemoteBytes
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -10142,7 +12376,9 @@ func QueryMetricsFromPb(pb *sqlpb.QueryMetricsPb) (*QueryMetrics, error) {
 	st.WorkToBeDone = pb.WorkToBeDone
 	st.WriteRemoteBytes = pb.WriteRemoteBytes
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -10164,12 +12400,29 @@ type QueryOptions struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *QueryOptions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QueryOptions) MarshalJSON() ([]byte, error) {
+	pb, err := QueryOptionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QueryOptions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QueryOptions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.QueryOptionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryOptionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryOptionsToPb(st *QueryOptions) (*sqlpb.QueryOptionsPb, error) {
@@ -10193,7 +12446,9 @@ func QueryOptionsToPb(st *QueryOptions) (*sqlpb.QueryOptionsPb, error) {
 	pb.Parameters = parametersPb
 	pb.Schema = st.Schema
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -10218,7 +12473,9 @@ func QueryOptionsFromPb(pb *sqlpb.QueryOptionsPb) (*QueryOptions, error) {
 	st.Parameters = parametersField
 	st.Schema = pb.Schema
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -10253,12 +12510,29 @@ type QueryParameter struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *QueryParameter) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QueryParameter) MarshalJSON() ([]byte, error) {
+	pb, err := QueryParameterToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QueryParameter) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QueryParameter) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.QueryParameterPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryParameterFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryParameterToPb(st *QueryParameter) (*sqlpb.QueryParameterPb, error) {
@@ -10311,7 +12585,9 @@ func QueryParameterToPb(st *QueryParameter) (*sqlpb.QueryParameterPb, error) {
 	}
 	pb.Title = st.Title
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -10365,7 +12641,9 @@ func QueryParameterFromPb(pb *sqlpb.QueryParameterPb) (*QueryParameter, error) {
 	}
 	st.Title = pb.Title
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -10406,12 +12684,29 @@ type QueryPostContent struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *QueryPostContent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QueryPostContent) MarshalJSON() ([]byte, error) {
+	pb, err := QueryPostContentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QueryPostContent) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QueryPostContent) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.QueryPostContentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryPostContentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryPostContentToPb(st *QueryPostContent) (*sqlpb.QueryPostContentPb, error) {
@@ -10434,7 +12729,9 @@ func QueryPostContentToPb(st *QueryPostContent) (*sqlpb.QueryPostContentPb, erro
 	}
 	pb.Tags = st.Tags
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -10458,7 +12755,9 @@ func QueryPostContentFromPb(pb *sqlpb.QueryPostContentPb) (*QueryPostContent, er
 	}
 	st.Tags = pb.Tags
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -10656,6 +12955,31 @@ type RepeatedEndpointConfPairs struct {
 	ConfigurationPairs []EndpointConfPair ``
 }
 
+func (st RepeatedEndpointConfPairs) MarshalJSON() ([]byte, error) {
+	pb, err := RepeatedEndpointConfPairsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RepeatedEndpointConfPairs) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.RepeatedEndpointConfPairsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RepeatedEndpointConfPairsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func RepeatedEndpointConfPairsToPb(st *RepeatedEndpointConfPairs) (*sqlpb.RepeatedEndpointConfPairsPb, error) {
 	if st == nil {
 		return nil, nil
@@ -10728,6 +13052,31 @@ type RestoreDashboardRequest struct {
 	DashboardId string `tf:"-"`
 }
 
+func (st RestoreDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := RestoreDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RestoreDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.RestoreDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RestoreDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func RestoreDashboardRequestToPb(st *RestoreDashboardRequest) (*sqlpb.RestoreDashboardRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -10752,6 +13101,31 @@ type RestoreQueriesLegacyRequest struct {
 
 	// Wire name: 'query_id'
 	QueryId string `tf:"-"`
+}
+
+func (st RestoreQueriesLegacyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := RestoreQueriesLegacyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RestoreQueriesLegacyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.RestoreQueriesLegacyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RestoreQueriesLegacyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RestoreQueriesLegacyRequestToPb(st *RestoreQueriesLegacyRequest) (*sqlpb.RestoreQueriesLegacyRequestPb, error) {
@@ -10810,12 +13184,29 @@ type ResultData struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ResultData) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ResultData) MarshalJSON() ([]byte, error) {
+	pb, err := ResultDataToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ResultData) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ResultData) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ResultDataPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ResultDataFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ResultDataToPb(st *ResultData) (*sqlpb.ResultDataPb, error) {
@@ -10843,7 +13234,9 @@ func ResultDataToPb(st *ResultData) (*sqlpb.ResultDataPb, error) {
 	pb.RowCount = st.RowCount
 	pb.RowOffset = st.RowOffset
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -10872,7 +13265,9 @@ func ResultDataFromPb(pb *sqlpb.ResultDataPb) (*ResultData, error) {
 	st.RowCount = pb.RowCount
 	st.RowOffset = pb.RowOffset
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -10904,12 +13299,29 @@ type ResultManifest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ResultManifest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ResultManifest) MarshalJSON() ([]byte, error) {
+	pb, err := ResultManifestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ResultManifest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ResultManifest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ResultManifestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ResultManifestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ResultManifestToPb(st *ResultManifest) (*sqlpb.ResultManifestPb, error) {
@@ -10948,7 +13360,9 @@ func ResultManifestToPb(st *ResultManifest) (*sqlpb.ResultManifestPb, error) {
 	pb.TotalRowCount = st.TotalRowCount
 	pb.Truncated = st.Truncated
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -10988,7 +13402,9 @@ func ResultManifestFromPb(pb *sqlpb.ResultManifestPb) (*ResultManifest, error) {
 	st.TotalRowCount = pb.TotalRowCount
 	st.Truncated = pb.Truncated
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -11003,12 +13419,29 @@ type ResultSchema struct {
 	ForceSendFields []string     `tf:"-"`
 }
 
-func (s *ResultSchema) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ResultSchema) MarshalJSON() ([]byte, error) {
+	pb, err := ResultSchemaToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ResultSchema) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ResultSchema) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ResultSchemaPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ResultSchemaFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ResultSchemaToPb(st *ResultSchema) (*sqlpb.ResultSchemaPb, error) {
@@ -11030,7 +13463,9 @@ func ResultSchemaToPb(st *ResultSchema) (*sqlpb.ResultSchemaPb, error) {
 	}
 	pb.Columns = columnsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -11053,7 +13488,9 @@ func ResultSchemaFromPb(pb *sqlpb.ResultSchemaPb) (*ResultSchema, error) {
 	}
 	st.Columns = columnsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -11226,12 +13663,29 @@ type ServiceError struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServiceError) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServiceError) MarshalJSON() ([]byte, error) {
+	pb, err := ServiceErrorToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServiceError) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServiceError) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.ServiceErrorPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServiceErrorFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServiceErrorToPb(st *ServiceError) (*sqlpb.ServiceErrorPb, error) {
@@ -11248,7 +13702,9 @@ func ServiceErrorToPb(st *ServiceError) (*sqlpb.ServiceErrorPb, error) {
 	}
 	pb.Message = st.Message
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -11266,7 +13722,9 @@ func ServiceErrorFromPb(pb *sqlpb.ServiceErrorPb) (*ServiceError, error) {
 	}
 	st.Message = pb.Message
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -11373,6 +13831,31 @@ type SetRequest struct {
 	ObjectType ObjectTypePlural `tf:"-"`
 }
 
+func (st SetRequest) MarshalJSON() ([]byte, error) {
+	pb, err := SetRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *SetRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.SetRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SetRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func SetRequestToPb(st *SetRequest) (*sqlpb.SetRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -11444,12 +13927,29 @@ type SetResponse struct {
 	ForceSendFields []string   `tf:"-"`
 }
 
-func (s *SetResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SetResponse) MarshalJSON() ([]byte, error) {
+	pb, err := SetResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SetResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SetResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.SetResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SetResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SetResponseToPb(st *SetResponse) (*sqlpb.SetResponsePb, error) {
@@ -11478,7 +13978,9 @@ func SetResponseToPb(st *SetResponse) (*sqlpb.SetResponsePb, error) {
 		pb.ObjectType = *objectTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -11508,7 +14010,9 @@ func SetResponseFromPb(pb *sqlpb.SetResponsePb) (*SetResponse, error) {
 		st.ObjectType = *objectTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -11550,12 +14054,29 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	ForceSendFields            []string                   `tf:"-"`
 }
 
-func (s *SetWorkspaceWarehouseConfigRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SetWorkspaceWarehouseConfigRequest) MarshalJSON() ([]byte, error) {
+	pb, err := SetWorkspaceWarehouseConfigRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SetWorkspaceWarehouseConfigRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SetWorkspaceWarehouseConfigRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.SetWorkspaceWarehouseConfigRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SetWorkspaceWarehouseConfigRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SetWorkspaceWarehouseConfigRequestToPb(st *SetWorkspaceWarehouseConfigRequest) (*sqlpb.SetWorkspaceWarehouseConfigRequestPb, error) {
@@ -11625,7 +14146,9 @@ func SetWorkspaceWarehouseConfigRequestToPb(st *SetWorkspaceWarehouseConfigReque
 		pb.SqlConfigurationParameters = sqlConfigurationParametersPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -11696,7 +14219,9 @@ func SetWorkspaceWarehouseConfigRequestFromPb(pb *sqlpb.SetWorkspaceWarehouseCon
 		st.SqlConfigurationParameters = sqlConfigurationParametersField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -11820,6 +14345,31 @@ type StartRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st StartRequest) MarshalJSON() ([]byte, error) {
+	pb, err := StartRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *StartRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.StartRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StartRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func StartRequestToPb(st *StartRequest) (*sqlpb.StartRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -11926,12 +14476,29 @@ type StatementParameterListItem struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *StatementParameterListItem) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st StatementParameterListItem) MarshalJSON() ([]byte, error) {
+	pb, err := StatementParameterListItemToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s StatementParameterListItem) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *StatementParameterListItem) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.StatementParameterListItemPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StatementParameterListItemFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func StatementParameterListItemToPb(st *StatementParameterListItem) (*sqlpb.StatementParameterListItemPb, error) {
@@ -11943,7 +14510,9 @@ func StatementParameterListItemToPb(st *StatementParameterListItem) (*sqlpb.Stat
 	pb.Type = st.Type
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -11956,7 +14525,9 @@ func StatementParameterListItemFromPb(pb *sqlpb.StatementParameterListItemPb) (*
 	st.Type = pb.Type
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -11977,12 +14548,29 @@ type StatementResponse struct {
 	ForceSendFields []string         `tf:"-"`
 }
 
-func (s *StatementResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st StatementResponse) MarshalJSON() ([]byte, error) {
+	pb, err := StatementResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s StatementResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *StatementResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.StatementResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StatementResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func StatementResponseToPb(st *StatementResponse) (*sqlpb.StatementResponsePb, error) {
@@ -12013,7 +14601,9 @@ func StatementResponseToPb(st *StatementResponse) (*sqlpb.StatementResponsePb, e
 		pb.Status = statusPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -12045,7 +14635,9 @@ func StatementResponseFromPb(pb *sqlpb.StatementResponsePb) (*StatementResponse,
 		st.Status = statusField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -12137,6 +14729,31 @@ type StatementStatus struct {
 
 	// Wire name: 'state'
 	State StatementState ``
+}
+
+func (st StatementStatus) MarshalJSON() ([]byte, error) {
+	pb, err := StatementStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *StatementStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.StatementStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StatementStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func StatementStatusToPb(st *StatementStatus) (*sqlpb.StatementStatusPb, error) {
@@ -12251,6 +14868,31 @@ type StopRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st StopRequest) MarshalJSON() ([]byte, error) {
+	pb, err := StopRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *StopRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.StopRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StopRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func StopRequestToPb(st *StopRequest) (*sqlpb.StopRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -12275,6 +14917,31 @@ type Success struct {
 
 	// Wire name: 'message'
 	Message SuccessMessage ``
+}
+
+func (st Success) MarshalJSON() ([]byte, error) {
+	pb, err := SuccessToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Success) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.SuccessPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SuccessFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SuccessToPb(st *Success) (*sqlpb.SuccessPb, error) {
@@ -12371,12 +15038,29 @@ type TaskTimeOverRange struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TaskTimeOverRange) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TaskTimeOverRange) MarshalJSON() ([]byte, error) {
+	pb, err := TaskTimeOverRangeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TaskTimeOverRange) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TaskTimeOverRange) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.TaskTimeOverRangePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TaskTimeOverRangeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TaskTimeOverRangeToPb(st *TaskTimeOverRange) (*sqlpb.TaskTimeOverRangePb, error) {
@@ -12398,7 +15082,9 @@ func TaskTimeOverRangeToPb(st *TaskTimeOverRange) (*sqlpb.TaskTimeOverRangePb, e
 	pb.Entries = entriesPb
 	pb.Interval = st.Interval
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -12421,7 +15107,9 @@ func TaskTimeOverRangeFromPb(pb *sqlpb.TaskTimeOverRangePb) (*TaskTimeOverRange,
 	st.Entries = entriesField
 	st.Interval = pb.Interval
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -12433,12 +15121,29 @@ type TaskTimeOverRangeEntry struct {
 	ForceSendFields     []string `tf:"-"`
 }
 
-func (s *TaskTimeOverRangeEntry) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TaskTimeOverRangeEntry) MarshalJSON() ([]byte, error) {
+	pb, err := TaskTimeOverRangeEntryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TaskTimeOverRangeEntry) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TaskTimeOverRangeEntry) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.TaskTimeOverRangeEntryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TaskTimeOverRangeEntryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TaskTimeOverRangeEntryToPb(st *TaskTimeOverRangeEntry) (*sqlpb.TaskTimeOverRangeEntryPb, error) {
@@ -12448,7 +15153,9 @@ func TaskTimeOverRangeEntryToPb(st *TaskTimeOverRangeEntry) (*sqlpb.TaskTimeOver
 	pb := &sqlpb.TaskTimeOverRangeEntryPb{}
 	pb.TaskCompletedTimeMs = st.TaskCompletedTimeMs
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -12459,7 +15166,9 @@ func TaskTimeOverRangeEntryFromPb(pb *sqlpb.TaskTimeOverRangeEntryPb) (*TaskTime
 	st := &TaskTimeOverRangeEntry{}
 	st.TaskCompletedTimeMs = pb.TaskCompletedTimeMs
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -12474,6 +15183,31 @@ type TerminationReason struct {
 	// type of the termination
 	// Wire name: 'type'
 	Type TerminationReasonType ``
+}
+
+func (st TerminationReason) MarshalJSON() ([]byte, error) {
+	pb, err := TerminationReasonToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *TerminationReason) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.TerminationReasonPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TerminationReasonFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TerminationReasonToPb(st *TerminationReason) (*sqlpb.TerminationReasonPb, error) {
@@ -12876,12 +15610,29 @@ type TextValue struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TextValue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TextValue) MarshalJSON() ([]byte, error) {
+	pb, err := TextValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TextValue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TextValue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.TextValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TextValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TextValueToPb(st *TextValue) (*sqlpb.TextValuePb, error) {
@@ -12891,7 +15642,9 @@ func TextValueToPb(st *TextValue) (*sqlpb.TextValuePb, error) {
 	pb := &sqlpb.TextValuePb{}
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -12902,7 +15655,9 @@ func TextValueFromPb(pb *sqlpb.TextValuePb) (*TextValue, error) {
 	st := &TextValue{}
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -12916,12 +15671,29 @@ type TimeRange struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TimeRange) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TimeRange) MarshalJSON() ([]byte, error) {
+	pb, err := TimeRangeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TimeRange) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TimeRange) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.TimeRangePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TimeRangeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TimeRangeToPb(st *TimeRange) (*sqlpb.TimeRangePb, error) {
@@ -12932,7 +15704,9 @@ func TimeRangeToPb(st *TimeRange) (*sqlpb.TimeRangePb, error) {
 	pb.EndTimeMs = st.EndTimeMs
 	pb.StartTimeMs = st.StartTimeMs
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -12944,7 +15718,9 @@ func TimeRangeFromPb(pb *sqlpb.TimeRangePb) (*TimeRange, error) {
 	st.EndTimeMs = pb.EndTimeMs
 	st.StartTimeMs = pb.StartTimeMs
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -12955,12 +15731,29 @@ type TransferOwnershipObjectId struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TransferOwnershipObjectId) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TransferOwnershipObjectId) MarshalJSON() ([]byte, error) {
+	pb, err := TransferOwnershipObjectIdToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TransferOwnershipObjectId) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TransferOwnershipObjectId) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.TransferOwnershipObjectIdPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TransferOwnershipObjectIdFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TransferOwnershipObjectIdToPb(st *TransferOwnershipObjectId) (*sqlpb.TransferOwnershipObjectIdPb, error) {
@@ -12970,7 +15763,9 @@ func TransferOwnershipObjectIdToPb(st *TransferOwnershipObjectId) (*sqlpb.Transf
 	pb := &sqlpb.TransferOwnershipObjectIdPb{}
 	pb.NewOwner = st.NewOwner
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -12981,7 +15776,9 @@ func TransferOwnershipObjectIdFromPb(pb *sqlpb.TransferOwnershipObjectIdPb) (*Tr
 	st := &TransferOwnershipObjectId{}
 	st.NewOwner = pb.NewOwner
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -12998,12 +15795,29 @@ type TransferOwnershipRequest struct {
 	ForceSendFields []string          `tf:"-"`
 }
 
-func (s *TransferOwnershipRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TransferOwnershipRequest) MarshalJSON() ([]byte, error) {
+	pb, err := TransferOwnershipRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TransferOwnershipRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TransferOwnershipRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.TransferOwnershipRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TransferOwnershipRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TransferOwnershipRequestToPb(st *TransferOwnershipRequest) (*sqlpb.TransferOwnershipRequestPb, error) {
@@ -13027,7 +15841,9 @@ func TransferOwnershipRequestToPb(st *TransferOwnershipRequest) (*sqlpb.Transfer
 		pb.ObjectType = *objectTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -13052,7 +15868,9 @@ func TransferOwnershipRequestFromPb(pb *sqlpb.TransferOwnershipRequestPb) (*Tran
 		st.ObjectType = *objectTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -13060,6 +15878,31 @@ type TrashAlertRequest struct {
 
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st TrashAlertRequest) MarshalJSON() ([]byte, error) {
+	pb, err := TrashAlertRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *TrashAlertRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.TrashAlertRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TrashAlertRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TrashAlertRequestToPb(st *TrashAlertRequest) (*sqlpb.TrashAlertRequestPb, error) {
@@ -13088,6 +15931,31 @@ type TrashAlertV2Request struct {
 	Id string `tf:"-"`
 }
 
+func (st TrashAlertV2Request) MarshalJSON() ([]byte, error) {
+	pb, err := TrashAlertV2RequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *TrashAlertV2Request) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.TrashAlertV2RequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TrashAlertV2RequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func TrashAlertV2RequestToPb(st *TrashAlertV2Request) (*sqlpb.TrashAlertV2RequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -13112,6 +15980,31 @@ type TrashQueryRequest struct {
 
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st TrashQueryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := TrashQueryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *TrashQueryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.TrashQueryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TrashQueryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TrashQueryRequestToPb(st *TrashQueryRequest) (*sqlpb.TrashQueryRequestPb, error) {
@@ -13158,16 +16051,33 @@ type UpdateAlertRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'update_mask'
-	UpdateMask      []string ``
+	UpdateMask      string   `` //legacy
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateAlertRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateAlertRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateAlertRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateAlertRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateAlertRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.UpdateAlertRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateAlertRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateAlertRequestToPb(st *UpdateAlertRequest) (*sqlpb.UpdateAlertRequestPb, error) {
@@ -13184,15 +16094,11 @@ func UpdateAlertRequestToPb(st *UpdateAlertRequest) (*sqlpb.UpdateAlertRequestPb
 	}
 	pb.AutoResolveDisplayName = st.AutoResolveDisplayName
 	pb.Id = st.Id
-	updateMaskPb, err := fieldMaskToPb(&st.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -13210,15 +16116,11 @@ func UpdateAlertRequestFromPb(pb *sqlpb.UpdateAlertRequestPb) (*UpdateAlertReque
 	}
 	st.AutoResolveDisplayName = pb.AutoResolveDisplayName
 	st.Id = pb.Id
-	updateMaskField, err := fieldMaskFromPb(&pb.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.UpdateMask = pb.UpdateMask
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -13260,12 +16162,29 @@ type UpdateAlertRequestAlert struct {
 	ForceSendFields    []string `tf:"-"`
 }
 
-func (s *UpdateAlertRequestAlert) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateAlertRequestAlert) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateAlertRequestAlertToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateAlertRequestAlert) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateAlertRequestAlert) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.UpdateAlertRequestAlertPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateAlertRequestAlertFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateAlertRequestAlertToPb(st *UpdateAlertRequestAlert) (*sqlpb.UpdateAlertRequestAlertPb, error) {
@@ -13288,7 +16207,9 @@ func UpdateAlertRequestAlertToPb(st *UpdateAlertRequestAlert) (*sqlpb.UpdateAler
 	pb.QueryId = st.QueryId
 	pb.SecondsToRetrigger = st.SecondsToRetrigger
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -13312,7 +16233,9 @@ func UpdateAlertRequestAlertFromPb(pb *sqlpb.UpdateAlertRequestAlertPb) (*Update
 	st.QueryId = pb.QueryId
 	st.SecondsToRetrigger = pb.SecondsToRetrigger
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -13335,7 +16258,33 @@ type UpdateAlertV2Request struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'update_mask'
-	UpdateMask []string `tf:"-"`
+	UpdateMask string `tf:"-"` //legacy
+
+}
+
+func (st UpdateAlertV2Request) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateAlertV2RequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateAlertV2Request) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.UpdateAlertV2RequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateAlertV2RequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateAlertV2RequestToPb(st *UpdateAlertV2Request) (*sqlpb.UpdateAlertV2RequestPb, error) {
@@ -13351,13 +16300,7 @@ func UpdateAlertV2RequestToPb(st *UpdateAlertV2Request) (*sqlpb.UpdateAlertV2Req
 		pb.Alert = *alertPb
 	}
 	pb.Id = st.Id
-	updateMaskPb, err := fieldMaskToPb(&st.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
 	return pb, nil
 }
@@ -13375,13 +16318,7 @@ func UpdateAlertV2RequestFromPb(pb *sqlpb.UpdateAlertV2RequestPb) (*UpdateAlertV
 		st.Alert = *alertField
 	}
 	st.Id = pb.Id
-	updateMaskField, err := fieldMaskFromPb(&pb.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.UpdateMask = pb.UpdateMask
 
 	return st, nil
 }
@@ -13410,16 +16347,33 @@ type UpdateQueryRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'update_mask'
-	UpdateMask      []string ``
+	UpdateMask      string   `` //legacy
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateQueryRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateQueryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateQueryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateQueryRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateQueryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.UpdateQueryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateQueryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateQueryRequestToPb(st *UpdateQueryRequest) (*sqlpb.UpdateQueryRequestPb, error) {
@@ -13436,15 +16390,11 @@ func UpdateQueryRequestToPb(st *UpdateQueryRequest) (*sqlpb.UpdateQueryRequestPb
 	if queryPb != nil {
 		pb.Query = queryPb
 	}
-	updateMaskPb, err := fieldMaskToPb(&st.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -13462,15 +16412,11 @@ func UpdateQueryRequestFromPb(pb *sqlpb.UpdateQueryRequestPb) (*UpdateQueryReque
 	if queryField != nil {
 		st.Query = queryField
 	}
-	updateMaskField, err := fieldMaskFromPb(&pb.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.UpdateMask = pb.UpdateMask
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -13513,12 +16459,29 @@ type UpdateQueryRequestQuery struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateQueryRequestQuery) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateQueryRequestQuery) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateQueryRequestQueryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateQueryRequestQuery) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateQueryRequestQuery) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.UpdateQueryRequestQueryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateQueryRequestQueryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateQueryRequestQueryToPb(st *UpdateQueryRequestQuery) (*sqlpb.UpdateQueryRequestQueryPb, error) {
@@ -13555,7 +16518,9 @@ func UpdateQueryRequestQueryToPb(st *UpdateQueryRequestQuery) (*sqlpb.UpdateQuer
 	pb.Tags = st.Tags
 	pb.WarehouseId = st.WarehouseId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -13593,7 +16558,9 @@ func UpdateQueryRequestQueryFromPb(pb *sqlpb.UpdateQueryRequestQueryPb) (*Update
 	st.Tags = pb.Tags
 	st.WarehouseId = pb.WarehouseId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -13613,10 +16580,35 @@ type UpdateVisualizationRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'update_mask'
-	UpdateMask []string ``
+	UpdateMask string `` //legacy
 
 	// Wire name: 'visualization'
 	Visualization *UpdateVisualizationRequestVisualization ``
+}
+
+func (st UpdateVisualizationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateVisualizationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateVisualizationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.UpdateVisualizationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateVisualizationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateVisualizationRequestToPb(st *UpdateVisualizationRequest) (*sqlpb.UpdateVisualizationRequestPb, error) {
@@ -13625,13 +16617,7 @@ func UpdateVisualizationRequestToPb(st *UpdateVisualizationRequest) (*sqlpb.Upda
 	}
 	pb := &sqlpb.UpdateVisualizationRequestPb{}
 	pb.Id = st.Id
-	updateMaskPb, err := fieldMaskToPb(&st.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 	visualizationPb, err := UpdateVisualizationRequestVisualizationToPb(st.Visualization)
 	if err != nil {
 		return nil, err
@@ -13649,13 +16635,7 @@ func UpdateVisualizationRequestFromPb(pb *sqlpb.UpdateVisualizationRequestPb) (*
 	}
 	st := &UpdateVisualizationRequest{}
 	st.Id = pb.Id
-	updateMaskField, err := fieldMaskFromPb(&pb.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.UpdateMask = pb.UpdateMask
 	visualizationField, err := UpdateVisualizationRequestVisualizationFromPb(pb.Visualization)
 	if err != nil {
 		return nil, err
@@ -13687,12 +16667,29 @@ type UpdateVisualizationRequestVisualization struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateVisualizationRequestVisualization) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateVisualizationRequestVisualization) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateVisualizationRequestVisualizationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateVisualizationRequestVisualization) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateVisualizationRequestVisualization) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.UpdateVisualizationRequestVisualizationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateVisualizationRequestVisualizationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateVisualizationRequestVisualizationToPb(st *UpdateVisualizationRequestVisualization) (*sqlpb.UpdateVisualizationRequestVisualizationPb, error) {
@@ -13705,7 +16702,9 @@ func UpdateVisualizationRequestVisualizationToPb(st *UpdateVisualizationRequestV
 	pb.SerializedQueryPlan = st.SerializedQueryPlan
 	pb.Type = st.Type
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -13719,7 +16718,9 @@ func UpdateVisualizationRequestVisualizationFromPb(pb *sqlpb.UpdateVisualization
 	st.SerializedQueryPlan = pb.SerializedQueryPlan
 	st.Type = pb.Type
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -13747,12 +16748,29 @@ type UpdateWidgetRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateWidgetRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateWidgetRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateWidgetRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateWidgetRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateWidgetRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.UpdateWidgetRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateWidgetRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateWidgetRequestToPb(st *UpdateWidgetRequest) (*sqlpb.UpdateWidgetRequestPb, error) {
@@ -13773,7 +16791,9 @@ func UpdateWidgetRequestToPb(st *UpdateWidgetRequest) (*sqlpb.UpdateWidgetReques
 	pb.VisualizationId = st.VisualizationId
 	pb.Width = st.Width
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -13795,7 +16815,9 @@ func UpdateWidgetRequestFromPb(pb *sqlpb.UpdateWidgetRequestPb) (*UpdateWidgetRe
 	st.VisualizationId = pb.VisualizationId
 	st.Width = pb.Width
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -13812,12 +16834,29 @@ type User struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *User) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st User) MarshalJSON() ([]byte, error) {
+	pb, err := UserToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s User) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *User) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.UserPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UserFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UserToPb(st *User) (*sqlpb.UserPb, error) {
@@ -13829,7 +16868,9 @@ func UserToPb(st *User) (*sqlpb.UserPb, error) {
 	pb.Id = st.Id
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -13842,14 +16883,16 @@ func UserFromPb(pb *sqlpb.UserPb) (*User, error) {
 	st.Id = pb.Id
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
 type Visualization struct {
 	// The timestamp indicating when the visualization was created.
 	// Wire name: 'create_time'
-	CreateTime *time.Time ``
+	CreateTime string `` //legacy
 	// The display name of the visualization.
 	// Wire name: 'display_name'
 	DisplayName string ``
@@ -13874,16 +16917,33 @@ type Visualization struct {
 	Type string ``
 	// The timestamp indicating when the visualization was updated.
 	// Wire name: 'update_time'
-	UpdateTime      *time.Time ``
-	ForceSendFields []string   `tf:"-"`
+	UpdateTime      string   `` //legacy
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Visualization) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Visualization) MarshalJSON() ([]byte, error) {
+	pb, err := VisualizationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Visualization) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Visualization) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.VisualizationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := VisualizationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func VisualizationToPb(st *Visualization) (*sqlpb.VisualizationPb, error) {
@@ -13891,28 +16951,18 @@ func VisualizationToPb(st *Visualization) (*sqlpb.VisualizationPb, error) {
 		return nil, nil
 	}
 	pb := &sqlpb.VisualizationPb{}
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 	pb.DisplayName = st.DisplayName
 	pb.Id = st.Id
 	pb.QueryId = st.QueryId
 	pb.SerializedOptions = st.SerializedOptions
 	pb.SerializedQueryPlan = st.SerializedQueryPlan
 	pb.Type = st.Type
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -13921,28 +16971,18 @@ func VisualizationFromPb(pb *sqlpb.VisualizationPb) (*Visualization, error) {
 		return nil, nil
 	}
 	st := &Visualization{}
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	st.DisplayName = pb.DisplayName
 	st.Id = pb.Id
 	st.QueryId = pb.QueryId
 	st.SerializedOptions = pb.SerializedOptions
 	st.SerializedQueryPlan = pb.SerializedQueryPlan
 	st.Type = pb.Type
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
+	st.UpdateTime = pb.UpdateTime
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -13962,12 +17002,29 @@ type WarehouseAccessControlRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *WarehouseAccessControlRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st WarehouseAccessControlRequest) MarshalJSON() ([]byte, error) {
+	pb, err := WarehouseAccessControlRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s WarehouseAccessControlRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *WarehouseAccessControlRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.WarehouseAccessControlRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WarehouseAccessControlRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WarehouseAccessControlRequestToPb(st *WarehouseAccessControlRequest) (*sqlpb.WarehouseAccessControlRequestPb, error) {
@@ -13986,7 +17043,9 @@ func WarehouseAccessControlRequestToPb(st *WarehouseAccessControlRequest) (*sqlp
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -14006,7 +17065,9 @@ func WarehouseAccessControlRequestFromPb(pb *sqlpb.WarehouseAccessControlRequest
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -14029,12 +17090,29 @@ type WarehouseAccessControlResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *WarehouseAccessControlResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st WarehouseAccessControlResponse) MarshalJSON() ([]byte, error) {
+	pb, err := WarehouseAccessControlResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s WarehouseAccessControlResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *WarehouseAccessControlResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.WarehouseAccessControlResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WarehouseAccessControlResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WarehouseAccessControlResponseToPb(st *WarehouseAccessControlResponse) (*sqlpb.WarehouseAccessControlResponsePb, error) {
@@ -14059,7 +17137,9 @@ func WarehouseAccessControlResponseToPb(st *WarehouseAccessControlResponse) (*sq
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -14085,7 +17165,9 @@ func WarehouseAccessControlResponseFromPb(pb *sqlpb.WarehouseAccessControlRespon
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -14102,12 +17184,29 @@ type WarehousePermission struct {
 	ForceSendFields []string                 `tf:"-"`
 }
 
-func (s *WarehousePermission) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st WarehousePermission) MarshalJSON() ([]byte, error) {
+	pb, err := WarehousePermissionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s WarehousePermission) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *WarehousePermission) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.WarehousePermissionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WarehousePermissionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WarehousePermissionToPb(st *WarehousePermission) (*sqlpb.WarehousePermissionPb, error) {
@@ -14125,7 +17224,9 @@ func WarehousePermissionToPb(st *WarehousePermission) (*sqlpb.WarehousePermissio
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -14144,7 +17245,9 @@ func WarehousePermissionFromPb(pb *sqlpb.WarehousePermissionPb) (*WarehousePermi
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -14224,12 +17327,29 @@ type WarehousePermissions struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *WarehousePermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st WarehousePermissions) MarshalJSON() ([]byte, error) {
+	pb, err := WarehousePermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s WarehousePermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *WarehousePermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.WarehousePermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WarehousePermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WarehousePermissionsToPb(st *WarehousePermissions) (*sqlpb.WarehousePermissionsPb, error) {
@@ -14252,7 +17372,9 @@ func WarehousePermissionsToPb(st *WarehousePermissions) (*sqlpb.WarehousePermiss
 	pb.ObjectId = st.ObjectId
 	pb.ObjectType = st.ObjectType
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -14276,7 +17398,9 @@ func WarehousePermissionsFromPb(pb *sqlpb.WarehousePermissionsPb) (*WarehousePer
 	st.ObjectId = pb.ObjectId
 	st.ObjectType = pb.ObjectType
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -14290,12 +17414,29 @@ type WarehousePermissionsDescription struct {
 	ForceSendFields []string                 `tf:"-"`
 }
 
-func (s *WarehousePermissionsDescription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st WarehousePermissionsDescription) MarshalJSON() ([]byte, error) {
+	pb, err := WarehousePermissionsDescriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s WarehousePermissionsDescription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *WarehousePermissionsDescription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.WarehousePermissionsDescriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WarehousePermissionsDescriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WarehousePermissionsDescriptionToPb(st *WarehousePermissionsDescription) (*sqlpb.WarehousePermissionsDescriptionPb, error) {
@@ -14312,7 +17453,9 @@ func WarehousePermissionsDescriptionToPb(st *WarehousePermissionsDescription) (*
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -14330,7 +17473,9 @@ func WarehousePermissionsDescriptionFromPb(pb *sqlpb.WarehousePermissionsDescrip
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -14341,6 +17486,31 @@ type WarehousePermissionsRequest struct {
 	// The SQL warehouse for which to get or manage permissions.
 	// Wire name: 'warehouse_id'
 	WarehouseId string `tf:"-"`
+}
+
+func (st WarehousePermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := WarehousePermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *WarehousePermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.WarehousePermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WarehousePermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WarehousePermissionsRequestToPb(st *WarehousePermissionsRequest) (*sqlpb.WarehousePermissionsRequestPb, error) {
@@ -14398,12 +17568,29 @@ type WarehouseTypePair struct {
 	ForceSendFields []string                       `tf:"-"`
 }
 
-func (s *WarehouseTypePair) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st WarehouseTypePair) MarshalJSON() ([]byte, error) {
+	pb, err := WarehouseTypePairToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s WarehouseTypePair) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *WarehouseTypePair) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.WarehouseTypePairPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WarehouseTypePairFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WarehouseTypePairToPb(st *WarehouseTypePair) (*sqlpb.WarehouseTypePairPb, error) {
@@ -14420,7 +17607,9 @@ func WarehouseTypePairToPb(st *WarehouseTypePair) (*sqlpb.WarehouseTypePairPb, e
 		pb.WarehouseType = *warehouseTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -14438,7 +17627,9 @@ func WarehouseTypePairFromPb(pb *sqlpb.WarehouseTypePairPb) (*WarehouseTypePair,
 		st.WarehouseType = *warehouseTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -14519,12 +17710,29 @@ type Widget struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Widget) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Widget) MarshalJSON() ([]byte, error) {
+	pb, err := WidgetToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Widget) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Widget) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.WidgetPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WidgetFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WidgetToPb(st *Widget) (*sqlpb.WidgetPb, error) {
@@ -14549,7 +17757,9 @@ func WidgetToPb(st *Widget) (*sqlpb.WidgetPb, error) {
 	}
 	pb.Width = st.Width
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -14575,7 +17785,9 @@ func WidgetFromPb(pb *sqlpb.WidgetPb) (*Widget, error) {
 	}
 	st.Width = pb.Width
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -14607,12 +17819,29 @@ type WidgetOptions struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *WidgetOptions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st WidgetOptions) MarshalJSON() ([]byte, error) {
+	pb, err := WidgetOptionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s WidgetOptions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *WidgetOptions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.WidgetOptionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WidgetOptionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WidgetOptionsToPb(st *WidgetOptions) (*sqlpb.WidgetOptionsPb, error) {
@@ -14634,7 +17863,9 @@ func WidgetOptionsToPb(st *WidgetOptions) (*sqlpb.WidgetOptionsPb, error) {
 	pb.Title = st.Title
 	pb.UpdatedAt = st.UpdatedAt
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -14657,7 +17888,9 @@ func WidgetOptionsFromPb(pb *sqlpb.WidgetOptionsPb) (*WidgetOptions, error) {
 	st.Title = pb.Title
 	st.UpdatedAt = pb.UpdatedAt
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -14682,12 +17915,29 @@ type WidgetPosition struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *WidgetPosition) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st WidgetPosition) MarshalJSON() ([]byte, error) {
+	pb, err := WidgetPositionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s WidgetPosition) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *WidgetPosition) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlpb.WidgetPositionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WidgetPositionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WidgetPositionToPb(st *WidgetPosition) (*sqlpb.WidgetPositionPb, error) {
@@ -14701,7 +17951,9 @@ func WidgetPositionToPb(st *WidgetPosition) (*sqlpb.WidgetPositionPb, error) {
 	pb.SizeX = st.SizeX
 	pb.SizeY = st.SizeY
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -14716,7 +17968,9 @@ func WidgetPositionFromPb(pb *sqlpb.WidgetPositionPb) (*WidgetPosition, error) {
 	st.SizeX = pb.SizeX
 	st.SizeY = pb.SizeY
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 

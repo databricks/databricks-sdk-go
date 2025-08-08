@@ -35,9 +35,12 @@ func (a *vectorSearchEndpointsImpl) CreateEndpoint(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&endpointInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EndpointInfoFromPb(&endpointInfoPb)
 	if err != nil {
 		return nil, err
@@ -61,9 +64,12 @@ func (a *vectorSearchEndpointsImpl) DeleteEndpoint(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -84,9 +90,12 @@ func (a *vectorSearchEndpointsImpl) GetEndpoint(ctx context.Context, request Get
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&endpointInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EndpointInfoFromPb(&endpointInfoPb)
 	if err != nil {
 		return nil, err
@@ -142,7 +151,7 @@ func (a *vectorSearchEndpointsImpl) internalListEndpoints(ctx context.Context, r
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listEndpointResponsePb,
 	)
 	if err != nil {
@@ -173,9 +182,12 @@ func (a *vectorSearchEndpointsImpl) UpdateEndpointBudgetPolicy(ctx context.Conte
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&patchEndpointBudgetPolicyResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PatchEndpointBudgetPolicyResponseFromPb(&patchEndpointBudgetPolicyResponsePb)
 	if err != nil {
 		return nil, err
@@ -201,9 +213,12 @@ func (a *vectorSearchEndpointsImpl) UpdateEndpointCustomTags(ctx context.Context
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateEndpointCustomTagsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateEndpointCustomTagsResponseFromPb(&updateEndpointCustomTagsResponsePb)
 	if err != nil {
 		return nil, err
@@ -234,9 +249,12 @@ func (a *vectorSearchIndexesImpl) CreateIndex(ctx context.Context, request Creat
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&vectorIndexPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := VectorIndexFromPb(&vectorIndexPb)
 	if err != nil {
 		return nil, err
@@ -261,9 +279,12 @@ func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, req
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteDataVectorIndexResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteDataVectorIndexResponseFromPb(&deleteDataVectorIndexResponsePb)
 	if err != nil {
 		return nil, err
@@ -287,9 +308,12 @@ func (a *vectorSearchIndexesImpl) DeleteIndex(ctx context.Context, request Delet
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -310,9 +334,12 @@ func (a *vectorSearchIndexesImpl) GetIndex(ctx context.Context, request GetIndex
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&vectorIndexPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := VectorIndexFromPb(&vectorIndexPb)
 	if err != nil {
 		return nil, err
@@ -368,7 +395,7 @@ func (a *vectorSearchIndexesImpl) internalListIndexes(ctx context.Context, reque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listVectorIndexesResponsePb,
 	)
 	if err != nil {
@@ -399,9 +426,12 @@ func (a *vectorSearchIndexesImpl) QueryIndex(ctx context.Context, request QueryV
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&queryVectorIndexResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := QueryVectorIndexResponseFromPb(&queryVectorIndexResponsePb)
 	if err != nil {
 		return nil, err
@@ -427,9 +457,12 @@ func (a *vectorSearchIndexesImpl) QueryNextPage(ctx context.Context, request Que
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&queryVectorIndexResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := QueryVectorIndexResponseFromPb(&queryVectorIndexResponsePb)
 	if err != nil {
 		return nil, err
@@ -455,9 +488,12 @@ func (a *vectorSearchIndexesImpl) ScanIndex(ctx context.Context, request ScanVec
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&scanVectorIndexResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ScanVectorIndexResponseFromPb(&scanVectorIndexResponsePb)
 	if err != nil {
 		return nil, err
@@ -480,6 +516,9 @@ func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncInd
 		nil,
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -501,9 +540,12 @@ func (a *vectorSearchIndexesImpl) UpsertDataVectorIndex(ctx context.Context, req
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&upsertDataVectorIndexResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpsertDataVectorIndexResponseFromPb(&upsertDataVectorIndexResponsePb)
 	if err != nil {
 		return nil, err

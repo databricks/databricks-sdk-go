@@ -120,7 +120,7 @@ func TestHttpCall_UpdateResourceWithSimpleQueryParams(t *testing.T) {
 		QueryParamString:      "query_string_val",
 		QueryParamInt:         999,
 		QueryParamBool:        true,
-		FieldMask:             "field.mask.value",
+		FieldMask:             []string{"field.mask.value"},
 	}
 	qa.HTTPFixtures{
 		{
@@ -283,7 +283,7 @@ func TestHttpCall_GetResourceWithSimpleQueryParams(t *testing.T) {
 		QueryParamString: "query_string_val",
 		QueryParamInt:    999,
 		QueryParamBool:   true,
-		FieldMask:        "field.mask.value",
+		FieldMask:        []string{"field.mask.value"},
 	}
 	qa.HTTPFixtures{
 		{

@@ -35,9 +35,12 @@ func (a *qualityMonitorV2Impl) CreateQualityMonitor(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb.QualityMonitor,
+		(*requestPb).QualityMonitor,
 		&qualityMonitorPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := QualityMonitorFromPb(&qualityMonitorPb)
 	if err != nil {
 		return nil, err
@@ -61,9 +64,12 @@ func (a *qualityMonitorV2Impl) DeleteQualityMonitor(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -84,9 +90,12 @@ func (a *qualityMonitorV2Impl) GetQualityMonitor(ctx context.Context, request Ge
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&qualityMonitorPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := QualityMonitorFromPb(&qualityMonitorPb)
 	if err != nil {
 		return nil, err
@@ -142,7 +151,7 @@ func (a *qualityMonitorV2Impl) internalListQualityMonitor(ctx context.Context, r
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listQualityMonitorResponsePb,
 	)
 	if err != nil {
@@ -173,9 +182,12 @@ func (a *qualityMonitorV2Impl) UpdateQualityMonitor(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb.QualityMonitor,
+		(*requestPb).QualityMonitor,
 		&qualityMonitorPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := QualityMonitorFromPb(&qualityMonitorPb)
 	if err != nil {
 		return nil, err

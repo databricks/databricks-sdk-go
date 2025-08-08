@@ -3,11 +3,11 @@
 package qualitymonitorv2
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2/qualitymonitorv2pb"
 )
 
@@ -21,12 +21,29 @@ type AnomalyDetectionConfig struct {
 	ForceSendFields []string                  `tf:"-"`
 }
 
-func (s *AnomalyDetectionConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AnomalyDetectionConfig) MarshalJSON() ([]byte, error) {
+	pb, err := AnomalyDetectionConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AnomalyDetectionConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AnomalyDetectionConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &qualitymonitorv2pb.AnomalyDetectionConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AnomalyDetectionConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AnomalyDetectionConfigToPb(st *AnomalyDetectionConfig) (*qualitymonitorv2pb.AnomalyDetectionConfigPb, error) {
@@ -43,7 +60,9 @@ func AnomalyDetectionConfigToPb(st *AnomalyDetectionConfig) (*qualitymonitorv2pb
 		pb.LatestRunStatus = *latestRunStatusPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -61,7 +80,9 @@ func AnomalyDetectionConfigFromPb(pb *qualitymonitorv2pb.AnomalyDetectionConfigP
 		st.LatestRunStatus = *latestRunStatusField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -143,6 +164,31 @@ type CreateQualityMonitorRequest struct {
 	QualityMonitor QualityMonitor ``
 }
 
+func (st CreateQualityMonitorRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateQualityMonitorRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateQualityMonitorRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &qualitymonitorv2pb.CreateQualityMonitorRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateQualityMonitorRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CreateQualityMonitorRequestToPb(st *CreateQualityMonitorRequest) (*qualitymonitorv2pb.CreateQualityMonitorRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -184,6 +230,31 @@ type DeleteQualityMonitorRequest struct {
 	ObjectType string `tf:"-"`
 }
 
+func (st DeleteQualityMonitorRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteQualityMonitorRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteQualityMonitorRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &qualitymonitorv2pb.DeleteQualityMonitorRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteQualityMonitorRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteQualityMonitorRequestToPb(st *DeleteQualityMonitorRequest) (*qualitymonitorv2pb.DeleteQualityMonitorRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -213,6 +284,31 @@ type GetQualityMonitorRequest struct {
 	// The type of the monitored object. Can be one of the following: schema.
 	// Wire name: 'object_type'
 	ObjectType string `tf:"-"`
+}
+
+func (st GetQualityMonitorRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetQualityMonitorRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetQualityMonitorRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &qualitymonitorv2pb.GetQualityMonitorRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetQualityMonitorRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetQualityMonitorRequestToPb(st *GetQualityMonitorRequest) (*qualitymonitorv2pb.GetQualityMonitorRequestPb, error) {
@@ -247,12 +343,29 @@ type ListQualityMonitorRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListQualityMonitorRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListQualityMonitorRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListQualityMonitorRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListQualityMonitorRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListQualityMonitorRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &qualitymonitorv2pb.ListQualityMonitorRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListQualityMonitorRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListQualityMonitorRequestToPb(st *ListQualityMonitorRequest) (*qualitymonitorv2pb.ListQualityMonitorRequestPb, error) {
@@ -263,7 +376,9 @@ func ListQualityMonitorRequestToPb(st *ListQualityMonitorRequest) (*qualitymonit
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -275,7 +390,9 @@ func ListQualityMonitorRequestFromPb(pb *qualitymonitorv2pb.ListQualityMonitorRe
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -289,12 +406,29 @@ type ListQualityMonitorResponse struct {
 	ForceSendFields []string         `tf:"-"`
 }
 
-func (s *ListQualityMonitorResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListQualityMonitorResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListQualityMonitorResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListQualityMonitorResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListQualityMonitorResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &qualitymonitorv2pb.ListQualityMonitorResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListQualityMonitorResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListQualityMonitorResponseToPb(st *ListQualityMonitorResponse) (*qualitymonitorv2pb.ListQualityMonitorResponsePb, error) {
@@ -316,7 +450,9 @@ func ListQualityMonitorResponseToPb(st *ListQualityMonitorResponse) (*qualitymon
 	}
 	pb.QualityMonitors = qualityMonitorsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -339,7 +475,9 @@ func ListQualityMonitorResponseFromPb(pb *qualitymonitorv2pb.ListQualityMonitorR
 	}
 	st.QualityMonitors = qualityMonitorsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -353,6 +491,31 @@ type QualityMonitor struct {
 	// The type of the monitored object. Can be one of the following: schema.
 	// Wire name: 'object_type'
 	ObjectType string ``
+}
+
+func (st QualityMonitor) MarshalJSON() ([]byte, error) {
+	pb, err := QualityMonitorToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *QualityMonitor) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &qualitymonitorv2pb.QualityMonitorPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QualityMonitorFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QualityMonitorToPb(st *QualityMonitor) (*qualitymonitorv2pb.QualityMonitorPb, error) {
@@ -401,6 +564,31 @@ type UpdateQualityMonitorRequest struct {
 
 	// Wire name: 'quality_monitor'
 	QualityMonitor QualityMonitor ``
+}
+
+func (st UpdateQualityMonitorRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateQualityMonitorRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateQualityMonitorRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &qualitymonitorv2pb.UpdateQualityMonitorRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateQualityMonitorRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateQualityMonitorRequestToPb(st *UpdateQualityMonitorRequest) (*qualitymonitorv2pb.UpdateQualityMonitorRequestPb, error) {

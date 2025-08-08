@@ -3,12 +3,12 @@
 package serving
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/serving/servingpb"
 )
 
@@ -28,12 +28,29 @@ type Ai21LabsConfig struct {
 	ForceSendFields         []string `tf:"-"`
 }
 
-func (s *Ai21LabsConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Ai21LabsConfig) MarshalJSON() ([]byte, error) {
+	pb, err := Ai21LabsConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Ai21LabsConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Ai21LabsConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.Ai21LabsConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := Ai21LabsConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func Ai21LabsConfigToPb(st *Ai21LabsConfig) (*servingpb.Ai21LabsConfigPb, error) {
@@ -44,7 +61,9 @@ func Ai21LabsConfigToPb(st *Ai21LabsConfig) (*servingpb.Ai21LabsConfigPb, error)
 	pb.Ai21labsApiKey = st.Ai21labsApiKey
 	pb.Ai21labsApiKeyPlaintext = st.Ai21labsApiKeyPlaintext
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -56,7 +75,9 @@ func Ai21LabsConfigFromPb(pb *servingpb.Ai21LabsConfigPb) (*Ai21LabsConfig, erro
 	st.Ai21labsApiKey = pb.Ai21labsApiKey
 	st.Ai21labsApiKeyPlaintext = pb.Ai21labsApiKeyPlaintext
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -83,6 +104,31 @@ type AiGatewayConfig struct {
 	// costs.
 	// Wire name: 'usage_tracking_config'
 	UsageTrackingConfig *AiGatewayUsageTrackingConfig ``
+}
+
+func (st AiGatewayConfig) MarshalJSON() ([]byte, error) {
+	pb, err := AiGatewayConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AiGatewayConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.AiGatewayConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AiGatewayConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AiGatewayConfigToPb(st *AiGatewayConfig) (*servingpb.AiGatewayConfigPb, error) {
@@ -201,12 +247,29 @@ type AiGatewayGuardrailParameters struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AiGatewayGuardrailParameters) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AiGatewayGuardrailParameters) MarshalJSON() ([]byte, error) {
+	pb, err := AiGatewayGuardrailParametersToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AiGatewayGuardrailParameters) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AiGatewayGuardrailParameters) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.AiGatewayGuardrailParametersPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AiGatewayGuardrailParametersFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AiGatewayGuardrailParametersToPb(st *AiGatewayGuardrailParameters) (*servingpb.AiGatewayGuardrailParametersPb, error) {
@@ -225,7 +288,9 @@ func AiGatewayGuardrailParametersToPb(st *AiGatewayGuardrailParameters) (*servin
 	pb.Safety = st.Safety
 	pb.ValidTopics = st.ValidTopics
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -245,7 +310,9 @@ func AiGatewayGuardrailParametersFromPb(pb *servingpb.AiGatewayGuardrailParamete
 	st.Safety = pb.Safety
 	st.ValidTopics = pb.ValidTopics
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -253,6 +320,31 @@ type AiGatewayGuardrailPiiBehavior struct {
 	// Configuration for input guardrail filters.
 	// Wire name: 'behavior'
 	Behavior AiGatewayGuardrailPiiBehaviorBehavior ``
+}
+
+func (st AiGatewayGuardrailPiiBehavior) MarshalJSON() ([]byte, error) {
+	pb, err := AiGatewayGuardrailPiiBehaviorToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AiGatewayGuardrailPiiBehavior) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.AiGatewayGuardrailPiiBehaviorPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AiGatewayGuardrailPiiBehaviorFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AiGatewayGuardrailPiiBehaviorToPb(st *AiGatewayGuardrailPiiBehavior) (*servingpb.AiGatewayGuardrailPiiBehaviorPb, error) {
@@ -349,6 +441,31 @@ type AiGatewayGuardrails struct {
 	Output *AiGatewayGuardrailParameters ``
 }
 
+func (st AiGatewayGuardrails) MarshalJSON() ([]byte, error) {
+	pb, err := AiGatewayGuardrailsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AiGatewayGuardrails) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.AiGatewayGuardrailsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AiGatewayGuardrailsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func AiGatewayGuardrailsToPb(st *AiGatewayGuardrails) (*servingpb.AiGatewayGuardrailsPb, error) {
 	if st == nil {
 		return nil, nil
@@ -416,12 +533,29 @@ type AiGatewayInferenceTableConfig struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AiGatewayInferenceTableConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AiGatewayInferenceTableConfig) MarshalJSON() ([]byte, error) {
+	pb, err := AiGatewayInferenceTableConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AiGatewayInferenceTableConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AiGatewayInferenceTableConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.AiGatewayInferenceTableConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AiGatewayInferenceTableConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AiGatewayInferenceTableConfigToPb(st *AiGatewayInferenceTableConfig) (*servingpb.AiGatewayInferenceTableConfigPb, error) {
@@ -434,7 +568,9 @@ func AiGatewayInferenceTableConfigToPb(st *AiGatewayInferenceTableConfig) (*serv
 	pb.SchemaName = st.SchemaName
 	pb.TableNamePrefix = st.TableNamePrefix
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -448,7 +584,9 @@ func AiGatewayInferenceTableConfigFromPb(pb *servingpb.AiGatewayInferenceTableCo
 	st.SchemaName = pb.SchemaName
 	st.TableNamePrefix = pb.TableNamePrefix
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -474,12 +612,29 @@ type AiGatewayRateLimit struct {
 	ForceSendFields []string                        `tf:"-"`
 }
 
-func (s *AiGatewayRateLimit) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AiGatewayRateLimit) MarshalJSON() ([]byte, error) {
+	pb, err := AiGatewayRateLimitToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AiGatewayRateLimit) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AiGatewayRateLimit) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.AiGatewayRateLimitPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AiGatewayRateLimitFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AiGatewayRateLimitToPb(st *AiGatewayRateLimit) (*servingpb.AiGatewayRateLimitPb, error) {
@@ -504,7 +659,9 @@ func AiGatewayRateLimitToPb(st *AiGatewayRateLimit) (*servingpb.AiGatewayRateLim
 		pb.RenewalPeriod = *renewalPeriodPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -530,7 +687,9 @@ func AiGatewayRateLimitFromPb(pb *servingpb.AiGatewayRateLimitPb) (*AiGatewayRat
 		st.RenewalPeriod = *renewalPeriodField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -650,12 +809,29 @@ type AiGatewayUsageTrackingConfig struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AiGatewayUsageTrackingConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AiGatewayUsageTrackingConfig) MarshalJSON() ([]byte, error) {
+	pb, err := AiGatewayUsageTrackingConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AiGatewayUsageTrackingConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AiGatewayUsageTrackingConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.AiGatewayUsageTrackingConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AiGatewayUsageTrackingConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AiGatewayUsageTrackingConfigToPb(st *AiGatewayUsageTrackingConfig) (*servingpb.AiGatewayUsageTrackingConfigPb, error) {
@@ -665,7 +841,9 @@ func AiGatewayUsageTrackingConfigToPb(st *AiGatewayUsageTrackingConfig) (*servin
 	pb := &servingpb.AiGatewayUsageTrackingConfigPb{}
 	pb.Enabled = st.Enabled
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -676,7 +854,9 @@ func AiGatewayUsageTrackingConfigFromPb(pb *servingpb.AiGatewayUsageTrackingConf
 	st := &AiGatewayUsageTrackingConfig{}
 	st.Enabled = pb.Enabled
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -728,12 +908,29 @@ type AmazonBedrockConfig struct {
 	ForceSendFields    []string `tf:"-"`
 }
 
-func (s *AmazonBedrockConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AmazonBedrockConfig) MarshalJSON() ([]byte, error) {
+	pb, err := AmazonBedrockConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AmazonBedrockConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AmazonBedrockConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.AmazonBedrockConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AmazonBedrockConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AmazonBedrockConfigToPb(st *AmazonBedrockConfig) (*servingpb.AmazonBedrockConfigPb, error) {
@@ -755,7 +952,9 @@ func AmazonBedrockConfigToPb(st *AmazonBedrockConfig) (*servingpb.AmazonBedrockC
 	}
 	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -778,7 +977,9 @@ func AmazonBedrockConfigFromPb(pb *servingpb.AmazonBedrockConfigPb) (*AmazonBedr
 	}
 	st.InstanceProfileArn = pb.InstanceProfileArn
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -857,12 +1058,29 @@ type AnthropicConfig struct {
 	ForceSendFields          []string `tf:"-"`
 }
 
-func (s *AnthropicConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AnthropicConfig) MarshalJSON() ([]byte, error) {
+	pb, err := AnthropicConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AnthropicConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AnthropicConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.AnthropicConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AnthropicConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AnthropicConfigToPb(st *AnthropicConfig) (*servingpb.AnthropicConfigPb, error) {
@@ -873,7 +1091,9 @@ func AnthropicConfigToPb(st *AnthropicConfig) (*servingpb.AnthropicConfigPb, err
 	pb.AnthropicApiKey = st.AnthropicApiKey
 	pb.AnthropicApiKeyPlaintext = st.AnthropicApiKeyPlaintext
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -885,7 +1105,9 @@ func AnthropicConfigFromPb(pb *servingpb.AnthropicConfigPb) (*AnthropicConfig, e
 	st.AnthropicApiKey = pb.AnthropicApiKey
 	st.AnthropicApiKeyPlaintext = pb.AnthropicApiKeyPlaintext
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -904,12 +1126,29 @@ type ApiKeyAuth struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ApiKeyAuth) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ApiKeyAuth) MarshalJSON() ([]byte, error) {
+	pb, err := ApiKeyAuthToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ApiKeyAuth) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ApiKeyAuth) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ApiKeyAuthPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ApiKeyAuthFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ApiKeyAuthToPb(st *ApiKeyAuth) (*servingpb.ApiKeyAuthPb, error) {
@@ -921,7 +1160,9 @@ func ApiKeyAuthToPb(st *ApiKeyAuth) (*servingpb.ApiKeyAuthPb, error) {
 	pb.Value = st.Value
 	pb.ValuePlaintext = st.ValuePlaintext
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -934,7 +1175,9 @@ func ApiKeyAuthFromPb(pb *servingpb.ApiKeyAuthPb) (*ApiKeyAuth, error) {
 	st.Value = pb.Value
 	st.ValuePlaintext = pb.ValuePlaintext
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -957,12 +1200,29 @@ type AutoCaptureConfigInput struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AutoCaptureConfigInput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AutoCaptureConfigInput) MarshalJSON() ([]byte, error) {
+	pb, err := AutoCaptureConfigInputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AutoCaptureConfigInput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AutoCaptureConfigInput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.AutoCaptureConfigInputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AutoCaptureConfigInputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AutoCaptureConfigInputToPb(st *AutoCaptureConfigInput) (*servingpb.AutoCaptureConfigInputPb, error) {
@@ -975,7 +1235,9 @@ func AutoCaptureConfigInputToPb(st *AutoCaptureConfigInput) (*servingpb.AutoCapt
 	pb.SchemaName = st.SchemaName
 	pb.TableNamePrefix = st.TableNamePrefix
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -989,7 +1251,9 @@ func AutoCaptureConfigInputFromPb(pb *servingpb.AutoCaptureConfigInputPb) (*Auto
 	st.SchemaName = pb.SchemaName
 	st.TableNamePrefix = pb.TableNamePrefix
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1015,12 +1279,29 @@ type AutoCaptureConfigOutput struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AutoCaptureConfigOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AutoCaptureConfigOutput) MarshalJSON() ([]byte, error) {
+	pb, err := AutoCaptureConfigOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AutoCaptureConfigOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AutoCaptureConfigOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.AutoCaptureConfigOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AutoCaptureConfigOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AutoCaptureConfigOutputToPb(st *AutoCaptureConfigOutput) (*servingpb.AutoCaptureConfigOutputPb, error) {
@@ -1040,7 +1321,9 @@ func AutoCaptureConfigOutputToPb(st *AutoCaptureConfigOutput) (*servingpb.AutoCa
 	}
 	pb.TableNamePrefix = st.TableNamePrefix
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1061,7 +1344,9 @@ func AutoCaptureConfigOutputFromPb(pb *servingpb.AutoCaptureConfigOutputPb) (*Au
 	}
 	st.TableNamePrefix = pb.TableNamePrefix
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1069,6 +1354,31 @@ type AutoCaptureState struct {
 
 	// Wire name: 'payload_table'
 	PayloadTable *PayloadTable ``
+}
+
+func (st AutoCaptureState) MarshalJSON() ([]byte, error) {
+	pb, err := AutoCaptureStateToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AutoCaptureState) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.AutoCaptureStatePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AutoCaptureStateFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AutoCaptureStateToPb(st *AutoCaptureState) (*servingpb.AutoCaptureStatePb, error) {
@@ -1115,12 +1425,29 @@ type BearerTokenAuth struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *BearerTokenAuth) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st BearerTokenAuth) MarshalJSON() ([]byte, error) {
+	pb, err := BearerTokenAuthToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s BearerTokenAuth) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *BearerTokenAuth) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.BearerTokenAuthPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BearerTokenAuthFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func BearerTokenAuthToPb(st *BearerTokenAuth) (*servingpb.BearerTokenAuthPb, error) {
@@ -1131,7 +1458,9 @@ func BearerTokenAuthToPb(st *BearerTokenAuth) (*servingpb.BearerTokenAuthPb, err
 	pb.Token = st.Token
 	pb.TokenPlaintext = st.TokenPlaintext
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1143,7 +1472,9 @@ func BearerTokenAuthFromPb(pb *servingpb.BearerTokenAuthPb) (*BearerTokenAuth, e
 	st.Token = pb.Token
 	st.TokenPlaintext = pb.TokenPlaintext
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1156,6 +1487,31 @@ type BuildLogsRequest struct {
 	// field is required.
 	// Wire name: 'served_model_name'
 	ServedModelName string `tf:"-"`
+}
+
+func (st BuildLogsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := BuildLogsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *BuildLogsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.BuildLogsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BuildLogsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func BuildLogsRequestToPb(st *BuildLogsRequest) (*servingpb.BuildLogsRequestPb, error) {
@@ -1184,6 +1540,31 @@ type BuildLogsResponse struct {
 	// The logs associated with building the served entity's environment.
 	// Wire name: 'logs'
 	Logs string ``
+}
+
+func (st BuildLogsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := BuildLogsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *BuildLogsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.BuildLogsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BuildLogsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func BuildLogsResponseToPb(st *BuildLogsResponse) (*servingpb.BuildLogsResponsePb, error) {
@@ -1216,12 +1597,29 @@ type ChatMessage struct {
 	ForceSendFields []string        `tf:"-"`
 }
 
-func (s *ChatMessage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ChatMessage) MarshalJSON() ([]byte, error) {
+	pb, err := ChatMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ChatMessage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ChatMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ChatMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ChatMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ChatMessageToPb(st *ChatMessage) (*servingpb.ChatMessagePb, error) {
@@ -1238,7 +1636,9 @@ func ChatMessageToPb(st *ChatMessage) (*servingpb.ChatMessagePb, error) {
 		pb.Role = *rolePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1256,7 +1656,9 @@ func ChatMessageFromPb(pb *servingpb.ChatMessagePb) (*ChatMessage, error) {
 		st.Role = *roleField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1337,12 +1739,29 @@ type CohereConfig struct {
 	ForceSendFields       []string `tf:"-"`
 }
 
-func (s *CohereConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CohereConfig) MarshalJSON() ([]byte, error) {
+	pb, err := CohereConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CohereConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CohereConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.CohereConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CohereConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CohereConfigToPb(st *CohereConfig) (*servingpb.CohereConfigPb, error) {
@@ -1354,7 +1773,9 @@ func CohereConfigToPb(st *CohereConfig) (*servingpb.CohereConfigPb, error) {
 	pb.CohereApiKey = st.CohereApiKey
 	pb.CohereApiKeyPlaintext = st.CohereApiKeyPlaintext
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1367,7 +1788,9 @@ func CohereConfigFromPb(pb *servingpb.CohereConfigPb) (*CohereConfig, error) {
 	st.CohereApiKey = pb.CohereApiKey
 	st.CohereApiKeyPlaintext = pb.CohereApiKeyPlaintext
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1393,12 +1816,29 @@ type CreatePtEndpointRequest struct {
 	ForceSendFields []string      `tf:"-"`
 }
 
-func (s *CreatePtEndpointRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreatePtEndpointRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreatePtEndpointRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreatePtEndpointRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreatePtEndpointRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.CreatePtEndpointRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreatePtEndpointRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreatePtEndpointRequestToPb(st *CreatePtEndpointRequest) (*servingpb.CreatePtEndpointRequestPb, error) {
@@ -1435,7 +1875,9 @@ func CreatePtEndpointRequestToPb(st *CreatePtEndpointRequest) (*servingpb.Create
 	}
 	pb.Tags = tagsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1473,7 +1915,9 @@ func CreatePtEndpointRequestFromPb(pb *servingpb.CreatePtEndpointRequestPb) (*Cr
 	}
 	st.Tags = tagsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1511,12 +1955,29 @@ type CreateServingEndpoint struct {
 	ForceSendFields []string      `tf:"-"`
 }
 
-func (s *CreateServingEndpoint) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateServingEndpoint) MarshalJSON() ([]byte, error) {
+	pb, err := CreateServingEndpointToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateServingEndpoint) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateServingEndpoint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.CreateServingEndpointPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateServingEndpointFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateServingEndpointToPb(st *CreateServingEndpoint) (*servingpb.CreateServingEndpointPb, error) {
@@ -1567,7 +2028,9 @@ func CreateServingEndpointToPb(st *CreateServingEndpoint) (*servingpb.CreateServ
 	}
 	pb.Tags = tagsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1619,7 +2082,9 @@ func CreateServingEndpointFromPb(pb *servingpb.CreateServingEndpointPb) (*Create
 	}
 	st.Tags = tagsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1636,6 +2101,31 @@ type CustomProviderConfig struct {
 	// This is a field to provide the URL of the custom provider API.
 	// Wire name: 'custom_provider_url'
 	CustomProviderUrl string ``
+}
+
+func (st CustomProviderConfig) MarshalJSON() ([]byte, error) {
+	pb, err := CustomProviderConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CustomProviderConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.CustomProviderConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CustomProviderConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CustomProviderConfigToPb(st *CustomProviderConfig) (*servingpb.CustomProviderConfigPb, error) {
@@ -1697,12 +2187,29 @@ type DataPlaneInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DataPlaneInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DataPlaneInfo) MarshalJSON() ([]byte, error) {
+	pb, err := DataPlaneInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DataPlaneInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DataPlaneInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.DataPlaneInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DataPlaneInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DataPlaneInfoToPb(st *DataPlaneInfo) (*servingpb.DataPlaneInfoPb, error) {
@@ -1713,7 +2220,9 @@ func DataPlaneInfoToPb(st *DataPlaneInfo) (*servingpb.DataPlaneInfoPb, error) {
 	pb.AuthorizationDetails = st.AuthorizationDetails
 	pb.EndpointUrl = st.EndpointUrl
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1725,7 +2234,9 @@ func DataPlaneInfoFromPb(pb *servingpb.DataPlaneInfoPb) (*DataPlaneInfo, error) 
 	st.AuthorizationDetails = pb.AuthorizationDetails
 	st.EndpointUrl = pb.EndpointUrl
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1753,12 +2264,29 @@ type DatabricksModelServingConfig struct {
 	ForceSendFields        []string `tf:"-"`
 }
 
-func (s *DatabricksModelServingConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DatabricksModelServingConfig) MarshalJSON() ([]byte, error) {
+	pb, err := DatabricksModelServingConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DatabricksModelServingConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DatabricksModelServingConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.DatabricksModelServingConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DatabricksModelServingConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DatabricksModelServingConfigToPb(st *DatabricksModelServingConfig) (*servingpb.DatabricksModelServingConfigPb, error) {
@@ -1770,7 +2298,9 @@ func DatabricksModelServingConfigToPb(st *DatabricksModelServingConfig) (*servin
 	pb.DatabricksApiTokenPlaintext = st.DatabricksApiTokenPlaintext
 	pb.DatabricksWorkspaceUrl = st.DatabricksWorkspaceUrl
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1783,7 +2313,9 @@ func DatabricksModelServingConfigFromPb(pb *servingpb.DatabricksModelServingConf
 	st.DatabricksApiTokenPlaintext = pb.DatabricksApiTokenPlaintext
 	st.DatabricksWorkspaceUrl = pb.DatabricksWorkspaceUrl
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1797,6 +2329,31 @@ type DataframeSplitInput struct {
 
 	// Wire name: 'index'
 	Index []int ``
+}
+
+func (st DataframeSplitInput) MarshalJSON() ([]byte, error) {
+	pb, err := DataframeSplitInputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DataframeSplitInput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.DataframeSplitInputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DataframeSplitInputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DataframeSplitInputToPb(st *DataframeSplitInput) (*servingpb.DataframeSplitInputPb, error) {
@@ -1827,6 +2384,31 @@ type DeleteServingEndpointRequest struct {
 
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st DeleteServingEndpointRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteServingEndpointRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteServingEndpointRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.DeleteServingEndpointRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteServingEndpointRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteServingEndpointRequestToPb(st *DeleteServingEndpointRequest) (*servingpb.DeleteServingEndpointRequestPb, error) {
@@ -1862,12 +2444,29 @@ type EmbeddingsV1ResponseEmbeddingElement struct {
 	ForceSendFields []string                                   `tf:"-"`
 }
 
-func (s *EmbeddingsV1ResponseEmbeddingElement) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EmbeddingsV1ResponseEmbeddingElement) MarshalJSON() ([]byte, error) {
+	pb, err := EmbeddingsV1ResponseEmbeddingElementToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EmbeddingsV1ResponseEmbeddingElement) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EmbeddingsV1ResponseEmbeddingElement) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.EmbeddingsV1ResponseEmbeddingElementPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EmbeddingsV1ResponseEmbeddingElementFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EmbeddingsV1ResponseEmbeddingElementToPb(st *EmbeddingsV1ResponseEmbeddingElement) (*servingpb.EmbeddingsV1ResponseEmbeddingElementPb, error) {
@@ -1885,7 +2484,9 @@ func EmbeddingsV1ResponseEmbeddingElementToPb(st *EmbeddingsV1ResponseEmbeddingE
 		pb.Object = *objectPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1904,7 +2505,9 @@ func EmbeddingsV1ResponseEmbeddingElementFromPb(pb *servingpb.EmbeddingsV1Respon
 		st.Object = *objectField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1980,6 +2583,31 @@ type EndpointCoreConfigInput struct {
 	// The traffic configuration associated with the serving endpoint config.
 	// Wire name: 'traffic_config'
 	TrafficConfig *TrafficConfig ``
+}
+
+func (st EndpointCoreConfigInput) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointCoreConfigInputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *EndpointCoreConfigInput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.EndpointCoreConfigInputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointCoreConfigInputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointCoreConfigInputToPb(st *EndpointCoreConfigInput) (*servingpb.EndpointCoreConfigInputPb, error) {
@@ -2102,12 +2730,29 @@ type EndpointCoreConfigOutput struct {
 	ForceSendFields []string       `tf:"-"`
 }
 
-func (s *EndpointCoreConfigOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EndpointCoreConfigOutput) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointCoreConfigOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EndpointCoreConfigOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EndpointCoreConfigOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.EndpointCoreConfigOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointCoreConfigOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointCoreConfigOutputToPb(st *EndpointCoreConfigOutput) (*servingpb.EndpointCoreConfigOutputPb, error) {
@@ -2155,7 +2800,9 @@ func EndpointCoreConfigOutputToPb(st *EndpointCoreConfigOutput) (*servingpb.Endp
 		pb.TrafficConfig = trafficConfigPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2204,7 +2851,9 @@ func EndpointCoreConfigOutputFromPb(pb *servingpb.EndpointCoreConfigOutputPb) (*
 		st.TrafficConfig = trafficConfigField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2216,6 +2865,31 @@ type EndpointCoreConfigSummary struct {
 	// the serving endpoint config.
 	// Wire name: 'served_models'
 	ServedModels []ServedModelSpec ``
+}
+
+func (st EndpointCoreConfigSummary) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointCoreConfigSummaryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *EndpointCoreConfigSummary) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.EndpointCoreConfigSummaryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointCoreConfigSummaryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointCoreConfigSummaryToPb(st *EndpointCoreConfigSummary) (*servingpb.EndpointCoreConfigSummaryPb, error) {
@@ -2313,12 +2987,29 @@ type EndpointPendingConfig struct {
 	ForceSendFields []string       `tf:"-"`
 }
 
-func (s *EndpointPendingConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EndpointPendingConfig) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointPendingConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EndpointPendingConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EndpointPendingConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.EndpointPendingConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointPendingConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointPendingConfigToPb(st *EndpointPendingConfig) (*servingpb.EndpointPendingConfigPb, error) {
@@ -2367,7 +3058,9 @@ func EndpointPendingConfigToPb(st *EndpointPendingConfig) (*servingpb.EndpointPe
 		pb.TrafficConfig = trafficConfigPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2417,7 +3110,9 @@ func EndpointPendingConfigFromPb(pb *servingpb.EndpointPendingConfigPb) (*Endpoi
 		st.TrafficConfig = trafficConfigField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2435,6 +3130,31 @@ type EndpointState struct {
 	// are in a non-ready state, the endpoint state will be NOT_READY.
 	// Wire name: 'ready'
 	Ready EndpointStateReady ``
+}
+
+func (st EndpointState) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointStateToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *EndpointState) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.EndpointStatePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointStateFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointStateToPb(st *EndpointState) (*servingpb.EndpointStatePb, error) {
@@ -2605,12 +3325,29 @@ type EndpointTag struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EndpointTag) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EndpointTag) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointTagToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EndpointTag) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EndpointTag) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.EndpointTagPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointTagFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointTagToPb(st *EndpointTag) (*servingpb.EndpointTagPb, error) {
@@ -2621,7 +3358,9 @@ func EndpointTagToPb(st *EndpointTag) (*servingpb.EndpointTagPb, error) {
 	pb.Key = st.Key
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2633,7 +3372,9 @@ func EndpointTagFromPb(pb *servingpb.EndpointTagPb) (*EndpointTag, error) {
 	st.Key = pb.Key
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2641,6 +3382,31 @@ type EndpointTags struct {
 
 	// Wire name: 'tags'
 	Tags []EndpointTag ``
+}
+
+func (st EndpointTags) MarshalJSON() ([]byte, error) {
+	pb, err := EndpointTagsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *EndpointTags) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.EndpointTagsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EndpointTagsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EndpointTagsToPb(st *EndpointTags) (*servingpb.EndpointTagsPb, error) {
@@ -2692,6 +3458,31 @@ type ExportMetricsRequest struct {
 	Name string `tf:"-"`
 }
 
+func (st ExportMetricsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ExportMetricsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ExportMetricsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ExportMetricsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExportMetricsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func ExportMetricsRequestToPb(st *ExportMetricsRequest) (*servingpb.ExportMetricsRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2716,6 +3507,31 @@ type ExportMetricsResponse struct {
 
 	// Wire name: 'contents'
 	Contents io.ReadCloser `tf:"-"`
+}
+
+func (st ExportMetricsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ExportMetricsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ExportMetricsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ExportMetricsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExportMetricsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ExportMetricsResponseToPb(st *ExportMetricsResponse) (*servingpb.ExportMetricsResponsePb, error) {
@@ -2763,12 +3579,29 @@ type ExternalFunctionRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExternalFunctionRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalFunctionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalFunctionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalFunctionRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalFunctionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ExternalFunctionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalFunctionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ExternalFunctionRequestToPb(st *ExternalFunctionRequest) (*servingpb.ExternalFunctionRequestPb, error) {
@@ -2789,7 +3622,9 @@ func ExternalFunctionRequestToPb(st *ExternalFunctionRequest) (*servingpb.Extern
 	pb.Params = st.Params
 	pb.Path = st.Path
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2811,7 +3646,9 @@ func ExternalFunctionRequestFromPb(pb *servingpb.ExternalFunctionRequestPb) (*Ex
 	st.Params = pb.Params
 	st.Path = pb.Path
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2919,6 +3756,31 @@ type ExternalModel struct {
 	// The task type of the external model.
 	// Wire name: 'task'
 	Task string ``
+}
+
+func (st ExternalModel) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalModelToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ExternalModel) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ExternalModelPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalModelFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ExternalModelToPb(st *ExternalModel) (*servingpb.ExternalModelPb, error) {
@@ -3170,12 +4032,29 @@ type ExternalModelUsageElement struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExternalModelUsageElement) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalModelUsageElement) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalModelUsageElementToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalModelUsageElement) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalModelUsageElement) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ExternalModelUsageElementPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalModelUsageElementFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ExternalModelUsageElementToPb(st *ExternalModelUsageElement) (*servingpb.ExternalModelUsageElementPb, error) {
@@ -3187,7 +4066,9 @@ func ExternalModelUsageElementToPb(st *ExternalModelUsageElement) (*servingpb.Ex
 	pb.PromptTokens = st.PromptTokens
 	pb.TotalTokens = st.TotalTokens
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3200,7 +4081,9 @@ func ExternalModelUsageElementFromPb(pb *servingpb.ExternalModelUsageElementPb) 
 	st.PromptTokens = pb.PromptTokens
 	st.TotalTokens = pb.TotalTokens
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3213,6 +4096,31 @@ type FallbackConfig struct {
 	// response with the error code.
 	// Wire name: 'enabled'
 	Enabled bool ``
+}
+
+func (st FallbackConfig) MarshalJSON() ([]byte, error) {
+	pb, err := FallbackConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *FallbackConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.FallbackConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FallbackConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FallbackConfigToPb(st *FallbackConfig) (*servingpb.FallbackConfigPb, error) {
@@ -3253,12 +4161,29 @@ type FoundationModel struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FoundationModel) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st FoundationModel) MarshalJSON() ([]byte, error) {
+	pb, err := FoundationModelToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s FoundationModel) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *FoundationModel) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.FoundationModelPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FoundationModelFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FoundationModelToPb(st *FoundationModel) (*servingpb.FoundationModelPb, error) {
@@ -3271,7 +4196,9 @@ func FoundationModelToPb(st *FoundationModel) (*servingpb.FoundationModelPb, err
 	pb.Docs = st.Docs
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3285,7 +4212,9 @@ func FoundationModelFromPb(pb *servingpb.FoundationModelPb) (*FoundationModel, e
 	st.Docs = pb.Docs
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3294,6 +4223,31 @@ type GetOpenApiRequest struct {
 	// field is required.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st GetOpenApiRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetOpenApiRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetOpenApiRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.GetOpenApiRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetOpenApiRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetOpenApiRequestToPb(st *GetOpenApiRequest) (*servingpb.GetOpenApiRequestPb, error) {
@@ -3322,6 +4276,31 @@ type GetOpenApiResponse struct {
 	Contents io.ReadCloser `tf:"-"`
 }
 
+func (st GetOpenApiResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetOpenApiResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetOpenApiResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.GetOpenApiResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetOpenApiResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetOpenApiResponseToPb(st *GetOpenApiResponse) (*servingpb.GetOpenApiResponsePb, error) {
 	if st == nil {
 		return nil, nil
@@ -3348,6 +4327,31 @@ type GetServingEndpointPermissionLevelsRequest struct {
 	ServingEndpointId string `tf:"-"`
 }
 
+func (st GetServingEndpointPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetServingEndpointPermissionLevelsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetServingEndpointPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.GetServingEndpointPermissionLevelsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetServingEndpointPermissionLevelsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetServingEndpointPermissionLevelsRequestToPb(st *GetServingEndpointPermissionLevelsRequest) (*servingpb.GetServingEndpointPermissionLevelsRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -3372,6 +4376,31 @@ type GetServingEndpointPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
 	PermissionLevels []ServingEndpointPermissionsDescription ``
+}
+
+func (st GetServingEndpointPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetServingEndpointPermissionLevelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetServingEndpointPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.GetServingEndpointPermissionLevelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetServingEndpointPermissionLevelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetServingEndpointPermissionLevelsResponseToPb(st *GetServingEndpointPermissionLevelsResponse) (*servingpb.GetServingEndpointPermissionLevelsResponsePb, error) {
@@ -3422,6 +4451,31 @@ type GetServingEndpointPermissionsRequest struct {
 	ServingEndpointId string `tf:"-"`
 }
 
+func (st GetServingEndpointPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetServingEndpointPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetServingEndpointPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.GetServingEndpointPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetServingEndpointPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetServingEndpointPermissionsRequestToPb(st *GetServingEndpointPermissionsRequest) (*servingpb.GetServingEndpointPermissionsRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -3446,6 +4500,31 @@ type GetServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st GetServingEndpointRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetServingEndpointRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetServingEndpointRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.GetServingEndpointRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetServingEndpointRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetServingEndpointRequestToPb(st *GetServingEndpointRequest) (*servingpb.GetServingEndpointRequestPb, error) {
@@ -3506,12 +4585,29 @@ type GoogleCloudVertexAiConfig struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GoogleCloudVertexAiConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GoogleCloudVertexAiConfig) MarshalJSON() ([]byte, error) {
+	pb, err := GoogleCloudVertexAiConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GoogleCloudVertexAiConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GoogleCloudVertexAiConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.GoogleCloudVertexAiConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GoogleCloudVertexAiConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GoogleCloudVertexAiConfigToPb(st *GoogleCloudVertexAiConfig) (*servingpb.GoogleCloudVertexAiConfigPb, error) {
@@ -3524,7 +4620,9 @@ func GoogleCloudVertexAiConfigToPb(st *GoogleCloudVertexAiConfig) (*servingpb.Go
 	pb.ProjectId = st.ProjectId
 	pb.Region = st.Region
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3538,7 +4636,9 @@ func GoogleCloudVertexAiConfigFromPb(pb *servingpb.GoogleCloudVertexAiConfigPb) 
 	st.ProjectId = pb.ProjectId
 	st.Region = pb.Region
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3546,6 +4646,31 @@ type HttpRequestResponse struct {
 
 	// Wire name: 'contents'
 	Contents io.ReadCloser `tf:"-"`
+}
+
+func (st HttpRequestResponse) MarshalJSON() ([]byte, error) {
+	pb, err := HttpRequestResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *HttpRequestResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.HttpRequestResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := HttpRequestResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func HttpRequestResponseToPb(st *HttpRequestResponse) (*servingpb.HttpRequestResponsePb, error) {
@@ -3572,6 +4697,31 @@ type ListEndpointsResponse struct {
 	// The list of endpoints.
 	// Wire name: 'endpoints'
 	Endpoints []ServingEndpoint ``
+}
+
+func (st ListEndpointsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListEndpointsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListEndpointsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ListEndpointsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListEndpointsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListEndpointsResponseToPb(st *ListEndpointsResponse) (*servingpb.ListEndpointsResponsePb, error) {
@@ -3627,6 +4777,31 @@ type LogsRequest struct {
 	ServedModelName string `tf:"-"`
 }
 
+func (st LogsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := LogsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *LogsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.LogsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := LogsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func LogsRequestToPb(st *LogsRequest) (*servingpb.LogsRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -3655,6 +4830,31 @@ type ModelDataPlaneInfo struct {
 	// Information required to query DataPlane API 'query' endpoint.
 	// Wire name: 'query_info'
 	QueryInfo *DataPlaneInfo ``
+}
+
+func (st ModelDataPlaneInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ModelDataPlaneInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ModelDataPlaneInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ModelDataPlaneInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ModelDataPlaneInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ModelDataPlaneInfoToPb(st *ModelDataPlaneInfo) (*servingpb.ModelDataPlaneInfoPb, error) {
@@ -3756,12 +4956,29 @@ type OpenAiConfig struct {
 	ForceSendFields    []string `tf:"-"`
 }
 
-func (s *OpenAiConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st OpenAiConfig) MarshalJSON() ([]byte, error) {
+	pb, err := OpenAiConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s OpenAiConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *OpenAiConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.OpenAiConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := OpenAiConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func OpenAiConfigToPb(st *OpenAiConfig) (*servingpb.OpenAiConfigPb, error) {
@@ -3781,7 +4998,9 @@ func OpenAiConfigToPb(st *OpenAiConfig) (*servingpb.OpenAiConfigPb, error) {
 	pb.OpenaiDeploymentName = st.OpenaiDeploymentName
 	pb.OpenaiOrganization = st.OpenaiOrganization
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3802,7 +5021,9 @@ func OpenAiConfigFromPb(pb *servingpb.OpenAiConfigPb) (*OpenAiConfig, error) {
 	st.OpenaiDeploymentName = pb.OpenaiDeploymentName
 	st.OpenaiOrganization = pb.OpenaiOrganization
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3822,12 +5043,29 @@ type PaLmConfig struct {
 	ForceSendFields     []string `tf:"-"`
 }
 
-func (s *PaLmConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PaLmConfig) MarshalJSON() ([]byte, error) {
+	pb, err := PaLmConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PaLmConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PaLmConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.PaLmConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PaLmConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PaLmConfigToPb(st *PaLmConfig) (*servingpb.PaLmConfigPb, error) {
@@ -3838,7 +5076,9 @@ func PaLmConfigToPb(st *PaLmConfig) (*servingpb.PaLmConfigPb, error) {
 	pb.PalmApiKey = st.PalmApiKey
 	pb.PalmApiKeyPlaintext = st.PalmApiKeyPlaintext
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3850,7 +5090,9 @@ func PaLmConfigFromPb(pb *servingpb.PaLmConfigPb) (*PaLmConfig, error) {
 	st.PalmApiKey = pb.PalmApiKey
 	st.PalmApiKeyPlaintext = pb.PalmApiKeyPlaintext
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3865,6 +5107,31 @@ type PatchServingEndpointTags struct {
 	// required.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st PatchServingEndpointTags) MarshalJSON() ([]byte, error) {
+	pb, err := PatchServingEndpointTagsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PatchServingEndpointTags) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.PatchServingEndpointTagsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PatchServingEndpointTagsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PatchServingEndpointTagsToPb(st *PatchServingEndpointTags) (*servingpb.PatchServingEndpointTagsPb, error) {
@@ -3926,12 +5193,29 @@ type PayloadTable struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PayloadTable) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PayloadTable) MarshalJSON() ([]byte, error) {
+	pb, err := PayloadTableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PayloadTable) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PayloadTable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.PayloadTablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PayloadTableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PayloadTableToPb(st *PayloadTable) (*servingpb.PayloadTablePb, error) {
@@ -3943,7 +5227,9 @@ func PayloadTableToPb(st *PayloadTable) (*servingpb.PayloadTablePb, error) {
 	pb.Status = st.Status
 	pb.StatusMessage = st.StatusMessage
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3956,7 +5242,9 @@ func PayloadTableFromPb(pb *servingpb.PayloadTablePb) (*PayloadTable, error) {
 	st.Status = pb.Status
 	st.StatusMessage = pb.StatusMessage
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3967,6 +5255,31 @@ type PtEndpointCoreConfig struct {
 
 	// Wire name: 'traffic_config'
 	TrafficConfig *TrafficConfig ``
+}
+
+func (st PtEndpointCoreConfig) MarshalJSON() ([]byte, error) {
+	pb, err := PtEndpointCoreConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PtEndpointCoreConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.PtEndpointCoreConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PtEndpointCoreConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PtEndpointCoreConfigToPb(st *PtEndpointCoreConfig) (*servingpb.PtEndpointCoreConfigPb, error) {
@@ -4049,12 +5362,29 @@ type PtServedModel struct {
 	ForceSendFields       []string `tf:"-"`
 }
 
-func (s *PtServedModel) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PtServedModel) MarshalJSON() ([]byte, error) {
+	pb, err := PtServedModelToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PtServedModel) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PtServedModel) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.PtServedModelPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PtServedModelFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PtServedModelToPb(st *PtServedModel) (*servingpb.PtServedModelPb, error) {
@@ -4067,7 +5397,9 @@ func PtServedModelToPb(st *PtServedModel) (*servingpb.PtServedModelPb, error) {
 	pb.Name = st.Name
 	pb.ProvisionedModelUnits = st.ProvisionedModelUnits
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4081,7 +5413,9 @@ func PtServedModelFromPb(pb *servingpb.PtServedModelPb) (*PtServedModel, error) 
 	st.Name = pb.Name
 	st.ProvisionedModelUnits = pb.ProvisionedModelUnits
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4112,6 +5446,31 @@ type PutAiGatewayRequest struct {
 	// costs.
 	// Wire name: 'usage_tracking_config'
 	UsageTrackingConfig *AiGatewayUsageTrackingConfig ``
+}
+
+func (st PutAiGatewayRequest) MarshalJSON() ([]byte, error) {
+	pb, err := PutAiGatewayRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PutAiGatewayRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.PutAiGatewayRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PutAiGatewayRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PutAiGatewayRequestToPb(st *PutAiGatewayRequest) (*servingpb.PutAiGatewayRequestPb, error) {
@@ -4239,6 +5598,31 @@ type PutAiGatewayResponse struct {
 	UsageTrackingConfig *AiGatewayUsageTrackingConfig ``
 }
 
+func (st PutAiGatewayResponse) MarshalJSON() ([]byte, error) {
+	pb, err := PutAiGatewayResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PutAiGatewayResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.PutAiGatewayResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PutAiGatewayResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func PutAiGatewayResponseToPb(st *PutAiGatewayResponse) (*servingpb.PutAiGatewayResponsePb, error) {
 	if st == nil {
 		return nil, nil
@@ -4347,6 +5731,31 @@ type PutRequest struct {
 	RateLimits []RateLimit ``
 }
 
+func (st PutRequest) MarshalJSON() ([]byte, error) {
+	pb, err := PutRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PutRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.PutRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PutRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func PutRequestToPb(st *PutRequest) (*servingpb.PutRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -4395,6 +5804,31 @@ type PutResponse struct {
 	// The list of endpoint rate limits.
 	// Wire name: 'rate_limits'
 	RateLimits []RateLimit ``
+}
+
+func (st PutResponse) MarshalJSON() ([]byte, error) {
+	pb, err := PutResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PutResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.PutResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PutResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PutResponseToPb(st *PutResponse) (*servingpb.PutResponsePb, error) {
@@ -4506,12 +5940,29 @@ type QueryEndpointInput struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *QueryEndpointInput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QueryEndpointInput) MarshalJSON() ([]byte, error) {
+	pb, err := QueryEndpointInputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QueryEndpointInput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QueryEndpointInput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.QueryEndpointInputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryEndpointInputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryEndpointInputToPb(st *QueryEndpointInput) (*servingpb.QueryEndpointInputPb, error) {
@@ -4551,7 +6002,9 @@ func QueryEndpointInputToPb(st *QueryEndpointInput) (*servingpb.QueryEndpointInp
 	pb.Stream = st.Stream
 	pb.Temperature = st.Temperature
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4592,7 +6045,9 @@ func QueryEndpointInputFromPb(pb *servingpb.QueryEndpointInputPb) (*QueryEndpoin
 	st.Stream = pb.Stream
 	st.Temperature = pb.Temperature
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4637,12 +6092,29 @@ type QueryEndpointResponse struct {
 	ForceSendFields []string                   `tf:"-"`
 }
 
-func (s *QueryEndpointResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QueryEndpointResponse) MarshalJSON() ([]byte, error) {
+	pb, err := QueryEndpointResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QueryEndpointResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QueryEndpointResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.QueryEndpointResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QueryEndpointResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func QueryEndpointResponseToPb(st *QueryEndpointResponse) (*servingpb.QueryEndpointResponsePb, error) {
@@ -4694,7 +6166,9 @@ func QueryEndpointResponseToPb(st *QueryEndpointResponse) (*servingpb.QueryEndpo
 		pb.Usage = usagePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4747,7 +6221,9 @@ func QueryEndpointResponseFromPb(pb *servingpb.QueryEndpointResponsePb) (*QueryE
 		st.Usage = usageField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4823,6 +6299,31 @@ type RateLimit struct {
 	// 'minute' is supported.
 	// Wire name: 'renewal_period'
 	RenewalPeriod RateLimitRenewalPeriod ``
+}
+
+func (st RateLimit) MarshalJSON() ([]byte, error) {
+	pb, err := RateLimitToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RateLimit) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.RateLimitPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RateLimitFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RateLimitToPb(st *RateLimit) (*servingpb.RateLimitPb, error) {
@@ -4990,12 +6491,29 @@ type Route struct {
 	ForceSendFields   []string `tf:"-"`
 }
 
-func (s *Route) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Route) MarshalJSON() ([]byte, error) {
+	pb, err := RouteToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Route) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Route) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.RoutePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RouteFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RouteToPb(st *Route) (*servingpb.RoutePb, error) {
@@ -5007,7 +6525,9 @@ func RouteToPb(st *Route) (*servingpb.RoutePb, error) {
 	pb.ServedModelName = st.ServedModelName
 	pb.TrafficPercentage = st.TrafficPercentage
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5020,7 +6540,9 @@ func RouteFromPb(pb *servingpb.RoutePb) (*Route, error) {
 	st.ServedModelName = pb.ServedModelName
 	st.TrafficPercentage = pb.TrafficPercentage
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5109,12 +6631,29 @@ type ServedEntityInput struct {
 	ForceSendFields []string                 `tf:"-"`
 }
 
-func (s *ServedEntityInput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServedEntityInput) MarshalJSON() ([]byte, error) {
+	pb, err := ServedEntityInputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServedEntityInput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServedEntityInput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServedEntityInputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServedEntityInputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServedEntityInputToPb(st *ServedEntityInput) (*servingpb.ServedEntityInputPb, error) {
@@ -5149,7 +6688,9 @@ func ServedEntityInputToPb(st *ServedEntityInput) (*servingpb.ServedEntityInputP
 		pb.WorkloadType = *workloadTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5185,7 +6726,9 @@ func ServedEntityInputFromPb(pb *servingpb.ServedEntityInputPb) (*ServedEntityIn
 		st.WorkloadType = *workloadTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5286,12 +6829,29 @@ type ServedEntityOutput struct {
 	ForceSendFields []string                 `tf:"-"`
 }
 
-func (s *ServedEntityOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServedEntityOutput) MarshalJSON() ([]byte, error) {
+	pb, err := ServedEntityOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServedEntityOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServedEntityOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServedEntityOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServedEntityOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServedEntityOutputToPb(st *ServedEntityOutput) (*servingpb.ServedEntityOutputPb, error) {
@@ -5342,7 +6902,9 @@ func ServedEntityOutputToPb(st *ServedEntityOutput) (*servingpb.ServedEntityOutp
 		pb.WorkloadType = *workloadTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5394,7 +6956,9 @@ func ServedEntityOutputFromPb(pb *servingpb.ServedEntityOutputPb) (*ServedEntity
 		st.WorkloadType = *workloadTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5417,12 +6981,29 @@ type ServedEntitySpec struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServedEntitySpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServedEntitySpec) MarshalJSON() ([]byte, error) {
+	pb, err := ServedEntitySpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServedEntitySpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServedEntitySpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServedEntitySpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServedEntitySpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServedEntitySpecToPb(st *ServedEntitySpec) (*servingpb.ServedEntitySpecPb, error) {
@@ -5448,7 +7029,9 @@ func ServedEntitySpecToPb(st *ServedEntitySpec) (*servingpb.ServedEntitySpecPb, 
 	}
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5475,7 +7058,9 @@ func ServedEntitySpecFromPb(pb *servingpb.ServedEntitySpecPb) (*ServedEntitySpec
 	}
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5550,12 +7135,29 @@ type ServedModelInput struct {
 	ForceSendFields []string                     `tf:"-"`
 }
 
-func (s *ServedModelInput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServedModelInput) MarshalJSON() ([]byte, error) {
+	pb, err := ServedModelInputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServedModelInput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServedModelInput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServedModelInputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServedModelInputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServedModelInputToPb(st *ServedModelInput) (*servingpb.ServedModelInputPb, error) {
@@ -5583,7 +7185,9 @@ func ServedModelInputToPb(st *ServedModelInput) (*servingpb.ServedModelInputPb, 
 		pb.WorkloadType = *workloadTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5612,7 +7216,9 @@ func ServedModelInputFromPb(pb *servingpb.ServedModelInputPb) (*ServedModelInput
 		st.WorkloadType = *workloadTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5754,12 +7360,29 @@ type ServedModelOutput struct {
 	ForceSendFields []string                 `tf:"-"`
 }
 
-func (s *ServedModelOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServedModelOutput) MarshalJSON() ([]byte, error) {
+	pb, err := ServedModelOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServedModelOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServedModelOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServedModelOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServedModelOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServedModelOutputToPb(st *ServedModelOutput) (*servingpb.ServedModelOutputPb, error) {
@@ -5794,7 +7417,9 @@ func ServedModelOutputToPb(st *ServedModelOutput) (*servingpb.ServedModelOutputP
 		pb.WorkloadType = *workloadTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5830,7 +7455,9 @@ func ServedModelOutputFromPb(pb *servingpb.ServedModelOutputPb) (*ServedModelOut
 		st.WorkloadType = *workloadTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5847,12 +7474,29 @@ type ServedModelSpec struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServedModelSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServedModelSpec) MarshalJSON() ([]byte, error) {
+	pb, err := ServedModelSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServedModelSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServedModelSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServedModelSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServedModelSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServedModelSpecToPb(st *ServedModelSpec) (*servingpb.ServedModelSpecPb, error) {
@@ -5864,7 +7508,9 @@ func ServedModelSpecToPb(st *ServedModelSpec) (*servingpb.ServedModelSpecPb, err
 	pb.ModelVersion = st.ModelVersion
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5877,7 +7523,9 @@ func ServedModelSpecFromPb(pb *servingpb.ServedModelSpecPb) (*ServedModelSpec, e
 	st.ModelVersion = pb.ModelVersion
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5891,12 +7539,29 @@ type ServedModelState struct {
 	ForceSendFields        []string `tf:"-"`
 }
 
-func (s *ServedModelState) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServedModelState) MarshalJSON() ([]byte, error) {
+	pb, err := ServedModelStateToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServedModelState) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServedModelState) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServedModelStatePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServedModelStateFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServedModelStateToPb(st *ServedModelState) (*servingpb.ServedModelStatePb, error) {
@@ -5913,7 +7578,9 @@ func ServedModelStateToPb(st *ServedModelState) (*servingpb.ServedModelStatePb, 
 	}
 	pb.DeploymentStateMessage = st.DeploymentStateMessage
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5931,7 +7598,9 @@ func ServedModelStateFromPb(pb *servingpb.ServedModelStatePb) (*ServedModelState
 	}
 	st.DeploymentStateMessage = pb.DeploymentStateMessage
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6004,6 +7673,31 @@ type ServerLogsResponse struct {
 	Logs string ``
 }
 
+func (st ServerLogsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ServerLogsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ServerLogsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServerLogsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServerLogsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func ServerLogsResponseToPb(st *ServerLogsResponse) (*servingpb.ServerLogsResponsePb, error) {
 	if st == nil {
 		return nil, nil
@@ -6067,12 +7761,29 @@ type ServingEndpoint struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServingEndpoint) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServingEndpoint) MarshalJSON() ([]byte, error) {
+	pb, err := ServingEndpointToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServingEndpoint) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServingEndpoint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServingEndpointPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServingEndpointFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServingEndpointToPb(st *ServingEndpoint) (*servingpb.ServingEndpointPb, error) {
@@ -6122,7 +7833,9 @@ func ServingEndpointToPb(st *ServingEndpoint) (*servingpb.ServingEndpointPb, err
 	pb.Tags = tagsPb
 	pb.Task = st.Task
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6173,7 +7886,9 @@ func ServingEndpointFromPb(pb *servingpb.ServingEndpointPb) (*ServingEndpoint, e
 	st.Tags = tagsField
 	st.Task = pb.Task
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6193,12 +7908,29 @@ type ServingEndpointAccessControlRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServingEndpointAccessControlRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServingEndpointAccessControlRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ServingEndpointAccessControlRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServingEndpointAccessControlRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServingEndpointAccessControlRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServingEndpointAccessControlRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServingEndpointAccessControlRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServingEndpointAccessControlRequestToPb(st *ServingEndpointAccessControlRequest) (*servingpb.ServingEndpointAccessControlRequestPb, error) {
@@ -6217,7 +7949,9 @@ func ServingEndpointAccessControlRequestToPb(st *ServingEndpointAccessControlReq
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6237,7 +7971,9 @@ func ServingEndpointAccessControlRequestFromPb(pb *servingpb.ServingEndpointAcce
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6260,12 +7996,29 @@ type ServingEndpointAccessControlResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServingEndpointAccessControlResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServingEndpointAccessControlResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ServingEndpointAccessControlResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServingEndpointAccessControlResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServingEndpointAccessControlResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServingEndpointAccessControlResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServingEndpointAccessControlResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServingEndpointAccessControlResponseToPb(st *ServingEndpointAccessControlResponse) (*servingpb.ServingEndpointAccessControlResponsePb, error) {
@@ -6290,7 +8043,9 @@ func ServingEndpointAccessControlResponseToPb(st *ServingEndpointAccessControlRe
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6316,7 +8071,9 @@ func ServingEndpointAccessControlResponseFromPb(pb *servingpb.ServingEndpointAcc
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6379,12 +8136,29 @@ type ServingEndpointDetailed struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServingEndpointDetailed) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServingEndpointDetailed) MarshalJSON() ([]byte, error) {
+	pb, err := ServingEndpointDetailedToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServingEndpointDetailed) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServingEndpointDetailed) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServingEndpointDetailedPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServingEndpointDetailedFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServingEndpointDetailedToPb(st *ServingEndpointDetailed) (*servingpb.ServingEndpointDetailedPb, error) {
@@ -6457,7 +8231,9 @@ func ServingEndpointDetailedToPb(st *ServingEndpointDetailed) (*servingpb.Servin
 	pb.Tags = tagsPb
 	pb.Task = st.Task
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6531,7 +8307,9 @@ func ServingEndpointDetailedFromPb(pb *servingpb.ServingEndpointDetailedPb) (*Se
 	st.Tags = tagsField
 	st.Task = pb.Task
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6604,12 +8382,29 @@ type ServingEndpointPermission struct {
 	ForceSendFields []string                       `tf:"-"`
 }
 
-func (s *ServingEndpointPermission) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServingEndpointPermission) MarshalJSON() ([]byte, error) {
+	pb, err := ServingEndpointPermissionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServingEndpointPermission) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServingEndpointPermission) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServingEndpointPermissionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServingEndpointPermissionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServingEndpointPermissionToPb(st *ServingEndpointPermission) (*servingpb.ServingEndpointPermissionPb, error) {
@@ -6627,7 +8422,9 @@ func ServingEndpointPermissionToPb(st *ServingEndpointPermission) (*servingpb.Se
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6646,7 +8443,9 @@ func ServingEndpointPermissionFromPb(pb *servingpb.ServingEndpointPermissionPb) 
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6720,12 +8519,29 @@ type ServingEndpointPermissions struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServingEndpointPermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServingEndpointPermissions) MarshalJSON() ([]byte, error) {
+	pb, err := ServingEndpointPermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServingEndpointPermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServingEndpointPermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServingEndpointPermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServingEndpointPermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServingEndpointPermissionsToPb(st *ServingEndpointPermissions) (*servingpb.ServingEndpointPermissionsPb, error) {
@@ -6748,7 +8564,9 @@ func ServingEndpointPermissionsToPb(st *ServingEndpointPermissions) (*servingpb.
 	pb.ObjectId = st.ObjectId
 	pb.ObjectType = st.ObjectType
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6772,7 +8590,9 @@ func ServingEndpointPermissionsFromPb(pb *servingpb.ServingEndpointPermissionsPb
 	st.ObjectId = pb.ObjectId
 	st.ObjectType = pb.ObjectType
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6786,12 +8606,29 @@ type ServingEndpointPermissionsDescription struct {
 	ForceSendFields []string                       `tf:"-"`
 }
 
-func (s *ServingEndpointPermissionsDescription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServingEndpointPermissionsDescription) MarshalJSON() ([]byte, error) {
+	pb, err := ServingEndpointPermissionsDescriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServingEndpointPermissionsDescription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServingEndpointPermissionsDescription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServingEndpointPermissionsDescriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServingEndpointPermissionsDescriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServingEndpointPermissionsDescriptionToPb(st *ServingEndpointPermissionsDescription) (*servingpb.ServingEndpointPermissionsDescriptionPb, error) {
@@ -6808,7 +8645,9 @@ func ServingEndpointPermissionsDescriptionToPb(st *ServingEndpointPermissionsDes
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6826,7 +8665,9 @@ func ServingEndpointPermissionsDescriptionFromPb(pb *servingpb.ServingEndpointPe
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6837,6 +8678,31 @@ type ServingEndpointPermissionsRequest struct {
 	// The serving endpoint for which to get or manage permissions.
 	// Wire name: 'serving_endpoint_id'
 	ServingEndpointId string `tf:"-"`
+}
+
+func (st ServingEndpointPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ServingEndpointPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ServingEndpointPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.ServingEndpointPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServingEndpointPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServingEndpointPermissionsRequestToPb(st *ServingEndpointPermissionsRequest) (*servingpb.ServingEndpointPermissionsRequestPb, error) {
@@ -6953,6 +8819,31 @@ type TrafficConfig struct {
 	Routes []Route ``
 }
 
+func (st TrafficConfig) MarshalJSON() ([]byte, error) {
+	pb, err := TrafficConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *TrafficConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.TrafficConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TrafficConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func TrafficConfigToPb(st *TrafficConfig) (*servingpb.TrafficConfigPb, error) {
 	if st == nil {
 		return nil, nil
@@ -7002,6 +8893,31 @@ type UpdateProvisionedThroughputEndpointConfigRequest struct {
 	// The name of the pt endpoint to update. This field is required.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st UpdateProvisionedThroughputEndpointConfigRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateProvisionedThroughputEndpointConfigRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateProvisionedThroughputEndpointConfigRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.UpdateProvisionedThroughputEndpointConfigRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateProvisionedThroughputEndpointConfigRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateProvisionedThroughputEndpointConfigRequestToPb(st *UpdateProvisionedThroughputEndpointConfigRequest) (*servingpb.UpdateProvisionedThroughputEndpointConfigRequestPb, error) {
@@ -7057,12 +8973,29 @@ type V1ResponseChoiceElement struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *V1ResponseChoiceElement) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st V1ResponseChoiceElement) MarshalJSON() ([]byte, error) {
+	pb, err := V1ResponseChoiceElementToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s V1ResponseChoiceElement) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *V1ResponseChoiceElement) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingpb.V1ResponseChoiceElementPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := V1ResponseChoiceElementFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func V1ResponseChoiceElementToPb(st *V1ResponseChoiceElement) (*servingpb.V1ResponseChoiceElementPb, error) {
@@ -7082,7 +9015,9 @@ func V1ResponseChoiceElementToPb(st *V1ResponseChoiceElement) (*servingpb.V1Resp
 	}
 	pb.Text = st.Text
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7103,7 +9038,9 @@ func V1ResponseChoiceElementFromPb(pb *servingpb.V1ResponseChoiceElementPb) (*V1
 	}
 	st.Text = pb.Text
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 

@@ -34,9 +34,12 @@ func (a *accessControlImpl) CheckPolicy(ctx context.Context, request CheckPolicy
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&checkPolicyResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CheckPolicyResponseFromPb(&checkPolicyResponsePb)
 	if err != nil {
 		return nil, err
@@ -66,9 +69,12 @@ func (a *accountAccessControlImpl) GetAssignableRolesForResource(ctx context.Con
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getAssignableRolesForResourceResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetAssignableRolesForResourceResponseFromPb(&getAssignableRolesForResourceResponsePb)
 	if err != nil {
 		return nil, err
@@ -93,9 +99,12 @@ func (a *accountAccessControlImpl) GetRuleSet(ctx context.Context, request GetRu
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&ruleSetResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RuleSetResponseFromPb(&ruleSetResponsePb)
 	if err != nil {
 		return nil, err
@@ -121,9 +130,12 @@ func (a *accountAccessControlImpl) UpdateRuleSet(ctx context.Context, request Up
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&ruleSetResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RuleSetResponseFromPb(&ruleSetResponsePb)
 	if err != nil {
 		return nil, err
@@ -153,9 +165,12 @@ func (a *accountAccessControlProxyImpl) GetAssignableRolesForResource(ctx contex
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getAssignableRolesForResourceResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetAssignableRolesForResourceResponseFromPb(&getAssignableRolesForResourceResponsePb)
 	if err != nil {
 		return nil, err
@@ -180,9 +195,12 @@ func (a *accountAccessControlProxyImpl) GetRuleSet(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&ruleSetResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RuleSetResponseFromPb(&ruleSetResponsePb)
 	if err != nil {
 		return nil, err
@@ -208,9 +226,12 @@ func (a *accountAccessControlProxyImpl) UpdateRuleSet(ctx context.Context, reque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&ruleSetResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RuleSetResponseFromPb(&ruleSetResponsePb)
 	if err != nil {
 		return nil, err
@@ -241,9 +262,12 @@ func (a *accountGroupsImpl) Create(ctx context.Context, request Group) (*Group, 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&groupPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GroupFromPb(&groupPb)
 	if err != nil {
 		return nil, err
@@ -266,9 +290,12 @@ func (a *accountGroupsImpl) Delete(ctx context.Context, request DeleteAccountGro
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -289,9 +316,12 @@ func (a *accountGroupsImpl) Get(ctx context.Context, request GetAccountGroupRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&groupPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GroupFromPb(&groupPb)
 	if err != nil {
 		return nil, err
@@ -357,7 +387,7 @@ func (a *accountGroupsImpl) internalList(ctx context.Context, request ListAccoun
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listGroupsResponsePb,
 	)
 	if err != nil {
@@ -386,9 +416,12 @@ func (a *accountGroupsImpl) Patch(ctx context.Context, request PartialUpdate) er
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -408,9 +441,12 @@ func (a *accountGroupsImpl) Update(ctx context.Context, request Group) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -437,9 +473,12 @@ func (a *accountServicePrincipalsImpl) Create(ctx context.Context, request Servi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&servicePrincipalPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ServicePrincipalFromPb(&servicePrincipalPb)
 	if err != nil {
 		return nil, err
@@ -462,9 +501,12 @@ func (a *accountServicePrincipalsImpl) Delete(ctx context.Context, request Delet
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -485,9 +527,12 @@ func (a *accountServicePrincipalsImpl) Get(ctx context.Context, request GetAccou
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&servicePrincipalPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ServicePrincipalFromPb(&servicePrincipalPb)
 	if err != nil {
 		return nil, err
@@ -553,7 +598,7 @@ func (a *accountServicePrincipalsImpl) internalList(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listServicePrincipalResponsePb,
 	)
 	if err != nil {
@@ -582,9 +627,12 @@ func (a *accountServicePrincipalsImpl) Patch(ctx context.Context, request Partia
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -604,9 +652,12 @@ func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request Servi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -633,9 +684,12 @@ func (a *accountUsersImpl) Create(ctx context.Context, request User) (*User, err
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&userPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UserFromPb(&userPb)
 	if err != nil {
 		return nil, err
@@ -658,9 +712,12 @@ func (a *accountUsersImpl) Delete(ctx context.Context, request DeleteAccountUser
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -681,9 +738,12 @@ func (a *accountUsersImpl) Get(ctx context.Context, request GetAccountUserReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&userPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UserFromPb(&userPb)
 	if err != nil {
 		return nil, err
@@ -749,7 +809,7 @@ func (a *accountUsersImpl) internalList(ctx context.Context, request ListAccount
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listUsersResponsePb,
 	)
 	if err != nil {
@@ -778,9 +838,12 @@ func (a *accountUsersImpl) Patch(ctx context.Context, request PartialUpdate) err
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -800,9 +863,12 @@ func (a *accountUsersImpl) Update(ctx context.Context, request User) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -827,6 +893,9 @@ func (a *currentUserImpl) Me(ctx context.Context) (*User, error) {
 		nil,
 		&userPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UserFromPb(&userPb)
 	if err != nil {
 		return nil, err
@@ -857,9 +926,12 @@ func (a *groupsImpl) Create(ctx context.Context, request Group) (*Group, error) 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&groupPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GroupFromPb(&groupPb)
 	if err != nil {
 		return nil, err
@@ -882,9 +954,12 @@ func (a *groupsImpl) Delete(ctx context.Context, request DeleteGroupRequest) err
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -905,9 +980,12 @@ func (a *groupsImpl) Get(ctx context.Context, request GetGroupRequest) (*Group, 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&groupPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GroupFromPb(&groupPb)
 	if err != nil {
 		return nil, err
@@ -973,7 +1051,7 @@ func (a *groupsImpl) internalList(ctx context.Context, request ListGroupsRequest
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listGroupsResponsePb,
 	)
 	if err != nil {
@@ -1002,9 +1080,12 @@ func (a *groupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1024,9 +1105,12 @@ func (a *groupsImpl) Update(ctx context.Context, request Group) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1053,9 +1137,12 @@ func (a *permissionMigrationImpl) MigratePermissions(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&migratePermissionsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := MigratePermissionsResponseFromPb(&migratePermissionsResponsePb)
 	if err != nil {
 		return nil, err
@@ -1085,9 +1172,12 @@ func (a *permissionsImpl) Get(ctx context.Context, request GetPermissionRequest)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&objectPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ObjectPermissionsFromPb(&objectPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1112,9 +1202,12 @@ func (a *permissionsImpl) GetPermissionLevels(ctx context.Context, request GetPe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getPermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetPermissionLevelsResponseFromPb(&getPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -1140,9 +1233,12 @@ func (a *permissionsImpl) Set(ctx context.Context, request SetObjectPermissions)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&objectPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ObjectPermissionsFromPb(&objectPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1168,9 +1264,12 @@ func (a *permissionsImpl) Update(ctx context.Context, request UpdateObjectPermis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&objectPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ObjectPermissionsFromPb(&objectPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1201,9 +1300,12 @@ func (a *servicePrincipalsImpl) Create(ctx context.Context, request ServicePrinc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&servicePrincipalPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ServicePrincipalFromPb(&servicePrincipalPb)
 	if err != nil {
 		return nil, err
@@ -1226,9 +1328,12 @@ func (a *servicePrincipalsImpl) Delete(ctx context.Context, request DeleteServic
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1249,9 +1354,12 @@ func (a *servicePrincipalsImpl) Get(ctx context.Context, request GetServicePrinc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&servicePrincipalPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ServicePrincipalFromPb(&servicePrincipalPb)
 	if err != nil {
 		return nil, err
@@ -1317,7 +1425,7 @@ func (a *servicePrincipalsImpl) internalList(ctx context.Context, request ListSe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listServicePrincipalResponsePb,
 	)
 	if err != nil {
@@ -1346,9 +1454,12 @@ func (a *servicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1368,9 +1479,12 @@ func (a *servicePrincipalsImpl) Update(ctx context.Context, request ServicePrinc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1397,9 +1511,12 @@ func (a *usersImpl) Create(ctx context.Context, request User) (*User, error) {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&userPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UserFromPb(&userPb)
 	if err != nil {
 		return nil, err
@@ -1422,9 +1539,12 @@ func (a *usersImpl) Delete(ctx context.Context, request DeleteUserRequest) error
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1445,9 +1565,12 @@ func (a *usersImpl) Get(ctx context.Context, request GetUserRequest) (*User, err
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&userPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UserFromPb(&userPb)
 	if err != nil {
 		return nil, err
@@ -1471,6 +1594,9 @@ func (a *usersImpl) GetPermissionLevels(ctx context.Context) (*GetPasswordPermis
 		nil,
 		&getPasswordPermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetPasswordPermissionLevelsResponseFromPb(&getPasswordPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -1494,6 +1620,9 @@ func (a *usersImpl) GetPermissions(ctx context.Context) (*PasswordPermissions, e
 		nil,
 		&passwordPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PasswordPermissionsFromPb(&passwordPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1559,7 +1688,7 @@ func (a *usersImpl) internalList(ctx context.Context, request ListUsersRequest) 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listUsersResponsePb,
 	)
 	if err != nil {
@@ -1588,9 +1717,12 @@ func (a *usersImpl) Patch(ctx context.Context, request PartialUpdate) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1612,9 +1744,12 @@ func (a *usersImpl) SetPermissions(ctx context.Context, request PasswordPermissi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&passwordPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PasswordPermissionsFromPb(&passwordPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1638,9 +1773,12 @@ func (a *usersImpl) Update(ctx context.Context, request User) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1662,9 +1800,12 @@ func (a *usersImpl) UpdatePermissions(ctx context.Context, request PasswordPermi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&passwordPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PasswordPermissionsFromPb(&passwordPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1693,9 +1834,12 @@ func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWork
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1716,9 +1860,12 @@ func (a *workspaceAssignmentImpl) Get(ctx context.Context, request GetWorkspaceA
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&workspacePermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WorkspacePermissionsFromPb(&workspacePermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1770,7 +1917,7 @@ func (a *workspaceAssignmentImpl) internalList(ctx context.Context, request List
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&permissionAssignmentsPb,
 	)
 	if err != nil {
@@ -1801,9 +1948,12 @@ func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWork
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&permissionAssignmentPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PermissionAssignmentFromPb(&permissionAssignmentPb)
 	if err != nil {
 		return nil, err

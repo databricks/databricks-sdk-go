@@ -35,9 +35,12 @@ func (a *alertsImpl) Create(ctx context.Context, request CreateAlertRequest) (*A
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&alertPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AlertFromPb(&alertPb)
 	if err != nil {
 		return nil, err
@@ -61,9 +64,12 @@ func (a *alertsImpl) Delete(ctx context.Context, request TrashAlertRequest) erro
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -84,9 +90,12 @@ func (a *alertsImpl) Get(ctx context.Context, request GetAlertRequest) (*Alert, 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&alertPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AlertFromPb(&alertPb)
 	if err != nil {
 		return nil, err
@@ -146,7 +155,7 @@ func (a *alertsImpl) internalList(ctx context.Context, request ListAlertsRequest
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listAlertsResponsePb,
 	)
 	if err != nil {
@@ -177,9 +186,12 @@ func (a *alertsImpl) Update(ctx context.Context, request UpdateAlertRequest) (*A
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&alertPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AlertFromPb(&alertPb)
 	if err != nil {
 		return nil, err
@@ -210,9 +222,12 @@ func (a *alertsLegacyImpl) Create(ctx context.Context, request CreateAlert) (*Le
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&legacyAlertPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := LegacyAlertFromPb(&legacyAlertPb)
 	if err != nil {
 		return nil, err
@@ -236,9 +251,12 @@ func (a *alertsLegacyImpl) Delete(ctx context.Context, request DeleteAlertsLegac
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -259,9 +277,12 @@ func (a *alertsLegacyImpl) Get(ctx context.Context, request GetAlertsLegacyReque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&legacyAlertPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := LegacyAlertFromPb(&legacyAlertPb)
 	if err != nil {
 		return nil, err
@@ -285,6 +306,9 @@ func (a *alertsLegacyImpl) List(ctx context.Context) ([]LegacyAlert, error) {
 		nil,
 		&legacyAlertListPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	var resp []LegacyAlert
 	for _, item := range legacyAlertListPb {
 		itemResp, err := LegacyAlertFromPb(&item)
@@ -313,9 +337,12 @@ func (a *alertsLegacyImpl) Update(ctx context.Context, request EditAlert) error 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -342,9 +369,12 @@ func (a *alertsV2Impl) CreateAlert(ctx context.Context, request CreateAlertV2Req
 		path,
 		headers,
 		queryParams,
-		requestPb.Alert,
+		(*requestPb).Alert,
 		&alertV2Pb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AlertV2FromPb(&alertV2Pb)
 	if err != nil {
 		return nil, err
@@ -369,9 +399,12 @@ func (a *alertsV2Impl) GetAlert(ctx context.Context, request GetAlertV2Request) 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&alertV2Pb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AlertV2FromPb(&alertV2Pb)
 	if err != nil {
 		return nil, err
@@ -427,7 +460,7 @@ func (a *alertsV2Impl) internalListAlerts(ctx context.Context, request ListAlert
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listAlertsV2ResponsePb,
 	)
 	if err != nil {
@@ -456,9 +489,12 @@ func (a *alertsV2Impl) TrashAlert(ctx context.Context, request TrashAlertV2Reque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -483,9 +519,12 @@ func (a *alertsV2Impl) UpdateAlert(ctx context.Context, request UpdateAlertV2Req
 		path,
 		headers,
 		queryParams,
-		requestPb.Alert,
+		(*requestPb).Alert,
 		&alertV2Pb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AlertV2FromPb(&alertV2Pb)
 	if err != nil {
 		return nil, err
@@ -516,9 +555,12 @@ func (a *dashboardWidgetsImpl) Create(ctx context.Context, request CreateWidget)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&widgetPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WidgetFromPb(&widgetPb)
 	if err != nil {
 		return nil, err
@@ -542,9 +584,12 @@ func (a *dashboardWidgetsImpl) Delete(ctx context.Context, request DeleteDashboa
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -566,9 +611,12 @@ func (a *dashboardWidgetsImpl) Update(ctx context.Context, request UpdateWidgetR
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&widgetPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WidgetFromPb(&widgetPb)
 	if err != nil {
 		return nil, err
@@ -597,9 +645,12 @@ func (a *dashboardsImpl) Delete(ctx context.Context, request DeleteDashboardRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -620,9 +671,12 @@ func (a *dashboardsImpl) Get(ctx context.Context, request GetDashboardRequest) (
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&dashboardPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DashboardFromPb(&dashboardPb)
 	if err != nil {
 		return nil, err
@@ -687,7 +741,7 @@ func (a *dashboardsImpl) internalList(ctx context.Context, request ListDashboard
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listResponsePb,
 	)
 	if err != nil {
@@ -715,6 +769,9 @@ func (a *dashboardsImpl) Restore(ctx context.Context, request RestoreDashboardRe
 		nil,
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -736,9 +793,12 @@ func (a *dashboardsImpl) Update(ctx context.Context, request DashboardEditConten
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&dashboardPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DashboardFromPb(&dashboardPb)
 	if err != nil {
 		return nil, err
@@ -767,6 +827,9 @@ func (a *dataSourcesImpl) List(ctx context.Context) ([]DataSource, error) {
 		nil,
 		&dataSourceListPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	var resp []DataSource
 	for _, item := range dataSourceListPb {
 		itemResp, err := DataSourceFromPb(&item)
@@ -800,9 +863,12 @@ func (a *dbsqlPermissionsImpl) Get(ctx context.Context, request GetDbsqlPermissi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetResponseFromPb(&getResponsePb)
 	if err != nil {
 		return nil, err
@@ -828,9 +894,12 @@ func (a *dbsqlPermissionsImpl) Set(ctx context.Context, request SetRequest) (*Se
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&setResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := SetResponseFromPb(&setResponsePb)
 	if err != nil {
 		return nil, err
@@ -856,9 +925,12 @@ func (a *dbsqlPermissionsImpl) TransferOwnership(ctx context.Context, request Tr
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&successPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := SuccessFromPb(&successPb)
 	if err != nil {
 		return nil, err
@@ -889,9 +961,12 @@ func (a *queriesImpl) Create(ctx context.Context, request CreateQueryRequest) (*
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&queryPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := QueryFromPb(&queryPb)
 	if err != nil {
 		return nil, err
@@ -915,9 +990,12 @@ func (a *queriesImpl) Delete(ctx context.Context, request TrashQueryRequest) err
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -938,9 +1016,12 @@ func (a *queriesImpl) Get(ctx context.Context, request GetQueryRequest) (*Query,
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&queryPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := QueryFromPb(&queryPb)
 	if err != nil {
 		return nil, err
@@ -1000,7 +1081,7 @@ func (a *queriesImpl) internalList(ctx context.Context, request ListQueriesReque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listQueryObjectsResponsePb,
 	)
 	if err != nil {
@@ -1061,7 +1142,7 @@ func (a *queriesImpl) internalListVisualizations(ctx context.Context, request Li
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listVisualizationsForQueryResponsePb,
 	)
 	if err != nil {
@@ -1092,9 +1173,12 @@ func (a *queriesImpl) Update(ctx context.Context, request UpdateQueryRequest) (*
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&queryPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := QueryFromPb(&queryPb)
 	if err != nil {
 		return nil, err
@@ -1125,9 +1209,12 @@ func (a *queriesLegacyImpl) Create(ctx context.Context, request QueryPostContent
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&legacyQueryPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := LegacyQueryFromPb(&legacyQueryPb)
 	if err != nil {
 		return nil, err
@@ -1151,9 +1238,12 @@ func (a *queriesLegacyImpl) Delete(ctx context.Context, request DeleteQueriesLeg
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1174,9 +1264,12 @@ func (a *queriesLegacyImpl) Get(ctx context.Context, request GetQueriesLegacyReq
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&legacyQueryPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := LegacyQueryFromPb(&legacyQueryPb)
 	if err != nil {
 		return nil, err
@@ -1253,7 +1346,7 @@ func (a *queriesLegacyImpl) internalList(ctx context.Context, request ListQuerie
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&queryListPb,
 	)
 	if err != nil {
@@ -1281,6 +1374,9 @@ func (a *queriesLegacyImpl) Restore(ctx context.Context, request RestoreQueriesL
 		nil,
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1302,9 +1398,12 @@ func (a *queriesLegacyImpl) Update(ctx context.Context, request QueryEditContent
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&legacyQueryPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := LegacyQueryFromPb(&legacyQueryPb)
 	if err != nil {
 		return nil, err
@@ -1334,9 +1433,12 @@ func (a *queryHistoryImpl) List(ctx context.Context, request ListQueryHistoryReq
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listQueriesResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ListQueriesResponseFromPb(&listQueriesResponsePb)
 	if err != nil {
 		return nil, err
@@ -1367,9 +1469,12 @@ func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateVisu
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&visualizationPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := VisualizationFromPb(&visualizationPb)
 	if err != nil {
 		return nil, err
@@ -1393,9 +1498,12 @@ func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteVisu
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1417,9 +1525,12 @@ func (a *queryVisualizationsImpl) Update(ctx context.Context, request UpdateVisu
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&visualizationPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := VisualizationFromPb(&visualizationPb)
 	if err != nil {
 		return nil, err
@@ -1450,9 +1561,12 @@ func (a *queryVisualizationsLegacyImpl) Create(ctx context.Context, request Crea
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&legacyVisualizationPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := LegacyVisualizationFromPb(&legacyVisualizationPb)
 	if err != nil {
 		return nil, err
@@ -1476,9 +1590,12 @@ func (a *queryVisualizationsLegacyImpl) Delete(ctx context.Context, request Dele
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1500,9 +1617,12 @@ func (a *queryVisualizationsLegacyImpl) Update(ctx context.Context, request Lega
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&legacyVisualizationPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := LegacyVisualizationFromPb(&legacyVisualizationPb)
 	if err != nil {
 		return nil, err
@@ -1531,6 +1651,9 @@ func (a *redashConfigImpl) GetConfig(ctx context.Context) (*ClientConfig, error)
 		nil,
 		&clientConfigPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ClientConfigFromPb(&clientConfigPb)
 	if err != nil {
 		return nil, err
@@ -1557,6 +1680,9 @@ func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request Ca
 		nil,
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1578,9 +1704,12 @@ func (a *statementExecutionImpl) ExecuteStatement(ctx context.Context, request E
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&statementResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := StatementResponseFromPb(&statementResponsePb)
 	if err != nil {
 		return nil, err
@@ -1605,9 +1734,12 @@ func (a *statementExecutionImpl) GetStatement(ctx context.Context, request GetSt
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&statementResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := StatementResponseFromPb(&statementResponsePb)
 	if err != nil {
 		return nil, err
@@ -1632,9 +1764,12 @@ func (a *statementExecutionImpl) GetStatementResultChunkN(ctx context.Context, r
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&resultDataPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ResultDataFromPb(&resultDataPb)
 	if err != nil {
 		return nil, err
@@ -1665,9 +1800,12 @@ func (a *warehousesImpl) Create(ctx context.Context, request CreateWarehouseRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createWarehouseResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateWarehouseResponseFromPb(&createWarehouseResponsePb)
 	if err != nil {
 		return nil, err
@@ -1691,9 +1829,12 @@ func (a *warehousesImpl) Delete(ctx context.Context, request DeleteWarehouseRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1714,9 +1855,12 @@ func (a *warehousesImpl) Edit(ctx context.Context, request EditWarehouseRequest)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1737,9 +1881,12 @@ func (a *warehousesImpl) Get(ctx context.Context, request GetWarehouseRequest) (
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getWarehouseResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetWarehouseResponseFromPb(&getWarehouseResponsePb)
 	if err != nil {
 		return nil, err
@@ -1764,9 +1911,12 @@ func (a *warehousesImpl) GetPermissionLevels(ctx context.Context, request GetWar
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getWarehousePermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetWarehousePermissionLevelsResponseFromPb(&getWarehousePermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -1791,9 +1941,12 @@ func (a *warehousesImpl) GetPermissions(ctx context.Context, request GetWarehous
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&warehousePermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WarehousePermissionsFromPb(&warehousePermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1817,6 +1970,9 @@ func (a *warehousesImpl) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetW
 		nil,
 		&getWorkspaceWarehouseConfigResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetWorkspaceWarehouseConfigResponseFromPb(&getWorkspaceWarehouseConfigResponsePb)
 	if err != nil {
 		return nil, err
@@ -1866,7 +2022,7 @@ func (a *warehousesImpl) internalList(ctx context.Context, request ListWarehouse
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listWarehousesResponsePb,
 	)
 	if err != nil {
@@ -1897,9 +2053,12 @@ func (a *warehousesImpl) SetPermissions(ctx context.Context, request WarehousePe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&warehousePermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WarehousePermissionsFromPb(&warehousePermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1924,9 +2083,12 @@ func (a *warehousesImpl) SetWorkspaceWarehouseConfig(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1945,6 +2107,9 @@ func (a *warehousesImpl) Start(ctx context.Context, request StartRequest) error 
 		nil,
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1963,6 +2128,9 @@ func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
 		nil,
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1984,9 +2152,12 @@ func (a *warehousesImpl) UpdatePermissions(ctx context.Context, request Warehous
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&warehousePermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WarehousePermissionsFromPb(&warehousePermissionsPb)
 	if err != nil {
 		return nil, err

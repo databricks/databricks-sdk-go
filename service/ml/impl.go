@@ -36,9 +36,12 @@ func (a *experimentsImpl) CreateExperiment(ctx context.Context, request CreateEx
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createExperimentResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateExperimentResponseFromPb(&createExperimentResponsePb)
 	if err != nil {
 		return nil, err
@@ -64,9 +67,12 @@ func (a *experimentsImpl) CreateLoggedModel(ctx context.Context, request CreateL
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createLoggedModelResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateLoggedModelResponseFromPb(&createLoggedModelResponsePb)
 	if err != nil {
 		return nil, err
@@ -92,9 +98,12 @@ func (a *experimentsImpl) CreateRun(ctx context.Context, request CreateRun) (*Cr
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createRunResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateRunResponseFromPb(&createRunResponsePb)
 	if err != nil {
 		return nil, err
@@ -119,9 +128,12 @@ func (a *experimentsImpl) DeleteExperiment(ctx context.Context, request DeleteEx
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -141,9 +153,12 @@ func (a *experimentsImpl) DeleteLoggedModel(ctx context.Context, request DeleteL
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -163,9 +178,12 @@ func (a *experimentsImpl) DeleteLoggedModelTag(ctx context.Context, request Dele
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -186,9 +204,12 @@ func (a *experimentsImpl) DeleteRun(ctx context.Context, request DeleteRun) erro
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -210,9 +231,12 @@ func (a *experimentsImpl) DeleteRuns(ctx context.Context, request DeleteRuns) (*
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteRunsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteRunsResponseFromPb(&deleteRunsResponsePb)
 	if err != nil {
 		return nil, err
@@ -237,9 +261,12 @@ func (a *experimentsImpl) DeleteTag(ctx context.Context, request DeleteTag) erro
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -261,9 +288,12 @@ func (a *experimentsImpl) FinalizeLoggedModel(ctx context.Context, request Final
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&finalizeLoggedModelResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FinalizeLoggedModelResponseFromPb(&finalizeLoggedModelResponsePb)
 	if err != nil {
 		return nil, err
@@ -288,9 +318,12 @@ func (a *experimentsImpl) GetByName(ctx context.Context, request GetByNameReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getExperimentByNameResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetExperimentByNameResponseFromPb(&getExperimentByNameResponsePb)
 	if err != nil {
 		return nil, err
@@ -315,9 +348,12 @@ func (a *experimentsImpl) GetExperiment(ctx context.Context, request GetExperime
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getExperimentResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetExperimentResponseFromPb(&getExperimentResponsePb)
 	if err != nil {
 		return nil, err
@@ -373,7 +409,7 @@ func (a *experimentsImpl) internalGetHistory(ctx context.Context, request GetHis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getMetricHistoryResponsePb,
 	)
 	if err != nil {
@@ -403,9 +439,12 @@ func (a *experimentsImpl) GetLoggedModel(ctx context.Context, request GetLoggedM
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getLoggedModelResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetLoggedModelResponseFromPb(&getLoggedModelResponsePb)
 	if err != nil {
 		return nil, err
@@ -430,9 +469,12 @@ func (a *experimentsImpl) GetPermissionLevels(ctx context.Context, request GetEx
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getExperimentPermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetExperimentPermissionLevelsResponseFromPb(&getExperimentPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -457,9 +499,12 @@ func (a *experimentsImpl) GetPermissions(ctx context.Context, request GetExperim
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&experimentPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExperimentPermissionsFromPb(&experimentPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -484,9 +529,12 @@ func (a *experimentsImpl) GetRun(ctx context.Context, request GetRunRequest) (*G
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getRunResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetRunResponseFromPb(&getRunResponsePb)
 	if err != nil {
 		return nil, err
@@ -552,7 +600,7 @@ func (a *experimentsImpl) internalListArtifacts(ctx context.Context, request Lis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listArtifactsResponsePb,
 	)
 	if err != nil {
@@ -613,7 +661,7 @@ func (a *experimentsImpl) internalListExperiments(ctx context.Context, request L
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listExperimentsResponsePb,
 	)
 	if err != nil {
@@ -643,9 +691,12 @@ func (a *experimentsImpl) LogBatch(ctx context.Context, request LogBatch) error 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -666,9 +717,12 @@ func (a *experimentsImpl) LogInputs(ctx context.Context, request LogInputs) erro
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -689,9 +743,12 @@ func (a *experimentsImpl) LogLoggedModelParams(ctx context.Context, request LogL
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -712,9 +769,12 @@ func (a *experimentsImpl) LogMetric(ctx context.Context, request LogMetric) erro
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -735,9 +795,12 @@ func (a *experimentsImpl) LogModel(ctx context.Context, request LogModel) error 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -758,9 +821,12 @@ func (a *experimentsImpl) LogOutputs(ctx context.Context, request LogOutputsRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -781,9 +847,12 @@ func (a *experimentsImpl) LogParam(ctx context.Context, request LogParam) error 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -804,9 +873,12 @@ func (a *experimentsImpl) RestoreExperiment(ctx context.Context, request Restore
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -827,9 +899,12 @@ func (a *experimentsImpl) RestoreRun(ctx context.Context, request RestoreRun) er
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -851,9 +926,12 @@ func (a *experimentsImpl) RestoreRuns(ctx context.Context, request RestoreRuns) 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&restoreRunsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RestoreRunsResponseFromPb(&restoreRunsResponsePb)
 	if err != nil {
 		return nil, err
@@ -910,7 +988,7 @@ func (a *experimentsImpl) internalSearchExperiments(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&searchExperimentsResponsePb,
 	)
 	if err != nil {
@@ -941,9 +1019,12 @@ func (a *experimentsImpl) SearchLoggedModels(ctx context.Context, request Search
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&searchLoggedModelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := SearchLoggedModelsResponseFromPb(&searchLoggedModelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -1004,7 +1085,7 @@ func (a *experimentsImpl) internalSearchRuns(ctx context.Context, request Search
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&searchRunsResponsePb,
 	)
 	if err != nil {
@@ -1034,9 +1115,12 @@ func (a *experimentsImpl) SetExperimentTag(ctx context.Context, request SetExper
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1057,9 +1141,12 @@ func (a *experimentsImpl) SetLoggedModelTags(ctx context.Context, request SetLog
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1081,9 +1168,12 @@ func (a *experimentsImpl) SetPermissions(ctx context.Context, request Experiment
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&experimentPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExperimentPermissionsFromPb(&experimentPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1108,9 +1198,12 @@ func (a *experimentsImpl) SetTag(ctx context.Context, request SetTag) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1131,9 +1224,12 @@ func (a *experimentsImpl) UpdateExperiment(ctx context.Context, request UpdateEx
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1155,9 +1251,12 @@ func (a *experimentsImpl) UpdatePermissions(ctx context.Context, request Experim
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&experimentPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExperimentPermissionsFromPb(&experimentPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1183,9 +1282,12 @@ func (a *experimentsImpl) UpdateRun(ctx context.Context, request UpdateRun) (*Up
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateRunResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateRunResponseFromPb(&updateRunResponsePb)
 	if err != nil {
 		return nil, err
@@ -1216,9 +1318,12 @@ func (a *featureStoreImpl) CreateOnlineStore(ctx context.Context, request Create
 		path,
 		headers,
 		queryParams,
-		requestPb.OnlineStore,
+		(*requestPb).OnlineStore,
 		&onlineStorePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := OnlineStoreFromPb(&onlineStorePb)
 	if err != nil {
 		return nil, err
@@ -1242,9 +1347,12 @@ func (a *featureStoreImpl) DeleteOnlineStore(ctx context.Context, request Delete
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1265,9 +1373,12 @@ func (a *featureStoreImpl) GetOnlineStore(ctx context.Context, request GetOnline
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&onlineStorePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := OnlineStoreFromPb(&onlineStorePb)
 	if err != nil {
 		return nil, err
@@ -1323,7 +1434,7 @@ func (a *featureStoreImpl) internalListOnlineStores(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listOnlineStoresResponsePb,
 	)
 	if err != nil {
@@ -1354,9 +1465,12 @@ func (a *featureStoreImpl) PublishTable(ctx context.Context, request PublishTabl
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&publishTableResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PublishTableResponseFromPb(&publishTableResponsePb)
 	if err != nil {
 		return nil, err
@@ -1385,9 +1499,12 @@ func (a *featureStoreImpl) UpdateOnlineStore(ctx context.Context, request Update
 		path,
 		headers,
 		queryParams,
-		requestPb.OnlineStore,
+		(*requestPb).OnlineStore,
 		&onlineStorePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := OnlineStoreFromPb(&onlineStorePb)
 	if err != nil {
 		return nil, err
@@ -1418,9 +1535,12 @@ func (a *forecastingImpl) CreateExperiment(ctx context.Context, request CreateFo
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createForecastingExperimentResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateForecastingExperimentResponseFromPb(&createForecastingExperimentResponsePb)
 	if err != nil {
 		return nil, err
@@ -1445,9 +1565,12 @@ func (a *forecastingImpl) GetExperiment(ctx context.Context, request GetForecast
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&forecastingExperimentPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ForecastingExperimentFromPb(&forecastingExperimentPb)
 	if err != nil {
 		return nil, err
@@ -1478,9 +1601,12 @@ func (a *materializedFeaturesImpl) CreateFeatureTag(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb.FeatureTag,
+		(*requestPb).FeatureTag,
 		&featureTagPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FeatureTagFromPb(&featureTagPb)
 	if err != nil {
 		return nil, err
@@ -1504,9 +1630,12 @@ func (a *materializedFeaturesImpl) DeleteFeatureTag(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1527,9 +1656,12 @@ func (a *materializedFeaturesImpl) GetFeatureLineage(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&featureLineagePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FeatureLineageFromPb(&featureLineagePb)
 	if err != nil {
 		return nil, err
@@ -1554,9 +1686,12 @@ func (a *materializedFeaturesImpl) GetFeatureTag(ctx context.Context, request Ge
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&featureTagPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FeatureTagFromPb(&featureTagPb)
 	if err != nil {
 		return nil, err
@@ -1612,7 +1747,7 @@ func (a *materializedFeaturesImpl) internalListFeatureTags(ctx context.Context, 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listFeatureTagsResponsePb,
 	)
 	if err != nil {
@@ -1646,9 +1781,12 @@ func (a *materializedFeaturesImpl) UpdateFeatureTag(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb.FeatureTag,
+		(*requestPb).FeatureTag,
 		&featureTagPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FeatureTagFromPb(&featureTagPb)
 	if err != nil {
 		return nil, err
@@ -1679,9 +1817,12 @@ func (a *modelRegistryImpl) ApproveTransitionRequest(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&approveTransitionRequestResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ApproveTransitionRequestResponseFromPb(&approveTransitionRequestResponsePb)
 	if err != nil {
 		return nil, err
@@ -1707,9 +1848,12 @@ func (a *modelRegistryImpl) CreateComment(ctx context.Context, request CreateCom
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createCommentResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateCommentResponseFromPb(&createCommentResponsePb)
 	if err != nil {
 		return nil, err
@@ -1735,9 +1879,12 @@ func (a *modelRegistryImpl) CreateModel(ctx context.Context, request CreateModel
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createModelResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateModelResponseFromPb(&createModelResponsePb)
 	if err != nil {
 		return nil, err
@@ -1763,9 +1910,12 @@ func (a *modelRegistryImpl) CreateModelVersion(ctx context.Context, request Crea
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createModelVersionResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateModelVersionResponseFromPb(&createModelVersionResponsePb)
 	if err != nil {
 		return nil, err
@@ -1791,9 +1941,12 @@ func (a *modelRegistryImpl) CreateTransitionRequest(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createTransitionRequestResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateTransitionRequestResponseFromPb(&createTransitionRequestResponsePb)
 	if err != nil {
 		return nil, err
@@ -1819,9 +1972,12 @@ func (a *modelRegistryImpl) CreateWebhook(ctx context.Context, request CreateReg
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createWebhookResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateWebhookResponseFromPb(&createWebhookResponsePb)
 	if err != nil {
 		return nil, err
@@ -1845,9 +2001,12 @@ func (a *modelRegistryImpl) DeleteComment(ctx context.Context, request DeleteCom
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1867,9 +2026,12 @@ func (a *modelRegistryImpl) DeleteModel(ctx context.Context, request DeleteModel
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1889,9 +2051,12 @@ func (a *modelRegistryImpl) DeleteModelTag(ctx context.Context, request DeleteMo
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1911,9 +2076,12 @@ func (a *modelRegistryImpl) DeleteModelVersion(ctx context.Context, request Dele
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1933,9 +2101,12 @@ func (a *modelRegistryImpl) DeleteModelVersionTag(ctx context.Context, request D
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1956,9 +2127,12 @@ func (a *modelRegistryImpl) DeleteTransitionRequest(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteTransitionRequestResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteTransitionRequestResponseFromPb(&deleteTransitionRequestResponsePb)
 	if err != nil {
 		return nil, err
@@ -1982,9 +2156,12 @@ func (a *modelRegistryImpl) DeleteWebhook(ctx context.Context, request DeleteWeb
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2031,7 +2208,7 @@ func (a *modelRegistryImpl) internalGetLatestVersions(ctx context.Context, reque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getLatestVersionsResponsePb,
 	)
 	if err != nil {
@@ -2061,9 +2238,12 @@ func (a *modelRegistryImpl) GetModel(ctx context.Context, request GetModelReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getModelResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetModelResponseFromPb(&getModelResponsePb)
 	if err != nil {
 		return nil, err
@@ -2088,9 +2268,12 @@ func (a *modelRegistryImpl) GetModelVersion(ctx context.Context, request GetMode
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getModelVersionResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetModelVersionResponseFromPb(&getModelVersionResponsePb)
 	if err != nil {
 		return nil, err
@@ -2115,9 +2298,12 @@ func (a *modelRegistryImpl) GetModelVersionDownloadUri(ctx context.Context, requ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getModelVersionDownloadUriResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetModelVersionDownloadUriResponseFromPb(&getModelVersionDownloadUriResponsePb)
 	if err != nil {
 		return nil, err
@@ -2142,9 +2328,12 @@ func (a *modelRegistryImpl) GetPermissionLevels(ctx context.Context, request Get
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getRegisteredModelPermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetRegisteredModelPermissionLevelsResponseFromPb(&getRegisteredModelPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -2169,9 +2358,12 @@ func (a *modelRegistryImpl) GetPermissions(ctx context.Context, request GetRegis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&registeredModelPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RegisteredModelPermissionsFromPb(&registeredModelPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -2229,7 +2421,7 @@ func (a *modelRegistryImpl) internalListModels(ctx context.Context, request List
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listModelsResponsePb,
 	)
 	if err != nil {
@@ -2284,7 +2476,7 @@ func (a *modelRegistryImpl) internalListTransitionRequests(ctx context.Context, 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listTransitionRequestsResponsePb,
 	)
 	if err != nil {
@@ -2345,7 +2537,7 @@ func (a *modelRegistryImpl) internalListWebhooks(ctx context.Context, request Li
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listRegistryWebhooksPb,
 	)
 	if err != nil {
@@ -2376,9 +2568,12 @@ func (a *modelRegistryImpl) RejectTransitionRequest(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&rejectTransitionRequestResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RejectTransitionRequestResponseFromPb(&rejectTransitionRequestResponsePb)
 	if err != nil {
 		return nil, err
@@ -2404,9 +2599,12 @@ func (a *modelRegistryImpl) RenameModel(ctx context.Context, request RenameModel
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&renameModelResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RenameModelResponseFromPb(&renameModelResponsePb)
 	if err != nil {
 		return nil, err
@@ -2462,7 +2660,7 @@ func (a *modelRegistryImpl) internalSearchModelVersions(ctx context.Context, req
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&searchModelVersionsResponsePb,
 	)
 	if err != nil {
@@ -2523,7 +2721,7 @@ func (a *modelRegistryImpl) internalSearchModels(ctx context.Context, request Se
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&searchModelsResponsePb,
 	)
 	if err != nil {
@@ -2553,9 +2751,12 @@ func (a *modelRegistryImpl) SetModelTag(ctx context.Context, request SetModelTag
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2576,9 +2777,12 @@ func (a *modelRegistryImpl) SetModelVersionTag(ctx context.Context, request SetM
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2600,9 +2804,12 @@ func (a *modelRegistryImpl) SetPermissions(ctx context.Context, request Register
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&registeredModelPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RegisteredModelPermissionsFromPb(&registeredModelPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -2628,9 +2835,12 @@ func (a *modelRegistryImpl) TestRegistryWebhook(ctx context.Context, request Tes
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&testRegistryWebhookResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := TestRegistryWebhookResponseFromPb(&testRegistryWebhookResponsePb)
 	if err != nil {
 		return nil, err
@@ -2656,9 +2866,12 @@ func (a *modelRegistryImpl) TransitionStage(ctx context.Context, request Transit
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&transitionStageResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := TransitionStageResponseFromPb(&transitionStageResponsePb)
 	if err != nil {
 		return nil, err
@@ -2684,9 +2897,12 @@ func (a *modelRegistryImpl) UpdateComment(ctx context.Context, request UpdateCom
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateCommentResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateCommentResponseFromPb(&updateCommentResponsePb)
 	if err != nil {
 		return nil, err
@@ -2712,9 +2928,12 @@ func (a *modelRegistryImpl) UpdateModel(ctx context.Context, request UpdateModel
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateModelResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateModelResponseFromPb(&updateModelResponsePb)
 	if err != nil {
 		return nil, err
@@ -2740,9 +2959,12 @@ func (a *modelRegistryImpl) UpdateModelVersion(ctx context.Context, request Upda
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateModelVersionResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateModelVersionResponseFromPb(&updateModelVersionResponsePb)
 	if err != nil {
 		return nil, err
@@ -2768,9 +2990,12 @@ func (a *modelRegistryImpl) UpdatePermissions(ctx context.Context, request Regis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&registeredModelPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RegisteredModelPermissionsFromPb(&registeredModelPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -2796,9 +3021,12 @@ func (a *modelRegistryImpl) UpdateWebhook(ctx context.Context, request UpdateReg
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateWebhookResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateWebhookResponseFromPb(&updateWebhookResponsePb)
 	if err != nil {
 		return nil, err

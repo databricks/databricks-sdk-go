@@ -3,11 +3,11 @@
 package dashboards
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/dashboards/dashboardspb"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
@@ -32,12 +32,29 @@ type AuthorizationDetails struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AuthorizationDetails) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AuthorizationDetails) MarshalJSON() ([]byte, error) {
+	pb, err := AuthorizationDetailsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AuthorizationDetails) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AuthorizationDetails) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.AuthorizationDetailsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AuthorizationDetailsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AuthorizationDetailsToPb(st *AuthorizationDetails) (*dashboardspb.AuthorizationDetailsPb, error) {
@@ -61,7 +78,9 @@ func AuthorizationDetailsToPb(st *AuthorizationDetails) (*dashboardspb.Authoriza
 	pb.ResourceName = st.ResourceName
 	pb.Type = st.Type
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -86,7 +105,9 @@ func AuthorizationDetailsFromPb(pb *dashboardspb.AuthorizationDetailsPb) (*Autho
 	st.ResourceName = pb.ResourceName
 	st.Type = pb.Type
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -99,12 +120,29 @@ type AuthorizationDetailsGrantRule struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AuthorizationDetailsGrantRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AuthorizationDetailsGrantRule) MarshalJSON() ([]byte, error) {
+	pb, err := AuthorizationDetailsGrantRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AuthorizationDetailsGrantRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AuthorizationDetailsGrantRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.AuthorizationDetailsGrantRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AuthorizationDetailsGrantRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AuthorizationDetailsGrantRuleToPb(st *AuthorizationDetailsGrantRule) (*dashboardspb.AuthorizationDetailsGrantRulePb, error) {
@@ -114,7 +152,9 @@ func AuthorizationDetailsGrantRuleToPb(st *AuthorizationDetailsGrantRule) (*dash
 	pb := &dashboardspb.AuthorizationDetailsGrantRulePb{}
 	pb.PermissionSet = st.PermissionSet
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -125,7 +165,9 @@ func AuthorizationDetailsGrantRuleFromPb(pb *dashboardspb.AuthorizationDetailsGr
 	st := &AuthorizationDetailsGrantRule{}
 	st.PermissionSet = pb.PermissionSet
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -133,6 +175,31 @@ type CreateDashboardRequest struct {
 
 	// Wire name: 'dashboard'
 	Dashboard Dashboard ``
+}
+
+func (st CreateDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.CreateDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateDashboardRequestToPb(st *CreateDashboardRequest) (*dashboardspb.CreateDashboardRequestPb, error) {
@@ -174,6 +241,31 @@ type CreateScheduleRequest struct {
 	// The schedule to create. A dashboard is limited to 10 schedules.
 	// Wire name: 'schedule'
 	Schedule Schedule ``
+}
+
+func (st CreateScheduleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateScheduleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateScheduleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.CreateScheduleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateScheduleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateScheduleRequestToPb(st *CreateScheduleRequest) (*dashboardspb.CreateScheduleRequestPb, error) {
@@ -220,6 +312,31 @@ type CreateSubscriptionRequest struct {
 	// The subscription to create. A schedule is limited to 100 subscriptions.
 	// Wire name: 'subscription'
 	Subscription Subscription ``
+}
+
+func (st CreateSubscriptionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateSubscriptionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateSubscriptionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.CreateSubscriptionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateSubscriptionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateSubscriptionRequestToPb(st *CreateSubscriptionRequest) (*dashboardspb.CreateSubscriptionRequestPb, error) {
@@ -273,6 +390,31 @@ type CronSchedule struct {
 	TimezoneId string ``
 }
 
+func (st CronSchedule) MarshalJSON() ([]byte, error) {
+	pb, err := CronScheduleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CronSchedule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.CronSchedulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CronScheduleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CronScheduleToPb(st *CronSchedule) (*dashboardspb.CronSchedulePb, error) {
 	if st == nil {
 		return nil, nil
@@ -298,7 +440,7 @@ func CronScheduleFromPb(pb *dashboardspb.CronSchedulePb) (*CronSchedule, error) 
 type Dashboard struct {
 	// The timestamp of when the dashboard was created.
 	// Wire name: 'create_time'
-	CreateTime *time.Time ``
+	CreateTime string `` //legacy
 	// UUID identifying the dashboard.
 	// Wire name: 'dashboard_id'
 	DashboardId string ``
@@ -335,19 +477,36 @@ type Dashboard struct {
 	// The timestamp of when the dashboard was last updated by the user. This
 	// field is excluded in List Dashboards responses.
 	// Wire name: 'update_time'
-	UpdateTime *time.Time ``
+	UpdateTime string `` //legacy
 	// The warehouse ID used to run the dashboard.
 	// Wire name: 'warehouse_id'
 	WarehouseId     string   ``
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Dashboard) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Dashboard) MarshalJSON() ([]byte, error) {
+	pb, err := DashboardToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Dashboard) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Dashboard) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.DashboardPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DashboardFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DashboardToPb(st *Dashboard) (*dashboardspb.DashboardPb, error) {
@@ -355,13 +514,7 @@ func DashboardToPb(st *Dashboard) (*dashboardspb.DashboardPb, error) {
 		return nil, nil
 	}
 	pb := &dashboardspb.DashboardPb{}
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 	pb.DashboardId = st.DashboardId
 	pb.DisplayName = st.DisplayName
 	pb.Etag = st.Etag
@@ -375,16 +528,12 @@ func DashboardToPb(st *Dashboard) (*dashboardspb.DashboardPb, error) {
 	pb.ParentPath = st.ParentPath
 	pb.Path = st.Path
 	pb.SerializedDashboard = st.SerializedDashboard
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 	pb.WarehouseId = st.WarehouseId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -393,13 +542,7 @@ func DashboardFromPb(pb *dashboardspb.DashboardPb) (*Dashboard, error) {
 		return nil, nil
 	}
 	st := &Dashboard{}
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	st.DashboardId = pb.DashboardId
 	st.DisplayName = pb.DisplayName
 	st.Etag = pb.Etag
@@ -413,16 +556,12 @@ func DashboardFromPb(pb *dashboardspb.DashboardPb) (*Dashboard, error) {
 	st.ParentPath = pb.ParentPath
 	st.Path = pb.Path
 	st.SerializedDashboard = pb.SerializedDashboard
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
+	st.UpdateTime = pb.UpdateTime
 	st.WarehouseId = pb.WarehouseId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -490,12 +629,29 @@ type DeleteScheduleRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteScheduleRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteScheduleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteScheduleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteScheduleRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteScheduleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.DeleteScheduleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteScheduleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteScheduleRequestToPb(st *DeleteScheduleRequest) (*dashboardspb.DeleteScheduleRequestPb, error) {
@@ -507,7 +663,9 @@ func DeleteScheduleRequestToPb(st *DeleteScheduleRequest) (*dashboardspb.DeleteS
 	pb.Etag = st.Etag
 	pb.ScheduleId = st.ScheduleId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -520,7 +678,9 @@ func DeleteScheduleRequestFromPb(pb *dashboardspb.DeleteScheduleRequestPb) (*Del
 	st.Etag = pb.Etag
 	st.ScheduleId = pb.ScheduleId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -541,12 +701,29 @@ type DeleteSubscriptionRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteSubscriptionRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteSubscriptionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteSubscriptionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.DeleteSubscriptionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteSubscriptionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteSubscriptionRequestToPb(st *DeleteSubscriptionRequest) (*dashboardspb.DeleteSubscriptionRequestPb, error) {
@@ -559,7 +736,9 @@ func DeleteSubscriptionRequestToPb(st *DeleteSubscriptionRequest) (*dashboardspb
 	pb.ScheduleId = st.ScheduleId
 	pb.SubscriptionId = st.SubscriptionId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -573,7 +752,9 @@ func DeleteSubscriptionRequestFromPb(pb *dashboardspb.DeleteSubscriptionRequestP
 	st.ScheduleId = pb.ScheduleId
 	st.SubscriptionId = pb.SubscriptionId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -591,12 +772,29 @@ type GenieAttachment struct {
 	ForceSendFields []string        `tf:"-"`
 }
 
-func (s *GenieAttachment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenieAttachment) MarshalJSON() ([]byte, error) {
+	pb, err := GenieAttachmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenieAttachment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenieAttachment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieAttachmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieAttachmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieAttachmentToPb(st *GenieAttachment) (*dashboardspb.GenieAttachmentPb, error) {
@@ -620,7 +818,9 @@ func GenieAttachmentToPb(st *GenieAttachment) (*dashboardspb.GenieAttachmentPb, 
 		pb.Text = textPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -645,7 +845,9 @@ func GenieAttachmentFromPb(pb *dashboardspb.GenieAttachmentPb) (*GenieAttachment
 		st.Text = textField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -674,12 +876,29 @@ type GenieConversation struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GenieConversation) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenieConversation) MarshalJSON() ([]byte, error) {
+	pb, err := GenieConversationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenieConversation) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenieConversation) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieConversationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieConversationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieConversationToPb(st *GenieConversation) (*dashboardspb.GenieConversationPb, error) {
@@ -695,7 +914,9 @@ func GenieConversationToPb(st *GenieConversation) (*dashboardspb.GenieConversati
 	pb.Title = st.Title
 	pb.UserId = st.UserId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -712,7 +933,9 @@ func GenieConversationFromPb(pb *dashboardspb.GenieConversationPb) (*GenieConver
 	st.Title = pb.Title
 	st.UserId = pb.UserId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -726,6 +949,31 @@ type GenieConversationSummary struct {
 
 	// Wire name: 'title'
 	Title string ``
+}
+
+func (st GenieConversationSummary) MarshalJSON() ([]byte, error) {
+	pb, err := GenieConversationSummaryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieConversationSummary) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieConversationSummaryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieConversationSummaryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieConversationSummaryToPb(st *GenieConversationSummary) (*dashboardspb.GenieConversationSummaryPb, error) {
@@ -764,6 +1012,31 @@ type GenieCreateConversationMessageRequest struct {
 	SpaceId string `tf:"-"`
 }
 
+func (st GenieCreateConversationMessageRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenieCreateConversationMessageRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieCreateConversationMessageRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieCreateConversationMessageRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieCreateConversationMessageRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GenieCreateConversationMessageRequestToPb(st *GenieCreateConversationMessageRequest) (*dashboardspb.GenieCreateConversationMessageRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -795,6 +1068,31 @@ type GenieDeleteConversationRequest struct {
 	// The ID associated with the Genie space where the conversation is located.
 	// Wire name: 'space_id'
 	SpaceId string `tf:"-"`
+}
+
+func (st GenieDeleteConversationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenieDeleteConversationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieDeleteConversationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieDeleteConversationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieDeleteConversationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieDeleteConversationRequestToPb(st *GenieDeleteConversationRequest) (*dashboardspb.GenieDeleteConversationRequestPb, error) {
@@ -832,6 +1130,31 @@ type GenieExecuteMessageAttachmentQueryRequest struct {
 	// Genie space ID
 	// Wire name: 'space_id'
 	SpaceId string `tf:"-"`
+}
+
+func (st GenieExecuteMessageAttachmentQueryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenieExecuteMessageAttachmentQueryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieExecuteMessageAttachmentQueryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieExecuteMessageAttachmentQueryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieExecuteMessageAttachmentQueryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieExecuteMessageAttachmentQueryRequestToPb(st *GenieExecuteMessageAttachmentQueryRequest) (*dashboardspb.GenieExecuteMessageAttachmentQueryRequestPb, error) {
@@ -872,6 +1195,31 @@ type GenieExecuteMessageQueryRequest struct {
 	SpaceId string `tf:"-"`
 }
 
+func (st GenieExecuteMessageQueryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenieExecuteMessageQueryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieExecuteMessageQueryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieExecuteMessageQueryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieExecuteMessageQueryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GenieExecuteMessageQueryRequestToPb(st *GenieExecuteMessageQueryRequest) (*dashboardspb.GenieExecuteMessageQueryRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -908,6 +1256,31 @@ type GenieGetConversationMessageRequest struct {
 	// located.
 	// Wire name: 'space_id'
 	SpaceId string `tf:"-"`
+}
+
+func (st GenieGetConversationMessageRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenieGetConversationMessageRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieGetConversationMessageRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieGetConversationMessageRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieGetConversationMessageRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieGetConversationMessageRequestToPb(st *GenieGetConversationMessageRequest) (*dashboardspb.GenieGetConversationMessageRequestPb, error) {
@@ -949,6 +1322,31 @@ type GenieGetMessageAttachmentQueryResultRequest struct {
 	SpaceId string `tf:"-"`
 }
 
+func (st GenieGetMessageAttachmentQueryResultRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenieGetMessageAttachmentQueryResultRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieGetMessageAttachmentQueryResultRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieGetMessageAttachmentQueryResultRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieGetMessageAttachmentQueryResultRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GenieGetMessageAttachmentQueryResultRequestToPb(st *GenieGetMessageAttachmentQueryResultRequest) (*dashboardspb.GenieGetMessageAttachmentQueryResultRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -987,6 +1385,31 @@ type GenieGetMessageQueryResultRequest struct {
 	SpaceId string `tf:"-"`
 }
 
+func (st GenieGetMessageQueryResultRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenieGetMessageQueryResultRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieGetMessageQueryResultRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieGetMessageQueryResultRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieGetMessageQueryResultRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GenieGetMessageQueryResultRequestToPb(st *GenieGetMessageQueryResultRequest) (*dashboardspb.GenieGetMessageQueryResultRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1016,6 +1439,31 @@ type GenieGetMessageQueryResultResponse struct {
 	// first chunk](:method:statementexecution/getstatement) for more details.
 	// Wire name: 'statement_response'
 	StatementResponse *sql.StatementResponse ``
+}
+
+func (st GenieGetMessageQueryResultResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GenieGetMessageQueryResultResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieGetMessageQueryResultResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieGetMessageQueryResultResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieGetMessageQueryResultResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieGetMessageQueryResultResponseToPb(st *GenieGetMessageQueryResultResponse) (*dashboardspb.GenieGetMessageQueryResultResponsePb, error) {
@@ -1065,6 +1513,31 @@ type GenieGetQueryResultByAttachmentRequest struct {
 	SpaceId string `tf:"-"`
 }
 
+func (st GenieGetQueryResultByAttachmentRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenieGetQueryResultByAttachmentRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieGetQueryResultByAttachmentRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieGetQueryResultByAttachmentRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieGetQueryResultByAttachmentRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GenieGetQueryResultByAttachmentRequestToPb(st *GenieGetQueryResultByAttachmentRequest) (*dashboardspb.GenieGetQueryResultByAttachmentRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1095,6 +1568,31 @@ type GenieGetSpaceRequest struct {
 	// The ID associated with the Genie space
 	// Wire name: 'space_id'
 	SpaceId string `tf:"-"`
+}
+
+func (st GenieGetSpaceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenieGetSpaceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieGetSpaceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieGetSpaceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieGetSpaceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieGetSpaceRequestToPb(st *GenieGetSpaceRequest) (*dashboardspb.GenieGetSpaceRequestPb, error) {
@@ -1130,12 +1628,29 @@ type GenieListConversationsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GenieListConversationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenieListConversationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenieListConversationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenieListConversationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenieListConversationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieListConversationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieListConversationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieListConversationsRequestToPb(st *GenieListConversationsRequest) (*dashboardspb.GenieListConversationsRequestPb, error) {
@@ -1147,7 +1662,9 @@ func GenieListConversationsRequestToPb(st *GenieListConversationsRequest) (*dash
 	pb.PageToken = st.PageToken
 	pb.SpaceId = st.SpaceId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1160,7 +1677,9 @@ func GenieListConversationsRequestFromPb(pb *dashboardspb.GenieListConversations
 	st.PageToken = pb.PageToken
 	st.SpaceId = pb.SpaceId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1174,12 +1693,29 @@ type GenieListConversationsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GenieListConversationsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenieListConversationsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GenieListConversationsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenieListConversationsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenieListConversationsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieListConversationsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieListConversationsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieListConversationsResponseToPb(st *GenieListConversationsResponse) (*dashboardspb.GenieListConversationsResponsePb, error) {
@@ -1201,7 +1737,9 @@ func GenieListConversationsResponseToPb(st *GenieListConversationsResponse) (*da
 	pb.Conversations = conversationsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1224,7 +1762,9 @@ func GenieListConversationsResponseFromPb(pb *dashboardspb.GenieListConversation
 	st.Conversations = conversationsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1238,12 +1778,29 @@ type GenieListSpacesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GenieListSpacesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenieListSpacesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenieListSpacesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenieListSpacesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenieListSpacesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieListSpacesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieListSpacesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieListSpacesRequestToPb(st *GenieListSpacesRequest) (*dashboardspb.GenieListSpacesRequestPb, error) {
@@ -1254,7 +1811,9 @@ func GenieListSpacesRequestToPb(st *GenieListSpacesRequest) (*dashboardspb.Genie
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1266,7 +1825,9 @@ func GenieListSpacesRequestFromPb(pb *dashboardspb.GenieListSpacesRequestPb) (*G
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1280,12 +1841,29 @@ type GenieListSpacesResponse struct {
 	ForceSendFields []string     `tf:"-"`
 }
 
-func (s *GenieListSpacesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenieListSpacesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GenieListSpacesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenieListSpacesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenieListSpacesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieListSpacesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieListSpacesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieListSpacesResponseToPb(st *GenieListSpacesResponse) (*dashboardspb.GenieListSpacesResponsePb, error) {
@@ -1307,7 +1885,9 @@ func GenieListSpacesResponseToPb(st *GenieListSpacesResponse) (*dashboardspb.Gen
 	}
 	pb.Spaces = spacesPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1330,7 +1910,9 @@ func GenieListSpacesResponseFromPb(pb *dashboardspb.GenieListSpacesResponsePb) (
 	}
 	st.Spaces = spacesField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1376,12 +1958,29 @@ type GenieMessage struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GenieMessage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenieMessage) MarshalJSON() ([]byte, error) {
+	pb, err := GenieMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenieMessage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenieMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieMessageToPb(st *GenieMessage) (*dashboardspb.GenieMessagePb, error) {
@@ -1431,7 +2030,9 @@ func GenieMessageToPb(st *GenieMessage) (*dashboardspb.GenieMessagePb, error) {
 	}
 	pb.UserId = st.UserId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1482,7 +2083,9 @@ func GenieMessageFromPb(pb *dashboardspb.GenieMessagePb) (*GenieMessage, error) 
 	}
 	st.UserId = pb.UserId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1513,12 +2116,29 @@ type GenieQueryAttachment struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GenieQueryAttachment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenieQueryAttachment) MarshalJSON() ([]byte, error) {
+	pb, err := GenieQueryAttachmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenieQueryAttachment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenieQueryAttachment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieQueryAttachmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieQueryAttachmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieQueryAttachmentToPb(st *GenieQueryAttachment) (*dashboardspb.GenieQueryAttachmentPb, error) {
@@ -1540,7 +2160,9 @@ func GenieQueryAttachmentToPb(st *GenieQueryAttachment) (*dashboardspb.GenieQuer
 	pb.StatementId = st.StatementId
 	pb.Title = st.Title
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1563,7 +2185,9 @@ func GenieQueryAttachmentFromPb(pb *dashboardspb.GenieQueryAttachmentPb) (*Genie
 	st.StatementId = pb.StatementId
 	st.Title = pb.Title
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1577,12 +2201,29 @@ type GenieResultMetadata struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GenieResultMetadata) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenieResultMetadata) MarshalJSON() ([]byte, error) {
+	pb, err := GenieResultMetadataToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenieResultMetadata) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenieResultMetadata) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieResultMetadataPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieResultMetadataFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieResultMetadataToPb(st *GenieResultMetadata) (*dashboardspb.GenieResultMetadataPb, error) {
@@ -1593,7 +2234,9 @@ func GenieResultMetadataToPb(st *GenieResultMetadata) (*dashboardspb.GenieResult
 	pb.IsTruncated = st.IsTruncated
 	pb.RowCount = st.RowCount
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1605,7 +2248,9 @@ func GenieResultMetadataFromPb(pb *dashboardspb.GenieResultMetadataPb) (*GenieRe
 	st.IsTruncated = pb.IsTruncated
 	st.RowCount = pb.RowCount
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1622,12 +2267,29 @@ type GenieSpace struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GenieSpace) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenieSpace) MarshalJSON() ([]byte, error) {
+	pb, err := GenieSpaceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenieSpace) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenieSpace) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieSpacePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieSpaceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieSpaceToPb(st *GenieSpace) (*dashboardspb.GenieSpacePb, error) {
@@ -1639,7 +2301,9 @@ func GenieSpaceToPb(st *GenieSpace) (*dashboardspb.GenieSpacePb, error) {
 	pb.SpaceId = st.SpaceId
 	pb.Title = st.Title
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1652,7 +2316,9 @@ func GenieSpaceFromPb(pb *dashboardspb.GenieSpacePb) (*GenieSpace, error) {
 	st.SpaceId = pb.SpaceId
 	st.Title = pb.Title
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1664,6 +2330,31 @@ type GenieStartConversationMessageRequest struct {
 	// conversation.
 	// Wire name: 'space_id'
 	SpaceId string `tf:"-"`
+}
+
+func (st GenieStartConversationMessageRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenieStartConversationMessageRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieStartConversationMessageRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieStartConversationMessageRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieStartConversationMessageRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieStartConversationMessageRequestToPb(st *GenieStartConversationMessageRequest) (*dashboardspb.GenieStartConversationMessageRequestPb, error) {
@@ -1701,6 +2392,31 @@ type GenieStartConversationResponse struct {
 	// Message ID
 	// Wire name: 'message_id'
 	MessageId string ``
+}
+
+func (st GenieStartConversationResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GenieStartConversationResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieStartConversationResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieStartConversationResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieStartConversationResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenieStartConversationResponseToPb(st *GenieStartConversationResponse) (*dashboardspb.GenieStartConversationResponsePb, error) {
@@ -1759,6 +2475,31 @@ type GenieTrashSpaceRequest struct {
 	SpaceId string `tf:"-"`
 }
 
+func (st GenieTrashSpaceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenieTrashSpaceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenieTrashSpaceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GenieTrashSpaceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenieTrashSpaceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GenieTrashSpaceRequestToPb(st *GenieTrashSpaceRequest) (*dashboardspb.GenieTrashSpaceRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1785,6 +2526,31 @@ type GetDashboardRequest struct {
 	DashboardId string `tf:"-"`
 }
 
+func (st GetDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GetDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetDashboardRequestToPb(st *GetDashboardRequest) (*dashboardspb.GetDashboardRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1809,6 +2575,31 @@ type GetPublishedDashboardRequest struct {
 	// UUID identifying the published dashboard.
 	// Wire name: 'dashboard_id'
 	DashboardId string `tf:"-"`
+}
+
+func (st GetPublishedDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetPublishedDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetPublishedDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GetPublishedDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPublishedDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPublishedDashboardRequestToPb(st *GetPublishedDashboardRequest) (*dashboardspb.GetPublishedDashboardRequestPb, error) {
@@ -1844,12 +2635,29 @@ type GetPublishedDashboardTokenInfoRequest struct {
 	ForceSendFields  []string `tf:"-"`
 }
 
-func (s *GetPublishedDashboardTokenInfoRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetPublishedDashboardTokenInfoRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetPublishedDashboardTokenInfoRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetPublishedDashboardTokenInfoRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetPublishedDashboardTokenInfoRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GetPublishedDashboardTokenInfoRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPublishedDashboardTokenInfoRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPublishedDashboardTokenInfoRequestToPb(st *GetPublishedDashboardTokenInfoRequest) (*dashboardspb.GetPublishedDashboardTokenInfoRequestPb, error) {
@@ -1861,7 +2669,9 @@ func GetPublishedDashboardTokenInfoRequestToPb(st *GetPublishedDashboardTokenInf
 	pb.ExternalValue = st.ExternalValue
 	pb.ExternalViewerId = st.ExternalViewerId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1874,7 +2684,9 @@ func GetPublishedDashboardTokenInfoRequestFromPb(pb *dashboardspb.GetPublishedDa
 	st.ExternalValue = pb.ExternalValue
 	st.ExternalViewerId = pb.ExternalViewerId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1895,12 +2707,29 @@ type GetPublishedDashboardTokenInfoResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetPublishedDashboardTokenInfoResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetPublishedDashboardTokenInfoResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetPublishedDashboardTokenInfoResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetPublishedDashboardTokenInfoResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetPublishedDashboardTokenInfoResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GetPublishedDashboardTokenInfoResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPublishedDashboardTokenInfoResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPublishedDashboardTokenInfoResponseToPb(st *GetPublishedDashboardTokenInfoResponse) (*dashboardspb.GetPublishedDashboardTokenInfoResponsePb, error) {
@@ -1923,7 +2752,9 @@ func GetPublishedDashboardTokenInfoResponseToPb(st *GetPublishedDashboardTokenIn
 	pb.CustomClaim = st.CustomClaim
 	pb.Scope = st.Scope
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1947,7 +2778,9 @@ func GetPublishedDashboardTokenInfoResponseFromPb(pb *dashboardspb.GetPublishedD
 	st.CustomClaim = pb.CustomClaim
 	st.Scope = pb.Scope
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1958,6 +2791,31 @@ type GetScheduleRequest struct {
 	// UUID identifying the schedule.
 	// Wire name: 'schedule_id'
 	ScheduleId string `tf:"-"`
+}
+
+func (st GetScheduleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetScheduleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetScheduleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GetScheduleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetScheduleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetScheduleRequestToPb(st *GetScheduleRequest) (*dashboardspb.GetScheduleRequestPb, error) {
@@ -1992,6 +2850,31 @@ type GetSubscriptionRequest struct {
 	// UUID identifying the subscription.
 	// Wire name: 'subscription_id'
 	SubscriptionId string `tf:"-"`
+}
+
+func (st GetSubscriptionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetSubscriptionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetSubscriptionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.GetSubscriptionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetSubscriptionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetSubscriptionRequestToPb(st *GetSubscriptionRequest) (*dashboardspb.GetSubscriptionRequestPb, error) {
@@ -2089,12 +2972,29 @@ type ListDashboardsRequest struct {
 	ForceSendFields []string      `tf:"-"`
 }
 
-func (s *ListDashboardsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListDashboardsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListDashboardsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListDashboardsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListDashboardsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.ListDashboardsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListDashboardsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListDashboardsRequestToPb(st *ListDashboardsRequest) (*dashboardspb.ListDashboardsRequestPb, error) {
@@ -2113,7 +3013,9 @@ func ListDashboardsRequestToPb(st *ListDashboardsRequest) (*dashboardspb.ListDas
 		pb.View = *viewPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2133,7 +3035,9 @@ func ListDashboardsRequestFromPb(pb *dashboardspb.ListDashboardsRequestPb) (*Lis
 		st.View = *viewField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2148,12 +3052,29 @@ type ListDashboardsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListDashboardsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListDashboardsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListDashboardsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListDashboardsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListDashboardsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.ListDashboardsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListDashboardsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListDashboardsResponseToPb(st *ListDashboardsResponse) (*dashboardspb.ListDashboardsResponsePb, error) {
@@ -2175,7 +3096,9 @@ func ListDashboardsResponseToPb(st *ListDashboardsResponse) (*dashboardspb.ListD
 	pb.Dashboards = dashboardsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2198,7 +3121,9 @@ func ListDashboardsResponseFromPb(pb *dashboardspb.ListDashboardsResponsePb) (*L
 	st.Dashboards = dashboardsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2216,12 +3141,29 @@ type ListSchedulesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListSchedulesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListSchedulesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListSchedulesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListSchedulesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListSchedulesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.ListSchedulesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListSchedulesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListSchedulesRequestToPb(st *ListSchedulesRequest) (*dashboardspb.ListSchedulesRequestPb, error) {
@@ -2233,7 +3175,9 @@ func ListSchedulesRequestToPb(st *ListSchedulesRequest) (*dashboardspb.ListSched
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2246,7 +3190,9 @@ func ListSchedulesRequestFromPb(pb *dashboardspb.ListSchedulesRequestPb) (*ListS
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2262,12 +3208,29 @@ type ListSchedulesResponse struct {
 	ForceSendFields []string   `tf:"-"`
 }
 
-func (s *ListSchedulesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListSchedulesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListSchedulesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListSchedulesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListSchedulesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.ListSchedulesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListSchedulesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListSchedulesResponseToPb(st *ListSchedulesResponse) (*dashboardspb.ListSchedulesResponsePb, error) {
@@ -2289,7 +3252,9 @@ func ListSchedulesResponseToPb(st *ListSchedulesResponse) (*dashboardspb.ListSch
 	}
 	pb.Schedules = schedulesPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2312,7 +3277,9 @@ func ListSchedulesResponseFromPb(pb *dashboardspb.ListSchedulesResponsePb) (*Lis
 	}
 	st.Schedules = schedulesField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2333,12 +3300,29 @@ type ListSubscriptionsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListSubscriptionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListSubscriptionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListSubscriptionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListSubscriptionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListSubscriptionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.ListSubscriptionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListSubscriptionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListSubscriptionsRequestToPb(st *ListSubscriptionsRequest) (*dashboardspb.ListSubscriptionsRequestPb, error) {
@@ -2351,7 +3335,9 @@ func ListSubscriptionsRequestToPb(st *ListSubscriptionsRequest) (*dashboardspb.L
 	pb.PageToken = st.PageToken
 	pb.ScheduleId = st.ScheduleId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2365,7 +3351,9 @@ func ListSubscriptionsRequestFromPb(pb *dashboardspb.ListSubscriptionsRequestPb)
 	st.PageToken = pb.PageToken
 	st.ScheduleId = pb.ScheduleId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2381,12 +3369,29 @@ type ListSubscriptionsResponse struct {
 	ForceSendFields []string       `tf:"-"`
 }
 
-func (s *ListSubscriptionsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListSubscriptionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListSubscriptionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListSubscriptionsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListSubscriptionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.ListSubscriptionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListSubscriptionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListSubscriptionsResponseToPb(st *ListSubscriptionsResponse) (*dashboardspb.ListSubscriptionsResponsePb, error) {
@@ -2408,7 +3413,9 @@ func ListSubscriptionsResponseToPb(st *ListSubscriptionsResponse) (*dashboardspb
 	}
 	pb.Subscriptions = subscriptionsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2431,7 +3438,9 @@ func ListSubscriptionsResponseFromPb(pb *dashboardspb.ListSubscriptionsResponseP
 	}
 	st.Subscriptions = subscriptionsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2445,12 +3454,29 @@ type MessageError struct {
 	ForceSendFields []string         `tf:"-"`
 }
 
-func (s *MessageError) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MessageError) MarshalJSON() ([]byte, error) {
+	pb, err := MessageErrorToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MessageError) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MessageError) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.MessageErrorPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MessageErrorFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func MessageErrorToPb(st *MessageError) (*dashboardspb.MessageErrorPb, error) {
@@ -2467,7 +3493,9 @@ func MessageErrorToPb(st *MessageError) (*dashboardspb.MessageErrorPb, error) {
 		pb.Type = *typePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2485,7 +3513,9 @@ func MessageErrorFromPb(pb *dashboardspb.MessageErrorPb) (*MessageError, error) 
 		st.Type = *typeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2825,12 +3855,29 @@ type MigrateDashboardRequest struct {
 	ForceSendFields       []string `tf:"-"`
 }
 
-func (s *MigrateDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MigrateDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := MigrateDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MigrateDashboardRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MigrateDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.MigrateDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MigrateDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func MigrateDashboardRequestToPb(st *MigrateDashboardRequest) (*dashboardspb.MigrateDashboardRequestPb, error) {
@@ -2843,7 +3890,9 @@ func MigrateDashboardRequestToPb(st *MigrateDashboardRequest) (*dashboardspb.Mig
 	pb.SourceDashboardId = st.SourceDashboardId
 	pb.UpdateParameterSyntax = st.UpdateParameterSyntax
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2857,7 +3906,9 @@ func MigrateDashboardRequestFromPb(pb *dashboardspb.MigrateDashboardRequestPb) (
 	st.SourceDashboardId = pb.SourceDashboardId
 	st.UpdateParameterSyntax = pb.UpdateParameterSyntax
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2877,12 +3928,29 @@ type PublishRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PublishRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PublishRequest) MarshalJSON() ([]byte, error) {
+	pb, err := PublishRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PublishRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PublishRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.PublishRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PublishRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PublishRequestToPb(st *PublishRequest) (*dashboardspb.PublishRequestPb, error) {
@@ -2894,7 +3962,9 @@ func PublishRequestToPb(st *PublishRequest) (*dashboardspb.PublishRequestPb, err
 	pb.EmbedCredentials = st.EmbedCredentials
 	pb.WarehouseId = st.WarehouseId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2907,7 +3977,9 @@ func PublishRequestFromPb(pb *dashboardspb.PublishRequestPb) (*PublishRequest, e
 	st.EmbedCredentials = pb.EmbedCredentials
 	st.WarehouseId = pb.WarehouseId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2920,19 +3992,36 @@ type PublishedDashboard struct {
 	EmbedCredentials bool ``
 	// The timestamp of when the published dashboard was last revised.
 	// Wire name: 'revision_create_time'
-	RevisionCreateTime *time.Time ``
+	RevisionCreateTime string `` //legacy
 	// The warehouse ID used to run the published dashboard.
 	// Wire name: 'warehouse_id'
 	WarehouseId     string   ``
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PublishedDashboard) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PublishedDashboard) MarshalJSON() ([]byte, error) {
+	pb, err := PublishedDashboardToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PublishedDashboard) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PublishedDashboard) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.PublishedDashboardPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PublishedDashboardFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PublishedDashboardToPb(st *PublishedDashboard) (*dashboardspb.PublishedDashboardPb, error) {
@@ -2942,16 +4031,12 @@ func PublishedDashboardToPb(st *PublishedDashboard) (*dashboardspb.PublishedDash
 	pb := &dashboardspb.PublishedDashboardPb{}
 	pb.DisplayName = st.DisplayName
 	pb.EmbedCredentials = st.EmbedCredentials
-	revisionCreateTimePb, err := timestampToPb(st.RevisionCreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if revisionCreateTimePb != nil {
-		pb.RevisionCreateTime = *revisionCreateTimePb
-	}
+	pb.RevisionCreateTime = st.RevisionCreateTime
 	pb.WarehouseId = st.WarehouseId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2962,16 +4047,12 @@ func PublishedDashboardFromPb(pb *dashboardspb.PublishedDashboardPb) (*Published
 	st := &PublishedDashboard{}
 	st.DisplayName = pb.DisplayName
 	st.EmbedCredentials = pb.EmbedCredentials
-	revisionCreateTimeField, err := timestampFromPb(&pb.RevisionCreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if revisionCreateTimeField != nil {
-		st.RevisionCreateTime = revisionCreateTimeField
-	}
+	st.RevisionCreateTime = pb.RevisionCreateTime
 	st.WarehouseId = pb.WarehouseId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2990,12 +4071,29 @@ type Result struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Result) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Result) MarshalJSON() ([]byte, error) {
+	pb, err := ResultToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Result) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Result) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.ResultPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ResultFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ResultToPb(st *Result) (*dashboardspb.ResultPb, error) {
@@ -3007,7 +4105,9 @@ func ResultToPb(st *Result) (*dashboardspb.ResultPb, error) {
 	pb.RowCount = st.RowCount
 	pb.StatementId = st.StatementId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3020,14 +4120,16 @@ func ResultFromPb(pb *dashboardspb.ResultPb) (*Result, error) {
 	st.RowCount = pb.RowCount
 	st.StatementId = pb.StatementId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
 type Schedule struct {
 	// A timestamp indicating when the schedule was created.
 	// Wire name: 'create_time'
-	CreateTime *time.Time ``
+	CreateTime string `` //legacy
 	// The cron expression describing the frequency of the periodic refresh for
 	// this schedule.
 	// Wire name: 'cron_schedule'
@@ -3051,19 +4153,36 @@ type Schedule struct {
 	ScheduleId string ``
 	// A timestamp indicating when the schedule was last updated.
 	// Wire name: 'update_time'
-	UpdateTime *time.Time ``
+	UpdateTime string `` //legacy
 	// The warehouse id to run the dashboard with for the schedule.
 	// Wire name: 'warehouse_id'
 	WarehouseId     string   ``
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Schedule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Schedule) MarshalJSON() ([]byte, error) {
+	pb, err := ScheduleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Schedule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Schedule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.SchedulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ScheduleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ScheduleToPb(st *Schedule) (*dashboardspb.SchedulePb, error) {
@@ -3071,13 +4190,7 @@ func ScheduleToPb(st *Schedule) (*dashboardspb.SchedulePb, error) {
 		return nil, nil
 	}
 	pb := &dashboardspb.SchedulePb{}
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 	cronSchedulePb, err := CronScheduleToPb(&st.CronSchedule)
 	if err != nil {
 		return nil, err
@@ -3096,16 +4209,12 @@ func ScheduleToPb(st *Schedule) (*dashboardspb.SchedulePb, error) {
 		pb.PauseStatus = *pauseStatusPb
 	}
 	pb.ScheduleId = st.ScheduleId
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 	pb.WarehouseId = st.WarehouseId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3114,13 +4223,7 @@ func ScheduleFromPb(pb *dashboardspb.SchedulePb) (*Schedule, error) {
 		return nil, nil
 	}
 	st := &Schedule{}
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	cronScheduleField, err := CronScheduleFromPb(&pb.CronSchedule)
 	if err != nil {
 		return nil, err
@@ -3139,16 +4242,12 @@ func ScheduleFromPb(pb *dashboardspb.SchedulePb) (*Schedule, error) {
 		st.PauseStatus = *pauseStatusField
 	}
 	st.ScheduleId = pb.ScheduleId
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
+	st.UpdateTime = pb.UpdateTime
 	st.WarehouseId = pb.WarehouseId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3216,6 +4315,31 @@ type Subscriber struct {
 	UserSubscriber *SubscriptionSubscriberUser ``
 }
 
+func (st Subscriber) MarshalJSON() ([]byte, error) {
+	pb, err := SubscriberToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Subscriber) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.SubscriberPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SubscriberFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func SubscriberToPb(st *Subscriber) (*dashboardspb.SubscriberPb, error) {
 	if st == nil {
 		return nil, nil
@@ -3265,7 +4389,7 @@ func SubscriberFromPb(pb *dashboardspb.SubscriberPb) (*Subscriber, error) {
 type Subscription struct {
 	// A timestamp indicating when the subscription was created.
 	// Wire name: 'create_time'
-	CreateTime *time.Time ``
+	CreateTime string `` //legacy
 	// UserId of the user who adds subscribers (users or notification
 	// destinations) to the dashboard's schedule.
 	// Wire name: 'created_by_user_id'
@@ -3290,16 +4414,33 @@ type Subscription struct {
 	SubscriptionId string ``
 	// A timestamp indicating when the subscription was last updated.
 	// Wire name: 'update_time'
-	UpdateTime      *time.Time ``
-	ForceSendFields []string   `tf:"-"`
+	UpdateTime      string   `` //legacy
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Subscription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Subscription) MarshalJSON() ([]byte, error) {
+	pb, err := SubscriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Subscription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Subscription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.SubscriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SubscriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SubscriptionToPb(st *Subscription) (*dashboardspb.SubscriptionPb, error) {
@@ -3307,13 +4448,7 @@ func SubscriptionToPb(st *Subscription) (*dashboardspb.SubscriptionPb, error) {
 		return nil, nil
 	}
 	pb := &dashboardspb.SubscriptionPb{}
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 	pb.CreatedByUserId = st.CreatedByUserId
 	pb.DashboardId = st.DashboardId
 	pb.Etag = st.Etag
@@ -3326,15 +4461,11 @@ func SubscriptionToPb(st *Subscription) (*dashboardspb.SubscriptionPb, error) {
 		pb.Subscriber = *subscriberPb
 	}
 	pb.SubscriptionId = st.SubscriptionId
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3343,13 +4474,7 @@ func SubscriptionFromPb(pb *dashboardspb.SubscriptionPb) (*Subscription, error) 
 		return nil, nil
 	}
 	st := &Subscription{}
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	st.CreatedByUserId = pb.CreatedByUserId
 	st.DashboardId = pb.DashboardId
 	st.Etag = pb.Etag
@@ -3362,15 +4487,11 @@ func SubscriptionFromPb(pb *dashboardspb.SubscriptionPb) (*Subscription, error) 
 		st.Subscriber = *subscriberField
 	}
 	st.SubscriptionId = pb.SubscriptionId
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
+	st.UpdateTime = pb.UpdateTime
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3379,6 +4500,31 @@ type SubscriptionSubscriberDestination struct {
 	// notification.
 	// Wire name: 'destination_id'
 	DestinationId string ``
+}
+
+func (st SubscriptionSubscriberDestination) MarshalJSON() ([]byte, error) {
+	pb, err := SubscriptionSubscriberDestinationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *SubscriptionSubscriberDestination) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.SubscriptionSubscriberDestinationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SubscriptionSubscriberDestinationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SubscriptionSubscriberDestinationToPb(st *SubscriptionSubscriberDestination) (*dashboardspb.SubscriptionSubscriberDestinationPb, error) {
@@ -3405,6 +4551,31 @@ type SubscriptionSubscriberUser struct {
 	// UserId of the subscriber.
 	// Wire name: 'user_id'
 	UserId int64 ``
+}
+
+func (st SubscriptionSubscriberUser) MarshalJSON() ([]byte, error) {
+	pb, err := SubscriptionSubscriberUserToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *SubscriptionSubscriberUser) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.SubscriptionSubscriberUserPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SubscriptionSubscriberUserFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SubscriptionSubscriberUserToPb(st *SubscriptionSubscriberUser) (*dashboardspb.SubscriptionSubscriberUserPb, error) {
@@ -3437,12 +4608,29 @@ type TextAttachment struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TextAttachment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TextAttachment) MarshalJSON() ([]byte, error) {
+	pb, err := TextAttachmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TextAttachment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TextAttachment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.TextAttachmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TextAttachmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TextAttachmentToPb(st *TextAttachment) (*dashboardspb.TextAttachmentPb, error) {
@@ -3453,7 +4641,9 @@ func TextAttachmentToPb(st *TextAttachment) (*dashboardspb.TextAttachmentPb, err
 	pb.Content = st.Content
 	pb.Id = st.Id
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3465,7 +4655,9 @@ func TextAttachmentFromPb(pb *dashboardspb.TextAttachmentPb) (*TextAttachment, e
 	st.Content = pb.Content
 	st.Id = pb.Id
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3473,6 +4665,31 @@ type TrashDashboardRequest struct {
 	// UUID identifying the dashboard.
 	// Wire name: 'dashboard_id'
 	DashboardId string `tf:"-"`
+}
+
+func (st TrashDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := TrashDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *TrashDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.TrashDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TrashDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TrashDashboardRequestToPb(st *TrashDashboardRequest) (*dashboardspb.TrashDashboardRequestPb, error) {
@@ -3499,6 +4716,31 @@ type UnpublishDashboardRequest struct {
 	// UUID identifying the published dashboard.
 	// Wire name: 'dashboard_id'
 	DashboardId string `tf:"-"`
+}
+
+func (st UnpublishDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UnpublishDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UnpublishDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.UnpublishDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UnpublishDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UnpublishDashboardRequestToPb(st *UnpublishDashboardRequest) (*dashboardspb.UnpublishDashboardRequestPb, error) {
@@ -3528,6 +4770,31 @@ type UpdateDashboardRequest struct {
 	// UUID identifying the dashboard.
 	// Wire name: 'dashboard_id'
 	DashboardId string `tf:"-"`
+}
+
+func (st UpdateDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.UpdateDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateDashboardRequestToPb(st *UpdateDashboardRequest) (*dashboardspb.UpdateDashboardRequestPb, error) {
@@ -3574,6 +4841,31 @@ type UpdateScheduleRequest struct {
 	// UUID identifying the schedule.
 	// Wire name: 'schedule_id'
 	ScheduleId string `tf:"-"`
+}
+
+func (st UpdateScheduleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateScheduleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateScheduleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardspb.UpdateScheduleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateScheduleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateScheduleRequestToPb(st *UpdateScheduleRequest) (*dashboardspb.UpdateScheduleRequestPb, error) {

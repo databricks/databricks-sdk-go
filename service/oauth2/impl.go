@@ -39,9 +39,12 @@ func (a *accountFederationPolicyImpl) Create(ctx context.Context, request Create
 		path,
 		headers,
 		queryParams,
-		requestPb.Policy,
+		(*requestPb).Policy,
 		&federationPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FederationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
@@ -65,9 +68,12 @@ func (a *accountFederationPolicyImpl) Delete(ctx context.Context, request Delete
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -88,9 +94,12 @@ func (a *accountFederationPolicyImpl) Get(ctx context.Context, request GetAccoun
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&federationPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FederationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
@@ -146,7 +155,7 @@ func (a *accountFederationPolicyImpl) internalList(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listFederationPoliciesResponsePb,
 	)
 	if err != nil {
@@ -180,9 +189,12 @@ func (a *accountFederationPolicyImpl) Update(ctx context.Context, request Update
 		path,
 		headers,
 		queryParams,
-		requestPb.Policy,
+		(*requestPb).Policy,
 		&federationPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FederationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
@@ -213,9 +225,12 @@ func (a *customAppIntegrationImpl) Create(ctx context.Context, request CreateCus
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createCustomAppIntegrationOutputPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateCustomAppIntegrationOutputFromPb(&createCustomAppIntegrationOutputPb)
 	if err != nil {
 		return nil, err
@@ -239,9 +254,12 @@ func (a *customAppIntegrationImpl) Delete(ctx context.Context, request DeleteCus
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -262,9 +280,12 @@ func (a *customAppIntegrationImpl) Get(ctx context.Context, request GetCustomApp
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getCustomAppIntegrationOutputPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetCustomAppIntegrationOutputFromPb(&getCustomAppIntegrationOutputPb)
 	if err != nil {
 		return nil, err
@@ -322,7 +343,7 @@ func (a *customAppIntegrationImpl) internalList(ctx context.Context, request Lis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getCustomAppIntegrationsOutputPb,
 	)
 	if err != nil {
@@ -352,9 +373,12 @@ func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCus
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -411,7 +435,7 @@ func (a *oAuthPublishedAppsImpl) internalList(ctx context.Context, request ListO
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getPublishedAppsOutputPb,
 	)
 	if err != nil {
@@ -447,9 +471,12 @@ func (a *publishedAppIntegrationImpl) Create(ctx context.Context, request Create
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createPublishedAppIntegrationOutputPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreatePublishedAppIntegrationOutputFromPb(&createPublishedAppIntegrationOutputPb)
 	if err != nil {
 		return nil, err
@@ -473,9 +500,12 @@ func (a *publishedAppIntegrationImpl) Delete(ctx context.Context, request Delete
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -496,9 +526,12 @@ func (a *publishedAppIntegrationImpl) Get(ctx context.Context, request GetPublis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getPublishedAppIntegrationOutputPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetPublishedAppIntegrationOutputFromPb(&getPublishedAppIntegrationOutputPb)
 	if err != nil {
 		return nil, err
@@ -556,7 +589,7 @@ func (a *publishedAppIntegrationImpl) internalList(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getPublishedAppIntegrationsOutputPb,
 	)
 	if err != nil {
@@ -586,9 +619,12 @@ func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request Update
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -618,9 +654,12 @@ func (a *servicePrincipalFederationPolicyImpl) Create(ctx context.Context, reque
 		path,
 		headers,
 		queryParams,
-		requestPb.Policy,
+		(*requestPb).Policy,
 		&federationPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FederationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
@@ -644,9 +683,12 @@ func (a *servicePrincipalFederationPolicyImpl) Delete(ctx context.Context, reque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -667,9 +709,12 @@ func (a *servicePrincipalFederationPolicyImpl) Get(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&federationPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FederationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
@@ -725,7 +770,7 @@ func (a *servicePrincipalFederationPolicyImpl) internalList(ctx context.Context,
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listFederationPoliciesResponsePb,
 	)
 	if err != nil {
@@ -759,9 +804,12 @@ func (a *servicePrincipalFederationPolicyImpl) Update(ctx context.Context, reque
 		path,
 		headers,
 		queryParams,
-		requestPb.Policy,
+		(*requestPb).Policy,
 		&federationPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FederationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
@@ -792,9 +840,12 @@ func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request Create
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createServicePrincipalSecretResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateServicePrincipalSecretResponseFromPb(&createServicePrincipalSecretResponsePb)
 	if err != nil {
 		return nil, err
@@ -817,9 +868,12 @@ func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request Delete
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -875,7 +929,7 @@ func (a *servicePrincipalSecretsImpl) internalList(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listServicePrincipalSecretsResponsePb,
 	)
 	if err != nil {
@@ -911,9 +965,12 @@ func (a *servicePrincipalSecretsProxyImpl) Create(ctx context.Context, request C
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createServicePrincipalSecretResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateServicePrincipalSecretResponseFromPb(&createServicePrincipalSecretResponsePb)
 	if err != nil {
 		return nil, err
@@ -936,9 +993,12 @@ func (a *servicePrincipalSecretsProxyImpl) Delete(ctx context.Context, request D
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -994,7 +1054,7 @@ func (a *servicePrincipalSecretsProxyImpl) internalList(ctx context.Context, req
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listServicePrincipalSecretsResponsePb,
 	)
 	if err != nil {

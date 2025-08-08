@@ -3,11 +3,11 @@
 package oauth2
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/oauth2/oauth2pb"
 )
 
@@ -23,12 +23,29 @@ type CreateAccountFederationPolicyRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateAccountFederationPolicyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateAccountFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateAccountFederationPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateAccountFederationPolicyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateAccountFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.CreateAccountFederationPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateAccountFederationPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateAccountFederationPolicyRequestToPb(st *CreateAccountFederationPolicyRequest) (*oauth2pb.CreateAccountFederationPolicyRequestPb, error) {
@@ -45,7 +62,9 @@ func CreateAccountFederationPolicyRequestToPb(st *CreateAccountFederationPolicyR
 	}
 	pb.PolicyId = st.PolicyId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -63,7 +82,9 @@ func CreateAccountFederationPolicyRequestFromPb(pb *oauth2pb.CreateAccountFedera
 	}
 	st.PolicyId = pb.PolicyId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -93,12 +114,29 @@ type CreateCustomAppIntegration struct {
 	ForceSendFields      []string `tf:"-"`
 }
 
-func (s *CreateCustomAppIntegration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateCustomAppIntegration) MarshalJSON() ([]byte, error) {
+	pb, err := CreateCustomAppIntegrationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateCustomAppIntegration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateCustomAppIntegration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.CreateCustomAppIntegrationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateCustomAppIntegrationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateCustomAppIntegrationToPb(st *CreateCustomAppIntegration) (*oauth2pb.CreateCustomAppIntegrationPb, error) {
@@ -119,7 +157,9 @@ func CreateCustomAppIntegrationToPb(st *CreateCustomAppIntegration) (*oauth2pb.C
 	}
 	pb.UserAuthorizedScopes = st.UserAuthorizedScopes
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -141,7 +181,9 @@ func CreateCustomAppIntegrationFromPb(pb *oauth2pb.CreateCustomAppIntegrationPb)
 	}
 	st.UserAuthorizedScopes = pb.UserAuthorizedScopes
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -159,12 +201,29 @@ type CreateCustomAppIntegrationOutput struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateCustomAppIntegrationOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateCustomAppIntegrationOutput) MarshalJSON() ([]byte, error) {
+	pb, err := CreateCustomAppIntegrationOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateCustomAppIntegrationOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateCustomAppIntegrationOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.CreateCustomAppIntegrationOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateCustomAppIntegrationOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateCustomAppIntegrationOutputToPb(st *CreateCustomAppIntegrationOutput) (*oauth2pb.CreateCustomAppIntegrationOutputPb, error) {
@@ -176,7 +235,9 @@ func CreateCustomAppIntegrationOutputToPb(st *CreateCustomAppIntegrationOutput) 
 	pb.ClientSecret = st.ClientSecret
 	pb.IntegrationId = st.IntegrationId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -189,7 +250,9 @@ func CreateCustomAppIntegrationOutputFromPb(pb *oauth2pb.CreateCustomAppIntegrat
 	st.ClientSecret = pb.ClientSecret
 	st.IntegrationId = pb.IntegrationId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -204,12 +267,29 @@ type CreatePublishedAppIntegration struct {
 	ForceSendFields   []string           `tf:"-"`
 }
 
-func (s *CreatePublishedAppIntegration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreatePublishedAppIntegration) MarshalJSON() ([]byte, error) {
+	pb, err := CreatePublishedAppIntegrationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreatePublishedAppIntegration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreatePublishedAppIntegration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.CreatePublishedAppIntegrationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreatePublishedAppIntegrationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreatePublishedAppIntegrationToPb(st *CreatePublishedAppIntegration) (*oauth2pb.CreatePublishedAppIntegrationPb, error) {
@@ -226,7 +306,9 @@ func CreatePublishedAppIntegrationToPb(st *CreatePublishedAppIntegration) (*oaut
 		pb.TokenAccessPolicy = tokenAccessPolicyPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -244,7 +326,9 @@ func CreatePublishedAppIntegrationFromPb(pb *oauth2pb.CreatePublishedAppIntegrat
 		st.TokenAccessPolicy = tokenAccessPolicyField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -255,12 +339,29 @@ type CreatePublishedAppIntegrationOutput struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreatePublishedAppIntegrationOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreatePublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
+	pb, err := CreatePublishedAppIntegrationOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreatePublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreatePublishedAppIntegrationOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.CreatePublishedAppIntegrationOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreatePublishedAppIntegrationOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreatePublishedAppIntegrationOutputToPb(st *CreatePublishedAppIntegrationOutput) (*oauth2pb.CreatePublishedAppIntegrationOutputPb, error) {
@@ -270,7 +371,9 @@ func CreatePublishedAppIntegrationOutputToPb(st *CreatePublishedAppIntegrationOu
 	pb := &oauth2pb.CreatePublishedAppIntegrationOutputPb{}
 	pb.IntegrationId = st.IntegrationId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -281,7 +384,9 @@ func CreatePublishedAppIntegrationOutputFromPb(pb *oauth2pb.CreatePublishedAppIn
 	st := &CreatePublishedAppIntegrationOutput{}
 	st.IntegrationId = pb.IntegrationId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -300,12 +405,29 @@ type CreateServicePrincipalFederationPolicyRequest struct {
 	ForceSendFields    []string `tf:"-"`
 }
 
-func (s *CreateServicePrincipalFederationPolicyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateServicePrincipalFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateServicePrincipalFederationPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateServicePrincipalFederationPolicyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateServicePrincipalFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.CreateServicePrincipalFederationPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateServicePrincipalFederationPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateServicePrincipalFederationPolicyRequestToPb(st *CreateServicePrincipalFederationPolicyRequest) (*oauth2pb.CreateServicePrincipalFederationPolicyRequestPb, error) {
@@ -323,7 +445,9 @@ func CreateServicePrincipalFederationPolicyRequestToPb(st *CreateServicePrincipa
 	pb.PolicyId = st.PolicyId
 	pb.ServicePrincipalId = st.ServicePrincipalId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -342,7 +466,9 @@ func CreateServicePrincipalFederationPolicyRequestFromPb(pb *oauth2pb.CreateServ
 	st.PolicyId = pb.PolicyId
 	st.ServicePrincipalId = pb.ServicePrincipalId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -350,19 +476,36 @@ type CreateServicePrincipalSecretRequest struct {
 	// The lifetime of the secret in seconds. If this parameter is not provided,
 	// the secret will have a default lifetime of 730 days (63072000s).
 	// Wire name: 'lifetime'
-	Lifetime *time.Duration ``
+	Lifetime string `` //legacy
 	// The service principal ID.
 	// Wire name: 'service_principal_id'
 	ServicePrincipalId string   `tf:"-"`
 	ForceSendFields    []string `tf:"-"`
 }
 
-func (s *CreateServicePrincipalSecretRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateServicePrincipalSecretRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateServicePrincipalSecretRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateServicePrincipalSecretRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateServicePrincipalSecretRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.CreateServicePrincipalSecretRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateServicePrincipalSecretRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateServicePrincipalSecretRequestToPb(st *CreateServicePrincipalSecretRequest) (*oauth2pb.CreateServicePrincipalSecretRequestPb, error) {
@@ -370,16 +513,12 @@ func CreateServicePrincipalSecretRequestToPb(st *CreateServicePrincipalSecretReq
 		return nil, nil
 	}
 	pb := &oauth2pb.CreateServicePrincipalSecretRequestPb{}
-	lifetimePb, err := durationToPb(st.Lifetime)
-	if err != nil {
-		return nil, err
-	}
-	if lifetimePb != nil {
-		pb.Lifetime = *lifetimePb
-	}
+	pb.Lifetime = st.Lifetime
 	pb.ServicePrincipalId = st.ServicePrincipalId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -388,16 +527,12 @@ func CreateServicePrincipalSecretRequestFromPb(pb *oauth2pb.CreateServicePrincip
 		return nil, nil
 	}
 	st := &CreateServicePrincipalSecretRequest{}
-	lifetimeField, err := durationFromPb(&pb.Lifetime)
-	if err != nil {
-		return nil, err
-	}
-	if lifetimeField != nil {
-		st.Lifetime = lifetimeField
-	}
+	st.Lifetime = pb.Lifetime
 	st.ServicePrincipalId = pb.ServicePrincipalId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -408,7 +543,7 @@ type CreateServicePrincipalSecretResponse struct {
 	// UTC time when the secret will expire. If the field is not present, the
 	// secret does not expire.
 	// Wire name: 'expire_time'
-	ExpireTime *time.Time ``
+	ExpireTime string `` //legacy
 	// ID of the secret
 	// Wire name: 'id'
 	Id string ``
@@ -427,12 +562,29 @@ type CreateServicePrincipalSecretResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateServicePrincipalSecretResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateServicePrincipalSecretResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateServicePrincipalSecretResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateServicePrincipalSecretResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateServicePrincipalSecretResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.CreateServicePrincipalSecretResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateServicePrincipalSecretResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateServicePrincipalSecretResponseToPb(st *CreateServicePrincipalSecretResponse) (*oauth2pb.CreateServicePrincipalSecretResponsePb, error) {
@@ -441,20 +593,16 @@ func CreateServicePrincipalSecretResponseToPb(st *CreateServicePrincipalSecretRe
 	}
 	pb := &oauth2pb.CreateServicePrincipalSecretResponsePb{}
 	pb.CreateTime = st.CreateTime
-	expireTimePb, err := timestampToPb(st.ExpireTime)
-	if err != nil {
-		return nil, err
-	}
-	if expireTimePb != nil {
-		pb.ExpireTime = *expireTimePb
-	}
+	pb.ExpireTime = st.ExpireTime
 	pb.Id = st.Id
 	pb.Secret = st.Secret
 	pb.SecretHash = st.SecretHash
 	pb.Status = st.Status
 	pb.UpdateTime = st.UpdateTime
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -464,20 +612,16 @@ func CreateServicePrincipalSecretResponseFromPb(pb *oauth2pb.CreateServicePrinci
 	}
 	st := &CreateServicePrincipalSecretResponse{}
 	st.CreateTime = pb.CreateTime
-	expireTimeField, err := timestampFromPb(&pb.ExpireTime)
-	if err != nil {
-		return nil, err
-	}
-	if expireTimeField != nil {
-		st.ExpireTime = expireTimeField
-	}
+	st.ExpireTime = pb.ExpireTime
 	st.Id = pb.Id
 	st.Secret = pb.Secret
 	st.SecretHash = pb.SecretHash
 	st.Status = pb.Status
 	st.UpdateTime = pb.UpdateTime
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -485,6 +629,31 @@ type DeleteAccountFederationPolicyRequest struct {
 	// The identifier for the federation policy.
 	// Wire name: 'policy_id'
 	PolicyId string `tf:"-"`
+}
+
+func (st DeleteAccountFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAccountFederationPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteAccountFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.DeleteAccountFederationPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAccountFederationPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteAccountFederationPolicyRequestToPb(st *DeleteAccountFederationPolicyRequest) (*oauth2pb.DeleteAccountFederationPolicyRequestPb, error) {
@@ -513,6 +682,31 @@ type DeleteCustomAppIntegrationRequest struct {
 	IntegrationId string `tf:"-"`
 }
 
+func (st DeleteCustomAppIntegrationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteCustomAppIntegrationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteCustomAppIntegrationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.DeleteCustomAppIntegrationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteCustomAppIntegrationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteCustomAppIntegrationRequestToPb(st *DeleteCustomAppIntegrationRequest) (*oauth2pb.DeleteCustomAppIntegrationRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -537,6 +731,31 @@ type DeletePublishedAppIntegrationRequest struct {
 
 	// Wire name: 'integration_id'
 	IntegrationId string `tf:"-"`
+}
+
+func (st DeletePublishedAppIntegrationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeletePublishedAppIntegrationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeletePublishedAppIntegrationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.DeletePublishedAppIntegrationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeletePublishedAppIntegrationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeletePublishedAppIntegrationRequestToPb(st *DeletePublishedAppIntegrationRequest) (*oauth2pb.DeletePublishedAppIntegrationRequestPb, error) {
@@ -566,6 +785,31 @@ type DeleteServicePrincipalFederationPolicyRequest struct {
 	// The service principal id for the federation policy.
 	// Wire name: 'service_principal_id'
 	ServicePrincipalId int64 `tf:"-"`
+}
+
+func (st DeleteServicePrincipalFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteServicePrincipalFederationPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteServicePrincipalFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.DeleteServicePrincipalFederationPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteServicePrincipalFederationPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteServicePrincipalFederationPolicyRequestToPb(st *DeleteServicePrincipalFederationPolicyRequest) (*oauth2pb.DeleteServicePrincipalFederationPolicyRequestPb, error) {
@@ -599,6 +843,31 @@ type DeleteServicePrincipalSecretRequest struct {
 	ServicePrincipalId string `tf:"-"`
 }
 
+func (st DeleteServicePrincipalSecretRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteServicePrincipalSecretRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteServicePrincipalSecretRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.DeleteServicePrincipalSecretRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteServicePrincipalSecretRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteServicePrincipalSecretRequestToPb(st *DeleteServicePrincipalSecretRequest) (*oauth2pb.DeleteServicePrincipalSecretRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -624,7 +893,7 @@ func DeleteServicePrincipalSecretRequestFromPb(pb *oauth2pb.DeleteServicePrincip
 type FederationPolicy struct {
 	// Creation time of the federation policy.
 	// Wire name: 'create_time'
-	CreateTime *time.Time ``
+	CreateTime string `` //legacy
 	// Description of the federation policy.
 	// Wire name: 'description'
 	Description string ``
@@ -652,16 +921,33 @@ type FederationPolicy struct {
 	Uid string ``
 	// Last update time of the federation policy.
 	// Wire name: 'update_time'
-	UpdateTime      *time.Time ``
-	ForceSendFields []string   `tf:"-"`
+	UpdateTime      string   `` //legacy
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FederationPolicy) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st FederationPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := FederationPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s FederationPolicy) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *FederationPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.FederationPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FederationPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FederationPolicyToPb(st *FederationPolicy) (*oauth2pb.FederationPolicyPb, error) {
@@ -669,13 +955,7 @@ func FederationPolicyToPb(st *FederationPolicy) (*oauth2pb.FederationPolicyPb, e
 		return nil, nil
 	}
 	pb := &oauth2pb.FederationPolicyPb{}
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 	pb.Description = st.Description
 	pb.Name = st.Name
 	oidcPolicyPb, err := OidcFederationPolicyToPb(st.OidcPolicy)
@@ -688,15 +968,11 @@ func FederationPolicyToPb(st *FederationPolicy) (*oauth2pb.FederationPolicyPb, e
 	pb.PolicyId = st.PolicyId
 	pb.ServicePrincipalId = st.ServicePrincipalId
 	pb.Uid = st.Uid
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -705,13 +981,7 @@ func FederationPolicyFromPb(pb *oauth2pb.FederationPolicyPb) (*FederationPolicy,
 		return nil, nil
 	}
 	st := &FederationPolicy{}
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	st.Description = pb.Description
 	st.Name = pb.Name
 	oidcPolicyField, err := OidcFederationPolicyFromPb(pb.OidcPolicy)
@@ -724,15 +994,11 @@ func FederationPolicyFromPb(pb *oauth2pb.FederationPolicyPb) (*FederationPolicy,
 	st.PolicyId = pb.PolicyId
 	st.ServicePrincipalId = pb.ServicePrincipalId
 	st.Uid = pb.Uid
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
+	st.UpdateTime = pb.UpdateTime
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -740,6 +1006,31 @@ type GetAccountFederationPolicyRequest struct {
 	// The identifier for the federation policy.
 	// Wire name: 'policy_id'
 	PolicyId string `tf:"-"`
+}
+
+func (st GetAccountFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAccountFederationPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAccountFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.GetAccountFederationPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAccountFederationPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetAccountFederationPolicyRequestToPb(st *GetAccountFederationPolicyRequest) (*oauth2pb.GetAccountFederationPolicyRequestPb, error) {
@@ -802,12 +1093,29 @@ type GetCustomAppIntegrationOutput struct {
 	ForceSendFields      []string `tf:"-"`
 }
 
-func (s *GetCustomAppIntegrationOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetCustomAppIntegrationOutput) MarshalJSON() ([]byte, error) {
+	pb, err := GetCustomAppIntegrationOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetCustomAppIntegrationOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetCustomAppIntegrationOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.GetCustomAppIntegrationOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetCustomAppIntegrationOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetCustomAppIntegrationOutputToPb(st *GetCustomAppIntegrationOutput) (*oauth2pb.GetCustomAppIntegrationOutputPb, error) {
@@ -833,7 +1141,9 @@ func GetCustomAppIntegrationOutputToPb(st *GetCustomAppIntegrationOutput) (*oaut
 	}
 	pb.UserAuthorizedScopes = st.UserAuthorizedScopes
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -860,7 +1170,9 @@ func GetCustomAppIntegrationOutputFromPb(pb *oauth2pb.GetCustomAppIntegrationOut
 	}
 	st.UserAuthorizedScopes = pb.UserAuthorizedScopes
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -868,6 +1180,31 @@ type GetCustomAppIntegrationRequest struct {
 	// The OAuth app integration ID.
 	// Wire name: 'integration_id'
 	IntegrationId string `tf:"-"`
+}
+
+func (st GetCustomAppIntegrationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetCustomAppIntegrationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetCustomAppIntegrationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.GetCustomAppIntegrationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetCustomAppIntegrationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetCustomAppIntegrationRequestToPb(st *GetCustomAppIntegrationRequest) (*oauth2pb.GetCustomAppIntegrationRequestPb, error) {
@@ -900,12 +1237,29 @@ type GetCustomAppIntegrationsOutput struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetCustomAppIntegrationsOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetCustomAppIntegrationsOutput) MarshalJSON() ([]byte, error) {
+	pb, err := GetCustomAppIntegrationsOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetCustomAppIntegrationsOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetCustomAppIntegrationsOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.GetCustomAppIntegrationsOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetCustomAppIntegrationsOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetCustomAppIntegrationsOutputToPb(st *GetCustomAppIntegrationsOutput) (*oauth2pb.GetCustomAppIntegrationsOutputPb, error) {
@@ -927,7 +1281,9 @@ func GetCustomAppIntegrationsOutputToPb(st *GetCustomAppIntegrationsOutput) (*oa
 	pb.Apps = appsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -950,7 +1306,9 @@ func GetCustomAppIntegrationsOutputFromPb(pb *oauth2pb.GetCustomAppIntegrationsO
 	st.Apps = appsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -976,12 +1334,29 @@ type GetPublishedAppIntegrationOutput struct {
 	ForceSendFields   []string           `tf:"-"`
 }
 
-func (s *GetPublishedAppIntegrationOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetPublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
+	pb, err := GetPublishedAppIntegrationOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetPublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetPublishedAppIntegrationOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.GetPublishedAppIntegrationOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPublishedAppIntegrationOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPublishedAppIntegrationOutputToPb(st *GetPublishedAppIntegrationOutput) (*oauth2pb.GetPublishedAppIntegrationOutputPb, error) {
@@ -1002,7 +1377,9 @@ func GetPublishedAppIntegrationOutputToPb(st *GetPublishedAppIntegrationOutput) 
 		pb.TokenAccessPolicy = tokenAccessPolicyPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1024,7 +1401,9 @@ func GetPublishedAppIntegrationOutputFromPb(pb *oauth2pb.GetPublishedAppIntegrat
 		st.TokenAccessPolicy = tokenAccessPolicyField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1032,6 +1411,31 @@ type GetPublishedAppIntegrationRequest struct {
 
 	// Wire name: 'integration_id'
 	IntegrationId string `tf:"-"`
+}
+
+func (st GetPublishedAppIntegrationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetPublishedAppIntegrationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetPublishedAppIntegrationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.GetPublishedAppIntegrationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPublishedAppIntegrationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPublishedAppIntegrationRequestToPb(st *GetPublishedAppIntegrationRequest) (*oauth2pb.GetPublishedAppIntegrationRequestPb, error) {
@@ -1064,12 +1468,29 @@ type GetPublishedAppIntegrationsOutput struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetPublishedAppIntegrationsOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetPublishedAppIntegrationsOutput) MarshalJSON() ([]byte, error) {
+	pb, err := GetPublishedAppIntegrationsOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetPublishedAppIntegrationsOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetPublishedAppIntegrationsOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.GetPublishedAppIntegrationsOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPublishedAppIntegrationsOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPublishedAppIntegrationsOutputToPb(st *GetPublishedAppIntegrationsOutput) (*oauth2pb.GetPublishedAppIntegrationsOutputPb, error) {
@@ -1091,7 +1512,9 @@ func GetPublishedAppIntegrationsOutputToPb(st *GetPublishedAppIntegrationsOutput
 	pb.Apps = appsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1114,7 +1537,9 @@ func GetPublishedAppIntegrationsOutputFromPb(pb *oauth2pb.GetPublishedAppIntegra
 	st.Apps = appsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1129,12 +1554,29 @@ type GetPublishedAppsOutput struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetPublishedAppsOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetPublishedAppsOutput) MarshalJSON() ([]byte, error) {
+	pb, err := GetPublishedAppsOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetPublishedAppsOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetPublishedAppsOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.GetPublishedAppsOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPublishedAppsOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPublishedAppsOutputToPb(st *GetPublishedAppsOutput) (*oauth2pb.GetPublishedAppsOutputPb, error) {
@@ -1156,7 +1598,9 @@ func GetPublishedAppsOutputToPb(st *GetPublishedAppsOutput) (*oauth2pb.GetPublis
 	pb.Apps = appsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1179,7 +1623,9 @@ func GetPublishedAppsOutputFromPb(pb *oauth2pb.GetPublishedAppsOutputPb) (*GetPu
 	st.Apps = appsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1190,6 +1636,31 @@ type GetServicePrincipalFederationPolicyRequest struct {
 	// The service principal id for the federation policy.
 	// Wire name: 'service_principal_id'
 	ServicePrincipalId int64 `tf:"-"`
+}
+
+func (st GetServicePrincipalFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetServicePrincipalFederationPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetServicePrincipalFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.GetServicePrincipalFederationPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetServicePrincipalFederationPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetServicePrincipalFederationPolicyRequestToPb(st *GetServicePrincipalFederationPolicyRequest) (*oauth2pb.GetServicePrincipalFederationPolicyRequestPb, error) {
@@ -1224,12 +1695,29 @@ type ListAccountFederationPoliciesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAccountFederationPoliciesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAccountFederationPoliciesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListAccountFederationPoliciesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAccountFederationPoliciesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAccountFederationPoliciesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.ListAccountFederationPoliciesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAccountFederationPoliciesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAccountFederationPoliciesRequestToPb(st *ListAccountFederationPoliciesRequest) (*oauth2pb.ListAccountFederationPoliciesRequestPb, error) {
@@ -1240,7 +1728,9 @@ func ListAccountFederationPoliciesRequestToPb(st *ListAccountFederationPoliciesR
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1252,7 +1742,9 @@ func ListAccountFederationPoliciesRequestFromPb(pb *oauth2pb.ListAccountFederati
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1269,12 +1761,29 @@ type ListCustomAppIntegrationsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListCustomAppIntegrationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCustomAppIntegrationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListCustomAppIntegrationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCustomAppIntegrationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCustomAppIntegrationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.ListCustomAppIntegrationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCustomAppIntegrationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListCustomAppIntegrationsRequestToPb(st *ListCustomAppIntegrationsRequest) (*oauth2pb.ListCustomAppIntegrationsRequestPb, error) {
@@ -1286,7 +1795,9 @@ func ListCustomAppIntegrationsRequestToPb(st *ListCustomAppIntegrationsRequest) 
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1299,7 +1810,9 @@ func ListCustomAppIntegrationsRequestFromPb(pb *oauth2pb.ListCustomAppIntegratio
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1313,12 +1826,29 @@ type ListFederationPoliciesResponse struct {
 	ForceSendFields []string           `tf:"-"`
 }
 
-func (s *ListFederationPoliciesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListFederationPoliciesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListFederationPoliciesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListFederationPoliciesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListFederationPoliciesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.ListFederationPoliciesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListFederationPoliciesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListFederationPoliciesResponseToPb(st *ListFederationPoliciesResponse) (*oauth2pb.ListFederationPoliciesResponsePb, error) {
@@ -1340,7 +1870,9 @@ func ListFederationPoliciesResponseToPb(st *ListFederationPoliciesResponse) (*oa
 	}
 	pb.Policies = policiesPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1363,7 +1895,9 @@ func ListFederationPoliciesResponseFromPb(pb *oauth2pb.ListFederationPoliciesRes
 	}
 	st.Policies = policiesField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1377,12 +1911,29 @@ type ListOAuthPublishedAppsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListOAuthPublishedAppsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListOAuthPublishedAppsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListOAuthPublishedAppsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListOAuthPublishedAppsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListOAuthPublishedAppsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.ListOAuthPublishedAppsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListOAuthPublishedAppsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListOAuthPublishedAppsRequestToPb(st *ListOAuthPublishedAppsRequest) (*oauth2pb.ListOAuthPublishedAppsRequestPb, error) {
@@ -1393,7 +1944,9 @@ func ListOAuthPublishedAppsRequestToPb(st *ListOAuthPublishedAppsRequest) (*oaut
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1405,7 +1958,9 @@ func ListOAuthPublishedAppsRequestFromPb(pb *oauth2pb.ListOAuthPublishedAppsRequ
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1419,12 +1974,29 @@ type ListPublishedAppIntegrationsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListPublishedAppIntegrationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListPublishedAppIntegrationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListPublishedAppIntegrationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListPublishedAppIntegrationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListPublishedAppIntegrationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.ListPublishedAppIntegrationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListPublishedAppIntegrationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListPublishedAppIntegrationsRequestToPb(st *ListPublishedAppIntegrationsRequest) (*oauth2pb.ListPublishedAppIntegrationsRequestPb, error) {
@@ -1435,7 +2007,9 @@ func ListPublishedAppIntegrationsRequestToPb(st *ListPublishedAppIntegrationsReq
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1447,7 +2021,9 @@ func ListPublishedAppIntegrationsRequestFromPb(pb *oauth2pb.ListPublishedAppInte
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1464,12 +2040,29 @@ type ListServicePrincipalFederationPoliciesRequest struct {
 	ForceSendFields    []string `tf:"-"`
 }
 
-func (s *ListServicePrincipalFederationPoliciesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListServicePrincipalFederationPoliciesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListServicePrincipalFederationPoliciesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListServicePrincipalFederationPoliciesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListServicePrincipalFederationPoliciesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.ListServicePrincipalFederationPoliciesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListServicePrincipalFederationPoliciesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListServicePrincipalFederationPoliciesRequestToPb(st *ListServicePrincipalFederationPoliciesRequest) (*oauth2pb.ListServicePrincipalFederationPoliciesRequestPb, error) {
@@ -1481,7 +2074,9 @@ func ListServicePrincipalFederationPoliciesRequestToPb(st *ListServicePrincipalF
 	pb.PageToken = st.PageToken
 	pb.ServicePrincipalId = st.ServicePrincipalId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1494,7 +2089,9 @@ func ListServicePrincipalFederationPoliciesRequestFromPb(pb *oauth2pb.ListServic
 	st.PageToken = pb.PageToken
 	st.ServicePrincipalId = pb.ServicePrincipalId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1519,12 +2116,29 @@ type ListServicePrincipalSecretsRequest struct {
 	ForceSendFields    []string `tf:"-"`
 }
 
-func (s *ListServicePrincipalSecretsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListServicePrincipalSecretsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListServicePrincipalSecretsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListServicePrincipalSecretsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListServicePrincipalSecretsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.ListServicePrincipalSecretsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListServicePrincipalSecretsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListServicePrincipalSecretsRequestToPb(st *ListServicePrincipalSecretsRequest) (*oauth2pb.ListServicePrincipalSecretsRequestPb, error) {
@@ -1536,7 +2150,9 @@ func ListServicePrincipalSecretsRequestToPb(st *ListServicePrincipalSecretsReque
 	pb.PageToken = st.PageToken
 	pb.ServicePrincipalId = st.ServicePrincipalId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1549,7 +2165,9 @@ func ListServicePrincipalSecretsRequestFromPb(pb *oauth2pb.ListServicePrincipalS
 	st.PageToken = pb.PageToken
 	st.ServicePrincipalId = pb.ServicePrincipalId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1563,12 +2181,29 @@ type ListServicePrincipalSecretsResponse struct {
 	ForceSendFields []string     `tf:"-"`
 }
 
-func (s *ListServicePrincipalSecretsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListServicePrincipalSecretsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListServicePrincipalSecretsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListServicePrincipalSecretsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListServicePrincipalSecretsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.ListServicePrincipalSecretsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListServicePrincipalSecretsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListServicePrincipalSecretsResponseToPb(st *ListServicePrincipalSecretsResponse) (*oauth2pb.ListServicePrincipalSecretsResponsePb, error) {
@@ -1590,7 +2225,9 @@ func ListServicePrincipalSecretsResponseToPb(st *ListServicePrincipalSecretsResp
 	}
 	pb.Secrets = secretsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1613,7 +2250,9 @@ func ListServicePrincipalSecretsResponseFromPb(pb *oauth2pb.ListServicePrincipal
 	}
 	st.Secrets = secretsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1660,12 +2299,29 @@ type OidcFederationPolicy struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *OidcFederationPolicy) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st OidcFederationPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := OidcFederationPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s OidcFederationPolicy) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *OidcFederationPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.OidcFederationPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := OidcFederationPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func OidcFederationPolicyToPb(st *OidcFederationPolicy) (*oauth2pb.OidcFederationPolicyPb, error) {
@@ -1680,7 +2336,9 @@ func OidcFederationPolicyToPb(st *OidcFederationPolicy) (*oauth2pb.OidcFederatio
 	pb.Subject = st.Subject
 	pb.SubjectClaim = st.SubjectClaim
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1696,7 +2354,9 @@ func OidcFederationPolicyFromPb(pb *oauth2pb.OidcFederationPolicyPb) (*OidcFeder
 	st.Subject = pb.Subject
 	st.SubjectClaim = pb.SubjectClaim
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1727,12 +2387,29 @@ type PublishedAppOutput struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PublishedAppOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PublishedAppOutput) MarshalJSON() ([]byte, error) {
+	pb, err := PublishedAppOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PublishedAppOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PublishedAppOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.PublishedAppOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PublishedAppOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PublishedAppOutputToPb(st *PublishedAppOutput) (*oauth2pb.PublishedAppOutputPb, error) {
@@ -1748,7 +2425,9 @@ func PublishedAppOutputToPb(st *PublishedAppOutput) (*oauth2pb.PublishedAppOutpu
 	pb.RedirectUrls = st.RedirectUrls
 	pb.Scopes = st.Scopes
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1765,7 +2444,9 @@ func PublishedAppOutputFromPb(pb *oauth2pb.PublishedAppOutputPb) (*PublishedAppO
 	st.RedirectUrls = pb.RedirectUrls
 	st.Scopes = pb.Scopes
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1776,7 +2457,7 @@ type SecretInfo struct {
 	// UTC time when the secret will expire. If the field is not present, the
 	// secret does not expire.
 	// Wire name: 'expire_time'
-	ExpireTime *time.Time ``
+	ExpireTime string `` //legacy
 	// ID of the secret
 	// Wire name: 'id'
 	Id string ``
@@ -1792,12 +2473,29 @@ type SecretInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SecretInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SecretInfo) MarshalJSON() ([]byte, error) {
+	pb, err := SecretInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SecretInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SecretInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.SecretInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SecretInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SecretInfoToPb(st *SecretInfo) (*oauth2pb.SecretInfoPb, error) {
@@ -1806,19 +2504,15 @@ func SecretInfoToPb(st *SecretInfo) (*oauth2pb.SecretInfoPb, error) {
 	}
 	pb := &oauth2pb.SecretInfoPb{}
 	pb.CreateTime = st.CreateTime
-	expireTimePb, err := timestampToPb(st.ExpireTime)
-	if err != nil {
-		return nil, err
-	}
-	if expireTimePb != nil {
-		pb.ExpireTime = *expireTimePb
-	}
+	pb.ExpireTime = st.ExpireTime
 	pb.Id = st.Id
 	pb.SecretHash = st.SecretHash
 	pb.Status = st.Status
 	pb.UpdateTime = st.UpdateTime
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1828,19 +2522,15 @@ func SecretInfoFromPb(pb *oauth2pb.SecretInfoPb) (*SecretInfo, error) {
 	}
 	st := &SecretInfo{}
 	st.CreateTime = pb.CreateTime
-	expireTimeField, err := timestampFromPb(&pb.ExpireTime)
-	if err != nil {
-		return nil, err
-	}
-	if expireTimeField != nil {
-		st.ExpireTime = expireTimeField
-	}
+	st.ExpireTime = pb.ExpireTime
 	st.Id = pb.Id
 	st.SecretHash = pb.SecretHash
 	st.Status = pb.Status
 	st.UpdateTime = pb.UpdateTime
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1854,12 +2544,29 @@ type TokenAccessPolicy struct {
 	ForceSendFields          []string `tf:"-"`
 }
 
-func (s *TokenAccessPolicy) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TokenAccessPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := TokenAccessPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TokenAccessPolicy) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TokenAccessPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.TokenAccessPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TokenAccessPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TokenAccessPolicyToPb(st *TokenAccessPolicy) (*oauth2pb.TokenAccessPolicyPb, error) {
@@ -1870,7 +2577,9 @@ func TokenAccessPolicyToPb(st *TokenAccessPolicy) (*oauth2pb.TokenAccessPolicyPb
 	pb.AccessTokenTtlInMinutes = st.AccessTokenTtlInMinutes
 	pb.RefreshTokenTtlInMinutes = st.RefreshTokenTtlInMinutes
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1882,7 +2591,9 @@ func TokenAccessPolicyFromPb(pb *oauth2pb.TokenAccessPolicyPb) (*TokenAccessPoli
 	st.AccessTokenTtlInMinutes = pb.AccessTokenTtlInMinutes
 	st.RefreshTokenTtlInMinutes = pb.RefreshTokenTtlInMinutes
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1900,16 +2611,33 @@ type UpdateAccountFederationPolicyRequest struct {
 	// provided in the update request will overwrite the corresponding fields in
 	// the existing policy. Example value: 'description,oidc_policy.audiences'.
 	// Wire name: 'update_mask'
-	UpdateMask      *[]string `tf:"-"`
-	ForceSendFields []string  `tf:"-"`
+	UpdateMask      string   `tf:"-"` //legacy
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateAccountFederationPolicyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateAccountFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateAccountFederationPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateAccountFederationPolicyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateAccountFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.UpdateAccountFederationPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateAccountFederationPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateAccountFederationPolicyRequestToPb(st *UpdateAccountFederationPolicyRequest) (*oauth2pb.UpdateAccountFederationPolicyRequestPb, error) {
@@ -1925,15 +2653,11 @@ func UpdateAccountFederationPolicyRequestToPb(st *UpdateAccountFederationPolicyR
 		pb.Policy = *policyPb
 	}
 	pb.PolicyId = st.PolicyId
-	updateMaskPb, err := fieldMaskToPb(st.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1950,15 +2674,11 @@ func UpdateAccountFederationPolicyRequestFromPb(pb *oauth2pb.UpdateAccountFedera
 		st.Policy = *policyField
 	}
 	st.PolicyId = pb.PolicyId
-	updateMaskField, err := fieldMaskFromPb(&pb.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskField != nil {
-		st.UpdateMask = updateMaskField
-	}
+	st.UpdateMask = pb.UpdateMask
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1983,6 +2703,31 @@ type UpdateCustomAppIntegration struct {
 	// minted. Must be a subset of scopes.
 	// Wire name: 'user_authorized_scopes'
 	UserAuthorizedScopes []string ``
+}
+
+func (st UpdateCustomAppIntegration) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateCustomAppIntegrationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateCustomAppIntegration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.UpdateCustomAppIntegrationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateCustomAppIntegrationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateCustomAppIntegrationToPb(st *UpdateCustomAppIntegration) (*oauth2pb.UpdateCustomAppIntegrationPb, error) {
@@ -2032,6 +2777,31 @@ type UpdatePublishedAppIntegration struct {
 	// Token access policy to be updated in the published OAuth app integration
 	// Wire name: 'token_access_policy'
 	TokenAccessPolicy *TokenAccessPolicy ``
+}
+
+func (st UpdatePublishedAppIntegration) MarshalJSON() ([]byte, error) {
+	pb, err := UpdatePublishedAppIntegrationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdatePublishedAppIntegration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.UpdatePublishedAppIntegrationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdatePublishedAppIntegrationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdatePublishedAppIntegrationToPb(st *UpdatePublishedAppIntegration) (*oauth2pb.UpdatePublishedAppIntegrationPb, error) {
@@ -2085,16 +2855,33 @@ type UpdateServicePrincipalFederationPolicyRequest struct {
 	// provided in the update request will overwrite the corresponding fields in
 	// the existing policy. Example value: 'description,oidc_policy.audiences'.
 	// Wire name: 'update_mask'
-	UpdateMask      *[]string `tf:"-"`
-	ForceSendFields []string  `tf:"-"`
+	UpdateMask      string   `tf:"-"` //legacy
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateServicePrincipalFederationPolicyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateServicePrincipalFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateServicePrincipalFederationPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateServicePrincipalFederationPolicyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateServicePrincipalFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &oauth2pb.UpdateServicePrincipalFederationPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateServicePrincipalFederationPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateServicePrincipalFederationPolicyRequestToPb(st *UpdateServicePrincipalFederationPolicyRequest) (*oauth2pb.UpdateServicePrincipalFederationPolicyRequestPb, error) {
@@ -2111,15 +2898,11 @@ func UpdateServicePrincipalFederationPolicyRequestToPb(st *UpdateServicePrincipa
 	}
 	pb.PolicyId = st.PolicyId
 	pb.ServicePrincipalId = st.ServicePrincipalId
-	updateMaskPb, err := fieldMaskToPb(st.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2137,15 +2920,11 @@ func UpdateServicePrincipalFederationPolicyRequestFromPb(pb *oauth2pb.UpdateServ
 	}
 	st.PolicyId = pb.PolicyId
 	st.ServicePrincipalId = pb.ServicePrincipalId
-	updateMaskField, err := fieldMaskFromPb(&pb.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskField != nil {
-		st.UpdateMask = updateMaskField
-	}
+	st.UpdateMask = pb.UpdateMask
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 

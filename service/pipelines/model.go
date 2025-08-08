@@ -3,11 +3,11 @@
 package pipelines
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/compute/computepb"
 	"github.com/databricks/databricks-sdk-go/service/pipelines/pipelinespb"
@@ -120,12 +120,29 @@ type CreatePipeline struct {
 	ForceSendFields []string         `tf:"-"`
 }
 
-func (s *CreatePipeline) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreatePipeline) MarshalJSON() ([]byte, error) {
+	pb, err := CreatePipelineToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreatePipeline) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreatePipeline) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.CreatePipelinePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreatePipelineFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreatePipelineToPb(st *CreatePipeline) (*pipelinespb.CreatePipelinePb, error) {
@@ -251,7 +268,9 @@ func CreatePipelineToPb(st *CreatePipeline) (*pipelinespb.CreatePipelinePb, erro
 		pb.Trigger = triggerPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -378,7 +397,9 @@ func CreatePipelineFromPb(pb *pipelinespb.CreatePipelinePb) (*CreatePipeline, er
 		st.Trigger = triggerField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -393,12 +414,29 @@ type CreatePipelineResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreatePipelineResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreatePipelineResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreatePipelineResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreatePipelineResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreatePipelineResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.CreatePipelineResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreatePipelineResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreatePipelineResponseToPb(st *CreatePipelineResponse) (*pipelinespb.CreatePipelineResponsePb, error) {
@@ -415,7 +453,9 @@ func CreatePipelineResponseToPb(st *CreatePipelineResponse) (*pipelinespb.Create
 	}
 	pb.PipelineId = st.PipelineId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -433,7 +473,9 @@ func CreatePipelineResponseFromPb(pb *pipelinespb.CreatePipelineResponsePb) (*Cr
 	}
 	st.PipelineId = pb.PipelineId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -447,12 +489,29 @@ type CronTrigger struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CronTrigger) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CronTrigger) MarshalJSON() ([]byte, error) {
+	pb, err := CronTriggerToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CronTrigger) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CronTrigger) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.CronTriggerPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CronTriggerFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CronTriggerToPb(st *CronTrigger) (*pipelinespb.CronTriggerPb, error) {
@@ -463,7 +522,9 @@ func CronTriggerToPb(st *CronTrigger) (*pipelinespb.CronTriggerPb, error) {
 	pb.QuartzCronSchedule = st.QuartzCronSchedule
 	pb.TimezoneId = st.TimezoneId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -475,7 +536,9 @@ func CronTriggerFromPb(pb *pipelinespb.CronTriggerPb) (*CronTrigger, error) {
 	st.QuartzCronSchedule = pb.QuartzCronSchedule
 	st.TimezoneId = pb.TimezoneId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -489,12 +552,29 @@ type DataPlaneId struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DataPlaneId) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DataPlaneId) MarshalJSON() ([]byte, error) {
+	pb, err := DataPlaneIdToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DataPlaneId) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DataPlaneId) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.DataPlaneIdPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DataPlaneIdFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DataPlaneIdToPb(st *DataPlaneId) (*pipelinespb.DataPlaneIdPb, error) {
@@ -505,7 +585,9 @@ func DataPlaneIdToPb(st *DataPlaneId) (*pipelinespb.DataPlaneIdPb, error) {
 	pb.Instance = st.Instance
 	pb.SeqNo = st.SeqNo
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -517,7 +599,9 @@ func DataPlaneIdFromPb(pb *pipelinespb.DataPlaneIdPb) (*DataPlaneId, error) {
 	st.Instance = pb.Instance
 	st.SeqNo = pb.SeqNo
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -596,6 +680,31 @@ type DeletePipelineRequest struct {
 
 	// Wire name: 'pipeline_id'
 	PipelineId string `tf:"-"`
+}
+
+func (st DeletePipelineRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeletePipelineRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeletePipelineRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.DeletePipelineRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeletePipelineRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeletePipelineRequestToPb(st *DeletePipelineRequest) (*pipelinespb.DeletePipelineRequestPb, error) {
@@ -782,12 +891,29 @@ type EditPipeline struct {
 	ForceSendFields []string         `tf:"-"`
 }
 
-func (s *EditPipeline) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EditPipeline) MarshalJSON() ([]byte, error) {
+	pb, err := EditPipelineToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EditPipeline) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EditPipeline) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.EditPipelinePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EditPipelineFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EditPipelineToPb(st *EditPipeline) (*pipelinespb.EditPipelinePb, error) {
@@ -914,7 +1040,9 @@ func EditPipelineToPb(st *EditPipeline) (*pipelinespb.EditPipelinePb, error) {
 		pb.Trigger = triggerPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1042,7 +1170,9 @@ func EditPipelineFromPb(pb *pipelinespb.EditPipelinePb) (*EditPipeline, error) {
 		st.Trigger = triggerField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1056,12 +1186,29 @@ type ErrorDetail struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ErrorDetail) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ErrorDetail) MarshalJSON() ([]byte, error) {
+	pb, err := ErrorDetailToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ErrorDetail) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ErrorDetail) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.ErrorDetailPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ErrorDetailFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ErrorDetailToPb(st *ErrorDetail) (*pipelinespb.ErrorDetailPb, error) {
@@ -1083,7 +1230,9 @@ func ErrorDetailToPb(st *ErrorDetail) (*pipelinespb.ErrorDetailPb, error) {
 	pb.Exceptions = exceptionsPb
 	pb.Fatal = st.Fatal
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1106,7 +1255,9 @@ func ErrorDetailFromPb(pb *pipelinespb.ErrorDetailPb) (*ErrorDetail, error) {
 	st.Exceptions = exceptionsField
 	st.Fatal = pb.Fatal
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1184,12 +1335,29 @@ type EventLogSpec struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EventLogSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EventLogSpec) MarshalJSON() ([]byte, error) {
+	pb, err := EventLogSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EventLogSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EventLogSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.EventLogSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EventLogSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EventLogSpecToPb(st *EventLogSpec) (*pipelinespb.EventLogSpecPb, error) {
@@ -1201,7 +1369,9 @@ func EventLogSpecToPb(st *EventLogSpec) (*pipelinespb.EventLogSpecPb, error) {
 	pb.Name = st.Name
 	pb.Schema = st.Schema
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1214,7 +1384,9 @@ func EventLogSpecFromPb(pb *pipelinespb.EventLogSpecPb) (*EventLogSpec, error) {
 	st.Name = pb.Name
 	st.Schema = pb.Schema
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1225,12 +1397,29 @@ type FileLibrary struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FileLibrary) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st FileLibrary) MarshalJSON() ([]byte, error) {
+	pb, err := FileLibraryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s FileLibrary) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *FileLibrary) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.FileLibraryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FileLibraryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FileLibraryToPb(st *FileLibrary) (*pipelinespb.FileLibraryPb, error) {
@@ -1240,7 +1429,9 @@ func FileLibraryToPb(st *FileLibrary) (*pipelinespb.FileLibraryPb, error) {
 	pb := &pipelinespb.FileLibraryPb{}
 	pb.Path = st.Path
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1251,7 +1442,9 @@ func FileLibraryFromPb(pb *pipelinespb.FileLibraryPb) (*FileLibrary, error) {
 	st := &FileLibrary{}
 	st.Path = pb.Path
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1262,6 +1455,31 @@ type Filters struct {
 	// Paths to include.
 	// Wire name: 'include'
 	Include []string ``
+}
+
+func (st Filters) MarshalJSON() ([]byte, error) {
+	pb, err := FiltersToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Filters) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.FiltersPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FiltersFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FiltersToPb(st *Filters) (*pipelinespb.FiltersPb, error) {
@@ -1292,6 +1510,31 @@ type GetPipelinePermissionLevelsRequest struct {
 	PipelineId string `tf:"-"`
 }
 
+func (st GetPipelinePermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetPipelinePermissionLevelsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetPipelinePermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.GetPipelinePermissionLevelsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPipelinePermissionLevelsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetPipelinePermissionLevelsRequestToPb(st *GetPipelinePermissionLevelsRequest) (*pipelinespb.GetPipelinePermissionLevelsRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1316,6 +1559,31 @@ type GetPipelinePermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
 	PermissionLevels []PipelinePermissionsDescription ``
+}
+
+func (st GetPipelinePermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetPipelinePermissionLevelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetPipelinePermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.GetPipelinePermissionLevelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPipelinePermissionLevelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPipelinePermissionLevelsResponseToPb(st *GetPipelinePermissionLevelsResponse) (*pipelinespb.GetPipelinePermissionLevelsResponsePb, error) {
@@ -1366,6 +1634,31 @@ type GetPipelinePermissionsRequest struct {
 	PipelineId string `tf:"-"`
 }
 
+func (st GetPipelinePermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetPipelinePermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetPipelinePermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.GetPipelinePermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPipelinePermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetPipelinePermissionsRequestToPb(st *GetPipelinePermissionsRequest) (*pipelinespb.GetPipelinePermissionsRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1390,6 +1683,31 @@ type GetPipelineRequest struct {
 
 	// Wire name: 'pipeline_id'
 	PipelineId string `tf:"-"`
+}
+
+func (st GetPipelineRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetPipelineRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetPipelineRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.GetPipelineRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPipelineRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPipelineRequestToPb(st *GetPipelineRequest) (*pipelinespb.GetPipelineRequestPb, error) {
@@ -1460,12 +1778,29 @@ type GetPipelineResponse struct {
 	ForceSendFields []string      `tf:"-"`
 }
 
-func (s *GetPipelineResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetPipelineResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetPipelineResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetPipelineResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetPipelineResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.GetPipelineResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPipelineResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPipelineResponseToPb(st *GetPipelineResponse) (*pipelinespb.GetPipelineResponsePb, error) {
@@ -1522,7 +1857,9 @@ func GetPipelineResponseToPb(st *GetPipelineResponse) (*pipelinespb.GetPipelineR
 		pb.State = *statePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1580,7 +1917,9 @@ func GetPipelineResponseFromPb(pb *pipelinespb.GetPipelineResponsePb) (*GetPipel
 		st.State = *stateField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1647,6 +1986,31 @@ type GetUpdateRequest struct {
 	UpdateId string `tf:"-"`
 }
 
+func (st GetUpdateRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetUpdateRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetUpdateRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.GetUpdateRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetUpdateRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetUpdateRequestToPb(st *GetUpdateRequest) (*pipelinespb.GetUpdateRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1673,6 +2037,31 @@ type GetUpdateResponse struct {
 	// The current update info.
 	// Wire name: 'update'
 	Update *UpdateInfo ``
+}
+
+func (st GetUpdateResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetUpdateResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetUpdateResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.GetUpdateResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetUpdateResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetUpdateResponseToPb(st *GetUpdateResponse) (*pipelinespb.GetUpdateResponsePb, error) {
@@ -1717,6 +2106,31 @@ type IngestionConfig struct {
 	// Select a specific source table.
 	// Wire name: 'table'
 	Table *TableSpec ``
+}
+
+func (st IngestionConfig) MarshalJSON() ([]byte, error) {
+	pb, err := IngestionConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *IngestionConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.IngestionConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := IngestionConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func IngestionConfigToPb(st *IngestionConfig) (*pipelinespb.IngestionConfigPb, error) {
@@ -1806,12 +2220,29 @@ type IngestionGatewayPipelineDefinition struct {
 	ForceSendFields      []string `tf:"-"`
 }
 
-func (s *IngestionGatewayPipelineDefinition) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st IngestionGatewayPipelineDefinition) MarshalJSON() ([]byte, error) {
+	pb, err := IngestionGatewayPipelineDefinitionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s IngestionGatewayPipelineDefinition) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *IngestionGatewayPipelineDefinition) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.IngestionGatewayPipelineDefinitionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := IngestionGatewayPipelineDefinitionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func IngestionGatewayPipelineDefinitionToPb(st *IngestionGatewayPipelineDefinition) (*pipelinespb.IngestionGatewayPipelineDefinitionPb, error) {
@@ -1825,7 +2256,9 @@ func IngestionGatewayPipelineDefinitionToPb(st *IngestionGatewayPipelineDefiniti
 	pb.GatewayStorageName = st.GatewayStorageName
 	pb.GatewayStorageSchema = st.GatewayStorageSchema
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1840,7 +2273,9 @@ func IngestionGatewayPipelineDefinitionFromPb(pb *pipelinespb.IngestionGatewayPi
 	st.GatewayStorageName = pb.GatewayStorageName
 	st.GatewayStorageSchema = pb.GatewayStorageSchema
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1871,12 +2306,29 @@ type IngestionPipelineDefinition struct {
 	ForceSendFields    []string             `tf:"-"`
 }
 
-func (s *IngestionPipelineDefinition) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st IngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
+	pb, err := IngestionPipelineDefinitionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s IngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *IngestionPipelineDefinition) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.IngestionPipelineDefinitionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := IngestionPipelineDefinitionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func IngestionPipelineDefinitionToPb(st *IngestionPipelineDefinition) (*pipelinespb.IngestionPipelineDefinitionPb, error) {
@@ -1913,7 +2365,9 @@ func IngestionPipelineDefinitionToPb(st *IngestionPipelineDefinition) (*pipeline
 		pb.TableConfiguration = tableConfigurationPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1951,7 +2405,9 @@ func IngestionPipelineDefinitionFromPb(pb *pipelinespb.IngestionPipelineDefiniti
 		st.TableConfiguration = tableConfigurationField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1988,12 +2444,29 @@ type IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig str
 	ForceSendFields                      []string `tf:"-"`
 }
 
-func (s *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig) MarshalJSON() ([]byte, error) {
+	pb, err := IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfigToPb(st *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig) (*pipelinespb.IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfigPb, error) {
@@ -2005,7 +2478,9 @@ func IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfigToPb
 	pb.DeletionCondition = st.DeletionCondition
 	pb.HardDeletionSyncMinIntervalInSeconds = st.HardDeletionSyncMinIntervalInSeconds
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2018,7 +2493,9 @@ func IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfigFrom
 	st.DeletionCondition = pb.DeletionCondition
 	st.HardDeletionSyncMinIntervalInSeconds = pb.HardDeletionSyncMinIntervalInSeconds
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2155,12 +2632,29 @@ type ListPipelineEventsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListPipelineEventsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListPipelineEventsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListPipelineEventsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListPipelineEventsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListPipelineEventsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.ListPipelineEventsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListPipelineEventsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListPipelineEventsRequestToPb(st *ListPipelineEventsRequest) (*pipelinespb.ListPipelineEventsRequestPb, error) {
@@ -2174,7 +2668,9 @@ func ListPipelineEventsRequestToPb(st *ListPipelineEventsRequest) (*pipelinespb.
 	pb.PageToken = st.PageToken
 	pb.PipelineId = st.PipelineId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2189,7 +2685,9 @@ func ListPipelineEventsRequestFromPb(pb *pipelinespb.ListPipelineEventsRequestPb
 	st.PageToken = pb.PageToken
 	st.PipelineId = pb.PipelineId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2206,12 +2704,29 @@ type ListPipelineEventsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListPipelineEventsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListPipelineEventsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListPipelineEventsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListPipelineEventsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListPipelineEventsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.ListPipelineEventsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListPipelineEventsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListPipelineEventsResponseToPb(st *ListPipelineEventsResponse) (*pipelinespb.ListPipelineEventsResponsePb, error) {
@@ -2234,7 +2749,9 @@ func ListPipelineEventsResponseToPb(st *ListPipelineEventsResponse) (*pipelinesp
 	pb.NextPageToken = st.NextPageToken
 	pb.PrevPageToken = st.PrevPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2258,7 +2775,9 @@ func ListPipelineEventsResponseFromPb(pb *pipelinespb.ListPipelineEventsResponse
 	st.NextPageToken = pb.NextPageToken
 	st.PrevPageToken = pb.PrevPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2291,12 +2810,29 @@ type ListPipelinesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListPipelinesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListPipelinesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListPipelinesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListPipelinesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListPipelinesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.ListPipelinesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListPipelinesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListPipelinesRequestToPb(st *ListPipelinesRequest) (*pipelinespb.ListPipelinesRequestPb, error) {
@@ -2309,7 +2845,9 @@ func ListPipelinesRequestToPb(st *ListPipelinesRequest) (*pipelinespb.ListPipeli
 	pb.OrderBy = st.OrderBy
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2323,7 +2861,9 @@ func ListPipelinesRequestFromPb(pb *pipelinespb.ListPipelinesRequestPb) (*ListPi
 	st.OrderBy = pb.OrderBy
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2337,12 +2877,29 @@ type ListPipelinesResponse struct {
 	ForceSendFields []string            `tf:"-"`
 }
 
-func (s *ListPipelinesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListPipelinesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListPipelinesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListPipelinesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListPipelinesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.ListPipelinesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListPipelinesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListPipelinesResponseToPb(st *ListPipelinesResponse) (*pipelinespb.ListPipelinesResponsePb, error) {
@@ -2364,7 +2921,9 @@ func ListPipelinesResponseToPb(st *ListPipelinesResponse) (*pipelinespb.ListPipe
 	}
 	pb.Statuses = statusesPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2387,7 +2946,9 @@ func ListPipelinesResponseFromPb(pb *pipelinespb.ListPipelinesResponsePb) (*List
 	}
 	st.Statuses = statusesField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2407,12 +2968,29 @@ type ListUpdatesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListUpdatesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListUpdatesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListUpdatesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListUpdatesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListUpdatesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.ListUpdatesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListUpdatesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListUpdatesRequestToPb(st *ListUpdatesRequest) (*pipelinespb.ListUpdatesRequestPb, error) {
@@ -2425,7 +3003,9 @@ func ListUpdatesRequestToPb(st *ListUpdatesRequest) (*pipelinespb.ListUpdatesReq
 	pb.PipelineId = st.PipelineId
 	pb.UntilUpdateId = st.UntilUpdateId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2439,7 +3019,9 @@ func ListUpdatesRequestFromPb(pb *pipelinespb.ListUpdatesRequestPb) (*ListUpdate
 	st.PipelineId = pb.PipelineId
 	st.UntilUpdateId = pb.UntilUpdateId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2458,12 +3040,29 @@ type ListUpdatesResponse struct {
 	ForceSendFields []string     `tf:"-"`
 }
 
-func (s *ListUpdatesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListUpdatesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListUpdatesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListUpdatesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListUpdatesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.ListUpdatesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListUpdatesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListUpdatesResponseToPb(st *ListUpdatesResponse) (*pipelinespb.ListUpdatesResponsePb, error) {
@@ -2486,7 +3085,9 @@ func ListUpdatesResponseToPb(st *ListUpdatesResponse) (*pipelinespb.ListUpdatesR
 	}
 	pb.Updates = updatesPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2510,11 +3111,38 @@ func ListUpdatesResponseFromPb(pb *pipelinespb.ListUpdatesResponsePb) (*ListUpda
 	}
 	st.Updates = updatesField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
 type ManualTrigger struct {
+}
+
+func (st ManualTrigger) MarshalJSON() ([]byte, error) {
+	pb, err := ManualTriggerToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ManualTrigger) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.ManualTriggerPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ManualTriggerFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ManualTriggerToPb(st *ManualTrigger) (*pipelinespb.ManualTriggerPb, error) {
@@ -2599,12 +3227,29 @@ type NotebookLibrary struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *NotebookLibrary) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st NotebookLibrary) MarshalJSON() ([]byte, error) {
+	pb, err := NotebookLibraryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s NotebookLibrary) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *NotebookLibrary) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.NotebookLibraryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NotebookLibraryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NotebookLibraryToPb(st *NotebookLibrary) (*pipelinespb.NotebookLibraryPb, error) {
@@ -2614,7 +3259,9 @@ func NotebookLibraryToPb(st *NotebookLibrary) (*pipelinespb.NotebookLibraryPb, e
 	pb := &pipelinespb.NotebookLibraryPb{}
 	pb.Path = st.Path
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2625,7 +3272,9 @@ func NotebookLibraryFromPb(pb *pipelinespb.NotebookLibraryPb) (*NotebookLibrary,
 	st := &NotebookLibrary{}
 	st.Path = pb.Path
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2642,6 +3291,31 @@ type Notifications struct {
 	// A list of email addresses notified when a configured alert is triggered.
 	// Wire name: 'email_recipients'
 	EmailRecipients []string ``
+}
+
+func (st Notifications) MarshalJSON() ([]byte, error) {
+	pb, err := NotificationsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Notifications) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.NotificationsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NotificationsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NotificationsToPb(st *Notifications) (*pipelinespb.NotificationsPb, error) {
@@ -2722,12 +3396,29 @@ type Origin struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Origin) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Origin) MarshalJSON() ([]byte, error) {
+	pb, err := OriginToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Origin) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Origin) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.OriginPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := OriginFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func OriginToPb(st *Origin) (*pipelinespb.OriginPb, error) {
@@ -2753,7 +3444,9 @@ func OriginToPb(st *Origin) (*pipelinespb.OriginPb, error) {
 	pb.UcResourceId = st.UcResourceId
 	pb.UpdateId = st.UpdateId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2780,7 +3473,9 @@ func OriginFromPb(pb *pipelinespb.OriginPb) (*Origin, error) {
 	st.UcResourceId = pb.UcResourceId
 	st.UpdateId = pb.UpdateId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2791,12 +3486,29 @@ type PathPattern struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PathPattern) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PathPattern) MarshalJSON() ([]byte, error) {
+	pb, err := PathPatternToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PathPattern) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PathPattern) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PathPatternPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PathPatternFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PathPatternToPb(st *PathPattern) (*pipelinespb.PathPatternPb, error) {
@@ -2806,7 +3518,9 @@ func PathPatternToPb(st *PathPattern) (*pipelinespb.PathPatternPb, error) {
 	pb := &pipelinespb.PathPatternPb{}
 	pb.Include = st.Include
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2817,7 +3531,9 @@ func PathPatternFromPb(pb *pipelinespb.PathPatternPb) (*PathPattern, error) {
 	st := &PathPattern{}
 	st.Include = pb.Include
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2837,12 +3553,29 @@ type PipelineAccessControlRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PipelineAccessControlRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PipelineAccessControlRequest) MarshalJSON() ([]byte, error) {
+	pb, err := PipelineAccessControlRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PipelineAccessControlRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PipelineAccessControlRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelineAccessControlRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelineAccessControlRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PipelineAccessControlRequestToPb(st *PipelineAccessControlRequest) (*pipelinespb.PipelineAccessControlRequestPb, error) {
@@ -2861,7 +3594,9 @@ func PipelineAccessControlRequestToPb(st *PipelineAccessControlRequest) (*pipeli
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2881,7 +3616,9 @@ func PipelineAccessControlRequestFromPb(pb *pipelinespb.PipelineAccessControlReq
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2904,12 +3641,29 @@ type PipelineAccessControlResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PipelineAccessControlResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PipelineAccessControlResponse) MarshalJSON() ([]byte, error) {
+	pb, err := PipelineAccessControlResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PipelineAccessControlResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PipelineAccessControlResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelineAccessControlResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelineAccessControlResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PipelineAccessControlResponseToPb(st *PipelineAccessControlResponse) (*pipelinespb.PipelineAccessControlResponsePb, error) {
@@ -2934,7 +3688,9 @@ func PipelineAccessControlResponseToPb(st *PipelineAccessControlResponse) (*pipe
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2960,7 +3716,9 @@ func PipelineAccessControlResponseFromPb(pb *pipelinespb.PipelineAccessControlRe
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3081,12 +3839,29 @@ type PipelineCluster struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PipelineCluster) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PipelineCluster) MarshalJSON() ([]byte, error) {
+	pb, err := PipelineClusterToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PipelineCluster) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PipelineCluster) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelineClusterPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelineClusterFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PipelineClusterToPb(st *PipelineCluster) (*pipelinespb.PipelineClusterPb, error) {
@@ -3155,7 +3930,9 @@ func PipelineClusterToPb(st *PipelineCluster) (*pipelinespb.PipelineClusterPb, e
 	pb.SparkEnvVars = st.SparkEnvVars
 	pb.SshPublicKeys = st.SshPublicKeys
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3225,7 +4002,9 @@ func PipelineClusterFromPb(pb *pipelinespb.PipelineClusterPb) (*PipelineCluster,
 	st.SparkEnvVars = pb.SparkEnvVars
 	st.SshPublicKeys = pb.SshPublicKeys
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3246,6 +4025,31 @@ type PipelineClusterAutoscale struct {
 	// autoscaling feature is used for `maintenance` clusters.
 	// Wire name: 'mode'
 	Mode PipelineClusterAutoscaleMode ``
+}
+
+func (st PipelineClusterAutoscale) MarshalJSON() ([]byte, error) {
+	pb, err := PipelineClusterAutoscaleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PipelineClusterAutoscale) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelineClusterAutoscalePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelineClusterAutoscaleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PipelineClusterAutoscaleToPb(st *PipelineClusterAutoscale) (*pipelinespb.PipelineClusterAutoscalePb, error) {
@@ -3352,12 +4156,29 @@ type PipelineDeployment struct {
 	ForceSendFields  []string `tf:"-"`
 }
 
-func (s *PipelineDeployment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PipelineDeployment) MarshalJSON() ([]byte, error) {
+	pb, err := PipelineDeploymentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PipelineDeployment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PipelineDeployment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelineDeploymentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelineDeploymentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PipelineDeploymentToPb(st *PipelineDeployment) (*pipelinespb.PipelineDeploymentPb, error) {
@@ -3374,7 +4195,9 @@ func PipelineDeploymentToPb(st *PipelineDeployment) (*pipelinespb.PipelineDeploy
 	}
 	pb.MetadataFilePath = st.MetadataFilePath
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3392,7 +4215,9 @@ func PipelineDeploymentFromPb(pb *pipelinespb.PipelineDeploymentPb) (*PipelineDe
 	}
 	st.MetadataFilePath = pb.MetadataFilePath
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3427,12 +4252,29 @@ type PipelineEvent struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PipelineEvent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PipelineEvent) MarshalJSON() ([]byte, error) {
+	pb, err := PipelineEventToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PipelineEvent) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PipelineEvent) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelineEventPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelineEventFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PipelineEventToPb(st *PipelineEvent) (*pipelinespb.PipelineEventPb, error) {
@@ -3480,7 +4322,9 @@ func PipelineEventToPb(st *PipelineEvent) (*pipelinespb.PipelineEventPb, error) 
 	}
 	pb.Timestamp = st.Timestamp
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3529,7 +4373,9 @@ func PipelineEventFromPb(pb *pipelinespb.PipelineEventPb) (*PipelineEvent, error
 	}
 	st.Timestamp = pb.Timestamp
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3559,12 +4405,29 @@ type PipelineLibrary struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PipelineLibrary) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PipelineLibrary) MarshalJSON() ([]byte, error) {
+	pb, err := PipelineLibraryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PipelineLibrary) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PipelineLibrary) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelineLibraryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelineLibraryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PipelineLibraryToPb(st *PipelineLibrary) (*pipelinespb.PipelineLibraryPb, error) {
@@ -3603,7 +4466,9 @@ func PipelineLibraryToPb(st *PipelineLibrary) (*pipelinespb.PipelineLibraryPb, e
 	}
 	pb.Whl = st.Whl
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3643,7 +4508,9 @@ func PipelineLibraryFromPb(pb *pipelinespb.PipelineLibraryPb) (*PipelineLibrary,
 	}
 	st.Whl = pb.Whl
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3660,12 +4527,29 @@ type PipelinePermission struct {
 	ForceSendFields []string                `tf:"-"`
 }
 
-func (s *PipelinePermission) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PipelinePermission) MarshalJSON() ([]byte, error) {
+	pb, err := PipelinePermissionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PipelinePermission) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PipelinePermission) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelinePermissionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelinePermissionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PipelinePermissionToPb(st *PipelinePermission) (*pipelinespb.PipelinePermissionPb, error) {
@@ -3683,7 +4567,9 @@ func PipelinePermissionToPb(st *PipelinePermission) (*pipelinespb.PipelinePermis
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3702,7 +4588,9 @@ func PipelinePermissionFromPb(pb *pipelinespb.PipelinePermissionPb) (*PipelinePe
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3779,12 +4667,29 @@ type PipelinePermissions struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PipelinePermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PipelinePermissions) MarshalJSON() ([]byte, error) {
+	pb, err := PipelinePermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PipelinePermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PipelinePermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelinePermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelinePermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PipelinePermissionsToPb(st *PipelinePermissions) (*pipelinespb.PipelinePermissionsPb, error) {
@@ -3807,7 +4712,9 @@ func PipelinePermissionsToPb(st *PipelinePermissions) (*pipelinespb.PipelinePerm
 	pb.ObjectId = st.ObjectId
 	pb.ObjectType = st.ObjectType
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3831,7 +4738,9 @@ func PipelinePermissionsFromPb(pb *pipelinespb.PipelinePermissionsPb) (*Pipeline
 	st.ObjectId = pb.ObjectId
 	st.ObjectType = pb.ObjectType
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3845,12 +4754,29 @@ type PipelinePermissionsDescription struct {
 	ForceSendFields []string                `tf:"-"`
 }
 
-func (s *PipelinePermissionsDescription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PipelinePermissionsDescription) MarshalJSON() ([]byte, error) {
+	pb, err := PipelinePermissionsDescriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PipelinePermissionsDescription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PipelinePermissionsDescription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelinePermissionsDescriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelinePermissionsDescriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PipelinePermissionsDescriptionToPb(st *PipelinePermissionsDescription) (*pipelinespb.PipelinePermissionsDescriptionPb, error) {
@@ -3867,7 +4793,9 @@ func PipelinePermissionsDescriptionToPb(st *PipelinePermissionsDescription) (*pi
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3885,7 +4813,9 @@ func PipelinePermissionsDescriptionFromPb(pb *pipelinespb.PipelinePermissionsDes
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3896,6 +4826,31 @@ type PipelinePermissionsRequest struct {
 	// The pipeline for which to get or manage permissions.
 	// Wire name: 'pipeline_id'
 	PipelineId string `tf:"-"`
+}
+
+func (st PipelinePermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := PipelinePermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PipelinePermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelinePermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelinePermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PipelinePermissionsRequestToPb(st *PipelinePermissionsRequest) (*pipelinespb.PipelinePermissionsRequestPb, error) {
@@ -4039,12 +4994,29 @@ type PipelineSpec struct {
 	ForceSendFields []string         `tf:"-"`
 }
 
-func (s *PipelineSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PipelineSpec) MarshalJSON() ([]byte, error) {
+	pb, err := PipelineSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PipelineSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PipelineSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelineSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelineSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PipelineSpecToPb(st *PipelineSpec) (*pipelinespb.PipelineSpecPb, error) {
@@ -4161,7 +5133,9 @@ func PipelineSpecToPb(st *PipelineSpec) (*pipelinespb.PipelineSpecPb, error) {
 		pb.Trigger = triggerPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4279,7 +5253,9 @@ func PipelineSpecFromPb(pb *pipelinespb.PipelineSpecPb) (*PipelineSpec, error) {
 		st.Trigger = triggerField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4388,12 +5364,29 @@ type PipelineStateInfo struct {
 	ForceSendFields []string      `tf:"-"`
 }
 
-func (s *PipelineStateInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PipelineStateInfo) MarshalJSON() ([]byte, error) {
+	pb, err := PipelineStateInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PipelineStateInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PipelineStateInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelineStateInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelineStateInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PipelineStateInfoToPb(st *PipelineStateInfo) (*pipelinespb.PipelineStateInfoPb, error) {
@@ -4433,7 +5426,9 @@ func PipelineStateInfoToPb(st *PipelineStateInfo) (*pipelinespb.PipelineStateInf
 		pb.State = *statePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4474,7 +5469,9 @@ func PipelineStateInfoFromPb(pb *pipelinespb.PipelineStateInfoPb) (*PipelineStat
 		st.State = *stateField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4541,6 +5538,31 @@ type PipelineTrigger struct {
 	Manual *ManualTrigger ``
 }
 
+func (st PipelineTrigger) MarshalJSON() ([]byte, error) {
+	pb, err := PipelineTriggerToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PipelineTrigger) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelineTriggerPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelineTriggerFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func PipelineTriggerToPb(st *PipelineTrigger) (*pipelinespb.PipelineTriggerPb, error) {
 	if st == nil {
 		return nil, nil
@@ -4601,6 +5623,31 @@ type PipelinesEnvironment struct {
 	Dependencies []string ``
 }
 
+func (st PipelinesEnvironment) MarshalJSON() ([]byte, error) {
+	pb, err := PipelinesEnvironmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PipelinesEnvironment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.PipelinesEnvironmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelinesEnvironmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func PipelinesEnvironmentToPb(st *PipelinesEnvironment) (*pipelinespb.PipelinesEnvironmentPb, error) {
 	if st == nil {
 		return nil, nil
@@ -4643,12 +5690,29 @@ type ReportSpec struct {
 	ForceSendFields    []string             `tf:"-"`
 }
 
-func (s *ReportSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ReportSpec) MarshalJSON() ([]byte, error) {
+	pb, err := ReportSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ReportSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ReportSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.ReportSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ReportSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ReportSpecToPb(st *ReportSpec) (*pipelinespb.ReportSpecPb, error) {
@@ -4668,7 +5732,9 @@ func ReportSpecToPb(st *ReportSpec) (*pipelinespb.ReportSpecPb, error) {
 		pb.TableConfiguration = tableConfigurationPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4689,7 +5755,9 @@ func ReportSpecFromPb(pb *pipelinespb.ReportSpecPb) (*ReportSpec, error) {
 		st.TableConfiguration = tableConfigurationField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4712,12 +5780,29 @@ type RestartWindow struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RestartWindow) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RestartWindow) MarshalJSON() ([]byte, error) {
+	pb, err := RestartWindowToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RestartWindow) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RestartWindow) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.RestartWindowPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RestartWindowFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RestartWindowToPb(st *RestartWindow) (*pipelinespb.RestartWindowPb, error) {
@@ -4740,7 +5825,9 @@ func RestartWindowToPb(st *RestartWindow) (*pipelinespb.RestartWindowPb, error) 
 	pb.StartHour = st.StartHour
 	pb.TimeZoneId = st.TimeZoneId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4764,7 +5851,9 @@ func RestartWindowFromPb(pb *pipelinespb.RestartWindowPb) (*RestartWindow, error
 	st.StartHour = pb.StartHour
 	st.TimeZoneId = pb.TimeZoneId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4786,12 +5875,29 @@ type RunAs struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RunAs) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RunAs) MarshalJSON() ([]byte, error) {
+	pb, err := RunAsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RunAs) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RunAs) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.RunAsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RunAsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RunAsToPb(st *RunAs) (*pipelinespb.RunAsPb, error) {
@@ -4802,7 +5908,9 @@ func RunAsToPb(st *RunAs) (*pipelinespb.RunAsPb, error) {
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4814,7 +5922,9 @@ func RunAsFromPb(pb *pipelinespb.RunAsPb) (*RunAs, error) {
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4842,12 +5952,29 @@ type SchemaSpec struct {
 	ForceSendFields    []string             `tf:"-"`
 }
 
-func (s *SchemaSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SchemaSpec) MarshalJSON() ([]byte, error) {
+	pb, err := SchemaSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SchemaSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SchemaSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.SchemaSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SchemaSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SchemaSpecToPb(st *SchemaSpec) (*pipelinespb.SchemaSpecPb, error) {
@@ -4867,7 +5994,9 @@ func SchemaSpecToPb(st *SchemaSpec) (*pipelinespb.SchemaSpecPb, error) {
 		pb.TableConfiguration = tableConfigurationPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4888,7 +6017,9 @@ func SchemaSpecFromPb(pb *pipelinespb.SchemaSpecPb) (*SchemaSpec, error) {
 		st.TableConfiguration = tableConfigurationField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4902,12 +6033,29 @@ type Sequencing struct {
 	ForceSendFields []string     `tf:"-"`
 }
 
-func (s *Sequencing) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Sequencing) MarshalJSON() ([]byte, error) {
+	pb, err := SequencingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Sequencing) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Sequencing) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.SequencingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SequencingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SequencingToPb(st *Sequencing) (*pipelinespb.SequencingPb, error) {
@@ -4924,7 +6072,9 @@ func SequencingToPb(st *Sequencing) (*pipelinespb.SequencingPb, error) {
 		pb.DataPlaneId = dataPlaneIdPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4942,7 +6092,9 @@ func SequencingFromPb(pb *pipelinespb.SequencingPb) (*Sequencing, error) {
 		st.DataPlaneId = dataPlaneIdField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4959,12 +6111,29 @@ type SerializedException struct {
 	ForceSendFields []string     `tf:"-"`
 }
 
-func (s *SerializedException) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SerializedException) MarshalJSON() ([]byte, error) {
+	pb, err := SerializedExceptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SerializedException) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SerializedException) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.SerializedExceptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SerializedExceptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SerializedExceptionToPb(st *SerializedException) (*pipelinespb.SerializedExceptionPb, error) {
@@ -4987,7 +6156,9 @@ func SerializedExceptionToPb(st *SerializedException) (*pipelinespb.SerializedEx
 	}
 	pb.Stack = stackPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5011,7 +6182,9 @@ func SerializedExceptionFromPb(pb *pipelinespb.SerializedExceptionPb) (*Serializ
 	}
 	st.Stack = stackField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5031,12 +6204,29 @@ type StackFrame struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *StackFrame) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st StackFrame) MarshalJSON() ([]byte, error) {
+	pb, err := StackFrameToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s StackFrame) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *StackFrame) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.StackFramePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StackFrameFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func StackFrameToPb(st *StackFrame) (*pipelinespb.StackFramePb, error) {
@@ -5049,7 +6239,9 @@ func StackFrameToPb(st *StackFrame) (*pipelinespb.StackFramePb, error) {
 	pb.LineNumber = st.LineNumber
 	pb.MethodName = st.MethodName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5063,7 +6255,9 @@ func StackFrameFromPb(pb *pipelinespb.StackFramePb) (*StackFrame, error) {
 	st.LineNumber = pb.LineNumber
 	st.MethodName = pb.MethodName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5096,12 +6290,29 @@ type StartUpdate struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *StartUpdate) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st StartUpdate) MarshalJSON() ([]byte, error) {
+	pb, err := StartUpdateToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s StartUpdate) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *StartUpdate) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.StartUpdatePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StartUpdateFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func StartUpdateToPb(st *StartUpdate) (*pipelinespb.StartUpdatePb, error) {
@@ -5122,7 +6333,9 @@ func StartUpdateToPb(st *StartUpdate) (*pipelinespb.StartUpdatePb, error) {
 	pb.RefreshSelection = st.RefreshSelection
 	pb.ValidateOnly = st.ValidateOnly
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5144,7 +6357,9 @@ func StartUpdateFromPb(pb *pipelinespb.StartUpdatePb) (*StartUpdate, error) {
 	st.RefreshSelection = pb.RefreshSelection
 	st.ValidateOnly = pb.ValidateOnly
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5224,12 +6439,29 @@ type StartUpdateResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *StartUpdateResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st StartUpdateResponse) MarshalJSON() ([]byte, error) {
+	pb, err := StartUpdateResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s StartUpdateResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *StartUpdateResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.StartUpdateResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StartUpdateResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func StartUpdateResponseToPb(st *StartUpdateResponse) (*pipelinespb.StartUpdateResponsePb, error) {
@@ -5239,7 +6471,9 @@ func StartUpdateResponseToPb(st *StartUpdateResponse) (*pipelinespb.StartUpdateR
 	pb := &pipelinespb.StartUpdateResponsePb{}
 	pb.UpdateId = st.UpdateId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5250,7 +6484,9 @@ func StartUpdateResponseFromPb(pb *pipelinespb.StartUpdateResponsePb) (*StartUpd
 	st := &StartUpdateResponse{}
 	st.UpdateId = pb.UpdateId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5258,6 +6494,31 @@ type StopRequest struct {
 
 	// Wire name: 'pipeline_id'
 	PipelineId string `tf:"-"`
+}
+
+func (st StopRequest) MarshalJSON() ([]byte, error) {
+	pb, err := StopRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *StopRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.StopRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StopRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func StopRequestToPb(st *StopRequest) (*pipelinespb.StopRequestPb, error) {
@@ -5309,12 +6570,29 @@ type TableSpec struct {
 	ForceSendFields    []string             `tf:"-"`
 }
 
-func (s *TableSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TableSpec) MarshalJSON() ([]byte, error) {
+	pb, err := TableSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TableSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TableSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.TableSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TableSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TableSpecToPb(st *TableSpec) (*pipelinespb.TableSpecPb, error) {
@@ -5336,7 +6614,9 @@ func TableSpecToPb(st *TableSpec) (*pipelinespb.TableSpecPb, error) {
 		pb.TableConfiguration = tableConfigurationPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5359,7 +6639,9 @@ func TableSpecFromPb(pb *pipelinespb.TableSpecPb) (*TableSpec, error) {
 		st.TableConfiguration = tableConfigurationField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5399,12 +6681,29 @@ type TableSpecificConfig struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TableSpecificConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TableSpecificConfig) MarshalJSON() ([]byte, error) {
+	pb, err := TableSpecificConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TableSpecificConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TableSpecificConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.TableSpecificConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TableSpecificConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TableSpecificConfigToPb(st *TableSpecificConfig) (*pipelinespb.TableSpecificConfigPb, error) {
@@ -5432,7 +6731,9 @@ func TableSpecificConfigToPb(st *TableSpecificConfig) (*pipelinespb.TableSpecifi
 	}
 	pb.SequenceBy = st.SequenceBy
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5461,7 +6762,9 @@ func TableSpecificConfigFromPb(pb *pipelinespb.TableSpecificConfigPb) (*TableSpe
 	}
 	st.SequenceBy = pb.SequenceBy
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5567,12 +6870,29 @@ type UpdateInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateInfo) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.UpdateInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateInfoToPb(st *UpdateInfo) (*pipelinespb.UpdateInfoPb, error) {
@@ -5610,7 +6930,9 @@ func UpdateInfoToPb(st *UpdateInfo) (*pipelinespb.UpdateInfoPb, error) {
 	pb.UpdateId = st.UpdateId
 	pb.ValidateOnly = st.ValidateOnly
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5649,7 +6971,9 @@ func UpdateInfoFromPb(pb *pipelinespb.UpdateInfoPb) (*UpdateInfo, error) {
 	st.UpdateId = pb.UpdateId
 	st.ValidateOnly = pb.ValidateOnly
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5816,12 +7140,29 @@ type UpdateStateInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateStateInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateStateInfo) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateStateInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateStateInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateStateInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelinespb.UpdateStateInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateStateInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateStateInfoToPb(st *UpdateStateInfo) (*pipelinespb.UpdateStateInfoPb, error) {
@@ -5839,7 +7180,9 @@ func UpdateStateInfoToPb(st *UpdateStateInfo) (*pipelinespb.UpdateStateInfoPb, e
 	}
 	pb.UpdateId = st.UpdateId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5858,7 +7201,9 @@ func UpdateStateInfoFromPb(pb *pipelinespb.UpdateStateInfoPb) (*UpdateStateInfo,
 	}
 	st.UpdateId = pb.UpdateId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 

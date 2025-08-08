@@ -3,12 +3,12 @@
 package files
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/files/filespb"
 )
 
@@ -20,6 +20,31 @@ type AddBlock struct {
 	// The handle on an open stream.
 	// Wire name: 'handle'
 	Handle int64 ``
+}
+
+func (st AddBlock) MarshalJSON() ([]byte, error) {
+	pb, err := AddBlockToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AddBlock) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.AddBlockPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AddBlockFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AddBlockToPb(st *AddBlock) (*filespb.AddBlockPb, error) {
@@ -48,6 +73,31 @@ type Close struct {
 	// The handle on an open stream.
 	// Wire name: 'handle'
 	Handle int64 ``
+}
+
+func (st Close) MarshalJSON() ([]byte, error) {
+	pb, err := CloseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Close) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.ClosePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CloseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CloseToPb(st *Close) (*filespb.ClosePb, error) {
@@ -80,12 +130,29 @@ type Create struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Create) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Create) MarshalJSON() ([]byte, error) {
+	pb, err := CreateToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Create) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Create) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.CreatePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateToPb(st *Create) (*filespb.CreatePb, error) {
@@ -96,7 +163,9 @@ func CreateToPb(st *Create) (*filespb.CreatePb, error) {
 	pb.Overwrite = st.Overwrite
 	pb.Path = st.Path
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -108,7 +177,9 @@ func CreateFromPb(pb *filespb.CreatePb) (*Create, error) {
 	st.Overwrite = pb.Overwrite
 	st.Path = pb.Path
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -116,6 +187,31 @@ type CreateDirectoryRequest struct {
 	// The absolute path of a directory.
 	// Wire name: 'directory_path'
 	DirectoryPath string `tf:"-"`
+}
+
+func (st CreateDirectoryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateDirectoryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateDirectoryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.CreateDirectoryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateDirectoryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateDirectoryRequestToPb(st *CreateDirectoryRequest) (*filespb.CreateDirectoryRequestPb, error) {
@@ -146,12 +242,29 @@ type CreateResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.CreateResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateResponseToPb(st *CreateResponse) (*filespb.CreateResponsePb, error) {
@@ -161,7 +274,9 @@ func CreateResponseToPb(st *CreateResponse) (*filespb.CreateResponsePb, error) {
 	pb := &filespb.CreateResponsePb{}
 	pb.Handle = st.Handle
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -172,7 +287,9 @@ func CreateResponseFromPb(pb *filespb.CreateResponsePb) (*CreateResponse, error)
 	st := &CreateResponse{}
 	st.Handle = pb.Handle
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -188,12 +305,29 @@ type Delete struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Delete) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Delete) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Delete) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Delete) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.DeletePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteToPb(st *Delete) (*filespb.DeletePb, error) {
@@ -204,7 +338,9 @@ func DeleteToPb(st *Delete) (*filespb.DeletePb, error) {
 	pb.Path = st.Path
 	pb.Recursive = st.Recursive
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -216,7 +352,9 @@ func DeleteFromPb(pb *filespb.DeletePb) (*Delete, error) {
 	st.Path = pb.Path
 	st.Recursive = pb.Recursive
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -224,6 +362,31 @@ type DeleteDirectoryRequest struct {
 	// The absolute path of a directory.
 	// Wire name: 'directory_path'
 	DirectoryPath string `tf:"-"`
+}
+
+func (st DeleteDirectoryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDirectoryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteDirectoryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.DeleteDirectoryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDirectoryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDirectoryRequestToPb(st *DeleteDirectoryRequest) (*filespb.DeleteDirectoryRequestPb, error) {
@@ -250,6 +413,31 @@ type DeleteFileRequest struct {
 	// The absolute path of the file.
 	// Wire name: 'file_path'
 	FilePath string `tf:"-"`
+}
+
+func (st DeleteFileRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteFileRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteFileRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.DeleteFileRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteFileRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteFileRequestToPb(st *DeleteFileRequest) (*filespb.DeleteFileRequestPb, error) {
@@ -292,12 +480,29 @@ type DirectoryEntry struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DirectoryEntry) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DirectoryEntry) MarshalJSON() ([]byte, error) {
+	pb, err := DirectoryEntryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DirectoryEntry) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DirectoryEntry) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.DirectoryEntryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DirectoryEntryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DirectoryEntryToPb(st *DirectoryEntry) (*filespb.DirectoryEntryPb, error) {
@@ -311,7 +516,9 @@ func DirectoryEntryToPb(st *DirectoryEntry) (*filespb.DirectoryEntryPb, error) {
 	pb.Name = st.Name
 	pb.Path = st.Path
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -326,7 +533,9 @@ func DirectoryEntryFromPb(pb *filespb.DirectoryEntryPb) (*DirectoryEntry, error)
 	st.Name = pb.Name
 	st.Path = pb.Path
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -334,6 +543,31 @@ type DownloadRequest struct {
 	// The absolute path of the file.
 	// Wire name: 'file_path'
 	FilePath string `tf:"-"`
+}
+
+func (st DownloadRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DownloadRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DownloadRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.DownloadRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DownloadRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DownloadRequestToPb(st *DownloadRequest) (*filespb.DownloadRequestPb, error) {
@@ -372,12 +606,29 @@ type DownloadResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DownloadResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DownloadResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DownloadResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DownloadResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DownloadResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.DownloadResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DownloadResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DownloadResponseToPb(st *DownloadResponse) (*filespb.DownloadResponsePb, error) {
@@ -390,7 +641,9 @@ func DownloadResponseToPb(st *DownloadResponse) (*filespb.DownloadResponsePb, er
 	pb.Contents = st.Contents
 	pb.LastModified = st.LastModified
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -404,7 +657,9 @@ func DownloadResponseFromPb(pb *filespb.DownloadResponsePb) (*DownloadResponse, 
 	st.Contents = pb.Contents
 	st.LastModified = pb.LastModified
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -424,12 +679,29 @@ type FileInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FileInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st FileInfo) MarshalJSON() ([]byte, error) {
+	pb, err := FileInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s FileInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *FileInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.FileInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FileInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FileInfoToPb(st *FileInfo) (*filespb.FileInfoPb, error) {
@@ -442,7 +714,9 @@ func FileInfoToPb(st *FileInfo) (*filespb.FileInfoPb, error) {
 	pb.ModificationTime = st.ModificationTime
 	pb.Path = st.Path
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -456,7 +730,9 @@ func FileInfoFromPb(pb *filespb.FileInfoPb) (*FileInfo, error) {
 	st.ModificationTime = pb.ModificationTime
 	st.Path = pb.Path
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -464,6 +740,31 @@ type GetDirectoryMetadataRequest struct {
 	// The absolute path of a directory.
 	// Wire name: 'directory_path'
 	DirectoryPath string `tf:"-"`
+}
+
+func (st GetDirectoryMetadataRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDirectoryMetadataRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetDirectoryMetadataRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.GetDirectoryMetadataRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDirectoryMetadataRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetDirectoryMetadataRequestToPb(st *GetDirectoryMetadataRequest) (*filespb.GetDirectoryMetadataRequestPb, error) {
@@ -490,6 +791,31 @@ type GetMetadataRequest struct {
 	// The absolute path of the file.
 	// Wire name: 'file_path'
 	FilePath string `tf:"-"`
+}
+
+func (st GetMetadataRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetMetadataRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetMetadataRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.GetMetadataRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetMetadataRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetMetadataRequestToPb(st *GetMetadataRequest) (*filespb.GetMetadataRequestPb, error) {
@@ -525,12 +851,29 @@ type GetMetadataResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetMetadataResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetMetadataResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetMetadataResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetMetadataResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetMetadataResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.GetMetadataResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetMetadataResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetMetadataResponseToPb(st *GetMetadataResponse) (*filespb.GetMetadataResponsePb, error) {
@@ -542,7 +885,9 @@ func GetMetadataResponseToPb(st *GetMetadataResponse) (*filespb.GetMetadataRespo
 	pb.ContentType = st.ContentType
 	pb.LastModified = st.LastModified
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -555,7 +900,9 @@ func GetMetadataResponseFromPb(pb *filespb.GetMetadataResponsePb) (*GetMetadataR
 	st.ContentType = pb.ContentType
 	st.LastModified = pb.LastModified
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -564,6 +911,31 @@ type GetStatusRequest struct {
 	// path.
 	// Wire name: 'path'
 	Path string `tf:"-"`
+}
+
+func (st GetStatusRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetStatusRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetStatusRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.GetStatusRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetStatusRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetStatusRequestToPb(st *GetStatusRequest) (*filespb.GetStatusRequestPb, error) {
@@ -591,6 +963,31 @@ type ListDbfsRequest struct {
 	// path.
 	// Wire name: 'path'
 	Path string `tf:"-"`
+}
+
+func (st ListDbfsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListDbfsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListDbfsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.ListDbfsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListDbfsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListDbfsRequestToPb(st *ListDbfsRequest) (*filespb.ListDbfsRequestPb, error) {
@@ -642,12 +1039,29 @@ type ListDirectoryContentsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListDirectoryContentsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListDirectoryContentsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListDirectoryContentsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListDirectoryContentsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListDirectoryContentsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.ListDirectoryContentsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListDirectoryContentsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListDirectoryContentsRequestToPb(st *ListDirectoryContentsRequest) (*filespb.ListDirectoryContentsRequestPb, error) {
@@ -659,7 +1073,9 @@ func ListDirectoryContentsRequestToPb(st *ListDirectoryContentsRequest) (*filesp
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -672,7 +1088,9 @@ func ListDirectoryContentsRequestFromPb(pb *filespb.ListDirectoryContentsRequest
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -686,12 +1104,29 @@ type ListDirectoryResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListDirectoryResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListDirectoryResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListDirectoryResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListDirectoryResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListDirectoryResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.ListDirectoryResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListDirectoryResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListDirectoryResponseToPb(st *ListDirectoryResponse) (*filespb.ListDirectoryResponsePb, error) {
@@ -713,7 +1148,9 @@ func ListDirectoryResponseToPb(st *ListDirectoryResponse) (*filespb.ListDirector
 	pb.Contents = contentsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -736,7 +1173,9 @@ func ListDirectoryResponseFromPb(pb *filespb.ListDirectoryResponsePb) (*ListDire
 	st.Contents = contentsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -745,6 +1184,31 @@ type ListStatusResponse struct {
 	// example above.
 	// Wire name: 'files'
 	Files []FileInfo ``
+}
+
+func (st ListStatusResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListStatusResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListStatusResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.ListStatusResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListStatusResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListStatusResponseToPb(st *ListStatusResponse) (*filespb.ListStatusResponsePb, error) {
@@ -795,6 +1259,31 @@ type MkDirs struct {
 	Path string ``
 }
 
+func (st MkDirs) MarshalJSON() ([]byte, error) {
+	pb, err := MkDirsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *MkDirs) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.MkDirsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MkDirsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func MkDirsToPb(st *MkDirs) (*filespb.MkDirsPb, error) {
 	if st == nil {
 		return nil, nil
@@ -824,6 +1313,31 @@ type Move struct {
 	// DBFS path.
 	// Wire name: 'source_path'
 	SourcePath string ``
+}
+
+func (st Move) MarshalJSON() ([]byte, error) {
+	pb, err := MoveToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Move) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.MovePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MoveFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func MoveToPb(st *Move) (*filespb.MovePb, error) {
@@ -861,12 +1375,29 @@ type Put struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Put) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Put) MarshalJSON() ([]byte, error) {
+	pb, err := PutToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Put) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Put) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.PutPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PutFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PutToPb(st *Put) (*filespb.PutPb, error) {
@@ -878,7 +1409,9 @@ func PutToPb(st *Put) (*filespb.PutPb, error) {
 	pb.Overwrite = st.Overwrite
 	pb.Path = st.Path
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -891,7 +1424,9 @@ func PutFromPb(pb *filespb.PutPb) (*Put, error) {
 	st.Overwrite = pb.Overwrite
 	st.Path = pb.Path
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -909,12 +1444,29 @@ type ReadDbfsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ReadDbfsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ReadDbfsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ReadDbfsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ReadDbfsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ReadDbfsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.ReadDbfsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ReadDbfsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ReadDbfsRequestToPb(st *ReadDbfsRequest) (*filespb.ReadDbfsRequestPb, error) {
@@ -926,7 +1478,9 @@ func ReadDbfsRequestToPb(st *ReadDbfsRequest) (*filespb.ReadDbfsRequestPb, error
 	pb.Offset = st.Offset
 	pb.Path = st.Path
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -939,7 +1493,9 @@ func ReadDbfsRequestFromPb(pb *filespb.ReadDbfsRequestPb) (*ReadDbfsRequest, err
 	st.Offset = pb.Offset
 	st.Path = pb.Path
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -955,12 +1511,29 @@ type ReadResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ReadResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ReadResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ReadResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ReadResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ReadResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.ReadResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ReadResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ReadResponseToPb(st *ReadResponse) (*filespb.ReadResponsePb, error) {
@@ -971,7 +1544,9 @@ func ReadResponseToPb(st *ReadResponse) (*filespb.ReadResponsePb, error) {
 	pb.BytesRead = st.BytesRead
 	pb.Data = st.Data
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -983,7 +1558,9 @@ func ReadResponseFromPb(pb *filespb.ReadResponsePb) (*ReadResponse, error) {
 	st.BytesRead = pb.BytesRead
 	st.Data = pb.Data
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1001,12 +1578,29 @@ type UploadRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UploadRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UploadRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UploadRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UploadRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UploadRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filespb.UploadRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UploadRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UploadRequestToPb(st *UploadRequest) (*filespb.UploadRequestPb, error) {
@@ -1018,7 +1612,9 @@ func UploadRequestToPb(st *UploadRequest) (*filespb.UploadRequestPb, error) {
 	pb.FilePath = st.FilePath
 	pb.Overwrite = st.Overwrite
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1031,7 +1627,9 @@ func UploadRequestFromPb(pb *filespb.UploadRequestPb) (*UploadRequest, error) {
 	st.FilePath = pb.FilePath
 	st.Overwrite = pb.Overwrite
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 

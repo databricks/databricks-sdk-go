@@ -3,11 +3,11 @@
 package sharing
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/catalog/catalogpb"
 	"github.com/databricks/databricks-sdk-go/service/sharing/sharingpb"
@@ -198,6 +198,31 @@ type CreateFederationPolicyRequest struct {
 	RecipientName string `tf:"-"`
 }
 
+func (st CreateFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateFederationPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.CreateFederationPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateFederationPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CreateFederationPolicyRequestToPb(st *CreateFederationPolicyRequest) (*sharingpb.CreateFederationPolicyRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -249,12 +274,29 @@ type CreateProvider struct {
 	ForceSendFields     []string `tf:"-"`
 }
 
-func (s *CreateProvider) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateProvider) MarshalJSON() ([]byte, error) {
+	pb, err := CreateProviderToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateProvider) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateProvider) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.CreateProviderPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateProviderFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateProviderToPb(st *CreateProvider) (*sharingpb.CreateProviderPb, error) {
@@ -273,7 +315,9 @@ func CreateProviderToPb(st *CreateProvider) (*sharingpb.CreateProviderPb, error)
 	pb.Name = st.Name
 	pb.RecipientProfileStr = st.RecipientProfileStr
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -293,7 +337,9 @@ func CreateProviderFromPb(pb *sharingpb.CreateProviderPb) (*CreateProvider, erro
 	st.Name = pb.Name
 	st.RecipientProfileStr = pb.RecipientProfileStr
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -335,12 +381,29 @@ type CreateRecipient struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateRecipient) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateRecipient) MarshalJSON() ([]byte, error) {
+	pb, err := CreateRecipientToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateRecipient) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateRecipient) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.CreateRecipientPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateRecipientFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateRecipientToPb(st *CreateRecipient) (*sharingpb.CreateRecipientPb, error) {
@@ -376,7 +439,9 @@ func CreateRecipientToPb(st *CreateRecipient) (*sharingpb.CreateRecipientPb, err
 	}
 	pb.SharingCode = st.SharingCode
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -413,7 +478,9 @@ func CreateRecipientFromPb(pb *sharingpb.CreateRecipientPb) (*CreateRecipient, e
 	}
 	st.SharingCode = pb.SharingCode
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -430,12 +497,29 @@ type CreateShare struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateShare) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateShare) MarshalJSON() ([]byte, error) {
+	pb, err := CreateShareToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateShare) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateShare) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.CreateSharePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateShareFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateShareToPb(st *CreateShare) (*sharingpb.CreateSharePb, error) {
@@ -447,7 +531,9 @@ func CreateShareToPb(st *CreateShare) (*sharingpb.CreateSharePb, error) {
 	pb.Name = st.Name
 	pb.StorageRoot = st.StorageRoot
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -460,7 +546,9 @@ func CreateShareFromPb(pb *sharingpb.CreateSharePb) (*CreateShare, error) {
 	st.Name = pb.Name
 	st.StorageRoot = pb.StorageRoot
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -472,6 +560,31 @@ type DeleteFederationPolicyRequest struct {
 	// policy is being deleted.
 	// Wire name: 'recipient_name'
 	RecipientName string `tf:"-"`
+}
+
+func (st DeleteFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteFederationPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.DeleteFederationPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteFederationPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteFederationPolicyRequestToPb(st *DeleteFederationPolicyRequest) (*sharingpb.DeleteFederationPolicyRequestPb, error) {
@@ -502,6 +615,31 @@ type DeleteProviderRequest struct {
 	Name string `tf:"-"`
 }
 
+func (st DeleteProviderRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteProviderRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteProviderRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.DeleteProviderRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteProviderRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteProviderRequestToPb(st *DeleteProviderRequest) (*sharingpb.DeleteProviderRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -528,6 +666,31 @@ type DeleteRecipientRequest struct {
 	Name string `tf:"-"`
 }
 
+func (st DeleteRecipientRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteRecipientRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteRecipientRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.DeleteRecipientRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteRecipientRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteRecipientRequestToPb(st *DeleteRecipientRequest) (*sharingpb.DeleteRecipientRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -552,6 +715,31 @@ type DeleteShareRequest struct {
 	// The name of the share.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st DeleteShareRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteShareRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteShareRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.DeleteShareRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteShareRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteShareRequestToPb(st *DeleteShareRequest) (*sharingpb.DeleteShareRequestPb, error) {
@@ -582,6 +770,31 @@ type DeltaSharingDependency struct {
 
 	// Wire name: 'table'
 	Table *DeltaSharingTableDependency ``
+}
+
+func (st DeltaSharingDependency) MarshalJSON() ([]byte, error) {
+	pb, err := DeltaSharingDependencyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeltaSharingDependency) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.DeltaSharingDependencyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeltaSharingDependencyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeltaSharingDependencyToPb(st *DeltaSharingDependency) (*sharingpb.DeltaSharingDependencyPb, error) {
@@ -635,6 +848,31 @@ type DeltaSharingDependencyList struct {
 	// An array of Dependency.
 	// Wire name: 'dependencies'
 	Dependencies []DeltaSharingDependency ``
+}
+
+func (st DeltaSharingDependencyList) MarshalJSON() ([]byte, error) {
+	pb, err := DeltaSharingDependencyListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeltaSharingDependencyList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.DeltaSharingDependencyListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeltaSharingDependencyListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeltaSharingDependencyListToPb(st *DeltaSharingDependencyList) (*sharingpb.DeltaSharingDependencyListPb, error) {
@@ -731,12 +969,29 @@ type DeltaSharingFunction struct {
 	ForceSendFields []string              `tf:"-"`
 }
 
-func (s *DeltaSharingFunction) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeltaSharingFunction) MarshalJSON() ([]byte, error) {
+	pb, err := DeltaSharingFunctionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeltaSharingFunction) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeltaSharingFunction) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.DeltaSharingFunctionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeltaSharingFunctionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeltaSharingFunctionToPb(st *DeltaSharingFunction) (*sharingpb.DeltaSharingFunctionPb, error) {
@@ -807,7 +1062,9 @@ func DeltaSharingFunctionToPb(st *DeltaSharingFunction) (*sharingpb.DeltaSharing
 	}
 	pb.Tags = tagsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -879,7 +1136,9 @@ func DeltaSharingFunctionFromPb(pb *sharingpb.DeltaSharingFunctionPb) (*DeltaSha
 	}
 	st.Tags = tagsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -894,12 +1153,29 @@ type DeltaSharingFunctionDependency struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeltaSharingFunctionDependency) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeltaSharingFunctionDependency) MarshalJSON() ([]byte, error) {
+	pb, err := DeltaSharingFunctionDependencyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeltaSharingFunctionDependency) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeltaSharingFunctionDependency) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.DeltaSharingFunctionDependencyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeltaSharingFunctionDependencyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeltaSharingFunctionDependencyToPb(st *DeltaSharingFunctionDependency) (*sharingpb.DeltaSharingFunctionDependencyPb, error) {
@@ -910,7 +1186,9 @@ func DeltaSharingFunctionDependencyToPb(st *DeltaSharingFunctionDependency) (*sh
 	pb.FunctionName = st.FunctionName
 	pb.SchemaName = st.SchemaName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -922,7 +1200,9 @@ func DeltaSharingFunctionDependencyFromPb(pb *sharingpb.DeltaSharingFunctionDepe
 	st.FunctionName = pb.FunctionName
 	st.SchemaName = pb.SchemaName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -937,12 +1217,29 @@ type DeltaSharingTableDependency struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeltaSharingTableDependency) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeltaSharingTableDependency) MarshalJSON() ([]byte, error) {
+	pb, err := DeltaSharingTableDependencyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeltaSharingTableDependency) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeltaSharingTableDependency) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.DeltaSharingTableDependencyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeltaSharingTableDependencyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeltaSharingTableDependencyToPb(st *DeltaSharingTableDependency) (*sharingpb.DeltaSharingTableDependencyPb, error) {
@@ -953,7 +1250,9 @@ func DeltaSharingTableDependencyToPb(st *DeltaSharingTableDependency) (*sharingp
 	pb.SchemaName = st.SchemaName
 	pb.TableName = st.TableName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -965,7 +1264,9 @@ func DeltaSharingTableDependencyFromPb(pb *sharingpb.DeltaSharingTableDependency
 	st.SchemaName = pb.SchemaName
 	st.TableName = pb.TableName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -975,7 +1276,7 @@ type FederationPolicy struct {
 	Comment string ``
 	// System-generated timestamp indicating when the policy was created.
 	// Wire name: 'create_time'
-	CreateTime *time.Time ``
+	CreateTime string `` //legacy
 	// Unique, immutable system-generated identifier for the federation policy.
 	// Wire name: 'id'
 	Id string ``
@@ -990,16 +1291,33 @@ type FederationPolicy struct {
 	OidcPolicy *OidcFederationPolicy ``
 	// System-generated timestamp indicating when the policy was last updated.
 	// Wire name: 'update_time'
-	UpdateTime      *time.Time ``
-	ForceSendFields []string   `tf:"-"`
+	UpdateTime      string   `` //legacy
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FederationPolicy) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st FederationPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := FederationPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s FederationPolicy) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *FederationPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.FederationPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FederationPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FederationPolicyToPb(st *FederationPolicy) (*sharingpb.FederationPolicyPb, error) {
@@ -1008,13 +1326,7 @@ func FederationPolicyToPb(st *FederationPolicy) (*sharingpb.FederationPolicyPb, 
 	}
 	pb := &sharingpb.FederationPolicyPb{}
 	pb.Comment = st.Comment
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 	pb.Id = st.Id
 	pb.Name = st.Name
 	oidcPolicyPb, err := OidcFederationPolicyToPb(st.OidcPolicy)
@@ -1024,15 +1336,11 @@ func FederationPolicyToPb(st *FederationPolicy) (*sharingpb.FederationPolicyPb, 
 	if oidcPolicyPb != nil {
 		pb.OidcPolicy = oidcPolicyPb
 	}
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1042,13 +1350,7 @@ func FederationPolicyFromPb(pb *sharingpb.FederationPolicyPb) (*FederationPolicy
 	}
 	st := &FederationPolicy{}
 	st.Comment = pb.Comment
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	st.Id = pb.Id
 	st.Name = pb.Name
 	oidcPolicyField, err := OidcFederationPolicyFromPb(pb.OidcPolicy)
@@ -1058,15 +1360,11 @@ func FederationPolicyFromPb(pb *sharingpb.FederationPolicyPb) (*FederationPolicy
 	if oidcPolicyField != nil {
 		st.OidcPolicy = oidcPolicyField
 	}
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
+	st.UpdateTime = pb.UpdateTime
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1112,12 +1410,29 @@ type FunctionParameterInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FunctionParameterInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st FunctionParameterInfo) MarshalJSON() ([]byte, error) {
+	pb, err := FunctionParameterInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s FunctionParameterInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *FunctionParameterInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.FunctionParameterInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FunctionParameterInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FunctionParameterInfoToPb(st *FunctionParameterInfo) (*sharingpb.FunctionParameterInfoPb, error) {
@@ -1156,7 +1471,9 @@ func FunctionParameterInfoToPb(st *FunctionParameterInfo) (*sharingpb.FunctionPa
 	pb.TypeScale = st.TypeScale
 	pb.TypeText = st.TypeText
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1196,7 +1513,9 @@ func FunctionParameterInfoFromPb(pb *sharingpb.FunctionParameterInfoPb) (*Functi
 	st.TypeScale = pb.TypeScale
 	st.TypeText = pb.TypeText
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1204,6 +1523,31 @@ type FunctionParameterInfos struct {
 	// The list of parameters of the function.
 	// Wire name: 'parameters'
 	Parameters []FunctionParameterInfo ``
+}
+
+func (st FunctionParameterInfos) MarshalJSON() ([]byte, error) {
+	pb, err := FunctionParameterInfosToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *FunctionParameterInfos) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.FunctionParameterInfosPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FunctionParameterInfosFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FunctionParameterInfosToPb(st *FunctionParameterInfos) (*sharingpb.FunctionParameterInfosPb, error) {
@@ -1363,6 +1707,31 @@ type GetActivationUrlInfoRequest struct {
 	ActivationUrl string `tf:"-"`
 }
 
+func (st GetActivationUrlInfoRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetActivationUrlInfoRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetActivationUrlInfoRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.GetActivationUrlInfoRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetActivationUrlInfoRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetActivationUrlInfoRequestToPb(st *GetActivationUrlInfoRequest) (*sharingpb.GetActivationUrlInfoRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1393,6 +1762,31 @@ type GetFederationPolicyRequest struct {
 	RecipientName string `tf:"-"`
 }
 
+func (st GetFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetFederationPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.GetFederationPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetFederationPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetFederationPolicyRequestToPb(st *GetFederationPolicyRequest) (*sharingpb.GetFederationPolicyRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1421,6 +1815,31 @@ type GetProviderRequest struct {
 	Name string `tf:"-"`
 }
 
+func (st GetProviderRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetProviderRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetProviderRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.GetProviderRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetProviderRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetProviderRequestToPb(st *GetProviderRequest) (*sharingpb.GetProviderRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1445,6 +1864,31 @@ type GetRecipientRequest struct {
 	// Name of the recipient.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st GetRecipientRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetRecipientRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetRecipientRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.GetRecipientRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetRecipientRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetRecipientRequestToPb(st *GetRecipientRequest) (*sharingpb.GetRecipientRequestPb, error) {
@@ -1479,12 +1923,29 @@ type GetRecipientSharePermissionsResponse struct {
 	ForceSendFields []string                     `tf:"-"`
 }
 
-func (s *GetRecipientSharePermissionsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetRecipientSharePermissionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetRecipientSharePermissionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetRecipientSharePermissionsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetRecipientSharePermissionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.GetRecipientSharePermissionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetRecipientSharePermissionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetRecipientSharePermissionsResponseToPb(st *GetRecipientSharePermissionsResponse) (*sharingpb.GetRecipientSharePermissionsResponsePb, error) {
@@ -1506,7 +1967,9 @@ func GetRecipientSharePermissionsResponseToPb(st *GetRecipientSharePermissionsRe
 	}
 	pb.PermissionsOut = permissionsOutPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1529,7 +1992,9 @@ func GetRecipientSharePermissionsResponseFromPb(pb *sharingpb.GetRecipientShareP
 	}
 	st.PermissionsOut = permissionsOutField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1545,12 +2010,29 @@ type GetSharePermissionsResponse struct {
 	ForceSendFields      []string              `tf:"-"`
 }
 
-func (s *GetSharePermissionsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetSharePermissionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetSharePermissionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetSharePermissionsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetSharePermissionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.GetSharePermissionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetSharePermissionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetSharePermissionsResponseToPb(st *GetSharePermissionsResponse) (*sharingpb.GetSharePermissionsResponsePb, error) {
@@ -1572,7 +2054,9 @@ func GetSharePermissionsResponseToPb(st *GetSharePermissionsResponse) (*sharingp
 	}
 	pb.PrivilegeAssignments = privilegeAssignmentsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1595,7 +2079,9 @@ func GetSharePermissionsResponseFromPb(pb *sharingpb.GetSharePermissionsResponse
 	}
 	st.PrivilegeAssignments = privilegeAssignmentsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1609,12 +2095,29 @@ type GetShareRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetShareRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetShareRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetShareRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetShareRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetShareRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.GetShareRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetShareRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetShareRequestToPb(st *GetShareRequest) (*sharingpb.GetShareRequestPb, error) {
@@ -1625,7 +2128,9 @@ func GetShareRequestToPb(st *GetShareRequest) (*sharingpb.GetShareRequestPb, err
 	pb.IncludeSharedData = st.IncludeSharedData
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1637,7 +2142,9 @@ func GetShareRequestFromPb(pb *sharingpb.GetShareRequestPb) (*GetShareRequest, e
 	st.IncludeSharedData = pb.IncludeSharedData
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1645,6 +2152,31 @@ type IpAccessList struct {
 	// Allowed IP Addresses in CIDR notation. Limit of 100.
 	// Wire name: 'allowed_ip_addresses'
 	AllowedIpAddresses []string ``
+}
+
+func (st IpAccessList) MarshalJSON() ([]byte, error) {
+	pb, err := IpAccessListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *IpAccessList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.IpAccessListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := IpAccessListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func IpAccessListToPb(st *IpAccessList) (*sharingpb.IpAccessListPb, error) {
@@ -1681,12 +2213,29 @@ type ListFederationPoliciesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListFederationPoliciesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListFederationPoliciesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListFederationPoliciesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListFederationPoliciesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListFederationPoliciesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ListFederationPoliciesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListFederationPoliciesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListFederationPoliciesRequestToPb(st *ListFederationPoliciesRequest) (*sharingpb.ListFederationPoliciesRequestPb, error) {
@@ -1698,7 +2247,9 @@ func ListFederationPoliciesRequestToPb(st *ListFederationPoliciesRequest) (*shar
 	pb.PageToken = st.PageToken
 	pb.RecipientName = st.RecipientName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1711,7 +2262,9 @@ func ListFederationPoliciesRequestFromPb(pb *sharingpb.ListFederationPoliciesReq
 	st.PageToken = pb.PageToken
 	st.RecipientName = pb.RecipientName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1725,12 +2278,29 @@ type ListFederationPoliciesResponse struct {
 	ForceSendFields []string           `tf:"-"`
 }
 
-func (s *ListFederationPoliciesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListFederationPoliciesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListFederationPoliciesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListFederationPoliciesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListFederationPoliciesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ListFederationPoliciesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListFederationPoliciesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListFederationPoliciesResponseToPb(st *ListFederationPoliciesResponse) (*sharingpb.ListFederationPoliciesResponsePb, error) {
@@ -1752,7 +2322,9 @@ func ListFederationPoliciesResponseToPb(st *ListFederationPoliciesResponse) (*sh
 	}
 	pb.Policies = policiesPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1775,7 +2347,9 @@ func ListFederationPoliciesResponseFromPb(pb *sharingpb.ListFederationPoliciesRe
 	}
 	st.Policies = policiesField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1801,12 +2375,29 @@ type ListProviderShareAssetsRequest struct {
 	ForceSendFields  []string `tf:"-"`
 }
 
-func (s *ListProviderShareAssetsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListProviderShareAssetsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListProviderShareAssetsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListProviderShareAssetsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListProviderShareAssetsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ListProviderShareAssetsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListProviderShareAssetsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListProviderShareAssetsRequestToPb(st *ListProviderShareAssetsRequest) (*sharingpb.ListProviderShareAssetsRequestPb, error) {
@@ -1821,7 +2412,9 @@ func ListProviderShareAssetsRequestToPb(st *ListProviderShareAssetsRequest) (*sh
 	pb.TableMaxResults = st.TableMaxResults
 	pb.VolumeMaxResults = st.VolumeMaxResults
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1837,7 +2430,9 @@ func ListProviderShareAssetsRequestFromPb(pb *sharingpb.ListProviderShareAssetsR
 	st.TableMaxResults = pb.TableMaxResults
 	st.VolumeMaxResults = pb.VolumeMaxResults
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1856,6 +2451,31 @@ type ListProviderShareAssetsResponse struct {
 	// The list of volumes in the share.
 	// Wire name: 'volumes'
 	Volumes []Volume ``
+}
+
+func (st ListProviderShareAssetsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListProviderShareAssetsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListProviderShareAssetsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ListProviderShareAssetsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListProviderShareAssetsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListProviderShareAssetsResponseToPb(st *ListProviderShareAssetsResponse) (*sharingpb.ListProviderShareAssetsResponsePb, error) {
@@ -1984,12 +2604,29 @@ type ListProviderSharesResponse struct {
 	ForceSendFields []string        `tf:"-"`
 }
 
-func (s *ListProviderSharesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListProviderSharesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListProviderSharesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListProviderSharesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListProviderSharesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ListProviderSharesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListProviderSharesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListProviderSharesResponseToPb(st *ListProviderSharesResponse) (*sharingpb.ListProviderSharesResponsePb, error) {
@@ -2011,7 +2648,9 @@ func ListProviderSharesResponseToPb(st *ListProviderSharesResponse) (*sharingpb.
 	}
 	pb.Shares = sharesPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2034,7 +2673,9 @@ func ListProviderSharesResponseFromPb(pb *sharingpb.ListProviderSharesResponsePb
 	}
 	st.Shares = sharesField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2060,12 +2701,29 @@ type ListProvidersRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListProvidersRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListProvidersRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListProvidersRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListProvidersRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListProvidersRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ListProvidersRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListProvidersRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListProvidersRequestToPb(st *ListProvidersRequest) (*sharingpb.ListProvidersRequestPb, error) {
@@ -2077,7 +2735,9 @@ func ListProvidersRequestToPb(st *ListProvidersRequest) (*sharingpb.ListProvider
 	pb.MaxResults = st.MaxResults
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2090,7 +2750,9 @@ func ListProvidersRequestFromPb(pb *sharingpb.ListProvidersRequestPb) (*ListProv
 	st.MaxResults = pb.MaxResults
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2106,12 +2768,29 @@ type ListProvidersResponse struct {
 	ForceSendFields []string       `tf:"-"`
 }
 
-func (s *ListProvidersResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListProvidersResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListProvidersResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListProvidersResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListProvidersResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ListProvidersResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListProvidersResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListProvidersResponseToPb(st *ListProvidersResponse) (*sharingpb.ListProvidersResponsePb, error) {
@@ -2133,7 +2812,9 @@ func ListProvidersResponseToPb(st *ListProvidersResponse) (*sharingpb.ListProvid
 	}
 	pb.Providers = providersPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2156,7 +2837,9 @@ func ListProvidersResponseFromPb(pb *sharingpb.ListProvidersResponsePb) (*ListPr
 	}
 	st.Providers = providersField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2182,12 +2865,29 @@ type ListRecipientsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListRecipientsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListRecipientsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListRecipientsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListRecipientsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListRecipientsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ListRecipientsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListRecipientsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListRecipientsRequestToPb(st *ListRecipientsRequest) (*sharingpb.ListRecipientsRequestPb, error) {
@@ -2199,7 +2899,9 @@ func ListRecipientsRequestToPb(st *ListRecipientsRequest) (*sharingpb.ListRecipi
 	pb.MaxResults = st.MaxResults
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2212,7 +2914,9 @@ func ListRecipientsRequestFromPb(pb *sharingpb.ListRecipientsRequestPb) (*ListRe
 	st.MaxResults = pb.MaxResults
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2228,12 +2932,29 @@ type ListRecipientsResponse struct {
 	ForceSendFields []string        `tf:"-"`
 }
 
-func (s *ListRecipientsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListRecipientsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListRecipientsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListRecipientsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListRecipientsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ListRecipientsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListRecipientsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListRecipientsResponseToPb(st *ListRecipientsResponse) (*sharingpb.ListRecipientsResponsePb, error) {
@@ -2255,7 +2976,9 @@ func ListRecipientsResponseToPb(st *ListRecipientsResponse) (*sharingpb.ListReci
 	}
 	pb.Recipients = recipientsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2278,7 +3001,9 @@ func ListRecipientsResponseFromPb(pb *sharingpb.ListRecipientsResponsePb) (*List
 	}
 	st.Recipients = recipientsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2303,12 +3028,29 @@ type ListSharesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListSharesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListSharesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListSharesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListSharesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListSharesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ListSharesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListSharesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListSharesRequestToPb(st *ListSharesRequest) (*sharingpb.ListSharesRequestPb, error) {
@@ -2320,7 +3062,9 @@ func ListSharesRequestToPb(st *ListSharesRequest) (*sharingpb.ListSharesRequestP
 	pb.Name = st.Name
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2333,7 +3077,9 @@ func ListSharesRequestFromPb(pb *sharingpb.ListSharesRequestPb) (*ListSharesRequ
 	st.Name = pb.Name
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2349,12 +3095,29 @@ type ListSharesResponse struct {
 	ForceSendFields []string    `tf:"-"`
 }
 
-func (s *ListSharesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListSharesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListSharesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListSharesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListSharesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ListSharesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListSharesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListSharesResponseToPb(st *ListSharesResponse) (*sharingpb.ListSharesResponsePb, error) {
@@ -2376,7 +3139,9 @@ func ListSharesResponseToPb(st *ListSharesResponse) (*sharingpb.ListSharesRespon
 	}
 	pb.Shares = sharesPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2399,7 +3164,9 @@ func ListSharesResponseFromPb(pb *sharingpb.ListSharesResponsePb) (*ListSharesRe
 	}
 	st.Shares = sharesField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2425,12 +3192,29 @@ type NotebookFile struct {
 	ForceSendFields []string              `tf:"-"`
 }
 
-func (s *NotebookFile) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st NotebookFile) MarshalJSON() ([]byte, error) {
+	pb, err := NotebookFileToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s NotebookFile) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *NotebookFile) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.NotebookFilePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NotebookFileFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NotebookFileToPb(st *NotebookFile) (*sharingpb.NotebookFilePb, error) {
@@ -2456,7 +3240,9 @@ func NotebookFileToPb(st *NotebookFile) (*sharingpb.NotebookFilePb, error) {
 	}
 	pb.Tags = tagsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2483,7 +3269,9 @@ func NotebookFileFromPb(pb *sharingpb.NotebookFilePb) (*NotebookFile, error) {
 	}
 	st.Tags = tagsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2525,6 +3313,31 @@ type OidcFederationPolicy struct {
 	SubjectClaim string ``
 }
 
+func (st OidcFederationPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := OidcFederationPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *OidcFederationPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.OidcFederationPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := OidcFederationPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func OidcFederationPolicyToPb(st *OidcFederationPolicy) (*sharingpb.OidcFederationPolicyPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2555,6 +3368,31 @@ type Partition struct {
 	// An array of partition values.
 	// Wire name: 'values'
 	Values []PartitionValue ``
+}
+
+func (st Partition) MarshalJSON() ([]byte, error) {
+	pb, err := PartitionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Partition) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.PartitionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PartitionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PartitionToPb(st *Partition) (*sharingpb.PartitionPb, error) {
@@ -2619,12 +3457,29 @@ type PartitionValue struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PartitionValue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PartitionValue) MarshalJSON() ([]byte, error) {
+	pb, err := PartitionValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PartitionValue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PartitionValue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.PartitionValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PartitionValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PartitionValueToPb(st *PartitionValue) (*sharingpb.PartitionValuePb, error) {
@@ -2643,7 +3498,9 @@ func PartitionValueToPb(st *PartitionValue) (*sharingpb.PartitionValuePb, error)
 	pb.RecipientPropertyKey = st.RecipientPropertyKey
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2663,7 +3520,9 @@ func PartitionValueFromPb(pb *sharingpb.PartitionValuePb) (*PartitionValue, erro
 	st.RecipientPropertyKey = pb.RecipientPropertyKey
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2734,12 +3593,29 @@ type PermissionsChange struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PermissionsChange) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PermissionsChange) MarshalJSON() ([]byte, error) {
+	pb, err := PermissionsChangeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PermissionsChange) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PermissionsChange) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.PermissionsChangePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PermissionsChangeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PermissionsChangeToPb(st *PermissionsChange) (*sharingpb.PermissionsChangePb, error) {
@@ -2751,7 +3627,9 @@ func PermissionsChangeToPb(st *PermissionsChange) (*sharingpb.PermissionsChangeP
 	pb.Principal = st.Principal
 	pb.Remove = st.Remove
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2764,7 +3642,9 @@ func PermissionsChangeFromPb(pb *sharingpb.PermissionsChangePb) (*PermissionsCha
 	st.Principal = pb.Principal
 	st.Remove = pb.Remove
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2961,12 +3841,29 @@ type PrivilegeAssignment struct {
 	ForceSendFields []string    `tf:"-"`
 }
 
-func (s *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PrivilegeAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := PrivilegeAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PrivilegeAssignment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.PrivilegeAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PrivilegeAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PrivilegeAssignmentToPb(st *PrivilegeAssignment) (*sharingpb.PrivilegeAssignmentPb, error) {
@@ -2988,7 +3885,9 @@ func PrivilegeAssignmentToPb(st *PrivilegeAssignment) (*sharingpb.PrivilegeAssig
 	}
 	pb.Privileges = privilegesPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3011,7 +3910,9 @@ func PrivilegeAssignmentFromPb(pb *sharingpb.PrivilegeAssignmentPb) (*PrivilegeA
 	}
 	st.Privileges = privilegesField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3068,12 +3969,29 @@ type ProviderInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ProviderInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ProviderInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ProviderInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ProviderInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ProviderInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ProviderInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ProviderInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ProviderInfoToPb(st *ProviderInfo) (*sharingpb.ProviderInfoPb, error) {
@@ -3108,7 +4026,9 @@ func ProviderInfoToPb(st *ProviderInfo) (*sharingpb.ProviderInfoPb, error) {
 	pb.UpdatedAt = st.UpdatedAt
 	pb.UpdatedBy = st.UpdatedBy
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3144,7 +4064,9 @@ func ProviderInfoFromPb(pb *sharingpb.ProviderInfoPb) (*ProviderInfo, error) {
 	st.UpdatedAt = pb.UpdatedAt
 	st.UpdatedBy = pb.UpdatedBy
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3155,12 +4077,29 @@ type ProviderShare struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ProviderShare) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ProviderShare) MarshalJSON() ([]byte, error) {
+	pb, err := ProviderShareToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ProviderShare) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ProviderShare) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ProviderSharePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ProviderShareFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ProviderShareToPb(st *ProviderShare) (*sharingpb.ProviderSharePb, error) {
@@ -3170,7 +4109,9 @@ func ProviderShareToPb(st *ProviderShare) (*sharingpb.ProviderSharePb, error) {
 	pb := &sharingpb.ProviderSharePb{}
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3181,7 +4122,9 @@ func ProviderShareFromPb(pb *sharingpb.ProviderSharePb) (*ProviderShare, error) 
 	st := &ProviderShare{}
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3258,12 +4201,29 @@ type RecipientInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RecipientInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RecipientInfo) MarshalJSON() ([]byte, error) {
+	pb, err := RecipientInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RecipientInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RecipientInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.RecipientInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RecipientInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RecipientInfoToPb(st *RecipientInfo) (*sharingpb.RecipientInfoPb, error) {
@@ -3320,7 +4280,9 @@ func RecipientInfoToPb(st *RecipientInfo) (*sharingpb.RecipientInfoPb, error) {
 	pb.UpdatedAt = st.UpdatedAt
 	pb.UpdatedBy = st.UpdatedBy
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3378,7 +4340,9 @@ func RecipientInfoFromPb(pb *sharingpb.RecipientInfoPb) (*RecipientInfo, error) 
 	st.UpdatedAt = pb.UpdatedAt
 	st.UpdatedBy = pb.UpdatedBy
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3395,12 +4359,29 @@ type RecipientProfile struct {
 	ForceSendFields         []string `tf:"-"`
 }
 
-func (s *RecipientProfile) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RecipientProfile) MarshalJSON() ([]byte, error) {
+	pb, err := RecipientProfileToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RecipientProfile) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RecipientProfile) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.RecipientProfilePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RecipientProfileFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RecipientProfileToPb(st *RecipientProfile) (*sharingpb.RecipientProfilePb, error) {
@@ -3412,7 +4393,9 @@ func RecipientProfileToPb(st *RecipientProfile) (*sharingpb.RecipientProfilePb, 
 	pb.Endpoint = st.Endpoint
 	pb.ShareCredentialsVersion = st.ShareCredentialsVersion
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3425,7 +4408,9 @@ func RecipientProfileFromPb(pb *sharingpb.RecipientProfilePb) (*RecipientProfile
 	st.Endpoint = pb.Endpoint
 	st.ShareCredentialsVersion = pb.ShareCredentialsVersion
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3455,12 +4440,29 @@ type RecipientTokenInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RecipientTokenInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RecipientTokenInfo) MarshalJSON() ([]byte, error) {
+	pb, err := RecipientTokenInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RecipientTokenInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RecipientTokenInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.RecipientTokenInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RecipientTokenInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RecipientTokenInfoToPb(st *RecipientTokenInfo) (*sharingpb.RecipientTokenInfoPb, error) {
@@ -3476,7 +4478,9 @@ func RecipientTokenInfoToPb(st *RecipientTokenInfo) (*sharingpb.RecipientTokenIn
 	pb.UpdatedAt = st.UpdatedAt
 	pb.UpdatedBy = st.UpdatedBy
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3493,7 +4497,9 @@ func RecipientTokenInfoFromPb(pb *sharingpb.RecipientTokenInfoPb) (*RecipientTok
 	st.UpdatedAt = pb.UpdatedAt
 	st.UpdatedBy = pb.UpdatedBy
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3507,12 +4513,29 @@ type RegisteredModelAlias struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RegisteredModelAlias) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RegisteredModelAlias) MarshalJSON() ([]byte, error) {
+	pb, err := RegisteredModelAliasToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RegisteredModelAlias) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RegisteredModelAlias) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.RegisteredModelAliasPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RegisteredModelAliasFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RegisteredModelAliasToPb(st *RegisteredModelAlias) (*sharingpb.RegisteredModelAliasPb, error) {
@@ -3523,7 +4546,9 @@ func RegisteredModelAliasToPb(st *RegisteredModelAlias) (*sharingpb.RegisteredMo
 	pb.AliasName = st.AliasName
 	pb.VersionNum = st.VersionNum
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3535,7 +4560,9 @@ func RegisteredModelAliasFromPb(pb *sharingpb.RegisteredModelAliasPb) (*Register
 	st.AliasName = pb.AliasName
 	st.VersionNum = pb.VersionNum
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3543,6 +4570,31 @@ type RetrieveTokenRequest struct {
 	// The one time activation url. It also accepts activation token.
 	// Wire name: 'activation_url'
 	ActivationUrl string `tf:"-"`
+}
+
+func (st RetrieveTokenRequest) MarshalJSON() ([]byte, error) {
+	pb, err := RetrieveTokenRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RetrieveTokenRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.RetrieveTokenRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RetrieveTokenRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RetrieveTokenRequestToPb(st *RetrieveTokenRequest) (*sharingpb.RetrieveTokenRequestPb, error) {
@@ -3581,12 +4633,29 @@ type RetrieveTokenResponse struct {
 	ForceSendFields         []string `tf:"-"`
 }
 
-func (s *RetrieveTokenResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RetrieveTokenResponse) MarshalJSON() ([]byte, error) {
+	pb, err := RetrieveTokenResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RetrieveTokenResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RetrieveTokenResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.RetrieveTokenResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RetrieveTokenResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RetrieveTokenResponseToPb(st *RetrieveTokenResponse) (*sharingpb.RetrieveTokenResponsePb, error) {
@@ -3599,7 +4668,9 @@ func RetrieveTokenResponseToPb(st *RetrieveTokenResponse) (*sharingpb.RetrieveTo
 	pb.ExpirationTime = st.ExpirationTime
 	pb.ShareCredentialsVersion = st.ShareCredentialsVersion
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3613,7 +4684,9 @@ func RetrieveTokenResponseFromPb(pb *sharingpb.RetrieveTokenResponsePb) (*Retrie
 	st.ExpirationTime = pb.ExpirationTime
 	st.ShareCredentialsVersion = pb.ShareCredentialsVersion
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3627,6 +4700,31 @@ type RotateRecipientToken struct {
 	// The name of the Recipient.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st RotateRecipientToken) MarshalJSON() ([]byte, error) {
+	pb, err := RotateRecipientTokenToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RotateRecipientToken) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.RotateRecipientTokenPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RotateRecipientTokenFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RotateRecipientTokenToPb(st *RotateRecipientToken) (*sharingpb.RotateRecipientTokenPb, error) {
@@ -3657,6 +4755,31 @@ type SecurablePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'properties'
 	Properties map[string]string ``
+}
+
+func (st SecurablePropertiesKvPairs) MarshalJSON() ([]byte, error) {
+	pb, err := SecurablePropertiesKvPairsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *SecurablePropertiesKvPairs) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.SecurablePropertiesKvPairsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SecurablePropertiesKvPairsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SecurablePropertiesKvPairsToPb(st *SecurablePropertiesKvPairs) (*sharingpb.SecurablePropertiesKvPairsPb, error) {
@@ -3713,12 +4836,29 @@ type ShareInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ShareInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ShareInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ShareInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ShareInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ShareInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ShareInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ShareInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ShareInfoToPb(st *ShareInfo) (*sharingpb.ShareInfoPb, error) {
@@ -3748,7 +4888,9 @@ func ShareInfoToPb(st *ShareInfo) (*sharingpb.ShareInfoPb, error) {
 	pb.UpdatedAt = st.UpdatedAt
 	pb.UpdatedBy = st.UpdatedBy
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3779,7 +4921,9 @@ func ShareInfoFromPb(pb *sharingpb.ShareInfoPb) (*ShareInfo, error) {
 	st.UpdatedAt = pb.UpdatedAt
 	st.UpdatedBy = pb.UpdatedBy
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3804,12 +4948,29 @@ type SharePermissionsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SharePermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SharePermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := SharePermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SharePermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SharePermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.SharePermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SharePermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SharePermissionsRequestToPb(st *SharePermissionsRequest) (*sharingpb.SharePermissionsRequestPb, error) {
@@ -3821,7 +4982,9 @@ func SharePermissionsRequestToPb(st *SharePermissionsRequest) (*sharingpb.ShareP
 	pb.Name = st.Name
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3834,7 +4997,9 @@ func SharePermissionsRequestFromPb(pb *sharingpb.SharePermissionsRequestPb) (*Sh
 	st.Name = pb.Name
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3848,12 +5013,29 @@ type ShareToPrivilegeAssignment struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ShareToPrivilegeAssignment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ShareToPrivilegeAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := ShareToPrivilegeAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ShareToPrivilegeAssignment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ShareToPrivilegeAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.ShareToPrivilegeAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ShareToPrivilegeAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ShareToPrivilegeAssignmentToPb(st *ShareToPrivilegeAssignment) (*sharingpb.ShareToPrivilegeAssignmentPb, error) {
@@ -3875,7 +5057,9 @@ func ShareToPrivilegeAssignmentToPb(st *ShareToPrivilegeAssignment) (*sharingpb.
 	pb.PrivilegeAssignments = privilegeAssignmentsPb
 	pb.ShareName = st.ShareName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3898,7 +5082,9 @@ func ShareToPrivilegeAssignmentFromPb(pb *sharingpb.ShareToPrivilegeAssignmentPb
 	st.PrivilegeAssignments = privilegeAssignmentsField
 	st.ShareName = pb.ShareName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3964,12 +5150,29 @@ type SharedDataObject struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SharedDataObject) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SharedDataObject) MarshalJSON() ([]byte, error) {
+	pb, err := SharedDataObjectToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SharedDataObject) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SharedDataObject) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.SharedDataObjectPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SharedDataObjectFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SharedDataObjectToPb(st *SharedDataObject) (*sharingpb.SharedDataObjectPb, error) {
@@ -4020,7 +5223,9 @@ func SharedDataObjectToPb(st *SharedDataObject) (*sharingpb.SharedDataObjectPb, 
 	}
 	pb.StringSharedAs = st.StringSharedAs
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4072,7 +5277,9 @@ func SharedDataObjectFromPb(pb *sharingpb.SharedDataObjectPb) (*SharedDataObject
 	}
 	st.StringSharedAs = pb.StringSharedAs
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4264,6 +5471,31 @@ type SharedDataObjectUpdate struct {
 	// number update data objects allowed is a 100.
 	// Wire name: 'data_object'
 	DataObject *SharedDataObject ``
+}
+
+func (st SharedDataObjectUpdate) MarshalJSON() ([]byte, error) {
+	pb, err := SharedDataObjectUpdateToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *SharedDataObjectUpdate) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.SharedDataObjectUpdatePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SharedDataObjectUpdateFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SharedDataObjectUpdateToPb(st *SharedDataObjectUpdate) (*sharingpb.SharedDataObjectUpdatePb, error) {
@@ -4460,12 +5692,29 @@ type Table struct {
 	ForceSendFields []string              `tf:"-"`
 }
 
-func (s *Table) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Table) MarshalJSON() ([]byte, error) {
+	pb, err := TableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Table) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Table) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.TablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TableToPb(st *Table) (*sharingpb.TablePb, error) {
@@ -4501,7 +5750,9 @@ func TableToPb(st *Table) (*sharingpb.TablePb, error) {
 	}
 	pb.Tags = tagsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4538,7 +5789,9 @@ func TableFromPb(pb *sharingpb.TablePb) (*Table, error) {
 	}
 	st.Tags = tagsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4568,12 +5821,29 @@ type TableInternalAttributes struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TableInternalAttributes) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TableInternalAttributes) MarshalJSON() ([]byte, error) {
+	pb, err := TableInternalAttributesToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TableInternalAttributes) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TableInternalAttributes) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.TableInternalAttributesPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TableInternalAttributesFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TableInternalAttributesToPb(st *TableInternalAttributes) (*sharingpb.TableInternalAttributesPb, error) {
@@ -4592,7 +5862,9 @@ func TableInternalAttributesToPb(st *TableInternalAttributes) (*sharingpb.TableI
 	}
 	pb.ViewDefinition = st.ViewDefinition
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4612,7 +5884,9 @@ func TableInternalAttributesFromPb(pb *sharingpb.TableInternalAttributesPb) (*Ta
 	}
 	st.ViewDefinition = pb.ViewDefinition
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4702,16 +5976,33 @@ type UpdateFederationPolicyRequest struct {
 	// provided in the update request will overwrite the corresponding fields in
 	// the existing policy. Example value: 'comment,oidc_policy.audiences'.
 	// Wire name: 'update_mask'
-	UpdateMask      *[]string `tf:"-"`
-	ForceSendFields []string  `tf:"-"`
+	UpdateMask      string   `tf:"-"` //legacy
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateFederationPolicyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateFederationPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateFederationPolicyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.UpdateFederationPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateFederationPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateFederationPolicyRequestToPb(st *UpdateFederationPolicyRequest) (*sharingpb.UpdateFederationPolicyRequestPb, error) {
@@ -4728,15 +6019,11 @@ func UpdateFederationPolicyRequestToPb(st *UpdateFederationPolicyRequest) (*shar
 		pb.Policy = *policyPb
 	}
 	pb.RecipientName = st.RecipientName
-	updateMaskPb, err := fieldMaskToPb(st.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4754,15 +6041,11 @@ func UpdateFederationPolicyRequestFromPb(pb *sharingpb.UpdateFederationPolicyReq
 		st.Policy = *policyField
 	}
 	st.RecipientName = pb.RecipientName
-	updateMaskField, err := fieldMaskFromPb(&pb.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskField != nil {
-		st.UpdateMask = updateMaskField
-	}
+	st.UpdateMask = pb.UpdateMask
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4786,12 +6069,29 @@ type UpdateProvider struct {
 	ForceSendFields     []string `tf:"-"`
 }
 
-func (s *UpdateProvider) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateProvider) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateProviderToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateProvider) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateProvider) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.UpdateProviderPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateProviderFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateProviderToPb(st *UpdateProvider) (*sharingpb.UpdateProviderPb, error) {
@@ -4805,7 +6105,9 @@ func UpdateProviderToPb(st *UpdateProvider) (*sharingpb.UpdateProviderPb, error)
 	pb.Owner = st.Owner
 	pb.RecipientProfileStr = st.RecipientProfileStr
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4820,7 +6122,9 @@ func UpdateProviderFromPb(pb *sharingpb.UpdateProviderPb) (*UpdateProvider, erro
 	st.Owner = pb.Owner
 	st.RecipientProfileStr = pb.RecipientProfileStr
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4852,12 +6156,29 @@ type UpdateRecipient struct {
 	ForceSendFields   []string                    `tf:"-"`
 }
 
-func (s *UpdateRecipient) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateRecipient) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateRecipientToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateRecipient) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateRecipient) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.UpdateRecipientPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateRecipientFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateRecipientToPb(st *UpdateRecipient) (*sharingpb.UpdateRecipientPb, error) {
@@ -4885,7 +6206,9 @@ func UpdateRecipientToPb(st *UpdateRecipient) (*sharingpb.UpdateRecipientPb, err
 		pb.PropertiesKvpairs = propertiesKvpairsPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4914,7 +6237,9 @@ func UpdateRecipientFromPb(pb *sharingpb.UpdateRecipientPb) (*UpdateRecipient, e
 		st.PropertiesKvpairs = propertiesKvpairsField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4940,12 +6265,29 @@ type UpdateShare struct {
 	ForceSendFields []string                 `tf:"-"`
 }
 
-func (s *UpdateShare) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateShare) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateShareToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateShare) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateShare) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.UpdateSharePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateShareFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateShareToPb(st *UpdateShare) (*sharingpb.UpdateSharePb, error) {
@@ -4971,7 +6313,9 @@ func UpdateShareToPb(st *UpdateShare) (*sharingpb.UpdateSharePb, error) {
 	}
 	pb.Updates = updatesPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4998,7 +6342,9 @@ func UpdateShareFromPb(pb *sharingpb.UpdateSharePb) (*UpdateShare, error) {
 	}
 	st.Updates = updatesField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5016,12 +6362,29 @@ type UpdateSharePermissions struct {
 	ForceSendFields     []string `tf:"-"`
 }
 
-func (s *UpdateSharePermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateSharePermissions) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateSharePermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateSharePermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateSharePermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.UpdateSharePermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateSharePermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateSharePermissionsToPb(st *UpdateSharePermissions) (*sharingpb.UpdateSharePermissionsPb, error) {
@@ -5044,7 +6407,9 @@ func UpdateSharePermissionsToPb(st *UpdateSharePermissions) (*sharingpb.UpdateSh
 	pb.Name = st.Name
 	pb.OmitPermissionsList = st.OmitPermissionsList
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5068,7 +6433,9 @@ func UpdateSharePermissionsFromPb(pb *sharingpb.UpdateSharePermissionsPb) (*Upda
 	st.Name = pb.Name
 	st.OmitPermissionsList = pb.OmitPermissionsList
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5076,6 +6443,31 @@ type UpdateSharePermissionsResponse struct {
 	// The privileges assigned to each principal
 	// Wire name: 'privilege_assignments'
 	PrivilegeAssignments []PrivilegeAssignment ``
+}
+
+func (st UpdateSharePermissionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateSharePermissionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateSharePermissionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.UpdateSharePermissionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateSharePermissionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateSharePermissionsResponseToPb(st *UpdateSharePermissionsResponse) (*sharingpb.UpdateSharePermissionsResponsePb, error) {
@@ -5151,12 +6543,29 @@ type Volume struct {
 	ForceSendFields []string              `tf:"-"`
 }
 
-func (s *Volume) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Volume) MarshalJSON() ([]byte, error) {
+	pb, err := VolumeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Volume) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Volume) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.VolumePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := VolumeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func VolumeToPb(st *Volume) (*sharingpb.VolumePb, error) {
@@ -5190,7 +6599,9 @@ func VolumeToPb(st *Volume) (*sharingpb.VolumePb, error) {
 	}
 	pb.Tags = tagsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5225,7 +6636,9 @@ func VolumeFromPb(pb *sharingpb.VolumePb) (*Volume, error) {
 	}
 	st.Tags = tagsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5241,12 +6654,29 @@ type VolumeInternalAttributes struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *VolumeInternalAttributes) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st VolumeInternalAttributes) MarshalJSON() ([]byte, error) {
+	pb, err := VolumeInternalAttributesToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s VolumeInternalAttributes) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *VolumeInternalAttributes) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharingpb.VolumeInternalAttributesPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := VolumeInternalAttributesFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func VolumeInternalAttributesToPb(st *VolumeInternalAttributes) (*sharingpb.VolumeInternalAttributesPb, error) {
@@ -5257,7 +6687,9 @@ func VolumeInternalAttributesToPb(st *VolumeInternalAttributes) (*sharingpb.Volu
 	pb.StorageLocation = st.StorageLocation
 	pb.Type = st.Type
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5269,7 +6701,9 @@ func VolumeInternalAttributesFromPb(pb *sharingpb.VolumeInternalAttributesPb) (*
 	st.StorageLocation = pb.StorageLocation
 	st.Type = pb.Type
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 

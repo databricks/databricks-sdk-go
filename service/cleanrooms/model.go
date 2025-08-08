@@ -3,11 +3,11 @@
 package cleanrooms
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/catalog/catalogpb"
 	"github.com/databricks/databricks-sdk-go/service/cleanrooms/cleanroomspb"
@@ -62,12 +62,29 @@ type CleanRoom struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CleanRoom) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CleanRoom) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CleanRoom) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CleanRoom) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CleanRoomToPb(st *CleanRoom) (*cleanroomspb.CleanRoomPb, error) {
@@ -110,7 +127,9 @@ func CleanRoomToPb(st *CleanRoom) (*cleanroomspb.CleanRoomPb, error) {
 	}
 	pb.UpdatedAt = st.UpdatedAt
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -154,7 +173,9 @@ func CleanRoomFromPb(pb *cleanroomspb.CleanRoomPb) (*CleanRoom, error) {
 	}
 	st.UpdatedAt = pb.UpdatedAt
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -273,12 +294,29 @@ type CleanRoomAsset struct {
 	ForceSendFields    []string                          `tf:"-"`
 }
 
-func (s *CleanRoomAsset) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CleanRoomAsset) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomAssetToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CleanRoomAsset) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CleanRoomAsset) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomAssetPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomAssetFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CleanRoomAssetToPb(st *CleanRoomAsset) (*cleanroomspb.CleanRoomAssetPb, error) {
@@ -361,7 +399,9 @@ func CleanRoomAssetToPb(st *CleanRoomAsset) (*cleanroomspb.CleanRoomAssetPb, err
 		pb.VolumeLocalDetails = volumeLocalDetailsPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -445,7 +485,9 @@ func CleanRoomAssetFromPb(pb *cleanroomspb.CleanRoomAssetPb) (*CleanRoomAsset, e
 		st.VolumeLocalDetails = volumeLocalDetailsField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -517,6 +559,31 @@ type CleanRoomAssetForeignTable struct {
 	Columns []catalog.ColumnInfo ``
 }
 
+func (st CleanRoomAssetForeignTable) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomAssetForeignTableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CleanRoomAssetForeignTable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomAssetForeignTablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomAssetForeignTableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CleanRoomAssetForeignTableToPb(st *CleanRoomAssetForeignTable) (*cleanroomspb.CleanRoomAssetForeignTablePb, error) {
 	if st == nil {
 		return nil, nil
@@ -566,6 +633,31 @@ type CleanRoomAssetForeignTableLocalDetails struct {
 	LocalName string ``
 }
 
+func (st CleanRoomAssetForeignTableLocalDetails) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomAssetForeignTableLocalDetailsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CleanRoomAssetForeignTableLocalDetails) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomAssetForeignTableLocalDetailsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomAssetForeignTableLocalDetailsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CleanRoomAssetForeignTableLocalDetailsToPb(st *CleanRoomAssetForeignTableLocalDetails) (*cleanroomspb.CleanRoomAssetForeignTableLocalDetailsPb, error) {
 	if st == nil {
 		return nil, nil
@@ -606,12 +698,29 @@ type CleanRoomAssetNotebook struct {
 	ForceSendFields           []string `tf:"-"`
 }
 
-func (s *CleanRoomAssetNotebook) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CleanRoomAssetNotebook) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomAssetNotebookToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CleanRoomAssetNotebook) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CleanRoomAssetNotebook) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomAssetNotebookPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomAssetNotebookFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CleanRoomAssetNotebookToPb(st *CleanRoomAssetNotebook) (*cleanroomspb.CleanRoomAssetNotebookPb, error) {
@@ -642,7 +751,9 @@ func CleanRoomAssetNotebookToPb(st *CleanRoomAssetNotebook) (*cleanroomspb.Clean
 	pb.Reviews = reviewsPb
 	pb.RunnerCollaboratorAliases = st.RunnerCollaboratorAliases
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -674,7 +785,9 @@ func CleanRoomAssetNotebookFromPb(pb *cleanroomspb.CleanRoomAssetNotebookPb) (*C
 	st.Reviews = reviewsField
 	st.RunnerCollaboratorAliases = pb.RunnerCollaboratorAliases
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -740,6 +853,31 @@ type CleanRoomAssetTable struct {
 	Columns []catalog.ColumnInfo ``
 }
 
+func (st CleanRoomAssetTable) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomAssetTableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CleanRoomAssetTable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomAssetTablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomAssetTableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CleanRoomAssetTableToPb(st *CleanRoomAssetTable) (*cleanroomspb.CleanRoomAssetTablePb, error) {
 	if st == nil {
 		return nil, nil
@@ -792,6 +930,31 @@ type CleanRoomAssetTableLocalDetails struct {
 	Partitions []sharing.Partition ``
 }
 
+func (st CleanRoomAssetTableLocalDetails) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomAssetTableLocalDetailsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CleanRoomAssetTableLocalDetails) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomAssetTableLocalDetailsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomAssetTableLocalDetailsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CleanRoomAssetTableLocalDetailsToPb(st *CleanRoomAssetTableLocalDetails) (*cleanroomspb.CleanRoomAssetTableLocalDetailsPb, error) {
 	if st == nil {
 		return nil, nil
@@ -840,6 +1003,31 @@ type CleanRoomAssetView struct {
 	// The metadata information of the columns in the view
 	// Wire name: 'columns'
 	Columns []catalog.ColumnInfo ``
+}
+
+func (st CleanRoomAssetView) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomAssetViewToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CleanRoomAssetView) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomAssetViewPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomAssetViewFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CleanRoomAssetViewToPb(st *CleanRoomAssetView) (*cleanroomspb.CleanRoomAssetViewPb, error) {
@@ -891,6 +1079,31 @@ type CleanRoomAssetViewLocalDetails struct {
 	LocalName string ``
 }
 
+func (st CleanRoomAssetViewLocalDetails) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomAssetViewLocalDetailsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CleanRoomAssetViewLocalDetails) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomAssetViewLocalDetailsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomAssetViewLocalDetailsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CleanRoomAssetViewLocalDetailsToPb(st *CleanRoomAssetViewLocalDetails) (*cleanroomspb.CleanRoomAssetViewLocalDetailsPb, error) {
 	if st == nil {
 		return nil, nil
@@ -916,6 +1129,31 @@ type CleanRoomAssetVolumeLocalDetails struct {
 	// the format of *catalog*.*schema*.*volume_name*
 	// Wire name: 'local_name'
 	LocalName string ``
+}
+
+func (st CleanRoomAssetVolumeLocalDetails) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomAssetVolumeLocalDetailsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CleanRoomAssetVolumeLocalDetails) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomAssetVolumeLocalDetailsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomAssetVolumeLocalDetailsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CleanRoomAssetVolumeLocalDetailsToPb(st *CleanRoomAssetVolumeLocalDetails) (*cleanroomspb.CleanRoomAssetVolumeLocalDetailsPb, error) {
@@ -963,12 +1201,29 @@ type CleanRoomAutoApprovalRule struct {
 	ForceSendFields         []string `tf:"-"`
 }
 
-func (s *CleanRoomAutoApprovalRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CleanRoomAutoApprovalRule) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomAutoApprovalRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CleanRoomAutoApprovalRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CleanRoomAutoApprovalRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomAutoApprovalRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomAutoApprovalRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CleanRoomAutoApprovalRuleToPb(st *CleanRoomAutoApprovalRule) (*cleanroomspb.CleanRoomAutoApprovalRulePb, error) {
@@ -990,7 +1245,9 @@ func CleanRoomAutoApprovalRuleToPb(st *CleanRoomAutoApprovalRule) (*cleanroomspb
 	pb.RuleOwnerCollaboratorAlias = st.RuleOwnerCollaboratorAlias
 	pb.RunnerCollaboratorAlias = st.RunnerCollaboratorAlias
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1013,7 +1270,9 @@ func CleanRoomAutoApprovalRuleFromPb(pb *cleanroomspb.CleanRoomAutoApprovalRuleP
 	st.RuleOwnerCollaboratorAlias = pb.RuleOwnerCollaboratorAlias
 	st.RunnerCollaboratorAlias = pb.RunnerCollaboratorAlias
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1107,12 +1366,29 @@ type CleanRoomCollaborator struct {
 	ForceSendFields  []string `tf:"-"`
 }
 
-func (s *CleanRoomCollaborator) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CleanRoomCollaborator) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomCollaboratorToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CleanRoomCollaborator) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CleanRoomCollaborator) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomCollaboratorPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomCollaboratorFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CleanRoomCollaboratorToPb(st *CleanRoomCollaborator) (*cleanroomspb.CleanRoomCollaboratorPb, error) {
@@ -1127,7 +1403,9 @@ func CleanRoomCollaboratorToPb(st *CleanRoomCollaborator) (*cleanroomspb.CleanRo
 	pb.InviteRecipientWorkspaceId = st.InviteRecipientWorkspaceId
 	pb.OrganizationName = st.OrganizationName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1143,7 +1421,9 @@ func CleanRoomCollaboratorFromPb(pb *cleanroomspb.CleanRoomCollaboratorPb) (*Cle
 	st.InviteRecipientWorkspaceId = pb.InviteRecipientWorkspaceId
 	st.OrganizationName = pb.OrganizationName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1166,12 +1446,29 @@ type CleanRoomNotebookReview struct {
 	ForceSendFields           []string `tf:"-"`
 }
 
-func (s *CleanRoomNotebookReview) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CleanRoomNotebookReview) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomNotebookReviewToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CleanRoomNotebookReview) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CleanRoomNotebookReview) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomNotebookReviewPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomNotebookReviewFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CleanRoomNotebookReviewToPb(st *CleanRoomNotebookReview) (*cleanroomspb.CleanRoomNotebookReviewPb, error) {
@@ -1197,7 +1494,9 @@ func CleanRoomNotebookReviewToPb(st *CleanRoomNotebookReview) (*cleanroomspb.Cle
 	}
 	pb.ReviewerCollaboratorAlias = st.ReviewerCollaboratorAlias
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1224,7 +1523,9 @@ func CleanRoomNotebookReviewFromPb(pb *cleanroomspb.CleanRoomNotebookReviewPb) (
 	}
 	st.ReviewerCollaboratorAlias = pb.ReviewerCollaboratorAlias
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1375,12 +1676,29 @@ type CleanRoomNotebookTaskRun struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CleanRoomNotebookTaskRun) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CleanRoomNotebookTaskRun) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomNotebookTaskRunToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CleanRoomNotebookTaskRun) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CleanRoomNotebookTaskRun) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomNotebookTaskRunPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomNotebookTaskRunFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CleanRoomNotebookTaskRunToPb(st *CleanRoomNotebookTaskRun) (*cleanroomspb.CleanRoomNotebookTaskRunPb, error) {
@@ -1410,7 +1728,9 @@ func CleanRoomNotebookTaskRunToPb(st *CleanRoomNotebookTaskRun) (*cleanroomspb.C
 	pb.RunDuration = st.RunDuration
 	pb.StartTime = st.StartTime
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1441,7 +1761,9 @@ func CleanRoomNotebookTaskRunFromPb(pb *cleanroomspb.CleanRoomNotebookTaskRunPb)
 	st.RunDuration = pb.RunDuration
 	st.StartTime = pb.StartTime
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1458,12 +1780,29 @@ type CleanRoomOutputCatalog struct {
 	ForceSendFields []string                                  `tf:"-"`
 }
 
-func (s *CleanRoomOutputCatalog) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CleanRoomOutputCatalog) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomOutputCatalogToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CleanRoomOutputCatalog) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CleanRoomOutputCatalog) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomOutputCatalogPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomOutputCatalogFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CleanRoomOutputCatalogToPb(st *CleanRoomOutputCatalog) (*cleanroomspb.CleanRoomOutputCatalogPb, error) {
@@ -1480,7 +1819,9 @@ func CleanRoomOutputCatalogToPb(st *CleanRoomOutputCatalog) (*cleanroomspb.Clean
 		pb.Status = *statusPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1498,7 +1839,9 @@ func CleanRoomOutputCatalogFromPb(pb *cleanroomspb.CleanRoomOutputCatalogPb) (*C
 		st.Status = *statusField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1590,12 +1933,29 @@ type CleanRoomRemoteDetail struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CleanRoomRemoteDetail) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CleanRoomRemoteDetail) MarshalJSON() ([]byte, error) {
+	pb, err := CleanRoomRemoteDetailToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CleanRoomRemoteDetail) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CleanRoomRemoteDetail) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CleanRoomRemoteDetailPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CleanRoomRemoteDetailFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CleanRoomRemoteDetailToPb(st *CleanRoomRemoteDetail) (*cleanroomspb.CleanRoomRemoteDetailPb, error) {
@@ -1640,7 +2000,9 @@ func CleanRoomRemoteDetailToPb(st *CleanRoomRemoteDetail) (*cleanroomspb.CleanRo
 	}
 	pb.Region = st.Region
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1686,7 +2048,9 @@ func CleanRoomRemoteDetailFromPb(pb *cleanroomspb.CleanRoomRemoteDetailPb) (*Cle
 	}
 	st.Region = pb.Region
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1768,12 +2132,29 @@ type CollaboratorJobRunInfo struct {
 	ForceSendFields         []string `tf:"-"`
 }
 
-func (s *CollaboratorJobRunInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CollaboratorJobRunInfo) MarshalJSON() ([]byte, error) {
+	pb, err := CollaboratorJobRunInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CollaboratorJobRunInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CollaboratorJobRunInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CollaboratorJobRunInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CollaboratorJobRunInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CollaboratorJobRunInfoToPb(st *CollaboratorJobRunInfo) (*cleanroomspb.CollaboratorJobRunInfoPb, error) {
@@ -1787,7 +2168,9 @@ func CollaboratorJobRunInfoToPb(st *CollaboratorJobRunInfo) (*cleanroomspb.Colla
 	pb.CollaboratorTaskRunId = st.CollaboratorTaskRunId
 	pb.CollaboratorWorkspaceId = st.CollaboratorWorkspaceId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1802,7 +2185,9 @@ func CollaboratorJobRunInfoFromPb(pb *cleanroomspb.CollaboratorJobRunInfoPb) (*C
 	st.CollaboratorTaskRunId = pb.CollaboratorTaskRunId
 	st.CollaboratorWorkspaceId = pb.CollaboratorWorkspaceId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1819,12 +2204,29 @@ type ComplianceSecurityProfile struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ComplianceSecurityProfile) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
+	pb, err := ComplianceSecurityProfileToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ComplianceSecurityProfile) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.ComplianceSecurityProfilePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ComplianceSecurityProfileFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ComplianceSecurityProfileToPb(st *ComplianceSecurityProfile) (*cleanroomspb.ComplianceSecurityProfilePb, error) {
@@ -1846,7 +2248,9 @@ func ComplianceSecurityProfileToPb(st *ComplianceSecurityProfile) (*cleanroomspb
 	pb.ComplianceStandards = complianceStandardsPb
 	pb.IsEnabled = st.IsEnabled
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1869,7 +2273,9 @@ func ComplianceSecurityProfileFromPb(pb *cleanroomspb.ComplianceSecurityProfileP
 	st.ComplianceStandards = complianceStandardsField
 	st.IsEnabled = pb.IsEnabled
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1881,6 +2287,31 @@ type CreateCleanRoomAssetRequest struct {
 	// for create operations and populated by the server for responses.
 	// Wire name: 'clean_room_name'
 	CleanRoomName string `tf:"-"`
+}
+
+func (st CreateCleanRoomAssetRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateCleanRoomAssetRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateCleanRoomAssetRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CreateCleanRoomAssetRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateCleanRoomAssetRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateCleanRoomAssetRequestToPb(st *CreateCleanRoomAssetRequest) (*cleanroomspb.CreateCleanRoomAssetRequestPb, error) {
@@ -1930,6 +2361,31 @@ type CreateCleanRoomAssetReviewRequest struct {
 
 	// Wire name: 'notebook_review'
 	NotebookReview NotebookVersionReview ``
+}
+
+func (st CreateCleanRoomAssetReviewRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateCleanRoomAssetReviewRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateCleanRoomAssetReviewRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CreateCleanRoomAssetReviewRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateCleanRoomAssetReviewRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateCleanRoomAssetReviewRequestToPb(st *CreateCleanRoomAssetReviewRequest) (*cleanroomspb.CreateCleanRoomAssetReviewRequestPb, error) {
@@ -1989,6 +2445,31 @@ type CreateCleanRoomAssetReviewResponse struct {
 	// All existing notebook approvals or rejections
 	// Wire name: 'notebook_reviews'
 	NotebookReviews []CleanRoomNotebookReview ``
+}
+
+func (st CreateCleanRoomAssetReviewResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateCleanRoomAssetReviewResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateCleanRoomAssetReviewResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CreateCleanRoomAssetReviewResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateCleanRoomAssetReviewResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateCleanRoomAssetReviewResponseToPb(st *CreateCleanRoomAssetReviewResponse) (*cleanroomspb.CreateCleanRoomAssetReviewResponsePb, error) {
@@ -2056,6 +2537,31 @@ type CreateCleanRoomAutoApprovalRuleRequest struct {
 	CleanRoomName string `tf:"-"`
 }
 
+func (st CreateCleanRoomAutoApprovalRuleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateCleanRoomAutoApprovalRuleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateCleanRoomAutoApprovalRuleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CreateCleanRoomAutoApprovalRuleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateCleanRoomAutoApprovalRuleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CreateCleanRoomAutoApprovalRuleRequestToPb(st *CreateCleanRoomAutoApprovalRuleRequest) (*cleanroomspb.CreateCleanRoomAutoApprovalRuleRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2099,6 +2605,31 @@ type CreateCleanRoomOutputCatalogRequest struct {
 	OutputCatalog CleanRoomOutputCatalog ``
 }
 
+func (st CreateCleanRoomOutputCatalogRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateCleanRoomOutputCatalogRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateCleanRoomOutputCatalogRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CreateCleanRoomOutputCatalogRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateCleanRoomOutputCatalogRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CreateCleanRoomOutputCatalogRequestToPb(st *CreateCleanRoomOutputCatalogRequest) (*cleanroomspb.CreateCleanRoomOutputCatalogRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2139,6 +2670,31 @@ type CreateCleanRoomOutputCatalogResponse struct {
 	OutputCatalog *CleanRoomOutputCatalog ``
 }
 
+func (st CreateCleanRoomOutputCatalogResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateCleanRoomOutputCatalogResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateCleanRoomOutputCatalogResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CreateCleanRoomOutputCatalogResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateCleanRoomOutputCatalogResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CreateCleanRoomOutputCatalogResponseToPb(st *CreateCleanRoomOutputCatalogResponse) (*cleanroomspb.CreateCleanRoomOutputCatalogResponsePb, error) {
 	if st == nil {
 		return nil, nil
@@ -2175,6 +2731,31 @@ type CreateCleanRoomRequest struct {
 
 	// Wire name: 'clean_room'
 	CleanRoom CleanRoom ``
+}
+
+func (st CreateCleanRoomRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateCleanRoomRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateCleanRoomRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.CreateCleanRoomRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateCleanRoomRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateCleanRoomRequestToPb(st *CreateCleanRoomRequest) (*cleanroomspb.CreateCleanRoomRequestPb, error) {
@@ -2222,6 +2803,31 @@ type DeleteCleanRoomAssetRequest struct {
 	Name string `tf:"-"`
 }
 
+func (st DeleteCleanRoomAssetRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteCleanRoomAssetRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteCleanRoomAssetRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.DeleteCleanRoomAssetRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteCleanRoomAssetRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteCleanRoomAssetRequestToPb(st *DeleteCleanRoomAssetRequest) (*cleanroomspb.DeleteCleanRoomAssetRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2267,6 +2873,31 @@ type DeleteCleanRoomAutoApprovalRuleRequest struct {
 	RuleId string `tf:"-"`
 }
 
+func (st DeleteCleanRoomAutoApprovalRuleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteCleanRoomAutoApprovalRuleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteCleanRoomAutoApprovalRuleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.DeleteCleanRoomAutoApprovalRuleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteCleanRoomAutoApprovalRuleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteCleanRoomAutoApprovalRuleRequestToPb(st *DeleteCleanRoomAutoApprovalRuleRequest) (*cleanroomspb.DeleteCleanRoomAutoApprovalRuleRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2293,6 +2924,31 @@ type DeleteCleanRoomRequest struct {
 	// Name of the clean room.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st DeleteCleanRoomRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteCleanRoomRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteCleanRoomRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.DeleteCleanRoomRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteCleanRoomRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteCleanRoomRequestToPb(st *DeleteCleanRoomRequest) (*cleanroomspb.DeleteCleanRoomRequestPb, error) {
@@ -2326,6 +2982,31 @@ type GetCleanRoomAssetRequest struct {
 	// CleanRoomAsset.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st GetCleanRoomAssetRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetCleanRoomAssetRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetCleanRoomAssetRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.GetCleanRoomAssetRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetCleanRoomAssetRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetCleanRoomAssetRequestToPb(st *GetCleanRoomAssetRequest) (*cleanroomspb.GetCleanRoomAssetRequestPb, error) {
@@ -2380,6 +3061,31 @@ type GetCleanRoomAssetRevisionRequest struct {
 	Name string `tf:"-"`
 }
 
+func (st GetCleanRoomAssetRevisionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetCleanRoomAssetRevisionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetCleanRoomAssetRevisionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.GetCleanRoomAssetRevisionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetCleanRoomAssetRevisionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetCleanRoomAssetRevisionRequestToPb(st *GetCleanRoomAssetRevisionRequest) (*cleanroomspb.GetCleanRoomAssetRevisionRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2427,6 +3133,31 @@ type GetCleanRoomAutoApprovalRuleRequest struct {
 	RuleId string `tf:"-"`
 }
 
+func (st GetCleanRoomAutoApprovalRuleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetCleanRoomAutoApprovalRuleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetCleanRoomAutoApprovalRuleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.GetCleanRoomAutoApprovalRuleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetCleanRoomAutoApprovalRuleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetCleanRoomAutoApprovalRuleRequestToPb(st *GetCleanRoomAutoApprovalRuleRequest) (*cleanroomspb.GetCleanRoomAutoApprovalRuleRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2453,6 +3184,31 @@ type GetCleanRoomRequest struct {
 
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st GetCleanRoomRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetCleanRoomRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetCleanRoomRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.GetCleanRoomRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetCleanRoomRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetCleanRoomRequestToPb(st *GetCleanRoomRequest) (*cleanroomspb.GetCleanRoomRequestPb, error) {
@@ -2494,12 +3250,29 @@ type ListCleanRoomAssetRevisionsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListCleanRoomAssetRevisionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCleanRoomAssetRevisionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListCleanRoomAssetRevisionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCleanRoomAssetRevisionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCleanRoomAssetRevisionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.ListCleanRoomAssetRevisionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCleanRoomAssetRevisionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListCleanRoomAssetRevisionsRequestToPb(st *ListCleanRoomAssetRevisionsRequest) (*cleanroomspb.ListCleanRoomAssetRevisionsRequestPb, error) {
@@ -2519,7 +3292,9 @@ func ListCleanRoomAssetRevisionsRequestToPb(st *ListCleanRoomAssetRevisionsReque
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2540,7 +3315,9 @@ func ListCleanRoomAssetRevisionsRequestFromPb(pb *cleanroomspb.ListCleanRoomAsse
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2554,12 +3331,29 @@ type ListCleanRoomAssetRevisionsResponse struct {
 	ForceSendFields []string         `tf:"-"`
 }
 
-func (s *ListCleanRoomAssetRevisionsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCleanRoomAssetRevisionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListCleanRoomAssetRevisionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCleanRoomAssetRevisionsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCleanRoomAssetRevisionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.ListCleanRoomAssetRevisionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCleanRoomAssetRevisionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListCleanRoomAssetRevisionsResponseToPb(st *ListCleanRoomAssetRevisionsResponse) (*cleanroomspb.ListCleanRoomAssetRevisionsResponsePb, error) {
@@ -2581,7 +3375,9 @@ func ListCleanRoomAssetRevisionsResponseToPb(st *ListCleanRoomAssetRevisionsResp
 	}
 	pb.Revisions = revisionsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2604,7 +3400,9 @@ func ListCleanRoomAssetRevisionsResponseFromPb(pb *cleanroomspb.ListCleanRoomAss
 	}
 	st.Revisions = revisionsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2618,12 +3416,29 @@ type ListCleanRoomAssetsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListCleanRoomAssetsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCleanRoomAssetsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListCleanRoomAssetsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCleanRoomAssetsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCleanRoomAssetsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.ListCleanRoomAssetsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCleanRoomAssetsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListCleanRoomAssetsRequestToPb(st *ListCleanRoomAssetsRequest) (*cleanroomspb.ListCleanRoomAssetsRequestPb, error) {
@@ -2634,7 +3449,9 @@ func ListCleanRoomAssetsRequestToPb(st *ListCleanRoomAssetsRequest) (*cleanrooms
 	pb.CleanRoomName = st.CleanRoomName
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2646,7 +3463,9 @@ func ListCleanRoomAssetsRequestFromPb(pb *cleanroomspb.ListCleanRoomAssetsReques
 	st.CleanRoomName = pb.CleanRoomName
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2662,12 +3481,29 @@ type ListCleanRoomAssetsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListCleanRoomAssetsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCleanRoomAssetsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListCleanRoomAssetsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCleanRoomAssetsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCleanRoomAssetsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.ListCleanRoomAssetsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCleanRoomAssetsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListCleanRoomAssetsResponseToPb(st *ListCleanRoomAssetsResponse) (*cleanroomspb.ListCleanRoomAssetsResponsePb, error) {
@@ -2689,7 +3525,9 @@ func ListCleanRoomAssetsResponseToPb(st *ListCleanRoomAssetsResponse) (*cleanroo
 	pb.Assets = assetsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2712,7 +3550,9 @@ func ListCleanRoomAssetsResponseFromPb(pb *cleanroomspb.ListCleanRoomAssetsRespo
 	st.Assets = assetsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2729,12 +3569,29 @@ type ListCleanRoomAutoApprovalRulesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListCleanRoomAutoApprovalRulesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCleanRoomAutoApprovalRulesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListCleanRoomAutoApprovalRulesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCleanRoomAutoApprovalRulesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCleanRoomAutoApprovalRulesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.ListCleanRoomAutoApprovalRulesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCleanRoomAutoApprovalRulesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListCleanRoomAutoApprovalRulesRequestToPb(st *ListCleanRoomAutoApprovalRulesRequest) (*cleanroomspb.ListCleanRoomAutoApprovalRulesRequestPb, error) {
@@ -2746,7 +3603,9 @@ func ListCleanRoomAutoApprovalRulesRequestToPb(st *ListCleanRoomAutoApprovalRule
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2759,7 +3618,9 @@ func ListCleanRoomAutoApprovalRulesRequestFromPb(pb *cleanroomspb.ListCleanRoomA
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2775,12 +3636,29 @@ type ListCleanRoomAutoApprovalRulesResponse struct {
 	ForceSendFields []string                    `tf:"-"`
 }
 
-func (s *ListCleanRoomAutoApprovalRulesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCleanRoomAutoApprovalRulesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListCleanRoomAutoApprovalRulesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCleanRoomAutoApprovalRulesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCleanRoomAutoApprovalRulesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.ListCleanRoomAutoApprovalRulesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCleanRoomAutoApprovalRulesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListCleanRoomAutoApprovalRulesResponseToPb(st *ListCleanRoomAutoApprovalRulesResponse) (*cleanroomspb.ListCleanRoomAutoApprovalRulesResponsePb, error) {
@@ -2802,7 +3680,9 @@ func ListCleanRoomAutoApprovalRulesResponseToPb(st *ListCleanRoomAutoApprovalRul
 	}
 	pb.Rules = rulesPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2825,7 +3705,9 @@ func ListCleanRoomAutoApprovalRulesResponseFromPb(pb *cleanroomspb.ListCleanRoom
 	}
 	st.Rules = rulesField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2846,12 +3728,29 @@ type ListCleanRoomNotebookTaskRunsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListCleanRoomNotebookTaskRunsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCleanRoomNotebookTaskRunsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListCleanRoomNotebookTaskRunsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCleanRoomNotebookTaskRunsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCleanRoomNotebookTaskRunsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.ListCleanRoomNotebookTaskRunsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCleanRoomNotebookTaskRunsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListCleanRoomNotebookTaskRunsRequestToPb(st *ListCleanRoomNotebookTaskRunsRequest) (*cleanroomspb.ListCleanRoomNotebookTaskRunsRequestPb, error) {
@@ -2864,7 +3763,9 @@ func ListCleanRoomNotebookTaskRunsRequestToPb(st *ListCleanRoomNotebookTaskRunsR
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2878,7 +3779,9 @@ func ListCleanRoomNotebookTaskRunsRequestFromPb(pb *cleanroomspb.ListCleanRoomNo
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2894,12 +3797,29 @@ type ListCleanRoomNotebookTaskRunsResponse struct {
 	ForceSendFields []string                   `tf:"-"`
 }
 
-func (s *ListCleanRoomNotebookTaskRunsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCleanRoomNotebookTaskRunsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListCleanRoomNotebookTaskRunsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCleanRoomNotebookTaskRunsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCleanRoomNotebookTaskRunsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.ListCleanRoomNotebookTaskRunsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCleanRoomNotebookTaskRunsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListCleanRoomNotebookTaskRunsResponseToPb(st *ListCleanRoomNotebookTaskRunsResponse) (*cleanroomspb.ListCleanRoomNotebookTaskRunsResponsePb, error) {
@@ -2921,7 +3841,9 @@ func ListCleanRoomNotebookTaskRunsResponseToPb(st *ListCleanRoomNotebookTaskRuns
 	}
 	pb.Runs = runsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2944,7 +3866,9 @@ func ListCleanRoomNotebookTaskRunsResponseFromPb(pb *cleanroomspb.ListCleanRoomN
 	}
 	st.Runs = runsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2959,12 +3883,29 @@ type ListCleanRoomsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListCleanRoomsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCleanRoomsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListCleanRoomsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCleanRoomsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCleanRoomsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.ListCleanRoomsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCleanRoomsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListCleanRoomsRequestToPb(st *ListCleanRoomsRequest) (*cleanroomspb.ListCleanRoomsRequestPb, error) {
@@ -2975,7 +3916,9 @@ func ListCleanRoomsRequestToPb(st *ListCleanRoomsRequest) (*cleanroomspb.ListCle
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2987,7 +3930,9 @@ func ListCleanRoomsRequestFromPb(pb *cleanroomspb.ListCleanRoomsRequestPb) (*Lis
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3003,12 +3948,29 @@ type ListCleanRoomsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListCleanRoomsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListCleanRoomsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCleanRoomsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.ListCleanRoomsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCleanRoomsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListCleanRoomsResponseToPb(st *ListCleanRoomsResponse) (*cleanroomspb.ListCleanRoomsResponsePb, error) {
@@ -3030,7 +3992,9 @@ func ListCleanRoomsResponseToPb(st *ListCleanRoomsResponse) (*cleanroomspb.ListC
 	pb.CleanRooms = cleanRoomsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3053,7 +4017,9 @@ func ListCleanRoomsResponseFromPb(pb *cleanroomspb.ListCleanRoomsResponsePb) (*L
 	st.CleanRooms = cleanRoomsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3070,12 +4036,29 @@ type NotebookVersionReview struct {
 	ForceSendFields []string                                   `tf:"-"`
 }
 
-func (s *NotebookVersionReview) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st NotebookVersionReview) MarshalJSON() ([]byte, error) {
+	pb, err := NotebookVersionReviewToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s NotebookVersionReview) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *NotebookVersionReview) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.NotebookVersionReviewPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NotebookVersionReviewFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NotebookVersionReviewToPb(st *NotebookVersionReview) (*cleanroomspb.NotebookVersionReviewPb, error) {
@@ -3093,7 +4076,9 @@ func NotebookVersionReviewToPb(st *NotebookVersionReview) (*cleanroomspb.Noteboo
 		pb.ReviewState = *reviewStatePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3112,7 +4097,9 @@ func NotebookVersionReviewFromPb(pb *cleanroomspb.NotebookVersionReviewPb) (*Not
 		st.ReviewState = *reviewStateField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3136,6 +4123,31 @@ type UpdateCleanRoomAssetRequest struct {
 	// For notebooks, the name is the notebook file name.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st UpdateCleanRoomAssetRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateCleanRoomAssetRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateCleanRoomAssetRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.UpdateCleanRoomAssetRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateCleanRoomAssetRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateCleanRoomAssetRequestToPb(st *UpdateCleanRoomAssetRequest) (*cleanroomspb.UpdateCleanRoomAssetRequestPb, error) {
@@ -3201,6 +4213,31 @@ type UpdateCleanRoomAutoApprovalRuleRequest struct {
 	RuleId string `tf:"-"`
 }
 
+func (st UpdateCleanRoomAutoApprovalRuleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateCleanRoomAutoApprovalRuleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateCleanRoomAutoApprovalRuleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.UpdateCleanRoomAutoApprovalRuleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateCleanRoomAutoApprovalRuleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func UpdateCleanRoomAutoApprovalRuleRequestToPb(st *UpdateCleanRoomAutoApprovalRuleRequest) (*cleanroomspb.UpdateCleanRoomAutoApprovalRuleRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -3244,6 +4281,31 @@ type UpdateCleanRoomRequest struct {
 	// Name of the clean room.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st UpdateCleanRoomRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateCleanRoomRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateCleanRoomRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cleanroomspb.UpdateCleanRoomRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateCleanRoomRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateCleanRoomRequestToPb(st *UpdateCleanRoomRequest) (*cleanroomspb.UpdateCleanRoomRequestPb, error) {

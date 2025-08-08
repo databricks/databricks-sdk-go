@@ -3,11 +3,11 @@
 package iam
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/iam/iampb"
 )
 
@@ -27,12 +27,29 @@ type AccessControlRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AccessControlRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AccessControlRequest) MarshalJSON() ([]byte, error) {
+	pb, err := AccessControlRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AccessControlRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AccessControlRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.AccessControlRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccessControlRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AccessControlRequestToPb(st *AccessControlRequest) (*iampb.AccessControlRequestPb, error) {
@@ -51,7 +68,9 @@ func AccessControlRequestToPb(st *AccessControlRequest) (*iampb.AccessControlReq
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -71,7 +90,9 @@ func AccessControlRequestFromPb(pb *iampb.AccessControlRequestPb) (*AccessContro
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -94,12 +115,29 @@ type AccessControlResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AccessControlResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AccessControlResponse) MarshalJSON() ([]byte, error) {
+	pb, err := AccessControlResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AccessControlResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AccessControlResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.AccessControlResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccessControlResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AccessControlResponseToPb(st *AccessControlResponse) (*iampb.AccessControlResponsePb, error) {
@@ -124,7 +162,9 @@ func AccessControlResponseToPb(st *AccessControlResponse) (*iampb.AccessControlR
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -150,7 +190,9 @@ func AccessControlResponseFromPb(pb *iampb.AccessControlResponsePb) (*AccessCont
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -164,12 +206,29 @@ type Actor struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Actor) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Actor) MarshalJSON() ([]byte, error) {
+	pb, err := ActorToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Actor) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Actor) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ActorPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ActorFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ActorToPb(st *Actor) (*iampb.ActorPb, error) {
@@ -179,7 +238,9 @@ func ActorToPb(st *Actor) (*iampb.ActorPb, error) {
 	pb := &iampb.ActorPb{}
 	pb.ActorId = st.ActorId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -190,7 +251,9 @@ func ActorFromPb(pb *iampb.ActorPb) (*Actor, error) {
 	st := &Actor{}
 	st.ActorId = pb.ActorId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -216,6 +279,31 @@ type CheckPolicyRequest struct {
 
 	// Wire name: 'resource_info'
 	ResourceInfo *ResourceInfo `tf:"-"`
+}
+
+func (st CheckPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CheckPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CheckPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.CheckPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CheckPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CheckPolicyRequestToPb(st *CheckPolicyRequest) (*iampb.CheckPolicyRequestPb, error) {
@@ -306,12 +394,29 @@ type CheckPolicyResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CheckPolicyResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CheckPolicyResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CheckPolicyResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CheckPolicyResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CheckPolicyResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.CheckPolicyResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CheckPolicyResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CheckPolicyResponseToPb(st *CheckPolicyResponse) (*iampb.CheckPolicyResponsePb, error) {
@@ -328,7 +433,9 @@ func CheckPolicyResponseToPb(st *CheckPolicyResponse) (*iampb.CheckPolicyRespons
 	}
 	pb.IsPermitted = st.IsPermitted
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -346,7 +453,9 @@ func CheckPolicyResponseFromPb(pb *iampb.CheckPolicyResponsePb) (*CheckPolicyRes
 	}
 	st.IsPermitted = pb.IsPermitted
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -369,12 +478,29 @@ type ComplexValue struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ComplexValue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ComplexValue) MarshalJSON() ([]byte, error) {
+	pb, err := ComplexValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ComplexValue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ComplexValue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ComplexValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ComplexValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ComplexValueToPb(st *ComplexValue) (*iampb.ComplexValuePb, error) {
@@ -388,7 +514,9 @@ func ComplexValueToPb(st *ComplexValue) (*iampb.ComplexValuePb, error) {
 	pb.Type = st.Type
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -403,7 +531,9 @@ func ComplexValueFromPb(pb *iampb.ComplexValuePb) (*ComplexValue, error) {
 	st.Type = pb.Type
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -411,6 +541,31 @@ type ConsistencyToken struct {
 
 	// Wire name: 'value'
 	Value string ``
+}
+
+func (st ConsistencyToken) MarshalJSON() ([]byte, error) {
+	pb, err := ConsistencyTokenToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ConsistencyToken) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ConsistencyTokenPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ConsistencyTokenFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ConsistencyTokenToPb(st *ConsistencyToken) (*iampb.ConsistencyTokenPb, error) {
@@ -439,6 +594,31 @@ type DeleteAccountGroupRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st DeleteAccountGroupRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAccountGroupRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteAccountGroupRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.DeleteAccountGroupRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAccountGroupRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteAccountGroupRequestToPb(st *DeleteAccountGroupRequest) (*iampb.DeleteAccountGroupRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -463,6 +643,31 @@ type DeleteAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st DeleteAccountServicePrincipalRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAccountServicePrincipalRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteAccountServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.DeleteAccountServicePrincipalRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAccountServicePrincipalRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteAccountServicePrincipalRequestToPb(st *DeleteAccountServicePrincipalRequest) (*iampb.DeleteAccountServicePrincipalRequestPb, error) {
@@ -491,6 +696,31 @@ type DeleteAccountUserRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st DeleteAccountUserRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAccountUserRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteAccountUserRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.DeleteAccountUserRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAccountUserRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteAccountUserRequestToPb(st *DeleteAccountUserRequest) (*iampb.DeleteAccountUserRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -515,6 +745,31 @@ type DeleteGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st DeleteGroupRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteGroupRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteGroupRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.DeleteGroupRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteGroupRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteGroupRequestToPb(st *DeleteGroupRequest) (*iampb.DeleteGroupRequestPb, error) {
@@ -543,6 +798,31 @@ type DeleteServicePrincipalRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st DeleteServicePrincipalRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteServicePrincipalRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.DeleteServicePrincipalRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteServicePrincipalRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteServicePrincipalRequestToPb(st *DeleteServicePrincipalRequest) (*iampb.DeleteServicePrincipalRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -567,6 +847,31 @@ type DeleteUserRequest struct {
 	// Unique ID for a user in the Databricks workspace.
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st DeleteUserRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteUserRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteUserRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.DeleteUserRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteUserRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteUserRequestToPb(st *DeleteUserRequest) (*iampb.DeleteUserRequestPb, error) {
@@ -598,6 +903,31 @@ type DeleteWorkspaceAssignmentRequest struct {
 	WorkspaceId int64 `tf:"-"`
 }
 
+func (st DeleteWorkspaceAssignmentRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteWorkspaceAssignmentRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.DeleteWorkspaceAssignmentRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteWorkspaceAssignmentRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteWorkspaceAssignmentRequestToPb(st *DeleteWorkspaceAssignmentRequest) (*iampb.DeleteWorkspaceAssignmentRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -626,6 +956,31 @@ type GetAccountGroupRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st GetAccountGroupRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAccountGroupRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAccountGroupRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetAccountGroupRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAccountGroupRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetAccountGroupRequestToPb(st *GetAccountGroupRequest) (*iampb.GetAccountGroupRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -650,6 +1005,31 @@ type GetAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st GetAccountServicePrincipalRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAccountServicePrincipalRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAccountServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetAccountServicePrincipalRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAccountServicePrincipalRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetAccountServicePrincipalRequestToPb(st *GetAccountServicePrincipalRequest) (*iampb.GetAccountServicePrincipalRequestPb, error) {
@@ -707,12 +1087,29 @@ type GetAccountUserRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetAccountUserRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetAccountUserRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAccountUserRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetAccountUserRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetAccountUserRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetAccountUserRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAccountUserRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetAccountUserRequestToPb(st *GetAccountUserRequest) (*iampb.GetAccountUserRequestPb, error) {
@@ -735,7 +1132,9 @@ func GetAccountUserRequestToPb(st *GetAccountUserRequest) (*iampb.GetAccountUser
 	}
 	pb.StartIndex = st.StartIndex
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -759,7 +1158,9 @@ func GetAccountUserRequestFromPb(pb *iampb.GetAccountUserRequestPb) (*GetAccount
 	}
 	st.StartIndex = pb.StartIndex
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -773,6 +1174,31 @@ type GetAssignableRolesForResourceRequest struct {
 	// resource name for the service principal.
 	// Wire name: 'resource'
 	Resource string `tf:"-"`
+}
+
+func (st GetAssignableRolesForResourceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAssignableRolesForResourceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAssignableRolesForResourceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetAssignableRolesForResourceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAssignableRolesForResourceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetAssignableRolesForResourceRequestToPb(st *GetAssignableRolesForResourceRequest) (*iampb.GetAssignableRolesForResourceRequestPb, error) {
@@ -799,6 +1225,31 @@ type GetAssignableRolesForResourceResponse struct {
 
 	// Wire name: 'roles'
 	Roles []Role ``
+}
+
+func (st GetAssignableRolesForResourceResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetAssignableRolesForResourceResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAssignableRolesForResourceResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetAssignableRolesForResourceResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAssignableRolesForResourceResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetAssignableRolesForResourceResponseToPb(st *GetAssignableRolesForResourceResponse) (*iampb.GetAssignableRolesForResourceResponsePb, error) {
@@ -849,6 +1300,31 @@ type GetGroupRequest struct {
 	Id string `tf:"-"`
 }
 
+func (st GetGroupRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetGroupRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetGroupRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetGroupRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetGroupRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetGroupRequestToPb(st *GetGroupRequest) (*iampb.GetGroupRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -873,6 +1349,31 @@ type GetPasswordPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
 	PermissionLevels []PasswordPermissionsDescription ``
+}
+
+func (st GetPasswordPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetPasswordPermissionLevelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetPasswordPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetPasswordPermissionLevelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPasswordPermissionLevelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPasswordPermissionLevelsResponseToPb(st *GetPasswordPermissionLevelsResponse) (*iampb.GetPasswordPermissionLevelsResponsePb, error) {
@@ -930,6 +1431,31 @@ type GetPermissionLevelsRequest struct {
 	RequestObjectType string `tf:"-"`
 }
 
+func (st GetPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetPermissionLevelsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetPermissionLevelsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPermissionLevelsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetPermissionLevelsRequestToPb(st *GetPermissionLevelsRequest) (*iampb.GetPermissionLevelsRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -956,6 +1482,31 @@ type GetPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
 	PermissionLevels []PermissionsDescription ``
+}
+
+func (st GetPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetPermissionLevelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetPermissionLevelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPermissionLevelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPermissionLevelsResponseToPb(st *GetPermissionLevelsResponse) (*iampb.GetPermissionLevelsResponsePb, error) {
@@ -1013,6 +1564,31 @@ type GetPermissionRequest struct {
 	RequestObjectType string `tf:"-"`
 }
 
+func (st GetPermissionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetPermissionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetPermissionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetPermissionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPermissionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetPermissionRequestToPb(st *GetPermissionRequest) (*iampb.GetPermissionRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1064,6 +1640,31 @@ type GetRuleSetRequest struct {
 	Name string `tf:"-"`
 }
 
+func (st GetRuleSetRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetRuleSetRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetRuleSetRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetRuleSetRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetRuleSetRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetRuleSetRequestToPb(st *GetRuleSetRequest) (*iampb.GetRuleSetRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1090,6 +1691,31 @@ type GetServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st GetServicePrincipalRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetServicePrincipalRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetServicePrincipalRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetServicePrincipalRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetServicePrincipalRequestToPb(st *GetServicePrincipalRequest) (*iampb.GetServicePrincipalRequestPb, error) {
@@ -1200,12 +1826,29 @@ type GetUserRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetUserRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetUserRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetUserRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetUserRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetUserRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetUserRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetUserRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetUserRequestToPb(st *GetUserRequest) (*iampb.GetUserRequestPb, error) {
@@ -1228,7 +1871,9 @@ func GetUserRequestToPb(st *GetUserRequest) (*iampb.GetUserRequestPb, error) {
 	}
 	pb.StartIndex = st.StartIndex
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1252,7 +1897,9 @@ func GetUserRequestFromPb(pb *iampb.GetUserRequestPb) (*GetUserRequest, error) {
 	}
 	st.StartIndex = pb.StartIndex
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1260,6 +1907,31 @@ type GetWorkspaceAssignmentRequest struct {
 	// The workspace ID.
 	// Wire name: 'workspace_id'
 	WorkspaceId int64 `tf:"-"`
+}
+
+func (st GetWorkspaceAssignmentRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetWorkspaceAssignmentRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GetWorkspaceAssignmentRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetWorkspaceAssignmentRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetWorkspaceAssignmentRequestToPb(st *GetWorkspaceAssignmentRequest) (*iampb.GetWorkspaceAssignmentRequestPb, error) {
@@ -1293,6 +1965,31 @@ type GrantRule struct {
 	// Role that is assigned to the list of principals.
 	// Wire name: 'role'
 	Role string ``
+}
+
+func (st GrantRule) MarshalJSON() ([]byte, error) {
+	pb, err := GrantRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GrantRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GrantRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GrantRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GrantRuleToPb(st *GrantRule) (*iampb.GrantRulePb, error) {
@@ -1351,12 +2048,29 @@ type Group struct {
 	ForceSendFields []string      `tf:"-"`
 }
 
-func (s *Group) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Group) MarshalJSON() ([]byte, error) {
+	pb, err := GroupToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Group) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Group) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.GroupPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GroupFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GroupToPb(st *Group) (*iampb.GroupPb, error) {
@@ -1435,7 +2149,9 @@ func GroupToPb(st *Group) (*iampb.GroupPb, error) {
 	}
 	pb.Schemas = schemasPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1515,7 +2231,9 @@ func GroupFromPb(pb *iampb.GroupPb) (*Group, error) {
 	}
 	st.Schemas = schemasField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1600,12 +2318,29 @@ type ListAccountGroupsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAccountGroupsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAccountGroupsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListAccountGroupsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAccountGroupsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAccountGroupsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ListAccountGroupsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAccountGroupsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAccountGroupsRequestToPb(st *ListAccountGroupsRequest) (*iampb.ListAccountGroupsRequestPb, error) {
@@ -1627,7 +2362,9 @@ func ListAccountGroupsRequestToPb(st *ListAccountGroupsRequest) (*iampb.ListAcco
 	}
 	pb.StartIndex = st.StartIndex
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1650,7 +2387,9 @@ func ListAccountGroupsRequestFromPb(pb *iampb.ListAccountGroupsRequestPb) (*List
 	}
 	st.StartIndex = pb.StartIndex
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1685,12 +2424,29 @@ type ListAccountServicePrincipalsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAccountServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAccountServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListAccountServicePrincipalsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAccountServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAccountServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ListAccountServicePrincipalsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAccountServicePrincipalsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAccountServicePrincipalsRequestToPb(st *ListAccountServicePrincipalsRequest) (*iampb.ListAccountServicePrincipalsRequestPb, error) {
@@ -1712,7 +2468,9 @@ func ListAccountServicePrincipalsRequestToPb(st *ListAccountServicePrincipalsReq
 	}
 	pb.StartIndex = st.StartIndex
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1735,7 +2493,9 @@ func ListAccountServicePrincipalsRequestFromPb(pb *iampb.ListAccountServicePrinc
 	}
 	st.StartIndex = pb.StartIndex
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1771,12 +2531,29 @@ type ListAccountUsersRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAccountUsersRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAccountUsersRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListAccountUsersRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAccountUsersRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAccountUsersRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ListAccountUsersRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAccountUsersRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAccountUsersRequestToPb(st *ListAccountUsersRequest) (*iampb.ListAccountUsersRequestPb, error) {
@@ -1798,7 +2575,9 @@ func ListAccountUsersRequestToPb(st *ListAccountUsersRequest) (*iampb.ListAccoun
 	}
 	pb.StartIndex = st.StartIndex
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1821,7 +2600,9 @@ func ListAccountUsersRequestFromPb(pb *iampb.ListAccountUsersRequestPb) (*ListAc
 	}
 	st.StartIndex = pb.StartIndex
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1856,12 +2637,29 @@ type ListGroupsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListGroupsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListGroupsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListGroupsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListGroupsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListGroupsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ListGroupsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListGroupsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListGroupsRequestToPb(st *ListGroupsRequest) (*iampb.ListGroupsRequestPb, error) {
@@ -1883,7 +2681,9 @@ func ListGroupsRequestToPb(st *ListGroupsRequest) (*iampb.ListGroupsRequestPb, e
 	}
 	pb.StartIndex = st.StartIndex
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1906,7 +2706,9 @@ func ListGroupsRequestFromPb(pb *iampb.ListGroupsRequestPb) (*ListGroupsRequest,
 	}
 	st.StartIndex = pb.StartIndex
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1930,12 +2732,29 @@ type ListGroupsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListGroupsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListGroupsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListGroupsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListGroupsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListGroupsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ListGroupsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListGroupsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListGroupsResponseToPb(st *ListGroupsResponse) (*iampb.ListGroupsResponsePb, error) {
@@ -1971,7 +2790,9 @@ func ListGroupsResponseToPb(st *ListGroupsResponse) (*iampb.ListGroupsResponsePb
 	pb.StartIndex = st.StartIndex
 	pb.TotalResults = st.TotalResults
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2008,7 +2829,9 @@ func ListGroupsResponseFromPb(pb *iampb.ListGroupsResponsePb) (*ListGroupsRespon
 	st.StartIndex = pb.StartIndex
 	st.TotalResults = pb.TotalResults
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2082,12 +2905,29 @@ type ListServicePrincipalResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListServicePrincipalResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListServicePrincipalResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListServicePrincipalResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListServicePrincipalResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListServicePrincipalResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ListServicePrincipalResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListServicePrincipalResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListServicePrincipalResponseToPb(st *ListServicePrincipalResponse) (*iampb.ListServicePrincipalResponsePb, error) {
@@ -2123,7 +2963,9 @@ func ListServicePrincipalResponseToPb(st *ListServicePrincipalResponse) (*iampb.
 	pb.StartIndex = st.StartIndex
 	pb.TotalResults = st.TotalResults
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2160,7 +3002,9 @@ func ListServicePrincipalResponseFromPb(pb *iampb.ListServicePrincipalResponsePb
 	st.StartIndex = pb.StartIndex
 	st.TotalResults = pb.TotalResults
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2195,12 +3039,29 @@ type ListServicePrincipalsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListServicePrincipalsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ListServicePrincipalsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListServicePrincipalsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListServicePrincipalsRequestToPb(st *ListServicePrincipalsRequest) (*iampb.ListServicePrincipalsRequestPb, error) {
@@ -2222,7 +3083,9 @@ func ListServicePrincipalsRequestToPb(st *ListServicePrincipalsRequest) (*iampb.
 	}
 	pb.StartIndex = st.StartIndex
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2245,7 +3108,9 @@ func ListServicePrincipalsRequestFromPb(pb *iampb.ListServicePrincipalsRequestPb
 	}
 	st.StartIndex = pb.StartIndex
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2334,12 +3199,29 @@ type ListUsersRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListUsersRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListUsersRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListUsersRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListUsersRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListUsersRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ListUsersRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListUsersRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListUsersRequestToPb(st *ListUsersRequest) (*iampb.ListUsersRequestPb, error) {
@@ -2361,7 +3243,9 @@ func ListUsersRequestToPb(st *ListUsersRequest) (*iampb.ListUsersRequestPb, erro
 	}
 	pb.StartIndex = st.StartIndex
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2384,7 +3268,9 @@ func ListUsersRequestFromPb(pb *iampb.ListUsersRequestPb) (*ListUsersRequest, er
 	}
 	st.StartIndex = pb.StartIndex
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2408,12 +3294,29 @@ type ListUsersResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListUsersResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListUsersResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListUsersResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListUsersResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListUsersResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ListUsersResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListUsersResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListUsersResponseToPb(st *ListUsersResponse) (*iampb.ListUsersResponsePb, error) {
@@ -2449,7 +3352,9 @@ func ListUsersResponseToPb(st *ListUsersResponse) (*iampb.ListUsersResponsePb, e
 	pb.StartIndex = st.StartIndex
 	pb.TotalResults = st.TotalResults
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2486,7 +3391,9 @@ func ListUsersResponseFromPb(pb *iampb.ListUsersResponsePb) (*ListUsersResponse,
 	st.StartIndex = pb.StartIndex
 	st.TotalResults = pb.TotalResults
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2494,6 +3401,31 @@ type ListWorkspaceAssignmentRequest struct {
 	// The workspace ID for the account.
 	// Wire name: 'workspace_id'
 	WorkspaceId int64 `tf:"-"`
+}
+
+func (st ListWorkspaceAssignmentRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListWorkspaceAssignmentRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListWorkspaceAssignmentRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ListWorkspaceAssignmentRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListWorkspaceAssignmentRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListWorkspaceAssignmentRequestToPb(st *ListWorkspaceAssignmentRequest) (*iampb.ListWorkspaceAssignmentRequestPb, error) {
@@ -2533,12 +3465,29 @@ type MigratePermissionsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *MigratePermissionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MigratePermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := MigratePermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MigratePermissionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MigratePermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.MigratePermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MigratePermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func MigratePermissionsRequestToPb(st *MigratePermissionsRequest) (*iampb.MigratePermissionsRequestPb, error) {
@@ -2551,7 +3500,9 @@ func MigratePermissionsRequestToPb(st *MigratePermissionsRequest) (*iampb.Migrat
 	pb.ToAccountGroupName = st.ToAccountGroupName
 	pb.WorkspaceId = st.WorkspaceId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2565,7 +3516,9 @@ func MigratePermissionsRequestFromPb(pb *iampb.MigratePermissionsRequestPb) (*Mi
 	st.ToAccountGroupName = pb.ToAccountGroupName
 	st.WorkspaceId = pb.WorkspaceId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2576,12 +3529,29 @@ type MigratePermissionsResponse struct {
 	ForceSendFields     []string `tf:"-"`
 }
 
-func (s *MigratePermissionsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MigratePermissionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := MigratePermissionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MigratePermissionsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MigratePermissionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.MigratePermissionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MigratePermissionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func MigratePermissionsResponseToPb(st *MigratePermissionsResponse) (*iampb.MigratePermissionsResponsePb, error) {
@@ -2591,7 +3561,9 @@ func MigratePermissionsResponseToPb(st *MigratePermissionsResponse) (*iampb.Migr
 	pb := &iampb.MigratePermissionsResponsePb{}
 	pb.PermissionsMigrated = st.PermissionsMigrated
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2602,7 +3574,9 @@ func MigratePermissionsResponseFromPb(pb *iampb.MigratePermissionsResponsePb) (*
 	st := &MigratePermissionsResponse{}
 	st.PermissionsMigrated = pb.PermissionsMigrated
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2616,12 +3590,29 @@ type Name struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Name) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Name) MarshalJSON() ([]byte, error) {
+	pb, err := NameToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Name) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Name) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.NamePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NameFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NameToPb(st *Name) (*iampb.NamePb, error) {
@@ -2632,7 +3623,9 @@ func NameToPb(st *Name) (*iampb.NamePb, error) {
 	pb.FamilyName = st.FamilyName
 	pb.GivenName = st.GivenName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2644,7 +3637,9 @@ func NameFromPb(pb *iampb.NamePb) (*Name, error) {
 	st.FamilyName = pb.FamilyName
 	st.GivenName = pb.GivenName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2661,12 +3656,29 @@ type ObjectPermissions struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ObjectPermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ObjectPermissions) MarshalJSON() ([]byte, error) {
+	pb, err := ObjectPermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ObjectPermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ObjectPermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ObjectPermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ObjectPermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ObjectPermissionsToPb(st *ObjectPermissions) (*iampb.ObjectPermissionsPb, error) {
@@ -2689,7 +3701,9 @@ func ObjectPermissionsToPb(st *ObjectPermissions) (*iampb.ObjectPermissionsPb, e
 	pb.ObjectId = st.ObjectId
 	pb.ObjectType = st.ObjectType
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2713,7 +3727,9 @@ func ObjectPermissionsFromPb(pb *iampb.ObjectPermissionsPb) (*ObjectPermissions,
 	st.ObjectId = pb.ObjectId
 	st.ObjectType = pb.ObjectType
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2728,6 +3744,31 @@ type PartialUpdate struct {
 	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
 	// Wire name: 'schemas'
 	Schemas []PatchSchema ``
+}
+
+func (st PartialUpdate) MarshalJSON() ([]byte, error) {
+	pb, err := PartialUpdateToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PartialUpdate) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PartialUpdatePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PartialUpdateFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PartialUpdateToPb(st *PartialUpdate) (*iampb.PartialUpdatePb, error) {
@@ -2814,12 +3855,29 @@ type PasswordAccessControlRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PasswordAccessControlRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PasswordAccessControlRequest) MarshalJSON() ([]byte, error) {
+	pb, err := PasswordAccessControlRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PasswordAccessControlRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PasswordAccessControlRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PasswordAccessControlRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PasswordAccessControlRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PasswordAccessControlRequestToPb(st *PasswordAccessControlRequest) (*iampb.PasswordAccessControlRequestPb, error) {
@@ -2838,7 +3896,9 @@ func PasswordAccessControlRequestToPb(st *PasswordAccessControlRequest) (*iampb.
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2858,7 +3918,9 @@ func PasswordAccessControlRequestFromPb(pb *iampb.PasswordAccessControlRequestPb
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2881,12 +3943,29 @@ type PasswordAccessControlResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PasswordAccessControlResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PasswordAccessControlResponse) MarshalJSON() ([]byte, error) {
+	pb, err := PasswordAccessControlResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PasswordAccessControlResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PasswordAccessControlResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PasswordAccessControlResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PasswordAccessControlResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PasswordAccessControlResponseToPb(st *PasswordAccessControlResponse) (*iampb.PasswordAccessControlResponsePb, error) {
@@ -2911,7 +3990,9 @@ func PasswordAccessControlResponseToPb(st *PasswordAccessControlResponse) (*iamp
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2937,7 +4018,9 @@ func PasswordAccessControlResponseFromPb(pb *iampb.PasswordAccessControlResponse
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2954,12 +4037,29 @@ type PasswordPermission struct {
 	ForceSendFields []string                `tf:"-"`
 }
 
-func (s *PasswordPermission) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PasswordPermission) MarshalJSON() ([]byte, error) {
+	pb, err := PasswordPermissionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PasswordPermission) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PasswordPermission) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PasswordPermissionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PasswordPermissionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PasswordPermissionToPb(st *PasswordPermission) (*iampb.PasswordPermissionPb, error) {
@@ -2977,7 +4077,9 @@ func PasswordPermissionToPb(st *PasswordPermission) (*iampb.PasswordPermissionPb
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2996,7 +4098,9 @@ func PasswordPermissionFromPb(pb *iampb.PasswordPermissionPb) (*PasswordPermissi
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3064,12 +4168,29 @@ type PasswordPermissions struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PasswordPermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PasswordPermissions) MarshalJSON() ([]byte, error) {
+	pb, err := PasswordPermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PasswordPermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PasswordPermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PasswordPermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PasswordPermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PasswordPermissionsToPb(st *PasswordPermissions) (*iampb.PasswordPermissionsPb, error) {
@@ -3092,7 +4213,9 @@ func PasswordPermissionsToPb(st *PasswordPermissions) (*iampb.PasswordPermission
 	pb.ObjectId = st.ObjectId
 	pb.ObjectType = st.ObjectType
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3116,7 +4239,9 @@ func PasswordPermissionsFromPb(pb *iampb.PasswordPermissionsPb) (*PasswordPermis
 	st.ObjectId = pb.ObjectId
 	st.ObjectType = pb.ObjectType
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3130,12 +4255,29 @@ type PasswordPermissionsDescription struct {
 	ForceSendFields []string                `tf:"-"`
 }
 
-func (s *PasswordPermissionsDescription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PasswordPermissionsDescription) MarshalJSON() ([]byte, error) {
+	pb, err := PasswordPermissionsDescriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PasswordPermissionsDescription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PasswordPermissionsDescription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PasswordPermissionsDescriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PasswordPermissionsDescriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PasswordPermissionsDescriptionToPb(st *PasswordPermissionsDescription) (*iampb.PasswordPermissionsDescriptionPb, error) {
@@ -3152,7 +4294,9 @@ func PasswordPermissionsDescriptionToPb(st *PasswordPermissionsDescription) (*ia
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3170,7 +4314,9 @@ func PasswordPermissionsDescriptionFromPb(pb *iampb.PasswordPermissionsDescripti
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3178,6 +4324,31 @@ type PasswordPermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
 	AccessControlList []PasswordAccessControlRequest ``
+}
+
+func (st PasswordPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := PasswordPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PasswordPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PasswordPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PasswordPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PasswordPermissionsRequestToPb(st *PasswordPermissionsRequest) (*iampb.PasswordPermissionsRequestPb, error) {
@@ -3235,12 +4406,29 @@ type Patch struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Patch) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Patch) MarshalJSON() ([]byte, error) {
+	pb, err := PatchToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Patch) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Patch) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PatchPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PatchFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PatchToPb(st *Patch) (*iampb.PatchPb, error) {
@@ -3258,7 +4446,9 @@ func PatchToPb(st *Patch) (*iampb.PatchPb, error) {
 	pb.Path = st.Path
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3277,7 +4467,9 @@ func PatchFromPb(pb *iampb.PatchPb) (*Patch, error) {
 	st.Path = pb.Path
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3401,12 +4593,29 @@ type Permission struct {
 	ForceSendFields []string        `tf:"-"`
 }
 
-func (s *Permission) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Permission) MarshalJSON() ([]byte, error) {
+	pb, err := PermissionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Permission) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Permission) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PermissionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PermissionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PermissionToPb(st *Permission) (*iampb.PermissionPb, error) {
@@ -3424,7 +4633,9 @@ func PermissionToPb(st *Permission) (*iampb.PermissionPb, error) {
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3443,7 +4654,9 @@ func PermissionFromPb(pb *iampb.PermissionPb) (*Permission, error) {
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3462,12 +4675,29 @@ type PermissionAssignment struct {
 	ForceSendFields []string         `tf:"-"`
 }
 
-func (s *PermissionAssignment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PermissionAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := PermissionAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PermissionAssignment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PermissionAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PermissionAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PermissionAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PermissionAssignmentToPb(st *PermissionAssignment) (*iampb.PermissionAssignmentPb, error) {
@@ -3496,7 +4726,9 @@ func PermissionAssignmentToPb(st *PermissionAssignment) (*iampb.PermissionAssign
 		pb.Principal = principalPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3526,7 +4758,9 @@ func PermissionAssignmentFromPb(pb *iampb.PermissionAssignmentPb) (*PermissionAs
 		st.Principal = principalField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3534,6 +4768,31 @@ type PermissionAssignments struct {
 	// Array of permissions assignments defined for a workspace.
 	// Wire name: 'permission_assignments'
 	PermissionAssignments []PermissionAssignment ``
+}
+
+func (st PermissionAssignments) MarshalJSON() ([]byte, error) {
+	pb, err := PermissionAssignmentsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PermissionAssignments) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PermissionAssignmentsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PermissionAssignmentsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PermissionAssignmentsToPb(st *PermissionAssignments) (*iampb.PermissionAssignmentsPb, error) {
@@ -3693,12 +4952,29 @@ type PermissionOutput struct {
 	ForceSendFields []string            `tf:"-"`
 }
 
-func (s *PermissionOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PermissionOutput) MarshalJSON() ([]byte, error) {
+	pb, err := PermissionOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PermissionOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PermissionOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PermissionOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PermissionOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PermissionOutputToPb(st *PermissionOutput) (*iampb.PermissionOutputPb, error) {
@@ -3715,7 +4991,9 @@ func PermissionOutputToPb(st *PermissionOutput) (*iampb.PermissionOutputPb, erro
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3733,7 +5011,9 @@ func PermissionOutputFromPb(pb *iampb.PermissionOutputPb) (*PermissionOutput, er
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3747,12 +5027,29 @@ type PermissionsDescription struct {
 	ForceSendFields []string        `tf:"-"`
 }
 
-func (s *PermissionsDescription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PermissionsDescription) MarshalJSON() ([]byte, error) {
+	pb, err := PermissionsDescriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PermissionsDescription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PermissionsDescription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PermissionsDescriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PermissionsDescriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PermissionsDescriptionToPb(st *PermissionsDescription) (*iampb.PermissionsDescriptionPb, error) {
@@ -3769,7 +5066,9 @@ func PermissionsDescriptionToPb(st *PermissionsDescription) (*iampb.PermissionsD
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3787,7 +5086,9 @@ func PermissionsDescriptionFromPb(pb *iampb.PermissionsDescriptionPb) (*Permissi
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3812,12 +5113,29 @@ type PrincipalOutput struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PrincipalOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PrincipalOutput) MarshalJSON() ([]byte, error) {
+	pb, err := PrincipalOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PrincipalOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PrincipalOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.PrincipalOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PrincipalOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PrincipalOutputToPb(st *PrincipalOutput) (*iampb.PrincipalOutputPb, error) {
@@ -3831,7 +5149,9 @@ func PrincipalOutputToPb(st *PrincipalOutput) (*iampb.PrincipalOutputPb, error) 
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3846,7 +5166,9 @@ func PrincipalOutputFromPb(pb *iampb.PrincipalOutputPb) (*PrincipalOutput, error
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3919,12 +5241,29 @@ type ResourceInfo struct {
 	ForceSendFields    []string      `tf:"-"`
 }
 
-func (s *ResourceInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ResourceInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ResourceInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ResourceInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ResourceInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ResourceInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ResourceInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ResourceInfoToPb(st *ResourceInfo) (*iampb.ResourceInfoPb, error) {
@@ -3942,7 +5281,9 @@ func ResourceInfoToPb(st *ResourceInfo) (*iampb.ResourceInfoPb, error) {
 		pb.ParentResourceInfo = parentResourceInfoPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3961,7 +5302,9 @@ func ResourceInfoFromPb(pb *iampb.ResourceInfoPb) (*ResourceInfo, error) {
 		st.ParentResourceInfo = parentResourceInfoField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3973,12 +5316,29 @@ type ResourceMeta struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ResourceMeta) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ResourceMeta) MarshalJSON() ([]byte, error) {
+	pb, err := ResourceMetaToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ResourceMeta) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ResourceMeta) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ResourceMetaPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ResourceMetaFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ResourceMetaToPb(st *ResourceMeta) (*iampb.ResourceMetaPb, error) {
@@ -3988,7 +5348,9 @@ func ResourceMetaToPb(st *ResourceMeta) (*iampb.ResourceMetaPb, error) {
 	pb := &iampb.ResourceMetaPb{}
 	pb.ResourceType = st.ResourceType
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3999,7 +5361,9 @@ func ResourceMetaFromPb(pb *iampb.ResourceMetaPb) (*ResourceMeta, error) {
 	st := &ResourceMeta{}
 	st.ResourceType = pb.ResourceType
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4007,6 +5371,31 @@ type Role struct {
 	// Role to assign to a principal or a list of principals on a resource.
 	// Wire name: 'name'
 	Name string ``
+}
+
+func (st Role) MarshalJSON() ([]byte, error) {
+	pb, err := RoleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Role) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.RolePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RoleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RoleToPb(st *Role) (*iampb.RolePb, error) {
@@ -4047,6 +5436,31 @@ type RuleSetResponse struct {
 	// Name of the rule set.
 	// Wire name: 'name'
 	Name string ``
+}
+
+func (st RuleSetResponse) MarshalJSON() ([]byte, error) {
+	pb, err := RuleSetResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RuleSetResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.RuleSetResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RuleSetResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RuleSetResponseToPb(st *RuleSetResponse) (*iampb.RuleSetResponsePb, error) {
@@ -4113,6 +5527,31 @@ type RuleSetUpdateRequest struct {
 	// Name of the rule set.
 	// Wire name: 'name'
 	Name string ``
+}
+
+func (st RuleSetUpdateRequest) MarshalJSON() ([]byte, error) {
+	pb, err := RuleSetUpdateRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RuleSetUpdateRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.RuleSetUpdateRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RuleSetUpdateRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RuleSetUpdateRequestToPb(st *RuleSetUpdateRequest) (*iampb.RuleSetUpdateRequestPb, error) {
@@ -4195,12 +5634,29 @@ type ServicePrincipal struct {
 	ForceSendFields []string                 `tf:"-"`
 }
 
-func (s *ServicePrincipal) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ServicePrincipal) MarshalJSON() ([]byte, error) {
+	pb, err := ServicePrincipalToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ServicePrincipal) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ServicePrincipal) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.ServicePrincipalPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ServicePrincipalFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ServicePrincipalToPb(st *ServicePrincipal) (*iampb.ServicePrincipalPb, error) {
@@ -4262,7 +5718,9 @@ func ServicePrincipalToPb(st *ServicePrincipal) (*iampb.ServicePrincipalPb, erro
 	}
 	pb.Schemas = schemasPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4325,7 +5783,9 @@ func ServicePrincipalFromPb(pb *iampb.ServicePrincipalPb) (*ServicePrincipal, er
 	}
 	st.Schemas = schemasField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4395,6 +5855,31 @@ type SetObjectPermissions struct {
 	RequestObjectType string `tf:"-"`
 }
 
+func (st SetObjectPermissions) MarshalJSON() ([]byte, error) {
+	pb, err := SetObjectPermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *SetObjectPermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.SetObjectPermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SetObjectPermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func SetObjectPermissionsToPb(st *SetObjectPermissions) (*iampb.SetObjectPermissionsPb, error) {
 	if st == nil {
 		return nil, nil
@@ -4457,6 +5942,31 @@ type UpdateObjectPermissions struct {
 	RequestObjectType string `tf:"-"`
 }
 
+func (st UpdateObjectPermissions) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateObjectPermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateObjectPermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.UpdateObjectPermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateObjectPermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func UpdateObjectPermissionsToPb(st *UpdateObjectPermissions) (*iampb.UpdateObjectPermissionsPb, error) {
 	if st == nil {
 		return nil, nil
@@ -4512,6 +6022,31 @@ type UpdateRuleSetRequest struct {
 	RuleSet RuleSetUpdateRequest ``
 }
 
+func (st UpdateRuleSetRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateRuleSetRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateRuleSetRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.UpdateRuleSetRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateRuleSetRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func UpdateRuleSetRequestToPb(st *UpdateRuleSetRequest) (*iampb.UpdateRuleSetRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -4561,6 +6096,31 @@ type UpdateWorkspaceAssignments struct {
 	// The workspace ID.
 	// Wire name: 'workspace_id'
 	WorkspaceId int64 `tf:"-"`
+}
+
+func (st UpdateWorkspaceAssignments) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateWorkspaceAssignmentsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateWorkspaceAssignments) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.UpdateWorkspaceAssignmentsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateWorkspaceAssignmentsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateWorkspaceAssignmentsToPb(st *UpdateWorkspaceAssignments) (*iampb.UpdateWorkspaceAssignmentsPb, error) {
@@ -4654,12 +6214,29 @@ type User struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *User) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st User) MarshalJSON() ([]byte, error) {
+	pb, err := UserToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s User) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *User) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.UserPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UserFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UserToPb(st *User) (*iampb.UserPb, error) {
@@ -4740,7 +6317,9 @@ func UserToPb(st *User) (*iampb.UserPb, error) {
 	pb.Schemas = schemasPb
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4822,7 +6401,9 @@ func UserFromPb(pb *iampb.UserPb) (*User, error) {
 	st.Schemas = schemasField
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4939,6 +6520,31 @@ type WorkspacePermissions struct {
 	// Array of permissions defined for a workspace.
 	// Wire name: 'permissions'
 	Permissions []PermissionOutput ``
+}
+
+func (st WorkspacePermissions) MarshalJSON() ([]byte, error) {
+	pb, err := WorkspacePermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *WorkspacePermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &iampb.WorkspacePermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WorkspacePermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WorkspacePermissionsToPb(st *WorkspacePermissions) (*iampb.WorkspacePermissionsPb, error) {

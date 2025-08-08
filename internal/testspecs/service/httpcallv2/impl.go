@@ -34,9 +34,12 @@ func (a *httpCallV2Impl) CreateResource(ctx context.Context, request CreateResou
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&resourcePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ResourceFromPb(&resourcePb)
 	if err != nil {
 		return nil, err
@@ -61,9 +64,12 @@ func (a *httpCallV2Impl) GetResource(ctx context.Context, request GetResourceReq
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&resourcePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ResourceFromPb(&resourcePb)
 	if err != nil {
 		return nil, err
@@ -110,9 +116,12 @@ func (a *httpCallV2Impl) UpdateResource(ctx context.Context, request UpdateResou
 		path,
 		headers,
 		queryParams,
-		requestPb.Resource,
+		(*requestPb).Resource,
 		&resourcePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ResourceFromPb(&resourcePb)
 	if err != nil {
 		return nil, err

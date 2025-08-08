@@ -3,11 +3,11 @@
 package apps
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/apps/appspb"
 )
 
@@ -27,7 +27,7 @@ type App struct {
 	ComputeStatus *ComputeStatus ``
 	// The creation time of the app. Formatted timestamp in ISO 6801.
 	// Wire name: 'create_time'
-	CreateTime *time.Time ``
+	CreateTime string `` //legacy
 	// The email of the user that created the app.
 	// Wire name: 'creator'
 	Creator string ``
@@ -76,7 +76,7 @@ type App struct {
 	ServicePrincipalName string ``
 	// The update time of the app. Formatted timestamp in ISO 6801.
 	// Wire name: 'update_time'
-	UpdateTime *time.Time ``
+	UpdateTime string `` //legacy
 	// The email of the user that last updated the app.
 	// Wire name: 'updater'
 	Updater string ``
@@ -89,12 +89,29 @@ type App struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *App) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st App) MarshalJSON() ([]byte, error) {
+	pb, err := AppToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s App) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *App) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppToPb(st *App) (*appspb.AppPb, error) {
@@ -124,13 +141,7 @@ func AppToPb(st *App) (*appspb.AppPb, error) {
 	if computeStatusPb != nil {
 		pb.ComputeStatus = computeStatusPb
 	}
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 	pb.Creator = st.Creator
 	pb.DefaultSourceCodePath = st.DefaultSourceCodePath
 	pb.Description = st.Description
@@ -162,18 +173,14 @@ func AppToPb(st *App) (*appspb.AppPb, error) {
 	pb.ServicePrincipalClientId = st.ServicePrincipalClientId
 	pb.ServicePrincipalId = st.ServicePrincipalId
 	pb.ServicePrincipalName = st.ServicePrincipalName
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 	pb.Updater = st.Updater
 	pb.Url = st.Url
 	pb.UserApiScopes = st.UserApiScopes
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -204,13 +211,7 @@ func AppFromPb(pb *appspb.AppPb) (*App, error) {
 	if computeStatusField != nil {
 		st.ComputeStatus = computeStatusField
 	}
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	st.Creator = pb.Creator
 	st.DefaultSourceCodePath = pb.DefaultSourceCodePath
 	st.Description = pb.Description
@@ -242,18 +243,14 @@ func AppFromPb(pb *appspb.AppPb) (*App, error) {
 	st.ServicePrincipalClientId = pb.ServicePrincipalClientId
 	st.ServicePrincipalId = pb.ServicePrincipalId
 	st.ServicePrincipalName = pb.ServicePrincipalName
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
+	st.UpdateTime = pb.UpdateTime
 	st.Updater = pb.Updater
 	st.Url = pb.Url
 	st.UserApiScopes = pb.UserApiScopes
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -273,12 +270,29 @@ type AppAccessControlRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppAccessControlRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AppAccessControlRequest) MarshalJSON() ([]byte, error) {
+	pb, err := AppAccessControlRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AppAccessControlRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AppAccessControlRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppAccessControlRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppAccessControlRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppAccessControlRequestToPb(st *AppAccessControlRequest) (*appspb.AppAccessControlRequestPb, error) {
@@ -297,7 +311,9 @@ func AppAccessControlRequestToPb(st *AppAccessControlRequest) (*appspb.AppAccess
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -317,7 +333,9 @@ func AppAccessControlRequestFromPb(pb *appspb.AppAccessControlRequestPb) (*AppAc
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -340,12 +358,29 @@ type AppAccessControlResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppAccessControlResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AppAccessControlResponse) MarshalJSON() ([]byte, error) {
+	pb, err := AppAccessControlResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AppAccessControlResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AppAccessControlResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppAccessControlResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppAccessControlResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppAccessControlResponseToPb(st *AppAccessControlResponse) (*appspb.AppAccessControlResponsePb, error) {
@@ -370,7 +405,9 @@ func AppAccessControlResponseToPb(st *AppAccessControlResponse) (*appspb.AppAcce
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -396,14 +433,16 @@ func AppAccessControlResponseFromPb(pb *appspb.AppAccessControlResponsePb) (*App
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
 type AppDeployment struct {
 	// The creation time of the deployment. Formatted timestamp in ISO 6801.
 	// Wire name: 'create_time'
-	CreateTime *time.Time ``
+	CreateTime string `` //legacy
 	// The email of the user creates the deployment.
 	// Wire name: 'creator'
 	Creator string ``
@@ -430,16 +469,33 @@ type AppDeployment struct {
 	Status *AppDeploymentStatus ``
 	// The update time of the deployment. Formatted timestamp in ISO 6801.
 	// Wire name: 'update_time'
-	UpdateTime      *time.Time ``
-	ForceSendFields []string   `tf:"-"`
+	UpdateTime      string   `` //legacy
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppDeployment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AppDeployment) MarshalJSON() ([]byte, error) {
+	pb, err := AppDeploymentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AppDeployment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AppDeployment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppDeploymentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppDeploymentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppDeploymentToPb(st *AppDeployment) (*appspb.AppDeploymentPb, error) {
@@ -447,13 +503,7 @@ func AppDeploymentToPb(st *AppDeployment) (*appspb.AppDeploymentPb, error) {
 		return nil, nil
 	}
 	pb := &appspb.AppDeploymentPb{}
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 	pb.Creator = st.Creator
 	deploymentArtifactsPb, err := AppDeploymentArtifactsToPb(st.DeploymentArtifacts)
 	if err != nil {
@@ -478,15 +528,11 @@ func AppDeploymentToPb(st *AppDeployment) (*appspb.AppDeploymentPb, error) {
 	if statusPb != nil {
 		pb.Status = statusPb
 	}
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -495,13 +541,7 @@ func AppDeploymentFromPb(pb *appspb.AppDeploymentPb) (*AppDeployment, error) {
 		return nil, nil
 	}
 	st := &AppDeployment{}
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	st.Creator = pb.Creator
 	deploymentArtifactsField, err := AppDeploymentArtifactsFromPb(pb.DeploymentArtifacts)
 	if err != nil {
@@ -526,15 +566,11 @@ func AppDeploymentFromPb(pb *appspb.AppDeploymentPb) (*AppDeployment, error) {
 	if statusField != nil {
 		st.Status = statusField
 	}
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
+	st.UpdateTime = pb.UpdateTime
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -546,12 +582,29 @@ type AppDeploymentArtifacts struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppDeploymentArtifacts) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AppDeploymentArtifacts) MarshalJSON() ([]byte, error) {
+	pb, err := AppDeploymentArtifactsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AppDeploymentArtifacts) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AppDeploymentArtifacts) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppDeploymentArtifactsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppDeploymentArtifactsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppDeploymentArtifactsToPb(st *AppDeploymentArtifacts) (*appspb.AppDeploymentArtifactsPb, error) {
@@ -561,7 +614,9 @@ func AppDeploymentArtifactsToPb(st *AppDeploymentArtifacts) (*appspb.AppDeployme
 	pb := &appspb.AppDeploymentArtifactsPb{}
 	pb.SourceCodePath = st.SourceCodePath
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -572,7 +627,9 @@ func AppDeploymentArtifactsFromPb(pb *appspb.AppDeploymentArtifactsPb) (*AppDepl
 	st := &AppDeploymentArtifacts{}
 	st.SourceCodePath = pb.SourceCodePath
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -698,12 +755,29 @@ type AppDeploymentStatus struct {
 	ForceSendFields []string           `tf:"-"`
 }
 
-func (s *AppDeploymentStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AppDeploymentStatus) MarshalJSON() ([]byte, error) {
+	pb, err := AppDeploymentStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AppDeploymentStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AppDeploymentStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppDeploymentStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppDeploymentStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppDeploymentStatusToPb(st *AppDeploymentStatus) (*appspb.AppDeploymentStatusPb, error) {
@@ -720,7 +794,9 @@ func AppDeploymentStatusToPb(st *AppDeploymentStatus) (*appspb.AppDeploymentStat
 		pb.State = *statePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -738,7 +814,9 @@ func AppDeploymentStatusFromPb(pb *appspb.AppDeploymentStatusPb) (*AppDeployment
 		st.State = *stateField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -755,12 +833,29 @@ type AppPermission struct {
 	ForceSendFields []string           `tf:"-"`
 }
 
-func (s *AppPermission) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AppPermission) MarshalJSON() ([]byte, error) {
+	pb, err := AppPermissionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AppPermission) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AppPermission) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppPermissionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppPermissionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppPermissionToPb(st *AppPermission) (*appspb.AppPermissionPb, error) {
@@ -778,7 +873,9 @@ func AppPermissionToPb(st *AppPermission) (*appspb.AppPermissionPb, error) {
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -797,7 +894,9 @@ func AppPermissionFromPb(pb *appspb.AppPermissionPb) (*AppPermission, error) {
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -868,12 +967,29 @@ type AppPermissions struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppPermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AppPermissions) MarshalJSON() ([]byte, error) {
+	pb, err := AppPermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AppPermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AppPermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppPermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppPermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppPermissionsToPb(st *AppPermissions) (*appspb.AppPermissionsPb, error) {
@@ -896,7 +1012,9 @@ func AppPermissionsToPb(st *AppPermissions) (*appspb.AppPermissionsPb, error) {
 	pb.ObjectId = st.ObjectId
 	pb.ObjectType = st.ObjectType
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -920,7 +1038,9 @@ func AppPermissionsFromPb(pb *appspb.AppPermissionsPb) (*AppPermissions, error) 
 	st.ObjectId = pb.ObjectId
 	st.ObjectType = pb.ObjectType
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -934,12 +1054,29 @@ type AppPermissionsDescription struct {
 	ForceSendFields []string           `tf:"-"`
 }
 
-func (s *AppPermissionsDescription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AppPermissionsDescription) MarshalJSON() ([]byte, error) {
+	pb, err := AppPermissionsDescriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AppPermissionsDescription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AppPermissionsDescription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppPermissionsDescriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppPermissionsDescriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppPermissionsDescriptionToPb(st *AppPermissionsDescription) (*appspb.AppPermissionsDescriptionPb, error) {
@@ -956,7 +1093,9 @@ func AppPermissionsDescriptionToPb(st *AppPermissionsDescription) (*appspb.AppPe
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -974,7 +1113,9 @@ func AppPermissionsDescriptionFromPb(pb *appspb.AppPermissionsDescriptionPb) (*A
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -985,6 +1126,31 @@ type AppPermissionsRequest struct {
 	// The app for which to get or manage permissions.
 	// Wire name: 'app_name'
 	AppName string `tf:"-"`
+}
+
+func (st AppPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := AppPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AppPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppPermissionsRequestToPb(st *AppPermissionsRequest) (*appspb.AppPermissionsRequestPb, error) {
@@ -1059,12 +1225,29 @@ type AppResource struct {
 	ForceSendFields []string                `tf:"-"`
 }
 
-func (s *AppResource) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AppResource) MarshalJSON() ([]byte, error) {
+	pb, err := AppResourceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AppResource) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AppResource) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppResourcePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppResourceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppResourceToPb(st *AppResource) (*appspb.AppResourcePb, error) {
@@ -1117,7 +1300,9 @@ func AppResourceToPb(st *AppResource) (*appspb.AppResourcePb, error) {
 		pb.UcSecurable = ucSecurablePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1171,7 +1356,9 @@ func AppResourceFromPb(pb *appspb.AppResourcePb) (*AppResource, error) {
 		st.UcSecurable = ucSecurableField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1185,6 +1372,31 @@ type AppResourceDatabase struct {
 
 	// Wire name: 'permission'
 	Permission AppResourceDatabaseDatabasePermission ``
+}
+
+func (st AppResourceDatabase) MarshalJSON() ([]byte, error) {
+	pb, err := AppResourceDatabaseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AppResourceDatabase) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppResourceDatabasePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppResourceDatabaseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppResourceDatabaseToPb(st *AppResourceDatabase) (*appspb.AppResourceDatabasePb, error) {
@@ -1281,6 +1493,31 @@ type AppResourceJob struct {
 	// "IS_OWNER", "CAN_MANAGE_RUN", "CAN_VIEW".
 	// Wire name: 'permission'
 	Permission AppResourceJobJobPermission ``
+}
+
+func (st AppResourceJob) MarshalJSON() ([]byte, error) {
+	pb, err := AppResourceJobToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AppResourceJob) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppResourceJobPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppResourceJobFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppResourceJobToPb(st *AppResourceJob) (*appspb.AppResourceJobPb, error) {
@@ -1389,6 +1626,31 @@ type AppResourceSecret struct {
 	Scope string ``
 }
 
+func (st AppResourceSecret) MarshalJSON() ([]byte, error) {
+	pb, err := AppResourceSecretToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AppResourceSecret) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppResourceSecretPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppResourceSecretFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func AppResourceSecretToPb(st *AppResourceSecret) (*appspb.AppResourceSecretPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1493,6 +1755,31 @@ type AppResourceServingEndpoint struct {
 	Permission AppResourceServingEndpointServingEndpointPermission ``
 }
 
+func (st AppResourceServingEndpoint) MarshalJSON() ([]byte, error) {
+	pb, err := AppResourceServingEndpointToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AppResourceServingEndpoint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppResourceServingEndpointPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppResourceServingEndpointFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func AppResourceServingEndpointToPb(st *AppResourceServingEndpoint) (*appspb.AppResourceServingEndpointPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1591,6 +1878,31 @@ type AppResourceSqlWarehouse struct {
 	// "CAN_MANAGE", "CAN_USE", "IS_OWNER".
 	// Wire name: 'permission'
 	Permission AppResourceSqlWarehouseSqlWarehousePermission ``
+}
+
+func (st AppResourceSqlWarehouse) MarshalJSON() ([]byte, error) {
+	pb, err := AppResourceSqlWarehouseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AppResourceSqlWarehouse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppResourceSqlWarehousePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppResourceSqlWarehouseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppResourceSqlWarehouseToPb(st *AppResourceSqlWarehouse) (*appspb.AppResourceSqlWarehousePb, error) {
@@ -1693,6 +2005,31 @@ type AppResourceUcSecurable struct {
 
 	// Wire name: 'securable_type'
 	SecurableType AppResourceUcSecurableUcSecurableType ``
+}
+
+func (st AppResourceUcSecurable) MarshalJSON() ([]byte, error) {
+	pb, err := AppResourceUcSecurableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AppResourceUcSecurable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.AppResourceUcSecurablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AppResourceUcSecurableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AppResourceUcSecurableToPb(st *AppResourceUcSecurable) (*appspb.AppResourceUcSecurablePb, error) {
@@ -1915,12 +2252,29 @@ type ApplicationStatus struct {
 	ForceSendFields []string         `tf:"-"`
 }
 
-func (s *ApplicationStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ApplicationStatus) MarshalJSON() ([]byte, error) {
+	pb, err := ApplicationStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ApplicationStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ApplicationStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.ApplicationStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ApplicationStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ApplicationStatusToPb(st *ApplicationStatus) (*appspb.ApplicationStatusPb, error) {
@@ -1937,7 +2291,9 @@ func ApplicationStatusToPb(st *ApplicationStatus) (*appspb.ApplicationStatusPb, 
 		pb.State = *statePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1955,7 +2311,9 @@ func ApplicationStatusFromPb(pb *appspb.ApplicationStatusPb) (*ApplicationStatus
 		st.State = *stateField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2037,12 +2395,29 @@ type ComputeStatus struct {
 	ForceSendFields []string     `tf:"-"`
 }
 
-func (s *ComputeStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ComputeStatus) MarshalJSON() ([]byte, error) {
+	pb, err := ComputeStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ComputeStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ComputeStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.ComputeStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ComputeStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ComputeStatusToPb(st *ComputeStatus) (*appspb.ComputeStatusPb, error) {
@@ -2059,7 +2434,9 @@ func ComputeStatusToPb(st *ComputeStatus) (*appspb.ComputeStatusPb, error) {
 		pb.State = *statePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2077,7 +2454,9 @@ func ComputeStatusFromPb(pb *appspb.ComputeStatusPb) (*ComputeStatus, error) {
 		st.State = *stateField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2088,6 +2467,31 @@ type CreateAppDeploymentRequest struct {
 	// The name of the app.
 	// Wire name: 'app_name'
 	AppName string `tf:"-"`
+}
+
+func (st CreateAppDeploymentRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateAppDeploymentRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateAppDeploymentRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.CreateAppDeploymentRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateAppDeploymentRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateAppDeploymentRequestToPb(st *CreateAppDeploymentRequest) (*appspb.CreateAppDeploymentRequestPb, error) {
@@ -2134,12 +2538,29 @@ type CreateAppRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateAppRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateAppRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateAppRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateAppRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateAppRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.CreateAppRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateAppRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateAppRequestToPb(st *CreateAppRequest) (*appspb.CreateAppRequestPb, error) {
@@ -2156,7 +2577,9 @@ func CreateAppRequestToPb(st *CreateAppRequest) (*appspb.CreateAppRequestPb, err
 	}
 	pb.NoCompute = st.NoCompute
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2174,7 +2597,9 @@ func CreateAppRequestFromPb(pb *appspb.CreateAppRequestPb) (*CreateAppRequest, e
 	}
 	st.NoCompute = pb.NoCompute
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2182,6 +2607,31 @@ type DeleteAppRequest struct {
 	// The name of the app.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st DeleteAppRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAppRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteAppRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.DeleteAppRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAppRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteAppRequestToPb(st *DeleteAppRequest) (*appspb.DeleteAppRequestPb, error) {
@@ -2213,6 +2663,31 @@ type GetAppDeploymentRequest struct {
 	DeploymentId string `tf:"-"`
 }
 
+func (st GetAppDeploymentRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAppDeploymentRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAppDeploymentRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.GetAppDeploymentRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAppDeploymentRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetAppDeploymentRequestToPb(st *GetAppDeploymentRequest) (*appspb.GetAppDeploymentRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2241,6 +2716,31 @@ type GetAppPermissionLevelsRequest struct {
 	AppName string `tf:"-"`
 }
 
+func (st GetAppPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAppPermissionLevelsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAppPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.GetAppPermissionLevelsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAppPermissionLevelsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetAppPermissionLevelsRequestToPb(st *GetAppPermissionLevelsRequest) (*appspb.GetAppPermissionLevelsRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2265,6 +2765,31 @@ type GetAppPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
 	PermissionLevels []AppPermissionsDescription ``
+}
+
+func (st GetAppPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetAppPermissionLevelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAppPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.GetAppPermissionLevelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAppPermissionLevelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetAppPermissionLevelsResponseToPb(st *GetAppPermissionLevelsResponse) (*appspb.GetAppPermissionLevelsResponsePb, error) {
@@ -2315,6 +2840,31 @@ type GetAppPermissionsRequest struct {
 	AppName string `tf:"-"`
 }
 
+func (st GetAppPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAppPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAppPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.GetAppPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAppPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetAppPermissionsRequestToPb(st *GetAppPermissionsRequest) (*appspb.GetAppPermissionsRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2339,6 +2889,31 @@ type GetAppRequest struct {
 	// The name of the app.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st GetAppRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAppRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAppRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.GetAppRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAppRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetAppRequestToPb(st *GetAppRequest) (*appspb.GetAppRequestPb, error) {
@@ -2375,12 +2950,29 @@ type ListAppDeploymentsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAppDeploymentsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAppDeploymentsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListAppDeploymentsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAppDeploymentsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAppDeploymentsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.ListAppDeploymentsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAppDeploymentsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAppDeploymentsRequestToPb(st *ListAppDeploymentsRequest) (*appspb.ListAppDeploymentsRequestPb, error) {
@@ -2392,7 +2984,9 @@ func ListAppDeploymentsRequestToPb(st *ListAppDeploymentsRequest) (*appspb.ListA
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2405,7 +2999,9 @@ func ListAppDeploymentsRequestFromPb(pb *appspb.ListAppDeploymentsRequestPb) (*L
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2419,12 +3015,29 @@ type ListAppDeploymentsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAppDeploymentsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAppDeploymentsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListAppDeploymentsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAppDeploymentsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAppDeploymentsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.ListAppDeploymentsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAppDeploymentsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAppDeploymentsResponseToPb(st *ListAppDeploymentsResponse) (*appspb.ListAppDeploymentsResponsePb, error) {
@@ -2446,7 +3059,9 @@ func ListAppDeploymentsResponseToPb(st *ListAppDeploymentsResponse) (*appspb.Lis
 	pb.AppDeployments = appDeploymentsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2469,7 +3084,9 @@ func ListAppDeploymentsResponseFromPb(pb *appspb.ListAppDeploymentsResponsePb) (
 	st.AppDeployments = appDeploymentsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2484,12 +3101,29 @@ type ListAppsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAppsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAppsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListAppsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAppsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAppsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.ListAppsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAppsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAppsRequestToPb(st *ListAppsRequest) (*appspb.ListAppsRequestPb, error) {
@@ -2500,7 +3134,9 @@ func ListAppsRequestToPb(st *ListAppsRequest) (*appspb.ListAppsRequestPb, error)
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2512,7 +3148,9 @@ func ListAppsRequestFromPb(pb *appspb.ListAppsRequestPb) (*ListAppsRequest, erro
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2526,12 +3164,29 @@ type ListAppsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAppsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListAppsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListAppsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListAppsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListAppsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.ListAppsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAppsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListAppsResponseToPb(st *ListAppsResponse) (*appspb.ListAppsResponsePb, error) {
@@ -2553,7 +3208,9 @@ func ListAppsResponseToPb(st *ListAppsResponse) (*appspb.ListAppsResponsePb, err
 	pb.Apps = appsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2576,7 +3233,9 @@ func ListAppsResponseFromPb(pb *appspb.ListAppsResponsePb) (*ListAppsResponse, e
 	st.Apps = appsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2584,6 +3243,31 @@ type StartAppRequest struct {
 	// The name of the app.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st StartAppRequest) MarshalJSON() ([]byte, error) {
+	pb, err := StartAppRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *StartAppRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.StartAppRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StartAppRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func StartAppRequestToPb(st *StartAppRequest) (*appspb.StartAppRequestPb, error) {
@@ -2610,6 +3294,31 @@ type StopAppRequest struct {
 	// The name of the app.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st StopAppRequest) MarshalJSON() ([]byte, error) {
+	pb, err := StopAppRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *StopAppRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.StopAppRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StopAppRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func StopAppRequestToPb(st *StopAppRequest) (*appspb.StopAppRequestPb, error) {
@@ -2640,6 +3349,31 @@ type UpdateAppRequest struct {
 	// characters and hyphens. It must be unique within the workspace.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st UpdateAppRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateAppRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateAppRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appspb.UpdateAppRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateAppRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateAppRequestToPb(st *UpdateAppRequest) (*appspb.UpdateAppRequestPb, error) {

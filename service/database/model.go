@@ -3,11 +3,11 @@
 package database
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/database/databasepb"
 )
 
@@ -15,6 +15,31 @@ type CreateDatabaseCatalogRequest struct {
 
 	// Wire name: 'catalog'
 	Catalog DatabaseCatalog ``
+}
+
+func (st CreateDatabaseCatalogRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateDatabaseCatalogRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateDatabaseCatalogRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.CreateDatabaseCatalogRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateDatabaseCatalogRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateDatabaseCatalogRequestToPb(st *CreateDatabaseCatalogRequest) (*databasepb.CreateDatabaseCatalogRequestPb, error) {
@@ -53,6 +78,31 @@ type CreateDatabaseInstanceRequest struct {
 	// Instance to create.
 	// Wire name: 'database_instance'
 	DatabaseInstance DatabaseInstance ``
+}
+
+func (st CreateDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateDatabaseInstanceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.CreateDatabaseInstanceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateDatabaseInstanceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateDatabaseInstanceRequestToPb(st *CreateDatabaseInstanceRequest) (*databasepb.CreateDatabaseInstanceRequestPb, error) {
@@ -96,6 +146,31 @@ type CreateDatabaseInstanceRoleRequest struct {
 	InstanceName string `tf:"-"`
 }
 
+func (st CreateDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateDatabaseInstanceRoleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateDatabaseInstanceRoleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.CreateDatabaseInstanceRoleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateDatabaseInstanceRoleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CreateDatabaseInstanceRoleRequestToPb(st *CreateDatabaseInstanceRoleRequest) (*databasepb.CreateDatabaseInstanceRoleRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -136,6 +211,31 @@ type CreateDatabaseTableRequest struct {
 	Table DatabaseTable ``
 }
 
+func (st CreateDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateDatabaseTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.CreateDatabaseTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateDatabaseTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CreateDatabaseTableRequestToPb(st *CreateDatabaseTableRequest) (*databasepb.CreateDatabaseTableRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -172,6 +272,31 @@ type CreateSyncedDatabaseTableRequest struct {
 
 	// Wire name: 'synced_table'
 	SyncedTable SyncedDatabaseTable ``
+}
+
+func (st CreateSyncedDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateSyncedDatabaseTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateSyncedDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.CreateSyncedDatabaseTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateSyncedDatabaseTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateSyncedDatabaseTableRequestToPb(st *CreateSyncedDatabaseTableRequest) (*databasepb.CreateSyncedDatabaseTableRequestPb, error) {
@@ -225,12 +350,29 @@ type DatabaseCatalog struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DatabaseCatalog) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DatabaseCatalog) MarshalJSON() ([]byte, error) {
+	pb, err := DatabaseCatalogToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DatabaseCatalog) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DatabaseCatalog) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.DatabaseCatalogPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DatabaseCatalogFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DatabaseCatalogToPb(st *DatabaseCatalog) (*databasepb.DatabaseCatalogPb, error) {
@@ -244,7 +386,9 @@ func DatabaseCatalogToPb(st *DatabaseCatalog) (*databasepb.DatabaseCatalogPb, er
 	pb.Name = st.Name
 	pb.Uid = st.Uid
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -259,26 +403,45 @@ func DatabaseCatalogFromPb(pb *databasepb.DatabaseCatalogPb) (*DatabaseCatalog, 
 	st.Name = pb.Name
 	st.Uid = pb.Uid
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
 type DatabaseCredential struct {
 
 	// Wire name: 'expiration_time'
-	ExpirationTime *time.Time ``
+	ExpirationTime string `` //legacy
 
 	// Wire name: 'token'
 	Token           string   ``
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DatabaseCredential) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DatabaseCredential) MarshalJSON() ([]byte, error) {
+	pb, err := DatabaseCredentialToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DatabaseCredential) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DatabaseCredential) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.DatabaseCredentialPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DatabaseCredentialFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DatabaseCredentialToPb(st *DatabaseCredential) (*databasepb.DatabaseCredentialPb, error) {
@@ -286,16 +449,12 @@ func DatabaseCredentialToPb(st *DatabaseCredential) (*databasepb.DatabaseCredent
 		return nil, nil
 	}
 	pb := &databasepb.DatabaseCredentialPb{}
-	expirationTimePb, err := timestampToPb(st.ExpirationTime)
-	if err != nil {
-		return nil, err
-	}
-	if expirationTimePb != nil {
-		pb.ExpirationTime = *expirationTimePb
-	}
+	pb.ExpirationTime = st.ExpirationTime
 	pb.Token = st.Token
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -304,16 +463,12 @@ func DatabaseCredentialFromPb(pb *databasepb.DatabaseCredentialPb) (*DatabaseCre
 		return nil, nil
 	}
 	st := &DatabaseCredential{}
-	expirationTimeField, err := timestampFromPb(&pb.ExpirationTime)
-	if err != nil {
-		return nil, err
-	}
-	if expirationTimeField != nil {
-		st.ExpirationTime = expirationTimeField
-	}
+	st.ExpirationTime = pb.ExpirationTime
 	st.Token = pb.Token
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -329,7 +484,7 @@ type DatabaseInstance struct {
 	ChildInstanceRefs []DatabaseInstanceRef ``
 	// The timestamp when the instance was created.
 	// Wire name: 'creation_time'
-	CreationTime *time.Time ``
+	CreationTime string `` //legacy
 	// The email of the creator of the instance.
 	// Wire name: 'creator'
 	Creator string ``
@@ -407,12 +562,29 @@ type DatabaseInstance struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DatabaseInstance) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DatabaseInstance) MarshalJSON() ([]byte, error) {
+	pb, err := DatabaseInstanceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DatabaseInstance) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DatabaseInstance) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.DatabaseInstancePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DatabaseInstanceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DatabaseInstanceToPb(st *DatabaseInstance) (*databasepb.DatabaseInstancePb, error) {
@@ -433,13 +605,7 @@ func DatabaseInstanceToPb(st *DatabaseInstance) (*databasepb.DatabaseInstancePb,
 		}
 	}
 	pb.ChildInstanceRefs = childInstanceRefsPb
-	creationTimePb, err := timestampToPb(st.CreationTime)
-	if err != nil {
-		return nil, err
-	}
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 	pb.Creator = st.Creator
 	pb.EffectiveEnableReadableSecondaries = st.EffectiveEnableReadableSecondaries
 	pb.EffectiveNodeCount = st.EffectiveNodeCount
@@ -469,7 +635,9 @@ func DatabaseInstanceToPb(st *DatabaseInstance) (*databasepb.DatabaseInstancePb,
 	pb.Stopped = st.Stopped
 	pb.Uid = st.Uid
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -491,13 +659,7 @@ func DatabaseInstanceFromPb(pb *databasepb.DatabaseInstancePb) (*DatabaseInstanc
 		}
 	}
 	st.ChildInstanceRefs = childInstanceRefsField
-	creationTimeField, err := timestampFromPb(&pb.CreationTime)
-	if err != nil {
-		return nil, err
-	}
-	if creationTimeField != nil {
-		st.CreationTime = creationTimeField
-	}
+	st.CreationTime = pb.CreationTime
 	st.Creator = pb.Creator
 	st.EffectiveEnableReadableSecondaries = pb.EffectiveEnableReadableSecondaries
 	st.EffectiveNodeCount = pb.EffectiveNodeCount
@@ -527,7 +689,9 @@ func DatabaseInstanceFromPb(pb *databasepb.DatabaseInstancePb) (*DatabaseInstanc
 	st.Stopped = pb.Stopped
 	st.Uid = pb.Uid
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -546,7 +710,7 @@ type DatabaseInstanceRef struct {
 	// the point in time to create a child instance. Optional. Output: Only
 	// populated if provided as input to create a child instance.
 	// Wire name: 'branch_time'
-	BranchTime *time.Time ``
+	BranchTime string `` //legacy
 	// xref AIP-129. `lsn` is owned by the client, while `effective_lsn` is
 	// owned by the server. `lsn` will only be set in Create/Update response
 	// messages if and only if the user provides the field via the request.
@@ -572,12 +736,29 @@ type DatabaseInstanceRef struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DatabaseInstanceRef) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DatabaseInstanceRef) MarshalJSON() ([]byte, error) {
+	pb, err := DatabaseInstanceRefToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DatabaseInstanceRef) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DatabaseInstanceRef) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.DatabaseInstanceRefPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DatabaseInstanceRefFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DatabaseInstanceRefToPb(st *DatabaseInstanceRef) (*databasepb.DatabaseInstanceRefPb, error) {
@@ -585,19 +766,15 @@ func DatabaseInstanceRefToPb(st *DatabaseInstanceRef) (*databasepb.DatabaseInsta
 		return nil, nil
 	}
 	pb := &databasepb.DatabaseInstanceRefPb{}
-	branchTimePb, err := timestampToPb(st.BranchTime)
-	if err != nil {
-		return nil, err
-	}
-	if branchTimePb != nil {
-		pb.BranchTime = *branchTimePb
-	}
+	pb.BranchTime = st.BranchTime
 	pb.EffectiveLsn = st.EffectiveLsn
 	pb.Lsn = st.Lsn
 	pb.Name = st.Name
 	pb.Uid = st.Uid
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -606,19 +783,15 @@ func DatabaseInstanceRefFromPb(pb *databasepb.DatabaseInstanceRefPb) (*DatabaseI
 		return nil, nil
 	}
 	st := &DatabaseInstanceRef{}
-	branchTimeField, err := timestampFromPb(&pb.BranchTime)
-	if err != nil {
-		return nil, err
-	}
-	if branchTimeField != nil {
-		st.BranchTime = branchTimeField
-	}
+	st.BranchTime = pb.BranchTime
 	st.EffectiveLsn = pb.EffectiveLsn
 	st.Lsn = pb.Lsn
 	st.Name = pb.Name
 	st.Uid = pb.Uid
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -640,12 +813,29 @@ type DatabaseInstanceRole struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DatabaseInstanceRole) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DatabaseInstanceRole) MarshalJSON() ([]byte, error) {
+	pb, err := DatabaseInstanceRoleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DatabaseInstanceRole) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DatabaseInstanceRole) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.DatabaseInstanceRolePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DatabaseInstanceRoleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DatabaseInstanceRoleToPb(st *DatabaseInstanceRole) (*databasepb.DatabaseInstanceRolePb, error) {
@@ -676,7 +866,9 @@ func DatabaseInstanceRoleToPb(st *DatabaseInstanceRole) (*databasepb.DatabaseIns
 	}
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -708,7 +900,9 @@ func DatabaseInstanceRoleFromPb(pb *databasepb.DatabaseInstanceRolePb) (*Databas
 	}
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -732,12 +926,29 @@ type DatabaseInstanceRoleAttributes struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DatabaseInstanceRoleAttributes) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DatabaseInstanceRoleAttributes) MarshalJSON() ([]byte, error) {
+	pb, err := DatabaseInstanceRoleAttributesToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DatabaseInstanceRoleAttributes) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DatabaseInstanceRoleAttributes) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.DatabaseInstanceRoleAttributesPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DatabaseInstanceRoleAttributesFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DatabaseInstanceRoleAttributesToPb(st *DatabaseInstanceRoleAttributes) (*databasepb.DatabaseInstanceRoleAttributesPb, error) {
@@ -749,7 +960,9 @@ func DatabaseInstanceRoleAttributesToPb(st *DatabaseInstanceRoleAttributes) (*da
 	pb.Createdb = st.Createdb
 	pb.Createrole = st.Createrole
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -762,7 +975,9 @@ func DatabaseInstanceRoleAttributesFromPb(pb *databasepb.DatabaseInstanceRoleAtt
 	st.Createdb = pb.Createdb
 	st.Createrole = pb.Createrole
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -970,12 +1185,29 @@ type DatabaseTable struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DatabaseTable) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DatabaseTable) MarshalJSON() ([]byte, error) {
+	pb, err := DatabaseTableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DatabaseTable) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DatabaseTable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.DatabaseTablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DatabaseTableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DatabaseTableToPb(st *DatabaseTable) (*databasepb.DatabaseTablePb, error) {
@@ -987,7 +1219,9 @@ func DatabaseTableToPb(st *DatabaseTable) (*databasepb.DatabaseTablePb, error) {
 	pb.LogicalDatabaseName = st.LogicalDatabaseName
 	pb.Name = st.Name
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1000,7 +1234,9 @@ func DatabaseTableFromPb(pb *databasepb.DatabaseTablePb) (*DatabaseTable, error)
 	st.LogicalDatabaseName = pb.LogicalDatabaseName
 	st.Name = pb.Name
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1008,6 +1244,31 @@ type DeleteDatabaseCatalogRequest struct {
 
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st DeleteDatabaseCatalogRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDatabaseCatalogRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteDatabaseCatalogRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.DeleteDatabaseCatalogRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDatabaseCatalogRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDatabaseCatalogRequestToPb(st *DeleteDatabaseCatalogRequest) (*databasepb.DeleteDatabaseCatalogRequestPb, error) {
@@ -1052,12 +1313,29 @@ type DeleteDatabaseInstanceRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDatabaseInstanceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.DeleteDatabaseInstanceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDatabaseInstanceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDatabaseInstanceRequestToPb(st *DeleteDatabaseInstanceRequest) (*databasepb.DeleteDatabaseInstanceRequestPb, error) {
@@ -1069,7 +1347,9 @@ func DeleteDatabaseInstanceRequestToPb(st *DeleteDatabaseInstanceRequest) (*data
 	pb.Name = st.Name
 	pb.Purge = st.Purge
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1082,7 +1362,9 @@ func DeleteDatabaseInstanceRequestFromPb(pb *databasepb.DeleteDatabaseInstanceRe
 	st.Name = pb.Name
 	st.Purge = pb.Purge
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1103,12 +1385,29 @@ type DeleteDatabaseInstanceRoleRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteDatabaseInstanceRoleRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDatabaseInstanceRoleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteDatabaseInstanceRoleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.DeleteDatabaseInstanceRoleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDatabaseInstanceRoleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDatabaseInstanceRoleRequestToPb(st *DeleteDatabaseInstanceRoleRequest) (*databasepb.DeleteDatabaseInstanceRoleRequestPb, error) {
@@ -1121,7 +1420,9 @@ func DeleteDatabaseInstanceRoleRequestToPb(st *DeleteDatabaseInstanceRoleRequest
 	pb.Name = st.Name
 	pb.ReassignOwnedTo = st.ReassignOwnedTo
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1135,7 +1436,9 @@ func DeleteDatabaseInstanceRoleRequestFromPb(pb *databasepb.DeleteDatabaseInstan
 	st.Name = pb.Name
 	st.ReassignOwnedTo = pb.ReassignOwnedTo
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1143,6 +1446,31 @@ type DeleteDatabaseTableRequest struct {
 
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st DeleteDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDatabaseTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.DeleteDatabaseTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDatabaseTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDatabaseTableRequestToPb(st *DeleteDatabaseTableRequest) (*databasepb.DeleteDatabaseTableRequestPb, error) {
@@ -1171,6 +1499,31 @@ type DeleteSyncedDatabaseTableRequest struct {
 	Name string `tf:"-"`
 }
 
+func (st DeleteSyncedDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteSyncedDatabaseTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteSyncedDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.DeleteSyncedDatabaseTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteSyncedDatabaseTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteSyncedDatabaseTableRequestToPb(st *DeleteSyncedDatabaseTableRequest) (*databasepb.DeleteSyncedDatabaseTableRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1196,19 +1549,36 @@ type DeltaTableSyncInfo struct {
 	// Delta table. Note: This is the Delta commit time, not the time the data
 	// was written to the synced table.
 	// Wire name: 'delta_commit_timestamp'
-	DeltaCommitTimestamp *time.Time ``
+	DeltaCommitTimestamp string `` //legacy
 	// The Delta Lake commit version that was last successfully synced.
 	// Wire name: 'delta_commit_version'
 	DeltaCommitVersion int64    ``
 	ForceSendFields    []string `tf:"-"`
 }
 
-func (s *DeltaTableSyncInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeltaTableSyncInfo) MarshalJSON() ([]byte, error) {
+	pb, err := DeltaTableSyncInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeltaTableSyncInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeltaTableSyncInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.DeltaTableSyncInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeltaTableSyncInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeltaTableSyncInfoToPb(st *DeltaTableSyncInfo) (*databasepb.DeltaTableSyncInfoPb, error) {
@@ -1216,16 +1586,12 @@ func DeltaTableSyncInfoToPb(st *DeltaTableSyncInfo) (*databasepb.DeltaTableSyncI
 		return nil, nil
 	}
 	pb := &databasepb.DeltaTableSyncInfoPb{}
-	deltaCommitTimestampPb, err := timestampToPb(st.DeltaCommitTimestamp)
-	if err != nil {
-		return nil, err
-	}
-	if deltaCommitTimestampPb != nil {
-		pb.DeltaCommitTimestamp = *deltaCommitTimestampPb
-	}
+	pb.DeltaCommitTimestamp = st.DeltaCommitTimestamp
 	pb.DeltaCommitVersion = st.DeltaCommitVersion
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1234,16 +1600,12 @@ func DeltaTableSyncInfoFromPb(pb *databasepb.DeltaTableSyncInfoPb) (*DeltaTableS
 		return nil, nil
 	}
 	st := &DeltaTableSyncInfo{}
-	deltaCommitTimestampField, err := timestampFromPb(&pb.DeltaCommitTimestamp)
-	if err != nil {
-		return nil, err
-	}
-	if deltaCommitTimestampField != nil {
-		st.DeltaCommitTimestamp = deltaCommitTimestampField
-	}
+	st.DeltaCommitTimestamp = pb.DeltaCommitTimestamp
 	st.DeltaCommitVersion = pb.DeltaCommitVersion
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1254,12 +1616,29 @@ type FindDatabaseInstanceByUidRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FindDatabaseInstanceByUidRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st FindDatabaseInstanceByUidRequest) MarshalJSON() ([]byte, error) {
+	pb, err := FindDatabaseInstanceByUidRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s FindDatabaseInstanceByUidRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *FindDatabaseInstanceByUidRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.FindDatabaseInstanceByUidRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FindDatabaseInstanceByUidRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FindDatabaseInstanceByUidRequestToPb(st *FindDatabaseInstanceByUidRequest) (*databasepb.FindDatabaseInstanceByUidRequestPb, error) {
@@ -1269,7 +1648,9 @@ func FindDatabaseInstanceByUidRequestToPb(st *FindDatabaseInstanceByUidRequest) 
 	pb := &databasepb.FindDatabaseInstanceByUidRequestPb{}
 	pb.Uid = st.Uid
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1280,7 +1661,9 @@ func FindDatabaseInstanceByUidRequestFromPb(pb *databasepb.FindDatabaseInstanceB
 	st := &FindDatabaseInstanceByUidRequest{}
 	st.Uid = pb.Uid
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1300,12 +1683,29 @@ type GenerateDatabaseCredentialRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GenerateDatabaseCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenerateDatabaseCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenerateDatabaseCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenerateDatabaseCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenerateDatabaseCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.GenerateDatabaseCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenerateDatabaseCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenerateDatabaseCredentialRequestToPb(st *GenerateDatabaseCredentialRequest) (*databasepb.GenerateDatabaseCredentialRequestPb, error) {
@@ -1328,7 +1728,9 @@ func GenerateDatabaseCredentialRequestToPb(st *GenerateDatabaseCredentialRequest
 	pb.InstanceNames = st.InstanceNames
 	pb.RequestId = st.RequestId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1352,7 +1754,9 @@ func GenerateDatabaseCredentialRequestFromPb(pb *databasepb.GenerateDatabaseCred
 	st.InstanceNames = pb.InstanceNames
 	st.RequestId = pb.RequestId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1360,6 +1764,31 @@ type GetDatabaseCatalogRequest struct {
 
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st GetDatabaseCatalogRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDatabaseCatalogRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetDatabaseCatalogRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.GetDatabaseCatalogRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDatabaseCatalogRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetDatabaseCatalogRequestToPb(st *GetDatabaseCatalogRequest) (*databasepb.GetDatabaseCatalogRequestPb, error) {
@@ -1386,6 +1815,31 @@ type GetDatabaseInstanceRequest struct {
 	// Name of the cluster to get.
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st GetDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDatabaseInstanceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.GetDatabaseInstanceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDatabaseInstanceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetDatabaseInstanceRequestToPb(st *GetDatabaseInstanceRequest) (*databasepb.GetDatabaseInstanceRequestPb, error) {
@@ -1417,6 +1871,31 @@ type GetDatabaseInstanceRoleRequest struct {
 	Name string `tf:"-"`
 }
 
+func (st GetDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDatabaseInstanceRoleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetDatabaseInstanceRoleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.GetDatabaseInstanceRoleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDatabaseInstanceRoleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetDatabaseInstanceRoleRequestToPb(st *GetDatabaseInstanceRoleRequest) (*databasepb.GetDatabaseInstanceRoleRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1445,6 +1924,31 @@ type GetDatabaseTableRequest struct {
 	Name string `tf:"-"`
 }
 
+func (st GetDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDatabaseTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.GetDatabaseTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDatabaseTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetDatabaseTableRequestToPb(st *GetDatabaseTableRequest) (*databasepb.GetDatabaseTableRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1469,6 +1973,31 @@ type GetSyncedDatabaseTableRequest struct {
 
 	// Wire name: 'name'
 	Name string `tf:"-"`
+}
+
+func (st GetSyncedDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetSyncedDatabaseTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetSyncedDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.GetSyncedDatabaseTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetSyncedDatabaseTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetSyncedDatabaseTableRequestToPb(st *GetSyncedDatabaseTableRequest) (*databasepb.GetSyncedDatabaseTableRequestPb, error) {
@@ -1505,12 +2034,29 @@ type ListDatabaseInstanceRolesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListDatabaseInstanceRolesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListDatabaseInstanceRolesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListDatabaseInstanceRolesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListDatabaseInstanceRolesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListDatabaseInstanceRolesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.ListDatabaseInstanceRolesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListDatabaseInstanceRolesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListDatabaseInstanceRolesRequestToPb(st *ListDatabaseInstanceRolesRequest) (*databasepb.ListDatabaseInstanceRolesRequestPb, error) {
@@ -1522,7 +2068,9 @@ func ListDatabaseInstanceRolesRequestToPb(st *ListDatabaseInstanceRolesRequest) 
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1535,7 +2083,9 @@ func ListDatabaseInstanceRolesRequestFromPb(pb *databasepb.ListDatabaseInstanceR
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1549,12 +2099,29 @@ type ListDatabaseInstanceRolesResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListDatabaseInstanceRolesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListDatabaseInstanceRolesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListDatabaseInstanceRolesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListDatabaseInstanceRolesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListDatabaseInstanceRolesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.ListDatabaseInstanceRolesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListDatabaseInstanceRolesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListDatabaseInstanceRolesResponseToPb(st *ListDatabaseInstanceRolesResponse) (*databasepb.ListDatabaseInstanceRolesResponsePb, error) {
@@ -1576,7 +2143,9 @@ func ListDatabaseInstanceRolesResponseToPb(st *ListDatabaseInstanceRolesResponse
 	pb.DatabaseInstanceRoles = databaseInstanceRolesPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1599,7 +2168,9 @@ func ListDatabaseInstanceRolesResponseFromPb(pb *databasepb.ListDatabaseInstance
 	st.DatabaseInstanceRoles = databaseInstanceRolesField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1614,12 +2185,29 @@ type ListDatabaseInstancesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListDatabaseInstancesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListDatabaseInstancesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListDatabaseInstancesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListDatabaseInstancesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListDatabaseInstancesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.ListDatabaseInstancesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListDatabaseInstancesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListDatabaseInstancesRequestToPb(st *ListDatabaseInstancesRequest) (*databasepb.ListDatabaseInstancesRequestPb, error) {
@@ -1630,7 +2218,9 @@ func ListDatabaseInstancesRequestToPb(st *ListDatabaseInstancesRequest) (*databa
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1642,7 +2232,9 @@ func ListDatabaseInstancesRequestFromPb(pb *databasepb.ListDatabaseInstancesRequ
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1656,12 +2248,29 @@ type ListDatabaseInstancesResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListDatabaseInstancesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListDatabaseInstancesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListDatabaseInstancesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListDatabaseInstancesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListDatabaseInstancesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.ListDatabaseInstancesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListDatabaseInstancesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListDatabaseInstancesResponseToPb(st *ListDatabaseInstancesResponse) (*databasepb.ListDatabaseInstancesResponsePb, error) {
@@ -1683,7 +2292,9 @@ func ListDatabaseInstancesResponseToPb(st *ListDatabaseInstancesResponse) (*data
 	pb.DatabaseInstances = databaseInstancesPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1706,7 +2317,9 @@ func ListDatabaseInstancesResponseFromPb(pb *databasepb.ListDatabaseInstancesRes
 	st.DatabaseInstances = databaseInstancesField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1733,12 +2346,29 @@ type NewPipelineSpec struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *NewPipelineSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st NewPipelineSpec) MarshalJSON() ([]byte, error) {
+	pb, err := NewPipelineSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s NewPipelineSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *NewPipelineSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.NewPipelineSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NewPipelineSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NewPipelineSpecToPb(st *NewPipelineSpec) (*databasepb.NewPipelineSpecPb, error) {
@@ -1749,7 +2379,9 @@ func NewPipelineSpecToPb(st *NewPipelineSpec) (*databasepb.NewPipelineSpecPb, er
 	pb.StorageCatalog = st.StorageCatalog
 	pb.StorageSchema = st.StorageSchema
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1761,7 +2393,9 @@ func NewPipelineSpecFromPb(pb *databasepb.NewPipelineSpecPb) (*NewPipelineSpec, 
 	st.StorageCatalog = pb.StorageCatalog
 	st.StorageSchema = pb.StorageSchema
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1895,6 +2529,31 @@ type RequestedClaims struct {
 	Resources []RequestedResource ``
 }
 
+func (st RequestedClaims) MarshalJSON() ([]byte, error) {
+	pb, err := RequestedClaimsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RequestedClaims) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.RequestedClaimsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RequestedClaimsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func RequestedClaimsToPb(st *RequestedClaims) (*databasepb.RequestedClaimsPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2012,12 +2671,29 @@ type RequestedResource struct {
 	ForceSendFields         []string `tf:"-"`
 }
 
-func (s *RequestedResource) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RequestedResource) MarshalJSON() ([]byte, error) {
+	pb, err := RequestedResourceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RequestedResource) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RequestedResource) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.RequestedResourcePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RequestedResourceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RequestedResourceToPb(st *RequestedResource) (*databasepb.RequestedResourcePb, error) {
@@ -2028,7 +2704,9 @@ func RequestedResourceToPb(st *RequestedResource) (*databasepb.RequestedResource
 	pb.TableName = st.TableName
 	pb.UnspecifiedResourceName = st.UnspecifiedResourceName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2040,7 +2718,9 @@ func RequestedResourceFromPb(pb *databasepb.RequestedResourcePb) (*RequestedReso
 	st.TableName = pb.TableName
 	st.UnspecifiedResourceName = pb.UnspecifiedResourceName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2086,12 +2766,29 @@ type SyncedDatabaseTable struct {
 	ForceSendFields               []string              `tf:"-"`
 }
 
-func (s *SyncedDatabaseTable) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SyncedDatabaseTable) MarshalJSON() ([]byte, error) {
+	pb, err := SyncedDatabaseTableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SyncedDatabaseTable) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SyncedDatabaseTable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.SyncedDatabaseTablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SyncedDatabaseTableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SyncedDatabaseTableToPb(st *SyncedDatabaseTable) (*databasepb.SyncedDatabaseTablePb, error) {
@@ -2124,7 +2821,9 @@ func SyncedDatabaseTableToPb(st *SyncedDatabaseTable) (*databasepb.SyncedDatabas
 		pb.UnityCatalogProvisioningState = *unityCatalogProvisioningStatePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2158,7 +2857,9 @@ func SyncedDatabaseTableFromPb(pb *databasepb.SyncedDatabaseTablePb) (*SyncedDat
 		st.UnityCatalogProvisioningState = *unityCatalogProvisioningStateField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2176,16 +2877,33 @@ type SyncedTableContinuousUpdateStatus struct {
 	// source table to the synced table. This is when the data is available in
 	// the synced table.
 	// Wire name: 'timestamp'
-	Timestamp       *time.Time ``
-	ForceSendFields []string   `tf:"-"`
+	Timestamp       string   `` //legacy
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SyncedTableContinuousUpdateStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SyncedTableContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
+	pb, err := SyncedTableContinuousUpdateStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SyncedTableContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SyncedTableContinuousUpdateStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.SyncedTableContinuousUpdateStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SyncedTableContinuousUpdateStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SyncedTableContinuousUpdateStatusToPb(st *SyncedTableContinuousUpdateStatus) (*databasepb.SyncedTableContinuousUpdateStatusPb, error) {
@@ -2201,15 +2919,11 @@ func SyncedTableContinuousUpdateStatusToPb(st *SyncedTableContinuousUpdateStatus
 		pb.InitialPipelineSyncProgress = initialPipelineSyncProgressPb
 	}
 	pb.LastProcessedCommitVersion = st.LastProcessedCommitVersion
-	timestampPb, err := timestampToPb(st.Timestamp)
-	if err != nil {
-		return nil, err
-	}
-	if timestampPb != nil {
-		pb.Timestamp = *timestampPb
-	}
+	pb.Timestamp = st.Timestamp
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2226,15 +2940,11 @@ func SyncedTableContinuousUpdateStatusFromPb(pb *databasepb.SyncedTableContinuou
 		st.InitialPipelineSyncProgress = initialPipelineSyncProgressField
 	}
 	st.LastProcessedCommitVersion = pb.LastProcessedCommitVersion
-	timestampField, err := timestampFromPb(&pb.Timestamp)
-	if err != nil {
-		return nil, err
-	}
-	if timestampField != nil {
-		st.Timestamp = timestampField
-	}
+	st.Timestamp = pb.Timestamp
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2251,16 +2961,33 @@ type SyncedTableFailedStatus struct {
 	// source table to the synced table. Only populated if the table is still
 	// synced and available for serving.
 	// Wire name: 'timestamp'
-	Timestamp       *time.Time ``
-	ForceSendFields []string   `tf:"-"`
+	Timestamp       string   `` //legacy
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SyncedTableFailedStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SyncedTableFailedStatus) MarshalJSON() ([]byte, error) {
+	pb, err := SyncedTableFailedStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SyncedTableFailedStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SyncedTableFailedStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.SyncedTableFailedStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SyncedTableFailedStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SyncedTableFailedStatusToPb(st *SyncedTableFailedStatus) (*databasepb.SyncedTableFailedStatusPb, error) {
@@ -2269,15 +2996,11 @@ func SyncedTableFailedStatusToPb(st *SyncedTableFailedStatus) (*databasepb.Synce
 	}
 	pb := &databasepb.SyncedTableFailedStatusPb{}
 	pb.LastProcessedCommitVersion = st.LastProcessedCommitVersion
-	timestampPb, err := timestampToPb(st.Timestamp)
-	if err != nil {
-		return nil, err
-	}
-	if timestampPb != nil {
-		pb.Timestamp = *timestampPb
-	}
+	pb.Timestamp = st.Timestamp
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2287,15 +3010,11 @@ func SyncedTableFailedStatusFromPb(pb *databasepb.SyncedTableFailedStatusPb) (*S
 	}
 	st := &SyncedTableFailedStatus{}
 	st.LastProcessedCommitVersion = pb.LastProcessedCommitVersion
-	timestampField, err := timestampFromPb(&pb.Timestamp)
-	if err != nil {
-		return nil, err
-	}
-	if timestampField != nil {
-		st.Timestamp = timestampField
-	}
+	st.Timestamp = pb.Timestamp
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2324,12 +3043,29 @@ type SyncedTablePipelineProgress struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SyncedTablePipelineProgress) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SyncedTablePipelineProgress) MarshalJSON() ([]byte, error) {
+	pb, err := SyncedTablePipelineProgressToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SyncedTablePipelineProgress) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SyncedTablePipelineProgress) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.SyncedTablePipelineProgressPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SyncedTablePipelineProgressFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SyncedTablePipelineProgressToPb(st *SyncedTablePipelineProgress) (*databasepb.SyncedTablePipelineProgressPb, error) {
@@ -2350,7 +3086,9 @@ func SyncedTablePipelineProgressToPb(st *SyncedTablePipelineProgress) (*database
 	pb.SyncedRowCount = st.SyncedRowCount
 	pb.TotalRowCount = st.TotalRowCount
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2372,7 +3110,9 @@ func SyncedTablePipelineProgressFromPb(pb *databasepb.SyncedTablePipelineProgres
 	st.SyncedRowCount = pb.SyncedRowCount
 	st.TotalRowCount = pb.TotalRowCount
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2383,22 +3123,39 @@ type SyncedTablePosition struct {
 	// The end timestamp of the most recent successful synchronization. This is
 	// the time when the data is available in the synced table.
 	// Wire name: 'sync_end_timestamp'
-	SyncEndTimestamp *time.Time ``
+	SyncEndTimestamp string `` //legacy
 	// The starting timestamp of the most recent successful synchronization from
 	// the source table to the destination (synced) table. Note this is the
 	// starting timestamp of the sync operation, not the end time. E.g., for a
 	// batch, this is the time when the sync operation started.
 	// Wire name: 'sync_start_timestamp'
-	SyncStartTimestamp *time.Time ``
-	ForceSendFields    []string   `tf:"-"`
+	SyncStartTimestamp string   `` //legacy
+	ForceSendFields    []string `tf:"-"`
 }
 
-func (s *SyncedTablePosition) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SyncedTablePosition) MarshalJSON() ([]byte, error) {
+	pb, err := SyncedTablePositionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SyncedTablePosition) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SyncedTablePosition) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.SyncedTablePositionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SyncedTablePositionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SyncedTablePositionToPb(st *SyncedTablePosition) (*databasepb.SyncedTablePositionPb, error) {
@@ -2413,22 +3170,12 @@ func SyncedTablePositionToPb(st *SyncedTablePosition) (*databasepb.SyncedTablePo
 	if deltaTableSyncInfoPb != nil {
 		pb.DeltaTableSyncInfo = deltaTableSyncInfoPb
 	}
-	syncEndTimestampPb, err := timestampToPb(st.SyncEndTimestamp)
-	if err != nil {
-		return nil, err
-	}
-	if syncEndTimestampPb != nil {
-		pb.SyncEndTimestamp = *syncEndTimestampPb
-	}
-	syncStartTimestampPb, err := timestampToPb(st.SyncStartTimestamp)
-	if err != nil {
-		return nil, err
-	}
-	if syncStartTimestampPb != nil {
-		pb.SyncStartTimestamp = *syncStartTimestampPb
-	}
+	pb.SyncEndTimestamp = st.SyncEndTimestamp
+	pb.SyncStartTimestamp = st.SyncStartTimestamp
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2444,22 +3191,12 @@ func SyncedTablePositionFromPb(pb *databasepb.SyncedTablePositionPb) (*SyncedTab
 	if deltaTableSyncInfoField != nil {
 		st.DeltaTableSyncInfo = deltaTableSyncInfoField
 	}
-	syncEndTimestampField, err := timestampFromPb(&pb.SyncEndTimestamp)
-	if err != nil {
-		return nil, err
-	}
-	if syncEndTimestampField != nil {
-		st.SyncEndTimestamp = syncEndTimestampField
-	}
-	syncStartTimestampField, err := timestampFromPb(&pb.SyncStartTimestamp)
-	if err != nil {
-		return nil, err
-	}
-	if syncStartTimestampField != nil {
-		st.SyncStartTimestamp = syncStartTimestampField
-	}
+	st.SyncEndTimestamp = pb.SyncEndTimestamp
+	st.SyncStartTimestamp = pb.SyncStartTimestamp
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2470,6 +3207,31 @@ type SyncedTableProvisioningStatus struct {
 	// PROVISIONING_INITIAL_SNAPSHOT state.
 	// Wire name: 'initial_pipeline_sync_progress'
 	InitialPipelineSyncProgress *SyncedTablePipelineProgress ``
+}
+
+func (st SyncedTableProvisioningStatus) MarshalJSON() ([]byte, error) {
+	pb, err := SyncedTableProvisioningStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *SyncedTableProvisioningStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.SyncedTableProvisioningStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SyncedTableProvisioningStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SyncedTableProvisioningStatusToPb(st *SyncedTableProvisioningStatus) (*databasepb.SyncedTableProvisioningStatusPb, error) {
@@ -2603,12 +3365,29 @@ type SyncedTableSpec struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SyncedTableSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SyncedTableSpec) MarshalJSON() ([]byte, error) {
+	pb, err := SyncedTableSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SyncedTableSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SyncedTableSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.SyncedTableSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SyncedTableSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SyncedTableSpecToPb(st *SyncedTableSpec) (*databasepb.SyncedTableSpecPb, error) {
@@ -2636,7 +3415,9 @@ func SyncedTableSpecToPb(st *SyncedTableSpec) (*databasepb.SyncedTableSpecPb, er
 	pb.SourceTableFullName = st.SourceTableFullName
 	pb.TimeseriesKey = st.TimeseriesKey
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2665,7 +3446,9 @@ func SyncedTableSpecFromPb(pb *databasepb.SyncedTableSpecPb) (*SyncedTableSpec, 
 	st.SourceTableFullName = pb.SourceTableFullName
 	st.TimeseriesKey = pb.TimeseriesKey
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2793,12 +3576,29 @@ type SyncedTableStatus struct {
 	ForceSendFields       []string                          `tf:"-"`
 }
 
-func (s *SyncedTableStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SyncedTableStatus) MarshalJSON() ([]byte, error) {
+	pb, err := SyncedTableStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SyncedTableStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SyncedTableStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.SyncedTableStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SyncedTableStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SyncedTableStatusToPb(st *SyncedTableStatus) (*databasepb.SyncedTableStatusPb, error) {
@@ -2851,7 +3651,9 @@ func SyncedTableStatusToPb(st *SyncedTableStatus) (*databasepb.SyncedTableStatus
 		pb.TriggeredUpdateStatus = triggeredUpdateStatusPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2905,7 +3707,9 @@ func SyncedTableStatusFromPb(pb *databasepb.SyncedTableStatusPb) (*SyncedTableSt
 		st.TriggeredUpdateStatus = triggeredUpdateStatusField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2920,19 +3724,36 @@ type SyncedTableTriggeredUpdateStatus struct {
 	// source table to the synced table. This is when the data is available in
 	// the synced table.
 	// Wire name: 'timestamp'
-	Timestamp *time.Time ``
+	Timestamp string `` //legacy
 	// Progress of the active data synchronization pipeline.
 	// Wire name: 'triggered_update_progress'
 	TriggeredUpdateProgress *SyncedTablePipelineProgress ``
 	ForceSendFields         []string                     `tf:"-"`
 }
 
-func (s *SyncedTableTriggeredUpdateStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SyncedTableTriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
+	pb, err := SyncedTableTriggeredUpdateStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SyncedTableTriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SyncedTableTriggeredUpdateStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.SyncedTableTriggeredUpdateStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SyncedTableTriggeredUpdateStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SyncedTableTriggeredUpdateStatusToPb(st *SyncedTableTriggeredUpdateStatus) (*databasepb.SyncedTableTriggeredUpdateStatusPb, error) {
@@ -2941,13 +3762,7 @@ func SyncedTableTriggeredUpdateStatusToPb(st *SyncedTableTriggeredUpdateStatus) 
 	}
 	pb := &databasepb.SyncedTableTriggeredUpdateStatusPb{}
 	pb.LastProcessedCommitVersion = st.LastProcessedCommitVersion
-	timestampPb, err := timestampToPb(st.Timestamp)
-	if err != nil {
-		return nil, err
-	}
-	if timestampPb != nil {
-		pb.Timestamp = *timestampPb
-	}
+	pb.Timestamp = st.Timestamp
 	triggeredUpdateProgressPb, err := SyncedTablePipelineProgressToPb(st.TriggeredUpdateProgress)
 	if err != nil {
 		return nil, err
@@ -2956,7 +3771,9 @@ func SyncedTableTriggeredUpdateStatusToPb(st *SyncedTableTriggeredUpdateStatus) 
 		pb.TriggeredUpdateProgress = triggeredUpdateProgressPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2966,13 +3783,7 @@ func SyncedTableTriggeredUpdateStatusFromPb(pb *databasepb.SyncedTableTriggeredU
 	}
 	st := &SyncedTableTriggeredUpdateStatus{}
 	st.LastProcessedCommitVersion = pb.LastProcessedCommitVersion
-	timestampField, err := timestampFromPb(&pb.Timestamp)
-	if err != nil {
-		return nil, err
-	}
-	if timestampField != nil {
-		st.Timestamp = timestampField
-	}
+	st.Timestamp = pb.Timestamp
 	triggeredUpdateProgressField, err := SyncedTablePipelineProgressFromPb(pb.TriggeredUpdateProgress)
 	if err != nil {
 		return nil, err
@@ -2981,7 +3792,9 @@ func SyncedTableTriggeredUpdateStatusFromPb(pb *databasepb.SyncedTableTriggeredU
 		st.TriggeredUpdateProgress = triggeredUpdateProgressField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2995,7 +3808,33 @@ type UpdateDatabaseInstanceRequest struct {
 	// The list of fields to update. This field is not yet supported, and is
 	// ignored by the server.
 	// Wire name: 'update_mask'
-	UpdateMask []string `tf:"-"`
+	UpdateMask string `tf:"-"` //legacy
+
+}
+
+func (st UpdateDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateDatabaseInstanceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databasepb.UpdateDatabaseInstanceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateDatabaseInstanceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateDatabaseInstanceRequestToPb(st *UpdateDatabaseInstanceRequest) (*databasepb.UpdateDatabaseInstanceRequestPb, error) {
@@ -3011,13 +3850,7 @@ func UpdateDatabaseInstanceRequestToPb(st *UpdateDatabaseInstanceRequest) (*data
 		pb.DatabaseInstance = *databaseInstancePb
 	}
 	pb.Name = st.Name
-	updateMaskPb, err := fieldMaskToPb(&st.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
 	return pb, nil
 }
@@ -3035,13 +3868,7 @@ func UpdateDatabaseInstanceRequestFromPb(pb *databasepb.UpdateDatabaseInstanceRe
 		st.DatabaseInstance = *databaseInstanceField
 	}
 	st.Name = pb.Name
-	updateMaskField, err := fieldMaskFromPb(&pb.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.UpdateMask = pb.UpdateMask
 
 	return st, nil
 }

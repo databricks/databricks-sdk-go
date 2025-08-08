@@ -34,9 +34,12 @@ func (a *cleanRoomAssetRevisionsImpl) Get(ctx context.Context, request GetCleanR
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&cleanRoomAssetPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CleanRoomAssetFromPb(&cleanRoomAssetPb)
 	if err != nil {
 		return nil, err
@@ -92,7 +95,7 @@ func (a *cleanRoomAssetRevisionsImpl) internalList(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listCleanRoomAssetRevisionsResponsePb,
 	)
 	if err != nil {
@@ -128,9 +131,12 @@ func (a *cleanRoomAssetsImpl) Create(ctx context.Context, request CreateCleanRoo
 		path,
 		headers,
 		queryParams,
-		requestPb.Asset,
+		(*requestPb).Asset,
 		&cleanRoomAssetPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CleanRoomAssetFromPb(&cleanRoomAssetPb)
 	if err != nil {
 		return nil, err
@@ -156,9 +162,12 @@ func (a *cleanRoomAssetsImpl) CreateCleanRoomAssetReview(ctx context.Context, re
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createCleanRoomAssetReviewResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateCleanRoomAssetReviewResponseFromPb(&createCleanRoomAssetReviewResponsePb)
 	if err != nil {
 		return nil, err
@@ -182,9 +191,12 @@ func (a *cleanRoomAssetsImpl) Delete(ctx context.Context, request DeleteCleanRoo
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -205,9 +217,12 @@ func (a *cleanRoomAssetsImpl) Get(ctx context.Context, request GetCleanRoomAsset
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&cleanRoomAssetPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CleanRoomAssetFromPb(&cleanRoomAssetPb)
 	if err != nil {
 		return nil, err
@@ -263,7 +278,7 @@ func (a *cleanRoomAssetsImpl) internalList(ctx context.Context, request ListClea
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listCleanRoomAssetsResponsePb,
 	)
 	if err != nil {
@@ -294,9 +309,12 @@ func (a *cleanRoomAssetsImpl) Update(ctx context.Context, request UpdateCleanRoo
 		path,
 		headers,
 		queryParams,
-		requestPb.Asset,
+		(*requestPb).Asset,
 		&cleanRoomAssetPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CleanRoomAssetFromPb(&cleanRoomAssetPb)
 	if err != nil {
 		return nil, err
@@ -327,9 +345,12 @@ func (a *cleanRoomAutoApprovalRulesImpl) Create(ctx context.Context, request Cre
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&cleanRoomAutoApprovalRulePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CleanRoomAutoApprovalRuleFromPb(&cleanRoomAutoApprovalRulePb)
 	if err != nil {
 		return nil, err
@@ -353,9 +374,12 @@ func (a *cleanRoomAutoApprovalRulesImpl) Delete(ctx context.Context, request Del
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -376,9 +400,12 @@ func (a *cleanRoomAutoApprovalRulesImpl) Get(ctx context.Context, request GetCle
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&cleanRoomAutoApprovalRulePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CleanRoomAutoApprovalRuleFromPb(&cleanRoomAutoApprovalRulePb)
 	if err != nil {
 		return nil, err
@@ -434,7 +461,7 @@ func (a *cleanRoomAutoApprovalRulesImpl) internalList(ctx context.Context, reque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listCleanRoomAutoApprovalRulesResponsePb,
 	)
 	if err != nil {
@@ -465,9 +492,12 @@ func (a *cleanRoomAutoApprovalRulesImpl) Update(ctx context.Context, request Upd
 		path,
 		headers,
 		queryParams,
-		requestPb.AutoApprovalRule,
+		(*requestPb).AutoApprovalRule,
 		&cleanRoomAutoApprovalRulePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CleanRoomAutoApprovalRuleFromPb(&cleanRoomAutoApprovalRulePb)
 	if err != nil {
 		return nil, err
@@ -528,7 +558,7 @@ func (a *cleanRoomTaskRunsImpl) internalList(ctx context.Context, request ListCl
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listCleanRoomNotebookTaskRunsResponsePb,
 	)
 	if err != nil {
@@ -564,9 +594,12 @@ func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoomRequ
 		path,
 		headers,
 		queryParams,
-		requestPb.CleanRoom,
+		(*requestPb).CleanRoom,
 		&cleanRoomPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CleanRoomFromPb(&cleanRoomPb)
 	if err != nil {
 		return nil, err
@@ -592,9 +625,12 @@ func (a *cleanRoomsImpl) CreateOutputCatalog(ctx context.Context, request Create
 		path,
 		headers,
 		queryParams,
-		requestPb.OutputCatalog,
+		(*requestPb).OutputCatalog,
 		&createCleanRoomOutputCatalogResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateCleanRoomOutputCatalogResponseFromPb(&createCleanRoomOutputCatalogResponsePb)
 	if err != nil {
 		return nil, err
@@ -618,9 +654,12 @@ func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -641,9 +680,12 @@ func (a *cleanRoomsImpl) Get(ctx context.Context, request GetCleanRoomRequest) (
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&cleanRoomPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CleanRoomFromPb(&cleanRoomPb)
 	if err != nil {
 		return nil, err
@@ -701,7 +743,7 @@ func (a *cleanRoomsImpl) internalList(ctx context.Context, request ListCleanRoom
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listCleanRoomsResponsePb,
 	)
 	if err != nil {
@@ -732,9 +774,12 @@ func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoomRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&cleanRoomPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CleanRoomFromPb(&cleanRoomPb)
 	if err != nil {
 		return nil, err

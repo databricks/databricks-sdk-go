@@ -3,11 +3,11 @@
 package settings
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/settings/settingspb"
 )
 
@@ -34,12 +34,29 @@ type AccountIpAccessEnable struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AccountIpAccessEnable) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AccountIpAccessEnable) MarshalJSON() ([]byte, error) {
+	pb, err := AccountIpAccessEnableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AccountIpAccessEnable) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AccountIpAccessEnable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.AccountIpAccessEnablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccountIpAccessEnableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AccountIpAccessEnableToPb(st *AccountIpAccessEnable) (*settingspb.AccountIpAccessEnablePb, error) {
@@ -57,7 +74,9 @@ func AccountIpAccessEnableToPb(st *AccountIpAccessEnable) (*settingspb.AccountIp
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -76,7 +95,9 @@ func AccountIpAccessEnableFromPb(pb *settingspb.AccountIpAccessEnablePb) (*Accou
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -93,12 +114,29 @@ type AccountNetworkPolicy struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AccountNetworkPolicy) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AccountNetworkPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := AccountNetworkPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AccountNetworkPolicy) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AccountNetworkPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.AccountNetworkPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccountNetworkPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AccountNetworkPolicyToPb(st *AccountNetworkPolicy) (*settingspb.AccountNetworkPolicyPb, error) {
@@ -116,7 +154,9 @@ func AccountNetworkPolicyToPb(st *AccountNetworkPolicy) (*settingspb.AccountNetw
 	}
 	pb.NetworkPolicyId = st.NetworkPolicyId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -135,7 +175,9 @@ func AccountNetworkPolicyFromPb(pb *settingspb.AccountNetworkPolicyPb) (*Account
 	}
 	st.NetworkPolicyId = pb.NetworkPolicyId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -143,6 +185,31 @@ type AibiDashboardEmbeddingAccessPolicy struct {
 
 	// Wire name: 'access_policy_type'
 	AccessPolicyType AibiDashboardEmbeddingAccessPolicyAccessPolicyType ``
+}
+
+func (st AibiDashboardEmbeddingAccessPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := AibiDashboardEmbeddingAccessPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AibiDashboardEmbeddingAccessPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.AibiDashboardEmbeddingAccessPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AibiDashboardEmbeddingAccessPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AibiDashboardEmbeddingAccessPolicyToPb(st *AibiDashboardEmbeddingAccessPolicy) (*settingspb.AibiDashboardEmbeddingAccessPolicyPb, error) {
@@ -256,12 +323,29 @@ type AibiDashboardEmbeddingAccessPolicySetting struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AibiDashboardEmbeddingAccessPolicySetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AibiDashboardEmbeddingAccessPolicySetting) MarshalJSON() ([]byte, error) {
+	pb, err := AibiDashboardEmbeddingAccessPolicySettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AibiDashboardEmbeddingAccessPolicySetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AibiDashboardEmbeddingAccessPolicySetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.AibiDashboardEmbeddingAccessPolicySettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AibiDashboardEmbeddingAccessPolicySettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AibiDashboardEmbeddingAccessPolicySettingToPb(st *AibiDashboardEmbeddingAccessPolicySetting) (*settingspb.AibiDashboardEmbeddingAccessPolicySettingPb, error) {
@@ -279,7 +363,9 @@ func AibiDashboardEmbeddingAccessPolicySettingToPb(st *AibiDashboardEmbeddingAcc
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -298,7 +384,9 @@ func AibiDashboardEmbeddingAccessPolicySettingFromPb(pb *settingspb.AibiDashboar
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -306,6 +394,31 @@ type AibiDashboardEmbeddingApprovedDomains struct {
 
 	// Wire name: 'approved_domains'
 	ApprovedDomains []string ``
+}
+
+func (st AibiDashboardEmbeddingApprovedDomains) MarshalJSON() ([]byte, error) {
+	pb, err := AibiDashboardEmbeddingApprovedDomainsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AibiDashboardEmbeddingApprovedDomains) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.AibiDashboardEmbeddingApprovedDomainsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AibiDashboardEmbeddingApprovedDomainsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AibiDashboardEmbeddingApprovedDomainsToPb(st *AibiDashboardEmbeddingApprovedDomains) (*settingspb.AibiDashboardEmbeddingApprovedDomainsPb, error) {
@@ -351,12 +464,29 @@ type AibiDashboardEmbeddingApprovedDomainsSetting struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AibiDashboardEmbeddingApprovedDomainsSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AibiDashboardEmbeddingApprovedDomainsSetting) MarshalJSON() ([]byte, error) {
+	pb, err := AibiDashboardEmbeddingApprovedDomainsSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AibiDashboardEmbeddingApprovedDomainsSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AibiDashboardEmbeddingApprovedDomainsSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.AibiDashboardEmbeddingApprovedDomainsSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AibiDashboardEmbeddingApprovedDomainsSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AibiDashboardEmbeddingApprovedDomainsSettingToPb(st *AibiDashboardEmbeddingApprovedDomainsSetting) (*settingspb.AibiDashboardEmbeddingApprovedDomainsSettingPb, error) {
@@ -374,7 +504,9 @@ func AibiDashboardEmbeddingApprovedDomainsSettingToPb(st *AibiDashboardEmbedding
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -393,7 +525,9 @@ func AibiDashboardEmbeddingApprovedDomainsSettingFromPb(pb *settingspb.AibiDashb
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -420,12 +554,29 @@ type AutomaticClusterUpdateSetting struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AutomaticClusterUpdateSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AutomaticClusterUpdateSetting) MarshalJSON() ([]byte, error) {
+	pb, err := AutomaticClusterUpdateSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AutomaticClusterUpdateSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AutomaticClusterUpdateSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.AutomaticClusterUpdateSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AutomaticClusterUpdateSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AutomaticClusterUpdateSettingToPb(st *AutomaticClusterUpdateSetting) (*settingspb.AutomaticClusterUpdateSettingPb, error) {
@@ -443,7 +594,9 @@ func AutomaticClusterUpdateSettingToPb(st *AutomaticClusterUpdateSetting) (*sett
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -462,7 +615,9 @@ func AutomaticClusterUpdateSettingFromPb(pb *settingspb.AutomaticClusterUpdateSe
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -473,12 +628,29 @@ type BooleanMessage struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *BooleanMessage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st BooleanMessage) MarshalJSON() ([]byte, error) {
+	pb, err := BooleanMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s BooleanMessage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *BooleanMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.BooleanMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BooleanMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func BooleanMessageToPb(st *BooleanMessage) (*settingspb.BooleanMessagePb, error) {
@@ -488,7 +660,9 @@ func BooleanMessageToPb(st *BooleanMessage) (*settingspb.BooleanMessagePb, error
 	pb := &settingspb.BooleanMessagePb{}
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -499,7 +673,9 @@ func BooleanMessageFromPb(pb *settingspb.BooleanMessagePb) (*BooleanMessage, err
 	st := &BooleanMessage{}
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -522,12 +698,29 @@ type ClusterAutoRestartMessage struct {
 	ForceSendFields                 []string `tf:"-"`
 }
 
-func (s *ClusterAutoRestartMessage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ClusterAutoRestartMessage) MarshalJSON() ([]byte, error) {
+	pb, err := ClusterAutoRestartMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ClusterAutoRestartMessage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ClusterAutoRestartMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ClusterAutoRestartMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ClusterAutoRestartMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ClusterAutoRestartMessageToPb(st *ClusterAutoRestartMessage) (*settingspb.ClusterAutoRestartMessagePb, error) {
@@ -553,7 +746,9 @@ func ClusterAutoRestartMessageToPb(st *ClusterAutoRestartMessage) (*settingspb.C
 	}
 	pb.RestartEvenIfNoUpdatesAvailable = st.RestartEvenIfNoUpdatesAvailable
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -580,7 +775,9 @@ func ClusterAutoRestartMessageFromPb(pb *settingspb.ClusterAutoRestartMessagePb)
 	}
 	st.RestartEvenIfNoUpdatesAvailable = pb.RestartEvenIfNoUpdatesAvailable
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -604,12 +801,29 @@ type ClusterAutoRestartMessageEnablementDetails struct {
 	ForceSendFields                 []string `tf:"-"`
 }
 
-func (s *ClusterAutoRestartMessageEnablementDetails) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ClusterAutoRestartMessageEnablementDetails) MarshalJSON() ([]byte, error) {
+	pb, err := ClusterAutoRestartMessageEnablementDetailsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ClusterAutoRestartMessageEnablementDetails) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ClusterAutoRestartMessageEnablementDetails) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ClusterAutoRestartMessageEnablementDetailsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ClusterAutoRestartMessageEnablementDetailsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ClusterAutoRestartMessageEnablementDetailsToPb(st *ClusterAutoRestartMessageEnablementDetails) (*settingspb.ClusterAutoRestartMessageEnablementDetailsPb, error) {
@@ -621,7 +835,9 @@ func ClusterAutoRestartMessageEnablementDetailsToPb(st *ClusterAutoRestartMessag
 	pb.UnavailableForDisabledEntitlement = st.UnavailableForDisabledEntitlement
 	pb.UnavailableForNonEnterpriseTier = st.UnavailableForNonEnterpriseTier
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -634,7 +850,9 @@ func ClusterAutoRestartMessageEnablementDetailsFromPb(pb *settingspb.ClusterAuto
 	st.UnavailableForDisabledEntitlement = pb.UnavailableForDisabledEntitlement
 	st.UnavailableForNonEnterpriseTier = pb.UnavailableForNonEnterpriseTier
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -642,6 +860,31 @@ type ClusterAutoRestartMessageMaintenanceWindow struct {
 
 	// Wire name: 'week_day_based_schedule'
 	WeekDayBasedSchedule *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule ``
+}
+
+func (st ClusterAutoRestartMessageMaintenanceWindow) MarshalJSON() ([]byte, error) {
+	pb, err := ClusterAutoRestartMessageMaintenanceWindowToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ClusterAutoRestartMessageMaintenanceWindow) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ClusterAutoRestartMessageMaintenanceWindowPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ClusterAutoRestartMessageMaintenanceWindowFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ClusterAutoRestartMessageMaintenanceWindowToPb(st *ClusterAutoRestartMessageMaintenanceWindow) (*settingspb.ClusterAutoRestartMessageMaintenanceWindowPb, error) {
@@ -754,6 +997,31 @@ type ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule struct {
 
 	// Wire name: 'window_start_time'
 	WindowStartTime *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime ``
+}
+
+func (st ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule) MarshalJSON() ([]byte, error) {
+	pb, err := ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedScheduleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedScheduleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedScheduleToPb(st *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule) (*settingspb.ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedulePb, error) {
@@ -894,12 +1162,29 @@ type ClusterAutoRestartMessageMaintenanceWindowWindowStartTime struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) MarshalJSON() ([]byte, error) {
+	pb, err := ClusterAutoRestartMessageMaintenanceWindowWindowStartTimeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ClusterAutoRestartMessageMaintenanceWindowWindowStartTimePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ClusterAutoRestartMessageMaintenanceWindowWindowStartTimeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ClusterAutoRestartMessageMaintenanceWindowWindowStartTimeToPb(st *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) (*settingspb.ClusterAutoRestartMessageMaintenanceWindowWindowStartTimePb, error) {
@@ -910,7 +1195,9 @@ func ClusterAutoRestartMessageMaintenanceWindowWindowStartTimeToPb(st *ClusterAu
 	pb.Hours = st.Hours
 	pb.Minutes = st.Minutes
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -922,7 +1209,9 @@ func ClusterAutoRestartMessageMaintenanceWindowWindowStartTimeFromPb(pb *setting
 	st.Hours = pb.Hours
 	st.Minutes = pb.Minutes
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -937,12 +1226,29 @@ type ComplianceSecurityProfile struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ComplianceSecurityProfile) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
+	pb, err := ComplianceSecurityProfileToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ComplianceSecurityProfile) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ComplianceSecurityProfilePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ComplianceSecurityProfileFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ComplianceSecurityProfileToPb(st *ComplianceSecurityProfile) (*settingspb.ComplianceSecurityProfilePb, error) {
@@ -964,7 +1270,9 @@ func ComplianceSecurityProfileToPb(st *ComplianceSecurityProfile) (*settingspb.C
 	pb.ComplianceStandards = complianceStandardsPb
 	pb.IsEnabled = st.IsEnabled
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -987,7 +1295,9 @@ func ComplianceSecurityProfileFromPb(pb *settingspb.ComplianceSecurityProfilePb)
 	st.ComplianceStandards = complianceStandardsField
 	st.IsEnabled = pb.IsEnabled
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1014,12 +1324,29 @@ type ComplianceSecurityProfileSetting struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ComplianceSecurityProfileSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ComplianceSecurityProfileSetting) MarshalJSON() ([]byte, error) {
+	pb, err := ComplianceSecurityProfileSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ComplianceSecurityProfileSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ComplianceSecurityProfileSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ComplianceSecurityProfileSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ComplianceSecurityProfileSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ComplianceSecurityProfileSettingToPb(st *ComplianceSecurityProfileSetting) (*settingspb.ComplianceSecurityProfileSettingPb, error) {
@@ -1037,7 +1364,9 @@ func ComplianceSecurityProfileSettingToPb(st *ComplianceSecurityProfileSetting) 
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1056,7 +1385,9 @@ func ComplianceSecurityProfileSettingFromPb(pb *settingspb.ComplianceSecurityPro
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1168,6 +1499,31 @@ type Config struct {
 	Slack *SlackConfig ``
 }
 
+func (st Config) MarshalJSON() ([]byte, error) {
+	pb, err := ConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Config) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func ConfigToPb(st *Config) (*settingspb.ConfigPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1269,6 +1625,31 @@ type CreateIpAccessList struct {
 	ListType ListType ``
 }
 
+func (st CreateIpAccessList) MarshalJSON() ([]byte, error) {
+	pb, err := CreateIpAccessListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateIpAccessList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CreateIpAccessListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateIpAccessListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CreateIpAccessListToPb(st *CreateIpAccessList) (*settingspb.CreateIpAccessListPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1312,6 +1693,31 @@ type CreateIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo ``
 }
 
+func (st CreateIpAccessListResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateIpAccessListResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CreateIpAccessListResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateIpAccessListResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CreateIpAccessListResponseToPb(st *CreateIpAccessListResponse) (*settingspb.CreateIpAccessListResponsePb, error) {
 	if st == nil {
 		return nil, nil
@@ -1348,6 +1754,31 @@ type CreateNetworkConnectivityConfigRequest struct {
 
 	// Wire name: 'network_connectivity_config'
 	NetworkConnectivityConfig CreateNetworkConnectivityConfiguration ``
+}
+
+func (st CreateNetworkConnectivityConfigRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateNetworkConnectivityConfigRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateNetworkConnectivityConfigRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CreateNetworkConnectivityConfigRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateNetworkConnectivityConfigRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateNetworkConnectivityConfigRequestToPb(st *CreateNetworkConnectivityConfigRequest) (*settingspb.CreateNetworkConnectivityConfigRequestPb, error) {
@@ -1397,6 +1828,31 @@ type CreateNetworkConnectivityConfiguration struct {
 	Region string ``
 }
 
+func (st CreateNetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := CreateNetworkConnectivityConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateNetworkConnectivityConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CreateNetworkConnectivityConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateNetworkConnectivityConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func CreateNetworkConnectivityConfigurationToPb(st *CreateNetworkConnectivityConfiguration) (*settingspb.CreateNetworkConnectivityConfigurationPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1423,6 +1879,31 @@ type CreateNetworkPolicyRequest struct {
 	// Network policy configuration details.
 	// Wire name: 'network_policy'
 	NetworkPolicy AccountNetworkPolicy ``
+}
+
+func (st CreateNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateNetworkPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CreateNetworkPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateNetworkPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateNetworkPolicyRequestToPb(st *CreateNetworkPolicyRequest) (*settingspb.CreateNetworkPolicyRequestPb, error) {
@@ -1468,12 +1949,29 @@ type CreateNotificationDestinationRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateNotificationDestinationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CreateNotificationDestinationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateNotificationDestinationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateNotificationDestinationRequestToPb(st *CreateNotificationDestinationRequest) (*settingspb.CreateNotificationDestinationRequestPb, error) {
@@ -1490,7 +1988,9 @@ func CreateNotificationDestinationRequestToPb(st *CreateNotificationDestinationR
 	}
 	pb.DisplayName = st.DisplayName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1508,7 +2008,9 @@ func CreateNotificationDestinationRequestFromPb(pb *settingspb.CreateNotificatio
 	}
 	st.DisplayName = pb.DisplayName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1526,12 +2028,29 @@ type CreateOboTokenRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateOboTokenRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateOboTokenRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateOboTokenRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateOboTokenRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateOboTokenRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CreateOboTokenRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateOboTokenRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateOboTokenRequestToPb(st *CreateOboTokenRequest) (*settingspb.CreateOboTokenRequestPb, error) {
@@ -1543,7 +2062,9 @@ func CreateOboTokenRequestToPb(st *CreateOboTokenRequest) (*settingspb.CreateObo
 	pb.Comment = st.Comment
 	pb.LifetimeSeconds = st.LifetimeSeconds
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1556,7 +2077,9 @@ func CreateOboTokenRequestFromPb(pb *settingspb.CreateOboTokenRequestPb) (*Creat
 	st.Comment = pb.Comment
 	st.LifetimeSeconds = pb.LifetimeSeconds
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1571,12 +2094,29 @@ type CreateOboTokenResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateOboTokenResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateOboTokenResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateOboTokenResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateOboTokenResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateOboTokenResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CreateOboTokenResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateOboTokenResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateOboTokenResponseToPb(st *CreateOboTokenResponse) (*settingspb.CreateOboTokenResponsePb, error) {
@@ -1593,7 +2133,9 @@ func CreateOboTokenResponseToPb(st *CreateOboTokenResponse) (*settingspb.CreateO
 	}
 	pb.TokenValue = st.TokenValue
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1611,7 +2153,9 @@ func CreateOboTokenResponseFromPb(pb *settingspb.CreateOboTokenResponsePb) (*Cre
 	}
 	st.TokenValue = pb.TokenValue
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1650,12 +2194,29 @@ type CreatePrivateEndpointRule struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreatePrivateEndpointRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	pb, err := CreatePrivateEndpointRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreatePrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CreatePrivateEndpointRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreatePrivateEndpointRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreatePrivateEndpointRuleToPb(st *CreatePrivateEndpointRule) (*settingspb.CreatePrivateEndpointRulePb, error) {
@@ -1669,7 +2230,9 @@ func CreatePrivateEndpointRuleToPb(st *CreatePrivateEndpointRule) (*settingspb.C
 	pb.ResourceId = st.ResourceId
 	pb.ResourceNames = st.ResourceNames
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1684,7 +2247,9 @@ func CreatePrivateEndpointRuleFromPb(pb *settingspb.CreatePrivateEndpointRulePb)
 	st.ResourceId = pb.ResourceId
 	st.ResourceNames = pb.ResourceNames
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1695,6 +2260,31 @@ type CreatePrivateEndpointRuleRequest struct {
 
 	// Wire name: 'private_endpoint_rule'
 	PrivateEndpointRule CreatePrivateEndpointRule ``
+}
+
+func (st CreatePrivateEndpointRuleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreatePrivateEndpointRuleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreatePrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CreatePrivateEndpointRuleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreatePrivateEndpointRuleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreatePrivateEndpointRuleRequestToPb(st *CreatePrivateEndpointRuleRequest) (*settingspb.CreatePrivateEndpointRuleRequestPb, error) {
@@ -1743,12 +2333,29 @@ type CreateTokenRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateTokenRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateTokenRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateTokenRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateTokenRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateTokenRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CreateTokenRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateTokenRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateTokenRequestToPb(st *CreateTokenRequest) (*settingspb.CreateTokenRequestPb, error) {
@@ -1759,7 +2366,9 @@ func CreateTokenRequestToPb(st *CreateTokenRequest) (*settingspb.CreateTokenRequ
 	pb.Comment = st.Comment
 	pb.LifetimeSeconds = st.LifetimeSeconds
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1771,7 +2380,9 @@ func CreateTokenRequestFromPb(pb *settingspb.CreateTokenRequestPb) (*CreateToken
 	st.Comment = pb.Comment
 	st.LifetimeSeconds = pb.LifetimeSeconds
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1785,12 +2396,29 @@ type CreateTokenResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateTokenResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateTokenResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateTokenResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateTokenResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateTokenResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CreateTokenResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateTokenResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateTokenResponseToPb(st *CreateTokenResponse) (*settingspb.CreateTokenResponsePb, error) {
@@ -1807,7 +2435,9 @@ func CreateTokenResponseToPb(st *CreateTokenResponse) (*settingspb.CreateTokenRe
 	}
 	pb.TokenValue = st.TokenValue
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1825,7 +2455,9 @@ func CreateTokenResponseFromPb(pb *settingspb.CreateTokenResponsePb) (*CreateTok
 	}
 	st.TokenValue = pb.TokenValue
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1841,12 +2473,29 @@ type CspEnablementAccount struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CspEnablementAccount) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CspEnablementAccount) MarshalJSON() ([]byte, error) {
+	pb, err := CspEnablementAccountToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CspEnablementAccount) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CspEnablementAccount) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CspEnablementAccountPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CspEnablementAccountFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CspEnablementAccountToPb(st *CspEnablementAccount) (*settingspb.CspEnablementAccountPb, error) {
@@ -1868,7 +2517,9 @@ func CspEnablementAccountToPb(st *CspEnablementAccount) (*settingspb.CspEnableme
 	pb.ComplianceStandards = complianceStandardsPb
 	pb.IsEnforced = st.IsEnforced
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1891,7 +2542,9 @@ func CspEnablementAccountFromPb(pb *settingspb.CspEnablementAccountPb) (*CspEnab
 	st.ComplianceStandards = complianceStandardsField
 	st.IsEnforced = pb.IsEnforced
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1918,12 +2571,29 @@ type CspEnablementAccountSetting struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CspEnablementAccountSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
+	pb, err := CspEnablementAccountSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CspEnablementAccountSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CspEnablementAccountSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CspEnablementAccountSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CspEnablementAccountSettingToPb(st *CspEnablementAccountSetting) (*settingspb.CspEnablementAccountSettingPb, error) {
@@ -1941,7 +2611,9 @@ func CspEnablementAccountSettingToPb(st *CspEnablementAccountSetting) (*settings
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1960,7 +2632,9 @@ func CspEnablementAccountSettingFromPb(pb *settingspb.CspEnablementAccountSettin
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2037,12 +2711,29 @@ type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	pb, err := CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRuleToPb(st *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) (*settingspb.CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePb, error) {
@@ -2070,7 +2761,9 @@ func CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRuleToPb(st *Custo
 	pb.UpdatedTime = st.UpdatedTime
 	pb.VpcEndpointId = st.VpcEndpointId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2099,7 +2792,9 @@ func CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRuleFromPb(pb *set
 	st.UpdatedTime = pb.UpdatedTime
 	st.VpcEndpointId = pb.VpcEndpointId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2188,12 +2883,29 @@ type DashboardEmailSubscriptions struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DashboardEmailSubscriptions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DashboardEmailSubscriptions) MarshalJSON() ([]byte, error) {
+	pb, err := DashboardEmailSubscriptionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DashboardEmailSubscriptions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DashboardEmailSubscriptions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DashboardEmailSubscriptionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DashboardEmailSubscriptionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DashboardEmailSubscriptionsToPb(st *DashboardEmailSubscriptions) (*settingspb.DashboardEmailSubscriptionsPb, error) {
@@ -2211,7 +2923,9 @@ func DashboardEmailSubscriptionsToPb(st *DashboardEmailSubscriptions) (*settings
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2230,7 +2944,9 @@ func DashboardEmailSubscriptionsFromPb(pb *settingspb.DashboardEmailSubscription
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2266,12 +2982,29 @@ type DefaultNamespaceSetting struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DefaultNamespaceSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DefaultNamespaceSetting) MarshalJSON() ([]byte, error) {
+	pb, err := DefaultNamespaceSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DefaultNamespaceSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DefaultNamespaceSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DefaultNamespaceSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DefaultNamespaceSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DefaultNamespaceSettingToPb(st *DefaultNamespaceSetting) (*settingspb.DefaultNamespaceSettingPb, error) {
@@ -2289,7 +3022,9 @@ func DefaultNamespaceSettingToPb(st *DefaultNamespaceSetting) (*settingspb.Defau
 	}
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2308,7 +3043,9 @@ func DefaultNamespaceSettingFromPb(pb *settingspb.DefaultNamespaceSettingPb) (*D
 	}
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2335,12 +3072,29 @@ type DefaultWarehouseId struct {
 	ForceSendFields []string      `tf:"-"`
 }
 
-func (s *DefaultWarehouseId) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DefaultWarehouseId) MarshalJSON() ([]byte, error) {
+	pb, err := DefaultWarehouseIdToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DefaultWarehouseId) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DefaultWarehouseId) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DefaultWarehouseIdPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DefaultWarehouseIdFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DefaultWarehouseIdToPb(st *DefaultWarehouseId) (*settingspb.DefaultWarehouseIdPb, error) {
@@ -2358,7 +3112,9 @@ func DefaultWarehouseIdToPb(st *DefaultWarehouseId) (*settingspb.DefaultWarehous
 		pb.StringVal = *stringValPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2377,7 +3133,9 @@ func DefaultWarehouseIdFromPb(pb *settingspb.DefaultWarehouseIdPb) (*DefaultWare
 		st.StringVal = *stringValField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2394,12 +3152,29 @@ type DeleteAccountIpAccessEnableRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAccountIpAccessEnableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteAccountIpAccessEnableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAccountIpAccessEnableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteAccountIpAccessEnableRequestToPb(st *DeleteAccountIpAccessEnableRequest) (*settingspb.DeleteAccountIpAccessEnableRequestPb, error) {
@@ -2409,7 +3184,9 @@ func DeleteAccountIpAccessEnableRequestToPb(st *DeleteAccountIpAccessEnableReque
 	pb := &settingspb.DeleteAccountIpAccessEnableRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2420,7 +3197,9 @@ func DeleteAccountIpAccessEnableRequestFromPb(pb *settingspb.DeleteAccountIpAcce
 	st := &DeleteAccountIpAccessEnableRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2435,6 +3214,31 @@ type DeleteAccountIpAccessEnableResponse struct {
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
 	Etag string ``
+}
+
+func (st DeleteAccountIpAccessEnableResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAccountIpAccessEnableResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteAccountIpAccessEnableResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteAccountIpAccessEnableResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAccountIpAccessEnableResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteAccountIpAccessEnableResponseToPb(st *DeleteAccountIpAccessEnableResponse) (*settingspb.DeleteAccountIpAccessEnableResponsePb, error) {
@@ -2461,6 +3265,31 @@ type DeleteAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
 	// Wire name: 'ip_access_list_id'
 	IpAccessListId string `tf:"-"`
+}
+
+func (st DeleteAccountIpAccessListRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAccountIpAccessListRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteAccountIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteAccountIpAccessListRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAccountIpAccessListRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteAccountIpAccessListRequestToPb(st *DeleteAccountIpAccessListRequest) (*settingspb.DeleteAccountIpAccessListRequestPb, error) {
@@ -2496,12 +3325,29 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAibiDashboardEmbeddingAccessPolicySettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteAibiDashboardEmbeddingAccessPolicySettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st *DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) (*settingspb.DeleteAibiDashboardEmbeddingAccessPolicySettingRequestPb, error) {
@@ -2511,7 +3357,9 @@ func DeleteAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st *DeleteAibiDa
 	pb := &settingspb.DeleteAibiDashboardEmbeddingAccessPolicySettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2522,7 +3370,9 @@ func DeleteAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb *settingspb
 	st := &DeleteAibiDashboardEmbeddingAccessPolicySettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2537,6 +3387,31 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingResponse struct {
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
 	Etag string ``
+}
+
+func (st DeleteAibiDashboardEmbeddingAccessPolicySettingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAibiDashboardEmbeddingAccessPolicySettingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteAibiDashboardEmbeddingAccessPolicySettingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteAibiDashboardEmbeddingAccessPolicySettingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAibiDashboardEmbeddingAccessPolicySettingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteAibiDashboardEmbeddingAccessPolicySettingResponseToPb(st *DeleteAibiDashboardEmbeddingAccessPolicySettingResponse) (*settingspb.DeleteAibiDashboardEmbeddingAccessPolicySettingResponsePb, error) {
@@ -2572,12 +3447,29 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st *DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*settingspb.DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequestPb, error) {
@@ -2587,7 +3479,9 @@ func DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st *DeleteAib
 	pb := &settingspb.DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2598,7 +3492,9 @@ func DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb *setting
 	st := &DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2613,6 +3509,31 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse struct {
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
 	Etag string ``
+}
+
+func (st DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponseToPb(st *DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse) (*settingspb.DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb, error) {
@@ -2648,12 +3569,29 @@ type DeleteDashboardEmailSubscriptionsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteDashboardEmailSubscriptionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDashboardEmailSubscriptionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteDashboardEmailSubscriptionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteDashboardEmailSubscriptionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDashboardEmailSubscriptionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDashboardEmailSubscriptionsRequestToPb(st *DeleteDashboardEmailSubscriptionsRequest) (*settingspb.DeleteDashboardEmailSubscriptionsRequestPb, error) {
@@ -2663,7 +3601,9 @@ func DeleteDashboardEmailSubscriptionsRequestToPb(st *DeleteDashboardEmailSubscr
 	pb := &settingspb.DeleteDashboardEmailSubscriptionsRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2674,7 +3614,9 @@ func DeleteDashboardEmailSubscriptionsRequestFromPb(pb *settingspb.DeleteDashboa
 	st := &DeleteDashboardEmailSubscriptionsRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2689,6 +3631,31 @@ type DeleteDashboardEmailSubscriptionsResponse struct {
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
 	Etag string ``
+}
+
+func (st DeleteDashboardEmailSubscriptionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDashboardEmailSubscriptionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteDashboardEmailSubscriptionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteDashboardEmailSubscriptionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDashboardEmailSubscriptionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDashboardEmailSubscriptionsResponseToPb(st *DeleteDashboardEmailSubscriptionsResponse) (*settingspb.DeleteDashboardEmailSubscriptionsResponsePb, error) {
@@ -2724,12 +3691,29 @@ type DeleteDefaultNamespaceSettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDefaultNamespaceSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteDefaultNamespaceSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDefaultNamespaceSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDefaultNamespaceSettingRequestToPb(st *DeleteDefaultNamespaceSettingRequest) (*settingspb.DeleteDefaultNamespaceSettingRequestPb, error) {
@@ -2739,7 +3723,9 @@ func DeleteDefaultNamespaceSettingRequestToPb(st *DeleteDefaultNamespaceSettingR
 	pb := &settingspb.DeleteDefaultNamespaceSettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2750,7 +3736,9 @@ func DeleteDefaultNamespaceSettingRequestFromPb(pb *settingspb.DeleteDefaultName
 	st := &DeleteDefaultNamespaceSettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2765,6 +3753,31 @@ type DeleteDefaultNamespaceSettingResponse struct {
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
 	Etag string ``
+}
+
+func (st DeleteDefaultNamespaceSettingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDefaultNamespaceSettingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteDefaultNamespaceSettingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteDefaultNamespaceSettingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDefaultNamespaceSettingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDefaultNamespaceSettingResponseToPb(st *DeleteDefaultNamespaceSettingResponse) (*settingspb.DeleteDefaultNamespaceSettingResponsePb, error) {
@@ -2800,12 +3813,29 @@ type DeleteDefaultWarehouseIdRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteDefaultWarehouseIdRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteDefaultWarehouseIdRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDefaultWarehouseIdRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteDefaultWarehouseIdRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteDefaultWarehouseIdRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteDefaultWarehouseIdRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDefaultWarehouseIdRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDefaultWarehouseIdRequestToPb(st *DeleteDefaultWarehouseIdRequest) (*settingspb.DeleteDefaultWarehouseIdRequestPb, error) {
@@ -2815,7 +3845,9 @@ func DeleteDefaultWarehouseIdRequestToPb(st *DeleteDefaultWarehouseIdRequest) (*
 	pb := &settingspb.DeleteDefaultWarehouseIdRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2826,7 +3858,9 @@ func DeleteDefaultWarehouseIdRequestFromPb(pb *settingspb.DeleteDefaultWarehouse
 	st := &DeleteDefaultWarehouseIdRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2841,6 +3875,31 @@ type DeleteDefaultWarehouseIdResponse struct {
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
 	Etag string ``
+}
+
+func (st DeleteDefaultWarehouseIdResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDefaultWarehouseIdResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteDefaultWarehouseIdResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteDefaultWarehouseIdResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDefaultWarehouseIdResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDefaultWarehouseIdResponseToPb(st *DeleteDefaultWarehouseIdResponse) (*settingspb.DeleteDefaultWarehouseIdResponsePb, error) {
@@ -2876,12 +3935,29 @@ type DeleteDisableLegacyAccessRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDisableLegacyAccessRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteDisableLegacyAccessRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDisableLegacyAccessRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDisableLegacyAccessRequestToPb(st *DeleteDisableLegacyAccessRequest) (*settingspb.DeleteDisableLegacyAccessRequestPb, error) {
@@ -2891,7 +3967,9 @@ func DeleteDisableLegacyAccessRequestToPb(st *DeleteDisableLegacyAccessRequest) 
 	pb := &settingspb.DeleteDisableLegacyAccessRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2902,7 +3980,9 @@ func DeleteDisableLegacyAccessRequestFromPb(pb *settingspb.DeleteDisableLegacyAc
 	st := &DeleteDisableLegacyAccessRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2917,6 +3997,31 @@ type DeleteDisableLegacyAccessResponse struct {
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
 	Etag string ``
+}
+
+func (st DeleteDisableLegacyAccessResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDisableLegacyAccessResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteDisableLegacyAccessResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteDisableLegacyAccessResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDisableLegacyAccessResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDisableLegacyAccessResponseToPb(st *DeleteDisableLegacyAccessResponse) (*settingspb.DeleteDisableLegacyAccessResponsePb, error) {
@@ -2952,12 +4057,29 @@ type DeleteDisableLegacyDbfsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDisableLegacyDbfsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteDisableLegacyDbfsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDisableLegacyDbfsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDisableLegacyDbfsRequestToPb(st *DeleteDisableLegacyDbfsRequest) (*settingspb.DeleteDisableLegacyDbfsRequestPb, error) {
@@ -2967,7 +4089,9 @@ func DeleteDisableLegacyDbfsRequestToPb(st *DeleteDisableLegacyDbfsRequest) (*se
 	pb := &settingspb.DeleteDisableLegacyDbfsRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2978,7 +4102,9 @@ func DeleteDisableLegacyDbfsRequestFromPb(pb *settingspb.DeleteDisableLegacyDbfs
 	st := &DeleteDisableLegacyDbfsRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2993,6 +4119,31 @@ type DeleteDisableLegacyDbfsResponse struct {
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
 	Etag string ``
+}
+
+func (st DeleteDisableLegacyDbfsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDisableLegacyDbfsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteDisableLegacyDbfsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteDisableLegacyDbfsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDisableLegacyDbfsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDisableLegacyDbfsResponseToPb(st *DeleteDisableLegacyDbfsResponse) (*settingspb.DeleteDisableLegacyDbfsResponsePb, error) {
@@ -3028,12 +4179,29 @@ type DeleteDisableLegacyFeaturesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDisableLegacyFeaturesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteDisableLegacyFeaturesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDisableLegacyFeaturesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDisableLegacyFeaturesRequestToPb(st *DeleteDisableLegacyFeaturesRequest) (*settingspb.DeleteDisableLegacyFeaturesRequestPb, error) {
@@ -3043,7 +4211,9 @@ func DeleteDisableLegacyFeaturesRequestToPb(st *DeleteDisableLegacyFeaturesReque
 	pb := &settingspb.DeleteDisableLegacyFeaturesRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3054,7 +4224,9 @@ func DeleteDisableLegacyFeaturesRequestFromPb(pb *settingspb.DeleteDisableLegacy
 	st := &DeleteDisableLegacyFeaturesRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3069,6 +4241,31 @@ type DeleteDisableLegacyFeaturesResponse struct {
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
 	Etag string ``
+}
+
+func (st DeleteDisableLegacyFeaturesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteDisableLegacyFeaturesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteDisableLegacyFeaturesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteDisableLegacyFeaturesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteDisableLegacyFeaturesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteDisableLegacyFeaturesResponseToPb(st *DeleteDisableLegacyFeaturesResponse) (*settingspb.DeleteDisableLegacyFeaturesResponsePb, error) {
@@ -3095,6 +4292,31 @@ type DeleteIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
 	// Wire name: 'ip_access_list_id'
 	IpAccessListId string `tf:"-"`
+}
+
+func (st DeleteIpAccessListRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteIpAccessListRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteIpAccessListRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteIpAccessListRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteIpAccessListRequestToPb(st *DeleteIpAccessListRequest) (*settingspb.DeleteIpAccessListRequestPb, error) {
@@ -3130,12 +4352,29 @@ type DeleteLlmProxyPartnerPoweredWorkspaceRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteLlmProxyPartnerPoweredWorkspaceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteLlmProxyPartnerPoweredWorkspaceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteLlmProxyPartnerPoweredWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteLlmProxyPartnerPoweredWorkspaceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteLlmProxyPartnerPoweredWorkspaceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteLlmProxyPartnerPoweredWorkspaceRequestToPb(st *DeleteLlmProxyPartnerPoweredWorkspaceRequest) (*settingspb.DeleteLlmProxyPartnerPoweredWorkspaceRequestPb, error) {
@@ -3145,7 +4384,9 @@ func DeleteLlmProxyPartnerPoweredWorkspaceRequestToPb(st *DeleteLlmProxyPartnerP
 	pb := &settingspb.DeleteLlmProxyPartnerPoweredWorkspaceRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3156,7 +4397,9 @@ func DeleteLlmProxyPartnerPoweredWorkspaceRequestFromPb(pb *settingspb.DeleteLlm
 	st := &DeleteLlmProxyPartnerPoweredWorkspaceRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3171,6 +4414,31 @@ type DeleteLlmProxyPartnerPoweredWorkspaceResponse struct {
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
 	Etag string ``
+}
+
+func (st DeleteLlmProxyPartnerPoweredWorkspaceResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteLlmProxyPartnerPoweredWorkspaceResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteLlmProxyPartnerPoweredWorkspaceResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteLlmProxyPartnerPoweredWorkspaceResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteLlmProxyPartnerPoweredWorkspaceResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteLlmProxyPartnerPoweredWorkspaceResponseToPb(st *DeleteLlmProxyPartnerPoweredWorkspaceResponse) (*settingspb.DeleteLlmProxyPartnerPoweredWorkspaceResponsePb, error) {
@@ -3199,6 +4467,31 @@ type DeleteNetworkConnectivityConfigurationRequest struct {
 	NetworkConnectivityConfigId string `tf:"-"`
 }
 
+func (st DeleteNetworkConnectivityConfigurationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteNetworkConnectivityConfigurationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteNetworkConnectivityConfigurationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteNetworkConnectivityConfigurationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteNetworkConnectivityConfigurationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteNetworkConnectivityConfigurationRequestToPb(st *DeleteNetworkConnectivityConfigurationRequest) (*settingspb.DeleteNetworkConnectivityConfigurationRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -3225,6 +4518,31 @@ type DeleteNetworkPolicyRequest struct {
 	NetworkPolicyId string `tf:"-"`
 }
 
+func (st DeleteNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteNetworkPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteNetworkPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteNetworkPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func DeleteNetworkPolicyRequestToPb(st *DeleteNetworkPolicyRequest) (*settingspb.DeleteNetworkPolicyRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -3249,6 +4567,31 @@ type DeleteNotificationDestinationRequest struct {
 
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st DeleteNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteNotificationDestinationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteNotificationDestinationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteNotificationDestinationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteNotificationDestinationRequestToPb(st *DeleteNotificationDestinationRequest) (*settingspb.DeleteNotificationDestinationRequestPb, error) {
@@ -3284,12 +4627,29 @@ type DeletePersonalComputeSettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeletePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeletePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeletePersonalComputeSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeletePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeletePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeletePersonalComputeSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeletePersonalComputeSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeletePersonalComputeSettingRequestToPb(st *DeletePersonalComputeSettingRequest) (*settingspb.DeletePersonalComputeSettingRequestPb, error) {
@@ -3299,7 +4659,9 @@ func DeletePersonalComputeSettingRequestToPb(st *DeletePersonalComputeSettingReq
 	pb := &settingspb.DeletePersonalComputeSettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3310,7 +4672,9 @@ func DeletePersonalComputeSettingRequestFromPb(pb *settingspb.DeletePersonalComp
 	st := &DeletePersonalComputeSettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3325,6 +4689,31 @@ type DeletePersonalComputeSettingResponse struct {
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
 	Etag string ``
+}
+
+func (st DeletePersonalComputeSettingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeletePersonalComputeSettingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeletePersonalComputeSettingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeletePersonalComputeSettingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeletePersonalComputeSettingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeletePersonalComputeSettingResponseToPb(st *DeletePersonalComputeSettingResponse) (*settingspb.DeletePersonalComputeSettingResponsePb, error) {
@@ -3354,6 +4743,31 @@ type DeletePrivateEndpointRuleRequest struct {
 	// Your private endpoint rule ID.
 	// Wire name: 'private_endpoint_rule_id'
 	PrivateEndpointRuleId string `tf:"-"`
+}
+
+func (st DeletePrivateEndpointRuleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeletePrivateEndpointRuleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeletePrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeletePrivateEndpointRuleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeletePrivateEndpointRuleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeletePrivateEndpointRuleRequestToPb(st *DeletePrivateEndpointRuleRequest) (*settingspb.DeletePrivateEndpointRuleRequestPb, error) {
@@ -3391,12 +4805,29 @@ type DeleteRestrictWorkspaceAdminsSettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteRestrictWorkspaceAdminsSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteRestrictWorkspaceAdminsSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteRestrictWorkspaceAdminsSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteRestrictWorkspaceAdminsSettingRequestToPb(st *DeleteRestrictWorkspaceAdminsSettingRequest) (*settingspb.DeleteRestrictWorkspaceAdminsSettingRequestPb, error) {
@@ -3406,7 +4837,9 @@ func DeleteRestrictWorkspaceAdminsSettingRequestToPb(st *DeleteRestrictWorkspace
 	pb := &settingspb.DeleteRestrictWorkspaceAdminsSettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3417,7 +4850,9 @@ func DeleteRestrictWorkspaceAdminsSettingRequestFromPb(pb *settingspb.DeleteRest
 	st := &DeleteRestrictWorkspaceAdminsSettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3432,6 +4867,31 @@ type DeleteRestrictWorkspaceAdminsSettingResponse struct {
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
 	Etag string ``
+}
+
+func (st DeleteRestrictWorkspaceAdminsSettingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteRestrictWorkspaceAdminsSettingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteRestrictWorkspaceAdminsSettingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteRestrictWorkspaceAdminsSettingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteRestrictWorkspaceAdminsSettingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteRestrictWorkspaceAdminsSettingResponseToPb(st *DeleteRestrictWorkspaceAdminsSettingResponse) (*settingspb.DeleteRestrictWorkspaceAdminsSettingResponsePb, error) {
@@ -3467,12 +4927,29 @@ type DeleteSqlResultsDownloadRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteSqlResultsDownloadRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteSqlResultsDownloadRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteSqlResultsDownloadRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteSqlResultsDownloadRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteSqlResultsDownloadRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteSqlResultsDownloadRequestToPb(st *DeleteSqlResultsDownloadRequest) (*settingspb.DeleteSqlResultsDownloadRequestPb, error) {
@@ -3482,7 +4959,9 @@ func DeleteSqlResultsDownloadRequestToPb(st *DeleteSqlResultsDownloadRequest) (*
 	pb := &settingspb.DeleteSqlResultsDownloadRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3493,7 +4972,9 @@ func DeleteSqlResultsDownloadRequestFromPb(pb *settingspb.DeleteSqlResultsDownlo
 	st := &DeleteSqlResultsDownloadRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3508,6 +4989,31 @@ type DeleteSqlResultsDownloadResponse struct {
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
 	Etag string ``
+}
+
+func (st DeleteSqlResultsDownloadResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteSqlResultsDownloadResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteSqlResultsDownloadResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteSqlResultsDownloadResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteSqlResultsDownloadResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteSqlResultsDownloadResponseToPb(st *DeleteSqlResultsDownloadResponse) (*settingspb.DeleteSqlResultsDownloadResponsePb, error) {
@@ -3534,6 +5040,31 @@ type DeleteTokenManagementRequest struct {
 	// The ID of the token to revoke.
 	// Wire name: 'token_id'
 	TokenId string `tf:"-"`
+}
+
+func (st DeleteTokenManagementRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteTokenManagementRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteTokenManagementRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DeleteTokenManagementRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteTokenManagementRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteTokenManagementRequestToPb(st *DeleteTokenManagementRequest) (*settingspb.DeleteTokenManagementRequestPb, error) {
@@ -3641,12 +5172,29 @@ type DisableLegacyAccess struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DisableLegacyAccess) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DisableLegacyAccess) MarshalJSON() ([]byte, error) {
+	pb, err := DisableLegacyAccessToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DisableLegacyAccess) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DisableLegacyAccess) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DisableLegacyAccessPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DisableLegacyAccessFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DisableLegacyAccessToPb(st *DisableLegacyAccess) (*settingspb.DisableLegacyAccessPb, error) {
@@ -3664,7 +5212,9 @@ func DisableLegacyAccessToPb(st *DisableLegacyAccess) (*settingspb.DisableLegacy
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3683,7 +5233,9 @@ func DisableLegacyAccessFromPb(pb *settingspb.DisableLegacyAccessPb) (*DisableLe
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3710,12 +5262,29 @@ type DisableLegacyDbfs struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DisableLegacyDbfs) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DisableLegacyDbfs) MarshalJSON() ([]byte, error) {
+	pb, err := DisableLegacyDbfsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DisableLegacyDbfs) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DisableLegacyDbfs) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DisableLegacyDbfsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DisableLegacyDbfsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DisableLegacyDbfsToPb(st *DisableLegacyDbfs) (*settingspb.DisableLegacyDbfsPb, error) {
@@ -3733,7 +5302,9 @@ func DisableLegacyDbfsToPb(st *DisableLegacyDbfs) (*settingspb.DisableLegacyDbfs
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3752,7 +5323,9 @@ func DisableLegacyDbfsFromPb(pb *settingspb.DisableLegacyDbfsPb) (*DisableLegacy
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3779,12 +5352,29 @@ type DisableLegacyFeatures struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DisableLegacyFeatures) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DisableLegacyFeatures) MarshalJSON() ([]byte, error) {
+	pb, err := DisableLegacyFeaturesToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DisableLegacyFeatures) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DisableLegacyFeatures) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.DisableLegacyFeaturesPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DisableLegacyFeaturesFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DisableLegacyFeaturesToPb(st *DisableLegacyFeatures) (*settingspb.DisableLegacyFeaturesPb, error) {
@@ -3802,7 +5392,9 @@ func DisableLegacyFeaturesToPb(st *DisableLegacyFeatures) (*settingspb.DisableLe
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3821,7 +5413,9 @@ func DisableLegacyFeaturesFromPb(pb *settingspb.DisableLegacyFeaturesPb) (*Disab
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -3833,6 +5427,31 @@ type EgressNetworkPolicy struct {
 	// The access policy enforced for egress traffic to the internet.
 	// Wire name: 'internet_access'
 	InternetAccess *EgressNetworkPolicyInternetAccessPolicy ``
+}
+
+func (st EgressNetworkPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := EgressNetworkPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *EgressNetworkPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EgressNetworkPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EgressNetworkPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EgressNetworkPolicyToPb(st *EgressNetworkPolicy) (*settingspb.EgressNetworkPolicyPb, error) {
@@ -3881,6 +5500,31 @@ type EgressNetworkPolicyInternetAccessPolicy struct {
 
 	// Wire name: 'restriction_mode'
 	RestrictionMode EgressNetworkPolicyInternetAccessPolicyRestrictionMode ``
+}
+
+func (st EgressNetworkPolicyInternetAccessPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := EgressNetworkPolicyInternetAccessPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *EgressNetworkPolicyInternetAccessPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EgressNetworkPolicyInternetAccessPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EgressNetworkPolicyInternetAccessPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EgressNetworkPolicyInternetAccessPolicyToPb(st *EgressNetworkPolicyInternetAccessPolicy) (*settingspb.EgressNetworkPolicyInternetAccessPolicyPb, error) {
@@ -3993,12 +5637,29 @@ type EgressNetworkPolicyInternetAccessPolicyInternetDestination struct {
 	ForceSendFields []string                                                                          `tf:"-"`
 }
 
-func (s *EgressNetworkPolicyInternetAccessPolicyInternetDestination) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EgressNetworkPolicyInternetAccessPolicyInternetDestination) MarshalJSON() ([]byte, error) {
+	pb, err := EgressNetworkPolicyInternetAccessPolicyInternetDestinationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EgressNetworkPolicyInternetAccessPolicyInternetDestination) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EgressNetworkPolicyInternetAccessPolicyInternetDestination) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EgressNetworkPolicyInternetAccessPolicyInternetDestinationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EgressNetworkPolicyInternetAccessPolicyInternetDestinationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EgressNetworkPolicyInternetAccessPolicyInternetDestinationToPb(st *EgressNetworkPolicyInternetAccessPolicyInternetDestination) (*settingspb.EgressNetworkPolicyInternetAccessPolicyInternetDestinationPb, error) {
@@ -4022,7 +5683,9 @@ func EgressNetworkPolicyInternetAccessPolicyInternetDestinationToPb(st *EgressNe
 		pb.Type = *typePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4047,7 +5710,9 @@ func EgressNetworkPolicyInternetAccessPolicyInternetDestinationFromPb(pb *settin
 		st.Type = *typeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4163,6 +5828,31 @@ type EgressNetworkPolicyInternetAccessPolicyLogOnlyMode struct {
 
 	// Wire name: 'workloads'
 	Workloads []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType ``
+}
+
+func (st EgressNetworkPolicyInternetAccessPolicyLogOnlyMode) MarshalJSON() ([]byte, error) {
+	pb, err := EgressNetworkPolicyInternetAccessPolicyLogOnlyModeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *EgressNetworkPolicyInternetAccessPolicyLogOnlyMode) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EgressNetworkPolicyInternetAccessPolicyLogOnlyModePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EgressNetworkPolicyInternetAccessPolicyLogOnlyModeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EgressNetworkPolicyInternetAccessPolicyLogOnlyModeToPb(st *EgressNetworkPolicyInternetAccessPolicyLogOnlyMode) (*settingspb.EgressNetworkPolicyInternetAccessPolicyLogOnlyModePb, error) {
@@ -4419,12 +6109,29 @@ type EgressNetworkPolicyInternetAccessPolicyStorageDestination struct {
 	ForceSendFields []string                                                                        `tf:"-"`
 }
 
-func (s *EgressNetworkPolicyInternetAccessPolicyStorageDestination) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EgressNetworkPolicyInternetAccessPolicyStorageDestination) MarshalJSON() ([]byte, error) {
+	pb, err := EgressNetworkPolicyInternetAccessPolicyStorageDestinationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EgressNetworkPolicyInternetAccessPolicyStorageDestination) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EgressNetworkPolicyInternetAccessPolicyStorageDestination) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EgressNetworkPolicyInternetAccessPolicyStorageDestinationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EgressNetworkPolicyInternetAccessPolicyStorageDestinationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EgressNetworkPolicyInternetAccessPolicyStorageDestinationToPb(st *EgressNetworkPolicyInternetAccessPolicyStorageDestination) (*settingspb.EgressNetworkPolicyInternetAccessPolicyStorageDestinationPb, error) {
@@ -4447,7 +6154,9 @@ func EgressNetworkPolicyInternetAccessPolicyStorageDestinationToPb(st *EgressNet
 		pb.Type = *typePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4471,7 +6180,9 @@ func EgressNetworkPolicyInternetAccessPolicyStorageDestinationFromPb(pb *setting
 		st.Type = *typeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4551,6 +6262,31 @@ type EgressNetworkPolicyNetworkAccessPolicy struct {
 	// the internet.
 	// Wire name: 'restriction_mode'
 	RestrictionMode EgressNetworkPolicyNetworkAccessPolicyRestrictionMode ``
+}
+
+func (st EgressNetworkPolicyNetworkAccessPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := EgressNetworkPolicyNetworkAccessPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *EgressNetworkPolicyNetworkAccessPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EgressNetworkPolicyNetworkAccessPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EgressNetworkPolicyNetworkAccessPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EgressNetworkPolicyNetworkAccessPolicyToPb(st *EgressNetworkPolicyNetworkAccessPolicy) (*settingspb.EgressNetworkPolicyNetworkAccessPolicyPb, error) {
@@ -4661,12 +6397,29 @@ type EgressNetworkPolicyNetworkAccessPolicyInternetDestination struct {
 	ForceSendFields         []string                                                                         `tf:"-"`
 }
 
-func (s *EgressNetworkPolicyNetworkAccessPolicyInternetDestination) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EgressNetworkPolicyNetworkAccessPolicyInternetDestination) MarshalJSON() ([]byte, error) {
+	pb, err := EgressNetworkPolicyNetworkAccessPolicyInternetDestinationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EgressNetworkPolicyNetworkAccessPolicyInternetDestination) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EgressNetworkPolicyNetworkAccessPolicyInternetDestination) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EgressNetworkPolicyNetworkAccessPolicyInternetDestinationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EgressNetworkPolicyNetworkAccessPolicyInternetDestinationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EgressNetworkPolicyNetworkAccessPolicyInternetDestinationToPb(st *EgressNetworkPolicyNetworkAccessPolicyInternetDestination) (*settingspb.EgressNetworkPolicyNetworkAccessPolicyInternetDestinationPb, error) {
@@ -4683,7 +6436,9 @@ func EgressNetworkPolicyNetworkAccessPolicyInternetDestinationToPb(st *EgressNet
 		pb.InternetDestinationType = *internetDestinationTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -4701,7 +6456,9 @@ func EgressNetworkPolicyNetworkAccessPolicyInternetDestinationFromPb(pb *setting
 		st.InternetDestinationType = *internetDestinationTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -4766,6 +6523,31 @@ type EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement struct {
 	// specified, defaults to ENFORCED.
 	// Wire name: 'enforcement_mode'
 	EnforcementMode EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode ``
+}
+
+func (st EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement) MarshalJSON() ([]byte, error) {
+	pb, err := EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementToPb(st *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement) (*settingspb.EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementPb, error) {
@@ -5008,12 +6790,29 @@ type EgressNetworkPolicyNetworkAccessPolicyStorageDestination struct {
 	ForceSendFields        []string                                                                       `tf:"-"`
 }
 
-func (s *EgressNetworkPolicyNetworkAccessPolicyStorageDestination) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EgressNetworkPolicyNetworkAccessPolicyStorageDestination) MarshalJSON() ([]byte, error) {
+	pb, err := EgressNetworkPolicyNetworkAccessPolicyStorageDestinationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EgressNetworkPolicyNetworkAccessPolicyStorageDestination) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EgressNetworkPolicyNetworkAccessPolicyStorageDestination) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EgressNetworkPolicyNetworkAccessPolicyStorageDestinationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EgressNetworkPolicyNetworkAccessPolicyStorageDestinationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EgressNetworkPolicyNetworkAccessPolicyStorageDestinationToPb(st *EgressNetworkPolicyNetworkAccessPolicyStorageDestination) (*settingspb.EgressNetworkPolicyNetworkAccessPolicyStorageDestinationPb, error) {
@@ -5033,7 +6832,9 @@ func EgressNetworkPolicyNetworkAccessPolicyStorageDestinationToPb(st *EgressNetw
 		pb.StorageDestinationType = *storageDestinationTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5054,7 +6855,9 @@ func EgressNetworkPolicyNetworkAccessPolicyStorageDestinationFromPb(pb *settings
 		st.StorageDestinationType = *storageDestinationTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5174,6 +6977,31 @@ type EmailConfig struct {
 	Addresses []string ``
 }
 
+func (st EmailConfig) MarshalJSON() ([]byte, error) {
+	pb, err := EmailConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *EmailConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EmailConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EmailConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func EmailConfigToPb(st *EmailConfig) (*settingspb.EmailConfigPb, error) {
 	if st == nil {
 		return nil, nil
@@ -5208,12 +7036,29 @@ type EnableExportNotebook struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EnableExportNotebook) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EnableExportNotebook) MarshalJSON() ([]byte, error) {
+	pb, err := EnableExportNotebookToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EnableExportNotebook) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EnableExportNotebook) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EnableExportNotebookPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EnableExportNotebookFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EnableExportNotebookToPb(st *EnableExportNotebook) (*settingspb.EnableExportNotebookPb, error) {
@@ -5230,7 +7075,9 @@ func EnableExportNotebookToPb(st *EnableExportNotebook) (*settingspb.EnableExpor
 	}
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5248,7 +7095,9 @@ func EnableExportNotebookFromPb(pb *settingspb.EnableExportNotebookPb) (*EnableE
 	}
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5266,12 +7115,29 @@ type EnableNotebookTableClipboard struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EnableNotebookTableClipboard) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EnableNotebookTableClipboard) MarshalJSON() ([]byte, error) {
+	pb, err := EnableNotebookTableClipboardToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EnableNotebookTableClipboard) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EnableNotebookTableClipboard) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EnableNotebookTableClipboardPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EnableNotebookTableClipboardFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EnableNotebookTableClipboardToPb(st *EnableNotebookTableClipboard) (*settingspb.EnableNotebookTableClipboardPb, error) {
@@ -5288,7 +7154,9 @@ func EnableNotebookTableClipboardToPb(st *EnableNotebookTableClipboard) (*settin
 	}
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5306,7 +7174,9 @@ func EnableNotebookTableClipboardFromPb(pb *settingspb.EnableNotebookTableClipbo
 	}
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5324,12 +7194,29 @@ type EnableResultsDownloading struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EnableResultsDownloading) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EnableResultsDownloading) MarshalJSON() ([]byte, error) {
+	pb, err := EnableResultsDownloadingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EnableResultsDownloading) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EnableResultsDownloading) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EnableResultsDownloadingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EnableResultsDownloadingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EnableResultsDownloadingToPb(st *EnableResultsDownloading) (*settingspb.EnableResultsDownloadingPb, error) {
@@ -5346,7 +7233,9 @@ func EnableResultsDownloadingToPb(st *EnableResultsDownloading) (*settingspb.Ena
 	}
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5364,7 +7253,9 @@ func EnableResultsDownloadingFromPb(pb *settingspb.EnableResultsDownloadingPb) (
 	}
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5376,12 +7267,29 @@ type EnhancedSecurityMonitoring struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EnhancedSecurityMonitoring) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EnhancedSecurityMonitoring) MarshalJSON() ([]byte, error) {
+	pb, err := EnhancedSecurityMonitoringToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EnhancedSecurityMonitoring) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EnhancedSecurityMonitoring) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EnhancedSecurityMonitoringPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EnhancedSecurityMonitoringFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EnhancedSecurityMonitoringToPb(st *EnhancedSecurityMonitoring) (*settingspb.EnhancedSecurityMonitoringPb, error) {
@@ -5391,7 +7299,9 @@ func EnhancedSecurityMonitoringToPb(st *EnhancedSecurityMonitoring) (*settingspb
 	pb := &settingspb.EnhancedSecurityMonitoringPb{}
 	pb.IsEnabled = st.IsEnabled
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5402,7 +7312,9 @@ func EnhancedSecurityMonitoringFromPb(pb *settingspb.EnhancedSecurityMonitoringP
 	st := &EnhancedSecurityMonitoring{}
 	st.IsEnabled = pb.IsEnabled
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5429,12 +7341,29 @@ type EnhancedSecurityMonitoringSetting struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EnhancedSecurityMonitoringSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EnhancedSecurityMonitoringSetting) MarshalJSON() ([]byte, error) {
+	pb, err := EnhancedSecurityMonitoringSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EnhancedSecurityMonitoringSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EnhancedSecurityMonitoringSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EnhancedSecurityMonitoringSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EnhancedSecurityMonitoringSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EnhancedSecurityMonitoringSettingToPb(st *EnhancedSecurityMonitoringSetting) (*settingspb.EnhancedSecurityMonitoringSettingPb, error) {
@@ -5452,7 +7381,9 @@ func EnhancedSecurityMonitoringSettingToPb(st *EnhancedSecurityMonitoringSetting
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5471,7 +7402,9 @@ func EnhancedSecurityMonitoringSettingFromPb(pb *settingspb.EnhancedSecurityMoni
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5483,12 +7416,29 @@ type EsmEnablementAccount struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EsmEnablementAccount) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EsmEnablementAccount) MarshalJSON() ([]byte, error) {
+	pb, err := EsmEnablementAccountToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EsmEnablementAccount) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EsmEnablementAccount) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EsmEnablementAccountPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EsmEnablementAccountFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EsmEnablementAccountToPb(st *EsmEnablementAccount) (*settingspb.EsmEnablementAccountPb, error) {
@@ -5498,7 +7448,9 @@ func EsmEnablementAccountToPb(st *EsmEnablementAccount) (*settingspb.EsmEnableme
 	pb := &settingspb.EsmEnablementAccountPb{}
 	pb.IsEnforced = st.IsEnforced
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5509,7 +7461,9 @@ func EsmEnablementAccountFromPb(pb *settingspb.EsmEnablementAccountPb) (*EsmEnab
 	st := &EsmEnablementAccount{}
 	st.IsEnforced = pb.IsEnforced
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5536,12 +7490,29 @@ type EsmEnablementAccountSetting struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EsmEnablementAccountSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EsmEnablementAccountSetting) MarshalJSON() ([]byte, error) {
+	pb, err := EsmEnablementAccountSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EsmEnablementAccountSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EsmEnablementAccountSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.EsmEnablementAccountSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EsmEnablementAccountSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func EsmEnablementAccountSettingToPb(st *EsmEnablementAccountSetting) (*settingspb.EsmEnablementAccountSettingPb, error) {
@@ -5559,7 +7530,9 @@ func EsmEnablementAccountSettingToPb(st *EsmEnablementAccountSetting) (*settings
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5578,7 +7551,9 @@ func EsmEnablementAccountSettingFromPb(pb *settingspb.EsmEnablementAccountSettin
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5603,12 +7578,29 @@ type ExchangeToken struct {
 	ForceSendFields []string  `tf:"-"`
 }
 
-func (s *ExchangeToken) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExchangeToken) MarshalJSON() ([]byte, error) {
+	pb, err := ExchangeTokenToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExchangeToken) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExchangeToken) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ExchangeTokenPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExchangeTokenFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ExchangeTokenToPb(st *ExchangeToken) (*settingspb.ExchangeTokenPb, error) {
@@ -5628,7 +7620,9 @@ func ExchangeTokenToPb(st *ExchangeToken) (*settingspb.ExchangeTokenPb, error) {
 		pb.TokenType = *tokenTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5649,7 +7643,9 @@ func ExchangeTokenFromPb(pb *settingspb.ExchangeTokenPb) (*ExchangeToken, error)
 		st.TokenType = *tokenTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5664,6 +7660,31 @@ type ExchangeTokenRequest struct {
 	// A list of token types being requested
 	// Wire name: 'tokenType'
 	TokenType []TokenType ``
+}
+
+func (st ExchangeTokenRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ExchangeTokenRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ExchangeTokenRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ExchangeTokenRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExchangeTokenRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ExchangeTokenRequestToPb(st *ExchangeTokenRequest) (*settingspb.ExchangeTokenRequestPb, error) {
@@ -5731,6 +7752,31 @@ type ExchangeTokenResponse struct {
 	Values []ExchangeToken ``
 }
 
+func (st ExchangeTokenResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ExchangeTokenResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ExchangeTokenResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ExchangeTokenResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExchangeTokenResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func ExchangeTokenResponseToPb(st *ExchangeTokenResponse) (*settingspb.ExchangeTokenResponsePb, error) {
 	if st == nil {
 		return nil, nil
@@ -5778,6 +7824,31 @@ type FetchIpAccessListResponse struct {
 
 	// Wire name: 'ip_access_list'
 	IpAccessList *IpAccessListInfo ``
+}
+
+func (st FetchIpAccessListResponse) MarshalJSON() ([]byte, error) {
+	pb, err := FetchIpAccessListResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *FetchIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.FetchIpAccessListResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FetchIpAccessListResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FetchIpAccessListResponseToPb(st *FetchIpAccessListResponse) (*settingspb.FetchIpAccessListResponsePb, error) {
@@ -5834,12 +7905,29 @@ type GenericWebhookConfig struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GenericWebhookConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenericWebhookConfig) MarshalJSON() ([]byte, error) {
+	pb, err := GenericWebhookConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenericWebhookConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenericWebhookConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GenericWebhookConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenericWebhookConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GenericWebhookConfigToPb(st *GenericWebhookConfig) (*settingspb.GenericWebhookConfigPb, error) {
@@ -5854,7 +7942,9 @@ func GenericWebhookConfigToPb(st *GenericWebhookConfig) (*settingspb.GenericWebh
 	pb.Username = st.Username
 	pb.UsernameSet = st.UsernameSet
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5870,7 +7960,9 @@ func GenericWebhookConfigFromPb(pb *settingspb.GenericWebhookConfigPb) (*Generic
 	st.Username = pb.Username
 	st.UsernameSet = pb.UsernameSet
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5887,12 +7979,29 @@ type GetAccountIpAccessEnableRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAccountIpAccessEnableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetAccountIpAccessEnableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAccountIpAccessEnableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetAccountIpAccessEnableRequestToPb(st *GetAccountIpAccessEnableRequest) (*settingspb.GetAccountIpAccessEnableRequestPb, error) {
@@ -5902,7 +8011,9 @@ func GetAccountIpAccessEnableRequestToPb(st *GetAccountIpAccessEnableRequest) (*
 	pb := &settingspb.GetAccountIpAccessEnableRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5913,7 +8024,9 @@ func GetAccountIpAccessEnableRequestFromPb(pb *settingspb.GetAccountIpAccessEnab
 	st := &GetAccountIpAccessEnableRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5921,6 +8034,31 @@ type GetAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
 	// Wire name: 'ip_access_list_id'
 	IpAccessListId string `tf:"-"`
+}
+
+func (st GetAccountIpAccessListRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAccountIpAccessListRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAccountIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetAccountIpAccessListRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAccountIpAccessListRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetAccountIpAccessListRequestToPb(st *GetAccountIpAccessListRequest) (*settingspb.GetAccountIpAccessListRequestPb, error) {
@@ -5956,12 +8094,29 @@ type GetAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAibiDashboardEmbeddingAccessPolicySettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetAibiDashboardEmbeddingAccessPolicySettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st *GetAibiDashboardEmbeddingAccessPolicySettingRequest) (*settingspb.GetAibiDashboardEmbeddingAccessPolicySettingRequestPb, error) {
@@ -5971,7 +8126,9 @@ func GetAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st *GetAibiDashboar
 	pb := &settingspb.GetAibiDashboardEmbeddingAccessPolicySettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -5982,7 +8139,9 @@ func GetAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb *settingspb.Ge
 	st := &GetAibiDashboardEmbeddingAccessPolicySettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -5999,12 +8158,29 @@ type GetAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetAibiDashboardEmbeddingApprovedDomainsSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st *GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*settingspb.GetAibiDashboardEmbeddingApprovedDomainsSettingRequestPb, error) {
@@ -6014,7 +8190,9 @@ func GetAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st *GetAibiDashb
 	pb := &settingspb.GetAibiDashboardEmbeddingApprovedDomainsSettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6025,7 +8203,9 @@ func GetAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb *settingspb
 	st := &GetAibiDashboardEmbeddingApprovedDomainsSettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6042,12 +8222,29 @@ type GetAutomaticClusterUpdateSettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetAutomaticClusterUpdateSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetAutomaticClusterUpdateSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAutomaticClusterUpdateSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetAutomaticClusterUpdateSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetAutomaticClusterUpdateSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetAutomaticClusterUpdateSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAutomaticClusterUpdateSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetAutomaticClusterUpdateSettingRequestToPb(st *GetAutomaticClusterUpdateSettingRequest) (*settingspb.GetAutomaticClusterUpdateSettingRequestPb, error) {
@@ -6057,7 +8254,9 @@ func GetAutomaticClusterUpdateSettingRequestToPb(st *GetAutomaticClusterUpdateSe
 	pb := &settingspb.GetAutomaticClusterUpdateSettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6068,7 +8267,9 @@ func GetAutomaticClusterUpdateSettingRequestFromPb(pb *settingspb.GetAutomaticCl
 	st := &GetAutomaticClusterUpdateSettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6085,12 +8286,29 @@ type GetComplianceSecurityProfileSettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetComplianceSecurityProfileSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetComplianceSecurityProfileSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetComplianceSecurityProfileSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetComplianceSecurityProfileSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetComplianceSecurityProfileSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetComplianceSecurityProfileSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetComplianceSecurityProfileSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetComplianceSecurityProfileSettingRequestToPb(st *GetComplianceSecurityProfileSettingRequest) (*settingspb.GetComplianceSecurityProfileSettingRequestPb, error) {
@@ -6100,7 +8318,9 @@ func GetComplianceSecurityProfileSettingRequestToPb(st *GetComplianceSecurityPro
 	pb := &settingspb.GetComplianceSecurityProfileSettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6111,7 +8331,9 @@ func GetComplianceSecurityProfileSettingRequestFromPb(pb *settingspb.GetComplian
 	st := &GetComplianceSecurityProfileSettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6128,12 +8350,29 @@ type GetCspEnablementAccountSettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetCspEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetCspEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetCspEnablementAccountSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetCspEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetCspEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetCspEnablementAccountSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetCspEnablementAccountSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetCspEnablementAccountSettingRequestToPb(st *GetCspEnablementAccountSettingRequest) (*settingspb.GetCspEnablementAccountSettingRequestPb, error) {
@@ -6143,7 +8382,9 @@ func GetCspEnablementAccountSettingRequestToPb(st *GetCspEnablementAccountSettin
 	pb := &settingspb.GetCspEnablementAccountSettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6154,7 +8395,9 @@ func GetCspEnablementAccountSettingRequestFromPb(pb *settingspb.GetCspEnablement
 	st := &GetCspEnablementAccountSettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6171,12 +8414,29 @@ type GetDashboardEmailSubscriptionsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetDashboardEmailSubscriptionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDashboardEmailSubscriptionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetDashboardEmailSubscriptionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetDashboardEmailSubscriptionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDashboardEmailSubscriptionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetDashboardEmailSubscriptionsRequestToPb(st *GetDashboardEmailSubscriptionsRequest) (*settingspb.GetDashboardEmailSubscriptionsRequestPb, error) {
@@ -6186,7 +8446,9 @@ func GetDashboardEmailSubscriptionsRequestToPb(st *GetDashboardEmailSubscription
 	pb := &settingspb.GetDashboardEmailSubscriptionsRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6197,7 +8459,9 @@ func GetDashboardEmailSubscriptionsRequestFromPb(pb *settingspb.GetDashboardEmai
 	st := &GetDashboardEmailSubscriptionsRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6214,12 +8478,29 @@ type GetDefaultNamespaceSettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDefaultNamespaceSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetDefaultNamespaceSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDefaultNamespaceSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetDefaultNamespaceSettingRequestToPb(st *GetDefaultNamespaceSettingRequest) (*settingspb.GetDefaultNamespaceSettingRequestPb, error) {
@@ -6229,7 +8510,9 @@ func GetDefaultNamespaceSettingRequestToPb(st *GetDefaultNamespaceSettingRequest
 	pb := &settingspb.GetDefaultNamespaceSettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6240,7 +8523,9 @@ func GetDefaultNamespaceSettingRequestFromPb(pb *settingspb.GetDefaultNamespaceS
 	st := &GetDefaultNamespaceSettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6257,12 +8542,29 @@ type GetDefaultWarehouseIdRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetDefaultWarehouseIdRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetDefaultWarehouseIdRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDefaultWarehouseIdRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetDefaultWarehouseIdRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetDefaultWarehouseIdRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetDefaultWarehouseIdRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDefaultWarehouseIdRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetDefaultWarehouseIdRequestToPb(st *GetDefaultWarehouseIdRequest) (*settingspb.GetDefaultWarehouseIdRequestPb, error) {
@@ -6272,7 +8574,9 @@ func GetDefaultWarehouseIdRequestToPb(st *GetDefaultWarehouseIdRequest) (*settin
 	pb := &settingspb.GetDefaultWarehouseIdRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6283,7 +8587,9 @@ func GetDefaultWarehouseIdRequestFromPb(pb *settingspb.GetDefaultWarehouseIdRequ
 	st := &GetDefaultWarehouseIdRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6300,12 +8606,29 @@ type GetDisableLegacyAccessRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDisableLegacyAccessRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetDisableLegacyAccessRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDisableLegacyAccessRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetDisableLegacyAccessRequestToPb(st *GetDisableLegacyAccessRequest) (*settingspb.GetDisableLegacyAccessRequestPb, error) {
@@ -6315,7 +8638,9 @@ func GetDisableLegacyAccessRequestToPb(st *GetDisableLegacyAccessRequest) (*sett
 	pb := &settingspb.GetDisableLegacyAccessRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6326,7 +8651,9 @@ func GetDisableLegacyAccessRequestFromPb(pb *settingspb.GetDisableLegacyAccessRe
 	st := &GetDisableLegacyAccessRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6343,12 +8670,29 @@ type GetDisableLegacyDbfsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDisableLegacyDbfsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetDisableLegacyDbfsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDisableLegacyDbfsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetDisableLegacyDbfsRequestToPb(st *GetDisableLegacyDbfsRequest) (*settingspb.GetDisableLegacyDbfsRequestPb, error) {
@@ -6358,7 +8702,9 @@ func GetDisableLegacyDbfsRequestToPb(st *GetDisableLegacyDbfsRequest) (*settings
 	pb := &settingspb.GetDisableLegacyDbfsRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6369,7 +8715,9 @@ func GetDisableLegacyDbfsRequestFromPb(pb *settingspb.GetDisableLegacyDbfsReques
 	st := &GetDisableLegacyDbfsRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6386,12 +8734,29 @@ type GetDisableLegacyFeaturesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetDisableLegacyFeaturesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetDisableLegacyFeaturesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetDisableLegacyFeaturesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetDisableLegacyFeaturesRequestToPb(st *GetDisableLegacyFeaturesRequest) (*settingspb.GetDisableLegacyFeaturesRequestPb, error) {
@@ -6401,7 +8766,9 @@ func GetDisableLegacyFeaturesRequestToPb(st *GetDisableLegacyFeaturesRequest) (*
 	pb := &settingspb.GetDisableLegacyFeaturesRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6412,7 +8779,9 @@ func GetDisableLegacyFeaturesRequestFromPb(pb *settingspb.GetDisableLegacyFeatur
 	st := &GetDisableLegacyFeaturesRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6429,12 +8798,29 @@ type GetEnhancedSecurityMonitoringSettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetEnhancedSecurityMonitoringSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetEnhancedSecurityMonitoringSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetEnhancedSecurityMonitoringSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetEnhancedSecurityMonitoringSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetEnhancedSecurityMonitoringSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetEnhancedSecurityMonitoringSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetEnhancedSecurityMonitoringSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetEnhancedSecurityMonitoringSettingRequestToPb(st *GetEnhancedSecurityMonitoringSettingRequest) (*settingspb.GetEnhancedSecurityMonitoringSettingRequestPb, error) {
@@ -6444,7 +8830,9 @@ func GetEnhancedSecurityMonitoringSettingRequestToPb(st *GetEnhancedSecurityMoni
 	pb := &settingspb.GetEnhancedSecurityMonitoringSettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6455,7 +8843,9 @@ func GetEnhancedSecurityMonitoringSettingRequestFromPb(pb *settingspb.GetEnhance
 	st := &GetEnhancedSecurityMonitoringSettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6472,12 +8862,29 @@ type GetEsmEnablementAccountSettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetEsmEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetEsmEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetEsmEnablementAccountSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetEsmEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetEsmEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetEsmEnablementAccountSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetEsmEnablementAccountSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetEsmEnablementAccountSettingRequestToPb(st *GetEsmEnablementAccountSettingRequest) (*settingspb.GetEsmEnablementAccountSettingRequestPb, error) {
@@ -6487,7 +8894,9 @@ func GetEsmEnablementAccountSettingRequestToPb(st *GetEsmEnablementAccountSettin
 	pb := &settingspb.GetEsmEnablementAccountSettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6498,7 +8907,9 @@ func GetEsmEnablementAccountSettingRequestFromPb(pb *settingspb.GetEsmEnablement
 	st := &GetEsmEnablementAccountSettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6506,6 +8917,31 @@ type GetIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
 	// Wire name: 'ip_access_list_id'
 	IpAccessListId string `tf:"-"`
+}
+
+func (st GetIpAccessListRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetIpAccessListRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetIpAccessListRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetIpAccessListRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetIpAccessListRequestToPb(st *GetIpAccessListRequest) (*settingspb.GetIpAccessListRequestPb, error) {
@@ -6532,6 +8968,31 @@ type GetIpAccessListResponse struct {
 
 	// Wire name: 'ip_access_list'
 	IpAccessList *IpAccessListInfo ``
+}
+
+func (st GetIpAccessListResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetIpAccessListResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetIpAccessListResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetIpAccessListResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetIpAccessListResponseToPb(st *GetIpAccessListResponse) (*settingspb.GetIpAccessListResponsePb, error) {
@@ -6571,6 +9032,31 @@ type GetIpAccessListsResponse struct {
 
 	// Wire name: 'ip_access_lists'
 	IpAccessLists []IpAccessListInfo ``
+}
+
+func (st GetIpAccessListsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetIpAccessListsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetIpAccessListsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetIpAccessListsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetIpAccessListsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetIpAccessListsResponseToPb(st *GetIpAccessListsResponse) (*settingspb.GetIpAccessListsResponsePb, error) {
@@ -6628,12 +9114,29 @@ type GetLlmProxyPartnerPoweredAccountRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetLlmProxyPartnerPoweredAccountRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetLlmProxyPartnerPoweredAccountRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetLlmProxyPartnerPoweredAccountRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetLlmProxyPartnerPoweredAccountRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetLlmProxyPartnerPoweredAccountRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetLlmProxyPartnerPoweredAccountRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetLlmProxyPartnerPoweredAccountRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetLlmProxyPartnerPoweredAccountRequestToPb(st *GetLlmProxyPartnerPoweredAccountRequest) (*settingspb.GetLlmProxyPartnerPoweredAccountRequestPb, error) {
@@ -6643,7 +9146,9 @@ func GetLlmProxyPartnerPoweredAccountRequestToPb(st *GetLlmProxyPartnerPoweredAc
 	pb := &settingspb.GetLlmProxyPartnerPoweredAccountRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6654,7 +9159,9 @@ func GetLlmProxyPartnerPoweredAccountRequestFromPb(pb *settingspb.GetLlmProxyPar
 	st := &GetLlmProxyPartnerPoweredAccountRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6671,12 +9178,29 @@ type GetLlmProxyPartnerPoweredEnforceRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetLlmProxyPartnerPoweredEnforceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetLlmProxyPartnerPoweredEnforceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetLlmProxyPartnerPoweredEnforceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetLlmProxyPartnerPoweredEnforceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetLlmProxyPartnerPoweredEnforceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetLlmProxyPartnerPoweredEnforceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetLlmProxyPartnerPoweredEnforceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetLlmProxyPartnerPoweredEnforceRequestToPb(st *GetLlmProxyPartnerPoweredEnforceRequest) (*settingspb.GetLlmProxyPartnerPoweredEnforceRequestPb, error) {
@@ -6686,7 +9210,9 @@ func GetLlmProxyPartnerPoweredEnforceRequestToPb(st *GetLlmProxyPartnerPoweredEn
 	pb := &settingspb.GetLlmProxyPartnerPoweredEnforceRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6697,7 +9223,9 @@ func GetLlmProxyPartnerPoweredEnforceRequestFromPb(pb *settingspb.GetLlmProxyPar
 	st := &GetLlmProxyPartnerPoweredEnforceRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6714,12 +9242,29 @@ type GetLlmProxyPartnerPoweredWorkspaceRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetLlmProxyPartnerPoweredWorkspaceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetLlmProxyPartnerPoweredWorkspaceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetLlmProxyPartnerPoweredWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetLlmProxyPartnerPoweredWorkspaceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetLlmProxyPartnerPoweredWorkspaceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetLlmProxyPartnerPoweredWorkspaceRequestToPb(st *GetLlmProxyPartnerPoweredWorkspaceRequest) (*settingspb.GetLlmProxyPartnerPoweredWorkspaceRequestPb, error) {
@@ -6729,7 +9274,9 @@ func GetLlmProxyPartnerPoweredWorkspaceRequestToPb(st *GetLlmProxyPartnerPowered
 	pb := &settingspb.GetLlmProxyPartnerPoweredWorkspaceRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6740,7 +9287,9 @@ func GetLlmProxyPartnerPoweredWorkspaceRequestFromPb(pb *settingspb.GetLlmProxyP
 	st := &GetLlmProxyPartnerPoweredWorkspaceRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6748,6 +9297,31 @@ type GetNetworkConnectivityConfigurationRequest struct {
 	// Your Network Connectivity Configuration ID.
 	// Wire name: 'network_connectivity_config_id'
 	NetworkConnectivityConfigId string `tf:"-"`
+}
+
+func (st GetNetworkConnectivityConfigurationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetNetworkConnectivityConfigurationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetNetworkConnectivityConfigurationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetNetworkConnectivityConfigurationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetNetworkConnectivityConfigurationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetNetworkConnectivityConfigurationRequestToPb(st *GetNetworkConnectivityConfigurationRequest) (*settingspb.GetNetworkConnectivityConfigurationRequestPb, error) {
@@ -6776,6 +9350,31 @@ type GetNetworkPolicyRequest struct {
 	NetworkPolicyId string `tf:"-"`
 }
 
+func (st GetNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetNetworkPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetNetworkPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetNetworkPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetNetworkPolicyRequestToPb(st *GetNetworkPolicyRequest) (*settingspb.GetNetworkPolicyRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -6800,6 +9399,31 @@ type GetNotificationDestinationRequest struct {
 
 	// Wire name: 'id'
 	Id string `tf:"-"`
+}
+
+func (st GetNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetNotificationDestinationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetNotificationDestinationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetNotificationDestinationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetNotificationDestinationRequestToPb(st *GetNotificationDestinationRequest) (*settingspb.GetNotificationDestinationRequestPb, error) {
@@ -6835,12 +9459,29 @@ type GetPersonalComputeSettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetPersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetPersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetPersonalComputeSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetPersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetPersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetPersonalComputeSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPersonalComputeSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPersonalComputeSettingRequestToPb(st *GetPersonalComputeSettingRequest) (*settingspb.GetPersonalComputeSettingRequestPb, error) {
@@ -6850,7 +9491,9 @@ func GetPersonalComputeSettingRequestToPb(st *GetPersonalComputeSettingRequest) 
 	pb := &settingspb.GetPersonalComputeSettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6861,7 +9504,9 @@ func GetPersonalComputeSettingRequestFromPb(pb *settingspb.GetPersonalComputeSet
 	st := &GetPersonalComputeSettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6872,6 +9517,31 @@ type GetPrivateEndpointRuleRequest struct {
 	// Your private endpoint rule ID.
 	// Wire name: 'private_endpoint_rule_id'
 	PrivateEndpointRuleId string `tf:"-"`
+}
+
+func (st GetPrivateEndpointRuleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetPrivateEndpointRuleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetPrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetPrivateEndpointRuleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPrivateEndpointRuleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetPrivateEndpointRuleRequestToPb(st *GetPrivateEndpointRuleRequest) (*settingspb.GetPrivateEndpointRuleRequestPb, error) {
@@ -6909,12 +9579,29 @@ type GetRestrictWorkspaceAdminsSettingRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetRestrictWorkspaceAdminsSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetRestrictWorkspaceAdminsSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetRestrictWorkspaceAdminsSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetRestrictWorkspaceAdminsSettingRequestToPb(st *GetRestrictWorkspaceAdminsSettingRequest) (*settingspb.GetRestrictWorkspaceAdminsSettingRequestPb, error) {
@@ -6924,7 +9611,9 @@ func GetRestrictWorkspaceAdminsSettingRequestToPb(st *GetRestrictWorkspaceAdmins
 	pb := &settingspb.GetRestrictWorkspaceAdminsSettingRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6935,7 +9624,9 @@ func GetRestrictWorkspaceAdminsSettingRequestFromPb(pb *settingspb.GetRestrictWo
 	st := &GetRestrictWorkspaceAdminsSettingRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6952,12 +9643,29 @@ type GetSqlResultsDownloadRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetSqlResultsDownloadRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetSqlResultsDownloadRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetSqlResultsDownloadRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetSqlResultsDownloadRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetSqlResultsDownloadRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetSqlResultsDownloadRequestToPb(st *GetSqlResultsDownloadRequest) (*settingspb.GetSqlResultsDownloadRequestPb, error) {
@@ -6967,7 +9675,9 @@ func GetSqlResultsDownloadRequestToPb(st *GetSqlResultsDownloadRequest) (*settin
 	pb := &settingspb.GetSqlResultsDownloadRequestPb{}
 	pb.Etag = st.Etag
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -6978,7 +9688,9 @@ func GetSqlResultsDownloadRequestFromPb(pb *settingspb.GetSqlResultsDownloadRequ
 	st := &GetSqlResultsDownloadRequest{}
 	st.Etag = pb.Etag
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -6986,6 +9698,31 @@ type GetStatusRequest struct {
 
 	// Wire name: 'keys'
 	Keys string `tf:"-"`
+}
+
+func (st GetStatusRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetStatusRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetStatusRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetStatusRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetStatusRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetStatusRequestToPb(st *GetStatusRequest) (*settingspb.GetStatusRequestPb, error) {
@@ -7014,6 +9751,31 @@ type GetTokenManagementRequest struct {
 	TokenId string `tf:"-"`
 }
 
+func (st GetTokenManagementRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetTokenManagementRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetTokenManagementRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetTokenManagementRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetTokenManagementRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetTokenManagementRequestToPb(st *GetTokenManagementRequest) (*settingspb.GetTokenManagementRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -7038,6 +9800,31 @@ type GetTokenPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
 	PermissionLevels []TokenPermissionsDescription ``
+}
+
+func (st GetTokenPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetTokenPermissionLevelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetTokenPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetTokenPermissionLevelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetTokenPermissionLevelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetTokenPermissionLevelsResponseToPb(st *GetTokenPermissionLevelsResponse) (*settingspb.GetTokenPermissionLevelsResponsePb, error) {
@@ -7089,6 +9876,31 @@ type GetTokenResponse struct {
 	TokenInfo *TokenInfo ``
 }
 
+func (st GetTokenResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetTokenResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetTokenResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetTokenResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetTokenResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetTokenResponseToPb(st *GetTokenResponse) (*settingspb.GetTokenResponsePb, error) {
 	if st == nil {
 		return nil, nil
@@ -7125,6 +9937,31 @@ type GetWorkspaceNetworkOptionRequest struct {
 	// The workspace ID.
 	// Wire name: 'workspace_id'
 	WorkspaceId int64 `tf:"-"`
+}
+
+func (st GetWorkspaceNetworkOptionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetWorkspaceNetworkOptionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetWorkspaceNetworkOptionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.GetWorkspaceNetworkOptionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetWorkspaceNetworkOptionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetWorkspaceNetworkOptionRequestToPb(st *GetWorkspaceNetworkOptionRequest) (*settingspb.GetWorkspaceNetworkOptionRequestPb, error) {
@@ -7182,12 +10019,29 @@ type IpAccessListInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *IpAccessListInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st IpAccessListInfo) MarshalJSON() ([]byte, error) {
+	pb, err := IpAccessListInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s IpAccessListInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *IpAccessListInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.IpAccessListInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := IpAccessListInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func IpAccessListInfoToPb(st *IpAccessListInfo) (*settingspb.IpAccessListInfoPb, error) {
@@ -7212,7 +10066,9 @@ func IpAccessListInfoToPb(st *IpAccessListInfo) (*settingspb.IpAccessListInfoPb,
 	pb.UpdatedAt = st.UpdatedAt
 	pb.UpdatedBy = st.UpdatedBy
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7238,7 +10094,9 @@ func IpAccessListInfoFromPb(pb *settingspb.IpAccessListInfoPb) (*IpAccessListInf
 	st.UpdatedAt = pb.UpdatedAt
 	st.UpdatedBy = pb.UpdatedBy
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7247,6 +10105,31 @@ type ListIpAccessListResponse struct {
 
 	// Wire name: 'ip_access_lists'
 	IpAccessLists []IpAccessListInfo ``
+}
+
+func (st ListIpAccessListResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListIpAccessListResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ListIpAccessListResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListIpAccessListResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListIpAccessListResponseToPb(st *ListIpAccessListResponse) (*settingspb.ListIpAccessListResponsePb, error) {
@@ -7298,12 +10181,29 @@ type ListNetworkConnectivityConfigurationsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListNetworkConnectivityConfigurationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListNetworkConnectivityConfigurationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListNetworkConnectivityConfigurationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListNetworkConnectivityConfigurationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListNetworkConnectivityConfigurationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ListNetworkConnectivityConfigurationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListNetworkConnectivityConfigurationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListNetworkConnectivityConfigurationsRequestToPb(st *ListNetworkConnectivityConfigurationsRequest) (*settingspb.ListNetworkConnectivityConfigurationsRequestPb, error) {
@@ -7313,7 +10213,9 @@ func ListNetworkConnectivityConfigurationsRequestToPb(st *ListNetworkConnectivit
 	pb := &settingspb.ListNetworkConnectivityConfigurationsRequestPb{}
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7324,7 +10226,9 @@ func ListNetworkConnectivityConfigurationsRequestFromPb(pb *settingspb.ListNetwo
 	st := &ListNetworkConnectivityConfigurationsRequest{}
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7340,12 +10244,29 @@ type ListNetworkConnectivityConfigurationsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListNetworkConnectivityConfigurationsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListNetworkConnectivityConfigurationsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListNetworkConnectivityConfigurationsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListNetworkConnectivityConfigurationsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListNetworkConnectivityConfigurationsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ListNetworkConnectivityConfigurationsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListNetworkConnectivityConfigurationsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListNetworkConnectivityConfigurationsResponseToPb(st *ListNetworkConnectivityConfigurationsResponse) (*settingspb.ListNetworkConnectivityConfigurationsResponsePb, error) {
@@ -7367,7 +10288,9 @@ func ListNetworkConnectivityConfigurationsResponseToPb(st *ListNetworkConnectivi
 	pb.Items = itemsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7390,7 +10313,9 @@ func ListNetworkConnectivityConfigurationsResponseFromPb(pb *settingspb.ListNetw
 	st.Items = itemsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7401,12 +10326,29 @@ type ListNetworkPoliciesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListNetworkPoliciesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListNetworkPoliciesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListNetworkPoliciesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListNetworkPoliciesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListNetworkPoliciesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ListNetworkPoliciesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListNetworkPoliciesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListNetworkPoliciesRequestToPb(st *ListNetworkPoliciesRequest) (*settingspb.ListNetworkPoliciesRequestPb, error) {
@@ -7416,7 +10358,9 @@ func ListNetworkPoliciesRequestToPb(st *ListNetworkPoliciesRequest) (*settingspb
 	pb := &settingspb.ListNetworkPoliciesRequestPb{}
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7427,7 +10371,9 @@ func ListNetworkPoliciesRequestFromPb(pb *settingspb.ListNetworkPoliciesRequestP
 	st := &ListNetworkPoliciesRequest{}
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7442,12 +10388,29 @@ type ListNetworkPoliciesResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListNetworkPoliciesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListNetworkPoliciesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListNetworkPoliciesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListNetworkPoliciesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListNetworkPoliciesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ListNetworkPoliciesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListNetworkPoliciesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListNetworkPoliciesResponseToPb(st *ListNetworkPoliciesResponse) (*settingspb.ListNetworkPoliciesResponsePb, error) {
@@ -7469,7 +10432,9 @@ func ListNetworkPoliciesResponseToPb(st *ListNetworkPoliciesResponse) (*settings
 	pb.Items = itemsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7492,7 +10457,9 @@ func ListNetworkPoliciesResponseFromPb(pb *settingspb.ListNetworkPoliciesRespons
 	st.Items = itemsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7506,12 +10473,29 @@ type ListNotificationDestinationsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListNotificationDestinationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListNotificationDestinationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListNotificationDestinationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListNotificationDestinationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListNotificationDestinationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ListNotificationDestinationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListNotificationDestinationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListNotificationDestinationsRequestToPb(st *ListNotificationDestinationsRequest) (*settingspb.ListNotificationDestinationsRequestPb, error) {
@@ -7522,7 +10506,9 @@ func ListNotificationDestinationsRequestToPb(st *ListNotificationDestinationsReq
 	pb.PageSize = st.PageSize
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7534,7 +10520,9 @@ func ListNotificationDestinationsRequestFromPb(pb *settingspb.ListNotificationDe
 	st.PageSize = pb.PageSize
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7548,12 +10536,29 @@ type ListNotificationDestinationsResponse struct {
 	ForceSendFields []string                             `tf:"-"`
 }
 
-func (s *ListNotificationDestinationsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListNotificationDestinationsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListNotificationDestinationsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListNotificationDestinationsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListNotificationDestinationsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ListNotificationDestinationsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListNotificationDestinationsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListNotificationDestinationsResponseToPb(st *ListNotificationDestinationsResponse) (*settingspb.ListNotificationDestinationsResponsePb, error) {
@@ -7575,7 +10580,9 @@ func ListNotificationDestinationsResponseToPb(st *ListNotificationDestinationsRe
 	}
 	pb.Results = resultsPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7598,7 +10605,9 @@ func ListNotificationDestinationsResponseFromPb(pb *settingspb.ListNotificationD
 	}
 	st.Results = resultsField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7616,12 +10625,29 @@ type ListNotificationDestinationsResult struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListNotificationDestinationsResult) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListNotificationDestinationsResult) MarshalJSON() ([]byte, error) {
+	pb, err := ListNotificationDestinationsResultToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListNotificationDestinationsResult) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListNotificationDestinationsResult) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ListNotificationDestinationsResultPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListNotificationDestinationsResultFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListNotificationDestinationsResultToPb(st *ListNotificationDestinationsResult) (*settingspb.ListNotificationDestinationsResultPb, error) {
@@ -7639,7 +10665,9 @@ func ListNotificationDestinationsResultToPb(st *ListNotificationDestinationsResu
 	pb.DisplayName = st.DisplayName
 	pb.Id = st.Id
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7658,7 +10686,9 @@ func ListNotificationDestinationsResultFromPb(pb *settingspb.ListNotificationDes
 	st.DisplayName = pb.DisplayName
 	st.Id = pb.Id
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7672,12 +10702,29 @@ type ListPrivateEndpointRulesRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListPrivateEndpointRulesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListPrivateEndpointRulesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListPrivateEndpointRulesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListPrivateEndpointRulesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListPrivateEndpointRulesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ListPrivateEndpointRulesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListPrivateEndpointRulesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListPrivateEndpointRulesRequestToPb(st *ListPrivateEndpointRulesRequest) (*settingspb.ListPrivateEndpointRulesRequestPb, error) {
@@ -7688,7 +10735,9 @@ func ListPrivateEndpointRulesRequestToPb(st *ListPrivateEndpointRulesRequest) (*
 	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7700,7 +10749,9 @@ func ListPrivateEndpointRulesRequestFromPb(pb *settingspb.ListPrivateEndpointRul
 	st.NetworkConnectivityConfigId = pb.NetworkConnectivityConfigId
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7716,12 +10767,29 @@ type ListPrivateEndpointRulesResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListPrivateEndpointRulesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListPrivateEndpointRulesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListPrivateEndpointRulesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListPrivateEndpointRulesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListPrivateEndpointRulesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ListPrivateEndpointRulesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListPrivateEndpointRulesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListPrivateEndpointRulesResponseToPb(st *ListPrivateEndpointRulesResponse) (*settingspb.ListPrivateEndpointRulesResponsePb, error) {
@@ -7743,7 +10811,9 @@ func ListPrivateEndpointRulesResponseToPb(st *ListPrivateEndpointRulesResponse) 
 	pb.Items = itemsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7766,7 +10836,9 @@ func ListPrivateEndpointRulesResponseFromPb(pb *settingspb.ListPrivateEndpointRu
 	st.Items = itemsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7774,6 +10846,31 @@ type ListPublicTokensResponse struct {
 	// The information for each token.
 	// Wire name: 'token_infos'
 	TokenInfos []PublicTokenInfo ``
+}
+
+func (st ListPublicTokensResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListPublicTokensResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListPublicTokensResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ListPublicTokensResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListPublicTokensResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListPublicTokensResponseToPb(st *ListPublicTokensResponse) (*settingspb.ListPublicTokensResponsePb, error) {
@@ -7828,12 +10925,29 @@ type ListTokenManagementRequest struct {
 	ForceSendFields   []string `tf:"-"`
 }
 
-func (s *ListTokenManagementRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListTokenManagementRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListTokenManagementRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListTokenManagementRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListTokenManagementRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ListTokenManagementRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListTokenManagementRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListTokenManagementRequestToPb(st *ListTokenManagementRequest) (*settingspb.ListTokenManagementRequestPb, error) {
@@ -7844,7 +10958,9 @@ func ListTokenManagementRequestToPb(st *ListTokenManagementRequest) (*settingspb
 	pb.CreatedById = st.CreatedById
 	pb.CreatedByUsername = st.CreatedByUsername
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -7856,7 +10972,9 @@ func ListTokenManagementRequestFromPb(pb *settingspb.ListTokenManagementRequestP
 	st.CreatedById = pb.CreatedById
 	st.CreatedByUsername = pb.CreatedByUsername
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -7865,6 +10983,31 @@ type ListTokensResponse struct {
 	// Token metadata of each user-created token in the workspace
 	// Wire name: 'token_infos'
 	TokenInfos []TokenInfo ``
+}
+
+func (st ListTokensResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListTokensResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListTokensResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ListTokensResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListTokensResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListTokensResponseToPb(st *ListTokensResponse) (*settingspb.ListTokensResponsePb, error) {
@@ -7993,12 +11136,29 @@ type LlmProxyPartnerPoweredAccount struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *LlmProxyPartnerPoweredAccount) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st LlmProxyPartnerPoweredAccount) MarshalJSON() ([]byte, error) {
+	pb, err := LlmProxyPartnerPoweredAccountToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s LlmProxyPartnerPoweredAccount) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *LlmProxyPartnerPoweredAccount) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.LlmProxyPartnerPoweredAccountPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := LlmProxyPartnerPoweredAccountFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func LlmProxyPartnerPoweredAccountToPb(st *LlmProxyPartnerPoweredAccount) (*settingspb.LlmProxyPartnerPoweredAccountPb, error) {
@@ -8016,7 +11176,9 @@ func LlmProxyPartnerPoweredAccountToPb(st *LlmProxyPartnerPoweredAccount) (*sett
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8035,7 +11197,9 @@ func LlmProxyPartnerPoweredAccountFromPb(pb *settingspb.LlmProxyPartnerPoweredAc
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8062,12 +11226,29 @@ type LlmProxyPartnerPoweredEnforce struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *LlmProxyPartnerPoweredEnforce) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st LlmProxyPartnerPoweredEnforce) MarshalJSON() ([]byte, error) {
+	pb, err := LlmProxyPartnerPoweredEnforceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s LlmProxyPartnerPoweredEnforce) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *LlmProxyPartnerPoweredEnforce) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.LlmProxyPartnerPoweredEnforcePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := LlmProxyPartnerPoweredEnforceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func LlmProxyPartnerPoweredEnforceToPb(st *LlmProxyPartnerPoweredEnforce) (*settingspb.LlmProxyPartnerPoweredEnforcePb, error) {
@@ -8085,7 +11266,9 @@ func LlmProxyPartnerPoweredEnforceToPb(st *LlmProxyPartnerPoweredEnforce) (*sett
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8104,7 +11287,9 @@ func LlmProxyPartnerPoweredEnforceFromPb(pb *settingspb.LlmProxyPartnerPoweredEn
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8131,12 +11316,29 @@ type LlmProxyPartnerPoweredWorkspace struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *LlmProxyPartnerPoweredWorkspace) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st LlmProxyPartnerPoweredWorkspace) MarshalJSON() ([]byte, error) {
+	pb, err := LlmProxyPartnerPoweredWorkspaceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s LlmProxyPartnerPoweredWorkspace) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *LlmProxyPartnerPoweredWorkspace) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.LlmProxyPartnerPoweredWorkspacePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := LlmProxyPartnerPoweredWorkspaceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func LlmProxyPartnerPoweredWorkspaceToPb(st *LlmProxyPartnerPoweredWorkspace) (*settingspb.LlmProxyPartnerPoweredWorkspacePb, error) {
@@ -8154,7 +11356,9 @@ func LlmProxyPartnerPoweredWorkspaceToPb(st *LlmProxyPartnerPoweredWorkspace) (*
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8173,7 +11377,9 @@ func LlmProxyPartnerPoweredWorkspaceFromPb(pb *settingspb.LlmProxyPartnerPowered
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8187,12 +11393,29 @@ type MicrosoftTeamsConfig struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *MicrosoftTeamsConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MicrosoftTeamsConfig) MarshalJSON() ([]byte, error) {
+	pb, err := MicrosoftTeamsConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MicrosoftTeamsConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MicrosoftTeamsConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.MicrosoftTeamsConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MicrosoftTeamsConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func MicrosoftTeamsConfigToPb(st *MicrosoftTeamsConfig) (*settingspb.MicrosoftTeamsConfigPb, error) {
@@ -8203,7 +11426,9 @@ func MicrosoftTeamsConfigToPb(st *MicrosoftTeamsConfig) (*settingspb.MicrosoftTe
 	pb.Url = st.Url
 	pb.UrlSet = st.UrlSet
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8215,7 +11440,9 @@ func MicrosoftTeamsConfigFromPb(pb *settingspb.MicrosoftTeamsConfigPb) (*Microso
 	st.Url = pb.Url
 	st.UrlSet = pb.UrlSet
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8226,6 +11453,31 @@ type NccAwsStableIpRule struct {
 	// originates when accessing your resources.
 	// Wire name: 'cidr_blocks'
 	CidrBlocks []string ``
+}
+
+func (st NccAwsStableIpRule) MarshalJSON() ([]byte, error) {
+	pb, err := NccAwsStableIpRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *NccAwsStableIpRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.NccAwsStableIpRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NccAwsStableIpRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NccAwsStableIpRuleToPb(st *NccAwsStableIpRule) (*settingspb.NccAwsStableIpRulePb, error) {
@@ -8306,12 +11558,29 @@ type NccAzurePrivateEndpointRule struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *NccAzurePrivateEndpointRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st NccAzurePrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	pb, err := NccAzurePrivateEndpointRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s NccAzurePrivateEndpointRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *NccAzurePrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.NccAzurePrivateEndpointRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NccAzurePrivateEndpointRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NccAzurePrivateEndpointRuleToPb(st *NccAzurePrivateEndpointRule) (*settingspb.NccAzurePrivateEndpointRulePb, error) {
@@ -8337,7 +11606,9 @@ func NccAzurePrivateEndpointRuleToPb(st *NccAzurePrivateEndpointRule) (*settings
 	pb.RuleId = st.RuleId
 	pb.UpdatedTime = st.UpdatedTime
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8364,7 +11635,9 @@ func NccAzurePrivateEndpointRuleFromPb(pb *settingspb.NccAzurePrivateEndpointRul
 	st.RuleId = pb.RuleId
 	st.UpdatedTime = pb.UpdatedTime
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8450,12 +11723,29 @@ type NccAzureServiceEndpointRule struct {
 	ForceSendFields []string             `tf:"-"`
 }
 
-func (s *NccAzureServiceEndpointRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st NccAzureServiceEndpointRule) MarshalJSON() ([]byte, error) {
+	pb, err := NccAzureServiceEndpointRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s NccAzureServiceEndpointRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *NccAzureServiceEndpointRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.NccAzureServiceEndpointRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NccAzureServiceEndpointRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NccAzureServiceEndpointRuleToPb(st *NccAzureServiceEndpointRule) (*settingspb.NccAzureServiceEndpointRulePb, error) {
@@ -8478,7 +11768,9 @@ func NccAzureServiceEndpointRuleToPb(st *NccAzureServiceEndpointRule) (*settings
 	}
 	pb.TargetServices = targetServicesPb
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8502,7 +11794,9 @@ func NccAzureServiceEndpointRuleFromPb(pb *settingspb.NccAzureServiceEndpointRul
 	}
 	st.TargetServices = targetServicesField
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8516,6 +11810,31 @@ type NccEgressConfig struct {
 	// These rules override default rules.
 	// Wire name: 'target_rules'
 	TargetRules *NccEgressTargetRules ``
+}
+
+func (st NccEgressConfig) MarshalJSON() ([]byte, error) {
+	pb, err := NccEgressConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *NccEgressConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.NccEgressConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NccEgressConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NccEgressConfigToPb(st *NccEgressConfig) (*settingspb.NccEgressConfigPb, error) {
@@ -8574,6 +11893,31 @@ type NccEgressDefaultRules struct {
 	AzureServiceEndpointRule *NccAzureServiceEndpointRule ``
 }
 
+func (st NccEgressDefaultRules) MarshalJSON() ([]byte, error) {
+	pb, err := NccEgressDefaultRulesToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *NccEgressDefaultRules) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.NccEgressDefaultRulesPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NccEgressDefaultRulesFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func NccEgressDefaultRulesToPb(st *NccEgressDefaultRules) (*settingspb.NccEgressDefaultRulesPb, error) {
 	if st == nil {
 		return nil, nil
@@ -8630,6 +11974,31 @@ type NccEgressTargetRules struct {
 
 	// Wire name: 'azure_private_endpoint_rules'
 	AzurePrivateEndpointRules []NccAzurePrivateEndpointRule ``
+}
+
+func (st NccEgressTargetRules) MarshalJSON() ([]byte, error) {
+	pb, err := NccEgressTargetRulesToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *NccEgressTargetRules) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.NccEgressTargetRulesPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NccEgressTargetRulesFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NccEgressTargetRulesToPb(st *NccEgressTargetRules) (*settingspb.NccEgressTargetRulesPb, error) {
@@ -8782,12 +12151,29 @@ type NccPrivateEndpointRule struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *NccPrivateEndpointRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st NccPrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	pb, err := NccPrivateEndpointRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s NccPrivateEndpointRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *NccPrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.NccPrivateEndpointRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NccPrivateEndpointRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NccPrivateEndpointRuleToPb(st *NccPrivateEndpointRule) (*settingspb.NccPrivateEndpointRulePb, error) {
@@ -8818,7 +12204,9 @@ func NccPrivateEndpointRuleToPb(st *NccPrivateEndpointRule) (*settingspb.NccPriv
 	pb.UpdatedTime = st.UpdatedTime
 	pb.VpcEndpointId = st.VpcEndpointId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8850,7 +12238,9 @@ func NccPrivateEndpointRuleFromPb(pb *settingspb.NccPrivateEndpointRulePb) (*Ncc
 	st.UpdatedTime = pb.UpdatedTime
 	st.VpcEndpointId = pb.VpcEndpointId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -8949,12 +12339,29 @@ type NetworkConnectivityConfiguration struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *NetworkConnectivityConfiguration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st NetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := NetworkConnectivityConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s NetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *NetworkConnectivityConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.NetworkConnectivityConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NetworkConnectivityConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NetworkConnectivityConfigurationToPb(st *NetworkConnectivityConfiguration) (*settingspb.NetworkConnectivityConfigurationPb, error) {
@@ -8976,7 +12383,9 @@ func NetworkConnectivityConfigurationToPb(st *NetworkConnectivityConfiguration) 
 	pb.Region = st.Region
 	pb.UpdatedTime = st.UpdatedTime
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -8999,7 +12408,9 @@ func NetworkConnectivityConfigurationFromPb(pb *settingspb.NetworkConnectivityCo
 	st.Region = pb.Region
 	st.UpdatedTime = pb.UpdatedTime
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9014,6 +12425,31 @@ type NetworkPolicyEgress struct {
 	// The access policy enforced for egress traffic to the internet.
 	// Wire name: 'network_access'
 	NetworkAccess *EgressNetworkPolicyNetworkAccessPolicy ``
+}
+
+func (st NetworkPolicyEgress) MarshalJSON() ([]byte, error) {
+	pb, err := NetworkPolicyEgressToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *NetworkPolicyEgress) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.NetworkPolicyEgressPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NetworkPolicyEgressFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NetworkPolicyEgressToPb(st *NetworkPolicyEgress) (*settingspb.NetworkPolicyEgressPb, error) {
@@ -9067,12 +12503,29 @@ type NotificationDestination struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *NotificationDestination) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st NotificationDestination) MarshalJSON() ([]byte, error) {
+	pb, err := NotificationDestinationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s NotificationDestination) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *NotificationDestination) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.NotificationDestinationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NotificationDestinationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NotificationDestinationToPb(st *NotificationDestination) (*settingspb.NotificationDestinationPb, error) {
@@ -9097,7 +12550,9 @@ func NotificationDestinationToPb(st *NotificationDestination) (*settingspb.Notif
 	pb.DisplayName = st.DisplayName
 	pb.Id = st.Id
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9123,7 +12578,9 @@ func NotificationDestinationFromPb(pb *settingspb.NotificationDestinationPb) (*N
 	st.DisplayName = pb.DisplayName
 	st.Id = pb.Id
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9137,12 +12594,29 @@ type PagerdutyConfig struct {
 	ForceSendFields   []string `tf:"-"`
 }
 
-func (s *PagerdutyConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PagerdutyConfig) MarshalJSON() ([]byte, error) {
+	pb, err := PagerdutyConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PagerdutyConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PagerdutyConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.PagerdutyConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PagerdutyConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PagerdutyConfigToPb(st *PagerdutyConfig) (*settingspb.PagerdutyConfigPb, error) {
@@ -9153,7 +12627,9 @@ func PagerdutyConfigToPb(st *PagerdutyConfig) (*settingspb.PagerdutyConfigPb, er
 	pb.IntegrationKey = st.IntegrationKey
 	pb.IntegrationKeySet = st.IntegrationKeySet
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9165,7 +12641,9 @@ func PagerdutyConfigFromPb(pb *settingspb.PagerdutyConfigPb) (*PagerdutyConfig, 
 	st.IntegrationKey = pb.IntegrationKey
 	st.IntegrationKeySet = pb.IntegrationKeySet
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9177,12 +12655,29 @@ type PartitionId struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PartitionId) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PartitionId) MarshalJSON() ([]byte, error) {
+	pb, err := PartitionIdToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PartitionId) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PartitionId) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.PartitionIdPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PartitionIdFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PartitionIdToPb(st *PartitionId) (*settingspb.PartitionIdPb, error) {
@@ -9192,7 +12687,9 @@ func PartitionIdToPb(st *PartitionId) (*settingspb.PartitionIdPb, error) {
 	pb := &settingspb.PartitionIdPb{}
 	pb.WorkspaceId = st.WorkspaceId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9203,7 +12700,9 @@ func PartitionIdFromPb(pb *settingspb.PartitionIdPb) (*PartitionId, error) {
 	st := &PartitionId{}
 	st.WorkspaceId = pb.WorkspaceId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9211,6 +12710,31 @@ type PersonalComputeMessage struct {
 
 	// Wire name: 'value'
 	Value PersonalComputeMessageEnum ``
+}
+
+func (st PersonalComputeMessage) MarshalJSON() ([]byte, error) {
+	pb, err := PersonalComputeMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *PersonalComputeMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.PersonalComputeMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PersonalComputeMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PersonalComputeMessageToPb(st *PersonalComputeMessage) (*settingspb.PersonalComputeMessagePb, error) {
@@ -9327,12 +12851,29 @@ type PersonalComputeSetting struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PersonalComputeSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PersonalComputeSetting) MarshalJSON() ([]byte, error) {
+	pb, err := PersonalComputeSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PersonalComputeSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PersonalComputeSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.PersonalComputeSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PersonalComputeSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PersonalComputeSettingToPb(st *PersonalComputeSetting) (*settingspb.PersonalComputeSettingPb, error) {
@@ -9350,7 +12891,9 @@ func PersonalComputeSettingToPb(st *PersonalComputeSetting) (*settingspb.Persona
 	}
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9369,7 +12912,9 @@ func PersonalComputeSettingFromPb(pb *settingspb.PersonalComputeSettingPb) (*Per
 	}
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9390,12 +12935,29 @@ type PublicTokenInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PublicTokenInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PublicTokenInfo) MarshalJSON() ([]byte, error) {
+	pb, err := PublicTokenInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PublicTokenInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PublicTokenInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.PublicTokenInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PublicTokenInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func PublicTokenInfoToPb(st *PublicTokenInfo) (*settingspb.PublicTokenInfoPb, error) {
@@ -9408,7 +12970,9 @@ func PublicTokenInfoToPb(st *PublicTokenInfo) (*settingspb.PublicTokenInfoPb, er
 	pb.ExpiryTime = st.ExpiryTime
 	pb.TokenId = st.TokenId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9422,7 +12986,9 @@ func PublicTokenInfoFromPb(pb *settingspb.PublicTokenInfoPb) (*PublicTokenInfo, 
 	st.ExpiryTime = pb.ExpiryTime
 	st.TokenId = pb.TokenId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9443,6 +13009,31 @@ type ReplaceIpAccessList struct {
 
 	// Wire name: 'list_type'
 	ListType ListType ``
+}
+
+func (st ReplaceIpAccessList) MarshalJSON() ([]byte, error) {
+	pb, err := ReplaceIpAccessListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ReplaceIpAccessList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.ReplaceIpAccessListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ReplaceIpAccessListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ReplaceIpAccessListToPb(st *ReplaceIpAccessList) (*settingspb.ReplaceIpAccessListPb, error) {
@@ -9489,6 +13080,31 @@ type RestrictWorkspaceAdminsMessage struct {
 
 	// Wire name: 'status'
 	Status RestrictWorkspaceAdminsMessageStatus ``
+}
+
+func (st RestrictWorkspaceAdminsMessage) MarshalJSON() ([]byte, error) {
+	pb, err := RestrictWorkspaceAdminsMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RestrictWorkspaceAdminsMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.RestrictWorkspaceAdminsMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RestrictWorkspaceAdminsMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RestrictWorkspaceAdminsMessageToPb(st *RestrictWorkspaceAdminsMessage) (*settingspb.RestrictWorkspaceAdminsMessagePb, error) {
@@ -9599,12 +13215,29 @@ type RestrictWorkspaceAdminsSetting struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RestrictWorkspaceAdminsSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RestrictWorkspaceAdminsSetting) MarshalJSON() ([]byte, error) {
+	pb, err := RestrictWorkspaceAdminsSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RestrictWorkspaceAdminsSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RestrictWorkspaceAdminsSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.RestrictWorkspaceAdminsSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RestrictWorkspaceAdminsSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RestrictWorkspaceAdminsSettingToPb(st *RestrictWorkspaceAdminsSetting) (*settingspb.RestrictWorkspaceAdminsSettingPb, error) {
@@ -9622,7 +13255,9 @@ func RestrictWorkspaceAdminsSettingToPb(st *RestrictWorkspaceAdminsSetting) (*se
 	}
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9641,7 +13276,9 @@ func RestrictWorkspaceAdminsSettingFromPb(pb *settingspb.RestrictWorkspaceAdmins
 	}
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9649,6 +13286,31 @@ type RevokeTokenRequest struct {
 	// The ID of the token to be revoked.
 	// Wire name: 'token_id'
 	TokenId string ``
+}
+
+func (st RevokeTokenRequest) MarshalJSON() ([]byte, error) {
+	pb, err := RevokeTokenRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RevokeTokenRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.RevokeTokenRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RevokeTokenRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RevokeTokenRequestToPb(st *RevokeTokenRequest) (*settingspb.RevokeTokenRequestPb, error) {
@@ -9681,12 +13343,29 @@ type SlackConfig struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SlackConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SlackConfig) MarshalJSON() ([]byte, error) {
+	pb, err := SlackConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SlackConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SlackConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.SlackConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SlackConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SlackConfigToPb(st *SlackConfig) (*settingspb.SlackConfigPb, error) {
@@ -9697,7 +13376,9 @@ func SlackConfigToPb(st *SlackConfig) (*settingspb.SlackConfigPb, error) {
 	pb.Url = st.Url
 	pb.UrlSet = st.UrlSet
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9709,7 +13390,9 @@ func SlackConfigFromPb(pb *settingspb.SlackConfigPb) (*SlackConfig, error) {
 	st.Url = pb.Url
 	st.UrlSet = pb.UrlSet
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9736,12 +13419,29 @@ type SqlResultsDownload struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SqlResultsDownload) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SqlResultsDownload) MarshalJSON() ([]byte, error) {
+	pb, err := SqlResultsDownloadToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SqlResultsDownload) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SqlResultsDownload) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.SqlResultsDownloadPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SqlResultsDownloadFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SqlResultsDownloadToPb(st *SqlResultsDownload) (*settingspb.SqlResultsDownloadPb, error) {
@@ -9759,7 +13459,9 @@ func SqlResultsDownloadToPb(st *SqlResultsDownload) (*settingspb.SqlResultsDownl
 	pb.Etag = st.Etag
 	pb.SettingName = st.SettingName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9778,7 +13480,9 @@ func SqlResultsDownloadFromPb(pb *settingspb.SqlResultsDownloadPb) (*SqlResultsD
 	st.Etag = pb.Etag
 	st.SettingName = pb.SettingName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9789,12 +13493,29 @@ type StringMessage struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *StringMessage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st StringMessage) MarshalJSON() ([]byte, error) {
+	pb, err := StringMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s StringMessage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *StringMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.StringMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StringMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func StringMessageToPb(st *StringMessage) (*settingspb.StringMessagePb, error) {
@@ -9804,7 +13525,9 @@ func StringMessageToPb(st *StringMessage) (*settingspb.StringMessagePb, error) {
 	pb := &settingspb.StringMessagePb{}
 	pb.Value = st.Value
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9815,7 +13538,9 @@ func StringMessageFromPb(pb *settingspb.StringMessagePb) (*StringMessage, error)
 	st := &StringMessage{}
 	st.Value = pb.Value
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9835,12 +13560,29 @@ type TokenAccessControlRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TokenAccessControlRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TokenAccessControlRequest) MarshalJSON() ([]byte, error) {
+	pb, err := TokenAccessControlRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TokenAccessControlRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TokenAccessControlRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.TokenAccessControlRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TokenAccessControlRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TokenAccessControlRequestToPb(st *TokenAccessControlRequest) (*settingspb.TokenAccessControlRequestPb, error) {
@@ -9859,7 +13601,9 @@ func TokenAccessControlRequestToPb(st *TokenAccessControlRequest) (*settingspb.T
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9879,7 +13623,9 @@ func TokenAccessControlRequestFromPb(pb *settingspb.TokenAccessControlRequestPb)
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9902,12 +13648,29 @@ type TokenAccessControlResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TokenAccessControlResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TokenAccessControlResponse) MarshalJSON() ([]byte, error) {
+	pb, err := TokenAccessControlResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TokenAccessControlResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TokenAccessControlResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.TokenAccessControlResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TokenAccessControlResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TokenAccessControlResponseToPb(st *TokenAccessControlResponse) (*settingspb.TokenAccessControlResponsePb, error) {
@@ -9932,7 +13695,9 @@ func TokenAccessControlResponseToPb(st *TokenAccessControlResponse) (*settingspb
 	pb.ServicePrincipalName = st.ServicePrincipalName
 	pb.UserName = st.UserName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -9958,7 +13723,9 @@ func TokenAccessControlResponseFromPb(pb *settingspb.TokenAccessControlResponseP
 	st.ServicePrincipalName = pb.ServicePrincipalName
 	st.UserName = pb.UserName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -9995,12 +13762,29 @@ type TokenInfo struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TokenInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TokenInfo) MarshalJSON() ([]byte, error) {
+	pb, err := TokenInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TokenInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TokenInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.TokenInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TokenInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TokenInfoToPb(st *TokenInfo) (*settingspb.TokenInfoPb, error) {
@@ -10018,7 +13802,9 @@ func TokenInfoToPb(st *TokenInfo) (*settingspb.TokenInfoPb, error) {
 	pb.TokenId = st.TokenId
 	pb.WorkspaceId = st.WorkspaceId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -10037,7 +13823,9 @@ func TokenInfoFromPb(pb *settingspb.TokenInfoPb) (*TokenInfo, error) {
 	st.TokenId = pb.TokenId
 	st.WorkspaceId = pb.WorkspaceId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -10054,12 +13842,29 @@ type TokenPermission struct {
 	ForceSendFields []string             `tf:"-"`
 }
 
-func (s *TokenPermission) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TokenPermission) MarshalJSON() ([]byte, error) {
+	pb, err := TokenPermissionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TokenPermission) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TokenPermission) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.TokenPermissionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TokenPermissionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TokenPermissionToPb(st *TokenPermission) (*settingspb.TokenPermissionPb, error) {
@@ -10077,7 +13882,9 @@ func TokenPermissionToPb(st *TokenPermission) (*settingspb.TokenPermissionPb, er
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -10096,7 +13903,9 @@ func TokenPermissionFromPb(pb *settingspb.TokenPermissionPb) (*TokenPermission, 
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -10164,12 +13973,29 @@ type TokenPermissions struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TokenPermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TokenPermissions) MarshalJSON() ([]byte, error) {
+	pb, err := TokenPermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TokenPermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TokenPermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.TokenPermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TokenPermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TokenPermissionsToPb(st *TokenPermissions) (*settingspb.TokenPermissionsPb, error) {
@@ -10192,7 +14018,9 @@ func TokenPermissionsToPb(st *TokenPermissions) (*settingspb.TokenPermissionsPb,
 	pb.ObjectId = st.ObjectId
 	pb.ObjectType = st.ObjectType
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -10216,7 +14044,9 @@ func TokenPermissionsFromPb(pb *settingspb.TokenPermissionsPb) (*TokenPermission
 	st.ObjectId = pb.ObjectId
 	st.ObjectType = pb.ObjectType
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -10230,12 +14060,29 @@ type TokenPermissionsDescription struct {
 	ForceSendFields []string             `tf:"-"`
 }
 
-func (s *TokenPermissionsDescription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TokenPermissionsDescription) MarshalJSON() ([]byte, error) {
+	pb, err := TokenPermissionsDescriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TokenPermissionsDescription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TokenPermissionsDescription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.TokenPermissionsDescriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TokenPermissionsDescriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TokenPermissionsDescriptionToPb(st *TokenPermissionsDescription) (*settingspb.TokenPermissionsDescriptionPb, error) {
@@ -10252,7 +14099,9 @@ func TokenPermissionsDescriptionToPb(st *TokenPermissionsDescription) (*settings
 		pb.PermissionLevel = *permissionLevelPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -10270,7 +14119,9 @@ func TokenPermissionsDescriptionFromPb(pb *settingspb.TokenPermissionsDescriptio
 		st.PermissionLevel = *permissionLevelField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -10278,6 +14129,31 @@ type TokenPermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
 	AccessControlList []TokenAccessControlRequest ``
+}
+
+func (st TokenPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := TokenPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *TokenPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.TokenPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TokenPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func TokenPermissionsRequestToPb(st *TokenPermissionsRequest) (*settingspb.TokenPermissionsRequestPb, error) {
@@ -10404,10 +14280,35 @@ type UpdateAccountIpAccessEnableRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting AccountIpAccessEnable ``
+}
+
+func (st UpdateAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateAccountIpAccessEnableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateAccountIpAccessEnableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateAccountIpAccessEnableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateAccountIpAccessEnableRequestToPb(st *UpdateAccountIpAccessEnableRequest) (*settingspb.UpdateAccountIpAccessEnableRequestPb, error) {
@@ -10416,13 +14317,7 @@ func UpdateAccountIpAccessEnableRequestToPb(st *UpdateAccountIpAccessEnableReque
 	}
 	pb := &settingspb.UpdateAccountIpAccessEnableRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := AccountIpAccessEnableToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -10440,13 +14335,7 @@ func UpdateAccountIpAccessEnableRequestFromPb(pb *settingspb.UpdateAccountIpAcce
 	}
 	st := &UpdateAccountIpAccessEnableRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := AccountIpAccessEnableFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -10476,10 +14365,35 @@ type UpdateAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting AibiDashboardEmbeddingAccessPolicySetting ``
+}
+
+func (st UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateAibiDashboardEmbeddingAccessPolicySettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateAibiDashboardEmbeddingAccessPolicySettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st *UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) (*settingspb.UpdateAibiDashboardEmbeddingAccessPolicySettingRequestPb, error) {
@@ -10488,13 +14402,7 @@ func UpdateAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st *UpdateAibiDa
 	}
 	pb := &settingspb.UpdateAibiDashboardEmbeddingAccessPolicySettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := AibiDashboardEmbeddingAccessPolicySettingToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -10512,13 +14420,7 @@ func UpdateAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb *settingspb
 	}
 	st := &UpdateAibiDashboardEmbeddingAccessPolicySettingRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := AibiDashboardEmbeddingAccessPolicySettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -10548,10 +14450,35 @@ type UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting AibiDashboardEmbeddingApprovedDomainsSetting ``
+}
+
+func (st UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st *UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*settingspb.UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequestPb, error) {
@@ -10560,13 +14487,7 @@ func UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st *UpdateAib
 	}
 	pb := &settingspb.UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := AibiDashboardEmbeddingApprovedDomainsSettingToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -10584,13 +14505,7 @@ func UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb *setting
 	}
 	st := &UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := AibiDashboardEmbeddingApprovedDomainsSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -10620,10 +14535,35 @@ type UpdateAutomaticClusterUpdateSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting AutomaticClusterUpdateSetting ``
+}
+
+func (st UpdateAutomaticClusterUpdateSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateAutomaticClusterUpdateSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateAutomaticClusterUpdateSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateAutomaticClusterUpdateSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateAutomaticClusterUpdateSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateAutomaticClusterUpdateSettingRequestToPb(st *UpdateAutomaticClusterUpdateSettingRequest) (*settingspb.UpdateAutomaticClusterUpdateSettingRequestPb, error) {
@@ -10632,13 +14572,7 @@ func UpdateAutomaticClusterUpdateSettingRequestToPb(st *UpdateAutomaticClusterUp
 	}
 	pb := &settingspb.UpdateAutomaticClusterUpdateSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := AutomaticClusterUpdateSettingToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -10656,13 +14590,7 @@ func UpdateAutomaticClusterUpdateSettingRequestFromPb(pb *settingspb.UpdateAutom
 	}
 	st := &UpdateAutomaticClusterUpdateSettingRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := AutomaticClusterUpdateSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -10692,10 +14620,35 @@ type UpdateComplianceSecurityProfileSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting ComplianceSecurityProfileSetting ``
+}
+
+func (st UpdateComplianceSecurityProfileSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateComplianceSecurityProfileSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateComplianceSecurityProfileSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateComplianceSecurityProfileSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateComplianceSecurityProfileSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateComplianceSecurityProfileSettingRequestToPb(st *UpdateComplianceSecurityProfileSettingRequest) (*settingspb.UpdateComplianceSecurityProfileSettingRequestPb, error) {
@@ -10704,13 +14657,7 @@ func UpdateComplianceSecurityProfileSettingRequestToPb(st *UpdateComplianceSecur
 	}
 	pb := &settingspb.UpdateComplianceSecurityProfileSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := ComplianceSecurityProfileSettingToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -10728,13 +14675,7 @@ func UpdateComplianceSecurityProfileSettingRequestFromPb(pb *settingspb.UpdateCo
 	}
 	st := &UpdateComplianceSecurityProfileSettingRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := ComplianceSecurityProfileSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -10764,10 +14705,35 @@ type UpdateCspEnablementAccountSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting CspEnablementAccountSetting ``
+}
+
+func (st UpdateCspEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateCspEnablementAccountSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateCspEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateCspEnablementAccountSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateCspEnablementAccountSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateCspEnablementAccountSettingRequestToPb(st *UpdateCspEnablementAccountSettingRequest) (*settingspb.UpdateCspEnablementAccountSettingRequestPb, error) {
@@ -10776,13 +14742,7 @@ func UpdateCspEnablementAccountSettingRequestToPb(st *UpdateCspEnablementAccount
 	}
 	pb := &settingspb.UpdateCspEnablementAccountSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := CspEnablementAccountSettingToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -10800,13 +14760,7 @@ func UpdateCspEnablementAccountSettingRequestFromPb(pb *settingspb.UpdateCspEnab
 	}
 	st := &UpdateCspEnablementAccountSettingRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := CspEnablementAccountSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -10836,10 +14790,35 @@ type UpdateDashboardEmailSubscriptionsRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting DashboardEmailSubscriptions ``
+}
+
+func (st UpdateDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateDashboardEmailSubscriptionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateDashboardEmailSubscriptionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateDashboardEmailSubscriptionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateDashboardEmailSubscriptionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateDashboardEmailSubscriptionsRequestToPb(st *UpdateDashboardEmailSubscriptionsRequest) (*settingspb.UpdateDashboardEmailSubscriptionsRequestPb, error) {
@@ -10848,13 +14827,7 @@ func UpdateDashboardEmailSubscriptionsRequestToPb(st *UpdateDashboardEmailSubscr
 	}
 	pb := &settingspb.UpdateDashboardEmailSubscriptionsRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := DashboardEmailSubscriptionsToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -10872,13 +14845,7 @@ func UpdateDashboardEmailSubscriptionsRequestFromPb(pb *settingspb.UpdateDashboa
 	}
 	st := &UpdateDashboardEmailSubscriptionsRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := DashboardEmailSubscriptionsFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -10908,10 +14875,35 @@ type UpdateDefaultNamespaceSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting DefaultNamespaceSetting ``
+}
+
+func (st UpdateDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateDefaultNamespaceSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateDefaultNamespaceSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateDefaultNamespaceSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateDefaultNamespaceSettingRequestToPb(st *UpdateDefaultNamespaceSettingRequest) (*settingspb.UpdateDefaultNamespaceSettingRequestPb, error) {
@@ -10920,13 +14912,7 @@ func UpdateDefaultNamespaceSettingRequestToPb(st *UpdateDefaultNamespaceSettingR
 	}
 	pb := &settingspb.UpdateDefaultNamespaceSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := DefaultNamespaceSettingToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -10944,13 +14930,7 @@ func UpdateDefaultNamespaceSettingRequestFromPb(pb *settingspb.UpdateDefaultName
 	}
 	st := &UpdateDefaultNamespaceSettingRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := DefaultNamespaceSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -10980,10 +14960,35 @@ type UpdateDefaultWarehouseIdRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting DefaultWarehouseId ``
+}
+
+func (st UpdateDefaultWarehouseIdRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateDefaultWarehouseIdRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateDefaultWarehouseIdRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateDefaultWarehouseIdRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateDefaultWarehouseIdRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateDefaultWarehouseIdRequestToPb(st *UpdateDefaultWarehouseIdRequest) (*settingspb.UpdateDefaultWarehouseIdRequestPb, error) {
@@ -10992,13 +14997,7 @@ func UpdateDefaultWarehouseIdRequestToPb(st *UpdateDefaultWarehouseIdRequest) (*
 	}
 	pb := &settingspb.UpdateDefaultWarehouseIdRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := DefaultWarehouseIdToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -11016,13 +15015,7 @@ func UpdateDefaultWarehouseIdRequestFromPb(pb *settingspb.UpdateDefaultWarehouse
 	}
 	st := &UpdateDefaultWarehouseIdRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := DefaultWarehouseIdFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -11052,10 +15045,35 @@ type UpdateDisableLegacyAccessRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting DisableLegacyAccess ``
+}
+
+func (st UpdateDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateDisableLegacyAccessRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateDisableLegacyAccessRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateDisableLegacyAccessRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateDisableLegacyAccessRequestToPb(st *UpdateDisableLegacyAccessRequest) (*settingspb.UpdateDisableLegacyAccessRequestPb, error) {
@@ -11064,13 +15082,7 @@ func UpdateDisableLegacyAccessRequestToPb(st *UpdateDisableLegacyAccessRequest) 
 	}
 	pb := &settingspb.UpdateDisableLegacyAccessRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := DisableLegacyAccessToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -11088,13 +15100,7 @@ func UpdateDisableLegacyAccessRequestFromPb(pb *settingspb.UpdateDisableLegacyAc
 	}
 	st := &UpdateDisableLegacyAccessRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := DisableLegacyAccessFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -11124,10 +15130,35 @@ type UpdateDisableLegacyDbfsRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting DisableLegacyDbfs ``
+}
+
+func (st UpdateDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateDisableLegacyDbfsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateDisableLegacyDbfsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateDisableLegacyDbfsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateDisableLegacyDbfsRequestToPb(st *UpdateDisableLegacyDbfsRequest) (*settingspb.UpdateDisableLegacyDbfsRequestPb, error) {
@@ -11136,13 +15167,7 @@ func UpdateDisableLegacyDbfsRequestToPb(st *UpdateDisableLegacyDbfsRequest) (*se
 	}
 	pb := &settingspb.UpdateDisableLegacyDbfsRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := DisableLegacyDbfsToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -11160,13 +15185,7 @@ func UpdateDisableLegacyDbfsRequestFromPb(pb *settingspb.UpdateDisableLegacyDbfs
 	}
 	st := &UpdateDisableLegacyDbfsRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := DisableLegacyDbfsFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -11196,10 +15215,35 @@ type UpdateDisableLegacyFeaturesRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting DisableLegacyFeatures ``
+}
+
+func (st UpdateDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateDisableLegacyFeaturesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateDisableLegacyFeaturesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateDisableLegacyFeaturesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateDisableLegacyFeaturesRequestToPb(st *UpdateDisableLegacyFeaturesRequest) (*settingspb.UpdateDisableLegacyFeaturesRequestPb, error) {
@@ -11208,13 +15252,7 @@ func UpdateDisableLegacyFeaturesRequestToPb(st *UpdateDisableLegacyFeaturesReque
 	}
 	pb := &settingspb.UpdateDisableLegacyFeaturesRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := DisableLegacyFeaturesToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -11232,13 +15270,7 @@ func UpdateDisableLegacyFeaturesRequestFromPb(pb *settingspb.UpdateDisableLegacy
 	}
 	st := &UpdateDisableLegacyFeaturesRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := DisableLegacyFeaturesFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -11268,10 +15300,35 @@ type UpdateEnableExportNotebookRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting EnableExportNotebook ``
+}
+
+func (st UpdateEnableExportNotebookRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateEnableExportNotebookRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateEnableExportNotebookRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateEnableExportNotebookRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateEnableExportNotebookRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateEnableExportNotebookRequestToPb(st *UpdateEnableExportNotebookRequest) (*settingspb.UpdateEnableExportNotebookRequestPb, error) {
@@ -11280,13 +15337,7 @@ func UpdateEnableExportNotebookRequestToPb(st *UpdateEnableExportNotebookRequest
 	}
 	pb := &settingspb.UpdateEnableExportNotebookRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := EnableExportNotebookToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -11304,13 +15355,7 @@ func UpdateEnableExportNotebookRequestFromPb(pb *settingspb.UpdateEnableExportNo
 	}
 	st := &UpdateEnableExportNotebookRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := EnableExportNotebookFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -11340,10 +15385,35 @@ type UpdateEnableNotebookTableClipboardRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting EnableNotebookTableClipboard ``
+}
+
+func (st UpdateEnableNotebookTableClipboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateEnableNotebookTableClipboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateEnableNotebookTableClipboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateEnableNotebookTableClipboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateEnableNotebookTableClipboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateEnableNotebookTableClipboardRequestToPb(st *UpdateEnableNotebookTableClipboardRequest) (*settingspb.UpdateEnableNotebookTableClipboardRequestPb, error) {
@@ -11352,13 +15422,7 @@ func UpdateEnableNotebookTableClipboardRequestToPb(st *UpdateEnableNotebookTable
 	}
 	pb := &settingspb.UpdateEnableNotebookTableClipboardRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := EnableNotebookTableClipboardToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -11376,13 +15440,7 @@ func UpdateEnableNotebookTableClipboardRequestFromPb(pb *settingspb.UpdateEnable
 	}
 	st := &UpdateEnableNotebookTableClipboardRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := EnableNotebookTableClipboardFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -11412,10 +15470,35 @@ type UpdateEnableResultsDownloadingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting EnableResultsDownloading ``
+}
+
+func (st UpdateEnableResultsDownloadingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateEnableResultsDownloadingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateEnableResultsDownloadingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateEnableResultsDownloadingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateEnableResultsDownloadingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateEnableResultsDownloadingRequestToPb(st *UpdateEnableResultsDownloadingRequest) (*settingspb.UpdateEnableResultsDownloadingRequestPb, error) {
@@ -11424,13 +15507,7 @@ func UpdateEnableResultsDownloadingRequestToPb(st *UpdateEnableResultsDownloadin
 	}
 	pb := &settingspb.UpdateEnableResultsDownloadingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := EnableResultsDownloadingToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -11448,13 +15525,7 @@ func UpdateEnableResultsDownloadingRequestFromPb(pb *settingspb.UpdateEnableResu
 	}
 	st := &UpdateEnableResultsDownloadingRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := EnableResultsDownloadingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -11484,10 +15555,35 @@ type UpdateEnhancedSecurityMonitoringSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting EnhancedSecurityMonitoringSetting ``
+}
+
+func (st UpdateEnhancedSecurityMonitoringSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateEnhancedSecurityMonitoringSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateEnhancedSecurityMonitoringSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateEnhancedSecurityMonitoringSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateEnhancedSecurityMonitoringSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateEnhancedSecurityMonitoringSettingRequestToPb(st *UpdateEnhancedSecurityMonitoringSettingRequest) (*settingspb.UpdateEnhancedSecurityMonitoringSettingRequestPb, error) {
@@ -11496,13 +15592,7 @@ func UpdateEnhancedSecurityMonitoringSettingRequestToPb(st *UpdateEnhancedSecuri
 	}
 	pb := &settingspb.UpdateEnhancedSecurityMonitoringSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := EnhancedSecurityMonitoringSettingToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -11520,13 +15610,7 @@ func UpdateEnhancedSecurityMonitoringSettingRequestFromPb(pb *settingspb.UpdateE
 	}
 	st := &UpdateEnhancedSecurityMonitoringSettingRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := EnhancedSecurityMonitoringSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -11556,10 +15640,35 @@ type UpdateEsmEnablementAccountSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting EsmEnablementAccountSetting ``
+}
+
+func (st UpdateEsmEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateEsmEnablementAccountSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateEsmEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateEsmEnablementAccountSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateEsmEnablementAccountSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateEsmEnablementAccountSettingRequestToPb(st *UpdateEsmEnablementAccountSettingRequest) (*settingspb.UpdateEsmEnablementAccountSettingRequestPb, error) {
@@ -11568,13 +15677,7 @@ func UpdateEsmEnablementAccountSettingRequestToPb(st *UpdateEsmEnablementAccount
 	}
 	pb := &settingspb.UpdateEsmEnablementAccountSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := EsmEnablementAccountSettingToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -11592,13 +15695,7 @@ func UpdateEsmEnablementAccountSettingRequestFromPb(pb *settingspb.UpdateEsmEnab
 	}
 	st := &UpdateEsmEnablementAccountSettingRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := EsmEnablementAccountSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -11630,12 +15727,29 @@ type UpdateIpAccessList struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateIpAccessList) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateIpAccessList) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateIpAccessListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateIpAccessList) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateIpAccessList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateIpAccessListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateIpAccessListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateIpAccessListToPb(st *UpdateIpAccessList) (*settingspb.UpdateIpAccessListPb, error) {
@@ -11655,7 +15769,9 @@ func UpdateIpAccessListToPb(st *UpdateIpAccessList) (*settingspb.UpdateIpAccessL
 		pb.ListType = *listTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -11676,7 +15792,9 @@ func UpdateIpAccessListFromPb(pb *settingspb.UpdateIpAccessListPb) (*UpdateIpAcc
 		st.ListType = *listTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -11698,10 +15816,35 @@ type UpdateLlmProxyPartnerPoweredAccountRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting LlmProxyPartnerPoweredAccount ``
+}
+
+func (st UpdateLlmProxyPartnerPoweredAccountRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateLlmProxyPartnerPoweredAccountRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateLlmProxyPartnerPoweredAccountRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateLlmProxyPartnerPoweredAccountRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateLlmProxyPartnerPoweredAccountRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateLlmProxyPartnerPoweredAccountRequestToPb(st *UpdateLlmProxyPartnerPoweredAccountRequest) (*settingspb.UpdateLlmProxyPartnerPoweredAccountRequestPb, error) {
@@ -11710,13 +15853,7 @@ func UpdateLlmProxyPartnerPoweredAccountRequestToPb(st *UpdateLlmProxyPartnerPow
 	}
 	pb := &settingspb.UpdateLlmProxyPartnerPoweredAccountRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := LlmProxyPartnerPoweredAccountToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -11734,13 +15871,7 @@ func UpdateLlmProxyPartnerPoweredAccountRequestFromPb(pb *settingspb.UpdateLlmPr
 	}
 	st := &UpdateLlmProxyPartnerPoweredAccountRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := LlmProxyPartnerPoweredAccountFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -11770,10 +15901,35 @@ type UpdateLlmProxyPartnerPoweredEnforceRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting LlmProxyPartnerPoweredEnforce ``
+}
+
+func (st UpdateLlmProxyPartnerPoweredEnforceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateLlmProxyPartnerPoweredEnforceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateLlmProxyPartnerPoweredEnforceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateLlmProxyPartnerPoweredEnforceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateLlmProxyPartnerPoweredEnforceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateLlmProxyPartnerPoweredEnforceRequestToPb(st *UpdateLlmProxyPartnerPoweredEnforceRequest) (*settingspb.UpdateLlmProxyPartnerPoweredEnforceRequestPb, error) {
@@ -11782,13 +15938,7 @@ func UpdateLlmProxyPartnerPoweredEnforceRequestToPb(st *UpdateLlmProxyPartnerPow
 	}
 	pb := &settingspb.UpdateLlmProxyPartnerPoweredEnforceRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := LlmProxyPartnerPoweredEnforceToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -11806,13 +15956,7 @@ func UpdateLlmProxyPartnerPoweredEnforceRequestFromPb(pb *settingspb.UpdateLlmPr
 	}
 	st := &UpdateLlmProxyPartnerPoweredEnforceRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := LlmProxyPartnerPoweredEnforceFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -11842,10 +15986,35 @@ type UpdateLlmProxyPartnerPoweredWorkspaceRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting LlmProxyPartnerPoweredWorkspace ``
+}
+
+func (st UpdateLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateLlmProxyPartnerPoweredWorkspaceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateLlmProxyPartnerPoweredWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateLlmProxyPartnerPoweredWorkspaceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateLlmProxyPartnerPoweredWorkspaceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateLlmProxyPartnerPoweredWorkspaceRequestToPb(st *UpdateLlmProxyPartnerPoweredWorkspaceRequest) (*settingspb.UpdateLlmProxyPartnerPoweredWorkspaceRequestPb, error) {
@@ -11854,13 +16023,7 @@ func UpdateLlmProxyPartnerPoweredWorkspaceRequestToPb(st *UpdateLlmProxyPartnerP
 	}
 	pb := &settingspb.UpdateLlmProxyPartnerPoweredWorkspaceRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := LlmProxyPartnerPoweredWorkspaceToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -11878,13 +16041,7 @@ func UpdateLlmProxyPartnerPoweredWorkspaceRequestFromPb(pb *settingspb.UpdateLlm
 	}
 	st := &UpdateLlmProxyPartnerPoweredWorkspaceRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := LlmProxyPartnerPoweredWorkspaceFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -11914,7 +16071,33 @@ type UpdateNccPrivateEndpointRuleRequest struct {
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
 	// Wire name: 'update_mask'
-	UpdateMask []string `tf:"-"`
+	UpdateMask string `tf:"-"` //legacy
+
+}
+
+func (st UpdateNccPrivateEndpointRuleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateNccPrivateEndpointRuleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateNccPrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateNccPrivateEndpointRuleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateNccPrivateEndpointRuleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateNccPrivateEndpointRuleRequestToPb(st *UpdateNccPrivateEndpointRuleRequest) (*settingspb.UpdateNccPrivateEndpointRuleRequestPb, error) {
@@ -11931,13 +16114,7 @@ func UpdateNccPrivateEndpointRuleRequestToPb(st *UpdateNccPrivateEndpointRuleReq
 		pb.PrivateEndpointRule = *privateEndpointRulePb
 	}
 	pb.PrivateEndpointRuleId = st.PrivateEndpointRuleId
-	updateMaskPb, err := fieldMaskToPb(&st.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
 	return pb, nil
 }
@@ -11956,13 +16133,7 @@ func UpdateNccPrivateEndpointRuleRequestFromPb(pb *settingspb.UpdateNccPrivateEn
 		st.PrivateEndpointRule = *privateEndpointRuleField
 	}
 	st.PrivateEndpointRuleId = pb.PrivateEndpointRuleId
-	updateMaskField, err := fieldMaskFromPb(&pb.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.UpdateMask = pb.UpdateMask
 
 	return st, nil
 }
@@ -11974,6 +16145,31 @@ type UpdateNetworkPolicyRequest struct {
 	// The unique identifier for the network policy.
 	// Wire name: 'network_policy_id'
 	NetworkPolicyId string `tf:"-"`
+}
+
+func (st UpdateNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateNetworkPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateNetworkPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateNetworkPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateNetworkPolicyRequestToPb(st *UpdateNetworkPolicyRequest) (*settingspb.UpdateNetworkPolicyRequestPb, error) {
@@ -12024,12 +16220,29 @@ type UpdateNotificationDestinationRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateNotificationDestinationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateNotificationDestinationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateNotificationDestinationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateNotificationDestinationRequestToPb(st *UpdateNotificationDestinationRequest) (*settingspb.UpdateNotificationDestinationRequestPb, error) {
@@ -12047,7 +16260,9 @@ func UpdateNotificationDestinationRequestToPb(st *UpdateNotificationDestinationR
 	pb.DisplayName = st.DisplayName
 	pb.Id = st.Id
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -12066,7 +16281,9 @@ func UpdateNotificationDestinationRequestFromPb(pb *settingspb.UpdateNotificatio
 	st.DisplayName = pb.DisplayName
 	st.Id = pb.Id
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -12088,10 +16305,35 @@ type UpdatePersonalComputeSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting PersonalComputeSetting ``
+}
+
+func (st UpdatePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdatePersonalComputeSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdatePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdatePersonalComputeSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdatePersonalComputeSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdatePersonalComputeSettingRequestToPb(st *UpdatePersonalComputeSettingRequest) (*settingspb.UpdatePersonalComputeSettingRequestPb, error) {
@@ -12100,13 +16342,7 @@ func UpdatePersonalComputeSettingRequestToPb(st *UpdatePersonalComputeSettingReq
 	}
 	pb := &settingspb.UpdatePersonalComputeSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := PersonalComputeSettingToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -12124,13 +16360,7 @@ func UpdatePersonalComputeSettingRequestFromPb(pb *settingspb.UpdatePersonalComp
 	}
 	st := &UpdatePersonalComputeSettingRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := PersonalComputeSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -12169,12 +16399,29 @@ type UpdatePrivateEndpointRule struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdatePrivateEndpointRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	pb, err := UpdatePrivateEndpointRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdatePrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdatePrivateEndpointRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdatePrivateEndpointRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdatePrivateEndpointRuleToPb(st *UpdatePrivateEndpointRule) (*settingspb.UpdatePrivateEndpointRulePb, error) {
@@ -12186,7 +16433,9 @@ func UpdatePrivateEndpointRuleToPb(st *UpdatePrivateEndpointRule) (*settingspb.U
 	pb.Enabled = st.Enabled
 	pb.ResourceNames = st.ResourceNames
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -12199,7 +16448,9 @@ func UpdatePrivateEndpointRuleFromPb(pb *settingspb.UpdatePrivateEndpointRulePb)
 	st.Enabled = pb.Enabled
 	st.ResourceNames = pb.ResourceNames
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -12221,10 +16472,35 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting RestrictWorkspaceAdminsSetting ``
+}
+
+func (st UpdateRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateRestrictWorkspaceAdminsSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateRestrictWorkspaceAdminsSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateRestrictWorkspaceAdminsSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateRestrictWorkspaceAdminsSettingRequestToPb(st *UpdateRestrictWorkspaceAdminsSettingRequest) (*settingspb.UpdateRestrictWorkspaceAdminsSettingRequestPb, error) {
@@ -12233,13 +16509,7 @@ func UpdateRestrictWorkspaceAdminsSettingRequestToPb(st *UpdateRestrictWorkspace
 	}
 	pb := &settingspb.UpdateRestrictWorkspaceAdminsSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := RestrictWorkspaceAdminsSettingToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -12257,13 +16527,7 @@ func UpdateRestrictWorkspaceAdminsSettingRequestFromPb(pb *settingspb.UpdateRest
 	}
 	st := &UpdateRestrictWorkspaceAdminsSettingRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := RestrictWorkspaceAdminsSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -12293,10 +16557,35 @@ type UpdateSqlResultsDownloadRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask []string ``
+	FieldMask string `` //legacy
 
 	// Wire name: 'setting'
 	Setting SqlResultsDownload ``
+}
+
+func (st UpdateSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateSqlResultsDownloadRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateSqlResultsDownloadRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateSqlResultsDownloadRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateSqlResultsDownloadRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateSqlResultsDownloadRequestToPb(st *UpdateSqlResultsDownloadRequest) (*settingspb.UpdateSqlResultsDownloadRequestPb, error) {
@@ -12305,13 +16594,7 @@ func UpdateSqlResultsDownloadRequestToPb(st *UpdateSqlResultsDownloadRequest) (*
 	}
 	pb := &settingspb.UpdateSqlResultsDownloadRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	settingPb, err := SqlResultsDownloadToPb(&st.Setting)
 	if err != nil {
 		return nil, err
@@ -12329,13 +16612,7 @@ func UpdateSqlResultsDownloadRequestFromPb(pb *settingspb.UpdateSqlResultsDownlo
 	}
 	st := &UpdateSqlResultsDownloadRequest{}
 	st.AllowMissing = pb.AllowMissing
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	settingField, err := SqlResultsDownloadFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -12354,6 +16631,31 @@ type UpdateWorkspaceNetworkOptionRequest struct {
 	// The network option details for the workspace.
 	// Wire name: 'workspace_network_option'
 	WorkspaceNetworkOption WorkspaceNetworkOption ``
+}
+
+func (st UpdateWorkspaceNetworkOptionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateWorkspaceNetworkOptionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateWorkspaceNetworkOptionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.UpdateWorkspaceNetworkOptionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateWorkspaceNetworkOptionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateWorkspaceNetworkOptionRequestToPb(st *UpdateWorkspaceNetworkOptionRequest) (*settingspb.UpdateWorkspaceNetworkOptionRequestPb, error) {
@@ -12422,12 +16724,29 @@ type WorkspaceNetworkOption struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *WorkspaceNetworkOption) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st WorkspaceNetworkOption) MarshalJSON() ([]byte, error) {
+	pb, err := WorkspaceNetworkOptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s WorkspaceNetworkOption) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *WorkspaceNetworkOption) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &settingspb.WorkspaceNetworkOptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WorkspaceNetworkOptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WorkspaceNetworkOptionToPb(st *WorkspaceNetworkOption) (*settingspb.WorkspaceNetworkOptionPb, error) {
@@ -12438,7 +16757,9 @@ func WorkspaceNetworkOptionToPb(st *WorkspaceNetworkOption) (*settingspb.Workspa
 	pb.NetworkPolicyId = st.NetworkPolicyId
 	pb.WorkspaceId = st.WorkspaceId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -12450,7 +16771,9 @@ func WorkspaceNetworkOptionFromPb(pb *settingspb.WorkspaceNetworkOptionPb) (*Wor
 	st.NetworkPolicyId = pb.NetworkPolicyId
 	st.WorkspaceId = pb.WorkspaceId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 

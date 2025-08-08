@@ -35,9 +35,12 @@ func (a *databaseImpl) CreateDatabaseCatalog(ctx context.Context, request Create
 		path,
 		headers,
 		queryParams,
-		requestPb.Catalog,
+		(*requestPb).Catalog,
 		&databaseCatalogPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DatabaseCatalogFromPb(&databaseCatalogPb)
 	if err != nil {
 		return nil, err
@@ -63,9 +66,12 @@ func (a *databaseImpl) CreateDatabaseInstance(ctx context.Context, request Creat
 		path,
 		headers,
 		queryParams,
-		requestPb.DatabaseInstance,
+		(*requestPb).DatabaseInstance,
 		&databaseInstancePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DatabaseInstanceFromPb(&databaseInstancePb)
 	if err != nil {
 		return nil, err
@@ -91,9 +97,12 @@ func (a *databaseImpl) CreateDatabaseInstanceRole(ctx context.Context, request C
 		path,
 		headers,
 		queryParams,
-		requestPb.DatabaseInstanceRole,
+		(*requestPb).DatabaseInstanceRole,
 		&databaseInstanceRolePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DatabaseInstanceRoleFromPb(&databaseInstanceRolePb)
 	if err != nil {
 		return nil, err
@@ -119,9 +128,12 @@ func (a *databaseImpl) CreateDatabaseTable(ctx context.Context, request CreateDa
 		path,
 		headers,
 		queryParams,
-		requestPb.Table,
+		(*requestPb).Table,
 		&databaseTablePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DatabaseTableFromPb(&databaseTablePb)
 	if err != nil {
 		return nil, err
@@ -147,9 +159,12 @@ func (a *databaseImpl) CreateSyncedDatabaseTable(ctx context.Context, request Cr
 		path,
 		headers,
 		queryParams,
-		requestPb.SyncedTable,
+		(*requestPb).SyncedTable,
 		&syncedDatabaseTablePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := SyncedDatabaseTableFromPb(&syncedDatabaseTablePb)
 	if err != nil {
 		return nil, err
@@ -173,9 +188,12 @@ func (a *databaseImpl) DeleteDatabaseCatalog(ctx context.Context, request Delete
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -195,9 +213,12 @@ func (a *databaseImpl) DeleteDatabaseInstance(ctx context.Context, request Delet
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -217,9 +238,12 @@ func (a *databaseImpl) DeleteDatabaseInstanceRole(ctx context.Context, request D
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -239,9 +263,12 @@ func (a *databaseImpl) DeleteDatabaseTable(ctx context.Context, request DeleteDa
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -261,9 +288,12 @@ func (a *databaseImpl) DeleteSyncedDatabaseTable(ctx context.Context, request De
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -284,9 +314,12 @@ func (a *databaseImpl) FindDatabaseInstanceByUid(ctx context.Context, request Fi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&databaseInstancePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DatabaseInstanceFromPb(&databaseInstancePb)
 	if err != nil {
 		return nil, err
@@ -312,9 +345,12 @@ func (a *databaseImpl) GenerateDatabaseCredential(ctx context.Context, request G
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&databaseCredentialPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DatabaseCredentialFromPb(&databaseCredentialPb)
 	if err != nil {
 		return nil, err
@@ -339,9 +375,12 @@ func (a *databaseImpl) GetDatabaseCatalog(ctx context.Context, request GetDataba
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&databaseCatalogPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DatabaseCatalogFromPb(&databaseCatalogPb)
 	if err != nil {
 		return nil, err
@@ -366,9 +405,12 @@ func (a *databaseImpl) GetDatabaseInstance(ctx context.Context, request GetDatab
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&databaseInstancePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DatabaseInstanceFromPb(&databaseInstancePb)
 	if err != nil {
 		return nil, err
@@ -393,9 +435,12 @@ func (a *databaseImpl) GetDatabaseInstanceRole(ctx context.Context, request GetD
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&databaseInstanceRolePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DatabaseInstanceRoleFromPb(&databaseInstanceRolePb)
 	if err != nil {
 		return nil, err
@@ -420,9 +465,12 @@ func (a *databaseImpl) GetDatabaseTable(ctx context.Context, request GetDatabase
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&databaseTablePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DatabaseTableFromPb(&databaseTablePb)
 	if err != nil {
 		return nil, err
@@ -447,9 +495,12 @@ func (a *databaseImpl) GetSyncedDatabaseTable(ctx context.Context, request GetSy
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&syncedDatabaseTablePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := SyncedDatabaseTableFromPb(&syncedDatabaseTablePb)
 	if err != nil {
 		return nil, err
@@ -505,7 +556,7 @@ func (a *databaseImpl) internalListDatabaseInstanceRoles(ctx context.Context, re
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listDatabaseInstanceRolesResponsePb,
 	)
 	if err != nil {
@@ -566,7 +617,7 @@ func (a *databaseImpl) internalListDatabaseInstances(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listDatabaseInstancesResponsePb,
 	)
 	if err != nil {
@@ -600,9 +651,12 @@ func (a *databaseImpl) UpdateDatabaseInstance(ctx context.Context, request Updat
 		path,
 		headers,
 		queryParams,
-		requestPb.DatabaseInstance,
+		(*requestPb).DatabaseInstance,
 		&databaseInstancePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DatabaseInstanceFromPb(&databaseInstancePb)
 	if err != nil {
 		return nil, err

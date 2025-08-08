@@ -138,7 +138,7 @@ func TestMwsAccPrivateAccess(t *testing.T) {
 		t.SkipNow()
 	}
 
-	created, err := a.PrivateAccess.Create(ctx, provisioning.CreatePrivateAccessSettingsRequest{
+	created, err := a.PrivateAccess.Create(ctx, provisioning.UpsertPrivateAccessSettingsRequest{
 		PrivateAccessSettingsName: RandomName("go-sdk-"),
 		Region:                    GetEnvOrSkipTest(t, "AWS_REGION"),
 	})
@@ -148,7 +148,7 @@ func TestMwsAccPrivateAccess(t *testing.T) {
 		err := a.PrivateAccess.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
 		require.NoError(t, err)
 	})
-	err = a.PrivateAccess.Replace(ctx, provisioning.ReplacePrivateAccessSettingsRequest{
+	err = a.PrivateAccess.Replace(ctx, provisioning.UpsertPrivateAccessSettingsRequest{
 		PrivateAccessSettingsId:   created.PrivateAccessSettingsId,
 		PrivateAccessSettingsName: RandomName("go-sdk-"),
 		Region:                    GetEnvOrSkipTest(t, "AWS_REGION"),

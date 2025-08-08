@@ -39,9 +39,12 @@ func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, 
 		path,
 		headers,
 		queryParams,
-		requestPb.App,
+		(*requestPb).App,
 		&appPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AppFromPb(&appPb)
 	if err != nil {
 		return nil, err
@@ -66,9 +69,12 @@ func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) (*App, 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&appPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AppFromPb(&appPb)
 	if err != nil {
 		return nil, err
@@ -94,9 +100,12 @@ func (a *appsImpl) Deploy(ctx context.Context, request CreateAppDeploymentReques
 		path,
 		headers,
 		queryParams,
-		requestPb.AppDeployment,
+		(*requestPb).AppDeployment,
 		&appDeploymentPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AppDeploymentFromPb(&appDeploymentPb)
 	if err != nil {
 		return nil, err
@@ -121,9 +130,12 @@ func (a *appsImpl) Get(ctx context.Context, request GetAppRequest) (*App, error)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&appPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AppFromPb(&appPb)
 	if err != nil {
 		return nil, err
@@ -148,9 +160,12 @@ func (a *appsImpl) GetDeployment(ctx context.Context, request GetAppDeploymentRe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&appDeploymentPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AppDeploymentFromPb(&appDeploymentPb)
 	if err != nil {
 		return nil, err
@@ -175,9 +190,12 @@ func (a *appsImpl) GetPermissionLevels(ctx context.Context, request GetAppPermis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getAppPermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetAppPermissionLevelsResponseFromPb(&getAppPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -202,9 +220,12 @@ func (a *appsImpl) GetPermissions(ctx context.Context, request GetAppPermissions
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&appPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AppPermissionsFromPb(&appPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -260,7 +281,7 @@ func (a *appsImpl) internalList(ctx context.Context, request ListAppsRequest) (*
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listAppsResponsePb,
 	)
 	if err != nil {
@@ -321,7 +342,7 @@ func (a *appsImpl) internalListDeployments(ctx context.Context, request ListAppD
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listAppDeploymentsResponsePb,
 	)
 	if err != nil {
@@ -352,9 +373,12 @@ func (a *appsImpl) SetPermissions(ctx context.Context, request AppPermissionsReq
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&appPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AppPermissionsFromPb(&appPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -380,9 +404,12 @@ func (a *appsImpl) Start(ctx context.Context, request StartAppRequest) (*App, er
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&appPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AppFromPb(&appPb)
 	if err != nil {
 		return nil, err
@@ -408,9 +435,12 @@ func (a *appsImpl) Stop(ctx context.Context, request StopAppRequest) (*App, erro
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&appPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AppFromPb(&appPb)
 	if err != nil {
 		return nil, err
@@ -436,9 +466,12 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 		path,
 		headers,
 		queryParams,
-		requestPb.App,
+		(*requestPb).App,
 		&appPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AppFromPb(&appPb)
 	if err != nil {
 		return nil, err
@@ -464,9 +497,12 @@ func (a *appsImpl) UpdatePermissions(ctx context.Context, request AppPermissions
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&appPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AppPermissionsFromPb(&appPermissionsPb)
 	if err != nil {
 		return nil, err

@@ -32,9 +32,12 @@ func (a *jsonMarshallV2Impl) GetResource(ctx context.Context, request GetResourc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&resourcePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ResourceFromPb(&resourcePb)
 	if err != nil {
 		return nil, err

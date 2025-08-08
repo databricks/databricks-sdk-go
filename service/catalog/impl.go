@@ -34,9 +34,12 @@ func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request Ac
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -56,9 +59,12 @@ func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request De
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -79,9 +85,12 @@ func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&accountsMetastoreAssignmentPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AccountsMetastoreAssignmentFromPb(&accountsMetastoreAssignmentPb)
 	if err != nil {
 		return nil, err
@@ -133,7 +142,7 @@ func (a *accountMetastoreAssignmentsImpl) internalList(ctx context.Context, requ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listAccountMetastoreAssignmentsResponsePb,
 	)
 	if err != nil {
@@ -163,9 +172,12 @@ func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request Ac
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -192,9 +204,12 @@ func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCrea
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&accountsMetastoreInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AccountsMetastoreInfoFromPb(&accountsMetastoreInfoPb)
 	if err != nil {
 		return nil, err
@@ -218,9 +233,12 @@ func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccoun
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -241,9 +259,12 @@ func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetas
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&accountsMetastoreInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AccountsMetastoreInfoFromPb(&accountsMetastoreInfoPb)
 	if err != nil {
 		return nil, err
@@ -321,9 +342,12 @@ func (a *accountMetastoresImpl) Update(ctx context.Context, request AccountsUpda
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&accountsMetastoreInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AccountsMetastoreInfoFromPb(&accountsMetastoreInfoPb)
 	if err != nil {
 		return nil, err
@@ -354,9 +378,12 @@ func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request Acco
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&accountsStorageCredentialInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AccountsStorageCredentialInfoFromPb(&accountsStorageCredentialInfoPb)
 	if err != nil {
 		return nil, err
@@ -380,9 +407,12 @@ func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request Dele
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -403,9 +433,12 @@ func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAcco
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&accountsStorageCredentialInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AccountsStorageCredentialInfoFromPb(&accountsStorageCredentialInfoPb)
 	if err != nil {
 		return nil, err
@@ -457,7 +490,7 @@ func (a *accountStorageCredentialsImpl) internalList(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listAccountStorageCredentialsResponsePb,
 	)
 	if err != nil {
@@ -488,9 +521,12 @@ func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request Acco
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&accountsStorageCredentialInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AccountsStorageCredentialInfoFromPb(&accountsStorageCredentialInfoPb)
 	if err != nil {
 		return nil, err
@@ -520,9 +556,12 @@ func (a *artifactAllowlistsImpl) Get(ctx context.Context, request GetArtifactAll
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&artifactAllowlistInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ArtifactAllowlistInfoFromPb(&artifactAllowlistInfoPb)
 	if err != nil {
 		return nil, err
@@ -548,9 +587,12 @@ func (a *artifactAllowlistsImpl) Update(ctx context.Context, request SetArtifact
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&artifactAllowlistInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ArtifactAllowlistInfoFromPb(&artifactAllowlistInfoPb)
 	if err != nil {
 		return nil, err
@@ -581,9 +623,12 @@ func (a *catalogsImpl) Create(ctx context.Context, request CreateCatalog) (*Cata
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&catalogInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CatalogInfoFromPb(&catalogInfoPb)
 	if err != nil {
 		return nil, err
@@ -607,9 +652,12 @@ func (a *catalogsImpl) Delete(ctx context.Context, request DeleteCatalogRequest)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -630,9 +678,12 @@ func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*Cat
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&catalogInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CatalogInfoFromPb(&catalogInfoPb)
 	if err != nil {
 		return nil, err
@@ -696,7 +747,7 @@ func (a *catalogsImpl) internalList(ctx context.Context, request ListCatalogsReq
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listCatalogsResponsePb,
 	)
 	if err != nil {
@@ -727,9 +778,12 @@ func (a *catalogsImpl) Update(ctx context.Context, request UpdateCatalog) (*Cata
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&catalogInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CatalogInfoFromPb(&catalogInfoPb)
 	if err != nil {
 		return nil, err
@@ -760,9 +814,12 @@ func (a *connectionsImpl) Create(ctx context.Context, request CreateConnection) 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&connectionInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ConnectionInfoFromPb(&connectionInfoPb)
 	if err != nil {
 		return nil, err
@@ -786,9 +843,12 @@ func (a *connectionsImpl) Delete(ctx context.Context, request DeleteConnectionRe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -809,9 +869,12 @@ func (a *connectionsImpl) Get(ctx context.Context, request GetConnectionRequest)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&connectionInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ConnectionInfoFromPb(&connectionInfoPb)
 	if err != nil {
 		return nil, err
@@ -867,7 +930,7 @@ func (a *connectionsImpl) internalList(ctx context.Context, request ListConnecti
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listConnectionsResponsePb,
 	)
 	if err != nil {
@@ -898,9 +961,12 @@ func (a *connectionsImpl) Update(ctx context.Context, request UpdateConnection) 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&connectionInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ConnectionInfoFromPb(&connectionInfoPb)
 	if err != nil {
 		return nil, err
@@ -931,9 +997,12 @@ func (a *credentialsImpl) CreateCredential(ctx context.Context, request CreateCr
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&credentialInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CredentialInfoFromPb(&credentialInfoPb)
 	if err != nil {
 		return nil, err
@@ -957,9 +1026,12 @@ func (a *credentialsImpl) DeleteCredential(ctx context.Context, request DeleteCr
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -981,9 +1053,12 @@ func (a *credentialsImpl) GenerateTemporaryServiceCredential(ctx context.Context
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&temporaryCredentialsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := TemporaryCredentialsFromPb(&temporaryCredentialsPb)
 	if err != nil {
 		return nil, err
@@ -1008,9 +1083,12 @@ func (a *credentialsImpl) GetCredential(ctx context.Context, request GetCredenti
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&credentialInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CredentialInfoFromPb(&credentialInfoPb)
 	if err != nil {
 		return nil, err
@@ -1076,7 +1154,7 @@ func (a *credentialsImpl) internalListCredentials(ctx context.Context, request L
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listCredentialsResponsePb,
 	)
 	if err != nil {
@@ -1107,9 +1185,12 @@ func (a *credentialsImpl) UpdateCredential(ctx context.Context, request UpdateCr
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&credentialInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CredentialInfoFromPb(&credentialInfoPb)
 	if err != nil {
 		return nil, err
@@ -1135,9 +1216,12 @@ func (a *credentialsImpl) ValidateCredential(ctx context.Context, request Valida
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&validateCredentialResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ValidateCredentialResponseFromPb(&validateCredentialResponsePb)
 	if err != nil {
 		return nil, err
@@ -1168,9 +1252,12 @@ func (a *externalLineageImpl) CreateExternalLineageRelationship(ctx context.Cont
 		path,
 		headers,
 		queryParams,
-		requestPb.ExternalLineageRelationship,
+		(*requestPb).ExternalLineageRelationship,
 		&externalLineageRelationshipPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExternalLineageRelationshipFromPb(&externalLineageRelationshipPb)
 	if err != nil {
 		return nil, err
@@ -1194,9 +1281,12 @@ func (a *externalLineageImpl) DeleteExternalLineageRelationship(ctx context.Cont
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1250,7 +1340,7 @@ func (a *externalLineageImpl) internalListExternalLineageRelationships(ctx conte
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listExternalLineageRelationshipsResponsePb,
 	)
 	if err != nil {
@@ -1284,9 +1374,12 @@ func (a *externalLineageImpl) UpdateExternalLineageRelationship(ctx context.Cont
 		path,
 		headers,
 		queryParams,
-		requestPb.ExternalLineageRelationship,
+		(*requestPb).ExternalLineageRelationship,
 		&externalLineageRelationshipPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExternalLineageRelationshipFromPb(&externalLineageRelationshipPb)
 	if err != nil {
 		return nil, err
@@ -1317,9 +1410,12 @@ func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExtern
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&externalLocationInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExternalLocationInfoFromPb(&externalLocationInfoPb)
 	if err != nil {
 		return nil, err
@@ -1343,9 +1439,12 @@ func (a *externalLocationsImpl) Delete(ctx context.Context, request DeleteExtern
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1366,9 +1465,12 @@ func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLoca
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&externalLocationInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExternalLocationInfoFromPb(&externalLocationInfoPb)
 	if err != nil {
 		return nil, err
@@ -1432,7 +1534,7 @@ func (a *externalLocationsImpl) internalList(ctx context.Context, request ListEx
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listExternalLocationsResponsePb,
 	)
 	if err != nil {
@@ -1463,9 +1565,12 @@ func (a *externalLocationsImpl) Update(ctx context.Context, request UpdateExtern
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&externalLocationInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExternalLocationInfoFromPb(&externalLocationInfoPb)
 	if err != nil {
 		return nil, err
@@ -1496,9 +1601,12 @@ func (a *externalMetadataImpl) CreateExternalMetadata(ctx context.Context, reque
 		path,
 		headers,
 		queryParams,
-		requestPb.ExternalMetadata,
+		(*requestPb).ExternalMetadata,
 		&externalMetadataPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExternalMetadataFromPb(&externalMetadataPb)
 	if err != nil {
 		return nil, err
@@ -1522,9 +1630,12 @@ func (a *externalMetadataImpl) DeleteExternalMetadata(ctx context.Context, reque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1545,9 +1656,12 @@ func (a *externalMetadataImpl) GetExternalMetadata(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&externalMetadataPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExternalMetadataFromPb(&externalMetadataPb)
 	if err != nil {
 		return nil, err
@@ -1611,7 +1725,7 @@ func (a *externalMetadataImpl) internalListExternalMetadata(ctx context.Context,
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listExternalMetadataResponsePb,
 	)
 	if err != nil {
@@ -1645,9 +1759,12 @@ func (a *externalMetadataImpl) UpdateExternalMetadata(ctx context.Context, reque
 		path,
 		headers,
 		queryParams,
-		requestPb.ExternalMetadata,
+		(*requestPb).ExternalMetadata,
 		&externalMetadataPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExternalMetadataFromPb(&externalMetadataPb)
 	if err != nil {
 		return nil, err
@@ -1678,9 +1795,12 @@ func (a *functionsImpl) Create(ctx context.Context, request CreateFunctionReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&functionInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FunctionInfoFromPb(&functionInfoPb)
 	if err != nil {
 		return nil, err
@@ -1704,9 +1824,12 @@ func (a *functionsImpl) Delete(ctx context.Context, request DeleteFunctionReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1727,9 +1850,12 @@ func (a *functionsImpl) Get(ctx context.Context, request GetFunctionRequest) (*F
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&functionInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FunctionInfoFromPb(&functionInfoPb)
 	if err != nil {
 		return nil, err
@@ -1797,7 +1923,7 @@ func (a *functionsImpl) internalList(ctx context.Context, request ListFunctionsR
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listFunctionsResponsePb,
 	)
 	if err != nil {
@@ -1828,9 +1954,12 @@ func (a *functionsImpl) Update(ctx context.Context, request UpdateFunction) (*Fu
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&functionInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FunctionInfoFromPb(&functionInfoPb)
 	if err != nil {
 		return nil, err
@@ -1860,9 +1989,12 @@ func (a *grantsImpl) Get(ctx context.Context, request GetGrantRequest) (*GetPerm
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getPermissionsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetPermissionsResponseFromPb(&getPermissionsResponsePb)
 	if err != nil {
 		return nil, err
@@ -1887,9 +2019,12 @@ func (a *grantsImpl) GetEffective(ctx context.Context, request GetEffectiveReque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&effectivePermissionsListPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EffectivePermissionsListFromPb(&effectivePermissionsListPb)
 	if err != nil {
 		return nil, err
@@ -1915,9 +2050,12 @@ func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) (*Up
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updatePermissionsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdatePermissionsResponseFromPb(&updatePermissionsResponsePb)
 	if err != nil {
 		return nil, err
@@ -1947,9 +2085,12 @@ func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1971,9 +2112,12 @@ func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&metastoreInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := MetastoreInfoFromPb(&metastoreInfoPb)
 	if err != nil {
 		return nil, err
@@ -1997,6 +2141,9 @@ func (a *metastoresImpl) Current(ctx context.Context) (*MetastoreAssignment, err
 		nil,
 		&metastoreAssignmentPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := MetastoreAssignmentFromPb(&metastoreAssignmentPb)
 	if err != nil {
 		return nil, err
@@ -2020,9 +2167,12 @@ func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2043,9 +2193,12 @@ func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&metastoreInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := MetastoreInfoFromPb(&metastoreInfoPb)
 	if err != nil {
 		return nil, err
@@ -2105,7 +2258,7 @@ func (a *metastoresImpl) internalList(ctx context.Context, request ListMetastore
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listMetastoresResponsePb,
 	)
 	if err != nil {
@@ -2134,6 +2287,9 @@ func (a *metastoresImpl) Summary(ctx context.Context) (*GetMetastoreSummaryRespo
 		nil,
 		&getMetastoreSummaryResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetMetastoreSummaryResponseFromPb(&getMetastoreSummaryResponsePb)
 	if err != nil {
 		return nil, err
@@ -2157,9 +2313,12 @@ func (a *metastoresImpl) Unassign(ctx context.Context, request UnassignRequest) 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2181,9 +2340,12 @@ func (a *metastoresImpl) Update(ctx context.Context, request UpdateMetastore) (*
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&metastoreInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := MetastoreInfoFromPb(&metastoreInfoPb)
 	if err != nil {
 		return nil, err
@@ -2208,9 +2370,12 @@ func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMet
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2234,9 +2399,12 @@ func (a *modelVersionsImpl) Delete(ctx context.Context, request DeleteModelVersi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2257,9 +2425,12 @@ func (a *modelVersionsImpl) Get(ctx context.Context, request GetModelVersionRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&modelVersionInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ModelVersionInfoFromPb(&modelVersionInfoPb)
 	if err != nil {
 		return nil, err
@@ -2284,9 +2455,12 @@ func (a *modelVersionsImpl) GetByAlias(ctx context.Context, request GetByAliasRe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&modelVersionInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ModelVersionInfoFromPb(&modelVersionInfoPb)
 	if err != nil {
 		return nil, err
@@ -2366,7 +2540,7 @@ func (a *modelVersionsImpl) internalList(ctx context.Context, request ListModelV
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listModelVersionsResponsePb,
 	)
 	if err != nil {
@@ -2397,9 +2571,12 @@ func (a *modelVersionsImpl) Update(ctx context.Context, request UpdateModelVersi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&modelVersionInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ModelVersionInfoFromPb(&modelVersionInfoPb)
 	if err != nil {
 		return nil, err
@@ -2430,9 +2607,12 @@ func (a *onlineTablesImpl) Create(ctx context.Context, request CreateOnlineTable
 		path,
 		headers,
 		queryParams,
-		requestPb.Table,
+		(*requestPb).Table,
 		&onlineTablePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := OnlineTableFromPb(&onlineTablePb)
 	if err != nil {
 		return nil, err
@@ -2456,9 +2636,12 @@ func (a *onlineTablesImpl) Delete(ctx context.Context, request DeleteOnlineTable
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2479,9 +2662,12 @@ func (a *onlineTablesImpl) Get(ctx context.Context, request GetOnlineTableReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&onlineTablePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := OnlineTableFromPb(&onlineTablePb)
 	if err != nil {
 		return nil, err
@@ -2509,6 +2695,9 @@ func (a *qualityMonitorsImpl) CancelRefresh(ctx context.Context, request CancelR
 		nil,
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2530,9 +2719,12 @@ func (a *qualityMonitorsImpl) Create(ctx context.Context, request CreateMonitor)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&monitorInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := MonitorInfoFromPb(&monitorInfoPb)
 	if err != nil {
 		return nil, err
@@ -2557,9 +2749,12 @@ func (a *qualityMonitorsImpl) Delete(ctx context.Context, request DeleteQualityM
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteMonitorResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteMonitorResponseFromPb(&deleteMonitorResponsePb)
 	if err != nil {
 		return nil, err
@@ -2584,9 +2779,12 @@ func (a *qualityMonitorsImpl) Get(ctx context.Context, request GetQualityMonitor
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&monitorInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := MonitorInfoFromPb(&monitorInfoPb)
 	if err != nil {
 		return nil, err
@@ -2611,9 +2809,12 @@ func (a *qualityMonitorsImpl) GetRefresh(ctx context.Context, request GetRefresh
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&monitorRefreshInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := MonitorRefreshInfoFromPb(&monitorRefreshInfoPb)
 	if err != nil {
 		return nil, err
@@ -2638,9 +2839,12 @@ func (a *qualityMonitorsImpl) ListRefreshes(ctx context.Context, request ListRef
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&monitorRefreshListResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := MonitorRefreshListResponseFromPb(&monitorRefreshListResponsePb)
 	if err != nil {
 		return nil, err
@@ -2666,9 +2870,12 @@ func (a *qualityMonitorsImpl) RegenerateDashboard(ctx context.Context, request R
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&regenerateDashboardResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RegenerateDashboardResponseFromPb(&regenerateDashboardResponsePb)
 	if err != nil {
 		return nil, err
@@ -2692,6 +2899,9 @@ func (a *qualityMonitorsImpl) RunRefresh(ctx context.Context, request RunRefresh
 		nil,
 		&monitorRefreshInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := MonitorRefreshInfoFromPb(&monitorRefreshInfoPb)
 	if err != nil {
 		return nil, err
@@ -2717,9 +2927,12 @@ func (a *qualityMonitorsImpl) Update(ctx context.Context, request UpdateMonitor)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&monitorInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := MonitorInfoFromPb(&monitorInfoPb)
 	if err != nil {
 		return nil, err
@@ -2750,9 +2963,12 @@ func (a *registeredModelsImpl) Create(ctx context.Context, request CreateRegiste
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&registeredModelInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RegisteredModelInfoFromPb(&registeredModelInfoPb)
 	if err != nil {
 		return nil, err
@@ -2775,9 +2991,12 @@ func (a *registeredModelsImpl) Delete(ctx context.Context, request DeleteRegiste
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2796,9 +3015,12 @@ func (a *registeredModelsImpl) DeleteAlias(ctx context.Context, request DeleteAl
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2819,9 +3041,12 @@ func (a *registeredModelsImpl) Get(ctx context.Context, request GetRegisteredMod
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&registeredModelInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RegisteredModelInfoFromPb(&registeredModelInfoPb)
 	if err != nil {
 		return nil, err
@@ -2899,7 +3124,7 @@ func (a *registeredModelsImpl) internalList(ctx context.Context, request ListReg
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listRegisteredModelsResponsePb,
 	)
 	if err != nil {
@@ -2930,9 +3155,12 @@ func (a *registeredModelsImpl) SetAlias(ctx context.Context, request SetRegister
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&registeredModelAliasPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RegisteredModelAliasFromPb(&registeredModelAliasPb)
 	if err != nil {
 		return nil, err
@@ -2958,9 +3186,12 @@ func (a *registeredModelsImpl) Update(ctx context.Context, request UpdateRegiste
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&registeredModelInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RegisteredModelInfoFromPb(&registeredModelInfoPb)
 	if err != nil {
 		return nil, err
@@ -2990,9 +3221,12 @@ func (a *resourceQuotasImpl) GetQuota(ctx context.Context, request GetQuotaReque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getQuotaResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetQuotaResponseFromPb(&getQuotaResponsePb)
 	if err != nil {
 		return nil, err
@@ -3052,7 +3286,7 @@ func (a *resourceQuotasImpl) internalListQuotas(ctx context.Context, request Lis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listQuotasResponsePb,
 	)
 	if err != nil {
@@ -3088,9 +3322,12 @@ func (a *schemasImpl) Create(ctx context.Context, request CreateSchema) (*Schema
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&schemaInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := SchemaInfoFromPb(&schemaInfoPb)
 	if err != nil {
 		return nil, err
@@ -3114,9 +3351,12 @@ func (a *schemasImpl) Delete(ctx context.Context, request DeleteSchemaRequest) e
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -3137,9 +3377,12 @@ func (a *schemasImpl) Get(ctx context.Context, request GetSchemaRequest) (*Schem
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&schemaInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := SchemaInfoFromPb(&schemaInfoPb)
 	if err != nil {
 		return nil, err
@@ -3203,7 +3446,7 @@ func (a *schemasImpl) internalList(ctx context.Context, request ListSchemasReque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listSchemasResponsePb,
 	)
 	if err != nil {
@@ -3234,9 +3477,12 @@ func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*Schema
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&schemaInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := SchemaInfoFromPb(&schemaInfoPb)
 	if err != nil {
 		return nil, err
@@ -3267,9 +3513,12 @@ func (a *storageCredentialsImpl) Create(ctx context.Context, request CreateStora
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&storageCredentialInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := StorageCredentialInfoFromPb(&storageCredentialInfoPb)
 	if err != nil {
 		return nil, err
@@ -3293,9 +3542,12 @@ func (a *storageCredentialsImpl) Delete(ctx context.Context, request DeleteStora
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -3316,9 +3568,12 @@ func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCred
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&storageCredentialInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := StorageCredentialInfoFromPb(&storageCredentialInfoPb)
 	if err != nil {
 		return nil, err
@@ -3382,7 +3637,7 @@ func (a *storageCredentialsImpl) internalList(ctx context.Context, request ListS
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listStorageCredentialsResponsePb,
 	)
 	if err != nil {
@@ -3413,9 +3668,12 @@ func (a *storageCredentialsImpl) Update(ctx context.Context, request UpdateStora
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&storageCredentialInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := StorageCredentialInfoFromPb(&storageCredentialInfoPb)
 	if err != nil {
 		return nil, err
@@ -3441,9 +3699,12 @@ func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateS
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&validateStorageCredentialResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ValidateStorageCredentialResponseFromPb(&validateStorageCredentialResponsePb)
 	if err != nil {
 		return nil, err
@@ -3472,9 +3733,12 @@ func (a *systemSchemasImpl) Disable(ctx context.Context, request DisableRequest)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -3495,9 +3759,12 @@ func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) e
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -3551,7 +3818,7 @@ func (a *systemSchemasImpl) internalList(ctx context.Context, request ListSystem
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listSystemSchemasResponsePb,
 	)
 	if err != nil {
@@ -3587,9 +3854,12 @@ func (a *tableConstraintsImpl) Create(ctx context.Context, request CreateTableCo
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&tableConstraintPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := TableConstraintFromPb(&tableConstraintPb)
 	if err != nil {
 		return nil, err
@@ -3613,9 +3883,12 @@ func (a *tableConstraintsImpl) Delete(ctx context.Context, request DeleteTableCo
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -3640,9 +3913,12 @@ func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) err
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -3663,9 +3939,12 @@ func (a *tablesImpl) Exists(ctx context.Context, request ExistsRequest) (*TableE
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&tableExistsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := TableExistsResponseFromPb(&tableExistsResponsePb)
 	if err != nil {
 		return nil, err
@@ -3690,9 +3969,12 @@ func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableIn
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&tableInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := TableInfoFromPb(&tableInfoPb)
 	if err != nil {
 		return nil, err
@@ -3758,7 +4040,7 @@ func (a *tablesImpl) internalList(ctx context.Context, request ListTablesRequest
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listTablesResponsePb,
 	)
 	if err != nil {
@@ -3839,7 +4121,7 @@ func (a *tablesImpl) internalListSummaries(ctx context.Context, request ListSumm
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listTableSummariesResponsePb,
 	)
 	if err != nil {
@@ -3869,9 +4151,12 @@ func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) err
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -3898,9 +4183,12 @@ func (a *temporaryTableCredentialsImpl) GenerateTemporaryTableCredentials(ctx co
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&generateTemporaryTableCredentialResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GenerateTemporaryTableCredentialResponseFromPb(&generateTemporaryTableCredentialResponsePb)
 	if err != nil {
 		return nil, err
@@ -3931,9 +4219,12 @@ func (a *volumesImpl) Create(ctx context.Context, request CreateVolumeRequestCon
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&volumeInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := VolumeInfoFromPb(&volumeInfoPb)
 	if err != nil {
 		return nil, err
@@ -3956,9 +4247,12 @@ func (a *volumesImpl) Delete(ctx context.Context, request DeleteVolumeRequest) e
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -4030,7 +4324,7 @@ func (a *volumesImpl) internalList(ctx context.Context, request ListVolumesReque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listVolumesResponseContentPb,
 	)
 	if err != nil {
@@ -4060,9 +4354,12 @@ func (a *volumesImpl) Read(ctx context.Context, request ReadVolumeRequest) (*Vol
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&volumeInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := VolumeInfoFromPb(&volumeInfoPb)
 	if err != nil {
 		return nil, err
@@ -4088,9 +4385,12 @@ func (a *volumesImpl) Update(ctx context.Context, request UpdateVolumeRequestCon
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&volumeInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := VolumeInfoFromPb(&volumeInfoPb)
 	if err != nil {
 		return nil, err
@@ -4120,9 +4420,12 @@ func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBin
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getCatalogWorkspaceBindingsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetCatalogWorkspaceBindingsResponseFromPb(&getCatalogWorkspaceBindingsResponsePb)
 	if err != nil {
 		return nil, err
@@ -4180,7 +4483,7 @@ func (a *workspaceBindingsImpl) internalGetBindings(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getWorkspaceBindingsResponsePb,
 	)
 	if err != nil {
@@ -4211,9 +4514,12 @@ func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorksp
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateCatalogWorkspaceBindingsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateCatalogWorkspaceBindingsResponseFromPb(&updateCatalogWorkspaceBindingsResponsePb)
 	if err != nil {
 		return nil, err
@@ -4239,9 +4545,12 @@ func (a *workspaceBindingsImpl) UpdateBindings(ctx context.Context, request Upda
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateWorkspaceBindingsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateWorkspaceBindingsResponseFromPb(&updateWorkspaceBindingsResponsePb)
 	if err != nil {
 		return nil, err

@@ -65,7 +65,7 @@ func (a *consumerFulfillmentsImpl) internalGet(ctx context.Context, request GetL
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getListingContentMetadataResponsePb,
 	)
 	if err != nil {
@@ -134,7 +134,7 @@ func (a *consumerFulfillmentsImpl) internalList(ctx context.Context, request Lis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listFulfillmentsResponsePb,
 	)
 	if err != nil {
@@ -170,9 +170,12 @@ func (a *consumerInstallationsImpl) Create(ctx context.Context, request CreateIn
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&installationPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := InstallationFromPb(&installationPb)
 	if err != nil {
 		return nil, err
@@ -196,9 +199,12 @@ func (a *consumerInstallationsImpl) Delete(ctx context.Context, request DeleteIn
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -250,7 +256,7 @@ func (a *consumerInstallationsImpl) internalList(ctx context.Context, request Li
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listAllInstallationsResponsePb,
 	)
 	if err != nil {
@@ -311,7 +317,7 @@ func (a *consumerInstallationsImpl) internalListListingInstallations(ctx context
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listInstallationsResponsePb,
 	)
 	if err != nil {
@@ -342,9 +348,12 @@ func (a *consumerInstallationsImpl) Update(ctx context.Context, request UpdateIn
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateInstallationResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateInstallationResponseFromPb(&updateInstallationResponsePb)
 	if err != nil {
 		return nil, err
@@ -374,9 +383,12 @@ func (a *consumerListingsImpl) BatchGet(ctx context.Context, request BatchGetLis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&batchGetListingsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := BatchGetListingsResponseFromPb(&batchGetListingsResponsePb)
 	if err != nil {
 		return nil, err
@@ -401,9 +413,12 @@ func (a *consumerListingsImpl) Get(ctx context.Context, request GetListingReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getListingResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetListingResponseFromPb(&getListingResponsePb)
 	if err != nil {
 		return nil, err
@@ -461,7 +476,7 @@ func (a *consumerListingsImpl) internalList(ctx context.Context, request ListLis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listListingsResponsePb,
 	)
 	if err != nil {
@@ -526,7 +541,7 @@ func (a *consumerListingsImpl) internalSearch(ctx context.Context, request Searc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&searchListingsResponsePb,
 	)
 	if err != nil {
@@ -562,9 +577,12 @@ func (a *consumerPersonalizationRequestsImpl) Create(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createPersonalizationRequestResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreatePersonalizationRequestResponseFromPb(&createPersonalizationRequestResponsePb)
 	if err != nil {
 		return nil, err
@@ -589,9 +607,12 @@ func (a *consumerPersonalizationRequestsImpl) Get(ctx context.Context, request G
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getPersonalizationRequestResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetPersonalizationRequestResponseFromPb(&getPersonalizationRequestResponsePb)
 	if err != nil {
 		return nil, err
@@ -647,7 +668,7 @@ func (a *consumerPersonalizationRequestsImpl) internalList(ctx context.Context, 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listAllPersonalizationRequestsResponsePb,
 	)
 	if err != nil {
@@ -682,9 +703,12 @@ func (a *consumerProvidersImpl) BatchGet(ctx context.Context, request BatchGetPr
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&batchGetProvidersResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := BatchGetProvidersResponseFromPb(&batchGetProvidersResponsePb)
 	if err != nil {
 		return nil, err
@@ -709,9 +733,12 @@ func (a *consumerProvidersImpl) Get(ctx context.Context, request GetProviderRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getProviderResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetProviderResponseFromPb(&getProviderResponsePb)
 	if err != nil {
 		return nil, err
@@ -769,7 +796,7 @@ func (a *consumerProvidersImpl) internalList(ctx context.Context, request ListPr
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listProvidersResponsePb,
 	)
 	if err != nil {
@@ -805,9 +832,12 @@ func (a *providerExchangeFiltersImpl) Create(ctx context.Context, request Create
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createExchangeFilterResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateExchangeFilterResponseFromPb(&createExchangeFilterResponsePb)
 	if err != nil {
 		return nil, err
@@ -831,9 +861,12 @@ func (a *providerExchangeFiltersImpl) Delete(ctx context.Context, request Delete
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -885,7 +918,7 @@ func (a *providerExchangeFiltersImpl) internalList(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listExchangeFiltersResponsePb,
 	)
 	if err != nil {
@@ -916,9 +949,12 @@ func (a *providerExchangeFiltersImpl) Update(ctx context.Context, request Update
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateExchangeFilterResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateExchangeFilterResponseFromPb(&updateExchangeFilterResponsePb)
 	if err != nil {
 		return nil, err
@@ -949,9 +985,12 @@ func (a *providerExchangesImpl) AddListingToExchange(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&addExchangeForListingResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AddExchangeForListingResponseFromPb(&addExchangeForListingResponsePb)
 	if err != nil {
 		return nil, err
@@ -977,9 +1016,12 @@ func (a *providerExchangesImpl) Create(ctx context.Context, request CreateExchan
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createExchangeResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateExchangeResponseFromPb(&createExchangeResponsePb)
 	if err != nil {
 		return nil, err
@@ -1003,9 +1045,12 @@ func (a *providerExchangesImpl) Delete(ctx context.Context, request DeleteExchan
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1025,9 +1070,12 @@ func (a *providerExchangesImpl) DeleteListingFromExchange(ctx context.Context, r
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1048,9 +1096,12 @@ func (a *providerExchangesImpl) Get(ctx context.Context, request GetExchangeRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getExchangeResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetExchangeResponseFromPb(&getExchangeResponsePb)
 	if err != nil {
 		return nil, err
@@ -1106,7 +1157,7 @@ func (a *providerExchangesImpl) internalList(ctx context.Context, request ListEx
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listExchangesResponsePb,
 	)
 	if err != nil {
@@ -1167,7 +1218,7 @@ func (a *providerExchangesImpl) internalListExchangesForListing(ctx context.Cont
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listExchangesForListingResponsePb,
 	)
 	if err != nil {
@@ -1228,7 +1279,7 @@ func (a *providerExchangesImpl) internalListListingsForExchange(ctx context.Cont
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listListingsForExchangeResponsePb,
 	)
 	if err != nil {
@@ -1259,9 +1310,12 @@ func (a *providerExchangesImpl) Update(ctx context.Context, request UpdateExchan
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateExchangeResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateExchangeResponseFromPb(&updateExchangeResponsePb)
 	if err != nil {
 		return nil, err
@@ -1292,9 +1346,12 @@ func (a *providerFilesImpl) Create(ctx context.Context, request CreateFileReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createFileResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateFileResponseFromPb(&createFileResponsePb)
 	if err != nil {
 		return nil, err
@@ -1318,9 +1375,12 @@ func (a *providerFilesImpl) Delete(ctx context.Context, request DeleteFileReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1341,9 +1401,12 @@ func (a *providerFilesImpl) Get(ctx context.Context, request GetFileRequest) (*G
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getFileResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetFileResponseFromPb(&getFileResponsePb)
 	if err != nil {
 		return nil, err
@@ -1399,7 +1462,7 @@ func (a *providerFilesImpl) internalList(ctx context.Context, request ListFilesR
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listFilesResponsePb,
 	)
 	if err != nil {
@@ -1435,9 +1498,12 @@ func (a *providerListingsImpl) Create(ctx context.Context, request CreateListing
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createListingResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateListingResponseFromPb(&createListingResponsePb)
 	if err != nil {
 		return nil, err
@@ -1461,9 +1527,12 @@ func (a *providerListingsImpl) Delete(ctx context.Context, request DeleteListing
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1484,9 +1553,12 @@ func (a *providerListingsImpl) Get(ctx context.Context, request GetListingReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getListingResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetListingResponseFromPb(&getListingResponsePb)
 	if err != nil {
 		return nil, err
@@ -1542,7 +1614,7 @@ func (a *providerListingsImpl) internalList(ctx context.Context, request GetList
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getListingsResponsePb,
 	)
 	if err != nil {
@@ -1573,9 +1645,12 @@ func (a *providerListingsImpl) Update(ctx context.Context, request UpdateListing
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateListingResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateListingResponseFromPb(&updateListingResponsePb)
 	if err != nil {
 		return nil, err
@@ -1638,7 +1713,7 @@ func (a *providerPersonalizationRequestsImpl) internalList(ctx context.Context, 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listAllPersonalizationRequestsResponsePb,
 	)
 	if err != nil {
@@ -1669,9 +1744,12 @@ func (a *providerPersonalizationRequestsImpl) Update(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updatePersonalizationRequestResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdatePersonalizationRequestResponseFromPb(&updatePersonalizationRequestResponsePb)
 	if err != nil {
 		return nil, err
@@ -1700,6 +1778,9 @@ func (a *providerProviderAnalyticsDashboardsImpl) Create(ctx context.Context) (*
 		nil,
 		&providerAnalyticsDashboardPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ProviderAnalyticsDashboardFromPb(&providerAnalyticsDashboardPb)
 	if err != nil {
 		return nil, err
@@ -1723,6 +1804,9 @@ func (a *providerProviderAnalyticsDashboardsImpl) Get(ctx context.Context) (*Lis
 		nil,
 		&listProviderAnalyticsDashboardResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ListProviderAnalyticsDashboardResponseFromPb(&listProviderAnalyticsDashboardResponsePb)
 	if err != nil {
 		return nil, err
@@ -1746,6 +1830,9 @@ func (a *providerProviderAnalyticsDashboardsImpl) GetLatestVersion(ctx context.C
 		nil,
 		&getLatestVersionProviderAnalyticsDashboardResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetLatestVersionProviderAnalyticsDashboardResponseFromPb(&getLatestVersionProviderAnalyticsDashboardResponsePb)
 	if err != nil {
 		return nil, err
@@ -1771,9 +1858,12 @@ func (a *providerProviderAnalyticsDashboardsImpl) Update(ctx context.Context, re
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateProviderAnalyticsDashboardResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateProviderAnalyticsDashboardResponseFromPb(&updateProviderAnalyticsDashboardResponsePb)
 	if err != nil {
 		return nil, err
@@ -1804,9 +1894,12 @@ func (a *providerProvidersImpl) Create(ctx context.Context, request CreateProvid
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createProviderResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateProviderResponseFromPb(&createProviderResponsePb)
 	if err != nil {
 		return nil, err
@@ -1830,9 +1923,12 @@ func (a *providerProvidersImpl) Delete(ctx context.Context, request DeleteProvid
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1853,9 +1949,12 @@ func (a *providerProvidersImpl) Get(ctx context.Context, request GetProviderRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getProviderResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetProviderResponseFromPb(&getProviderResponsePb)
 	if err != nil {
 		return nil, err
@@ -1911,7 +2010,7 @@ func (a *providerProvidersImpl) internalList(ctx context.Context, request ListPr
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listProvidersResponsePb,
 	)
 	if err != nil {
@@ -1942,9 +2041,12 @@ func (a *providerProvidersImpl) Update(ctx context.Context, request UpdateProvid
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateProviderResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateProviderResponseFromPb(&updateProviderResponsePb)
 	if err != nil {
 		return nil, err

@@ -3,12 +3,12 @@
 package billing
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
 	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/billing/billingpb"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/compute/computepb"
@@ -27,12 +27,29 @@ type ActionConfiguration struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ActionConfiguration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ActionConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := ActionConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ActionConfiguration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ActionConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.ActionConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ActionConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ActionConfigurationToPb(st *ActionConfiguration) (*billingpb.ActionConfigurationPb, error) {
@@ -50,7 +67,9 @@ func ActionConfigurationToPb(st *ActionConfiguration) (*billingpb.ActionConfigur
 	}
 	pb.Target = st.Target
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -69,7 +88,9 @@ func ActionConfigurationFromPb(pb *billingpb.ActionConfigurationPb) (*ActionConf
 	}
 	st.Target = pb.Target
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -149,12 +170,29 @@ type AlertConfiguration struct {
 	ForceSendFields []string                      `tf:"-"`
 }
 
-func (s *AlertConfiguration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AlertConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := AlertConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AlertConfiguration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AlertConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.AlertConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AlertConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func AlertConfigurationToPb(st *AlertConfiguration) (*billingpb.AlertConfigurationPb, error) {
@@ -198,7 +236,9 @@ func AlertConfigurationToPb(st *AlertConfiguration) (*billingpb.AlertConfigurati
 		pb.TriggerType = *triggerTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -243,7 +283,9 @@ func AlertConfigurationFromPb(pb *billingpb.AlertConfigurationPb) (*AlertConfigu
 		st.TriggerType = *triggerTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -426,12 +468,29 @@ type BudgetConfiguration struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *BudgetConfiguration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st BudgetConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := BudgetConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s BudgetConfiguration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *BudgetConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.BudgetConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BudgetConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func BudgetConfigurationToPb(st *BudgetConfiguration) (*billingpb.BudgetConfigurationPb, error) {
@@ -464,7 +523,9 @@ func BudgetConfigurationToPb(st *BudgetConfiguration) (*billingpb.BudgetConfigur
 	}
 	pb.UpdateTime = st.UpdateTime
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -498,7 +559,9 @@ func BudgetConfigurationFromPb(pb *billingpb.BudgetConfigurationPb) (*BudgetConf
 	}
 	st.UpdateTime = pb.UpdateTime
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -511,6 +574,31 @@ type BudgetConfigurationFilter struct {
 	// If provided, usage must match with the provided Databricks workspace IDs.
 	// Wire name: 'workspace_id'
 	WorkspaceId *BudgetConfigurationFilterWorkspaceIdClause ``
+}
+
+func (st BudgetConfigurationFilter) MarshalJSON() ([]byte, error) {
+	pb, err := BudgetConfigurationFilterToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *BudgetConfigurationFilter) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.BudgetConfigurationFilterPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BudgetConfigurationFilterFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func BudgetConfigurationFilterToPb(st *BudgetConfigurationFilter) (*billingpb.BudgetConfigurationFilterPb, error) {
@@ -576,6 +664,31 @@ type BudgetConfigurationFilterClause struct {
 
 	// Wire name: 'values'
 	Values []string ``
+}
+
+func (st BudgetConfigurationFilterClause) MarshalJSON() ([]byte, error) {
+	pb, err := BudgetConfigurationFilterClauseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *BudgetConfigurationFilterClause) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.BudgetConfigurationFilterClausePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BudgetConfigurationFilterClauseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func BudgetConfigurationFilterClauseToPb(st *BudgetConfigurationFilterClause) (*billingpb.BudgetConfigurationFilterClausePb, error) {
@@ -672,12 +785,29 @@ type BudgetConfigurationFilterTagClause struct {
 	ForceSendFields []string                         `tf:"-"`
 }
 
-func (s *BudgetConfigurationFilterTagClause) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st BudgetConfigurationFilterTagClause) MarshalJSON() ([]byte, error) {
+	pb, err := BudgetConfigurationFilterTagClauseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s BudgetConfigurationFilterTagClause) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *BudgetConfigurationFilterTagClause) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.BudgetConfigurationFilterTagClausePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BudgetConfigurationFilterTagClauseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func BudgetConfigurationFilterTagClauseToPb(st *BudgetConfigurationFilterTagClause) (*billingpb.BudgetConfigurationFilterTagClausePb, error) {
@@ -694,7 +824,9 @@ func BudgetConfigurationFilterTagClauseToPb(st *BudgetConfigurationFilterTagClau
 		pb.Value = valuePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -712,7 +844,9 @@ func BudgetConfigurationFilterTagClauseFromPb(pb *billingpb.BudgetConfigurationF
 		st.Value = valueField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -723,6 +857,31 @@ type BudgetConfigurationFilterWorkspaceIdClause struct {
 
 	// Wire name: 'values'
 	Values []int64 ``
+}
+
+func (st BudgetConfigurationFilterWorkspaceIdClause) MarshalJSON() ([]byte, error) {
+	pb, err := BudgetConfigurationFilterWorkspaceIdClauseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *BudgetConfigurationFilterWorkspaceIdClause) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.BudgetConfigurationFilterWorkspaceIdClausePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BudgetConfigurationFilterWorkspaceIdClauseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func BudgetConfigurationFilterWorkspaceIdClauseToPb(st *BudgetConfigurationFilterWorkspaceIdClause) (*billingpb.BudgetConfigurationFilterWorkspaceIdClausePb, error) {
@@ -782,12 +941,29 @@ type BudgetPolicy struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *BudgetPolicy) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st BudgetPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := BudgetPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s BudgetPolicy) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *BudgetPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.BudgetPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := BudgetPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func BudgetPolicyToPb(st *BudgetPolicy) (*billingpb.BudgetPolicyPb, error) {
@@ -811,7 +987,9 @@ func BudgetPolicyToPb(st *BudgetPolicy) (*billingpb.BudgetPolicyPb, error) {
 	pb.PolicyId = st.PolicyId
 	pb.PolicyName = st.PolicyName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -836,7 +1014,9 @@ func BudgetPolicyFromPb(pb *billingpb.BudgetPolicyPb) (*BudgetPolicy, error) {
 	st.PolicyId = pb.PolicyId
 	st.PolicyName = pb.PolicyName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -853,12 +1033,29 @@ type CreateBillingUsageDashboardRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateBillingUsageDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.CreateBillingUsageDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateBillingUsageDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateBillingUsageDashboardRequestToPb(st *CreateBillingUsageDashboardRequest) (*billingpb.CreateBillingUsageDashboardRequestPb, error) {
@@ -875,7 +1072,9 @@ func CreateBillingUsageDashboardRequestToPb(st *CreateBillingUsageDashboardReque
 	}
 	pb.WorkspaceId = st.WorkspaceId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -893,7 +1092,9 @@ func CreateBillingUsageDashboardRequestFromPb(pb *billingpb.CreateBillingUsageDa
 	}
 	st.WorkspaceId = pb.WorkspaceId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -904,12 +1105,29 @@ type CreateBillingUsageDashboardResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateBillingUsageDashboardResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.CreateBillingUsageDashboardResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateBillingUsageDashboardResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateBillingUsageDashboardResponseToPb(st *CreateBillingUsageDashboardResponse) (*billingpb.CreateBillingUsageDashboardResponsePb, error) {
@@ -919,7 +1137,9 @@ func CreateBillingUsageDashboardResponseToPb(st *CreateBillingUsageDashboardResp
 	pb := &billingpb.CreateBillingUsageDashboardResponsePb{}
 	pb.DashboardId = st.DashboardId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -930,7 +1150,9 @@ func CreateBillingUsageDashboardResponseFromPb(pb *billingpb.CreateBillingUsageD
 	st := &CreateBillingUsageDashboardResponse{}
 	st.DashboardId = pb.DashboardId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -954,12 +1176,29 @@ type CreateBudgetConfigurationBudget struct {
 	ForceSendFields []string                   `tf:"-"`
 }
 
-func (s *CreateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
+	pb, err := CreateBudgetConfigurationBudgetToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.CreateBudgetConfigurationBudgetPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateBudgetConfigurationBudgetFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateBudgetConfigurationBudgetToPb(st *CreateBudgetConfigurationBudget) (*billingpb.CreateBudgetConfigurationBudgetPb, error) {
@@ -989,7 +1228,9 @@ func CreateBudgetConfigurationBudgetToPb(st *CreateBudgetConfigurationBudget) (*
 		pb.Filter = filterPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1020,7 +1261,9 @@ func CreateBudgetConfigurationBudgetFromPb(pb *billingpb.CreateBudgetConfigurati
 		st.Filter = filterField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1034,12 +1277,29 @@ type CreateBudgetConfigurationBudgetActionConfigurations struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateBudgetConfigurationBudgetActionConfigurations) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateBudgetConfigurationBudgetActionConfigurations) MarshalJSON() ([]byte, error) {
+	pb, err := CreateBudgetConfigurationBudgetActionConfigurationsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateBudgetConfigurationBudgetActionConfigurations) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateBudgetConfigurationBudgetActionConfigurations) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.CreateBudgetConfigurationBudgetActionConfigurationsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateBudgetConfigurationBudgetActionConfigurationsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateBudgetConfigurationBudgetActionConfigurationsToPb(st *CreateBudgetConfigurationBudgetActionConfigurations) (*billingpb.CreateBudgetConfigurationBudgetActionConfigurationsPb, error) {
@@ -1056,7 +1316,9 @@ func CreateBudgetConfigurationBudgetActionConfigurationsToPb(st *CreateBudgetCon
 	}
 	pb.Target = st.Target
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1074,7 +1336,9 @@ func CreateBudgetConfigurationBudgetActionConfigurationsFromPb(pb *billingpb.Cre
 	}
 	st.Target = pb.Target
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1101,12 +1365,29 @@ type CreateBudgetConfigurationBudgetAlertConfigurations struct {
 	ForceSendFields []string                      `tf:"-"`
 }
 
-func (s *CreateBudgetConfigurationBudgetAlertConfigurations) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateBudgetConfigurationBudgetAlertConfigurations) MarshalJSON() ([]byte, error) {
+	pb, err := CreateBudgetConfigurationBudgetAlertConfigurationsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateBudgetConfigurationBudgetAlertConfigurations) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateBudgetConfigurationBudgetAlertConfigurations) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.CreateBudgetConfigurationBudgetAlertConfigurationsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateBudgetConfigurationBudgetAlertConfigurationsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateBudgetConfigurationBudgetAlertConfigurationsToPb(st *CreateBudgetConfigurationBudgetAlertConfigurations) (*billingpb.CreateBudgetConfigurationBudgetAlertConfigurationsPb, error) {
@@ -1149,7 +1430,9 @@ func CreateBudgetConfigurationBudgetAlertConfigurationsToPb(st *CreateBudgetConf
 		pb.TriggerType = *triggerTypePb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1193,7 +1476,9 @@ func CreateBudgetConfigurationBudgetAlertConfigurationsFromPb(pb *billingpb.Crea
 		st.TriggerType = *triggerTypeField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1201,6 +1486,31 @@ type CreateBudgetConfigurationRequest struct {
 	// Properties of the new budget configuration.
 	// Wire name: 'budget'
 	Budget CreateBudgetConfigurationBudget ``
+}
+
+func (st CreateBudgetConfigurationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateBudgetConfigurationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateBudgetConfigurationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.CreateBudgetConfigurationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateBudgetConfigurationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateBudgetConfigurationRequestToPb(st *CreateBudgetConfigurationRequest) (*billingpb.CreateBudgetConfigurationRequestPb, error) {
@@ -1239,6 +1549,31 @@ type CreateBudgetConfigurationResponse struct {
 	// The created budget configuration.
 	// Wire name: 'budget'
 	Budget *BudgetConfiguration ``
+}
+
+func (st CreateBudgetConfigurationResponse) MarshalJSON() ([]byte, error) {
+	pb, err := CreateBudgetConfigurationResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateBudgetConfigurationResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.CreateBudgetConfigurationResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateBudgetConfigurationResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateBudgetConfigurationResponseToPb(st *CreateBudgetConfigurationResponse) (*billingpb.CreateBudgetConfigurationResponsePb, error) {
@@ -1288,12 +1623,29 @@ type CreateBudgetPolicyRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateBudgetPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.CreateBudgetPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateBudgetPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateBudgetPolicyRequestToPb(st *CreateBudgetPolicyRequest) (*billingpb.CreateBudgetPolicyRequestPb, error) {
@@ -1310,7 +1662,9 @@ func CreateBudgetPolicyRequestToPb(st *CreateBudgetPolicyRequest) (*billingpb.Cr
 	}
 	pb.RequestId = st.RequestId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1328,7 +1682,9 @@ func CreateBudgetPolicyRequestFromPb(pb *billingpb.CreateBudgetPolicyRequestPb) 
 	}
 	st.RequestId = pb.RequestId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1411,12 +1767,29 @@ type CreateLogDeliveryConfigurationParams struct {
 	ForceSendFields    []string `tf:"-"`
 }
 
-func (s *CreateLogDeliveryConfigurationParams) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateLogDeliveryConfigurationParams) MarshalJSON() ([]byte, error) {
+	pb, err := CreateLogDeliveryConfigurationParamsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateLogDeliveryConfigurationParams) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateLogDeliveryConfigurationParams) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.CreateLogDeliveryConfigurationParamsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateLogDeliveryConfigurationParamsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func CreateLogDeliveryConfigurationParamsToPb(st *CreateLogDeliveryConfigurationParams) (*billingpb.CreateLogDeliveryConfigurationParamsPb, error) {
@@ -1452,7 +1825,9 @@ func CreateLogDeliveryConfigurationParamsToPb(st *CreateLogDeliveryConfiguration
 	pb.StorageConfigurationId = st.StorageConfigurationId
 	pb.WorkspaceIdsFilter = st.WorkspaceIdsFilter
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1489,7 +1864,9 @@ func CreateLogDeliveryConfigurationParamsFromPb(pb *billingpb.CreateLogDeliveryC
 	st.StorageConfigurationId = pb.StorageConfigurationId
 	st.WorkspaceIdsFilter = pb.WorkspaceIdsFilter
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1497,6 +1874,31 @@ type DeleteBudgetConfigurationRequest struct {
 	// The Databricks budget configuration ID.
 	// Wire name: 'budget_id'
 	BudgetId string `tf:"-"`
+}
+
+func (st DeleteBudgetConfigurationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteBudgetConfigurationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteBudgetConfigurationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.DeleteBudgetConfigurationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteBudgetConfigurationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteBudgetConfigurationRequestToPb(st *DeleteBudgetConfigurationRequest) (*billingpb.DeleteBudgetConfigurationRequestPb, error) {
@@ -1523,6 +1925,31 @@ type DeleteBudgetPolicyRequest struct {
 	// The Id of the policy.
 	// Wire name: 'policy_id'
 	PolicyId string `tf:"-"`
+}
+
+func (st DeleteBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteBudgetPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.DeleteBudgetPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteBudgetPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DeleteBudgetPolicyRequestToPb(st *DeleteBudgetPolicyRequest) (*billingpb.DeleteBudgetPolicyRequestPb, error) {
@@ -1635,12 +2062,29 @@ type DownloadRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DownloadRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DownloadRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DownloadRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DownloadRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DownloadRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.DownloadRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DownloadRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DownloadRequestToPb(st *DownloadRequest) (*billingpb.DownloadRequestPb, error) {
@@ -1652,7 +2096,9 @@ func DownloadRequestToPb(st *DownloadRequest) (*billingpb.DownloadRequestPb, err
 	pb.PersonalData = st.PersonalData
 	pb.StartMonth = st.StartMonth
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1665,7 +2111,9 @@ func DownloadRequestFromPb(pb *billingpb.DownloadRequestPb) (*DownloadRequest, e
 	st.PersonalData = pb.PersonalData
 	st.StartMonth = pb.StartMonth
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1673,6 +2121,31 @@ type DownloadResponse struct {
 
 	// Wire name: 'contents'
 	Contents io.ReadCloser `tf:"-"`
+}
+
+func (st DownloadResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DownloadResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DownloadResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.DownloadResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DownloadResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func DownloadResponseToPb(st *DownloadResponse) (*billingpb.DownloadResponsePb, error) {
@@ -1713,12 +2186,29 @@ type Filter struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Filter) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st Filter) MarshalJSON() ([]byte, error) {
+	pb, err := FilterToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s Filter) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *Filter) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.FilterPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FilterFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func FilterToPb(st *Filter) (*billingpb.FilterPb, error) {
@@ -1730,7 +2220,9 @@ func FilterToPb(st *Filter) (*billingpb.FilterPb, error) {
 	pb.CreatorUserName = st.CreatorUserName
 	pb.PolicyName = st.PolicyName
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1743,7 +2235,9 @@ func FilterFromPb(pb *billingpb.FilterPb) (*Filter, error) {
 	st.CreatorUserName = pb.CreatorUserName
 	st.PolicyName = pb.PolicyName
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1760,12 +2254,29 @@ type GetBillingUsageDashboardRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetBillingUsageDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.GetBillingUsageDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetBillingUsageDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetBillingUsageDashboardRequestToPb(st *GetBillingUsageDashboardRequest) (*billingpb.GetBillingUsageDashboardRequestPb, error) {
@@ -1782,7 +2293,9 @@ func GetBillingUsageDashboardRequestToPb(st *GetBillingUsageDashboardRequest) (*
 	}
 	pb.WorkspaceId = st.WorkspaceId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1800,7 +2313,9 @@ func GetBillingUsageDashboardRequestFromPb(pb *billingpb.GetBillingUsageDashboar
 	}
 	st.WorkspaceId = pb.WorkspaceId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1814,12 +2329,29 @@ type GetBillingUsageDashboardResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetBillingUsageDashboardResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.GetBillingUsageDashboardResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetBillingUsageDashboardResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetBillingUsageDashboardResponseToPb(st *GetBillingUsageDashboardResponse) (*billingpb.GetBillingUsageDashboardResponsePb, error) {
@@ -1830,7 +2362,9 @@ func GetBillingUsageDashboardResponseToPb(st *GetBillingUsageDashboardResponse) 
 	pb.DashboardId = st.DashboardId
 	pb.DashboardUrl = st.DashboardUrl
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -1842,7 +2376,9 @@ func GetBillingUsageDashboardResponseFromPb(pb *billingpb.GetBillingUsageDashboa
 	st.DashboardId = pb.DashboardId
 	st.DashboardUrl = pb.DashboardUrl
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -1850,6 +2386,31 @@ type GetBudgetConfigurationRequest struct {
 	// The budget configuration ID
 	// Wire name: 'budget_id'
 	BudgetId string `tf:"-"`
+}
+
+func (st GetBudgetConfigurationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetBudgetConfigurationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetBudgetConfigurationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.GetBudgetConfigurationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetBudgetConfigurationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetBudgetConfigurationRequestToPb(st *GetBudgetConfigurationRequest) (*billingpb.GetBudgetConfigurationRequestPb, error) {
@@ -1876,6 +2437,31 @@ type GetBudgetConfigurationResponse struct {
 
 	// Wire name: 'budget'
 	Budget *BudgetConfiguration ``
+}
+
+func (st GetBudgetConfigurationResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetBudgetConfigurationResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetBudgetConfigurationResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.GetBudgetConfigurationResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetBudgetConfigurationResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetBudgetConfigurationResponseToPb(st *GetBudgetConfigurationResponse) (*billingpb.GetBudgetConfigurationResponsePb, error) {
@@ -1916,6 +2502,31 @@ type GetBudgetPolicyRequest struct {
 	PolicyId string `tf:"-"`
 }
 
+func (st GetBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetBudgetPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.GetBudgetPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetBudgetPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetBudgetPolicyRequestToPb(st *GetBudgetPolicyRequest) (*billingpb.GetBudgetPolicyRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -1940,6 +2551,31 @@ type GetLogDeliveryConfigurationResponse struct {
 	// The fetched log delivery configuration
 	// Wire name: 'log_delivery_configuration'
 	LogDeliveryConfiguration *LogDeliveryConfiguration ``
+}
+
+func (st GetLogDeliveryConfigurationResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetLogDeliveryConfigurationResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetLogDeliveryConfigurationResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.GetLogDeliveryConfigurationResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetLogDeliveryConfigurationResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetLogDeliveryConfigurationResponseToPb(st *GetLogDeliveryConfigurationResponse) (*billingpb.GetLogDeliveryConfigurationResponsePb, error) {
@@ -1980,6 +2616,31 @@ type GetLogDeliveryRequest struct {
 	LogDeliveryConfigurationId string `tf:"-"`
 }
 
+func (st GetLogDeliveryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetLogDeliveryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetLogDeliveryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.GetLogDeliveryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetLogDeliveryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func GetLogDeliveryRequestToPb(st *GetLogDeliveryRequest) (*billingpb.GetLogDeliveryRequestPb, error) {
 	if st == nil {
 		return nil, nil
@@ -2003,6 +2664,31 @@ func GetLogDeliveryRequestFromPb(pb *billingpb.GetLogDeliveryRequestPb) (*GetLog
 // The limit configuration of the policy. Limit configuration provide a budget
 // policy level cost control by enforcing the limit.
 type LimitConfig struct {
+}
+
+func (st LimitConfig) MarshalJSON() ([]byte, error) {
+	pb, err := LimitConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *LimitConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.LimitConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := LimitConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func LimitConfigToPb(st *LimitConfig) (*billingpb.LimitConfigPb, error) {
@@ -2032,12 +2718,29 @@ type ListBudgetConfigurationsRequest struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListBudgetConfigurationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListBudgetConfigurationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListBudgetConfigurationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListBudgetConfigurationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListBudgetConfigurationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.ListBudgetConfigurationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListBudgetConfigurationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListBudgetConfigurationsRequestToPb(st *ListBudgetConfigurationsRequest) (*billingpb.ListBudgetConfigurationsRequestPb, error) {
@@ -2047,7 +2750,9 @@ func ListBudgetConfigurationsRequestToPb(st *ListBudgetConfigurationsRequest) (*
 	pb := &billingpb.ListBudgetConfigurationsRequestPb{}
 	pb.PageToken = st.PageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2058,7 +2763,9 @@ func ListBudgetConfigurationsRequestFromPb(pb *billingpb.ListBudgetConfiguration
 	st := &ListBudgetConfigurationsRequest{}
 	st.PageToken = pb.PageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2073,12 +2780,29 @@ type ListBudgetConfigurationsResponse struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListBudgetConfigurationsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListBudgetConfigurationsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListBudgetConfigurationsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListBudgetConfigurationsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListBudgetConfigurationsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.ListBudgetConfigurationsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListBudgetConfigurationsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListBudgetConfigurationsResponseToPb(st *ListBudgetConfigurationsResponse) (*billingpb.ListBudgetConfigurationsResponsePb, error) {
@@ -2100,7 +2824,9 @@ func ListBudgetConfigurationsResponseToPb(st *ListBudgetConfigurationsResponse) 
 	pb.Budgets = budgetsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2123,7 +2849,9 @@ func ListBudgetConfigurationsResponseFromPb(pb *billingpb.ListBudgetConfiguratio
 	st.Budgets = budgetsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2151,12 +2879,29 @@ type ListBudgetPoliciesRequest struct {
 	ForceSendFields []string  `tf:"-"`
 }
 
-func (s *ListBudgetPoliciesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListBudgetPoliciesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListBudgetPoliciesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListBudgetPoliciesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListBudgetPoliciesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.ListBudgetPoliciesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListBudgetPoliciesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListBudgetPoliciesRequestToPb(st *ListBudgetPoliciesRequest) (*billingpb.ListBudgetPoliciesRequestPb, error) {
@@ -2181,7 +2926,9 @@ func ListBudgetPoliciesRequestToPb(st *ListBudgetPoliciesRequest) (*billingpb.Li
 		pb.SortSpec = sortSpecPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2207,7 +2954,9 @@ func ListBudgetPoliciesRequestFromPb(pb *billingpb.ListBudgetPoliciesRequestPb) 
 		st.SortSpec = sortSpecField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2227,12 +2976,29 @@ type ListBudgetPoliciesResponse struct {
 	ForceSendFields   []string `tf:"-"`
 }
 
-func (s *ListBudgetPoliciesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListBudgetPoliciesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListBudgetPoliciesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListBudgetPoliciesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListBudgetPoliciesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.ListBudgetPoliciesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListBudgetPoliciesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListBudgetPoliciesResponseToPb(st *ListBudgetPoliciesResponse) (*billingpb.ListBudgetPoliciesResponsePb, error) {
@@ -2255,7 +3021,9 @@ func ListBudgetPoliciesResponseToPb(st *ListBudgetPoliciesResponse) (*billingpb.
 	pb.Policies = policiesPb
 	pb.PreviousPageToken = st.PreviousPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2279,7 +3047,9 @@ func ListBudgetPoliciesResponseFromPb(pb *billingpb.ListBudgetPoliciesResponsePb
 	st.Policies = policiesField
 	st.PreviousPageToken = pb.PreviousPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2301,12 +3071,29 @@ type ListLogDeliveryRequest struct {
 	ForceSendFields        []string `tf:"-"`
 }
 
-func (s *ListLogDeliveryRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListLogDeliveryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListLogDeliveryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListLogDeliveryRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListLogDeliveryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.ListLogDeliveryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListLogDeliveryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ListLogDeliveryRequestToPb(st *ListLogDeliveryRequest) (*billingpb.ListLogDeliveryRequestPb, error) {
@@ -2325,7 +3112,9 @@ func ListLogDeliveryRequestToPb(st *ListLogDeliveryRequest) (*billingpb.ListLogD
 	}
 	pb.StorageConfigurationId = st.StorageConfigurationId
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2345,7 +3134,9 @@ func ListLogDeliveryRequestFromPb(pb *billingpb.ListLogDeliveryRequestPb) (*List
 	}
 	st.StorageConfigurationId = pb.StorageConfigurationId
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2502,12 +3293,29 @@ type LogDeliveryConfiguration struct {
 	ForceSendFields    []string `tf:"-"`
 }
 
-func (s *LogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st LogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := LogDeliveryConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s LogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *LogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.LogDeliveryConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := LogDeliveryConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func LogDeliveryConfigurationToPb(st *LogDeliveryConfiguration) (*billingpb.LogDeliveryConfigurationPb, error) {
@@ -2554,7 +3362,9 @@ func LogDeliveryConfigurationToPb(st *LogDeliveryConfiguration) (*billingpb.LogD
 	pb.UpdateTime = st.UpdateTime
 	pb.WorkspaceIdsFilter = st.WorkspaceIdsFilter
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2602,7 +3412,9 @@ func LogDeliveryConfigurationFromPb(pb *billingpb.LogDeliveryConfigurationPb) (*
 	st.UpdateTime = pb.UpdateTime
 	st.WorkspaceIdsFilter = pb.WorkspaceIdsFilter
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2633,12 +3445,29 @@ type LogDeliveryStatus struct {
 	ForceSendFields []string       `tf:"-"`
 }
 
-func (s *LogDeliveryStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st LogDeliveryStatus) MarshalJSON() ([]byte, error) {
+	pb, err := LogDeliveryStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s LogDeliveryStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *LogDeliveryStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.LogDeliveryStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := LogDeliveryStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func LogDeliveryStatusToPb(st *LogDeliveryStatus) (*billingpb.LogDeliveryStatusPb, error) {
@@ -2657,7 +3486,9 @@ func LogDeliveryStatusToPb(st *LogDeliveryStatus) (*billingpb.LogDeliveryStatusP
 		pb.Status = *statusPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2677,7 +3508,9 @@ func LogDeliveryStatusFromPb(pb *billingpb.LogDeliveryStatusPb) (*LogDeliverySta
 		st.Status = *statusField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2799,12 +3632,29 @@ type SortSpec struct {
 	ForceSendFields []string      `tf:"-"`
 }
 
-func (s *SortSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SortSpec) MarshalJSON() ([]byte, error) {
+	pb, err := SortSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SortSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SortSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.SortSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SortSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func SortSpecToPb(st *SortSpec) (*billingpb.SortSpecPb, error) {
@@ -2821,7 +3671,9 @@ func SortSpecToPb(st *SortSpec) (*billingpb.SortSpecPb, error) {
 		pb.Field = *fieldPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2839,7 +3691,9 @@ func SortSpecFromPb(pb *billingpb.SortSpecPb) (*SortSpec, error) {
 		st.Field = *fieldField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2916,12 +3770,29 @@ type UpdateBudgetConfigurationBudget struct {
 	ForceSendFields []string                   `tf:"-"`
 }
 
-func (s *UpdateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateBudgetConfigurationBudgetToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.UpdateBudgetConfigurationBudgetPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateBudgetConfigurationBudgetFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateBudgetConfigurationBudgetToPb(st *UpdateBudgetConfigurationBudget) (*billingpb.UpdateBudgetConfigurationBudgetPb, error) {
@@ -2952,7 +3823,9 @@ func UpdateBudgetConfigurationBudgetToPb(st *UpdateBudgetConfigurationBudget) (*
 		pb.Filter = filterPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -2984,7 +3857,9 @@ func UpdateBudgetConfigurationBudgetFromPb(pb *billingpb.UpdateBudgetConfigurati
 		st.Filter = filterField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
@@ -2996,6 +3871,31 @@ type UpdateBudgetConfigurationRequest struct {
 	// The Databricks budget configuration ID.
 	// Wire name: 'budget_id'
 	BudgetId string `tf:"-"`
+}
+
+func (st UpdateBudgetConfigurationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateBudgetConfigurationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateBudgetConfigurationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.UpdateBudgetConfigurationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateBudgetConfigurationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateBudgetConfigurationRequestToPb(st *UpdateBudgetConfigurationRequest) (*billingpb.UpdateBudgetConfigurationRequestPb, error) {
@@ -3036,6 +3936,31 @@ type UpdateBudgetConfigurationResponse struct {
 	// The updated budget.
 	// Wire name: 'budget'
 	Budget *BudgetConfiguration ``
+}
+
+func (st UpdateBudgetConfigurationResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateBudgetConfigurationResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateBudgetConfigurationResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.UpdateBudgetConfigurationResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateBudgetConfigurationResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateBudgetConfigurationResponseToPb(st *UpdateBudgetConfigurationResponse) (*billingpb.UpdateBudgetConfigurationResponsePb, error) {
@@ -3084,6 +4009,31 @@ type UpdateBudgetPolicyRequest struct {
 	// unique.
 	// Wire name: 'policy_id'
 	PolicyId string `tf:"-"`
+}
+
+func (st UpdateBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateBudgetPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.UpdateBudgetPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateBudgetPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateBudgetPolicyRequestToPb(st *UpdateBudgetPolicyRequest) (*billingpb.UpdateBudgetPolicyRequestPb, error) {
@@ -3146,6 +4096,31 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// configuration that is no longer needed.
 	// Wire name: 'status'
 	Status LogDeliveryConfigStatus ``
+}
+
+func (st UpdateLogDeliveryConfigurationStatusRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateLogDeliveryConfigurationStatusRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateLogDeliveryConfigurationStatusRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.UpdateLogDeliveryConfigurationStatusRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateLogDeliveryConfigurationStatusRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func UpdateLogDeliveryConfigurationStatusRequestToPb(st *UpdateLogDeliveryConfigurationStatusRequest) (*billingpb.UpdateLogDeliveryConfigurationStatusRequestPb, error) {
@@ -3242,6 +4217,31 @@ type WrappedCreateLogDeliveryConfiguration struct {
 	LogDeliveryConfiguration CreateLogDeliveryConfigurationParams ``
 }
 
+func (st WrappedCreateLogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := WrappedCreateLogDeliveryConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *WrappedCreateLogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.WrappedCreateLogDeliveryConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WrappedCreateLogDeliveryConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
 func WrappedCreateLogDeliveryConfigurationToPb(st *WrappedCreateLogDeliveryConfiguration) (*billingpb.WrappedCreateLogDeliveryConfigurationPb, error) {
 	if st == nil {
 		return nil, nil
@@ -3278,6 +4278,31 @@ type WrappedLogDeliveryConfiguration struct {
 	// The created log delivery configuration
 	// Wire name: 'log_delivery_configuration'
 	LogDeliveryConfiguration *LogDeliveryConfiguration ``
+}
+
+func (st WrappedLogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := WrappedLogDeliveryConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *WrappedLogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.WrappedLogDeliveryConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WrappedLogDeliveryConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WrappedLogDeliveryConfigurationToPb(st *WrappedLogDeliveryConfiguration) (*billingpb.WrappedLogDeliveryConfigurationPb, error) {
@@ -3323,12 +4348,29 @@ type WrappedLogDeliveryConfigurations struct {
 	ForceSendFields []string `tf:"-"`
 }
 
-func (s *WrappedLogDeliveryConfigurations) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st WrappedLogDeliveryConfigurations) MarshalJSON() ([]byte, error) {
+	pb, err := WrappedLogDeliveryConfigurationsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s WrappedLogDeliveryConfigurations) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *WrappedLogDeliveryConfigurations) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &billingpb.WrappedLogDeliveryConfigurationsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WrappedLogDeliveryConfigurationsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func WrappedLogDeliveryConfigurationsToPb(st *WrappedLogDeliveryConfigurations) (*billingpb.WrappedLogDeliveryConfigurationsPb, error) {
@@ -3350,7 +4392,9 @@ func WrappedLogDeliveryConfigurationsToPb(st *WrappedLogDeliveryConfigurations) 
 	pb.LogDeliveryConfigurations = logDeliveryConfigurationsPb
 	pb.NextPageToken = st.NextPageToken
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -3373,7 +4417,9 @@ func WrappedLogDeliveryConfigurationsFromPb(pb *billingpb.WrappedLogDeliveryConf
 	st.LogDeliveryConfigurations = logDeliveryConfigurationsField
 	st.NextPageToken = pb.NextPageToken
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 

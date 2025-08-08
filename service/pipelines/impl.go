@@ -35,9 +35,12 @@ func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*Cr
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createPipelineResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreatePipelineResponseFromPb(&createPipelineResponsePb)
 	if err != nil {
 		return nil, err
@@ -61,9 +64,12 @@ func (a *pipelinesImpl) Delete(ctx context.Context, request DeletePipelineReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -84,9 +90,12 @@ func (a *pipelinesImpl) Get(ctx context.Context, request GetPipelineRequest) (*G
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getPipelineResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetPipelineResponseFromPb(&getPipelineResponsePb)
 	if err != nil {
 		return nil, err
@@ -111,9 +120,12 @@ func (a *pipelinesImpl) GetPermissionLevels(ctx context.Context, request GetPipe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getPipelinePermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetPipelinePermissionLevelsResponseFromPb(&getPipelinePermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -138,9 +150,12 @@ func (a *pipelinesImpl) GetPermissions(ctx context.Context, request GetPipelineP
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&pipelinePermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PipelinePermissionsFromPb(&pipelinePermissionsPb)
 	if err != nil {
 		return nil, err
@@ -165,9 +180,12 @@ func (a *pipelinesImpl) GetUpdate(ctx context.Context, request GetUpdateRequest)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getUpdateResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetUpdateResponseFromPb(&getUpdateResponsePb)
 	if err != nil {
 		return nil, err
@@ -223,7 +241,7 @@ func (a *pipelinesImpl) internalListPipelineEvents(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listPipelineEventsResponsePb,
 	)
 	if err != nil {
@@ -284,7 +302,7 @@ func (a *pipelinesImpl) internalListPipelines(ctx context.Context, request ListP
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listPipelinesResponsePb,
 	)
 	if err != nil {
@@ -314,9 +332,12 @@ func (a *pipelinesImpl) ListUpdates(ctx context.Context, request ListUpdatesRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listUpdatesResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ListUpdatesResponseFromPb(&listUpdatesResponsePb)
 	if err != nil {
 		return nil, err
@@ -342,9 +363,12 @@ func (a *pipelinesImpl) SetPermissions(ctx context.Context, request PipelinePerm
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&pipelinePermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PipelinePermissionsFromPb(&pipelinePermissionsPb)
 	if err != nil {
 		return nil, err
@@ -370,9 +394,12 @@ func (a *pipelinesImpl) StartUpdate(ctx context.Context, request StartUpdate) (*
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&startUpdateResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := StartUpdateResponseFromPb(&startUpdateResponsePb)
 	if err != nil {
 		return nil, err
@@ -395,6 +422,9 @@ func (a *pipelinesImpl) Stop(ctx context.Context, request StopRequest) error {
 		nil,
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -415,9 +445,12 @@ func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) error 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -439,9 +472,12 @@ func (a *pipelinesImpl) UpdatePermissions(ctx context.Context, request PipelineP
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&pipelinePermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PipelinePermissionsFromPb(&pipelinePermissionsPb)
 	if err != nil {
 		return nil, err

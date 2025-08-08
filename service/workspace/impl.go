@@ -35,9 +35,12 @@ func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentia
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createCredentialsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateCredentialsResponseFromPb(&createCredentialsResponsePb)
 	if err != nil {
 		return nil, err
@@ -61,9 +64,12 @@ func (a *gitCredentialsImpl) Delete(ctx context.Context, request DeleteCredentia
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -84,9 +90,12 @@ func (a *gitCredentialsImpl) Get(ctx context.Context, request GetCredentialsRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getCredentialsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetCredentialsResponseFromPb(&getCredentialsResponsePb)
 	if err != nil {
 		return nil, err
@@ -165,9 +174,12 @@ func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentia
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -194,9 +206,12 @@ func (a *reposImpl) Create(ctx context.Context, request CreateRepoRequest) (*Cre
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createRepoResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateRepoResponseFromPb(&createRepoResponsePb)
 	if err != nil {
 		return nil, err
@@ -220,9 +235,12 @@ func (a *reposImpl) Delete(ctx context.Context, request DeleteRepoRequest) error
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -243,9 +261,12 @@ func (a *reposImpl) Get(ctx context.Context, request GetRepoRequest) (*GetRepoRe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getRepoResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetRepoResponseFromPb(&getRepoResponsePb)
 	if err != nil {
 		return nil, err
@@ -270,9 +291,12 @@ func (a *reposImpl) GetPermissionLevels(ctx context.Context, request GetRepoPerm
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getRepoPermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetRepoPermissionLevelsResponseFromPb(&getRepoPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -297,9 +321,12 @@ func (a *reposImpl) GetPermissions(ctx context.Context, request GetRepoPermissio
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&repoPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RepoPermissionsFromPb(&repoPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -357,7 +384,7 @@ func (a *reposImpl) internalList(ctx context.Context, request ListReposRequest) 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listReposResponsePb,
 	)
 	if err != nil {
@@ -388,9 +415,12 @@ func (a *reposImpl) SetPermissions(ctx context.Context, request RepoPermissionsR
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&repoPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RepoPermissionsFromPb(&repoPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -415,9 +445,12 @@ func (a *reposImpl) Update(ctx context.Context, request UpdateRepoRequest) error
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -439,9 +472,12 @@ func (a *reposImpl) UpdatePermissions(ctx context.Context, request RepoPermissio
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&repoPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RepoPermissionsFromPb(&repoPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -470,9 +506,12 @@ func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) erro
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -492,9 +531,12 @@ func (a *secretsImpl) DeleteAcl(ctx context.Context, request DeleteAcl) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -514,9 +556,12 @@ func (a *secretsImpl) DeleteScope(ctx context.Context, request DeleteScope) erro
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -537,9 +582,12 @@ func (a *secretsImpl) DeleteSecret(ctx context.Context, request DeleteSecret) er
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -560,9 +608,12 @@ func (a *secretsImpl) GetAcl(ctx context.Context, request GetAclRequest) (*AclIt
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&aclItemPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AclItemFromPb(&aclItemPb)
 	if err != nil {
 		return nil, err
@@ -587,9 +638,12 @@ func (a *secretsImpl) GetSecret(ctx context.Context, request GetSecretRequest) (
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getSecretResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetSecretResponseFromPb(&getSecretResponsePb)
 	if err != nil {
 		return nil, err
@@ -665,7 +719,7 @@ func (a *secretsImpl) internalListAcls(ctx context.Context, request ListAclsRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listAclsResponsePb,
 	)
 	if err != nil {
@@ -824,7 +878,7 @@ func (a *secretsImpl) internalListSecrets(ctx context.Context, request ListSecre
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listSecretsResponsePb,
 	)
 	if err != nil {
@@ -853,9 +907,12 @@ func (a *secretsImpl) PutAcl(ctx context.Context, request PutAcl) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -875,9 +932,12 @@ func (a *secretsImpl) PutSecret(ctx context.Context, request PutSecret) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -903,9 +963,12 @@ func (a *workspaceImpl) Delete(ctx context.Context, request Delete) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -926,9 +989,12 @@ func (a *workspaceImpl) Export(ctx context.Context, request ExportRequest) (*Exp
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&exportResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExportResponseFromPb(&exportResponsePb)
 	if err != nil {
 		return nil, err
@@ -953,9 +1019,12 @@ func (a *workspaceImpl) GetPermissionLevels(ctx context.Context, request GetWork
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getWorkspaceObjectPermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetWorkspaceObjectPermissionLevelsResponseFromPb(&getWorkspaceObjectPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -980,9 +1049,12 @@ func (a *workspaceImpl) GetPermissions(ctx context.Context, request GetWorkspace
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&workspaceObjectPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WorkspaceObjectPermissionsFromPb(&workspaceObjectPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1007,9 +1079,12 @@ func (a *workspaceImpl) GetStatus(ctx context.Context, request GetStatusRequest)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&objectInfoPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ObjectInfoFromPb(&objectInfoPb)
 	if err != nil {
 		return nil, err
@@ -1034,9 +1109,12 @@ func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1086,7 +1164,7 @@ func (a *workspaceImpl) internalList(ctx context.Context, request ListWorkspaceR
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listResponsePb,
 	)
 	if err != nil {
@@ -1116,9 +1194,12 @@ func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1140,9 +1221,12 @@ func (a *workspaceImpl) SetPermissions(ctx context.Context, request WorkspaceObj
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&workspaceObjectPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WorkspaceObjectPermissionsFromPb(&workspaceObjectPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -1168,9 +1252,12 @@ func (a *workspaceImpl) UpdatePermissions(ctx context.Context, request Workspace
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&workspaceObjectPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WorkspaceObjectPermissionsFromPb(&workspaceObjectPermissionsPb)
 	if err != nil {
 		return nil, err

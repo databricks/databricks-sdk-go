@@ -33,9 +33,12 @@ func (a *jobsImpl) CancelAllRuns(ctx context.Context, request CancelAllRuns) err
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -55,9 +58,12 @@ func (a *jobsImpl) CancelRun(ctx context.Context, request CancelRun) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -79,9 +85,12 @@ func (a *jobsImpl) Create(ctx context.Context, request CreateJob) (*CreateRespon
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateResponseFromPb(&createResponsePb)
 	if err != nil {
 		return nil, err
@@ -105,9 +114,12 @@ func (a *jobsImpl) Delete(ctx context.Context, request DeleteJob) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -127,9 +139,12 @@ func (a *jobsImpl) DeleteRun(ctx context.Context, request DeleteRun) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -150,9 +165,12 @@ func (a *jobsImpl) ExportRun(ctx context.Context, request ExportRunRequest) (*Ex
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&exportRunOutputPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExportRunOutputFromPb(&exportRunOutputPb)
 	if err != nil {
 		return nil, err
@@ -177,9 +195,12 @@ func (a *jobsImpl) Get(ctx context.Context, request GetJobRequest) (*Job, error)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&jobPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := JobFromPb(&jobPb)
 	if err != nil {
 		return nil, err
@@ -204,9 +225,12 @@ func (a *jobsImpl) GetPermissionLevels(ctx context.Context, request GetJobPermis
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getJobPermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetJobPermissionLevelsResponseFromPb(&getJobPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -231,9 +255,12 @@ func (a *jobsImpl) GetPermissions(ctx context.Context, request GetJobPermissions
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&jobPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := JobPermissionsFromPb(&jobPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -258,9 +285,12 @@ func (a *jobsImpl) GetRun(ctx context.Context, request GetRunRequest) (*Run, err
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&runPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RunFromPb(&runPb)
 	if err != nil {
 		return nil, err
@@ -285,9 +315,12 @@ func (a *jobsImpl) GetRunOutput(ctx context.Context, request GetRunOutputRequest
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&runOutputPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RunOutputFromPb(&runOutputPb)
 	if err != nil {
 		return nil, err
@@ -343,7 +376,7 @@ func (a *jobsImpl) internalList(ctx context.Context, request ListJobsRequest) (*
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listJobsResponsePb,
 	)
 	if err != nil {
@@ -404,7 +437,7 @@ func (a *jobsImpl) internalListRuns(ctx context.Context, request ListRunsRequest
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listRunsResponsePb,
 	)
 	if err != nil {
@@ -435,9 +468,12 @@ func (a *jobsImpl) RepairRun(ctx context.Context, request RepairRun) (*RepairRun
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&repairRunResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RepairRunResponseFromPb(&repairRunResponsePb)
 	if err != nil {
 		return nil, err
@@ -461,9 +497,12 @@ func (a *jobsImpl) Reset(ctx context.Context, request ResetJob) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -485,9 +524,12 @@ func (a *jobsImpl) RunNow(ctx context.Context, request RunNow) (*RunNowResponse,
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&runNowResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RunNowResponseFromPb(&runNowResponsePb)
 	if err != nil {
 		return nil, err
@@ -513,9 +555,12 @@ func (a *jobsImpl) SetPermissions(ctx context.Context, request JobPermissionsReq
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&jobPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := JobPermissionsFromPb(&jobPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -541,9 +586,12 @@ func (a *jobsImpl) Submit(ctx context.Context, request SubmitRun) (*SubmitRunRes
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&submitRunResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := SubmitRunResponseFromPb(&submitRunResponsePb)
 	if err != nil {
 		return nil, err
@@ -567,9 +615,12 @@ func (a *jobsImpl) Update(ctx context.Context, request UpdateJob) error {
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -591,9 +642,12 @@ func (a *jobsImpl) UpdatePermissions(ctx context.Context, request JobPermissions
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&jobPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := JobPermissionsFromPb(&jobPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -624,9 +678,12 @@ func (a *policyComplianceForJobsImpl) EnforceCompliance(ctx context.Context, req
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&enforcePolicyComplianceResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EnforcePolicyComplianceResponseFromPb(&enforcePolicyComplianceResponsePb)
 	if err != nil {
 		return nil, err
@@ -651,9 +708,12 @@ func (a *policyComplianceForJobsImpl) GetCompliance(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getPolicyComplianceResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetPolicyComplianceResponseFromPb(&getPolicyComplianceResponsePb)
 	if err != nil {
 		return nil, err
@@ -715,7 +775,7 @@ func (a *policyComplianceForJobsImpl) internalListCompliance(ctx context.Context
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listJobComplianceForPolicyResponsePb,
 	)
 	if err != nil {

@@ -34,9 +34,12 @@ func (a *billableUsageImpl) Download(ctx context.Context, request DownloadReques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&downloadResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DownloadResponseFromPb(&downloadResponsePb)
 	if err != nil {
 		return nil, err
@@ -67,9 +70,12 @@ func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolic
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&budgetPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := BudgetPolicyFromPb(&budgetPolicyPb)
 	if err != nil {
 		return nil, err
@@ -93,9 +99,12 @@ func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolic
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -116,9 +125,12 @@ func (a *budgetPolicyImpl) Get(ctx context.Context, request GetBudgetPolicyReque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&budgetPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := BudgetPolicyFromPb(&budgetPolicyPb)
 	if err != nil {
 		return nil, err
@@ -176,7 +188,7 @@ func (a *budgetPolicyImpl) internalList(ctx context.Context, request ListBudgetP
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listBudgetPoliciesResponsePb,
 	)
 	if err != nil {
@@ -210,9 +222,12 @@ func (a *budgetPolicyImpl) Update(ctx context.Context, request UpdateBudgetPolic
 		path,
 		headers,
 		queryParams,
-		requestPb.Policy,
+		(*requestPb).Policy,
 		&budgetPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := BudgetPolicyFromPb(&budgetPolicyPb)
 	if err != nil {
 		return nil, err
@@ -243,9 +258,12 @@ func (a *budgetsImpl) Create(ctx context.Context, request CreateBudgetConfigurat
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createBudgetConfigurationResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateBudgetConfigurationResponseFromPb(&createBudgetConfigurationResponsePb)
 	if err != nil {
 		return nil, err
@@ -269,9 +287,12 @@ func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurat
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -292,9 +313,12 @@ func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetConfigurationReq
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getBudgetConfigurationResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetBudgetConfigurationResponseFromPb(&getBudgetConfigurationResponsePb)
 	if err != nil {
 		return nil, err
@@ -350,7 +374,7 @@ func (a *budgetsImpl) internalList(ctx context.Context, request ListBudgetConfig
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listBudgetConfigurationsResponsePb,
 	)
 	if err != nil {
@@ -381,9 +405,12 @@ func (a *budgetsImpl) Update(ctx context.Context, request UpdateBudgetConfigurat
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&updateBudgetConfigurationResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := UpdateBudgetConfigurationResponseFromPb(&updateBudgetConfigurationResponsePb)
 	if err != nil {
 		return nil, err
@@ -414,9 +441,12 @@ func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&wrappedLogDeliveryConfigurationPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WrappedLogDeliveryConfigurationFromPb(&wrappedLogDeliveryConfigurationPb)
 	if err != nil {
 		return nil, err
@@ -441,9 +471,12 @@ func (a *logDeliveryImpl) Get(ctx context.Context, request GetLogDeliveryRequest
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getLogDeliveryConfigurationResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetLogDeliveryConfigurationResponseFromPb(&getLogDeliveryConfigurationResponsePb)
 	if err != nil {
 		return nil, err
@@ -501,7 +534,7 @@ func (a *logDeliveryImpl) internalList(ctx context.Context, request ListLogDeliv
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&wrappedLogDeliveryConfigurationsPb,
 	)
 	if err != nil {
@@ -531,9 +564,12 @@ func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeli
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -560,9 +596,12 @@ func (a *usageDashboardsImpl) Create(ctx context.Context, request CreateBillingU
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createBillingUsageDashboardResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateBillingUsageDashboardResponseFromPb(&createBillingUsageDashboardResponsePb)
 	if err != nil {
 		return nil, err
@@ -587,9 +626,12 @@ func (a *usageDashboardsImpl) Get(ctx context.Context, request GetBillingUsageDa
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getBillingUsageDashboardResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetBillingUsageDashboardResponseFromPb(&getBillingUsageDashboardResponsePb)
 	if err != nil {
 		return nil, err

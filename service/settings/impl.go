@@ -35,9 +35,12 @@ func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpA
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createIpAccessListResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateIpAccessListResponseFromPb(&createIpAccessListResponsePb)
 	if err != nil {
 		return nil, err
@@ -60,9 +63,12 @@ func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAcc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -83,9 +89,12 @@ func (a *accountIpAccessListsImpl) Get(ctx context.Context, request GetAccountIp
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getIpAccessListResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetIpAccessListResponseFromPb(&getIpAccessListResponsePb)
 	if err != nil {
 		return nil, err
@@ -161,9 +170,12 @@ func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceI
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -183,9 +195,12 @@ func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpA
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -216,9 +231,12 @@ func (a *aibiDashboardEmbeddingAccessPolicyImpl) Delete(ctx context.Context, req
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteAibiDashboardEmbeddingAccessPolicySettingResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteAibiDashboardEmbeddingAccessPolicySettingResponseFromPb(&deleteAibiDashboardEmbeddingAccessPolicySettingResponsePb)
 	if err != nil {
 		return nil, err
@@ -243,9 +261,12 @@ func (a *aibiDashboardEmbeddingAccessPolicyImpl) Get(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&aibiDashboardEmbeddingAccessPolicySettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AibiDashboardEmbeddingAccessPolicySettingFromPb(&aibiDashboardEmbeddingAccessPolicySettingPb)
 	if err != nil {
 		return nil, err
@@ -271,9 +292,12 @@ func (a *aibiDashboardEmbeddingAccessPolicyImpl) Update(ctx context.Context, req
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&aibiDashboardEmbeddingAccessPolicySettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AibiDashboardEmbeddingAccessPolicySettingFromPb(&aibiDashboardEmbeddingAccessPolicySettingPb)
 	if err != nil {
 		return nil, err
@@ -303,9 +327,12 @@ func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Delete(ctx context.Context, 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponseFromPb(&deleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb)
 	if err != nil {
 		return nil, err
@@ -330,9 +357,12 @@ func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Get(ctx context.Context, req
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&aibiDashboardEmbeddingApprovedDomainsSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AibiDashboardEmbeddingApprovedDomainsSettingFromPb(&aibiDashboardEmbeddingApprovedDomainsSettingPb)
 	if err != nil {
 		return nil, err
@@ -358,9 +388,12 @@ func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Update(ctx context.Context, 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&aibiDashboardEmbeddingApprovedDomainsSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AibiDashboardEmbeddingApprovedDomainsSettingFromPb(&aibiDashboardEmbeddingApprovedDomainsSettingPb)
 	if err != nil {
 		return nil, err
@@ -390,9 +423,12 @@ func (a *automaticClusterUpdateImpl) Get(ctx context.Context, request GetAutomat
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&automaticClusterUpdateSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AutomaticClusterUpdateSettingFromPb(&automaticClusterUpdateSettingPb)
 	if err != nil {
 		return nil, err
@@ -418,9 +454,12 @@ func (a *automaticClusterUpdateImpl) Update(ctx context.Context, request UpdateA
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&automaticClusterUpdateSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AutomaticClusterUpdateSettingFromPb(&automaticClusterUpdateSettingPb)
 	if err != nil {
 		return nil, err
@@ -450,9 +489,12 @@ func (a *complianceSecurityProfileImpl) Get(ctx context.Context, request GetComp
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&complianceSecurityProfileSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ComplianceSecurityProfileSettingFromPb(&complianceSecurityProfileSettingPb)
 	if err != nil {
 		return nil, err
@@ -478,9 +520,12 @@ func (a *complianceSecurityProfileImpl) Update(ctx context.Context, request Upda
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&complianceSecurityProfileSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ComplianceSecurityProfileSettingFromPb(&complianceSecurityProfileSettingPb)
 	if err != nil {
 		return nil, err
@@ -511,9 +556,12 @@ func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request Exch
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&exchangeTokenResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ExchangeTokenResponseFromPb(&exchangeTokenResponsePb)
 	if err != nil {
 		return nil, err
@@ -543,9 +591,12 @@ func (a *cspEnablementAccountImpl) Get(ctx context.Context, request GetCspEnable
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&cspEnablementAccountSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CspEnablementAccountSettingFromPb(&cspEnablementAccountSettingPb)
 	if err != nil {
 		return nil, err
@@ -571,9 +622,12 @@ func (a *cspEnablementAccountImpl) Update(ctx context.Context, request UpdateCsp
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&cspEnablementAccountSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CspEnablementAccountSettingFromPb(&cspEnablementAccountSettingPb)
 	if err != nil {
 		return nil, err
@@ -603,9 +657,12 @@ func (a *dashboardEmailSubscriptionsImpl) Delete(ctx context.Context, request De
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteDashboardEmailSubscriptionsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteDashboardEmailSubscriptionsResponseFromPb(&deleteDashboardEmailSubscriptionsResponsePb)
 	if err != nil {
 		return nil, err
@@ -630,9 +687,12 @@ func (a *dashboardEmailSubscriptionsImpl) Get(ctx context.Context, request GetDa
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&dashboardEmailSubscriptionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DashboardEmailSubscriptionsFromPb(&dashboardEmailSubscriptionsPb)
 	if err != nil {
 		return nil, err
@@ -658,9 +718,12 @@ func (a *dashboardEmailSubscriptionsImpl) Update(ctx context.Context, request Up
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&dashboardEmailSubscriptionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DashboardEmailSubscriptionsFromPb(&dashboardEmailSubscriptionsPb)
 	if err != nil {
 		return nil, err
@@ -690,9 +753,12 @@ func (a *defaultNamespaceImpl) Delete(ctx context.Context, request DeleteDefault
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteDefaultNamespaceSettingResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteDefaultNamespaceSettingResponseFromPb(&deleteDefaultNamespaceSettingResponsePb)
 	if err != nil {
 		return nil, err
@@ -717,9 +783,12 @@ func (a *defaultNamespaceImpl) Get(ctx context.Context, request GetDefaultNamesp
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&defaultNamespaceSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DefaultNamespaceSettingFromPb(&defaultNamespaceSettingPb)
 	if err != nil {
 		return nil, err
@@ -745,9 +814,12 @@ func (a *defaultNamespaceImpl) Update(ctx context.Context, request UpdateDefault
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&defaultNamespaceSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DefaultNamespaceSettingFromPb(&defaultNamespaceSettingPb)
 	if err != nil {
 		return nil, err
@@ -777,9 +849,12 @@ func (a *defaultWarehouseIdImpl) Delete(ctx context.Context, request DeleteDefau
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteDefaultWarehouseIdResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteDefaultWarehouseIdResponseFromPb(&deleteDefaultWarehouseIdResponsePb)
 	if err != nil {
 		return nil, err
@@ -804,9 +879,12 @@ func (a *defaultWarehouseIdImpl) Get(ctx context.Context, request GetDefaultWare
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&defaultWarehouseIdPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DefaultWarehouseIdFromPb(&defaultWarehouseIdPb)
 	if err != nil {
 		return nil, err
@@ -832,9 +910,12 @@ func (a *defaultWarehouseIdImpl) Update(ctx context.Context, request UpdateDefau
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&defaultWarehouseIdPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DefaultWarehouseIdFromPb(&defaultWarehouseIdPb)
 	if err != nil {
 		return nil, err
@@ -864,9 +945,12 @@ func (a *disableLegacyAccessImpl) Delete(ctx context.Context, request DeleteDisa
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteDisableLegacyAccessResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteDisableLegacyAccessResponseFromPb(&deleteDisableLegacyAccessResponsePb)
 	if err != nil {
 		return nil, err
@@ -891,9 +975,12 @@ func (a *disableLegacyAccessImpl) Get(ctx context.Context, request GetDisableLeg
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&disableLegacyAccessPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DisableLegacyAccessFromPb(&disableLegacyAccessPb)
 	if err != nil {
 		return nil, err
@@ -919,9 +1006,12 @@ func (a *disableLegacyAccessImpl) Update(ctx context.Context, request UpdateDisa
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&disableLegacyAccessPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DisableLegacyAccessFromPb(&disableLegacyAccessPb)
 	if err != nil {
 		return nil, err
@@ -951,9 +1041,12 @@ func (a *disableLegacyDbfsImpl) Delete(ctx context.Context, request DeleteDisabl
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteDisableLegacyDbfsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteDisableLegacyDbfsResponseFromPb(&deleteDisableLegacyDbfsResponsePb)
 	if err != nil {
 		return nil, err
@@ -978,9 +1071,12 @@ func (a *disableLegacyDbfsImpl) Get(ctx context.Context, request GetDisableLegac
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&disableLegacyDbfsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DisableLegacyDbfsFromPb(&disableLegacyDbfsPb)
 	if err != nil {
 		return nil, err
@@ -1006,9 +1102,12 @@ func (a *disableLegacyDbfsImpl) Update(ctx context.Context, request UpdateDisabl
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&disableLegacyDbfsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DisableLegacyDbfsFromPb(&disableLegacyDbfsPb)
 	if err != nil {
 		return nil, err
@@ -1038,9 +1137,12 @@ func (a *disableLegacyFeaturesImpl) Delete(ctx context.Context, request DeleteDi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteDisableLegacyFeaturesResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteDisableLegacyFeaturesResponseFromPb(&deleteDisableLegacyFeaturesResponsePb)
 	if err != nil {
 		return nil, err
@@ -1065,9 +1167,12 @@ func (a *disableLegacyFeaturesImpl) Get(ctx context.Context, request GetDisableL
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&disableLegacyFeaturesPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DisableLegacyFeaturesFromPb(&disableLegacyFeaturesPb)
 	if err != nil {
 		return nil, err
@@ -1093,9 +1198,12 @@ func (a *disableLegacyFeaturesImpl) Update(ctx context.Context, request UpdateDi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&disableLegacyFeaturesPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DisableLegacyFeaturesFromPb(&disableLegacyFeaturesPb)
 	if err != nil {
 		return nil, err
@@ -1124,6 +1232,9 @@ func (a *enableExportNotebookImpl) GetEnableExportNotebook(ctx context.Context) 
 		nil,
 		&enableExportNotebookPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EnableExportNotebookFromPb(&enableExportNotebookPb)
 	if err != nil {
 		return nil, err
@@ -1149,9 +1260,12 @@ func (a *enableExportNotebookImpl) PatchEnableExportNotebook(ctx context.Context
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&enableExportNotebookPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EnableExportNotebookFromPb(&enableExportNotebookPb)
 	if err != nil {
 		return nil, err
@@ -1181,9 +1295,12 @@ func (a *enableIpAccessListsImpl) Delete(ctx context.Context, request DeleteAcco
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteAccountIpAccessEnableResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteAccountIpAccessEnableResponseFromPb(&deleteAccountIpAccessEnableResponsePb)
 	if err != nil {
 		return nil, err
@@ -1208,9 +1325,12 @@ func (a *enableIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpA
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&accountIpAccessEnablePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AccountIpAccessEnableFromPb(&accountIpAccessEnablePb)
 	if err != nil {
 		return nil, err
@@ -1236,9 +1356,12 @@ func (a *enableIpAccessListsImpl) Update(ctx context.Context, request UpdateAcco
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&accountIpAccessEnablePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AccountIpAccessEnableFromPb(&accountIpAccessEnablePb)
 	if err != nil {
 		return nil, err
@@ -1267,6 +1390,9 @@ func (a *enableNotebookTableClipboardImpl) GetEnableNotebookTableClipboard(ctx c
 		nil,
 		&enableNotebookTableClipboardPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EnableNotebookTableClipboardFromPb(&enableNotebookTableClipboardPb)
 	if err != nil {
 		return nil, err
@@ -1292,9 +1418,12 @@ func (a *enableNotebookTableClipboardImpl) PatchEnableNotebookTableClipboard(ctx
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&enableNotebookTableClipboardPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EnableNotebookTableClipboardFromPb(&enableNotebookTableClipboardPb)
 	if err != nil {
 		return nil, err
@@ -1323,6 +1452,9 @@ func (a *enableResultsDownloadingImpl) GetEnableResultsDownloading(ctx context.C
 		nil,
 		&enableResultsDownloadingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EnableResultsDownloadingFromPb(&enableResultsDownloadingPb)
 	if err != nil {
 		return nil, err
@@ -1348,9 +1480,12 @@ func (a *enableResultsDownloadingImpl) PatchEnableResultsDownloading(ctx context
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&enableResultsDownloadingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EnableResultsDownloadingFromPb(&enableResultsDownloadingPb)
 	if err != nil {
 		return nil, err
@@ -1380,9 +1515,12 @@ func (a *enhancedSecurityMonitoringImpl) Get(ctx context.Context, request GetEnh
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&enhancedSecurityMonitoringSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EnhancedSecurityMonitoringSettingFromPb(&enhancedSecurityMonitoringSettingPb)
 	if err != nil {
 		return nil, err
@@ -1408,9 +1546,12 @@ func (a *enhancedSecurityMonitoringImpl) Update(ctx context.Context, request Upd
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&enhancedSecurityMonitoringSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EnhancedSecurityMonitoringSettingFromPb(&enhancedSecurityMonitoringSettingPb)
 	if err != nil {
 		return nil, err
@@ -1440,9 +1581,12 @@ func (a *esmEnablementAccountImpl) Get(ctx context.Context, request GetEsmEnable
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&esmEnablementAccountSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EsmEnablementAccountSettingFromPb(&esmEnablementAccountSettingPb)
 	if err != nil {
 		return nil, err
@@ -1468,9 +1612,12 @@ func (a *esmEnablementAccountImpl) Update(ctx context.Context, request UpdateEsm
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&esmEnablementAccountSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := EsmEnablementAccountSettingFromPb(&esmEnablementAccountSettingPb)
 	if err != nil {
 		return nil, err
@@ -1501,9 +1648,12 @@ func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessLi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createIpAccessListResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateIpAccessListResponseFromPb(&createIpAccessListResponsePb)
 	if err != nil {
 		return nil, err
@@ -1526,9 +1676,12 @@ func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteIpAccessLi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1549,9 +1702,12 @@ func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessListRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&fetchIpAccessListResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := FetchIpAccessListResponseFromPb(&fetchIpAccessListResponsePb)
 	if err != nil {
 		return nil, err
@@ -1627,9 +1783,12 @@ func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccess
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1649,9 +1808,12 @@ func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessLi
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1677,9 +1839,12 @@ func (a *llmProxyPartnerPoweredAccountImpl) Get(ctx context.Context, request Get
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&llmProxyPartnerPoweredAccountPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := LlmProxyPartnerPoweredAccountFromPb(&llmProxyPartnerPoweredAccountPb)
 	if err != nil {
 		return nil, err
@@ -1705,9 +1870,12 @@ func (a *llmProxyPartnerPoweredAccountImpl) Update(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&llmProxyPartnerPoweredAccountPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := LlmProxyPartnerPoweredAccountFromPb(&llmProxyPartnerPoweredAccountPb)
 	if err != nil {
 		return nil, err
@@ -1737,9 +1905,12 @@ func (a *llmProxyPartnerPoweredEnforceImpl) Get(ctx context.Context, request Get
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&llmProxyPartnerPoweredEnforcePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := LlmProxyPartnerPoweredEnforceFromPb(&llmProxyPartnerPoweredEnforcePb)
 	if err != nil {
 		return nil, err
@@ -1765,9 +1936,12 @@ func (a *llmProxyPartnerPoweredEnforceImpl) Update(ctx context.Context, request 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&llmProxyPartnerPoweredEnforcePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := LlmProxyPartnerPoweredEnforceFromPb(&llmProxyPartnerPoweredEnforcePb)
 	if err != nil {
 		return nil, err
@@ -1797,9 +1971,12 @@ func (a *llmProxyPartnerPoweredWorkspaceImpl) Delete(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteLlmProxyPartnerPoweredWorkspaceResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteLlmProxyPartnerPoweredWorkspaceResponseFromPb(&deleteLlmProxyPartnerPoweredWorkspaceResponsePb)
 	if err != nil {
 		return nil, err
@@ -1824,9 +2001,12 @@ func (a *llmProxyPartnerPoweredWorkspaceImpl) Get(ctx context.Context, request G
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&llmProxyPartnerPoweredWorkspacePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := LlmProxyPartnerPoweredWorkspaceFromPb(&llmProxyPartnerPoweredWorkspacePb)
 	if err != nil {
 		return nil, err
@@ -1852,9 +2032,12 @@ func (a *llmProxyPartnerPoweredWorkspaceImpl) Update(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&llmProxyPartnerPoweredWorkspacePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := LlmProxyPartnerPoweredWorkspaceFromPb(&llmProxyPartnerPoweredWorkspacePb)
 	if err != nil {
 		return nil, err
@@ -1885,9 +2068,12 @@ func (a *networkConnectivityImpl) CreateNetworkConnectivityConfiguration(ctx con
 		path,
 		headers,
 		queryParams,
-		requestPb.NetworkConnectivityConfig,
+		(*requestPb).NetworkConnectivityConfig,
 		&networkConnectivityConfigurationPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := NetworkConnectivityConfigurationFromPb(&networkConnectivityConfigurationPb)
 	if err != nil {
 		return nil, err
@@ -1913,9 +2099,12 @@ func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context,
 		path,
 		headers,
 		queryParams,
-		requestPb.PrivateEndpointRule,
+		(*requestPb).PrivateEndpointRule,
 		&nccPrivateEndpointRulePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := NccPrivateEndpointRuleFromPb(&nccPrivateEndpointRulePb)
 	if err != nil {
 		return nil, err
@@ -1939,9 +2128,12 @@ func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx con
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -1962,9 +2154,12 @@ func (a *networkConnectivityImpl) DeletePrivateEndpointRule(ctx context.Context,
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&nccPrivateEndpointRulePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := NccPrivateEndpointRuleFromPb(&nccPrivateEndpointRulePb)
 	if err != nil {
 		return nil, err
@@ -1989,9 +2184,12 @@ func (a *networkConnectivityImpl) GetNetworkConnectivityConfiguration(ctx contex
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&networkConnectivityConfigurationPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := NetworkConnectivityConfigurationFromPb(&networkConnectivityConfigurationPb)
 	if err != nil {
 		return nil, err
@@ -2016,9 +2214,12 @@ func (a *networkConnectivityImpl) GetPrivateEndpointRule(ctx context.Context, re
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&nccPrivateEndpointRulePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := NccPrivateEndpointRuleFromPb(&nccPrivateEndpointRulePb)
 	if err != nil {
 		return nil, err
@@ -2074,7 +2275,7 @@ func (a *networkConnectivityImpl) internalListNetworkConnectivityConfigurations(
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listNetworkConnectivityConfigurationsResponsePb,
 	)
 	if err != nil {
@@ -2135,7 +2336,7 @@ func (a *networkConnectivityImpl) internalListPrivateEndpointRules(ctx context.C
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listPrivateEndpointRulesResponsePb,
 	)
 	if err != nil {
@@ -2169,9 +2370,12 @@ func (a *networkConnectivityImpl) UpdatePrivateEndpointRule(ctx context.Context,
 		path,
 		headers,
 		queryParams,
-		requestPb.PrivateEndpointRule,
+		(*requestPb).PrivateEndpointRule,
 		&nccPrivateEndpointRulePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := NccPrivateEndpointRuleFromPb(&nccPrivateEndpointRulePb)
 	if err != nil {
 		return nil, err
@@ -2202,9 +2406,12 @@ func (a *networkPoliciesImpl) CreateNetworkPolicyRpc(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb.NetworkPolicy,
+		(*requestPb).NetworkPolicy,
 		&accountNetworkPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AccountNetworkPolicyFromPb(&accountNetworkPolicyPb)
 	if err != nil {
 		return nil, err
@@ -2228,9 +2435,12 @@ func (a *networkPoliciesImpl) DeleteNetworkPolicyRpc(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2251,9 +2461,12 @@ func (a *networkPoliciesImpl) GetNetworkPolicyRpc(ctx context.Context, request G
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&accountNetworkPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AccountNetworkPolicyFromPb(&accountNetworkPolicyPb)
 	if err != nil {
 		return nil, err
@@ -2309,7 +2522,7 @@ func (a *networkPoliciesImpl) internalListNetworkPoliciesRpc(ctx context.Context
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listNetworkPoliciesResponsePb,
 	)
 	if err != nil {
@@ -2340,9 +2553,12 @@ func (a *networkPoliciesImpl) UpdateNetworkPolicyRpc(ctx context.Context, reques
 		path,
 		headers,
 		queryParams,
-		requestPb.NetworkPolicy,
+		(*requestPb).NetworkPolicy,
 		&accountNetworkPolicyPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := AccountNetworkPolicyFromPb(&accountNetworkPolicyPb)
 	if err != nil {
 		return nil, err
@@ -2373,9 +2589,12 @@ func (a *notificationDestinationsImpl) Create(ctx context.Context, request Creat
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&notificationDestinationPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := NotificationDestinationFromPb(&notificationDestinationPb)
 	if err != nil {
 		return nil, err
@@ -2399,9 +2618,12 @@ func (a *notificationDestinationsImpl) Delete(ctx context.Context, request Delet
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2422,9 +2644,12 @@ func (a *notificationDestinationsImpl) Get(ctx context.Context, request GetNotif
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&notificationDestinationPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := NotificationDestinationFromPb(&notificationDestinationPb)
 	if err != nil {
 		return nil, err
@@ -2480,7 +2705,7 @@ func (a *notificationDestinationsImpl) internalList(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listNotificationDestinationsResponsePb,
 	)
 	if err != nil {
@@ -2511,9 +2736,12 @@ func (a *notificationDestinationsImpl) Update(ctx context.Context, request Updat
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&notificationDestinationPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := NotificationDestinationFromPb(&notificationDestinationPb)
 	if err != nil {
 		return nil, err
@@ -2543,9 +2771,12 @@ func (a *personalComputeImpl) Delete(ctx context.Context, request DeletePersonal
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deletePersonalComputeSettingResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeletePersonalComputeSettingResponseFromPb(&deletePersonalComputeSettingResponsePb)
 	if err != nil {
 		return nil, err
@@ -2570,9 +2801,12 @@ func (a *personalComputeImpl) Get(ctx context.Context, request GetPersonalComput
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&personalComputeSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PersonalComputeSettingFromPb(&personalComputeSettingPb)
 	if err != nil {
 		return nil, err
@@ -2598,9 +2832,12 @@ func (a *personalComputeImpl) Update(ctx context.Context, request UpdatePersonal
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&personalComputeSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PersonalComputeSettingFromPb(&personalComputeSettingPb)
 	if err != nil {
 		return nil, err
@@ -2630,9 +2867,12 @@ func (a *restrictWorkspaceAdminsImpl) Delete(ctx context.Context, request Delete
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteRestrictWorkspaceAdminsSettingResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteRestrictWorkspaceAdminsSettingResponseFromPb(&deleteRestrictWorkspaceAdminsSettingResponsePb)
 	if err != nil {
 		return nil, err
@@ -2657,9 +2897,12 @@ func (a *restrictWorkspaceAdminsImpl) Get(ctx context.Context, request GetRestri
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&restrictWorkspaceAdminsSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RestrictWorkspaceAdminsSettingFromPb(&restrictWorkspaceAdminsSettingPb)
 	if err != nil {
 		return nil, err
@@ -2685,9 +2928,12 @@ func (a *restrictWorkspaceAdminsImpl) Update(ctx context.Context, request Update
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&restrictWorkspaceAdminsSettingPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := RestrictWorkspaceAdminsSettingFromPb(&restrictWorkspaceAdminsSettingPb)
 	if err != nil {
 		return nil, err
@@ -2722,9 +2968,12 @@ func (a *sqlResultsDownloadImpl) Delete(ctx context.Context, request DeleteSqlRe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&deleteSqlResultsDownloadResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DeleteSqlResultsDownloadResponseFromPb(&deleteSqlResultsDownloadResponsePb)
 	if err != nil {
 		return nil, err
@@ -2749,9 +2998,12 @@ func (a *sqlResultsDownloadImpl) Get(ctx context.Context, request GetSqlResultsD
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&sqlResultsDownloadPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := SqlResultsDownloadFromPb(&sqlResultsDownloadPb)
 	if err != nil {
 		return nil, err
@@ -2777,9 +3029,12 @@ func (a *sqlResultsDownloadImpl) Update(ctx context.Context, request UpdateSqlRe
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&sqlResultsDownloadPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := SqlResultsDownloadFromPb(&sqlResultsDownloadPb)
 	if err != nil {
 		return nil, err
@@ -2810,9 +3065,12 @@ func (a *tokenManagementImpl) CreateOboToken(ctx context.Context, request Create
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createOboTokenResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateOboTokenResponseFromPb(&createOboTokenResponsePb)
 	if err != nil {
 		return nil, err
@@ -2835,9 +3093,12 @@ func (a *tokenManagementImpl) Delete(ctx context.Context, request DeleteTokenMan
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -2858,9 +3119,12 @@ func (a *tokenManagementImpl) Get(ctx context.Context, request GetTokenManagemen
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getTokenResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetTokenResponseFromPb(&getTokenResponsePb)
 	if err != nil {
 		return nil, err
@@ -2884,6 +3148,9 @@ func (a *tokenManagementImpl) GetPermissionLevels(ctx context.Context) (*GetToke
 		nil,
 		&getTokenPermissionLevelsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetTokenPermissionLevelsResponseFromPb(&getTokenPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
@@ -2907,6 +3174,9 @@ func (a *tokenManagementImpl) GetPermissions(ctx context.Context) (*TokenPermiss
 		nil,
 		&tokenPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := TokenPermissionsFromPb(&tokenPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -2956,7 +3226,7 @@ func (a *tokenManagementImpl) internalList(ctx context.Context, request ListToke
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listTokensResponsePb,
 	)
 	if err != nil {
@@ -2987,9 +3257,12 @@ func (a *tokenManagementImpl) SetPermissions(ctx context.Context, request TokenP
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&tokenPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := TokenPermissionsFromPb(&tokenPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -3015,9 +3288,12 @@ func (a *tokenManagementImpl) UpdatePermissions(ctx context.Context, request Tok
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&tokenPermissionsPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := TokenPermissionsFromPb(&tokenPermissionsPb)
 	if err != nil {
 		return nil, err
@@ -3048,9 +3324,12 @@ func (a *tokensImpl) Create(ctx context.Context, request CreateTokenRequest) (*C
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&createTokenResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CreateTokenResponseFromPb(&createTokenResponsePb)
 	if err != nil {
 		return nil, err
@@ -3075,9 +3354,12 @@ func (a *tokensImpl) Delete(ctx context.Context, request RevokeTokenRequest) err
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -3155,9 +3437,12 @@ func (a *workspaceConfImpl) GetStatus(ctx context.Context, request GetStatusRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&workspaceConfPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp := &workspaceConfPb
 
 	return resp, err
@@ -3178,9 +3463,12 @@ func (a *workspaceConfImpl) SetStatus(ctx context.Context, request WorkspaceConf
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -3206,9 +3494,12 @@ func (a *workspaceNetworkConfigurationImpl) GetWorkspaceNetworkOptionRpc(ctx con
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&workspaceNetworkOptionPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WorkspaceNetworkOptionFromPb(&workspaceNetworkOptionPb)
 	if err != nil {
 		return nil, err
@@ -3234,9 +3525,12 @@ func (a *workspaceNetworkConfigurationImpl) UpdateWorkspaceNetworkOptionRpc(ctx 
 		path,
 		headers,
 		queryParams,
-		requestPb.WorkspaceNetworkOption,
+		(*requestPb).WorkspaceNetworkOption,
 		&workspaceNetworkOptionPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := WorkspaceNetworkOptionFromPb(&workspaceNetworkOptionPb)
 	if err != nil {
 		return nil, err

@@ -35,9 +35,12 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&genieMessagePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GenieMessageFromPb(&genieMessagePb)
 	if err != nil {
 		return nil, err
@@ -61,9 +64,12 @@ func (a *genieImpl) DeleteConversation(ctx context.Context, request GenieDeleteC
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -83,6 +89,9 @@ func (a *genieImpl) ExecuteMessageAttachmentQuery(ctx context.Context, request G
 		nil,
 		&genieGetMessageQueryResultResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GenieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
 	if err != nil {
 		return nil, err
@@ -106,6 +115,9 @@ func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecut
 		nil,
 		&genieGetMessageQueryResultResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GenieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
 	if err != nil {
 		return nil, err
@@ -130,9 +142,12 @@ func (a *genieImpl) GetMessage(ctx context.Context, request GenieGetConversation
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&genieMessagePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GenieMessageFromPb(&genieMessagePb)
 	if err != nil {
 		return nil, err
@@ -157,9 +172,12 @@ func (a *genieImpl) GetMessageAttachmentQueryResult(ctx context.Context, request
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&genieGetMessageQueryResultResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GenieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
 	if err != nil {
 		return nil, err
@@ -184,9 +202,12 @@ func (a *genieImpl) GetMessageQueryResult(ctx context.Context, request GenieGetM
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&genieGetMessageQueryResultResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GenieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
 	if err != nil {
 		return nil, err
@@ -211,9 +232,12 @@ func (a *genieImpl) GetMessageQueryResultByAttachment(ctx context.Context, reque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&genieGetMessageQueryResultResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GenieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
 	if err != nil {
 		return nil, err
@@ -238,9 +262,12 @@ func (a *genieImpl) GetSpace(ctx context.Context, request GenieGetSpaceRequest) 
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&genieSpacePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GenieSpaceFromPb(&genieSpacePb)
 	if err != nil {
 		return nil, err
@@ -265,9 +292,12 @@ func (a *genieImpl) ListConversations(ctx context.Context, request GenieListConv
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&genieListConversationsResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GenieListConversationsResponseFromPb(&genieListConversationsResponsePb)
 	if err != nil {
 		return nil, err
@@ -292,9 +322,12 @@ func (a *genieImpl) ListSpaces(ctx context.Context, request GenieListSpacesReque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&genieListSpacesResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GenieListSpacesResponseFromPb(&genieListSpacesResponsePb)
 	if err != nil {
 		return nil, err
@@ -320,9 +353,12 @@ func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartCon
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&genieStartConversationResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GenieStartConversationResponseFromPb(&genieStartConversationResponsePb)
 	if err != nil {
 		return nil, err
@@ -346,9 +382,12 @@ func (a *genieImpl) TrashSpace(ctx context.Context, request GenieTrashSpaceReque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -375,9 +414,12 @@ func (a *lakeviewImpl) Create(ctx context.Context, request CreateDashboardReques
 		path,
 		headers,
 		queryParams,
-		requestPb.Dashboard,
+		(*requestPb).Dashboard,
 		&dashboardPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DashboardFromPb(&dashboardPb)
 	if err != nil {
 		return nil, err
@@ -403,9 +445,12 @@ func (a *lakeviewImpl) CreateSchedule(ctx context.Context, request CreateSchedul
 		path,
 		headers,
 		queryParams,
-		requestPb.Schedule,
+		(*requestPb).Schedule,
 		&schedulePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ScheduleFromPb(&schedulePb)
 	if err != nil {
 		return nil, err
@@ -431,9 +476,12 @@ func (a *lakeviewImpl) CreateSubscription(ctx context.Context, request CreateSub
 		path,
 		headers,
 		queryParams,
-		requestPb.Subscription,
+		(*requestPb).Subscription,
 		&subscriptionPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := SubscriptionFromPb(&subscriptionPb)
 	if err != nil {
 		return nil, err
@@ -457,9 +505,12 @@ func (a *lakeviewImpl) DeleteSchedule(ctx context.Context, request DeleteSchedul
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -479,9 +530,12 @@ func (a *lakeviewImpl) DeleteSubscription(ctx context.Context, request DeleteSub
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -502,9 +556,12 @@ func (a *lakeviewImpl) Get(ctx context.Context, request GetDashboardRequest) (*D
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&dashboardPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DashboardFromPb(&dashboardPb)
 	if err != nil {
 		return nil, err
@@ -529,9 +586,12 @@ func (a *lakeviewImpl) GetPublished(ctx context.Context, request GetPublishedDas
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&publishedDashboardPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PublishedDashboardFromPb(&publishedDashboardPb)
 	if err != nil {
 		return nil, err
@@ -556,9 +616,12 @@ func (a *lakeviewImpl) GetSchedule(ctx context.Context, request GetScheduleReque
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&schedulePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ScheduleFromPb(&schedulePb)
 	if err != nil {
 		return nil, err
@@ -583,9 +646,12 @@ func (a *lakeviewImpl) GetSubscription(ctx context.Context, request GetSubscript
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&subscriptionPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := SubscriptionFromPb(&subscriptionPb)
 	if err != nil {
 		return nil, err
@@ -641,7 +707,7 @@ func (a *lakeviewImpl) internalList(ctx context.Context, request ListDashboardsR
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listDashboardsResponsePb,
 	)
 	if err != nil {
@@ -702,7 +768,7 @@ func (a *lakeviewImpl) internalListSchedules(ctx context.Context, request ListSc
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listSchedulesResponsePb,
 	)
 	if err != nil {
@@ -763,7 +829,7 @@ func (a *lakeviewImpl) internalListSubscriptions(ctx context.Context, request Li
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&listSubscriptionsResponsePb,
 	)
 	if err != nil {
@@ -794,9 +860,12 @@ func (a *lakeviewImpl) Migrate(ctx context.Context, request MigrateDashboardRequ
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&dashboardPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DashboardFromPb(&dashboardPb)
 	if err != nil {
 		return nil, err
@@ -822,9 +891,12 @@ func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*Pu
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&publishedDashboardPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := PublishedDashboardFromPb(&publishedDashboardPb)
 	if err != nil {
 		return nil, err
@@ -848,9 +920,12 @@ func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest)
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -870,9 +945,12 @@ func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboard
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -894,9 +972,12 @@ func (a *lakeviewImpl) Update(ctx context.Context, request UpdateDashboardReques
 		path,
 		headers,
 		queryParams,
-		requestPb.Dashboard,
+		(*requestPb).Dashboard,
 		&dashboardPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := DashboardFromPb(&dashboardPb)
 	if err != nil {
 		return nil, err
@@ -922,9 +1003,12 @@ func (a *lakeviewImpl) UpdateSchedule(ctx context.Context, request UpdateSchedul
 		path,
 		headers,
 		queryParams,
-		requestPb.Schedule,
+		(*requestPb).Schedule,
 		&schedulePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := ScheduleFromPb(&schedulePb)
 	if err != nil {
 		return nil, err
@@ -954,9 +1038,12 @@ func (a *lakeviewEmbeddedImpl) GetPublishedDashboardTokenInfo(ctx context.Contex
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&getPublishedDashboardTokenInfoResponsePb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := GetPublishedDashboardTokenInfoResponseFromPb(&getPublishedDashboardTokenInfoResponsePb)
 	if err != nil {
 		return nil, err

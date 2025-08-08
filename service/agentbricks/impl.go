@@ -32,9 +32,12 @@ func (a *agentBricksImpl) CancelOptimize(ctx context.Context, request CancelCust
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -56,9 +59,12 @@ func (a *agentBricksImpl) CreateCustomLlm(ctx context.Context, request CreateCus
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&customLlmPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CustomLlmFromPb(&customLlmPb)
 	if err != nil {
 		return nil, err
@@ -82,9 +88,12 @@ func (a *agentBricksImpl) DeleteCustomLlm(ctx context.Context, request DeleteCus
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -105,9 +114,12 @@ func (a *agentBricksImpl) GetCustomLlm(ctx context.Context, request GetCustomLlm
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&customLlmPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CustomLlmFromPb(&customLlmPb)
 	if err != nil {
 		return nil, err
@@ -133,9 +145,12 @@ func (a *agentBricksImpl) StartOptimize(ctx context.Context, request StartCustom
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&customLlmPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CustomLlmFromPb(&customLlmPb)
 	if err != nil {
 		return nil, err
@@ -161,9 +176,12 @@ func (a *agentBricksImpl) UpdateCustomLlm(ctx context.Context, request UpdateCus
 		path,
 		headers,
 		queryParams,
-		requestPb,
+		(*requestPb),
 		&customLlmPb,
 	)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := CustomLlmFromPb(&customLlmPb)
 	if err != nil {
 		return nil, err
