@@ -30,8 +30,8 @@ type APIError struct {
 
 	// ResponseWrapper contains request/response for the error.
 	//
-	// EXPERIMENTAL: This field is experimental and may be changed or removed
-	// in the future.
+	// EXPERIMENTAL INTERNAL: This field is experimental and meant for internal
+	// use only. It will change or be removed in the future.
 	ResponseWrapper *common.ResponseWrapper
 
 	errorDetails ErrorDetails
