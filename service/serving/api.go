@@ -124,7 +124,7 @@ type ServingEndpointsInterface interface {
 	// agent endpoints currently only support inference tables.
 	PutAiGateway(ctx context.Context, request PutAiGatewayRequest) (*PutAiGatewayResponse, error)
 
-	// Query a serving endpoint
+	// Query a serving endpoint.
 	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
 
 	// Sets permissions on an object, replacing existing permissions if they exist.
@@ -488,7 +488,7 @@ func (a *ServingEndpointsAPI) UpdateProvisionedThroughputEndpointConfigAndWait(c
 
 type ServingEndpointsDataPlaneInterface interface {
 
-	// Query a serving endpoint
+	// Query a serving endpoint.
 	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
 }
 

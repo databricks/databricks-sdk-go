@@ -9,6 +9,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/service/settings/settingspb"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
@@ -18,32 +19,79 @@ type accountIpAccessListsImpl struct {
 }
 
 func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
-	var createIpAccessListResponse CreateIpAccessListResponse
+	requestPb, pbErr := CreateIpAccessListToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createIpAccessListResponsePb settingspb.CreateIpAccessListResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createIpAccessListResponse)
-	return &createIpAccessListResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createIpAccessListResponsePb,
+	)
+	resp, err := CreateIpAccessListResponseFromPb(&createIpAccessListResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error {
+	requestPb, pbErr := DeleteAccountIpAccessListRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *accountIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpAccessListRequest) (*GetIpAccessListResponse, error) {
-	var getIpAccessListResponse GetIpAccessListResponse
+	requestPb, pbErr := GetAccountIpAccessListRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getIpAccessListResponsePb settingspb.GetIpAccessListResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getIpAccessListResponse)
-	return &getIpAccessListResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getIpAccessListResponsePb,
+	)
+	resp, err := GetIpAccessListResponseFromPb(&getIpAccessListResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets all IP access lists for the specified account.
@@ -73,30 +121,72 @@ func (a *accountIpAccessListsImpl) ListAll(ctx context.Context) ([]IpAccessListI
 }
 
 func (a *accountIpAccessListsImpl) internalList(ctx context.Context) (*GetIpAccessListsResponse, error) {
-	var getIpAccessListsResponse GetIpAccessListsResponse
+
+	var getIpAccessListsResponsePb settingspb.GetIpAccessListsResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getIpAccessListsResponse)
-	return &getIpAccessListsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&getIpAccessListsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GetIpAccessListsResponseFromPb(&getIpAccessListsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
+	requestPb, pbErr := ReplaceIpAccessListToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
+	requestPb, pbErr := UpdateIpAccessListToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
@@ -111,34 +201,85 @@ type aibiDashboardEmbeddingAccessPolicyImpl struct {
 }
 
 func (a *aibiDashboardEmbeddingAccessPolicyImpl) Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) (*DeleteAibiDashboardEmbeddingAccessPolicySettingResponse, error) {
-	var deleteAibiDashboardEmbeddingAccessPolicySettingResponse DeleteAibiDashboardEmbeddingAccessPolicySettingResponse
+	requestPb, pbErr := DeleteAibiDashboardEmbeddingAccessPolicySettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteAibiDashboardEmbeddingAccessPolicySettingResponsePb settingspb.DeleteAibiDashboardEmbeddingAccessPolicySettingResponsePb
 	path := "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteAibiDashboardEmbeddingAccessPolicySettingResponse)
-	return &deleteAibiDashboardEmbeddingAccessPolicySettingResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteAibiDashboardEmbeddingAccessPolicySettingResponsePb,
+	)
+	resp, err := DeleteAibiDashboardEmbeddingAccessPolicySettingResponseFromPb(&deleteAibiDashboardEmbeddingAccessPolicySettingResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *aibiDashboardEmbeddingAccessPolicyImpl) Get(ctx context.Context, request GetAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error) {
-	var aibiDashboardEmbeddingAccessPolicySetting AibiDashboardEmbeddingAccessPolicySetting
+	requestPb, pbErr := GetAibiDashboardEmbeddingAccessPolicySettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var aibiDashboardEmbeddingAccessPolicySettingPb settingspb.AibiDashboardEmbeddingAccessPolicySettingPb
 	path := "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &aibiDashboardEmbeddingAccessPolicySetting)
-	return &aibiDashboardEmbeddingAccessPolicySetting, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&aibiDashboardEmbeddingAccessPolicySettingPb,
+	)
+	resp, err := AibiDashboardEmbeddingAccessPolicySettingFromPb(&aibiDashboardEmbeddingAccessPolicySettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *aibiDashboardEmbeddingAccessPolicyImpl) Update(ctx context.Context, request UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) (*AibiDashboardEmbeddingAccessPolicySetting, error) {
-	var aibiDashboardEmbeddingAccessPolicySetting AibiDashboardEmbeddingAccessPolicySetting
+	requestPb, pbErr := UpdateAibiDashboardEmbeddingAccessPolicySettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var aibiDashboardEmbeddingAccessPolicySettingPb settingspb.AibiDashboardEmbeddingAccessPolicySettingPb
 	path := "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &aibiDashboardEmbeddingAccessPolicySetting)
-	return &aibiDashboardEmbeddingAccessPolicySetting, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&aibiDashboardEmbeddingAccessPolicySettingPb,
+	)
+	resp, err := AibiDashboardEmbeddingAccessPolicySettingFromPb(&aibiDashboardEmbeddingAccessPolicySettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just AibiDashboardEmbeddingApprovedDomains API methods
@@ -147,34 +288,85 @@ type aibiDashboardEmbeddingApprovedDomainsImpl struct {
 }
 
 func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse, error) {
-	var deleteAibiDashboardEmbeddingApprovedDomainsSettingResponse DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse
+	requestPb, pbErr := DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb settingspb.DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb
 	path := "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteAibiDashboardEmbeddingApprovedDomainsSettingResponse)
-	return &deleteAibiDashboardEmbeddingApprovedDomainsSettingResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb,
+	)
+	resp, err := DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponseFromPb(&deleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Get(ctx context.Context, request GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error) {
-	var aibiDashboardEmbeddingApprovedDomainsSetting AibiDashboardEmbeddingApprovedDomainsSetting
+	requestPb, pbErr := GetAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var aibiDashboardEmbeddingApprovedDomainsSettingPb settingspb.AibiDashboardEmbeddingApprovedDomainsSettingPb
 	path := "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &aibiDashboardEmbeddingApprovedDomainsSetting)
-	return &aibiDashboardEmbeddingApprovedDomainsSetting, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&aibiDashboardEmbeddingApprovedDomainsSettingPb,
+	)
+	resp, err := AibiDashboardEmbeddingApprovedDomainsSettingFromPb(&aibiDashboardEmbeddingApprovedDomainsSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Update(ctx context.Context, request UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*AibiDashboardEmbeddingApprovedDomainsSetting, error) {
-	var aibiDashboardEmbeddingApprovedDomainsSetting AibiDashboardEmbeddingApprovedDomainsSetting
+	requestPb, pbErr := UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var aibiDashboardEmbeddingApprovedDomainsSettingPb settingspb.AibiDashboardEmbeddingApprovedDomainsSettingPb
 	path := "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &aibiDashboardEmbeddingApprovedDomainsSetting)
-	return &aibiDashboardEmbeddingApprovedDomainsSetting, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&aibiDashboardEmbeddingApprovedDomainsSettingPb,
+	)
+	resp, err := AibiDashboardEmbeddingApprovedDomainsSettingFromPb(&aibiDashboardEmbeddingApprovedDomainsSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just AutomaticClusterUpdate API methods
@@ -183,24 +375,58 @@ type automaticClusterUpdateImpl struct {
 }
 
 func (a *automaticClusterUpdateImpl) Get(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
-	var automaticClusterUpdateSetting AutomaticClusterUpdateSetting
+	requestPb, pbErr := GetAutomaticClusterUpdateSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var automaticClusterUpdateSettingPb settingspb.AutomaticClusterUpdateSettingPb
 	path := "/api/2.0/settings/types/automatic_cluster_update/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &automaticClusterUpdateSetting)
-	return &automaticClusterUpdateSetting, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&automaticClusterUpdateSettingPb,
+	)
+	resp, err := AutomaticClusterUpdateSettingFromPb(&automaticClusterUpdateSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *automaticClusterUpdateImpl) Update(ctx context.Context, request UpdateAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
-	var automaticClusterUpdateSetting AutomaticClusterUpdateSetting
+	requestPb, pbErr := UpdateAutomaticClusterUpdateSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var automaticClusterUpdateSettingPb settingspb.AutomaticClusterUpdateSettingPb
 	path := "/api/2.0/settings/types/automatic_cluster_update/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &automaticClusterUpdateSetting)
-	return &automaticClusterUpdateSetting, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&automaticClusterUpdateSettingPb,
+	)
+	resp, err := AutomaticClusterUpdateSettingFromPb(&automaticClusterUpdateSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ComplianceSecurityProfile API methods
@@ -209,24 +435,58 @@ type complianceSecurityProfileImpl struct {
 }
 
 func (a *complianceSecurityProfileImpl) Get(ctx context.Context, request GetComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error) {
-	var complianceSecurityProfileSetting ComplianceSecurityProfileSetting
+	requestPb, pbErr := GetComplianceSecurityProfileSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var complianceSecurityProfileSettingPb settingspb.ComplianceSecurityProfileSettingPb
 	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &complianceSecurityProfileSetting)
-	return &complianceSecurityProfileSetting, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&complianceSecurityProfileSettingPb,
+	)
+	resp, err := ComplianceSecurityProfileSettingFromPb(&complianceSecurityProfileSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *complianceSecurityProfileImpl) Update(ctx context.Context, request UpdateComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error) {
-	var complianceSecurityProfileSetting ComplianceSecurityProfileSetting
+	requestPb, pbErr := UpdateComplianceSecurityProfileSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var complianceSecurityProfileSettingPb settingspb.ComplianceSecurityProfileSettingPb
 	path := "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &complianceSecurityProfileSetting)
-	return &complianceSecurityProfileSetting, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&complianceSecurityProfileSettingPb,
+	)
+	resp, err := ComplianceSecurityProfileSettingFromPb(&complianceSecurityProfileSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just CredentialsManager API methods
@@ -235,14 +495,31 @@ type credentialsManagerImpl struct {
 }
 
 func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
-	var exchangeTokenResponse ExchangeTokenResponse
+	requestPb, pbErr := ExchangeTokenRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var exchangeTokenResponsePb settingspb.ExchangeTokenResponsePb
 	path := "/api/2.0/credentials-manager/exchange-tokens/token"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &exchangeTokenResponse)
-	return &exchangeTokenResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&exchangeTokenResponsePb,
+	)
+	resp, err := ExchangeTokenResponseFromPb(&exchangeTokenResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just CspEnablementAccount API methods
@@ -251,24 +528,58 @@ type cspEnablementAccountImpl struct {
 }
 
 func (a *cspEnablementAccountImpl) Get(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
-	var cspEnablementAccountSetting CspEnablementAccountSetting
+	requestPb, pbErr := GetCspEnablementAccountSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var cspEnablementAccountSettingPb settingspb.CspEnablementAccountSettingPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &cspEnablementAccountSetting)
-	return &cspEnablementAccountSetting, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&cspEnablementAccountSettingPb,
+	)
+	resp, err := CspEnablementAccountSettingFromPb(&cspEnablementAccountSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *cspEnablementAccountImpl) Update(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
-	var cspEnablementAccountSetting CspEnablementAccountSetting
+	requestPb, pbErr := UpdateCspEnablementAccountSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var cspEnablementAccountSettingPb settingspb.CspEnablementAccountSettingPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &cspEnablementAccountSetting)
-	return &cspEnablementAccountSetting, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&cspEnablementAccountSettingPb,
+	)
+	resp, err := CspEnablementAccountSettingFromPb(&cspEnablementAccountSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just DashboardEmailSubscriptions API methods
@@ -277,34 +588,85 @@ type dashboardEmailSubscriptionsImpl struct {
 }
 
 func (a *dashboardEmailSubscriptionsImpl) Delete(ctx context.Context, request DeleteDashboardEmailSubscriptionsRequest) (*DeleteDashboardEmailSubscriptionsResponse, error) {
-	var deleteDashboardEmailSubscriptionsResponse DeleteDashboardEmailSubscriptionsResponse
+	requestPb, pbErr := DeleteDashboardEmailSubscriptionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteDashboardEmailSubscriptionsResponsePb settingspb.DeleteDashboardEmailSubscriptionsResponsePb
 	path := "/api/2.0/settings/types/dashboard_email_subscriptions/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDashboardEmailSubscriptionsResponse)
-	return &deleteDashboardEmailSubscriptionsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteDashboardEmailSubscriptionsResponsePb,
+	)
+	resp, err := DeleteDashboardEmailSubscriptionsResponseFromPb(&deleteDashboardEmailSubscriptionsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *dashboardEmailSubscriptionsImpl) Get(ctx context.Context, request GetDashboardEmailSubscriptionsRequest) (*DashboardEmailSubscriptions, error) {
-	var dashboardEmailSubscriptions DashboardEmailSubscriptions
+	requestPb, pbErr := GetDashboardEmailSubscriptionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var dashboardEmailSubscriptionsPb settingspb.DashboardEmailSubscriptionsPb
 	path := "/api/2.0/settings/types/dashboard_email_subscriptions/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &dashboardEmailSubscriptions)
-	return &dashboardEmailSubscriptions, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&dashboardEmailSubscriptionsPb,
+	)
+	resp, err := DashboardEmailSubscriptionsFromPb(&dashboardEmailSubscriptionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *dashboardEmailSubscriptionsImpl) Update(ctx context.Context, request UpdateDashboardEmailSubscriptionsRequest) (*DashboardEmailSubscriptions, error) {
-	var dashboardEmailSubscriptions DashboardEmailSubscriptions
+	requestPb, pbErr := UpdateDashboardEmailSubscriptionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var dashboardEmailSubscriptionsPb settingspb.DashboardEmailSubscriptionsPb
 	path := "/api/2.0/settings/types/dashboard_email_subscriptions/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &dashboardEmailSubscriptions)
-	return &dashboardEmailSubscriptions, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&dashboardEmailSubscriptionsPb,
+	)
+	resp, err := DashboardEmailSubscriptionsFromPb(&dashboardEmailSubscriptionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just DefaultNamespace API methods
@@ -313,34 +675,85 @@ type defaultNamespaceImpl struct {
 }
 
 func (a *defaultNamespaceImpl) Delete(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
-	var deleteDefaultNamespaceSettingResponse DeleteDefaultNamespaceSettingResponse
+	requestPb, pbErr := DeleteDefaultNamespaceSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteDefaultNamespaceSettingResponsePb settingspb.DeleteDefaultNamespaceSettingResponsePb
 	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDefaultNamespaceSettingResponse)
-	return &deleteDefaultNamespaceSettingResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteDefaultNamespaceSettingResponsePb,
+	)
+	resp, err := DeleteDefaultNamespaceSettingResponseFromPb(&deleteDefaultNamespaceSettingResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *defaultNamespaceImpl) Get(ctx context.Context, request GetDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
-	var defaultNamespaceSetting DefaultNamespaceSetting
+	requestPb, pbErr := GetDefaultNamespaceSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var defaultNamespaceSettingPb settingspb.DefaultNamespaceSettingPb
 	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &defaultNamespaceSetting)
-	return &defaultNamespaceSetting, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&defaultNamespaceSettingPb,
+	)
+	resp, err := DefaultNamespaceSettingFromPb(&defaultNamespaceSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *defaultNamespaceImpl) Update(ctx context.Context, request UpdateDefaultNamespaceSettingRequest) (*DefaultNamespaceSetting, error) {
-	var defaultNamespaceSetting DefaultNamespaceSetting
+	requestPb, pbErr := UpdateDefaultNamespaceSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var defaultNamespaceSettingPb settingspb.DefaultNamespaceSettingPb
 	path := "/api/2.0/settings/types/default_namespace_ws/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &defaultNamespaceSetting)
-	return &defaultNamespaceSetting, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&defaultNamespaceSettingPb,
+	)
+	resp, err := DefaultNamespaceSettingFromPb(&defaultNamespaceSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just DefaultWarehouseId API methods
@@ -349,34 +762,85 @@ type defaultWarehouseIdImpl struct {
 }
 
 func (a *defaultWarehouseIdImpl) Delete(ctx context.Context, request DeleteDefaultWarehouseIdRequest) (*DeleteDefaultWarehouseIdResponse, error) {
-	var deleteDefaultWarehouseIdResponse DeleteDefaultWarehouseIdResponse
+	requestPb, pbErr := DeleteDefaultWarehouseIdRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteDefaultWarehouseIdResponsePb settingspb.DeleteDefaultWarehouseIdResponsePb
 	path := "/api/2.0/settings/types/default_warehouse_id/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDefaultWarehouseIdResponse)
-	return &deleteDefaultWarehouseIdResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteDefaultWarehouseIdResponsePb,
+	)
+	resp, err := DeleteDefaultWarehouseIdResponseFromPb(&deleteDefaultWarehouseIdResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *defaultWarehouseIdImpl) Get(ctx context.Context, request GetDefaultWarehouseIdRequest) (*DefaultWarehouseId, error) {
-	var defaultWarehouseId DefaultWarehouseId
+	requestPb, pbErr := GetDefaultWarehouseIdRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var defaultWarehouseIdPb settingspb.DefaultWarehouseIdPb
 	path := "/api/2.0/settings/types/default_warehouse_id/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &defaultWarehouseId)
-	return &defaultWarehouseId, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&defaultWarehouseIdPb,
+	)
+	resp, err := DefaultWarehouseIdFromPb(&defaultWarehouseIdPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *defaultWarehouseIdImpl) Update(ctx context.Context, request UpdateDefaultWarehouseIdRequest) (*DefaultWarehouseId, error) {
-	var defaultWarehouseId DefaultWarehouseId
+	requestPb, pbErr := UpdateDefaultWarehouseIdRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var defaultWarehouseIdPb settingspb.DefaultWarehouseIdPb
 	path := "/api/2.0/settings/types/default_warehouse_id/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &defaultWarehouseId)
-	return &defaultWarehouseId, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&defaultWarehouseIdPb,
+	)
+	resp, err := DefaultWarehouseIdFromPb(&defaultWarehouseIdPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just DisableLegacyAccess API methods
@@ -385,34 +849,85 @@ type disableLegacyAccessImpl struct {
 }
 
 func (a *disableLegacyAccessImpl) Delete(ctx context.Context, request DeleteDisableLegacyAccessRequest) (*DeleteDisableLegacyAccessResponse, error) {
-	var deleteDisableLegacyAccessResponse DeleteDisableLegacyAccessResponse
+	requestPb, pbErr := DeleteDisableLegacyAccessRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteDisableLegacyAccessResponsePb settingspb.DeleteDisableLegacyAccessResponsePb
 	path := "/api/2.0/settings/types/disable_legacy_access/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDisableLegacyAccessResponse)
-	return &deleteDisableLegacyAccessResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteDisableLegacyAccessResponsePb,
+	)
+	resp, err := DeleteDisableLegacyAccessResponseFromPb(&deleteDisableLegacyAccessResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *disableLegacyAccessImpl) Get(ctx context.Context, request GetDisableLegacyAccessRequest) (*DisableLegacyAccess, error) {
-	var disableLegacyAccess DisableLegacyAccess
+	requestPb, pbErr := GetDisableLegacyAccessRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var disableLegacyAccessPb settingspb.DisableLegacyAccessPb
 	path := "/api/2.0/settings/types/disable_legacy_access/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &disableLegacyAccess)
-	return &disableLegacyAccess, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&disableLegacyAccessPb,
+	)
+	resp, err := DisableLegacyAccessFromPb(&disableLegacyAccessPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *disableLegacyAccessImpl) Update(ctx context.Context, request UpdateDisableLegacyAccessRequest) (*DisableLegacyAccess, error) {
-	var disableLegacyAccess DisableLegacyAccess
+	requestPb, pbErr := UpdateDisableLegacyAccessRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var disableLegacyAccessPb settingspb.DisableLegacyAccessPb
 	path := "/api/2.0/settings/types/disable_legacy_access/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &disableLegacyAccess)
-	return &disableLegacyAccess, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&disableLegacyAccessPb,
+	)
+	resp, err := DisableLegacyAccessFromPb(&disableLegacyAccessPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just DisableLegacyDbfs API methods
@@ -421,34 +936,85 @@ type disableLegacyDbfsImpl struct {
 }
 
 func (a *disableLegacyDbfsImpl) Delete(ctx context.Context, request DeleteDisableLegacyDbfsRequest) (*DeleteDisableLegacyDbfsResponse, error) {
-	var deleteDisableLegacyDbfsResponse DeleteDisableLegacyDbfsResponse
+	requestPb, pbErr := DeleteDisableLegacyDbfsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteDisableLegacyDbfsResponsePb settingspb.DeleteDisableLegacyDbfsResponsePb
 	path := "/api/2.0/settings/types/disable_legacy_dbfs/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDisableLegacyDbfsResponse)
-	return &deleteDisableLegacyDbfsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteDisableLegacyDbfsResponsePb,
+	)
+	resp, err := DeleteDisableLegacyDbfsResponseFromPb(&deleteDisableLegacyDbfsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *disableLegacyDbfsImpl) Get(ctx context.Context, request GetDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error) {
-	var disableLegacyDbfs DisableLegacyDbfs
+	requestPb, pbErr := GetDisableLegacyDbfsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var disableLegacyDbfsPb settingspb.DisableLegacyDbfsPb
 	path := "/api/2.0/settings/types/disable_legacy_dbfs/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &disableLegacyDbfs)
-	return &disableLegacyDbfs, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&disableLegacyDbfsPb,
+	)
+	resp, err := DisableLegacyDbfsFromPb(&disableLegacyDbfsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *disableLegacyDbfsImpl) Update(ctx context.Context, request UpdateDisableLegacyDbfsRequest) (*DisableLegacyDbfs, error) {
-	var disableLegacyDbfs DisableLegacyDbfs
+	requestPb, pbErr := UpdateDisableLegacyDbfsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var disableLegacyDbfsPb settingspb.DisableLegacyDbfsPb
 	path := "/api/2.0/settings/types/disable_legacy_dbfs/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &disableLegacyDbfs)
-	return &disableLegacyDbfs, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&disableLegacyDbfsPb,
+	)
+	resp, err := DisableLegacyDbfsFromPb(&disableLegacyDbfsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just DisableLegacyFeatures API methods
@@ -457,34 +1023,85 @@ type disableLegacyFeaturesImpl struct {
 }
 
 func (a *disableLegacyFeaturesImpl) Delete(ctx context.Context, request DeleteDisableLegacyFeaturesRequest) (*DeleteDisableLegacyFeaturesResponse, error) {
-	var deleteDisableLegacyFeaturesResponse DeleteDisableLegacyFeaturesResponse
+	requestPb, pbErr := DeleteDisableLegacyFeaturesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteDisableLegacyFeaturesResponsePb settingspb.DeleteDisableLegacyFeaturesResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDisableLegacyFeaturesResponse)
-	return &deleteDisableLegacyFeaturesResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteDisableLegacyFeaturesResponsePb,
+	)
+	resp, err := DeleteDisableLegacyFeaturesResponseFromPb(&deleteDisableLegacyFeaturesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *disableLegacyFeaturesImpl) Get(ctx context.Context, request GetDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error) {
-	var disableLegacyFeatures DisableLegacyFeatures
+	requestPb, pbErr := GetDisableLegacyFeaturesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var disableLegacyFeaturesPb settingspb.DisableLegacyFeaturesPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &disableLegacyFeatures)
-	return &disableLegacyFeatures, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&disableLegacyFeaturesPb,
+	)
+	resp, err := DisableLegacyFeaturesFromPb(&disableLegacyFeaturesPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *disableLegacyFeaturesImpl) Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error) {
-	var disableLegacyFeatures DisableLegacyFeatures
+	requestPb, pbErr := UpdateDisableLegacyFeaturesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var disableLegacyFeaturesPb settingspb.DisableLegacyFeaturesPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &disableLegacyFeatures)
-	return &disableLegacyFeatures, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&disableLegacyFeaturesPb,
+	)
+	resp, err := DisableLegacyFeaturesFromPb(&disableLegacyFeaturesPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just EnableExportNotebook API methods
@@ -493,24 +1110,54 @@ type enableExportNotebookImpl struct {
 }
 
 func (a *enableExportNotebookImpl) GetEnableExportNotebook(ctx context.Context) (*EnableExportNotebook, error) {
-	var enableExportNotebook EnableExportNotebook
+
+	var enableExportNotebookPb settingspb.EnableExportNotebookPb
 	path := "/api/2.0/settings/types/enable-export-notebook/names/default"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &enableExportNotebook)
-	return &enableExportNotebook, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&enableExportNotebookPb,
+	)
+	resp, err := EnableExportNotebookFromPb(&enableExportNotebookPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *enableExportNotebookImpl) PatchEnableExportNotebook(ctx context.Context, request UpdateEnableExportNotebookRequest) (*EnableExportNotebook, error) {
-	var enableExportNotebook EnableExportNotebook
+	requestPb, pbErr := UpdateEnableExportNotebookRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var enableExportNotebookPb settingspb.EnableExportNotebookPb
 	path := "/api/2.0/settings/types/enable-export-notebook/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &enableExportNotebook)
-	return &enableExportNotebook, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&enableExportNotebookPb,
+	)
+	resp, err := EnableExportNotebookFromPb(&enableExportNotebookPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just EnableIpAccessLists API methods
@@ -519,34 +1166,85 @@ type enableIpAccessListsImpl struct {
 }
 
 func (a *enableIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessEnableRequest) (*DeleteAccountIpAccessEnableResponse, error) {
-	var deleteAccountIpAccessEnableResponse DeleteAccountIpAccessEnableResponse
+	requestPb, pbErr := DeleteAccountIpAccessEnableRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteAccountIpAccessEnableResponsePb settingspb.DeleteAccountIpAccessEnableResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteAccountIpAccessEnableResponse)
-	return &deleteAccountIpAccessEnableResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteAccountIpAccessEnableResponsePb,
+	)
+	resp, err := DeleteAccountIpAccessEnableResponseFromPb(&deleteAccountIpAccessEnableResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *enableIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error) {
-	var accountIpAccessEnable AccountIpAccessEnable
+	requestPb, pbErr := GetAccountIpAccessEnableRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var accountIpAccessEnablePb settingspb.AccountIpAccessEnablePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountIpAccessEnable)
-	return &accountIpAccessEnable, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&accountIpAccessEnablePb,
+	)
+	resp, err := AccountIpAccessEnableFromPb(&accountIpAccessEnablePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *enableIpAccessListsImpl) Update(ctx context.Context, request UpdateAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error) {
-	var accountIpAccessEnable AccountIpAccessEnable
+	requestPb, pbErr := UpdateAccountIpAccessEnableRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var accountIpAccessEnablePb settingspb.AccountIpAccessEnablePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &accountIpAccessEnable)
-	return &accountIpAccessEnable, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&accountIpAccessEnablePb,
+	)
+	resp, err := AccountIpAccessEnableFromPb(&accountIpAccessEnablePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just EnableNotebookTableClipboard API methods
@@ -555,24 +1253,54 @@ type enableNotebookTableClipboardImpl struct {
 }
 
 func (a *enableNotebookTableClipboardImpl) GetEnableNotebookTableClipboard(ctx context.Context) (*EnableNotebookTableClipboard, error) {
-	var enableNotebookTableClipboard EnableNotebookTableClipboard
+
+	var enableNotebookTableClipboardPb settingspb.EnableNotebookTableClipboardPb
 	path := "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &enableNotebookTableClipboard)
-	return &enableNotebookTableClipboard, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&enableNotebookTableClipboardPb,
+	)
+	resp, err := EnableNotebookTableClipboardFromPb(&enableNotebookTableClipboardPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *enableNotebookTableClipboardImpl) PatchEnableNotebookTableClipboard(ctx context.Context, request UpdateEnableNotebookTableClipboardRequest) (*EnableNotebookTableClipboard, error) {
-	var enableNotebookTableClipboard EnableNotebookTableClipboard
+	requestPb, pbErr := UpdateEnableNotebookTableClipboardRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var enableNotebookTableClipboardPb settingspb.EnableNotebookTableClipboardPb
 	path := "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &enableNotebookTableClipboard)
-	return &enableNotebookTableClipboard, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&enableNotebookTableClipboardPb,
+	)
+	resp, err := EnableNotebookTableClipboardFromPb(&enableNotebookTableClipboardPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just EnableResultsDownloading API methods
@@ -581,24 +1309,54 @@ type enableResultsDownloadingImpl struct {
 }
 
 func (a *enableResultsDownloadingImpl) GetEnableResultsDownloading(ctx context.Context) (*EnableResultsDownloading, error) {
-	var enableResultsDownloading EnableResultsDownloading
+
+	var enableResultsDownloadingPb settingspb.EnableResultsDownloadingPb
 	path := "/api/2.0/settings/types/enable-results-downloading/names/default"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &enableResultsDownloading)
-	return &enableResultsDownloading, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&enableResultsDownloadingPb,
+	)
+	resp, err := EnableResultsDownloadingFromPb(&enableResultsDownloadingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *enableResultsDownloadingImpl) PatchEnableResultsDownloading(ctx context.Context, request UpdateEnableResultsDownloadingRequest) (*EnableResultsDownloading, error) {
-	var enableResultsDownloading EnableResultsDownloading
+	requestPb, pbErr := UpdateEnableResultsDownloadingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var enableResultsDownloadingPb settingspb.EnableResultsDownloadingPb
 	path := "/api/2.0/settings/types/enable-results-downloading/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &enableResultsDownloading)
-	return &enableResultsDownloading, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&enableResultsDownloadingPb,
+	)
+	resp, err := EnableResultsDownloadingFromPb(&enableResultsDownloadingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just EnhancedSecurityMonitoring API methods
@@ -607,24 +1365,58 @@ type enhancedSecurityMonitoringImpl struct {
 }
 
 func (a *enhancedSecurityMonitoringImpl) Get(ctx context.Context, request GetEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error) {
-	var enhancedSecurityMonitoringSetting EnhancedSecurityMonitoringSetting
+	requestPb, pbErr := GetEnhancedSecurityMonitoringSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var enhancedSecurityMonitoringSettingPb settingspb.EnhancedSecurityMonitoringSettingPb
 	path := "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &enhancedSecurityMonitoringSetting)
-	return &enhancedSecurityMonitoringSetting, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&enhancedSecurityMonitoringSettingPb,
+	)
+	resp, err := EnhancedSecurityMonitoringSettingFromPb(&enhancedSecurityMonitoringSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *enhancedSecurityMonitoringImpl) Update(ctx context.Context, request UpdateEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error) {
-	var enhancedSecurityMonitoringSetting EnhancedSecurityMonitoringSetting
+	requestPb, pbErr := UpdateEnhancedSecurityMonitoringSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var enhancedSecurityMonitoringSettingPb settingspb.EnhancedSecurityMonitoringSettingPb
 	path := "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &enhancedSecurityMonitoringSetting)
-	return &enhancedSecurityMonitoringSetting, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&enhancedSecurityMonitoringSettingPb,
+	)
+	resp, err := EnhancedSecurityMonitoringSettingFromPb(&enhancedSecurityMonitoringSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just EsmEnablementAccount API methods
@@ -633,24 +1425,58 @@ type esmEnablementAccountImpl struct {
 }
 
 func (a *esmEnablementAccountImpl) Get(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
-	var esmEnablementAccountSetting EsmEnablementAccountSetting
+	requestPb, pbErr := GetEsmEnablementAccountSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var esmEnablementAccountSettingPb settingspb.EsmEnablementAccountSettingPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &esmEnablementAccountSetting)
-	return &esmEnablementAccountSetting, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&esmEnablementAccountSettingPb,
+	)
+	resp, err := EsmEnablementAccountSettingFromPb(&esmEnablementAccountSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *esmEnablementAccountImpl) Update(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
-	var esmEnablementAccountSetting EsmEnablementAccountSetting
+	requestPb, pbErr := UpdateEsmEnablementAccountSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var esmEnablementAccountSettingPb settingspb.EsmEnablementAccountSettingPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &esmEnablementAccountSetting)
-	return &esmEnablementAccountSetting, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&esmEnablementAccountSettingPb,
+	)
+	resp, err := EsmEnablementAccountSettingFromPb(&esmEnablementAccountSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just IpAccessLists API methods
@@ -659,32 +1485,79 @@ type ipAccessListsImpl struct {
 }
 
 func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
-	var createIpAccessListResponse CreateIpAccessListResponse
+	requestPb, pbErr := CreateIpAccessListToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createIpAccessListResponsePb settingspb.CreateIpAccessListResponsePb
 	path := "/api/2.0/ip-access-lists"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createIpAccessListResponse)
-	return &createIpAccessListResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createIpAccessListResponsePb,
+	)
+	resp, err := CreateIpAccessListResponseFromPb(&createIpAccessListResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteIpAccessListRequest) error {
+	requestPb, pbErr := DeleteIpAccessListRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessListRequest) (*FetchIpAccessListResponse, error) {
-	var fetchIpAccessListResponse FetchIpAccessListResponse
+	requestPb, pbErr := GetIpAccessListRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var fetchIpAccessListResponsePb settingspb.FetchIpAccessListResponsePb
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &fetchIpAccessListResponse)
-	return &fetchIpAccessListResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&fetchIpAccessListResponsePb,
+	)
+	resp, err := FetchIpAccessListResponseFromPb(&fetchIpAccessListResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets all IP access lists for the specified workspace.
@@ -714,30 +1587,72 @@ func (a *ipAccessListsImpl) ListAll(ctx context.Context) ([]IpAccessListInfo, er
 }
 
 func (a *ipAccessListsImpl) internalList(ctx context.Context) (*ListIpAccessListResponse, error) {
-	var listIpAccessListResponse ListIpAccessListResponse
+
+	var listIpAccessListResponsePb settingspb.ListIpAccessListResponsePb
 	path := "/api/2.0/ip-access-lists"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listIpAccessListResponse)
-	return &listIpAccessListResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listIpAccessListResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListIpAccessListResponseFromPb(&listIpAccessListResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) error {
+	requestPb, pbErr := ReplaceIpAccessListToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) error {
+	requestPb, pbErr := UpdateIpAccessListToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
@@ -747,24 +1662,58 @@ type llmProxyPartnerPoweredAccountImpl struct {
 }
 
 func (a *llmProxyPartnerPoweredAccountImpl) Get(ctx context.Context, request GetLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error) {
-	var llmProxyPartnerPoweredAccount LlmProxyPartnerPoweredAccount
+	requestPb, pbErr := GetLlmProxyPartnerPoweredAccountRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var llmProxyPartnerPoweredAccountPb settingspb.LlmProxyPartnerPoweredAccountPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/llm_proxy_partner_powered/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &llmProxyPartnerPoweredAccount)
-	return &llmProxyPartnerPoweredAccount, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&llmProxyPartnerPoweredAccountPb,
+	)
+	resp, err := LlmProxyPartnerPoweredAccountFromPb(&llmProxyPartnerPoweredAccountPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *llmProxyPartnerPoweredAccountImpl) Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error) {
-	var llmProxyPartnerPoweredAccount LlmProxyPartnerPoweredAccount
+	requestPb, pbErr := UpdateLlmProxyPartnerPoweredAccountRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var llmProxyPartnerPoweredAccountPb settingspb.LlmProxyPartnerPoweredAccountPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/llm_proxy_partner_powered/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &llmProxyPartnerPoweredAccount)
-	return &llmProxyPartnerPoweredAccount, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&llmProxyPartnerPoweredAccountPb,
+	)
+	resp, err := LlmProxyPartnerPoweredAccountFromPb(&llmProxyPartnerPoweredAccountPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just LlmProxyPartnerPoweredEnforce API methods
@@ -773,24 +1722,58 @@ type llmProxyPartnerPoweredEnforceImpl struct {
 }
 
 func (a *llmProxyPartnerPoweredEnforceImpl) Get(ctx context.Context, request GetLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error) {
-	var llmProxyPartnerPoweredEnforce LlmProxyPartnerPoweredEnforce
+	requestPb, pbErr := GetLlmProxyPartnerPoweredEnforceRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var llmProxyPartnerPoweredEnforcePb settingspb.LlmProxyPartnerPoweredEnforcePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/llm_proxy_partner_powered_enforce/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &llmProxyPartnerPoweredEnforce)
-	return &llmProxyPartnerPoweredEnforce, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&llmProxyPartnerPoweredEnforcePb,
+	)
+	resp, err := LlmProxyPartnerPoweredEnforceFromPb(&llmProxyPartnerPoweredEnforcePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *llmProxyPartnerPoweredEnforceImpl) Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error) {
-	var llmProxyPartnerPoweredEnforce LlmProxyPartnerPoweredEnforce
+	requestPb, pbErr := UpdateLlmProxyPartnerPoweredEnforceRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var llmProxyPartnerPoweredEnforcePb settingspb.LlmProxyPartnerPoweredEnforcePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/llm_proxy_partner_powered_enforce/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &llmProxyPartnerPoweredEnforce)
-	return &llmProxyPartnerPoweredEnforce, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&llmProxyPartnerPoweredEnforcePb,
+	)
+	resp, err := LlmProxyPartnerPoweredEnforceFromPb(&llmProxyPartnerPoweredEnforcePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just LlmProxyPartnerPoweredWorkspace API methods
@@ -799,34 +1782,85 @@ type llmProxyPartnerPoweredWorkspaceImpl struct {
 }
 
 func (a *llmProxyPartnerPoweredWorkspaceImpl) Delete(ctx context.Context, request DeleteLlmProxyPartnerPoweredWorkspaceRequest) (*DeleteLlmProxyPartnerPoweredWorkspaceResponse, error) {
-	var deleteLlmProxyPartnerPoweredWorkspaceResponse DeleteLlmProxyPartnerPoweredWorkspaceResponse
+	requestPb, pbErr := DeleteLlmProxyPartnerPoweredWorkspaceRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteLlmProxyPartnerPoweredWorkspaceResponsePb settingspb.DeleteLlmProxyPartnerPoweredWorkspaceResponsePb
 	path := "/api/2.0/settings/types/llm_proxy_partner_powered/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteLlmProxyPartnerPoweredWorkspaceResponse)
-	return &deleteLlmProxyPartnerPoweredWorkspaceResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteLlmProxyPartnerPoweredWorkspaceResponsePb,
+	)
+	resp, err := DeleteLlmProxyPartnerPoweredWorkspaceResponseFromPb(&deleteLlmProxyPartnerPoweredWorkspaceResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *llmProxyPartnerPoweredWorkspaceImpl) Get(ctx context.Context, request GetLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error) {
-	var llmProxyPartnerPoweredWorkspace LlmProxyPartnerPoweredWorkspace
+	requestPb, pbErr := GetLlmProxyPartnerPoweredWorkspaceRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var llmProxyPartnerPoweredWorkspacePb settingspb.LlmProxyPartnerPoweredWorkspacePb
 	path := "/api/2.0/settings/types/llm_proxy_partner_powered/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &llmProxyPartnerPoweredWorkspace)
-	return &llmProxyPartnerPoweredWorkspace, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&llmProxyPartnerPoweredWorkspacePb,
+	)
+	resp, err := LlmProxyPartnerPoweredWorkspaceFromPb(&llmProxyPartnerPoweredWorkspacePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *llmProxyPartnerPoweredWorkspaceImpl) Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error) {
-	var llmProxyPartnerPoweredWorkspace LlmProxyPartnerPoweredWorkspace
+	requestPb, pbErr := UpdateLlmProxyPartnerPoweredWorkspaceRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var llmProxyPartnerPoweredWorkspacePb settingspb.LlmProxyPartnerPoweredWorkspacePb
 	path := "/api/2.0/settings/types/llm_proxy_partner_powered/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &llmProxyPartnerPoweredWorkspace)
-	return &llmProxyPartnerPoweredWorkspace, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&llmProxyPartnerPoweredWorkspacePb,
+	)
+	resp, err := LlmProxyPartnerPoweredWorkspaceFromPb(&llmProxyPartnerPoweredWorkspacePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just NetworkConnectivity API methods
@@ -835,64 +1869,162 @@ type networkConnectivityImpl struct {
 }
 
 func (a *networkConnectivityImpl) CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error) {
-	var networkConnectivityConfiguration NetworkConnectivityConfiguration
+	requestPb, pbErr := CreateNetworkConnectivityConfigRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var networkConnectivityConfigurationPb settingspb.NetworkConnectivityConfigurationPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.NetworkConnectivityConfig, &networkConnectivityConfiguration)
-	return &networkConnectivityConfiguration, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb.NetworkConnectivityConfig,
+		&networkConnectivityConfigurationPb,
+	)
+	resp, err := NetworkConnectivityConfigurationFromPb(&networkConnectivityConfigurationPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context, request CreatePrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error) {
-	var nccPrivateEndpointRule NccPrivateEndpointRule
+	requestPb, pbErr := CreatePrivateEndpointRuleRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var nccPrivateEndpointRulePb settingspb.NccPrivateEndpointRulePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.PrivateEndpointRule, &nccPrivateEndpointRule)
-	return &nccPrivateEndpointRule, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb.PrivateEndpointRule,
+		&nccPrivateEndpointRulePb,
+	)
+	resp, err := NccPrivateEndpointRuleFromPb(&nccPrivateEndpointRulePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error {
+	requestPb, pbErr := DeleteNetworkConnectivityConfigurationRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *networkConnectivityImpl) DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error) {
-	var nccPrivateEndpointRule NccPrivateEndpointRule
+	requestPb, pbErr := DeletePrivateEndpointRuleRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var nccPrivateEndpointRulePb settingspb.NccPrivateEndpointRulePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &nccPrivateEndpointRule)
-	return &nccPrivateEndpointRule, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&nccPrivateEndpointRulePb,
+	)
+	resp, err := NccPrivateEndpointRuleFromPb(&nccPrivateEndpointRulePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *networkConnectivityImpl) GetNetworkConnectivityConfiguration(ctx context.Context, request GetNetworkConnectivityConfigurationRequest) (*NetworkConnectivityConfiguration, error) {
-	var networkConnectivityConfiguration NetworkConnectivityConfiguration
+	requestPb, pbErr := GetNetworkConnectivityConfigurationRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var networkConnectivityConfigurationPb settingspb.NetworkConnectivityConfigurationPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &networkConnectivityConfiguration)
-	return &networkConnectivityConfiguration, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&networkConnectivityConfigurationPb,
+	)
+	resp, err := NetworkConnectivityConfigurationFromPb(&networkConnectivityConfigurationPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *networkConnectivityImpl) GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error) {
-	var nccPrivateEndpointRule NccPrivateEndpointRule
+	requestPb, pbErr := GetPrivateEndpointRuleRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var nccPrivateEndpointRulePb settingspb.NccPrivateEndpointRulePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &nccPrivateEndpointRule)
-	return &nccPrivateEndpointRule, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&nccPrivateEndpointRulePb,
+	)
+	resp, err := NccPrivateEndpointRuleFromPb(&nccPrivateEndpointRulePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets an array of network connectivity configurations.
@@ -927,13 +2059,33 @@ func (a *networkConnectivityImpl) ListNetworkConnectivityConfigurationsAll(ctx c
 }
 
 func (a *networkConnectivityImpl) internalListNetworkConnectivityConfigurations(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) (*ListNetworkConnectivityConfigurationsResponse, error) {
-	var listNetworkConnectivityConfigurationsResponse ListNetworkConnectivityConfigurationsResponse
+	requestPb, pbErr := ListNetworkConnectivityConfigurationsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listNetworkConnectivityConfigurationsResponsePb settingspb.ListNetworkConnectivityConfigurationsResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listNetworkConnectivityConfigurationsResponse)
-	return &listNetworkConnectivityConfigurationsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listNetworkConnectivityConfigurationsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListNetworkConnectivityConfigurationsResponseFromPb(&listNetworkConnectivityConfigurationsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets an array of private endpoint rules.
@@ -968,27 +2120,64 @@ func (a *networkConnectivityImpl) ListPrivateEndpointRulesAll(ctx context.Contex
 }
 
 func (a *networkConnectivityImpl) internalListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListPrivateEndpointRulesResponse, error) {
-	var listPrivateEndpointRulesResponse ListPrivateEndpointRulesResponse
+	requestPb, pbErr := ListPrivateEndpointRulesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listPrivateEndpointRulesResponsePb settingspb.ListPrivateEndpointRulesResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listPrivateEndpointRulesResponse)
-	return &listPrivateEndpointRulesResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listPrivateEndpointRulesResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListPrivateEndpointRulesResponseFromPb(&listPrivateEndpointRulesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *networkConnectivityImpl) UpdatePrivateEndpointRule(ctx context.Context, request UpdateNccPrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error) {
-	var nccPrivateEndpointRule NccPrivateEndpointRule
+	requestPb, pbErr := UpdateNccPrivateEndpointRuleRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var nccPrivateEndpointRulePb settingspb.NccPrivateEndpointRulePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
 	queryParams := make(map[string]any)
-	if request.UpdateMask != "" {
-		queryParams["update_mask"] = request.UpdateMask
+	if requestPb.UpdateMask != "" {
+		queryParams["update_mask"] = requestPb.UpdateMask
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.PrivateEndpointRule, &nccPrivateEndpointRule)
-	return &nccPrivateEndpointRule, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb.PrivateEndpointRule,
+		&nccPrivateEndpointRulePb,
+	)
+	resp, err := NccPrivateEndpointRuleFromPb(&nccPrivateEndpointRulePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just NetworkPolicies API methods
@@ -997,33 +2186,80 @@ type networkPoliciesImpl struct {
 }
 
 func (a *networkPoliciesImpl) CreateNetworkPolicyRpc(ctx context.Context, request CreateNetworkPolicyRequest) (*AccountNetworkPolicy, error) {
-	var accountNetworkPolicy AccountNetworkPolicy
+	requestPb, pbErr := CreateNetworkPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var accountNetworkPolicyPb settingspb.AccountNetworkPolicyPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-policies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.NetworkPolicy, &accountNetworkPolicy)
-	return &accountNetworkPolicy, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb.NetworkPolicy,
+		&accountNetworkPolicyPb,
+	)
+	resp, err := AccountNetworkPolicyFromPb(&accountNetworkPolicyPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *networkPoliciesImpl) DeleteNetworkPolicyRpc(ctx context.Context, request DeleteNetworkPolicyRequest) error {
+	requestPb, pbErr := DeleteNetworkPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-policies/%v", a.client.ConfiguredAccountID(), request.NetworkPolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *networkPoliciesImpl) GetNetworkPolicyRpc(ctx context.Context, request GetNetworkPolicyRequest) (*AccountNetworkPolicy, error) {
-	var accountNetworkPolicy AccountNetworkPolicy
+	requestPb, pbErr := GetNetworkPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var accountNetworkPolicyPb settingspb.AccountNetworkPolicyPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-policies/%v", a.client.ConfiguredAccountID(), request.NetworkPolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountNetworkPolicy)
-	return &accountNetworkPolicy, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&accountNetworkPolicyPb,
+	)
+	resp, err := AccountNetworkPolicyFromPb(&accountNetworkPolicyPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets an array of network policies.
@@ -1058,24 +2294,61 @@ func (a *networkPoliciesImpl) ListNetworkPoliciesRpcAll(ctx context.Context, req
 }
 
 func (a *networkPoliciesImpl) internalListNetworkPoliciesRpc(ctx context.Context, request ListNetworkPoliciesRequest) (*ListNetworkPoliciesResponse, error) {
-	var listNetworkPoliciesResponse ListNetworkPoliciesResponse
+	requestPb, pbErr := ListNetworkPoliciesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listNetworkPoliciesResponsePb settingspb.ListNetworkPoliciesResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-policies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listNetworkPoliciesResponse)
-	return &listNetworkPoliciesResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listNetworkPoliciesResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListNetworkPoliciesResponseFromPb(&listNetworkPoliciesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *networkPoliciesImpl) UpdateNetworkPolicyRpc(ctx context.Context, request UpdateNetworkPolicyRequest) (*AccountNetworkPolicy, error) {
-	var accountNetworkPolicy AccountNetworkPolicy
+	requestPb, pbErr := UpdateNetworkPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var accountNetworkPolicyPb settingspb.AccountNetworkPolicyPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-policies/%v", a.client.ConfiguredAccountID(), request.NetworkPolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.NetworkPolicy, &accountNetworkPolicy)
-	return &accountNetworkPolicy, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb.NetworkPolicy,
+		&accountNetworkPolicyPb,
+	)
+	resp, err := AccountNetworkPolicyFromPb(&accountNetworkPolicyPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just NotificationDestinations API methods
@@ -1084,33 +2357,80 @@ type notificationDestinationsImpl struct {
 }
 
 func (a *notificationDestinationsImpl) Create(ctx context.Context, request CreateNotificationDestinationRequest) (*NotificationDestination, error) {
-	var notificationDestination NotificationDestination
+	requestPb, pbErr := CreateNotificationDestinationRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var notificationDestinationPb settingspb.NotificationDestinationPb
 	path := "/api/2.0/notification-destinations"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &notificationDestination)
-	return &notificationDestination, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&notificationDestinationPb,
+	)
+	resp, err := NotificationDestinationFromPb(&notificationDestinationPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *notificationDestinationsImpl) Delete(ctx context.Context, request DeleteNotificationDestinationRequest) error {
+	requestPb, pbErr := DeleteNotificationDestinationRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/notification-destinations/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *notificationDestinationsImpl) Get(ctx context.Context, request GetNotificationDestinationRequest) (*NotificationDestination, error) {
-	var notificationDestination NotificationDestination
+	requestPb, pbErr := GetNotificationDestinationRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var notificationDestinationPb settingspb.NotificationDestinationPb
 	path := fmt.Sprintf("/api/2.0/notification-destinations/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &notificationDestination)
-	return &notificationDestination, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&notificationDestinationPb,
+	)
+	resp, err := NotificationDestinationFromPb(&notificationDestinationPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Lists notification destinations.
@@ -1145,24 +2465,61 @@ func (a *notificationDestinationsImpl) ListAll(ctx context.Context, request List
 }
 
 func (a *notificationDestinationsImpl) internalList(ctx context.Context, request ListNotificationDestinationsRequest) (*ListNotificationDestinationsResponse, error) {
-	var listNotificationDestinationsResponse ListNotificationDestinationsResponse
+	requestPb, pbErr := ListNotificationDestinationsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listNotificationDestinationsResponsePb settingspb.ListNotificationDestinationsResponsePb
 	path := "/api/2.0/notification-destinations"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listNotificationDestinationsResponse)
-	return &listNotificationDestinationsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listNotificationDestinationsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListNotificationDestinationsResponseFromPb(&listNotificationDestinationsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *notificationDestinationsImpl) Update(ctx context.Context, request UpdateNotificationDestinationRequest) (*NotificationDestination, error) {
-	var notificationDestination NotificationDestination
+	requestPb, pbErr := UpdateNotificationDestinationRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var notificationDestinationPb settingspb.NotificationDestinationPb
 	path := fmt.Sprintf("/api/2.0/notification-destinations/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &notificationDestination)
-	return &notificationDestination, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&notificationDestinationPb,
+	)
+	resp, err := NotificationDestinationFromPb(&notificationDestinationPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just PersonalCompute API methods
@@ -1171,34 +2528,85 @@ type personalComputeImpl struct {
 }
 
 func (a *personalComputeImpl) Delete(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
-	var deletePersonalComputeSettingResponse DeletePersonalComputeSettingResponse
+	requestPb, pbErr := DeletePersonalComputeSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deletePersonalComputeSettingResponsePb settingspb.DeletePersonalComputeSettingResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deletePersonalComputeSettingResponse)
-	return &deletePersonalComputeSettingResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deletePersonalComputeSettingResponsePb,
+	)
+	resp, err := DeletePersonalComputeSettingResponseFromPb(&deletePersonalComputeSettingResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *personalComputeImpl) Get(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
-	var personalComputeSetting PersonalComputeSetting
+	requestPb, pbErr := GetPersonalComputeSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var personalComputeSettingPb settingspb.PersonalComputeSettingPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &personalComputeSetting)
-	return &personalComputeSetting, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&personalComputeSettingPb,
+	)
+	resp, err := PersonalComputeSettingFromPb(&personalComputeSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *personalComputeImpl) Update(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
-	var personalComputeSetting PersonalComputeSetting
+	requestPb, pbErr := UpdatePersonalComputeSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var personalComputeSettingPb settingspb.PersonalComputeSettingPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &personalComputeSetting)
-	return &personalComputeSetting, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&personalComputeSettingPb,
+	)
+	resp, err := PersonalComputeSettingFromPb(&personalComputeSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just RestrictWorkspaceAdmins API methods
@@ -1207,34 +2615,85 @@ type restrictWorkspaceAdminsImpl struct {
 }
 
 func (a *restrictWorkspaceAdminsImpl) Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
-	var deleteRestrictWorkspaceAdminsSettingResponse DeleteRestrictWorkspaceAdminsSettingResponse
+	requestPb, pbErr := DeleteRestrictWorkspaceAdminsSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteRestrictWorkspaceAdminsSettingResponsePb settingspb.DeleteRestrictWorkspaceAdminsSettingResponsePb
 	path := "/api/2.0/settings/types/restrict_workspace_admins/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteRestrictWorkspaceAdminsSettingResponse)
-	return &deleteRestrictWorkspaceAdminsSettingResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteRestrictWorkspaceAdminsSettingResponsePb,
+	)
+	resp, err := DeleteRestrictWorkspaceAdminsSettingResponseFromPb(&deleteRestrictWorkspaceAdminsSettingResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *restrictWorkspaceAdminsImpl) Get(ctx context.Context, request GetRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
-	var restrictWorkspaceAdminsSetting RestrictWorkspaceAdminsSetting
+	requestPb, pbErr := GetRestrictWorkspaceAdminsSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var restrictWorkspaceAdminsSettingPb settingspb.RestrictWorkspaceAdminsSettingPb
 	path := "/api/2.0/settings/types/restrict_workspace_admins/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &restrictWorkspaceAdminsSetting)
-	return &restrictWorkspaceAdminsSetting, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&restrictWorkspaceAdminsSettingPb,
+	)
+	resp, err := RestrictWorkspaceAdminsSettingFromPb(&restrictWorkspaceAdminsSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *restrictWorkspaceAdminsImpl) Update(ctx context.Context, request UpdateRestrictWorkspaceAdminsSettingRequest) (*RestrictWorkspaceAdminsSetting, error) {
-	var restrictWorkspaceAdminsSetting RestrictWorkspaceAdminsSetting
+	requestPb, pbErr := UpdateRestrictWorkspaceAdminsSettingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var restrictWorkspaceAdminsSettingPb settingspb.RestrictWorkspaceAdminsSettingPb
 	path := "/api/2.0/settings/types/restrict_workspace_admins/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &restrictWorkspaceAdminsSetting)
-	return &restrictWorkspaceAdminsSetting, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&restrictWorkspaceAdminsSettingPb,
+	)
+	resp, err := RestrictWorkspaceAdminsSettingFromPb(&restrictWorkspaceAdminsSettingPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just Settings API methods
@@ -1248,34 +2707,85 @@ type sqlResultsDownloadImpl struct {
 }
 
 func (a *sqlResultsDownloadImpl) Delete(ctx context.Context, request DeleteSqlResultsDownloadRequest) (*DeleteSqlResultsDownloadResponse, error) {
-	var deleteSqlResultsDownloadResponse DeleteSqlResultsDownloadResponse
+	requestPb, pbErr := DeleteSqlResultsDownloadRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteSqlResultsDownloadResponsePb settingspb.DeleteSqlResultsDownloadResponsePb
 	path := "/api/2.0/settings/types/sql_results_download/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteSqlResultsDownloadResponse)
-	return &deleteSqlResultsDownloadResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteSqlResultsDownloadResponsePb,
+	)
+	resp, err := DeleteSqlResultsDownloadResponseFromPb(&deleteSqlResultsDownloadResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *sqlResultsDownloadImpl) Get(ctx context.Context, request GetSqlResultsDownloadRequest) (*SqlResultsDownload, error) {
-	var sqlResultsDownload SqlResultsDownload
+	requestPb, pbErr := GetSqlResultsDownloadRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var sqlResultsDownloadPb settingspb.SqlResultsDownloadPb
 	path := "/api/2.0/settings/types/sql_results_download/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &sqlResultsDownload)
-	return &sqlResultsDownload, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&sqlResultsDownloadPb,
+	)
+	resp, err := SqlResultsDownloadFromPb(&sqlResultsDownloadPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *sqlResultsDownloadImpl) Update(ctx context.Context, request UpdateSqlResultsDownloadRequest) (*SqlResultsDownload, error) {
-	var sqlResultsDownload SqlResultsDownload
+	requestPb, pbErr := UpdateSqlResultsDownloadRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var sqlResultsDownloadPb settingspb.SqlResultsDownloadPb
 	path := "/api/2.0/settings/types/sql_results_download/names/default"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &sqlResultsDownload)
-	return &sqlResultsDownload, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&sqlResultsDownloadPb,
+	)
+	resp, err := SqlResultsDownloadFromPb(&sqlResultsDownloadPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just TokenManagement API methods
@@ -1284,52 +2794,125 @@ type tokenManagementImpl struct {
 }
 
 func (a *tokenManagementImpl) CreateOboToken(ctx context.Context, request CreateOboTokenRequest) (*CreateOboTokenResponse, error) {
-	var createOboTokenResponse CreateOboTokenResponse
+	requestPb, pbErr := CreateOboTokenRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createOboTokenResponsePb settingspb.CreateOboTokenResponsePb
 	path := "/api/2.0/token-management/on-behalf-of/tokens"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createOboTokenResponse)
-	return &createOboTokenResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createOboTokenResponsePb,
+	)
+	resp, err := CreateOboTokenResponseFromPb(&createOboTokenResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *tokenManagementImpl) Delete(ctx context.Context, request DeleteTokenManagementRequest) error {
+	requestPb, pbErr := DeleteTokenManagementRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", request.TokenId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *tokenManagementImpl) Get(ctx context.Context, request GetTokenManagementRequest) (*GetTokenResponse, error) {
-	var getTokenResponse GetTokenResponse
+	requestPb, pbErr := GetTokenManagementRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getTokenResponsePb settingspb.GetTokenResponsePb
 	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", request.TokenId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getTokenResponse)
-	return &getTokenResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getTokenResponsePb,
+	)
+	resp, err := GetTokenResponseFromPb(&getTokenResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *tokenManagementImpl) GetPermissionLevels(ctx context.Context) (*GetTokenPermissionLevelsResponse, error) {
-	var getTokenPermissionLevelsResponse GetTokenPermissionLevelsResponse
+
+	var getTokenPermissionLevelsResponsePb settingspb.GetTokenPermissionLevelsResponsePb
 	path := "/api/2.0/permissions/authorization/tokens/permissionLevels"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getTokenPermissionLevelsResponse)
-	return &getTokenPermissionLevelsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&getTokenPermissionLevelsResponsePb,
+	)
+	resp, err := GetTokenPermissionLevelsResponseFromPb(&getTokenPermissionLevelsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *tokenManagementImpl) GetPermissions(ctx context.Context) (*TokenPermissions, error) {
-	var tokenPermissions TokenPermissions
+
+	var tokenPermissionsPb settingspb.TokenPermissionsPb
 	path := "/api/2.0/permissions/authorization/tokens"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &tokenPermissions)
-	return &tokenPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&tokenPermissionsPb,
+	)
+	resp, err := TokenPermissionsFromPb(&tokenPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Lists all tokens associated with the specified workspace or user.
@@ -1358,35 +2941,89 @@ func (a *tokenManagementImpl) ListAll(ctx context.Context, request ListTokenMana
 }
 
 func (a *tokenManagementImpl) internalList(ctx context.Context, request ListTokenManagementRequest) (*ListTokensResponse, error) {
-	var listTokensResponse ListTokensResponse
+	requestPb, pbErr := ListTokenManagementRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listTokensResponsePb settingspb.ListTokensResponsePb
 	path := "/api/2.0/token-management/tokens"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listTokensResponse)
-	return &listTokensResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listTokensResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListTokensResponseFromPb(&listTokensResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *tokenManagementImpl) SetPermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
-	var tokenPermissions TokenPermissions
+	requestPb, pbErr := TokenPermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var tokenPermissionsPb settingspb.TokenPermissionsPb
 	path := "/api/2.0/permissions/authorization/tokens"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &tokenPermissions)
-	return &tokenPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&tokenPermissionsPb,
+	)
+	resp, err := TokenPermissionsFromPb(&tokenPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *tokenManagementImpl) UpdatePermissions(ctx context.Context, request TokenPermissionsRequest) (*TokenPermissions, error) {
-	var tokenPermissions TokenPermissions
+	requestPb, pbErr := TokenPermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var tokenPermissionsPb settingspb.TokenPermissionsPb
 	path := "/api/2.0/permissions/authorization/tokens"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &tokenPermissions)
-	return &tokenPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&tokenPermissionsPb,
+	)
+	resp, err := TokenPermissionsFromPb(&tokenPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just Tokens API methods
@@ -1395,23 +3032,53 @@ type tokensImpl struct {
 }
 
 func (a *tokensImpl) Create(ctx context.Context, request CreateTokenRequest) (*CreateTokenResponse, error) {
-	var createTokenResponse CreateTokenResponse
+	requestPb, pbErr := CreateTokenRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createTokenResponsePb settingspb.CreateTokenResponsePb
 	path := "/api/2.0/token/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createTokenResponse)
-	return &createTokenResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createTokenResponsePb,
+	)
+	resp, err := CreateTokenResponseFromPb(&createTokenResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *tokensImpl) Delete(ctx context.Context, request RevokeTokenRequest) error {
+	requestPb, pbErr := RevokeTokenRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/token/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
@@ -1442,13 +3109,29 @@ func (a *tokensImpl) ListAll(ctx context.Context) ([]PublicTokenInfo, error) {
 }
 
 func (a *tokensImpl) internalList(ctx context.Context) (*ListPublicTokensResponse, error) {
-	var listPublicTokensResponse ListPublicTokensResponse
+
+	var listPublicTokensResponsePb settingspb.ListPublicTokensResponsePb
 	path := "/api/2.0/token/list"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listPublicTokensResponse)
-	return &listPublicTokensResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listPublicTokensResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListPublicTokensResponseFromPb(&listPublicTokensResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just WorkspaceConf API methods
@@ -1457,21 +3140,48 @@ type workspaceConfImpl struct {
 }
 
 func (a *workspaceConfImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*map[string]string, error) {
-	var workspaceConf map[string]string
+	requestPb, pbErr := GetStatusRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var workspaceConfPb map[string]string
 	path := "/api/2.0/workspace-conf"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &workspaceConf)
-	return &workspaceConf, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&workspaceConfPb,
+	)
+	resp := &workspaceConfPb
+
+	return resp, err
 }
 
 func (a *workspaceConfImpl) SetStatus(ctx context.Context, request WorkspaceConf) error {
+	requestPb, pbErr := WorkspaceConfToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/workspace-conf"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
@@ -1481,22 +3191,56 @@ type workspaceNetworkConfigurationImpl struct {
 }
 
 func (a *workspaceNetworkConfigurationImpl) GetWorkspaceNetworkOptionRpc(ctx context.Context, request GetWorkspaceNetworkOptionRequest) (*WorkspaceNetworkOption, error) {
-	var workspaceNetworkOption WorkspaceNetworkOption
+	requestPb, pbErr := GetWorkspaceNetworkOptionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var workspaceNetworkOptionPb settingspb.WorkspaceNetworkOptionPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/network", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &workspaceNetworkOption)
-	return &workspaceNetworkOption, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&workspaceNetworkOptionPb,
+	)
+	resp, err := WorkspaceNetworkOptionFromPb(&workspaceNetworkOptionPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *workspaceNetworkConfigurationImpl) UpdateWorkspaceNetworkOptionRpc(ctx context.Context, request UpdateWorkspaceNetworkOptionRequest) (*WorkspaceNetworkOption, error) {
-	var workspaceNetworkOption WorkspaceNetworkOption
+	requestPb, pbErr := UpdateWorkspaceNetworkOptionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var workspaceNetworkOptionPb settingspb.WorkspaceNetworkOptionPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/network", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.WorkspaceNetworkOption, &workspaceNetworkOption)
-	return &workspaceNetworkOption, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb.WorkspaceNetworkOption,
+		&workspaceNetworkOptionPb,
+	)
+	resp, err := WorkspaceNetworkOptionFromPb(&workspaceNetworkOptionPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }

@@ -9,6 +9,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/service/marketplace/marketplacepb"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
@@ -49,13 +50,33 @@ func (a *consumerFulfillmentsImpl) GetAll(ctx context.Context, request GetListin
 }
 
 func (a *consumerFulfillmentsImpl) internalGet(ctx context.Context, request GetListingContentMetadataRequest) (*GetListingContentMetadataResponse, error) {
-	var getListingContentMetadataResponse GetListingContentMetadataResponse
+	requestPb, pbErr := GetListingContentMetadataRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getListingContentMetadataResponsePb marketplacepb.GetListingContentMetadataResponsePb
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/content", request.ListingId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getListingContentMetadataResponse)
-	return &getListingContentMetadataResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getListingContentMetadataResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GetListingContentMetadataResponseFromPb(&getListingContentMetadataResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Get all listings fulfillments associated with a listing. A _fulfillment_ is a
@@ -98,13 +119,33 @@ func (a *consumerFulfillmentsImpl) ListAll(ctx context.Context, request ListFulf
 }
 
 func (a *consumerFulfillmentsImpl) internalList(ctx context.Context, request ListFulfillmentsRequest) (*ListFulfillmentsResponse, error) {
-	var listFulfillmentsResponse ListFulfillmentsResponse
+	requestPb, pbErr := ListFulfillmentsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listFulfillmentsResponsePb marketplacepb.ListFulfillmentsResponsePb
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/fulfillments", request.ListingId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFulfillmentsResponse)
-	return &listFulfillmentsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listFulfillmentsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListFulfillmentsResponseFromPb(&listFulfillmentsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ConsumerInstallations API methods
@@ -113,22 +154,52 @@ type consumerInstallationsImpl struct {
 }
 
 func (a *consumerInstallationsImpl) Create(ctx context.Context, request CreateInstallationRequest) (*Installation, error) {
-	var installation Installation
+	requestPb, pbErr := CreateInstallationRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var installationPb marketplacepb.InstallationPb
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations", request.ListingId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &installation)
-	return &installation, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&installationPb,
+	)
+	resp, err := InstallationFromPb(&installationPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *consumerInstallationsImpl) Delete(ctx context.Context, request DeleteInstallationRequest) error {
+	requestPb, pbErr := DeleteInstallationRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations/%v", request.ListingId, request.InstallationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
@@ -164,13 +235,33 @@ func (a *consumerInstallationsImpl) ListAll(ctx context.Context, request ListAll
 }
 
 func (a *consumerInstallationsImpl) internalList(ctx context.Context, request ListAllInstallationsRequest) (*ListAllInstallationsResponse, error) {
-	var listAllInstallationsResponse ListAllInstallationsResponse
+	requestPb, pbErr := ListAllInstallationsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listAllInstallationsResponsePb marketplacepb.ListAllInstallationsResponsePb
 	path := "/api/2.1/marketplace-consumer/installations"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAllInstallationsResponse)
-	return &listAllInstallationsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listAllInstallationsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListAllInstallationsResponseFromPb(&listAllInstallationsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List all installations for a particular listing.
@@ -205,24 +296,61 @@ func (a *consumerInstallationsImpl) ListListingInstallationsAll(ctx context.Cont
 }
 
 func (a *consumerInstallationsImpl) internalListListingInstallations(ctx context.Context, request ListInstallationsRequest) (*ListInstallationsResponse, error) {
-	var listInstallationsResponse ListInstallationsResponse
+	requestPb, pbErr := ListInstallationsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listInstallationsResponsePb marketplacepb.ListInstallationsResponsePb
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations", request.ListingId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listInstallationsResponse)
-	return &listInstallationsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listInstallationsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListInstallationsResponseFromPb(&listInstallationsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *consumerInstallationsImpl) Update(ctx context.Context, request UpdateInstallationRequest) (*UpdateInstallationResponse, error) {
-	var updateInstallationResponse UpdateInstallationResponse
+	requestPb, pbErr := UpdateInstallationRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var updateInstallationResponsePb marketplacepb.UpdateInstallationResponsePb
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations/%v", request.ListingId, request.InstallationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateInstallationResponse)
-	return &updateInstallationResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&updateInstallationResponsePb,
+	)
+	resp, err := UpdateInstallationResponseFromPb(&updateInstallationResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ConsumerListings API methods
@@ -231,23 +359,57 @@ type consumerListingsImpl struct {
 }
 
 func (a *consumerListingsImpl) BatchGet(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error) {
-	var batchGetListingsResponse BatchGetListingsResponse
+	requestPb, pbErr := BatchGetListingsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var batchGetListingsResponsePb marketplacepb.BatchGetListingsResponsePb
 	path := "/api/2.1/marketplace-consumer/listings:batchGet"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &batchGetListingsResponse)
-	return &batchGetListingsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&batchGetListingsResponsePb,
+	)
+	resp, err := BatchGetListingsResponseFromPb(&batchGetListingsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *consumerListingsImpl) Get(ctx context.Context, request GetListingRequest) (*GetListingResponse, error) {
-	var getListingResponse GetListingResponse
+	requestPb, pbErr := GetListingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getListingResponsePb marketplacepb.GetListingResponsePb
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getListingResponse)
-	return &getListingResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getListingResponsePb,
+	)
+	resp, err := GetListingResponseFromPb(&getListingResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List all published listings in the Databricks Marketplace that the consumer
@@ -284,13 +446,33 @@ func (a *consumerListingsImpl) ListAll(ctx context.Context, request ListListings
 }
 
 func (a *consumerListingsImpl) internalList(ctx context.Context, request ListListingsRequest) (*ListListingsResponse, error) {
-	var listListingsResponse ListListingsResponse
+	requestPb, pbErr := ListListingsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listListingsResponsePb marketplacepb.ListListingsResponsePb
 	path := "/api/2.1/marketplace-consumer/listings"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listListingsResponse)
-	return &listListingsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listListingsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListListingsResponseFromPb(&listListingsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Search published listings in the Databricks Marketplace that the consumer has
@@ -329,13 +511,33 @@ func (a *consumerListingsImpl) SearchAll(ctx context.Context, request SearchList
 }
 
 func (a *consumerListingsImpl) internalSearch(ctx context.Context, request SearchListingsRequest) (*SearchListingsResponse, error) {
-	var searchListingsResponse SearchListingsResponse
+	requestPb, pbErr := SearchListingsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var searchListingsResponsePb marketplacepb.SearchListingsResponsePb
 	path := "/api/2.1/marketplace-consumer/search-listings"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &searchListingsResponse)
-	return &searchListingsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&searchListingsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := SearchListingsResponseFromPb(&searchListingsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ConsumerPersonalizationRequests API methods
@@ -344,24 +546,58 @@ type consumerPersonalizationRequestsImpl struct {
 }
 
 func (a *consumerPersonalizationRequestsImpl) Create(ctx context.Context, request CreatePersonalizationRequest) (*CreatePersonalizationRequestResponse, error) {
-	var createPersonalizationRequestResponse CreatePersonalizationRequestResponse
+	requestPb, pbErr := CreatePersonalizationRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createPersonalizationRequestResponsePb marketplacepb.CreatePersonalizationRequestResponsePb
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/personalization-requests", request.ListingId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createPersonalizationRequestResponse)
-	return &createPersonalizationRequestResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createPersonalizationRequestResponsePb,
+	)
+	resp, err := CreatePersonalizationRequestResponseFromPb(&createPersonalizationRequestResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *consumerPersonalizationRequestsImpl) Get(ctx context.Context, request GetPersonalizationRequestRequest) (*GetPersonalizationRequestResponse, error) {
-	var getPersonalizationRequestResponse GetPersonalizationRequestResponse
+	requestPb, pbErr := GetPersonalizationRequestRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getPersonalizationRequestResponsePb marketplacepb.GetPersonalizationRequestResponsePb
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/personalization-requests", request.ListingId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPersonalizationRequestResponse)
-	return &getPersonalizationRequestResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getPersonalizationRequestResponsePb,
+	)
+	resp, err := GetPersonalizationRequestResponseFromPb(&getPersonalizationRequestResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List personalization requests for a consumer across all listings.
@@ -396,13 +632,33 @@ func (a *consumerPersonalizationRequestsImpl) ListAll(ctx context.Context, reque
 }
 
 func (a *consumerPersonalizationRequestsImpl) internalList(ctx context.Context, request ListAllPersonalizationRequestsRequest) (*ListAllPersonalizationRequestsResponse, error) {
-	var listAllPersonalizationRequestsResponse ListAllPersonalizationRequestsResponse
+	requestPb, pbErr := ListAllPersonalizationRequestsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listAllPersonalizationRequestsResponsePb marketplacepb.ListAllPersonalizationRequestsResponsePb
 	path := "/api/2.1/marketplace-consumer/personalization-requests"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAllPersonalizationRequestsResponse)
-	return &listAllPersonalizationRequestsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listAllPersonalizationRequestsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListAllPersonalizationRequestsResponseFromPb(&listAllPersonalizationRequestsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ConsumerProviders API methods
@@ -411,37 +667,71 @@ type consumerProvidersImpl struct {
 }
 
 func (a *consumerProvidersImpl) BatchGet(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error) {
-	var batchGetProvidersResponse BatchGetProvidersResponse
+	requestPb, pbErr := BatchGetProvidersRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var batchGetProvidersResponsePb marketplacepb.BatchGetProvidersResponsePb
 	path := "/api/2.1/marketplace-consumer/providers:batchGet"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &batchGetProvidersResponse)
-	return &batchGetProvidersResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&batchGetProvidersResponsePb,
+	)
+	resp, err := BatchGetProvidersResponseFromPb(&batchGetProvidersResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *consumerProvidersImpl) Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
-	var getProviderResponse GetProviderResponse
+	requestPb, pbErr := GetProviderRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getProviderResponsePb marketplacepb.GetProviderResponsePb
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/providers/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getProviderResponse)
-	return &getProviderResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getProviderResponsePb,
+	)
+	resp, err := GetProviderResponseFromPb(&getProviderResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List all providers in the Databricks Marketplace with at least one visible
 // listing.
-func (a *consumerProvidersImpl) List(ctx context.Context, request ListConsumerProvidersRequest) listing.Iterator[ProviderInfo] {
+func (a *consumerProvidersImpl) List(ctx context.Context, request ListProvidersRequest) listing.Iterator[ProviderInfo] {
 
-	getNextPage := func(ctx context.Context, req ListConsumerProvidersRequest) (*ListProvidersResponse, error) {
+	getNextPage := func(ctx context.Context, req ListProvidersRequest) (*ListProvidersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
 	}
 	getItems := func(resp *ListProvidersResponse) []ProviderInfo {
 		return resp.Providers
 	}
-	getNextReq := func(resp *ListProvidersResponse) *ListConsumerProvidersRequest {
+	getNextReq := func(resp *ListProvidersResponse) *ListProvidersRequest {
 		if resp.NextPageToken == "" {
 			return nil
 		}
@@ -458,19 +748,39 @@ func (a *consumerProvidersImpl) List(ctx context.Context, request ListConsumerPr
 
 // List all providers in the Databricks Marketplace with at least one visible
 // listing.
-func (a *consumerProvidersImpl) ListAll(ctx context.Context, request ListConsumerProvidersRequest) ([]ProviderInfo, error) {
+func (a *consumerProvidersImpl) ListAll(ctx context.Context, request ListProvidersRequest) ([]ProviderInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ProviderInfo](ctx, iterator)
 }
 
-func (a *consumerProvidersImpl) internalList(ctx context.Context, request ListConsumerProvidersRequest) (*ListProvidersResponse, error) {
-	var listProvidersResponse ListProvidersResponse
+func (a *consumerProvidersImpl) internalList(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error) {
+	requestPb, pbErr := ListProvidersRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listProvidersResponsePb marketplacepb.ListProvidersResponsePb
 	path := "/api/2.1/marketplace-consumer/providers"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProvidersResponse)
-	return &listProvidersResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listProvidersResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListProvidersResponseFromPb(&listProvidersResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ProviderExchangeFilters API methods
@@ -479,22 +789,52 @@ type providerExchangeFiltersImpl struct {
 }
 
 func (a *providerExchangeFiltersImpl) Create(ctx context.Context, request CreateExchangeFilterRequest) (*CreateExchangeFilterResponse, error) {
-	var createExchangeFilterResponse CreateExchangeFilterResponse
+	requestPb, pbErr := CreateExchangeFilterRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createExchangeFilterResponsePb marketplacepb.CreateExchangeFilterResponsePb
 	path := "/api/2.0/marketplace-exchange/filters"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createExchangeFilterResponse)
-	return &createExchangeFilterResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createExchangeFilterResponsePb,
+	)
+	resp, err := CreateExchangeFilterResponseFromPb(&createExchangeFilterResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerExchangeFiltersImpl) Delete(ctx context.Context, request DeleteExchangeFilterRequest) error {
+	requestPb, pbErr := DeleteExchangeFilterRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/filters/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
@@ -530,24 +870,61 @@ func (a *providerExchangeFiltersImpl) ListAll(ctx context.Context, request ListE
 }
 
 func (a *providerExchangeFiltersImpl) internalList(ctx context.Context, request ListExchangeFiltersRequest) (*ListExchangeFiltersResponse, error) {
-	var listExchangeFiltersResponse ListExchangeFiltersResponse
+	requestPb, pbErr := ListExchangeFiltersRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listExchangeFiltersResponsePb marketplacepb.ListExchangeFiltersResponsePb
 	path := "/api/2.0/marketplace-exchange/filters"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExchangeFiltersResponse)
-	return &listExchangeFiltersResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listExchangeFiltersResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListExchangeFiltersResponseFromPb(&listExchangeFiltersResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerExchangeFiltersImpl) Update(ctx context.Context, request UpdateExchangeFilterRequest) (*UpdateExchangeFilterResponse, error) {
-	var updateExchangeFilterResponse UpdateExchangeFilterResponse
+	requestPb, pbErr := UpdateExchangeFilterRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var updateExchangeFilterResponsePb marketplacepb.UpdateExchangeFilterResponsePb
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/filters/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateExchangeFilterResponse)
-	return &updateExchangeFilterResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&updateExchangeFilterResponsePb,
+	)
+	resp, err := UpdateExchangeFilterResponseFromPb(&updateExchangeFilterResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ProviderExchanges API methods
@@ -556,53 +933,130 @@ type providerExchangesImpl struct {
 }
 
 func (a *providerExchangesImpl) AddListingToExchange(ctx context.Context, request AddExchangeForListingRequest) (*AddExchangeForListingResponse, error) {
-	var addExchangeForListingResponse AddExchangeForListingResponse
+	requestPb, pbErr := AddExchangeForListingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var addExchangeForListingResponsePb marketplacepb.AddExchangeForListingResponsePb
 	path := "/api/2.0/marketplace-exchange/exchanges-for-listing"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &addExchangeForListingResponse)
-	return &addExchangeForListingResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&addExchangeForListingResponsePb,
+	)
+	resp, err := AddExchangeForListingResponseFromPb(&addExchangeForListingResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerExchangesImpl) Create(ctx context.Context, request CreateExchangeRequest) (*CreateExchangeResponse, error) {
-	var createExchangeResponse CreateExchangeResponse
+	requestPb, pbErr := CreateExchangeRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createExchangeResponsePb marketplacepb.CreateExchangeResponsePb
 	path := "/api/2.0/marketplace-exchange/exchanges"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createExchangeResponse)
-	return &createExchangeResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createExchangeResponsePb,
+	)
+	resp, err := CreateExchangeResponseFromPb(&createExchangeResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerExchangesImpl) Delete(ctx context.Context, request DeleteExchangeRequest) error {
+	requestPb, pbErr := DeleteExchangeRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *providerExchangesImpl) DeleteListingFromExchange(ctx context.Context, request RemoveExchangeForListingRequest) error {
+	requestPb, pbErr := RemoveExchangeForListingRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges-for-listing/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *providerExchangesImpl) Get(ctx context.Context, request GetExchangeRequest) (*GetExchangeResponse, error) {
-	var getExchangeResponse GetExchangeResponse
+	requestPb, pbErr := GetExchangeRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getExchangeResponsePb marketplacepb.GetExchangeResponsePb
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getExchangeResponse)
-	return &getExchangeResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getExchangeResponsePb,
+	)
+	resp, err := GetExchangeResponseFromPb(&getExchangeResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List exchanges visible to provider
@@ -637,13 +1091,33 @@ func (a *providerExchangesImpl) ListAll(ctx context.Context, request ListExchang
 }
 
 func (a *providerExchangesImpl) internalList(ctx context.Context, request ListExchangesRequest) (*ListExchangesResponse, error) {
-	var listExchangesResponse ListExchangesResponse
+	requestPb, pbErr := ListExchangesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listExchangesResponsePb marketplacepb.ListExchangesResponsePb
 	path := "/api/2.0/marketplace-exchange/exchanges"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExchangesResponse)
-	return &listExchangesResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listExchangesResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListExchangesResponseFromPb(&listExchangesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List exchanges associated with a listing
@@ -678,13 +1152,33 @@ func (a *providerExchangesImpl) ListExchangesForListingAll(ctx context.Context, 
 }
 
 func (a *providerExchangesImpl) internalListExchangesForListing(ctx context.Context, request ListExchangesForListingRequest) (*ListExchangesForListingResponse, error) {
-	var listExchangesForListingResponse ListExchangesForListingResponse
+	requestPb, pbErr := ListExchangesForListingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listExchangesForListingResponsePb marketplacepb.ListExchangesForListingResponsePb
 	path := "/api/2.0/marketplace-exchange/exchanges-for-listing"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExchangesForListingResponse)
-	return &listExchangesForListingResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listExchangesForListingResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListExchangesForListingResponseFromPb(&listExchangesForListingResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List listings associated with an exchange
@@ -719,24 +1213,61 @@ func (a *providerExchangesImpl) ListListingsForExchangeAll(ctx context.Context, 
 }
 
 func (a *providerExchangesImpl) internalListListingsForExchange(ctx context.Context, request ListListingsForExchangeRequest) (*ListListingsForExchangeResponse, error) {
-	var listListingsForExchangeResponse ListListingsForExchangeResponse
+	requestPb, pbErr := ListListingsForExchangeRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listListingsForExchangeResponsePb marketplacepb.ListListingsForExchangeResponsePb
 	path := "/api/2.0/marketplace-exchange/listings-for-exchange"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listListingsForExchangeResponse)
-	return &listListingsForExchangeResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listListingsForExchangeResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListListingsForExchangeResponseFromPb(&listListingsForExchangeResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerExchangesImpl) Update(ctx context.Context, request UpdateExchangeRequest) (*UpdateExchangeResponse, error) {
-	var updateExchangeResponse UpdateExchangeResponse
+	requestPb, pbErr := UpdateExchangeRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var updateExchangeResponsePb marketplacepb.UpdateExchangeResponsePb
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateExchangeResponse)
-	return &updateExchangeResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&updateExchangeResponsePb,
+	)
+	resp, err := UpdateExchangeResponseFromPb(&updateExchangeResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ProviderFiles API methods
@@ -745,33 +1276,80 @@ type providerFilesImpl struct {
 }
 
 func (a *providerFilesImpl) Create(ctx context.Context, request CreateFileRequest) (*CreateFileResponse, error) {
-	var createFileResponse CreateFileResponse
+	requestPb, pbErr := CreateFileRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createFileResponsePb marketplacepb.CreateFileResponsePb
 	path := "/api/2.0/marketplace-provider/files"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createFileResponse)
-	return &createFileResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createFileResponsePb,
+	)
+	resp, err := CreateFileResponseFromPb(&createFileResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerFilesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
+	requestPb, pbErr := DeleteFileRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/files/%v", request.FileId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *providerFilesImpl) Get(ctx context.Context, request GetFileRequest) (*GetFileResponse, error) {
-	var getFileResponse GetFileResponse
+	requestPb, pbErr := GetFileRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getFileResponsePb marketplacepb.GetFileResponsePb
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/files/%v", request.FileId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getFileResponse)
-	return &getFileResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getFileResponsePb,
+	)
+	resp, err := GetFileResponseFromPb(&getFileResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List files attached to a parent entity.
@@ -806,13 +1384,33 @@ func (a *providerFilesImpl) ListAll(ctx context.Context, request ListFilesReques
 }
 
 func (a *providerFilesImpl) internalList(ctx context.Context, request ListFilesRequest) (*ListFilesResponse, error) {
-	var listFilesResponse ListFilesResponse
+	requestPb, pbErr := ListFilesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listFilesResponsePb marketplacepb.ListFilesResponsePb
 	path := "/api/2.0/marketplace-provider/files"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFilesResponse)
-	return &listFilesResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listFilesResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListFilesResponseFromPb(&listFilesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ProviderListings API methods
@@ -821,33 +1419,80 @@ type providerListingsImpl struct {
 }
 
 func (a *providerListingsImpl) Create(ctx context.Context, request CreateListingRequest) (*CreateListingResponse, error) {
-	var createListingResponse CreateListingResponse
+	requestPb, pbErr := CreateListingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createListingResponsePb marketplacepb.CreateListingResponsePb
 	path := "/api/2.0/marketplace-provider/listing"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createListingResponse)
-	return &createListingResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createListingResponsePb,
+	)
+	resp, err := CreateListingResponseFromPb(&createListingResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerListingsImpl) Delete(ctx context.Context, request DeleteListingRequest) error {
+	requestPb, pbErr := DeleteListingRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *providerListingsImpl) Get(ctx context.Context, request GetListingRequest) (*GetListingResponse, error) {
-	var getListingResponse GetListingResponse
+	requestPb, pbErr := GetListingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getListingResponsePb marketplacepb.GetListingResponsePb
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getListingResponse)
-	return &getListingResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getListingResponsePb,
+	)
+	resp, err := GetListingResponseFromPb(&getListingResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List listings owned by this provider
@@ -882,24 +1527,61 @@ func (a *providerListingsImpl) ListAll(ctx context.Context, request GetListingsR
 }
 
 func (a *providerListingsImpl) internalList(ctx context.Context, request GetListingsRequest) (*GetListingsResponse, error) {
-	var getListingsResponse GetListingsResponse
+	requestPb, pbErr := GetListingsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getListingsResponsePb marketplacepb.GetListingsResponsePb
 	path := "/api/2.0/marketplace-provider/listings"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getListingsResponse)
-	return &getListingsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getListingsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GetListingsResponseFromPb(&getListingsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerListingsImpl) Update(ctx context.Context, request UpdateListingRequest) (*UpdateListingResponse, error) {
-	var updateListingResponse UpdateListingResponse
+	requestPb, pbErr := UpdateListingRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var updateListingResponsePb marketplacepb.UpdateListingResponsePb
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateListingResponse)
-	return &updateListingResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&updateListingResponsePb,
+	)
+	resp, err := UpdateListingResponseFromPb(&updateListingResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ProviderPersonalizationRequests API methods
@@ -941,24 +1623,61 @@ func (a *providerPersonalizationRequestsImpl) ListAll(ctx context.Context, reque
 }
 
 func (a *providerPersonalizationRequestsImpl) internalList(ctx context.Context, request ListAllPersonalizationRequestsRequest) (*ListAllPersonalizationRequestsResponse, error) {
-	var listAllPersonalizationRequestsResponse ListAllPersonalizationRequestsResponse
+	requestPb, pbErr := ListAllPersonalizationRequestsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listAllPersonalizationRequestsResponsePb marketplacepb.ListAllPersonalizationRequestsResponsePb
 	path := "/api/2.0/marketplace-provider/personalization-requests"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAllPersonalizationRequestsResponse)
-	return &listAllPersonalizationRequestsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listAllPersonalizationRequestsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListAllPersonalizationRequestsResponseFromPb(&listAllPersonalizationRequestsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerPersonalizationRequestsImpl) Update(ctx context.Context, request UpdatePersonalizationRequestRequest) (*UpdatePersonalizationRequestResponse, error) {
-	var updatePersonalizationRequestResponse UpdatePersonalizationRequestResponse
+	requestPb, pbErr := UpdatePersonalizationRequestRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var updatePersonalizationRequestResponsePb marketplacepb.UpdatePersonalizationRequestResponsePb
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v/personalization-requests/%v/request-status", request.ListingId, request.RequestId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updatePersonalizationRequestResponse)
-	return &updatePersonalizationRequestResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&updatePersonalizationRequestResponsePb,
+	)
+	resp, err := UpdatePersonalizationRequestResponseFromPb(&updatePersonalizationRequestResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ProviderProviderAnalyticsDashboards API methods
@@ -967,44 +1686,100 @@ type providerProviderAnalyticsDashboardsImpl struct {
 }
 
 func (a *providerProviderAnalyticsDashboardsImpl) Create(ctx context.Context) (*ProviderAnalyticsDashboard, error) {
-	var providerAnalyticsDashboard ProviderAnalyticsDashboard
+
+	var providerAnalyticsDashboardPb marketplacepb.ProviderAnalyticsDashboardPb
 	path := "/api/2.0/marketplace-provider/analytics_dashboard"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, nil, nil, &providerAnalyticsDashboard)
-	return &providerAnalyticsDashboard, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		nil,
+		nil,
+		&providerAnalyticsDashboardPb,
+	)
+	resp, err := ProviderAnalyticsDashboardFromPb(&providerAnalyticsDashboardPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerProviderAnalyticsDashboardsImpl) Get(ctx context.Context) (*ListProviderAnalyticsDashboardResponse, error) {
-	var listProviderAnalyticsDashboardResponse ListProviderAnalyticsDashboardResponse
+
+	var listProviderAnalyticsDashboardResponsePb marketplacepb.ListProviderAnalyticsDashboardResponsePb
 	path := "/api/2.0/marketplace-provider/analytics_dashboard"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listProviderAnalyticsDashboardResponse)
-	return &listProviderAnalyticsDashboardResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listProviderAnalyticsDashboardResponsePb,
+	)
+	resp, err := ListProviderAnalyticsDashboardResponseFromPb(&listProviderAnalyticsDashboardResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerProviderAnalyticsDashboardsImpl) GetLatestVersion(ctx context.Context) (*GetLatestVersionProviderAnalyticsDashboardResponse, error) {
-	var getLatestVersionProviderAnalyticsDashboardResponse GetLatestVersionProviderAnalyticsDashboardResponse
+
+	var getLatestVersionProviderAnalyticsDashboardResponsePb marketplacepb.GetLatestVersionProviderAnalyticsDashboardResponsePb
 	path := "/api/2.0/marketplace-provider/analytics_dashboard/latest"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getLatestVersionProviderAnalyticsDashboardResponse)
-	return &getLatestVersionProviderAnalyticsDashboardResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&getLatestVersionProviderAnalyticsDashboardResponsePb,
+	)
+	resp, err := GetLatestVersionProviderAnalyticsDashboardResponseFromPb(&getLatestVersionProviderAnalyticsDashboardResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerProviderAnalyticsDashboardsImpl) Update(ctx context.Context, request UpdateProviderAnalyticsDashboardRequest) (*UpdateProviderAnalyticsDashboardResponse, error) {
-	var updateProviderAnalyticsDashboardResponse UpdateProviderAnalyticsDashboardResponse
+	requestPb, pbErr := UpdateProviderAnalyticsDashboardRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var updateProviderAnalyticsDashboardResponsePb marketplacepb.UpdateProviderAnalyticsDashboardResponsePb
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/analytics_dashboard/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateProviderAnalyticsDashboardResponse)
-	return &updateProviderAnalyticsDashboardResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&updateProviderAnalyticsDashboardResponsePb,
+	)
+	resp, err := UpdateProviderAnalyticsDashboardResponseFromPb(&updateProviderAnalyticsDashboardResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ProviderProviders API methods
@@ -1013,33 +1788,80 @@ type providerProvidersImpl struct {
 }
 
 func (a *providerProvidersImpl) Create(ctx context.Context, request CreateProviderRequest) (*CreateProviderResponse, error) {
-	var createProviderResponse CreateProviderResponse
+	requestPb, pbErr := CreateProviderRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createProviderResponsePb marketplacepb.CreateProviderResponsePb
 	path := "/api/2.0/marketplace-provider/provider"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createProviderResponse)
-	return &createProviderResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createProviderResponsePb,
+	)
+	resp, err := CreateProviderResponseFromPb(&createProviderResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerProvidersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
+	requestPb, pbErr := DeleteProviderRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/providers/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *providerProvidersImpl) Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {
-	var getProviderResponse GetProviderResponse
+	requestPb, pbErr := GetProviderRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getProviderResponsePb marketplacepb.GetProviderResponsePb
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/providers/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getProviderResponse)
-	return &getProviderResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getProviderResponsePb,
+	)
+	resp, err := GetProviderResponseFromPb(&getProviderResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List provider profiles for account.
@@ -1074,22 +1896,59 @@ func (a *providerProvidersImpl) ListAll(ctx context.Context, request ListProvide
 }
 
 func (a *providerProvidersImpl) internalList(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error) {
-	var listProvidersResponse ListProvidersResponse
+	requestPb, pbErr := ListProvidersRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listProvidersResponsePb marketplacepb.ListProvidersResponsePb
 	path := "/api/2.0/marketplace-provider/providers"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProvidersResponse)
-	return &listProvidersResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listProvidersResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListProvidersResponseFromPb(&listProvidersResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providerProvidersImpl) Update(ctx context.Context, request UpdateProviderRequest) (*UpdateProviderResponse, error) {
-	var updateProviderResponse UpdateProviderResponse
+	requestPb, pbErr := UpdateProviderRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var updateProviderResponsePb marketplacepb.UpdateProviderResponsePb
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/providers/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateProviderResponse)
-	return &updateProviderResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&updateProviderResponsePb,
+	)
+	resp, err := UpdateProviderResponseFromPb(&updateProviderResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }

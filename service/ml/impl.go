@@ -9,6 +9,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/service/ml/mlpb"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/exp/slices"
 )
@@ -19,126 +20,310 @@ type experimentsImpl struct {
 }
 
 func (a *experimentsImpl) CreateExperiment(ctx context.Context, request CreateExperiment) (*CreateExperimentResponse, error) {
-	var createExperimentResponse CreateExperimentResponse
+	requestPb, pbErr := CreateExperimentToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createExperimentResponsePb mlpb.CreateExperimentResponsePb
 	path := "/api/2.0/mlflow/experiments/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createExperimentResponse)
-	return &createExperimentResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createExperimentResponsePb,
+	)
+	resp, err := CreateExperimentResponseFromPb(&createExperimentResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) CreateLoggedModel(ctx context.Context, request CreateLoggedModelRequest) (*CreateLoggedModelResponse, error) {
-	var createLoggedModelResponse CreateLoggedModelResponse
+	requestPb, pbErr := CreateLoggedModelRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createLoggedModelResponsePb mlpb.CreateLoggedModelResponsePb
 	path := "/api/2.0/mlflow/logged-models"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createLoggedModelResponse)
-	return &createLoggedModelResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createLoggedModelResponsePb,
+	)
+	resp, err := CreateLoggedModelResponseFromPb(&createLoggedModelResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) CreateRun(ctx context.Context, request CreateRun) (*CreateRunResponse, error) {
-	var createRunResponse CreateRunResponse
+	requestPb, pbErr := CreateRunToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createRunResponsePb mlpb.CreateRunResponsePb
 	path := "/api/2.0/mlflow/runs/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createRunResponse)
-	return &createRunResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createRunResponsePb,
+	)
+	resp, err := CreateRunResponseFromPb(&createRunResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) DeleteExperiment(ctx context.Context, request DeleteExperiment) error {
+	requestPb, pbErr := DeleteExperimentToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/experiments/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) DeleteLoggedModel(ctx context.Context, request DeleteLoggedModelRequest) error {
+	requestPb, pbErr := DeleteLoggedModelRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v", request.ModelId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) DeleteLoggedModelTag(ctx context.Context, request DeleteLoggedModelTagRequest) error {
+	requestPb, pbErr := DeleteLoggedModelTagRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/tags/%v", request.ModelId, request.TagKey)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) DeleteRun(ctx context.Context, request DeleteRun) error {
+	requestPb, pbErr := DeleteRunToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/runs/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) DeleteRuns(ctx context.Context, request DeleteRuns) (*DeleteRunsResponse, error) {
-	var deleteRunsResponse DeleteRunsResponse
+	requestPb, pbErr := DeleteRunsToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteRunsResponsePb mlpb.DeleteRunsResponsePb
 	path := "/api/2.0/mlflow/databricks/runs/delete-runs"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteRunsResponse)
-	return &deleteRunsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteRunsResponsePb,
+	)
+	resp, err := DeleteRunsResponseFromPb(&deleteRunsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) DeleteTag(ctx context.Context, request DeleteTag) error {
+	requestPb, pbErr := DeleteTagToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/runs/delete-tag"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) FinalizeLoggedModel(ctx context.Context, request FinalizeLoggedModelRequest) (*FinalizeLoggedModelResponse, error) {
-	var finalizeLoggedModelResponse FinalizeLoggedModelResponse
+	requestPb, pbErr := FinalizeLoggedModelRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var finalizeLoggedModelResponsePb mlpb.FinalizeLoggedModelResponsePb
 	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v", request.ModelId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &finalizeLoggedModelResponse)
-	return &finalizeLoggedModelResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&finalizeLoggedModelResponsePb,
+	)
+	resp, err := FinalizeLoggedModelResponseFromPb(&finalizeLoggedModelResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error) {
-	var getExperimentByNameResponse GetExperimentByNameResponse
+	requestPb, pbErr := GetByNameRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getExperimentByNameResponsePb mlpb.GetExperimentByNameResponsePb
 	path := "/api/2.0/mlflow/experiments/get-by-name"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getExperimentByNameResponse)
-	return &getExperimentByNameResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getExperimentByNameResponsePb,
+	)
+	resp, err := GetExperimentByNameResponseFromPb(&getExperimentByNameResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) GetExperiment(ctx context.Context, request GetExperimentRequest) (*GetExperimentResponse, error) {
-	var getExperimentResponse GetExperimentResponse
+	requestPb, pbErr := GetExperimentRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getExperimentResponsePb mlpb.GetExperimentResponsePb
 	path := "/api/2.0/mlflow/experiments/get"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getExperimentResponse)
-	return &getExperimentResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getExperimentResponsePb,
+	)
+	resp, err := GetExperimentResponseFromPb(&getExperimentResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets a list of all values for the specified metric for a given run.
@@ -173,53 +358,141 @@ func (a *experimentsImpl) GetHistoryAll(ctx context.Context, request GetHistoryR
 }
 
 func (a *experimentsImpl) internalGetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error) {
-	var getMetricHistoryResponse GetMetricHistoryResponse
+	requestPb, pbErr := GetHistoryRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getMetricHistoryResponsePb mlpb.GetMetricHistoryResponsePb
 	path := "/api/2.0/mlflow/metrics/get-history"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getMetricHistoryResponse)
-	return &getMetricHistoryResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getMetricHistoryResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GetMetricHistoryResponseFromPb(&getMetricHistoryResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) GetLoggedModel(ctx context.Context, request GetLoggedModelRequest) (*GetLoggedModelResponse, error) {
-	var getLoggedModelResponse GetLoggedModelResponse
+	requestPb, pbErr := GetLoggedModelRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getLoggedModelResponsePb mlpb.GetLoggedModelResponsePb
 	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v", request.ModelId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getLoggedModelResponse)
-	return &getLoggedModelResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getLoggedModelResponsePb,
+	)
+	resp, err := GetLoggedModelResponseFromPb(&getLoggedModelResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
-	var getExperimentPermissionLevelsResponse GetExperimentPermissionLevelsResponse
+	requestPb, pbErr := GetExperimentPermissionLevelsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getExperimentPermissionLevelsResponsePb mlpb.GetExperimentPermissionLevelsResponsePb
 	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v/permissionLevels", request.ExperimentId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getExperimentPermissionLevelsResponse)
-	return &getExperimentPermissionLevelsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getExperimentPermissionLevelsResponsePb,
+	)
+	resp, err := GetExperimentPermissionLevelsResponseFromPb(&getExperimentPermissionLevelsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) GetPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error) {
-	var experimentPermissions ExperimentPermissions
+	requestPb, pbErr := GetExperimentPermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var experimentPermissionsPb mlpb.ExperimentPermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &experimentPermissions)
-	return &experimentPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&experimentPermissionsPb,
+	)
+	resp, err := ExperimentPermissionsFromPb(&experimentPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) GetRun(ctx context.Context, request GetRunRequest) (*GetRunResponse, error) {
-	var getRunResponse GetRunResponse
+	requestPb, pbErr := GetRunRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getRunResponsePb mlpb.GetRunResponsePb
 	path := "/api/2.0/mlflow/runs/get"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getRunResponse)
-	return &getRunResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getRunResponsePb,
+	)
+	resp, err := GetRunResponseFromPb(&getRunResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List artifacts for a run. Takes an optional `artifact_path` prefix which if
@@ -264,13 +537,33 @@ func (a *experimentsImpl) ListArtifactsAll(ctx context.Context, request ListArti
 }
 
 func (a *experimentsImpl) internalListArtifacts(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error) {
-	var listArtifactsResponse ListArtifactsResponse
+	requestPb, pbErr := ListArtifactsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listArtifactsResponsePb mlpb.ListArtifactsResponsePb
 	path := "/api/2.0/mlflow/artifacts/list"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listArtifactsResponse)
-	return &listArtifactsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listArtifactsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListArtifactsResponseFromPb(&listArtifactsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets a list of all experiments.
@@ -305,114 +598,268 @@ func (a *experimentsImpl) ListExperimentsAll(ctx context.Context, request ListEx
 }
 
 func (a *experimentsImpl) internalListExperiments(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error) {
-	var listExperimentsResponse ListExperimentsResponse
+	requestPb, pbErr := ListExperimentsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listExperimentsResponsePb mlpb.ListExperimentsResponsePb
 	path := "/api/2.0/mlflow/experiments/list"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExperimentsResponse)
-	return &listExperimentsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listExperimentsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListExperimentsResponseFromPb(&listExperimentsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) LogBatch(ctx context.Context, request LogBatch) error {
+	requestPb, pbErr := LogBatchToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/runs/log-batch"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) LogInputs(ctx context.Context, request LogInputs) error {
+	requestPb, pbErr := LogInputsToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/runs/log-inputs"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) LogLoggedModelParams(ctx context.Context, request LogLoggedModelParamsRequest) error {
+	requestPb, pbErr := LogLoggedModelParamsRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/params", request.ModelId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) LogMetric(ctx context.Context, request LogMetric) error {
+	requestPb, pbErr := LogMetricToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/runs/log-metric"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) LogModel(ctx context.Context, request LogModel) error {
+	requestPb, pbErr := LogModelToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/runs/log-model"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) LogOutputs(ctx context.Context, request LogOutputsRequest) error {
+	requestPb, pbErr := LogOutputsRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/runs/outputs"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) LogParam(ctx context.Context, request LogParam) error {
+	requestPb, pbErr := LogParamToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/runs/log-parameter"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) RestoreExperiment(ctx context.Context, request RestoreExperiment) error {
+	requestPb, pbErr := RestoreExperimentToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/experiments/restore"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) RestoreRun(ctx context.Context, request RestoreRun) error {
+	requestPb, pbErr := RestoreRunToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/runs/restore"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) RestoreRuns(ctx context.Context, request RestoreRuns) (*RestoreRunsResponse, error) {
-	var restoreRunsResponse RestoreRunsResponse
+	requestPb, pbErr := RestoreRunsToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var restoreRunsResponsePb mlpb.RestoreRunsResponsePb
 	path := "/api/2.0/mlflow/databricks/runs/restore-runs"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &restoreRunsResponse)
-	return &restoreRunsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&restoreRunsResponsePb,
+	)
+	resp, err := RestoreRunsResponseFromPb(&restoreRunsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Searches for experiments that satisfy specified search criteria.
@@ -447,25 +894,62 @@ func (a *experimentsImpl) SearchExperimentsAll(ctx context.Context, request Sear
 }
 
 func (a *experimentsImpl) internalSearchExperiments(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error) {
-	var searchExperimentsResponse SearchExperimentsResponse
+	requestPb, pbErr := SearchExperimentsToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var searchExperimentsResponsePb mlpb.SearchExperimentsResponsePb
 	path := "/api/2.0/mlflow/experiments/search"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &searchExperimentsResponse)
-	return &searchExperimentsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&searchExperimentsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := SearchExperimentsResponseFromPb(&searchExperimentsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) SearchLoggedModels(ctx context.Context, request SearchLoggedModelsRequest) (*SearchLoggedModelsResponse, error) {
-	var searchLoggedModelsResponse SearchLoggedModelsResponse
+	requestPb, pbErr := SearchLoggedModelsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var searchLoggedModelsResponsePb mlpb.SearchLoggedModelsResponsePb
 	path := "/api/2.0/mlflow/logged-models/search"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &searchLoggedModelsResponse)
-	return &searchLoggedModelsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&searchLoggedModelsResponsePb,
+	)
+	resp, err := SearchLoggedModelsResponseFromPb(&searchLoggedModelsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Searches for runs that satisfy expressions.
@@ -504,87 +988,210 @@ func (a *experimentsImpl) SearchRunsAll(ctx context.Context, request SearchRuns)
 }
 
 func (a *experimentsImpl) internalSearchRuns(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error) {
-	var searchRunsResponse SearchRunsResponse
+	requestPb, pbErr := SearchRunsToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var searchRunsResponsePb mlpb.SearchRunsResponsePb
 	path := "/api/2.0/mlflow/runs/search"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &searchRunsResponse)
-	return &searchRunsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&searchRunsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := SearchRunsResponseFromPb(&searchRunsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) SetExperimentTag(ctx context.Context, request SetExperimentTag) error {
+	requestPb, pbErr := SetExperimentTagToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/experiments/set-experiment-tag"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) SetLoggedModelTags(ctx context.Context, request SetLoggedModelTagsRequest) error {
+	requestPb, pbErr := SetLoggedModelTagsRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/tags", request.ModelId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) SetPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
-	var experimentPermissions ExperimentPermissions
+	requestPb, pbErr := ExperimentPermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var experimentPermissionsPb mlpb.ExperimentPermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &experimentPermissions)
-	return &experimentPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&experimentPermissionsPb,
+	)
+	resp, err := ExperimentPermissionsFromPb(&experimentPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) SetTag(ctx context.Context, request SetTag) error {
+	requestPb, pbErr := SetTagToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/runs/set-tag"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) UpdateExperiment(ctx context.Context, request UpdateExperiment) error {
+	requestPb, pbErr := UpdateExperimentToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/experiments/update"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *experimentsImpl) UpdatePermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error) {
-	var experimentPermissions ExperimentPermissions
+	requestPb, pbErr := ExperimentPermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var experimentPermissionsPb mlpb.ExperimentPermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v", request.ExperimentId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &experimentPermissions)
-	return &experimentPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&experimentPermissionsPb,
+	)
+	resp, err := ExperimentPermissionsFromPb(&experimentPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *experimentsImpl) UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error) {
-	var updateRunResponse UpdateRunResponse
+	requestPb, pbErr := UpdateRunToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var updateRunResponsePb mlpb.UpdateRunResponsePb
 	path := "/api/2.0/mlflow/runs/update"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &updateRunResponse)
-	return &updateRunResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&updateRunResponsePb,
+	)
+	resp, err := UpdateRunResponseFromPb(&updateRunResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just FeatureStore API methods
@@ -593,33 +1200,80 @@ type featureStoreImpl struct {
 }
 
 func (a *featureStoreImpl) CreateOnlineStore(ctx context.Context, request CreateOnlineStoreRequest) (*OnlineStore, error) {
-	var onlineStore OnlineStore
+	requestPb, pbErr := CreateOnlineStoreRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var onlineStorePb mlpb.OnlineStorePb
 	path := "/api/2.0/feature-store/online-stores"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.OnlineStore, &onlineStore)
-	return &onlineStore, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb.OnlineStore,
+		&onlineStorePb,
+	)
+	resp, err := OnlineStoreFromPb(&onlineStorePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *featureStoreImpl) DeleteOnlineStore(ctx context.Context, request DeleteOnlineStoreRequest) error {
+	requestPb, pbErr := DeleteOnlineStoreRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/feature-store/online-stores/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *featureStoreImpl) GetOnlineStore(ctx context.Context, request GetOnlineStoreRequest) (*OnlineStore, error) {
-	var onlineStore OnlineStore
+	requestPb, pbErr := GetOnlineStoreRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var onlineStorePb mlpb.OnlineStorePb
 	path := fmt.Sprintf("/api/2.0/feature-store/online-stores/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &onlineStore)
-	return &onlineStore, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&onlineStorePb,
+	)
+	resp, err := OnlineStoreFromPb(&onlineStorePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List Online Feature Stores.
@@ -654,38 +1308,92 @@ func (a *featureStoreImpl) ListOnlineStoresAll(ctx context.Context, request List
 }
 
 func (a *featureStoreImpl) internalListOnlineStores(ctx context.Context, request ListOnlineStoresRequest) (*ListOnlineStoresResponse, error) {
-	var listOnlineStoresResponse ListOnlineStoresResponse
+	requestPb, pbErr := ListOnlineStoresRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listOnlineStoresResponsePb mlpb.ListOnlineStoresResponsePb
 	path := "/api/2.0/feature-store/online-stores"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listOnlineStoresResponse)
-	return &listOnlineStoresResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listOnlineStoresResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListOnlineStoresResponseFromPb(&listOnlineStoresResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *featureStoreImpl) PublishTable(ctx context.Context, request PublishTableRequest) (*PublishTableResponse, error) {
-	var publishTableResponse PublishTableResponse
+	requestPb, pbErr := PublishTableRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var publishTableResponsePb mlpb.PublishTableResponsePb
 	path := fmt.Sprintf("/api/2.0/feature-store/tables/%v/publish", request.SourceTableName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &publishTableResponse)
-	return &publishTableResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&publishTableResponsePb,
+	)
+	resp, err := PublishTableResponseFromPb(&publishTableResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *featureStoreImpl) UpdateOnlineStore(ctx context.Context, request UpdateOnlineStoreRequest) (*OnlineStore, error) {
-	var onlineStore OnlineStore
+	requestPb, pbErr := UpdateOnlineStoreRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var onlineStorePb mlpb.OnlineStorePb
 	path := fmt.Sprintf("/api/2.0/feature-store/online-stores/%v", request.Name)
 	queryParams := make(map[string]any)
-	if request.UpdateMask != "" {
-		queryParams["update_mask"] = request.UpdateMask
+	if requestPb.UpdateMask != "" {
+		queryParams["update_mask"] = requestPb.UpdateMask
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.OnlineStore, &onlineStore)
-	return &onlineStore, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb.OnlineStore,
+		&onlineStorePb,
+	)
+	resp, err := OnlineStoreFromPb(&onlineStorePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just Forecasting API methods
@@ -694,24 +1402,58 @@ type forecastingImpl struct {
 }
 
 func (a *forecastingImpl) CreateExperiment(ctx context.Context, request CreateForecastingExperimentRequest) (*CreateForecastingExperimentResponse, error) {
-	var createForecastingExperimentResponse CreateForecastingExperimentResponse
+	requestPb, pbErr := CreateForecastingExperimentRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createForecastingExperimentResponsePb mlpb.CreateForecastingExperimentResponsePb
 	path := "/api/2.0/automl/create-forecasting-experiment"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createForecastingExperimentResponse)
-	return &createForecastingExperimentResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createForecastingExperimentResponsePb,
+	)
+	resp, err := CreateForecastingExperimentResponseFromPb(&createForecastingExperimentResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *forecastingImpl) GetExperiment(ctx context.Context, request GetForecastingExperimentRequest) (*ForecastingExperiment, error) {
-	var forecastingExperiment ForecastingExperiment
+	requestPb, pbErr := GetForecastingExperimentRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var forecastingExperimentPb mlpb.ForecastingExperimentPb
 	path := fmt.Sprintf("/api/2.0/automl/get-forecasting-experiment/%v", request.ExperimentId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &forecastingExperiment)
-	return &forecastingExperiment, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&forecastingExperimentPb,
+	)
+	resp, err := ForecastingExperimentFromPb(&forecastingExperimentPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just MaterializedFeatures API methods
@@ -720,43 +1462,107 @@ type materializedFeaturesImpl struct {
 }
 
 func (a *materializedFeaturesImpl) CreateFeatureTag(ctx context.Context, request CreateFeatureTagRequest) (*FeatureTag, error) {
-	var featureTag FeatureTag
+	requestPb, pbErr := CreateFeatureTagRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var featureTagPb mlpb.FeatureTagPb
 	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags", request.TableName, request.FeatureName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.FeatureTag, &featureTag)
-	return &featureTag, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb.FeatureTag,
+		&featureTagPb,
+	)
+	resp, err := FeatureTagFromPb(&featureTagPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *materializedFeaturesImpl) DeleteFeatureTag(ctx context.Context, request DeleteFeatureTagRequest) error {
+	requestPb, pbErr := DeleteFeatureTagRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", request.TableName, request.FeatureName, request.Key)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *materializedFeaturesImpl) GetFeatureLineage(ctx context.Context, request GetFeatureLineageRequest) (*FeatureLineage, error) {
-	var featureLineage FeatureLineage
+	requestPb, pbErr := GetFeatureLineageRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var featureLineagePb mlpb.FeatureLineagePb
 	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/lineage", request.TableName, request.FeatureName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &featureLineage)
-	return &featureLineage, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&featureLineagePb,
+	)
+	resp, err := FeatureLineageFromPb(&featureLineagePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *materializedFeaturesImpl) GetFeatureTag(ctx context.Context, request GetFeatureTagRequest) (*FeatureTag, error) {
-	var featureTag FeatureTag
+	requestPb, pbErr := GetFeatureTagRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var featureTagPb mlpb.FeatureTagPb
 	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", request.TableName, request.FeatureName, request.Key)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &featureTag)
-	return &featureTag, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&featureTagPb,
+	)
+	resp, err := FeatureTagFromPb(&featureTagPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Lists FeatureTags.
@@ -791,27 +1597,64 @@ func (a *materializedFeaturesImpl) ListFeatureTagsAll(ctx context.Context, reque
 }
 
 func (a *materializedFeaturesImpl) internalListFeatureTags(ctx context.Context, request ListFeatureTagsRequest) (*ListFeatureTagsResponse, error) {
-	var listFeatureTagsResponse ListFeatureTagsResponse
+	requestPb, pbErr := ListFeatureTagsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listFeatureTagsResponsePb mlpb.ListFeatureTagsResponsePb
 	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags", request.TableName, request.FeatureName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFeatureTagsResponse)
-	return &listFeatureTagsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listFeatureTagsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListFeatureTagsResponseFromPb(&listFeatureTagsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *materializedFeaturesImpl) UpdateFeatureTag(ctx context.Context, request UpdateFeatureTagRequest) (*FeatureTag, error) {
-	var featureTag FeatureTag
+	requestPb, pbErr := UpdateFeatureTagRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var featureTagPb mlpb.FeatureTagPb
 	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", request.TableName, request.FeatureName, request.Key)
 	queryParams := make(map[string]any)
-	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
-		queryParams["update_mask"] = request.UpdateMask
+	if requestPb.UpdateMask != "" || slices.Contains(requestPb.ForceSendFields, "UpdateMask") {
+		queryParams["update_mask"] = requestPb.UpdateMask
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.FeatureTag, &featureTag)
-	return &featureTag, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb.FeatureTag,
+		&featureTagPb,
+	)
+	resp, err := FeatureTagFromPb(&featureTagPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ModelRegistry API methods
@@ -820,132 +1663,329 @@ type modelRegistryImpl struct {
 }
 
 func (a *modelRegistryImpl) ApproveTransitionRequest(ctx context.Context, request ApproveTransitionRequest) (*ApproveTransitionRequestResponse, error) {
-	var approveTransitionRequestResponse ApproveTransitionRequestResponse
+	requestPb, pbErr := ApproveTransitionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var approveTransitionRequestResponsePb mlpb.ApproveTransitionRequestResponsePb
 	path := "/api/2.0/mlflow/transition-requests/approve"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &approveTransitionRequestResponse)
-	return &approveTransitionRequestResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&approveTransitionRequestResponsePb,
+	)
+	resp, err := ApproveTransitionRequestResponseFromPb(&approveTransitionRequestResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) CreateComment(ctx context.Context, request CreateComment) (*CreateCommentResponse, error) {
-	var createCommentResponse CreateCommentResponse
+	requestPb, pbErr := CreateCommentToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createCommentResponsePb mlpb.CreateCommentResponsePb
 	path := "/api/2.0/mlflow/comments/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createCommentResponse)
-	return &createCommentResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createCommentResponsePb,
+	)
+	resp, err := CreateCommentResponseFromPb(&createCommentResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) CreateModel(ctx context.Context, request CreateModelRequest) (*CreateModelResponse, error) {
-	var createModelResponse CreateModelResponse
+	requestPb, pbErr := CreateModelRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createModelResponsePb mlpb.CreateModelResponsePb
 	path := "/api/2.0/mlflow/registered-models/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createModelResponse)
-	return &createModelResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createModelResponsePb,
+	)
+	resp, err := CreateModelResponseFromPb(&createModelResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) CreateModelVersion(ctx context.Context, request CreateModelVersionRequest) (*CreateModelVersionResponse, error) {
-	var createModelVersionResponse CreateModelVersionResponse
+	requestPb, pbErr := CreateModelVersionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createModelVersionResponsePb mlpb.CreateModelVersionResponsePb
 	path := "/api/2.0/mlflow/model-versions/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createModelVersionResponse)
-	return &createModelVersionResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createModelVersionResponsePb,
+	)
+	resp, err := CreateModelVersionResponseFromPb(&createModelVersionResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) CreateTransitionRequest(ctx context.Context, request CreateTransitionRequest) (*CreateTransitionRequestResponse, error) {
-	var createTransitionRequestResponse CreateTransitionRequestResponse
+	requestPb, pbErr := CreateTransitionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createTransitionRequestResponsePb mlpb.CreateTransitionRequestResponsePb
 	path := "/api/2.0/mlflow/transition-requests/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createTransitionRequestResponse)
-	return &createTransitionRequestResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createTransitionRequestResponsePb,
+	)
+	resp, err := CreateTransitionRequestResponseFromPb(&createTransitionRequestResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) CreateWebhook(ctx context.Context, request CreateRegistryWebhook) (*CreateWebhookResponse, error) {
-	var createWebhookResponse CreateWebhookResponse
+	requestPb, pbErr := CreateRegistryWebhookToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createWebhookResponsePb mlpb.CreateWebhookResponsePb
 	path := "/api/2.0/mlflow/registry-webhooks/create"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createWebhookResponse)
-	return &createWebhookResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createWebhookResponsePb,
+	)
+	resp, err := CreateWebhookResponseFromPb(&createWebhookResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) DeleteComment(ctx context.Context, request DeleteCommentRequest) error {
+	requestPb, pbErr := DeleteCommentRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/comments/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *modelRegistryImpl) DeleteModel(ctx context.Context, request DeleteModelRequest) error {
+	requestPb, pbErr := DeleteModelRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/registered-models/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *modelRegistryImpl) DeleteModelTag(ctx context.Context, request DeleteModelTagRequest) error {
+	requestPb, pbErr := DeleteModelTagRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/registered-models/delete-tag"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *modelRegistryImpl) DeleteModelVersion(ctx context.Context, request DeleteModelVersionRequest) error {
+	requestPb, pbErr := DeleteModelVersionRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/model-versions/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *modelRegistryImpl) DeleteModelVersionTag(ctx context.Context, request DeleteModelVersionTagRequest) error {
+	requestPb, pbErr := DeleteModelVersionTagRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/model-versions/delete-tag"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *modelRegistryImpl) DeleteTransitionRequest(ctx context.Context, request DeleteTransitionRequestRequest) (*DeleteTransitionRequestResponse, error) {
-	var deleteTransitionRequestResponse DeleteTransitionRequestResponse
+	requestPb, pbErr := DeleteTransitionRequestRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var deleteTransitionRequestResponsePb mlpb.DeleteTransitionRequestResponsePb
 	path := "/api/2.0/mlflow/transition-requests/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteTransitionRequestResponse)
-	return &deleteTransitionRequestResponse, err
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&deleteTransitionRequestResponsePb,
+	)
+	resp, err := DeleteTransitionRequestResponseFromPb(&deleteTransitionRequestResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) DeleteWebhook(ctx context.Context, request DeleteWebhookRequest) error {
+	requestPb, pbErr := DeleteWebhookRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/registry-webhooks/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
@@ -975,64 +2015,169 @@ func (a *modelRegistryImpl) GetLatestVersionsAll(ctx context.Context, request Ge
 }
 
 func (a *modelRegistryImpl) internalGetLatestVersions(ctx context.Context, request GetLatestVersionsRequest) (*GetLatestVersionsResponse, error) {
-	var getLatestVersionsResponse GetLatestVersionsResponse
+	requestPb, pbErr := GetLatestVersionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getLatestVersionsResponsePb mlpb.GetLatestVersionsResponsePb
 	path := "/api/2.0/mlflow/registered-models/get-latest-versions"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &getLatestVersionsResponse)
-	return &getLatestVersionsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getLatestVersionsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GetLatestVersionsResponseFromPb(&getLatestVersionsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) GetModel(ctx context.Context, request GetModelRequest) (*GetModelResponse, error) {
-	var getModelResponse GetModelResponse
+	requestPb, pbErr := GetModelRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getModelResponsePb mlpb.GetModelResponsePb
 	path := "/api/2.0/mlflow/databricks/registered-models/get"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getModelResponse)
-	return &getModelResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getModelResponsePb,
+	)
+	resp, err := GetModelResponseFromPb(&getModelResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) GetModelVersion(ctx context.Context, request GetModelVersionRequest) (*GetModelVersionResponse, error) {
-	var getModelVersionResponse GetModelVersionResponse
+	requestPb, pbErr := GetModelVersionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getModelVersionResponsePb mlpb.GetModelVersionResponsePb
 	path := "/api/2.0/mlflow/model-versions/get"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getModelVersionResponse)
-	return &getModelVersionResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getModelVersionResponsePb,
+	)
+	resp, err := GetModelVersionResponseFromPb(&getModelVersionResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) GetModelVersionDownloadUri(ctx context.Context, request GetModelVersionDownloadUriRequest) (*GetModelVersionDownloadUriResponse, error) {
-	var getModelVersionDownloadUriResponse GetModelVersionDownloadUriResponse
+	requestPb, pbErr := GetModelVersionDownloadUriRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getModelVersionDownloadUriResponsePb mlpb.GetModelVersionDownloadUriResponsePb
 	path := "/api/2.0/mlflow/model-versions/get-download-uri"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getModelVersionDownloadUriResponse)
-	return &getModelVersionDownloadUriResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getModelVersionDownloadUriResponsePb,
+	)
+	resp, err := GetModelVersionDownloadUriResponseFromPb(&getModelVersionDownloadUriResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) GetPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error) {
-	var getRegisteredModelPermissionLevelsResponse GetRegisteredModelPermissionLevelsResponse
+	requestPb, pbErr := GetRegisteredModelPermissionLevelsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getRegisteredModelPermissionLevelsResponsePb mlpb.GetRegisteredModelPermissionLevelsResponsePb
 	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v/permissionLevels", request.RegisteredModelId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getRegisteredModelPermissionLevelsResponse)
-	return &getRegisteredModelPermissionLevelsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getRegisteredModelPermissionLevelsResponsePb,
+	)
+	resp, err := GetRegisteredModelPermissionLevelsResponseFromPb(&getRegisteredModelPermissionLevelsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) GetPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
-	var registeredModelPermissions RegisteredModelPermissions
+	requestPb, pbErr := GetRegisteredModelPermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var registeredModelPermissionsPb mlpb.RegisteredModelPermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &registeredModelPermissions)
-	return &registeredModelPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&registeredModelPermissionsPb,
+	)
+	resp, err := RegisteredModelPermissionsFromPb(&registeredModelPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Lists all available registered models, up to the limit specified in
@@ -1069,13 +2214,33 @@ func (a *modelRegistryImpl) ListModelsAll(ctx context.Context, request ListModel
 }
 
 func (a *modelRegistryImpl) internalListModels(ctx context.Context, request ListModelsRequest) (*ListModelsResponse, error) {
-	var listModelsResponse ListModelsResponse
+	requestPb, pbErr := ListModelsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listModelsResponsePb mlpb.ListModelsResponsePb
 	path := "/api/2.0/mlflow/registered-models/list"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listModelsResponse)
-	return &listModelsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listModelsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListModelsResponseFromPb(&listModelsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets a list of all open stage transition requests for the model version.
@@ -1104,13 +2269,33 @@ func (a *modelRegistryImpl) ListTransitionRequestsAll(ctx context.Context, reque
 }
 
 func (a *modelRegistryImpl) internalListTransitionRequests(ctx context.Context, request ListTransitionRequestsRequest) (*ListTransitionRequestsResponse, error) {
-	var listTransitionRequestsResponse ListTransitionRequestsResponse
+	requestPb, pbErr := ListTransitionRequestsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listTransitionRequestsResponsePb mlpb.ListTransitionRequestsResponsePb
 	path := "/api/2.0/mlflow/transition-requests/list"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listTransitionRequestsResponse)
-	return &listTransitionRequestsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listTransitionRequestsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListTransitionRequestsResponseFromPb(&listTransitionRequestsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // **NOTE:** This endpoint is in Public Preview. Lists all registry webhooks.
@@ -1145,35 +2330,89 @@ func (a *modelRegistryImpl) ListWebhooksAll(ctx context.Context, request ListWeb
 }
 
 func (a *modelRegistryImpl) internalListWebhooks(ctx context.Context, request ListWebhooksRequest) (*ListRegistryWebhooks, error) {
-	var listRegistryWebhooks ListRegistryWebhooks
+	requestPb, pbErr := ListWebhooksRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listRegistryWebhooksPb mlpb.ListRegistryWebhooksPb
 	path := "/api/2.0/mlflow/registry-webhooks/list"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listRegistryWebhooks)
-	return &listRegistryWebhooks, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listRegistryWebhooksPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListRegistryWebhooksFromPb(&listRegistryWebhooksPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) RejectTransitionRequest(ctx context.Context, request RejectTransitionRequest) (*RejectTransitionRequestResponse, error) {
-	var rejectTransitionRequestResponse RejectTransitionRequestResponse
+	requestPb, pbErr := RejectTransitionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var rejectTransitionRequestResponsePb mlpb.RejectTransitionRequestResponsePb
 	path := "/api/2.0/mlflow/transition-requests/reject"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &rejectTransitionRequestResponse)
-	return &rejectTransitionRequestResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&rejectTransitionRequestResponsePb,
+	)
+	resp, err := RejectTransitionRequestResponseFromPb(&rejectTransitionRequestResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) RenameModel(ctx context.Context, request RenameModelRequest) (*RenameModelResponse, error) {
-	var renameModelResponse RenameModelResponse
+	requestPb, pbErr := RenameModelRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var renameModelResponsePb mlpb.RenameModelResponsePb
 	path := "/api/2.0/mlflow/registered-models/rename"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &renameModelResponse)
-	return &renameModelResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&renameModelResponsePb,
+	)
+	resp, err := RenameModelResponseFromPb(&renameModelResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Searches for specific model versions based on the supplied __filter__.
@@ -1208,13 +2447,33 @@ func (a *modelRegistryImpl) SearchModelVersionsAll(ctx context.Context, request 
 }
 
 func (a *modelRegistryImpl) internalSearchModelVersions(ctx context.Context, request SearchModelVersionsRequest) (*SearchModelVersionsResponse, error) {
-	var searchModelVersionsResponse SearchModelVersionsResponse
+	requestPb, pbErr := SearchModelVersionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var searchModelVersionsResponsePb mlpb.SearchModelVersionsResponsePb
 	path := "/api/2.0/mlflow/model-versions/search"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &searchModelVersionsResponse)
-	return &searchModelVersionsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&searchModelVersionsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := SearchModelVersionsResponseFromPb(&searchModelVersionsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Search for registered models based on the specified __filter__.
@@ -1249,119 +2508,301 @@ func (a *modelRegistryImpl) SearchModelsAll(ctx context.Context, request SearchM
 }
 
 func (a *modelRegistryImpl) internalSearchModels(ctx context.Context, request SearchModelsRequest) (*SearchModelsResponse, error) {
-	var searchModelsResponse SearchModelsResponse
+	requestPb, pbErr := SearchModelsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var searchModelsResponsePb mlpb.SearchModelsResponsePb
 	path := "/api/2.0/mlflow/registered-models/search"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &searchModelsResponse)
-	return &searchModelsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&searchModelsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := SearchModelsResponseFromPb(&searchModelsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) SetModelTag(ctx context.Context, request SetModelTagRequest) error {
+	requestPb, pbErr := SetModelTagRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/registered-models/set-tag"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *modelRegistryImpl) SetModelVersionTag(ctx context.Context, request SetModelVersionTagRequest) error {
+	requestPb, pbErr := SetModelVersionTagRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/mlflow/model-versions/set-tag"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *modelRegistryImpl) SetPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
-	var registeredModelPermissions RegisteredModelPermissions
+	requestPb, pbErr := RegisteredModelPermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var registeredModelPermissionsPb mlpb.RegisteredModelPermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &registeredModelPermissions)
-	return &registeredModelPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&registeredModelPermissionsPb,
+	)
+	resp, err := RegisteredModelPermissionsFromPb(&registeredModelPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) TestRegistryWebhook(ctx context.Context, request TestRegistryWebhookRequest) (*TestRegistryWebhookResponse, error) {
-	var testRegistryWebhookResponse TestRegistryWebhookResponse
+	requestPb, pbErr := TestRegistryWebhookRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var testRegistryWebhookResponsePb mlpb.TestRegistryWebhookResponsePb
 	path := "/api/2.0/mlflow/registry-webhooks/test"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &testRegistryWebhookResponse)
-	return &testRegistryWebhookResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&testRegistryWebhookResponsePb,
+	)
+	resp, err := TestRegistryWebhookResponseFromPb(&testRegistryWebhookResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) TransitionStage(ctx context.Context, request TransitionModelVersionStageDatabricks) (*TransitionStageResponse, error) {
-	var transitionStageResponse TransitionStageResponse
+	requestPb, pbErr := TransitionModelVersionStageDatabricksToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var transitionStageResponsePb mlpb.TransitionStageResponsePb
 	path := "/api/2.0/mlflow/databricks/model-versions/transition-stage"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &transitionStageResponse)
-	return &transitionStageResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&transitionStageResponsePb,
+	)
+	resp, err := TransitionStageResponseFromPb(&transitionStageResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) UpdateComment(ctx context.Context, request UpdateComment) (*UpdateCommentResponse, error) {
-	var updateCommentResponse UpdateCommentResponse
+	requestPb, pbErr := UpdateCommentToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var updateCommentResponsePb mlpb.UpdateCommentResponsePb
 	path := "/api/2.0/mlflow/comments/update"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateCommentResponse)
-	return &updateCommentResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&updateCommentResponsePb,
+	)
+	resp, err := UpdateCommentResponseFromPb(&updateCommentResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) UpdateModel(ctx context.Context, request UpdateModelRequest) (*UpdateModelResponse, error) {
-	var updateModelResponse UpdateModelResponse
+	requestPb, pbErr := UpdateModelRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var updateModelResponsePb mlpb.UpdateModelResponsePb
 	path := "/api/2.0/mlflow/registered-models/update"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateModelResponse)
-	return &updateModelResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&updateModelResponsePb,
+	)
+	resp, err := UpdateModelResponseFromPb(&updateModelResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) UpdateModelVersion(ctx context.Context, request UpdateModelVersionRequest) (*UpdateModelVersionResponse, error) {
-	var updateModelVersionResponse UpdateModelVersionResponse
+	requestPb, pbErr := UpdateModelVersionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var updateModelVersionResponsePb mlpb.UpdateModelVersionResponsePb
 	path := "/api/2.0/mlflow/model-versions/update"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateModelVersionResponse)
-	return &updateModelVersionResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&updateModelVersionResponsePb,
+	)
+	resp, err := UpdateModelVersionResponseFromPb(&updateModelVersionResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) UpdatePermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error) {
-	var registeredModelPermissions RegisteredModelPermissions
+	requestPb, pbErr := RegisteredModelPermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var registeredModelPermissionsPb mlpb.RegisteredModelPermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/registered-models/%v", request.RegisteredModelId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &registeredModelPermissions)
-	return &registeredModelPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&registeredModelPermissionsPb,
+	)
+	resp, err := RegisteredModelPermissionsFromPb(&registeredModelPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *modelRegistryImpl) UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) (*UpdateWebhookResponse, error) {
-	var updateWebhookResponse UpdateWebhookResponse
+	requestPb, pbErr := UpdateRegistryWebhookToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var updateWebhookResponsePb mlpb.UpdateWebhookResponsePb
 	path := "/api/2.0/mlflow/registry-webhooks/update"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateWebhookResponse)
-	return &updateWebhookResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&updateWebhookResponsePb,
+	)
+	resp, err := UpdateWebhookResponseFromPb(&updateWebhookResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }

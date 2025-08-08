@@ -5,20 +5,26 @@ package billing
 import (
 	"fmt"
 	"io"
+	"strings"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/marshal"
+	"github.com/databricks/databricks-sdk-go/service/billing/billingpb"
 	"github.com/databricks/databricks-sdk-go/service/compute"
+	"github.com/databricks/databricks-sdk-go/service/compute/computepb"
 )
 
 type ActionConfiguration struct {
 	// Databricks action configuration ID.
-	ActionConfigurationId string `json:"action_configuration_id,omitempty"`
+	// Wire name: 'action_configuration_id'
+	ActionConfigurationId string ``
 	// The type of the action.
-	ActionType ActionConfigurationType `json:"action_type,omitempty"`
+	// Wire name: 'action_type'
+	ActionType ActionConfigurationType ``
 	// Target for the action. For example, an email address.
-	Target string `json:"target,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'target'
+	Target          string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ActionConfiguration) UnmarshalJSON(b []byte) error {
@@ -27,6 +33,44 @@ func (s *ActionConfiguration) UnmarshalJSON(b []byte) error {
 
 func (s ActionConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func ActionConfigurationToPb(st *ActionConfiguration) (*billingpb.ActionConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.ActionConfigurationPb{}
+	pb.ActionConfigurationId = st.ActionConfigurationId
+	actionTypePb, err := ActionConfigurationTypeToPb(&st.ActionType)
+	if err != nil {
+		return nil, err
+	}
+	if actionTypePb != nil {
+		pb.ActionType = *actionTypePb
+	}
+	pb.Target = st.Target
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ActionConfigurationFromPb(pb *billingpb.ActionConfigurationPb) (*ActionConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ActionConfiguration{}
+	st.ActionConfigurationId = pb.ActionConfigurationId
+	actionTypeField, err := ActionConfigurationTypeFromPb(&pb.ActionType)
+	if err != nil {
+		return nil, err
+	}
+	if actionTypeField != nil {
+		st.ActionType = *actionTypeField
+	}
+	st.Target = pb.Target
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 type ActionConfigurationType string
@@ -63,25 +107,46 @@ func (f *ActionConfigurationType) Type() string {
 	return "ActionConfigurationType"
 }
 
+func ActionConfigurationTypeToPb(st *ActionConfigurationType) (*billingpb.ActionConfigurationTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := billingpb.ActionConfigurationTypePb(*st)
+	return &pb, nil
+}
+
+func ActionConfigurationTypeFromPb(pb *billingpb.ActionConfigurationTypePb) (*ActionConfigurationType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ActionConfigurationType(*pb)
+	return &st, nil
+}
+
 type AlertConfiguration struct {
 	// Configured actions for this alert. These define what happens when an
 	// alert enters a triggered state.
-	ActionConfigurations []ActionConfiguration `json:"action_configurations,omitempty"`
+	// Wire name: 'action_configurations'
+	ActionConfigurations []ActionConfiguration ``
 	// Databricks alert configuration ID.
-	AlertConfigurationId string `json:"alert_configuration_id,omitempty"`
+	// Wire name: 'alert_configuration_id'
+	AlertConfigurationId string ``
 	// The threshold for the budget alert to determine if it is in a triggered
 	// state. The number is evaluated based on `quantity_type`.
-	QuantityThreshold string `json:"quantity_threshold,omitempty"`
+	// Wire name: 'quantity_threshold'
+	QuantityThreshold string ``
 	// The way to calculate cost for this budget alert. This is what
 	// `quantity_threshold` is measured in.
-	QuantityType AlertConfigurationQuantityType `json:"quantity_type,omitempty"`
+	// Wire name: 'quantity_type'
+	QuantityType AlertConfigurationQuantityType ``
 	// The time window of usage data for the budget.
-	TimePeriod AlertConfigurationTimePeriod `json:"time_period,omitempty"`
+	// Wire name: 'time_period'
+	TimePeriod AlertConfigurationTimePeriod ``
 	// The evaluation method to determine when this budget alert is in a
 	// triggered state.
-	TriggerType AlertConfigurationTriggerType `json:"trigger_type,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'trigger_type'
+	TriggerType     AlertConfigurationTriggerType ``
+	ForceSendFields []string                      `tf:"-"`
 }
 
 func (s *AlertConfiguration) UnmarshalJSON(b []byte) error {
@@ -90,6 +155,96 @@ func (s *AlertConfiguration) UnmarshalJSON(b []byte) error {
 
 func (s AlertConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func AlertConfigurationToPb(st *AlertConfiguration) (*billingpb.AlertConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.AlertConfigurationPb{}
+
+	var actionConfigurationsPb []billingpb.ActionConfigurationPb
+	for _, item := range st.ActionConfigurations {
+		itemPb, err := ActionConfigurationToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			actionConfigurationsPb = append(actionConfigurationsPb, *itemPb)
+		}
+	}
+	pb.ActionConfigurations = actionConfigurationsPb
+	pb.AlertConfigurationId = st.AlertConfigurationId
+	pb.QuantityThreshold = st.QuantityThreshold
+	quantityTypePb, err := AlertConfigurationQuantityTypeToPb(&st.QuantityType)
+	if err != nil {
+		return nil, err
+	}
+	if quantityTypePb != nil {
+		pb.QuantityType = *quantityTypePb
+	}
+	timePeriodPb, err := AlertConfigurationTimePeriodToPb(&st.TimePeriod)
+	if err != nil {
+		return nil, err
+	}
+	if timePeriodPb != nil {
+		pb.TimePeriod = *timePeriodPb
+	}
+	triggerTypePb, err := AlertConfigurationTriggerTypeToPb(&st.TriggerType)
+	if err != nil {
+		return nil, err
+	}
+	if triggerTypePb != nil {
+		pb.TriggerType = *triggerTypePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func AlertConfigurationFromPb(pb *billingpb.AlertConfigurationPb) (*AlertConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AlertConfiguration{}
+
+	var actionConfigurationsField []ActionConfiguration
+	for _, itemPb := range pb.ActionConfigurations {
+		item, err := ActionConfigurationFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			actionConfigurationsField = append(actionConfigurationsField, *item)
+		}
+	}
+	st.ActionConfigurations = actionConfigurationsField
+	st.AlertConfigurationId = pb.AlertConfigurationId
+	st.QuantityThreshold = pb.QuantityThreshold
+	quantityTypeField, err := AlertConfigurationQuantityTypeFromPb(&pb.QuantityType)
+	if err != nil {
+		return nil, err
+	}
+	if quantityTypeField != nil {
+		st.QuantityType = *quantityTypeField
+	}
+	timePeriodField, err := AlertConfigurationTimePeriodFromPb(&pb.TimePeriod)
+	if err != nil {
+		return nil, err
+	}
+	if timePeriodField != nil {
+		st.TimePeriod = *timePeriodField
+	}
+	triggerTypeField, err := AlertConfigurationTriggerTypeFromPb(&pb.TriggerType)
+	if err != nil {
+		return nil, err
+	}
+	if triggerTypeField != nil {
+		st.TriggerType = *triggerTypeField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 type AlertConfigurationQuantityType string
@@ -126,6 +281,22 @@ func (f *AlertConfigurationQuantityType) Type() string {
 	return "AlertConfigurationQuantityType"
 }
 
+func AlertConfigurationQuantityTypeToPb(st *AlertConfigurationQuantityType) (*billingpb.AlertConfigurationQuantityTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := billingpb.AlertConfigurationQuantityTypePb(*st)
+	return &pb, nil
+}
+
+func AlertConfigurationQuantityTypeFromPb(pb *billingpb.AlertConfigurationQuantityTypePb) (*AlertConfigurationQuantityType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AlertConfigurationQuantityType(*pb)
+	return &st, nil
+}
+
 type AlertConfigurationTimePeriod string
 
 const AlertConfigurationTimePeriodMonth AlertConfigurationTimePeriod = `MONTH`
@@ -158,6 +329,22 @@ func (f *AlertConfigurationTimePeriod) Values() []AlertConfigurationTimePeriod {
 // Type always returns AlertConfigurationTimePeriod to satisfy [pflag.Value] interface
 func (f *AlertConfigurationTimePeriod) Type() string {
 	return "AlertConfigurationTimePeriod"
+}
+
+func AlertConfigurationTimePeriodToPb(st *AlertConfigurationTimePeriod) (*billingpb.AlertConfigurationTimePeriodPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := billingpb.AlertConfigurationTimePeriodPb(*st)
+	return &pb, nil
+}
+
+func AlertConfigurationTimePeriodFromPb(pb *billingpb.AlertConfigurationTimePeriodPb) (*AlertConfigurationTimePeriod, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AlertConfigurationTimePeriod(*pb)
+	return &st, nil
 }
 
 type AlertConfigurationTriggerType string
@@ -194,27 +381,49 @@ func (f *AlertConfigurationTriggerType) Type() string {
 	return "AlertConfigurationTriggerType"
 }
 
+func AlertConfigurationTriggerTypeToPb(st *AlertConfigurationTriggerType) (*billingpb.AlertConfigurationTriggerTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := billingpb.AlertConfigurationTriggerTypePb(*st)
+	return &pb, nil
+}
+
+func AlertConfigurationTriggerTypeFromPb(pb *billingpb.AlertConfigurationTriggerTypePb) (*AlertConfigurationTriggerType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AlertConfigurationTriggerType(*pb)
+	return &st, nil
+}
+
 type BudgetConfiguration struct {
 	// Databricks account ID.
-	AccountId string `json:"account_id,omitempty"`
+	// Wire name: 'account_id'
+	AccountId string ``
 	// Alerts to configure when this budget is in a triggered state. Budgets
 	// must have exactly one alert configuration.
-	AlertConfigurations []AlertConfiguration `json:"alert_configurations,omitempty"`
+	// Wire name: 'alert_configurations'
+	AlertConfigurations []AlertConfiguration ``
 	// Databricks budget configuration ID.
-	BudgetConfigurationId string `json:"budget_configuration_id,omitempty"`
+	// Wire name: 'budget_configuration_id'
+	BudgetConfigurationId string ``
 	// Creation time of this budget configuration.
-	CreateTime int64 `json:"create_time,omitempty"`
+	// Wire name: 'create_time'
+	CreateTime int64 ``
 	// Human-readable name of budget configuration. Max Length: 128
-	DisplayName string `json:"display_name,omitempty"`
+	// Wire name: 'display_name'
+	DisplayName string ``
 	// Configured filters for this budget. These are applied to your account's
 	// usage to limit the scope of what is considered for this budget. Leave
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
-	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	// Wire name: 'filter'
+	Filter *BudgetConfigurationFilter ``
 	// Update time of this budget configuration.
-	UpdateTime int64 `json:"update_time,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'update_time'
+	UpdateTime      int64    ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *BudgetConfiguration) UnmarshalJSON(b []byte) error {
@@ -225,19 +434,182 @@ func (s BudgetConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func BudgetConfigurationToPb(st *BudgetConfiguration) (*billingpb.BudgetConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.BudgetConfigurationPb{}
+	pb.AccountId = st.AccountId
+
+	var alertConfigurationsPb []billingpb.AlertConfigurationPb
+	for _, item := range st.AlertConfigurations {
+		itemPb, err := AlertConfigurationToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			alertConfigurationsPb = append(alertConfigurationsPb, *itemPb)
+		}
+	}
+	pb.AlertConfigurations = alertConfigurationsPb
+	pb.BudgetConfigurationId = st.BudgetConfigurationId
+	pb.CreateTime = st.CreateTime
+	pb.DisplayName = st.DisplayName
+	filterPb, err := BudgetConfigurationFilterToPb(st.Filter)
+	if err != nil {
+		return nil, err
+	}
+	if filterPb != nil {
+		pb.Filter = filterPb
+	}
+	pb.UpdateTime = st.UpdateTime
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func BudgetConfigurationFromPb(pb *billingpb.BudgetConfigurationPb) (*BudgetConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BudgetConfiguration{}
+	st.AccountId = pb.AccountId
+
+	var alertConfigurationsField []AlertConfiguration
+	for _, itemPb := range pb.AlertConfigurations {
+		item, err := AlertConfigurationFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			alertConfigurationsField = append(alertConfigurationsField, *item)
+		}
+	}
+	st.AlertConfigurations = alertConfigurationsField
+	st.BudgetConfigurationId = pb.BudgetConfigurationId
+	st.CreateTime = pb.CreateTime
+	st.DisplayName = pb.DisplayName
+	filterField, err := BudgetConfigurationFilterFromPb(pb.Filter)
+	if err != nil {
+		return nil, err
+	}
+	if filterField != nil {
+		st.Filter = filterField
+	}
+	st.UpdateTime = pb.UpdateTime
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type BudgetConfigurationFilter struct {
 	// A list of tag keys and values that will limit the budget to usage that
 	// includes those specific custom tags. Tags are case-sensitive and should
 	// be entered exactly as they appear in your usage data.
-	Tags []BudgetConfigurationFilterTagClause `json:"tags,omitempty"`
+	// Wire name: 'tags'
+	Tags []BudgetConfigurationFilterTagClause ``
 	// If provided, usage must match with the provided Databricks workspace IDs.
-	WorkspaceId *BudgetConfigurationFilterWorkspaceIdClause `json:"workspace_id,omitempty"`
+	// Wire name: 'workspace_id'
+	WorkspaceId *BudgetConfigurationFilterWorkspaceIdClause ``
+}
+
+func BudgetConfigurationFilterToPb(st *BudgetConfigurationFilter) (*billingpb.BudgetConfigurationFilterPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.BudgetConfigurationFilterPb{}
+
+	var tagsPb []billingpb.BudgetConfigurationFilterTagClausePb
+	for _, item := range st.Tags {
+		itemPb, err := BudgetConfigurationFilterTagClauseToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			tagsPb = append(tagsPb, *itemPb)
+		}
+	}
+	pb.Tags = tagsPb
+	workspaceIdPb, err := BudgetConfigurationFilterWorkspaceIdClauseToPb(st.WorkspaceId)
+	if err != nil {
+		return nil, err
+	}
+	if workspaceIdPb != nil {
+		pb.WorkspaceId = workspaceIdPb
+	}
+
+	return pb, nil
+}
+
+func BudgetConfigurationFilterFromPb(pb *billingpb.BudgetConfigurationFilterPb) (*BudgetConfigurationFilter, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BudgetConfigurationFilter{}
+
+	var tagsField []BudgetConfigurationFilterTagClause
+	for _, itemPb := range pb.Tags {
+		item, err := BudgetConfigurationFilterTagClauseFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			tagsField = append(tagsField, *item)
+		}
+	}
+	st.Tags = tagsField
+	workspaceIdField, err := BudgetConfigurationFilterWorkspaceIdClauseFromPb(pb.WorkspaceId)
+	if err != nil {
+		return nil, err
+	}
+	if workspaceIdField != nil {
+		st.WorkspaceId = workspaceIdField
+	}
+
+	return st, nil
 }
 
 type BudgetConfigurationFilterClause struct {
-	Operator BudgetConfigurationFilterOperator `json:"operator,omitempty"`
 
-	Values []string `json:"values,omitempty"`
+	// Wire name: 'operator'
+	Operator BudgetConfigurationFilterOperator ``
+
+	// Wire name: 'values'
+	Values []string ``
+}
+
+func BudgetConfigurationFilterClauseToPb(st *BudgetConfigurationFilterClause) (*billingpb.BudgetConfigurationFilterClausePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.BudgetConfigurationFilterClausePb{}
+	operatorPb, err := BudgetConfigurationFilterOperatorToPb(&st.Operator)
+	if err != nil {
+		return nil, err
+	}
+	if operatorPb != nil {
+		pb.Operator = *operatorPb
+	}
+	pb.Values = st.Values
+
+	return pb, nil
+}
+
+func BudgetConfigurationFilterClauseFromPb(pb *billingpb.BudgetConfigurationFilterClausePb) (*BudgetConfigurationFilterClause, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BudgetConfigurationFilterClause{}
+	operatorField, err := BudgetConfigurationFilterOperatorFromPb(&pb.Operator)
+	if err != nil {
+		return nil, err
+	}
+	if operatorField != nil {
+		st.Operator = *operatorField
+	}
+	st.Values = pb.Values
+
+	return st, nil
 }
 
 type BudgetConfigurationFilterOperator string
@@ -274,12 +646,30 @@ func (f *BudgetConfigurationFilterOperator) Type() string {
 	return "BudgetConfigurationFilterOperator"
 }
 
+func BudgetConfigurationFilterOperatorToPb(st *BudgetConfigurationFilterOperator) (*billingpb.BudgetConfigurationFilterOperatorPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := billingpb.BudgetConfigurationFilterOperatorPb(*st)
+	return &pb, nil
+}
+
+func BudgetConfigurationFilterOperatorFromPb(pb *billingpb.BudgetConfigurationFilterOperatorPb) (*BudgetConfigurationFilterOperator, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := BudgetConfigurationFilterOperator(*pb)
+	return &st, nil
+}
+
 type BudgetConfigurationFilterTagClause struct {
-	Key string `json:"key,omitempty"`
 
-	Value *BudgetConfigurationFilterClause `json:"value,omitempty"`
+	// Wire name: 'key'
+	Key string ``
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'value'
+	Value           *BudgetConfigurationFilterClause ``
+	ForceSendFields []string                         `tf:"-"`
 }
 
 func (s *BudgetConfigurationFilterTagClause) UnmarshalJSON(b []byte) error {
@@ -290,10 +680,83 @@ func (s BudgetConfigurationFilterTagClause) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type BudgetConfigurationFilterWorkspaceIdClause struct {
-	Operator BudgetConfigurationFilterOperator `json:"operator,omitempty"`
+func BudgetConfigurationFilterTagClauseToPb(st *BudgetConfigurationFilterTagClause) (*billingpb.BudgetConfigurationFilterTagClausePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.BudgetConfigurationFilterTagClausePb{}
+	pb.Key = st.Key
+	valuePb, err := BudgetConfigurationFilterClauseToPb(st.Value)
+	if err != nil {
+		return nil, err
+	}
+	if valuePb != nil {
+		pb.Value = valuePb
+	}
 
-	Values []int64 `json:"values,omitempty"`
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func BudgetConfigurationFilterTagClauseFromPb(pb *billingpb.BudgetConfigurationFilterTagClausePb) (*BudgetConfigurationFilterTagClause, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BudgetConfigurationFilterTagClause{}
+	st.Key = pb.Key
+	valueField, err := BudgetConfigurationFilterClauseFromPb(pb.Value)
+	if err != nil {
+		return nil, err
+	}
+	if valueField != nil {
+		st.Value = valueField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
+type BudgetConfigurationFilterWorkspaceIdClause struct {
+
+	// Wire name: 'operator'
+	Operator BudgetConfigurationFilterOperator ``
+
+	// Wire name: 'values'
+	Values []int64 ``
+}
+
+func BudgetConfigurationFilterWorkspaceIdClauseToPb(st *BudgetConfigurationFilterWorkspaceIdClause) (*billingpb.BudgetConfigurationFilterWorkspaceIdClausePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.BudgetConfigurationFilterWorkspaceIdClausePb{}
+	operatorPb, err := BudgetConfigurationFilterOperatorToPb(&st.Operator)
+	if err != nil {
+		return nil, err
+	}
+	if operatorPb != nil {
+		pb.Operator = *operatorPb
+	}
+	pb.Values = st.Values
+
+	return pb, nil
+}
+
+func BudgetConfigurationFilterWorkspaceIdClauseFromPb(pb *billingpb.BudgetConfigurationFilterWorkspaceIdClausePb) (*BudgetConfigurationFilterWorkspaceIdClause, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BudgetConfigurationFilterWorkspaceIdClause{}
+	operatorField, err := BudgetConfigurationFilterOperatorFromPb(&pb.Operator)
+	if err != nil {
+		return nil, err
+	}
+	if operatorField != nil {
+		st.Operator = *operatorField
+	}
+	st.Values = pb.Values
+
+	return st, nil
 }
 
 // Contains the BudgetPolicy details.
@@ -301,19 +764,22 @@ type BudgetPolicy struct {
 	// List of workspaces that this budget policy will be exclusively bound to.
 	// An empty binding implies that this budget policy is open to any workspace
 	// in the account.
-	BindingWorkspaceIds []int64 `json:"binding_workspace_ids,omitempty"`
+	// Wire name: 'binding_workspace_ids'
+	BindingWorkspaceIds []int64 ``
 	// A list of tags defined by the customer. At most 20 entries are allowed
 	// per policy.
-	CustomTags []compute.CustomPolicyTag `json:"custom_tags,omitempty"`
+	// Wire name: 'custom_tags'
+	CustomTags []compute.CustomPolicyTag ``
 	// The Id of the policy. This field is generated by Databricks and globally
 	// unique.
-	PolicyId string `json:"policy_id,omitempty"`
+	// Wire name: 'policy_id'
+	PolicyId string ``
 	// The name of the policy. - Must be unique among active policies. - Can
 	// contain only characters from the ISO 8859-1 (latin1) set. - Can't start
 	// with reserved keywords such as `databricks:default-policy`.
-	PolicyName string `json:"policy_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'policy_name'
+	PolicyName      string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *BudgetPolicy) UnmarshalJSON(b []byte) error {
@@ -324,16 +790,67 @@ func (s BudgetPolicy) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func BudgetPolicyToPb(st *BudgetPolicy) (*billingpb.BudgetPolicyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.BudgetPolicyPb{}
+	pb.BindingWorkspaceIds = st.BindingWorkspaceIds
+
+	var customTagsPb []computepb.CustomPolicyTagPb
+	for _, item := range st.CustomTags {
+		itemPb, err := compute.CustomPolicyTagToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			customTagsPb = append(customTagsPb, *itemPb)
+		}
+	}
+	pb.CustomTags = customTagsPb
+	pb.PolicyId = st.PolicyId
+	pb.PolicyName = st.PolicyName
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func BudgetPolicyFromPb(pb *billingpb.BudgetPolicyPb) (*BudgetPolicy, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BudgetPolicy{}
+	st.BindingWorkspaceIds = pb.BindingWorkspaceIds
+
+	var customTagsField []compute.CustomPolicyTag
+	for _, itemPb := range pb.CustomTags {
+		item, err := compute.CustomPolicyTagFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			customTagsField = append(customTagsField, *item)
+		}
+	}
+	st.CustomTags = customTagsField
+	st.PolicyId = pb.PolicyId
+	st.PolicyName = pb.PolicyName
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type CreateBillingUsageDashboardRequest struct {
 	// Workspace level usage dashboard shows usage data for the specified
 	// workspace ID. Global level usage dashboard shows usage data for all
 	// workspaces in the account.
-	DashboardType UsageDashboardType `json:"dashboard_type,omitempty"`
+	// Wire name: 'dashboard_type'
+	DashboardType UsageDashboardType ``
 	// The workspace ID of the workspace in which the usage dashboard is
 	// created.
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'workspace_id'
+	WorkspaceId     int64    ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *CreateBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
@@ -344,11 +861,47 @@ func (s CreateBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func CreateBillingUsageDashboardRequestToPb(st *CreateBillingUsageDashboardRequest) (*billingpb.CreateBillingUsageDashboardRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.CreateBillingUsageDashboardRequestPb{}
+	dashboardTypePb, err := UsageDashboardTypeToPb(&st.DashboardType)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardTypePb != nil {
+		pb.DashboardType = *dashboardTypePb
+	}
+	pb.WorkspaceId = st.WorkspaceId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func CreateBillingUsageDashboardRequestFromPb(pb *billingpb.CreateBillingUsageDashboardRequestPb) (*CreateBillingUsageDashboardRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBillingUsageDashboardRequest{}
+	dashboardTypeField, err := UsageDashboardTypeFromPb(&pb.DashboardType)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardTypeField != nil {
+		st.DashboardType = *dashboardTypeField
+	}
+	st.WorkspaceId = pb.WorkspaceId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type CreateBillingUsageDashboardResponse struct {
 	// The unique id of the usage dashboard.
-	DashboardId string `json:"dashboard_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'dashboard_id'
+	DashboardId     string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *CreateBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
@@ -359,21 +912,46 @@ func (s CreateBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func CreateBillingUsageDashboardResponseToPb(st *CreateBillingUsageDashboardResponse) (*billingpb.CreateBillingUsageDashboardResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.CreateBillingUsageDashboardResponsePb{}
+	pb.DashboardId = st.DashboardId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func CreateBillingUsageDashboardResponseFromPb(pb *billingpb.CreateBillingUsageDashboardResponsePb) (*CreateBillingUsageDashboardResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBillingUsageDashboardResponse{}
+	st.DashboardId = pb.DashboardId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type CreateBudgetConfigurationBudget struct {
 	// Databricks account ID.
-	AccountId string `json:"account_id,omitempty"`
+	// Wire name: 'account_id'
+	AccountId string ``
 	// Alerts to configure when this budget is in a triggered state. Budgets
 	// must have exactly one alert configuration.
-	AlertConfigurations []CreateBudgetConfigurationBudgetAlertConfigurations `json:"alert_configurations,omitempty"`
+	// Wire name: 'alert_configurations'
+	AlertConfigurations []CreateBudgetConfigurationBudgetAlertConfigurations ``
 	// Human-readable name of budget configuration. Max Length: 128
-	DisplayName string `json:"display_name,omitempty"`
+	// Wire name: 'display_name'
+	DisplayName string ``
 	// Configured filters for this budget. These are applied to your account's
 	// usage to limit the scope of what is considered for this budget. Leave
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
-	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'filter'
+	Filter          *BudgetConfigurationFilter ``
+	ForceSendFields []string                   `tf:"-"`
 }
 
 func (s *CreateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {
@@ -384,13 +962,76 @@ func (s CreateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func CreateBudgetConfigurationBudgetToPb(st *CreateBudgetConfigurationBudget) (*billingpb.CreateBudgetConfigurationBudgetPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.CreateBudgetConfigurationBudgetPb{}
+	pb.AccountId = st.AccountId
+
+	var alertConfigurationsPb []billingpb.CreateBudgetConfigurationBudgetAlertConfigurationsPb
+	for _, item := range st.AlertConfigurations {
+		itemPb, err := CreateBudgetConfigurationBudgetAlertConfigurationsToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			alertConfigurationsPb = append(alertConfigurationsPb, *itemPb)
+		}
+	}
+	pb.AlertConfigurations = alertConfigurationsPb
+	pb.DisplayName = st.DisplayName
+	filterPb, err := BudgetConfigurationFilterToPb(st.Filter)
+	if err != nil {
+		return nil, err
+	}
+	if filterPb != nil {
+		pb.Filter = filterPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func CreateBudgetConfigurationBudgetFromPb(pb *billingpb.CreateBudgetConfigurationBudgetPb) (*CreateBudgetConfigurationBudget, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBudgetConfigurationBudget{}
+	st.AccountId = pb.AccountId
+
+	var alertConfigurationsField []CreateBudgetConfigurationBudgetAlertConfigurations
+	for _, itemPb := range pb.AlertConfigurations {
+		item, err := CreateBudgetConfigurationBudgetAlertConfigurationsFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			alertConfigurationsField = append(alertConfigurationsField, *item)
+		}
+	}
+	st.AlertConfigurations = alertConfigurationsField
+	st.DisplayName = pb.DisplayName
+	filterField, err := BudgetConfigurationFilterFromPb(pb.Filter)
+	if err != nil {
+		return nil, err
+	}
+	if filterField != nil {
+		st.Filter = filterField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type CreateBudgetConfigurationBudgetActionConfigurations struct {
 	// The type of the action.
-	ActionType ActionConfigurationType `json:"action_type,omitempty"`
+	// Wire name: 'action_type'
+	ActionType ActionConfigurationType ``
 	// Target for the action. For example, an email address.
-	Target string `json:"target,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'target'
+	Target          string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *CreateBudgetConfigurationBudgetActionConfigurations) UnmarshalJSON(b []byte) error {
@@ -401,23 +1042,63 @@ func (s CreateBudgetConfigurationBudgetActionConfigurations) MarshalJSON() ([]by
 	return marshal.Marshal(s)
 }
 
+func CreateBudgetConfigurationBudgetActionConfigurationsToPb(st *CreateBudgetConfigurationBudgetActionConfigurations) (*billingpb.CreateBudgetConfigurationBudgetActionConfigurationsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.CreateBudgetConfigurationBudgetActionConfigurationsPb{}
+	actionTypePb, err := ActionConfigurationTypeToPb(&st.ActionType)
+	if err != nil {
+		return nil, err
+	}
+	if actionTypePb != nil {
+		pb.ActionType = *actionTypePb
+	}
+	pb.Target = st.Target
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func CreateBudgetConfigurationBudgetActionConfigurationsFromPb(pb *billingpb.CreateBudgetConfigurationBudgetActionConfigurationsPb) (*CreateBudgetConfigurationBudgetActionConfigurations, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBudgetConfigurationBudgetActionConfigurations{}
+	actionTypeField, err := ActionConfigurationTypeFromPb(&pb.ActionType)
+	if err != nil {
+		return nil, err
+	}
+	if actionTypeField != nil {
+		st.ActionType = *actionTypeField
+	}
+	st.Target = pb.Target
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type CreateBudgetConfigurationBudgetAlertConfigurations struct {
 	// Configured actions for this alert. These define what happens when an
 	// alert enters a triggered state.
-	ActionConfigurations []CreateBudgetConfigurationBudgetActionConfigurations `json:"action_configurations,omitempty"`
+	// Wire name: 'action_configurations'
+	ActionConfigurations []CreateBudgetConfigurationBudgetActionConfigurations ``
 	// The threshold for the budget alert to determine if it is in a triggered
 	// state. The number is evaluated based on `quantity_type`.
-	QuantityThreshold string `json:"quantity_threshold,omitempty"`
+	// Wire name: 'quantity_threshold'
+	QuantityThreshold string ``
 	// The way to calculate cost for this budget alert. This is what
 	// `quantity_threshold` is measured in.
-	QuantityType AlertConfigurationQuantityType `json:"quantity_type,omitempty"`
+	// Wire name: 'quantity_type'
+	QuantityType AlertConfigurationQuantityType ``
 	// The time window of usage data for the budget.
-	TimePeriod AlertConfigurationTimePeriod `json:"time_period,omitempty"`
+	// Wire name: 'time_period'
+	TimePeriod AlertConfigurationTimePeriod ``
 	// The evaluation method to determine when this budget alert is in a
 	// triggered state.
-	TriggerType AlertConfigurationTriggerType `json:"trigger_type,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'trigger_type'
+	TriggerType     AlertConfigurationTriggerType ``
+	ForceSendFields []string                      `tf:"-"`
 }
 
 func (s *CreateBudgetConfigurationBudgetAlertConfigurations) UnmarshalJSON(b []byte) error {
@@ -428,14 +1109,168 @@ func (s CreateBudgetConfigurationBudgetAlertConfigurations) MarshalJSON() ([]byt
 	return marshal.Marshal(s)
 }
 
+func CreateBudgetConfigurationBudgetAlertConfigurationsToPb(st *CreateBudgetConfigurationBudgetAlertConfigurations) (*billingpb.CreateBudgetConfigurationBudgetAlertConfigurationsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.CreateBudgetConfigurationBudgetAlertConfigurationsPb{}
+
+	var actionConfigurationsPb []billingpb.CreateBudgetConfigurationBudgetActionConfigurationsPb
+	for _, item := range st.ActionConfigurations {
+		itemPb, err := CreateBudgetConfigurationBudgetActionConfigurationsToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			actionConfigurationsPb = append(actionConfigurationsPb, *itemPb)
+		}
+	}
+	pb.ActionConfigurations = actionConfigurationsPb
+	pb.QuantityThreshold = st.QuantityThreshold
+	quantityTypePb, err := AlertConfigurationQuantityTypeToPb(&st.QuantityType)
+	if err != nil {
+		return nil, err
+	}
+	if quantityTypePb != nil {
+		pb.QuantityType = *quantityTypePb
+	}
+	timePeriodPb, err := AlertConfigurationTimePeriodToPb(&st.TimePeriod)
+	if err != nil {
+		return nil, err
+	}
+	if timePeriodPb != nil {
+		pb.TimePeriod = *timePeriodPb
+	}
+	triggerTypePb, err := AlertConfigurationTriggerTypeToPb(&st.TriggerType)
+	if err != nil {
+		return nil, err
+	}
+	if triggerTypePb != nil {
+		pb.TriggerType = *triggerTypePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func CreateBudgetConfigurationBudgetAlertConfigurationsFromPb(pb *billingpb.CreateBudgetConfigurationBudgetAlertConfigurationsPb) (*CreateBudgetConfigurationBudgetAlertConfigurations, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBudgetConfigurationBudgetAlertConfigurations{}
+
+	var actionConfigurationsField []CreateBudgetConfigurationBudgetActionConfigurations
+	for _, itemPb := range pb.ActionConfigurations {
+		item, err := CreateBudgetConfigurationBudgetActionConfigurationsFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			actionConfigurationsField = append(actionConfigurationsField, *item)
+		}
+	}
+	st.ActionConfigurations = actionConfigurationsField
+	st.QuantityThreshold = pb.QuantityThreshold
+	quantityTypeField, err := AlertConfigurationQuantityTypeFromPb(&pb.QuantityType)
+	if err != nil {
+		return nil, err
+	}
+	if quantityTypeField != nil {
+		st.QuantityType = *quantityTypeField
+	}
+	timePeriodField, err := AlertConfigurationTimePeriodFromPb(&pb.TimePeriod)
+	if err != nil {
+		return nil, err
+	}
+	if timePeriodField != nil {
+		st.TimePeriod = *timePeriodField
+	}
+	triggerTypeField, err := AlertConfigurationTriggerTypeFromPb(&pb.TriggerType)
+	if err != nil {
+		return nil, err
+	}
+	if triggerTypeField != nil {
+		st.TriggerType = *triggerTypeField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type CreateBudgetConfigurationRequest struct {
 	// Properties of the new budget configuration.
-	Budget CreateBudgetConfigurationBudget `json:"budget"`
+	// Wire name: 'budget'
+	Budget CreateBudgetConfigurationBudget ``
+}
+
+func CreateBudgetConfigurationRequestToPb(st *CreateBudgetConfigurationRequest) (*billingpb.CreateBudgetConfigurationRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.CreateBudgetConfigurationRequestPb{}
+	budgetPb, err := CreateBudgetConfigurationBudgetToPb(&st.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetPb != nil {
+		pb.Budget = *budgetPb
+	}
+
+	return pb, nil
+}
+
+func CreateBudgetConfigurationRequestFromPb(pb *billingpb.CreateBudgetConfigurationRequestPb) (*CreateBudgetConfigurationRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBudgetConfigurationRequest{}
+	budgetField, err := CreateBudgetConfigurationBudgetFromPb(&pb.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetField != nil {
+		st.Budget = *budgetField
+	}
+
+	return st, nil
 }
 
 type CreateBudgetConfigurationResponse struct {
 	// The created budget configuration.
-	Budget *BudgetConfiguration `json:"budget,omitempty"`
+	// Wire name: 'budget'
+	Budget *BudgetConfiguration ``
+}
+
+func CreateBudgetConfigurationResponseToPb(st *CreateBudgetConfigurationResponse) (*billingpb.CreateBudgetConfigurationResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.CreateBudgetConfigurationResponsePb{}
+	budgetPb, err := BudgetConfigurationToPb(st.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetPb != nil {
+		pb.Budget = budgetPb
+	}
+
+	return pb, nil
+}
+
+func CreateBudgetConfigurationResponseFromPb(pb *billingpb.CreateBudgetConfigurationResponsePb) (*CreateBudgetConfigurationResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBudgetConfigurationResponse{}
+	budgetField, err := BudgetConfigurationFromPb(pb.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetField != nil {
+		st.Budget = budgetField
+	}
+
+	return st, nil
 }
 
 // A request to create a BudgetPolicy.
@@ -443,13 +1278,14 @@ type CreateBudgetPolicyRequest struct {
 	// The policy to create. `policy_id` needs to be empty as it will be
 	// generated `policy_name` must be provided, custom_tags may need to be
 	// provided depending on the cloud provider. All other fields are optional.
-	Policy *BudgetPolicy `json:"policy,omitempty"`
+	// Wire name: 'policy'
+	Policy *BudgetPolicy ``
 	// A unique identifier for this request. Restricted to 36 ASCII characters.
 	// A random UUID is recommended. This request is only idempotent if a
 	// `request_id` is provided.
-	RequestId string `json:"request_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'request_id'
+	RequestId       string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *CreateBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
@@ -460,27 +1296,67 @@ func (s CreateBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func CreateBudgetPolicyRequestToPb(st *CreateBudgetPolicyRequest) (*billingpb.CreateBudgetPolicyRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.CreateBudgetPolicyRequestPb{}
+	policyPb, err := BudgetPolicyToPb(st.Policy)
+	if err != nil {
+		return nil, err
+	}
+	if policyPb != nil {
+		pb.Policy = policyPb
+	}
+	pb.RequestId = st.RequestId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func CreateBudgetPolicyRequestFromPb(pb *billingpb.CreateBudgetPolicyRequestPb) (*CreateBudgetPolicyRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBudgetPolicyRequest{}
+	policyField, err := BudgetPolicyFromPb(pb.Policy)
+	if err != nil {
+		return nil, err
+	}
+	if policyField != nil {
+		st.Policy = policyField
+	}
+	st.RequestId = pb.RequestId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // * Log Delivery Configuration
 type CreateLogDeliveryConfigurationParams struct {
 	// The optional human-readable name of the log delivery configuration.
 	// Defaults to empty.
-	ConfigName string `json:"config_name,omitempty"`
+	// Wire name: 'config_name'
+	ConfigName string ``
 	// The ID for a method:credentials/create that represents the AWS IAM role
 	// with policy and trust relationship as described in the main billable
 	// usage documentation page. See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
-	CredentialsId string `json:"credentials_id"`
+	// Wire name: 'credentials_id'
+	CredentialsId string ``
 	// The optional delivery path prefix within Amazon S3 storage. Defaults to
 	// empty, which means that logs are delivered to the root of the bucket.
 	// This must be a valid S3 object key. This must not start or end with a
 	// slash character.
-	DeliveryPathPrefix string `json:"delivery_path_prefix,omitempty"`
+	// Wire name: 'delivery_path_prefix'
+	DeliveryPathPrefix string ``
 	// This field applies only if log_type is BILLABLE_USAGE. This is the
 	// optional start month and year for delivery, specified in YYYY-MM format.
 	// Defaults to current year and month. BILLABLE_USAGE logs are not available
 	// for usage before March 2019 (2019-03).
-	DeliveryStartTime string `json:"delivery_start_time,omitempty"`
+	// Wire name: 'delivery_start_time'
+	DeliveryStartTime string ``
 	// Log delivery type. Supported values are: * `BILLABLE_USAGE` — Configure
 	// [billable usage log delivery]. For the CSV schema, see the [View billable
 	// usage]. * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON
@@ -490,7 +1366,8 @@ type CreateLogDeliveryConfigurationParams struct {
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 	// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
-	LogType LogType `json:"log_type"`
+	// Wire name: 'log_type'
+	LogType LogType ``
 	// The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`, this
 	// value must be `CSV`. Only the CSV (comma-separated values) format is
 	// supported. For the schema, see the [View billable usage] * If `log_type`
@@ -500,19 +1377,22 @@ type CreateLogDeliveryConfigurationParams struct {
 	//
 	// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
-	OutputFormat OutputFormat `json:"output_format"`
+	// Wire name: 'output_format'
+	OutputFormat OutputFormat ``
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
 	// the configuration](#operation/patch-log-delivery-config-status) later.
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
-	Status LogDeliveryConfigStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status LogDeliveryConfigStatus ``
 	// The ID for a method:storage/create that represents the S3 bucket with
 	// bucket policy as described in the main billable usage documentation page.
 	// See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
-	StorageConfigurationId string `json:"storage_configuration_id"`
+	// Wire name: 'storage_configuration_id'
+	StorageConfigurationId string ``
 	// Optional filter that specifies workspace IDs to deliver logs for. By
 	// default the workspace filter is empty and log delivery applies at the
 	// account level, delivering workspace-level logs for all workspaces in your
@@ -526,9 +1406,9 @@ type CreateLogDeliveryConfigurationParams struct {
 	// delivery won't include account level logs. For some types of Databricks
 	// deployments there is only one workspace per account ID, so this field is
 	// unnecessary.
-	WorkspaceIdsFilter []int64 `json:"workspace_ids_filter,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'workspace_ids_filter'
+	WorkspaceIdsFilter []int64  ``
+	ForceSendFields    []string `tf:"-"`
 }
 
 func (s *CreateLogDeliveryConfigurationParams) UnmarshalJSON(b []byte) error {
@@ -539,14 +1419,130 @@ func (s CreateLogDeliveryConfigurationParams) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func CreateLogDeliveryConfigurationParamsToPb(st *CreateLogDeliveryConfigurationParams) (*billingpb.CreateLogDeliveryConfigurationParamsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.CreateLogDeliveryConfigurationParamsPb{}
+	pb.ConfigName = st.ConfigName
+	pb.CredentialsId = st.CredentialsId
+	pb.DeliveryPathPrefix = st.DeliveryPathPrefix
+	pb.DeliveryStartTime = st.DeliveryStartTime
+	logTypePb, err := LogTypeToPb(&st.LogType)
+	if err != nil {
+		return nil, err
+	}
+	if logTypePb != nil {
+		pb.LogType = *logTypePb
+	}
+	outputFormatPb, err := OutputFormatToPb(&st.OutputFormat)
+	if err != nil {
+		return nil, err
+	}
+	if outputFormatPb != nil {
+		pb.OutputFormat = *outputFormatPb
+	}
+	statusPb, err := LogDeliveryConfigStatusToPb(&st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+	pb.StorageConfigurationId = st.StorageConfigurationId
+	pb.WorkspaceIdsFilter = st.WorkspaceIdsFilter
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func CreateLogDeliveryConfigurationParamsFromPb(pb *billingpb.CreateLogDeliveryConfigurationParamsPb) (*CreateLogDeliveryConfigurationParams, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateLogDeliveryConfigurationParams{}
+	st.ConfigName = pb.ConfigName
+	st.CredentialsId = pb.CredentialsId
+	st.DeliveryPathPrefix = pb.DeliveryPathPrefix
+	st.DeliveryStartTime = pb.DeliveryStartTime
+	logTypeField, err := LogTypeFromPb(&pb.LogType)
+	if err != nil {
+		return nil, err
+	}
+	if logTypeField != nil {
+		st.LogType = *logTypeField
+	}
+	outputFormatField, err := OutputFormatFromPb(&pb.OutputFormat)
+	if err != nil {
+		return nil, err
+	}
+	if outputFormatField != nil {
+		st.OutputFormat = *outputFormatField
+	}
+	statusField, err := LogDeliveryConfigStatusFromPb(&pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = *statusField
+	}
+	st.StorageConfigurationId = pb.StorageConfigurationId
+	st.WorkspaceIdsFilter = pb.WorkspaceIdsFilter
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type DeleteBudgetConfigurationRequest struct {
 	// The Databricks budget configuration ID.
-	BudgetId string `json:"-" url:"-"`
+	// Wire name: 'budget_id'
+	BudgetId string `tf:"-"`
+}
+
+func DeleteBudgetConfigurationRequestToPb(st *DeleteBudgetConfigurationRequest) (*billingpb.DeleteBudgetConfigurationRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.DeleteBudgetConfigurationRequestPb{}
+	pb.BudgetId = st.BudgetId
+
+	return pb, nil
+}
+
+func DeleteBudgetConfigurationRequestFromPb(pb *billingpb.DeleteBudgetConfigurationRequestPb) (*DeleteBudgetConfigurationRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteBudgetConfigurationRequest{}
+	st.BudgetId = pb.BudgetId
+
+	return st, nil
 }
 
 type DeleteBudgetPolicyRequest struct {
 	// The Id of the policy.
-	PolicyId string `json:"-" url:"-"`
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
+}
+
+func DeleteBudgetPolicyRequestToPb(st *DeleteBudgetPolicyRequest) (*billingpb.DeleteBudgetPolicyRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.DeleteBudgetPolicyRequestPb{}
+	pb.PolicyId = st.PolicyId
+
+	return pb, nil
+}
+
+func DeleteBudgetPolicyRequestFromPb(pb *billingpb.DeleteBudgetPolicyRequestPb) (*DeleteBudgetPolicyRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteBudgetPolicyRequest{}
+	st.PolicyId = pb.PolicyId
+
+	return st, nil
 }
 
 // * The status string for log delivery. Possible values are: `CREATED`: There
@@ -604,21 +1600,39 @@ func (f *DeliveryStatus) Type() string {
 	return "DeliveryStatus"
 }
 
+func DeliveryStatusToPb(st *DeliveryStatus) (*billingpb.DeliveryStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := billingpb.DeliveryStatusPb(*st)
+	return &pb, nil
+}
+
+func DeliveryStatusFromPb(pb *billingpb.DeliveryStatusPb) (*DeliveryStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := DeliveryStatus(*pb)
+	return &st, nil
+}
+
 type DownloadRequest struct {
 	// Format: `YYYY-MM`. Last month to return billable usage logs for. This
 	// field is required.
-	EndMonth string `json:"-" url:"end_month"`
+	// Wire name: 'end_month'
+	EndMonth string `tf:"-"`
 	// Specify whether to include personally identifiable information in the
 	// billable usage logs, for example the email addresses of cluster creators.
 	// Handle this information with care. Defaults to false.
-	PersonalData bool `json:"-" url:"personal_data,omitempty"`
+	// Wire name: 'personal_data'
+	PersonalData bool `tf:"-"`
 	// Format specification for month in the format `YYYY-MM`. This is used to
 	// specify billable usage `start_month` and `end_month` properties.
 	// **Note**: Billable usage logs are unavailable before March 2019
 	// (`2019-03`).
-	StartMonth string `json:"-" url:"start_month"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'start_month'
+	StartMonth      string   `tf:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *DownloadRequest) UnmarshalJSON(b []byte) error {
@@ -629,8 +1643,56 @@ func (s DownloadRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func DownloadRequestToPb(st *DownloadRequest) (*billingpb.DownloadRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.DownloadRequestPb{}
+	pb.EndMonth = st.EndMonth
+	pb.PersonalData = st.PersonalData
+	pb.StartMonth = st.StartMonth
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func DownloadRequestFromPb(pb *billingpb.DownloadRequestPb) (*DownloadRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DownloadRequest{}
+	st.EndMonth = pb.EndMonth
+	st.PersonalData = pb.PersonalData
+	st.StartMonth = pb.StartMonth
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type DownloadResponse struct {
-	Contents io.ReadCloser `json:"-"`
+
+	// Wire name: 'contents'
+	Contents io.ReadCloser `tf:"-"`
+}
+
+func DownloadResponseToPb(st *DownloadResponse) (*billingpb.DownloadResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.DownloadResponsePb{}
+	pb.Contents = st.Contents
+
+	return pb, nil
+}
+
+func DownloadResponseFromPb(pb *billingpb.DownloadResponsePb) (*DownloadResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DownloadResponse{}
+	st.Contents = pb.Contents
+
+	return st, nil
 }
 
 // Structured representation of a filter to be applied to a list of policies.
@@ -638,15 +1700,17 @@ type DownloadResponse struct {
 type Filter struct {
 	// The policy creator user id to be filtered on. If unspecified, all
 	// policies will be returned.
-	CreatorUserId int64 `json:"creator_user_id,omitempty" url:"creator_user_id,omitempty"`
+	// Wire name: 'creator_user_id'
+	CreatorUserId int64 ``
 	// The policy creator user name to be filtered on. If unspecified, all
 	// policies will be returned.
-	CreatorUserName string `json:"creator_user_name,omitempty" url:"creator_user_name,omitempty"`
+	// Wire name: 'creator_user_name'
+	CreatorUserName string ``
 	// The partial name of policies to be filtered on. If unspecified, all
 	// policies will be returned.
-	PolicyName string `json:"policy_name,omitempty" url:"policy_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'policy_name'
+	PolicyName      string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *Filter) UnmarshalJSON(b []byte) error {
@@ -657,16 +1721,43 @@ func (s Filter) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func FilterToPb(st *Filter) (*billingpb.FilterPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.FilterPb{}
+	pb.CreatorUserId = st.CreatorUserId
+	pb.CreatorUserName = st.CreatorUserName
+	pb.PolicyName = st.PolicyName
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func FilterFromPb(pb *billingpb.FilterPb) (*Filter, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &Filter{}
+	st.CreatorUserId = pb.CreatorUserId
+	st.CreatorUserName = pb.CreatorUserName
+	st.PolicyName = pb.PolicyName
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type GetBillingUsageDashboardRequest struct {
 	// Workspace level usage dashboard shows usage data for the specified
 	// workspace ID. Global level usage dashboard shows usage data for all
 	// workspaces in the account.
-	DashboardType UsageDashboardType `json:"-" url:"dashboard_type,omitempty"`
+	// Wire name: 'dashboard_type'
+	DashboardType UsageDashboardType `tf:"-"`
 	// The workspace ID of the workspace in which the usage dashboard is
 	// created.
-	WorkspaceId int64 `json:"-" url:"workspace_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'workspace_id'
+	WorkspaceId     int64    `tf:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *GetBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
@@ -677,13 +1768,50 @@ func (s GetBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func GetBillingUsageDashboardRequestToPb(st *GetBillingUsageDashboardRequest) (*billingpb.GetBillingUsageDashboardRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.GetBillingUsageDashboardRequestPb{}
+	dashboardTypePb, err := UsageDashboardTypeToPb(&st.DashboardType)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardTypePb != nil {
+		pb.DashboardType = *dashboardTypePb
+	}
+	pb.WorkspaceId = st.WorkspaceId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func GetBillingUsageDashboardRequestFromPb(pb *billingpb.GetBillingUsageDashboardRequestPb) (*GetBillingUsageDashboardRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetBillingUsageDashboardRequest{}
+	dashboardTypeField, err := UsageDashboardTypeFromPb(&pb.DashboardType)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardTypeField != nil {
+		st.DashboardType = *dashboardTypeField
+	}
+	st.WorkspaceId = pb.WorkspaceId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type GetBillingUsageDashboardResponse struct {
 	// The unique id of the usage dashboard.
-	DashboardId string `json:"dashboard_id,omitempty"`
+	// Wire name: 'dashboard_id'
+	DashboardId string ``
 	// The URL of the usage dashboard.
-	DashboardUrl string `json:"dashboard_url,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'dashboard_url'
+	DashboardUrl    string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *GetBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
@@ -694,28 +1822,182 @@ func (s GetBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func GetBillingUsageDashboardResponseToPb(st *GetBillingUsageDashboardResponse) (*billingpb.GetBillingUsageDashboardResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.GetBillingUsageDashboardResponsePb{}
+	pb.DashboardId = st.DashboardId
+	pb.DashboardUrl = st.DashboardUrl
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func GetBillingUsageDashboardResponseFromPb(pb *billingpb.GetBillingUsageDashboardResponsePb) (*GetBillingUsageDashboardResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetBillingUsageDashboardResponse{}
+	st.DashboardId = pb.DashboardId
+	st.DashboardUrl = pb.DashboardUrl
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type GetBudgetConfigurationRequest struct {
 	// The budget configuration ID
-	BudgetId string `json:"-" url:"-"`
+	// Wire name: 'budget_id'
+	BudgetId string `tf:"-"`
+}
+
+func GetBudgetConfigurationRequestToPb(st *GetBudgetConfigurationRequest) (*billingpb.GetBudgetConfigurationRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.GetBudgetConfigurationRequestPb{}
+	pb.BudgetId = st.BudgetId
+
+	return pb, nil
+}
+
+func GetBudgetConfigurationRequestFromPb(pb *billingpb.GetBudgetConfigurationRequestPb) (*GetBudgetConfigurationRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetBudgetConfigurationRequest{}
+	st.BudgetId = pb.BudgetId
+
+	return st, nil
 }
 
 type GetBudgetConfigurationResponse struct {
-	Budget *BudgetConfiguration `json:"budget,omitempty"`
+
+	// Wire name: 'budget'
+	Budget *BudgetConfiguration ``
+}
+
+func GetBudgetConfigurationResponseToPb(st *GetBudgetConfigurationResponse) (*billingpb.GetBudgetConfigurationResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.GetBudgetConfigurationResponsePb{}
+	budgetPb, err := BudgetConfigurationToPb(st.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetPb != nil {
+		pb.Budget = budgetPb
+	}
+
+	return pb, nil
+}
+
+func GetBudgetConfigurationResponseFromPb(pb *billingpb.GetBudgetConfigurationResponsePb) (*GetBudgetConfigurationResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetBudgetConfigurationResponse{}
+	budgetField, err := BudgetConfigurationFromPb(pb.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetField != nil {
+		st.Budget = budgetField
+	}
+
+	return st, nil
 }
 
 type GetBudgetPolicyRequest struct {
 	// The Id of the policy.
-	PolicyId string `json:"-" url:"-"`
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
+}
+
+func GetBudgetPolicyRequestToPb(st *GetBudgetPolicyRequest) (*billingpb.GetBudgetPolicyRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.GetBudgetPolicyRequestPb{}
+	pb.PolicyId = st.PolicyId
+
+	return pb, nil
+}
+
+func GetBudgetPolicyRequestFromPb(pb *billingpb.GetBudgetPolicyRequestPb) (*GetBudgetPolicyRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetBudgetPolicyRequest{}
+	st.PolicyId = pb.PolicyId
+
+	return st, nil
 }
 
 type GetLogDeliveryConfigurationResponse struct {
 	// The fetched log delivery configuration
-	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
+	// Wire name: 'log_delivery_configuration'
+	LogDeliveryConfiguration *LogDeliveryConfiguration ``
+}
+
+func GetLogDeliveryConfigurationResponseToPb(st *GetLogDeliveryConfigurationResponse) (*billingpb.GetLogDeliveryConfigurationResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.GetLogDeliveryConfigurationResponsePb{}
+	logDeliveryConfigurationPb, err := LogDeliveryConfigurationToPb(st.LogDeliveryConfiguration)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryConfigurationPb != nil {
+		pb.LogDeliveryConfiguration = logDeliveryConfigurationPb
+	}
+
+	return pb, nil
+}
+
+func GetLogDeliveryConfigurationResponseFromPb(pb *billingpb.GetLogDeliveryConfigurationResponsePb) (*GetLogDeliveryConfigurationResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetLogDeliveryConfigurationResponse{}
+	logDeliveryConfigurationField, err := LogDeliveryConfigurationFromPb(pb.LogDeliveryConfiguration)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryConfigurationField != nil {
+		st.LogDeliveryConfiguration = logDeliveryConfigurationField
+	}
+
+	return st, nil
 }
 
 type GetLogDeliveryRequest struct {
 	// The log delivery configuration id of customer
-	LogDeliveryConfigurationId string `json:"-" url:"-"`
+	// Wire name: 'log_delivery_configuration_id'
+	LogDeliveryConfigurationId string `tf:"-"`
+}
+
+func GetLogDeliveryRequestToPb(st *GetLogDeliveryRequest) (*billingpb.GetLogDeliveryRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.GetLogDeliveryRequestPb{}
+	pb.LogDeliveryConfigurationId = st.LogDeliveryConfigurationId
+
+	return pb, nil
+}
+
+func GetLogDeliveryRequestFromPb(pb *billingpb.GetLogDeliveryRequestPb) (*GetLogDeliveryRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetLogDeliveryRequest{}
+	st.LogDeliveryConfigurationId = pb.LogDeliveryConfigurationId
+
+	return st, nil
 }
 
 // The limit configuration of the policy. Limit configuration provide a budget
@@ -723,13 +2005,31 @@ type GetLogDeliveryRequest struct {
 type LimitConfig struct {
 }
 
+func LimitConfigToPb(st *LimitConfig) (*billingpb.LimitConfigPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.LimitConfigPb{}
+
+	return pb, nil
+}
+
+func LimitConfigFromPb(pb *billingpb.LimitConfigPb) (*LimitConfig, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &LimitConfig{}
+
+	return st, nil
+}
+
 type ListBudgetConfigurationsRequest struct {
 	// A page token received from a previous get all budget configurations call.
 	// This token can be used to retrieve the subsequent page. Requests first
 	// page if absent.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken       string   `tf:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ListBudgetConfigurationsRequest) UnmarshalJSON(b []byte) error {
@@ -740,13 +2040,37 @@ func (s ListBudgetConfigurationsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ListBudgetConfigurationsRequestToPb(st *ListBudgetConfigurationsRequest) (*billingpb.ListBudgetConfigurationsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.ListBudgetConfigurationsRequestPb{}
+	pb.PageToken = st.PageToken
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListBudgetConfigurationsRequestFromPb(pb *billingpb.ListBudgetConfigurationsRequestPb) (*ListBudgetConfigurationsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListBudgetConfigurationsRequest{}
+	st.PageToken = pb.PageToken
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ListBudgetConfigurationsResponse struct {
-	Budgets []BudgetConfiguration `json:"budgets,omitempty"`
+
+	// Wire name: 'budgets'
+	Budgets []BudgetConfiguration ``
 	// Token which can be sent as `page_token` to retrieve the next page of
 	// results. If this field is omitted, there are no subsequent budgets.
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken   string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ListBudgetConfigurationsResponse) UnmarshalJSON(b []byte) error {
@@ -757,13 +2081,61 @@ func (s ListBudgetConfigurationsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ListBudgetConfigurationsResponseToPb(st *ListBudgetConfigurationsResponse) (*billingpb.ListBudgetConfigurationsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.ListBudgetConfigurationsResponsePb{}
+
+	var budgetsPb []billingpb.BudgetConfigurationPb
+	for _, item := range st.Budgets {
+		itemPb, err := BudgetConfigurationToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			budgetsPb = append(budgetsPb, *itemPb)
+		}
+	}
+	pb.Budgets = budgetsPb
+	pb.NextPageToken = st.NextPageToken
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListBudgetConfigurationsResponseFromPb(pb *billingpb.ListBudgetConfigurationsResponsePb) (*ListBudgetConfigurationsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListBudgetConfigurationsResponse{}
+
+	var budgetsField []BudgetConfiguration
+	for _, itemPb := range pb.Budgets {
+		item, err := BudgetConfigurationFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			budgetsField = append(budgetsField, *item)
+		}
+	}
+	st.Budgets = budgetsField
+	st.NextPageToken = pb.NextPageToken
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ListBudgetPoliciesRequest struct {
 	// A filter to apply to the list of policies.
-	FilterBy *Filter `json:"-" url:"filter_by,omitempty"`
+	// Wire name: 'filter_by'
+	FilterBy *Filter `tf:"-"`
 	// The maximum number of budget policies to return. If unspecified, at most
 	// 100 budget policies will be returned. The maximum value is 1000; values
 	// above 1000 will be coerced to 1000.
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// A page token, received from a previous `ListServerlessPolicies` call.
 	// Provide this to retrieve the subsequent page. If unspecified, the first
 	// page will be returned.
@@ -771,11 +2143,12 @@ type ListBudgetPoliciesRequest struct {
 	// When paginating, all other parameters provided to
 	// `ListServerlessPoliciesRequest` must match the call that provided the
 	// page token.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The sort specification.
-	SortSpec *SortSpec `json:"-" url:"sort_spec,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'sort_spec'
+	SortSpec        *SortSpec `tf:"-"`
+	ForceSendFields []string  `tf:"-"`
 }
 
 func (s *ListBudgetPoliciesRequest) UnmarshalJSON(b []byte) error {
@@ -786,18 +2159,72 @@ func (s ListBudgetPoliciesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ListBudgetPoliciesRequestToPb(st *ListBudgetPoliciesRequest) (*billingpb.ListBudgetPoliciesRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.ListBudgetPoliciesRequestPb{}
+	filterByPb, err := FilterToPb(st.FilterBy)
+	if err != nil {
+		return nil, err
+	}
+	if filterByPb != nil {
+		pb.FilterBy = filterByPb
+	}
+	pb.PageSize = st.PageSize
+	pb.PageToken = st.PageToken
+	sortSpecPb, err := SortSpecToPb(st.SortSpec)
+	if err != nil {
+		return nil, err
+	}
+	if sortSpecPb != nil {
+		pb.SortSpec = sortSpecPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListBudgetPoliciesRequestFromPb(pb *billingpb.ListBudgetPoliciesRequestPb) (*ListBudgetPoliciesRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListBudgetPoliciesRequest{}
+	filterByField, err := FilterFromPb(pb.FilterBy)
+	if err != nil {
+		return nil, err
+	}
+	if filterByField != nil {
+		st.FilterBy = filterByField
+	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
+	sortSpecField, err := SortSpecFromPb(pb.SortSpec)
+	if err != nil {
+		return nil, err
+	}
+	if sortSpecField != nil {
+		st.SortSpec = sortSpecField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // A list of policies.
 type ListBudgetPoliciesResponse struct {
 	// A token that can be sent as `page_token` to retrieve the next page. If
 	// this field is omitted, there are no subsequent pages.
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string ``
 
-	Policies []BudgetPolicy `json:"policies,omitempty"`
+	// Wire name: 'policies'
+	Policies []BudgetPolicy ``
 	// A token that can be sent as `page_token` to retrieve the previous page.
 	// In this field is omitted, there are no previous pages.
-	PreviousPageToken string `json:"previous_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'previous_page_token'
+	PreviousPageToken string   ``
+	ForceSendFields   []string `tf:"-"`
 }
 
 func (s *ListBudgetPoliciesResponse) UnmarshalJSON(b []byte) error {
@@ -808,19 +2235,70 @@ func (s ListBudgetPoliciesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ListBudgetPoliciesResponseToPb(st *ListBudgetPoliciesResponse) (*billingpb.ListBudgetPoliciesResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.ListBudgetPoliciesResponsePb{}
+	pb.NextPageToken = st.NextPageToken
+
+	var policiesPb []billingpb.BudgetPolicyPb
+	for _, item := range st.Policies {
+		itemPb, err := BudgetPolicyToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			policiesPb = append(policiesPb, *itemPb)
+		}
+	}
+	pb.Policies = policiesPb
+	pb.PreviousPageToken = st.PreviousPageToken
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListBudgetPoliciesResponseFromPb(pb *billingpb.ListBudgetPoliciesResponsePb) (*ListBudgetPoliciesResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListBudgetPoliciesResponse{}
+	st.NextPageToken = pb.NextPageToken
+
+	var policiesField []BudgetPolicy
+	for _, itemPb := range pb.Policies {
+		item, err := BudgetPolicyFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			policiesField = append(policiesField, *item)
+		}
+	}
+	st.Policies = policiesField
+	st.PreviousPageToken = pb.PreviousPageToken
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ListLogDeliveryRequest struct {
 	// The Credentials id to filter the search results with
-	CredentialsId string `json:"-" url:"credentials_id,omitempty"`
+	// Wire name: 'credentials_id'
+	CredentialsId string `tf:"-"`
 	// A page token received from a previous get all budget configurations call.
 	// This token can be used to retrieve the subsequent page. Requests first
 	// page if absent.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The log delivery status to filter the search results with
-	Status LogDeliveryConfigStatus `json:"-" url:"status,omitempty"`
+	// Wire name: 'status'
+	Status LogDeliveryConfigStatus `tf:"-"`
 	// The Storage Configuration id to filter the search results with
-	StorageConfigurationId string `json:"-" url:"storage_configuration_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'storage_configuration_id'
+	StorageConfigurationId string   `tf:"-"`
+	ForceSendFields        []string `tf:"-"`
 }
 
 func (s *ListLogDeliveryRequest) UnmarshalJSON(b []byte) error {
@@ -829,6 +2307,46 @@ func (s *ListLogDeliveryRequest) UnmarshalJSON(b []byte) error {
 
 func (s ListLogDeliveryRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func ListLogDeliveryRequestToPb(st *ListLogDeliveryRequest) (*billingpb.ListLogDeliveryRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.ListLogDeliveryRequestPb{}
+	pb.CredentialsId = st.CredentialsId
+	pb.PageToken = st.PageToken
+	statusPb, err := LogDeliveryConfigStatusToPb(&st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+	pb.StorageConfigurationId = st.StorageConfigurationId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListLogDeliveryRequestFromPb(pb *billingpb.ListLogDeliveryRequestPb) (*ListLogDeliveryRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListLogDeliveryRequest{}
+	st.CredentialsId = pb.CredentialsId
+	st.PageToken = pb.PageToken
+	statusField, err := LogDeliveryConfigStatusFromPb(&pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = *statusField
+	}
+	st.StorageConfigurationId = pb.StorageConfigurationId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // * Log Delivery Status
@@ -872,36 +2390,60 @@ func (f *LogDeliveryConfigStatus) Type() string {
 	return "LogDeliveryConfigStatus"
 }
 
+func LogDeliveryConfigStatusToPb(st *LogDeliveryConfigStatus) (*billingpb.LogDeliveryConfigStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := billingpb.LogDeliveryConfigStatusPb(*st)
+	return &pb, nil
+}
+
+func LogDeliveryConfigStatusFromPb(pb *billingpb.LogDeliveryConfigStatusPb) (*LogDeliveryConfigStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := LogDeliveryConfigStatus(*pb)
+	return &st, nil
+}
+
 // * Log Delivery Configuration
 type LogDeliveryConfiguration struct {
 	// Databricks account ID.
-	AccountId string `json:"account_id"`
+	// Wire name: 'account_id'
+	AccountId string ``
 	// The unique UUID of log delivery configuration
-	ConfigId string `json:"config_id,omitempty"`
+	// Wire name: 'config_id'
+	ConfigId string ``
 	// The optional human-readable name of the log delivery configuration.
 	// Defaults to empty.
-	ConfigName string `json:"config_name,omitempty"`
+	// Wire name: 'config_name'
+	ConfigName string ``
 	// Time in epoch milliseconds when the log delivery configuration was
 	// created.
-	CreationTime int64 `json:"creation_time,omitempty"`
+	// Wire name: 'creation_time'
+	CreationTime int64 ``
 	// The ID for a method:credentials/create that represents the AWS IAM role
 	// with policy and trust relationship as described in the main billable
 	// usage documentation page. See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
-	CredentialsId string `json:"credentials_id"`
+	// Wire name: 'credentials_id'
+	CredentialsId string ``
 	// The optional delivery path prefix within Amazon S3 storage. Defaults to
 	// empty, which means that logs are delivered to the root of the bucket.
 	// This must be a valid S3 object key. This must not start or end with a
 	// slash character.
-	DeliveryPathPrefix string `json:"delivery_path_prefix,omitempty"`
+	// Wire name: 'delivery_path_prefix'
+	DeliveryPathPrefix string ``
 	// This field applies only if log_type is BILLABLE_USAGE. This is the
 	// optional start month and year for delivery, specified in YYYY-MM format.
 	// Defaults to current year and month. BILLABLE_USAGE logs are not available
 	// for usage before March 2019 (2019-03).
-	DeliveryStartTime string `json:"delivery_start_time,omitempty"`
+	// Wire name: 'delivery_start_time'
+	DeliveryStartTime string ``
 	// The LogDeliveryStatus of this log delivery configuration
-	LogDeliveryStatus *LogDeliveryStatus `json:"log_delivery_status,omitempty"`
+	// Wire name: 'log_delivery_status'
+	LogDeliveryStatus *LogDeliveryStatus ``
 	// Log delivery type. Supported values are: * `BILLABLE_USAGE` — Configure
 	// [billable usage log delivery]. For the CSV schema, see the [View billable
 	// usage]. * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON
@@ -911,7 +2453,8 @@ type LogDeliveryConfiguration struct {
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 	// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
-	LogType LogType `json:"log_type"`
+	// Wire name: 'log_type'
+	LogType LogType ``
 	// The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`, this
 	// value must be `CSV`. Only the CSV (comma-separated values) format is
 	// supported. For the schema, see the [View billable usage] * If `log_type`
@@ -921,22 +2464,26 @@ type LogDeliveryConfiguration struct {
 	//
 	// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
-	OutputFormat OutputFormat `json:"output_format"`
+	// Wire name: 'output_format'
+	OutputFormat OutputFormat ``
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
 	// the configuration](#operation/patch-log-delivery-config-status) later.
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
-	Status LogDeliveryConfigStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status LogDeliveryConfigStatus ``
 	// The ID for a method:storage/create that represents the S3 bucket with
 	// bucket policy as described in the main billable usage documentation page.
 	// See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
-	StorageConfigurationId string `json:"storage_configuration_id"`
+	// Wire name: 'storage_configuration_id'
+	StorageConfigurationId string ``
 	// Time in epoch milliseconds when the log delivery configuration was
 	// updated.
-	UpdateTime int64 `json:"update_time,omitempty"`
+	// Wire name: 'update_time'
+	UpdateTime int64 ``
 	// Optional filter that specifies workspace IDs to deliver logs for. By
 	// default the workspace filter is empty and log delivery applies at the
 	// account level, delivering workspace-level logs for all workspaces in your
@@ -950,9 +2497,9 @@ type LogDeliveryConfiguration struct {
 	// delivery won't include account level logs. For some types of Databricks
 	// deployments there is only one workspace per account ID, so this field is
 	// unnecessary.
-	WorkspaceIdsFilter []int64 `json:"workspace_ids_filter,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'workspace_ids_filter'
+	WorkspaceIdsFilter []int64  ``
+	ForceSendFields    []string `tf:"-"`
 }
 
 func (s *LogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
@@ -963,15 +2510,114 @@ func (s LogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func LogDeliveryConfigurationToPb(st *LogDeliveryConfiguration) (*billingpb.LogDeliveryConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.LogDeliveryConfigurationPb{}
+	pb.AccountId = st.AccountId
+	pb.ConfigId = st.ConfigId
+	pb.ConfigName = st.ConfigName
+	pb.CreationTime = st.CreationTime
+	pb.CredentialsId = st.CredentialsId
+	pb.DeliveryPathPrefix = st.DeliveryPathPrefix
+	pb.DeliveryStartTime = st.DeliveryStartTime
+	logDeliveryStatusPb, err := LogDeliveryStatusToPb(st.LogDeliveryStatus)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryStatusPb != nil {
+		pb.LogDeliveryStatus = logDeliveryStatusPb
+	}
+	logTypePb, err := LogTypeToPb(&st.LogType)
+	if err != nil {
+		return nil, err
+	}
+	if logTypePb != nil {
+		pb.LogType = *logTypePb
+	}
+	outputFormatPb, err := OutputFormatToPb(&st.OutputFormat)
+	if err != nil {
+		return nil, err
+	}
+	if outputFormatPb != nil {
+		pb.OutputFormat = *outputFormatPb
+	}
+	statusPb, err := LogDeliveryConfigStatusToPb(&st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+	pb.StorageConfigurationId = st.StorageConfigurationId
+	pb.UpdateTime = st.UpdateTime
+	pb.WorkspaceIdsFilter = st.WorkspaceIdsFilter
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func LogDeliveryConfigurationFromPb(pb *billingpb.LogDeliveryConfigurationPb) (*LogDeliveryConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &LogDeliveryConfiguration{}
+	st.AccountId = pb.AccountId
+	st.ConfigId = pb.ConfigId
+	st.ConfigName = pb.ConfigName
+	st.CreationTime = pb.CreationTime
+	st.CredentialsId = pb.CredentialsId
+	st.DeliveryPathPrefix = pb.DeliveryPathPrefix
+	st.DeliveryStartTime = pb.DeliveryStartTime
+	logDeliveryStatusField, err := LogDeliveryStatusFromPb(pb.LogDeliveryStatus)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryStatusField != nil {
+		st.LogDeliveryStatus = logDeliveryStatusField
+	}
+	logTypeField, err := LogTypeFromPb(&pb.LogType)
+	if err != nil {
+		return nil, err
+	}
+	if logTypeField != nil {
+		st.LogType = *logTypeField
+	}
+	outputFormatField, err := OutputFormatFromPb(&pb.OutputFormat)
+	if err != nil {
+		return nil, err
+	}
+	if outputFormatField != nil {
+		st.OutputFormat = *outputFormatField
+	}
+	statusField, err := LogDeliveryConfigStatusFromPb(&pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = *statusField
+	}
+	st.StorageConfigurationId = pb.StorageConfigurationId
+	st.UpdateTime = pb.UpdateTime
+	st.WorkspaceIdsFilter = pb.WorkspaceIdsFilter
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type LogDeliveryStatus struct {
 	// The UTC time for the latest log delivery attempt.
-	LastAttemptTime string `json:"last_attempt_time,omitempty"`
+	// Wire name: 'last_attempt_time'
+	LastAttemptTime string ``
 	// The UTC time for the latest successful log delivery.
-	LastSuccessfulAttemptTime string `json:"last_successful_attempt_time,omitempty"`
+	// Wire name: 'last_successful_attempt_time'
+	LastSuccessfulAttemptTime string ``
 	// Informative message about the latest log delivery attempt. If the log
 	// delivery fails with USER_FAILURE, error details will be provided for
 	// fixing misconfigurations in cloud permissions.
-	Message string `json:"message"`
+	// Wire name: 'message'
+	Message string ``
 	// Enum that describes the status. Possible values are: * `CREATED`: There
 	// were no log delivery attempts since the config was created. *
 	// `SUCCEEDED`: The latest attempt of log delivery has succeeded completely.
@@ -982,9 +2628,9 @@ type LogDeliveryStatus struct {
 	// `NOT_FOUND`: The log delivery status as the configuration has been
 	// disabled since the release of this feature or there are no workspaces in
 	// the account.
-	Status DeliveryStatus `json:"status"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'status'
+	Status          DeliveryStatus ``
+	ForceSendFields []string       `tf:"-"`
 }
 
 func (s *LogDeliveryStatus) UnmarshalJSON(b []byte) error {
@@ -993,6 +2639,46 @@ func (s *LogDeliveryStatus) UnmarshalJSON(b []byte) error {
 
 func (s LogDeliveryStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func LogDeliveryStatusToPb(st *LogDeliveryStatus) (*billingpb.LogDeliveryStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.LogDeliveryStatusPb{}
+	pb.LastAttemptTime = st.LastAttemptTime
+	pb.LastSuccessfulAttemptTime = st.LastSuccessfulAttemptTime
+	pb.Message = st.Message
+	statusPb, err := DeliveryStatusToPb(&st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func LogDeliveryStatusFromPb(pb *billingpb.LogDeliveryStatusPb) (*LogDeliveryStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &LogDeliveryStatus{}
+	st.LastAttemptTime = pb.LastAttemptTime
+	st.LastSuccessfulAttemptTime = pb.LastSuccessfulAttemptTime
+	st.Message = pb.Message
+	statusField, err := DeliveryStatusFromPb(&pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = *statusField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // * Log Delivery Type
@@ -1033,6 +2719,22 @@ func (f *LogType) Type() string {
 	return "LogType"
 }
 
+func LogTypeToPb(st *LogType) (*billingpb.LogTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := billingpb.LogTypePb(*st)
+	return &pb, nil
+}
+
+func LogTypeFromPb(pb *billingpb.LogTypePb) (*LogType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := LogType(*pb)
+	return &st, nil
+}
+
 // * Log Delivery Output Format
 type OutputFormat string
 
@@ -1071,13 +2773,30 @@ func (f *OutputFormat) Type() string {
 	return "OutputFormat"
 }
 
+func OutputFormatToPb(st *OutputFormat) (*billingpb.OutputFormatPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := billingpb.OutputFormatPb(*st)
+	return &pb, nil
+}
+
+func OutputFormatFromPb(pb *billingpb.OutputFormatPb) (*OutputFormat, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := OutputFormat(*pb)
+	return &st, nil
+}
+
 type SortSpec struct {
 	// Whether to sort in descending order.
-	Descending bool `json:"descending,omitempty" url:"descending,omitempty"`
+	// Wire name: 'descending'
+	Descending bool ``
 	// The filed to sort by
-	Field SortSpecField `json:"field,omitempty" url:"field,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'field'
+	Field           SortSpecField ``
+	ForceSendFields []string      `tf:"-"`
 }
 
 func (s *SortSpec) UnmarshalJSON(b []byte) error {
@@ -1086,6 +2805,42 @@ func (s *SortSpec) UnmarshalJSON(b []byte) error {
 
 func (s SortSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func SortSpecToPb(st *SortSpec) (*billingpb.SortSpecPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.SortSpecPb{}
+	pb.Descending = st.Descending
+	fieldPb, err := SortSpecFieldToPb(&st.Field)
+	if err != nil {
+		return nil, err
+	}
+	if fieldPb != nil {
+		pb.Field = *fieldPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SortSpecFromPb(pb *billingpb.SortSpecPb) (*SortSpec, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SortSpec{}
+	st.Descending = pb.Descending
+	fieldField, err := SortSpecFieldFromPb(&pb.Field)
+	if err != nil {
+		return nil, err
+	}
+	if fieldField != nil {
+		st.Field = *fieldField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 type SortSpecField string
@@ -1122,23 +2877,43 @@ func (f *SortSpecField) Type() string {
 	return "SortSpecField"
 }
 
+func SortSpecFieldToPb(st *SortSpecField) (*billingpb.SortSpecFieldPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := billingpb.SortSpecFieldPb(*st)
+	return &pb, nil
+}
+
+func SortSpecFieldFromPb(pb *billingpb.SortSpecFieldPb) (*SortSpecField, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := SortSpecField(*pb)
+	return &st, nil
+}
+
 type UpdateBudgetConfigurationBudget struct {
 	// Databricks account ID.
-	AccountId string `json:"account_id,omitempty"`
+	// Wire name: 'account_id'
+	AccountId string ``
 	// Alerts to configure when this budget is in a triggered state. Budgets
 	// must have exactly one alert configuration.
-	AlertConfigurations []AlertConfiguration `json:"alert_configurations,omitempty"`
+	// Wire name: 'alert_configurations'
+	AlertConfigurations []AlertConfiguration ``
 	// Databricks budget configuration ID.
-	BudgetConfigurationId string `json:"budget_configuration_id,omitempty"`
+	// Wire name: 'budget_configuration_id'
+	BudgetConfigurationId string ``
 	// Human-readable name of budget configuration. Max Length: 128
-	DisplayName string `json:"display_name,omitempty"`
+	// Wire name: 'display_name'
+	DisplayName string ``
 	// Configured filters for this budget. These are applied to your account's
 	// usage to limit the scope of what is considered for this budget. Leave
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
-	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'filter'
+	Filter          *BudgetConfigurationFilter ``
+	ForceSendFields []string                   `tf:"-"`
 }
 
 func (s *UpdateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {
@@ -1149,42 +2924,262 @@ func (s UpdateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func UpdateBudgetConfigurationBudgetToPb(st *UpdateBudgetConfigurationBudget) (*billingpb.UpdateBudgetConfigurationBudgetPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.UpdateBudgetConfigurationBudgetPb{}
+	pb.AccountId = st.AccountId
+
+	var alertConfigurationsPb []billingpb.AlertConfigurationPb
+	for _, item := range st.AlertConfigurations {
+		itemPb, err := AlertConfigurationToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			alertConfigurationsPb = append(alertConfigurationsPb, *itemPb)
+		}
+	}
+	pb.AlertConfigurations = alertConfigurationsPb
+	pb.BudgetConfigurationId = st.BudgetConfigurationId
+	pb.DisplayName = st.DisplayName
+	filterPb, err := BudgetConfigurationFilterToPb(st.Filter)
+	if err != nil {
+		return nil, err
+	}
+	if filterPb != nil {
+		pb.Filter = filterPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func UpdateBudgetConfigurationBudgetFromPb(pb *billingpb.UpdateBudgetConfigurationBudgetPb) (*UpdateBudgetConfigurationBudget, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateBudgetConfigurationBudget{}
+	st.AccountId = pb.AccountId
+
+	var alertConfigurationsField []AlertConfiguration
+	for _, itemPb := range pb.AlertConfigurations {
+		item, err := AlertConfigurationFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			alertConfigurationsField = append(alertConfigurationsField, *item)
+		}
+	}
+	st.AlertConfigurations = alertConfigurationsField
+	st.BudgetConfigurationId = pb.BudgetConfigurationId
+	st.DisplayName = pb.DisplayName
+	filterField, err := BudgetConfigurationFilterFromPb(pb.Filter)
+	if err != nil {
+		return nil, err
+	}
+	if filterField != nil {
+		st.Filter = filterField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type UpdateBudgetConfigurationRequest struct {
 	// The updated budget. This will overwrite the budget specified by the
 	// budget ID.
-	Budget UpdateBudgetConfigurationBudget `json:"budget"`
+	// Wire name: 'budget'
+	Budget UpdateBudgetConfigurationBudget ``
 	// The Databricks budget configuration ID.
-	BudgetId string `json:"-" url:"-"`
+	// Wire name: 'budget_id'
+	BudgetId string `tf:"-"`
+}
+
+func UpdateBudgetConfigurationRequestToPb(st *UpdateBudgetConfigurationRequest) (*billingpb.UpdateBudgetConfigurationRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.UpdateBudgetConfigurationRequestPb{}
+	budgetPb, err := UpdateBudgetConfigurationBudgetToPb(&st.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetPb != nil {
+		pb.Budget = *budgetPb
+	}
+	pb.BudgetId = st.BudgetId
+
+	return pb, nil
+}
+
+func UpdateBudgetConfigurationRequestFromPb(pb *billingpb.UpdateBudgetConfigurationRequestPb) (*UpdateBudgetConfigurationRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateBudgetConfigurationRequest{}
+	budgetField, err := UpdateBudgetConfigurationBudgetFromPb(&pb.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetField != nil {
+		st.Budget = *budgetField
+	}
+	st.BudgetId = pb.BudgetId
+
+	return st, nil
 }
 
 type UpdateBudgetConfigurationResponse struct {
 	// The updated budget.
-	Budget *BudgetConfiguration `json:"budget,omitempty"`
+	// Wire name: 'budget'
+	Budget *BudgetConfiguration ``
+}
+
+func UpdateBudgetConfigurationResponseToPb(st *UpdateBudgetConfigurationResponse) (*billingpb.UpdateBudgetConfigurationResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.UpdateBudgetConfigurationResponsePb{}
+	budgetPb, err := BudgetConfigurationToPb(st.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetPb != nil {
+		pb.Budget = budgetPb
+	}
+
+	return pb, nil
+}
+
+func UpdateBudgetConfigurationResponseFromPb(pb *billingpb.UpdateBudgetConfigurationResponsePb) (*UpdateBudgetConfigurationResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateBudgetConfigurationResponse{}
+	budgetField, err := BudgetConfigurationFromPb(pb.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetField != nil {
+		st.Budget = budgetField
+	}
+
+	return st, nil
 }
 
 type UpdateBudgetPolicyRequest struct {
 	// DEPRECATED. This is redundant field as LimitConfig is part of the
 	// BudgetPolicy
-	LimitConfig *LimitConfig `json:"-" url:"limit_config,omitempty"`
+	// Wire name: 'limit_config'
+	LimitConfig *LimitConfig `tf:"-"`
 	// The policy to update. `creator_user_id` cannot be specified in the
 	// request. All other fields must be specified even if not changed. The
 	// `policy_id` is used to identify the policy to update.
-	Policy BudgetPolicy `json:"policy"`
+	// Wire name: 'policy'
+	Policy BudgetPolicy ``
 	// The Id of the policy. This field is generated by Databricks and globally
 	// unique.
-	PolicyId string `json:"-" url:"-"`
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
+}
+
+func UpdateBudgetPolicyRequestToPb(st *UpdateBudgetPolicyRequest) (*billingpb.UpdateBudgetPolicyRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.UpdateBudgetPolicyRequestPb{}
+	limitConfigPb, err := LimitConfigToPb(st.LimitConfig)
+	if err != nil {
+		return nil, err
+	}
+	if limitConfigPb != nil {
+		pb.LimitConfig = limitConfigPb
+	}
+	policyPb, err := BudgetPolicyToPb(&st.Policy)
+	if err != nil {
+		return nil, err
+	}
+	if policyPb != nil {
+		pb.Policy = *policyPb
+	}
+	pb.PolicyId = st.PolicyId
+
+	return pb, nil
+}
+
+func UpdateBudgetPolicyRequestFromPb(pb *billingpb.UpdateBudgetPolicyRequestPb) (*UpdateBudgetPolicyRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateBudgetPolicyRequest{}
+	limitConfigField, err := LimitConfigFromPb(pb.LimitConfig)
+	if err != nil {
+		return nil, err
+	}
+	if limitConfigField != nil {
+		st.LimitConfig = limitConfigField
+	}
+	policyField, err := BudgetPolicyFromPb(&pb.Policy)
+	if err != nil {
+		return nil, err
+	}
+	if policyField != nil {
+		st.Policy = *policyField
+	}
+	st.PolicyId = pb.PolicyId
+
+	return st, nil
 }
 
 // * Update Log Delivery Configuration
 type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// The log delivery configuration id of customer
-	LogDeliveryConfigurationId string `json:"-" url:"-"`
+	// Wire name: 'log_delivery_configuration_id'
+	LogDeliveryConfigurationId string `tf:"-"`
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
 	// the configuration](#operation/patch-log-delivery-config-status) later.
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
-	Status LogDeliveryConfigStatus `json:"status"`
+	// Wire name: 'status'
+	Status LogDeliveryConfigStatus ``
+}
+
+func UpdateLogDeliveryConfigurationStatusRequestToPb(st *UpdateLogDeliveryConfigurationStatusRequest) (*billingpb.UpdateLogDeliveryConfigurationStatusRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.UpdateLogDeliveryConfigurationStatusRequestPb{}
+	pb.LogDeliveryConfigurationId = st.LogDeliveryConfigurationId
+	statusPb, err := LogDeliveryConfigStatusToPb(&st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+
+	return pb, nil
+}
+
+func UpdateLogDeliveryConfigurationStatusRequestFromPb(pb *billingpb.UpdateLogDeliveryConfigurationStatusRequestPb) (*UpdateLogDeliveryConfigurationStatusRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateLogDeliveryConfigurationStatusRequest{}
+	st.LogDeliveryConfigurationId = pb.LogDeliveryConfigurationId
+	statusField, err := LogDeliveryConfigStatusFromPb(&pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = *statusField
+	}
+
+	return st, nil
 }
 
 type UsageDashboardType string
@@ -1224,24 +3219,108 @@ func (f *UsageDashboardType) Type() string {
 	return "UsageDashboardType"
 }
 
+func UsageDashboardTypeToPb(st *UsageDashboardType) (*billingpb.UsageDashboardTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := billingpb.UsageDashboardTypePb(*st)
+	return &pb, nil
+}
+
+func UsageDashboardTypeFromPb(pb *billingpb.UsageDashboardTypePb) (*UsageDashboardType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := UsageDashboardType(*pb)
+	return &st, nil
+}
+
 // * Properties of the new log delivery configuration.
 type WrappedCreateLogDeliveryConfiguration struct {
-	LogDeliveryConfiguration CreateLogDeliveryConfigurationParams `json:"log_delivery_configuration"`
+
+	// Wire name: 'log_delivery_configuration'
+	LogDeliveryConfiguration CreateLogDeliveryConfigurationParams ``
+}
+
+func WrappedCreateLogDeliveryConfigurationToPb(st *WrappedCreateLogDeliveryConfiguration) (*billingpb.WrappedCreateLogDeliveryConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.WrappedCreateLogDeliveryConfigurationPb{}
+	logDeliveryConfigurationPb, err := CreateLogDeliveryConfigurationParamsToPb(&st.LogDeliveryConfiguration)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryConfigurationPb != nil {
+		pb.LogDeliveryConfiguration = *logDeliveryConfigurationPb
+	}
+
+	return pb, nil
+}
+
+func WrappedCreateLogDeliveryConfigurationFromPb(pb *billingpb.WrappedCreateLogDeliveryConfigurationPb) (*WrappedCreateLogDeliveryConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &WrappedCreateLogDeliveryConfiguration{}
+	logDeliveryConfigurationField, err := CreateLogDeliveryConfigurationParamsFromPb(&pb.LogDeliveryConfiguration)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryConfigurationField != nil {
+		st.LogDeliveryConfiguration = *logDeliveryConfigurationField
+	}
+
+	return st, nil
 }
 
 type WrappedLogDeliveryConfiguration struct {
 	// The created log delivery configuration
-	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
+	// Wire name: 'log_delivery_configuration'
+	LogDeliveryConfiguration *LogDeliveryConfiguration ``
+}
+
+func WrappedLogDeliveryConfigurationToPb(st *WrappedLogDeliveryConfiguration) (*billingpb.WrappedLogDeliveryConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.WrappedLogDeliveryConfigurationPb{}
+	logDeliveryConfigurationPb, err := LogDeliveryConfigurationToPb(st.LogDeliveryConfiguration)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryConfigurationPb != nil {
+		pb.LogDeliveryConfiguration = logDeliveryConfigurationPb
+	}
+
+	return pb, nil
+}
+
+func WrappedLogDeliveryConfigurationFromPb(pb *billingpb.WrappedLogDeliveryConfigurationPb) (*WrappedLogDeliveryConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &WrappedLogDeliveryConfiguration{}
+	logDeliveryConfigurationField, err := LogDeliveryConfigurationFromPb(pb.LogDeliveryConfiguration)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryConfigurationField != nil {
+		st.LogDeliveryConfiguration = logDeliveryConfigurationField
+	}
+
+	return st, nil
 }
 
 type WrappedLogDeliveryConfigurations struct {
 	// Log delivery configurations were returned successfully.
-	LogDeliveryConfigurations []LogDeliveryConfiguration `json:"log_delivery_configurations,omitempty"`
+	// Wire name: 'log_delivery_configurations'
+	LogDeliveryConfigurations []LogDeliveryConfiguration ``
 	// Token which can be sent as `page_token` to retrieve the next page of
 	// results. If this field is omitted, there are no subsequent budgets.
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken   string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *WrappedLogDeliveryConfigurations) UnmarshalJSON(b []byte) error {
@@ -1250,4 +3329,104 @@ func (s *WrappedLogDeliveryConfigurations) UnmarshalJSON(b []byte) error {
 
 func (s WrappedLogDeliveryConfigurations) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func WrappedLogDeliveryConfigurationsToPb(st *WrappedLogDeliveryConfigurations) (*billingpb.WrappedLogDeliveryConfigurationsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &billingpb.WrappedLogDeliveryConfigurationsPb{}
+
+	var logDeliveryConfigurationsPb []billingpb.LogDeliveryConfigurationPb
+	for _, item := range st.LogDeliveryConfigurations {
+		itemPb, err := LogDeliveryConfigurationToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			logDeliveryConfigurationsPb = append(logDeliveryConfigurationsPb, *itemPb)
+		}
+	}
+	pb.LogDeliveryConfigurations = logDeliveryConfigurationsPb
+	pb.NextPageToken = st.NextPageToken
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func WrappedLogDeliveryConfigurationsFromPb(pb *billingpb.WrappedLogDeliveryConfigurationsPb) (*WrappedLogDeliveryConfigurations, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &WrappedLogDeliveryConfigurations{}
+
+	var logDeliveryConfigurationsField []LogDeliveryConfiguration
+	for _, itemPb := range pb.LogDeliveryConfigurations {
+		item, err := LogDeliveryConfigurationFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			logDeliveryConfigurationsField = append(logDeliveryConfigurationsField, *item)
+		}
+	}
+	st.LogDeliveryConfigurations = logDeliveryConfigurationsField
+	st.NextPageToken = pb.NextPageToken
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%.9fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

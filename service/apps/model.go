@@ -4,68 +4,89 @@ package apps
 
 import (
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/marshal"
+	"github.com/databricks/databricks-sdk-go/service/apps/appspb"
 )
 
 type App struct {
 	// The active deployment of the app. A deployment is considered active when
 	// it has been deployed to the app compute.
-	ActiveDeployment *AppDeployment `json:"active_deployment,omitempty"`
+	// Wire name: 'active_deployment'
+	ActiveDeployment *AppDeployment ``
 
-	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
-	// TODO: Deprecate this field after serverless entitlements are released to
-	// all prod stages and the new usage_policy_id is properly populated and
-	// used.
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Wire name: 'app_status'
+	AppStatus *ApplicationStatus ``
 
-	ComputeStatus *ComputeStatus `json:"compute_status,omitempty"`
+	// Wire name: 'budget_policy_id'
+	BudgetPolicyId string ``
+
+	// Wire name: 'compute_status'
+	ComputeStatus *ComputeStatus ``
 	// The creation time of the app. Formatted timestamp in ISO 6801.
-	CreateTime string `json:"create_time,omitempty"`
+	// Wire name: 'create_time'
+	CreateTime *time.Time ``
 	// The email of the user that created the app.
-	Creator string `json:"creator,omitempty"`
+	// Wire name: 'creator'
+	Creator string ``
 	// The default workspace file system path of the source code from which app
 	// deployment are created. This field tracks the workspace source code path
 	// of the last active deployment.
-	DefaultSourceCodePath string `json:"default_source_code_path,omitempty"`
+	// Wire name: 'default_source_code_path'
+	DefaultSourceCodePath string ``
 	// The description of the app.
-	Description string `json:"description,omitempty"`
-	// TODO: Deprecate this field after serverless entitlements are released to
-	// all prod stages and the new usage_policy_id is properly populated and
-	// used.
-	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// Wire name: 'description'
+	Description string ``
+
+	// Wire name: 'effective_budget_policy_id'
+	EffectiveBudgetPolicyId string ``
 	// The effective api scopes granted to the user access token.
-	EffectiveUserApiScopes []string `json:"effective_user_api_scopes,omitempty"`
+	// Wire name: 'effective_user_api_scopes'
+	EffectiveUserApiScopes []string ``
 	// The unique identifier of the app.
-	Id string `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id string ``
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string ``
 
-	Oauth2AppClientId string `json:"oauth2_app_client_id,omitempty"`
+	// Wire name: 'oauth2_app_client_id'
+	Oauth2AppClientId string ``
 
-	Oauth2AppIntegrationId string `json:"oauth2_app_integration_id,omitempty"`
+	// Wire name: 'oauth2_app_integration_id'
+	Oauth2AppIntegrationId string ``
 	// The pending deployment of the app. A deployment is considered pending
 	// when it is being prepared for deployment to the app compute.
-	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
+	// Wire name: 'pending_deployment'
+	PendingDeployment *AppDeployment ``
 	// Resources for the app.
-	Resources []AppResource `json:"resources,omitempty"`
+	// Wire name: 'resources'
+	Resources []AppResource ``
 
-	ServicePrincipalClientId string `json:"service_principal_client_id,omitempty"`
+	// Wire name: 'service_principal_client_id'
+	ServicePrincipalClientId string ``
 
-	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
+	// Wire name: 'service_principal_id'
+	ServicePrincipalId int64 ``
 
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string ``
 	// The update time of the app. Formatted timestamp in ISO 6801.
-	UpdateTime string `json:"update_time,omitempty"`
+	// Wire name: 'update_time'
+	UpdateTime *time.Time ``
 	// The email of the user that last updated the app.
-	Updater string `json:"updater,omitempty"`
+	// Wire name: 'updater'
+	Updater string ``
 	// The URL of the app once it is deployed.
-	Url string `json:"url,omitempty"`
+	// Wire name: 'url'
+	Url string ``
 
-	UserApiScopes []string `json:"user_api_scopes,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'user_api_scopes'
+	UserApiScopes   []string ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *App) UnmarshalJSON(b []byte) error {
@@ -76,17 +97,180 @@ func (s App) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func AppToPb(st *App) (*appspb.AppPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppPb{}
+	activeDeploymentPb, err := AppDeploymentToPb(st.ActiveDeployment)
+	if err != nil {
+		return nil, err
+	}
+	if activeDeploymentPb != nil {
+		pb.ActiveDeployment = activeDeploymentPb
+	}
+	appStatusPb, err := ApplicationStatusToPb(st.AppStatus)
+	if err != nil {
+		return nil, err
+	}
+	if appStatusPb != nil {
+		pb.AppStatus = appStatusPb
+	}
+	pb.BudgetPolicyId = st.BudgetPolicyId
+	computeStatusPb, err := ComputeStatusToPb(st.ComputeStatus)
+	if err != nil {
+		return nil, err
+	}
+	if computeStatusPb != nil {
+		pb.ComputeStatus = computeStatusPb
+	}
+	createTimePb, err := timestampToPb(st.CreateTime)
+	if err != nil {
+		return nil, err
+	}
+	if createTimePb != nil {
+		pb.CreateTime = *createTimePb
+	}
+	pb.Creator = st.Creator
+	pb.DefaultSourceCodePath = st.DefaultSourceCodePath
+	pb.Description = st.Description
+	pb.EffectiveBudgetPolicyId = st.EffectiveBudgetPolicyId
+	pb.EffectiveUserApiScopes = st.EffectiveUserApiScopes
+	pb.Id = st.Id
+	pb.Name = st.Name
+	pb.Oauth2AppClientId = st.Oauth2AppClientId
+	pb.Oauth2AppIntegrationId = st.Oauth2AppIntegrationId
+	pendingDeploymentPb, err := AppDeploymentToPb(st.PendingDeployment)
+	if err != nil {
+		return nil, err
+	}
+	if pendingDeploymentPb != nil {
+		pb.PendingDeployment = pendingDeploymentPb
+	}
+
+	var resourcesPb []appspb.AppResourcePb
+	for _, item := range st.Resources {
+		itemPb, err := AppResourceToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			resourcesPb = append(resourcesPb, *itemPb)
+		}
+	}
+	pb.Resources = resourcesPb
+	pb.ServicePrincipalClientId = st.ServicePrincipalClientId
+	pb.ServicePrincipalId = st.ServicePrincipalId
+	pb.ServicePrincipalName = st.ServicePrincipalName
+	updateTimePb, err := timestampToPb(st.UpdateTime)
+	if err != nil {
+		return nil, err
+	}
+	if updateTimePb != nil {
+		pb.UpdateTime = *updateTimePb
+	}
+	pb.Updater = st.Updater
+	pb.Url = st.Url
+	pb.UserApiScopes = st.UserApiScopes
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func AppFromPb(pb *appspb.AppPb) (*App, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &App{}
+	activeDeploymentField, err := AppDeploymentFromPb(pb.ActiveDeployment)
+	if err != nil {
+		return nil, err
+	}
+	if activeDeploymentField != nil {
+		st.ActiveDeployment = activeDeploymentField
+	}
+	appStatusField, err := ApplicationStatusFromPb(pb.AppStatus)
+	if err != nil {
+		return nil, err
+	}
+	if appStatusField != nil {
+		st.AppStatus = appStatusField
+	}
+	st.BudgetPolicyId = pb.BudgetPolicyId
+	computeStatusField, err := ComputeStatusFromPb(pb.ComputeStatus)
+	if err != nil {
+		return nil, err
+	}
+	if computeStatusField != nil {
+		st.ComputeStatus = computeStatusField
+	}
+	createTimeField, err := timestampFromPb(&pb.CreateTime)
+	if err != nil {
+		return nil, err
+	}
+	if createTimeField != nil {
+		st.CreateTime = createTimeField
+	}
+	st.Creator = pb.Creator
+	st.DefaultSourceCodePath = pb.DefaultSourceCodePath
+	st.Description = pb.Description
+	st.EffectiveBudgetPolicyId = pb.EffectiveBudgetPolicyId
+	st.EffectiveUserApiScopes = pb.EffectiveUserApiScopes
+	st.Id = pb.Id
+	st.Name = pb.Name
+	st.Oauth2AppClientId = pb.Oauth2AppClientId
+	st.Oauth2AppIntegrationId = pb.Oauth2AppIntegrationId
+	pendingDeploymentField, err := AppDeploymentFromPb(pb.PendingDeployment)
+	if err != nil {
+		return nil, err
+	}
+	if pendingDeploymentField != nil {
+		st.PendingDeployment = pendingDeploymentField
+	}
+
+	var resourcesField []AppResource
+	for _, itemPb := range pb.Resources {
+		item, err := AppResourceFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			resourcesField = append(resourcesField, *item)
+		}
+	}
+	st.Resources = resourcesField
+	st.ServicePrincipalClientId = pb.ServicePrincipalClientId
+	st.ServicePrincipalId = pb.ServicePrincipalId
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
+	if err != nil {
+		return nil, err
+	}
+	if updateTimeField != nil {
+		st.UpdateTime = updateTimeField
+	}
+	st.Updater = pb.Updater
+	st.Url = pb.Url
+	st.UserApiScopes = pb.UserApiScopes
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type AppAccessControlRequest struct {
 	// name of the group
-	GroupName string `json:"group_name,omitempty"`
+	// Wire name: 'group_name'
+	GroupName string ``
 
-	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel AppPermissionLevel ``
 	// application ID of a service principal
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string ``
 	// name of the user
-	UserName string `json:"user_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'user_name'
+	UserName        string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *AppAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -97,19 +281,63 @@ func (s AppAccessControlRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func AppAccessControlRequestToPb(st *AppAccessControlRequest) (*appspb.AppAccessControlRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppAccessControlRequestPb{}
+	pb.GroupName = st.GroupName
+	permissionLevelPb, err := AppPermissionLevelToPb(&st.PermissionLevel)
+	if err != nil {
+		return nil, err
+	}
+	if permissionLevelPb != nil {
+		pb.PermissionLevel = *permissionLevelPb
+	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
+	pb.UserName = st.UserName
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func AppAccessControlRequestFromPb(pb *appspb.AppAccessControlRequestPb) (*AppAccessControlRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppAccessControlRequest{}
+	st.GroupName = pb.GroupName
+	permissionLevelField, err := AppPermissionLevelFromPb(&pb.PermissionLevel)
+	if err != nil {
+		return nil, err
+	}
+	if permissionLevelField != nil {
+		st.PermissionLevel = *permissionLevelField
+	}
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type AppAccessControlResponse struct {
 	// All permissions.
-	AllPermissions []AppPermission `json:"all_permissions,omitempty"`
+	// Wire name: 'all_permissions'
+	AllPermissions []AppPermission ``
 	// Display name of the user or service principal.
-	DisplayName string `json:"display_name,omitempty"`
+	// Wire name: 'display_name'
+	DisplayName string ``
 	// name of the group
-	GroupName string `json:"group_name,omitempty"`
+	// Wire name: 'group_name'
+	GroupName string ``
 	// Name of the service principal.
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string ``
 	// name of the user
-	UserName string `json:"user_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'user_name'
+	UserName        string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *AppAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -120,17 +348,74 @@ func (s AppAccessControlResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func AppAccessControlResponseToPb(st *AppAccessControlResponse) (*appspb.AppAccessControlResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppAccessControlResponsePb{}
+
+	var allPermissionsPb []appspb.AppPermissionPb
+	for _, item := range st.AllPermissions {
+		itemPb, err := AppPermissionToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			allPermissionsPb = append(allPermissionsPb, *itemPb)
+		}
+	}
+	pb.AllPermissions = allPermissionsPb
+	pb.DisplayName = st.DisplayName
+	pb.GroupName = st.GroupName
+	pb.ServicePrincipalName = st.ServicePrincipalName
+	pb.UserName = st.UserName
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func AppAccessControlResponseFromPb(pb *appspb.AppAccessControlResponsePb) (*AppAccessControlResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppAccessControlResponse{}
+
+	var allPermissionsField []AppPermission
+	for _, itemPb := range pb.AllPermissions {
+		item, err := AppPermissionFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
+		}
+	}
+	st.AllPermissions = allPermissionsField
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type AppDeployment struct {
 	// The creation time of the deployment. Formatted timestamp in ISO 6801.
-	CreateTime string `json:"create_time,omitempty"`
+	// Wire name: 'create_time'
+	CreateTime *time.Time ``
 	// The email of the user creates the deployment.
-	Creator string `json:"creator,omitempty"`
+	// Wire name: 'creator'
+	Creator string ``
 	// The deployment artifacts for an app.
-	DeploymentArtifacts *AppDeploymentArtifacts `json:"deployment_artifacts,omitempty"`
+	// Wire name: 'deployment_artifacts'
+	DeploymentArtifacts *AppDeploymentArtifacts ``
 	// The unique id of the deployment.
-	DeploymentId string `json:"deployment_id,omitempty"`
+	// Wire name: 'deployment_id'
+	DeploymentId string ``
 	// The mode of which the deployment will manage the source code.
-	Mode AppDeploymentMode `json:"mode,omitempty"`
+	// Wire name: 'mode'
+	Mode AppDeploymentMode ``
 	// The workspace file system path of the source code used to create the app
 	// deployment. This is different from
 	// `deployment_artifacts.source_code_path`, which is the path used by the
@@ -138,13 +423,15 @@ type AppDeployment struct {
 	// the app in the workspace during deployment creation, whereas the latter
 	// provides a system generated stable snapshotted source code path used by
 	// the deployment.
-	SourceCodePath string `json:"source_code_path,omitempty"`
+	// Wire name: 'source_code_path'
+	SourceCodePath string ``
 	// Status and status message of the deployment
-	Status *AppDeploymentStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status *AppDeploymentStatus ``
 	// The update time of the deployment. Formatted timestamp in ISO 6801.
-	UpdateTime string `json:"update_time,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'update_time'
+	UpdateTime      *time.Time ``
+	ForceSendFields []string   `tf:"-"`
 }
 
 func (s *AppDeployment) UnmarshalJSON(b []byte) error {
@@ -155,12 +442,108 @@ func (s AppDeployment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func AppDeploymentToPb(st *AppDeployment) (*appspb.AppDeploymentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppDeploymentPb{}
+	createTimePb, err := timestampToPb(st.CreateTime)
+	if err != nil {
+		return nil, err
+	}
+	if createTimePb != nil {
+		pb.CreateTime = *createTimePb
+	}
+	pb.Creator = st.Creator
+	deploymentArtifactsPb, err := AppDeploymentArtifactsToPb(st.DeploymentArtifacts)
+	if err != nil {
+		return nil, err
+	}
+	if deploymentArtifactsPb != nil {
+		pb.DeploymentArtifacts = deploymentArtifactsPb
+	}
+	pb.DeploymentId = st.DeploymentId
+	modePb, err := AppDeploymentModeToPb(&st.Mode)
+	if err != nil {
+		return nil, err
+	}
+	if modePb != nil {
+		pb.Mode = *modePb
+	}
+	pb.SourceCodePath = st.SourceCodePath
+	statusPb, err := AppDeploymentStatusToPb(st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = statusPb
+	}
+	updateTimePb, err := timestampToPb(st.UpdateTime)
+	if err != nil {
+		return nil, err
+	}
+	if updateTimePb != nil {
+		pb.UpdateTime = *updateTimePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func AppDeploymentFromPb(pb *appspb.AppDeploymentPb) (*AppDeployment, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppDeployment{}
+	createTimeField, err := timestampFromPb(&pb.CreateTime)
+	if err != nil {
+		return nil, err
+	}
+	if createTimeField != nil {
+		st.CreateTime = createTimeField
+	}
+	st.Creator = pb.Creator
+	deploymentArtifactsField, err := AppDeploymentArtifactsFromPb(pb.DeploymentArtifacts)
+	if err != nil {
+		return nil, err
+	}
+	if deploymentArtifactsField != nil {
+		st.DeploymentArtifacts = deploymentArtifactsField
+	}
+	st.DeploymentId = pb.DeploymentId
+	modeField, err := AppDeploymentModeFromPb(&pb.Mode)
+	if err != nil {
+		return nil, err
+	}
+	if modeField != nil {
+		st.Mode = *modeField
+	}
+	st.SourceCodePath = pb.SourceCodePath
+	statusField, err := AppDeploymentStatusFromPb(pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = statusField
+	}
+	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
+	if err != nil {
+		return nil, err
+	}
+	if updateTimeField != nil {
+		st.UpdateTime = updateTimeField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type AppDeploymentArtifacts struct {
 	// The snapshotted workspace file system path of the source code loaded by
 	// the deployed app.
-	SourceCodePath string `json:"source_code_path,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'source_code_path'
+	SourceCodePath  string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *AppDeploymentArtifacts) UnmarshalJSON(b []byte) error {
@@ -169,6 +552,28 @@ func (s *AppDeploymentArtifacts) UnmarshalJSON(b []byte) error {
 
 func (s AppDeploymentArtifacts) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func AppDeploymentArtifactsToPb(st *AppDeploymentArtifacts) (*appspb.AppDeploymentArtifactsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppDeploymentArtifactsPb{}
+	pb.SourceCodePath = st.SourceCodePath
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func AppDeploymentArtifactsFromPb(pb *appspb.AppDeploymentArtifactsPb) (*AppDeploymentArtifacts, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppDeploymentArtifacts{}
+	st.SourceCodePath = pb.SourceCodePath
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 type AppDeploymentMode string
@@ -206,6 +611,22 @@ func (f *AppDeploymentMode) Values() []AppDeploymentMode {
 // Type always returns AppDeploymentMode to satisfy [pflag.Value] interface
 func (f *AppDeploymentMode) Type() string {
 	return "AppDeploymentMode"
+}
+
+func AppDeploymentModeToPb(st *AppDeploymentMode) (*appspb.AppDeploymentModePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appspb.AppDeploymentModePb(*st)
+	return &pb, nil
+}
+
+func AppDeploymentModeFromPb(pb *appspb.AppDeploymentModePb) (*AppDeploymentMode, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppDeploymentMode(*pb)
+	return &st, nil
 }
 
 type AppDeploymentState string
@@ -251,13 +672,30 @@ func (f *AppDeploymentState) Type() string {
 	return "AppDeploymentState"
 }
 
+func AppDeploymentStateToPb(st *AppDeploymentState) (*appspb.AppDeploymentStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appspb.AppDeploymentStatePb(*st)
+	return &pb, nil
+}
+
+func AppDeploymentStateFromPb(pb *appspb.AppDeploymentStatePb) (*AppDeploymentState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppDeploymentState(*pb)
+	return &st, nil
+}
+
 type AppDeploymentStatus struct {
 	// Message corresponding with the deployment state.
-	Message string `json:"message,omitempty"`
+	// Wire name: 'message'
+	Message string ``
 	// State of the deployment.
-	State AppDeploymentState `json:"state,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'state'
+	State           AppDeploymentState ``
+	ForceSendFields []string           `tf:"-"`
 }
 
 func (s *AppDeploymentStatus) UnmarshalJSON(b []byte) error {
@@ -268,14 +706,53 @@ func (s AppDeploymentStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func AppDeploymentStatusToPb(st *AppDeploymentStatus) (*appspb.AppDeploymentStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppDeploymentStatusPb{}
+	pb.Message = st.Message
+	statePb, err := AppDeploymentStateToPb(&st.State)
+	if err != nil {
+		return nil, err
+	}
+	if statePb != nil {
+		pb.State = *statePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func AppDeploymentStatusFromPb(pb *appspb.AppDeploymentStatusPb) (*AppDeploymentStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppDeploymentStatus{}
+	st.Message = pb.Message
+	stateField, err := AppDeploymentStateFromPb(&pb.State)
+	if err != nil {
+		return nil, err
+	}
+	if stateField != nil {
+		st.State = *stateField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type AppPermission struct {
-	Inherited bool `json:"inherited,omitempty"`
 
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Wire name: 'inherited'
+	Inherited bool ``
 
-	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'inherited_from_object'
+	InheritedFromObject []string ``
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'permission_level'
+	PermissionLevel AppPermissionLevel ``
+	ForceSendFields []string           `tf:"-"`
 }
 
 func (s *AppPermission) UnmarshalJSON(b []byte) error {
@@ -284,6 +761,44 @@ func (s *AppPermission) UnmarshalJSON(b []byte) error {
 
 func (s AppPermission) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func AppPermissionToPb(st *AppPermission) (*appspb.AppPermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppPermissionPb{}
+	pb.Inherited = st.Inherited
+	pb.InheritedFromObject = st.InheritedFromObject
+	permissionLevelPb, err := AppPermissionLevelToPb(&st.PermissionLevel)
+	if err != nil {
+		return nil, err
+	}
+	if permissionLevelPb != nil {
+		pb.PermissionLevel = *permissionLevelPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func AppPermissionFromPb(pb *appspb.AppPermissionPb) (*AppPermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppPermission{}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	permissionLevelField, err := AppPermissionLevelFromPb(&pb.PermissionLevel)
+	if err != nil {
+		return nil, err
+	}
+	if permissionLevelField != nil {
+		st.PermissionLevel = *permissionLevelField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // Permission level
@@ -324,14 +839,33 @@ func (f *AppPermissionLevel) Type() string {
 	return "AppPermissionLevel"
 }
 
+func AppPermissionLevelToPb(st *AppPermissionLevel) (*appspb.AppPermissionLevelPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appspb.AppPermissionLevelPb(*st)
+	return &pb, nil
+}
+
+func AppPermissionLevelFromPb(pb *appspb.AppPermissionLevelPb) (*AppPermissionLevel, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppPermissionLevel(*pb)
+	return &st, nil
+}
+
 type AppPermissions struct {
-	AccessControlList []AppAccessControlResponse `json:"access_control_list,omitempty"`
 
-	ObjectId string `json:"object_id,omitempty"`
+	// Wire name: 'access_control_list'
+	AccessControlList []AppAccessControlResponse ``
 
-	ObjectType string `json:"object_type,omitempty"`
+	// Wire name: 'object_id'
+	ObjectId string ``
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'object_type'
+	ObjectType      string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *AppPermissions) UnmarshalJSON(b []byte) error {
@@ -342,12 +876,62 @@ func (s AppPermissions) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func AppPermissionsToPb(st *AppPermissions) (*appspb.AppPermissionsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppPermissionsPb{}
+
+	var accessControlListPb []appspb.AppAccessControlResponsePb
+	for _, item := range st.AccessControlList {
+		itemPb, err := AppAccessControlResponseToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			accessControlListPb = append(accessControlListPb, *itemPb)
+		}
+	}
+	pb.AccessControlList = accessControlListPb
+	pb.ObjectId = st.ObjectId
+	pb.ObjectType = st.ObjectType
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func AppPermissionsFromPb(pb *appspb.AppPermissionsPb) (*AppPermissions, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppPermissions{}
+
+	var accessControlListField []AppAccessControlResponse
+	for _, itemPb := range pb.AccessControlList {
+		item, err := AppAccessControlResponseFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
+		}
+	}
+	st.AccessControlList = accessControlListField
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type AppPermissionsDescription struct {
-	Description string `json:"description,omitempty"`
 
-	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'description'
+	Description string ``
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'permission_level'
+	PermissionLevel AppPermissionLevel ``
+	ForceSendFields []string           `tf:"-"`
 }
 
 func (s *AppPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -358,30 +942,121 @@ func (s AppPermissionsDescription) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func AppPermissionsDescriptionToPb(st *AppPermissionsDescription) (*appspb.AppPermissionsDescriptionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppPermissionsDescriptionPb{}
+	pb.Description = st.Description
+	permissionLevelPb, err := AppPermissionLevelToPb(&st.PermissionLevel)
+	if err != nil {
+		return nil, err
+	}
+	if permissionLevelPb != nil {
+		pb.PermissionLevel = *permissionLevelPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func AppPermissionsDescriptionFromPb(pb *appspb.AppPermissionsDescriptionPb) (*AppPermissionsDescription, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppPermissionsDescription{}
+	st.Description = pb.Description
+	permissionLevelField, err := AppPermissionLevelFromPb(&pb.PermissionLevel)
+	if err != nil {
+		return nil, err
+	}
+	if permissionLevelField != nil {
+		st.PermissionLevel = *permissionLevelField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type AppPermissionsRequest struct {
-	AccessControlList []AppAccessControlRequest `json:"access_control_list,omitempty"`
+
+	// Wire name: 'access_control_list'
+	AccessControlList []AppAccessControlRequest ``
 	// The app for which to get or manage permissions.
-	AppName string `json:"-" url:"-"`
+	// Wire name: 'app_name'
+	AppName string `tf:"-"`
+}
+
+func AppPermissionsRequestToPb(st *AppPermissionsRequest) (*appspb.AppPermissionsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppPermissionsRequestPb{}
+
+	var accessControlListPb []appspb.AppAccessControlRequestPb
+	for _, item := range st.AccessControlList {
+		itemPb, err := AppAccessControlRequestToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			accessControlListPb = append(accessControlListPb, *itemPb)
+		}
+	}
+	pb.AccessControlList = accessControlListPb
+	pb.AppName = st.AppName
+
+	return pb, nil
+}
+
+func AppPermissionsRequestFromPb(pb *appspb.AppPermissionsRequestPb) (*AppPermissionsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppPermissionsRequest{}
+
+	var accessControlListField []AppAccessControlRequest
+	for _, itemPb := range pb.AccessControlList {
+		item, err := AppAccessControlRequestFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
+		}
+	}
+	st.AccessControlList = accessControlListField
+	st.AppName = pb.AppName
+
+	return st, nil
 }
 
 type AppResource struct {
-	Database *AppResourceDatabase `json:"database,omitempty"`
+
+	// Wire name: 'database'
+	Database *AppResourceDatabase ``
 	// Description of the App Resource.
-	Description string `json:"description,omitempty"`
+	// Wire name: 'description'
+	Description string ``
 
-	Job *AppResourceJob `json:"job,omitempty"`
+	// Wire name: 'job'
+	Job *AppResourceJob ``
 	// Name of the App Resource.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string ``
 
-	Secret *AppResourceSecret `json:"secret,omitempty"`
+	// Wire name: 'secret'
+	Secret *AppResourceSecret ``
 
-	ServingEndpoint *AppResourceServingEndpoint `json:"serving_endpoint,omitempty"`
+	// Wire name: 'serving_endpoint'
+	ServingEndpoint *AppResourceServingEndpoint ``
 
-	SqlWarehouse *AppResourceSqlWarehouse `json:"sql_warehouse,omitempty"`
+	// Wire name: 'sql_warehouse'
+	SqlWarehouse *AppResourceSqlWarehouse ``
 
-	UcSecurable *AppResourceUcSecurable `json:"uc_securable,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'uc_securable'
+	UcSecurable     *AppResourceUcSecurable ``
+	ForceSendFields []string                `tf:"-"`
 }
 
 func (s *AppResource) UnmarshalJSON(b []byte) error {
@@ -392,12 +1067,160 @@ func (s AppResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func AppResourceToPb(st *AppResource) (*appspb.AppResourcePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppResourcePb{}
+	databasePb, err := AppResourceDatabaseToPb(st.Database)
+	if err != nil {
+		return nil, err
+	}
+	if databasePb != nil {
+		pb.Database = databasePb
+	}
+	pb.Description = st.Description
+	jobPb, err := AppResourceJobToPb(st.Job)
+	if err != nil {
+		return nil, err
+	}
+	if jobPb != nil {
+		pb.Job = jobPb
+	}
+	pb.Name = st.Name
+	secretPb, err := AppResourceSecretToPb(st.Secret)
+	if err != nil {
+		return nil, err
+	}
+	if secretPb != nil {
+		pb.Secret = secretPb
+	}
+	servingEndpointPb, err := AppResourceServingEndpointToPb(st.ServingEndpoint)
+	if err != nil {
+		return nil, err
+	}
+	if servingEndpointPb != nil {
+		pb.ServingEndpoint = servingEndpointPb
+	}
+	sqlWarehousePb, err := AppResourceSqlWarehouseToPb(st.SqlWarehouse)
+	if err != nil {
+		return nil, err
+	}
+	if sqlWarehousePb != nil {
+		pb.SqlWarehouse = sqlWarehousePb
+	}
+	ucSecurablePb, err := AppResourceUcSecurableToPb(st.UcSecurable)
+	if err != nil {
+		return nil, err
+	}
+	if ucSecurablePb != nil {
+		pb.UcSecurable = ucSecurablePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func AppResourceFromPb(pb *appspb.AppResourcePb) (*AppResource, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppResource{}
+	databaseField, err := AppResourceDatabaseFromPb(pb.Database)
+	if err != nil {
+		return nil, err
+	}
+	if databaseField != nil {
+		st.Database = databaseField
+	}
+	st.Description = pb.Description
+	jobField, err := AppResourceJobFromPb(pb.Job)
+	if err != nil {
+		return nil, err
+	}
+	if jobField != nil {
+		st.Job = jobField
+	}
+	st.Name = pb.Name
+	secretField, err := AppResourceSecretFromPb(pb.Secret)
+	if err != nil {
+		return nil, err
+	}
+	if secretField != nil {
+		st.Secret = secretField
+	}
+	servingEndpointField, err := AppResourceServingEndpointFromPb(pb.ServingEndpoint)
+	if err != nil {
+		return nil, err
+	}
+	if servingEndpointField != nil {
+		st.ServingEndpoint = servingEndpointField
+	}
+	sqlWarehouseField, err := AppResourceSqlWarehouseFromPb(pb.SqlWarehouse)
+	if err != nil {
+		return nil, err
+	}
+	if sqlWarehouseField != nil {
+		st.SqlWarehouse = sqlWarehouseField
+	}
+	ucSecurableField, err := AppResourceUcSecurableFromPb(pb.UcSecurable)
+	if err != nil {
+		return nil, err
+	}
+	if ucSecurableField != nil {
+		st.UcSecurable = ucSecurableField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type AppResourceDatabase struct {
-	DatabaseName string `json:"database_name"`
 
-	InstanceName string `json:"instance_name"`
+	// Wire name: 'database_name'
+	DatabaseName string ``
 
-	Permission AppResourceDatabaseDatabasePermission `json:"permission"`
+	// Wire name: 'instance_name'
+	InstanceName string ``
+
+	// Wire name: 'permission'
+	Permission AppResourceDatabaseDatabasePermission ``
+}
+
+func AppResourceDatabaseToPb(st *AppResourceDatabase) (*appspb.AppResourceDatabasePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppResourceDatabasePb{}
+	pb.DatabaseName = st.DatabaseName
+	pb.InstanceName = st.InstanceName
+	permissionPb, err := AppResourceDatabaseDatabasePermissionToPb(&st.Permission)
+	if err != nil {
+		return nil, err
+	}
+	if permissionPb != nil {
+		pb.Permission = *permissionPb
+	}
+
+	return pb, nil
+}
+
+func AppResourceDatabaseFromPb(pb *appspb.AppResourceDatabasePb) (*AppResourceDatabase, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppResourceDatabase{}
+	st.DatabaseName = pb.DatabaseName
+	st.InstanceName = pb.InstanceName
+	permissionField, err := AppResourceDatabaseDatabasePermissionFromPb(&pb.Permission)
+	if err != nil {
+		return nil, err
+	}
+	if permissionField != nil {
+		st.Permission = *permissionField
+	}
+
+	return st, nil
 }
 
 type AppResourceDatabaseDatabasePermission string
@@ -434,12 +1257,64 @@ func (f *AppResourceDatabaseDatabasePermission) Type() string {
 	return "AppResourceDatabaseDatabasePermission"
 }
 
+func AppResourceDatabaseDatabasePermissionToPb(st *AppResourceDatabaseDatabasePermission) (*appspb.AppResourceDatabaseDatabasePermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appspb.AppResourceDatabaseDatabasePermissionPb(*st)
+	return &pb, nil
+}
+
+func AppResourceDatabaseDatabasePermissionFromPb(pb *appspb.AppResourceDatabaseDatabasePermissionPb) (*AppResourceDatabaseDatabasePermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppResourceDatabaseDatabasePermission(*pb)
+	return &st, nil
+}
+
 type AppResourceJob struct {
 	// Id of the job to grant permission on.
-	Id string `json:"id"`
+	// Wire name: 'id'
+	Id string ``
 	// Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE",
 	// "IS_OWNER", "CAN_MANAGE_RUN", "CAN_VIEW".
-	Permission AppResourceJobJobPermission `json:"permission"`
+	// Wire name: 'permission'
+	Permission AppResourceJobJobPermission ``
+}
+
+func AppResourceJobToPb(st *AppResourceJob) (*appspb.AppResourceJobPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppResourceJobPb{}
+	pb.Id = st.Id
+	permissionPb, err := AppResourceJobJobPermissionToPb(&st.Permission)
+	if err != nil {
+		return nil, err
+	}
+	if permissionPb != nil {
+		pb.Permission = *permissionPb
+	}
+
+	return pb, nil
+}
+
+func AppResourceJobFromPb(pb *appspb.AppResourceJobPb) (*AppResourceJob, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppResourceJob{}
+	st.Id = pb.Id
+	permissionField, err := AppResourceJobJobPermissionFromPb(&pb.Permission)
+	if err != nil {
+		return nil, err
+	}
+	if permissionField != nil {
+		st.Permission = *permissionField
+	}
+
+	return st, nil
 }
 
 type AppResourceJobJobPermission string
@@ -485,14 +1360,69 @@ func (f *AppResourceJobJobPermission) Type() string {
 	return "AppResourceJobJobPermission"
 }
 
+func AppResourceJobJobPermissionToPb(st *AppResourceJobJobPermission) (*appspb.AppResourceJobJobPermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appspb.AppResourceJobJobPermissionPb(*st)
+	return &pb, nil
+}
+
+func AppResourceJobJobPermissionFromPb(pb *appspb.AppResourceJobJobPermissionPb) (*AppResourceJobJobPermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppResourceJobJobPermission(*pb)
+	return &st, nil
+}
+
 type AppResourceSecret struct {
 	// Key of the secret to grant permission on.
-	Key string `json:"key"`
+	// Wire name: 'key'
+	Key string ``
 	// Permission to grant on the secret scope. For secrets, only one permission
 	// is allowed. Permission must be one of: "READ", "WRITE", "MANAGE".
-	Permission AppResourceSecretSecretPermission `json:"permission"`
+	// Wire name: 'permission'
+	Permission AppResourceSecretSecretPermission ``
 	// Scope of the secret to grant permission on.
-	Scope string `json:"scope"`
+	// Wire name: 'scope'
+	Scope string ``
+}
+
+func AppResourceSecretToPb(st *AppResourceSecret) (*appspb.AppResourceSecretPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppResourceSecretPb{}
+	pb.Key = st.Key
+	permissionPb, err := AppResourceSecretSecretPermissionToPb(&st.Permission)
+	if err != nil {
+		return nil, err
+	}
+	if permissionPb != nil {
+		pb.Permission = *permissionPb
+	}
+	pb.Scope = st.Scope
+
+	return pb, nil
+}
+
+func AppResourceSecretFromPb(pb *appspb.AppResourceSecretPb) (*AppResourceSecret, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppResourceSecret{}
+	st.Key = pb.Key
+	permissionField, err := AppResourceSecretSecretPermissionFromPb(&pb.Permission)
+	if err != nil {
+		return nil, err
+	}
+	if permissionField != nil {
+		st.Permission = *permissionField
+	}
+	st.Scope = pb.Scope
+
+	return st, nil
 }
 
 // Permission to grant on the secret scope. Supported permissions are: "READ",
@@ -537,12 +1467,64 @@ func (f *AppResourceSecretSecretPermission) Type() string {
 	return "AppResourceSecretSecretPermission"
 }
 
+func AppResourceSecretSecretPermissionToPb(st *AppResourceSecretSecretPermission) (*appspb.AppResourceSecretSecretPermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appspb.AppResourceSecretSecretPermissionPb(*st)
+	return &pb, nil
+}
+
+func AppResourceSecretSecretPermissionFromPb(pb *appspb.AppResourceSecretSecretPermissionPb) (*AppResourceSecretSecretPermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppResourceSecretSecretPermission(*pb)
+	return &st, nil
+}
+
 type AppResourceServingEndpoint struct {
 	// Name of the serving endpoint to grant permission on.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string ``
 	// Permission to grant on the serving endpoint. Supported permissions are:
 	// "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW".
-	Permission AppResourceServingEndpointServingEndpointPermission `json:"permission"`
+	// Wire name: 'permission'
+	Permission AppResourceServingEndpointServingEndpointPermission ``
+}
+
+func AppResourceServingEndpointToPb(st *AppResourceServingEndpoint) (*appspb.AppResourceServingEndpointPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppResourceServingEndpointPb{}
+	pb.Name = st.Name
+	permissionPb, err := AppResourceServingEndpointServingEndpointPermissionToPb(&st.Permission)
+	if err != nil {
+		return nil, err
+	}
+	if permissionPb != nil {
+		pb.Permission = *permissionPb
+	}
+
+	return pb, nil
+}
+
+func AppResourceServingEndpointFromPb(pb *appspb.AppResourceServingEndpointPb) (*AppResourceServingEndpoint, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppResourceServingEndpoint{}
+	st.Name = pb.Name
+	permissionField, err := AppResourceServingEndpointServingEndpointPermissionFromPb(&pb.Permission)
+	if err != nil {
+		return nil, err
+	}
+	if permissionField != nil {
+		st.Permission = *permissionField
+	}
+
+	return st, nil
 }
 
 type AppResourceServingEndpointServingEndpointPermission string
@@ -585,12 +1567,64 @@ func (f *AppResourceServingEndpointServingEndpointPermission) Type() string {
 	return "AppResourceServingEndpointServingEndpointPermission"
 }
 
+func AppResourceServingEndpointServingEndpointPermissionToPb(st *AppResourceServingEndpointServingEndpointPermission) (*appspb.AppResourceServingEndpointServingEndpointPermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appspb.AppResourceServingEndpointServingEndpointPermissionPb(*st)
+	return &pb, nil
+}
+
+func AppResourceServingEndpointServingEndpointPermissionFromPb(pb *appspb.AppResourceServingEndpointServingEndpointPermissionPb) (*AppResourceServingEndpointServingEndpointPermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppResourceServingEndpointServingEndpointPermission(*pb)
+	return &st, nil
+}
+
 type AppResourceSqlWarehouse struct {
 	// Id of the SQL warehouse to grant permission on.
-	Id string `json:"id"`
+	// Wire name: 'id'
+	Id string ``
 	// Permission to grant on the SQL warehouse. Supported permissions are:
 	// "CAN_MANAGE", "CAN_USE", "IS_OWNER".
-	Permission AppResourceSqlWarehouseSqlWarehousePermission `json:"permission"`
+	// Wire name: 'permission'
+	Permission AppResourceSqlWarehouseSqlWarehousePermission ``
+}
+
+func AppResourceSqlWarehouseToPb(st *AppResourceSqlWarehouse) (*appspb.AppResourceSqlWarehousePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppResourceSqlWarehousePb{}
+	pb.Id = st.Id
+	permissionPb, err := AppResourceSqlWarehouseSqlWarehousePermissionToPb(&st.Permission)
+	if err != nil {
+		return nil, err
+	}
+	if permissionPb != nil {
+		pb.Permission = *permissionPb
+	}
+
+	return pb, nil
+}
+
+func AppResourceSqlWarehouseFromPb(pb *appspb.AppResourceSqlWarehousePb) (*AppResourceSqlWarehouse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppResourceSqlWarehouse{}
+	st.Id = pb.Id
+	permissionField, err := AppResourceSqlWarehouseSqlWarehousePermissionFromPb(&pb.Permission)
+	if err != nil {
+		return nil, err
+	}
+	if permissionField != nil {
+		st.Permission = *permissionField
+	}
+
+	return st, nil
 }
 
 type AppResourceSqlWarehouseSqlWarehousePermission string
@@ -633,12 +1667,80 @@ func (f *AppResourceSqlWarehouseSqlWarehousePermission) Type() string {
 	return "AppResourceSqlWarehouseSqlWarehousePermission"
 }
 
+func AppResourceSqlWarehouseSqlWarehousePermissionToPb(st *AppResourceSqlWarehouseSqlWarehousePermission) (*appspb.AppResourceSqlWarehouseSqlWarehousePermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appspb.AppResourceSqlWarehouseSqlWarehousePermissionPb(*st)
+	return &pb, nil
+}
+
+func AppResourceSqlWarehouseSqlWarehousePermissionFromPb(pb *appspb.AppResourceSqlWarehouseSqlWarehousePermissionPb) (*AppResourceSqlWarehouseSqlWarehousePermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppResourceSqlWarehouseSqlWarehousePermission(*pb)
+	return &st, nil
+}
+
 type AppResourceUcSecurable struct {
-	Permission AppResourceUcSecurableUcSecurablePermission `json:"permission"`
 
-	SecurableFullName string `json:"securable_full_name"`
+	// Wire name: 'permission'
+	Permission AppResourceUcSecurableUcSecurablePermission ``
 
-	SecurableType AppResourceUcSecurableUcSecurableType `json:"securable_type"`
+	// Wire name: 'securable_full_name'
+	SecurableFullName string ``
+
+	// Wire name: 'securable_type'
+	SecurableType AppResourceUcSecurableUcSecurableType ``
+}
+
+func AppResourceUcSecurableToPb(st *AppResourceUcSecurable) (*appspb.AppResourceUcSecurablePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.AppResourceUcSecurablePb{}
+	permissionPb, err := AppResourceUcSecurableUcSecurablePermissionToPb(&st.Permission)
+	if err != nil {
+		return nil, err
+	}
+	if permissionPb != nil {
+		pb.Permission = *permissionPb
+	}
+	pb.SecurableFullName = st.SecurableFullName
+	securableTypePb, err := AppResourceUcSecurableUcSecurableTypeToPb(&st.SecurableType)
+	if err != nil {
+		return nil, err
+	}
+	if securableTypePb != nil {
+		pb.SecurableType = *securableTypePb
+	}
+
+	return pb, nil
+}
+
+func AppResourceUcSecurableFromPb(pb *appspb.AppResourceUcSecurablePb) (*AppResourceUcSecurable, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AppResourceUcSecurable{}
+	permissionField, err := AppResourceUcSecurableUcSecurablePermissionFromPb(&pb.Permission)
+	if err != nil {
+		return nil, err
+	}
+	if permissionField != nil {
+		st.Permission = *permissionField
+	}
+	st.SecurableFullName = pb.SecurableFullName
+	securableTypeField, err := AppResourceUcSecurableUcSecurableTypeFromPb(&pb.SecurableType)
+	if err != nil {
+		return nil, err
+	}
+	if securableTypeField != nil {
+		st.SecurableType = *securableTypeField
+	}
+
+	return st, nil
 }
 
 type AppResourceUcSecurableUcSecurablePermission string
@@ -678,6 +1780,22 @@ func (f *AppResourceUcSecurableUcSecurablePermission) Type() string {
 	return "AppResourceUcSecurableUcSecurablePermission"
 }
 
+func AppResourceUcSecurableUcSecurablePermissionToPb(st *AppResourceUcSecurableUcSecurablePermission) (*appspb.AppResourceUcSecurableUcSecurablePermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appspb.AppResourceUcSecurableUcSecurablePermissionPb(*st)
+	return &pb, nil
+}
+
+func AppResourceUcSecurableUcSecurablePermissionFromPb(pb *appspb.AppResourceUcSecurableUcSecurablePermissionPb) (*AppResourceUcSecurableUcSecurablePermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppResourceUcSecurableUcSecurablePermission(*pb)
+	return &st, nil
+}
+
 type AppResourceUcSecurableUcSecurableType string
 
 const AppResourceUcSecurableUcSecurableTypeVolume AppResourceUcSecurableUcSecurableType = `VOLUME`
@@ -710,6 +1828,22 @@ func (f *AppResourceUcSecurableUcSecurableType) Values() []AppResourceUcSecurabl
 // Type always returns AppResourceUcSecurableUcSecurableType to satisfy [pflag.Value] interface
 func (f *AppResourceUcSecurableUcSecurableType) Type() string {
 	return "AppResourceUcSecurableUcSecurableType"
+}
+
+func AppResourceUcSecurableUcSecurableTypeToPb(st *AppResourceUcSecurableUcSecurableType) (*appspb.AppResourceUcSecurableUcSecurableTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appspb.AppResourceUcSecurableUcSecurableTypePb(*st)
+	return &pb, nil
+}
+
+func AppResourceUcSecurableUcSecurableTypeFromPb(pb *appspb.AppResourceUcSecurableUcSecurableTypePb) (*AppResourceUcSecurableUcSecurableType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppResourceUcSecurableUcSecurableType(*pb)
+	return &st, nil
 }
 
 type ApplicationState string
@@ -755,13 +1889,30 @@ func (f *ApplicationState) Type() string {
 	return "ApplicationState"
 }
 
+func ApplicationStateToPb(st *ApplicationState) (*appspb.ApplicationStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appspb.ApplicationStatePb(*st)
+	return &pb, nil
+}
+
+func ApplicationStateFromPb(pb *appspb.ApplicationStatePb) (*ApplicationState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ApplicationState(*pb)
+	return &st, nil
+}
+
 type ApplicationStatus struct {
 	// Application status message
-	Message string `json:"message,omitempty"`
+	// Wire name: 'message'
+	Message string ``
 	// State of the application.
-	State ApplicationState `json:"state,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'state'
+	State           ApplicationState ``
+	ForceSendFields []string         `tf:"-"`
 }
 
 func (s *ApplicationStatus) UnmarshalJSON(b []byte) error {
@@ -770,6 +1921,42 @@ func (s *ApplicationStatus) UnmarshalJSON(b []byte) error {
 
 func (s ApplicationStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func ApplicationStatusToPb(st *ApplicationStatus) (*appspb.ApplicationStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.ApplicationStatusPb{}
+	pb.Message = st.Message
+	statePb, err := ApplicationStateToPb(&st.State)
+	if err != nil {
+		return nil, err
+	}
+	if statePb != nil {
+		pb.State = *statePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ApplicationStatusFromPb(pb *appspb.ApplicationStatusPb) (*ApplicationStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ApplicationStatus{}
+	st.Message = pb.Message
+	stateField, err := ApplicationStateFromPb(&pb.State)
+	if err != nil {
+		return nil, err
+	}
+	if stateField != nil {
+		st.State = *stateField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 type ComputeState string
@@ -824,13 +2011,30 @@ func (f *ComputeState) Type() string {
 	return "ComputeState"
 }
 
+func ComputeStateToPb(st *ComputeState) (*appspb.ComputeStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appspb.ComputeStatePb(*st)
+	return &pb, nil
+}
+
+func ComputeStateFromPb(pb *appspb.ComputeStatePb) (*ComputeState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ComputeState(*pb)
+	return &st, nil
+}
+
 type ComputeStatus struct {
 	// Compute status message
-	Message string `json:"message,omitempty"`
+	// Wire name: 'message'
+	Message string ``
 	// State of the app compute.
-	State ComputeState `json:"state,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'state'
+	State           ComputeState ``
+	ForceSendFields []string     `tf:"-"`
 }
 
 func (s *ComputeStatus) UnmarshalJSON(b []byte) error {
@@ -841,19 +2045,93 @@ func (s ComputeStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ComputeStatusToPb(st *ComputeStatus) (*appspb.ComputeStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.ComputeStatusPb{}
+	pb.Message = st.Message
+	statePb, err := ComputeStateToPb(&st.State)
+	if err != nil {
+		return nil, err
+	}
+	if statePb != nil {
+		pb.State = *statePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ComputeStatusFromPb(pb *appspb.ComputeStatusPb) (*ComputeStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ComputeStatus{}
+	st.Message = pb.Message
+	stateField, err := ComputeStateFromPb(&pb.State)
+	if err != nil {
+		return nil, err
+	}
+	if stateField != nil {
+		st.State = *stateField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type CreateAppDeploymentRequest struct {
 	// The app deployment configuration.
-	AppDeployment AppDeployment `json:"app_deployment"`
+	// Wire name: 'app_deployment'
+	AppDeployment AppDeployment ``
 	// The name of the app.
-	AppName string `json:"-" url:"-"`
+	// Wire name: 'app_name'
+	AppName string `tf:"-"`
+}
+
+func CreateAppDeploymentRequestToPb(st *CreateAppDeploymentRequest) (*appspb.CreateAppDeploymentRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.CreateAppDeploymentRequestPb{}
+	appDeploymentPb, err := AppDeploymentToPb(&st.AppDeployment)
+	if err != nil {
+		return nil, err
+	}
+	if appDeploymentPb != nil {
+		pb.AppDeployment = *appDeploymentPb
+	}
+	pb.AppName = st.AppName
+
+	return pb, nil
+}
+
+func CreateAppDeploymentRequestFromPb(pb *appspb.CreateAppDeploymentRequestPb) (*CreateAppDeploymentRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateAppDeploymentRequest{}
+	appDeploymentField, err := AppDeploymentFromPb(&pb.AppDeployment)
+	if err != nil {
+		return nil, err
+	}
+	if appDeploymentField != nil {
+		st.AppDeployment = *appDeploymentField
+	}
+	st.AppName = pb.AppName
+
+	return st, nil
 }
 
 type CreateAppRequest struct {
-	App App `json:"app"`
-	// If true, the app will not be started after creation.
-	NoCompute bool `json:"-" url:"no_compute,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'app'
+	App App ``
+	// If true, the app will not be started after creation.
+	// Wire name: 'no_compute'
+	NoCompute       bool     `tf:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *CreateAppRequest) UnmarshalJSON(b []byte) error {
@@ -864,48 +2142,237 @@ func (s CreateAppRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func CreateAppRequestToPb(st *CreateAppRequest) (*appspb.CreateAppRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.CreateAppRequestPb{}
+	appPb, err := AppToPb(&st.App)
+	if err != nil {
+		return nil, err
+	}
+	if appPb != nil {
+		pb.App = *appPb
+	}
+	pb.NoCompute = st.NoCompute
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func CreateAppRequestFromPb(pb *appspb.CreateAppRequestPb) (*CreateAppRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateAppRequest{}
+	appField, err := AppFromPb(&pb.App)
+	if err != nil {
+		return nil, err
+	}
+	if appField != nil {
+		st.App = *appField
+	}
+	st.NoCompute = pb.NoCompute
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type DeleteAppRequest struct {
 	// The name of the app.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func DeleteAppRequestToPb(st *DeleteAppRequest) (*appspb.DeleteAppRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.DeleteAppRequestPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func DeleteAppRequestFromPb(pb *appspb.DeleteAppRequestPb) (*DeleteAppRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteAppRequest{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 type GetAppDeploymentRequest struct {
 	// The name of the app.
-	AppName string `json:"-" url:"-"`
+	// Wire name: 'app_name'
+	AppName string `tf:"-"`
 	// The unique id of the deployment.
-	DeploymentId string `json:"-" url:"-"`
+	// Wire name: 'deployment_id'
+	DeploymentId string `tf:"-"`
+}
+
+func GetAppDeploymentRequestToPb(st *GetAppDeploymentRequest) (*appspb.GetAppDeploymentRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.GetAppDeploymentRequestPb{}
+	pb.AppName = st.AppName
+	pb.DeploymentId = st.DeploymentId
+
+	return pb, nil
+}
+
+func GetAppDeploymentRequestFromPb(pb *appspb.GetAppDeploymentRequestPb) (*GetAppDeploymentRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetAppDeploymentRequest{}
+	st.AppName = pb.AppName
+	st.DeploymentId = pb.DeploymentId
+
+	return st, nil
 }
 
 type GetAppPermissionLevelsRequest struct {
 	// The app for which to get or manage permissions.
-	AppName string `json:"-" url:"-"`
+	// Wire name: 'app_name'
+	AppName string `tf:"-"`
+}
+
+func GetAppPermissionLevelsRequestToPb(st *GetAppPermissionLevelsRequest) (*appspb.GetAppPermissionLevelsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.GetAppPermissionLevelsRequestPb{}
+	pb.AppName = st.AppName
+
+	return pb, nil
+}
+
+func GetAppPermissionLevelsRequestFromPb(pb *appspb.GetAppPermissionLevelsRequestPb) (*GetAppPermissionLevelsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetAppPermissionLevelsRequest{}
+	st.AppName = pb.AppName
+
+	return st, nil
 }
 
 type GetAppPermissionLevelsResponse struct {
 	// Specific permission levels
-	PermissionLevels []AppPermissionsDescription `json:"permission_levels,omitempty"`
+	// Wire name: 'permission_levels'
+	PermissionLevels []AppPermissionsDescription ``
+}
+
+func GetAppPermissionLevelsResponseToPb(st *GetAppPermissionLevelsResponse) (*appspb.GetAppPermissionLevelsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.GetAppPermissionLevelsResponsePb{}
+
+	var permissionLevelsPb []appspb.AppPermissionsDescriptionPb
+	for _, item := range st.PermissionLevels {
+		itemPb, err := AppPermissionsDescriptionToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			permissionLevelsPb = append(permissionLevelsPb, *itemPb)
+		}
+	}
+	pb.PermissionLevels = permissionLevelsPb
+
+	return pb, nil
+}
+
+func GetAppPermissionLevelsResponseFromPb(pb *appspb.GetAppPermissionLevelsResponsePb) (*GetAppPermissionLevelsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetAppPermissionLevelsResponse{}
+
+	var permissionLevelsField []AppPermissionsDescription
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := AppPermissionsDescriptionFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
+		}
+	}
+	st.PermissionLevels = permissionLevelsField
+
+	return st, nil
 }
 
 type GetAppPermissionsRequest struct {
 	// The app for which to get or manage permissions.
-	AppName string `json:"-" url:"-"`
+	// Wire name: 'app_name'
+	AppName string `tf:"-"`
+}
+
+func GetAppPermissionsRequestToPb(st *GetAppPermissionsRequest) (*appspb.GetAppPermissionsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.GetAppPermissionsRequestPb{}
+	pb.AppName = st.AppName
+
+	return pb, nil
+}
+
+func GetAppPermissionsRequestFromPb(pb *appspb.GetAppPermissionsRequestPb) (*GetAppPermissionsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetAppPermissionsRequest{}
+	st.AppName = pb.AppName
+
+	return st, nil
 }
 
 type GetAppRequest struct {
 	// The name of the app.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func GetAppRequestToPb(st *GetAppRequest) (*appspb.GetAppRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.GetAppRequestPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func GetAppRequestFromPb(pb *appspb.GetAppRequestPb) (*GetAppRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetAppRequest{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 type ListAppDeploymentsRequest struct {
 	// The name of the app.
-	AppName string `json:"-" url:"-"`
+	// Wire name: 'app_name'
+	AppName string `tf:"-"`
 	// Upper bound for items returned.
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// Pagination token to go to the next page of apps. Requests first page if
 	// absent.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken       string   `tf:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ListAppDeploymentsRequest) UnmarshalJSON(b []byte) error {
@@ -916,13 +2383,40 @@ func (s ListAppDeploymentsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ListAppDeploymentsRequestToPb(st *ListAppDeploymentsRequest) (*appspb.ListAppDeploymentsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.ListAppDeploymentsRequestPb{}
+	pb.AppName = st.AppName
+	pb.PageSize = st.PageSize
+	pb.PageToken = st.PageToken
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListAppDeploymentsRequestFromPb(pb *appspb.ListAppDeploymentsRequestPb) (*ListAppDeploymentsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListAppDeploymentsRequest{}
+	st.AppName = pb.AppName
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ListAppDeploymentsResponse struct {
 	// Deployment history of the app.
-	AppDeployments []AppDeployment `json:"app_deployments,omitempty"`
+	// Wire name: 'app_deployments'
+	AppDeployments []AppDeployment ``
 	// Pagination token to request the next page of apps.
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken   string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ListAppDeploymentsResponse) UnmarshalJSON(b []byte) error {
@@ -933,14 +2427,61 @@ func (s ListAppDeploymentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ListAppDeploymentsResponseToPb(st *ListAppDeploymentsResponse) (*appspb.ListAppDeploymentsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.ListAppDeploymentsResponsePb{}
+
+	var appDeploymentsPb []appspb.AppDeploymentPb
+	for _, item := range st.AppDeployments {
+		itemPb, err := AppDeploymentToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			appDeploymentsPb = append(appDeploymentsPb, *itemPb)
+		}
+	}
+	pb.AppDeployments = appDeploymentsPb
+	pb.NextPageToken = st.NextPageToken
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListAppDeploymentsResponseFromPb(pb *appspb.ListAppDeploymentsResponsePb) (*ListAppDeploymentsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListAppDeploymentsResponse{}
+
+	var appDeploymentsField []AppDeployment
+	for _, itemPb := range pb.AppDeployments {
+		item, err := AppDeploymentFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			appDeploymentsField = append(appDeploymentsField, *item)
+		}
+	}
+	st.AppDeployments = appDeploymentsField
+	st.NextPageToken = pb.NextPageToken
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ListAppsRequest struct {
 	// Upper bound for items returned.
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// Pagination token to go to the next page of apps. Requests first page if
 	// absent.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken       string   `tf:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ListAppsRequest) UnmarshalJSON(b []byte) error {
@@ -951,12 +2492,38 @@ func (s ListAppsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type ListAppsResponse struct {
-	Apps []App `json:"apps,omitempty"`
-	// Pagination token to request the next page of apps.
-	NextPageToken string `json:"next_page_token,omitempty"`
+func ListAppsRequestToPb(st *ListAppsRequest) (*appspb.ListAppsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.ListAppsRequestPb{}
+	pb.PageSize = st.PageSize
+	pb.PageToken = st.PageToken
 
-	ForceSendFields []string `json:"-" url:"-"`
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListAppsRequestFromPb(pb *appspb.ListAppsRequestPb) (*ListAppsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListAppsRequest{}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
+type ListAppsResponse struct {
+
+	// Wire name: 'apps'
+	Apps []App ``
+	// Pagination token to request the next page of apps.
+	// Wire name: 'next_page_token'
+	NextPageToken   string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ListAppsResponse) UnmarshalJSON(b []byte) error {
@@ -967,19 +2534,198 @@ func (s ListAppsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ListAppsResponseToPb(st *ListAppsResponse) (*appspb.ListAppsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.ListAppsResponsePb{}
+
+	var appsPb []appspb.AppPb
+	for _, item := range st.Apps {
+		itemPb, err := AppToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			appsPb = append(appsPb, *itemPb)
+		}
+	}
+	pb.Apps = appsPb
+	pb.NextPageToken = st.NextPageToken
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListAppsResponseFromPb(pb *appspb.ListAppsResponsePb) (*ListAppsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListAppsResponse{}
+
+	var appsField []App
+	for _, itemPb := range pb.Apps {
+		item, err := AppFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			appsField = append(appsField, *item)
+		}
+	}
+	st.Apps = appsField
+	st.NextPageToken = pb.NextPageToken
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type StartAppRequest struct {
 	// The name of the app.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func StartAppRequestToPb(st *StartAppRequest) (*appspb.StartAppRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.StartAppRequestPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func StartAppRequestFromPb(pb *appspb.StartAppRequestPb) (*StartAppRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &StartAppRequest{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 type StopAppRequest struct {
 	// The name of the app.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func StopAppRequestToPb(st *StopAppRequest) (*appspb.StopAppRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.StopAppRequestPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func StopAppRequestFromPb(pb *appspb.StopAppRequestPb) (*StopAppRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &StopAppRequest{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 type UpdateAppRequest struct {
-	App App `json:"app"`
+
+	// Wire name: 'app'
+	App App ``
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func UpdateAppRequestToPb(st *UpdateAppRequest) (*appspb.UpdateAppRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &appspb.UpdateAppRequestPb{}
+	appPb, err := AppToPb(&st.App)
+	if err != nil {
+		return nil, err
+	}
+	if appPb != nil {
+		pb.App = *appPb
+	}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func UpdateAppRequestFromPb(pb *appspb.UpdateAppRequestPb) (*UpdateAppRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateAppRequest{}
+	appField, err := AppFromPb(&pb.App)
+	if err != nil {
+		return nil, err
+	}
+	if appField != nil {
+		st.App = *appField
+	}
+	st.Name = pb.Name
+
+	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%.9fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

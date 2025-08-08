@@ -4,9 +4,13 @@ package jobs
 
 import (
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/compute"
+	"github.com/databricks/databricks-sdk-go/service/compute/computepb"
+	"github.com/databricks/databricks-sdk-go/service/jobs/jobspb"
 )
 
 type AuthenticationMethod string
@@ -46,34 +50,56 @@ func (f *AuthenticationMethod) Type() string {
 	return "AuthenticationMethod"
 }
 
+func AuthenticationMethodToPb(st *AuthenticationMethod) (*jobspb.AuthenticationMethodPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.AuthenticationMethodPb(*st)
+	return &pb, nil
+}
+
+func AuthenticationMethodFromPb(pb *jobspb.AuthenticationMethodPb) (*AuthenticationMethod, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AuthenticationMethod(*pb)
+	return &st, nil
+}
+
 type BaseJob struct {
 	// The time at which this job was created in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC).
-	CreatedTime int64 `json:"created_time,omitempty"`
+	// Wire name: 'created_time'
+	CreatedTime int64 ``
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
-	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// Wire name: 'creator_user_name'
+	CreatorUserName string ``
 	// The id of the budget policy used by this job for cost attribution
 	// purposes. This may be set through (in order of precedence): 1. Budget
 	// admins through the account or workspace console 2. Jobs UI in the job
 	// details page and Jobs API using `budget_policy_id` 3. Inferred default
 	// based on accessible budget policies of the run_as identity on job
 	// creation or modification.
-	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// Wire name: 'effective_budget_policy_id'
+	EffectiveBudgetPolicyId string ``
 	// Indicates if the job has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/get endpoint.
 	// It is only relevant for API 2.2 :method:jobs/list requests with
 	// `expand_tasks=true`.
-	HasMore bool `json:"has_more,omitempty"`
+	// Wire name: 'has_more'
+	HasMore bool ``
 	// The canonical identifier for this job.
-	JobId int64 `json:"job_id,omitempty"`
+	// Wire name: 'job_id'
+	JobId int64 ``
 	// Settings for this job and all of its runs. These settings can be updated
 	// using the `resetJob` method.
-	Settings *JobSettings `json:"settings,omitempty"`
+	// Wire name: 'settings'
+	Settings *JobSettings ``
 	// State of the trigger associated with the job.
-	TriggerState *TriggerStateProto `json:"trigger_state,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'trigger_state'
+	TriggerState    *TriggerStateProto ``
+	ForceSendFields []string           `tf:"-"`
 }
 
 func (s *BaseJob) UnmarshalJSON(b []byte) error {
@@ -84,6 +110,64 @@ func (s BaseJob) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func BaseJobToPb(st *BaseJob) (*jobspb.BaseJobPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.BaseJobPb{}
+	pb.CreatedTime = st.CreatedTime
+	pb.CreatorUserName = st.CreatorUserName
+	pb.EffectiveBudgetPolicyId = st.EffectiveBudgetPolicyId
+	pb.HasMore = st.HasMore
+	pb.JobId = st.JobId
+	settingsPb, err := JobSettingsToPb(st.Settings)
+	if err != nil {
+		return nil, err
+	}
+	if settingsPb != nil {
+		pb.Settings = settingsPb
+	}
+	triggerStatePb, err := TriggerStateProtoToPb(st.TriggerState)
+	if err != nil {
+		return nil, err
+	}
+	if triggerStatePb != nil {
+		pb.TriggerState = triggerStatePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func BaseJobFromPb(pb *jobspb.BaseJobPb) (*BaseJob, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BaseJob{}
+	st.CreatedTime = pb.CreatedTime
+	st.CreatorUserName = pb.CreatorUserName
+	st.EffectiveBudgetPolicyId = pb.EffectiveBudgetPolicyId
+	st.HasMore = pb.HasMore
+	st.JobId = pb.JobId
+	settingsField, err := JobSettingsFromPb(pb.Settings)
+	if err != nil {
+		return nil, err
+	}
+	if settingsField != nil {
+		st.Settings = settingsField
+	}
+	triggerStateField, err := TriggerStateProtoFromPb(pb.TriggerState)
+	if err != nil {
+		return nil, err
+	}
+	if triggerStateField != nil {
+		st.TriggerState = triggerStateField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type BaseRun struct {
 	// The sequence number of this run attempt for a triggered job run. The
 	// initial attempt of a run has an attempt_number of 0. If the initial run
@@ -92,25 +176,31 @@ type BaseRun struct {
 	// original attempt’s ID and an incrementing `attempt_number`. Runs are
 	// retried only until they succeed, and the maximum `attempt_number` is the
 	// same as the `max_retries` value for the job.
-	AttemptNumber int `json:"attempt_number,omitempty"`
+	// Wire name: 'attempt_number'
+	AttemptNumber int ``
 	// The time in milliseconds it took to terminate the cluster and clean up
 	// any associated artifacts. The duration of a task run is the sum of the
 	// `setup_duration`, `execution_duration`, and the `cleanup_duration`. The
 	// `cleanup_duration` field is set to 0 for multitask job runs. The total
 	// duration of a multitask job run is the value of the `run_duration` field.
-	CleanupDuration int64 `json:"cleanup_duration,omitempty"`
+	// Wire name: 'cleanup_duration'
+	CleanupDuration int64 ``
 	// The cluster used for this run. If the run is specified to use a new
 	// cluster, this field is set once the Jobs service has requested a cluster
 	// for the run.
-	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
+	// Wire name: 'cluster_instance'
+	ClusterInstance *ClusterInstance ``
 	// A snapshot of the job’s cluster specification when this run was
 	// created.
-	ClusterSpec *ClusterSpec `json:"cluster_spec,omitempty"`
+	// Wire name: 'cluster_spec'
+	ClusterSpec *ClusterSpec ``
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
-	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// Wire name: 'creator_user_name'
+	CreatorUserName string ``
 	// Description of the run
-	Description string `json:"description,omitempty"`
+	// Wire name: 'description'
+	Description string ``
 	// The actual performance target used by the serverless run during
 	// execution. This can differ from the client-set performance target on the
 	// request depending on whether the performance mode is supported by the job
@@ -119,10 +209,12 @@ type BaseRun struct {
 	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
-	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
+	// Wire name: 'effective_performance_target'
+	EffectivePerformanceTarget PerformanceTarget ``
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
-	EndTime int64 `json:"end_time,omitempty"`
+	// Wire name: 'end_time'
+	EndTime int64 ``
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
 	// encountered an unexpected error. The duration of a task run is the sum of
@@ -130,7 +222,8 @@ type BaseRun struct {
 	// The `execution_duration` field is set to 0 for multitask job runs. The
 	// total duration of a multitask job run is the value of the `run_duration`
 	// field.
-	ExecutionDuration int64 `json:"execution_duration,omitempty"`
+	// Wire name: 'execution_duration'
+	ExecutionDuration int64 ``
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks.
@@ -141,55 +234,72 @@ type BaseRun struct {
 	//
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
-	GitSource *GitSource `json:"git_source,omitempty"`
+	// Wire name: 'git_source'
+	GitSource *GitSource ``
 	// Indicates if the run has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/getrun
 	// endpoint. It is only relevant for API 2.2 :method:jobs/listruns requests
 	// with `expand_tasks=true`.
-	HasMore bool `json:"has_more,omitempty"`
+	// Wire name: 'has_more'
+	HasMore bool ``
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
 	// You must declare dependent libraries in task settings. If more than 100
 	// job clusters are available, you can paginate through them using
 	// :method:jobs/getrun.
-	JobClusters []JobCluster `json:"job_clusters,omitempty"`
+	// Wire name: 'job_clusters'
+	JobClusters []JobCluster ``
 	// The canonical identifier of the job that contains this run.
-	JobId int64 `json:"job_id,omitempty"`
+	// Wire name: 'job_id'
+	JobId int64 ``
 	// Job-level parameters used in the run
-	JobParameters []JobParameter `json:"job_parameters,omitempty"`
+	// Wire name: 'job_parameters'
+	JobParameters []JobParameter ``
 	// ID of the job run that this run belongs to. For legacy and single-task
 	// job runs the field is populated with the job run ID. For task runs, the
 	// field is populated with the ID of the job run that the task run belongs
 	// to.
-	JobRunId int64 `json:"job_run_id,omitempty"`
+	// Wire name: 'job_run_id'
+	JobRunId int64 ``
 	// A unique identifier for this job run. This is set to the same value as
 	// `run_id`.
-	NumberInJob int64 `json:"number_in_job,omitempty"`
+	// Wire name: 'number_in_job'
+	NumberInJob int64 ``
 	// If this run is a retry of a prior run attempt, this field contains the
 	// run_id of the original attempt; otherwise, it is the same as the run_id.
-	OriginalAttemptRunId int64 `json:"original_attempt_run_id,omitempty"`
+	// Wire name: 'original_attempt_run_id'
+	OriginalAttemptRunId int64 ``
 	// The parameters used for this run.
-	OverridingParameters *RunParameters `json:"overriding_parameters,omitempty"`
+	// Wire name: 'overriding_parameters'
+	OverridingParameters *RunParameters ``
 	// The time in milliseconds that the run has spent in the queue.
-	QueueDuration int64 `json:"queue_duration,omitempty"`
+	// Wire name: 'queue_duration'
+	QueueDuration int64 ``
 	// The repair history of the run.
-	RepairHistory []RepairHistoryItem `json:"repair_history,omitempty"`
+	// Wire name: 'repair_history'
+	RepairHistory []RepairHistoryItem ``
 	// The time in milliseconds it took the job run and all of its repairs to
 	// finish.
-	RunDuration int64 `json:"run_duration,omitempty"`
+	// Wire name: 'run_duration'
+	RunDuration int64 ``
 	// The canonical identifier of the run. This ID is unique across all runs of
 	// all jobs.
-	RunId int64 `json:"run_id,omitempty"`
+	// Wire name: 'run_id'
+	RunId int64 ``
 	// An optional name for the run. The maximum length is 4096 bytes in UTF-8
 	// encoding.
-	RunName string `json:"run_name,omitempty"`
+	// Wire name: 'run_name'
+	RunName string ``
 	// The URL to the detail page of the run.
-	RunPageUrl string `json:"run_page_url,omitempty"`
+	// Wire name: 'run_page_url'
+	RunPageUrl string ``
 
-	RunType RunType `json:"run_type,omitempty"`
+	// Wire name: 'run_type'
+	RunType RunType ``
 	// The cron schedule that triggered this run if it was triggered by the
 	// periodic scheduler.
-	Schedule *CronSchedule `json:"schedule,omitempty"`
+	// Wire name: 'schedule'
+	Schedule *CronSchedule ``
 	// The time in milliseconds it took to set up the cluster. For runs that run
 	// on new clusters this is the cluster creation time, for runs that run on
 	// existing clusters this time should be very short. The duration of a task
@@ -197,28 +307,34 @@ type BaseRun struct {
 	// `cleanup_duration`. The `setup_duration` field is set to 0 for multitask
 	// job runs. The total duration of a multitask job run is the value of the
 	// `run_duration` field.
-	SetupDuration int64 `json:"setup_duration,omitempty"`
+	// Wire name: 'setup_duration'
+	SetupDuration int64 ``
 	// The time at which this run was started in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC). This may not be the time when the job
 	// task starts executing, for example, if the job is scheduled to run on a
 	// new cluster, this is the time the cluster creation call is issued.
-	StartTime int64 `json:"start_time,omitempty"`
+	// Wire name: 'start_time'
+	StartTime int64 ``
 	// Deprecated. Please use the `status` field instead.
-	State *RunState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State *RunState ``
 
-	Status *RunStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status *RunStatus ``
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run resutls. If
 	// more than 100 tasks are available, you can paginate through them using
 	// :method:jobs/getrun. Use the `next_page_token` field at the object root
 	// to determine if more results are available.
-	Tasks []RunTask `json:"tasks,omitempty"`
+	// Wire name: 'tasks'
+	Tasks []RunTask ``
 
-	Trigger TriggerType `json:"trigger,omitempty"`
+	// Wire name: 'trigger'
+	Trigger TriggerType ``
 
-	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'trigger_info'
+	TriggerInfo     *TriggerInfo ``
+	ForceSendFields []string     `tf:"-"`
 }
 
 func (s *BaseRun) UnmarshalJSON(b []byte) error {
@@ -229,14 +345,321 @@ func (s BaseRun) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func BaseRunToPb(st *BaseRun) (*jobspb.BaseRunPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.BaseRunPb{}
+	pb.AttemptNumber = st.AttemptNumber
+	pb.CleanupDuration = st.CleanupDuration
+	clusterInstancePb, err := ClusterInstanceToPb(st.ClusterInstance)
+	if err != nil {
+		return nil, err
+	}
+	if clusterInstancePb != nil {
+		pb.ClusterInstance = clusterInstancePb
+	}
+	clusterSpecPb, err := ClusterSpecToPb(st.ClusterSpec)
+	if err != nil {
+		return nil, err
+	}
+	if clusterSpecPb != nil {
+		pb.ClusterSpec = clusterSpecPb
+	}
+	pb.CreatorUserName = st.CreatorUserName
+	pb.Description = st.Description
+	effectivePerformanceTargetPb, err := PerformanceTargetToPb(&st.EffectivePerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePerformanceTargetPb != nil {
+		pb.EffectivePerformanceTarget = *effectivePerformanceTargetPb
+	}
+	pb.EndTime = st.EndTime
+	pb.ExecutionDuration = st.ExecutionDuration
+	gitSourcePb, err := GitSourceToPb(st.GitSource)
+	if err != nil {
+		return nil, err
+	}
+	if gitSourcePb != nil {
+		pb.GitSource = gitSourcePb
+	}
+	pb.HasMore = st.HasMore
+
+	var jobClustersPb []jobspb.JobClusterPb
+	for _, item := range st.JobClusters {
+		itemPb, err := JobClusterToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			jobClustersPb = append(jobClustersPb, *itemPb)
+		}
+	}
+	pb.JobClusters = jobClustersPb
+	pb.JobId = st.JobId
+
+	var jobParametersPb []jobspb.JobParameterPb
+	for _, item := range st.JobParameters {
+		itemPb, err := JobParameterToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			jobParametersPb = append(jobParametersPb, *itemPb)
+		}
+	}
+	pb.JobParameters = jobParametersPb
+	pb.JobRunId = st.JobRunId
+	pb.NumberInJob = st.NumberInJob
+	pb.OriginalAttemptRunId = st.OriginalAttemptRunId
+	overridingParametersPb, err := RunParametersToPb(st.OverridingParameters)
+	if err != nil {
+		return nil, err
+	}
+	if overridingParametersPb != nil {
+		pb.OverridingParameters = overridingParametersPb
+	}
+	pb.QueueDuration = st.QueueDuration
+
+	var repairHistoryPb []jobspb.RepairHistoryItemPb
+	for _, item := range st.RepairHistory {
+		itemPb, err := RepairHistoryItemToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			repairHistoryPb = append(repairHistoryPb, *itemPb)
+		}
+	}
+	pb.RepairHistory = repairHistoryPb
+	pb.RunDuration = st.RunDuration
+	pb.RunId = st.RunId
+	pb.RunName = st.RunName
+	pb.RunPageUrl = st.RunPageUrl
+	runTypePb, err := RunTypeToPb(&st.RunType)
+	if err != nil {
+		return nil, err
+	}
+	if runTypePb != nil {
+		pb.RunType = *runTypePb
+	}
+	schedulePb, err := CronScheduleToPb(st.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if schedulePb != nil {
+		pb.Schedule = schedulePb
+	}
+	pb.SetupDuration = st.SetupDuration
+	pb.StartTime = st.StartTime
+	statePb, err := RunStateToPb(st.State)
+	if err != nil {
+		return nil, err
+	}
+	if statePb != nil {
+		pb.State = statePb
+	}
+	statusPb, err := RunStatusToPb(st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = statusPb
+	}
+
+	var tasksPb []jobspb.RunTaskPb
+	for _, item := range st.Tasks {
+		itemPb, err := RunTaskToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			tasksPb = append(tasksPb, *itemPb)
+		}
+	}
+	pb.Tasks = tasksPb
+	triggerPb, err := TriggerTypeToPb(&st.Trigger)
+	if err != nil {
+		return nil, err
+	}
+	if triggerPb != nil {
+		pb.Trigger = *triggerPb
+	}
+	triggerInfoPb, err := TriggerInfoToPb(st.TriggerInfo)
+	if err != nil {
+		return nil, err
+	}
+	if triggerInfoPb != nil {
+		pb.TriggerInfo = triggerInfoPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func BaseRunFromPb(pb *jobspb.BaseRunPb) (*BaseRun, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BaseRun{}
+	st.AttemptNumber = pb.AttemptNumber
+	st.CleanupDuration = pb.CleanupDuration
+	clusterInstanceField, err := ClusterInstanceFromPb(pb.ClusterInstance)
+	if err != nil {
+		return nil, err
+	}
+	if clusterInstanceField != nil {
+		st.ClusterInstance = clusterInstanceField
+	}
+	clusterSpecField, err := ClusterSpecFromPb(pb.ClusterSpec)
+	if err != nil {
+		return nil, err
+	}
+	if clusterSpecField != nil {
+		st.ClusterSpec = clusterSpecField
+	}
+	st.CreatorUserName = pb.CreatorUserName
+	st.Description = pb.Description
+	effectivePerformanceTargetField, err := PerformanceTargetFromPb(&pb.EffectivePerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePerformanceTargetField != nil {
+		st.EffectivePerformanceTarget = *effectivePerformanceTargetField
+	}
+	st.EndTime = pb.EndTime
+	st.ExecutionDuration = pb.ExecutionDuration
+	gitSourceField, err := GitSourceFromPb(pb.GitSource)
+	if err != nil {
+		return nil, err
+	}
+	if gitSourceField != nil {
+		st.GitSource = gitSourceField
+	}
+	st.HasMore = pb.HasMore
+
+	var jobClustersField []JobCluster
+	for _, itemPb := range pb.JobClusters {
+		item, err := JobClusterFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			jobClustersField = append(jobClustersField, *item)
+		}
+	}
+	st.JobClusters = jobClustersField
+	st.JobId = pb.JobId
+
+	var jobParametersField []JobParameter
+	for _, itemPb := range pb.JobParameters {
+		item, err := JobParameterFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			jobParametersField = append(jobParametersField, *item)
+		}
+	}
+	st.JobParameters = jobParametersField
+	st.JobRunId = pb.JobRunId
+	st.NumberInJob = pb.NumberInJob
+	st.OriginalAttemptRunId = pb.OriginalAttemptRunId
+	overridingParametersField, err := RunParametersFromPb(pb.OverridingParameters)
+	if err != nil {
+		return nil, err
+	}
+	if overridingParametersField != nil {
+		st.OverridingParameters = overridingParametersField
+	}
+	st.QueueDuration = pb.QueueDuration
+
+	var repairHistoryField []RepairHistoryItem
+	for _, itemPb := range pb.RepairHistory {
+		item, err := RepairHistoryItemFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			repairHistoryField = append(repairHistoryField, *item)
+		}
+	}
+	st.RepairHistory = repairHistoryField
+	st.RunDuration = pb.RunDuration
+	st.RunId = pb.RunId
+	st.RunName = pb.RunName
+	st.RunPageUrl = pb.RunPageUrl
+	runTypeField, err := RunTypeFromPb(&pb.RunType)
+	if err != nil {
+		return nil, err
+	}
+	if runTypeField != nil {
+		st.RunType = *runTypeField
+	}
+	scheduleField, err := CronScheduleFromPb(pb.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if scheduleField != nil {
+		st.Schedule = scheduleField
+	}
+	st.SetupDuration = pb.SetupDuration
+	st.StartTime = pb.StartTime
+	stateField, err := RunStateFromPb(pb.State)
+	if err != nil {
+		return nil, err
+	}
+	if stateField != nil {
+		st.State = stateField
+	}
+	statusField, err := RunStatusFromPb(pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = statusField
+	}
+
+	var tasksField []RunTask
+	for _, itemPb := range pb.Tasks {
+		item, err := RunTaskFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			tasksField = append(tasksField, *item)
+		}
+	}
+	st.Tasks = tasksField
+	triggerField, err := TriggerTypeFromPb(&pb.Trigger)
+	if err != nil {
+		return nil, err
+	}
+	if triggerField != nil {
+		st.Trigger = *triggerField
+	}
+	triggerInfoField, err := TriggerInfoFromPb(pb.TriggerInfo)
+	if err != nil {
+		return nil, err
+	}
+	if triggerInfoField != nil {
+		st.TriggerInfo = triggerInfoField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type CancelAllRuns struct {
 	// Optional boolean parameter to cancel all queued runs. If no job_id is
 	// provided, all queued runs in the workspace are canceled.
-	AllQueuedRuns bool `json:"all_queued_runs,omitempty"`
+	// Wire name: 'all_queued_runs'
+	AllQueuedRuns bool ``
 	// The canonical identifier of the job to cancel all runs of.
-	JobId int64 `json:"job_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'job_id'
+	JobId           int64    ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *CancelAllRuns) UnmarshalJSON(b []byte) error {
@@ -247,9 +670,54 @@ func (s CancelAllRuns) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func CancelAllRunsToPb(st *CancelAllRuns) (*jobspb.CancelAllRunsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.CancelAllRunsPb{}
+	pb.AllQueuedRuns = st.AllQueuedRuns
+	pb.JobId = st.JobId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func CancelAllRunsFromPb(pb *jobspb.CancelAllRunsPb) (*CancelAllRuns, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CancelAllRuns{}
+	st.AllQueuedRuns = pb.AllQueuedRuns
+	st.JobId = pb.JobId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type CancelRun struct {
 	// This field is required.
-	RunId int64 `json:"run_id"`
+	// Wire name: 'run_id'
+	RunId int64 ``
+}
+
+func CancelRunToPb(st *CancelRun) (*jobspb.CancelRunPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.CancelRunPb{}
+	pb.RunId = st.RunId
+
+	return pb, nil
+}
+
+func CancelRunFromPb(pb *jobspb.CancelRunPb) (*CancelRun, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CancelRun{}
+	st.RunId = pb.RunId
+
+	return st, nil
 }
 
 // Copied from elastic-spark-common/api/messages/runs.proto. Using the original
@@ -313,6 +781,22 @@ func (f *CleanRoomTaskRunLifeCycleState) Values() []CleanRoomTaskRunLifeCycleSta
 // Type always returns CleanRoomTaskRunLifeCycleState to satisfy [pflag.Value] interface
 func (f *CleanRoomTaskRunLifeCycleState) Type() string {
 	return "CleanRoomTaskRunLifeCycleState"
+}
+
+func CleanRoomTaskRunLifeCycleStateToPb(st *CleanRoomTaskRunLifeCycleState) (*jobspb.CleanRoomTaskRunLifeCycleStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.CleanRoomTaskRunLifeCycleStatePb(*st)
+	return &pb, nil
+}
+
+func CleanRoomTaskRunLifeCycleStateFromPb(pb *jobspb.CleanRoomTaskRunLifeCycleStatePb) (*CleanRoomTaskRunLifeCycleState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CleanRoomTaskRunLifeCycleState(*pb)
+	return &st, nil
 }
 
 // Copied from elastic-spark-common/api/messages/runs.proto. Using the original
@@ -387,31 +871,98 @@ func (f *CleanRoomTaskRunResultState) Type() string {
 	return "CleanRoomTaskRunResultState"
 }
 
+func CleanRoomTaskRunResultStateToPb(st *CleanRoomTaskRunResultState) (*jobspb.CleanRoomTaskRunResultStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.CleanRoomTaskRunResultStatePb(*st)
+	return &pb, nil
+}
+
+func CleanRoomTaskRunResultStateFromPb(pb *jobspb.CleanRoomTaskRunResultStatePb) (*CleanRoomTaskRunResultState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CleanRoomTaskRunResultState(*pb)
+	return &st, nil
+}
+
 // Stores the run state of the clean rooms notebook task.
 type CleanRoomTaskRunState struct {
 	// A value indicating the run's current lifecycle state. This field is
 	// always available in the response. Note: Additional states might be
 	// introduced in future releases.
-	LifeCycleState CleanRoomTaskRunLifeCycleState `json:"life_cycle_state,omitempty"`
+	// Wire name: 'life_cycle_state'
+	LifeCycleState CleanRoomTaskRunLifeCycleState ``
 	// A value indicating the run's result. This field is only available for
 	// terminal lifecycle states. Note: Additional states might be introduced in
 	// future releases.
-	ResultState CleanRoomTaskRunResultState `json:"result_state,omitempty"`
+	// Wire name: 'result_state'
+	ResultState CleanRoomTaskRunResultState ``
+}
+
+func CleanRoomTaskRunStateToPb(st *CleanRoomTaskRunState) (*jobspb.CleanRoomTaskRunStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.CleanRoomTaskRunStatePb{}
+	lifeCycleStatePb, err := CleanRoomTaskRunLifeCycleStateToPb(&st.LifeCycleState)
+	if err != nil {
+		return nil, err
+	}
+	if lifeCycleStatePb != nil {
+		pb.LifeCycleState = *lifeCycleStatePb
+	}
+	resultStatePb, err := CleanRoomTaskRunResultStateToPb(&st.ResultState)
+	if err != nil {
+		return nil, err
+	}
+	if resultStatePb != nil {
+		pb.ResultState = *resultStatePb
+	}
+
+	return pb, nil
+}
+
+func CleanRoomTaskRunStateFromPb(pb *jobspb.CleanRoomTaskRunStatePb) (*CleanRoomTaskRunState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CleanRoomTaskRunState{}
+	lifeCycleStateField, err := CleanRoomTaskRunLifeCycleStateFromPb(&pb.LifeCycleState)
+	if err != nil {
+		return nil, err
+	}
+	if lifeCycleStateField != nil {
+		st.LifeCycleState = *lifeCycleStateField
+	}
+	resultStateField, err := CleanRoomTaskRunResultStateFromPb(&pb.ResultState)
+	if err != nil {
+		return nil, err
+	}
+	if resultStateField != nil {
+		st.ResultState = *resultStateField
+	}
+
+	return st, nil
 }
 
 type CleanRoomsNotebookTask struct {
 	// The clean room that the notebook belongs to.
-	CleanRoomName string `json:"clean_room_name"`
+	// Wire name: 'clean_room_name'
+	CleanRoomName string ``
 	// Checksum to validate the freshness of the notebook resource (i.e. the
 	// notebook being run is the latest version). It can be fetched by calling
 	// the :method:cleanroomassets/get API.
-	Etag string `json:"etag,omitempty"`
+	// Wire name: 'etag'
+	Etag string ``
 	// Base parameters to be used for the clean room notebook job.
-	NotebookBaseParameters map[string]string `json:"notebook_base_parameters,omitempty"`
+	// Wire name: 'notebook_base_parameters'
+	NotebookBaseParameters map[string]string ``
 	// Name of the notebook being run.
-	NotebookName string `json:"notebook_name"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'notebook_name'
+	NotebookName    string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *CleanRoomsNotebookTask) UnmarshalJSON(b []byte) error {
@@ -422,13 +973,104 @@ func (s CleanRoomsNotebookTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func CleanRoomsNotebookTaskToPb(st *CleanRoomsNotebookTask) (*jobspb.CleanRoomsNotebookTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.CleanRoomsNotebookTaskPb{}
+	pb.CleanRoomName = st.CleanRoomName
+	pb.Etag = st.Etag
+	pb.NotebookBaseParameters = st.NotebookBaseParameters
+	pb.NotebookName = st.NotebookName
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func CleanRoomsNotebookTaskFromPb(pb *jobspb.CleanRoomsNotebookTaskPb) (*CleanRoomsNotebookTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CleanRoomsNotebookTask{}
+	st.CleanRoomName = pb.CleanRoomName
+	st.Etag = pb.Etag
+	st.NotebookBaseParameters = pb.NotebookBaseParameters
+	st.NotebookName = pb.NotebookName
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput struct {
 	// The run state of the clean rooms notebook task.
-	CleanRoomJobRunState *CleanRoomTaskRunState `json:"clean_room_job_run_state,omitempty"`
+	// Wire name: 'clean_room_job_run_state'
+	CleanRoomJobRunState *CleanRoomTaskRunState ``
 	// The notebook output for the clean room run
-	NotebookOutput *NotebookOutput `json:"notebook_output,omitempty"`
+	// Wire name: 'notebook_output'
+	NotebookOutput *NotebookOutput ``
 	// Information on how to access the output schema for the clean room run
-	OutputSchemaInfo *OutputSchemaInfo `json:"output_schema_info,omitempty"`
+	// Wire name: 'output_schema_info'
+	OutputSchemaInfo *OutputSchemaInfo ``
+}
+
+func CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputToPb(st *CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput) (*jobspb.CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputPb{}
+	cleanRoomJobRunStatePb, err := CleanRoomTaskRunStateToPb(st.CleanRoomJobRunState)
+	if err != nil {
+		return nil, err
+	}
+	if cleanRoomJobRunStatePb != nil {
+		pb.CleanRoomJobRunState = cleanRoomJobRunStatePb
+	}
+	notebookOutputPb, err := NotebookOutputToPb(st.NotebookOutput)
+	if err != nil {
+		return nil, err
+	}
+	if notebookOutputPb != nil {
+		pb.NotebookOutput = notebookOutputPb
+	}
+	outputSchemaInfoPb, err := OutputSchemaInfoToPb(st.OutputSchemaInfo)
+	if err != nil {
+		return nil, err
+	}
+	if outputSchemaInfoPb != nil {
+		pb.OutputSchemaInfo = outputSchemaInfoPb
+	}
+
+	return pb, nil
+}
+
+func CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputFromPb(pb *jobspb.CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputPb) (*CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput{}
+	cleanRoomJobRunStateField, err := CleanRoomTaskRunStateFromPb(pb.CleanRoomJobRunState)
+	if err != nil {
+		return nil, err
+	}
+	if cleanRoomJobRunStateField != nil {
+		st.CleanRoomJobRunState = cleanRoomJobRunStateField
+	}
+	notebookOutputField, err := NotebookOutputFromPb(pb.NotebookOutput)
+	if err != nil {
+		return nil, err
+	}
+	if notebookOutputField != nil {
+		st.NotebookOutput = notebookOutputField
+	}
+	outputSchemaInfoField, err := OutputSchemaInfoFromPb(pb.OutputSchemaInfo)
+	if err != nil {
+		return nil, err
+	}
+	if outputSchemaInfoField != nil {
+		st.OutputSchemaInfo = outputSchemaInfoField
+	}
+
+	return st, nil
 }
 
 type ClusterInstance struct {
@@ -440,7 +1082,8 @@ type ClusterInstance struct {
 	//
 	// The response won’t include this field if the identifier is not
 	// available yet.
-	ClusterId string `json:"cluster_id,omitempty"`
+	// Wire name: 'cluster_id'
+	ClusterId string ``
 	// The canonical identifier for the Spark context used by a run. This field
 	// is filled in once the run begins execution. This value can be used to
 	// view the Spark UI by browsing to
@@ -449,9 +1092,9 @@ type ClusterInstance struct {
 	//
 	// The response won’t include this field if the identifier is not
 	// available yet.
-	SparkContextId string `json:"spark_context_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'spark_context_id'
+	SparkContextId  string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ClusterInstance) UnmarshalJSON(b []byte) error {
@@ -462,23 +1105,50 @@ func (s ClusterInstance) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ClusterInstanceToPb(st *ClusterInstance) (*jobspb.ClusterInstancePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ClusterInstancePb{}
+	pb.ClusterId = st.ClusterId
+	pb.SparkContextId = st.SparkContextId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ClusterInstanceFromPb(pb *jobspb.ClusterInstancePb) (*ClusterInstance, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ClusterInstance{}
+	st.ClusterId = pb.ClusterId
+	st.SparkContextId = pb.SparkContextId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ClusterSpec struct {
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
 	// running jobs and tasks on new clusters for greater reliability
-	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
+	// Wire name: 'existing_cluster_id'
+	ExistingClusterId string ``
 	// If job_cluster_key, this task is executed reusing the cluster specified
 	// in `job.settings.job_clusters`.
-	JobClusterKey string `json:"job_cluster_key,omitempty"`
+	// Wire name: 'job_cluster_key'
+	JobClusterKey string ``
 	// An optional list of libraries to be installed on the cluster. The default
 	// value is an empty list.
-	Libraries []compute.Library `json:"libraries,omitempty"`
+	// Wire name: 'libraries'
+	Libraries []compute.Library ``
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
-	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'new_cluster'
+	NewCluster      *compute.ClusterSpec ``
+	ForceSendFields []string             `tf:"-"`
 }
 
 func (s *ClusterSpec) UnmarshalJSON(b []byte) error {
@@ -489,15 +1159,79 @@ func (s ClusterSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ClusterSpecToPb(st *ClusterSpec) (*jobspb.ClusterSpecPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ClusterSpecPb{}
+	pb.ExistingClusterId = st.ExistingClusterId
+	pb.JobClusterKey = st.JobClusterKey
+
+	var librariesPb []computepb.LibraryPb
+	for _, item := range st.Libraries {
+		itemPb, err := compute.LibraryToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			librariesPb = append(librariesPb, *itemPb)
+		}
+	}
+	pb.Libraries = librariesPb
+	newClusterPb, err := compute.ClusterSpecToPb(st.NewCluster)
+	if err != nil {
+		return nil, err
+	}
+	if newClusterPb != nil {
+		pb.NewCluster = newClusterPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ClusterSpecFromPb(pb *jobspb.ClusterSpecPb) (*ClusterSpec, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ClusterSpec{}
+	st.ExistingClusterId = pb.ExistingClusterId
+	st.JobClusterKey = pb.JobClusterKey
+
+	var librariesField []compute.Library
+	for _, itemPb := range pb.Libraries {
+		item, err := compute.LibraryFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			librariesField = append(librariesField, *item)
+		}
+	}
+	st.Libraries = librariesField
+	newClusterField, err := compute.ClusterSpecFromPb(pb.NewCluster)
+	if err != nil {
+		return nil, err
+	}
+	if newClusterField != nil {
+		st.NewCluster = newClusterField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ComputeConfig struct {
 	// IDof the GPU pool to use.
-	GpuNodePoolId string `json:"gpu_node_pool_id,omitempty"`
+	// Wire name: 'gpu_node_pool_id'
+	GpuNodePoolId string ``
 	// GPU type.
-	GpuType string `json:"gpu_type,omitempty"`
+	// Wire name: 'gpu_type'
+	GpuType string ``
 	// Number of GPUs.
-	NumGpus int `json:"num_gpus"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'num_gpus'
+	NumGpus         int      ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ComputeConfig) UnmarshalJSON(b []byte) error {
@@ -506,6 +1240,32 @@ func (s *ComputeConfig) UnmarshalJSON(b []byte) error {
 
 func (s ComputeConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func ComputeConfigToPb(st *ComputeConfig) (*jobspb.ComputeConfigPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ComputeConfigPb{}
+	pb.GpuNodePoolId = st.GpuNodePoolId
+	pb.GpuType = st.GpuType
+	pb.NumGpus = st.NumGpus
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ComputeConfigFromPb(pb *jobspb.ComputeConfigPb) (*ComputeConfig, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ComputeConfig{}
+	st.GpuNodePoolId = pb.GpuNodePoolId
+	st.GpuType = pb.GpuType
+	st.NumGpus = pb.NumGpus
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 type Condition string
@@ -545,10 +1305,27 @@ func (f *Condition) Type() string {
 	return "Condition"
 }
 
+func ConditionToPb(st *Condition) (*jobspb.ConditionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.ConditionPb(*st)
+	return &pb, nil
+}
+
+func ConditionFromPb(pb *jobspb.ConditionPb) (*Condition, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := Condition(*pb)
+	return &st, nil
+}
+
 type ConditionTask struct {
 	// The left operand of the condition task. Can be either a string value or a
 	// job state or parameter reference.
-	Left string `json:"left"`
+	// Wire name: 'left'
+	Left string ``
 	// * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
 	// operands. This means that `“12.0” == “12”` will evaluate to
 	// `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`,
@@ -559,10 +1336,48 @@ type ConditionTask struct {
 	// The boolean comparison to task values can be implemented with operators
 	// `EQUAL_TO`, `NOT_EQUAL`. If a task value was set to a boolean value, it
 	// will be serialized to `“true”` or `“false”` for the comparison.
-	Op ConditionTaskOp `json:"op"`
+	// Wire name: 'op'
+	Op ConditionTaskOp ``
 	// The right operand of the condition task. Can be either a string value or
 	// a job state or parameter reference.
-	Right string `json:"right"`
+	// Wire name: 'right'
+	Right string ``
+}
+
+func ConditionTaskToPb(st *ConditionTask) (*jobspb.ConditionTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ConditionTaskPb{}
+	pb.Left = st.Left
+	opPb, err := ConditionTaskOpToPb(&st.Op)
+	if err != nil {
+		return nil, err
+	}
+	if opPb != nil {
+		pb.Op = *opPb
+	}
+	pb.Right = st.Right
+
+	return pb, nil
+}
+
+func ConditionTaskFromPb(pb *jobspb.ConditionTaskPb) (*ConditionTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ConditionTask{}
+	st.Left = pb.Left
+	opField, err := ConditionTaskOpFromPb(&pb.Op)
+	if err != nil {
+		return nil, err
+	}
+	if opField != nil {
+		st.Op = *opField
+	}
+	st.Right = pb.Right
+
+	return st, nil
 }
 
 // * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
@@ -624,48 +1439,106 @@ func (f *ConditionTaskOp) Type() string {
 	return "ConditionTaskOp"
 }
 
+func ConditionTaskOpToPb(st *ConditionTaskOp) (*jobspb.ConditionTaskOpPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.ConditionTaskOpPb(*st)
+	return &pb, nil
+}
+
+func ConditionTaskOpFromPb(pb *jobspb.ConditionTaskOpPb) (*ConditionTaskOp, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ConditionTaskOp(*pb)
+	return &st, nil
+}
+
 type Continuous struct {
 	// Indicate whether the continuous execution of the job is paused or not.
 	// Defaults to UNPAUSED.
-	PauseStatus PauseStatus `json:"pause_status,omitempty"`
+	// Wire name: 'pause_status'
+	PauseStatus PauseStatus ``
+}
+
+func ContinuousToPb(st *Continuous) (*jobspb.ContinuousPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ContinuousPb{}
+	pauseStatusPb, err := PauseStatusToPb(&st.PauseStatus)
+	if err != nil {
+		return nil, err
+	}
+	if pauseStatusPb != nil {
+		pb.PauseStatus = *pauseStatusPb
+	}
+
+	return pb, nil
+}
+
+func ContinuousFromPb(pb *jobspb.ContinuousPb) (*Continuous, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &Continuous{}
+	pauseStatusField, err := PauseStatusFromPb(&pb.PauseStatus)
+	if err != nil {
+		return nil, err
+	}
+	if pauseStatusField != nil {
+		st.PauseStatus = *pauseStatusField
+	}
+
+	return st, nil
 }
 
 type CreateJob struct {
 	// List of permissions to set on the job.
-	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
+	// Wire name: 'access_control_list'
+	AccessControlList []JobAccessControlRequest ``
 	// The id of the user specified budget policy to use for this job. If not
 	// specified, a default budget policy may be applied when creating or
 	// modifying the job. See `effective_budget_policy_id` for the budget policy
 	// used by this workload.
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Wire name: 'budget_policy_id'
+	BudgetPolicyId string ``
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
-	Continuous *Continuous `json:"continuous,omitempty"`
+	// Wire name: 'continuous'
+	Continuous *Continuous ``
 	// Deployment information for jobs managed by external sources.
-	Deployment *JobDeployment `json:"deployment,omitempty"`
+	// Wire name: 'deployment'
+	Deployment *JobDeployment ``
 	// An optional description for the job. The maximum length is 27700
 	// characters in UTF-8 encoding.
-	Description string `json:"description,omitempty"`
+	// Wire name: 'description'
+	Description string ``
 	// Edit mode of the job.
 	//
 	// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
 	// `EDITABLE`: The job is in an editable state and can be modified.
-	EditMode JobEditMode `json:"edit_mode,omitempty"`
+	// Wire name: 'edit_mode'
+	EditMode JobEditMode ``
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
-	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// Wire name: 'email_notifications'
+	EmailNotifications *JobEmailNotifications ``
 	// A list of task execution environment specifications that can be
 	// referenced by serverless tasks of this job. An environment is required to
 	// be present for serverless tasks. For serverless notebook tasks, the
 	// environment is accessible in the notebook environment panel. For other
 	// serverless tasks, the task environment is required to be specified using
 	// environment_key in the task settings.
-	Environments []JobEnvironment `json:"environments,omitempty"`
+	// Wire name: 'environments'
+	Environments []JobEnvironment ``
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
 	// always set to `"MULTI_TASK"`.
-	Format Format `json:"format,omitempty"`
+	// Wire name: 'format'
+	Format Format ``
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks.
@@ -676,13 +1549,16 @@ type CreateJob struct {
 	//
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
-	GitSource *GitSource `json:"git_source,omitempty"`
+	// Wire name: 'git_source'
+	GitSource *GitSource ``
 
-	Health *JobsHealthRules `json:"health,omitempty"`
+	// Wire name: 'health'
+	Health *JobsHealthRules ``
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
 	// You must declare dependent libraries in task settings.
-	JobClusters []JobCluster `json:"job_clusters,omitempty"`
+	// Wire name: 'job_clusters'
+	JobClusters []JobCluster ``
 	// An optional maximum allowed number of concurrent runs of the job. Set
 	// this value if you want to be able to execute multiple runs of the same
 	// job concurrently. This is useful for example if you trigger your job on a
@@ -694,39 +1570,48 @@ type CreateJob struct {
 	// runs. However, from then on, new runs are skipped unless there are fewer
 	// than 3 active runs. This value cannot exceed 1000. Setting this value to
 	// `0` causes all new runs to be skipped.
-	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
+	// Wire name: 'max_concurrent_runs'
+	MaxConcurrentRuns int ``
 	// An optional name for the job. The maximum length is 4096 bytes in UTF-8
 	// encoding.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string ``
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// job.
-	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
+	// Wire name: 'notification_settings'
+	NotificationSettings *JobNotificationSettings ``
 	// Job-level parameter definitions
-	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
+	// Wire name: 'parameters'
+	Parameters []JobParameterDefinition ``
 	// The performance mode on a serverless job. This field determines the level
 	// of compute performance or cost-efficiency for the run.
 	//
 	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
-	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
+	// Wire name: 'performance_target'
+	PerformanceTarget PerformanceTarget ``
 	// The queue settings of the job.
-	Queue *QueueSettings `json:"queue,omitempty"`
+	// Wire name: 'queue'
+	Queue *QueueSettings ``
 	// The user or service principal that the job runs as, if specified in the
 	// request. This field indicates the explicit configuration of `run_as` for
 	// the job. To find the value in all cases, explicit or implicit, use
 	// `run_as_user_name`.
-	RunAs *JobRunAs `json:"run_as,omitempty"`
+	// Wire name: 'run_as'
+	RunAs *JobRunAs ``
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
 	// or sending an API request to `runNow`.
-	Schedule *CronSchedule `json:"schedule,omitempty"`
+	// Wire name: 'schedule'
+	Schedule *CronSchedule ``
 	// A map of tags associated with the job. These are forwarded to the cluster
 	// as cluster tags for jobs clusters, and are subject to the same
 	// limitations as cluster tags. A maximum of 25 tags can be added to the
 	// job.
-	Tags map[string]string `json:"tags,omitempty"`
+	// Wire name: 'tags'
+	Tags map[string]string ``
 	// A list of task specifications to be executed by this job. It supports up
 	// to 1000 elements in write endpoints (:method:jobs/create,
 	// :method:jobs/reset, :method:jobs/update, :method:jobs/submit). Read
@@ -734,19 +1619,22 @@ type CreateJob struct {
 	// you can paginate through them using :method:jobs/get. Use the
 	// `next_page_token` field at the object root to determine if more results
 	// are available.
-	Tasks []Task `json:"tasks,omitempty"`
+	// Wire name: 'tasks'
+	Tasks []Task ``
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// Wire name: 'timeout_seconds'
+	TimeoutSeconds int ``
 	// A configuration to trigger a run when certain conditions are met. The
 	// default behavior is that the job runs only when triggered by clicking
 	// “Run Now” in the Jobs UI or sending an API request to `runNow`.
-	Trigger *TriggerSettings `json:"trigger,omitempty"`
+	// Wire name: 'trigger'
+	Trigger *TriggerSettings ``
 	// A collection of system notification IDs to notify when runs of this job
 	// begin or complete.
-	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'webhook_notifications'
+	WebhookNotifications *WebhookNotifications ``
+	ForceSendFields      []string              `tf:"-"`
 }
 
 func (s *CreateJob) UnmarshalJSON(b []byte) error {
@@ -757,12 +1645,360 @@ func (s CreateJob) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func CreateJobToPb(st *CreateJob) (*jobspb.CreateJobPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.CreateJobPb{}
+
+	var accessControlListPb []jobspb.JobAccessControlRequestPb
+	for _, item := range st.AccessControlList {
+		itemPb, err := JobAccessControlRequestToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			accessControlListPb = append(accessControlListPb, *itemPb)
+		}
+	}
+	pb.AccessControlList = accessControlListPb
+	pb.BudgetPolicyId = st.BudgetPolicyId
+	continuousPb, err := ContinuousToPb(st.Continuous)
+	if err != nil {
+		return nil, err
+	}
+	if continuousPb != nil {
+		pb.Continuous = continuousPb
+	}
+	deploymentPb, err := JobDeploymentToPb(st.Deployment)
+	if err != nil {
+		return nil, err
+	}
+	if deploymentPb != nil {
+		pb.Deployment = deploymentPb
+	}
+	pb.Description = st.Description
+	editModePb, err := JobEditModeToPb(&st.EditMode)
+	if err != nil {
+		return nil, err
+	}
+	if editModePb != nil {
+		pb.EditMode = *editModePb
+	}
+	emailNotificationsPb, err := JobEmailNotificationsToPb(st.EmailNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if emailNotificationsPb != nil {
+		pb.EmailNotifications = emailNotificationsPb
+	}
+
+	var environmentsPb []jobspb.JobEnvironmentPb
+	for _, item := range st.Environments {
+		itemPb, err := JobEnvironmentToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			environmentsPb = append(environmentsPb, *itemPb)
+		}
+	}
+	pb.Environments = environmentsPb
+	formatPb, err := FormatToPb(&st.Format)
+	if err != nil {
+		return nil, err
+	}
+	if formatPb != nil {
+		pb.Format = *formatPb
+	}
+	gitSourcePb, err := GitSourceToPb(st.GitSource)
+	if err != nil {
+		return nil, err
+	}
+	if gitSourcePb != nil {
+		pb.GitSource = gitSourcePb
+	}
+	healthPb, err := JobsHealthRulesToPb(st.Health)
+	if err != nil {
+		return nil, err
+	}
+	if healthPb != nil {
+		pb.Health = healthPb
+	}
+
+	var jobClustersPb []jobspb.JobClusterPb
+	for _, item := range st.JobClusters {
+		itemPb, err := JobClusterToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			jobClustersPb = append(jobClustersPb, *itemPb)
+		}
+	}
+	pb.JobClusters = jobClustersPb
+	pb.MaxConcurrentRuns = st.MaxConcurrentRuns
+	pb.Name = st.Name
+	notificationSettingsPb, err := JobNotificationSettingsToPb(st.NotificationSettings)
+	if err != nil {
+		return nil, err
+	}
+	if notificationSettingsPb != nil {
+		pb.NotificationSettings = notificationSettingsPb
+	}
+
+	var parametersPb []jobspb.JobParameterDefinitionPb
+	for _, item := range st.Parameters {
+		itemPb, err := JobParameterDefinitionToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			parametersPb = append(parametersPb, *itemPb)
+		}
+	}
+	pb.Parameters = parametersPb
+	performanceTargetPb, err := PerformanceTargetToPb(&st.PerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if performanceTargetPb != nil {
+		pb.PerformanceTarget = *performanceTargetPb
+	}
+	queuePb, err := QueueSettingsToPb(st.Queue)
+	if err != nil {
+		return nil, err
+	}
+	if queuePb != nil {
+		pb.Queue = queuePb
+	}
+	runAsPb, err := JobRunAsToPb(st.RunAs)
+	if err != nil {
+		return nil, err
+	}
+	if runAsPb != nil {
+		pb.RunAs = runAsPb
+	}
+	schedulePb, err := CronScheduleToPb(st.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if schedulePb != nil {
+		pb.Schedule = schedulePb
+	}
+	pb.Tags = st.Tags
+
+	var tasksPb []jobspb.TaskPb
+	for _, item := range st.Tasks {
+		itemPb, err := TaskToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			tasksPb = append(tasksPb, *itemPb)
+		}
+	}
+	pb.Tasks = tasksPb
+	pb.TimeoutSeconds = st.TimeoutSeconds
+	triggerPb, err := TriggerSettingsToPb(st.Trigger)
+	if err != nil {
+		return nil, err
+	}
+	if triggerPb != nil {
+		pb.Trigger = triggerPb
+	}
+	webhookNotificationsPb, err := WebhookNotificationsToPb(st.WebhookNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if webhookNotificationsPb != nil {
+		pb.WebhookNotifications = webhookNotificationsPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func CreateJobFromPb(pb *jobspb.CreateJobPb) (*CreateJob, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateJob{}
+
+	var accessControlListField []JobAccessControlRequest
+	for _, itemPb := range pb.AccessControlList {
+		item, err := JobAccessControlRequestFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
+		}
+	}
+	st.AccessControlList = accessControlListField
+	st.BudgetPolicyId = pb.BudgetPolicyId
+	continuousField, err := ContinuousFromPb(pb.Continuous)
+	if err != nil {
+		return nil, err
+	}
+	if continuousField != nil {
+		st.Continuous = continuousField
+	}
+	deploymentField, err := JobDeploymentFromPb(pb.Deployment)
+	if err != nil {
+		return nil, err
+	}
+	if deploymentField != nil {
+		st.Deployment = deploymentField
+	}
+	st.Description = pb.Description
+	editModeField, err := JobEditModeFromPb(&pb.EditMode)
+	if err != nil {
+		return nil, err
+	}
+	if editModeField != nil {
+		st.EditMode = *editModeField
+	}
+	emailNotificationsField, err := JobEmailNotificationsFromPb(pb.EmailNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if emailNotificationsField != nil {
+		st.EmailNotifications = emailNotificationsField
+	}
+
+	var environmentsField []JobEnvironment
+	for _, itemPb := range pb.Environments {
+		item, err := JobEnvironmentFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			environmentsField = append(environmentsField, *item)
+		}
+	}
+	st.Environments = environmentsField
+	formatField, err := FormatFromPb(&pb.Format)
+	if err != nil {
+		return nil, err
+	}
+	if formatField != nil {
+		st.Format = *formatField
+	}
+	gitSourceField, err := GitSourceFromPb(pb.GitSource)
+	if err != nil {
+		return nil, err
+	}
+	if gitSourceField != nil {
+		st.GitSource = gitSourceField
+	}
+	healthField, err := JobsHealthRulesFromPb(pb.Health)
+	if err != nil {
+		return nil, err
+	}
+	if healthField != nil {
+		st.Health = healthField
+	}
+
+	var jobClustersField []JobCluster
+	for _, itemPb := range pb.JobClusters {
+		item, err := JobClusterFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			jobClustersField = append(jobClustersField, *item)
+		}
+	}
+	st.JobClusters = jobClustersField
+	st.MaxConcurrentRuns = pb.MaxConcurrentRuns
+	st.Name = pb.Name
+	notificationSettingsField, err := JobNotificationSettingsFromPb(pb.NotificationSettings)
+	if err != nil {
+		return nil, err
+	}
+	if notificationSettingsField != nil {
+		st.NotificationSettings = notificationSettingsField
+	}
+
+	var parametersField []JobParameterDefinition
+	for _, itemPb := range pb.Parameters {
+		item, err := JobParameterDefinitionFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			parametersField = append(parametersField, *item)
+		}
+	}
+	st.Parameters = parametersField
+	performanceTargetField, err := PerformanceTargetFromPb(&pb.PerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if performanceTargetField != nil {
+		st.PerformanceTarget = *performanceTargetField
+	}
+	queueField, err := QueueSettingsFromPb(pb.Queue)
+	if err != nil {
+		return nil, err
+	}
+	if queueField != nil {
+		st.Queue = queueField
+	}
+	runAsField, err := JobRunAsFromPb(pb.RunAs)
+	if err != nil {
+		return nil, err
+	}
+	if runAsField != nil {
+		st.RunAs = runAsField
+	}
+	scheduleField, err := CronScheduleFromPb(pb.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if scheduleField != nil {
+		st.Schedule = scheduleField
+	}
+	st.Tags = pb.Tags
+
+	var tasksField []Task
+	for _, itemPb := range pb.Tasks {
+		item, err := TaskFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			tasksField = append(tasksField, *item)
+		}
+	}
+	st.Tasks = tasksField
+	st.TimeoutSeconds = pb.TimeoutSeconds
+	triggerField, err := TriggerSettingsFromPb(pb.Trigger)
+	if err != nil {
+		return nil, err
+	}
+	if triggerField != nil {
+		st.Trigger = triggerField
+	}
+	webhookNotificationsField, err := WebhookNotificationsFromPb(pb.WebhookNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if webhookNotificationsField != nil {
+		st.WebhookNotifications = webhookNotificationsField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // Job was created successfully
 type CreateResponse struct {
 	// The canonical identifier for the newly created job.
-	JobId int64 `json:"job_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'job_id'
+	JobId           int64    ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *CreateResponse) UnmarshalJSON(b []byte) error {
@@ -773,27 +2009,90 @@ func (s CreateResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func CreateResponseToPb(st *CreateResponse) (*jobspb.CreateResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.CreateResponsePb{}
+	pb.JobId = st.JobId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func CreateResponseFromPb(pb *jobspb.CreateResponsePb) (*CreateResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateResponse{}
+	st.JobId = pb.JobId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type CronSchedule struct {
 	// Indicate whether this schedule is paused or not.
-	PauseStatus PauseStatus `json:"pause_status,omitempty"`
+	// Wire name: 'pause_status'
+	PauseStatus PauseStatus ``
 	// A Cron expression using Quartz syntax that describes the schedule for a
 	// job. See [Cron Trigger] for details. This field is required.
 	//
 	// [Cron Trigger]: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
-	QuartzCronExpression string `json:"quartz_cron_expression"`
+	// Wire name: 'quartz_cron_expression'
+	QuartzCronExpression string ``
 	// A Java timezone ID. The schedule for a job is resolved with respect to
 	// this timezone. See [Java TimeZone] for details. This field is required.
 	//
 	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
-	TimezoneId string `json:"timezone_id"`
+	// Wire name: 'timezone_id'
+	TimezoneId string ``
+}
+
+func CronScheduleToPb(st *CronSchedule) (*jobspb.CronSchedulePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.CronSchedulePb{}
+	pauseStatusPb, err := PauseStatusToPb(&st.PauseStatus)
+	if err != nil {
+		return nil, err
+	}
+	if pauseStatusPb != nil {
+		pb.PauseStatus = *pauseStatusPb
+	}
+	pb.QuartzCronExpression = st.QuartzCronExpression
+	pb.TimezoneId = st.TimezoneId
+
+	return pb, nil
+}
+
+func CronScheduleFromPb(pb *jobspb.CronSchedulePb) (*CronSchedule, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CronSchedule{}
+	pauseStatusField, err := PauseStatusFromPb(&pb.PauseStatus)
+	if err != nil {
+		return nil, err
+	}
+	if pauseStatusField != nil {
+		st.PauseStatus = *pauseStatusField
+	}
+	st.QuartzCronExpression = pb.QuartzCronExpression
+	st.TimezoneId = pb.TimezoneId
+
+	return st, nil
 }
 
 type DashboardPageSnapshot struct {
-	PageDisplayName string `json:"page_display_name,omitempty"`
 
-	WidgetErrorDetails []WidgetErrorDetail `json:"widget_error_details,omitempty"`
+	// Wire name: 'page_display_name'
+	PageDisplayName string ``
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'widget_error_details'
+	WidgetErrorDetails []WidgetErrorDetail ``
+	ForceSendFields    []string            `tf:"-"`
 }
 
 func (s *DashboardPageSnapshot) UnmarshalJSON(b []byte) error {
@@ -804,18 +2103,66 @@ func (s DashboardPageSnapshot) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func DashboardPageSnapshotToPb(st *DashboardPageSnapshot) (*jobspb.DashboardPageSnapshotPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.DashboardPageSnapshotPb{}
+	pb.PageDisplayName = st.PageDisplayName
+
+	var widgetErrorDetailsPb []jobspb.WidgetErrorDetailPb
+	for _, item := range st.WidgetErrorDetails {
+		itemPb, err := WidgetErrorDetailToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			widgetErrorDetailsPb = append(widgetErrorDetailsPb, *itemPb)
+		}
+	}
+	pb.WidgetErrorDetails = widgetErrorDetailsPb
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func DashboardPageSnapshotFromPb(pb *jobspb.DashboardPageSnapshotPb) (*DashboardPageSnapshot, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DashboardPageSnapshot{}
+	st.PageDisplayName = pb.PageDisplayName
+
+	var widgetErrorDetailsField []WidgetErrorDetail
+	for _, itemPb := range pb.WidgetErrorDetails {
+		item, err := WidgetErrorDetailFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			widgetErrorDetailsField = append(widgetErrorDetailsField, *item)
+		}
+	}
+	st.WidgetErrorDetails = widgetErrorDetailsField
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // Configures the Lakeview Dashboard job task type.
 type DashboardTask struct {
 	// The identifier of the dashboard to refresh.
-	DashboardId string `json:"dashboard_id,omitempty"`
+	// Wire name: 'dashboard_id'
+	DashboardId string ``
 	// Optional: subscription configuration for sending the dashboard snapshot.
-	Subscription *Subscription `json:"subscription,omitempty"`
+	// Wire name: 'subscription'
+	Subscription *Subscription ``
 	// Optional: The warehouse id to execute the dashboard with for the
 	// schedule. If not specified, the default warehouse of the dashboard will
 	// be used.
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'warehouse_id'
+	WarehouseId     string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *DashboardTask) UnmarshalJSON(b []byte) error {
@@ -826,24 +2173,108 @@ func (s DashboardTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func DashboardTaskToPb(st *DashboardTask) (*jobspb.DashboardTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.DashboardTaskPb{}
+	pb.DashboardId = st.DashboardId
+	subscriptionPb, err := SubscriptionToPb(st.Subscription)
+	if err != nil {
+		return nil, err
+	}
+	if subscriptionPb != nil {
+		pb.Subscription = subscriptionPb
+	}
+	pb.WarehouseId = st.WarehouseId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func DashboardTaskFromPb(pb *jobspb.DashboardTaskPb) (*DashboardTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DashboardTask{}
+	st.DashboardId = pb.DashboardId
+	subscriptionField, err := SubscriptionFromPb(pb.Subscription)
+	if err != nil {
+		return nil, err
+	}
+	if subscriptionField != nil {
+		st.Subscription = subscriptionField
+	}
+	st.WarehouseId = pb.WarehouseId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type DashboardTaskOutput struct {
 	// Should only be populated for manual PDF download jobs.
-	PageSnapshots []DashboardPageSnapshot `json:"page_snapshots,omitempty"`
+	// Wire name: 'page_snapshots'
+	PageSnapshots []DashboardPageSnapshot ``
+}
+
+func DashboardTaskOutputToPb(st *DashboardTaskOutput) (*jobspb.DashboardTaskOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.DashboardTaskOutputPb{}
+
+	var pageSnapshotsPb []jobspb.DashboardPageSnapshotPb
+	for _, item := range st.PageSnapshots {
+		itemPb, err := DashboardPageSnapshotToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			pageSnapshotsPb = append(pageSnapshotsPb, *itemPb)
+		}
+	}
+	pb.PageSnapshots = pageSnapshotsPb
+
+	return pb, nil
+}
+
+func DashboardTaskOutputFromPb(pb *jobspb.DashboardTaskOutputPb) (*DashboardTaskOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DashboardTaskOutput{}
+
+	var pageSnapshotsField []DashboardPageSnapshot
+	for _, itemPb := range pb.PageSnapshots {
+		item, err := DashboardPageSnapshotFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			pageSnapshotsField = append(pageSnapshotsField, *item)
+		}
+	}
+	st.PageSnapshots = pageSnapshotsField
+
+	return st, nil
 }
 
 // Format of response retrieved from dbt Cloud, for inclusion in output
 // Deprecated in favor of DbtPlatformJobRunStep
 type DbtCloudJobRunStep struct {
 	// Orders the steps in the job
-	Index int `json:"index,omitempty"`
+	// Wire name: 'index'
+	Index int ``
 	// Output of the step
-	Logs string `json:"logs,omitempty"`
+	// Wire name: 'logs'
+	Logs string ``
 	// Name of the step in the job
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string ``
 	// State of the step
-	Status DbtPlatformRunStatus `json:"status,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'status'
+	Status          DbtPlatformRunStatus ``
+	ForceSendFields []string             `tf:"-"`
 }
 
 func (s *DbtCloudJobRunStep) UnmarshalJSON(b []byte) error {
@@ -854,15 +2285,56 @@ func (s DbtCloudJobRunStep) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func DbtCloudJobRunStepToPb(st *DbtCloudJobRunStep) (*jobspb.DbtCloudJobRunStepPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.DbtCloudJobRunStepPb{}
+	pb.Index = st.Index
+	pb.Logs = st.Logs
+	pb.Name = st.Name
+	statusPb, err := DbtPlatformRunStatusToPb(&st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func DbtCloudJobRunStepFromPb(pb *jobspb.DbtCloudJobRunStepPb) (*DbtCloudJobRunStep, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DbtCloudJobRunStep{}
+	st.Index = pb.Index
+	st.Logs = pb.Logs
+	st.Name = pb.Name
+	statusField, err := DbtPlatformRunStatusFromPb(&pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = *statusField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // Deprecated in favor of DbtPlatformTask
 type DbtCloudTask struct {
 	// The resource name of the UC connection that authenticates the dbt Cloud
 	// for this task
-	ConnectionResourceName string `json:"connection_resource_name,omitempty"`
+	// Wire name: 'connection_resource_name'
+	ConnectionResourceName string ``
 	// Id of the dbt Cloud job to be triggered
-	DbtCloudJobId int64 `json:"dbt_cloud_job_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'dbt_cloud_job_id'
+	DbtCloudJobId   int64    ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *DbtCloudTask) UnmarshalJSON(b []byte) error {
@@ -873,16 +2345,42 @@ func (s DbtCloudTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func DbtCloudTaskToPb(st *DbtCloudTask) (*jobspb.DbtCloudTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.DbtCloudTaskPb{}
+	pb.ConnectionResourceName = st.ConnectionResourceName
+	pb.DbtCloudJobId = st.DbtCloudJobId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func DbtCloudTaskFromPb(pb *jobspb.DbtCloudTaskPb) (*DbtCloudTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DbtCloudTask{}
+	st.ConnectionResourceName = pb.ConnectionResourceName
+	st.DbtCloudJobId = pb.DbtCloudJobId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // Deprecated in favor of DbtPlatformTaskOutput
 type DbtCloudTaskOutput struct {
 	// Id of the job run in dbt Cloud
-	DbtCloudJobRunId int64 `json:"dbt_cloud_job_run_id,omitempty"`
+	// Wire name: 'dbt_cloud_job_run_id'
+	DbtCloudJobRunId int64 ``
 	// Steps of the job run as received from dbt Cloud
-	DbtCloudJobRunOutput []DbtCloudJobRunStep `json:"dbt_cloud_job_run_output,omitempty"`
+	// Wire name: 'dbt_cloud_job_run_output'
+	DbtCloudJobRunOutput []DbtCloudJobRunStep ``
 	// Url where full run details can be viewed
-	DbtCloudJobRunUrl string `json:"dbt_cloud_job_run_url,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'dbt_cloud_job_run_url'
+	DbtCloudJobRunUrl string   ``
+	ForceSendFields   []string `tf:"-"`
 }
 
 func (s *DbtCloudTaskOutput) UnmarshalJSON(b []byte) error {
@@ -893,16 +2391,65 @@ func (s DbtCloudTaskOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func DbtCloudTaskOutputToPb(st *DbtCloudTaskOutput) (*jobspb.DbtCloudTaskOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.DbtCloudTaskOutputPb{}
+	pb.DbtCloudJobRunId = st.DbtCloudJobRunId
+
+	var dbtCloudJobRunOutputPb []jobspb.DbtCloudJobRunStepPb
+	for _, item := range st.DbtCloudJobRunOutput {
+		itemPb, err := DbtCloudJobRunStepToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			dbtCloudJobRunOutputPb = append(dbtCloudJobRunOutputPb, *itemPb)
+		}
+	}
+	pb.DbtCloudJobRunOutput = dbtCloudJobRunOutputPb
+	pb.DbtCloudJobRunUrl = st.DbtCloudJobRunUrl
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func DbtCloudTaskOutputFromPb(pb *jobspb.DbtCloudTaskOutputPb) (*DbtCloudTaskOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DbtCloudTaskOutput{}
+	st.DbtCloudJobRunId = pb.DbtCloudJobRunId
+
+	var dbtCloudJobRunOutputField []DbtCloudJobRunStep
+	for _, itemPb := range pb.DbtCloudJobRunOutput {
+		item, err := DbtCloudJobRunStepFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			dbtCloudJobRunOutputField = append(dbtCloudJobRunOutputField, *item)
+		}
+	}
+	st.DbtCloudJobRunOutput = dbtCloudJobRunOutputField
+	st.DbtCloudJobRunUrl = pb.DbtCloudJobRunUrl
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type DbtOutput struct {
 	// An optional map of headers to send when retrieving the artifact from the
 	// `artifacts_link`.
-	ArtifactsHeaders map[string]string `json:"artifacts_headers,omitempty"`
+	// Wire name: 'artifacts_headers'
+	ArtifactsHeaders map[string]string ``
 	// A pre-signed URL to download the (compressed) dbt artifacts. This link is
 	// valid for a limited time (30 minutes). This information is only available
 	// after the run has finished.
-	ArtifactsLink string `json:"artifacts_link,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'artifacts_link'
+	ArtifactsLink   string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *DbtOutput) UnmarshalJSON(b []byte) error {
@@ -913,24 +2460,53 @@ func (s DbtOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func DbtOutputToPb(st *DbtOutput) (*jobspb.DbtOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.DbtOutputPb{}
+	pb.ArtifactsHeaders = st.ArtifactsHeaders
+	pb.ArtifactsLink = st.ArtifactsLink
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func DbtOutputFromPb(pb *jobspb.DbtOutputPb) (*DbtOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DbtOutput{}
+	st.ArtifactsHeaders = pb.ArtifactsHeaders
+	st.ArtifactsLink = pb.ArtifactsLink
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // Format of response retrieved from dbt platform, for inclusion in output
 type DbtPlatformJobRunStep struct {
 	// Orders the steps in the job
-	Index int `json:"index,omitempty"`
+	// Wire name: 'index'
+	Index int ``
 	// Output of the step
-	Logs string `json:"logs,omitempty"`
+	// Wire name: 'logs'
+	Logs string ``
 	// Whether the logs of this step have been truncated. If true, the logs has
 	// been truncated to 10000 characters.
-	LogsTruncated bool `json:"logs_truncated,omitempty"`
+	// Wire name: 'logs_truncated'
+	LogsTruncated bool ``
 	// Name of the step in the job
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string ``
 	// Whether the name of the job has been truncated. If true, the name has
 	// been truncated to 100 characters.
-	NameTruncated bool `json:"name_truncated,omitempty"`
+	// Wire name: 'name_truncated'
+	NameTruncated bool ``
 	// State of the step
-	Status DbtPlatformRunStatus `json:"status,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'status'
+	Status          DbtPlatformRunStatus ``
+	ForceSendFields []string             `tf:"-"`
 }
 
 func (s *DbtPlatformJobRunStep) UnmarshalJSON(b []byte) error {
@@ -939,6 +2515,50 @@ func (s *DbtPlatformJobRunStep) UnmarshalJSON(b []byte) error {
 
 func (s DbtPlatformJobRunStep) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func DbtPlatformJobRunStepToPb(st *DbtPlatformJobRunStep) (*jobspb.DbtPlatformJobRunStepPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.DbtPlatformJobRunStepPb{}
+	pb.Index = st.Index
+	pb.Logs = st.Logs
+	pb.LogsTruncated = st.LogsTruncated
+	pb.Name = st.Name
+	pb.NameTruncated = st.NameTruncated
+	statusPb, err := DbtPlatformRunStatusToPb(&st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func DbtPlatformJobRunStepFromPb(pb *jobspb.DbtPlatformJobRunStepPb) (*DbtPlatformJobRunStep, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DbtPlatformJobRunStep{}
+	st.Index = pb.Index
+	st.Logs = pb.Logs
+	st.LogsTruncated = pb.LogsTruncated
+	st.Name = pb.Name
+	st.NameTruncated = pb.NameTruncated
+	statusField, err := DbtPlatformRunStatusFromPb(&pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = *statusField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // Response enumeration from calling the dbt platform API, for inclusion in
@@ -992,15 +2612,32 @@ func (f *DbtPlatformRunStatus) Type() string {
 	return "DbtPlatformRunStatus"
 }
 
+func DbtPlatformRunStatusToPb(st *DbtPlatformRunStatus) (*jobspb.DbtPlatformRunStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.DbtPlatformRunStatusPb(*st)
+	return &pb, nil
+}
+
+func DbtPlatformRunStatusFromPb(pb *jobspb.DbtPlatformRunStatusPb) (*DbtPlatformRunStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := DbtPlatformRunStatus(*pb)
+	return &st, nil
+}
+
 type DbtPlatformTask struct {
 	// The resource name of the UC connection that authenticates the dbt
 	// platform for this task
-	ConnectionResourceName string `json:"connection_resource_name,omitempty"`
+	// Wire name: 'connection_resource_name'
+	ConnectionResourceName string ``
 	// Id of the dbt platform job to be triggered. Specified as a string for
 	// maximum compatibility with clients.
-	DbtPlatformJobId string `json:"dbt_platform_job_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'dbt_platform_job_id'
+	DbtPlatformJobId string   ``
+	ForceSendFields  []string `tf:"-"`
 }
 
 func (s *DbtPlatformTask) UnmarshalJSON(b []byte) error {
@@ -1011,19 +2648,46 @@ func (s DbtPlatformTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func DbtPlatformTaskToPb(st *DbtPlatformTask) (*jobspb.DbtPlatformTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.DbtPlatformTaskPb{}
+	pb.ConnectionResourceName = st.ConnectionResourceName
+	pb.DbtPlatformJobId = st.DbtPlatformJobId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func DbtPlatformTaskFromPb(pb *jobspb.DbtPlatformTaskPb) (*DbtPlatformTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DbtPlatformTask{}
+	st.ConnectionResourceName = pb.ConnectionResourceName
+	st.DbtPlatformJobId = pb.DbtPlatformJobId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type DbtPlatformTaskOutput struct {
 	// Id of the job run in dbt platform. Specified as a string for maximum
 	// compatibility with clients.
-	DbtPlatformJobRunId string `json:"dbt_platform_job_run_id,omitempty"`
+	// Wire name: 'dbt_platform_job_run_id'
+	DbtPlatformJobRunId string ``
 	// Steps of the job run as received from dbt platform
-	DbtPlatformJobRunOutput []DbtPlatformJobRunStep `json:"dbt_platform_job_run_output,omitempty"`
+	// Wire name: 'dbt_platform_job_run_output'
+	DbtPlatformJobRunOutput []DbtPlatformJobRunStep ``
 	// Url where full run details can be viewed
-	DbtPlatformJobRunUrl string `json:"dbt_platform_job_run_url,omitempty"`
+	// Wire name: 'dbt_platform_job_run_url'
+	DbtPlatformJobRunUrl string ``
 	// Whether the number of steps in the output has been truncated. If true,
 	// the output will contain the first 20 steps of the output.
-	StepsTruncated bool `json:"steps_truncated,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'steps_truncated'
+	StepsTruncated  bool     ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *DbtPlatformTaskOutput) UnmarshalJSON(b []byte) error {
@@ -1034,27 +2698,82 @@ func (s DbtPlatformTaskOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func DbtPlatformTaskOutputToPb(st *DbtPlatformTaskOutput) (*jobspb.DbtPlatformTaskOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.DbtPlatformTaskOutputPb{}
+	pb.DbtPlatformJobRunId = st.DbtPlatformJobRunId
+
+	var dbtPlatformJobRunOutputPb []jobspb.DbtPlatformJobRunStepPb
+	for _, item := range st.DbtPlatformJobRunOutput {
+		itemPb, err := DbtPlatformJobRunStepToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			dbtPlatformJobRunOutputPb = append(dbtPlatformJobRunOutputPb, *itemPb)
+		}
+	}
+	pb.DbtPlatformJobRunOutput = dbtPlatformJobRunOutputPb
+	pb.DbtPlatformJobRunUrl = st.DbtPlatformJobRunUrl
+	pb.StepsTruncated = st.StepsTruncated
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func DbtPlatformTaskOutputFromPb(pb *jobspb.DbtPlatformTaskOutputPb) (*DbtPlatformTaskOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DbtPlatformTaskOutput{}
+	st.DbtPlatformJobRunId = pb.DbtPlatformJobRunId
+
+	var dbtPlatformJobRunOutputField []DbtPlatformJobRunStep
+	for _, itemPb := range pb.DbtPlatformJobRunOutput {
+		item, err := DbtPlatformJobRunStepFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			dbtPlatformJobRunOutputField = append(dbtPlatformJobRunOutputField, *item)
+		}
+	}
+	st.DbtPlatformJobRunOutput = dbtPlatformJobRunOutputField
+	st.DbtPlatformJobRunUrl = pb.DbtPlatformJobRunUrl
+	st.StepsTruncated = pb.StepsTruncated
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type DbtTask struct {
 	// Optional name of the catalog to use. The value is the top level in the
 	// 3-level namespace of Unity Catalog (catalog / schema / relation). The
 	// catalog value can only be specified if a warehouse_id is specified.
 	// Requires dbt-databricks >= 1.1.1.
-	Catalog string `json:"catalog,omitempty"`
+	// Wire name: 'catalog'
+	Catalog string ``
 	// A list of dbt commands to execute. All commands must start with `dbt`.
 	// This parameter must not be empty. A maximum of up to 10 commands can be
 	// provided.
-	Commands []string `json:"commands"`
+	// Wire name: 'commands'
+	Commands []string ``
 	// Optional (relative) path to the profiles directory. Can only be specified
 	// if no warehouse_id is specified. If no warehouse_id is specified and this
 	// folder is unset, the root directory is used.
-	ProfilesDirectory string `json:"profiles_directory,omitempty"`
+	// Wire name: 'profiles_directory'
+	ProfilesDirectory string ``
 	// Path to the project directory. Optional for Git sourced tasks, in which
 	// case if no value is provided, the root of the Git repository is used.
-	ProjectDirectory string `json:"project_directory,omitempty"`
+	// Wire name: 'project_directory'
+	ProjectDirectory string ``
 	// Optional schema to write to. This parameter is only used when a
 	// warehouse_id is also provided. If not provided, the `default` schema is
 	// used.
-	Schema string `json:"schema,omitempty"`
+	// Wire name: 'schema'
+	Schema string ``
 	// Optional location type of the project directory. When set to `WORKSPACE`,
 	// the project will be retrieved from the local Databricks workspace. When
 	// set to `GIT`, the project will be retrieved from a Git repository defined
@@ -1063,14 +2782,15 @@ type DbtTask struct {
 	//
 	// * `WORKSPACE`: Project is located in Databricks workspace. * `GIT`:
 	// Project is located in cloud Git provider.
-	Source Source `json:"source,omitempty"`
+	// Wire name: 'source'
+	Source Source ``
 	// ID of the SQL warehouse to connect to. If provided, we automatically
 	// generate and provide the profile and connection details to dbt. It can be
 	// overridden on a per-command basis by using the `--profiles-dir` command
 	// line argument.
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'warehouse_id'
+	WarehouseId     string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *DbtTask) UnmarshalJSON(b []byte) error {
@@ -1081,14 +2801,102 @@ func (s DbtTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func DbtTaskToPb(st *DbtTask) (*jobspb.DbtTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.DbtTaskPb{}
+	pb.Catalog = st.Catalog
+	pb.Commands = st.Commands
+	pb.ProfilesDirectory = st.ProfilesDirectory
+	pb.ProjectDirectory = st.ProjectDirectory
+	pb.Schema = st.Schema
+	sourcePb, err := SourceToPb(&st.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourcePb != nil {
+		pb.Source = *sourcePb
+	}
+	pb.WarehouseId = st.WarehouseId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func DbtTaskFromPb(pb *jobspb.DbtTaskPb) (*DbtTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DbtTask{}
+	st.Catalog = pb.Catalog
+	st.Commands = pb.Commands
+	st.ProfilesDirectory = pb.ProfilesDirectory
+	st.ProjectDirectory = pb.ProjectDirectory
+	st.Schema = pb.Schema
+	sourceField, err := SourceFromPb(&pb.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourceField != nil {
+		st.Source = *sourceField
+	}
+	st.WarehouseId = pb.WarehouseId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type DeleteJob struct {
 	// The canonical identifier of the job to delete. This field is required.
-	JobId int64 `json:"job_id"`
+	// Wire name: 'job_id'
+	JobId int64 ``
+}
+
+func DeleteJobToPb(st *DeleteJob) (*jobspb.DeleteJobPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.DeleteJobPb{}
+	pb.JobId = st.JobId
+
+	return pb, nil
+}
+
+func DeleteJobFromPb(pb *jobspb.DeleteJobPb) (*DeleteJob, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteJob{}
+	st.JobId = pb.JobId
+
+	return st, nil
 }
 
 type DeleteRun struct {
 	// ID of the run to delete.
-	RunId int64 `json:"run_id"`
+	// Wire name: 'run_id'
+	RunId int64 ``
+}
+
+func DeleteRunToPb(st *DeleteRun) (*jobspb.DeleteRunPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.DeleteRunPb{}
+	pb.RunId = st.RunId
+
+	return pb, nil
+}
+
+func DeleteRunFromPb(pb *jobspb.DeleteRunPb) (*DeleteRun, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteRun{}
+	st.RunId = pb.RunId
+
+	return st, nil
 }
 
 // Represents a change to the job cluster's settings that would be required for
@@ -1096,19 +2904,21 @@ type DeleteRun struct {
 type EnforcePolicyComplianceForJobResponseJobClusterSettingsChange struct {
 	// The field where this change would be made, prepended with the job cluster
 	// key.
-	Field string `json:"field,omitempty"`
+	// Wire name: 'field'
+	Field string ``
 	// The new value of this field after enforcing policy compliance (either a
 	// number, a boolean, or a string) converted to a string. This is intended
 	// to be read by a human. The typed new value of this field can be retrieved
 	// by reading the settings field in the API response.
-	NewValue string `json:"new_value,omitempty"`
+	// Wire name: 'new_value'
+	NewValue string ``
 	// The previous value of this field before enforcing policy compliance
 	// (either a number, a boolean, or a string) converted to a string. This is
 	// intended to be read by a human. The type of the field can be retrieved by
 	// reading the settings field in the API response.
-	PreviousValue string `json:"previous_value,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'previous_value'
+	PreviousValue   string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *EnforcePolicyComplianceForJobResponseJobClusterSettingsChange) UnmarshalJSON(b []byte) error {
@@ -1119,14 +2929,41 @@ func (s EnforcePolicyComplianceForJobResponseJobClusterSettingsChange) MarshalJS
 	return marshal.Marshal(s)
 }
 
+func EnforcePolicyComplianceForJobResponseJobClusterSettingsChangeToPb(st *EnforcePolicyComplianceForJobResponseJobClusterSettingsChange) (*jobspb.EnforcePolicyComplianceForJobResponseJobClusterSettingsChangePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.EnforcePolicyComplianceForJobResponseJobClusterSettingsChangePb{}
+	pb.Field = st.Field
+	pb.NewValue = st.NewValue
+	pb.PreviousValue = st.PreviousValue
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func EnforcePolicyComplianceForJobResponseJobClusterSettingsChangeFromPb(pb *jobspb.EnforcePolicyComplianceForJobResponseJobClusterSettingsChangePb) (*EnforcePolicyComplianceForJobResponseJobClusterSettingsChange, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &EnforcePolicyComplianceForJobResponseJobClusterSettingsChange{}
+	st.Field = pb.Field
+	st.NewValue = pb.NewValue
+	st.PreviousValue = pb.PreviousValue
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type EnforcePolicyComplianceRequest struct {
 	// The ID of the job you want to enforce policy compliance on.
-	JobId int64 `json:"job_id"`
+	// Wire name: 'job_id'
+	JobId int64 ``
 	// If set, previews changes made to the job to comply with its policy, but
 	// does not update the job.
-	ValidateOnly bool `json:"validate_only,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'validate_only'
+	ValidateOnly    bool     ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *EnforcePolicyComplianceRequest) UnmarshalJSON(b []byte) error {
@@ -1137,23 +2974,49 @@ func (s EnforcePolicyComplianceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func EnforcePolicyComplianceRequestToPb(st *EnforcePolicyComplianceRequest) (*jobspb.EnforcePolicyComplianceRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.EnforcePolicyComplianceRequestPb{}
+	pb.JobId = st.JobId
+	pb.ValidateOnly = st.ValidateOnly
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func EnforcePolicyComplianceRequestFromPb(pb *jobspb.EnforcePolicyComplianceRequestPb) (*EnforcePolicyComplianceRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &EnforcePolicyComplianceRequest{}
+	st.JobId = pb.JobId
+	st.ValidateOnly = pb.ValidateOnly
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type EnforcePolicyComplianceResponse struct {
 	// Whether any changes have been made to the job cluster settings for the
 	// job to become compliant with its policies.
-	HasChanges bool `json:"has_changes,omitempty"`
+	// Wire name: 'has_changes'
+	HasChanges bool ``
 	// A list of job cluster changes that have been made to the job’s cluster
 	// settings in order for all job clusters to become compliant with their
 	// policies.
-	JobClusterChanges []EnforcePolicyComplianceForJobResponseJobClusterSettingsChange `json:"job_cluster_changes,omitempty"`
+	// Wire name: 'job_cluster_changes'
+	JobClusterChanges []EnforcePolicyComplianceForJobResponseJobClusterSettingsChange ``
 	// Updated job settings after policy enforcement. Policy enforcement only
 	// applies to job clusters that are created when running the job (which are
 	// specified in new_cluster) and does not apply to existing all-purpose
 	// clusters. Updated job settings are derived by applying policy default
 	// values to the existing job clusters in order to satisfy policy
 	// requirements.
-	Settings *JobSettings `json:"settings,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'settings'
+	Settings        *JobSettings ``
+	ForceSendFields []string     `tf:"-"`
 }
 
 func (s *EnforcePolicyComplianceResponse) UnmarshalJSON(b []byte) error {
@@ -1164,6 +3027,66 @@ func (s EnforcePolicyComplianceResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func EnforcePolicyComplianceResponseToPb(st *EnforcePolicyComplianceResponse) (*jobspb.EnforcePolicyComplianceResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.EnforcePolicyComplianceResponsePb{}
+	pb.HasChanges = st.HasChanges
+
+	var jobClusterChangesPb []jobspb.EnforcePolicyComplianceForJobResponseJobClusterSettingsChangePb
+	for _, item := range st.JobClusterChanges {
+		itemPb, err := EnforcePolicyComplianceForJobResponseJobClusterSettingsChangeToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			jobClusterChangesPb = append(jobClusterChangesPb, *itemPb)
+		}
+	}
+	pb.JobClusterChanges = jobClusterChangesPb
+	settingsPb, err := JobSettingsToPb(st.Settings)
+	if err != nil {
+		return nil, err
+	}
+	if settingsPb != nil {
+		pb.Settings = settingsPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func EnforcePolicyComplianceResponseFromPb(pb *jobspb.EnforcePolicyComplianceResponsePb) (*EnforcePolicyComplianceResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &EnforcePolicyComplianceResponse{}
+	st.HasChanges = pb.HasChanges
+
+	var jobClusterChangesField []EnforcePolicyComplianceForJobResponseJobClusterSettingsChange
+	for _, itemPb := range pb.JobClusterChanges {
+		item, err := EnforcePolicyComplianceForJobResponseJobClusterSettingsChangeFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			jobClusterChangesField = append(jobClusterChangesField, *item)
+		}
+	}
+	st.JobClusterChanges = jobClusterChangesField
+	settingsField, err := JobSettingsFromPb(pb.Settings)
+	if err != nil {
+		return nil, err
+	}
+	if settingsField != nil {
+		st.Settings = settingsField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // Run was exported successfully.
 type ExportRunOutput struct {
 	// The exported content in HTML format (one for every view item). To extract
@@ -1171,31 +3094,112 @@ type ExportRunOutput struct {
 	// script].
 	//
 	// [Python script]: https://docs.databricks.com/en/_static/examples/extract.py
-	Views []ViewItem `json:"views,omitempty"`
+	// Wire name: 'views'
+	Views []ViewItem ``
+}
+
+func ExportRunOutputToPb(st *ExportRunOutput) (*jobspb.ExportRunOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ExportRunOutputPb{}
+
+	var viewsPb []jobspb.ViewItemPb
+	for _, item := range st.Views {
+		itemPb, err := ViewItemToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			viewsPb = append(viewsPb, *itemPb)
+		}
+	}
+	pb.Views = viewsPb
+
+	return pb, nil
+}
+
+func ExportRunOutputFromPb(pb *jobspb.ExportRunOutputPb) (*ExportRunOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExportRunOutput{}
+
+	var viewsField []ViewItem
+	for _, itemPb := range pb.Views {
+		item, err := ViewItemFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			viewsField = append(viewsField, *item)
+		}
+	}
+	st.Views = viewsField
+
+	return st, nil
 }
 
 type ExportRunRequest struct {
 	// The canonical identifier for the run. This field is required.
-	RunId int64 `json:"-" url:"run_id"`
+	// Wire name: 'run_id'
+	RunId int64 `tf:"-"`
 	// Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
-	ViewsToExport ViewsToExport `json:"-" url:"views_to_export,omitempty"`
+	// Wire name: 'views_to_export'
+	ViewsToExport ViewsToExport `tf:"-"`
+}
+
+func ExportRunRequestToPb(st *ExportRunRequest) (*jobspb.ExportRunRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ExportRunRequestPb{}
+	pb.RunId = st.RunId
+	viewsToExportPb, err := ViewsToExportToPb(&st.ViewsToExport)
+	if err != nil {
+		return nil, err
+	}
+	if viewsToExportPb != nil {
+		pb.ViewsToExport = *viewsToExportPb
+	}
+
+	return pb, nil
+}
+
+func ExportRunRequestFromPb(pb *jobspb.ExportRunRequestPb) (*ExportRunRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExportRunRequest{}
+	st.RunId = pb.RunId
+	viewsToExportField, err := ViewsToExportFromPb(&pb.ViewsToExport)
+	if err != nil {
+		return nil, err
+	}
+	if viewsToExportField != nil {
+		st.ViewsToExport = *viewsToExportField
+	}
+
+	return st, nil
 }
 
 type FileArrivalTriggerConfiguration struct {
 	// If set, the trigger starts a run only after the specified amount of time
 	// passed since the last time the trigger fired. The minimum allowed value
 	// is 60 seconds
-	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
+	// Wire name: 'min_time_between_triggers_seconds'
+	MinTimeBetweenTriggersSeconds int ``
 	// URL to be monitored for file arrivals. The path must point to the root or
 	// a subpath of the external location.
-	Url string `json:"url"`
+	// Wire name: 'url'
+	Url string ``
 	// If set, the trigger starts a run only after no file activity has occurred
 	// for the specified amount of time. This makes it possible to wait for a
 	// batch of incoming files to arrive before triggering a run. The minimum
 	// allowed value is 60 seconds.
-	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'wait_after_last_change_seconds'
+	WaitAfterLastChangeSeconds int      ``
+	ForceSendFields            []string `tf:"-"`
 }
 
 func (s *FileArrivalTriggerConfiguration) UnmarshalJSON(b []byte) error {
@@ -1206,12 +3210,38 @@ func (s FileArrivalTriggerConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func FileArrivalTriggerConfigurationToPb(st *FileArrivalTriggerConfiguration) (*jobspb.FileArrivalTriggerConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.FileArrivalTriggerConfigurationPb{}
+	pb.MinTimeBetweenTriggersSeconds = st.MinTimeBetweenTriggersSeconds
+	pb.Url = st.Url
+	pb.WaitAfterLastChangeSeconds = st.WaitAfterLastChangeSeconds
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func FileArrivalTriggerConfigurationFromPb(pb *jobspb.FileArrivalTriggerConfigurationPb) (*FileArrivalTriggerConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &FileArrivalTriggerConfiguration{}
+	st.MinTimeBetweenTriggersSeconds = pb.MinTimeBetweenTriggersSeconds
+	st.Url = pb.Url
+	st.WaitAfterLastChangeSeconds = pb.WaitAfterLastChangeSeconds
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type FileArrivalTriggerState struct {
 	// Indicates whether the trigger leverages file events to detect file
 	// arrivals.
-	UsingFileEvents bool `json:"using_file_events,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'using_file_events'
+	UsingFileEvents bool     ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *FileArrivalTriggerState) UnmarshalJSON(b []byte) error {
@@ -1222,25 +3252,107 @@ func (s FileArrivalTriggerState) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func FileArrivalTriggerStateToPb(st *FileArrivalTriggerState) (*jobspb.FileArrivalTriggerStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.FileArrivalTriggerStatePb{}
+	pb.UsingFileEvents = st.UsingFileEvents
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func FileArrivalTriggerStateFromPb(pb *jobspb.FileArrivalTriggerStatePb) (*FileArrivalTriggerState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &FileArrivalTriggerState{}
+	st.UsingFileEvents = pb.UsingFileEvents
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ForEachStats struct {
 	// Sample of 3 most common error messages occurred during the iteration.
-	ErrorMessageStats []ForEachTaskErrorMessageStats `json:"error_message_stats,omitempty"`
+	// Wire name: 'error_message_stats'
+	ErrorMessageStats []ForEachTaskErrorMessageStats ``
 	// Describes stats of the iteration. Only latest retries are considered.
-	TaskRunStats *ForEachTaskTaskRunStats `json:"task_run_stats,omitempty"`
+	// Wire name: 'task_run_stats'
+	TaskRunStats *ForEachTaskTaskRunStats ``
+}
+
+func ForEachStatsToPb(st *ForEachStats) (*jobspb.ForEachStatsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ForEachStatsPb{}
+
+	var errorMessageStatsPb []jobspb.ForEachTaskErrorMessageStatsPb
+	for _, item := range st.ErrorMessageStats {
+		itemPb, err := ForEachTaskErrorMessageStatsToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			errorMessageStatsPb = append(errorMessageStatsPb, *itemPb)
+		}
+	}
+	pb.ErrorMessageStats = errorMessageStatsPb
+	taskRunStatsPb, err := ForEachTaskTaskRunStatsToPb(st.TaskRunStats)
+	if err != nil {
+		return nil, err
+	}
+	if taskRunStatsPb != nil {
+		pb.TaskRunStats = taskRunStatsPb
+	}
+
+	return pb, nil
+}
+
+func ForEachStatsFromPb(pb *jobspb.ForEachStatsPb) (*ForEachStats, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ForEachStats{}
+
+	var errorMessageStatsField []ForEachTaskErrorMessageStats
+	for _, itemPb := range pb.ErrorMessageStats {
+		item, err := ForEachTaskErrorMessageStatsFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			errorMessageStatsField = append(errorMessageStatsField, *item)
+		}
+	}
+	st.ErrorMessageStats = errorMessageStatsField
+	taskRunStatsField, err := ForEachTaskTaskRunStatsFromPb(pb.TaskRunStats)
+	if err != nil {
+		return nil, err
+	}
+	if taskRunStatsField != nil {
+		st.TaskRunStats = taskRunStatsField
+	}
+
+	return st, nil
 }
 
 type ForEachTask struct {
 	// An optional maximum allowed number of concurrent runs of the task. Set
 	// this value if you want to be able to execute multiple runs of the task
 	// concurrently.
-	Concurrency int `json:"concurrency,omitempty"`
+	// Wire name: 'concurrency'
+	Concurrency int ``
 	// Array for task to iterate on. This can be a JSON string or a reference to
 	// an array parameter.
-	Inputs string `json:"inputs"`
+	// Wire name: 'inputs'
+	Inputs string ``
 	// Configuration for the task that will be run for each element in the array
-	Task Task `json:"task"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'task'
+	Task            Task     ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ForEachTask) UnmarshalJSON(b []byte) error {
@@ -1251,16 +3363,56 @@ func (s ForEachTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ForEachTaskToPb(st *ForEachTask) (*jobspb.ForEachTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ForEachTaskPb{}
+	pb.Concurrency = st.Concurrency
+	pb.Inputs = st.Inputs
+	taskPb, err := TaskToPb(&st.Task)
+	if err != nil {
+		return nil, err
+	}
+	if taskPb != nil {
+		pb.Task = *taskPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ForEachTaskFromPb(pb *jobspb.ForEachTaskPb) (*ForEachTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ForEachTask{}
+	st.Concurrency = pb.Concurrency
+	st.Inputs = pb.Inputs
+	taskField, err := TaskFromPb(&pb.Task)
+	if err != nil {
+		return nil, err
+	}
+	if taskField != nil {
+		st.Task = *taskField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ForEachTaskErrorMessageStats struct {
 	// Describes the count of such error message encountered during the
 	// iterations.
-	Count int `json:"count,omitempty"`
+	// Wire name: 'count'
+	Count int ``
 	// Describes the error message occured during the iterations.
-	ErrorMessage string `json:"error_message,omitempty"`
+	// Wire name: 'error_message'
+	ErrorMessage string ``
 	// Describes the termination reason for the error message.
-	TerminationCategory string `json:"termination_category,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'termination_category'
+	TerminationCategory string   ``
+	ForceSendFields     []string `tf:"-"`
 }
 
 func (s *ForEachTaskErrorMessageStats) UnmarshalJSON(b []byte) error {
@@ -1271,22 +3423,53 @@ func (s ForEachTaskErrorMessageStats) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ForEachTaskErrorMessageStatsToPb(st *ForEachTaskErrorMessageStats) (*jobspb.ForEachTaskErrorMessageStatsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ForEachTaskErrorMessageStatsPb{}
+	pb.Count = st.Count
+	pb.ErrorMessage = st.ErrorMessage
+	pb.TerminationCategory = st.TerminationCategory
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ForEachTaskErrorMessageStatsFromPb(pb *jobspb.ForEachTaskErrorMessageStatsPb) (*ForEachTaskErrorMessageStats, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ForEachTaskErrorMessageStats{}
+	st.Count = pb.Count
+	st.ErrorMessage = pb.ErrorMessage
+	st.TerminationCategory = pb.TerminationCategory
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ForEachTaskTaskRunStats struct {
 	// Describes the iteration runs having an active lifecycle state or an
 	// active run sub state.
-	ActiveIterations int `json:"active_iterations,omitempty"`
+	// Wire name: 'active_iterations'
+	ActiveIterations int ``
 	// Describes the number of failed and succeeded iteration runs.
-	CompletedIterations int `json:"completed_iterations,omitempty"`
+	// Wire name: 'completed_iterations'
+	CompletedIterations int ``
 	// Describes the number of failed iteration runs.
-	FailedIterations int `json:"failed_iterations,omitempty"`
+	// Wire name: 'failed_iterations'
+	FailedIterations int ``
 	// Describes the number of iteration runs that have been scheduled.
-	ScheduledIterations int `json:"scheduled_iterations,omitempty"`
+	// Wire name: 'scheduled_iterations'
+	ScheduledIterations int ``
 	// Describes the number of succeeded iteration runs.
-	SucceededIterations int `json:"succeeded_iterations,omitempty"`
+	// Wire name: 'succeeded_iterations'
+	SucceededIterations int ``
 	// Describes the length of the list of items to iterate over.
-	TotalIterations int `json:"total_iterations,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'total_iterations'
+	TotalIterations int      ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ForEachTaskTaskRunStats) UnmarshalJSON(b []byte) error {
@@ -1295,6 +3478,38 @@ func (s *ForEachTaskTaskRunStats) UnmarshalJSON(b []byte) error {
 
 func (s ForEachTaskTaskRunStats) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func ForEachTaskTaskRunStatsToPb(st *ForEachTaskTaskRunStats) (*jobspb.ForEachTaskTaskRunStatsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ForEachTaskTaskRunStatsPb{}
+	pb.ActiveIterations = st.ActiveIterations
+	pb.CompletedIterations = st.CompletedIterations
+	pb.FailedIterations = st.FailedIterations
+	pb.ScheduledIterations = st.ScheduledIterations
+	pb.SucceededIterations = st.SucceededIterations
+	pb.TotalIterations = st.TotalIterations
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ForEachTaskTaskRunStatsFromPb(pb *jobspb.ForEachTaskTaskRunStatsPb) (*ForEachTaskTaskRunStats, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ForEachTaskTaskRunStats{}
+	st.ActiveIterations = pb.ActiveIterations
+	st.CompletedIterations = pb.CompletedIterations
+	st.FailedIterations = pb.FailedIterations
+	st.ScheduledIterations = pb.ScheduledIterations
+	st.SucceededIterations = pb.SucceededIterations
+	st.TotalIterations = pb.TotalIterations
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 type Format string
@@ -1334,17 +3549,37 @@ func (f *Format) Type() string {
 	return "Format"
 }
 
+func FormatToPb(st *Format) (*jobspb.FormatPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.FormatPb(*st)
+	return &pb, nil
+}
+
+func FormatFromPb(pb *jobspb.FormatPb) (*Format, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := Format(*pb)
+	return &st, nil
+}
+
 type GenAiComputeTask struct {
 	// Command launcher to run the actual script, e.g. bash, python etc.
-	Command string `json:"command,omitempty"`
+	// Wire name: 'command'
+	Command string ``
 
-	Compute *ComputeConfig `json:"compute,omitempty"`
+	// Wire name: 'compute'
+	Compute *ComputeConfig ``
 	// Runtime image
-	DlRuntimeImage string `json:"dl_runtime_image"`
+	// Wire name: 'dl_runtime_image'
+	DlRuntimeImage string ``
 	// Optional string containing the name of the MLflow experiment to log the
 	// run to. If name is not found, backend will create the mlflow experiment
 	// using the name.
-	MlflowExperimentName string `json:"mlflow_experiment_name,omitempty"`
+	// Wire name: 'mlflow_experiment_name'
+	MlflowExperimentName string ``
 	// Optional location type of the training script. When set to `WORKSPACE`,
 	// the script will be retrieved from the local Databricks workspace. When
 	// set to `GIT`, the script will be retrieved from a Git repository defined
@@ -1352,22 +3587,25 @@ type GenAiComputeTask struct {
 	// `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script
 	// is located in Databricks workspace. * `GIT`: Script is located in cloud
 	// Git provider.
-	Source Source `json:"source,omitempty"`
+	// Wire name: 'source'
+	Source Source ``
 	// The training script file path to be executed. Cloud file URIs (such as
 	// dbfs:/, s3:/, adls:/, gcs:/) and workspace paths are supported. For
 	// python files stored in the Databricks workspace, the path must be
 	// absolute and begin with `/`. For files stored in a remote repository, the
 	// path must be relative. This field is required.
-	TrainingScriptPath string `json:"training_script_path,omitempty"`
+	// Wire name: 'training_script_path'
+	TrainingScriptPath string ``
 	// Optional string containing model parameters passed to the training script
 	// in yaml format. If present, then the content in yaml_parameters_file_path
 	// will be ignored.
-	YamlParameters string `json:"yaml_parameters,omitempty"`
+	// Wire name: 'yaml_parameters'
+	YamlParameters string ``
 	// Optional path to a YAML file containing model parameters passed to the
 	// training script.
-	YamlParametersFilePath string `json:"yaml_parameters_file_path,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'yaml_parameters_file_path'
+	YamlParametersFilePath string   ``
+	ForceSendFields        []string `tf:"-"`
 }
 
 func (s *GenAiComputeTask) UnmarshalJSON(b []byte) error {
@@ -1378,30 +3616,176 @@ func (s GenAiComputeTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func GenAiComputeTaskToPb(st *GenAiComputeTask) (*jobspb.GenAiComputeTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.GenAiComputeTaskPb{}
+	pb.Command = st.Command
+	computePb, err := ComputeConfigToPb(st.Compute)
+	if err != nil {
+		return nil, err
+	}
+	if computePb != nil {
+		pb.Compute = computePb
+	}
+	pb.DlRuntimeImage = st.DlRuntimeImage
+	pb.MlflowExperimentName = st.MlflowExperimentName
+	sourcePb, err := SourceToPb(&st.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourcePb != nil {
+		pb.Source = *sourcePb
+	}
+	pb.TrainingScriptPath = st.TrainingScriptPath
+	pb.YamlParameters = st.YamlParameters
+	pb.YamlParametersFilePath = st.YamlParametersFilePath
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func GenAiComputeTaskFromPb(pb *jobspb.GenAiComputeTaskPb) (*GenAiComputeTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GenAiComputeTask{}
+	st.Command = pb.Command
+	computeField, err := ComputeConfigFromPb(pb.Compute)
+	if err != nil {
+		return nil, err
+	}
+	if computeField != nil {
+		st.Compute = computeField
+	}
+	st.DlRuntimeImage = pb.DlRuntimeImage
+	st.MlflowExperimentName = pb.MlflowExperimentName
+	sourceField, err := SourceFromPb(&pb.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourceField != nil {
+		st.Source = *sourceField
+	}
+	st.TrainingScriptPath = pb.TrainingScriptPath
+	st.YamlParameters = pb.YamlParameters
+	st.YamlParametersFilePath = pb.YamlParametersFilePath
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type GetJobPermissionLevelsRequest struct {
 	// The job for which to get or manage permissions.
-	JobId string `json:"-" url:"-"`
+	// Wire name: 'job_id'
+	JobId string `tf:"-"`
+}
+
+func GetJobPermissionLevelsRequestToPb(st *GetJobPermissionLevelsRequest) (*jobspb.GetJobPermissionLevelsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.GetJobPermissionLevelsRequestPb{}
+	pb.JobId = st.JobId
+
+	return pb, nil
+}
+
+func GetJobPermissionLevelsRequestFromPb(pb *jobspb.GetJobPermissionLevelsRequestPb) (*GetJobPermissionLevelsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetJobPermissionLevelsRequest{}
+	st.JobId = pb.JobId
+
+	return st, nil
 }
 
 type GetJobPermissionLevelsResponse struct {
 	// Specific permission levels
-	PermissionLevels []JobPermissionsDescription `json:"permission_levels,omitempty"`
+	// Wire name: 'permission_levels'
+	PermissionLevels []JobPermissionsDescription ``
+}
+
+func GetJobPermissionLevelsResponseToPb(st *GetJobPermissionLevelsResponse) (*jobspb.GetJobPermissionLevelsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.GetJobPermissionLevelsResponsePb{}
+
+	var permissionLevelsPb []jobspb.JobPermissionsDescriptionPb
+	for _, item := range st.PermissionLevels {
+		itemPb, err := JobPermissionsDescriptionToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			permissionLevelsPb = append(permissionLevelsPb, *itemPb)
+		}
+	}
+	pb.PermissionLevels = permissionLevelsPb
+
+	return pb, nil
+}
+
+func GetJobPermissionLevelsResponseFromPb(pb *jobspb.GetJobPermissionLevelsResponsePb) (*GetJobPermissionLevelsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetJobPermissionLevelsResponse{}
+
+	var permissionLevelsField []JobPermissionsDescription
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := JobPermissionsDescriptionFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
+		}
+	}
+	st.PermissionLevels = permissionLevelsField
+
+	return st, nil
 }
 
 type GetJobPermissionsRequest struct {
 	// The job for which to get or manage permissions.
-	JobId string `json:"-" url:"-"`
+	// Wire name: 'job_id'
+	JobId string `tf:"-"`
+}
+
+func GetJobPermissionsRequestToPb(st *GetJobPermissionsRequest) (*jobspb.GetJobPermissionsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.GetJobPermissionsRequestPb{}
+	pb.JobId = st.JobId
+
+	return pb, nil
+}
+
+func GetJobPermissionsRequestFromPb(pb *jobspb.GetJobPermissionsRequestPb) (*GetJobPermissionsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetJobPermissionsRequest{}
+	st.JobId = pb.JobId
+
+	return st, nil
 }
 
 type GetJobRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
-	JobId int64 `json:"-" url:"job_id"`
+	// Wire name: 'job_id'
+	JobId int64 `tf:"-"`
 	// Use `next_page_token` returned from the previous GetJob response to
 	// request the next page of the job's array properties.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken       string   `tf:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *GetJobRequest) UnmarshalJSON(b []byte) error {
@@ -1412,9 +3796,54 @@ func (s GetJobRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func GetJobRequestToPb(st *GetJobRequest) (*jobspb.GetJobRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.GetJobRequestPb{}
+	pb.JobId = st.JobId
+	pb.PageToken = st.PageToken
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func GetJobRequestFromPb(pb *jobspb.GetJobRequestPb) (*GetJobRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetJobRequest{}
+	st.JobId = pb.JobId
+	st.PageToken = pb.PageToken
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type GetPolicyComplianceRequest struct {
 	// The ID of the job whose compliance status you are requesting.
-	JobId int64 `json:"-" url:"job_id"`
+	// Wire name: 'job_id'
+	JobId int64 `tf:"-"`
+}
+
+func GetPolicyComplianceRequestToPb(st *GetPolicyComplianceRequest) (*jobspb.GetPolicyComplianceRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.GetPolicyComplianceRequestPb{}
+	pb.JobId = st.JobId
+
+	return pb, nil
+}
+
+func GetPolicyComplianceRequestFromPb(pb *jobspb.GetPolicyComplianceRequestPb) (*GetPolicyComplianceRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetPolicyComplianceRequest{}
+	st.JobId = pb.JobId
+
+	return st, nil
 }
 
 type GetPolicyComplianceResponse struct {
@@ -1422,15 +3851,16 @@ type GetPolicyComplianceResponse struct {
 	// of compliance if a policy they are using was updated after the job was
 	// last edited and some of its job clusters no longer comply with their
 	// updated policies.
-	IsCompliant bool `json:"is_compliant,omitempty"`
+	// Wire name: 'is_compliant'
+	IsCompliant bool ``
 	// An object containing key-value mappings representing the first 200 policy
 	// validation errors. The keys indicate the path where the policy validation
 	// error is occurring. An identifier for the job cluster is prepended to the
 	// path. The values indicate an error message describing the policy
 	// validation error.
-	Violations map[string]string `json:"violations,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'violations'
+	Violations      map[string]string ``
+	ForceSendFields []string          `tf:"-"`
 }
 
 func (s *GetPolicyComplianceResponse) UnmarshalJSON(b []byte) error {
@@ -1441,24 +3871,72 @@ func (s GetPolicyComplianceResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func GetPolicyComplianceResponseToPb(st *GetPolicyComplianceResponse) (*jobspb.GetPolicyComplianceResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.GetPolicyComplianceResponsePb{}
+	pb.IsCompliant = st.IsCompliant
+	pb.Violations = st.Violations
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func GetPolicyComplianceResponseFromPb(pb *jobspb.GetPolicyComplianceResponsePb) (*GetPolicyComplianceResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetPolicyComplianceResponse{}
+	st.IsCompliant = pb.IsCompliant
+	st.Violations = pb.Violations
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type GetRunOutputRequest struct {
 	// The canonical identifier for the run.
-	RunId int64 `json:"-" url:"run_id"`
+	// Wire name: 'run_id'
+	RunId int64 `tf:"-"`
+}
+
+func GetRunOutputRequestToPb(st *GetRunOutputRequest) (*jobspb.GetRunOutputRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.GetRunOutputRequestPb{}
+	pb.RunId = st.RunId
+
+	return pb, nil
+}
+
+func GetRunOutputRequestFromPb(pb *jobspb.GetRunOutputRequestPb) (*GetRunOutputRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetRunOutputRequest{}
+	st.RunId = pb.RunId
+
+	return st, nil
 }
 
 type GetRunRequest struct {
 	// Whether to include the repair history in the response.
-	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
+	// Wire name: 'include_history'
+	IncludeHistory bool `tf:"-"`
 	// Whether to include resolved parameter values in the response.
-	IncludeResolvedValues bool `json:"-" url:"include_resolved_values,omitempty"`
+	// Wire name: 'include_resolved_values'
+	IncludeResolvedValues bool `tf:"-"`
 	// Use `next_page_token` returned from the previous GetRun response to
 	// request the next page of the run's array properties.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
-	RunId int64 `json:"-" url:"run_id"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'run_id'
+	RunId           int64    `tf:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *GetRunRequest) UnmarshalJSON(b []byte) error {
@@ -1467,6 +3945,34 @@ func (s *GetRunRequest) UnmarshalJSON(b []byte) error {
 
 func (s GetRunRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func GetRunRequestToPb(st *GetRunRequest) (*jobspb.GetRunRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.GetRunRequestPb{}
+	pb.IncludeHistory = st.IncludeHistory
+	pb.IncludeResolvedValues = st.IncludeResolvedValues
+	pb.PageToken = st.PageToken
+	pb.RunId = st.RunId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func GetRunRequestFromPb(pb *jobspb.GetRunRequestPb) (*GetRunRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetRunRequest{}
+	st.IncludeHistory = pb.IncludeHistory
+	st.IncludeResolvedValues = pb.IncludeResolvedValues
+	st.PageToken = pb.PageToken
+	st.RunId = pb.RunId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 type GitProvider string
@@ -1524,15 +4030,31 @@ func (f *GitProvider) Type() string {
 	return "GitProvider"
 }
 
+func GitProviderToPb(st *GitProvider) (*jobspb.GitProviderPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.GitProviderPb(*st)
+	return &pb, nil
+}
+
+func GitProviderFromPb(pb *jobspb.GitProviderPb) (*GitProvider, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := GitProvider(*pb)
+	return &st, nil
+}
+
 // Read-only state of the remote repository at the time the job was run. This
 // field is only included on job runs.
 type GitSnapshot struct {
 	// Commit that was used to execute the run. If git_branch was specified,
 	// this points to the HEAD of the branch at the time of the run; if git_tag
 	// was specified, this points to the commit the tag points to.
-	UsedCommit string `json:"used_commit,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'used_commit'
+	UsedCommit      string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *GitSnapshot) UnmarshalJSON(b []byte) error {
@@ -1541,6 +4063,28 @@ func (s *GitSnapshot) UnmarshalJSON(b []byte) error {
 
 func (s GitSnapshot) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func GitSnapshotToPb(st *GitSnapshot) (*jobspb.GitSnapshotPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.GitSnapshotPb{}
+	pb.UsedCommit = st.UsedCommit
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func GitSnapshotFromPb(pb *jobspb.GitSnapshotPb) (*GitSnapshot, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GitSnapshot{}
+	st.UsedCommit = pb.UsedCommit
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // An optional specification for a remote Git repository containing the source
@@ -1556,25 +4100,31 @@ func (s GitSnapshot) MarshalJSON() ([]byte, error) {
 type GitSource struct {
 	// Name of the branch to be checked out and used by this job. This field
 	// cannot be specified in conjunction with git_tag or git_commit.
-	GitBranch string `json:"git_branch,omitempty"`
+	// Wire name: 'git_branch'
+	GitBranch string ``
 	// Commit to be checked out and used by this job. This field cannot be
 	// specified in conjunction with git_branch or git_tag.
-	GitCommit string `json:"git_commit,omitempty"`
+	// Wire name: 'git_commit'
+	GitCommit string ``
 	// Unique identifier of the service used to host the Git repository. The
 	// value is case insensitive.
-	GitProvider GitProvider `json:"git_provider"`
+	// Wire name: 'git_provider'
+	GitProvider GitProvider ``
 
-	GitSnapshot *GitSnapshot `json:"git_snapshot,omitempty"`
+	// Wire name: 'git_snapshot'
+	GitSnapshot *GitSnapshot ``
 	// Name of the tag to be checked out and used by this job. This field cannot
 	// be specified in conjunction with git_branch or git_commit.
-	GitTag string `json:"git_tag,omitempty"`
+	// Wire name: 'git_tag'
+	GitTag string ``
 	// URL of the repository to be cloned by this job.
-	GitUrl string `json:"git_url"`
+	// Wire name: 'git_url'
+	GitUrl string ``
 	// The source of the job specification in the remote repository when the job
 	// is source controlled.
-	JobSource *JobSource `json:"job_source,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'job_source'
+	JobSource       *JobSource ``
+	ForceSendFields []string   `tf:"-"`
 }
 
 func (s *GitSource) UnmarshalJSON(b []byte) error {
@@ -1585,30 +4135,106 @@ func (s GitSource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func GitSourceToPb(st *GitSource) (*jobspb.GitSourcePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.GitSourcePb{}
+	pb.GitBranch = st.GitBranch
+	pb.GitCommit = st.GitCommit
+	gitProviderPb, err := GitProviderToPb(&st.GitProvider)
+	if err != nil {
+		return nil, err
+	}
+	if gitProviderPb != nil {
+		pb.GitProvider = *gitProviderPb
+	}
+	gitSnapshotPb, err := GitSnapshotToPb(st.GitSnapshot)
+	if err != nil {
+		return nil, err
+	}
+	if gitSnapshotPb != nil {
+		pb.GitSnapshot = gitSnapshotPb
+	}
+	pb.GitTag = st.GitTag
+	pb.GitUrl = st.GitUrl
+	jobSourcePb, err := JobSourceToPb(st.JobSource)
+	if err != nil {
+		return nil, err
+	}
+	if jobSourcePb != nil {
+		pb.JobSource = jobSourcePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func GitSourceFromPb(pb *jobspb.GitSourcePb) (*GitSource, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GitSource{}
+	st.GitBranch = pb.GitBranch
+	st.GitCommit = pb.GitCommit
+	gitProviderField, err := GitProviderFromPb(&pb.GitProvider)
+	if err != nil {
+		return nil, err
+	}
+	if gitProviderField != nil {
+		st.GitProvider = *gitProviderField
+	}
+	gitSnapshotField, err := GitSnapshotFromPb(pb.GitSnapshot)
+	if err != nil {
+		return nil, err
+	}
+	if gitSnapshotField != nil {
+		st.GitSnapshot = gitSnapshotField
+	}
+	st.GitTag = pb.GitTag
+	st.GitUrl = pb.GitUrl
+	jobSourceField, err := JobSourceFromPb(pb.JobSource)
+	if err != nil {
+		return nil, err
+	}
+	if jobSourceField != nil {
+		st.JobSource = jobSourceField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // Job was retrieved successfully.
 type Job struct {
 	// The time at which this job was created in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC).
-	CreatedTime int64 `json:"created_time,omitempty"`
+	// Wire name: 'created_time'
+	CreatedTime int64 ``
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
-	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// Wire name: 'creator_user_name'
+	CreatorUserName string ``
 	// The id of the budget policy used by this job for cost attribution
 	// purposes. This may be set through (in order of precedence): 1. Budget
 	// admins through the account or workspace console 2. Jobs UI in the job
 	// details page and Jobs API using `budget_policy_id` 3. Inferred default
 	// based on accessible budget policies of the run_as identity on job
 	// creation or modification.
-	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// Wire name: 'effective_budget_policy_id'
+	EffectiveBudgetPolicyId string ``
 	// Indicates if the job has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/get endpoint.
 	// It is only relevant for API 2.2 :method:jobs/list requests with
 	// `expand_tasks=true`.
-	HasMore bool `json:"has_more,omitempty"`
+	// Wire name: 'has_more'
+	HasMore bool ``
 	// The canonical identifier for this job.
-	JobId int64 `json:"job_id,omitempty"`
+	// Wire name: 'job_id'
+	JobId int64 ``
 	// A token that can be used to list the next page of array properties.
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string ``
 	// The email of an active workspace user or the application ID of a service
 	// principal that the job runs as. This value can be changed by setting the
 	// `run_as` field when creating or updating a job.
@@ -1616,14 +4242,16 @@ type Job struct {
 	// By default, `run_as_user_name` is based on the current job settings and
 	// is set to the creator of the job if job access control is disabled or to
 	// the user with the `is_owner` permission if job access control is enabled.
-	RunAsUserName string `json:"run_as_user_name,omitempty"`
+	// Wire name: 'run_as_user_name'
+	RunAsUserName string ``
 	// Settings for this job and all of its runs. These settings can be updated
 	// using the `resetJob` method.
-	Settings *JobSettings `json:"settings,omitempty"`
+	// Wire name: 'settings'
+	Settings *JobSettings ``
 	// State of the trigger associated with the job.
-	TriggerState *TriggerStateProto `json:"trigger_state,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'trigger_state'
+	TriggerState    *TriggerStateProto ``
+	ForceSendFields []string           `tf:"-"`
 }
 
 func (s *Job) UnmarshalJSON(b []byte) error {
@@ -1634,17 +4262,82 @@ func (s Job) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func JobToPb(st *Job) (*jobspb.JobPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobPb{}
+	pb.CreatedTime = st.CreatedTime
+	pb.CreatorUserName = st.CreatorUserName
+	pb.EffectiveBudgetPolicyId = st.EffectiveBudgetPolicyId
+	pb.HasMore = st.HasMore
+	pb.JobId = st.JobId
+	pb.NextPageToken = st.NextPageToken
+	pb.RunAsUserName = st.RunAsUserName
+	settingsPb, err := JobSettingsToPb(st.Settings)
+	if err != nil {
+		return nil, err
+	}
+	if settingsPb != nil {
+		pb.Settings = settingsPb
+	}
+	triggerStatePb, err := TriggerStateProtoToPb(st.TriggerState)
+	if err != nil {
+		return nil, err
+	}
+	if triggerStatePb != nil {
+		pb.TriggerState = triggerStatePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func JobFromPb(pb *jobspb.JobPb) (*Job, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &Job{}
+	st.CreatedTime = pb.CreatedTime
+	st.CreatorUserName = pb.CreatorUserName
+	st.EffectiveBudgetPolicyId = pb.EffectiveBudgetPolicyId
+	st.HasMore = pb.HasMore
+	st.JobId = pb.JobId
+	st.NextPageToken = pb.NextPageToken
+	st.RunAsUserName = pb.RunAsUserName
+	settingsField, err := JobSettingsFromPb(pb.Settings)
+	if err != nil {
+		return nil, err
+	}
+	if settingsField != nil {
+		st.Settings = settingsField
+	}
+	triggerStateField, err := TriggerStateProtoFromPb(pb.TriggerState)
+	if err != nil {
+		return nil, err
+	}
+	if triggerStateField != nil {
+		st.TriggerState = triggerStateField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type JobAccessControlRequest struct {
 	// name of the group
-	GroupName string `json:"group_name,omitempty"`
+	// Wire name: 'group_name'
+	GroupName string ``
 
-	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel JobPermissionLevel ``
 	// application ID of a service principal
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string ``
 	// name of the user
-	UserName string `json:"user_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'user_name'
+	UserName        string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *JobAccessControlRequest) UnmarshalJSON(b []byte) error {
@@ -1655,19 +4348,63 @@ func (s JobAccessControlRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func JobAccessControlRequestToPb(st *JobAccessControlRequest) (*jobspb.JobAccessControlRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobAccessControlRequestPb{}
+	pb.GroupName = st.GroupName
+	permissionLevelPb, err := JobPermissionLevelToPb(&st.PermissionLevel)
+	if err != nil {
+		return nil, err
+	}
+	if permissionLevelPb != nil {
+		pb.PermissionLevel = *permissionLevelPb
+	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
+	pb.UserName = st.UserName
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func JobAccessControlRequestFromPb(pb *jobspb.JobAccessControlRequestPb) (*JobAccessControlRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobAccessControlRequest{}
+	st.GroupName = pb.GroupName
+	permissionLevelField, err := JobPermissionLevelFromPb(&pb.PermissionLevel)
+	if err != nil {
+		return nil, err
+	}
+	if permissionLevelField != nil {
+		st.PermissionLevel = *permissionLevelField
+	}
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type JobAccessControlResponse struct {
 	// All permissions.
-	AllPermissions []JobPermission `json:"all_permissions,omitempty"`
+	// Wire name: 'all_permissions'
+	AllPermissions []JobPermission ``
 	// Display name of the user or service principal.
-	DisplayName string `json:"display_name,omitempty"`
+	// Wire name: 'display_name'
+	DisplayName string ``
 	// name of the group
-	GroupName string `json:"group_name,omitempty"`
+	// Wire name: 'group_name'
+	GroupName string ``
 	// Name of the service principal.
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string ``
 	// name of the user
-	UserName string `json:"user_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'user_name'
+	UserName        string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *JobAccessControlResponse) UnmarshalJSON(b []byte) error {
@@ -1678,28 +4415,118 @@ func (s JobAccessControlResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func JobAccessControlResponseToPb(st *JobAccessControlResponse) (*jobspb.JobAccessControlResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobAccessControlResponsePb{}
+
+	var allPermissionsPb []jobspb.JobPermissionPb
+	for _, item := range st.AllPermissions {
+		itemPb, err := JobPermissionToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			allPermissionsPb = append(allPermissionsPb, *itemPb)
+		}
+	}
+	pb.AllPermissions = allPermissionsPb
+	pb.DisplayName = st.DisplayName
+	pb.GroupName = st.GroupName
+	pb.ServicePrincipalName = st.ServicePrincipalName
+	pb.UserName = st.UserName
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func JobAccessControlResponseFromPb(pb *jobspb.JobAccessControlResponsePb) (*JobAccessControlResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobAccessControlResponse{}
+
+	var allPermissionsField []JobPermission
+	for _, itemPb := range pb.AllPermissions {
+		item, err := JobPermissionFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
+		}
+	}
+	st.AllPermissions = allPermissionsField
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type JobCluster struct {
 	// A unique name for the job cluster. This field is required and must be
 	// unique within the job. `JobTaskSettings` may refer to this field to
 	// determine which cluster to launch for the task execution.
-	JobClusterKey string `json:"job_cluster_key"`
+	// Wire name: 'job_cluster_key'
+	JobClusterKey string ``
 	// If new_cluster, a description of a cluster that is created for each task.
-	NewCluster compute.ClusterSpec `json:"new_cluster"`
+	// Wire name: 'new_cluster'
+	NewCluster compute.ClusterSpec ``
+}
+
+func JobClusterToPb(st *JobCluster) (*jobspb.JobClusterPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobClusterPb{}
+	pb.JobClusterKey = st.JobClusterKey
+	newClusterPb, err := compute.ClusterSpecToPb(&st.NewCluster)
+	if err != nil {
+		return nil, err
+	}
+	if newClusterPb != nil {
+		pb.NewCluster = *newClusterPb
+	}
+
+	return pb, nil
+}
+
+func JobClusterFromPb(pb *jobspb.JobClusterPb) (*JobCluster, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobCluster{}
+	st.JobClusterKey = pb.JobClusterKey
+	newClusterField, err := compute.ClusterSpecFromPb(&pb.NewCluster)
+	if err != nil {
+		return nil, err
+	}
+	if newClusterField != nil {
+		st.NewCluster = *newClusterField
+	}
+
+	return st, nil
 }
 
 type JobCompliance struct {
 	// Whether this job is in compliance with the latest version of its policy.
-	IsCompliant bool `json:"is_compliant,omitempty"`
+	// Wire name: 'is_compliant'
+	IsCompliant bool ``
 	// Canonical unique identifier for a job.
-	JobId int64 `json:"job_id"`
+	// Wire name: 'job_id'
+	JobId int64 ``
 	// An object containing key-value mappings representing the first 200 policy
 	// validation errors. The keys indicate the path where the policy validation
 	// error is occurring. An identifier for the job cluster is prepended to the
 	// path. The values indicate an error message describing the policy
 	// validation error.
-	Violations map[string]string `json:"violations,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'violations'
+	Violations      map[string]string ``
+	ForceSendFields []string          `tf:"-"`
 }
 
 func (s *JobCompliance) UnmarshalJSON(b []byte) error {
@@ -1710,15 +4537,42 @@ func (s JobCompliance) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func JobComplianceToPb(st *JobCompliance) (*jobspb.JobCompliancePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobCompliancePb{}
+	pb.IsCompliant = st.IsCompliant
+	pb.JobId = st.JobId
+	pb.Violations = st.Violations
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func JobComplianceFromPb(pb *jobspb.JobCompliancePb) (*JobCompliance, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobCompliance{}
+	st.IsCompliant = pb.IsCompliant
+	st.JobId = pb.JobId
+	st.Violations = pb.Violations
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type JobDeployment struct {
 	// The kind of deployment that manages the job.
 	//
 	// * `BUNDLE`: The job is managed by Databricks Asset Bundle.
-	Kind JobDeploymentKind `json:"kind"`
+	// Wire name: 'kind'
+	Kind JobDeploymentKind ``
 	// Path of the file that contains deployment metadata.
-	MetadataFilePath string `json:"metadata_file_path,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'metadata_file_path'
+	MetadataFilePath string   ``
+	ForceSendFields  []string `tf:"-"`
 }
 
 func (s *JobDeployment) UnmarshalJSON(b []byte) error {
@@ -1727,6 +4581,42 @@ func (s *JobDeployment) UnmarshalJSON(b []byte) error {
 
 func (s JobDeployment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func JobDeploymentToPb(st *JobDeployment) (*jobspb.JobDeploymentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobDeploymentPb{}
+	kindPb, err := JobDeploymentKindToPb(&st.Kind)
+	if err != nil {
+		return nil, err
+	}
+	if kindPb != nil {
+		pb.Kind = *kindPb
+	}
+	pb.MetadataFilePath = st.MetadataFilePath
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func JobDeploymentFromPb(pb *jobspb.JobDeploymentPb) (*JobDeployment, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobDeployment{}
+	kindField, err := JobDeploymentKindFromPb(&pb.Kind)
+	if err != nil {
+		return nil, err
+	}
+	if kindField != nil {
+		st.Kind = *kindField
+	}
+	st.MetadataFilePath = pb.MetadataFilePath
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // * `BUNDLE`: The job is managed by Databricks Asset Bundle.
@@ -1763,6 +4653,22 @@ func (f *JobDeploymentKind) Values() []JobDeploymentKind {
 // Type always returns JobDeploymentKind to satisfy [pflag.Value] interface
 func (f *JobDeploymentKind) Type() string {
 	return "JobDeploymentKind"
+}
+
+func JobDeploymentKindToPb(st *JobDeploymentKind) (*jobspb.JobDeploymentKindPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.JobDeploymentKindPb(*st)
+	return &pb, nil
+}
+
+func JobDeploymentKindFromPb(pb *jobspb.JobDeploymentKindPb) (*JobDeploymentKind, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := JobDeploymentKind(*pb)
+	return &st, nil
 }
 
 // Edit mode of the job.
@@ -1808,26 +4714,46 @@ func (f *JobEditMode) Type() string {
 	return "JobEditMode"
 }
 
+func JobEditModeToPb(st *JobEditMode) (*jobspb.JobEditModePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.JobEditModePb(*st)
+	return &pb, nil
+}
+
+func JobEditModeFromPb(pb *jobspb.JobEditModePb) (*JobEditMode, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := JobEditMode(*pb)
+	return &st, nil
+}
+
 type JobEmailNotifications struct {
 	// If true, do not send email to recipients specified in `on_failure` if the
 	// run is skipped. This field is `deprecated`. Please use the
 	// `notification_settings.no_alert_for_skipped_runs` field.
-	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
+	// Wire name: 'no_alert_for_skipped_runs'
+	NoAlertForSkippedRuns bool ``
 	// A list of email addresses to be notified when the duration of a run
 	// exceeds the threshold specified for the `RUN_DURATION_SECONDS` metric in
 	// the `health` field. If no rule for the `RUN_DURATION_SECONDS` metric is
 	// specified in the `health` field for the job, notifications are not sent.
-	OnDurationWarningThresholdExceeded []string `json:"on_duration_warning_threshold_exceeded,omitempty"`
+	// Wire name: 'on_duration_warning_threshold_exceeded'
+	OnDurationWarningThresholdExceeded []string ``
 	// A list of email addresses to be notified when a run unsuccessfully
 	// completes. A run is considered to have completed unsuccessfully if it
 	// ends with an `INTERNAL_ERROR` `life_cycle_state` or a `FAILED`, or
 	// `TIMED_OUT` result_state. If this is not specified on job creation,
 	// reset, or update the list is empty, and notifications are not sent.
-	OnFailure []string `json:"on_failure,omitempty"`
+	// Wire name: 'on_failure'
+	OnFailure []string ``
 	// A list of email addresses to be notified when a run begins. If not
 	// specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
-	OnStart []string `json:"on_start,omitempty"`
+	// Wire name: 'on_start'
+	OnStart []string ``
 	// A list of email addresses to notify when any streaming backlog thresholds
 	// are exceeded for any stream. Streaming backlog thresholds can be set in
 	// the `health` field using the following metrics:
@@ -1835,15 +4761,16 @@ type JobEmailNotifications struct {
 	// `STREAMING_BACKLOG_SECONDS`, or `STREAMING_BACKLOG_FILES`. Alerting is
 	// based on the 10-minute average of these metrics. If the issue persists,
 	// notifications are resent every 30 minutes.
-	OnStreamingBacklogExceeded []string `json:"on_streaming_backlog_exceeded,omitempty"`
+	// Wire name: 'on_streaming_backlog_exceeded'
+	OnStreamingBacklogExceeded []string ``
 	// A list of email addresses to be notified when a run successfully
 	// completes. A run is considered to have completed successfully if it ends
 	// with a `TERMINATED` `life_cycle_state` and a `SUCCESS` result_state. If
 	// not specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
-	OnSuccess []string `json:"on_success,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'on_success'
+	OnSuccess       []string ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *JobEmailNotifications) UnmarshalJSON(b []byte) error {
@@ -1854,22 +4781,91 @@ func (s JobEmailNotifications) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func JobEmailNotificationsToPb(st *JobEmailNotifications) (*jobspb.JobEmailNotificationsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobEmailNotificationsPb{}
+	pb.NoAlertForSkippedRuns = st.NoAlertForSkippedRuns
+	pb.OnDurationWarningThresholdExceeded = st.OnDurationWarningThresholdExceeded
+	pb.OnFailure = st.OnFailure
+	pb.OnStart = st.OnStart
+	pb.OnStreamingBacklogExceeded = st.OnStreamingBacklogExceeded
+	pb.OnSuccess = st.OnSuccess
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func JobEmailNotificationsFromPb(pb *jobspb.JobEmailNotificationsPb) (*JobEmailNotifications, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobEmailNotifications{}
+	st.NoAlertForSkippedRuns = pb.NoAlertForSkippedRuns
+	st.OnDurationWarningThresholdExceeded = pb.OnDurationWarningThresholdExceeded
+	st.OnFailure = pb.OnFailure
+	st.OnStart = pb.OnStart
+	st.OnStreamingBacklogExceeded = pb.OnStreamingBacklogExceeded
+	st.OnSuccess = pb.OnSuccess
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type JobEnvironment struct {
 	// The key of an environment. It has to be unique within a job.
-	EnvironmentKey string `json:"environment_key"`
+	// Wire name: 'environment_key'
+	EnvironmentKey string ``
 
-	Spec *compute.Environment `json:"spec,omitempty"`
+	// Wire name: 'spec'
+	Spec *compute.Environment ``
+}
+
+func JobEnvironmentToPb(st *JobEnvironment) (*jobspb.JobEnvironmentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobEnvironmentPb{}
+	pb.EnvironmentKey = st.EnvironmentKey
+	specPb, err := compute.EnvironmentToPb(st.Spec)
+	if err != nil {
+		return nil, err
+	}
+	if specPb != nil {
+		pb.Spec = specPb
+	}
+
+	return pb, nil
+}
+
+func JobEnvironmentFromPb(pb *jobspb.JobEnvironmentPb) (*JobEnvironment, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobEnvironment{}
+	st.EnvironmentKey = pb.EnvironmentKey
+	specField, err := compute.EnvironmentFromPb(pb.Spec)
+	if err != nil {
+		return nil, err
+	}
+	if specField != nil {
+		st.Spec = specField
+	}
+
+	return st, nil
 }
 
 type JobNotificationSettings struct {
 	// If true, do not send notifications to recipients specified in
 	// `on_failure` if the run is canceled.
-	NoAlertForCanceledRuns bool `json:"no_alert_for_canceled_runs,omitempty"`
+	// Wire name: 'no_alert_for_canceled_runs'
+	NoAlertForCanceledRuns bool ``
 	// If true, do not send notifications to recipients specified in
 	// `on_failure` if the run is skipped.
-	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'no_alert_for_skipped_runs'
+	NoAlertForSkippedRuns bool     ``
+	ForceSendFields       []string `tf:"-"`
 }
 
 func (s *JobNotificationSettings) UnmarshalJSON(b []byte) error {
@@ -1880,15 +4876,41 @@ func (s JobNotificationSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func JobNotificationSettingsToPb(st *JobNotificationSettings) (*jobspb.JobNotificationSettingsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobNotificationSettingsPb{}
+	pb.NoAlertForCanceledRuns = st.NoAlertForCanceledRuns
+	pb.NoAlertForSkippedRuns = st.NoAlertForSkippedRuns
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func JobNotificationSettingsFromPb(pb *jobspb.JobNotificationSettingsPb) (*JobNotificationSettings, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobNotificationSettings{}
+	st.NoAlertForCanceledRuns = pb.NoAlertForCanceledRuns
+	st.NoAlertForSkippedRuns = pb.NoAlertForSkippedRuns
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type JobParameter struct {
 	// The optional default value of the parameter
-	Default string `json:"default,omitempty"`
+	// Wire name: 'default'
+	Default string ``
 	// The name of the parameter
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string ``
 	// The value used in the run
-	Value string `json:"value,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'value'
+	Value           string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *JobParameter) UnmarshalJSON(b []byte) error {
@@ -1899,22 +4921,75 @@ func (s JobParameter) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func JobParameterToPb(st *JobParameter) (*jobspb.JobParameterPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobParameterPb{}
+	pb.Default = st.Default
+	pb.Name = st.Name
+	pb.Value = st.Value
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func JobParameterFromPb(pb *jobspb.JobParameterPb) (*JobParameter, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobParameter{}
+	st.Default = pb.Default
+	st.Name = pb.Name
+	st.Value = pb.Value
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type JobParameterDefinition struct {
 	// Default value of the parameter.
-	Default string `json:"default"`
+	// Wire name: 'default'
+	Default string ``
 	// The name of the defined parameter. May only contain alphanumeric
 	// characters, `_`, `-`, and `.`
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string ``
+}
+
+func JobParameterDefinitionToPb(st *JobParameterDefinition) (*jobspb.JobParameterDefinitionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobParameterDefinitionPb{}
+	pb.Default = st.Default
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func JobParameterDefinitionFromPb(pb *jobspb.JobParameterDefinitionPb) (*JobParameterDefinition, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobParameterDefinition{}
+	st.Default = pb.Default
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 type JobPermission struct {
-	Inherited bool `json:"inherited,omitempty"`
 
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Wire name: 'inherited'
+	Inherited bool ``
 
-	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'inherited_from_object'
+	InheritedFromObject []string ``
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'permission_level'
+	PermissionLevel JobPermissionLevel ``
+	ForceSendFields []string           `tf:"-"`
 }
 
 func (s *JobPermission) UnmarshalJSON(b []byte) error {
@@ -1923,6 +4998,44 @@ func (s *JobPermission) UnmarshalJSON(b []byte) error {
 
 func (s JobPermission) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func JobPermissionToPb(st *JobPermission) (*jobspb.JobPermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobPermissionPb{}
+	pb.Inherited = st.Inherited
+	pb.InheritedFromObject = st.InheritedFromObject
+	permissionLevelPb, err := JobPermissionLevelToPb(&st.PermissionLevel)
+	if err != nil {
+		return nil, err
+	}
+	if permissionLevelPb != nil {
+		pb.PermissionLevel = *permissionLevelPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func JobPermissionFromPb(pb *jobspb.JobPermissionPb) (*JobPermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobPermission{}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	permissionLevelField, err := JobPermissionLevelFromPb(&pb.PermissionLevel)
+	if err != nil {
+		return nil, err
+	}
+	if permissionLevelField != nil {
+		st.PermissionLevel = *permissionLevelField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // Permission level
@@ -1969,14 +5082,33 @@ func (f *JobPermissionLevel) Type() string {
 	return "JobPermissionLevel"
 }
 
+func JobPermissionLevelToPb(st *JobPermissionLevel) (*jobspb.JobPermissionLevelPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.JobPermissionLevelPb(*st)
+	return &pb, nil
+}
+
+func JobPermissionLevelFromPb(pb *jobspb.JobPermissionLevelPb) (*JobPermissionLevel, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := JobPermissionLevel(*pb)
+	return &st, nil
+}
+
 type JobPermissions struct {
-	AccessControlList []JobAccessControlResponse `json:"access_control_list,omitempty"`
 
-	ObjectId string `json:"object_id,omitempty"`
+	// Wire name: 'access_control_list'
+	AccessControlList []JobAccessControlResponse ``
 
-	ObjectType string `json:"object_type,omitempty"`
+	// Wire name: 'object_id'
+	ObjectId string ``
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'object_type'
+	ObjectType      string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *JobPermissions) UnmarshalJSON(b []byte) error {
@@ -1987,12 +5119,62 @@ func (s JobPermissions) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func JobPermissionsToPb(st *JobPermissions) (*jobspb.JobPermissionsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobPermissionsPb{}
+
+	var accessControlListPb []jobspb.JobAccessControlResponsePb
+	for _, item := range st.AccessControlList {
+		itemPb, err := JobAccessControlResponseToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			accessControlListPb = append(accessControlListPb, *itemPb)
+		}
+	}
+	pb.AccessControlList = accessControlListPb
+	pb.ObjectId = st.ObjectId
+	pb.ObjectType = st.ObjectType
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func JobPermissionsFromPb(pb *jobspb.JobPermissionsPb) (*JobPermissions, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobPermissions{}
+
+	var accessControlListField []JobAccessControlResponse
+	for _, itemPb := range pb.AccessControlList {
+		item, err := JobAccessControlResponseFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
+		}
+	}
+	st.AccessControlList = accessControlListField
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type JobPermissionsDescription struct {
-	Description string `json:"description,omitempty"`
 
-	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'description'
+	Description string ``
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'permission_level'
+	PermissionLevel JobPermissionLevel ``
+	ForceSendFields []string           `tf:"-"`
 }
 
 func (s *JobPermissionsDescription) UnmarshalJSON(b []byte) error {
@@ -2003,10 +5185,93 @@ func (s JobPermissionsDescription) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func JobPermissionsDescriptionToPb(st *JobPermissionsDescription) (*jobspb.JobPermissionsDescriptionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobPermissionsDescriptionPb{}
+	pb.Description = st.Description
+	permissionLevelPb, err := JobPermissionLevelToPb(&st.PermissionLevel)
+	if err != nil {
+		return nil, err
+	}
+	if permissionLevelPb != nil {
+		pb.PermissionLevel = *permissionLevelPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func JobPermissionsDescriptionFromPb(pb *jobspb.JobPermissionsDescriptionPb) (*JobPermissionsDescription, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobPermissionsDescription{}
+	st.Description = pb.Description
+	permissionLevelField, err := JobPermissionLevelFromPb(&pb.PermissionLevel)
+	if err != nil {
+		return nil, err
+	}
+	if permissionLevelField != nil {
+		st.PermissionLevel = *permissionLevelField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type JobPermissionsRequest struct {
-	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
+
+	// Wire name: 'access_control_list'
+	AccessControlList []JobAccessControlRequest ``
 	// The job for which to get or manage permissions.
-	JobId string `json:"-" url:"-"`
+	// Wire name: 'job_id'
+	JobId string `tf:"-"`
+}
+
+func JobPermissionsRequestToPb(st *JobPermissionsRequest) (*jobspb.JobPermissionsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobPermissionsRequestPb{}
+
+	var accessControlListPb []jobspb.JobAccessControlRequestPb
+	for _, item := range st.AccessControlList {
+		itemPb, err := JobAccessControlRequestToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			accessControlListPb = append(accessControlListPb, *itemPb)
+		}
+	}
+	pb.AccessControlList = accessControlListPb
+	pb.JobId = st.JobId
+
+	return pb, nil
+}
+
+func JobPermissionsRequestFromPb(pb *jobspb.JobPermissionsRequestPb) (*JobPermissionsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobPermissionsRequest{}
+
+	var accessControlListField []JobAccessControlRequest
+	for _, itemPb := range pb.AccessControlList {
+		item, err := JobAccessControlRequestFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
+		}
+	}
+	st.AccessControlList = accessControlListField
+	st.JobId = pb.JobId
+
+	return st, nil
 }
 
 // Write-only setting. Specifies the user or service principal that the job runs
@@ -2017,12 +5282,13 @@ type JobPermissionsRequest struct {
 type JobRunAs struct {
 	// Application ID of an active service principal. Setting this field
 	// requires the `servicePrincipal/user` role.
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string ``
 	// The email of an active workspace user. Non-admin users can only set this
 	// field to their own email.
-	UserName string `json:"user_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'user_name'
+	UserName        string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *JobRunAs) UnmarshalJSON(b []byte) error {
@@ -2033,40 +5299,72 @@ func (s JobRunAs) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func JobRunAsToPb(st *JobRunAs) (*jobspb.JobRunAsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobRunAsPb{}
+	pb.ServicePrincipalName = st.ServicePrincipalName
+	pb.UserName = st.UserName
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func JobRunAsFromPb(pb *jobspb.JobRunAsPb) (*JobRunAs, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobRunAs{}
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type JobSettings struct {
 	// The id of the user specified budget policy to use for this job. If not
 	// specified, a default budget policy may be applied when creating or
 	// modifying the job. See `effective_budget_policy_id` for the budget policy
 	// used by this workload.
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Wire name: 'budget_policy_id'
+	BudgetPolicyId string ``
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
-	Continuous *Continuous `json:"continuous,omitempty"`
+	// Wire name: 'continuous'
+	Continuous *Continuous ``
 	// Deployment information for jobs managed by external sources.
-	Deployment *JobDeployment `json:"deployment,omitempty"`
+	// Wire name: 'deployment'
+	Deployment *JobDeployment ``
 	// An optional description for the job. The maximum length is 27700
 	// characters in UTF-8 encoding.
-	Description string `json:"description,omitempty"`
+	// Wire name: 'description'
+	Description string ``
 	// Edit mode of the job.
 	//
 	// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
 	// `EDITABLE`: The job is in an editable state and can be modified.
-	EditMode JobEditMode `json:"edit_mode,omitempty"`
+	// Wire name: 'edit_mode'
+	EditMode JobEditMode ``
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
-	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// Wire name: 'email_notifications'
+	EmailNotifications *JobEmailNotifications ``
 	// A list of task execution environment specifications that can be
 	// referenced by serverless tasks of this job. An environment is required to
 	// be present for serverless tasks. For serverless notebook tasks, the
 	// environment is accessible in the notebook environment panel. For other
 	// serverless tasks, the task environment is required to be specified using
 	// environment_key in the task settings.
-	Environments []JobEnvironment `json:"environments,omitempty"`
+	// Wire name: 'environments'
+	Environments []JobEnvironment ``
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
 	// always set to `"MULTI_TASK"`.
-	Format Format `json:"format,omitempty"`
+	// Wire name: 'format'
+	Format Format ``
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks.
@@ -2077,13 +5375,16 @@ type JobSettings struct {
 	//
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
-	GitSource *GitSource `json:"git_source,omitempty"`
+	// Wire name: 'git_source'
+	GitSource *GitSource ``
 
-	Health *JobsHealthRules `json:"health,omitempty"`
+	// Wire name: 'health'
+	Health *JobsHealthRules ``
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
 	// You must declare dependent libraries in task settings.
-	JobClusters []JobCluster `json:"job_clusters,omitempty"`
+	// Wire name: 'job_clusters'
+	JobClusters []JobCluster ``
 	// An optional maximum allowed number of concurrent runs of the job. Set
 	// this value if you want to be able to execute multiple runs of the same
 	// job concurrently. This is useful for example if you trigger your job on a
@@ -2095,39 +5396,48 @@ type JobSettings struct {
 	// runs. However, from then on, new runs are skipped unless there are fewer
 	// than 3 active runs. This value cannot exceed 1000. Setting this value to
 	// `0` causes all new runs to be skipped.
-	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
+	// Wire name: 'max_concurrent_runs'
+	MaxConcurrentRuns int ``
 	// An optional name for the job. The maximum length is 4096 bytes in UTF-8
 	// encoding.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string ``
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// job.
-	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
+	// Wire name: 'notification_settings'
+	NotificationSettings *JobNotificationSettings ``
 	// Job-level parameter definitions
-	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
+	// Wire name: 'parameters'
+	Parameters []JobParameterDefinition ``
 	// The performance mode on a serverless job. This field determines the level
 	// of compute performance or cost-efficiency for the run.
 	//
 	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
-	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
+	// Wire name: 'performance_target'
+	PerformanceTarget PerformanceTarget ``
 	// The queue settings of the job.
-	Queue *QueueSettings `json:"queue,omitempty"`
+	// Wire name: 'queue'
+	Queue *QueueSettings ``
 	// The user or service principal that the job runs as, if specified in the
 	// request. This field indicates the explicit configuration of `run_as` for
 	// the job. To find the value in all cases, explicit or implicit, use
 	// `run_as_user_name`.
-	RunAs *JobRunAs `json:"run_as,omitempty"`
+	// Wire name: 'run_as'
+	RunAs *JobRunAs ``
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
 	// or sending an API request to `runNow`.
-	Schedule *CronSchedule `json:"schedule,omitempty"`
+	// Wire name: 'schedule'
+	Schedule *CronSchedule ``
 	// A map of tags associated with the job. These are forwarded to the cluster
 	// as cluster tags for jobs clusters, and are subject to the same
 	// limitations as cluster tags. A maximum of 25 tags can be added to the
 	// job.
-	Tags map[string]string `json:"tags,omitempty"`
+	// Wire name: 'tags'
+	Tags map[string]string ``
 	// A list of task specifications to be executed by this job. It supports up
 	// to 1000 elements in write endpoints (:method:jobs/create,
 	// :method:jobs/reset, :method:jobs/update, :method:jobs/submit). Read
@@ -2135,19 +5445,22 @@ type JobSettings struct {
 	// you can paginate through them using :method:jobs/get. Use the
 	// `next_page_token` field at the object root to determine if more results
 	// are available.
-	Tasks []Task `json:"tasks,omitempty"`
+	// Wire name: 'tasks'
+	Tasks []Task ``
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// Wire name: 'timeout_seconds'
+	TimeoutSeconds int ``
 	// A configuration to trigger a run when certain conditions are met. The
 	// default behavior is that the job runs only when triggered by clicking
 	// “Run Now” in the Jobs UI or sending an API request to `runNow`.
-	Trigger *TriggerSettings `json:"trigger,omitempty"`
+	// Wire name: 'trigger'
+	Trigger *TriggerSettings ``
 	// A collection of system notification IDs to notify when runs of this job
 	// begin or complete.
-	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'webhook_notifications'
+	WebhookNotifications *WebhookNotifications ``
+	ForceSendFields      []string              `tf:"-"`
 }
 
 func (s *JobSettings) UnmarshalJSON(b []byte) error {
@@ -2156,6 +5469,330 @@ func (s *JobSettings) UnmarshalJSON(b []byte) error {
 
 func (s JobSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func JobSettingsToPb(st *JobSettings) (*jobspb.JobSettingsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobSettingsPb{}
+	pb.BudgetPolicyId = st.BudgetPolicyId
+	continuousPb, err := ContinuousToPb(st.Continuous)
+	if err != nil {
+		return nil, err
+	}
+	if continuousPb != nil {
+		pb.Continuous = continuousPb
+	}
+	deploymentPb, err := JobDeploymentToPb(st.Deployment)
+	if err != nil {
+		return nil, err
+	}
+	if deploymentPb != nil {
+		pb.Deployment = deploymentPb
+	}
+	pb.Description = st.Description
+	editModePb, err := JobEditModeToPb(&st.EditMode)
+	if err != nil {
+		return nil, err
+	}
+	if editModePb != nil {
+		pb.EditMode = *editModePb
+	}
+	emailNotificationsPb, err := JobEmailNotificationsToPb(st.EmailNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if emailNotificationsPb != nil {
+		pb.EmailNotifications = emailNotificationsPb
+	}
+
+	var environmentsPb []jobspb.JobEnvironmentPb
+	for _, item := range st.Environments {
+		itemPb, err := JobEnvironmentToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			environmentsPb = append(environmentsPb, *itemPb)
+		}
+	}
+	pb.Environments = environmentsPb
+	formatPb, err := FormatToPb(&st.Format)
+	if err != nil {
+		return nil, err
+	}
+	if formatPb != nil {
+		pb.Format = *formatPb
+	}
+	gitSourcePb, err := GitSourceToPb(st.GitSource)
+	if err != nil {
+		return nil, err
+	}
+	if gitSourcePb != nil {
+		pb.GitSource = gitSourcePb
+	}
+	healthPb, err := JobsHealthRulesToPb(st.Health)
+	if err != nil {
+		return nil, err
+	}
+	if healthPb != nil {
+		pb.Health = healthPb
+	}
+
+	var jobClustersPb []jobspb.JobClusterPb
+	for _, item := range st.JobClusters {
+		itemPb, err := JobClusterToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			jobClustersPb = append(jobClustersPb, *itemPb)
+		}
+	}
+	pb.JobClusters = jobClustersPb
+	pb.MaxConcurrentRuns = st.MaxConcurrentRuns
+	pb.Name = st.Name
+	notificationSettingsPb, err := JobNotificationSettingsToPb(st.NotificationSettings)
+	if err != nil {
+		return nil, err
+	}
+	if notificationSettingsPb != nil {
+		pb.NotificationSettings = notificationSettingsPb
+	}
+
+	var parametersPb []jobspb.JobParameterDefinitionPb
+	for _, item := range st.Parameters {
+		itemPb, err := JobParameterDefinitionToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			parametersPb = append(parametersPb, *itemPb)
+		}
+	}
+	pb.Parameters = parametersPb
+	performanceTargetPb, err := PerformanceTargetToPb(&st.PerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if performanceTargetPb != nil {
+		pb.PerformanceTarget = *performanceTargetPb
+	}
+	queuePb, err := QueueSettingsToPb(st.Queue)
+	if err != nil {
+		return nil, err
+	}
+	if queuePb != nil {
+		pb.Queue = queuePb
+	}
+	runAsPb, err := JobRunAsToPb(st.RunAs)
+	if err != nil {
+		return nil, err
+	}
+	if runAsPb != nil {
+		pb.RunAs = runAsPb
+	}
+	schedulePb, err := CronScheduleToPb(st.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if schedulePb != nil {
+		pb.Schedule = schedulePb
+	}
+	pb.Tags = st.Tags
+
+	var tasksPb []jobspb.TaskPb
+	for _, item := range st.Tasks {
+		itemPb, err := TaskToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			tasksPb = append(tasksPb, *itemPb)
+		}
+	}
+	pb.Tasks = tasksPb
+	pb.TimeoutSeconds = st.TimeoutSeconds
+	triggerPb, err := TriggerSettingsToPb(st.Trigger)
+	if err != nil {
+		return nil, err
+	}
+	if triggerPb != nil {
+		pb.Trigger = triggerPb
+	}
+	webhookNotificationsPb, err := WebhookNotificationsToPb(st.WebhookNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if webhookNotificationsPb != nil {
+		pb.WebhookNotifications = webhookNotificationsPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func JobSettingsFromPb(pb *jobspb.JobSettingsPb) (*JobSettings, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobSettings{}
+	st.BudgetPolicyId = pb.BudgetPolicyId
+	continuousField, err := ContinuousFromPb(pb.Continuous)
+	if err != nil {
+		return nil, err
+	}
+	if continuousField != nil {
+		st.Continuous = continuousField
+	}
+	deploymentField, err := JobDeploymentFromPb(pb.Deployment)
+	if err != nil {
+		return nil, err
+	}
+	if deploymentField != nil {
+		st.Deployment = deploymentField
+	}
+	st.Description = pb.Description
+	editModeField, err := JobEditModeFromPb(&pb.EditMode)
+	if err != nil {
+		return nil, err
+	}
+	if editModeField != nil {
+		st.EditMode = *editModeField
+	}
+	emailNotificationsField, err := JobEmailNotificationsFromPb(pb.EmailNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if emailNotificationsField != nil {
+		st.EmailNotifications = emailNotificationsField
+	}
+
+	var environmentsField []JobEnvironment
+	for _, itemPb := range pb.Environments {
+		item, err := JobEnvironmentFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			environmentsField = append(environmentsField, *item)
+		}
+	}
+	st.Environments = environmentsField
+	formatField, err := FormatFromPb(&pb.Format)
+	if err != nil {
+		return nil, err
+	}
+	if formatField != nil {
+		st.Format = *formatField
+	}
+	gitSourceField, err := GitSourceFromPb(pb.GitSource)
+	if err != nil {
+		return nil, err
+	}
+	if gitSourceField != nil {
+		st.GitSource = gitSourceField
+	}
+	healthField, err := JobsHealthRulesFromPb(pb.Health)
+	if err != nil {
+		return nil, err
+	}
+	if healthField != nil {
+		st.Health = healthField
+	}
+
+	var jobClustersField []JobCluster
+	for _, itemPb := range pb.JobClusters {
+		item, err := JobClusterFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			jobClustersField = append(jobClustersField, *item)
+		}
+	}
+	st.JobClusters = jobClustersField
+	st.MaxConcurrentRuns = pb.MaxConcurrentRuns
+	st.Name = pb.Name
+	notificationSettingsField, err := JobNotificationSettingsFromPb(pb.NotificationSettings)
+	if err != nil {
+		return nil, err
+	}
+	if notificationSettingsField != nil {
+		st.NotificationSettings = notificationSettingsField
+	}
+
+	var parametersField []JobParameterDefinition
+	for _, itemPb := range pb.Parameters {
+		item, err := JobParameterDefinitionFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			parametersField = append(parametersField, *item)
+		}
+	}
+	st.Parameters = parametersField
+	performanceTargetField, err := PerformanceTargetFromPb(&pb.PerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if performanceTargetField != nil {
+		st.PerformanceTarget = *performanceTargetField
+	}
+	queueField, err := QueueSettingsFromPb(pb.Queue)
+	if err != nil {
+		return nil, err
+	}
+	if queueField != nil {
+		st.Queue = queueField
+	}
+	runAsField, err := JobRunAsFromPb(pb.RunAs)
+	if err != nil {
+		return nil, err
+	}
+	if runAsField != nil {
+		st.RunAs = runAsField
+	}
+	scheduleField, err := CronScheduleFromPb(pb.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if scheduleField != nil {
+		st.Schedule = scheduleField
+	}
+	st.Tags = pb.Tags
+
+	var tasksField []Task
+	for _, itemPb := range pb.Tasks {
+		item, err := TaskFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			tasksField = append(tasksField, *item)
+		}
+	}
+	st.Tasks = tasksField
+	st.TimeoutSeconds = pb.TimeoutSeconds
+	triggerField, err := TriggerSettingsFromPb(pb.Trigger)
+	if err != nil {
+		return nil, err
+	}
+	if triggerField != nil {
+		st.Trigger = triggerField
+	}
+	webhookNotificationsField, err := WebhookNotificationsFromPb(pb.WebhookNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if webhookNotificationsField != nil {
+		st.WebhookNotifications = webhookNotificationsField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // The source of the job specification in the remote repository when the job is
@@ -2170,11 +5807,50 @@ type JobSource struct {
 	// disconnected from the remote job specification and is allowed for live
 	// edit. Import the remote job specification again from UI to make the job
 	// fully synced.
-	DirtyState JobSourceDirtyState `json:"dirty_state,omitempty"`
+	// Wire name: 'dirty_state'
+	DirtyState JobSourceDirtyState ``
 	// Name of the branch which the job is imported from.
-	ImportFromGitBranch string `json:"import_from_git_branch"`
+	// Wire name: 'import_from_git_branch'
+	ImportFromGitBranch string ``
 	// Path of the job YAML file that contains the job specification.
-	JobConfigPath string `json:"job_config_path"`
+	// Wire name: 'job_config_path'
+	JobConfigPath string ``
+}
+
+func JobSourceToPb(st *JobSource) (*jobspb.JobSourcePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobSourcePb{}
+	dirtyStatePb, err := JobSourceDirtyStateToPb(&st.DirtyState)
+	if err != nil {
+		return nil, err
+	}
+	if dirtyStatePb != nil {
+		pb.DirtyState = *dirtyStatePb
+	}
+	pb.ImportFromGitBranch = st.ImportFromGitBranch
+	pb.JobConfigPath = st.JobConfigPath
+
+	return pb, nil
+}
+
+func JobSourceFromPb(pb *jobspb.JobSourcePb) (*JobSource, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobSource{}
+	dirtyStateField, err := JobSourceDirtyStateFromPb(&pb.DirtyState)
+	if err != nil {
+		return nil, err
+	}
+	if dirtyStateField != nil {
+		st.DirtyState = *dirtyStateField
+	}
+	st.ImportFromGitBranch = pb.ImportFromGitBranch
+	st.JobConfigPath = pb.JobConfigPath
+
+	return st, nil
 }
 
 // Dirty state indicates the job is not fully synced with the job specification
@@ -2225,6 +5901,22 @@ func (f *JobSourceDirtyState) Values() []JobSourceDirtyState {
 // Type always returns JobSourceDirtyState to satisfy [pflag.Value] interface
 func (f *JobSourceDirtyState) Type() string {
 	return "JobSourceDirtyState"
+}
+
+func JobSourceDirtyStateToPb(st *JobSourceDirtyState) (*jobspb.JobSourceDirtyStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.JobSourceDirtyStatePb(*st)
+	return &pb, nil
+}
+
+func JobSourceDirtyStateFromPb(pb *jobspb.JobSourceDirtyStatePb) (*JobSourceDirtyState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := JobSourceDirtyState(*pb)
+	return &st, nil
 }
 
 // Specifies the health metric that is being evaluated for a particular health
@@ -2294,6 +5986,22 @@ func (f *JobsHealthMetric) Type() string {
 	return "JobsHealthMetric"
 }
 
+func JobsHealthMetricToPb(st *JobsHealthMetric) (*jobspb.JobsHealthMetricPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.JobsHealthMetricPb(*st)
+	return &pb, nil
+}
+
+func JobsHealthMetricFromPb(pb *jobspb.JobsHealthMetricPb) (*JobsHealthMetric, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := JobsHealthMetric(*pb)
+	return &st, nil
+}
+
 // Specifies the operator used to compare the health metric value with the
 // specified threshold.
 type JobsHealthOperator string
@@ -2330,33 +6038,147 @@ func (f *JobsHealthOperator) Type() string {
 	return "JobsHealthOperator"
 }
 
-type JobsHealthRule struct {
-	Metric JobsHealthMetric `json:"metric"`
+func JobsHealthOperatorToPb(st *JobsHealthOperator) (*jobspb.JobsHealthOperatorPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.JobsHealthOperatorPb(*st)
+	return &pb, nil
+}
 
-	Op JobsHealthOperator `json:"op"`
+func JobsHealthOperatorFromPb(pb *jobspb.JobsHealthOperatorPb) (*JobsHealthOperator, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := JobsHealthOperator(*pb)
+	return &st, nil
+}
+
+type JobsHealthRule struct {
+
+	// Wire name: 'metric'
+	Metric JobsHealthMetric ``
+
+	// Wire name: 'op'
+	Op JobsHealthOperator ``
 	// Specifies the threshold value that the health metric should obey to
 	// satisfy the health rule.
-	Value int64 `json:"value"`
+	// Wire name: 'value'
+	Value int64 ``
+}
+
+func JobsHealthRuleToPb(st *JobsHealthRule) (*jobspb.JobsHealthRulePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobsHealthRulePb{}
+	metricPb, err := JobsHealthMetricToPb(&st.Metric)
+	if err != nil {
+		return nil, err
+	}
+	if metricPb != nil {
+		pb.Metric = *metricPb
+	}
+	opPb, err := JobsHealthOperatorToPb(&st.Op)
+	if err != nil {
+		return nil, err
+	}
+	if opPb != nil {
+		pb.Op = *opPb
+	}
+	pb.Value = st.Value
+
+	return pb, nil
+}
+
+func JobsHealthRuleFromPb(pb *jobspb.JobsHealthRulePb) (*JobsHealthRule, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobsHealthRule{}
+	metricField, err := JobsHealthMetricFromPb(&pb.Metric)
+	if err != nil {
+		return nil, err
+	}
+	if metricField != nil {
+		st.Metric = *metricField
+	}
+	opField, err := JobsHealthOperatorFromPb(&pb.Op)
+	if err != nil {
+		return nil, err
+	}
+	if opField != nil {
+		st.Op = *opField
+	}
+	st.Value = pb.Value
+
+	return st, nil
 }
 
 // An optional set of health rules that can be defined for this job.
 type JobsHealthRules struct {
-	Rules []JobsHealthRule `json:"rules,omitempty"`
+
+	// Wire name: 'rules'
+	Rules []JobsHealthRule ``
+}
+
+func JobsHealthRulesToPb(st *JobsHealthRules) (*jobspb.JobsHealthRulesPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.JobsHealthRulesPb{}
+
+	var rulesPb []jobspb.JobsHealthRulePb
+	for _, item := range st.Rules {
+		itemPb, err := JobsHealthRuleToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			rulesPb = append(rulesPb, *itemPb)
+		}
+	}
+	pb.Rules = rulesPb
+
+	return pb, nil
+}
+
+func JobsHealthRulesFromPb(pb *jobspb.JobsHealthRulesPb) (*JobsHealthRules, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &JobsHealthRules{}
+
+	var rulesField []JobsHealthRule
+	for _, itemPb := range pb.Rules {
+		item, err := JobsHealthRuleFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			rulesField = append(rulesField, *item)
+		}
+	}
+	st.Rules = rulesField
+
+	return st, nil
 }
 
 type ListJobComplianceForPolicyResponse struct {
 	// A list of jobs and their policy compliance statuses.
-	Jobs []JobCompliance `json:"jobs,omitempty"`
+	// Wire name: 'jobs'
+	Jobs []JobCompliance ``
 	// This field represents the pagination token to retrieve the next page of
 	// results. If this field is not in the response, it means no further
 	// results for the request.
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string ``
 	// This field represents the pagination token to retrieve the previous page
 	// of results. If this field is not in the response, it means no further
 	// results for the request.
-	PrevPageToken string `json:"prev_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'prev_page_token'
+	PrevPageToken   string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ListJobComplianceForPolicyResponse) UnmarshalJSON(b []byte) error {
@@ -2367,18 +6189,68 @@ func (s ListJobComplianceForPolicyResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ListJobComplianceForPolicyResponseToPb(st *ListJobComplianceForPolicyResponse) (*jobspb.ListJobComplianceForPolicyResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ListJobComplianceForPolicyResponsePb{}
+
+	var jobsPb []jobspb.JobCompliancePb
+	for _, item := range st.Jobs {
+		itemPb, err := JobComplianceToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			jobsPb = append(jobsPb, *itemPb)
+		}
+	}
+	pb.Jobs = jobsPb
+	pb.NextPageToken = st.NextPageToken
+	pb.PrevPageToken = st.PrevPageToken
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListJobComplianceForPolicyResponseFromPb(pb *jobspb.ListJobComplianceForPolicyResponsePb) (*ListJobComplianceForPolicyResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListJobComplianceForPolicyResponse{}
+
+	var jobsField []JobCompliance
+	for _, itemPb := range pb.Jobs {
+		item, err := JobComplianceFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			jobsField = append(jobsField, *item)
+		}
+	}
+	st.Jobs = jobsField
+	st.NextPageToken = pb.NextPageToken
+	st.PrevPageToken = pb.PrevPageToken
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ListJobComplianceRequest struct {
 	// Use this field to specify the maximum number of results to be returned by
 	// the server. The server may further constrain the maximum number of
 	// results returned in a single page.
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// A page token that can be used to navigate to the next page or previous
 	// page as returned by `next_page_token` or `prev_page_token`.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Canonical unique identifier for the cluster policy.
-	PolicyId string `json:"-" url:"policy_id"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'policy_id'
+	PolicyId        string   `tf:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ListJobComplianceRequest) UnmarshalJSON(b []byte) error {
@@ -2389,25 +6261,55 @@ func (s ListJobComplianceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ListJobComplianceRequestToPb(st *ListJobComplianceRequest) (*jobspb.ListJobComplianceRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ListJobComplianceRequestPb{}
+	pb.PageSize = st.PageSize
+	pb.PageToken = st.PageToken
+	pb.PolicyId = st.PolicyId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListJobComplianceRequestFromPb(pb *jobspb.ListJobComplianceRequestPb) (*ListJobComplianceRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListJobComplianceRequest{}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
+	st.PolicyId = pb.PolicyId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ListJobsRequest struct {
 	// Whether to include task and cluster details in the response. Note that
 	// only the first 100 elements will be shown. Use :method:jobs/get to
 	// paginate through all tasks and clusters.
-	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
+	// Wire name: 'expand_tasks'
+	ExpandTasks bool `tf:"-"`
 	// The number of jobs to return. This value must be greater than 0 and less
 	// or equal to 100. The default value is 20.
-	Limit int `json:"-" url:"limit,omitempty"`
+	// Wire name: 'limit'
+	Limit int `tf:"-"`
 	// A filter on the list based on the exact (case insensitive) job name.
-	Name string `json:"-" url:"name,omitempty"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// The offset of the first job to return, relative to the most recently
 	// created job. Deprecated since June 2023. Use `page_token` to iterate
 	// through the pages instead.
-	Offset int `json:"-" url:"offset,omitempty"`
+	// Wire name: 'offset'
+	Offset int `tf:"-"`
 	// Use `next_page_token` or `prev_page_token` returned from the previous
 	// request to list the next or previous page of jobs respectively.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken       string   `tf:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ListJobsRequest) UnmarshalJSON(b []byte) error {
@@ -2418,21 +6320,54 @@ func (s ListJobsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ListJobsRequestToPb(st *ListJobsRequest) (*jobspb.ListJobsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ListJobsRequestPb{}
+	pb.ExpandTasks = st.ExpandTasks
+	pb.Limit = st.Limit
+	pb.Name = st.Name
+	pb.Offset = st.Offset
+	pb.PageToken = st.PageToken
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListJobsRequestFromPb(pb *jobspb.ListJobsRequestPb) (*ListJobsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListJobsRequest{}
+	st.ExpandTasks = pb.ExpandTasks
+	st.Limit = pb.Limit
+	st.Name = pb.Name
+	st.Offset = pb.Offset
+	st.PageToken = pb.PageToken
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // List of jobs was retrieved successfully.
 type ListJobsResponse struct {
 	// If true, additional jobs matching the provided filter are available for
 	// listing.
-	HasMore bool `json:"has_more,omitempty"`
+	// Wire name: 'has_more'
+	HasMore bool ``
 	// The list of jobs. Only included in the response if there are jobs to
 	// list.
-	Jobs []BaseJob `json:"jobs,omitempty"`
+	// Wire name: 'jobs'
+	Jobs []BaseJob ``
 	// A token that can be used to list the next page of jobs (if applicable).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string ``
 	// A token that can be used to list the previous page of jobs (if
 	// applicable).
-	PrevPageToken string `json:"prev_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'prev_page_token'
+	PrevPageToken   string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ListJobsResponse) UnmarshalJSON(b []byte) error {
@@ -2443,47 +6378,106 @@ func (s ListJobsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ListJobsResponseToPb(st *ListJobsResponse) (*jobspb.ListJobsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ListJobsResponsePb{}
+	pb.HasMore = st.HasMore
+
+	var jobsPb []jobspb.BaseJobPb
+	for _, item := range st.Jobs {
+		itemPb, err := BaseJobToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			jobsPb = append(jobsPb, *itemPb)
+		}
+	}
+	pb.Jobs = jobsPb
+	pb.NextPageToken = st.NextPageToken
+	pb.PrevPageToken = st.PrevPageToken
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListJobsResponseFromPb(pb *jobspb.ListJobsResponsePb) (*ListJobsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListJobsResponse{}
+	st.HasMore = pb.HasMore
+
+	var jobsField []BaseJob
+	for _, itemPb := range pb.Jobs {
+		item, err := BaseJobFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			jobsField = append(jobsField, *item)
+		}
+	}
+	st.Jobs = jobsField
+	st.NextPageToken = pb.NextPageToken
+	st.PrevPageToken = pb.PrevPageToken
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ListRunsRequest struct {
 	// If active_only is `true`, only active runs are included in the results;
 	// otherwise, lists both active and completed runs. An active run is a run
 	// in the `QUEUED`, `PENDING`, `RUNNING`, or `TERMINATING`. This field
 	// cannot be `true` when completed_only is `true`.
-	ActiveOnly bool `json:"-" url:"active_only,omitempty"`
+	// Wire name: 'active_only'
+	ActiveOnly bool `tf:"-"`
 	// If completed_only is `true`, only completed runs are included in the
 	// results; otherwise, lists both active and completed runs. This field
 	// cannot be `true` when active_only is `true`.
-	CompletedOnly bool `json:"-" url:"completed_only,omitempty"`
+	// Wire name: 'completed_only'
+	CompletedOnly bool `tf:"-"`
 	// Whether to include task and cluster details in the response. Note that
 	// only the first 100 elements will be shown. Use :method:jobs/getrun to
 	// paginate through all tasks and clusters.
-	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
+	// Wire name: 'expand_tasks'
+	ExpandTasks bool `tf:"-"`
 	// The job for which to list runs. If omitted, the Jobs service lists runs
 	// from all jobs.
-	JobId int64 `json:"-" url:"job_id,omitempty"`
+	// Wire name: 'job_id'
+	JobId int64 `tf:"-"`
 	// The number of runs to return. This value must be greater than 0 and less
 	// than 25. The default value is 20. If a request specifies a limit of 0,
 	// the service instead uses the maximum limit.
-	Limit int `json:"-" url:"limit,omitempty"`
+	// Wire name: 'limit'
+	Limit int `tf:"-"`
 	// The offset of the first run to return, relative to the most recent run.
 	// Deprecated since June 2023. Use `page_token` to iterate through the pages
 	// instead.
-	Offset int `json:"-" url:"offset,omitempty"`
+	// Wire name: 'offset'
+	Offset int `tf:"-"`
 	// Use `next_page_token` or `prev_page_token` returned from the previous
 	// request to list the next or previous page of runs respectively.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The type of runs to return. For a description of run types, see
 	// :method:jobs/getRun.
-	RunType RunType `json:"-" url:"run_type,omitempty"`
+	// Wire name: 'run_type'
+	RunType RunType `tf:"-"`
 	// Show runs that started _at or after_ this value. The value must be a UTC
 	// timestamp in milliseconds. Can be combined with _start_time_to_ to filter
 	// by a time range.
-	StartTimeFrom int64 `json:"-" url:"start_time_from,omitempty"`
+	// Wire name: 'start_time_from'
+	StartTimeFrom int64 `tf:"-"`
 	// Show runs that started _at or before_ this value. The value must be a UTC
 	// timestamp in milliseconds. Can be combined with _start_time_from_ to
 	// filter by a time range.
-	StartTimeTo int64 `json:"-" url:"start_time_to,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'start_time_to'
+	StartTimeTo     int64    `tf:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ListRunsRequest) UnmarshalJSON(b []byte) error {
@@ -2494,21 +6488,76 @@ func (s ListRunsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ListRunsRequestToPb(st *ListRunsRequest) (*jobspb.ListRunsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ListRunsRequestPb{}
+	pb.ActiveOnly = st.ActiveOnly
+	pb.CompletedOnly = st.CompletedOnly
+	pb.ExpandTasks = st.ExpandTasks
+	pb.JobId = st.JobId
+	pb.Limit = st.Limit
+	pb.Offset = st.Offset
+	pb.PageToken = st.PageToken
+	runTypePb, err := RunTypeToPb(&st.RunType)
+	if err != nil {
+		return nil, err
+	}
+	if runTypePb != nil {
+		pb.RunType = *runTypePb
+	}
+	pb.StartTimeFrom = st.StartTimeFrom
+	pb.StartTimeTo = st.StartTimeTo
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListRunsRequestFromPb(pb *jobspb.ListRunsRequestPb) (*ListRunsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListRunsRequest{}
+	st.ActiveOnly = pb.ActiveOnly
+	st.CompletedOnly = pb.CompletedOnly
+	st.ExpandTasks = pb.ExpandTasks
+	st.JobId = pb.JobId
+	st.Limit = pb.Limit
+	st.Offset = pb.Offset
+	st.PageToken = pb.PageToken
+	runTypeField, err := RunTypeFromPb(&pb.RunType)
+	if err != nil {
+		return nil, err
+	}
+	if runTypeField != nil {
+		st.RunType = *runTypeField
+	}
+	st.StartTimeFrom = pb.StartTimeFrom
+	st.StartTimeTo = pb.StartTimeTo
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // List of runs was retrieved successfully.
 type ListRunsResponse struct {
 	// If true, additional runs matching the provided filter are available for
 	// listing.
-	HasMore bool `json:"has_more,omitempty"`
+	// Wire name: 'has_more'
+	HasMore bool ``
 	// A token that can be used to list the next page of runs (if applicable).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string ``
 	// A token that can be used to list the previous page of runs (if
 	// applicable).
-	PrevPageToken string `json:"prev_page_token,omitempty"`
+	// Wire name: 'prev_page_token'
+	PrevPageToken string ``
 	// A list of runs, from most recently started to least. Only included in the
 	// response if there are runs to list.
-	Runs []BaseRun `json:"runs,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'runs'
+	Runs            []BaseRun ``
+	ForceSendFields []string  `tf:"-"`
 }
 
 func (s *ListRunsResponse) UnmarshalJSON(b []byte) error {
@@ -2519,6 +6568,56 @@ func (s ListRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ListRunsResponseToPb(st *ListRunsResponse) (*jobspb.ListRunsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ListRunsResponsePb{}
+	pb.HasMore = st.HasMore
+	pb.NextPageToken = st.NextPageToken
+	pb.PrevPageToken = st.PrevPageToken
+
+	var runsPb []jobspb.BaseRunPb
+	for _, item := range st.Runs {
+		itemPb, err := BaseRunToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			runsPb = append(runsPb, *itemPb)
+		}
+	}
+	pb.Runs = runsPb
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ListRunsResponseFromPb(pb *jobspb.ListRunsResponsePb) (*ListRunsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListRunsResponse{}
+	st.HasMore = pb.HasMore
+	st.NextPageToken = pb.NextPageToken
+	st.PrevPageToken = pb.PrevPageToken
+
+	var runsField []BaseRun
+	for _, itemPb := range pb.Runs {
+		item, err := BaseRunFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			runsField = append(runsField, *item)
+		}
+	}
+	st.Runs = runsField
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type NotebookOutput struct {
 	// The value passed to
 	// [dbutils.notebook.exit()](/notebooks/notebook-workflows.html#notebook-workflows-exit).
@@ -2526,11 +6625,12 @@ type NotebookOutput struct {
 	// a larger result, your job can store the results in a cloud storage
 	// service. This field is absent if `dbutils.notebook.exit()` was never
 	// called.
-	Result string `json:"result,omitempty"`
+	// Wire name: 'result'
+	Result string ``
 	// Whether or not the result was truncated.
-	Truncated bool `json:"truncated,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'truncated'
+	Truncated       bool     ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *NotebookOutput) UnmarshalJSON(b []byte) error {
@@ -2539,6 +6639,30 @@ func (s *NotebookOutput) UnmarshalJSON(b []byte) error {
 
 func (s NotebookOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func NotebookOutputToPb(st *NotebookOutput) (*jobspb.NotebookOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.NotebookOutputPb{}
+	pb.Result = st.Result
+	pb.Truncated = st.Truncated
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func NotebookOutputFromPb(pb *jobspb.NotebookOutputPb) (*NotebookOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &NotebookOutput{}
+	st.Result = pb.Result
+	st.Truncated = pb.Truncated
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 type NotebookTask struct {
@@ -2559,12 +6683,14 @@ type NotebookTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-widgets
-	BaseParameters map[string]string `json:"base_parameters,omitempty"`
+	// Wire name: 'base_parameters'
+	BaseParameters map[string]string ``
 	// The path of the notebook to be run in the Databricks workspace or remote
 	// repository. For notebooks stored in the Databricks workspace, the path
 	// must be absolute and begin with a slash. For notebooks stored in a remote
 	// repository, the path must be relative. This field is required.
-	NotebookPath string `json:"notebook_path"`
+	// Wire name: 'notebook_path'
+	NotebookPath string ``
 	// Optional location type of the notebook. When set to `WORKSPACE`, the
 	// notebook will be retrieved from the local Databricks workspace. When set
 	// to `GIT`, the notebook will be retrieved from a Git repository defined in
@@ -2572,16 +6698,17 @@ type NotebookTask struct {
 	// `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`:
 	// Notebook is located in Databricks workspace. * `GIT`: Notebook is located
 	// in cloud Git provider.
-	Source Source `json:"source,omitempty"`
+	// Wire name: 'source'
+	Source Source ``
 	// Optional `warehouse_id` to run the notebook on a SQL warehouse. Classic
 	// SQL warehouses are NOT supported, please use serverless or pro SQL
 	// warehouses.
 	//
 	// Note that SQL warehouses only support SQL cells; if the notebook contains
 	// non-SQL cells, the run will fail.
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'warehouse_id'
+	WarehouseId     string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *NotebookTask) UnmarshalJSON(b []byte) error {
@@ -2592,17 +6719,60 @@ func (s NotebookTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func NotebookTaskToPb(st *NotebookTask) (*jobspb.NotebookTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.NotebookTaskPb{}
+	pb.BaseParameters = st.BaseParameters
+	pb.NotebookPath = st.NotebookPath
+	sourcePb, err := SourceToPb(&st.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourcePb != nil {
+		pb.Source = *sourcePb
+	}
+	pb.WarehouseId = st.WarehouseId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func NotebookTaskFromPb(pb *jobspb.NotebookTaskPb) (*NotebookTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &NotebookTask{}
+	st.BaseParameters = pb.BaseParameters
+	st.NotebookPath = pb.NotebookPath
+	sourceField, err := SourceFromPb(&pb.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourceField != nil {
+		st.Source = *sourceField
+	}
+	st.WarehouseId = pb.WarehouseId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // Stores the catalog name, schema name, and the output schema expiration time
 // for the clean room run.
 type OutputSchemaInfo struct {
-	CatalogName string `json:"catalog_name,omitempty"`
+
+	// Wire name: 'catalog_name'
+	CatalogName string ``
 	// The expiration time for the output schema as a Unix timestamp in
 	// milliseconds.
-	ExpirationTime int64 `json:"expiration_time,omitempty"`
+	// Wire name: 'expiration_time'
+	ExpirationTime int64 ``
 
-	SchemaName string `json:"schema_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'schema_name'
+	SchemaName      string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *OutputSchemaInfo) UnmarshalJSON(b []byte) error {
@@ -2611,6 +6781,32 @@ func (s *OutputSchemaInfo) UnmarshalJSON(b []byte) error {
 
 func (s OutputSchemaInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func OutputSchemaInfoToPb(st *OutputSchemaInfo) (*jobspb.OutputSchemaInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.OutputSchemaInfoPb{}
+	pb.CatalogName = st.CatalogName
+	pb.ExpirationTime = st.ExpirationTime
+	pb.SchemaName = st.SchemaName
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func OutputSchemaInfoFromPb(pb *jobspb.OutputSchemaInfoPb) (*OutputSchemaInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &OutputSchemaInfo{}
+	st.CatalogName = pb.CatalogName
+	st.ExpirationTime = pb.ExpirationTime
+	st.SchemaName = pb.SchemaName
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 type PauseStatus string
@@ -2648,6 +6844,22 @@ func (f *PauseStatus) Values() []PauseStatus {
 // Type always returns PauseStatus to satisfy [pflag.Value] interface
 func (f *PauseStatus) Type() string {
 	return "PauseStatus"
+}
+
+func PauseStatusToPb(st *PauseStatus) (*jobspb.PauseStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.PauseStatusPb(*st)
+	return &pb, nil
+}
+
+func PauseStatusFromPb(pb *jobspb.PauseStatusPb) (*PauseStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := PauseStatus(*pb)
+	return &st, nil
 }
 
 // PerformanceTarget defines how performant (lower latency) or cost efficient
@@ -2691,11 +6903,63 @@ func (f *PerformanceTarget) Type() string {
 	return "PerformanceTarget"
 }
 
+func PerformanceTargetToPb(st *PerformanceTarget) (*jobspb.PerformanceTargetPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.PerformanceTargetPb(*st)
+	return &pb, nil
+}
+
+func PerformanceTargetFromPb(pb *jobspb.PerformanceTargetPb) (*PerformanceTarget, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := PerformanceTarget(*pb)
+	return &st, nil
+}
+
 type PeriodicTriggerConfiguration struct {
 	// The interval at which the trigger should run.
-	Interval int `json:"interval"`
+	// Wire name: 'interval'
+	Interval int ``
 	// The unit of time for the interval.
-	Unit PeriodicTriggerConfigurationTimeUnit `json:"unit"`
+	// Wire name: 'unit'
+	Unit PeriodicTriggerConfigurationTimeUnit ``
+}
+
+func PeriodicTriggerConfigurationToPb(st *PeriodicTriggerConfiguration) (*jobspb.PeriodicTriggerConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.PeriodicTriggerConfigurationPb{}
+	pb.Interval = st.Interval
+	unitPb, err := PeriodicTriggerConfigurationTimeUnitToPb(&st.Unit)
+	if err != nil {
+		return nil, err
+	}
+	if unitPb != nil {
+		pb.Unit = *unitPb
+	}
+
+	return pb, nil
+}
+
+func PeriodicTriggerConfigurationFromPb(pb *jobspb.PeriodicTriggerConfigurationPb) (*PeriodicTriggerConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &PeriodicTriggerConfiguration{}
+	st.Interval = pb.Interval
+	unitField, err := PeriodicTriggerConfigurationTimeUnitFromPb(&pb.Unit)
+	if err != nil {
+		return nil, err
+	}
+	if unitField != nil {
+		st.Unit = *unitField
+	}
+
+	return st, nil
 }
 
 type PeriodicTriggerConfigurationTimeUnit string
@@ -2738,11 +7002,27 @@ func (f *PeriodicTriggerConfigurationTimeUnit) Type() string {
 	return "PeriodicTriggerConfigurationTimeUnit"
 }
 
+func PeriodicTriggerConfigurationTimeUnitToPb(st *PeriodicTriggerConfigurationTimeUnit) (*jobspb.PeriodicTriggerConfigurationTimeUnitPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.PeriodicTriggerConfigurationTimeUnitPb(*st)
+	return &pb, nil
+}
+
+func PeriodicTriggerConfigurationTimeUnitFromPb(pb *jobspb.PeriodicTriggerConfigurationTimeUnitPb) (*PeriodicTriggerConfigurationTimeUnit, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := PeriodicTriggerConfigurationTimeUnit(*pb)
+	return &st, nil
+}
+
 type PipelineParams struct {
 	// If true, triggers a full refresh on the delta live table.
-	FullRefresh bool `json:"full_refresh,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'full_refresh'
+	FullRefresh     bool     ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *PipelineParams) UnmarshalJSON(b []byte) error {
@@ -2753,13 +7033,36 @@ func (s PipelineParams) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func PipelineParamsToPb(st *PipelineParams) (*jobspb.PipelineParamsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.PipelineParamsPb{}
+	pb.FullRefresh = st.FullRefresh
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func PipelineParamsFromPb(pb *jobspb.PipelineParamsPb) (*PipelineParams, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &PipelineParams{}
+	st.FullRefresh = pb.FullRefresh
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type PipelineTask struct {
 	// If true, triggers a full refresh on the delta live table.
-	FullRefresh bool `json:"full_refresh,omitempty"`
+	// Wire name: 'full_refresh'
+	FullRefresh bool ``
 	// The full name of the pipeline task to execute.
-	PipelineId string `json:"pipeline_id"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'pipeline_id'
+	PipelineId      string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *PipelineTask) UnmarshalJSON(b []byte) error {
@@ -2770,19 +7073,47 @@ func (s PipelineTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func PipelineTaskToPb(st *PipelineTask) (*jobspb.PipelineTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.PipelineTaskPb{}
+	pb.FullRefresh = st.FullRefresh
+	pb.PipelineId = st.PipelineId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func PipelineTaskFromPb(pb *jobspb.PipelineTaskPb) (*PipelineTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &PipelineTask{}
+	st.FullRefresh = pb.FullRefresh
+	st.PipelineId = pb.PipelineId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type PowerBiModel struct {
 	// How the published Power BI model authenticates to Databricks
-	AuthenticationMethod AuthenticationMethod `json:"authentication_method,omitempty"`
+	// Wire name: 'authentication_method'
+	AuthenticationMethod AuthenticationMethod ``
 	// The name of the Power BI model
-	ModelName string `json:"model_name,omitempty"`
+	// Wire name: 'model_name'
+	ModelName string ``
 	// Whether to overwrite existing Power BI models
-	OverwriteExisting bool `json:"overwrite_existing,omitempty"`
+	// Wire name: 'overwrite_existing'
+	OverwriteExisting bool ``
 	// The default storage mode of the Power BI model
-	StorageMode StorageMode `json:"storage_mode,omitempty"`
+	// Wire name: 'storage_mode'
+	StorageMode StorageMode ``
 	// The name of the Power BI workspace of the model
-	WorkspaceName string `json:"workspace_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'workspace_name'
+	WorkspaceName   string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *PowerBiModel) UnmarshalJSON(b []byte) error {
@@ -2793,17 +7124,74 @@ func (s PowerBiModel) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func PowerBiModelToPb(st *PowerBiModel) (*jobspb.PowerBiModelPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.PowerBiModelPb{}
+	authenticationMethodPb, err := AuthenticationMethodToPb(&st.AuthenticationMethod)
+	if err != nil {
+		return nil, err
+	}
+	if authenticationMethodPb != nil {
+		pb.AuthenticationMethod = *authenticationMethodPb
+	}
+	pb.ModelName = st.ModelName
+	pb.OverwriteExisting = st.OverwriteExisting
+	storageModePb, err := StorageModeToPb(&st.StorageMode)
+	if err != nil {
+		return nil, err
+	}
+	if storageModePb != nil {
+		pb.StorageMode = *storageModePb
+	}
+	pb.WorkspaceName = st.WorkspaceName
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func PowerBiModelFromPb(pb *jobspb.PowerBiModelPb) (*PowerBiModel, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &PowerBiModel{}
+	authenticationMethodField, err := AuthenticationMethodFromPb(&pb.AuthenticationMethod)
+	if err != nil {
+		return nil, err
+	}
+	if authenticationMethodField != nil {
+		st.AuthenticationMethod = *authenticationMethodField
+	}
+	st.ModelName = pb.ModelName
+	st.OverwriteExisting = pb.OverwriteExisting
+	storageModeField, err := StorageModeFromPb(&pb.StorageMode)
+	if err != nil {
+		return nil, err
+	}
+	if storageModeField != nil {
+		st.StorageMode = *storageModeField
+	}
+	st.WorkspaceName = pb.WorkspaceName
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type PowerBiTable struct {
 	// The catalog name in Databricks
-	Catalog string `json:"catalog,omitempty"`
+	// Wire name: 'catalog'
+	Catalog string ``
 	// The table name in Databricks
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string ``
 	// The schema name in Databricks
-	Schema string `json:"schema,omitempty"`
+	// Wire name: 'schema'
+	Schema string ``
 	// The Power BI storage mode of the table
-	StorageMode StorageMode `json:"storage_mode,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'storage_mode'
+	StorageMode     StorageMode ``
+	ForceSendFields []string    `tf:"-"`
 }
 
 func (s *PowerBiTable) UnmarshalJSON(b []byte) error {
@@ -2814,20 +7202,64 @@ func (s PowerBiTable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func PowerBiTableToPb(st *PowerBiTable) (*jobspb.PowerBiTablePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.PowerBiTablePb{}
+	pb.Catalog = st.Catalog
+	pb.Name = st.Name
+	pb.Schema = st.Schema
+	storageModePb, err := StorageModeToPb(&st.StorageMode)
+	if err != nil {
+		return nil, err
+	}
+	if storageModePb != nil {
+		pb.StorageMode = *storageModePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func PowerBiTableFromPb(pb *jobspb.PowerBiTablePb) (*PowerBiTable, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &PowerBiTable{}
+	st.Catalog = pb.Catalog
+	st.Name = pb.Name
+	st.Schema = pb.Schema
+	storageModeField, err := StorageModeFromPb(&pb.StorageMode)
+	if err != nil {
+		return nil, err
+	}
+	if storageModeField != nil {
+		st.StorageMode = *storageModeField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type PowerBiTask struct {
 	// The resource name of the UC connection to authenticate from Databricks to
 	// Power BI
-	ConnectionResourceName string `json:"connection_resource_name,omitempty"`
+	// Wire name: 'connection_resource_name'
+	ConnectionResourceName string ``
 	// The semantic model to update
-	PowerBiModel *PowerBiModel `json:"power_bi_model,omitempty"`
+	// Wire name: 'power_bi_model'
+	PowerBiModel *PowerBiModel ``
 	// Whether the model should be refreshed after the update
-	RefreshAfterUpdate bool `json:"refresh_after_update,omitempty"`
+	// Wire name: 'refresh_after_update'
+	RefreshAfterUpdate bool ``
 	// The tables to be exported to Power BI
-	Tables []PowerBiTable `json:"tables,omitempty"`
+	// Wire name: 'tables'
+	Tables []PowerBiTable ``
 	// The SQL warehouse ID to use as the Power BI data source
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'warehouse_id'
+	WarehouseId     string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *PowerBiTask) UnmarshalJSON(b []byte) error {
@@ -2838,29 +7270,125 @@ func (s PowerBiTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func PowerBiTaskToPb(st *PowerBiTask) (*jobspb.PowerBiTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.PowerBiTaskPb{}
+	pb.ConnectionResourceName = st.ConnectionResourceName
+	powerBiModelPb, err := PowerBiModelToPb(st.PowerBiModel)
+	if err != nil {
+		return nil, err
+	}
+	if powerBiModelPb != nil {
+		pb.PowerBiModel = powerBiModelPb
+	}
+	pb.RefreshAfterUpdate = st.RefreshAfterUpdate
+
+	var tablesPb []jobspb.PowerBiTablePb
+	for _, item := range st.Tables {
+		itemPb, err := PowerBiTableToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			tablesPb = append(tablesPb, *itemPb)
+		}
+	}
+	pb.Tables = tablesPb
+	pb.WarehouseId = st.WarehouseId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func PowerBiTaskFromPb(pb *jobspb.PowerBiTaskPb) (*PowerBiTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &PowerBiTask{}
+	st.ConnectionResourceName = pb.ConnectionResourceName
+	powerBiModelField, err := PowerBiModelFromPb(pb.PowerBiModel)
+	if err != nil {
+		return nil, err
+	}
+	if powerBiModelField != nil {
+		st.PowerBiModel = powerBiModelField
+	}
+	st.RefreshAfterUpdate = pb.RefreshAfterUpdate
+
+	var tablesField []PowerBiTable
+	for _, itemPb := range pb.Tables {
+		item, err := PowerBiTableFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			tablesField = append(tablesField, *item)
+		}
+	}
+	st.Tables = tablesField
+	st.WarehouseId = pb.WarehouseId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type PythonWheelTask struct {
 	// Named entry point to use, if it does not exist in the metadata of the
 	// package it executes the function from the package directly using
 	// `$packageName.$entryPoint()`
-	EntryPoint string `json:"entry_point"`
+	// Wire name: 'entry_point'
+	EntryPoint string ``
 	// Command-line parameters passed to Python wheel task in the form of
 	// `["--name=task", "--data=dbfs:/path/to/data.json"]`. Leave it empty if
 	// `parameters` is not null.
-	NamedParameters map[string]string `json:"named_parameters,omitempty"`
+	// Wire name: 'named_parameters'
+	NamedParameters map[string]string ``
 	// Name of the package to execute
-	PackageName string `json:"package_name"`
+	// Wire name: 'package_name'
+	PackageName string ``
 	// Command-line parameters passed to Python wheel task. Leave it empty if
 	// `named_parameters` is not null.
-	Parameters []string `json:"parameters,omitempty"`
+	// Wire name: 'parameters'
+	Parameters []string ``
+}
+
+func PythonWheelTaskToPb(st *PythonWheelTask) (*jobspb.PythonWheelTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.PythonWheelTaskPb{}
+	pb.EntryPoint = st.EntryPoint
+	pb.NamedParameters = st.NamedParameters
+	pb.PackageName = st.PackageName
+	pb.Parameters = st.Parameters
+
+	return pb, nil
+}
+
+func PythonWheelTaskFromPb(pb *jobspb.PythonWheelTaskPb) (*PythonWheelTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &PythonWheelTask{}
+	st.EntryPoint = pb.EntryPoint
+	st.NamedParameters = pb.NamedParameters
+	st.PackageName = pb.PackageName
+	st.Parameters = pb.Parameters
+
+	return st, nil
 }
 
 type QueueDetails struct {
-	Code QueueDetailsCodeCode `json:"code,omitempty"`
+
+	// Wire name: 'code'
+	Code QueueDetailsCodeCode ``
 	// A descriptive message with the queuing details. This field is
 	// unstructured, and its exact format is subject to change.
-	Message string `json:"message,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'message'
+	Message         string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *QueueDetails) UnmarshalJSON(b []byte) error {
@@ -2869,6 +7397,42 @@ func (s *QueueDetails) UnmarshalJSON(b []byte) error {
 
 func (s QueueDetails) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func QueueDetailsToPb(st *QueueDetails) (*jobspb.QueueDetailsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.QueueDetailsPb{}
+	codePb, err := QueueDetailsCodeCodeToPb(&st.Code)
+	if err != nil {
+		return nil, err
+	}
+	if codePb != nil {
+		pb.Code = *codePb
+	}
+	pb.Message = st.Message
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func QueueDetailsFromPb(pb *jobspb.QueueDetailsPb) (*QueueDetails, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &QueueDetails{}
+	codeField, err := QueueDetailsCodeCodeFromPb(&pb.Code)
+	if err != nil {
+		return nil, err
+	}
+	if codeField != nil {
+		st.Code = *codeField
+	}
+	st.Message = pb.Message
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // The reason for queuing the run. * `ACTIVE_RUNS_LIMIT_REACHED`: The run was
@@ -2920,9 +7484,46 @@ func (f *QueueDetailsCodeCode) Type() string {
 	return "QueueDetailsCodeCode"
 }
 
+func QueueDetailsCodeCodeToPb(st *QueueDetailsCodeCode) (*jobspb.QueueDetailsCodeCodePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.QueueDetailsCodeCodePb(*st)
+	return &pb, nil
+}
+
+func QueueDetailsCodeCodeFromPb(pb *jobspb.QueueDetailsCodeCodePb) (*QueueDetailsCodeCode, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := QueueDetailsCodeCode(*pb)
+	return &st, nil
+}
+
 type QueueSettings struct {
 	// If true, enable queueing for the job. This is a required field.
-	Enabled bool `json:"enabled"`
+	// Wire name: 'enabled'
+	Enabled bool ``
+}
+
+func QueueSettingsToPb(st *QueueSettings) (*jobspb.QueueSettingsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.QueueSettingsPb{}
+	pb.Enabled = st.Enabled
+
+	return pb, nil
+}
+
+func QueueSettingsFromPb(pb *jobspb.QueueSettingsPb) (*QueueSettings, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &QueueSettings{}
+	st.Enabled = pb.Enabled
+
+	return st, nil
 }
 
 type RepairHistoryItem struct {
@@ -2934,26 +7535,33 @@ type RepairHistoryItem struct {
 	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
-	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
+	// Wire name: 'effective_performance_target'
+	EffectivePerformanceTarget PerformanceTarget ``
 	// The end time of the (repaired) run.
-	EndTime int64 `json:"end_time,omitempty"`
+	// Wire name: 'end_time'
+	EndTime int64 ``
 	// The ID of the repair. Only returned for the items that represent a repair
 	// in `repair_history`.
-	Id int64 `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id int64 ``
 	// The start time of the (repaired) run.
-	StartTime int64 `json:"start_time,omitempty"`
+	// Wire name: 'start_time'
+	StartTime int64 ``
 	// Deprecated. Please use the `status` field instead.
-	State *RunState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State *RunState ``
 
-	Status *RunStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status *RunStatus ``
 	// The run IDs of the task runs that ran as part of this repair history
 	// item.
-	TaskRunIds []int64 `json:"task_run_ids,omitempty"`
+	// Wire name: 'task_run_ids'
+	TaskRunIds []int64 ``
 	// The repair history item type. Indicates whether a run is the original run
 	// or a repair run.
-	Type RepairHistoryItemType `json:"type,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'type'
+	Type            RepairHistoryItemType ``
+	ForceSendFields []string              `tf:"-"`
 }
 
 func (s *RepairHistoryItem) UnmarshalJSON(b []byte) error {
@@ -2962,6 +7570,90 @@ func (s *RepairHistoryItem) UnmarshalJSON(b []byte) error {
 
 func (s RepairHistoryItem) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func RepairHistoryItemToPb(st *RepairHistoryItem) (*jobspb.RepairHistoryItemPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RepairHistoryItemPb{}
+	effectivePerformanceTargetPb, err := PerformanceTargetToPb(&st.EffectivePerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePerformanceTargetPb != nil {
+		pb.EffectivePerformanceTarget = *effectivePerformanceTargetPb
+	}
+	pb.EndTime = st.EndTime
+	pb.Id = st.Id
+	pb.StartTime = st.StartTime
+	statePb, err := RunStateToPb(st.State)
+	if err != nil {
+		return nil, err
+	}
+	if statePb != nil {
+		pb.State = statePb
+	}
+	statusPb, err := RunStatusToPb(st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = statusPb
+	}
+	pb.TaskRunIds = st.TaskRunIds
+	typePb, err := RepairHistoryItemTypeToPb(&st.Type)
+	if err != nil {
+		return nil, err
+	}
+	if typePb != nil {
+		pb.Type = *typePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func RepairHistoryItemFromPb(pb *jobspb.RepairHistoryItemPb) (*RepairHistoryItem, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RepairHistoryItem{}
+	effectivePerformanceTargetField, err := PerformanceTargetFromPb(&pb.EffectivePerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePerformanceTargetField != nil {
+		st.EffectivePerformanceTarget = *effectivePerformanceTargetField
+	}
+	st.EndTime = pb.EndTime
+	st.Id = pb.Id
+	st.StartTime = pb.StartTime
+	stateField, err := RunStateFromPb(pb.State)
+	if err != nil {
+		return nil, err
+	}
+	if stateField != nil {
+		st.State = stateField
+	}
+	statusField, err := RunStatusFromPb(pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = statusField
+	}
+	st.TaskRunIds = pb.TaskRunIds
+	typeField, err := RepairHistoryItemTypeFromPb(&pb.Type)
+	if err != nil {
+		return nil, err
+	}
+	if typeField != nil {
+		st.Type = *typeField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // The repair history item type. Indicates whether a run is the original run or
@@ -3003,11 +7695,28 @@ func (f *RepairHistoryItemType) Type() string {
 	return "RepairHistoryItemType"
 }
 
+func RepairHistoryItemTypeToPb(st *RepairHistoryItemType) (*jobspb.RepairHistoryItemTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.RepairHistoryItemTypePb(*st)
+	return &pb, nil
+}
+
+func RepairHistoryItemTypeFromPb(pb *jobspb.RepairHistoryItemTypePb) (*RepairHistoryItemType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := RepairHistoryItemType(*pb)
+	return &st, nil
+}
+
 type RepairRun struct {
 	// An array of commands to execute for jobs with the dbt task, for example
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt deps", "dbt seed", "dbt
 	// run"]`
-	DbtCommands []string `json:"dbt_commands,omitempty"`
+	// Wire name: 'dbt_commands'
+	DbtCommands []string ``
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
@@ -3020,14 +7729,17 @@ type RepairRun struct {
 	// about job runs.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	JarParams []string `json:"jar_params,omitempty"`
+	// Wire name: 'jar_params'
+	JarParams []string ``
 	// Job-level parameters used in the run. for example `"param":
 	// "overriding_val"`
-	JobParameters map[string]string `json:"job_parameters,omitempty"`
+	// Wire name: 'job_parameters'
+	JobParameters map[string]string ``
 	// The ID of the latest repair. This parameter is not required when
 	// repairing a run for the first time, but must be provided on subsequent
 	// requests to repair the same run.
-	LatestRepairId int64 `json:"latest_repair_id,omitempty"`
+	// Wire name: 'latest_repair_id'
+	LatestRepairId int64 ``
 	// A map from keys to values for jobs with notebook task, for example
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the [dbutils.widgets.get]
@@ -3047,7 +7759,8 @@ type RepairRun struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
-	NotebookParams map[string]string `json:"notebook_params,omitempty"`
+	// Wire name: 'notebook_params'
+	NotebookParams map[string]string ``
 	// The performance mode on a serverless job. The performance target
 	// determines the level of compute performance or cost-efficiency for the
 	// run. This field overrides the performance target defined on the job
@@ -3056,11 +7769,14 @@ type RepairRun struct {
 	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
-	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
+	// Wire name: 'performance_target'
+	PerformanceTarget PerformanceTarget ``
 	// Controls whether the pipeline should perform a full refresh
-	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
+	// Wire name: 'pipeline_params'
+	PipelineParams *PipelineParams ``
 
-	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
+	// Wire name: 'python_named_params'
+	PythonNamedParams map[string]string ``
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
@@ -3078,18 +7794,23 @@ type RepairRun struct {
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	PythonParams []string `json:"python_params,omitempty"`
+	// Wire name: 'python_params'
+	PythonParams []string ``
 	// If true, repair all failed tasks. Only one of `rerun_tasks` or
 	// `rerun_all_failed_tasks` can be used.
-	RerunAllFailedTasks bool `json:"rerun_all_failed_tasks,omitempty"`
+	// Wire name: 'rerun_all_failed_tasks'
+	RerunAllFailedTasks bool ``
 	// If true, repair all tasks that depend on the tasks in `rerun_tasks`, even
 	// if they were previously successful. Can be also used in combination with
 	// `rerun_all_failed_tasks`.
-	RerunDependentTasks bool `json:"rerun_dependent_tasks,omitempty"`
+	// Wire name: 'rerun_dependent_tasks'
+	RerunDependentTasks bool ``
 	// The task keys of the task runs to repair.
-	RerunTasks []string `json:"rerun_tasks,omitempty"`
+	// Wire name: 'rerun_tasks'
+	RerunTasks []string ``
 	// The job run ID of the run to repair. The run must not be in progress.
-	RunId int64 `json:"run_id"`
+	// Wire name: 'run_id'
+	RunId int64 ``
 	// A list of parameters for jobs with spark submit task, for example
 	// `"spark_submit_params": ["--class",
 	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
@@ -3108,13 +7829,14 @@ type RepairRun struct {
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
+	// Wire name: 'spark_submit_params'
+	SparkSubmitParams []string ``
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
-	SqlParams map[string]string `json:"sql_params,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'sql_params'
+	SqlParams       map[string]string ``
+	ForceSendFields []string          `tf:"-"`
 }
 
 func (s *RepairRun) UnmarshalJSON(b []byte) error {
@@ -3125,13 +7847,87 @@ func (s RepairRun) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func RepairRunToPb(st *RepairRun) (*jobspb.RepairRunPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RepairRunPb{}
+	pb.DbtCommands = st.DbtCommands
+	pb.JarParams = st.JarParams
+	pb.JobParameters = st.JobParameters
+	pb.LatestRepairId = st.LatestRepairId
+	pb.NotebookParams = st.NotebookParams
+	performanceTargetPb, err := PerformanceTargetToPb(&st.PerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if performanceTargetPb != nil {
+		pb.PerformanceTarget = *performanceTargetPb
+	}
+	pipelineParamsPb, err := PipelineParamsToPb(st.PipelineParams)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineParamsPb != nil {
+		pb.PipelineParams = pipelineParamsPb
+	}
+	pb.PythonNamedParams = st.PythonNamedParams
+	pb.PythonParams = st.PythonParams
+	pb.RerunAllFailedTasks = st.RerunAllFailedTasks
+	pb.RerunDependentTasks = st.RerunDependentTasks
+	pb.RerunTasks = st.RerunTasks
+	pb.RunId = st.RunId
+	pb.SparkSubmitParams = st.SparkSubmitParams
+	pb.SqlParams = st.SqlParams
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func RepairRunFromPb(pb *jobspb.RepairRunPb) (*RepairRun, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RepairRun{}
+	st.DbtCommands = pb.DbtCommands
+	st.JarParams = pb.JarParams
+	st.JobParameters = pb.JobParameters
+	st.LatestRepairId = pb.LatestRepairId
+	st.NotebookParams = pb.NotebookParams
+	performanceTargetField, err := PerformanceTargetFromPb(&pb.PerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if performanceTargetField != nil {
+		st.PerformanceTarget = *performanceTargetField
+	}
+	pipelineParamsField, err := PipelineParamsFromPb(pb.PipelineParams)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineParamsField != nil {
+		st.PipelineParams = pipelineParamsField
+	}
+	st.PythonNamedParams = pb.PythonNamedParams
+	st.PythonParams = pb.PythonParams
+	st.RerunAllFailedTasks = pb.RerunAllFailedTasks
+	st.RerunDependentTasks = pb.RerunDependentTasks
+	st.RerunTasks = pb.RerunTasks
+	st.RunId = pb.RunId
+	st.SparkSubmitParams = pb.SparkSubmitParams
+	st.SqlParams = pb.SqlParams
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // Run repair was initiated.
 type RepairRunResponse struct {
 	// The ID of the repair. Must be provided in subsequent repairs using the
 	// `latest_repair_id` field to ensure sequential repairs.
-	RepairId int64 `json:"repair_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'repair_id'
+	RepairId        int64    ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *RepairRunResponse) UnmarshalJSON(b []byte) error {
@@ -3142,23 +7938,83 @@ func (s RepairRunResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func RepairRunResponseToPb(st *RepairRunResponse) (*jobspb.RepairRunResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RepairRunResponsePb{}
+	pb.RepairId = st.RepairId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func RepairRunResponseFromPb(pb *jobspb.RepairRunResponsePb) (*RepairRunResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RepairRunResponse{}
+	st.RepairId = pb.RepairId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ResetJob struct {
 	// The canonical identifier of the job to reset. This field is required.
-	JobId int64 `json:"job_id"`
+	// Wire name: 'job_id'
+	JobId int64 ``
 	// The new settings of the job. These settings completely replace the old
 	// settings.
 	//
 	// Changes to the field `JobBaseSettings.timeout_seconds` are applied to
 	// active runs. Changes to other fields are applied to future runs only.
-	NewSettings JobSettings `json:"new_settings"`
+	// Wire name: 'new_settings'
+	NewSettings JobSettings ``
+}
+
+func ResetJobToPb(st *ResetJob) (*jobspb.ResetJobPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ResetJobPb{}
+	pb.JobId = st.JobId
+	newSettingsPb, err := JobSettingsToPb(&st.NewSettings)
+	if err != nil {
+		return nil, err
+	}
+	if newSettingsPb != nil {
+		pb.NewSettings = *newSettingsPb
+	}
+
+	return pb, nil
+}
+
+func ResetJobFromPb(pb *jobspb.ResetJobPb) (*ResetJob, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ResetJob{}
+	st.JobId = pb.JobId
+	newSettingsField, err := JobSettingsFromPb(&pb.NewSettings)
+	if err != nil {
+		return nil, err
+	}
+	if newSettingsField != nil {
+		st.NewSettings = *newSettingsField
+	}
+
+	return st, nil
 }
 
 type ResolvedConditionTaskValues struct {
-	Left string `json:"left,omitempty"`
 
-	Right string `json:"right,omitempty"`
+	// Wire name: 'left'
+	Left string ``
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'right'
+	Right           string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ResolvedConditionTaskValues) UnmarshalJSON(b []byte) error {
@@ -3169,54 +8025,385 @@ func (s ResolvedConditionTaskValues) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func ResolvedConditionTaskValuesToPb(st *ResolvedConditionTaskValues) (*jobspb.ResolvedConditionTaskValuesPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ResolvedConditionTaskValuesPb{}
+	pb.Left = st.Left
+	pb.Right = st.Right
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ResolvedConditionTaskValuesFromPb(pb *jobspb.ResolvedConditionTaskValuesPb) (*ResolvedConditionTaskValues, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ResolvedConditionTaskValues{}
+	st.Left = pb.Left
+	st.Right = pb.Right
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type ResolvedDbtTaskValues struct {
-	Commands []string `json:"commands,omitempty"`
+
+	// Wire name: 'commands'
+	Commands []string ``
+}
+
+func ResolvedDbtTaskValuesToPb(st *ResolvedDbtTaskValues) (*jobspb.ResolvedDbtTaskValuesPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ResolvedDbtTaskValuesPb{}
+	pb.Commands = st.Commands
+
+	return pb, nil
+}
+
+func ResolvedDbtTaskValuesFromPb(pb *jobspb.ResolvedDbtTaskValuesPb) (*ResolvedDbtTaskValues, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ResolvedDbtTaskValues{}
+	st.Commands = pb.Commands
+
+	return st, nil
 }
 
 type ResolvedNotebookTaskValues struct {
-	BaseParameters map[string]string `json:"base_parameters,omitempty"`
+
+	// Wire name: 'base_parameters'
+	BaseParameters map[string]string ``
+}
+
+func ResolvedNotebookTaskValuesToPb(st *ResolvedNotebookTaskValues) (*jobspb.ResolvedNotebookTaskValuesPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ResolvedNotebookTaskValuesPb{}
+	pb.BaseParameters = st.BaseParameters
+
+	return pb, nil
+}
+
+func ResolvedNotebookTaskValuesFromPb(pb *jobspb.ResolvedNotebookTaskValuesPb) (*ResolvedNotebookTaskValues, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ResolvedNotebookTaskValues{}
+	st.BaseParameters = pb.BaseParameters
+
+	return st, nil
 }
 
 type ResolvedParamPairValues struct {
-	Parameters map[string]string `json:"parameters,omitempty"`
+
+	// Wire name: 'parameters'
+	Parameters map[string]string ``
+}
+
+func ResolvedParamPairValuesToPb(st *ResolvedParamPairValues) (*jobspb.ResolvedParamPairValuesPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ResolvedParamPairValuesPb{}
+	pb.Parameters = st.Parameters
+
+	return pb, nil
+}
+
+func ResolvedParamPairValuesFromPb(pb *jobspb.ResolvedParamPairValuesPb) (*ResolvedParamPairValues, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ResolvedParamPairValues{}
+	st.Parameters = pb.Parameters
+
+	return st, nil
 }
 
 type ResolvedPythonWheelTaskValues struct {
-	NamedParameters map[string]string `json:"named_parameters,omitempty"`
 
-	Parameters []string `json:"parameters,omitempty"`
+	// Wire name: 'named_parameters'
+	NamedParameters map[string]string ``
+
+	// Wire name: 'parameters'
+	Parameters []string ``
+}
+
+func ResolvedPythonWheelTaskValuesToPb(st *ResolvedPythonWheelTaskValues) (*jobspb.ResolvedPythonWheelTaskValuesPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ResolvedPythonWheelTaskValuesPb{}
+	pb.NamedParameters = st.NamedParameters
+	pb.Parameters = st.Parameters
+
+	return pb, nil
+}
+
+func ResolvedPythonWheelTaskValuesFromPb(pb *jobspb.ResolvedPythonWheelTaskValuesPb) (*ResolvedPythonWheelTaskValues, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ResolvedPythonWheelTaskValues{}
+	st.NamedParameters = pb.NamedParameters
+	st.Parameters = pb.Parameters
+
+	return st, nil
 }
 
 type ResolvedRunJobTaskValues struct {
-	JobParameters map[string]string `json:"job_parameters,omitempty"`
 
-	Parameters map[string]string `json:"parameters,omitempty"`
+	// Wire name: 'job_parameters'
+	JobParameters map[string]string ``
+
+	// Wire name: 'parameters'
+	Parameters map[string]string ``
+}
+
+func ResolvedRunJobTaskValuesToPb(st *ResolvedRunJobTaskValues) (*jobspb.ResolvedRunJobTaskValuesPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ResolvedRunJobTaskValuesPb{}
+	pb.JobParameters = st.JobParameters
+	pb.Parameters = st.Parameters
+
+	return pb, nil
+}
+
+func ResolvedRunJobTaskValuesFromPb(pb *jobspb.ResolvedRunJobTaskValuesPb) (*ResolvedRunJobTaskValues, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ResolvedRunJobTaskValues{}
+	st.JobParameters = pb.JobParameters
+	st.Parameters = pb.Parameters
+
+	return st, nil
 }
 
 type ResolvedStringParamsValues struct {
-	Parameters []string `json:"parameters,omitempty"`
+
+	// Wire name: 'parameters'
+	Parameters []string ``
+}
+
+func ResolvedStringParamsValuesToPb(st *ResolvedStringParamsValues) (*jobspb.ResolvedStringParamsValuesPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ResolvedStringParamsValuesPb{}
+	pb.Parameters = st.Parameters
+
+	return pb, nil
+}
+
+func ResolvedStringParamsValuesFromPb(pb *jobspb.ResolvedStringParamsValuesPb) (*ResolvedStringParamsValues, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ResolvedStringParamsValues{}
+	st.Parameters = pb.Parameters
+
+	return st, nil
 }
 
 type ResolvedValues struct {
-	ConditionTask *ResolvedConditionTaskValues `json:"condition_task,omitempty"`
 
-	DbtTask *ResolvedDbtTaskValues `json:"dbt_task,omitempty"`
+	// Wire name: 'condition_task'
+	ConditionTask *ResolvedConditionTaskValues ``
 
-	NotebookTask *ResolvedNotebookTaskValues `json:"notebook_task,omitempty"`
+	// Wire name: 'dbt_task'
+	DbtTask *ResolvedDbtTaskValues ``
 
-	PythonWheelTask *ResolvedPythonWheelTaskValues `json:"python_wheel_task,omitempty"`
+	// Wire name: 'notebook_task'
+	NotebookTask *ResolvedNotebookTaskValues ``
 
-	RunJobTask *ResolvedRunJobTaskValues `json:"run_job_task,omitempty"`
+	// Wire name: 'python_wheel_task'
+	PythonWheelTask *ResolvedPythonWheelTaskValues ``
 
-	SimulationTask *ResolvedParamPairValues `json:"simulation_task,omitempty"`
+	// Wire name: 'run_job_task'
+	RunJobTask *ResolvedRunJobTaskValues ``
 
-	SparkJarTask *ResolvedStringParamsValues `json:"spark_jar_task,omitempty"`
+	// Wire name: 'simulation_task'
+	SimulationTask *ResolvedParamPairValues ``
 
-	SparkPythonTask *ResolvedStringParamsValues `json:"spark_python_task,omitempty"`
+	// Wire name: 'spark_jar_task'
+	SparkJarTask *ResolvedStringParamsValues ``
 
-	SparkSubmitTask *ResolvedStringParamsValues `json:"spark_submit_task,omitempty"`
+	// Wire name: 'spark_python_task'
+	SparkPythonTask *ResolvedStringParamsValues ``
 
-	SqlTask *ResolvedParamPairValues `json:"sql_task,omitempty"`
+	// Wire name: 'spark_submit_task'
+	SparkSubmitTask *ResolvedStringParamsValues ``
+
+	// Wire name: 'sql_task'
+	SqlTask *ResolvedParamPairValues ``
+}
+
+func ResolvedValuesToPb(st *ResolvedValues) (*jobspb.ResolvedValuesPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ResolvedValuesPb{}
+	conditionTaskPb, err := ResolvedConditionTaskValuesToPb(st.ConditionTask)
+	if err != nil {
+		return nil, err
+	}
+	if conditionTaskPb != nil {
+		pb.ConditionTask = conditionTaskPb
+	}
+	dbtTaskPb, err := ResolvedDbtTaskValuesToPb(st.DbtTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtTaskPb != nil {
+		pb.DbtTask = dbtTaskPb
+	}
+	notebookTaskPb, err := ResolvedNotebookTaskValuesToPb(st.NotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if notebookTaskPb != nil {
+		pb.NotebookTask = notebookTaskPb
+	}
+	pythonWheelTaskPb, err := ResolvedPythonWheelTaskValuesToPb(st.PythonWheelTask)
+	if err != nil {
+		return nil, err
+	}
+	if pythonWheelTaskPb != nil {
+		pb.PythonWheelTask = pythonWheelTaskPb
+	}
+	runJobTaskPb, err := ResolvedRunJobTaskValuesToPb(st.RunJobTask)
+	if err != nil {
+		return nil, err
+	}
+	if runJobTaskPb != nil {
+		pb.RunJobTask = runJobTaskPb
+	}
+	simulationTaskPb, err := ResolvedParamPairValuesToPb(st.SimulationTask)
+	if err != nil {
+		return nil, err
+	}
+	if simulationTaskPb != nil {
+		pb.SimulationTask = simulationTaskPb
+	}
+	sparkJarTaskPb, err := ResolvedStringParamsValuesToPb(st.SparkJarTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkJarTaskPb != nil {
+		pb.SparkJarTask = sparkJarTaskPb
+	}
+	sparkPythonTaskPb, err := ResolvedStringParamsValuesToPb(st.SparkPythonTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkPythonTaskPb != nil {
+		pb.SparkPythonTask = sparkPythonTaskPb
+	}
+	sparkSubmitTaskPb, err := ResolvedStringParamsValuesToPb(st.SparkSubmitTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkSubmitTaskPb != nil {
+		pb.SparkSubmitTask = sparkSubmitTaskPb
+	}
+	sqlTaskPb, err := ResolvedParamPairValuesToPb(st.SqlTask)
+	if err != nil {
+		return nil, err
+	}
+	if sqlTaskPb != nil {
+		pb.SqlTask = sqlTaskPb
+	}
+
+	return pb, nil
+}
+
+func ResolvedValuesFromPb(pb *jobspb.ResolvedValuesPb) (*ResolvedValues, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ResolvedValues{}
+	conditionTaskField, err := ResolvedConditionTaskValuesFromPb(pb.ConditionTask)
+	if err != nil {
+		return nil, err
+	}
+	if conditionTaskField != nil {
+		st.ConditionTask = conditionTaskField
+	}
+	dbtTaskField, err := ResolvedDbtTaskValuesFromPb(pb.DbtTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtTaskField != nil {
+		st.DbtTask = dbtTaskField
+	}
+	notebookTaskField, err := ResolvedNotebookTaskValuesFromPb(pb.NotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if notebookTaskField != nil {
+		st.NotebookTask = notebookTaskField
+	}
+	pythonWheelTaskField, err := ResolvedPythonWheelTaskValuesFromPb(pb.PythonWheelTask)
+	if err != nil {
+		return nil, err
+	}
+	if pythonWheelTaskField != nil {
+		st.PythonWheelTask = pythonWheelTaskField
+	}
+	runJobTaskField, err := ResolvedRunJobTaskValuesFromPb(pb.RunJobTask)
+	if err != nil {
+		return nil, err
+	}
+	if runJobTaskField != nil {
+		st.RunJobTask = runJobTaskField
+	}
+	simulationTaskField, err := ResolvedParamPairValuesFromPb(pb.SimulationTask)
+	if err != nil {
+		return nil, err
+	}
+	if simulationTaskField != nil {
+		st.SimulationTask = simulationTaskField
+	}
+	sparkJarTaskField, err := ResolvedStringParamsValuesFromPb(pb.SparkJarTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkJarTaskField != nil {
+		st.SparkJarTask = sparkJarTaskField
+	}
+	sparkPythonTaskField, err := ResolvedStringParamsValuesFromPb(pb.SparkPythonTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkPythonTaskField != nil {
+		st.SparkPythonTask = sparkPythonTaskField
+	}
+	sparkSubmitTaskField, err := ResolvedStringParamsValuesFromPb(pb.SparkSubmitTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkSubmitTaskField != nil {
+		st.SparkSubmitTask = sparkSubmitTaskField
+	}
+	sqlTaskField, err := ResolvedParamPairValuesFromPb(pb.SqlTask)
+	if err != nil {
+		return nil, err
+	}
+	if sqlTaskField != nil {
+		st.SqlTask = sqlTaskField
+	}
+
+	return st, nil
 }
 
 // Run was retrieved successfully
@@ -3228,25 +8415,31 @@ type Run struct {
 	// original attempt’s ID and an incrementing `attempt_number`. Runs are
 	// retried only until they succeed, and the maximum `attempt_number` is the
 	// same as the `max_retries` value for the job.
-	AttemptNumber int `json:"attempt_number,omitempty"`
+	// Wire name: 'attempt_number'
+	AttemptNumber int ``
 	// The time in milliseconds it took to terminate the cluster and clean up
 	// any associated artifacts. The duration of a task run is the sum of the
 	// `setup_duration`, `execution_duration`, and the `cleanup_duration`. The
 	// `cleanup_duration` field is set to 0 for multitask job runs. The total
 	// duration of a multitask job run is the value of the `run_duration` field.
-	CleanupDuration int64 `json:"cleanup_duration,omitempty"`
+	// Wire name: 'cleanup_duration'
+	CleanupDuration int64 ``
 	// The cluster used for this run. If the run is specified to use a new
 	// cluster, this field is set once the Jobs service has requested a cluster
 	// for the run.
-	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
+	// Wire name: 'cluster_instance'
+	ClusterInstance *ClusterInstance ``
 	// A snapshot of the job’s cluster specification when this run was
 	// created.
-	ClusterSpec *ClusterSpec `json:"cluster_spec,omitempty"`
+	// Wire name: 'cluster_spec'
+	ClusterSpec *ClusterSpec ``
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
-	CreatorUserName string `json:"creator_user_name,omitempty"`
+	// Wire name: 'creator_user_name'
+	CreatorUserName string ``
 	// Description of the run
-	Description string `json:"description,omitempty"`
+	// Wire name: 'description'
+	Description string ``
 	// The actual performance target used by the serverless run during
 	// execution. This can differ from the client-set performance target on the
 	// request depending on whether the performance mode is supported by the job
@@ -3255,10 +8448,12 @@ type Run struct {
 	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
-	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
+	// Wire name: 'effective_performance_target'
+	EffectivePerformanceTarget PerformanceTarget ``
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
-	EndTime int64 `json:"end_time,omitempty"`
+	// Wire name: 'end_time'
+	EndTime int64 ``
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
 	// encountered an unexpected error. The duration of a task run is the sum of
@@ -3266,7 +8461,8 @@ type Run struct {
 	// The `execution_duration` field is set to 0 for multitask job runs. The
 	// total duration of a multitask job run is the value of the `run_duration`
 	// field.
-	ExecutionDuration int64 `json:"execution_duration,omitempty"`
+	// Wire name: 'execution_duration'
+	ExecutionDuration int64 ``
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks.
@@ -3277,60 +8473,79 @@ type Run struct {
 	//
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
-	GitSource *GitSource `json:"git_source,omitempty"`
+	// Wire name: 'git_source'
+	GitSource *GitSource ``
 	// Indicates if the run has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/getrun
 	// endpoint. It is only relevant for API 2.2 :method:jobs/listruns requests
 	// with `expand_tasks=true`.
-	HasMore bool `json:"has_more,omitempty"`
+	// Wire name: 'has_more'
+	HasMore bool ``
 	// Only populated by for-each iterations. The parent for-each task is
 	// located in tasks array.
-	Iterations []RunTask `json:"iterations,omitempty"`
+	// Wire name: 'iterations'
+	Iterations []RunTask ``
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
 	// You must declare dependent libraries in task settings. If more than 100
 	// job clusters are available, you can paginate through them using
 	// :method:jobs/getrun.
-	JobClusters []JobCluster `json:"job_clusters,omitempty"`
+	// Wire name: 'job_clusters'
+	JobClusters []JobCluster ``
 	// The canonical identifier of the job that contains this run.
-	JobId int64 `json:"job_id,omitempty"`
+	// Wire name: 'job_id'
+	JobId int64 ``
 	// Job-level parameters used in the run
-	JobParameters []JobParameter `json:"job_parameters,omitempty"`
+	// Wire name: 'job_parameters'
+	JobParameters []JobParameter ``
 	// ID of the job run that this run belongs to. For legacy and single-task
 	// job runs the field is populated with the job run ID. For task runs, the
 	// field is populated with the ID of the job run that the task run belongs
 	// to.
-	JobRunId int64 `json:"job_run_id,omitempty"`
+	// Wire name: 'job_run_id'
+	JobRunId int64 ``
 	// A token that can be used to list the next page of array properties.
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string ``
 	// A unique identifier for this job run. This is set to the same value as
 	// `run_id`.
-	NumberInJob int64 `json:"number_in_job,omitempty"`
+	// Wire name: 'number_in_job'
+	NumberInJob int64 ``
 	// If this run is a retry of a prior run attempt, this field contains the
 	// run_id of the original attempt; otherwise, it is the same as the run_id.
-	OriginalAttemptRunId int64 `json:"original_attempt_run_id,omitempty"`
+	// Wire name: 'original_attempt_run_id'
+	OriginalAttemptRunId int64 ``
 	// The parameters used for this run.
-	OverridingParameters *RunParameters `json:"overriding_parameters,omitempty"`
+	// Wire name: 'overriding_parameters'
+	OverridingParameters *RunParameters ``
 	// The time in milliseconds that the run has spent in the queue.
-	QueueDuration int64 `json:"queue_duration,omitempty"`
+	// Wire name: 'queue_duration'
+	QueueDuration int64 ``
 	// The repair history of the run.
-	RepairHistory []RepairHistoryItem `json:"repair_history,omitempty"`
+	// Wire name: 'repair_history'
+	RepairHistory []RepairHistoryItem ``
 	// The time in milliseconds it took the job run and all of its repairs to
 	// finish.
-	RunDuration int64 `json:"run_duration,omitempty"`
+	// Wire name: 'run_duration'
+	RunDuration int64 ``
 	// The canonical identifier of the run. This ID is unique across all runs of
 	// all jobs.
-	RunId int64 `json:"run_id,omitempty"`
+	// Wire name: 'run_id'
+	RunId int64 ``
 	// An optional name for the run. The maximum length is 4096 bytes in UTF-8
 	// encoding.
-	RunName string `json:"run_name,omitempty"`
+	// Wire name: 'run_name'
+	RunName string ``
 	// The URL to the detail page of the run.
-	RunPageUrl string `json:"run_page_url,omitempty"`
+	// Wire name: 'run_page_url'
+	RunPageUrl string ``
 
-	RunType RunType `json:"run_type,omitempty"`
+	// Wire name: 'run_type'
+	RunType RunType ``
 	// The cron schedule that triggered this run if it was triggered by the
 	// periodic scheduler.
-	Schedule *CronSchedule `json:"schedule,omitempty"`
+	// Wire name: 'schedule'
+	Schedule *CronSchedule ``
 	// The time in milliseconds it took to set up the cluster. For runs that run
 	// on new clusters this is the cluster creation time, for runs that run on
 	// existing clusters this time should be very short. The duration of a task
@@ -3338,28 +8553,34 @@ type Run struct {
 	// `cleanup_duration`. The `setup_duration` field is set to 0 for multitask
 	// job runs. The total duration of a multitask job run is the value of the
 	// `run_duration` field.
-	SetupDuration int64 `json:"setup_duration,omitempty"`
+	// Wire name: 'setup_duration'
+	SetupDuration int64 ``
 	// The time at which this run was started in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC). This may not be the time when the job
 	// task starts executing, for example, if the job is scheduled to run on a
 	// new cluster, this is the time the cluster creation call is issued.
-	StartTime int64 `json:"start_time,omitempty"`
+	// Wire name: 'start_time'
+	StartTime int64 ``
 	// Deprecated. Please use the `status` field instead.
-	State *RunState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State *RunState ``
 
-	Status *RunStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status *RunStatus ``
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run resutls. If
 	// more than 100 tasks are available, you can paginate through them using
 	// :method:jobs/getrun. Use the `next_page_token` field at the object root
 	// to determine if more results are available.
-	Tasks []RunTask `json:"tasks,omitempty"`
+	// Wire name: 'tasks'
+	Tasks []RunTask ``
 
-	Trigger TriggerType `json:"trigger,omitempty"`
+	// Wire name: 'trigger'
+	Trigger TriggerType ``
 
-	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'trigger_info'
+	TriggerInfo     *TriggerInfo ``
+	ForceSendFields []string     `tf:"-"`
 }
 
 func (s *Run) UnmarshalJSON(b []byte) error {
@@ -3370,10 +8591,343 @@ func (s Run) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func RunToPb(st *Run) (*jobspb.RunPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RunPb{}
+	pb.AttemptNumber = st.AttemptNumber
+	pb.CleanupDuration = st.CleanupDuration
+	clusterInstancePb, err := ClusterInstanceToPb(st.ClusterInstance)
+	if err != nil {
+		return nil, err
+	}
+	if clusterInstancePb != nil {
+		pb.ClusterInstance = clusterInstancePb
+	}
+	clusterSpecPb, err := ClusterSpecToPb(st.ClusterSpec)
+	if err != nil {
+		return nil, err
+	}
+	if clusterSpecPb != nil {
+		pb.ClusterSpec = clusterSpecPb
+	}
+	pb.CreatorUserName = st.CreatorUserName
+	pb.Description = st.Description
+	effectivePerformanceTargetPb, err := PerformanceTargetToPb(&st.EffectivePerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePerformanceTargetPb != nil {
+		pb.EffectivePerformanceTarget = *effectivePerformanceTargetPb
+	}
+	pb.EndTime = st.EndTime
+	pb.ExecutionDuration = st.ExecutionDuration
+	gitSourcePb, err := GitSourceToPb(st.GitSource)
+	if err != nil {
+		return nil, err
+	}
+	if gitSourcePb != nil {
+		pb.GitSource = gitSourcePb
+	}
+	pb.HasMore = st.HasMore
+
+	var iterationsPb []jobspb.RunTaskPb
+	for _, item := range st.Iterations {
+		itemPb, err := RunTaskToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			iterationsPb = append(iterationsPb, *itemPb)
+		}
+	}
+	pb.Iterations = iterationsPb
+
+	var jobClustersPb []jobspb.JobClusterPb
+	for _, item := range st.JobClusters {
+		itemPb, err := JobClusterToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			jobClustersPb = append(jobClustersPb, *itemPb)
+		}
+	}
+	pb.JobClusters = jobClustersPb
+	pb.JobId = st.JobId
+
+	var jobParametersPb []jobspb.JobParameterPb
+	for _, item := range st.JobParameters {
+		itemPb, err := JobParameterToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			jobParametersPb = append(jobParametersPb, *itemPb)
+		}
+	}
+	pb.JobParameters = jobParametersPb
+	pb.JobRunId = st.JobRunId
+	pb.NextPageToken = st.NextPageToken
+	pb.NumberInJob = st.NumberInJob
+	pb.OriginalAttemptRunId = st.OriginalAttemptRunId
+	overridingParametersPb, err := RunParametersToPb(st.OverridingParameters)
+	if err != nil {
+		return nil, err
+	}
+	if overridingParametersPb != nil {
+		pb.OverridingParameters = overridingParametersPb
+	}
+	pb.QueueDuration = st.QueueDuration
+
+	var repairHistoryPb []jobspb.RepairHistoryItemPb
+	for _, item := range st.RepairHistory {
+		itemPb, err := RepairHistoryItemToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			repairHistoryPb = append(repairHistoryPb, *itemPb)
+		}
+	}
+	pb.RepairHistory = repairHistoryPb
+	pb.RunDuration = st.RunDuration
+	pb.RunId = st.RunId
+	pb.RunName = st.RunName
+	pb.RunPageUrl = st.RunPageUrl
+	runTypePb, err := RunTypeToPb(&st.RunType)
+	if err != nil {
+		return nil, err
+	}
+	if runTypePb != nil {
+		pb.RunType = *runTypePb
+	}
+	schedulePb, err := CronScheduleToPb(st.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if schedulePb != nil {
+		pb.Schedule = schedulePb
+	}
+	pb.SetupDuration = st.SetupDuration
+	pb.StartTime = st.StartTime
+	statePb, err := RunStateToPb(st.State)
+	if err != nil {
+		return nil, err
+	}
+	if statePb != nil {
+		pb.State = statePb
+	}
+	statusPb, err := RunStatusToPb(st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = statusPb
+	}
+
+	var tasksPb []jobspb.RunTaskPb
+	for _, item := range st.Tasks {
+		itemPb, err := RunTaskToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			tasksPb = append(tasksPb, *itemPb)
+		}
+	}
+	pb.Tasks = tasksPb
+	triggerPb, err := TriggerTypeToPb(&st.Trigger)
+	if err != nil {
+		return nil, err
+	}
+	if triggerPb != nil {
+		pb.Trigger = *triggerPb
+	}
+	triggerInfoPb, err := TriggerInfoToPb(st.TriggerInfo)
+	if err != nil {
+		return nil, err
+	}
+	if triggerInfoPb != nil {
+		pb.TriggerInfo = triggerInfoPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func RunFromPb(pb *jobspb.RunPb) (*Run, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &Run{}
+	st.AttemptNumber = pb.AttemptNumber
+	st.CleanupDuration = pb.CleanupDuration
+	clusterInstanceField, err := ClusterInstanceFromPb(pb.ClusterInstance)
+	if err != nil {
+		return nil, err
+	}
+	if clusterInstanceField != nil {
+		st.ClusterInstance = clusterInstanceField
+	}
+	clusterSpecField, err := ClusterSpecFromPb(pb.ClusterSpec)
+	if err != nil {
+		return nil, err
+	}
+	if clusterSpecField != nil {
+		st.ClusterSpec = clusterSpecField
+	}
+	st.CreatorUserName = pb.CreatorUserName
+	st.Description = pb.Description
+	effectivePerformanceTargetField, err := PerformanceTargetFromPb(&pb.EffectivePerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePerformanceTargetField != nil {
+		st.EffectivePerformanceTarget = *effectivePerformanceTargetField
+	}
+	st.EndTime = pb.EndTime
+	st.ExecutionDuration = pb.ExecutionDuration
+	gitSourceField, err := GitSourceFromPb(pb.GitSource)
+	if err != nil {
+		return nil, err
+	}
+	if gitSourceField != nil {
+		st.GitSource = gitSourceField
+	}
+	st.HasMore = pb.HasMore
+
+	var iterationsField []RunTask
+	for _, itemPb := range pb.Iterations {
+		item, err := RunTaskFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			iterationsField = append(iterationsField, *item)
+		}
+	}
+	st.Iterations = iterationsField
+
+	var jobClustersField []JobCluster
+	for _, itemPb := range pb.JobClusters {
+		item, err := JobClusterFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			jobClustersField = append(jobClustersField, *item)
+		}
+	}
+	st.JobClusters = jobClustersField
+	st.JobId = pb.JobId
+
+	var jobParametersField []JobParameter
+	for _, itemPb := range pb.JobParameters {
+		item, err := JobParameterFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			jobParametersField = append(jobParametersField, *item)
+		}
+	}
+	st.JobParameters = jobParametersField
+	st.JobRunId = pb.JobRunId
+	st.NextPageToken = pb.NextPageToken
+	st.NumberInJob = pb.NumberInJob
+	st.OriginalAttemptRunId = pb.OriginalAttemptRunId
+	overridingParametersField, err := RunParametersFromPb(pb.OverridingParameters)
+	if err != nil {
+		return nil, err
+	}
+	if overridingParametersField != nil {
+		st.OverridingParameters = overridingParametersField
+	}
+	st.QueueDuration = pb.QueueDuration
+
+	var repairHistoryField []RepairHistoryItem
+	for _, itemPb := range pb.RepairHistory {
+		item, err := RepairHistoryItemFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			repairHistoryField = append(repairHistoryField, *item)
+		}
+	}
+	st.RepairHistory = repairHistoryField
+	st.RunDuration = pb.RunDuration
+	st.RunId = pb.RunId
+	st.RunName = pb.RunName
+	st.RunPageUrl = pb.RunPageUrl
+	runTypeField, err := RunTypeFromPb(&pb.RunType)
+	if err != nil {
+		return nil, err
+	}
+	if runTypeField != nil {
+		st.RunType = *runTypeField
+	}
+	scheduleField, err := CronScheduleFromPb(pb.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if scheduleField != nil {
+		st.Schedule = scheduleField
+	}
+	st.SetupDuration = pb.SetupDuration
+	st.StartTime = pb.StartTime
+	stateField, err := RunStateFromPb(pb.State)
+	if err != nil {
+		return nil, err
+	}
+	if stateField != nil {
+		st.State = stateField
+	}
+	statusField, err := RunStatusFromPb(pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = statusField
+	}
+
+	var tasksField []RunTask
+	for _, itemPb := range pb.Tasks {
+		item, err := RunTaskFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			tasksField = append(tasksField, *item)
+		}
+	}
+	st.Tasks = tasksField
+	triggerField, err := TriggerTypeFromPb(&pb.Trigger)
+	if err != nil {
+		return nil, err
+	}
+	if triggerField != nil {
+		st.Trigger = *triggerField
+	}
+	triggerInfoField, err := TriggerInfoFromPb(pb.TriggerInfo)
+	if err != nil {
+		return nil, err
+	}
+	if triggerInfoField != nil {
+		st.TriggerInfo = triggerInfoField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type RunConditionTask struct {
 	// The left operand of the condition task. Can be either a string value or a
 	// job state or parameter reference.
-	Left string `json:"left"`
+	// Wire name: 'left'
+	Left string ``
 	// * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
 	// operands. This means that `“12.0” == “12”` will evaluate to
 	// `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`,
@@ -3384,15 +8938,17 @@ type RunConditionTask struct {
 	// The boolean comparison to task values can be implemented with operators
 	// `EQUAL_TO`, `NOT_EQUAL`. If a task value was set to a boolean value, it
 	// will be serialized to `“true”` or `“false”` for the comparison.
-	Op ConditionTaskOp `json:"op"`
+	// Wire name: 'op'
+	Op ConditionTaskOp ``
 	// The condition expression evaluation result. Filled in if the task was
 	// successfully completed. Can be `"true"` or `"false"`
-	Outcome string `json:"outcome,omitempty"`
+	// Wire name: 'outcome'
+	Outcome string ``
 	// The right operand of the condition task. Can be either a string value or
 	// a job state or parameter reference.
-	Right string `json:"right"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'right'
+	Right           string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *RunConditionTask) UnmarshalJSON(b []byte) error {
@@ -3403,21 +8959,64 @@ func (s RunConditionTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func RunConditionTaskToPb(st *RunConditionTask) (*jobspb.RunConditionTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RunConditionTaskPb{}
+	pb.Left = st.Left
+	opPb, err := ConditionTaskOpToPb(&st.Op)
+	if err != nil {
+		return nil, err
+	}
+	if opPb != nil {
+		pb.Op = *opPb
+	}
+	pb.Outcome = st.Outcome
+	pb.Right = st.Right
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func RunConditionTaskFromPb(pb *jobspb.RunConditionTaskPb) (*RunConditionTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RunConditionTask{}
+	st.Left = pb.Left
+	opField, err := ConditionTaskOpFromPb(&pb.Op)
+	if err != nil {
+		return nil, err
+	}
+	if opField != nil {
+		st.Op = *opField
+	}
+	st.Outcome = pb.Outcome
+	st.Right = pb.Right
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type RunForEachTask struct {
 	// An optional maximum allowed number of concurrent runs of the task. Set
 	// this value if you want to be able to execute multiple runs of the task
 	// concurrently.
-	Concurrency int `json:"concurrency,omitempty"`
+	// Wire name: 'concurrency'
+	Concurrency int ``
 	// Array for task to iterate on. This can be a JSON string or a reference to
 	// an array parameter.
-	Inputs string `json:"inputs"`
+	// Wire name: 'inputs'
+	Inputs string ``
 	// Read only field. Populated for GetRun and ListRuns RPC calls and stores
 	// the execution stats of an For each task
-	Stats *ForEachStats `json:"stats,omitempty"`
+	// Wire name: 'stats'
+	Stats *ForEachStats ``
 	// Configuration for the task that will be run for each element in the array
-	Task Task `json:"task"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'task'
+	Task            Task     ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *RunForEachTask) UnmarshalJSON(b []byte) error {
@@ -3426,6 +9025,58 @@ func (s *RunForEachTask) UnmarshalJSON(b []byte) error {
 
 func (s RunForEachTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func RunForEachTaskToPb(st *RunForEachTask) (*jobspb.RunForEachTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RunForEachTaskPb{}
+	pb.Concurrency = st.Concurrency
+	pb.Inputs = st.Inputs
+	statsPb, err := ForEachStatsToPb(st.Stats)
+	if err != nil {
+		return nil, err
+	}
+	if statsPb != nil {
+		pb.Stats = statsPb
+	}
+	taskPb, err := TaskToPb(&st.Task)
+	if err != nil {
+		return nil, err
+	}
+	if taskPb != nil {
+		pb.Task = *taskPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func RunForEachTaskFromPb(pb *jobspb.RunForEachTaskPb) (*RunForEachTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RunForEachTask{}
+	st.Concurrency = pb.Concurrency
+	st.Inputs = pb.Inputs
+	statsField, err := ForEachStatsFromPb(pb.Stats)
+	if err != nil {
+		return nil, err
+	}
+	if statsField != nil {
+		st.Stats = statsField
+	}
+	taskField, err := TaskFromPb(&pb.Task)
+	if err != nil {
+		return nil, err
+	}
+	if taskField != nil {
+		st.Task = *taskField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // An optional value indicating the condition that determines whether the task
@@ -3493,11 +9144,27 @@ func (f *RunIf) Type() string {
 	return "RunIf"
 }
 
+func RunIfToPb(st *RunIf) (*jobspb.RunIfPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.RunIfPb(*st)
+	return &pb, nil
+}
+
+func RunIfFromPb(pb *jobspb.RunIfPb) (*RunIf, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := RunIf(*pb)
+	return &st, nil
+}
+
 type RunJobOutput struct {
 	// The run id of the triggered job run
-	RunId int64 `json:"run_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'run_id'
+	RunId           int64    ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *RunJobOutput) UnmarshalJSON(b []byte) error {
@@ -3508,11 +9175,34 @@ func (s RunJobOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func RunJobOutputToPb(st *RunJobOutput) (*jobspb.RunJobOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RunJobOutputPb{}
+	pb.RunId = st.RunId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func RunJobOutputFromPb(pb *jobspb.RunJobOutputPb) (*RunJobOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RunJobOutput{}
+	st.RunId = pb.RunId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type RunJobTask struct {
 	// An array of commands to execute for jobs with the dbt task, for example
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt deps", "dbt seed", "dbt
 	// run"]`
-	DbtCommands []string `json:"dbt_commands,omitempty"`
+	// Wire name: 'dbt_commands'
+	DbtCommands []string ``
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
@@ -3525,11 +9215,14 @@ type RunJobTask struct {
 	// about job runs.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	JarParams []string `json:"jar_params,omitempty"`
+	// Wire name: 'jar_params'
+	JarParams []string ``
 	// ID of the job to trigger.
-	JobId int64 `json:"job_id"`
+	// Wire name: 'job_id'
+	JobId int64 ``
 	// Job-level parameters used to trigger the job.
-	JobParameters map[string]string `json:"job_parameters,omitempty"`
+	// Wire name: 'job_parameters'
+	JobParameters map[string]string ``
 	// A map from keys to values for jobs with notebook task, for example
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the [dbutils.widgets.get]
@@ -3549,11 +9242,14 @@ type RunJobTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
-	NotebookParams map[string]string `json:"notebook_params,omitempty"`
+	// Wire name: 'notebook_params'
+	NotebookParams map[string]string ``
 	// Controls whether the pipeline should perform a full refresh
-	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
+	// Wire name: 'pipeline_params'
+	PipelineParams *PipelineParams ``
 
-	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
+	// Wire name: 'python_named_params'
+	PythonNamedParams map[string]string ``
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
@@ -3571,7 +9267,8 @@ type RunJobTask struct {
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	PythonParams []string `json:"python_params,omitempty"`
+	// Wire name: 'python_params'
+	PythonParams []string ``
 	// A list of parameters for jobs with spark submit task, for example
 	// `"spark_submit_params": ["--class",
 	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
@@ -3590,11 +9287,63 @@ type RunJobTask struct {
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
+	// Wire name: 'spark_submit_params'
+	SparkSubmitParams []string ``
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
-	SqlParams map[string]string `json:"sql_params,omitempty"`
+	// Wire name: 'sql_params'
+	SqlParams map[string]string ``
+}
+
+func RunJobTaskToPb(st *RunJobTask) (*jobspb.RunJobTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RunJobTaskPb{}
+	pb.DbtCommands = st.DbtCommands
+	pb.JarParams = st.JarParams
+	pb.JobId = st.JobId
+	pb.JobParameters = st.JobParameters
+	pb.NotebookParams = st.NotebookParams
+	pipelineParamsPb, err := PipelineParamsToPb(st.PipelineParams)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineParamsPb != nil {
+		pb.PipelineParams = pipelineParamsPb
+	}
+	pb.PythonNamedParams = st.PythonNamedParams
+	pb.PythonParams = st.PythonParams
+	pb.SparkSubmitParams = st.SparkSubmitParams
+	pb.SqlParams = st.SqlParams
+
+	return pb, nil
+}
+
+func RunJobTaskFromPb(pb *jobspb.RunJobTaskPb) (*RunJobTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RunJobTask{}
+	st.DbtCommands = pb.DbtCommands
+	st.JarParams = pb.JarParams
+	st.JobId = pb.JobId
+	st.JobParameters = pb.JobParameters
+	st.NotebookParams = pb.NotebookParams
+	pipelineParamsField, err := PipelineParamsFromPb(pb.PipelineParams)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineParamsField != nil {
+		st.PipelineParams = pipelineParamsField
+	}
+	st.PythonNamedParams = pb.PythonNamedParams
+	st.PythonParams = pb.PythonParams
+	st.SparkSubmitParams = pb.SparkSubmitParams
+	st.SqlParams = pb.SqlParams
+
+	return st, nil
 }
 
 // A value indicating the run's lifecycle state. The possible values are: *
@@ -3685,6 +9434,22 @@ func (f *RunLifeCycleState) Type() string {
 	return "RunLifeCycleState"
 }
 
+func RunLifeCycleStateToPb(st *RunLifeCycleState) (*jobspb.RunLifeCycleStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.RunLifeCycleStatePb(*st)
+	return &pb, nil
+}
+
+func RunLifeCycleStateFromPb(pb *jobspb.RunLifeCycleStatePb) (*RunLifeCycleState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := RunLifeCycleState(*pb)
+	return &st, nil
+}
+
 // The current state of the run.
 type RunLifecycleStateV2State string
 
@@ -3738,11 +9503,28 @@ func (f *RunLifecycleStateV2State) Type() string {
 	return "RunLifecycleStateV2State"
 }
 
+func RunLifecycleStateV2StateToPb(st *RunLifecycleStateV2State) (*jobspb.RunLifecycleStateV2StatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.RunLifecycleStateV2StatePb(*st)
+	return &pb, nil
+}
+
+func RunLifecycleStateV2StateFromPb(pb *jobspb.RunLifecycleStateV2StatePb) (*RunLifecycleStateV2State, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := RunLifecycleStateV2State(*pb)
+	return &st, nil
+}
+
 type RunNow struct {
 	// An array of commands to execute for jobs with the dbt task, for example
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt deps", "dbt seed", "dbt
 	// run"]`
-	DbtCommands []string `json:"dbt_commands,omitempty"`
+	// Wire name: 'dbt_commands'
+	DbtCommands []string ``
 	// An optional token to guarantee the idempotency of job run requests. If a
 	// run with the provided token already exists, the request does not create a
 	// new run but returns the ID of the existing run instead. If a run with the
@@ -3757,7 +9539,8 @@ type RunNow struct {
 	// For more information, see [How to ensure idempotency for jobs].
 	//
 	// [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
-	IdempotencyToken string `json:"idempotency_token,omitempty"`
+	// Wire name: 'idempotency_token'
+	IdempotencyToken string ``
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
@@ -3770,12 +9553,15 @@ type RunNow struct {
 	// about job runs.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	JarParams []string `json:"jar_params,omitempty"`
+	// Wire name: 'jar_params'
+	JarParams []string ``
 	// The ID of the job to be executed
-	JobId int64 `json:"job_id"`
+	// Wire name: 'job_id'
+	JobId int64 ``
 	// Job-level parameters used in the run. for example `"param":
 	// "overriding_val"`
-	JobParameters map[string]string `json:"job_parameters,omitempty"`
+	// Wire name: 'job_parameters'
+	JobParameters map[string]string ``
 	// A map from keys to values for jobs with notebook task, for example
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the [dbutils.widgets.get]
@@ -3795,10 +9581,12 @@ type RunNow struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
-	NotebookParams map[string]string `json:"notebook_params,omitempty"`
+	// Wire name: 'notebook_params'
+	NotebookParams map[string]string ``
 	// A list of task keys to run inside of the job. If this field is not
 	// provided, all tasks in the job will be run.
-	Only []string `json:"only,omitempty"`
+	// Wire name: 'only'
+	Only []string ``
 	// The performance mode on a serverless job. The performance target
 	// determines the level of compute performance or cost-efficiency for the
 	// run. This field overrides the performance target defined on the job
@@ -3807,11 +9595,14 @@ type RunNow struct {
 	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
-	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
+	// Wire name: 'performance_target'
+	PerformanceTarget PerformanceTarget ``
 	// Controls whether the pipeline should perform a full refresh
-	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
+	// Wire name: 'pipeline_params'
+	PipelineParams *PipelineParams ``
 
-	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
+	// Wire name: 'python_named_params'
+	PythonNamedParams map[string]string ``
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
@@ -3829,9 +9620,11 @@ type RunNow struct {
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	PythonParams []string `json:"python_params,omitempty"`
+	// Wire name: 'python_params'
+	PythonParams []string ``
 	// The queue settings of the run.
-	Queue *QueueSettings `json:"queue,omitempty"`
+	// Wire name: 'queue'
+	Queue *QueueSettings ``
 	// A list of parameters for jobs with spark submit task, for example
 	// `"spark_submit_params": ["--class",
 	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
@@ -3850,13 +9643,14 @@ type RunNow struct {
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
+	// Wire name: 'spark_submit_params'
+	SparkSubmitParams []string ``
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
-	SqlParams map[string]string `json:"sql_params,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'sql_params'
+	SqlParams       map[string]string ``
+	ForceSendFields []string          `tf:"-"`
 }
 
 func (s *RunNow) UnmarshalJSON(b []byte) error {
@@ -3867,15 +9661,100 @@ func (s RunNow) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func RunNowToPb(st *RunNow) (*jobspb.RunNowPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RunNowPb{}
+	pb.DbtCommands = st.DbtCommands
+	pb.IdempotencyToken = st.IdempotencyToken
+	pb.JarParams = st.JarParams
+	pb.JobId = st.JobId
+	pb.JobParameters = st.JobParameters
+	pb.NotebookParams = st.NotebookParams
+	pb.Only = st.Only
+	performanceTargetPb, err := PerformanceTargetToPb(&st.PerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if performanceTargetPb != nil {
+		pb.PerformanceTarget = *performanceTargetPb
+	}
+	pipelineParamsPb, err := PipelineParamsToPb(st.PipelineParams)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineParamsPb != nil {
+		pb.PipelineParams = pipelineParamsPb
+	}
+	pb.PythonNamedParams = st.PythonNamedParams
+	pb.PythonParams = st.PythonParams
+	queuePb, err := QueueSettingsToPb(st.Queue)
+	if err != nil {
+		return nil, err
+	}
+	if queuePb != nil {
+		pb.Queue = queuePb
+	}
+	pb.SparkSubmitParams = st.SparkSubmitParams
+	pb.SqlParams = st.SqlParams
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func RunNowFromPb(pb *jobspb.RunNowPb) (*RunNow, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RunNow{}
+	st.DbtCommands = pb.DbtCommands
+	st.IdempotencyToken = pb.IdempotencyToken
+	st.JarParams = pb.JarParams
+	st.JobId = pb.JobId
+	st.JobParameters = pb.JobParameters
+	st.NotebookParams = pb.NotebookParams
+	st.Only = pb.Only
+	performanceTargetField, err := PerformanceTargetFromPb(&pb.PerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if performanceTargetField != nil {
+		st.PerformanceTarget = *performanceTargetField
+	}
+	pipelineParamsField, err := PipelineParamsFromPb(pb.PipelineParams)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineParamsField != nil {
+		st.PipelineParams = pipelineParamsField
+	}
+	st.PythonNamedParams = pb.PythonNamedParams
+	st.PythonParams = pb.PythonParams
+	queueField, err := QueueSettingsFromPb(pb.Queue)
+	if err != nil {
+		return nil, err
+	}
+	if queueField != nil {
+		st.Queue = queueField
+	}
+	st.SparkSubmitParams = pb.SparkSubmitParams
+	st.SqlParams = pb.SqlParams
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // Run was started successfully.
 type RunNowResponse struct {
 	// A unique identifier for this job run. This is set to the same value as
 	// `run_id`.
-	NumberInJob int64 `json:"number_in_job,omitempty"`
+	// Wire name: 'number_in_job'
+	NumberInJob int64 ``
 	// The globally unique ID of the newly triggered run.
-	RunId int64 `json:"run_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'run_id'
+	RunId           int64    ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *RunNowResponse) UnmarshalJSON(b []byte) error {
@@ -3886,27 +9765,59 @@ func (s RunNowResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func RunNowResponseToPb(st *RunNowResponse) (*jobspb.RunNowResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RunNowResponsePb{}
+	pb.NumberInJob = st.NumberInJob
+	pb.RunId = st.RunId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func RunNowResponseFromPb(pb *jobspb.RunNowResponsePb) (*RunNowResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RunNowResponse{}
+	st.NumberInJob = pb.NumberInJob
+	st.RunId = pb.RunId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // Run output was retrieved successfully.
 type RunOutput struct {
 	// The output of a clean rooms notebook task, if available
-	CleanRoomsNotebookOutput *CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput `json:"clean_rooms_notebook_output,omitempty"`
+	// Wire name: 'clean_rooms_notebook_output'
+	CleanRoomsNotebookOutput *CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput ``
 	// The output of a dashboard task, if available
-	DashboardOutput *DashboardTaskOutput `json:"dashboard_output,omitempty"`
+	// Wire name: 'dashboard_output'
+	DashboardOutput *DashboardTaskOutput ``
 	// Deprecated in favor of the new dbt_platform_output
-	DbtCloudOutput *DbtCloudTaskOutput `json:"dbt_cloud_output,omitempty"`
+	// Wire name: 'dbt_cloud_output'
+	DbtCloudOutput *DbtCloudTaskOutput ``
 	// The output of a dbt task, if available.
-	DbtOutput *DbtOutput `json:"dbt_output,omitempty"`
+	// Wire name: 'dbt_output'
+	DbtOutput *DbtOutput ``
 
-	DbtPlatformOutput *DbtPlatformTaskOutput `json:"dbt_platform_output,omitempty"`
+	// Wire name: 'dbt_platform_output'
+	DbtPlatformOutput *DbtPlatformTaskOutput ``
 	// An error message indicating why a task failed or why output is not
 	// available. The message is unstructured, and its exact format is subject
 	// to change.
-	Error string `json:"error,omitempty"`
+	// Wire name: 'error'
+	Error string ``
 	// If there was an error executing the run, this field contains any
 	// available stack traces.
-	ErrorTrace string `json:"error_trace,omitempty"`
+	// Wire name: 'error_trace'
+	ErrorTrace string ``
 
-	Info string `json:"info,omitempty"`
+	// Wire name: 'info'
+	Info string ``
 	// The output from tasks that write to standard streams (stdout/stderr) such
 	// as spark_jar_task, spark_python_task, python_wheel_task.
 	//
@@ -3914,11 +9825,14 @@ type RunOutput struct {
 	// spark_submit_task.
 	//
 	// Databricks restricts this API to return the last 5 MB of these logs.
-	Logs string `json:"logs,omitempty"`
+	// Wire name: 'logs'
+	Logs string ``
 	// Whether the logs are truncated.
-	LogsTruncated bool `json:"logs_truncated,omitempty"`
+	// Wire name: 'logs_truncated'
+	LogsTruncated bool ``
 	// All details of the run except for its output.
-	Metadata *Run `json:"metadata,omitempty"`
+	// Wire name: 'metadata'
+	Metadata *Run ``
 	// The output of a notebook task, if available. A notebook task that
 	// terminates (either successfully or with a failure) without calling
 	// `dbutils.notebook.exit()` is considered to have an empty output. This
@@ -3927,13 +9841,15 @@ type RunOutput struct {
 	// the [ClusterLogConf] field to configure log storage for the job cluster.
 	//
 	// [ClusterLogConf]: https://docs.databricks.com/dev-tools/api/latest/clusters.html#clusterlogconf
-	NotebookOutput *NotebookOutput `json:"notebook_output,omitempty"`
+	// Wire name: 'notebook_output'
+	NotebookOutput *NotebookOutput ``
 	// The output of a run job task, if available
-	RunJobOutput *RunJobOutput `json:"run_job_output,omitempty"`
+	// Wire name: 'run_job_output'
+	RunJobOutput *RunJobOutput ``
 	// The output of a SQL task, if available.
-	SqlOutput *SqlOutput `json:"sql_output,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'sql_output'
+	SqlOutput       *SqlOutput ``
+	ForceSendFields []string   `tf:"-"`
 }
 
 func (s *RunOutput) UnmarshalJSON(b []byte) error {
@@ -3944,11 +9860,168 @@ func (s RunOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func RunOutputToPb(st *RunOutput) (*jobspb.RunOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RunOutputPb{}
+	cleanRoomsNotebookOutputPb, err := CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputToPb(st.CleanRoomsNotebookOutput)
+	if err != nil {
+		return nil, err
+	}
+	if cleanRoomsNotebookOutputPb != nil {
+		pb.CleanRoomsNotebookOutput = cleanRoomsNotebookOutputPb
+	}
+	dashboardOutputPb, err := DashboardTaskOutputToPb(st.DashboardOutput)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardOutputPb != nil {
+		pb.DashboardOutput = dashboardOutputPb
+	}
+	dbtCloudOutputPb, err := DbtCloudTaskOutputToPb(st.DbtCloudOutput)
+	if err != nil {
+		return nil, err
+	}
+	if dbtCloudOutputPb != nil {
+		pb.DbtCloudOutput = dbtCloudOutputPb
+	}
+	dbtOutputPb, err := DbtOutputToPb(st.DbtOutput)
+	if err != nil {
+		return nil, err
+	}
+	if dbtOutputPb != nil {
+		pb.DbtOutput = dbtOutputPb
+	}
+	dbtPlatformOutputPb, err := DbtPlatformTaskOutputToPb(st.DbtPlatformOutput)
+	if err != nil {
+		return nil, err
+	}
+	if dbtPlatformOutputPb != nil {
+		pb.DbtPlatformOutput = dbtPlatformOutputPb
+	}
+	pb.Error = st.Error
+	pb.ErrorTrace = st.ErrorTrace
+	pb.Info = st.Info
+	pb.Logs = st.Logs
+	pb.LogsTruncated = st.LogsTruncated
+	metadataPb, err := RunToPb(st.Metadata)
+	if err != nil {
+		return nil, err
+	}
+	if metadataPb != nil {
+		pb.Metadata = metadataPb
+	}
+	notebookOutputPb, err := NotebookOutputToPb(st.NotebookOutput)
+	if err != nil {
+		return nil, err
+	}
+	if notebookOutputPb != nil {
+		pb.NotebookOutput = notebookOutputPb
+	}
+	runJobOutputPb, err := RunJobOutputToPb(st.RunJobOutput)
+	if err != nil {
+		return nil, err
+	}
+	if runJobOutputPb != nil {
+		pb.RunJobOutput = runJobOutputPb
+	}
+	sqlOutputPb, err := SqlOutputToPb(st.SqlOutput)
+	if err != nil {
+		return nil, err
+	}
+	if sqlOutputPb != nil {
+		pb.SqlOutput = sqlOutputPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func RunOutputFromPb(pb *jobspb.RunOutputPb) (*RunOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RunOutput{}
+	cleanRoomsNotebookOutputField, err := CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputFromPb(pb.CleanRoomsNotebookOutput)
+	if err != nil {
+		return nil, err
+	}
+	if cleanRoomsNotebookOutputField != nil {
+		st.CleanRoomsNotebookOutput = cleanRoomsNotebookOutputField
+	}
+	dashboardOutputField, err := DashboardTaskOutputFromPb(pb.DashboardOutput)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardOutputField != nil {
+		st.DashboardOutput = dashboardOutputField
+	}
+	dbtCloudOutputField, err := DbtCloudTaskOutputFromPb(pb.DbtCloudOutput)
+	if err != nil {
+		return nil, err
+	}
+	if dbtCloudOutputField != nil {
+		st.DbtCloudOutput = dbtCloudOutputField
+	}
+	dbtOutputField, err := DbtOutputFromPb(pb.DbtOutput)
+	if err != nil {
+		return nil, err
+	}
+	if dbtOutputField != nil {
+		st.DbtOutput = dbtOutputField
+	}
+	dbtPlatformOutputField, err := DbtPlatformTaskOutputFromPb(pb.DbtPlatformOutput)
+	if err != nil {
+		return nil, err
+	}
+	if dbtPlatformOutputField != nil {
+		st.DbtPlatformOutput = dbtPlatformOutputField
+	}
+	st.Error = pb.Error
+	st.ErrorTrace = pb.ErrorTrace
+	st.Info = pb.Info
+	st.Logs = pb.Logs
+	st.LogsTruncated = pb.LogsTruncated
+	metadataField, err := RunFromPb(pb.Metadata)
+	if err != nil {
+		return nil, err
+	}
+	if metadataField != nil {
+		st.Metadata = metadataField
+	}
+	notebookOutputField, err := NotebookOutputFromPb(pb.NotebookOutput)
+	if err != nil {
+		return nil, err
+	}
+	if notebookOutputField != nil {
+		st.NotebookOutput = notebookOutputField
+	}
+	runJobOutputField, err := RunJobOutputFromPb(pb.RunJobOutput)
+	if err != nil {
+		return nil, err
+	}
+	if runJobOutputField != nil {
+		st.RunJobOutput = runJobOutputField
+	}
+	sqlOutputField, err := SqlOutputFromPb(pb.SqlOutput)
+	if err != nil {
+		return nil, err
+	}
+	if sqlOutputField != nil {
+		st.SqlOutput = sqlOutputField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type RunParameters struct {
 	// An array of commands to execute for jobs with the dbt task, for example
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt deps", "dbt seed", "dbt
 	// run"]`
-	DbtCommands []string `json:"dbt_commands,omitempty"`
+	// Wire name: 'dbt_commands'
+	DbtCommands []string ``
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
@@ -3961,7 +10034,8 @@ type RunParameters struct {
 	// about job runs.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	JarParams []string `json:"jar_params,omitempty"`
+	// Wire name: 'jar_params'
+	JarParams []string ``
 	// A map from keys to values for jobs with notebook task, for example
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the [dbutils.widgets.get]
@@ -3981,11 +10055,14 @@ type RunParameters struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
-	NotebookParams map[string]string `json:"notebook_params,omitempty"`
+	// Wire name: 'notebook_params'
+	NotebookParams map[string]string ``
 	// Controls whether the pipeline should perform a full refresh
-	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
+	// Wire name: 'pipeline_params'
+	PipelineParams *PipelineParams ``
 
-	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
+	// Wire name: 'python_named_params'
+	PythonNamedParams map[string]string ``
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
@@ -4003,7 +10080,8 @@ type RunParameters struct {
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	PythonParams []string `json:"python_params,omitempty"`
+	// Wire name: 'python_params'
+	PythonParams []string ``
 	// A list of parameters for jobs with spark submit task, for example
 	// `"spark_submit_params": ["--class",
 	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
@@ -4022,11 +10100,59 @@ type RunParameters struct {
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
+	// Wire name: 'spark_submit_params'
+	SparkSubmitParams []string ``
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
-	SqlParams map[string]string `json:"sql_params,omitempty"`
+	// Wire name: 'sql_params'
+	SqlParams map[string]string ``
+}
+
+func RunParametersToPb(st *RunParameters) (*jobspb.RunParametersPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RunParametersPb{}
+	pb.DbtCommands = st.DbtCommands
+	pb.JarParams = st.JarParams
+	pb.NotebookParams = st.NotebookParams
+	pipelineParamsPb, err := PipelineParamsToPb(st.PipelineParams)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineParamsPb != nil {
+		pb.PipelineParams = pipelineParamsPb
+	}
+	pb.PythonNamedParams = st.PythonNamedParams
+	pb.PythonParams = st.PythonParams
+	pb.SparkSubmitParams = st.SparkSubmitParams
+	pb.SqlParams = st.SqlParams
+
+	return pb, nil
+}
+
+func RunParametersFromPb(pb *jobspb.RunParametersPb) (*RunParameters, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RunParameters{}
+	st.DbtCommands = pb.DbtCommands
+	st.JarParams = pb.JarParams
+	st.NotebookParams = pb.NotebookParams
+	pipelineParamsField, err := PipelineParamsFromPb(pb.PipelineParams)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineParamsField != nil {
+		st.PipelineParams = pipelineParamsField
+	}
+	st.PythonNamedParams = pb.PythonNamedParams
+	st.PythonParams = pb.PythonParams
+	st.SparkSubmitParams = pb.SparkSubmitParams
+	st.SqlParams = pb.SqlParams
+
+	return st, nil
 }
 
 // A value indicating the run's result. The possible values are: * `SUCCESS`:
@@ -4113,26 +10239,46 @@ func (f *RunResultState) Type() string {
 	return "RunResultState"
 }
 
+func RunResultStateToPb(st *RunResultState) (*jobspb.RunResultStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.RunResultStatePb(*st)
+	return &pb, nil
+}
+
+func RunResultStateFromPb(pb *jobspb.RunResultStatePb) (*RunResultState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := RunResultState(*pb)
+	return &st, nil
+}
+
 // The current state of the run.
 type RunState struct {
 	// A value indicating the run's current lifecycle state. This field is
 	// always available in the response. Note: Additional states might be
 	// introduced in future releases.
-	LifeCycleState RunLifeCycleState `json:"life_cycle_state,omitempty"`
+	// Wire name: 'life_cycle_state'
+	LifeCycleState RunLifeCycleState ``
 	// The reason indicating why the run was queued.
-	QueueReason string `json:"queue_reason,omitempty"`
+	// Wire name: 'queue_reason'
+	QueueReason string ``
 	// A value indicating the run's result. This field is only available for
 	// terminal lifecycle states. Note: Additional states might be introduced in
 	// future releases.
-	ResultState RunResultState `json:"result_state,omitempty"`
+	// Wire name: 'result_state'
+	ResultState RunResultState ``
 	// A descriptive message for the current state. This field is unstructured,
 	// and its exact format is subject to change.
-	StateMessage string `json:"state_message,omitempty"`
+	// Wire name: 'state_message'
+	StateMessage string ``
 	// A value indicating whether a run was canceled manually by a user or by
 	// the scheduler because the run timed out.
-	UserCancelledOrTimedout bool `json:"user_cancelled_or_timedout,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'user_cancelled_or_timedout'
+	UserCancelledOrTimedout bool     ``
+	ForceSendFields         []string `tf:"-"`
 }
 
 func (s *RunState) UnmarshalJSON(b []byte) error {
@@ -4143,15 +10289,132 @@ func (s RunState) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func RunStateToPb(st *RunState) (*jobspb.RunStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RunStatePb{}
+	lifeCycleStatePb, err := RunLifeCycleStateToPb(&st.LifeCycleState)
+	if err != nil {
+		return nil, err
+	}
+	if lifeCycleStatePb != nil {
+		pb.LifeCycleState = *lifeCycleStatePb
+	}
+	pb.QueueReason = st.QueueReason
+	resultStatePb, err := RunResultStateToPb(&st.ResultState)
+	if err != nil {
+		return nil, err
+	}
+	if resultStatePb != nil {
+		pb.ResultState = *resultStatePb
+	}
+	pb.StateMessage = st.StateMessage
+	pb.UserCancelledOrTimedout = st.UserCancelledOrTimedout
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func RunStateFromPb(pb *jobspb.RunStatePb) (*RunState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RunState{}
+	lifeCycleStateField, err := RunLifeCycleStateFromPb(&pb.LifeCycleState)
+	if err != nil {
+		return nil, err
+	}
+	if lifeCycleStateField != nil {
+		st.LifeCycleState = *lifeCycleStateField
+	}
+	st.QueueReason = pb.QueueReason
+	resultStateField, err := RunResultStateFromPb(&pb.ResultState)
+	if err != nil {
+		return nil, err
+	}
+	if resultStateField != nil {
+		st.ResultState = *resultStateField
+	}
+	st.StateMessage = pb.StateMessage
+	st.UserCancelledOrTimedout = pb.UserCancelledOrTimedout
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // The current status of the run
 type RunStatus struct {
 	// If the run was queued, details about the reason for queuing the run.
-	QueueDetails *QueueDetails `json:"queue_details,omitempty"`
+	// Wire name: 'queue_details'
+	QueueDetails *QueueDetails ``
 
-	State RunLifecycleStateV2State `json:"state,omitempty"`
+	// Wire name: 'state'
+	State RunLifecycleStateV2State ``
 	// If the run is in a TERMINATING or TERMINATED state, details about the
 	// reason for terminating the run.
-	TerminationDetails *TerminationDetails `json:"termination_details,omitempty"`
+	// Wire name: 'termination_details'
+	TerminationDetails *TerminationDetails ``
+}
+
+func RunStatusToPb(st *RunStatus) (*jobspb.RunStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RunStatusPb{}
+	queueDetailsPb, err := QueueDetailsToPb(st.QueueDetails)
+	if err != nil {
+		return nil, err
+	}
+	if queueDetailsPb != nil {
+		pb.QueueDetails = queueDetailsPb
+	}
+	statePb, err := RunLifecycleStateV2StateToPb(&st.State)
+	if err != nil {
+		return nil, err
+	}
+	if statePb != nil {
+		pb.State = *statePb
+	}
+	terminationDetailsPb, err := TerminationDetailsToPb(st.TerminationDetails)
+	if err != nil {
+		return nil, err
+	}
+	if terminationDetailsPb != nil {
+		pb.TerminationDetails = terminationDetailsPb
+	}
+
+	return pb, nil
+}
+
+func RunStatusFromPb(pb *jobspb.RunStatusPb) (*RunStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RunStatus{}
+	queueDetailsField, err := QueueDetailsFromPb(pb.QueueDetails)
+	if err != nil {
+		return nil, err
+	}
+	if queueDetailsField != nil {
+		st.QueueDetails = queueDetailsField
+	}
+	stateField, err := RunLifecycleStateV2StateFromPb(&pb.State)
+	if err != nil {
+		return nil, err
+	}
+	if stateField != nil {
+		st.State = *stateField
+	}
+	terminationDetailsField, err := TerminationDetailsFromPb(pb.TerminationDetails)
+	if err != nil {
+		return nil, err
+	}
+	if terminationDetailsField != nil {
+		st.TerminationDetails = terminationDetailsField
+	}
+
+	return st, nil
 }
 
 // Used when outputting a child run, in GetRun or ListRuns.
@@ -4163,47 +10426,59 @@ type RunTask struct {
 	// original attempt’s ID and an incrementing `attempt_number`. Runs are
 	// retried only until they succeed, and the maximum `attempt_number` is the
 	// same as the `max_retries` value for the job.
-	AttemptNumber int `json:"attempt_number,omitempty"`
+	// Wire name: 'attempt_number'
+	AttemptNumber int ``
 	// The task runs a [clean rooms] notebook when the
 	// `clean_rooms_notebook_task` field is present.
 	//
 	// [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html
-	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
+	// Wire name: 'clean_rooms_notebook_task'
+	CleanRoomsNotebookTask *CleanRoomsNotebookTask ``
 	// The time in milliseconds it took to terminate the cluster and clean up
 	// any associated artifacts. The duration of a task run is the sum of the
 	// `setup_duration`, `execution_duration`, and the `cleanup_duration`. The
 	// `cleanup_duration` field is set to 0 for multitask job runs. The total
 	// duration of a multitask job run is the value of the `run_duration` field.
-	CleanupDuration int64 `json:"cleanup_duration,omitempty"`
+	// Wire name: 'cleanup_duration'
+	CleanupDuration int64 ``
 	// The cluster used for this run. If the run is specified to use a new
 	// cluster, this field is set once the Jobs service has requested a cluster
 	// for the run.
-	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
+	// Wire name: 'cluster_instance'
+	ClusterInstance *ClusterInstance ``
 	// The task evaluates a condition that can be used to control the execution
 	// of other tasks when the `condition_task` field is present. The condition
 	// task does not require a cluster to execute and does not support retries
 	// or notifications.
-	ConditionTask *RunConditionTask `json:"condition_task,omitempty"`
+	// Wire name: 'condition_task'
+	ConditionTask *RunConditionTask ``
 	// The task refreshes a dashboard and sends a snapshot to subscribers.
-	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
+	// Wire name: 'dashboard_task'
+	DashboardTask *DashboardTask ``
 	// Task type for dbt cloud, deprecated in favor of the new name
 	// dbt_platform_task
-	DbtCloudTask *DbtCloudTask `json:"dbt_cloud_task,omitempty"`
+	// Wire name: 'dbt_cloud_task'
+	DbtCloudTask *DbtCloudTask ``
 
-	DbtPlatformTask *DbtPlatformTask `json:"dbt_platform_task,omitempty"`
+	// Wire name: 'dbt_platform_task'
+	DbtPlatformTask *DbtPlatformTask ``
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
 	// a serverless or a pro SQL warehouse.
-	DbtTask *DbtTask `json:"dbt_task,omitempty"`
+	// Wire name: 'dbt_task'
+	DbtTask *DbtTask ``
 	// An optional array of objects specifying the dependency graph of the task.
 	// All tasks specified in this field must complete successfully before
 	// executing this task. The key is `task_key`, and the value is the name
 	// assigned to the dependent task.
-	DependsOn []TaskDependency `json:"depends_on,omitempty"`
+	// Wire name: 'depends_on'
+	DependsOn []TaskDependency ``
 	// An optional description for this task.
-	Description string `json:"description,omitempty"`
+	// Wire name: 'description'
+	Description string ``
 	// Deprecated, field was never used in production.
-	Disabled bool `json:"disabled,omitempty"`
+	// Wire name: 'disabled'
+	Disabled bool ``
 	// The actual performance target used by the serverless run during
 	// execution. This can differ from the client-set performance target on the
 	// request depending on whether the performance mode is supported by the job
@@ -4212,17 +10487,21 @@ type RunTask struct {
 	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
-	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
+	// Wire name: 'effective_performance_target'
+	EffectivePerformanceTarget PerformanceTarget ``
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
-	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// Wire name: 'email_notifications'
+	EmailNotifications *JobEmailNotifications ``
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
-	EndTime int64 `json:"end_time,omitempty"`
+	// Wire name: 'end_time'
+	EndTime int64 ``
 	// The key that references an environment spec in a job. This field is
 	// required for Python script, Python wheel and dbt tasks when using
 	// serverless compute.
-	EnvironmentKey string `json:"environment_key,omitempty"`
+	// Wire name: 'environment_key'
+	EnvironmentKey string ``
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
 	// encountered an unexpected error. The duration of a task run is the sum of
@@ -4230,17 +10509,21 @@ type RunTask struct {
 	// The `execution_duration` field is set to 0 for multitask job runs. The
 	// total duration of a multitask job run is the value of the `run_duration`
 	// field.
-	ExecutionDuration int64 `json:"execution_duration,omitempty"`
+	// Wire name: 'execution_duration'
+	ExecutionDuration int64 ``
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
 	// running jobs and tasks on new clusters for greater reliability
-	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
+	// Wire name: 'existing_cluster_id'
+	ExistingClusterId string ``
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
-	ForEachTask *RunForEachTask `json:"for_each_task,omitempty"`
+	// Wire name: 'for_each_task'
+	ForEachTask *RunForEachTask ``
 
-	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
+	// Wire name: 'gen_ai_compute_task'
+	GenAiComputeTask *GenAiComputeTask ``
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks. If `git_source` is set,
@@ -4249,49 +10532,65 @@ type RunTask struct {
 	// `WORKSPACE` on the task. Note: dbt and SQL File tasks support only
 	// version-controlled sources. If dbt or SQL File tasks are used,
 	// `git_source` must be defined on the job.
-	GitSource *GitSource `json:"git_source,omitempty"`
+	// Wire name: 'git_source'
+	GitSource *GitSource ``
 	// If job_cluster_key, this task is executed reusing the cluster specified
 	// in `job.settings.job_clusters`.
-	JobClusterKey string `json:"job_cluster_key,omitempty"`
+	// Wire name: 'job_cluster_key'
+	JobClusterKey string ``
 	// An optional list of libraries to be installed on the cluster. The default
 	// value is an empty list.
-	Libraries []compute.Library `json:"libraries,omitempty"`
+	// Wire name: 'libraries'
+	Libraries []compute.Library ``
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
-	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
+	// Wire name: 'new_cluster'
+	NewCluster *compute.ClusterSpec ``
 	// The task runs a notebook when the `notebook_task` field is present.
-	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
+	// Wire name: 'notebook_task'
+	NotebookTask *NotebookTask ``
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// task run.
-	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
+	// Wire name: 'notification_settings'
+	NotificationSettings *TaskNotificationSettings ``
 	// The task triggers a pipeline update when the `pipeline_task` field is
 	// present. Only pipelines configured to use triggered more are supported.
-	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
+	// Wire name: 'pipeline_task'
+	PipelineTask *PipelineTask ``
 	// The task triggers a Power BI semantic model update when the
 	// `power_bi_task` field is present.
-	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
+	// Wire name: 'power_bi_task'
+	PowerBiTask *PowerBiTask ``
 	// The task runs a Python wheel when the `python_wheel_task` field is
 	// present.
-	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
+	// Wire name: 'python_wheel_task'
+	PythonWheelTask *PythonWheelTask ``
 	// The time in milliseconds that the run has spent in the queue.
-	QueueDuration int64 `json:"queue_duration,omitempty"`
+	// Wire name: 'queue_duration'
+	QueueDuration int64 ``
 	// Parameter values including resolved references
-	ResolvedValues *ResolvedValues `json:"resolved_values,omitempty"`
+	// Wire name: 'resolved_values'
+	ResolvedValues *ResolvedValues ``
 	// The time in milliseconds it took the job run and all of its repairs to
 	// finish.
-	RunDuration int64 `json:"run_duration,omitempty"`
+	// Wire name: 'run_duration'
+	RunDuration int64 ``
 	// The ID of the task run.
-	RunId int64 `json:"run_id,omitempty"`
+	// Wire name: 'run_id'
+	RunId int64 ``
 	// An optional value indicating the condition that determines whether the
 	// task should be run once its dependencies have been completed. When
 	// omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of
 	// possible values.
-	RunIf RunIf `json:"run_if,omitempty"`
+	// Wire name: 'run_if'
+	RunIf RunIf ``
 	// The task triggers another job when the `run_job_task` field is present.
-	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
+	// Wire name: 'run_job_task'
+	RunJobTask *RunJobTask ``
 
-	RunPageUrl string `json:"run_page_url,omitempty"`
+	// Wire name: 'run_page_url'
+	RunPageUrl string ``
 	// The time in milliseconds it took to set up the cluster. For runs that run
 	// on new clusters this is the cluster creation time, for runs that run on
 	// existing clusters this time should be very short. The duration of a task
@@ -4299,12 +10598,15 @@ type RunTask struct {
 	// `cleanup_duration`. The `setup_duration` field is set to 0 for multitask
 	// job runs. The total duration of a multitask job run is the value of the
 	// `run_duration` field.
-	SetupDuration int64 `json:"setup_duration,omitempty"`
+	// Wire name: 'setup_duration'
+	SetupDuration int64 ``
 	// The task runs a JAR when the `spark_jar_task` field is present.
-	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
+	// Wire name: 'spark_jar_task'
+	SparkJarTask *SparkJarTask ``
 	// The task runs a Python file when the `spark_python_task` field is
 	// present.
-	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
+	// Wire name: 'spark_python_task'
+	SparkPythonTask *SparkPythonTask ``
 	// (Legacy) The task runs the spark-submit script when the
 	// `spark_submit_task` field is present. This task can run only on new
 	// clusters and is not compatible with serverless compute.
@@ -4323,33 +10625,40 @@ type RunTask struct {
 	//
 	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
 	// paths.
-	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
+	// Wire name: 'spark_submit_task'
+	SparkSubmitTask *SparkSubmitTask ``
 	// The task runs a SQL query or file, or it refreshes a SQL alert or a
 	// legacy SQL dashboard when the `sql_task` field is present.
-	SqlTask *SqlTask `json:"sql_task,omitempty"`
+	// Wire name: 'sql_task'
+	SqlTask *SqlTask ``
 	// The time at which this run was started in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC). This may not be the time when the job
 	// task starts executing, for example, if the job is scheduled to run on a
 	// new cluster, this is the time the cluster creation call is issued.
-	StartTime int64 `json:"start_time,omitempty"`
+	// Wire name: 'start_time'
+	StartTime int64 ``
 	// Deprecated. Please use the `status` field instead.
-	State *RunState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State *RunState ``
 
-	Status *RunStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status *RunStatus ``
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
 	// job. On Update or Reset, this field is used to reference the tasks to be
 	// updated or reset.
-	TaskKey string `json:"task_key"`
+	// Wire name: 'task_key'
+	TaskKey string ``
 	// An optional timeout applied to each run of this job task. A value of `0`
 	// means no timeout.
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// Wire name: 'timeout_seconds'
+	TimeoutSeconds int ``
 	// A collection of system notification IDs to notify when the run begins or
 	// completes. The default behavior is to not send any system notifications.
 	// Task webhooks respect the task notification settings.
-	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'webhook_notifications'
+	WebhookNotifications *WebhookNotifications ``
+	ForceSendFields      []string              `tf:"-"`
 }
 
 func (s *RunTask) UnmarshalJSON(b []byte) error {
@@ -4358,6 +10667,500 @@ func (s *RunTask) UnmarshalJSON(b []byte) error {
 
 func (s RunTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func RunTaskToPb(st *RunTask) (*jobspb.RunTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.RunTaskPb{}
+	pb.AttemptNumber = st.AttemptNumber
+	cleanRoomsNotebookTaskPb, err := CleanRoomsNotebookTaskToPb(st.CleanRoomsNotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if cleanRoomsNotebookTaskPb != nil {
+		pb.CleanRoomsNotebookTask = cleanRoomsNotebookTaskPb
+	}
+	pb.CleanupDuration = st.CleanupDuration
+	clusterInstancePb, err := ClusterInstanceToPb(st.ClusterInstance)
+	if err != nil {
+		return nil, err
+	}
+	if clusterInstancePb != nil {
+		pb.ClusterInstance = clusterInstancePb
+	}
+	conditionTaskPb, err := RunConditionTaskToPb(st.ConditionTask)
+	if err != nil {
+		return nil, err
+	}
+	if conditionTaskPb != nil {
+		pb.ConditionTask = conditionTaskPb
+	}
+	dashboardTaskPb, err := DashboardTaskToPb(st.DashboardTask)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardTaskPb != nil {
+		pb.DashboardTask = dashboardTaskPb
+	}
+	dbtCloudTaskPb, err := DbtCloudTaskToPb(st.DbtCloudTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtCloudTaskPb != nil {
+		pb.DbtCloudTask = dbtCloudTaskPb
+	}
+	dbtPlatformTaskPb, err := DbtPlatformTaskToPb(st.DbtPlatformTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtPlatformTaskPb != nil {
+		pb.DbtPlatformTask = dbtPlatformTaskPb
+	}
+	dbtTaskPb, err := DbtTaskToPb(st.DbtTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtTaskPb != nil {
+		pb.DbtTask = dbtTaskPb
+	}
+
+	var dependsOnPb []jobspb.TaskDependencyPb
+	for _, item := range st.DependsOn {
+		itemPb, err := TaskDependencyToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			dependsOnPb = append(dependsOnPb, *itemPb)
+		}
+	}
+	pb.DependsOn = dependsOnPb
+	pb.Description = st.Description
+	pb.Disabled = st.Disabled
+	effectivePerformanceTargetPb, err := PerformanceTargetToPb(&st.EffectivePerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePerformanceTargetPb != nil {
+		pb.EffectivePerformanceTarget = *effectivePerformanceTargetPb
+	}
+	emailNotificationsPb, err := JobEmailNotificationsToPb(st.EmailNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if emailNotificationsPb != nil {
+		pb.EmailNotifications = emailNotificationsPb
+	}
+	pb.EndTime = st.EndTime
+	pb.EnvironmentKey = st.EnvironmentKey
+	pb.ExecutionDuration = st.ExecutionDuration
+	pb.ExistingClusterId = st.ExistingClusterId
+	forEachTaskPb, err := RunForEachTaskToPb(st.ForEachTask)
+	if err != nil {
+		return nil, err
+	}
+	if forEachTaskPb != nil {
+		pb.ForEachTask = forEachTaskPb
+	}
+	genAiComputeTaskPb, err := GenAiComputeTaskToPb(st.GenAiComputeTask)
+	if err != nil {
+		return nil, err
+	}
+	if genAiComputeTaskPb != nil {
+		pb.GenAiComputeTask = genAiComputeTaskPb
+	}
+	gitSourcePb, err := GitSourceToPb(st.GitSource)
+	if err != nil {
+		return nil, err
+	}
+	if gitSourcePb != nil {
+		pb.GitSource = gitSourcePb
+	}
+	pb.JobClusterKey = st.JobClusterKey
+
+	var librariesPb []computepb.LibraryPb
+	for _, item := range st.Libraries {
+		itemPb, err := compute.LibraryToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			librariesPb = append(librariesPb, *itemPb)
+		}
+	}
+	pb.Libraries = librariesPb
+	newClusterPb, err := compute.ClusterSpecToPb(st.NewCluster)
+	if err != nil {
+		return nil, err
+	}
+	if newClusterPb != nil {
+		pb.NewCluster = newClusterPb
+	}
+	notebookTaskPb, err := NotebookTaskToPb(st.NotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if notebookTaskPb != nil {
+		pb.NotebookTask = notebookTaskPb
+	}
+	notificationSettingsPb, err := TaskNotificationSettingsToPb(st.NotificationSettings)
+	if err != nil {
+		return nil, err
+	}
+	if notificationSettingsPb != nil {
+		pb.NotificationSettings = notificationSettingsPb
+	}
+	pipelineTaskPb, err := PipelineTaskToPb(st.PipelineTask)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineTaskPb != nil {
+		pb.PipelineTask = pipelineTaskPb
+	}
+	powerBiTaskPb, err := PowerBiTaskToPb(st.PowerBiTask)
+	if err != nil {
+		return nil, err
+	}
+	if powerBiTaskPb != nil {
+		pb.PowerBiTask = powerBiTaskPb
+	}
+	pythonWheelTaskPb, err := PythonWheelTaskToPb(st.PythonWheelTask)
+	if err != nil {
+		return nil, err
+	}
+	if pythonWheelTaskPb != nil {
+		pb.PythonWheelTask = pythonWheelTaskPb
+	}
+	pb.QueueDuration = st.QueueDuration
+	resolvedValuesPb, err := ResolvedValuesToPb(st.ResolvedValues)
+	if err != nil {
+		return nil, err
+	}
+	if resolvedValuesPb != nil {
+		pb.ResolvedValues = resolvedValuesPb
+	}
+	pb.RunDuration = st.RunDuration
+	pb.RunId = st.RunId
+	runIfPb, err := RunIfToPb(&st.RunIf)
+	if err != nil {
+		return nil, err
+	}
+	if runIfPb != nil {
+		pb.RunIf = *runIfPb
+	}
+	runJobTaskPb, err := RunJobTaskToPb(st.RunJobTask)
+	if err != nil {
+		return nil, err
+	}
+	if runJobTaskPb != nil {
+		pb.RunJobTask = runJobTaskPb
+	}
+	pb.RunPageUrl = st.RunPageUrl
+	pb.SetupDuration = st.SetupDuration
+	sparkJarTaskPb, err := SparkJarTaskToPb(st.SparkJarTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkJarTaskPb != nil {
+		pb.SparkJarTask = sparkJarTaskPb
+	}
+	sparkPythonTaskPb, err := SparkPythonTaskToPb(st.SparkPythonTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkPythonTaskPb != nil {
+		pb.SparkPythonTask = sparkPythonTaskPb
+	}
+	sparkSubmitTaskPb, err := SparkSubmitTaskToPb(st.SparkSubmitTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkSubmitTaskPb != nil {
+		pb.SparkSubmitTask = sparkSubmitTaskPb
+	}
+	sqlTaskPb, err := SqlTaskToPb(st.SqlTask)
+	if err != nil {
+		return nil, err
+	}
+	if sqlTaskPb != nil {
+		pb.SqlTask = sqlTaskPb
+	}
+	pb.StartTime = st.StartTime
+	statePb, err := RunStateToPb(st.State)
+	if err != nil {
+		return nil, err
+	}
+	if statePb != nil {
+		pb.State = statePb
+	}
+	statusPb, err := RunStatusToPb(st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = statusPb
+	}
+	pb.TaskKey = st.TaskKey
+	pb.TimeoutSeconds = st.TimeoutSeconds
+	webhookNotificationsPb, err := WebhookNotificationsToPb(st.WebhookNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if webhookNotificationsPb != nil {
+		pb.WebhookNotifications = webhookNotificationsPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func RunTaskFromPb(pb *jobspb.RunTaskPb) (*RunTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RunTask{}
+	st.AttemptNumber = pb.AttemptNumber
+	cleanRoomsNotebookTaskField, err := CleanRoomsNotebookTaskFromPb(pb.CleanRoomsNotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if cleanRoomsNotebookTaskField != nil {
+		st.CleanRoomsNotebookTask = cleanRoomsNotebookTaskField
+	}
+	st.CleanupDuration = pb.CleanupDuration
+	clusterInstanceField, err := ClusterInstanceFromPb(pb.ClusterInstance)
+	if err != nil {
+		return nil, err
+	}
+	if clusterInstanceField != nil {
+		st.ClusterInstance = clusterInstanceField
+	}
+	conditionTaskField, err := RunConditionTaskFromPb(pb.ConditionTask)
+	if err != nil {
+		return nil, err
+	}
+	if conditionTaskField != nil {
+		st.ConditionTask = conditionTaskField
+	}
+	dashboardTaskField, err := DashboardTaskFromPb(pb.DashboardTask)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardTaskField != nil {
+		st.DashboardTask = dashboardTaskField
+	}
+	dbtCloudTaskField, err := DbtCloudTaskFromPb(pb.DbtCloudTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtCloudTaskField != nil {
+		st.DbtCloudTask = dbtCloudTaskField
+	}
+	dbtPlatformTaskField, err := DbtPlatformTaskFromPb(pb.DbtPlatformTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtPlatformTaskField != nil {
+		st.DbtPlatformTask = dbtPlatformTaskField
+	}
+	dbtTaskField, err := DbtTaskFromPb(pb.DbtTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtTaskField != nil {
+		st.DbtTask = dbtTaskField
+	}
+
+	var dependsOnField []TaskDependency
+	for _, itemPb := range pb.DependsOn {
+		item, err := TaskDependencyFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			dependsOnField = append(dependsOnField, *item)
+		}
+	}
+	st.DependsOn = dependsOnField
+	st.Description = pb.Description
+	st.Disabled = pb.Disabled
+	effectivePerformanceTargetField, err := PerformanceTargetFromPb(&pb.EffectivePerformanceTarget)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePerformanceTargetField != nil {
+		st.EffectivePerformanceTarget = *effectivePerformanceTargetField
+	}
+	emailNotificationsField, err := JobEmailNotificationsFromPb(pb.EmailNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if emailNotificationsField != nil {
+		st.EmailNotifications = emailNotificationsField
+	}
+	st.EndTime = pb.EndTime
+	st.EnvironmentKey = pb.EnvironmentKey
+	st.ExecutionDuration = pb.ExecutionDuration
+	st.ExistingClusterId = pb.ExistingClusterId
+	forEachTaskField, err := RunForEachTaskFromPb(pb.ForEachTask)
+	if err != nil {
+		return nil, err
+	}
+	if forEachTaskField != nil {
+		st.ForEachTask = forEachTaskField
+	}
+	genAiComputeTaskField, err := GenAiComputeTaskFromPb(pb.GenAiComputeTask)
+	if err != nil {
+		return nil, err
+	}
+	if genAiComputeTaskField != nil {
+		st.GenAiComputeTask = genAiComputeTaskField
+	}
+	gitSourceField, err := GitSourceFromPb(pb.GitSource)
+	if err != nil {
+		return nil, err
+	}
+	if gitSourceField != nil {
+		st.GitSource = gitSourceField
+	}
+	st.JobClusterKey = pb.JobClusterKey
+
+	var librariesField []compute.Library
+	for _, itemPb := range pb.Libraries {
+		item, err := compute.LibraryFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			librariesField = append(librariesField, *item)
+		}
+	}
+	st.Libraries = librariesField
+	newClusterField, err := compute.ClusterSpecFromPb(pb.NewCluster)
+	if err != nil {
+		return nil, err
+	}
+	if newClusterField != nil {
+		st.NewCluster = newClusterField
+	}
+	notebookTaskField, err := NotebookTaskFromPb(pb.NotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if notebookTaskField != nil {
+		st.NotebookTask = notebookTaskField
+	}
+	notificationSettingsField, err := TaskNotificationSettingsFromPb(pb.NotificationSettings)
+	if err != nil {
+		return nil, err
+	}
+	if notificationSettingsField != nil {
+		st.NotificationSettings = notificationSettingsField
+	}
+	pipelineTaskField, err := PipelineTaskFromPb(pb.PipelineTask)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineTaskField != nil {
+		st.PipelineTask = pipelineTaskField
+	}
+	powerBiTaskField, err := PowerBiTaskFromPb(pb.PowerBiTask)
+	if err != nil {
+		return nil, err
+	}
+	if powerBiTaskField != nil {
+		st.PowerBiTask = powerBiTaskField
+	}
+	pythonWheelTaskField, err := PythonWheelTaskFromPb(pb.PythonWheelTask)
+	if err != nil {
+		return nil, err
+	}
+	if pythonWheelTaskField != nil {
+		st.PythonWheelTask = pythonWheelTaskField
+	}
+	st.QueueDuration = pb.QueueDuration
+	resolvedValuesField, err := ResolvedValuesFromPb(pb.ResolvedValues)
+	if err != nil {
+		return nil, err
+	}
+	if resolvedValuesField != nil {
+		st.ResolvedValues = resolvedValuesField
+	}
+	st.RunDuration = pb.RunDuration
+	st.RunId = pb.RunId
+	runIfField, err := RunIfFromPb(&pb.RunIf)
+	if err != nil {
+		return nil, err
+	}
+	if runIfField != nil {
+		st.RunIf = *runIfField
+	}
+	runJobTaskField, err := RunJobTaskFromPb(pb.RunJobTask)
+	if err != nil {
+		return nil, err
+	}
+	if runJobTaskField != nil {
+		st.RunJobTask = runJobTaskField
+	}
+	st.RunPageUrl = pb.RunPageUrl
+	st.SetupDuration = pb.SetupDuration
+	sparkJarTaskField, err := SparkJarTaskFromPb(pb.SparkJarTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkJarTaskField != nil {
+		st.SparkJarTask = sparkJarTaskField
+	}
+	sparkPythonTaskField, err := SparkPythonTaskFromPb(pb.SparkPythonTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkPythonTaskField != nil {
+		st.SparkPythonTask = sparkPythonTaskField
+	}
+	sparkSubmitTaskField, err := SparkSubmitTaskFromPb(pb.SparkSubmitTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkSubmitTaskField != nil {
+		st.SparkSubmitTask = sparkSubmitTaskField
+	}
+	sqlTaskField, err := SqlTaskFromPb(pb.SqlTask)
+	if err != nil {
+		return nil, err
+	}
+	if sqlTaskField != nil {
+		st.SqlTask = sqlTaskField
+	}
+	st.StartTime = pb.StartTime
+	stateField, err := RunStateFromPb(pb.State)
+	if err != nil {
+		return nil, err
+	}
+	if stateField != nil {
+		st.State = stateField
+	}
+	statusField, err := RunStatusFromPb(pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = statusField
+	}
+	st.TaskKey = pb.TaskKey
+	st.TimeoutSeconds = pb.TimeoutSeconds
+	webhookNotificationsField, err := WebhookNotificationsFromPb(pb.WebhookNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if webhookNotificationsField != nil {
+		st.WebhookNotifications = webhookNotificationsField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // The type of a run. * `JOB_RUN`: Normal job run. A run created with
@@ -4411,6 +11214,22 @@ func (f *RunType) Type() string {
 	return "RunType"
 }
 
+func RunTypeToPb(st *RunType) (*jobspb.RunTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.RunTypePb(*st)
+	return &pb, nil
+}
+
+func RunTypeFromPb(pb *jobspb.RunTypePb) (*RunType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := RunType(*pb)
+	return &st, nil
+}
+
 // Optional location type of the SQL file. When set to `WORKSPACE`, the SQL file
 // will be retrieved\ from the local Databricks workspace. When set to `GIT`,
 // the SQL file will be retrieved from a Git repository defined in `git_source`.
@@ -4458,27 +11277,46 @@ func (f *Source) Type() string {
 	return "Source"
 }
 
+func SourceToPb(st *Source) (*jobspb.SourcePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.SourcePb(*st)
+	return &pb, nil
+}
+
+func SourceFromPb(pb *jobspb.SourcePb) (*Source, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := Source(*pb)
+	return &st, nil
+}
+
 type SparkJarTask struct {
 	// Deprecated since 04/2016. Provide a `jar` through the `libraries` field
 	// instead. For an example, see :method:jobs/create.
-	JarUri string `json:"jar_uri,omitempty"`
+	// Wire name: 'jar_uri'
+	JarUri string ``
 	// The full name of the class containing the main method to be executed.
 	// This class must be contained in a JAR provided as a library.
 	//
 	// The code must use `SparkContext.getOrCreate` to obtain a Spark context;
 	// otherwise, runs of the job fail.
-	MainClassName string `json:"main_class_name,omitempty"`
+	// Wire name: 'main_class_name'
+	MainClassName string ``
 	// Parameters passed to the main method.
 	//
 	// Use [Task parameter variables] to set parameters containing information
 	// about job runs.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	Parameters []string `json:"parameters,omitempty"`
+	// Wire name: 'parameters'
+	Parameters []string ``
 	// Deprecated. A value of `false` is no longer supported.
-	RunAsRepl bool `json:"run_as_repl,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'run_as_repl'
+	RunAsRepl       bool     ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *SparkJarTask) UnmarshalJSON(b []byte) error {
@@ -4489,6 +11327,34 @@ func (s SparkJarTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func SparkJarTaskToPb(st *SparkJarTask) (*jobspb.SparkJarTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SparkJarTaskPb{}
+	pb.JarUri = st.JarUri
+	pb.MainClassName = st.MainClassName
+	pb.Parameters = st.Parameters
+	pb.RunAsRepl = st.RunAsRepl
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SparkJarTaskFromPb(pb *jobspb.SparkJarTaskPb) (*SparkJarTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SparkJarTask{}
+	st.JarUri = pb.JarUri
+	st.MainClassName = pb.MainClassName
+	st.Parameters = pb.Parameters
+	st.RunAsRepl = pb.RunAsRepl
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type SparkPythonTask struct {
 	// Command line parameters passed to the Python file.
 	//
@@ -4496,13 +11362,15 @@ type SparkPythonTask struct {
 	// about job runs.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	Parameters []string `json:"parameters,omitempty"`
+	// Wire name: 'parameters'
+	Parameters []string ``
 	// The Python file to be executed. Cloud file URIs (such as dbfs:/, s3:/,
 	// adls:/, gcs:/) and workspace paths are supported. For python files stored
 	// in the Databricks workspace, the path must be absolute and begin with
 	// `/`. For files stored in a remote repository, the path must be relative.
 	// This field is required.
-	PythonFile string `json:"python_file"`
+	// Wire name: 'python_file'
+	PythonFile string ``
 	// Optional location type of the Python file. When set to `WORKSPACE` or not
 	// specified, the file will be retrieved from the local Databricks workspace
 	// or cloud location (if the `python_file` has a URI format). When set to
@@ -4512,7 +11380,44 @@ type SparkPythonTask struct {
 	// * `WORKSPACE`: The Python file is located in a Databricks workspace or at
 	// a cloud filesystem URI. * `GIT`: The Python file is located in a remote
 	// Git repository.
-	Source Source `json:"source,omitempty"`
+	// Wire name: 'source'
+	Source Source ``
+}
+
+func SparkPythonTaskToPb(st *SparkPythonTask) (*jobspb.SparkPythonTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SparkPythonTaskPb{}
+	pb.Parameters = st.Parameters
+	pb.PythonFile = st.PythonFile
+	sourcePb, err := SourceToPb(&st.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourcePb != nil {
+		pb.Source = *sourcePb
+	}
+
+	return pb, nil
+}
+
+func SparkPythonTaskFromPb(pb *jobspb.SparkPythonTaskPb) (*SparkPythonTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SparkPythonTask{}
+	st.Parameters = pb.Parameters
+	st.PythonFile = pb.PythonFile
+	sourceField, err := SourceFromPb(&pb.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourceField != nil {
+		st.Source = *sourceField
+	}
+
+	return st, nil
 }
 
 type SparkSubmitTask struct {
@@ -4522,22 +11427,48 @@ type SparkSubmitTask struct {
 	// about job runs.
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-	Parameters []string `json:"parameters,omitempty"`
+	// Wire name: 'parameters'
+	Parameters []string ``
+}
+
+func SparkSubmitTaskToPb(st *SparkSubmitTask) (*jobspb.SparkSubmitTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SparkSubmitTaskPb{}
+	pb.Parameters = st.Parameters
+
+	return pb, nil
+}
+
+func SparkSubmitTaskFromPb(pb *jobspb.SparkSubmitTaskPb) (*SparkSubmitTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SparkSubmitTask{}
+	st.Parameters = pb.Parameters
+
+	return st, nil
 }
 
 type SqlAlertOutput struct {
-	AlertState SqlAlertState `json:"alert_state,omitempty"`
+
+	// Wire name: 'alert_state'
+	AlertState SqlAlertState ``
 	// The link to find the output results.
-	OutputLink string `json:"output_link,omitempty"`
+	// Wire name: 'output_link'
+	OutputLink string ``
 	// The text of the SQL query. Can Run permission of the SQL query associated
 	// with the SQL alert is required to view this field.
-	QueryText string `json:"query_text,omitempty"`
+	// Wire name: 'query_text'
+	QueryText string ``
 	// Information about SQL statements executed in the run.
-	SqlStatements []SqlStatementOutput `json:"sql_statements,omitempty"`
+	// Wire name: 'sql_statements'
+	SqlStatements []SqlStatementOutput ``
 	// The canonical identifier of the SQL warehouse.
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'warehouse_id'
+	WarehouseId     string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *SqlAlertOutput) UnmarshalJSON(b []byte) error {
@@ -4546,6 +11477,70 @@ func (s *SqlAlertOutput) UnmarshalJSON(b []byte) error {
 
 func (s SqlAlertOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func SqlAlertOutputToPb(st *SqlAlertOutput) (*jobspb.SqlAlertOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SqlAlertOutputPb{}
+	alertStatePb, err := SqlAlertStateToPb(&st.AlertState)
+	if err != nil {
+		return nil, err
+	}
+	if alertStatePb != nil {
+		pb.AlertState = *alertStatePb
+	}
+	pb.OutputLink = st.OutputLink
+	pb.QueryText = st.QueryText
+
+	var sqlStatementsPb []jobspb.SqlStatementOutputPb
+	for _, item := range st.SqlStatements {
+		itemPb, err := SqlStatementOutputToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			sqlStatementsPb = append(sqlStatementsPb, *itemPb)
+		}
+	}
+	pb.SqlStatements = sqlStatementsPb
+	pb.WarehouseId = st.WarehouseId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SqlAlertOutputFromPb(pb *jobspb.SqlAlertOutputPb) (*SqlAlertOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SqlAlertOutput{}
+	alertStateField, err := SqlAlertStateFromPb(&pb.AlertState)
+	if err != nil {
+		return nil, err
+	}
+	if alertStateField != nil {
+		st.AlertState = *alertStateField
+	}
+	st.OutputLink = pb.OutputLink
+	st.QueryText = pb.QueryText
+
+	var sqlStatementsField []SqlStatementOutput
+	for _, itemPb := range pb.SqlStatements {
+		item, err := SqlStatementOutputFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			sqlStatementsField = append(sqlStatementsField, *item)
+		}
+	}
+	st.SqlStatements = sqlStatementsField
+	st.WarehouseId = pb.WarehouseId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // The state of the SQL alert.
@@ -4593,13 +11588,30 @@ func (f *SqlAlertState) Type() string {
 	return "SqlAlertState"
 }
 
+func SqlAlertStateToPb(st *SqlAlertState) (*jobspb.SqlAlertStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.SqlAlertStatePb(*st)
+	return &pb, nil
+}
+
+func SqlAlertStateFromPb(pb *jobspb.SqlAlertStatePb) (*SqlAlertState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := SqlAlertState(*pb)
+	return &st, nil
+}
+
 type SqlDashboardOutput struct {
 	// The canonical identifier of the SQL warehouse.
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	// Wire name: 'warehouse_id'
+	WarehouseId string ``
 	// Widgets executed in the run. Only SQL query based widgets are listed.
-	Widgets []SqlDashboardWidgetOutput `json:"widgets,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'widgets'
+	Widgets         []SqlDashboardWidgetOutput ``
+	ForceSendFields []string                   `tf:"-"`
 }
 
 func (s *SqlDashboardOutput) UnmarshalJSON(b []byte) error {
@@ -4610,23 +11622,75 @@ func (s SqlDashboardOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func SqlDashboardOutputToPb(st *SqlDashboardOutput) (*jobspb.SqlDashboardOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SqlDashboardOutputPb{}
+	pb.WarehouseId = st.WarehouseId
+
+	var widgetsPb []jobspb.SqlDashboardWidgetOutputPb
+	for _, item := range st.Widgets {
+		itemPb, err := SqlDashboardWidgetOutputToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			widgetsPb = append(widgetsPb, *itemPb)
+		}
+	}
+	pb.Widgets = widgetsPb
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SqlDashboardOutputFromPb(pb *jobspb.SqlDashboardOutputPb) (*SqlDashboardOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SqlDashboardOutput{}
+	st.WarehouseId = pb.WarehouseId
+
+	var widgetsField []SqlDashboardWidgetOutput
+	for _, itemPb := range pb.Widgets {
+		item, err := SqlDashboardWidgetOutputFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			widgetsField = append(widgetsField, *item)
+		}
+	}
+	st.Widgets = widgetsField
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type SqlDashboardWidgetOutput struct {
 	// Time (in epoch milliseconds) when execution of the SQL widget ends.
-	EndTime int64 `json:"end_time,omitempty"`
+	// Wire name: 'end_time'
+	EndTime int64 ``
 	// The information about the error when execution fails.
-	Error *SqlOutputError `json:"error,omitempty"`
+	// Wire name: 'error'
+	Error *SqlOutputError ``
 	// The link to find the output results.
-	OutputLink string `json:"output_link,omitempty"`
+	// Wire name: 'output_link'
+	OutputLink string ``
 	// Time (in epoch milliseconds) when execution of the SQL widget starts.
-	StartTime int64 `json:"start_time,omitempty"`
+	// Wire name: 'start_time'
+	StartTime int64 ``
 	// The execution status of the SQL widget.
-	Status SqlDashboardWidgetOutputStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status SqlDashboardWidgetOutputStatus ``
 	// The canonical identifier of the SQL widget.
-	WidgetId string `json:"widget_id,omitempty"`
+	// Wire name: 'widget_id'
+	WidgetId string ``
 	// The title of the SQL widget.
-	WidgetTitle string `json:"widget_title,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'widget_title'
+	WidgetTitle     string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *SqlDashboardWidgetOutput) UnmarshalJSON(b []byte) error {
@@ -4635,6 +11699,64 @@ func (s *SqlDashboardWidgetOutput) UnmarshalJSON(b []byte) error {
 
 func (s SqlDashboardWidgetOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func SqlDashboardWidgetOutputToPb(st *SqlDashboardWidgetOutput) (*jobspb.SqlDashboardWidgetOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SqlDashboardWidgetOutputPb{}
+	pb.EndTime = st.EndTime
+	errorPb, err := SqlOutputErrorToPb(st.Error)
+	if err != nil {
+		return nil, err
+	}
+	if errorPb != nil {
+		pb.Error = errorPb
+	}
+	pb.OutputLink = st.OutputLink
+	pb.StartTime = st.StartTime
+	statusPb, err := SqlDashboardWidgetOutputStatusToPb(&st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+	pb.WidgetId = st.WidgetId
+	pb.WidgetTitle = st.WidgetTitle
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SqlDashboardWidgetOutputFromPb(pb *jobspb.SqlDashboardWidgetOutputPb) (*SqlDashboardWidgetOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SqlDashboardWidgetOutput{}
+	st.EndTime = pb.EndTime
+	errorField, err := SqlOutputErrorFromPb(pb.Error)
+	if err != nil {
+		return nil, err
+	}
+	if errorField != nil {
+		st.Error = errorField
+	}
+	st.OutputLink = pb.OutputLink
+	st.StartTime = pb.StartTime
+	statusField, err := SqlDashboardWidgetOutputStatusFromPb(&pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = *statusField
+	}
+	st.WidgetId = pb.WidgetId
+	st.WidgetTitle = pb.WidgetTitle
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 type SqlDashboardWidgetOutputStatus string
@@ -4683,20 +11805,99 @@ func (f *SqlDashboardWidgetOutputStatus) Type() string {
 	return "SqlDashboardWidgetOutputStatus"
 }
 
+func SqlDashboardWidgetOutputStatusToPb(st *SqlDashboardWidgetOutputStatus) (*jobspb.SqlDashboardWidgetOutputStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.SqlDashboardWidgetOutputStatusPb(*st)
+	return &pb, nil
+}
+
+func SqlDashboardWidgetOutputStatusFromPb(pb *jobspb.SqlDashboardWidgetOutputStatusPb) (*SqlDashboardWidgetOutputStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := SqlDashboardWidgetOutputStatus(*pb)
+	return &st, nil
+}
+
 type SqlOutput struct {
 	// The output of a SQL alert task, if available.
-	AlertOutput *SqlAlertOutput `json:"alert_output,omitempty"`
+	// Wire name: 'alert_output'
+	AlertOutput *SqlAlertOutput ``
 	// The output of a SQL dashboard task, if available.
-	DashboardOutput *SqlDashboardOutput `json:"dashboard_output,omitempty"`
+	// Wire name: 'dashboard_output'
+	DashboardOutput *SqlDashboardOutput ``
 	// The output of a SQL query task, if available.
-	QueryOutput *SqlQueryOutput `json:"query_output,omitempty"`
+	// Wire name: 'query_output'
+	QueryOutput *SqlQueryOutput ``
+}
+
+func SqlOutputToPb(st *SqlOutput) (*jobspb.SqlOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SqlOutputPb{}
+	alertOutputPb, err := SqlAlertOutputToPb(st.AlertOutput)
+	if err != nil {
+		return nil, err
+	}
+	if alertOutputPb != nil {
+		pb.AlertOutput = alertOutputPb
+	}
+	dashboardOutputPb, err := SqlDashboardOutputToPb(st.DashboardOutput)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardOutputPb != nil {
+		pb.DashboardOutput = dashboardOutputPb
+	}
+	queryOutputPb, err := SqlQueryOutputToPb(st.QueryOutput)
+	if err != nil {
+		return nil, err
+	}
+	if queryOutputPb != nil {
+		pb.QueryOutput = queryOutputPb
+	}
+
+	return pb, nil
+}
+
+func SqlOutputFromPb(pb *jobspb.SqlOutputPb) (*SqlOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SqlOutput{}
+	alertOutputField, err := SqlAlertOutputFromPb(pb.AlertOutput)
+	if err != nil {
+		return nil, err
+	}
+	if alertOutputField != nil {
+		st.AlertOutput = alertOutputField
+	}
+	dashboardOutputField, err := SqlDashboardOutputFromPb(pb.DashboardOutput)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardOutputField != nil {
+		st.DashboardOutput = dashboardOutputField
+	}
+	queryOutputField, err := SqlQueryOutputFromPb(pb.QueryOutput)
+	if err != nil {
+		return nil, err
+	}
+	if queryOutputField != nil {
+		st.QueryOutput = queryOutputField
+	}
+
+	return st, nil
 }
 
 type SqlOutputError struct {
 	// The error message when execution fails.
-	Message string `json:"message,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'message'
+	Message         string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *SqlOutputError) UnmarshalJSON(b []byte) error {
@@ -4707,19 +11908,46 @@ func (s SqlOutputError) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func SqlOutputErrorToPb(st *SqlOutputError) (*jobspb.SqlOutputErrorPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SqlOutputErrorPb{}
+	pb.Message = st.Message
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SqlOutputErrorFromPb(pb *jobspb.SqlOutputErrorPb) (*SqlOutputError, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SqlOutputError{}
+	st.Message = pb.Message
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type SqlQueryOutput struct {
-	EndpointId string `json:"endpoint_id,omitempty"`
+
+	// Wire name: 'endpoint_id'
+	EndpointId string ``
 	// The link to find the output results.
-	OutputLink string `json:"output_link,omitempty"`
+	// Wire name: 'output_link'
+	OutputLink string ``
 	// The text of the SQL query. Can Run permission of the SQL query is
 	// required to view this field.
-	QueryText string `json:"query_text,omitempty"`
+	// Wire name: 'query_text'
+	QueryText string ``
 	// Information about SQL statements executed in the run.
-	SqlStatements []SqlStatementOutput `json:"sql_statements,omitempty"`
+	// Wire name: 'sql_statements'
+	SqlStatements []SqlStatementOutput ``
 	// The canonical identifier of the SQL warehouse.
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'warehouse_id'
+	WarehouseId     string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *SqlQueryOutput) UnmarshalJSON(b []byte) error {
@@ -4730,11 +11958,63 @@ func (s SqlQueryOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func SqlQueryOutputToPb(st *SqlQueryOutput) (*jobspb.SqlQueryOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SqlQueryOutputPb{}
+	pb.EndpointId = st.EndpointId
+	pb.OutputLink = st.OutputLink
+	pb.QueryText = st.QueryText
+
+	var sqlStatementsPb []jobspb.SqlStatementOutputPb
+	for _, item := range st.SqlStatements {
+		itemPb, err := SqlStatementOutputToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			sqlStatementsPb = append(sqlStatementsPb, *itemPb)
+		}
+	}
+	pb.SqlStatements = sqlStatementsPb
+	pb.WarehouseId = st.WarehouseId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SqlQueryOutputFromPb(pb *jobspb.SqlQueryOutputPb) (*SqlQueryOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SqlQueryOutput{}
+	st.EndpointId = pb.EndpointId
+	st.OutputLink = pb.OutputLink
+	st.QueryText = pb.QueryText
+
+	var sqlStatementsField []SqlStatementOutput
+	for _, itemPb := range pb.SqlStatements {
+		item, err := SqlStatementOutputFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			sqlStatementsField = append(sqlStatementsField, *item)
+		}
+	}
+	st.SqlStatements = sqlStatementsField
+	st.WarehouseId = pb.WarehouseId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type SqlStatementOutput struct {
 	// A key that can be used to look up query details.
-	LookupKey string `json:"lookup_key,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'lookup_key'
+	LookupKey       string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *SqlStatementOutput) UnmarshalJSON(b []byte) error {
@@ -4745,35 +12025,143 @@ func (s SqlStatementOutput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func SqlStatementOutputToPb(st *SqlStatementOutput) (*jobspb.SqlStatementOutputPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SqlStatementOutputPb{}
+	pb.LookupKey = st.LookupKey
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SqlStatementOutputFromPb(pb *jobspb.SqlStatementOutputPb) (*SqlStatementOutput, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SqlStatementOutput{}
+	st.LookupKey = pb.LookupKey
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type SqlTask struct {
 	// If alert, indicates that this job must refresh a SQL alert.
-	Alert *SqlTaskAlert `json:"alert,omitempty"`
+	// Wire name: 'alert'
+	Alert *SqlTaskAlert ``
 	// If dashboard, indicates that this job must refresh a SQL dashboard.
-	Dashboard *SqlTaskDashboard `json:"dashboard,omitempty"`
+	// Wire name: 'dashboard'
+	Dashboard *SqlTaskDashboard ``
 	// If file, indicates that this job runs a SQL file in a remote Git
 	// repository.
-	File *SqlTaskFile `json:"file,omitempty"`
+	// Wire name: 'file'
+	File *SqlTaskFile ``
 	// Parameters to be used for each run of this job. The SQL alert task does
 	// not support custom parameters.
-	Parameters map[string]string `json:"parameters,omitempty"`
+	// Wire name: 'parameters'
+	Parameters map[string]string ``
 	// If query, indicates that this job must execute a SQL query.
-	Query *SqlTaskQuery `json:"query,omitempty"`
+	// Wire name: 'query'
+	Query *SqlTaskQuery ``
 	// The canonical identifier of the SQL warehouse. Recommended to use with
 	// serverless or pro SQL warehouses. Classic SQL warehouses are only
 	// supported for SQL alert, dashboard and query tasks and are limited to
 	// scheduled single-task jobs.
-	WarehouseId string `json:"warehouse_id"`
+	// Wire name: 'warehouse_id'
+	WarehouseId string ``
+}
+
+func SqlTaskToPb(st *SqlTask) (*jobspb.SqlTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SqlTaskPb{}
+	alertPb, err := SqlTaskAlertToPb(st.Alert)
+	if err != nil {
+		return nil, err
+	}
+	if alertPb != nil {
+		pb.Alert = alertPb
+	}
+	dashboardPb, err := SqlTaskDashboardToPb(st.Dashboard)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardPb != nil {
+		pb.Dashboard = dashboardPb
+	}
+	filePb, err := SqlTaskFileToPb(st.File)
+	if err != nil {
+		return nil, err
+	}
+	if filePb != nil {
+		pb.File = filePb
+	}
+	pb.Parameters = st.Parameters
+	queryPb, err := SqlTaskQueryToPb(st.Query)
+	if err != nil {
+		return nil, err
+	}
+	if queryPb != nil {
+		pb.Query = queryPb
+	}
+	pb.WarehouseId = st.WarehouseId
+
+	return pb, nil
+}
+
+func SqlTaskFromPb(pb *jobspb.SqlTaskPb) (*SqlTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SqlTask{}
+	alertField, err := SqlTaskAlertFromPb(pb.Alert)
+	if err != nil {
+		return nil, err
+	}
+	if alertField != nil {
+		st.Alert = alertField
+	}
+	dashboardField, err := SqlTaskDashboardFromPb(pb.Dashboard)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardField != nil {
+		st.Dashboard = dashboardField
+	}
+	fileField, err := SqlTaskFileFromPb(pb.File)
+	if err != nil {
+		return nil, err
+	}
+	if fileField != nil {
+		st.File = fileField
+	}
+	st.Parameters = pb.Parameters
+	queryField, err := SqlTaskQueryFromPb(pb.Query)
+	if err != nil {
+		return nil, err
+	}
+	if queryField != nil {
+		st.Query = queryField
+	}
+	st.WarehouseId = pb.WarehouseId
+
+	return st, nil
 }
 
 type SqlTaskAlert struct {
 	// The canonical identifier of the SQL alert.
-	AlertId string `json:"alert_id"`
+	// Wire name: 'alert_id'
+	AlertId string ``
 	// If true, the alert notifications are not sent to subscribers.
-	PauseSubscriptions bool `json:"pause_subscriptions,omitempty"`
+	// Wire name: 'pause_subscriptions'
+	PauseSubscriptions bool ``
 	// If specified, alert notifications are sent to subscribers.
-	Subscriptions []SqlTaskSubscription `json:"subscriptions,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'subscriptions'
+	Subscriptions   []SqlTaskSubscription ``
+	ForceSendFields []string              `tf:"-"`
 }
 
 func (s *SqlTaskAlert) UnmarshalJSON(b []byte) error {
@@ -4784,18 +12172,69 @@ func (s SqlTaskAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func SqlTaskAlertToPb(st *SqlTaskAlert) (*jobspb.SqlTaskAlertPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SqlTaskAlertPb{}
+	pb.AlertId = st.AlertId
+	pb.PauseSubscriptions = st.PauseSubscriptions
+
+	var subscriptionsPb []jobspb.SqlTaskSubscriptionPb
+	for _, item := range st.Subscriptions {
+		itemPb, err := SqlTaskSubscriptionToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			subscriptionsPb = append(subscriptionsPb, *itemPb)
+		}
+	}
+	pb.Subscriptions = subscriptionsPb
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SqlTaskAlertFromPb(pb *jobspb.SqlTaskAlertPb) (*SqlTaskAlert, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SqlTaskAlert{}
+	st.AlertId = pb.AlertId
+	st.PauseSubscriptions = pb.PauseSubscriptions
+
+	var subscriptionsField []SqlTaskSubscription
+	for _, itemPb := range pb.Subscriptions {
+		item, err := SqlTaskSubscriptionFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			subscriptionsField = append(subscriptionsField, *item)
+		}
+	}
+	st.Subscriptions = subscriptionsField
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type SqlTaskDashboard struct {
 	// Subject of the email sent to subscribers of this task.
-	CustomSubject string `json:"custom_subject,omitempty"`
+	// Wire name: 'custom_subject'
+	CustomSubject string ``
 	// The canonical identifier of the SQL dashboard.
-	DashboardId string `json:"dashboard_id"`
+	// Wire name: 'dashboard_id'
+	DashboardId string ``
 	// If true, the dashboard snapshot is not taken, and emails are not sent to
 	// subscribers.
-	PauseSubscriptions bool `json:"pause_subscriptions,omitempty"`
+	// Wire name: 'pause_subscriptions'
+	PauseSubscriptions bool ``
 	// If specified, dashboard snapshots are sent to subscriptions.
-	Subscriptions []SqlTaskSubscription `json:"subscriptions,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'subscriptions'
+	Subscriptions   []SqlTaskSubscription ``
+	ForceSendFields []string              `tf:"-"`
 }
 
 func (s *SqlTaskDashboard) UnmarshalJSON(b []byte) error {
@@ -4806,10 +12245,61 @@ func (s SqlTaskDashboard) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func SqlTaskDashboardToPb(st *SqlTaskDashboard) (*jobspb.SqlTaskDashboardPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SqlTaskDashboardPb{}
+	pb.CustomSubject = st.CustomSubject
+	pb.DashboardId = st.DashboardId
+	pb.PauseSubscriptions = st.PauseSubscriptions
+
+	var subscriptionsPb []jobspb.SqlTaskSubscriptionPb
+	for _, item := range st.Subscriptions {
+		itemPb, err := SqlTaskSubscriptionToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			subscriptionsPb = append(subscriptionsPb, *itemPb)
+		}
+	}
+	pb.Subscriptions = subscriptionsPb
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SqlTaskDashboardFromPb(pb *jobspb.SqlTaskDashboardPb) (*SqlTaskDashboard, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SqlTaskDashboard{}
+	st.CustomSubject = pb.CustomSubject
+	st.DashboardId = pb.DashboardId
+	st.PauseSubscriptions = pb.PauseSubscriptions
+
+	var subscriptionsField []SqlTaskSubscription
+	for _, itemPb := range pb.Subscriptions {
+		item, err := SqlTaskSubscriptionFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			subscriptionsField = append(subscriptionsField, *item)
+		}
+	}
+	st.Subscriptions = subscriptionsField
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type SqlTaskFile struct {
 	// Path of the SQL file. Must be relative if the source is a remote Git
 	// repository and absolute for workspace paths.
-	Path string `json:"path"`
+	// Wire name: 'path'
+	Path string ``
 	// Optional location type of the SQL file. When set to `WORKSPACE`, the SQL
 	// file will be retrieved from the local Databricks workspace. When set to
 	// `GIT`, the SQL file will be retrieved from a Git repository defined in
@@ -4818,12 +12308,68 @@ type SqlTaskFile struct {
 	//
 	// * `WORKSPACE`: SQL file is located in Databricks workspace. * `GIT`: SQL
 	// file is located in cloud Git provider.
-	Source Source `json:"source,omitempty"`
+	// Wire name: 'source'
+	Source Source ``
+}
+
+func SqlTaskFileToPb(st *SqlTaskFile) (*jobspb.SqlTaskFilePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SqlTaskFilePb{}
+	pb.Path = st.Path
+	sourcePb, err := SourceToPb(&st.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourcePb != nil {
+		pb.Source = *sourcePb
+	}
+
+	return pb, nil
+}
+
+func SqlTaskFileFromPb(pb *jobspb.SqlTaskFilePb) (*SqlTaskFile, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SqlTaskFile{}
+	st.Path = pb.Path
+	sourceField, err := SourceFromPb(&pb.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourceField != nil {
+		st.Source = *sourceField
+	}
+
+	return st, nil
 }
 
 type SqlTaskQuery struct {
 	// The canonical identifier of the SQL query.
-	QueryId string `json:"query_id"`
+	// Wire name: 'query_id'
+	QueryId string ``
+}
+
+func SqlTaskQueryToPb(st *SqlTaskQuery) (*jobspb.SqlTaskQueryPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SqlTaskQueryPb{}
+	pb.QueryId = st.QueryId
+
+	return pb, nil
+}
+
+func SqlTaskQueryFromPb(pb *jobspb.SqlTaskQueryPb) (*SqlTaskQuery, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SqlTaskQuery{}
+	st.QueryId = pb.QueryId
+
+	return st, nil
 }
 
 type SqlTaskSubscription struct {
@@ -4831,13 +12377,14 @@ type SqlTaskSubscription struct {
 	// notification. This parameter is mutually exclusive with user_name. You
 	// cannot set both destination_id and user_name for subscription
 	// notifications.
-	DestinationId string `json:"destination_id,omitempty"`
+	// Wire name: 'destination_id'
+	DestinationId string ``
 	// The user name to receive the subscription email. This parameter is
 	// mutually exclusive with destination_id. You cannot set both
 	// destination_id and user_name for subscription notifications.
-	UserName string `json:"user_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'user_name'
+	UserName        string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *SqlTaskSubscription) UnmarshalJSON(b []byte) error {
@@ -4846,6 +12393,30 @@ func (s *SqlTaskSubscription) UnmarshalJSON(b []byte) error {
 
 func (s SqlTaskSubscription) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func SqlTaskSubscriptionToPb(st *SqlTaskSubscription) (*jobspb.SqlTaskSubscriptionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SqlTaskSubscriptionPb{}
+	pb.DestinationId = st.DestinationId
+	pb.UserName = st.UserName
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SqlTaskSubscriptionFromPb(pb *jobspb.SqlTaskSubscriptionPb) (*SqlTaskSubscription, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SqlTaskSubscription{}
+	st.DestinationId = pb.DestinationId
+	st.UserName = pb.UserName
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 type StorageMode string
@@ -4888,18 +12459,38 @@ func (f *StorageMode) Type() string {
 	return "StorageMode"
 }
 
+func StorageModeToPb(st *StorageMode) (*jobspb.StorageModePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.StorageModePb(*st)
+	return &pb, nil
+}
+
+func StorageModeFromPb(pb *jobspb.StorageModePb) (*StorageMode, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := StorageMode(*pb)
+	return &st, nil
+}
+
 type SubmitRun struct {
 	// List of permissions to set on the job.
-	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
+	// Wire name: 'access_control_list'
+	AccessControlList []JobAccessControlRequest ``
 	// The user specified id of the budget policy to use for this one-time run.
 	// If not specified, the run will be not be attributed to any budget policy.
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Wire name: 'budget_policy_id'
+	BudgetPolicyId string ``
 	// An optional set of email addresses notified when the run begins or
 	// completes.
-	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// Wire name: 'email_notifications'
+	EmailNotifications *JobEmailNotifications ``
 	// A list of task execution environment specifications that can be
 	// referenced by tasks of this run.
-	Environments []JobEnvironment `json:"environments,omitempty"`
+	// Wire name: 'environments'
+	Environments []JobEnvironment ``
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks.
@@ -4910,9 +12501,11 @@ type SubmitRun struct {
 	//
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
-	GitSource *GitSource `json:"git_source,omitempty"`
+	// Wire name: 'git_source'
+	GitSource *GitSource ``
 
-	Health *JobsHealthRules `json:"health,omitempty"`
+	// Wire name: 'health'
+	Health *JobsHealthRules ``
 	// An optional token that can be used to guarantee the idempotency of job
 	// run requests. If a run with the provided token already exists, the
 	// request does not create a new run but returns the ID of the existing run
@@ -4928,28 +12521,35 @@ type SubmitRun struct {
 	// For more information, see [How to ensure idempotency for jobs].
 	//
 	// [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
-	IdempotencyToken string `json:"idempotency_token,omitempty"`
+	// Wire name: 'idempotency_token'
+	IdempotencyToken string ``
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// run.
-	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
+	// Wire name: 'notification_settings'
+	NotificationSettings *JobNotificationSettings ``
 	// The queue settings of the one-time run.
-	Queue *QueueSettings `json:"queue,omitempty"`
+	// Wire name: 'queue'
+	Queue *QueueSettings ``
 	// Specifies the user or service principal that the job runs as. If not
 	// specified, the job runs as the user who submits the request.
-	RunAs *JobRunAs `json:"run_as,omitempty"`
+	// Wire name: 'run_as'
+	RunAs *JobRunAs ``
 	// An optional name for the run. The default value is `Untitled`.
-	RunName string `json:"run_name,omitempty"`
+	// Wire name: 'run_name'
+	RunName string ``
 
-	Tasks []SubmitTask `json:"tasks,omitempty"`
+	// Wire name: 'tasks'
+	Tasks []SubmitTask ``
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// Wire name: 'timeout_seconds'
+	TimeoutSeconds int ``
 	// A collection of system notification IDs to notify when the run begins or
 	// completes.
-	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'webhook_notifications'
+	WebhookNotifications *WebhookNotifications ``
+	ForceSendFields      []string              `tf:"-"`
 }
 
 func (s *SubmitRun) UnmarshalJSON(b []byte) error {
@@ -4960,12 +12560,210 @@ func (s SubmitRun) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func SubmitRunToPb(st *SubmitRun) (*jobspb.SubmitRunPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SubmitRunPb{}
+
+	var accessControlListPb []jobspb.JobAccessControlRequestPb
+	for _, item := range st.AccessControlList {
+		itemPb, err := JobAccessControlRequestToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			accessControlListPb = append(accessControlListPb, *itemPb)
+		}
+	}
+	pb.AccessControlList = accessControlListPb
+	pb.BudgetPolicyId = st.BudgetPolicyId
+	emailNotificationsPb, err := JobEmailNotificationsToPb(st.EmailNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if emailNotificationsPb != nil {
+		pb.EmailNotifications = emailNotificationsPb
+	}
+
+	var environmentsPb []jobspb.JobEnvironmentPb
+	for _, item := range st.Environments {
+		itemPb, err := JobEnvironmentToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			environmentsPb = append(environmentsPb, *itemPb)
+		}
+	}
+	pb.Environments = environmentsPb
+	gitSourcePb, err := GitSourceToPb(st.GitSource)
+	if err != nil {
+		return nil, err
+	}
+	if gitSourcePb != nil {
+		pb.GitSource = gitSourcePb
+	}
+	healthPb, err := JobsHealthRulesToPb(st.Health)
+	if err != nil {
+		return nil, err
+	}
+	if healthPb != nil {
+		pb.Health = healthPb
+	}
+	pb.IdempotencyToken = st.IdempotencyToken
+	notificationSettingsPb, err := JobNotificationSettingsToPb(st.NotificationSettings)
+	if err != nil {
+		return nil, err
+	}
+	if notificationSettingsPb != nil {
+		pb.NotificationSettings = notificationSettingsPb
+	}
+	queuePb, err := QueueSettingsToPb(st.Queue)
+	if err != nil {
+		return nil, err
+	}
+	if queuePb != nil {
+		pb.Queue = queuePb
+	}
+	runAsPb, err := JobRunAsToPb(st.RunAs)
+	if err != nil {
+		return nil, err
+	}
+	if runAsPb != nil {
+		pb.RunAs = runAsPb
+	}
+	pb.RunName = st.RunName
+
+	var tasksPb []jobspb.SubmitTaskPb
+	for _, item := range st.Tasks {
+		itemPb, err := SubmitTaskToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			tasksPb = append(tasksPb, *itemPb)
+		}
+	}
+	pb.Tasks = tasksPb
+	pb.TimeoutSeconds = st.TimeoutSeconds
+	webhookNotificationsPb, err := WebhookNotificationsToPb(st.WebhookNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if webhookNotificationsPb != nil {
+		pb.WebhookNotifications = webhookNotificationsPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SubmitRunFromPb(pb *jobspb.SubmitRunPb) (*SubmitRun, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SubmitRun{}
+
+	var accessControlListField []JobAccessControlRequest
+	for _, itemPb := range pb.AccessControlList {
+		item, err := JobAccessControlRequestFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
+		}
+	}
+	st.AccessControlList = accessControlListField
+	st.BudgetPolicyId = pb.BudgetPolicyId
+	emailNotificationsField, err := JobEmailNotificationsFromPb(pb.EmailNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if emailNotificationsField != nil {
+		st.EmailNotifications = emailNotificationsField
+	}
+
+	var environmentsField []JobEnvironment
+	for _, itemPb := range pb.Environments {
+		item, err := JobEnvironmentFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			environmentsField = append(environmentsField, *item)
+		}
+	}
+	st.Environments = environmentsField
+	gitSourceField, err := GitSourceFromPb(pb.GitSource)
+	if err != nil {
+		return nil, err
+	}
+	if gitSourceField != nil {
+		st.GitSource = gitSourceField
+	}
+	healthField, err := JobsHealthRulesFromPb(pb.Health)
+	if err != nil {
+		return nil, err
+	}
+	if healthField != nil {
+		st.Health = healthField
+	}
+	st.IdempotencyToken = pb.IdempotencyToken
+	notificationSettingsField, err := JobNotificationSettingsFromPb(pb.NotificationSettings)
+	if err != nil {
+		return nil, err
+	}
+	if notificationSettingsField != nil {
+		st.NotificationSettings = notificationSettingsField
+	}
+	queueField, err := QueueSettingsFromPb(pb.Queue)
+	if err != nil {
+		return nil, err
+	}
+	if queueField != nil {
+		st.Queue = queueField
+	}
+	runAsField, err := JobRunAsFromPb(pb.RunAs)
+	if err != nil {
+		return nil, err
+	}
+	if runAsField != nil {
+		st.RunAs = runAsField
+	}
+	st.RunName = pb.RunName
+
+	var tasksField []SubmitTask
+	for _, itemPb := range pb.Tasks {
+		item, err := SubmitTaskFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			tasksField = append(tasksField, *item)
+		}
+	}
+	st.Tasks = tasksField
+	st.TimeoutSeconds = pb.TimeoutSeconds
+	webhookNotificationsField, err := WebhookNotificationsFromPb(pb.WebhookNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if webhookNotificationsField != nil {
+		st.WebhookNotifications = webhookNotificationsField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 // Run was created and started successfully.
 type SubmitRunResponse struct {
 	// The canonical identifier for the newly submitted run.
-	RunId int64 `json:"run_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'run_id'
+	RunId           int64    ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *SubmitRunResponse) UnmarshalJSON(b []byte) error {
@@ -4976,87 +12774,134 @@ func (s SubmitRunResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func SubmitRunResponseToPb(st *SubmitRunResponse) (*jobspb.SubmitRunResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SubmitRunResponsePb{}
+	pb.RunId = st.RunId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SubmitRunResponseFromPb(pb *jobspb.SubmitRunResponsePb) (*SubmitRunResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SubmitRunResponse{}
+	st.RunId = pb.RunId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type SubmitTask struct {
 	// The task runs a [clean rooms] notebook when the
 	// `clean_rooms_notebook_task` field is present.
 	//
 	// [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html
-	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
+	// Wire name: 'clean_rooms_notebook_task'
+	CleanRoomsNotebookTask *CleanRoomsNotebookTask ``
 	// The task evaluates a condition that can be used to control the execution
 	// of other tasks when the `condition_task` field is present. The condition
 	// task does not require a cluster to execute and does not support retries
 	// or notifications.
-	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
+	// Wire name: 'condition_task'
+	ConditionTask *ConditionTask ``
 	// The task refreshes a dashboard and sends a snapshot to subscribers.
-	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
+	// Wire name: 'dashboard_task'
+	DashboardTask *DashboardTask ``
 	// Task type for dbt cloud, deprecated in favor of the new name
 	// dbt_platform_task
-	DbtCloudTask *DbtCloudTask `json:"dbt_cloud_task,omitempty"`
+	// Wire name: 'dbt_cloud_task'
+	DbtCloudTask *DbtCloudTask ``
 
-	DbtPlatformTask *DbtPlatformTask `json:"dbt_platform_task,omitempty"`
+	// Wire name: 'dbt_platform_task'
+	DbtPlatformTask *DbtPlatformTask ``
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
 	// a serverless or a pro SQL warehouse.
-	DbtTask *DbtTask `json:"dbt_task,omitempty"`
+	// Wire name: 'dbt_task'
+	DbtTask *DbtTask ``
 	// An optional array of objects specifying the dependency graph of the task.
 	// All tasks specified in this field must complete successfully before
 	// executing this task. The key is `task_key`, and the value is the name
 	// assigned to the dependent task.
-	DependsOn []TaskDependency `json:"depends_on,omitempty"`
+	// Wire name: 'depends_on'
+	DependsOn []TaskDependency ``
 	// An optional description for this task.
-	Description string `json:"description,omitempty"`
+	// Wire name: 'description'
+	Description string ``
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
-	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
+	// Wire name: 'email_notifications'
+	EmailNotifications *JobEmailNotifications ``
 	// The key that references an environment spec in a job. This field is
 	// required for Python script, Python wheel and dbt tasks when using
 	// serverless compute.
-	EnvironmentKey string `json:"environment_key,omitempty"`
+	// Wire name: 'environment_key'
+	EnvironmentKey string ``
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
 	// running jobs and tasks on new clusters for greater reliability
-	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
+	// Wire name: 'existing_cluster_id'
+	ExistingClusterId string ``
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
-	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
+	// Wire name: 'for_each_task'
+	ForEachTask *ForEachTask ``
 
-	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
+	// Wire name: 'gen_ai_compute_task'
+	GenAiComputeTask *GenAiComputeTask ``
 
-	Health *JobsHealthRules `json:"health,omitempty"`
+	// Wire name: 'health'
+	Health *JobsHealthRules ``
 	// An optional list of libraries to be installed on the cluster. The default
 	// value is an empty list.
-	Libraries []compute.Library `json:"libraries,omitempty"`
+	// Wire name: 'libraries'
+	Libraries []compute.Library ``
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
-	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
+	// Wire name: 'new_cluster'
+	NewCluster *compute.ClusterSpec ``
 	// The task runs a notebook when the `notebook_task` field is present.
-	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
+	// Wire name: 'notebook_task'
+	NotebookTask *NotebookTask ``
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// task run.
-	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
+	// Wire name: 'notification_settings'
+	NotificationSettings *TaskNotificationSettings ``
 	// The task triggers a pipeline update when the `pipeline_task` field is
 	// present. Only pipelines configured to use triggered more are supported.
-	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
+	// Wire name: 'pipeline_task'
+	PipelineTask *PipelineTask ``
 	// The task triggers a Power BI semantic model update when the
 	// `power_bi_task` field is present.
-	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
+	// Wire name: 'power_bi_task'
+	PowerBiTask *PowerBiTask ``
 	// The task runs a Python wheel when the `python_wheel_task` field is
 	// present.
-	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
+	// Wire name: 'python_wheel_task'
+	PythonWheelTask *PythonWheelTask ``
 	// An optional value indicating the condition that determines whether the
 	// task should be run once its dependencies have been completed. When
 	// omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of
 	// possible values.
-	RunIf RunIf `json:"run_if,omitempty"`
+	// Wire name: 'run_if'
+	RunIf RunIf ``
 	// The task triggers another job when the `run_job_task` field is present.
-	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
+	// Wire name: 'run_job_task'
+	RunJobTask *RunJobTask ``
 	// The task runs a JAR when the `spark_jar_task` field is present.
-	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
+	// Wire name: 'spark_jar_task'
+	SparkJarTask *SparkJarTask ``
 	// The task runs a Python file when the `spark_python_task` field is
 	// present.
-	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
+	// Wire name: 'spark_python_task'
+	SparkPythonTask *SparkPythonTask ``
 	// (Legacy) The task runs the spark-submit script when the
 	// `spark_submit_task` field is present. This task can run only on new
 	// clusters and is not compatible with serverless compute.
@@ -5075,24 +12920,28 @@ type SubmitTask struct {
 	//
 	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
 	// paths.
-	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
+	// Wire name: 'spark_submit_task'
+	SparkSubmitTask *SparkSubmitTask ``
 	// The task runs a SQL query or file, or it refreshes a SQL alert or a
 	// legacy SQL dashboard when the `sql_task` field is present.
-	SqlTask *SqlTask `json:"sql_task,omitempty"`
+	// Wire name: 'sql_task'
+	SqlTask *SqlTask ``
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
 	// job. On Update or Reset, this field is used to reference the tasks to be
 	// updated or reset.
-	TaskKey string `json:"task_key"`
+	// Wire name: 'task_key'
+	TaskKey string ``
 	// An optional timeout applied to each run of this job task. A value of `0`
 	// means no timeout.
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// Wire name: 'timeout_seconds'
+	TimeoutSeconds int ``
 	// A collection of system notification IDs to notify when the run begins or
 	// completes. The default behavior is to not send any system notifications.
 	// Task webhooks respect the task notification settings.
-	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'webhook_notifications'
+	WebhookNotifications *WebhookNotifications ``
+	ForceSendFields      []string              `tf:"-"`
 }
 
 func (s *SubmitTask) UnmarshalJSON(b []byte) error {
@@ -5103,16 +12952,418 @@ func (s SubmitTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func SubmitTaskToPb(st *SubmitTask) (*jobspb.SubmitTaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SubmitTaskPb{}
+	cleanRoomsNotebookTaskPb, err := CleanRoomsNotebookTaskToPb(st.CleanRoomsNotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if cleanRoomsNotebookTaskPb != nil {
+		pb.CleanRoomsNotebookTask = cleanRoomsNotebookTaskPb
+	}
+	conditionTaskPb, err := ConditionTaskToPb(st.ConditionTask)
+	if err != nil {
+		return nil, err
+	}
+	if conditionTaskPb != nil {
+		pb.ConditionTask = conditionTaskPb
+	}
+	dashboardTaskPb, err := DashboardTaskToPb(st.DashboardTask)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardTaskPb != nil {
+		pb.DashboardTask = dashboardTaskPb
+	}
+	dbtCloudTaskPb, err := DbtCloudTaskToPb(st.DbtCloudTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtCloudTaskPb != nil {
+		pb.DbtCloudTask = dbtCloudTaskPb
+	}
+	dbtPlatformTaskPb, err := DbtPlatformTaskToPb(st.DbtPlatformTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtPlatformTaskPb != nil {
+		pb.DbtPlatformTask = dbtPlatformTaskPb
+	}
+	dbtTaskPb, err := DbtTaskToPb(st.DbtTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtTaskPb != nil {
+		pb.DbtTask = dbtTaskPb
+	}
+
+	var dependsOnPb []jobspb.TaskDependencyPb
+	for _, item := range st.DependsOn {
+		itemPb, err := TaskDependencyToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			dependsOnPb = append(dependsOnPb, *itemPb)
+		}
+	}
+	pb.DependsOn = dependsOnPb
+	pb.Description = st.Description
+	emailNotificationsPb, err := JobEmailNotificationsToPb(st.EmailNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if emailNotificationsPb != nil {
+		pb.EmailNotifications = emailNotificationsPb
+	}
+	pb.EnvironmentKey = st.EnvironmentKey
+	pb.ExistingClusterId = st.ExistingClusterId
+	forEachTaskPb, err := ForEachTaskToPb(st.ForEachTask)
+	if err != nil {
+		return nil, err
+	}
+	if forEachTaskPb != nil {
+		pb.ForEachTask = forEachTaskPb
+	}
+	genAiComputeTaskPb, err := GenAiComputeTaskToPb(st.GenAiComputeTask)
+	if err != nil {
+		return nil, err
+	}
+	if genAiComputeTaskPb != nil {
+		pb.GenAiComputeTask = genAiComputeTaskPb
+	}
+	healthPb, err := JobsHealthRulesToPb(st.Health)
+	if err != nil {
+		return nil, err
+	}
+	if healthPb != nil {
+		pb.Health = healthPb
+	}
+
+	var librariesPb []computepb.LibraryPb
+	for _, item := range st.Libraries {
+		itemPb, err := compute.LibraryToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			librariesPb = append(librariesPb, *itemPb)
+		}
+	}
+	pb.Libraries = librariesPb
+	newClusterPb, err := compute.ClusterSpecToPb(st.NewCluster)
+	if err != nil {
+		return nil, err
+	}
+	if newClusterPb != nil {
+		pb.NewCluster = newClusterPb
+	}
+	notebookTaskPb, err := NotebookTaskToPb(st.NotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if notebookTaskPb != nil {
+		pb.NotebookTask = notebookTaskPb
+	}
+	notificationSettingsPb, err := TaskNotificationSettingsToPb(st.NotificationSettings)
+	if err != nil {
+		return nil, err
+	}
+	if notificationSettingsPb != nil {
+		pb.NotificationSettings = notificationSettingsPb
+	}
+	pipelineTaskPb, err := PipelineTaskToPb(st.PipelineTask)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineTaskPb != nil {
+		pb.PipelineTask = pipelineTaskPb
+	}
+	powerBiTaskPb, err := PowerBiTaskToPb(st.PowerBiTask)
+	if err != nil {
+		return nil, err
+	}
+	if powerBiTaskPb != nil {
+		pb.PowerBiTask = powerBiTaskPb
+	}
+	pythonWheelTaskPb, err := PythonWheelTaskToPb(st.PythonWheelTask)
+	if err != nil {
+		return nil, err
+	}
+	if pythonWheelTaskPb != nil {
+		pb.PythonWheelTask = pythonWheelTaskPb
+	}
+	runIfPb, err := RunIfToPb(&st.RunIf)
+	if err != nil {
+		return nil, err
+	}
+	if runIfPb != nil {
+		pb.RunIf = *runIfPb
+	}
+	runJobTaskPb, err := RunJobTaskToPb(st.RunJobTask)
+	if err != nil {
+		return nil, err
+	}
+	if runJobTaskPb != nil {
+		pb.RunJobTask = runJobTaskPb
+	}
+	sparkJarTaskPb, err := SparkJarTaskToPb(st.SparkJarTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkJarTaskPb != nil {
+		pb.SparkJarTask = sparkJarTaskPb
+	}
+	sparkPythonTaskPb, err := SparkPythonTaskToPb(st.SparkPythonTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkPythonTaskPb != nil {
+		pb.SparkPythonTask = sparkPythonTaskPb
+	}
+	sparkSubmitTaskPb, err := SparkSubmitTaskToPb(st.SparkSubmitTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkSubmitTaskPb != nil {
+		pb.SparkSubmitTask = sparkSubmitTaskPb
+	}
+	sqlTaskPb, err := SqlTaskToPb(st.SqlTask)
+	if err != nil {
+		return nil, err
+	}
+	if sqlTaskPb != nil {
+		pb.SqlTask = sqlTaskPb
+	}
+	pb.TaskKey = st.TaskKey
+	pb.TimeoutSeconds = st.TimeoutSeconds
+	webhookNotificationsPb, err := WebhookNotificationsToPb(st.WebhookNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if webhookNotificationsPb != nil {
+		pb.WebhookNotifications = webhookNotificationsPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SubmitTaskFromPb(pb *jobspb.SubmitTaskPb) (*SubmitTask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SubmitTask{}
+	cleanRoomsNotebookTaskField, err := CleanRoomsNotebookTaskFromPb(pb.CleanRoomsNotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if cleanRoomsNotebookTaskField != nil {
+		st.CleanRoomsNotebookTask = cleanRoomsNotebookTaskField
+	}
+	conditionTaskField, err := ConditionTaskFromPb(pb.ConditionTask)
+	if err != nil {
+		return nil, err
+	}
+	if conditionTaskField != nil {
+		st.ConditionTask = conditionTaskField
+	}
+	dashboardTaskField, err := DashboardTaskFromPb(pb.DashboardTask)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardTaskField != nil {
+		st.DashboardTask = dashboardTaskField
+	}
+	dbtCloudTaskField, err := DbtCloudTaskFromPb(pb.DbtCloudTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtCloudTaskField != nil {
+		st.DbtCloudTask = dbtCloudTaskField
+	}
+	dbtPlatformTaskField, err := DbtPlatformTaskFromPb(pb.DbtPlatformTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtPlatformTaskField != nil {
+		st.DbtPlatformTask = dbtPlatformTaskField
+	}
+	dbtTaskField, err := DbtTaskFromPb(pb.DbtTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtTaskField != nil {
+		st.DbtTask = dbtTaskField
+	}
+
+	var dependsOnField []TaskDependency
+	for _, itemPb := range pb.DependsOn {
+		item, err := TaskDependencyFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			dependsOnField = append(dependsOnField, *item)
+		}
+	}
+	st.DependsOn = dependsOnField
+	st.Description = pb.Description
+	emailNotificationsField, err := JobEmailNotificationsFromPb(pb.EmailNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if emailNotificationsField != nil {
+		st.EmailNotifications = emailNotificationsField
+	}
+	st.EnvironmentKey = pb.EnvironmentKey
+	st.ExistingClusterId = pb.ExistingClusterId
+	forEachTaskField, err := ForEachTaskFromPb(pb.ForEachTask)
+	if err != nil {
+		return nil, err
+	}
+	if forEachTaskField != nil {
+		st.ForEachTask = forEachTaskField
+	}
+	genAiComputeTaskField, err := GenAiComputeTaskFromPb(pb.GenAiComputeTask)
+	if err != nil {
+		return nil, err
+	}
+	if genAiComputeTaskField != nil {
+		st.GenAiComputeTask = genAiComputeTaskField
+	}
+	healthField, err := JobsHealthRulesFromPb(pb.Health)
+	if err != nil {
+		return nil, err
+	}
+	if healthField != nil {
+		st.Health = healthField
+	}
+
+	var librariesField []compute.Library
+	for _, itemPb := range pb.Libraries {
+		item, err := compute.LibraryFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			librariesField = append(librariesField, *item)
+		}
+	}
+	st.Libraries = librariesField
+	newClusterField, err := compute.ClusterSpecFromPb(pb.NewCluster)
+	if err != nil {
+		return nil, err
+	}
+	if newClusterField != nil {
+		st.NewCluster = newClusterField
+	}
+	notebookTaskField, err := NotebookTaskFromPb(pb.NotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if notebookTaskField != nil {
+		st.NotebookTask = notebookTaskField
+	}
+	notificationSettingsField, err := TaskNotificationSettingsFromPb(pb.NotificationSettings)
+	if err != nil {
+		return nil, err
+	}
+	if notificationSettingsField != nil {
+		st.NotificationSettings = notificationSettingsField
+	}
+	pipelineTaskField, err := PipelineTaskFromPb(pb.PipelineTask)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineTaskField != nil {
+		st.PipelineTask = pipelineTaskField
+	}
+	powerBiTaskField, err := PowerBiTaskFromPb(pb.PowerBiTask)
+	if err != nil {
+		return nil, err
+	}
+	if powerBiTaskField != nil {
+		st.PowerBiTask = powerBiTaskField
+	}
+	pythonWheelTaskField, err := PythonWheelTaskFromPb(pb.PythonWheelTask)
+	if err != nil {
+		return nil, err
+	}
+	if pythonWheelTaskField != nil {
+		st.PythonWheelTask = pythonWheelTaskField
+	}
+	runIfField, err := RunIfFromPb(&pb.RunIf)
+	if err != nil {
+		return nil, err
+	}
+	if runIfField != nil {
+		st.RunIf = *runIfField
+	}
+	runJobTaskField, err := RunJobTaskFromPb(pb.RunJobTask)
+	if err != nil {
+		return nil, err
+	}
+	if runJobTaskField != nil {
+		st.RunJobTask = runJobTaskField
+	}
+	sparkJarTaskField, err := SparkJarTaskFromPb(pb.SparkJarTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkJarTaskField != nil {
+		st.SparkJarTask = sparkJarTaskField
+	}
+	sparkPythonTaskField, err := SparkPythonTaskFromPb(pb.SparkPythonTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkPythonTaskField != nil {
+		st.SparkPythonTask = sparkPythonTaskField
+	}
+	sparkSubmitTaskField, err := SparkSubmitTaskFromPb(pb.SparkSubmitTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkSubmitTaskField != nil {
+		st.SparkSubmitTask = sparkSubmitTaskField
+	}
+	sqlTaskField, err := SqlTaskFromPb(pb.SqlTask)
+	if err != nil {
+		return nil, err
+	}
+	if sqlTaskField != nil {
+		st.SqlTask = sqlTaskField
+	}
+	st.TaskKey = pb.TaskKey
+	st.TimeoutSeconds = pb.TimeoutSeconds
+	webhookNotificationsField, err := WebhookNotificationsFromPb(pb.WebhookNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if webhookNotificationsField != nil {
+		st.WebhookNotifications = webhookNotificationsField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type Subscription struct {
 	// Optional: Allows users to specify a custom subject line on the email sent
 	// to subscribers.
-	CustomSubject string `json:"custom_subject,omitempty"`
+	// Wire name: 'custom_subject'
+	CustomSubject string ``
 	// When true, the subscription will not send emails.
-	Paused bool `json:"paused,omitempty"`
+	// Wire name: 'paused'
+	Paused bool ``
 	// The list of subscribers to send the snapshot of the dashboard to.
-	Subscribers []SubscriptionSubscriber `json:"subscribers,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'subscribers'
+	Subscribers     []SubscriptionSubscriber ``
+	ForceSendFields []string                 `tf:"-"`
 }
 
 func (s *Subscription) UnmarshalJSON(b []byte) error {
@@ -5123,15 +13374,64 @@ func (s Subscription) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func SubscriptionToPb(st *Subscription) (*jobspb.SubscriptionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SubscriptionPb{}
+	pb.CustomSubject = st.CustomSubject
+	pb.Paused = st.Paused
+
+	var subscribersPb []jobspb.SubscriptionSubscriberPb
+	for _, item := range st.Subscribers {
+		itemPb, err := SubscriptionSubscriberToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			subscribersPb = append(subscribersPb, *itemPb)
+		}
+	}
+	pb.Subscribers = subscribersPb
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func SubscriptionFromPb(pb *jobspb.SubscriptionPb) (*Subscription, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &Subscription{}
+	st.CustomSubject = pb.CustomSubject
+	st.Paused = pb.Paused
+
+	var subscribersField []SubscriptionSubscriber
+	for _, itemPb := range pb.Subscribers {
+		item, err := SubscriptionSubscriberFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			subscribersField = append(subscribersField, *item)
+		}
+	}
+	st.Subscribers = subscribersField
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type SubscriptionSubscriber struct {
 	// A snapshot of the dashboard will be sent to the destination when the
 	// `destination_id` field is present.
-	DestinationId string `json:"destination_id,omitempty"`
+	// Wire name: 'destination_id'
+	DestinationId string ``
 	// A snapshot of the dashboard will be sent to the user's email when the
 	// `user_name` field is present.
-	UserName string `json:"user_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'user_name'
+	UserName        string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *SubscriptionSubscriber) UnmarshalJSON(b []byte) error {
@@ -5142,58 +13442,50 @@ func (s SubscriptionSubscriber) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type TableState struct {
-	// Whether or not the table has seen updates since either the creation of
-	// the trigger or the last successful evaluation of the trigger
-	HasSeenUpdates bool `json:"has_seen_updates,omitempty"`
-	// Full table name of the table to monitor, e.g.
-	// `mycatalog.myschema.mytable`
-	TableName string `json:"table_name,omitempty"`
+func SubscriptionSubscriberToPb(st *SubscriptionSubscriber) (*jobspb.SubscriptionSubscriberPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.SubscriptionSubscriberPb{}
+	pb.DestinationId = st.DestinationId
+	pb.UserName = st.UserName
 
-	ForceSendFields []string `json:"-" url:"-"`
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
 }
 
-func (s *TableState) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
+func SubscriptionSubscriberFromPb(pb *jobspb.SubscriptionSubscriberPb) (*SubscriptionSubscriber, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SubscriptionSubscriber{}
+	st.DestinationId = pb.DestinationId
+	st.UserName = pb.UserName
 
-func (s TableState) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type TableTriggerState struct {
-	LastSeenTableStates []TableState `json:"last_seen_table_states,omitempty"`
-	// Indicates whether the trigger is using scalable monitoring.
-	UsingScalableMonitoring bool `json:"using_scalable_monitoring,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *TableTriggerState) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s TableTriggerState) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 type TableUpdateTriggerConfiguration struct {
 	// The table(s) condition based on which to trigger a job run.
-	Condition Condition `json:"condition,omitempty"`
+	// Wire name: 'condition'
+	Condition Condition ``
 	// If set, the trigger starts a run only after the specified amount of time
 	// has passed since the last time the trigger fired. The minimum allowed
 	// value is 60 seconds.
-	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
+	// Wire name: 'min_time_between_triggers_seconds'
+	MinTimeBetweenTriggersSeconds int ``
 	// A list of Delta tables to monitor for changes. The table name must be in
 	// the format `catalog_name.schema_name.table_name`.
-	TableNames []string `json:"table_names,omitempty"`
+	// Wire name: 'table_names'
+	TableNames []string ``
 	// If set, the trigger starts a run only after no table updates have
 	// occurred for the specified time and can be used to wait for a series of
 	// table updates before triggering a run. The minimum allowed value is 60
 	// seconds.
-	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'wait_after_last_change_seconds'
+	WaitAfterLastChangeSeconds int      ``
+	ForceSendFields            []string `tf:"-"`
 }
 
 func (s *TableUpdateTriggerConfiguration) UnmarshalJSON(b []byte) error {
@@ -5204,93 +13496,159 @@ func (s TableUpdateTriggerConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func TableUpdateTriggerConfigurationToPb(st *TableUpdateTriggerConfiguration) (*jobspb.TableUpdateTriggerConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.TableUpdateTriggerConfigurationPb{}
+	conditionPb, err := ConditionToPb(&st.Condition)
+	if err != nil {
+		return nil, err
+	}
+	if conditionPb != nil {
+		pb.Condition = *conditionPb
+	}
+	pb.MinTimeBetweenTriggersSeconds = st.MinTimeBetweenTriggersSeconds
+	pb.TableNames = st.TableNames
+	pb.WaitAfterLastChangeSeconds = st.WaitAfterLastChangeSeconds
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func TableUpdateTriggerConfigurationFromPb(pb *jobspb.TableUpdateTriggerConfigurationPb) (*TableUpdateTriggerConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TableUpdateTriggerConfiguration{}
+	conditionField, err := ConditionFromPb(&pb.Condition)
+	if err != nil {
+		return nil, err
+	}
+	if conditionField != nil {
+		st.Condition = *conditionField
+	}
+	st.MinTimeBetweenTriggersSeconds = pb.MinTimeBetweenTriggersSeconds
+	st.TableNames = pb.TableNames
+	st.WaitAfterLastChangeSeconds = pb.WaitAfterLastChangeSeconds
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type Task struct {
 	// The task runs a [clean rooms] notebook when the
 	// `clean_rooms_notebook_task` field is present.
 	//
 	// [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html
-	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
+	// Wire name: 'clean_rooms_notebook_task'
+	CleanRoomsNotebookTask *CleanRoomsNotebookTask ``
 	// The task evaluates a condition that can be used to control the execution
 	// of other tasks when the `condition_task` field is present. The condition
 	// task does not require a cluster to execute and does not support retries
 	// or notifications.
-	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
+	// Wire name: 'condition_task'
+	ConditionTask *ConditionTask ``
 	// The task refreshes a dashboard and sends a snapshot to subscribers.
-	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
+	// Wire name: 'dashboard_task'
+	DashboardTask *DashboardTask ``
 	// Task type for dbt cloud, deprecated in favor of the new name
 	// dbt_platform_task
-	DbtCloudTask *DbtCloudTask `json:"dbt_cloud_task,omitempty"`
+	// Wire name: 'dbt_cloud_task'
+	DbtCloudTask *DbtCloudTask ``
 
-	DbtPlatformTask *DbtPlatformTask `json:"dbt_platform_task,omitempty"`
+	// Wire name: 'dbt_platform_task'
+	DbtPlatformTask *DbtPlatformTask ``
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
 	// a serverless or a pro SQL warehouse.
-	DbtTask *DbtTask `json:"dbt_task,omitempty"`
+	// Wire name: 'dbt_task'
+	DbtTask *DbtTask ``
 	// An optional array of objects specifying the dependency graph of the task.
 	// All tasks specified in this field must complete before executing this
 	// task. The task will run only if the `run_if` condition is true. The key
 	// is `task_key`, and the value is the name assigned to the dependent task.
-	DependsOn []TaskDependency `json:"depends_on,omitempty"`
+	// Wire name: 'depends_on'
+	DependsOn []TaskDependency ``
 	// An optional description for this task.
-	Description string `json:"description,omitempty"`
+	// Wire name: 'description'
+	Description string ``
 	// An option to disable auto optimization in serverless
-	DisableAutoOptimization bool `json:"disable_auto_optimization,omitempty"`
+	// Wire name: 'disable_auto_optimization'
+	DisableAutoOptimization bool ``
 	// An optional set of email addresses that is notified when runs of this
 	// task begin or complete as well as when this task is deleted. The default
 	// behavior is to not send any emails.
-	EmailNotifications *TaskEmailNotifications `json:"email_notifications,omitempty"`
+	// Wire name: 'email_notifications'
+	EmailNotifications *TaskEmailNotifications ``
 	// The key that references an environment spec in a job. This field is
 	// required for Python script, Python wheel and dbt tasks when using
 	// serverless compute.
-	EnvironmentKey string `json:"environment_key,omitempty"`
+	// Wire name: 'environment_key'
+	EnvironmentKey string ``
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
 	// running jobs and tasks on new clusters for greater reliability
-	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
+	// Wire name: 'existing_cluster_id'
+	ExistingClusterId string ``
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
-	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
+	// Wire name: 'for_each_task'
+	ForEachTask *ForEachTask ``
 
-	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
+	// Wire name: 'gen_ai_compute_task'
+	GenAiComputeTask *GenAiComputeTask ``
 
-	Health *JobsHealthRules `json:"health,omitempty"`
+	// Wire name: 'health'
+	Health *JobsHealthRules ``
 	// If job_cluster_key, this task is executed reusing the cluster specified
 	// in `job.settings.job_clusters`.
-	JobClusterKey string `json:"job_cluster_key,omitempty"`
+	// Wire name: 'job_cluster_key'
+	JobClusterKey string ``
 	// An optional list of libraries to be installed on the cluster. The default
 	// value is an empty list.
-	Libraries []compute.Library `json:"libraries,omitempty"`
+	// Wire name: 'libraries'
+	Libraries []compute.Library ``
 	// An optional maximum number of times to retry an unsuccessful run. A run
 	// is considered to be unsuccessful if it completes with the `FAILED`
 	// result_state or `INTERNAL_ERROR` `life_cycle_state`. The value `-1` means
 	// to retry indefinitely and the value `0` means to never retry.
-	MaxRetries int `json:"max_retries,omitempty"`
+	// Wire name: 'max_retries'
+	MaxRetries int ``
 	// An optional minimal interval in milliseconds between the start of the
 	// failed run and the subsequent retry run. The default behavior is that
 	// unsuccessful runs are immediately retried.
-	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
+	// Wire name: 'min_retry_interval_millis'
+	MinRetryIntervalMillis int ``
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
-	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
+	// Wire name: 'new_cluster'
+	NewCluster *compute.ClusterSpec ``
 	// The task runs a notebook when the `notebook_task` field is present.
-	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
+	// Wire name: 'notebook_task'
+	NotebookTask *NotebookTask ``
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// task.
-	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
+	// Wire name: 'notification_settings'
+	NotificationSettings *TaskNotificationSettings ``
 	// The task triggers a pipeline update when the `pipeline_task` field is
 	// present. Only pipelines configured to use triggered more are supported.
-	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
+	// Wire name: 'pipeline_task'
+	PipelineTask *PipelineTask ``
 	// The task triggers a Power BI semantic model update when the
 	// `power_bi_task` field is present.
-	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
+	// Wire name: 'power_bi_task'
+	PowerBiTask *PowerBiTask ``
 	// The task runs a Python wheel when the `python_wheel_task` field is
 	// present.
-	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
+	// Wire name: 'python_wheel_task'
+	PythonWheelTask *PythonWheelTask ``
 	// An optional policy to specify whether to retry a job when it times out.
 	// The default behavior is to not retry on timeout.
-	RetryOnTimeout bool `json:"retry_on_timeout,omitempty"`
+	// Wire name: 'retry_on_timeout'
+	RetryOnTimeout bool ``
 	// An optional value specifying the condition determining whether the task
 	// is run once its dependencies have been completed.
 	//
@@ -5300,14 +13658,18 @@ type Task struct {
 	// executed * `ALL_DONE`: All dependencies have been completed *
 	// `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl
 	// dependencies have failed
-	RunIf RunIf `json:"run_if,omitempty"`
+	// Wire name: 'run_if'
+	RunIf RunIf ``
 	// The task triggers another job when the `run_job_task` field is present.
-	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
+	// Wire name: 'run_job_task'
+	RunJobTask *RunJobTask ``
 	// The task runs a JAR when the `spark_jar_task` field is present.
-	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
+	// Wire name: 'spark_jar_task'
+	SparkJarTask *SparkJarTask ``
 	// The task runs a Python file when the `spark_python_task` field is
 	// present.
-	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
+	// Wire name: 'spark_python_task'
+	SparkPythonTask *SparkPythonTask ``
 	// (Legacy) The task runs the spark-submit script when the
 	// `spark_submit_task` field is present. This task can run only on new
 	// clusters and is not compatible with serverless compute.
@@ -5326,24 +13688,28 @@ type Task struct {
 	//
 	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
 	// paths.
-	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
+	// Wire name: 'spark_submit_task'
+	SparkSubmitTask *SparkSubmitTask ``
 	// The task runs a SQL query or file, or it refreshes a SQL alert or a
 	// legacy SQL dashboard when the `sql_task` field is present.
-	SqlTask *SqlTask `json:"sql_task,omitempty"`
+	// Wire name: 'sql_task'
+	SqlTask *SqlTask ``
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
 	// job. On Update or Reset, this field is used to reference the tasks to be
 	// updated or reset.
-	TaskKey string `json:"task_key"`
+	// Wire name: 'task_key'
+	TaskKey string ``
 	// An optional timeout applied to each run of this job task. A value of `0`
 	// means no timeout.
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// Wire name: 'timeout_seconds'
+	TimeoutSeconds int ``
 	// A collection of system notification IDs to notify when runs of this task
 	// begin or complete. The default behavior is to not send any system
 	// notifications.
-	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'webhook_notifications'
+	WebhookNotifications *WebhookNotifications ``
+	ForceSendFields      []string              `tf:"-"`
 }
 
 func (s *Task) UnmarshalJSON(b []byte) error {
@@ -5354,14 +13720,425 @@ func (s Task) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func TaskToPb(st *Task) (*jobspb.TaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.TaskPb{}
+	cleanRoomsNotebookTaskPb, err := CleanRoomsNotebookTaskToPb(st.CleanRoomsNotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if cleanRoomsNotebookTaskPb != nil {
+		pb.CleanRoomsNotebookTask = cleanRoomsNotebookTaskPb
+	}
+	conditionTaskPb, err := ConditionTaskToPb(st.ConditionTask)
+	if err != nil {
+		return nil, err
+	}
+	if conditionTaskPb != nil {
+		pb.ConditionTask = conditionTaskPb
+	}
+	dashboardTaskPb, err := DashboardTaskToPb(st.DashboardTask)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardTaskPb != nil {
+		pb.DashboardTask = dashboardTaskPb
+	}
+	dbtCloudTaskPb, err := DbtCloudTaskToPb(st.DbtCloudTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtCloudTaskPb != nil {
+		pb.DbtCloudTask = dbtCloudTaskPb
+	}
+	dbtPlatformTaskPb, err := DbtPlatformTaskToPb(st.DbtPlatformTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtPlatformTaskPb != nil {
+		pb.DbtPlatformTask = dbtPlatformTaskPb
+	}
+	dbtTaskPb, err := DbtTaskToPb(st.DbtTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtTaskPb != nil {
+		pb.DbtTask = dbtTaskPb
+	}
+
+	var dependsOnPb []jobspb.TaskDependencyPb
+	for _, item := range st.DependsOn {
+		itemPb, err := TaskDependencyToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			dependsOnPb = append(dependsOnPb, *itemPb)
+		}
+	}
+	pb.DependsOn = dependsOnPb
+	pb.Description = st.Description
+	pb.DisableAutoOptimization = st.DisableAutoOptimization
+	emailNotificationsPb, err := TaskEmailNotificationsToPb(st.EmailNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if emailNotificationsPb != nil {
+		pb.EmailNotifications = emailNotificationsPb
+	}
+	pb.EnvironmentKey = st.EnvironmentKey
+	pb.ExistingClusterId = st.ExistingClusterId
+	forEachTaskPb, err := ForEachTaskToPb(st.ForEachTask)
+	if err != nil {
+		return nil, err
+	}
+	if forEachTaskPb != nil {
+		pb.ForEachTask = forEachTaskPb
+	}
+	genAiComputeTaskPb, err := GenAiComputeTaskToPb(st.GenAiComputeTask)
+	if err != nil {
+		return nil, err
+	}
+	if genAiComputeTaskPb != nil {
+		pb.GenAiComputeTask = genAiComputeTaskPb
+	}
+	healthPb, err := JobsHealthRulesToPb(st.Health)
+	if err != nil {
+		return nil, err
+	}
+	if healthPb != nil {
+		pb.Health = healthPb
+	}
+	pb.JobClusterKey = st.JobClusterKey
+
+	var librariesPb []computepb.LibraryPb
+	for _, item := range st.Libraries {
+		itemPb, err := compute.LibraryToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			librariesPb = append(librariesPb, *itemPb)
+		}
+	}
+	pb.Libraries = librariesPb
+	pb.MaxRetries = st.MaxRetries
+	pb.MinRetryIntervalMillis = st.MinRetryIntervalMillis
+	newClusterPb, err := compute.ClusterSpecToPb(st.NewCluster)
+	if err != nil {
+		return nil, err
+	}
+	if newClusterPb != nil {
+		pb.NewCluster = newClusterPb
+	}
+	notebookTaskPb, err := NotebookTaskToPb(st.NotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if notebookTaskPb != nil {
+		pb.NotebookTask = notebookTaskPb
+	}
+	notificationSettingsPb, err := TaskNotificationSettingsToPb(st.NotificationSettings)
+	if err != nil {
+		return nil, err
+	}
+	if notificationSettingsPb != nil {
+		pb.NotificationSettings = notificationSettingsPb
+	}
+	pipelineTaskPb, err := PipelineTaskToPb(st.PipelineTask)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineTaskPb != nil {
+		pb.PipelineTask = pipelineTaskPb
+	}
+	powerBiTaskPb, err := PowerBiTaskToPb(st.PowerBiTask)
+	if err != nil {
+		return nil, err
+	}
+	if powerBiTaskPb != nil {
+		pb.PowerBiTask = powerBiTaskPb
+	}
+	pythonWheelTaskPb, err := PythonWheelTaskToPb(st.PythonWheelTask)
+	if err != nil {
+		return nil, err
+	}
+	if pythonWheelTaskPb != nil {
+		pb.PythonWheelTask = pythonWheelTaskPb
+	}
+	pb.RetryOnTimeout = st.RetryOnTimeout
+	runIfPb, err := RunIfToPb(&st.RunIf)
+	if err != nil {
+		return nil, err
+	}
+	if runIfPb != nil {
+		pb.RunIf = *runIfPb
+	}
+	runJobTaskPb, err := RunJobTaskToPb(st.RunJobTask)
+	if err != nil {
+		return nil, err
+	}
+	if runJobTaskPb != nil {
+		pb.RunJobTask = runJobTaskPb
+	}
+	sparkJarTaskPb, err := SparkJarTaskToPb(st.SparkJarTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkJarTaskPb != nil {
+		pb.SparkJarTask = sparkJarTaskPb
+	}
+	sparkPythonTaskPb, err := SparkPythonTaskToPb(st.SparkPythonTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkPythonTaskPb != nil {
+		pb.SparkPythonTask = sparkPythonTaskPb
+	}
+	sparkSubmitTaskPb, err := SparkSubmitTaskToPb(st.SparkSubmitTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkSubmitTaskPb != nil {
+		pb.SparkSubmitTask = sparkSubmitTaskPb
+	}
+	sqlTaskPb, err := SqlTaskToPb(st.SqlTask)
+	if err != nil {
+		return nil, err
+	}
+	if sqlTaskPb != nil {
+		pb.SqlTask = sqlTaskPb
+	}
+	pb.TaskKey = st.TaskKey
+	pb.TimeoutSeconds = st.TimeoutSeconds
+	webhookNotificationsPb, err := WebhookNotificationsToPb(st.WebhookNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if webhookNotificationsPb != nil {
+		pb.WebhookNotifications = webhookNotificationsPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func TaskFromPb(pb *jobspb.TaskPb) (*Task, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &Task{}
+	cleanRoomsNotebookTaskField, err := CleanRoomsNotebookTaskFromPb(pb.CleanRoomsNotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if cleanRoomsNotebookTaskField != nil {
+		st.CleanRoomsNotebookTask = cleanRoomsNotebookTaskField
+	}
+	conditionTaskField, err := ConditionTaskFromPb(pb.ConditionTask)
+	if err != nil {
+		return nil, err
+	}
+	if conditionTaskField != nil {
+		st.ConditionTask = conditionTaskField
+	}
+	dashboardTaskField, err := DashboardTaskFromPb(pb.DashboardTask)
+	if err != nil {
+		return nil, err
+	}
+	if dashboardTaskField != nil {
+		st.DashboardTask = dashboardTaskField
+	}
+	dbtCloudTaskField, err := DbtCloudTaskFromPb(pb.DbtCloudTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtCloudTaskField != nil {
+		st.DbtCloudTask = dbtCloudTaskField
+	}
+	dbtPlatformTaskField, err := DbtPlatformTaskFromPb(pb.DbtPlatformTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtPlatformTaskField != nil {
+		st.DbtPlatformTask = dbtPlatformTaskField
+	}
+	dbtTaskField, err := DbtTaskFromPb(pb.DbtTask)
+	if err != nil {
+		return nil, err
+	}
+	if dbtTaskField != nil {
+		st.DbtTask = dbtTaskField
+	}
+
+	var dependsOnField []TaskDependency
+	for _, itemPb := range pb.DependsOn {
+		item, err := TaskDependencyFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			dependsOnField = append(dependsOnField, *item)
+		}
+	}
+	st.DependsOn = dependsOnField
+	st.Description = pb.Description
+	st.DisableAutoOptimization = pb.DisableAutoOptimization
+	emailNotificationsField, err := TaskEmailNotificationsFromPb(pb.EmailNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if emailNotificationsField != nil {
+		st.EmailNotifications = emailNotificationsField
+	}
+	st.EnvironmentKey = pb.EnvironmentKey
+	st.ExistingClusterId = pb.ExistingClusterId
+	forEachTaskField, err := ForEachTaskFromPb(pb.ForEachTask)
+	if err != nil {
+		return nil, err
+	}
+	if forEachTaskField != nil {
+		st.ForEachTask = forEachTaskField
+	}
+	genAiComputeTaskField, err := GenAiComputeTaskFromPb(pb.GenAiComputeTask)
+	if err != nil {
+		return nil, err
+	}
+	if genAiComputeTaskField != nil {
+		st.GenAiComputeTask = genAiComputeTaskField
+	}
+	healthField, err := JobsHealthRulesFromPb(pb.Health)
+	if err != nil {
+		return nil, err
+	}
+	if healthField != nil {
+		st.Health = healthField
+	}
+	st.JobClusterKey = pb.JobClusterKey
+
+	var librariesField []compute.Library
+	for _, itemPb := range pb.Libraries {
+		item, err := compute.LibraryFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			librariesField = append(librariesField, *item)
+		}
+	}
+	st.Libraries = librariesField
+	st.MaxRetries = pb.MaxRetries
+	st.MinRetryIntervalMillis = pb.MinRetryIntervalMillis
+	newClusterField, err := compute.ClusterSpecFromPb(pb.NewCluster)
+	if err != nil {
+		return nil, err
+	}
+	if newClusterField != nil {
+		st.NewCluster = newClusterField
+	}
+	notebookTaskField, err := NotebookTaskFromPb(pb.NotebookTask)
+	if err != nil {
+		return nil, err
+	}
+	if notebookTaskField != nil {
+		st.NotebookTask = notebookTaskField
+	}
+	notificationSettingsField, err := TaskNotificationSettingsFromPb(pb.NotificationSettings)
+	if err != nil {
+		return nil, err
+	}
+	if notificationSettingsField != nil {
+		st.NotificationSettings = notificationSettingsField
+	}
+	pipelineTaskField, err := PipelineTaskFromPb(pb.PipelineTask)
+	if err != nil {
+		return nil, err
+	}
+	if pipelineTaskField != nil {
+		st.PipelineTask = pipelineTaskField
+	}
+	powerBiTaskField, err := PowerBiTaskFromPb(pb.PowerBiTask)
+	if err != nil {
+		return nil, err
+	}
+	if powerBiTaskField != nil {
+		st.PowerBiTask = powerBiTaskField
+	}
+	pythonWheelTaskField, err := PythonWheelTaskFromPb(pb.PythonWheelTask)
+	if err != nil {
+		return nil, err
+	}
+	if pythonWheelTaskField != nil {
+		st.PythonWheelTask = pythonWheelTaskField
+	}
+	st.RetryOnTimeout = pb.RetryOnTimeout
+	runIfField, err := RunIfFromPb(&pb.RunIf)
+	if err != nil {
+		return nil, err
+	}
+	if runIfField != nil {
+		st.RunIf = *runIfField
+	}
+	runJobTaskField, err := RunJobTaskFromPb(pb.RunJobTask)
+	if err != nil {
+		return nil, err
+	}
+	if runJobTaskField != nil {
+		st.RunJobTask = runJobTaskField
+	}
+	sparkJarTaskField, err := SparkJarTaskFromPb(pb.SparkJarTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkJarTaskField != nil {
+		st.SparkJarTask = sparkJarTaskField
+	}
+	sparkPythonTaskField, err := SparkPythonTaskFromPb(pb.SparkPythonTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkPythonTaskField != nil {
+		st.SparkPythonTask = sparkPythonTaskField
+	}
+	sparkSubmitTaskField, err := SparkSubmitTaskFromPb(pb.SparkSubmitTask)
+	if err != nil {
+		return nil, err
+	}
+	if sparkSubmitTaskField != nil {
+		st.SparkSubmitTask = sparkSubmitTaskField
+	}
+	sqlTaskField, err := SqlTaskFromPb(pb.SqlTask)
+	if err != nil {
+		return nil, err
+	}
+	if sqlTaskField != nil {
+		st.SqlTask = sqlTaskField
+	}
+	st.TaskKey = pb.TaskKey
+	st.TimeoutSeconds = pb.TimeoutSeconds
+	webhookNotificationsField, err := WebhookNotificationsFromPb(pb.WebhookNotifications)
+	if err != nil {
+		return nil, err
+	}
+	if webhookNotificationsField != nil {
+		st.WebhookNotifications = webhookNotificationsField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type TaskDependency struct {
 	// Can only be specified on condition task dependencies. The outcome of the
 	// dependent task that must be met for this task to run.
-	Outcome string `json:"outcome,omitempty"`
+	// Wire name: 'outcome'
+	Outcome string ``
 	// The name of the task this task depends on.
-	TaskKey string `json:"task_key"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'task_key'
+	TaskKey         string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *TaskDependency) UnmarshalJSON(b []byte) error {
@@ -5372,26 +14149,54 @@ func (s TaskDependency) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func TaskDependencyToPb(st *TaskDependency) (*jobspb.TaskDependencyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.TaskDependencyPb{}
+	pb.Outcome = st.Outcome
+	pb.TaskKey = st.TaskKey
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func TaskDependencyFromPb(pb *jobspb.TaskDependencyPb) (*TaskDependency, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TaskDependency{}
+	st.Outcome = pb.Outcome
+	st.TaskKey = pb.TaskKey
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type TaskEmailNotifications struct {
 	// If true, do not send email to recipients specified in `on_failure` if the
 	// run is skipped. This field is `deprecated`. Please use the
 	// `notification_settings.no_alert_for_skipped_runs` field.
-	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
+	// Wire name: 'no_alert_for_skipped_runs'
+	NoAlertForSkippedRuns bool ``
 	// A list of email addresses to be notified when the duration of a run
 	// exceeds the threshold specified for the `RUN_DURATION_SECONDS` metric in
 	// the `health` field. If no rule for the `RUN_DURATION_SECONDS` metric is
 	// specified in the `health` field for the job, notifications are not sent.
-	OnDurationWarningThresholdExceeded []string `json:"on_duration_warning_threshold_exceeded,omitempty"`
+	// Wire name: 'on_duration_warning_threshold_exceeded'
+	OnDurationWarningThresholdExceeded []string ``
 	// A list of email addresses to be notified when a run unsuccessfully
 	// completes. A run is considered to have completed unsuccessfully if it
 	// ends with an `INTERNAL_ERROR` `life_cycle_state` or a `FAILED`, or
 	// `TIMED_OUT` result_state. If this is not specified on job creation,
 	// reset, or update the list is empty, and notifications are not sent.
-	OnFailure []string `json:"on_failure,omitempty"`
+	// Wire name: 'on_failure'
+	OnFailure []string ``
 	// A list of email addresses to be notified when a run begins. If not
 	// specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
-	OnStart []string `json:"on_start,omitempty"`
+	// Wire name: 'on_start'
+	OnStart []string ``
 	// A list of email addresses to notify when any streaming backlog thresholds
 	// are exceeded for any stream. Streaming backlog thresholds can be set in
 	// the `health` field using the following metrics:
@@ -5399,15 +14204,16 @@ type TaskEmailNotifications struct {
 	// `STREAMING_BACKLOG_SECONDS`, or `STREAMING_BACKLOG_FILES`. Alerting is
 	// based on the 10-minute average of these metrics. If the issue persists,
 	// notifications are resent every 30 minutes.
-	OnStreamingBacklogExceeded []string `json:"on_streaming_backlog_exceeded,omitempty"`
+	// Wire name: 'on_streaming_backlog_exceeded'
+	OnStreamingBacklogExceeded []string ``
 	// A list of email addresses to be notified when a run successfully
 	// completes. A run is considered to have completed successfully if it ends
 	// with a `TERMINATED` `life_cycle_state` and a `SUCCESS` result_state. If
 	// not specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
-	OnSuccess []string `json:"on_success,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'on_success'
+	OnSuccess       []string ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *TaskEmailNotifications) UnmarshalJSON(b []byte) error {
@@ -5418,19 +14224,53 @@ func (s TaskEmailNotifications) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func TaskEmailNotificationsToPb(st *TaskEmailNotifications) (*jobspb.TaskEmailNotificationsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.TaskEmailNotificationsPb{}
+	pb.NoAlertForSkippedRuns = st.NoAlertForSkippedRuns
+	pb.OnDurationWarningThresholdExceeded = st.OnDurationWarningThresholdExceeded
+	pb.OnFailure = st.OnFailure
+	pb.OnStart = st.OnStart
+	pb.OnStreamingBacklogExceeded = st.OnStreamingBacklogExceeded
+	pb.OnSuccess = st.OnSuccess
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func TaskEmailNotificationsFromPb(pb *jobspb.TaskEmailNotificationsPb) (*TaskEmailNotifications, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TaskEmailNotifications{}
+	st.NoAlertForSkippedRuns = pb.NoAlertForSkippedRuns
+	st.OnDurationWarningThresholdExceeded = pb.OnDurationWarningThresholdExceeded
+	st.OnFailure = pb.OnFailure
+	st.OnStart = pb.OnStart
+	st.OnStreamingBacklogExceeded = pb.OnStreamingBacklogExceeded
+	st.OnSuccess = pb.OnSuccess
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type TaskNotificationSettings struct {
 	// If true, do not send notifications to recipients specified in `on_start`
 	// for the retried runs and do not send notifications to recipients
 	// specified in `on_failure` until the last retry of the run.
-	AlertOnLastAttempt bool `json:"alert_on_last_attempt,omitempty"`
+	// Wire name: 'alert_on_last_attempt'
+	AlertOnLastAttempt bool ``
 	// If true, do not send notifications to recipients specified in
 	// `on_failure` if the run is canceled.
-	NoAlertForCanceledRuns bool `json:"no_alert_for_canceled_runs,omitempty"`
+	// Wire name: 'no_alert_for_canceled_runs'
+	NoAlertForCanceledRuns bool ``
 	// If true, do not send notifications to recipients specified in
 	// `on_failure` if the run is skipped.
-	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'no_alert_for_skipped_runs'
+	NoAlertForSkippedRuns bool     ``
+	ForceSendFields       []string `tf:"-"`
 }
 
 func (s *TaskNotificationSettings) UnmarshalJSON(b []byte) error {
@@ -5439,6 +14279,32 @@ func (s *TaskNotificationSettings) UnmarshalJSON(b []byte) error {
 
 func (s TaskNotificationSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func TaskNotificationSettingsToPb(st *TaskNotificationSettings) (*jobspb.TaskNotificationSettingsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.TaskNotificationSettingsPb{}
+	pb.AlertOnLastAttempt = st.AlertOnLastAttempt
+	pb.NoAlertForCanceledRuns = st.NoAlertForCanceledRuns
+	pb.NoAlertForSkippedRuns = st.NoAlertForSkippedRuns
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func TaskNotificationSettingsFromPb(pb *jobspb.TaskNotificationSettingsPb) (*TaskNotificationSettings, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TaskNotificationSettings{}
+	st.AlertOnLastAttempt = pb.AlertOnLastAttempt
+	st.NoAlertForCanceledRuns = pb.NoAlertForCanceledRuns
+	st.NoAlertForSkippedRuns = pb.NoAlertForSkippedRuns
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // The code indicates why the run was terminated. Additional codes might be
@@ -5640,15 +14506,34 @@ func (f *TerminationCodeCode) Type() string {
 	return "TerminationCodeCode"
 }
 
+func TerminationCodeCodeToPb(st *TerminationCodeCode) (*jobspb.TerminationCodeCodePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.TerminationCodeCodePb(*st)
+	return &pb, nil
+}
+
+func TerminationCodeCodeFromPb(pb *jobspb.TerminationCodeCodePb) (*TerminationCodeCode, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := TerminationCodeCode(*pb)
+	return &st, nil
+}
+
 type TerminationDetails struct {
-	Code TerminationCodeCode `json:"code,omitempty"`
+
+	// Wire name: 'code'
+	Code TerminationCodeCode ``
 	// A descriptive message with the termination details. This field is
 	// unstructured and the format might change.
-	Message string `json:"message,omitempty"`
+	// Wire name: 'message'
+	Message string ``
 
-	Type TerminationTypeType `json:"type,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'type'
+	Type            TerminationTypeType ``
+	ForceSendFields []string            `tf:"-"`
 }
 
 func (s *TerminationDetails) UnmarshalJSON(b []byte) error {
@@ -5657,6 +14542,56 @@ func (s *TerminationDetails) UnmarshalJSON(b []byte) error {
 
 func (s TerminationDetails) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func TerminationDetailsToPb(st *TerminationDetails) (*jobspb.TerminationDetailsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.TerminationDetailsPb{}
+	codePb, err := TerminationCodeCodeToPb(&st.Code)
+	if err != nil {
+		return nil, err
+	}
+	if codePb != nil {
+		pb.Code = *codePb
+	}
+	pb.Message = st.Message
+	typePb, err := TerminationTypeTypeToPb(&st.Type)
+	if err != nil {
+		return nil, err
+	}
+	if typePb != nil {
+		pb.Type = *typePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func TerminationDetailsFromPb(pb *jobspb.TerminationDetailsPb) (*TerminationDetails, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TerminationDetails{}
+	codeField, err := TerminationCodeCodeFromPb(&pb.Code)
+	if err != nil {
+		return nil, err
+	}
+	if codeField != nil {
+		st.Code = *codeField
+	}
+	st.Message = pb.Message
+	typeField, err := TerminationTypeTypeFromPb(&pb.Type)
+	if err != nil {
+		return nil, err
+	}
+	if typeField != nil {
+		st.Type = *typeField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // * `SUCCESS`: The run terminated without any issues * `INTERNAL_ERROR`: An
@@ -5718,12 +14653,28 @@ func (f *TerminationTypeType) Type() string {
 	return "TerminationTypeType"
 }
 
+func TerminationTypeTypeToPb(st *TerminationTypeType) (*jobspb.TerminationTypeTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.TerminationTypeTypePb(*st)
+	return &pb, nil
+}
+
+func TerminationTypeTypeFromPb(pb *jobspb.TerminationTypeTypePb) (*TerminationTypeType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := TerminationTypeType(*pb)
+	return &st, nil
+}
+
 // Additional details about what triggered the run
 type TriggerInfo struct {
 	// The run id of the Run Job task run
-	RunId int64 `json:"run_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'run_id'
+	RunId           int64    ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *TriggerInfo) UnmarshalJSON(b []byte) error {
@@ -5734,23 +14685,170 @@ func (s TriggerInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+func TriggerInfoToPb(st *TriggerInfo) (*jobspb.TriggerInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.TriggerInfoPb{}
+	pb.RunId = st.RunId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func TriggerInfoFromPb(pb *jobspb.TriggerInfoPb) (*TriggerInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TriggerInfo{}
+	st.RunId = pb.RunId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
 type TriggerSettings struct {
 	// File arrival trigger settings.
-	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
+	// Wire name: 'file_arrival'
+	FileArrival *FileArrivalTriggerConfiguration ``
 	// Whether this trigger is paused or not.
-	PauseStatus PauseStatus `json:"pause_status,omitempty"`
+	// Wire name: 'pause_status'
+	PauseStatus PauseStatus ``
 	// Periodic trigger settings.
-	Periodic *PeriodicTriggerConfiguration `json:"periodic,omitempty"`
+	// Wire name: 'periodic'
+	Periodic *PeriodicTriggerConfiguration ``
 	// Old table trigger settings name. Deprecated in favor of `table_update`.
-	Table *TableUpdateTriggerConfiguration `json:"table,omitempty"`
+	// Wire name: 'table'
+	Table *TableUpdateTriggerConfiguration ``
 
-	TableUpdate *TableUpdateTriggerConfiguration `json:"table_update,omitempty"`
+	// Wire name: 'table_update'
+	TableUpdate *TableUpdateTriggerConfiguration ``
+}
+
+func TriggerSettingsToPb(st *TriggerSettings) (*jobspb.TriggerSettingsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.TriggerSettingsPb{}
+	fileArrivalPb, err := FileArrivalTriggerConfigurationToPb(st.FileArrival)
+	if err != nil {
+		return nil, err
+	}
+	if fileArrivalPb != nil {
+		pb.FileArrival = fileArrivalPb
+	}
+	pauseStatusPb, err := PauseStatusToPb(&st.PauseStatus)
+	if err != nil {
+		return nil, err
+	}
+	if pauseStatusPb != nil {
+		pb.PauseStatus = *pauseStatusPb
+	}
+	periodicPb, err := PeriodicTriggerConfigurationToPb(st.Periodic)
+	if err != nil {
+		return nil, err
+	}
+	if periodicPb != nil {
+		pb.Periodic = periodicPb
+	}
+	tablePb, err := TableUpdateTriggerConfigurationToPb(st.Table)
+	if err != nil {
+		return nil, err
+	}
+	if tablePb != nil {
+		pb.Table = tablePb
+	}
+	tableUpdatePb, err := TableUpdateTriggerConfigurationToPb(st.TableUpdate)
+	if err != nil {
+		return nil, err
+	}
+	if tableUpdatePb != nil {
+		pb.TableUpdate = tableUpdatePb
+	}
+
+	return pb, nil
+}
+
+func TriggerSettingsFromPb(pb *jobspb.TriggerSettingsPb) (*TriggerSettings, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TriggerSettings{}
+	fileArrivalField, err := FileArrivalTriggerConfigurationFromPb(pb.FileArrival)
+	if err != nil {
+		return nil, err
+	}
+	if fileArrivalField != nil {
+		st.FileArrival = fileArrivalField
+	}
+	pauseStatusField, err := PauseStatusFromPb(&pb.PauseStatus)
+	if err != nil {
+		return nil, err
+	}
+	if pauseStatusField != nil {
+		st.PauseStatus = *pauseStatusField
+	}
+	periodicField, err := PeriodicTriggerConfigurationFromPb(pb.Periodic)
+	if err != nil {
+		return nil, err
+	}
+	if periodicField != nil {
+		st.Periodic = periodicField
+	}
+	tableField, err := TableUpdateTriggerConfigurationFromPb(pb.Table)
+	if err != nil {
+		return nil, err
+	}
+	if tableField != nil {
+		st.Table = tableField
+	}
+	tableUpdateField, err := TableUpdateTriggerConfigurationFromPb(pb.TableUpdate)
+	if err != nil {
+		return nil, err
+	}
+	if tableUpdateField != nil {
+		st.TableUpdate = tableUpdateField
+	}
+
+	return st, nil
 }
 
 type TriggerStateProto struct {
-	FileArrival *FileArrivalTriggerState `json:"file_arrival,omitempty"`
 
-	Table *TableTriggerState `json:"table,omitempty"`
+	// Wire name: 'file_arrival'
+	FileArrival *FileArrivalTriggerState ``
+}
+
+func TriggerStateProtoToPb(st *TriggerStateProto) (*jobspb.TriggerStateProtoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.TriggerStateProtoPb{}
+	fileArrivalPb, err := FileArrivalTriggerStateToPb(st.FileArrival)
+	if err != nil {
+		return nil, err
+	}
+	if fileArrivalPb != nil {
+		pb.FileArrival = fileArrivalPb
+	}
+
+	return pb, nil
+}
+
+func TriggerStateProtoFromPb(pb *jobspb.TriggerStateProtoPb) (*TriggerStateProto, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TriggerStateProto{}
+	fileArrivalField, err := FileArrivalTriggerStateFromPb(pb.FileArrival)
+	if err != nil {
+		return nil, err
+	}
+	if fileArrivalField != nil {
+		st.FileArrival = fileArrivalField
+	}
+
+	return st, nil
 }
 
 // The type of trigger that fired this run.
@@ -5832,13 +14930,31 @@ func (f *TriggerType) Type() string {
 	return "TriggerType"
 }
 
+func TriggerTypeToPb(st *TriggerType) (*jobspb.TriggerTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.TriggerTypePb(*st)
+	return &pb, nil
+}
+
+func TriggerTypeFromPb(pb *jobspb.TriggerTypePb) (*TriggerType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := TriggerType(*pb)
+	return &st, nil
+}
+
 type UpdateJob struct {
 	// Remove top-level fields in the job settings. Removing nested fields is
 	// not supported, except for tasks and job clusters (`tasks/task_1`). This
 	// field is optional.
-	FieldsToRemove []string `json:"fields_to_remove,omitempty"`
+	// Wire name: 'fields_to_remove'
+	FieldsToRemove []string ``
 	// The canonical identifier of the job to update. This field is required.
-	JobId int64 `json:"job_id"`
+	// Wire name: 'job_id'
+	JobId int64 ``
 	// The new settings for the job.
 	//
 	// Top-level fields specified in `new_settings` are completely replaced,
@@ -5850,20 +14966,59 @@ type UpdateJob struct {
 	//
 	// Changes to the field `JobSettings.timeout_seconds` are applied to active
 	// runs. Changes to other fields are applied to future runs only.
-	NewSettings *JobSettings `json:"new_settings,omitempty"`
+	// Wire name: 'new_settings'
+	NewSettings *JobSettings ``
+}
+
+func UpdateJobToPb(st *UpdateJob) (*jobspb.UpdateJobPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.UpdateJobPb{}
+	pb.FieldsToRemove = st.FieldsToRemove
+	pb.JobId = st.JobId
+	newSettingsPb, err := JobSettingsToPb(st.NewSettings)
+	if err != nil {
+		return nil, err
+	}
+	if newSettingsPb != nil {
+		pb.NewSettings = newSettingsPb
+	}
+
+	return pb, nil
+}
+
+func UpdateJobFromPb(pb *jobspb.UpdateJobPb) (*UpdateJob, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateJob{}
+	st.FieldsToRemove = pb.FieldsToRemove
+	st.JobId = pb.JobId
+	newSettingsField, err := JobSettingsFromPb(pb.NewSettings)
+	if err != nil {
+		return nil, err
+	}
+	if newSettingsField != nil {
+		st.NewSettings = newSettingsField
+	}
+
+	return st, nil
 }
 
 type ViewItem struct {
 	// Content of the view.
-	Content string `json:"content,omitempty"`
+	// Wire name: 'content'
+	Content string ``
 	// Name of the view item. In the case of code view, it would be the
 	// notebook’s name. In the case of dashboard view, it would be the
 	// dashboard’s name.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string ``
 	// Type of the view item.
-	Type ViewType `json:"type,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'type'
+	Type            ViewType ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *ViewItem) UnmarshalJSON(b []byte) error {
@@ -5872,6 +15027,44 @@ func (s *ViewItem) UnmarshalJSON(b []byte) error {
 
 func (s ViewItem) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func ViewItemToPb(st *ViewItem) (*jobspb.ViewItemPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.ViewItemPb{}
+	pb.Content = st.Content
+	pb.Name = st.Name
+	typePb, err := ViewTypeToPb(&st.Type)
+	if err != nil {
+		return nil, err
+	}
+	if typePb != nil {
+		pb.Type = *typePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func ViewItemFromPb(pb *jobspb.ViewItemPb) (*ViewItem, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ViewItem{}
+	st.Content = pb.Content
+	st.Name = pb.Name
+	typeField, err := ViewTypeFromPb(&pb.Type)
+	if err != nil {
+		return nil, err
+	}
+	if typeField != nil {
+		st.Type = *typeField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
 // * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
@@ -5912,6 +15105,22 @@ func (f *ViewType) Values() []ViewType {
 // Type always returns ViewType to satisfy [pflag.Value] interface
 func (f *ViewType) Type() string {
 	return "ViewType"
+}
+
+func ViewTypeToPb(st *ViewType) (*jobspb.ViewTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.ViewTypePb(*st)
+	return &pb, nil
+}
+
+func ViewTypeFromPb(pb *jobspb.ViewTypePb) (*ViewType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ViewType(*pb)
+	return &st, nil
 }
 
 // * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
@@ -5959,8 +15168,46 @@ func (f *ViewsToExport) Type() string {
 	return "ViewsToExport"
 }
 
+func ViewsToExportToPb(st *ViewsToExport) (*jobspb.ViewsToExportPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := jobspb.ViewsToExportPb(*st)
+	return &pb, nil
+}
+
+func ViewsToExportFromPb(pb *jobspb.ViewsToExportPb) (*ViewsToExport, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ViewsToExport(*pb)
+	return &st, nil
+}
+
 type Webhook struct {
-	Id string `json:"id"`
+
+	// Wire name: 'id'
+	Id string ``
+}
+
+func WebhookToPb(st *Webhook) (*jobspb.WebhookPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.WebhookPb{}
+	pb.Id = st.Id
+
+	return pb, nil
+}
+
+func WebhookFromPb(pb *jobspb.WebhookPb) (*Webhook, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &Webhook{}
+	st.Id = pb.Id
+
+	return st, nil
 }
 
 type WebhookNotifications struct {
@@ -5968,13 +15215,16 @@ type WebhookNotifications struct {
 	// a run exceeds the threshold specified for the `RUN_DURATION_SECONDS`
 	// metric in the `health` field. A maximum of 3 destinations can be
 	// specified for the `on_duration_warning_threshold_exceeded` property.
-	OnDurationWarningThresholdExceeded []Webhook `json:"on_duration_warning_threshold_exceeded,omitempty"`
+	// Wire name: 'on_duration_warning_threshold_exceeded'
+	OnDurationWarningThresholdExceeded []Webhook ``
 	// An optional list of system notification IDs to call when the run fails. A
 	// maximum of 3 destinations can be specified for the `on_failure` property.
-	OnFailure []Webhook `json:"on_failure,omitempty"`
+	// Wire name: 'on_failure'
+	OnFailure []Webhook ``
 	// An optional list of system notification IDs to call when the run starts.
 	// A maximum of 3 destinations can be specified for the `on_start` property.
-	OnStart []Webhook `json:"on_start,omitempty"`
+	// Wire name: 'on_start'
+	OnStart []Webhook ``
 	// An optional list of system notification IDs to call when any streaming
 	// backlog thresholds are exceeded for any stream. Streaming backlog
 	// thresholds can be set in the `health` field using the following metrics:
@@ -5983,17 +15233,158 @@ type WebhookNotifications struct {
 	// based on the 10-minute average of these metrics. If the issue persists,
 	// notifications are resent every 30 minutes. A maximum of 3 destinations
 	// can be specified for the `on_streaming_backlog_exceeded` property.
-	OnStreamingBacklogExceeded []Webhook `json:"on_streaming_backlog_exceeded,omitempty"`
+	// Wire name: 'on_streaming_backlog_exceeded'
+	OnStreamingBacklogExceeded []Webhook ``
 	// An optional list of system notification IDs to call when the run
 	// completes successfully. A maximum of 3 destinations can be specified for
 	// the `on_success` property.
-	OnSuccess []Webhook `json:"on_success,omitempty"`
+	// Wire name: 'on_success'
+	OnSuccess []Webhook ``
+}
+
+func WebhookNotificationsToPb(st *WebhookNotifications) (*jobspb.WebhookNotificationsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.WebhookNotificationsPb{}
+
+	var onDurationWarningThresholdExceededPb []jobspb.WebhookPb
+	for _, item := range st.OnDurationWarningThresholdExceeded {
+		itemPb, err := WebhookToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			onDurationWarningThresholdExceededPb = append(onDurationWarningThresholdExceededPb, *itemPb)
+		}
+	}
+	pb.OnDurationWarningThresholdExceeded = onDurationWarningThresholdExceededPb
+
+	var onFailurePb []jobspb.WebhookPb
+	for _, item := range st.OnFailure {
+		itemPb, err := WebhookToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			onFailurePb = append(onFailurePb, *itemPb)
+		}
+	}
+	pb.OnFailure = onFailurePb
+
+	var onStartPb []jobspb.WebhookPb
+	for _, item := range st.OnStart {
+		itemPb, err := WebhookToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			onStartPb = append(onStartPb, *itemPb)
+		}
+	}
+	pb.OnStart = onStartPb
+
+	var onStreamingBacklogExceededPb []jobspb.WebhookPb
+	for _, item := range st.OnStreamingBacklogExceeded {
+		itemPb, err := WebhookToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			onStreamingBacklogExceededPb = append(onStreamingBacklogExceededPb, *itemPb)
+		}
+	}
+	pb.OnStreamingBacklogExceeded = onStreamingBacklogExceededPb
+
+	var onSuccessPb []jobspb.WebhookPb
+	for _, item := range st.OnSuccess {
+		itemPb, err := WebhookToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			onSuccessPb = append(onSuccessPb, *itemPb)
+		}
+	}
+	pb.OnSuccess = onSuccessPb
+
+	return pb, nil
+}
+
+func WebhookNotificationsFromPb(pb *jobspb.WebhookNotificationsPb) (*WebhookNotifications, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &WebhookNotifications{}
+
+	var onDurationWarningThresholdExceededField []Webhook
+	for _, itemPb := range pb.OnDurationWarningThresholdExceeded {
+		item, err := WebhookFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			onDurationWarningThresholdExceededField = append(onDurationWarningThresholdExceededField, *item)
+		}
+	}
+	st.OnDurationWarningThresholdExceeded = onDurationWarningThresholdExceededField
+
+	var onFailureField []Webhook
+	for _, itemPb := range pb.OnFailure {
+		item, err := WebhookFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			onFailureField = append(onFailureField, *item)
+		}
+	}
+	st.OnFailure = onFailureField
+
+	var onStartField []Webhook
+	for _, itemPb := range pb.OnStart {
+		item, err := WebhookFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			onStartField = append(onStartField, *item)
+		}
+	}
+	st.OnStart = onStartField
+
+	var onStreamingBacklogExceededField []Webhook
+	for _, itemPb := range pb.OnStreamingBacklogExceeded {
+		item, err := WebhookFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			onStreamingBacklogExceededField = append(onStreamingBacklogExceededField, *item)
+		}
+	}
+	st.OnStreamingBacklogExceeded = onStreamingBacklogExceededField
+
+	var onSuccessField []Webhook
+	for _, itemPb := range pb.OnSuccess {
+		item, err := WebhookFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			onSuccessField = append(onSuccessField, *item)
+		}
+	}
+	st.OnSuccess = onSuccessField
+
+	return st, nil
 }
 
 type WidgetErrorDetail struct {
-	Message string `json:"message,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'message'
+	Message         string   ``
+	ForceSendFields []string `tf:"-"`
 }
 
 func (s *WidgetErrorDetail) UnmarshalJSON(b []byte) error {
@@ -6002,4 +15393,80 @@ func (s *WidgetErrorDetail) UnmarshalJSON(b []byte) error {
 
 func (s WidgetErrorDetail) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+func WidgetErrorDetailToPb(st *WidgetErrorDetail) (*jobspb.WidgetErrorDetailPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &jobspb.WidgetErrorDetailPb{}
+	pb.Message = st.Message
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func WidgetErrorDetailFromPb(pb *jobspb.WidgetErrorDetailPb) (*WidgetErrorDetail, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &WidgetErrorDetail{}
+	st.Message = pb.Message
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%.9fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth/dataplane"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/service/serving/servingpb"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
@@ -22,104 +23,270 @@ type servingEndpointsImpl struct {
 }
 
 func (a *servingEndpointsImpl) BuildLogs(ctx context.Context, request BuildLogsRequest) (*BuildLogsResponse, error) {
-	var buildLogsResponse BuildLogsResponse
+	requestPb, pbErr := BuildLogsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var buildLogsResponsePb servingpb.BuildLogsResponsePb
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/served-models/%v/build-logs", request.Name, request.ServedModelName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &buildLogsResponse)
-	return &buildLogsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&buildLogsResponsePb,
+	)
+	resp, err := BuildLogsResponseFromPb(&buildLogsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) Create(ctx context.Context, request CreateServingEndpoint) (*ServingEndpointDetailed, error) {
-	var servingEndpointDetailed ServingEndpointDetailed
+	requestPb, pbErr := CreateServingEndpointToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var servingEndpointDetailedPb servingpb.ServingEndpointDetailedPb
 	path := "/api/2.0/serving-endpoints"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &servingEndpointDetailed)
-	return &servingEndpointDetailed, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&servingEndpointDetailedPb,
+	)
+	resp, err := ServingEndpointDetailedFromPb(&servingEndpointDetailedPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) CreateProvisionedThroughputEndpoint(ctx context.Context, request CreatePtEndpointRequest) (*ServingEndpointDetailed, error) {
-	var servingEndpointDetailed ServingEndpointDetailed
+	requestPb, pbErr := CreatePtEndpointRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var servingEndpointDetailedPb servingpb.ServingEndpointDetailedPb
 	path := "/api/2.0/serving-endpoints/pt"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &servingEndpointDetailed)
-	return &servingEndpointDetailed, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&servingEndpointDetailedPb,
+	)
+	resp, err := ServingEndpointDetailedFromPb(&servingEndpointDetailedPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServingEndpointRequest) error {
+	requestPb, pbErr := DeleteServingEndpointRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request ExportMetricsRequest) (*ExportMetricsResponse, error) {
-	var exportMetricsResponse ExportMetricsResponse
+	requestPb, pbErr := ExportMetricsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var exportMetricsResponsePb servingpb.ExportMetricsResponsePb
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/metrics", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &exportMetricsResponse)
-	return &exportMetricsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&exportMetricsResponsePb,
+	)
+	resp, err := ExportMetricsResponseFromPb(&exportMetricsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error) {
-	var servingEndpointDetailed ServingEndpointDetailed
+	requestPb, pbErr := GetServingEndpointRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var servingEndpointDetailedPb servingpb.ServingEndpointDetailedPb
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &servingEndpointDetailed)
-	return &servingEndpointDetailed, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&servingEndpointDetailedPb,
+	)
+	resp, err := ServingEndpointDetailedFromPb(&servingEndpointDetailedPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) GetOpenApi(ctx context.Context, request GetOpenApiRequest) (*GetOpenApiResponse, error) {
-	var getOpenApiResponse GetOpenApiResponse
+	requestPb, pbErr := GetOpenApiRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getOpenApiResponsePb servingpb.GetOpenApiResponsePb
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/openapi", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getOpenApiResponse)
-	return &getOpenApiResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getOpenApiResponsePb,
+	)
+	resp, err := GetOpenApiResponseFromPb(&getOpenApiResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) GetPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error) {
-	var getServingEndpointPermissionLevelsResponse GetServingEndpointPermissionLevelsResponse
+	requestPb, pbErr := GetServingEndpointPermissionLevelsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getServingEndpointPermissionLevelsResponsePb servingpb.GetServingEndpointPermissionLevelsResponsePb
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v/permissionLevels", request.ServingEndpointId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getServingEndpointPermissionLevelsResponse)
-	return &getServingEndpointPermissionLevelsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getServingEndpointPermissionLevelsResponsePb,
+	)
+	resp, err := GetServingEndpointPermissionLevelsResponseFromPb(&getServingEndpointPermissionLevelsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) GetPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
-	var servingEndpointPermissions ServingEndpointPermissions
+	requestPb, pbErr := GetServingEndpointPermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var servingEndpointPermissionsPb servingpb.ServingEndpointPermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &servingEndpointPermissions)
-	return &servingEndpointPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&servingEndpointPermissionsPb,
+	)
+	resp, err := ServingEndpointPermissionsFromPb(&servingEndpointPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) HttpRequest(ctx context.Context, request ExternalFunctionRequest) (*HttpRequestResponse, error) {
-	var httpRequestResponse HttpRequestResponse
+	requestPb, pbErr := ExternalFunctionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var httpRequestResponsePb servingpb.HttpRequestResponsePb
 	path := "/api/2.0/external-function"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &httpRequestResponse)
-	return &httpRequestResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&httpRequestResponsePb,
+	)
+	resp, err := HttpRequestResponseFromPb(&httpRequestResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Get all serving endpoints.
@@ -149,111 +316,280 @@ func (a *servingEndpointsImpl) ListAll(ctx context.Context) ([]ServingEndpoint, 
 }
 
 func (a *servingEndpointsImpl) internalList(ctx context.Context) (*ListEndpointsResponse, error) {
-	var listEndpointsResponse ListEndpointsResponse
+
+	var listEndpointsResponsePb servingpb.ListEndpointsResponsePb
 	path := "/api/2.0/serving-endpoints"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listEndpointsResponse)
-	return &listEndpointsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listEndpointsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListEndpointsResponseFromPb(&listEndpointsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) Logs(ctx context.Context, request LogsRequest) (*ServerLogsResponse, error) {
-	var serverLogsResponse ServerLogsResponse
+	requestPb, pbErr := LogsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var serverLogsResponsePb servingpb.ServerLogsResponsePb
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/served-models/%v/logs", request.Name, request.ServedModelName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &serverLogsResponse)
-	return &serverLogsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&serverLogsResponsePb,
+	)
+	resp, err := ServerLogsResponseFromPb(&serverLogsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) Patch(ctx context.Context, request PatchServingEndpointTags) (*EndpointTags, error) {
-	var endpointTags EndpointTags
+	requestPb, pbErr := PatchServingEndpointTagsToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var endpointTagsPb servingpb.EndpointTagsPb
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/tags", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &endpointTags)
-	return &endpointTags, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&endpointTagsPb,
+	)
+	resp, err := EndpointTagsFromPb(&endpointTagsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) Put(ctx context.Context, request PutRequest) (*PutResponse, error) {
-	var putResponse PutResponse
+	requestPb, pbErr := PutRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var putResponsePb servingpb.PutResponsePb
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/rate-limits", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &putResponse)
-	return &putResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&putResponsePb,
+	)
+	resp, err := PutResponseFromPb(&putResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) PutAiGateway(ctx context.Context, request PutAiGatewayRequest) (*PutAiGatewayResponse, error) {
-	var putAiGatewayResponse PutAiGatewayResponse
+	requestPb, pbErr := PutAiGatewayRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var putAiGatewayResponsePb servingpb.PutAiGatewayResponsePb
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/ai-gateway", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &putAiGatewayResponse)
-	return &putAiGatewayResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&putAiGatewayResponsePb,
+	)
+	resp, err := PutAiGatewayResponseFromPb(&putAiGatewayResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
-	var queryEndpointResponse QueryEndpointResponse
+	requestPb, pbErr := QueryEndpointInputToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var queryEndpointResponsePb servingpb.QueryEndpointResponsePb
 	path := fmt.Sprintf("/serving-endpoints/%v/invocations", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &queryEndpointResponse)
-	return &queryEndpointResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&queryEndpointResponsePb,
+	)
+	resp, err := QueryEndpointResponseFromPb(&queryEndpointResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) SetPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
-	var servingEndpointPermissions ServingEndpointPermissions
+	requestPb, pbErr := ServingEndpointPermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var servingEndpointPermissionsPb servingpb.ServingEndpointPermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &servingEndpointPermissions)
-	return &servingEndpointPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&servingEndpointPermissionsPb,
+	)
+	resp, err := ServingEndpointPermissionsFromPb(&servingEndpointPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) UpdateConfig(ctx context.Context, request EndpointCoreConfigInput) (*ServingEndpointDetailed, error) {
-	var servingEndpointDetailed ServingEndpointDetailed
+	requestPb, pbErr := EndpointCoreConfigInputToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var servingEndpointDetailedPb servingpb.ServingEndpointDetailedPb
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/config", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &servingEndpointDetailed)
-	return &servingEndpointDetailed, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&servingEndpointDetailedPb,
+	)
+	resp, err := ServingEndpointDetailedFromPb(&servingEndpointDetailedPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
-	var servingEndpointPermissions ServingEndpointPermissions
+	requestPb, pbErr := ServingEndpointPermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var servingEndpointPermissionsPb servingpb.ServingEndpointPermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &servingEndpointPermissions)
-	return &servingEndpointPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&servingEndpointPermissionsPb,
+	)
+	resp, err := ServingEndpointPermissionsFromPb(&servingEndpointPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servingEndpointsImpl) UpdateProvisionedThroughputEndpointConfig(ctx context.Context, request UpdateProvisionedThroughputEndpointConfigRequest) (*ServingEndpointDetailed, error) {
-	var servingEndpointDetailed ServingEndpointDetailed
+	requestPb, pbErr := UpdateProvisionedThroughputEndpointConfigRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var servingEndpointDetailedPb servingpb.ServingEndpointDetailedPb
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/pt/%v/config", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &servingEndpointDetailed)
-	return &servingEndpointDetailed, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&servingEndpointDetailedPb,
+	)
+	resp, err := ServingEndpointDetailedFromPb(&servingEndpointDetailedPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ServingEndpointsDataPlane API methods
@@ -284,6 +620,11 @@ func (a *servingEndpointsDataPlaneImpl) dataPlaneInfoQuery(ctx context.Context, 
 }
 
 func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error) {
+	requestPb, pbErr := QueryEndpointInputToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
 	dpi, err := a.dataPlaneInfoQuery(ctx, request)
 	if err != nil {
 		return nil, err
@@ -301,10 +642,18 @@ func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request Query
 	queryParams := make(map[string]any)
 	opts = append(opts, httpclient.WithQueryParameters(queryParams))
 
-	var queryEndpointResponse QueryEndpointResponse
-	opts = append(opts, httpclient.WithRequestData(request))
-	opts = append(opts, httpclient.WithResponseUnmarshal(&queryEndpointResponse))
+	var queryEndpointResponsePb servingpb.QueryEndpointResponsePb
+	opts = append(opts, httpclient.WithRequestData(*requestPb))
+	opts = append(opts, httpclient.WithResponseUnmarshal(&queryEndpointResponsePb))
 	opts = append(opts, httpclient.WithToken(dpt))
 	err = a.client.ApiClient().Do(ctx, http.MethodPost, dpi.EndpointUrl, opts...)
-	return &queryEndpointResponse, err
+	if err != nil {
+		return nil, err
+	}
+	resp, err := QueryEndpointResponseFromPb(&queryEndpointResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }

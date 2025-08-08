@@ -9,6 +9,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/service/oauth2/oauth2pb"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/exp/slices"
 )
@@ -19,36 +20,83 @@ type accountFederationPolicyImpl struct {
 }
 
 func (a *accountFederationPolicyImpl) Create(ctx context.Context, request CreateAccountFederationPolicyRequest) (*FederationPolicy, error) {
-	var federationPolicy FederationPolicy
+	requestPb, pbErr := CreateAccountFederationPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var federationPolicyPb oauth2pb.FederationPolicyPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
-	if request.PolicyId != "" || slices.Contains(request.ForceSendFields, "PolicyId") {
-		queryParams["policy_id"] = request.PolicyId
+	if requestPb.PolicyId != "" || slices.Contains(requestPb.ForceSendFields, "PolicyId") {
+		queryParams["policy_id"] = requestPb.PolicyId
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Policy, &federationPolicy)
-	return &federationPolicy, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb.Policy,
+		&federationPolicyPb,
+	)
+	resp, err := FederationPolicyFromPb(&federationPolicyPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountFederationPolicyImpl) Delete(ctx context.Context, request DeleteAccountFederationPolicyRequest) error {
+	requestPb, pbErr := DeleteAccountFederationPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *accountFederationPolicyImpl) Get(ctx context.Context, request GetAccountFederationPolicyRequest) (*FederationPolicy, error) {
-	var federationPolicy FederationPolicy
+	requestPb, pbErr := GetAccountFederationPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var federationPolicyPb oauth2pb.FederationPolicyPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &federationPolicy)
-	return &federationPolicy, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&federationPolicyPb,
+	)
+	resp, err := FederationPolicyFromPb(&federationPolicyPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List account federation policies.
@@ -83,27 +131,64 @@ func (a *accountFederationPolicyImpl) ListAll(ctx context.Context, request ListA
 }
 
 func (a *accountFederationPolicyImpl) internalList(ctx context.Context, request ListAccountFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
-	var listFederationPoliciesResponse ListFederationPoliciesResponse
+	requestPb, pbErr := ListAccountFederationPoliciesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listFederationPoliciesResponsePb oauth2pb.ListFederationPoliciesResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFederationPoliciesResponse)
-	return &listFederationPoliciesResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listFederationPoliciesResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListFederationPoliciesResponseFromPb(&listFederationPoliciesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountFederationPolicyImpl) Update(ctx context.Context, request UpdateAccountFederationPolicyRequest) (*FederationPolicy, error) {
-	var federationPolicy FederationPolicy
+	requestPb, pbErr := UpdateAccountFederationPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var federationPolicyPb oauth2pb.FederationPolicyPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
-	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
-		queryParams["update_mask"] = request.UpdateMask
+	if requestPb.UpdateMask != "" || slices.Contains(requestPb.ForceSendFields, "UpdateMask") {
+		queryParams["update_mask"] = requestPb.UpdateMask
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Policy, &federationPolicy)
-	return &federationPolicy, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb.Policy,
+		&federationPolicyPb,
+	)
+	resp, err := FederationPolicyFromPb(&federationPolicyPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just CustomAppIntegration API methods
@@ -112,33 +197,80 @@ type customAppIntegrationImpl struct {
 }
 
 func (a *customAppIntegrationImpl) Create(ctx context.Context, request CreateCustomAppIntegration) (*CreateCustomAppIntegrationOutput, error) {
-	var createCustomAppIntegrationOutput CreateCustomAppIntegrationOutput
+	requestPb, pbErr := CreateCustomAppIntegrationToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createCustomAppIntegrationOutputPb oauth2pb.CreateCustomAppIntegrationOutputPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createCustomAppIntegrationOutput)
-	return &createCustomAppIntegrationOutput, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createCustomAppIntegrationOutputPb,
+	)
+	resp, err := CreateCustomAppIntegrationOutputFromPb(&createCustomAppIntegrationOutputPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *customAppIntegrationImpl) Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error {
+	requestPb, pbErr := DeleteCustomAppIntegrationRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *customAppIntegrationImpl) Get(ctx context.Context, request GetCustomAppIntegrationRequest) (*GetCustomAppIntegrationOutput, error) {
-	var getCustomAppIntegrationOutput GetCustomAppIntegrationOutput
+	requestPb, pbErr := GetCustomAppIntegrationRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getCustomAppIntegrationOutputPb oauth2pb.GetCustomAppIntegrationOutputPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getCustomAppIntegrationOutput)
-	return &getCustomAppIntegrationOutput, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getCustomAppIntegrationOutputPb,
+	)
+	resp, err := GetCustomAppIntegrationOutputFromPb(&getCustomAppIntegrationOutputPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Get the list of custom OAuth app integrations for the specified Databricks
@@ -175,22 +307,55 @@ func (a *customAppIntegrationImpl) ListAll(ctx context.Context, request ListCust
 }
 
 func (a *customAppIntegrationImpl) internalList(ctx context.Context, request ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error) {
-	var getCustomAppIntegrationsOutput GetCustomAppIntegrationsOutput
+	requestPb, pbErr := ListCustomAppIntegrationsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getCustomAppIntegrationsOutputPb oauth2pb.GetCustomAppIntegrationsOutputPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getCustomAppIntegrationsOutput)
-	return &getCustomAppIntegrationsOutput, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getCustomAppIntegrationsOutputPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GetCustomAppIntegrationsOutputFromPb(&getCustomAppIntegrationsOutputPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCustomAppIntegration) error {
+	requestPb, pbErr := UpdateCustomAppIntegrationToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
@@ -231,13 +396,33 @@ func (a *oAuthPublishedAppsImpl) ListAll(ctx context.Context, request ListOAuthP
 }
 
 func (a *oAuthPublishedAppsImpl) internalList(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error) {
-	var getPublishedAppsOutput GetPublishedAppsOutput
+	requestPb, pbErr := ListOAuthPublishedAppsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getPublishedAppsOutputPb oauth2pb.GetPublishedAppsOutputPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-apps", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedAppsOutput)
-	return &getPublishedAppsOutput, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getPublishedAppsOutputPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GetPublishedAppsOutputFromPb(&getPublishedAppsOutputPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just PublishedAppIntegration API methods
@@ -246,33 +431,80 @@ type publishedAppIntegrationImpl struct {
 }
 
 func (a *publishedAppIntegrationImpl) Create(ctx context.Context, request CreatePublishedAppIntegration) (*CreatePublishedAppIntegrationOutput, error) {
-	var createPublishedAppIntegrationOutput CreatePublishedAppIntegrationOutput
+	requestPb, pbErr := CreatePublishedAppIntegrationToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createPublishedAppIntegrationOutputPb oauth2pb.CreatePublishedAppIntegrationOutputPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createPublishedAppIntegrationOutput)
-	return &createPublishedAppIntegrationOutput, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createPublishedAppIntegrationOutputPb,
+	)
+	resp, err := CreatePublishedAppIntegrationOutputFromPb(&createPublishedAppIntegrationOutputPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *publishedAppIntegrationImpl) Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error {
+	requestPb, pbErr := DeletePublishedAppIntegrationRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *publishedAppIntegrationImpl) Get(ctx context.Context, request GetPublishedAppIntegrationRequest) (*GetPublishedAppIntegrationOutput, error) {
-	var getPublishedAppIntegrationOutput GetPublishedAppIntegrationOutput
+	requestPb, pbErr := GetPublishedAppIntegrationRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getPublishedAppIntegrationOutputPb oauth2pb.GetPublishedAppIntegrationOutputPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedAppIntegrationOutput)
-	return &getPublishedAppIntegrationOutput, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getPublishedAppIntegrationOutputPb,
+	)
+	resp, err := GetPublishedAppIntegrationOutputFromPb(&getPublishedAppIntegrationOutputPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Get the list of published OAuth app integrations for the specified Databricks
@@ -309,22 +541,55 @@ func (a *publishedAppIntegrationImpl) ListAll(ctx context.Context, request ListP
 }
 
 func (a *publishedAppIntegrationImpl) internalList(ctx context.Context, request ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error) {
-	var getPublishedAppIntegrationsOutput GetPublishedAppIntegrationsOutput
+	requestPb, pbErr := ListPublishedAppIntegrationsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getPublishedAppIntegrationsOutputPb oauth2pb.GetPublishedAppIntegrationsOutputPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedAppIntegrationsOutput)
-	return &getPublishedAppIntegrationsOutput, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getPublishedAppIntegrationsOutputPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GetPublishedAppIntegrationsOutputFromPb(&getPublishedAppIntegrationsOutputPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request UpdatePublishedAppIntegration) error {
+	requestPb, pbErr := UpdatePublishedAppIntegrationToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
@@ -334,36 +599,83 @@ type servicePrincipalFederationPolicyImpl struct {
 }
 
 func (a *servicePrincipalFederationPolicyImpl) Create(ctx context.Context, request CreateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error) {
-	var federationPolicy FederationPolicy
+	requestPb, pbErr := CreateServicePrincipalFederationPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var federationPolicyPb oauth2pb.FederationPolicyPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)
-	if request.PolicyId != "" || slices.Contains(request.ForceSendFields, "PolicyId") {
-		queryParams["policy_id"] = request.PolicyId
+	if requestPb.PolicyId != "" || slices.Contains(requestPb.ForceSendFields, "PolicyId") {
+		queryParams["policy_id"] = requestPb.PolicyId
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Policy, &federationPolicy)
-	return &federationPolicy, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb.Policy,
+		&federationPolicyPb,
+	)
+	resp, err := FederationPolicyFromPb(&federationPolicyPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servicePrincipalFederationPolicyImpl) Delete(ctx context.Context, request DeleteServicePrincipalFederationPolicyRequest) error {
+	requestPb, pbErr := DeleteServicePrincipalFederationPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *servicePrincipalFederationPolicyImpl) Get(ctx context.Context, request GetServicePrincipalFederationPolicyRequest) (*FederationPolicy, error) {
-	var federationPolicy FederationPolicy
+	requestPb, pbErr := GetServicePrincipalFederationPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var federationPolicyPb oauth2pb.FederationPolicyPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &federationPolicy)
-	return &federationPolicy, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&federationPolicyPb,
+	)
+	resp, err := FederationPolicyFromPb(&federationPolicyPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List account federation policies.
@@ -398,27 +710,64 @@ func (a *servicePrincipalFederationPolicyImpl) ListAll(ctx context.Context, requ
 }
 
 func (a *servicePrincipalFederationPolicyImpl) internalList(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
-	var listFederationPoliciesResponse ListFederationPoliciesResponse
+	requestPb, pbErr := ListServicePrincipalFederationPoliciesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listFederationPoliciesResponsePb oauth2pb.ListFederationPoliciesResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFederationPoliciesResponse)
-	return &listFederationPoliciesResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listFederationPoliciesResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListFederationPoliciesResponseFromPb(&listFederationPoliciesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servicePrincipalFederationPolicyImpl) Update(ctx context.Context, request UpdateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error) {
-	var federationPolicy FederationPolicy
+	requestPb, pbErr := UpdateServicePrincipalFederationPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var federationPolicyPb oauth2pb.FederationPolicyPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
 	queryParams := make(map[string]any)
-	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
-		queryParams["update_mask"] = request.UpdateMask
+	if requestPb.UpdateMask != "" || slices.Contains(requestPb.ForceSendFields, "UpdateMask") {
+		queryParams["update_mask"] = requestPb.UpdateMask
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Policy, &federationPolicy)
-	return &federationPolicy, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb.Policy,
+		&federationPolicyPb,
+	)
+	resp, err := FederationPolicyFromPb(&federationPolicyPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ServicePrincipalSecrets API methods
@@ -427,21 +776,51 @@ type servicePrincipalSecretsImpl struct {
 }
 
 func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request CreateServicePrincipalSecretRequest) (*CreateServicePrincipalSecretResponse, error) {
-	var createServicePrincipalSecretResponse CreateServicePrincipalSecretResponse
+	requestPb, pbErr := CreateServicePrincipalSecretRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createServicePrincipalSecretResponsePb oauth2pb.CreateServicePrincipalSecretResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createServicePrincipalSecretResponse)
-	return &createServicePrincipalSecretResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createServicePrincipalSecretResponsePb,
+	)
+	resp, err := CreateServicePrincipalSecretResponseFromPb(&createServicePrincipalSecretResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error {
+	requestPb, pbErr := DeleteServicePrincipalSecretRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.SecretId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
@@ -481,13 +860,33 @@ func (a *servicePrincipalSecretsImpl) ListAll(ctx context.Context, request ListS
 }
 
 func (a *servicePrincipalSecretsImpl) internalList(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
-	var listServicePrincipalSecretsResponse ListServicePrincipalSecretsResponse
+	requestPb, pbErr := ListServicePrincipalSecretsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listServicePrincipalSecretsResponsePb oauth2pb.ListServicePrincipalSecretsResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listServicePrincipalSecretsResponse)
-	return &listServicePrincipalSecretsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listServicePrincipalSecretsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListServicePrincipalSecretsResponseFromPb(&listServicePrincipalSecretsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ServicePrincipalSecretsProxy API methods
@@ -496,21 +895,51 @@ type servicePrincipalSecretsProxyImpl struct {
 }
 
 func (a *servicePrincipalSecretsProxyImpl) Create(ctx context.Context, request CreateServicePrincipalSecretRequest) (*CreateServicePrincipalSecretResponse, error) {
-	var createServicePrincipalSecretResponse CreateServicePrincipalSecretResponse
+	requestPb, pbErr := CreateServicePrincipalSecretRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createServicePrincipalSecretResponsePb oauth2pb.CreateServicePrincipalSecretResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/servicePrincipals/%v/credentials/secrets", request.ServicePrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createServicePrincipalSecretResponse)
-	return &createServicePrincipalSecretResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createServicePrincipalSecretResponsePb,
+	)
+	resp, err := CreateServicePrincipalSecretResponseFromPb(&createServicePrincipalSecretResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servicePrincipalSecretsProxyImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error {
+	requestPb, pbErr := DeleteServicePrincipalSecretRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/servicePrincipals/%v/credentials/secrets/%v", request.ServicePrincipalId, request.SecretId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
@@ -550,11 +979,31 @@ func (a *servicePrincipalSecretsProxyImpl) ListAll(ctx context.Context, request 
 }
 
 func (a *servicePrincipalSecretsProxyImpl) internalList(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
-	var listServicePrincipalSecretsResponse ListServicePrincipalSecretsResponse
+	requestPb, pbErr := ListServicePrincipalSecretsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listServicePrincipalSecretsResponsePb oauth2pb.ListServicePrincipalSecretsResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/servicePrincipals/%v/credentials/secrets", request.ServicePrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listServicePrincipalSecretsResponse)
-	return &listServicePrincipalSecretsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listServicePrincipalSecretsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListServicePrincipalSecretsResponseFromPb(&listServicePrincipalSecretsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }

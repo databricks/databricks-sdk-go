@@ -106,7 +106,7 @@ type ConsumerProvidersService interface {
 
 	// List all providers in the Databricks Marketplace with at least one
 	// visible listing.
-	List(ctx context.Context, request ListConsumerProvidersRequest) (*ListProvidersResponse, error)
+	List(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error)
 }
 
 // Marketplace exchanges filters curate which groups can access an exchange.

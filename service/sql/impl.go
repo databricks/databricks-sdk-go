@@ -9,6 +9,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/service/sql/sqlpb"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
@@ -18,33 +19,80 @@ type alertsImpl struct {
 }
 
 func (a *alertsImpl) Create(ctx context.Context, request CreateAlertRequest) (*Alert, error) {
-	var alert Alert
+	requestPb, pbErr := CreateAlertRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var alertPb sqlpb.AlertPb
 	path := "/api/2.0/sql/alerts"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &alert)
-	return &alert, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&alertPb,
+	)
+	resp, err := AlertFromPb(&alertPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *alertsImpl) Delete(ctx context.Context, request TrashAlertRequest) error {
+	requestPb, pbErr := TrashAlertRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *alertsImpl) Get(ctx context.Context, request GetAlertRequest) (*Alert, error) {
-	var alert Alert
+	requestPb, pbErr := GetAlertRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var alertPb sqlpb.AlertPb
 	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &alert)
-	return &alert, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&alertPb,
+	)
+	resp, err := AlertFromPb(&alertPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets a list of alerts accessible to the user, ordered by creation time.
@@ -83,24 +131,61 @@ func (a *alertsImpl) ListAll(ctx context.Context, request ListAlertsRequest) ([]
 }
 
 func (a *alertsImpl) internalList(ctx context.Context, request ListAlertsRequest) (*ListAlertsResponse, error) {
-	var listAlertsResponse ListAlertsResponse
+	requestPb, pbErr := ListAlertsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listAlertsResponsePb sqlpb.ListAlertsResponsePb
 	path := "/api/2.0/sql/alerts"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAlertsResponse)
-	return &listAlertsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listAlertsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListAlertsResponseFromPb(&listAlertsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *alertsImpl) Update(ctx context.Context, request UpdateAlertRequest) (*Alert, error) {
-	var alert Alert
+	requestPb, pbErr := UpdateAlertRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var alertPb sqlpb.AlertPb
 	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &alert)
-	return &alert, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&alertPb,
+	)
+	resp, err := AlertFromPb(&alertPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just AlertsLegacy API methods
@@ -109,52 +194,129 @@ type alertsLegacyImpl struct {
 }
 
 func (a *alertsLegacyImpl) Create(ctx context.Context, request CreateAlert) (*LegacyAlert, error) {
-	var legacyAlert LegacyAlert
+	requestPb, pbErr := CreateAlertToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var legacyAlertPb sqlpb.LegacyAlertPb
 	path := "/api/2.0/preview/sql/alerts"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &legacyAlert)
-	return &legacyAlert, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&legacyAlertPb,
+	)
+	resp, err := LegacyAlertFromPb(&legacyAlertPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *alertsLegacyImpl) Delete(ctx context.Context, request DeleteAlertsLegacyRequest) error {
+	requestPb, pbErr := DeleteAlertsLegacyRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *alertsLegacyImpl) Get(ctx context.Context, request GetAlertsLegacyRequest) (*LegacyAlert, error) {
-	var legacyAlert LegacyAlert
+	requestPb, pbErr := GetAlertsLegacyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var legacyAlertPb sqlpb.LegacyAlertPb
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &legacyAlert)
-	return &legacyAlert, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&legacyAlertPb,
+	)
+	resp, err := LegacyAlertFromPb(&legacyAlertPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *alertsLegacyImpl) List(ctx context.Context) ([]LegacyAlert, error) {
-	var legacyAlertList []LegacyAlert
+
+	var legacyAlertListPb []sqlpb.LegacyAlertPb
 	path := "/api/2.0/preview/sql/alerts"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &legacyAlertList)
-	return legacyAlertList, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&legacyAlertListPb,
+	)
+	var resp []LegacyAlert
+	for _, item := range legacyAlertListPb {
+		itemResp, err := LegacyAlertFromPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		resp = append(resp, *itemResp)
+	}
+
+	return resp, err
 }
 
 func (a *alertsLegacyImpl) Update(ctx context.Context, request EditAlert) error {
+	requestPb, pbErr := EditAlertToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
@@ -164,24 +326,58 @@ type alertsV2Impl struct {
 }
 
 func (a *alertsV2Impl) CreateAlert(ctx context.Context, request CreateAlertV2Request) (*AlertV2, error) {
-	var alertV2 AlertV2
+	requestPb, pbErr := CreateAlertV2RequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var alertV2Pb sqlpb.AlertV2Pb
 	path := "/api/2.0/alerts"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Alert, &alertV2)
-	return &alertV2, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb.Alert,
+		&alertV2Pb,
+	)
+	resp, err := AlertV2FromPb(&alertV2Pb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *alertsV2Impl) GetAlert(ctx context.Context, request GetAlertV2Request) (*AlertV2, error) {
-	var alertV2 AlertV2
+	requestPb, pbErr := GetAlertV2RequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var alertV2Pb sqlpb.AlertV2Pb
 	path := fmt.Sprintf("/api/2.0/alerts/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &alertV2)
-	return &alertV2, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&alertV2Pb,
+	)
+	resp, err := AlertV2FromPb(&alertV2Pb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets a list of alerts accessible to the user, ordered by creation time.
@@ -216,36 +412,86 @@ func (a *alertsV2Impl) ListAlertsAll(ctx context.Context, request ListAlertsV2Re
 }
 
 func (a *alertsV2Impl) internalListAlerts(ctx context.Context, request ListAlertsV2Request) (*ListAlertsV2Response, error) {
-	var listAlertsV2Response ListAlertsV2Response
+	requestPb, pbErr := ListAlertsV2RequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listAlertsV2ResponsePb sqlpb.ListAlertsV2ResponsePb
 	path := "/api/2.0/alerts"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAlertsV2Response)
-	return &listAlertsV2Response, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listAlertsV2ResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListAlertsV2ResponseFromPb(&listAlertsV2ResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *alertsV2Impl) TrashAlert(ctx context.Context, request TrashAlertV2Request) error {
+	requestPb, pbErr := TrashAlertV2RequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/alerts/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *alertsV2Impl) UpdateAlert(ctx context.Context, request UpdateAlertV2Request) (*AlertV2, error) {
-	var alertV2 AlertV2
+	requestPb, pbErr := UpdateAlertV2RequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var alertV2Pb sqlpb.AlertV2Pb
 	path := fmt.Sprintf("/api/2.0/alerts/%v", request.Id)
 	queryParams := make(map[string]any)
-	if request.UpdateMask != "" {
-		queryParams["update_mask"] = request.UpdateMask
+	if requestPb.UpdateMask != "" {
+		queryParams["update_mask"] = requestPb.UpdateMask
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Alert, &alertV2)
-	return &alertV2, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb.Alert,
+		&alertV2Pb,
+	)
+	resp, err := AlertV2FromPb(&alertV2Pb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just DashboardWidgets API methods
@@ -254,34 +500,81 @@ type dashboardWidgetsImpl struct {
 }
 
 func (a *dashboardWidgetsImpl) Create(ctx context.Context, request CreateWidget) (*Widget, error) {
-	var widget Widget
+	requestPb, pbErr := CreateWidgetToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var widgetPb sqlpb.WidgetPb
 	path := "/api/2.0/preview/sql/widgets"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &widget)
-	return &widget, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&widgetPb,
+	)
+	resp, err := WidgetFromPb(&widgetPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *dashboardWidgetsImpl) Delete(ctx context.Context, request DeleteDashboardWidgetRequest) error {
+	requestPb, pbErr := DeleteDashboardWidgetRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *dashboardWidgetsImpl) Update(ctx context.Context, request UpdateWidgetRequest) (*Widget, error) {
-	var widget Widget
+	requestPb, pbErr := UpdateWidgetRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var widgetPb sqlpb.WidgetPb
 	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &widget)
-	return &widget, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&widgetPb,
+	)
+	resp, err := WidgetFromPb(&widgetPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just Dashboards API methods
@@ -290,22 +583,52 @@ type dashboardsImpl struct {
 }
 
 func (a *dashboardsImpl) Delete(ctx context.Context, request DeleteDashboardRequest) error {
+	requestPb, pbErr := DeleteDashboardRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *dashboardsImpl) Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error) {
-	var dashboard Dashboard
+	requestPb, pbErr := GetDashboardRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var dashboardPb sqlpb.DashboardPb
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &dashboard)
-	return &dashboard, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&dashboardPb,
+	)
+	resp, err := DashboardFromPb(&dashboardPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Fetch a paginated list of dashboard objects.
@@ -349,33 +672,79 @@ func (a *dashboardsImpl) ListAll(ctx context.Context, request ListDashboardsRequ
 }
 
 func (a *dashboardsImpl) internalList(ctx context.Context, request ListDashboardsRequest) (*ListResponse, error) {
-	var listResponse ListResponse
+	requestPb, pbErr := ListDashboardsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listResponsePb sqlpb.ListResponsePb
 	path := "/api/2.0/preview/sql/dashboards"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listResponse)
-	return &listResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListResponseFromPb(&listResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *dashboardsImpl) Restore(ctx context.Context, request RestoreDashboardRequest) error {
+
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/trash/%v", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		nil,
+	)
+
 	return err
 }
 
 func (a *dashboardsImpl) Update(ctx context.Context, request DashboardEditContent) (*Dashboard, error) {
-	var dashboard Dashboard
+	requestPb, pbErr := DashboardEditContentToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var dashboardPb sqlpb.DashboardPb
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &dashboard)
-	return &dashboard, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&dashboardPb,
+	)
+	resp, err := DashboardFromPb(&dashboardPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just DataSources API methods
@@ -384,13 +753,30 @@ type dataSourcesImpl struct {
 }
 
 func (a *dataSourcesImpl) List(ctx context.Context) ([]DataSource, error) {
-	var dataSourceList []DataSource
+
+	var dataSourceListPb []sqlpb.DataSourcePb
 	path := "/api/2.0/preview/sql/data_sources"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &dataSourceList)
-	return dataSourceList, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&dataSourceListPb,
+	)
+	var resp []DataSource
+	for _, item := range dataSourceListPb {
+		itemResp, err := DataSourceFromPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		resp = append(resp, *itemResp)
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just DbsqlPermissions API methods
@@ -399,35 +785,86 @@ type dbsqlPermissionsImpl struct {
 }
 
 func (a *dbsqlPermissionsImpl) Get(ctx context.Context, request GetDbsqlPermissionRequest) (*GetResponse, error) {
-	var getResponse GetResponse
+	requestPb, pbErr := GetDbsqlPermissionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getResponsePb sqlpb.GetResponsePb
 	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v", request.ObjectType, request.ObjectId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getResponse)
-	return &getResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getResponsePb,
+	)
+	resp, err := GetResponseFromPb(&getResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *dbsqlPermissionsImpl) Set(ctx context.Context, request SetRequest) (*SetResponse, error) {
-	var setResponse SetResponse
+	requestPb, pbErr := SetRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var setResponsePb sqlpb.SetResponsePb
 	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v", request.ObjectType, request.ObjectId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &setResponse)
-	return &setResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&setResponsePb,
+	)
+	resp, err := SetResponseFromPb(&setResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *dbsqlPermissionsImpl) TransferOwnership(ctx context.Context, request TransferOwnershipRequest) (*Success, error) {
-	var success Success
+	requestPb, pbErr := TransferOwnershipRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var successPb sqlpb.SuccessPb
 	path := fmt.Sprintf("/api/2.0/preview/sql/permissions/%v/%v/transfer", request.ObjectType, request.ObjectId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &success)
-	return &success, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&successPb,
+	)
+	resp, err := SuccessFromPb(&successPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just Queries API methods
@@ -436,33 +873,80 @@ type queriesImpl struct {
 }
 
 func (a *queriesImpl) Create(ctx context.Context, request CreateQueryRequest) (*Query, error) {
-	var query Query
+	requestPb, pbErr := CreateQueryRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var queryPb sqlpb.QueryPb
 	path := "/api/2.0/sql/queries"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &query)
-	return &query, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&queryPb,
+	)
+	resp, err := QueryFromPb(&queryPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *queriesImpl) Delete(ctx context.Context, request TrashQueryRequest) error {
+	requestPb, pbErr := TrashQueryRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/sql/queries/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *queriesImpl) Get(ctx context.Context, request GetQueryRequest) (*Query, error) {
-	var query Query
+	requestPb, pbErr := GetQueryRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var queryPb sqlpb.QueryPb
 	path := fmt.Sprintf("/api/2.0/sql/queries/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &query)
-	return &query, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&queryPb,
+	)
+	resp, err := QueryFromPb(&queryPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets a list of queries accessible to the user, ordered by creation time.
@@ -501,13 +985,33 @@ func (a *queriesImpl) ListAll(ctx context.Context, request ListQueriesRequest) (
 }
 
 func (a *queriesImpl) internalList(ctx context.Context, request ListQueriesRequest) (*ListQueryObjectsResponse, error) {
-	var listQueryObjectsResponse ListQueryObjectsResponse
+	requestPb, pbErr := ListQueriesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listQueryObjectsResponsePb sqlpb.ListQueryObjectsResponsePb
 	path := "/api/2.0/sql/queries"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listQueryObjectsResponse)
-	return &listQueryObjectsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listQueryObjectsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListQueryObjectsResponseFromPb(&listQueryObjectsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets a list of visualizations on a query.
@@ -542,24 +1046,61 @@ func (a *queriesImpl) ListVisualizationsAll(ctx context.Context, request ListVis
 }
 
 func (a *queriesImpl) internalListVisualizations(ctx context.Context, request ListVisualizationsForQueryRequest) (*ListVisualizationsForQueryResponse, error) {
-	var listVisualizationsForQueryResponse ListVisualizationsForQueryResponse
+	requestPb, pbErr := ListVisualizationsForQueryRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listVisualizationsForQueryResponsePb sqlpb.ListVisualizationsForQueryResponsePb
 	path := fmt.Sprintf("/api/2.0/sql/queries/%v/visualizations", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listVisualizationsForQueryResponse)
-	return &listVisualizationsForQueryResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listVisualizationsForQueryResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListVisualizationsForQueryResponseFromPb(&listVisualizationsForQueryResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *queriesImpl) Update(ctx context.Context, request UpdateQueryRequest) (*Query, error) {
-	var query Query
+	requestPb, pbErr := UpdateQueryRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var queryPb sqlpb.QueryPb
 	path := fmt.Sprintf("/api/2.0/sql/queries/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &query)
-	return &query, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&queryPb,
+	)
+	resp, err := QueryFromPb(&queryPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just QueriesLegacy API methods
@@ -568,33 +1109,80 @@ type queriesLegacyImpl struct {
 }
 
 func (a *queriesLegacyImpl) Create(ctx context.Context, request QueryPostContent) (*LegacyQuery, error) {
-	var legacyQuery LegacyQuery
+	requestPb, pbErr := QueryPostContentToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var legacyQueryPb sqlpb.LegacyQueryPb
 	path := "/api/2.0/preview/sql/queries"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &legacyQuery)
-	return &legacyQuery, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&legacyQueryPb,
+	)
+	resp, err := LegacyQueryFromPb(&legacyQueryPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *queriesLegacyImpl) Delete(ctx context.Context, request DeleteQueriesLegacyRequest) error {
+	requestPb, pbErr := DeleteQueriesLegacyRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *queriesLegacyImpl) Get(ctx context.Context, request GetQueriesLegacyRequest) (*LegacyQuery, error) {
-	var legacyQuery LegacyQuery
+	requestPb, pbErr := GetQueriesLegacyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var legacyQueryPb sqlpb.LegacyQueryPb
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &legacyQuery)
-	return &legacyQuery, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&legacyQueryPb,
+	)
+	resp, err := LegacyQueryFromPb(&legacyQueryPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets a list of queries. Optionally, this list can be filtered by a search
@@ -650,33 +1238,79 @@ func (a *queriesLegacyImpl) ListAll(ctx context.Context, request ListQueriesLega
 }
 
 func (a *queriesLegacyImpl) internalList(ctx context.Context, request ListQueriesLegacyRequest) (*QueryList, error) {
-	var queryList QueryList
+	requestPb, pbErr := ListQueriesLegacyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var queryListPb sqlpb.QueryListPb
 	path := "/api/2.0/preview/sql/queries"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &queryList)
-	return &queryList, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&queryListPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := QueryListFromPb(&queryListPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *queriesLegacyImpl) Restore(ctx context.Context, request RestoreQueriesLegacyRequest) error {
+
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/trash/%v", request.QueryId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		nil,
+	)
+
 	return err
 }
 
 func (a *queriesLegacyImpl) Update(ctx context.Context, request QueryEditContent) (*LegacyQuery, error) {
-	var legacyQuery LegacyQuery
+	requestPb, pbErr := QueryEditContentToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var legacyQueryPb sqlpb.LegacyQueryPb
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &legacyQuery)
-	return &legacyQuery, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&legacyQueryPb,
+	)
+	resp, err := LegacyQueryFromPb(&legacyQueryPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just QueryHistory API methods
@@ -685,13 +1319,30 @@ type queryHistoryImpl struct {
 }
 
 func (a *queryHistoryImpl) List(ctx context.Context, request ListQueryHistoryRequest) (*ListQueriesResponse, error) {
-	var listQueriesResponse ListQueriesResponse
+	requestPb, pbErr := ListQueryHistoryRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listQueriesResponsePb sqlpb.ListQueriesResponsePb
 	path := "/api/2.0/sql/history/queries"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listQueriesResponse)
-	return &listQueriesResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listQueriesResponsePb,
+	)
+	resp, err := ListQueriesResponseFromPb(&listQueriesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just QueryVisualizations API methods
@@ -700,34 +1351,81 @@ type queryVisualizationsImpl struct {
 }
 
 func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateVisualizationRequest) (*Visualization, error) {
-	var visualization Visualization
+	requestPb, pbErr := CreateVisualizationRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var visualizationPb sqlpb.VisualizationPb
 	path := "/api/2.0/sql/visualizations"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &visualization)
-	return &visualization, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&visualizationPb,
+	)
+	resp, err := VisualizationFromPb(&visualizationPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteVisualizationRequest) error {
+	requestPb, pbErr := DeleteVisualizationRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/sql/visualizations/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *queryVisualizationsImpl) Update(ctx context.Context, request UpdateVisualizationRequest) (*Visualization, error) {
-	var visualization Visualization
+	requestPb, pbErr := UpdateVisualizationRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var visualizationPb sqlpb.VisualizationPb
 	path := fmt.Sprintf("/api/2.0/sql/visualizations/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &visualization)
-	return &visualization, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&visualizationPb,
+	)
+	resp, err := VisualizationFromPb(&visualizationPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just QueryVisualizationsLegacy API methods
@@ -736,34 +1434,81 @@ type queryVisualizationsLegacyImpl struct {
 }
 
 func (a *queryVisualizationsLegacyImpl) Create(ctx context.Context, request CreateQueryVisualizationsLegacyRequest) (*LegacyVisualization, error) {
-	var legacyVisualization LegacyVisualization
+	requestPb, pbErr := CreateQueryVisualizationsLegacyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var legacyVisualizationPb sqlpb.LegacyVisualizationPb
 	path := "/api/2.0/preview/sql/visualizations"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &legacyVisualization)
-	return &legacyVisualization, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&legacyVisualizationPb,
+	)
+	resp, err := LegacyVisualizationFromPb(&legacyVisualizationPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *queryVisualizationsLegacyImpl) Delete(ctx context.Context, request DeleteQueryVisualizationsLegacyRequest) error {
+	requestPb, pbErr := DeleteQueryVisualizationsLegacyRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *queryVisualizationsLegacyImpl) Update(ctx context.Context, request LegacyVisualization) (*LegacyVisualization, error) {
-	var legacyVisualization LegacyVisualization
+	requestPb, pbErr := LegacyVisualizationToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var legacyVisualizationPb sqlpb.LegacyVisualizationPb
 	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &legacyVisualization)
-	return &legacyVisualization, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&legacyVisualizationPb,
+	)
+	resp, err := LegacyVisualizationFromPb(&legacyVisualizationPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just RedashConfig API methods
@@ -772,13 +1517,26 @@ type redashConfigImpl struct {
 }
 
 func (a *redashConfigImpl) GetConfig(ctx context.Context) (*ClientConfig, error) {
-	var clientConfig ClientConfig
+
+	var clientConfigPb sqlpb.ClientConfigPb
 	path := "/api/2.0/redash-v2/config"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &clientConfig)
-	return &clientConfig, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&clientConfigPb,
+	)
+	resp, err := ClientConfigFromPb(&clientConfigPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just StatementExecution API methods
@@ -787,42 +1545,102 @@ type statementExecutionImpl struct {
 }
 
 func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request CancelExecutionRequest) error {
+
 	path := fmt.Sprintf("/api/2.0/sql/statements/%v/cancel", request.StatementId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		nil,
+	)
+
 	return err
 }
 
 func (a *statementExecutionImpl) ExecuteStatement(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error) {
-	var statementResponse StatementResponse
+	requestPb, pbErr := ExecuteStatementRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var statementResponsePb sqlpb.StatementResponsePb
 	path := "/api/2.0/sql/statements/"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &statementResponse)
-	return &statementResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&statementResponsePb,
+	)
+	resp, err := StatementResponseFromPb(&statementResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *statementExecutionImpl) GetStatement(ctx context.Context, request GetStatementRequest) (*StatementResponse, error) {
-	var statementResponse StatementResponse
+	requestPb, pbErr := GetStatementRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var statementResponsePb sqlpb.StatementResponsePb
 	path := fmt.Sprintf("/api/2.0/sql/statements/%v", request.StatementId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &statementResponse)
-	return &statementResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&statementResponsePb,
+	)
+	resp, err := StatementResponseFromPb(&statementResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *statementExecutionImpl) GetStatementResultChunkN(ctx context.Context, request GetStatementResultChunkNRequest) (*ResultData, error) {
-	var resultData ResultData
+	requestPb, pbErr := GetStatementResultChunkNRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var resultDataPb sqlpb.ResultDataPb
 	path := fmt.Sprintf("/api/2.0/sql/statements/%v/result/chunks/%v", request.StatementId, request.ChunkIndex)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &resultData)
-	return &resultData, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&resultDataPb,
+	)
+	resp, err := ResultDataFromPb(&resultDataPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just Warehouses API methods
@@ -831,73 +1649,180 @@ type warehousesImpl struct {
 }
 
 func (a *warehousesImpl) Create(ctx context.Context, request CreateWarehouseRequest) (*CreateWarehouseResponse, error) {
-	var createWarehouseResponse CreateWarehouseResponse
+	requestPb, pbErr := CreateWarehouseRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var createWarehouseResponsePb sqlpb.CreateWarehouseResponsePb
 	path := "/api/2.0/sql/warehouses"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createWarehouseResponse)
-	return &createWarehouseResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&createWarehouseResponsePb,
+	)
+	resp, err := CreateWarehouseResponseFromPb(&createWarehouseResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *warehousesImpl) Delete(ctx context.Context, request DeleteWarehouseRequest) error {
+	requestPb, pbErr := DeleteWarehouseRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *warehousesImpl) Edit(ctx context.Context, request EditWarehouseRequest) error {
+	requestPb, pbErr := EditWarehouseRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/edit", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *warehousesImpl) Get(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error) {
-	var getWarehouseResponse GetWarehouseResponse
+	requestPb, pbErr := GetWarehouseRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getWarehouseResponsePb sqlpb.GetWarehouseResponsePb
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getWarehouseResponse)
-	return &getWarehouseResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getWarehouseResponsePb,
+	)
+	resp, err := GetWarehouseResponseFromPb(&getWarehouseResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *warehousesImpl) GetPermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error) {
-	var getWarehousePermissionLevelsResponse GetWarehousePermissionLevelsResponse
+	requestPb, pbErr := GetWarehousePermissionLevelsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getWarehousePermissionLevelsResponsePb sqlpb.GetWarehousePermissionLevelsResponsePb
 	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v/permissionLevels", request.WarehouseId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getWarehousePermissionLevelsResponse)
-	return &getWarehousePermissionLevelsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getWarehousePermissionLevelsResponsePb,
+	)
+	resp, err := GetWarehousePermissionLevelsResponseFromPb(&getWarehousePermissionLevelsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *warehousesImpl) GetPermissions(ctx context.Context, request GetWarehousePermissionsRequest) (*WarehousePermissions, error) {
-	var warehousePermissions WarehousePermissions
+	requestPb, pbErr := GetWarehousePermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var warehousePermissionsPb sqlpb.WarehousePermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &warehousePermissions)
-	return &warehousePermissions, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&warehousePermissionsPb,
+	)
+	resp, err := WarehousePermissionsFromPb(&warehousePermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *warehousesImpl) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetWorkspaceWarehouseConfigResponse, error) {
-	var getWorkspaceWarehouseConfigResponse GetWorkspaceWarehouseConfigResponse
+
+	var getWorkspaceWarehouseConfigResponsePb sqlpb.GetWorkspaceWarehouseConfigResponsePb
 	path := "/api/2.0/sql/config/warehouses"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getWorkspaceWarehouseConfigResponse)
-	return &getWorkspaceWarehouseConfigResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&getWorkspaceWarehouseConfigResponsePb,
+	)
+	resp, err := GetWorkspaceWarehouseConfigResponseFromPb(&getWorkspaceWarehouseConfigResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Lists all SQL warehouses that a user has manager permissions on.
@@ -926,61 +1851,146 @@ func (a *warehousesImpl) ListAll(ctx context.Context, request ListWarehousesRequ
 }
 
 func (a *warehousesImpl) internalList(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error) {
-	var listWarehousesResponse ListWarehousesResponse
+	requestPb, pbErr := ListWarehousesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listWarehousesResponsePb sqlpb.ListWarehousesResponsePb
 	path := "/api/2.0/sql/warehouses"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listWarehousesResponse)
-	return &listWarehousesResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listWarehousesResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListWarehousesResponseFromPb(&listWarehousesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *warehousesImpl) SetPermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
-	var warehousePermissions WarehousePermissions
+	requestPb, pbErr := WarehousePermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var warehousePermissionsPb sqlpb.WarehousePermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &warehousePermissions)
-	return &warehousePermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&warehousePermissionsPb,
+	)
+	resp, err := WarehousePermissionsFromPb(&warehousePermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *warehousesImpl) SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) error {
+	requestPb, pbErr := SetWorkspaceWarehouseConfigRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := "/api/2.0/sql/config/warehouses"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *warehousesImpl) Start(ctx context.Context, request StartRequest) error {
+
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/start", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		nil,
+	)
+
 	return err
 }
 
 func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
+
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/stop", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		nil,
+	)
+
 	return err
 }
 
 func (a *warehousesImpl) UpdatePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
-	var warehousePermissions WarehousePermissions
+	requestPb, pbErr := WarehousePermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var warehousePermissionsPb sqlpb.WarehousePermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &warehousePermissions)
-	return &warehousePermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&warehousePermissionsPb,
+	)
+	resp, err := WarehousePermissionsFromPb(&warehousePermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }

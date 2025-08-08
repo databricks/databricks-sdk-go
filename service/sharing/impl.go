@@ -9,6 +9,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/service/sharing/sharingpb"
 	"github.com/databricks/databricks-sdk-go/useragent"
 	"golang.org/x/exp/slices"
 )
@@ -19,32 +20,79 @@ type providersImpl struct {
 }
 
 func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*ProviderInfo, error) {
-	var providerInfo ProviderInfo
+	requestPb, pbErr := CreateProviderToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var providerInfoPb sharingpb.ProviderInfoPb
 	path := "/api/2.1/unity-catalog/providers"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &providerInfo)
-	return &providerInfo, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&providerInfoPb,
+	)
+	resp, err := ProviderInfoFromPb(&providerInfoPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
+	requestPb, pbErr := DeleteProviderRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *providersImpl) Get(ctx context.Context, request GetProviderRequest) (*ProviderInfo, error) {
-	var providerInfo ProviderInfo
+	requestPb, pbErr := GetProviderRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var providerInfoPb sharingpb.ProviderInfoPb
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &providerInfo)
-	return &providerInfo, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&providerInfoPb,
+	)
+	resp, err := ProviderInfoFromPb(&providerInfoPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets an array of available authentication providers. The caller must either
@@ -87,23 +135,60 @@ func (a *providersImpl) ListAll(ctx context.Context, request ListProvidersReques
 }
 
 func (a *providersImpl) internalList(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error) {
-	var listProvidersResponse ListProvidersResponse
+	requestPb, pbErr := ListProvidersRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listProvidersResponsePb sharingpb.ListProvidersResponsePb
 	path := "/api/2.1/unity-catalog/providers"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProvidersResponse)
-	return &listProvidersResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listProvidersResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListProvidersResponseFromPb(&listProvidersResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providersImpl) ListProviderShareAssets(ctx context.Context, request ListProviderShareAssetsRequest) (*ListProviderShareAssetsResponse, error) {
-	var listProviderShareAssetsResponse ListProviderShareAssetsResponse
+	requestPb, pbErr := ListProviderShareAssetsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listProviderShareAssetsResponsePb sharingpb.ListProviderShareAssetsResponsePb
 	path := fmt.Sprintf("/api/2.1/data-sharing/providers/%v/shares/%v", request.ProviderName, request.ShareName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProviderShareAssetsResponse)
-	return &listProviderShareAssetsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listProviderShareAssetsResponsePb,
+	)
+	resp, err := ListProviderShareAssetsResponseFromPb(&listProviderShareAssetsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets an array of a specified provider's shares within the metastore where:
@@ -144,24 +229,61 @@ func (a *providersImpl) ListSharesAll(ctx context.Context, request ListSharesReq
 }
 
 func (a *providersImpl) internalListShares(ctx context.Context, request ListSharesRequest) (*ListProviderSharesResponse, error) {
-	var listProviderSharesResponse ListProviderSharesResponse
+	requestPb, pbErr := ListSharesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listProviderSharesResponsePb sharingpb.ListProviderSharesResponsePb
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v/shares", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProviderSharesResponse)
-	return &listProviderSharesResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listProviderSharesResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListProviderSharesResponseFromPb(&listProviderSharesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *providersImpl) Update(ctx context.Context, request UpdateProvider) (*ProviderInfo, error) {
-	var providerInfo ProviderInfo
+	requestPb, pbErr := UpdateProviderToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var providerInfoPb sharingpb.ProviderInfoPb
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &providerInfo)
-	return &providerInfo, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&providerInfoPb,
+	)
+	resp, err := ProviderInfoFromPb(&providerInfoPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just RecipientActivation API methods
@@ -170,22 +292,52 @@ type recipientActivationImpl struct {
 }
 
 func (a *recipientActivationImpl) GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) error {
+	requestPb, pbErr := GetActivationUrlInfoRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.1/unity-catalog/public/data_sharing_activation_info/%v", request.ActivationUrl)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *recipientActivationImpl) RetrieveToken(ctx context.Context, request RetrieveTokenRequest) (*RetrieveTokenResponse, error) {
-	var retrieveTokenResponse RetrieveTokenResponse
+	requestPb, pbErr := RetrieveTokenRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var retrieveTokenResponsePb sharingpb.RetrieveTokenResponsePb
 	path := fmt.Sprintf("/api/2.1/unity-catalog/public/data_sharing_activation/%v", request.ActivationUrl)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &retrieveTokenResponse)
-	return &retrieveTokenResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&retrieveTokenResponsePb,
+	)
+	resp, err := RetrieveTokenResponseFromPb(&retrieveTokenResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just RecipientFederationPolicies API methods
@@ -194,33 +346,80 @@ type recipientFederationPoliciesImpl struct {
 }
 
 func (a *recipientFederationPoliciesImpl) Create(ctx context.Context, request CreateFederationPolicyRequest) (*FederationPolicy, error) {
-	var federationPolicy FederationPolicy
+	requestPb, pbErr := CreateFederationPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var federationPolicyPb sharingpb.FederationPolicyPb
 	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies", request.RecipientName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Policy, &federationPolicy)
-	return &federationPolicy, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb.Policy,
+		&federationPolicyPb,
+	)
+	resp, err := FederationPolicyFromPb(&federationPolicyPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *recipientFederationPoliciesImpl) Delete(ctx context.Context, request DeleteFederationPolicyRequest) error {
+	requestPb, pbErr := DeleteFederationPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies/%v", request.RecipientName, request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *recipientFederationPoliciesImpl) GetFederationPolicy(ctx context.Context, request GetFederationPolicyRequest) (*FederationPolicy, error) {
-	var federationPolicy FederationPolicy
+	requestPb, pbErr := GetFederationPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var federationPolicyPb sharingpb.FederationPolicyPb
 	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies/%v", request.RecipientName, request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &federationPolicy)
-	return &federationPolicy, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&federationPolicyPb,
+	)
+	resp, err := FederationPolicyFromPb(&federationPolicyPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Lists federation policies for an OIDC_FEDERATION recipient for sharing data
@@ -259,27 +458,64 @@ func (a *recipientFederationPoliciesImpl) ListAll(ctx context.Context, request L
 }
 
 func (a *recipientFederationPoliciesImpl) internalList(ctx context.Context, request ListFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
-	var listFederationPoliciesResponse ListFederationPoliciesResponse
+	requestPb, pbErr := ListFederationPoliciesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listFederationPoliciesResponsePb sharingpb.ListFederationPoliciesResponsePb
 	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies", request.RecipientName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFederationPoliciesResponse)
-	return &listFederationPoliciesResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listFederationPoliciesResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListFederationPoliciesResponseFromPb(&listFederationPoliciesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *recipientFederationPoliciesImpl) Update(ctx context.Context, request UpdateFederationPolicyRequest) (*FederationPolicy, error) {
-	var federationPolicy FederationPolicy
+	requestPb, pbErr := UpdateFederationPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var federationPolicyPb sharingpb.FederationPolicyPb
 	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies/%v", request.RecipientName, request.Name)
 	queryParams := make(map[string]any)
-	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
-		queryParams["update_mask"] = request.UpdateMask
+	if requestPb.UpdateMask != "" || slices.Contains(requestPb.ForceSendFields, "UpdateMask") {
+		queryParams["update_mask"] = requestPb.UpdateMask
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Policy, &federationPolicy)
-	return &federationPolicy, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb.Policy,
+		&federationPolicyPb,
+	)
+	resp, err := FederationPolicyFromPb(&federationPolicyPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just Recipients API methods
@@ -288,32 +524,79 @@ type recipientsImpl struct {
 }
 
 func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*RecipientInfo, error) {
-	var recipientInfo RecipientInfo
+	requestPb, pbErr := CreateRecipientToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var recipientInfoPb sharingpb.RecipientInfoPb
 	path := "/api/2.1/unity-catalog/recipients"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &recipientInfo)
-	return &recipientInfo, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&recipientInfoPb,
+	)
+	resp, err := RecipientInfoFromPb(&recipientInfoPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequest) error {
+	requestPb, pbErr := DeleteRecipientRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *recipientsImpl) Get(ctx context.Context, request GetRecipientRequest) (*RecipientInfo, error) {
-	var recipientInfo RecipientInfo
+	requestPb, pbErr := GetRecipientRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var recipientInfoPb sharingpb.RecipientInfoPb
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &recipientInfo)
-	return &recipientInfo, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&recipientInfoPb,
+	)
+	resp, err := RecipientInfoFromPb(&recipientInfoPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets an array of all share recipients within the current metastore where:
@@ -356,45 +639,116 @@ func (a *recipientsImpl) ListAll(ctx context.Context, request ListRecipientsRequ
 }
 
 func (a *recipientsImpl) internalList(ctx context.Context, request ListRecipientsRequest) (*ListRecipientsResponse, error) {
-	var listRecipientsResponse ListRecipientsResponse
+	requestPb, pbErr := ListRecipientsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listRecipientsResponsePb sharingpb.ListRecipientsResponsePb
 	path := "/api/2.1/unity-catalog/recipients"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listRecipientsResponse)
-	return &listRecipientsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listRecipientsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListRecipientsResponseFromPb(&listRecipientsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *recipientsImpl) RotateToken(ctx context.Context, request RotateRecipientToken) (*RecipientInfo, error) {
-	var recipientInfo RecipientInfo
+	requestPb, pbErr := RotateRecipientTokenToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var recipientInfoPb sharingpb.RecipientInfoPb
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/rotate-token", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &recipientInfo)
-	return &recipientInfo, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&recipientInfoPb,
+	)
+	resp, err := RecipientInfoFromPb(&recipientInfoPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error) {
-	var getRecipientSharePermissionsResponse GetRecipientSharePermissionsResponse
+	requestPb, pbErr := SharePermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getRecipientSharePermissionsResponsePb sharingpb.GetRecipientSharePermissionsResponsePb
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v/share-permissions", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getRecipientSharePermissionsResponse)
-	return &getRecipientSharePermissionsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getRecipientSharePermissionsResponsePb,
+	)
+	resp, err := GetRecipientSharePermissionsResponseFromPb(&getRecipientSharePermissionsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) (*RecipientInfo, error) {
-	var recipientInfo RecipientInfo
+	requestPb, pbErr := UpdateRecipientToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var recipientInfoPb sharingpb.RecipientInfoPb
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &recipientInfo)
-	return &recipientInfo, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&recipientInfoPb,
+	)
+	resp, err := RecipientInfoFromPb(&recipientInfoPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just Shares API methods
@@ -403,32 +757,79 @@ type sharesImpl struct {
 }
 
 func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*ShareInfo, error) {
-	var shareInfo ShareInfo
+	requestPb, pbErr := CreateShareToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var shareInfoPb sharingpb.ShareInfoPb
 	path := "/api/2.1/unity-catalog/shares"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &shareInfo)
-	return &shareInfo, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&shareInfoPb,
+	)
+	resp, err := ShareInfoFromPb(&shareInfoPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) error {
+	requestPb, pbErr := DeleteShareRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		nil,
+	)
+
 	return err
 }
 
 func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*ShareInfo, error) {
-	var shareInfo ShareInfo
+	requestPb, pbErr := GetShareRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var shareInfoPb sharingpb.ShareInfoPb
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &shareInfo)
-	return &shareInfo, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&shareInfoPb,
+	)
+	resp, err := ShareInfoFromPb(&shareInfoPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets an array of data object shares from the metastore. The caller must be a
@@ -469,43 +870,114 @@ func (a *sharesImpl) ListAll(ctx context.Context, request ListSharesRequest) ([]
 }
 
 func (a *sharesImpl) internalList(ctx context.Context, request ListSharesRequest) (*ListSharesResponse, error) {
-	var listSharesResponse ListSharesResponse
+	requestPb, pbErr := ListSharesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listSharesResponsePb sharingpb.ListSharesResponsePb
 	path := "/api/2.1/unity-catalog/shares"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSharesResponse)
-	return &listSharesResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&listSharesResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListSharesResponseFromPb(&listSharesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetSharePermissionsResponse, error) {
-	var getSharePermissionsResponse GetSharePermissionsResponse
+	requestPb, pbErr := SharePermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getSharePermissionsResponsePb sharingpb.GetSharePermissionsResponsePb
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getSharePermissionsResponse)
-	return &getSharePermissionsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&getSharePermissionsResponsePb,
+	)
+	resp, err := GetSharePermissionsResponseFromPb(&getSharePermissionsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInfo, error) {
-	var shareInfo ShareInfo
+	requestPb, pbErr := UpdateShareToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var shareInfoPb sharingpb.ShareInfoPb
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &shareInfo)
-	return &shareInfo, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&shareInfoPb,
+	)
+	resp, err := ShareInfoFromPb(&shareInfoPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateSharePermissions) (*UpdateSharePermissionsResponse, error) {
-	var updateSharePermissionsResponse UpdateSharePermissionsResponse
+	requestPb, pbErr := UpdateSharePermissionsToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var updateSharePermissionsResponsePb sharingpb.UpdateSharePermissionsResponsePb
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v/permissions", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateSharePermissionsResponse)
-	return &updateSharePermissionsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		requestPb,
+		&updateSharePermissionsResponsePb,
+	)
+	resp, err := UpdateSharePermissionsResponseFromPb(&updateSharePermissionsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }

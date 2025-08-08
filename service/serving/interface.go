@@ -76,7 +76,7 @@ type ServingEndpointsService interface {
 	// supported; agent endpoints currently only support inference tables.
 	PutAiGateway(ctx context.Context, request PutAiGatewayRequest) (*PutAiGatewayResponse, error)
 
-	// Query a serving endpoint
+	// Query a serving endpoint.
 	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
 
 	// Sets permissions on an object, replacing existing permissions if they
@@ -107,6 +107,6 @@ type ServingEndpointsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ServingEndpointsDataPlaneService interface {
 
-	// Query a serving endpoint
+	// Query a serving endpoint.
 	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
 }
