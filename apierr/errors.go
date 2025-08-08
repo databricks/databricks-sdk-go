@@ -28,7 +28,10 @@ type APIError struct {
 	Message    string
 	StatusCode int
 
-	// ResponseWrapper contains request/response for the error
+	// ResponseWrapper contains request/response for the error.
+	//
+	// EXPERIMENTAL INTERNAL: This field is experimental and meant for internal
+	// use only. It will change or be removed in the future.
 	ResponseWrapper *common.ResponseWrapper
 
 	errorDetails ErrorDetails
