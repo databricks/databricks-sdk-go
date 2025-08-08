@@ -16,20 +16,20 @@ type AuthorizationDetails struct {
 	// Represents downscoped permission rules with specific access rights. This
 	// field is specific to `workspace_rule_set` constraint.
 	// Wire name: 'grant_rules'
-	GrantRules []AuthorizationDetailsGrantRule ``
+	GrantRules []AuthorizationDetailsGrantRule `json:"grant_rules,omitempty"`
 	// The acl path of the tree store resource resource.
 	// Wire name: 'resource_legacy_acl_path'
-	ResourceLegacyAclPath string ``
+	ResourceLegacyAclPath string `json:"resource_legacy_acl_path,omitempty"`
 	// The resource name to which the authorization rule applies. This field is
 	// specific to `workspace_rule_set` constraint. Format:
 	// `workspaces/{workspace_id}/dashboards/{dashboard_id}`
 	// Wire name: 'resource_name'
-	ResourceName string ``
+	ResourceName string `json:"resource_name,omitempty"`
 	// The type of authorization downscoping policy. Ex: `workspace_rule_set`
 	// defines access rules for a specific workspace resource
 	// Wire name: 'type'
-	Type            string   ``
-	ForceSendFields []string `tf:"-"`
+	Type            string   `json:"type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AuthorizationDetails) MarshalJSON() ([]byte, error) {
@@ -116,8 +116,8 @@ type AuthorizationDetailsGrantRule struct {
 	// iam-common/rbac-common/permission-sets/definitions/TreeStoreBasePermissionSets
 	// Ex: `permissionSets/dashboard.runner`
 	// Wire name: 'permission_set'
-	PermissionSet   string   ``
-	ForceSendFields []string `tf:"-"`
+	PermissionSet   string   `json:"permission_set,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AuthorizationDetailsGrantRule) MarshalJSON() ([]byte, error) {
@@ -174,7 +174,7 @@ func AuthorizationDetailsGrantRuleFromPb(pb *dashboardspb.AuthorizationDetailsGr
 type CreateDashboardRequest struct {
 
 	// Wire name: 'dashboard'
-	Dashboard Dashboard ``
+	Dashboard Dashboard `json:"dashboard"`
 }
 
 func (st CreateDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -236,11 +236,10 @@ func CreateDashboardRequestFromPb(pb *dashboardspb.CreateDashboardRequestPb) (*C
 
 type CreateScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 	// The schedule to create. A dashboard is limited to 10 schedules.
 	// Wire name: 'schedule'
-	Schedule Schedule ``
+	Schedule Schedule `json:"schedule"`
 }
 
 func (st CreateScheduleRequest) MarshalJSON() ([]byte, error) {
@@ -304,14 +303,12 @@ func CreateScheduleRequestFromPb(pb *dashboardspb.CreateScheduleRequestPb) (*Cre
 
 type CreateSubscriptionRequest struct {
 	// UUID identifying the dashboard to which the subscription belongs.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 	// UUID identifying the schedule to which the subscription belongs.
-	// Wire name: 'schedule_id'
-	ScheduleId string `tf:"-"`
+	ScheduleId string `json:"-" tf:"-"`
 	// The subscription to create. A schedule is limited to 100 subscriptions.
 	// Wire name: 'subscription'
-	Subscription Subscription ``
+	Subscription Subscription `json:"subscription"`
 }
 
 func (st CreateSubscriptionRequest) MarshalJSON() ([]byte, error) {
@@ -381,13 +378,13 @@ type CronSchedule struct {
 	//
 	// [Cron Trigger]: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
 	// Wire name: 'quartz_cron_expression'
-	QuartzCronExpression string ``
+	QuartzCronExpression string `json:"quartz_cron_expression"`
 	// A Java timezone id. The schedule will be resolved with respect to this
 	// timezone. See [Java TimeZone] for details.
 	//
 	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
 	// Wire name: 'timezone_id'
-	TimezoneId string ``
+	TimezoneId string `json:"timezone_id"`
 }
 
 func (st CronSchedule) MarshalJSON() ([]byte, error) {
@@ -440,31 +437,31 @@ func CronScheduleFromPb(pb *dashboardspb.CronSchedulePb) (*CronSchedule, error) 
 type Dashboard struct {
 	// The timestamp of when the dashboard was created.
 	// Wire name: 'create_time'
-	CreateTime string `` //legacy
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// UUID identifying the dashboard.
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id,omitempty"`
 	// The display name of the dashboard.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// The etag for the dashboard. Can be optionally provided on updates to
 	// ensure that the dashboard has not been modified since the last read. This
 	// field is excluded in List Dashboards responses.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// The state of the dashboard resource. Used for tracking trashed status.
 	// Wire name: 'lifecycle_state'
-	LifecycleState LifecycleState ``
+	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
 	// The workspace path of the folder containing the dashboard. Includes
 	// leading slash and no trailing slash. This field is excluded in List
 	// Dashboards responses.
 	// Wire name: 'parent_path'
-	ParentPath string ``
+	ParentPath string `json:"parent_path,omitempty"`
 	// The workspace path of the dashboard asset, including the file name.
 	// Exported dashboards always have the file extension `.lvdash.json`. This
 	// field is excluded in List Dashboards responses.
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path,omitempty"`
 	// The contents of the dashboard in serialized string form. This field is
 	// excluded in List Dashboards responses. Use the [get dashboard API] to
 	// retrieve an example response, which includes the `serialized_dashboard`
@@ -473,15 +470,15 @@ type Dashboard struct {
 	//
 	// [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
 	// Wire name: 'serialized_dashboard'
-	SerializedDashboard string ``
+	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
 	// The timestamp of when the dashboard was last updated by the user. This
 	// field is excluded in List Dashboards responses.
 	// Wire name: 'update_time'
-	UpdateTime string `` //legacy
+	UpdateTime string `json:"update_time,omitempty"` //legacy
 	// The warehouse ID used to run the dashboard.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Dashboard) MarshalJSON() ([]byte, error) {
@@ -617,16 +614,13 @@ func DashboardViewFromPb(pb *dashboardspb.DashboardViewPb) (*DashboardView, erro
 
 type DeleteScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 	// The etag for the schedule. Optionally, it can be provided to verify that
 	// the schedule has not been modified from its last retrieval.
-	// Wire name: 'etag'
-	Etag string `tf:"-"`
+	Etag string `json:"-" tf:"-"`
 	// UUID identifying the schedule.
-	// Wire name: 'schedule_id'
-	ScheduleId      string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	ScheduleId      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteScheduleRequest) MarshalJSON() ([]byte, error) {
@@ -686,19 +680,15 @@ func DeleteScheduleRequestFromPb(pb *dashboardspb.DeleteScheduleRequestPb) (*Del
 
 type DeleteSubscriptionRequest struct {
 	// UUID identifying the dashboard which the subscription belongs.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 	// The etag for the subscription. Can be optionally provided to ensure that
 	// the subscription has not been modified since the last read.
-	// Wire name: 'etag'
-	Etag string `tf:"-"`
+	Etag string `json:"-" tf:"-"`
 	// UUID identifying the schedule which the subscription belongs.
-	// Wire name: 'schedule_id'
-	ScheduleId string `tf:"-"`
+	ScheduleId string `json:"-" tf:"-"`
 	// UUID identifying the subscription.
-	// Wire name: 'subscription_id'
-	SubscriptionId  string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	SubscriptionId  string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
@@ -762,14 +752,14 @@ func DeleteSubscriptionRequestFromPb(pb *dashboardspb.DeleteSubscriptionRequestP
 type GenieAttachment struct {
 	// Attachment ID
 	// Wire name: 'attachment_id'
-	AttachmentId string ``
+	AttachmentId string `json:"attachment_id,omitempty"`
 	// Query Attachment if Genie responds with a SQL query
 	// Wire name: 'query'
-	Query *GenieQueryAttachment ``
+	Query *GenieQueryAttachment `json:"query,omitempty"`
 	// Text Attachment if Genie responds with text
 	// Wire name: 'text'
-	Text            *TextAttachment ``
-	ForceSendFields []string        `tf:"-"`
+	Text            *TextAttachment `json:"text,omitempty"`
+	ForceSendFields []string        `json:"-" tf:"-"`
 }
 
 func (st GenieAttachment) MarshalJSON() ([]byte, error) {
@@ -854,26 +844,26 @@ func GenieAttachmentFromPb(pb *dashboardspb.GenieAttachmentPb) (*GenieAttachment
 type GenieConversation struct {
 	// Conversation ID
 	// Wire name: 'conversation_id'
-	ConversationId string ``
+	ConversationId string `json:"conversation_id"`
 	// Timestamp when the message was created
 	// Wire name: 'created_timestamp'
-	CreatedTimestamp int64 ``
+	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
 	// Conversation ID. Legacy identifier, use conversation_id instead
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id"`
 	// Timestamp when the message was last updated
 	// Wire name: 'last_updated_timestamp'
-	LastUpdatedTimestamp int64 ``
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Genie space ID
 	// Wire name: 'space_id'
-	SpaceId string ``
+	SpaceId string `json:"space_id"`
 	// Conversation title
 	// Wire name: 'title'
-	Title string ``
+	Title string `json:"title"`
 	// ID of the user who created the conversation
 	// Wire name: 'user_id'
-	UserId          int      ``
-	ForceSendFields []string `tf:"-"`
+	UserId          int      `json:"user_id"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GenieConversation) MarshalJSON() ([]byte, error) {
@@ -942,13 +932,13 @@ func GenieConversationFromPb(pb *dashboardspb.GenieConversationPb) (*GenieConver
 type GenieConversationSummary struct {
 
 	// Wire name: 'conversation_id'
-	ConversationId string ``
+	ConversationId string `json:"conversation_id"`
 
 	// Wire name: 'created_timestamp'
-	CreatedTimestamp int64 ``
+	CreatedTimestamp int64 `json:"created_timestamp"`
 
 	// Wire name: 'title'
-	Title string ``
+	Title string `json:"title"`
 }
 
 func (st GenieConversationSummary) MarshalJSON() ([]byte, error) {
@@ -1003,13 +993,11 @@ func GenieConversationSummaryFromPb(pb *dashboardspb.GenieConversationSummaryPb)
 type GenieCreateConversationMessageRequest struct {
 	// User message content.
 	// Wire name: 'content'
-	Content string ``
+	Content string `json:"content"`
 	// The ID associated with the conversation.
-	// Wire name: 'conversation_id'
-	ConversationId string `tf:"-"`
+	ConversationId string `json:"-" tf:"-"`
 	// The ID associated with the Genie space where the conversation is started.
-	// Wire name: 'space_id'
-	SpaceId string `tf:"-"`
+	SpaceId string `json:"-" tf:"-"`
 }
 
 func (st GenieCreateConversationMessageRequest) MarshalJSON() ([]byte, error) {
@@ -1063,11 +1051,9 @@ func GenieCreateConversationMessageRequestFromPb(pb *dashboardspb.GenieCreateCon
 
 type GenieDeleteConversationRequest struct {
 	// The ID of the conversation to delete.
-	// Wire name: 'conversation_id'
-	ConversationId string `tf:"-"`
+	ConversationId string `json:"-" tf:"-"`
 	// The ID associated with the Genie space where the conversation is located.
-	// Wire name: 'space_id'
-	SpaceId string `tf:"-"`
+	SpaceId string `json:"-" tf:"-"`
 }
 
 func (st GenieDeleteConversationRequest) MarshalJSON() ([]byte, error) {
@@ -1119,17 +1105,13 @@ func GenieDeleteConversationRequestFromPb(pb *dashboardspb.GenieDeleteConversati
 
 type GenieExecuteMessageAttachmentQueryRequest struct {
 	// Attachment ID
-	// Wire name: 'attachment_id'
-	AttachmentId string `tf:"-"`
+	AttachmentId string `json:"-" tf:"-"`
 	// Conversation ID
-	// Wire name: 'conversation_id'
-	ConversationId string `tf:"-"`
+	ConversationId string `json:"-" tf:"-"`
 	// Message ID
-	// Wire name: 'message_id'
-	MessageId string `tf:"-"`
+	MessageId string `json:"-" tf:"-"`
 	// Genie space ID
-	// Wire name: 'space_id'
-	SpaceId string `tf:"-"`
+	SpaceId string `json:"-" tf:"-"`
 }
 
 func (st GenieExecuteMessageAttachmentQueryRequest) MarshalJSON() ([]byte, error) {
@@ -1185,14 +1167,11 @@ func GenieExecuteMessageAttachmentQueryRequestFromPb(pb *dashboardspb.GenieExecu
 
 type GenieExecuteMessageQueryRequest struct {
 	// Conversation ID
-	// Wire name: 'conversation_id'
-	ConversationId string `tf:"-"`
+	ConversationId string `json:"-" tf:"-"`
 	// Message ID
-	// Wire name: 'message_id'
-	MessageId string `tf:"-"`
+	MessageId string `json:"-" tf:"-"`
 	// Genie space ID
-	// Wire name: 'space_id'
-	SpaceId string `tf:"-"`
+	SpaceId string `json:"-" tf:"-"`
 }
 
 func (st GenieExecuteMessageQueryRequest) MarshalJSON() ([]byte, error) {
@@ -1246,16 +1225,13 @@ func GenieExecuteMessageQueryRequestFromPb(pb *dashboardspb.GenieExecuteMessageQ
 
 type GenieGetConversationMessageRequest struct {
 	// The ID associated with the target conversation.
-	// Wire name: 'conversation_id'
-	ConversationId string `tf:"-"`
+	ConversationId string `json:"-" tf:"-"`
 	// The ID associated with the target message from the identified
 	// conversation.
-	// Wire name: 'message_id'
-	MessageId string `tf:"-"`
+	MessageId string `json:"-" tf:"-"`
 	// The ID associated with the Genie space where the target conversation is
 	// located.
-	// Wire name: 'space_id'
-	SpaceId string `tf:"-"`
+	SpaceId string `json:"-" tf:"-"`
 }
 
 func (st GenieGetConversationMessageRequest) MarshalJSON() ([]byte, error) {
@@ -1309,17 +1285,13 @@ func GenieGetConversationMessageRequestFromPb(pb *dashboardspb.GenieGetConversat
 
 type GenieGetMessageAttachmentQueryResultRequest struct {
 	// Attachment ID
-	// Wire name: 'attachment_id'
-	AttachmentId string `tf:"-"`
+	AttachmentId string `json:"-" tf:"-"`
 	// Conversation ID
-	// Wire name: 'conversation_id'
-	ConversationId string `tf:"-"`
+	ConversationId string `json:"-" tf:"-"`
 	// Message ID
-	// Wire name: 'message_id'
-	MessageId string `tf:"-"`
+	MessageId string `json:"-" tf:"-"`
 	// Genie space ID
-	// Wire name: 'space_id'
-	SpaceId string `tf:"-"`
+	SpaceId string `json:"-" tf:"-"`
 }
 
 func (st GenieGetMessageAttachmentQueryResultRequest) MarshalJSON() ([]byte, error) {
@@ -1375,14 +1347,11 @@ func GenieGetMessageAttachmentQueryResultRequestFromPb(pb *dashboardspb.GenieGet
 
 type GenieGetMessageQueryResultRequest struct {
 	// Conversation ID
-	// Wire name: 'conversation_id'
-	ConversationId string `tf:"-"`
+	ConversationId string `json:"-" tf:"-"`
 	// Message ID
-	// Wire name: 'message_id'
-	MessageId string `tf:"-"`
+	MessageId string `json:"-" tf:"-"`
 	// Genie space ID
-	// Wire name: 'space_id'
-	SpaceId string `tf:"-"`
+	SpaceId string `json:"-" tf:"-"`
 }
 
 func (st GenieGetMessageQueryResultRequest) MarshalJSON() ([]byte, error) {
@@ -1438,7 +1407,7 @@ type GenieGetMessageQueryResultResponse struct {
 	// SQL Statement Execution response. See [Get status, manifest, and result
 	// first chunk](:method:statementexecution/getstatement) for more details.
 	// Wire name: 'statement_response'
-	StatementResponse *sql.StatementResponse ``
+	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
 }
 
 func (st GenieGetMessageQueryResultResponse) MarshalJSON() ([]byte, error) {
@@ -1500,17 +1469,13 @@ func GenieGetMessageQueryResultResponseFromPb(pb *dashboardspb.GenieGetMessageQu
 
 type GenieGetQueryResultByAttachmentRequest struct {
 	// Attachment ID
-	// Wire name: 'attachment_id'
-	AttachmentId string `tf:"-"`
+	AttachmentId string `json:"-" tf:"-"`
 	// Conversation ID
-	// Wire name: 'conversation_id'
-	ConversationId string `tf:"-"`
+	ConversationId string `json:"-" tf:"-"`
 	// Message ID
-	// Wire name: 'message_id'
-	MessageId string `tf:"-"`
+	MessageId string `json:"-" tf:"-"`
 	// Genie space ID
-	// Wire name: 'space_id'
-	SpaceId string `tf:"-"`
+	SpaceId string `json:"-" tf:"-"`
 }
 
 func (st GenieGetQueryResultByAttachmentRequest) MarshalJSON() ([]byte, error) {
@@ -1566,8 +1531,7 @@ func GenieGetQueryResultByAttachmentRequestFromPb(pb *dashboardspb.GenieGetQuery
 
 type GenieGetSpaceRequest struct {
 	// The ID associated with the Genie space
-	// Wire name: 'space_id'
-	SpaceId string `tf:"-"`
+	SpaceId string `json:"-" tf:"-"`
 }
 
 func (st GenieGetSpaceRequest) MarshalJSON() ([]byte, error) {
@@ -1617,15 +1581,12 @@ func GenieGetSpaceRequestFromPb(pb *dashboardspb.GenieGetSpaceRequestPb) (*Genie
 
 type GenieListConversationsRequest struct {
 	// Maximum number of conversations to return per page
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Token to get the next page of results
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// The ID of the Genie space to retrieve conversations from.
-	// Wire name: 'space_id'
-	SpaceId         string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	SpaceId         string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GenieListConversationsRequest) MarshalJSON() ([]byte, error) {
@@ -1686,11 +1647,11 @@ func GenieListConversationsRequestFromPb(pb *dashboardspb.GenieListConversations
 type GenieListConversationsResponse struct {
 	// List of conversations in the Genie space
 	// Wire name: 'conversations'
-	Conversations []GenieConversationSummary ``
+	Conversations []GenieConversationSummary `json:"conversations,omitempty"`
 	// Token to get the next page of results
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GenieListConversationsResponse) MarshalJSON() ([]byte, error) {
@@ -1770,12 +1731,10 @@ func GenieListConversationsResponseFromPb(pb *dashboardspb.GenieListConversation
 
 type GenieListSpacesRequest struct {
 	// Maximum number of spaces to return per page
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Pagination token for getting the next page of results
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GenieListSpacesRequest) MarshalJSON() ([]byte, error) {
@@ -1834,11 +1793,11 @@ func GenieListSpacesRequestFromPb(pb *dashboardspb.GenieListSpacesRequestPb) (*G
 type GenieListSpacesResponse struct {
 	// Token to get the next page of results
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// List of Genie spaces
 	// Wire name: 'spaces'
-	Spaces          []GenieSpace ``
-	ForceSendFields []string     `tf:"-"`
+	Spaces          []GenieSpace `json:"spaces,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
 func (st GenieListSpacesResponse) MarshalJSON() ([]byte, error) {
@@ -1919,43 +1878,43 @@ func GenieListSpacesResponseFromPb(pb *dashboardspb.GenieListSpacesResponsePb) (
 type GenieMessage struct {
 	// AI-generated response to the message
 	// Wire name: 'attachments'
-	Attachments []GenieAttachment ``
+	Attachments []GenieAttachment `json:"attachments,omitempty"`
 	// User message content
 	// Wire name: 'content'
-	Content string ``
+	Content string `json:"content"`
 	// Conversation ID
 	// Wire name: 'conversation_id'
-	ConversationId string ``
+	ConversationId string `json:"conversation_id"`
 	// Timestamp when the message was created
 	// Wire name: 'created_timestamp'
-	CreatedTimestamp int64 ``
+	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
 	// Error message if Genie failed to respond to the message
 	// Wire name: 'error'
-	Error *MessageError ``
+	Error *MessageError `json:"error,omitempty"`
 	// Message ID. Legacy identifier, use message_id instead
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id"`
 	// Timestamp when the message was last updated
 	// Wire name: 'last_updated_timestamp'
-	LastUpdatedTimestamp int64 ``
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Message ID
 	// Wire name: 'message_id'
-	MessageId string ``
+	MessageId string `json:"message_id"`
 	// The result of SQL query if the message includes a query attachment.
 	// Deprecated. Use `query_result_metadata` in `GenieQueryAttachment`
 	// instead.
 	// Wire name: 'query_result'
-	QueryResult *Result ``
+	QueryResult *Result `json:"query_result,omitempty"`
 	// Genie space ID
 	// Wire name: 'space_id'
-	SpaceId string ``
+	SpaceId string `json:"space_id"`
 
 	// Wire name: 'status'
-	Status MessageStatus ``
+	Status MessageStatus `json:"status,omitempty"`
 	// ID of the user who created the message
 	// Wire name: 'user_id'
-	UserId          int64    ``
-	ForceSendFields []string `tf:"-"`
+	UserId          int64    `json:"user_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GenieMessage) MarshalJSON() ([]byte, error) {
@@ -2092,28 +2051,28 @@ func GenieMessageFromPb(pb *dashboardspb.GenieMessagePb) (*GenieMessage, error) 
 type GenieQueryAttachment struct {
 	// Description of the query
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Time when the user updated the query last
 	// Wire name: 'last_updated_timestamp'
-	LastUpdatedTimestamp int64 ``
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// AI generated SQL query
 	// Wire name: 'query'
-	Query string ``
+	Query string `json:"query,omitempty"`
 	// Metadata associated with the query result.
 	// Wire name: 'query_result_metadata'
-	QueryResultMetadata *GenieResultMetadata ``
+	QueryResultMetadata *GenieResultMetadata `json:"query_result_metadata,omitempty"`
 	// Statement Execution API statement id. Use [Get status, manifest, and
 	// result first chunk](:method:statementexecution/getstatement) to get the
 	// full result data.
 	// Wire name: 'statement_id'
-	StatementId string ``
+	StatementId string `json:"statement_id,omitempty"`
 	// Name of the query
 	// Wire name: 'title'
-	Title           string   ``
-	ForceSendFields []string `tf:"-"`
+	Title           string   `json:"title,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GenieQueryAttachment) MarshalJSON() ([]byte, error) {
@@ -2194,11 +2153,11 @@ func GenieQueryAttachmentFromPb(pb *dashboardspb.GenieQueryAttachmentPb) (*Genie
 type GenieResultMetadata struct {
 	// Indicates whether the result set is truncated.
 	// Wire name: 'is_truncated'
-	IsTruncated bool ``
+	IsTruncated bool `json:"is_truncated,omitempty"`
 	// The number of rows in the result set.
 	// Wire name: 'row_count'
-	RowCount        int64    ``
-	ForceSendFields []string `tf:"-"`
+	RowCount        int64    `json:"row_count,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GenieResultMetadata) MarshalJSON() ([]byte, error) {
@@ -2257,14 +2216,14 @@ func GenieResultMetadataFromPb(pb *dashboardspb.GenieResultMetadataPb) (*GenieRe
 type GenieSpace struct {
 	// Description of the Genie Space
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Genie space ID
 	// Wire name: 'space_id'
-	SpaceId string ``
+	SpaceId string `json:"space_id"`
 	// Title of the Genie Space
 	// Wire name: 'title'
-	Title           string   ``
-	ForceSendFields []string `tf:"-"`
+	Title           string   `json:"title"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GenieSpace) MarshalJSON() ([]byte, error) {
@@ -2325,11 +2284,10 @@ func GenieSpaceFromPb(pb *dashboardspb.GenieSpacePb) (*GenieSpace, error) {
 type GenieStartConversationMessageRequest struct {
 	// The text of the message that starts the conversation.
 	// Wire name: 'content'
-	Content string ``
+	Content string `json:"content"`
 	// The ID associated with the Genie space where you want to start a
 	// conversation.
-	// Wire name: 'space_id'
-	SpaceId string `tf:"-"`
+	SpaceId string `json:"-" tf:"-"`
 }
 
 func (st GenieStartConversationMessageRequest) MarshalJSON() ([]byte, error) {
@@ -2382,16 +2340,16 @@ func GenieStartConversationMessageRequestFromPb(pb *dashboardspb.GenieStartConve
 type GenieStartConversationResponse struct {
 
 	// Wire name: 'conversation'
-	Conversation *GenieConversation ``
+	Conversation *GenieConversation `json:"conversation,omitempty"`
 	// Conversation ID
 	// Wire name: 'conversation_id'
-	ConversationId string ``
+	ConversationId string `json:"conversation_id"`
 
 	// Wire name: 'message'
-	Message *GenieMessage ``
+	Message *GenieMessage `json:"message,omitempty"`
 	// Message ID
 	// Wire name: 'message_id'
-	MessageId string ``
+	MessageId string `json:"message_id"`
 }
 
 func (st GenieStartConversationResponse) MarshalJSON() ([]byte, error) {
@@ -2471,8 +2429,7 @@ func GenieStartConversationResponseFromPb(pb *dashboardspb.GenieStartConversatio
 
 type GenieTrashSpaceRequest struct {
 	// The ID associated with the Genie space to be sent to the trash.
-	// Wire name: 'space_id'
-	SpaceId string `tf:"-"`
+	SpaceId string `json:"-" tf:"-"`
 }
 
 func (st GenieTrashSpaceRequest) MarshalJSON() ([]byte, error) {
@@ -2522,8 +2479,7 @@ func GenieTrashSpaceRequestFromPb(pb *dashboardspb.GenieTrashSpaceRequestPb) (*G
 
 type GetDashboardRequest struct {
 	// UUID identifying the dashboard.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 }
 
 func (st GetDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -2573,8 +2529,7 @@ func GetDashboardRequestFromPb(pb *dashboardspb.GetDashboardRequestPb) (*GetDash
 
 type GetPublishedDashboardRequest struct {
 	// UUID identifying the published dashboard.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 }
 
 func (st GetPublishedDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -2624,15 +2579,12 @@ func GetPublishedDashboardRequestFromPb(pb *dashboardspb.GetPublishedDashboardRe
 
 type GetPublishedDashboardTokenInfoRequest struct {
 	// UUID identifying the published dashboard.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 	// Provided external value to be included in the custom claim.
-	// Wire name: 'external_value'
-	ExternalValue string `tf:"-"`
+	ExternalValue string `json:"-" tf:"-"`
 	// Provided external viewer id to be included in the custom claim.
-	// Wire name: 'external_viewer_id'
-	ExternalViewerId string   `tf:"-"`
-	ForceSendFields  []string `tf:"-"`
+	ExternalViewerId string   `json:"-" tf:"-"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st GetPublishedDashboardTokenInfoRequest) MarshalJSON() ([]byte, error) {
@@ -2695,16 +2647,16 @@ type GetPublishedDashboardTokenInfoResponse struct {
 	// Currently includes `workspace_rule_set` and could be enriched with
 	// `unity_catalog_privileges` before oAuth token generation.
 	// Wire name: 'authorization_details'
-	AuthorizationDetails []AuthorizationDetails ``
+	AuthorizationDetails []AuthorizationDetails `json:"authorization_details,omitempty"`
 	// Custom claim generated from external_value and external_viewer_id.
 	// Format:
 	// `urn:aibi:external_data:<external_value>:<external_viewer_id>:<dashboard_id>`
 	// Wire name: 'custom_claim'
-	CustomClaim string ``
+	CustomClaim string `json:"custom_claim,omitempty"`
 	// Scope defining access permissions.
 	// Wire name: 'scope'
-	Scope           string   ``
-	ForceSendFields []string `tf:"-"`
+	Scope           string   `json:"scope,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetPublishedDashboardTokenInfoResponse) MarshalJSON() ([]byte, error) {
@@ -2786,11 +2738,9 @@ func GetPublishedDashboardTokenInfoResponseFromPb(pb *dashboardspb.GetPublishedD
 
 type GetScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 	// UUID identifying the schedule.
-	// Wire name: 'schedule_id'
-	ScheduleId string `tf:"-"`
+	ScheduleId string `json:"-" tf:"-"`
 }
 
 func (st GetScheduleRequest) MarshalJSON() ([]byte, error) {
@@ -2842,14 +2792,11 @@ func GetScheduleRequestFromPb(pb *dashboardspb.GetScheduleRequestPb) (*GetSchedu
 
 type GetSubscriptionRequest struct {
 	// UUID identifying the dashboard which the subscription belongs.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 	// UUID identifying the schedule which the subscription belongs.
-	// Wire name: 'schedule_id'
-	ScheduleId string `tf:"-"`
+	ScheduleId string `json:"-" tf:"-"`
 	// UUID identifying the subscription.
-	// Wire name: 'subscription_id'
-	SubscriptionId string `tf:"-"`
+	SubscriptionId string `json:"-" tf:"-"`
 }
 
 func (st GetSubscriptionRequest) MarshalJSON() ([]byte, error) {
@@ -2956,20 +2903,16 @@ func LifecycleStateFromPb(pb *dashboardspb.LifecycleStatePb) (*LifecycleState, e
 
 type ListDashboardsRequest struct {
 	// The number of dashboards to return per page.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// A page token, received from a previous `ListDashboards` call. This token
 	// can be used to retrieve the subsequent page.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// The flag to include dashboards located in the trash. If unspecified, only
 	// active dashboards will be returned.
-	// Wire name: 'show_trashed'
-	ShowTrashed bool `tf:"-"`
+	ShowTrashed bool `json:"-" tf:"-"`
 	// `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.
-	// Wire name: 'view'
-	View            DashboardView `tf:"-"`
-	ForceSendFields []string      `tf:"-"`
+	View            DashboardView `json:"-" tf:"-"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st ListDashboardsRequest) MarshalJSON() ([]byte, error) {
@@ -3044,12 +2987,12 @@ func ListDashboardsRequestFromPb(pb *dashboardspb.ListDashboardsRequestPb) (*Lis
 type ListDashboardsResponse struct {
 
 	// Wire name: 'dashboards'
-	Dashboards []Dashboard ``
+	Dashboards []Dashboard `json:"dashboards,omitempty"`
 	// A token, which can be sent as `page_token` to retrieve the next page. If
 	// this field is omitted, there are no subsequent dashboards.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListDashboardsResponse) MarshalJSON() ([]byte, error) {
@@ -3129,16 +3072,13 @@ func ListDashboardsResponseFromPb(pb *dashboardspb.ListDashboardsResponsePb) (*L
 
 type ListSchedulesRequest struct {
 	// UUID identifying the dashboard to which the schedules belongs.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 	// The number of schedules to return per page.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// A page token, received from a previous `ListSchedules` call. Use this to
 	// retrieve the subsequent page.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListSchedulesRequest) MarshalJSON() ([]byte, error) {
@@ -3201,11 +3141,11 @@ type ListSchedulesResponse struct {
 	// retrieve the next page of results. If this field is omitted, there are no
 	// subsequent schedules.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'schedules'
-	Schedules       []Schedule ``
-	ForceSendFields []string   `tf:"-"`
+	Schedules       []Schedule `json:"schedules,omitempty"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
 func (st ListSchedulesResponse) MarshalJSON() ([]byte, error) {
@@ -3285,19 +3225,15 @@ func ListSchedulesResponseFromPb(pb *dashboardspb.ListSchedulesResponsePb) (*Lis
 
 type ListSubscriptionsRequest struct {
 	// UUID identifying the dashboard which the subscriptions belongs.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 	// The number of subscriptions to return per page.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// A page token, received from a previous `ListSubscriptions` call. Use this
 	// to retrieve the subsequent page.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// UUID identifying the schedule which the subscriptions belongs.
-	// Wire name: 'schedule_id'
-	ScheduleId      string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	ScheduleId      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListSubscriptionsRequest) MarshalJSON() ([]byte, error) {
@@ -3362,11 +3298,11 @@ type ListSubscriptionsResponse struct {
 	// retrieve the next page of results. If this field is omitted, there are no
 	// subsequent subscriptions.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'subscriptions'
-	Subscriptions   []Subscription ``
-	ForceSendFields []string       `tf:"-"`
+	Subscriptions   []Subscription `json:"subscriptions,omitempty"`
+	ForceSendFields []string       `json:"-" tf:"-"`
 }
 
 func (st ListSubscriptionsResponse) MarshalJSON() ([]byte, error) {
@@ -3447,11 +3383,11 @@ func ListSubscriptionsResponseFromPb(pb *dashboardspb.ListSubscriptionsResponseP
 type MessageError struct {
 
 	// Wire name: 'error'
-	Error string ``
+	Error string `json:"error,omitempty"`
 
 	// Wire name: 'type'
-	Type            MessageErrorType ``
-	ForceSendFields []string         `tf:"-"`
+	Type            MessageErrorType `json:"type,omitempty"`
+	ForceSendFields []string         `json:"-" tf:"-"`
 }
 
 func (st MessageError) MarshalJSON() ([]byte, error) {
@@ -3839,20 +3775,20 @@ func MessageStatusFromPb(pb *dashboardspb.MessageStatusPb) (*MessageStatus, erro
 type MigrateDashboardRequest struct {
 	// Display name for the new Lakeview dashboard.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// The workspace path of the folder to contain the migrated Lakeview
 	// dashboard.
 	// Wire name: 'parent_path'
-	ParentPath string ``
+	ParentPath string `json:"parent_path,omitempty"`
 	// UUID of the dashboard to be migrated.
 	// Wire name: 'source_dashboard_id'
-	SourceDashboardId string ``
+	SourceDashboardId string `json:"source_dashboard_id"`
 	// Flag to indicate if mustache parameter syntax ({{ param }}) should be
 	// auto-updated to named syntax (:param) when converting datasets in the
 	// dashboard.
 	// Wire name: 'update_parameter_syntax'
-	UpdateParameterSyntax bool     ``
-	ForceSendFields       []string `tf:"-"`
+	UpdateParameterSyntax bool     `json:"update_parameter_syntax,omitempty"`
+	ForceSendFields       []string `json:"-" tf:"-"`
 }
 
 func (st MigrateDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -3914,18 +3850,17 @@ func MigrateDashboardRequestFromPb(pb *dashboardspb.MigrateDashboardRequestPb) (
 
 type PublishRequest struct {
 	// UUID identifying the dashboard to be published.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 	// Flag to indicate if the publisher's credentials should be embedded in the
 	// published dashboard. These embedded credentials will be used to execute
 	// the published dashboard's queries.
 	// Wire name: 'embed_credentials'
-	EmbedCredentials bool ``
+	EmbedCredentials bool `json:"embed_credentials,omitempty"`
 	// The ID of the warehouse that can be used to override the warehouse which
 	// was set in the draft.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PublishRequest) MarshalJSON() ([]byte, error) {
@@ -3986,17 +3921,17 @@ func PublishRequestFromPb(pb *dashboardspb.PublishRequestPb) (*PublishRequest, e
 type PublishedDashboard struct {
 	// The display name of the published dashboard.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// Indicates whether credentials are embedded in the published dashboard.
 	// Wire name: 'embed_credentials'
-	EmbedCredentials bool ``
+	EmbedCredentials bool `json:"embed_credentials,omitempty"`
 	// The timestamp of when the published dashboard was last revised.
 	// Wire name: 'revision_create_time'
-	RevisionCreateTime string `` //legacy
+	RevisionCreateTime string `json:"revision_create_time,omitempty"` //legacy
 	// The warehouse ID used to run the published dashboard.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PublishedDashboard) MarshalJSON() ([]byte, error) {
@@ -4059,16 +3994,16 @@ func PublishedDashboardFromPb(pb *dashboardspb.PublishedDashboardPb) (*Published
 type Result struct {
 	// If result is truncated
 	// Wire name: 'is_truncated'
-	IsTruncated bool ``
+	IsTruncated bool `json:"is_truncated,omitempty"`
 	// Row count of the result
 	// Wire name: 'row_count'
-	RowCount int64 ``
+	RowCount int64 `json:"row_count,omitempty"`
 	// Statement Execution API statement id. Use [Get status, manifest, and
 	// result first chunk](:method:statementexecution/getstatement) to get the
 	// full result data.
 	// Wire name: 'statement_id'
-	StatementId     string   ``
-	ForceSendFields []string `tf:"-"`
+	StatementId     string   `json:"statement_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Result) MarshalJSON() ([]byte, error) {
@@ -4129,35 +4064,35 @@ func ResultFromPb(pb *dashboardspb.ResultPb) (*Result, error) {
 type Schedule struct {
 	// A timestamp indicating when the schedule was created.
 	// Wire name: 'create_time'
-	CreateTime string `` //legacy
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// The cron expression describing the frequency of the periodic refresh for
 	// this schedule.
 	// Wire name: 'cron_schedule'
-	CronSchedule CronSchedule ``
+	CronSchedule CronSchedule `json:"cron_schedule"`
 	// UUID identifying the dashboard to which the schedule belongs.
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id,omitempty"`
 	// The display name for schedule.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// The etag for the schedule. Must be left empty on create, must be provided
 	// on updates to ensure that the schedule has not been modified since the
 	// last read, and can be optionally provided on delete.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// The status indicates whether this schedule is paused or not.
 	// Wire name: 'pause_status'
-	PauseStatus SchedulePauseStatus ``
+	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
 	// UUID identifying the schedule.
 	// Wire name: 'schedule_id'
-	ScheduleId string ``
+	ScheduleId string `json:"schedule_id,omitempty"`
 	// A timestamp indicating when the schedule was last updated.
 	// Wire name: 'update_time'
-	UpdateTime string `` //legacy
+	UpdateTime string `json:"update_time,omitempty"` //legacy
 	// The warehouse id to run the dashboard with for the schedule.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Schedule) MarshalJSON() ([]byte, error) {
@@ -4308,11 +4243,11 @@ type Subscriber struct {
 	// The destination to receive the subscription email. This parameter is
 	// mutually exclusive with `user_subscriber`.
 	// Wire name: 'destination_subscriber'
-	DestinationSubscriber *SubscriptionSubscriberDestination ``
+	DestinationSubscriber *SubscriptionSubscriberDestination `json:"destination_subscriber,omitempty"`
 	// The user to receive the subscription email. This parameter is mutually
 	// exclusive with `destination_subscriber`.
 	// Wire name: 'user_subscriber'
-	UserSubscriber *SubscriptionSubscriberUser ``
+	UserSubscriber *SubscriptionSubscriberUser `json:"user_subscriber,omitempty"`
 }
 
 func (st Subscriber) MarshalJSON() ([]byte, error) {
@@ -4389,33 +4324,33 @@ func SubscriberFromPb(pb *dashboardspb.SubscriberPb) (*Subscriber, error) {
 type Subscription struct {
 	// A timestamp indicating when the subscription was created.
 	// Wire name: 'create_time'
-	CreateTime string `` //legacy
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// UserId of the user who adds subscribers (users or notification
 	// destinations) to the dashboard's schedule.
 	// Wire name: 'created_by_user_id'
-	CreatedByUserId int64 ``
+	CreatedByUserId int64 `json:"created_by_user_id,omitempty"`
 	// UUID identifying the dashboard to which the subscription belongs.
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id,omitempty"`
 	// The etag for the subscription. Must be left empty on create, can be
 	// optionally provided on delete to ensure that the subscription has not
 	// been deleted since the last read.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// UUID identifying the schedule to which the subscription belongs.
 	// Wire name: 'schedule_id'
-	ScheduleId string ``
+	ScheduleId string `json:"schedule_id,omitempty"`
 	// Subscriber details for users and destinations to be added as subscribers
 	// to the schedule.
 	// Wire name: 'subscriber'
-	Subscriber Subscriber ``
+	Subscriber Subscriber `json:"subscriber"`
 	// UUID identifying the subscription.
 	// Wire name: 'subscription_id'
-	SubscriptionId string ``
+	SubscriptionId string `json:"subscription_id,omitempty"`
 	// A timestamp indicating when the subscription was last updated.
 	// Wire name: 'update_time'
-	UpdateTime      string   `` //legacy
-	ForceSendFields []string `tf:"-"`
+	UpdateTime      string   `json:"update_time,omitempty"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Subscription) MarshalJSON() ([]byte, error) {
@@ -4499,7 +4434,7 @@ type SubscriptionSubscriberDestination struct {
 	// The canonical identifier of the destination to receive email
 	// notification.
 	// Wire name: 'destination_id'
-	DestinationId string ``
+	DestinationId string `json:"destination_id"`
 }
 
 func (st SubscriptionSubscriberDestination) MarshalJSON() ([]byte, error) {
@@ -4550,7 +4485,7 @@ func SubscriptionSubscriberDestinationFromPb(pb *dashboardspb.SubscriptionSubscr
 type SubscriptionSubscriberUser struct {
 	// UserId of the subscriber.
 	// Wire name: 'user_id'
-	UserId int64 ``
+	UserId int64 `json:"user_id"`
 }
 
 func (st SubscriptionSubscriberUser) MarshalJSON() ([]byte, error) {
@@ -4601,11 +4536,11 @@ func SubscriptionSubscriberUserFromPb(pb *dashboardspb.SubscriptionSubscriberUse
 type TextAttachment struct {
 	// AI generated message
 	// Wire name: 'content'
-	Content string ``
+	Content string `json:"content,omitempty"`
 
 	// Wire name: 'id'
-	Id              string   ``
-	ForceSendFields []string `tf:"-"`
+	Id              string   `json:"id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TextAttachment) MarshalJSON() ([]byte, error) {
@@ -4663,8 +4598,7 @@ func TextAttachmentFromPb(pb *dashboardspb.TextAttachmentPb) (*TextAttachment, e
 
 type TrashDashboardRequest struct {
 	// UUID identifying the dashboard.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 }
 
 func (st TrashDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -4714,8 +4648,7 @@ func TrashDashboardRequestFromPb(pb *dashboardspb.TrashDashboardRequestPb) (*Tra
 
 type UnpublishDashboardRequest struct {
 	// UUID identifying the published dashboard.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 }
 
 func (st UnpublishDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -4766,10 +4699,9 @@ func UnpublishDashboardRequestFromPb(pb *dashboardspb.UnpublishDashboardRequestP
 type UpdateDashboardRequest struct {
 
 	// Wire name: 'dashboard'
-	Dashboard Dashboard ``
+	Dashboard Dashboard `json:"dashboard"`
 	// UUID identifying the dashboard.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 }
 
 func (st UpdateDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -4833,14 +4765,12 @@ func UpdateDashboardRequestFromPb(pb *dashboardspb.UpdateDashboardRequestPb) (*U
 
 type UpdateScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 	// The schedule to update.
 	// Wire name: 'schedule'
-	Schedule Schedule ``
+	Schedule Schedule `json:"schedule"`
 	// UUID identifying the schedule.
-	// Wire name: 'schedule_id'
-	ScheduleId string `tf:"-"`
+	ScheduleId string `json:"-" tf:"-"`
 }
 
 func (st UpdateScheduleRequest) MarshalJSON() ([]byte, error) {

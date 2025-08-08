@@ -14,7 +14,7 @@ import (
 type CreateDatabaseCatalogRequest struct {
 
 	// Wire name: 'catalog'
-	Catalog DatabaseCatalog ``
+	Catalog DatabaseCatalog `json:"catalog"`
 }
 
 func (st CreateDatabaseCatalogRequest) MarshalJSON() ([]byte, error) {
@@ -77,7 +77,7 @@ func CreateDatabaseCatalogRequestFromPb(pb *databasepb.CreateDatabaseCatalogRequ
 type CreateDatabaseInstanceRequest struct {
 	// Instance to create.
 	// Wire name: 'database_instance'
-	DatabaseInstance DatabaseInstance ``
+	DatabaseInstance DatabaseInstance `json:"database_instance"`
 }
 
 func (st CreateDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
@@ -140,10 +140,9 @@ func CreateDatabaseInstanceRequestFromPb(pb *databasepb.CreateDatabaseInstanceRe
 type CreateDatabaseInstanceRoleRequest struct {
 
 	// Wire name: 'database_instance_role'
-	DatabaseInstanceRole DatabaseInstanceRole ``
+	DatabaseInstanceRole DatabaseInstanceRole `json:"database_instance_role"`
 
-	// Wire name: 'instance_name'
-	InstanceName string `tf:"-"`
+	InstanceName string `json:"-" tf:"-"`
 }
 
 func (st CreateDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
@@ -208,7 +207,7 @@ func CreateDatabaseInstanceRoleRequestFromPb(pb *databasepb.CreateDatabaseInstan
 type CreateDatabaseTableRequest struct {
 
 	// Wire name: 'table'
-	Table DatabaseTable ``
+	Table DatabaseTable `json:"table"`
 }
 
 func (st CreateDatabaseTableRequest) MarshalJSON() ([]byte, error) {
@@ -271,7 +270,7 @@ func CreateDatabaseTableRequestFromPb(pb *databasepb.CreateDatabaseTableRequestP
 type CreateSyncedDatabaseTableRequest struct {
 
 	// Wire name: 'synced_table'
-	SyncedTable SyncedDatabaseTable ``
+	SyncedTable SyncedDatabaseTable `json:"synced_table"`
 }
 
 func (st CreateSyncedDatabaseTableRequest) MarshalJSON() ([]byte, error) {
@@ -334,20 +333,20 @@ func CreateSyncedDatabaseTableRequestFromPb(pb *databasepb.CreateSyncedDatabaseT
 type DatabaseCatalog struct {
 
 	// Wire name: 'create_database_if_not_exists'
-	CreateDatabaseIfNotExists bool ``
+	CreateDatabaseIfNotExists bool `json:"create_database_if_not_exists,omitempty"`
 	// The name of the DatabaseInstance housing the database.
 	// Wire name: 'database_instance_name'
-	DatabaseInstanceName string ``
+	DatabaseInstanceName string `json:"database_instance_name"`
 	// The name of the database (in a instance) associated with the catalog.
 	// Wire name: 'database_name'
-	DatabaseName string ``
+	DatabaseName string `json:"database_name"`
 	// The name of the catalog in UC.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 
 	// Wire name: 'uid'
-	Uid             string   ``
-	ForceSendFields []string `tf:"-"`
+	Uid             string   `json:"uid,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DatabaseCatalog) MarshalJSON() ([]byte, error) {
@@ -412,11 +411,11 @@ func DatabaseCatalogFromPb(pb *databasepb.DatabaseCatalogPb) (*DatabaseCatalog, 
 type DatabaseCredential struct {
 
 	// Wire name: 'expiration_time'
-	ExpirationTime string `` //legacy
+	ExpirationTime string `json:"expiration_time,omitempty"` //legacy
 
 	// Wire name: 'token'
-	Token           string   ``
-	ForceSendFields []string `tf:"-"`
+	Token           string   `json:"token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DatabaseCredential) MarshalJSON() ([]byte, error) {
@@ -477,17 +476,17 @@ func DatabaseCredentialFromPb(pb *databasepb.DatabaseCredentialPb) (*DatabaseCre
 type DatabaseInstance struct {
 	// The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4", "CU_8".
 	// Wire name: 'capacity'
-	Capacity string ``
+	Capacity string `json:"capacity,omitempty"`
 	// The refs of the child instances. This is only available if the instance
 	// is parent instance.
 	// Wire name: 'child_instance_refs'
-	ChildInstanceRefs []DatabaseInstanceRef ``
+	ChildInstanceRefs []DatabaseInstanceRef `json:"child_instance_refs,omitempty"`
 	// The timestamp when the instance was created.
 	// Wire name: 'creation_time'
-	CreationTime string `` //legacy
+	CreationTime string `json:"creation_time,omitempty"` //legacy
 	// The email of the creator of the instance.
 	// Wire name: 'creator'
-	Creator string ``
+	Creator string `json:"creator,omitempty"`
 	// xref AIP-129. `enable_readable_secondaries` is owned by the client, while
 	// `effective_enable_readable_secondaries` is owned by the server.
 	// `enable_readable_secondaries` will only be set in Create/Update response
@@ -495,14 +494,14 @@ type DatabaseInstance struct {
 	// `effective_enable_readable_secondaries` on the other hand will always bet
 	// set in all response messages (Create/Update/Get/List).
 	// Wire name: 'effective_enable_readable_secondaries'
-	EffectiveEnableReadableSecondaries bool ``
+	EffectiveEnableReadableSecondaries bool `json:"effective_enable_readable_secondaries,omitempty"`
 	// xref AIP-129. `node_count` is owned by the client, while
 	// `effective_node_count` is owned by the server. `node_count` will only be
 	// set in Create/Update response messages if and only if the user provides
 	// the field via the request. `effective_node_count` on the other hand will
 	// always bet set in all response messages (Create/Update/Get/List).
 	// Wire name: 'effective_node_count'
-	EffectiveNodeCount int ``
+	EffectiveNodeCount int `json:"effective_node_count,omitempty"`
 	// xref AIP-129. `retention_window_in_days` is owned by the client, while
 	// `effective_retention_window_in_days` is owned by the server.
 	// `retention_window_in_days` will only be set in Create/Update response
@@ -510,56 +509,56 @@ type DatabaseInstance struct {
 	// `effective_retention_window_in_days` on the other hand will always bet
 	// set in all response messages (Create/Update/Get/List).
 	// Wire name: 'effective_retention_window_in_days'
-	EffectiveRetentionWindowInDays int ``
+	EffectiveRetentionWindowInDays int `json:"effective_retention_window_in_days,omitempty"`
 	// xref AIP-129. `stopped` is owned by the client, while `effective_stopped`
 	// is owned by the server. `stopped` will only be set in Create/Update
 	// response messages if and only if the user provides the field via the
 	// request. `effective_stopped` on the other hand will always bet set in all
 	// response messages (Create/Update/Get/List).
 	// Wire name: 'effective_stopped'
-	EffectiveStopped bool ``
+	EffectiveStopped bool `json:"effective_stopped,omitempty"`
 	// Whether to enable secondaries to serve read-only traffic. Defaults to
 	// false.
 	// Wire name: 'enable_readable_secondaries'
-	EnableReadableSecondaries bool ``
+	EnableReadableSecondaries bool `json:"enable_readable_secondaries,omitempty"`
 	// The name of the instance. This is the unique identifier for the instance.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// The number of nodes in the instance, composed of 1 primary and 0 or more
 	// secondaries. Defaults to 1 primary and 0 secondaries.
 	// Wire name: 'node_count'
-	NodeCount int ``
+	NodeCount int `json:"node_count,omitempty"`
 	// The ref of the parent instance. This is only available if the instance is
 	// child instance. Input: For specifying the parent instance to create a
 	// child instance. Optional. Output: Only populated if provided as input to
 	// create a child instance.
 	// Wire name: 'parent_instance_ref'
-	ParentInstanceRef *DatabaseInstanceRef ``
+	ParentInstanceRef *DatabaseInstanceRef `json:"parent_instance_ref,omitempty"`
 	// The version of Postgres running on the instance.
 	// Wire name: 'pg_version'
-	PgVersion string ``
+	PgVersion string `json:"pg_version,omitempty"`
 	// The DNS endpoint to connect to the instance for read only access. This is
 	// only available if enable_readable_secondaries is true.
 	// Wire name: 'read_only_dns'
-	ReadOnlyDns string ``
+	ReadOnlyDns string `json:"read_only_dns,omitempty"`
 	// The DNS endpoint to connect to the instance for read+write access.
 	// Wire name: 'read_write_dns'
-	ReadWriteDns string ``
+	ReadWriteDns string `json:"read_write_dns,omitempty"`
 	// The retention window for the instance. This is the time window in days
 	// for which the historical data is retained. The default value is 7 days.
 	// Valid values are 2 to 35 days.
 	// Wire name: 'retention_window_in_days'
-	RetentionWindowInDays int ``
+	RetentionWindowInDays int `json:"retention_window_in_days,omitempty"`
 	// The current state of the instance.
 	// Wire name: 'state'
-	State DatabaseInstanceState ``
+	State DatabaseInstanceState `json:"state,omitempty"`
 	// Whether the instance is stopped.
 	// Wire name: 'stopped'
-	Stopped bool ``
+	Stopped bool `json:"stopped,omitempty"`
 	// An immutable UUID identifier for the instance.
 	// Wire name: 'uid'
-	Uid             string   ``
-	ForceSendFields []string `tf:"-"`
+	Uid             string   `json:"uid,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DatabaseInstance) MarshalJSON() ([]byte, error) {
@@ -710,7 +709,7 @@ type DatabaseInstanceRef struct {
 	// the point in time to create a child instance. Optional. Output: Only
 	// populated if provided as input to create a child instance.
 	// Wire name: 'branch_time'
-	BranchTime string `` //legacy
+	BranchTime string `json:"branch_time,omitempty"` //legacy
 	// xref AIP-129. `lsn` is owned by the client, while `effective_lsn` is
 	// owned by the server. `lsn` will only be set in Create/Update response
 	// messages if and only if the user provides the field via the request.
@@ -720,20 +719,20 @@ type DatabaseInstanceRef struct {
 	// child ref instance, this is the LSN on the instance from which the child
 	// instance was created.
 	// Wire name: 'effective_lsn'
-	EffectiveLsn string ``
+	EffectiveLsn string `json:"effective_lsn,omitempty"`
 	// User-specified WAL LSN of the ref database instance.
 	//
 	// Input: For specifying the WAL LSN to create a child instance. Optional.
 	// Output: Only populated if provided as input to create a child instance.
 	// Wire name: 'lsn'
-	Lsn string ``
+	Lsn string `json:"lsn,omitempty"`
 	// Name of the ref database instance.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Id of the ref database instance.
 	// Wire name: 'uid'
-	Uid             string   ``
-	ForceSendFields []string `tf:"-"`
+	Uid             string   `json:"uid,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DatabaseInstanceRef) MarshalJSON() ([]byte, error) {
@@ -799,18 +798,18 @@ func DatabaseInstanceRefFromPb(pb *databasepb.DatabaseInstanceRefPb) (*DatabaseI
 type DatabaseInstanceRole struct {
 	// API-exposed Postgres role attributes
 	// Wire name: 'attributes'
-	Attributes *DatabaseInstanceRoleAttributes ``
+	Attributes *DatabaseInstanceRoleAttributes `json:"attributes,omitempty"`
 	// The type of the role.
 	// Wire name: 'identity_type'
-	IdentityType DatabaseInstanceRoleIdentityType ``
+	IdentityType DatabaseInstanceRoleIdentityType `json:"identity_type,omitempty"`
 	// An enum value for a standard role that this role is a member of.
 	// Wire name: 'membership_role'
-	MembershipRole DatabaseInstanceRoleMembershipRole ``
+	MembershipRole DatabaseInstanceRoleMembershipRole `json:"membership_role,omitempty"`
 	// The name of the role. This is the unique identifier for the role in an
 	// instance.
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DatabaseInstanceRole) MarshalJSON() ([]byte, error) {
@@ -916,14 +915,14 @@ func DatabaseInstanceRoleFromPb(pb *databasepb.DatabaseInstanceRolePb) (*Databas
 type DatabaseInstanceRoleAttributes struct {
 
 	// Wire name: 'bypassrls'
-	Bypassrls bool ``
+	Bypassrls bool `json:"bypassrls,omitempty"`
 
 	// Wire name: 'createdb'
-	Createdb bool ``
+	Createdb bool `json:"createdb,omitempty"`
 
 	// Wire name: 'createrole'
-	Createrole      bool     ``
-	ForceSendFields []string `tf:"-"`
+	Createrole      bool     `json:"createrole,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DatabaseInstanceRoleAttributes) MarshalJSON() ([]byte, error) {
@@ -1165,7 +1164,7 @@ type DatabaseTable struct {
 	// name MUST match that of the registered catalog (or the request will be
 	// rejected).
 	// Wire name: 'database_instance_name'
-	DatabaseInstanceName string ``
+	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
 	// Target Postgres database object (logical database) name for this table.
 	//
 	// When creating a table in a registered Postgres catalog, the target
@@ -1178,11 +1177,11 @@ type DatabaseTable struct {
 	// this scenario, specifying this field will allow targeting an arbitrary
 	// postgres database.
 	// Wire name: 'logical_database_name'
-	LogicalDatabaseName string ``
+	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
 	// Full three-part (catalog, schema, table) name of the table.
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DatabaseTable) MarshalJSON() ([]byte, error) {
@@ -1241,9 +1240,7 @@ func DatabaseTableFromPb(pb *databasepb.DatabaseTablePb) (*DatabaseTable, error)
 }
 
 type DeleteDatabaseCatalogRequest struct {
-
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteDatabaseCatalogRequest) MarshalJSON() ([]byte, error) {
@@ -1295,11 +1292,9 @@ type DeleteDatabaseInstanceRequest struct {
 	// By default, a instance cannot be deleted if it has descendant instances
 	// created via PITR. If this flag is specified as true, all descendent
 	// instances will be deleted as well.
-	// Wire name: 'force'
-	Force bool `tf:"-"`
+	Force bool `json:"-" tf:"-"`
 	// Name of the instance to delete.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Note purge=false is in development. If false, the database instance is
 	// soft deleted (implementation pending). Soft deleted instances behave as
 	// if they are deleted, and cannot be used for CRUD operations nor connected
@@ -1308,9 +1303,8 @@ type DeleteDatabaseInstanceRequest struct {
 	// hard deleted and cannot be undeleted. For the time being, setting this
 	// value to true is required to delete an instance (soft delete is not yet
 	// supported).
-	// Wire name: 'purge'
-	Purge           bool     `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Purge           bool     `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
@@ -1371,18 +1365,14 @@ func DeleteDatabaseInstanceRequestFromPb(pb *databasepb.DeleteDatabaseInstanceRe
 type DeleteDatabaseInstanceRoleRequest struct {
 	// This is the AIP standard name for the equivalent of Postgres' `IF EXISTS`
 	// option
-	// Wire name: 'allow_missing'
-	AllowMissing bool `tf:"-"`
+	AllowMissing bool `json:"-" tf:"-"`
 
-	// Wire name: 'instance_name'
-	InstanceName string `tf:"-"`
+	InstanceName string `json:"-" tf:"-"`
 
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 
-	// Wire name: 'reassign_owned_to'
-	ReassignOwnedTo string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	ReassignOwnedTo string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
@@ -1443,9 +1433,7 @@ func DeleteDatabaseInstanceRoleRequestFromPb(pb *databasepb.DeleteDatabaseInstan
 }
 
 type DeleteDatabaseTableRequest struct {
-
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteDatabaseTableRequest) MarshalJSON() ([]byte, error) {
@@ -1494,9 +1482,7 @@ func DeleteDatabaseTableRequestFromPb(pb *databasepb.DeleteDatabaseTableRequestP
 }
 
 type DeleteSyncedDatabaseTableRequest struct {
-
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteSyncedDatabaseTableRequest) MarshalJSON() ([]byte, error) {
@@ -1549,11 +1535,11 @@ type DeltaTableSyncInfo struct {
 	// Delta table. Note: This is the Delta commit time, not the time the data
 	// was written to the synced table.
 	// Wire name: 'delta_commit_timestamp'
-	DeltaCommitTimestamp string `` //legacy
+	DeltaCommitTimestamp string `json:"delta_commit_timestamp,omitempty"` //legacy
 	// The Delta Lake commit version that was last successfully synced.
 	// Wire name: 'delta_commit_version'
-	DeltaCommitVersion int64    ``
-	ForceSendFields    []string `tf:"-"`
+	DeltaCommitVersion int64    `json:"delta_commit_version,omitempty"`
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
 func (st DeltaTableSyncInfo) MarshalJSON() ([]byte, error) {
@@ -1611,9 +1597,8 @@ func DeltaTableSyncInfoFromPb(pb *databasepb.DeltaTableSyncInfoPb) (*DeltaTableS
 
 type FindDatabaseInstanceByUidRequest struct {
 	// UID of the cluster to get.
-	// Wire name: 'uid'
-	Uid             string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Uid             string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FindDatabaseInstanceByUidRequest) MarshalJSON() ([]byte, error) {
@@ -1673,14 +1658,14 @@ type GenerateDatabaseCredentialRequest struct {
 	// instances containing the specified UC tables, so instance_names is
 	// allowed to be empty.
 	// Wire name: 'claims'
-	Claims []RequestedClaims ``
+	Claims []RequestedClaims `json:"claims,omitempty"`
 	// Instances to which the token will be scoped.
 	// Wire name: 'instance_names'
-	InstanceNames []string ``
+	InstanceNames []string `json:"instance_names,omitempty"`
 
 	// Wire name: 'request_id'
-	RequestId       string   ``
-	ForceSendFields []string `tf:"-"`
+	RequestId       string   `json:"request_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GenerateDatabaseCredentialRequest) MarshalJSON() ([]byte, error) {
@@ -1761,9 +1746,7 @@ func GenerateDatabaseCredentialRequestFromPb(pb *databasepb.GenerateDatabaseCred
 }
 
 type GetDatabaseCatalogRequest struct {
-
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetDatabaseCatalogRequest) MarshalJSON() ([]byte, error) {
@@ -1813,8 +1796,7 @@ func GetDatabaseCatalogRequestFromPb(pb *databasepb.GetDatabaseCatalogRequestPb)
 
 type GetDatabaseInstanceRequest struct {
 	// Name of the cluster to get.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
@@ -1863,12 +1845,9 @@ func GetDatabaseInstanceRequestFromPb(pb *databasepb.GetDatabaseInstanceRequestP
 }
 
 type GetDatabaseInstanceRoleRequest struct {
+	InstanceName string `json:"-" tf:"-"`
 
-	// Wire name: 'instance_name'
-	InstanceName string `tf:"-"`
-
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
@@ -1919,9 +1898,7 @@ func GetDatabaseInstanceRoleRequestFromPb(pb *databasepb.GetDatabaseInstanceRole
 }
 
 type GetDatabaseTableRequest struct {
-
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetDatabaseTableRequest) MarshalJSON() ([]byte, error) {
@@ -1970,9 +1947,7 @@ func GetDatabaseTableRequestFromPb(pb *databasepb.GetDatabaseTableRequestPb) (*G
 }
 
 type GetSyncedDatabaseTableRequest struct {
-
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetSyncedDatabaseTableRequest) MarshalJSON() ([]byte, error) {
@@ -2021,17 +1996,13 @@ func GetSyncedDatabaseTableRequestFromPb(pb *databasepb.GetSyncedDatabaseTableRe
 }
 
 type ListDatabaseInstanceRolesRequest struct {
-
-	// Wire name: 'instance_name'
-	InstanceName string `tf:"-"`
+	InstanceName string `json:"-" tf:"-"`
 	// Upper bound for items returned.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Pagination token to go to the next page of Database Instances. Requests
 	// first page if absent.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListDatabaseInstanceRolesRequest) MarshalJSON() ([]byte, error) {
@@ -2092,11 +2063,11 @@ func ListDatabaseInstanceRolesRequestFromPb(pb *databasepb.ListDatabaseInstanceR
 type ListDatabaseInstanceRolesResponse struct {
 	// List of database instance roles.
 	// Wire name: 'database_instance_roles'
-	DatabaseInstanceRoles []DatabaseInstanceRole ``
+	DatabaseInstanceRoles []DatabaseInstanceRole `json:"database_instance_roles,omitempty"`
 	// Pagination token to request the next page of instances.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListDatabaseInstanceRolesResponse) MarshalJSON() ([]byte, error) {
@@ -2176,13 +2147,11 @@ func ListDatabaseInstanceRolesResponseFromPb(pb *databasepb.ListDatabaseInstance
 
 type ListDatabaseInstancesRequest struct {
 	// Upper bound for items returned.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Pagination token to go to the next page of Database Instances. Requests
 	// first page if absent.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListDatabaseInstancesRequest) MarshalJSON() ([]byte, error) {
@@ -2241,11 +2210,11 @@ func ListDatabaseInstancesRequestFromPb(pb *databasepb.ListDatabaseInstancesRequ
 type ListDatabaseInstancesResponse struct {
 	// List of instances.
 	// Wire name: 'database_instances'
-	DatabaseInstances []DatabaseInstance ``
+	DatabaseInstances []DatabaseInstance `json:"database_instances,omitempty"`
 	// Pagination token to request the next page of instances.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListDatabaseInstancesResponse) MarshalJSON() ([]byte, error) {
@@ -2334,7 +2303,7 @@ type NewPipelineSpec struct {
 	// event logs etc). This needs to be a standard catalog where the user has
 	// permissions to create Delta tables.
 	// Wire name: 'storage_catalog'
-	StorageCatalog string ``
+	StorageCatalog string `json:"storage_catalog,omitempty"`
 	// This field needs to be specified if the destination catalog is a managed
 	// postgres catalog.
 	//
@@ -2342,8 +2311,8 @@ type NewPipelineSpec struct {
 	// event logs etc). This needs to be in the standard catalog where the user
 	// has permissions to create Delta tables.
 	// Wire name: 'storage_schema'
-	StorageSchema   string   ``
-	ForceSendFields []string `tf:"-"`
+	StorageSchema   string   `json:"storage_schema,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st NewPipelineSpec) MarshalJSON() ([]byte, error) {
@@ -2523,10 +2492,10 @@ func ProvisioningPhaseFromPb(pb *databasepb.ProvisioningPhasePb) (*ProvisioningP
 type RequestedClaims struct {
 
 	// Wire name: 'permission_set'
-	PermissionSet RequestedClaimsPermissionSet ``
+	PermissionSet RequestedClaimsPermissionSet `json:"permission_set,omitempty"`
 
 	// Wire name: 'resources'
-	Resources []RequestedResource ``
+	Resources []RequestedResource `json:"resources,omitempty"`
 }
 
 func (st RequestedClaims) MarshalJSON() ([]byte, error) {
@@ -2664,11 +2633,11 @@ func RequestedClaimsPermissionSetFromPb(pb *databasepb.RequestedClaimsPermission
 type RequestedResource struct {
 
 	// Wire name: 'table_name'
-	TableName string ``
+	TableName string `json:"table_name,omitempty"`
 
 	// Wire name: 'unspecified_resource_name'
-	UnspecifiedResourceName string   ``
-	ForceSendFields         []string `tf:"-"`
+	UnspecifiedResourceName string   `json:"unspecified_resource_name,omitempty"`
+	ForceSendFields         []string `json:"-" tf:"-"`
 }
 
 func (st RequestedResource) MarshalJSON() ([]byte, error) {
@@ -2728,7 +2697,7 @@ func RequestedResourceFromPb(pb *databasepb.RequestedResourcePb) (*RequestedReso
 type SyncedDatabaseTable struct {
 	// Synced Table data synchronization status
 	// Wire name: 'data_synchronization_status'
-	DataSynchronizationStatus *SyncedTableStatus ``
+	DataSynchronizationStatus *SyncedTableStatus `json:"data_synchronization_status,omitempty"`
 	// Name of the target database instance. This is required when creating
 	// synced database tables in standard catalogs. This is optional when
 	// creating synced database tables in registered catalogs. If this field is
@@ -2736,7 +2705,7 @@ type SyncedDatabaseTable struct {
 	// the database instance name MUST match that of the registered catalog (or
 	// the request will be rejected).
 	// Wire name: 'database_instance_name'
-	DatabaseInstanceName string ``
+	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
 	// Target Postgres database object (logical database) name for this table.
 	//
 	// When creating a synced table in a registered Postgres catalog, the target
@@ -2750,20 +2719,20 @@ type SyncedDatabaseTable struct {
 	// arbitrary postgres database. Note that this has implications for the
 	// `create_database_objects_is_missing` field in `spec`.
 	// Wire name: 'logical_database_name'
-	LogicalDatabaseName string ``
+	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
 	// Full three-part (catalog, schema, table) name of the table.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 
 	// Wire name: 'spec'
-	Spec *SyncedTableSpec ``
+	Spec *SyncedTableSpec `json:"spec,omitempty"`
 	// The provisioning state of the synced table entity in Unity Catalog. This
 	// is distinct from the state of the data synchronization pipeline (i.e. the
 	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
 	// runs asynchronously).
 	// Wire name: 'unity_catalog_provisioning_state'
-	UnityCatalogProvisioningState ProvisioningInfoState ``
-	ForceSendFields               []string              `tf:"-"`
+	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
+	ForceSendFields               []string              `json:"-" tf:"-"`
 }
 
 func (st SyncedDatabaseTable) MarshalJSON() ([]byte, error) {
@@ -2868,17 +2837,17 @@ func SyncedDatabaseTableFromPb(pb *databasepb.SyncedDatabaseTablePb) (*SyncedDat
 type SyncedTableContinuousUpdateStatus struct {
 	// Progress of the initial data synchronization.
 	// Wire name: 'initial_pipeline_sync_progress'
-	InitialPipelineSyncProgress *SyncedTablePipelineProgress ``
+	InitialPipelineSyncProgress *SyncedTablePipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
 	// The last source table Delta version that was successfully synced to the
 	// synced table.
 	// Wire name: 'last_processed_commit_version'
-	LastProcessedCommitVersion int64 ``
+	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
 	// The end timestamp of the last time any data was synchronized from the
 	// source table to the synced table. This is when the data is available in
 	// the synced table.
 	// Wire name: 'timestamp'
-	Timestamp       string   `` //legacy
-	ForceSendFields []string `tf:"-"`
+	Timestamp       string   `json:"timestamp,omitempty"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SyncedTableContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
@@ -2956,13 +2925,13 @@ type SyncedTableFailedStatus struct {
 	// synced table. Only populated if the table is still synced and available
 	// for serving.
 	// Wire name: 'last_processed_commit_version'
-	LastProcessedCommitVersion int64 ``
+	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
 	// The end timestamp of the last time any data was synchronized from the
 	// source table to the synced table. Only populated if the table is still
 	// synced and available for serving.
 	// Wire name: 'timestamp'
-	Timestamp       string   `` //legacy
-	ForceSendFields []string `tf:"-"`
+	Timestamp       string   `json:"timestamp,omitempty"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SyncedTableFailedStatus) MarshalJSON() ([]byte, error) {
@@ -3022,25 +2991,25 @@ func SyncedTableFailedStatusFromPb(pb *databasepb.SyncedTableFailedStatusPb) (*S
 type SyncedTablePipelineProgress struct {
 	// The estimated time remaining to complete this update in seconds.
 	// Wire name: 'estimated_completion_time_seconds'
-	EstimatedCompletionTimeSeconds float64 ``
+	EstimatedCompletionTimeSeconds float64 `json:"estimated_completion_time_seconds,omitempty"`
 	// The source table Delta version that was last processed by the pipeline.
 	// The pipeline may not have completely processed this version yet.
 	// Wire name: 'latest_version_currently_processing'
-	LatestVersionCurrentlyProcessing int64 ``
+	LatestVersionCurrentlyProcessing int64 `json:"latest_version_currently_processing,omitempty"`
 	// The current phase of the data synchronization pipeline.
 	// Wire name: 'provisioning_phase'
-	ProvisioningPhase ProvisioningPhase ``
+	ProvisioningPhase ProvisioningPhase `json:"provisioning_phase,omitempty"`
 	// The completion ratio of this update. This is a number between 0 and 1.
 	// Wire name: 'sync_progress_completion'
-	SyncProgressCompletion float64 ``
+	SyncProgressCompletion float64 `json:"sync_progress_completion,omitempty"`
 	// The number of rows that have been synced in this update.
 	// Wire name: 'synced_row_count'
-	SyncedRowCount int64 ``
+	SyncedRowCount int64 `json:"synced_row_count,omitempty"`
 	// The total number of rows that need to be synced in this update. This
 	// number may be an estimate.
 	// Wire name: 'total_row_count'
-	TotalRowCount   int64    ``
-	ForceSendFields []string `tf:"-"`
+	TotalRowCount   int64    `json:"total_row_count,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SyncedTablePipelineProgress) MarshalJSON() ([]byte, error) {
@@ -3119,18 +3088,18 @@ func SyncedTablePipelineProgressFromPb(pb *databasepb.SyncedTablePipelineProgres
 type SyncedTablePosition struct {
 
 	// Wire name: 'delta_table_sync_info'
-	DeltaTableSyncInfo *DeltaTableSyncInfo ``
+	DeltaTableSyncInfo *DeltaTableSyncInfo `json:"delta_table_sync_info,omitempty"`
 	// The end timestamp of the most recent successful synchronization. This is
 	// the time when the data is available in the synced table.
 	// Wire name: 'sync_end_timestamp'
-	SyncEndTimestamp string `` //legacy
+	SyncEndTimestamp string `json:"sync_end_timestamp,omitempty"` //legacy
 	// The starting timestamp of the most recent successful synchronization from
 	// the source table to the destination (synced) table. Note this is the
 	// starting timestamp of the sync operation, not the end time. E.g., for a
 	// batch, this is the time when the sync operation started.
 	// Wire name: 'sync_start_timestamp'
-	SyncStartTimestamp string   `` //legacy
-	ForceSendFields    []string `tf:"-"`
+	SyncStartTimestamp string   `json:"sync_start_timestamp,omitempty"` //legacy
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
 func (st SyncedTablePosition) MarshalJSON() ([]byte, error) {
@@ -3206,7 +3175,7 @@ type SyncedTableProvisioningStatus struct {
 	// Details about initial data synchronization. Only populated when in the
 	// PROVISIONING_INITIAL_SNAPSHOT state.
 	// Wire name: 'initial_pipeline_sync_progress'
-	InitialPipelineSyncProgress *SyncedTablePipelineProgress ``
+	InitialPipelineSyncProgress *SyncedTablePipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
 }
 
 func (st SyncedTableProvisioningStatus) MarshalJSON() ([]byte, error) {
@@ -3327,7 +3296,7 @@ type SyncedTableSpec struct {
 	// If true, the synced table's logical database and schema resources in PG
 	// will be created if they do not already exist.
 	// Wire name: 'create_database_objects_if_missing'
-	CreateDatabaseObjectsIfMissing bool ``
+	CreateDatabaseObjectsIfMissing bool `json:"create_database_objects_if_missing,omitempty"`
 	// At most one of existing_pipeline_id and new_pipeline_spec should be
 	// defined.
 	//
@@ -3337,7 +3306,7 @@ type SyncedTableSpec struct {
 	// scheduling_policy of this synced table must match the scheduling policy
 	// of the existing pipeline.
 	// Wire name: 'existing_pipeline_id'
-	ExistingPipelineId string ``
+	ExistingPipelineId string `json:"existing_pipeline_id,omitempty"`
 	// At most one of existing_pipeline_id and new_pipeline_spec should be
 	// defined.
 	//
@@ -3348,21 +3317,21 @@ type SyncedTableSpec struct {
 	// requires write permissions, whereas the source table only requires read
 	// permissions.
 	// Wire name: 'new_pipeline_spec'
-	NewPipelineSpec *NewPipelineSpec ``
+	NewPipelineSpec *NewPipelineSpec `json:"new_pipeline_spec,omitempty"`
 	// Primary Key columns to be used for data insert/update in the destination.
 	// Wire name: 'primary_key_columns'
-	PrimaryKeyColumns []string ``
+	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
 	// Scheduling policy of the underlying pipeline.
 	// Wire name: 'scheduling_policy'
-	SchedulingPolicy SyncedTableSchedulingPolicy ``
+	SchedulingPolicy SyncedTableSchedulingPolicy `json:"scheduling_policy,omitempty"`
 	// Three-part (catalog, schema, table) name of the source Delta table.
 	// Wire name: 'source_table_full_name'
-	SourceTableFullName string ``
+	SourceTableFullName string `json:"source_table_full_name,omitempty"`
 	// Time series key to deduplicate (tie-break) rows with the same primary
 	// key.
 	// Wire name: 'timeseries_key'
-	TimeseriesKey   string   ``
-	ForceSendFields []string `tf:"-"`
+	TimeseriesKey   string   `json:"timeseries_key,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SyncedTableSpec) MarshalJSON() ([]byte, error) {
@@ -3537,13 +3506,13 @@ func SyncedTableStateFromPb(pb *databasepb.SyncedTableStatePb) (*SyncedTableStat
 type SyncedTableStatus struct {
 
 	// Wire name: 'continuous_update_status'
-	ContinuousUpdateStatus *SyncedTableContinuousUpdateStatus ``
+	ContinuousUpdateStatus *SyncedTableContinuousUpdateStatus `json:"continuous_update_status,omitempty"`
 	// The state of the synced table.
 	// Wire name: 'detailed_state'
-	DetailedState SyncedTableState ``
+	DetailedState SyncedTableState `json:"detailed_state,omitempty"`
 
 	// Wire name: 'failed_status'
-	FailedStatus *SyncedTableFailedStatus ``
+	FailedStatus *SyncedTableFailedStatus `json:"failed_status,omitempty"`
 	// Summary of the last successful synchronization from source to
 	// destination.
 	//
@@ -3558,22 +3527,22 @@ type SyncedTableStatus struct {
 	// This top-level field is a convenience for consumers who want easy access
 	// to last sync information without having to traverse detailed_status.
 	// Wire name: 'last_sync'
-	LastSync *SyncedTablePosition ``
+	LastSync *SyncedTablePosition `json:"last_sync,omitempty"`
 	// A text description of the current state of the synced table.
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 	// ID of the associated pipeline. The pipeline ID may have been provided by
 	// the client (in the case of bin packing), or generated by the server (when
 	// creating a new pipeline).
 	// Wire name: 'pipeline_id'
-	PipelineId string ``
+	PipelineId string `json:"pipeline_id,omitempty"`
 
 	// Wire name: 'provisioning_status'
-	ProvisioningStatus *SyncedTableProvisioningStatus ``
+	ProvisioningStatus *SyncedTableProvisioningStatus `json:"provisioning_status,omitempty"`
 
 	// Wire name: 'triggered_update_status'
-	TriggeredUpdateStatus *SyncedTableTriggeredUpdateStatus ``
-	ForceSendFields       []string                          `tf:"-"`
+	TriggeredUpdateStatus *SyncedTableTriggeredUpdateStatus `json:"triggered_update_status,omitempty"`
+	ForceSendFields       []string                          `json:"-" tf:"-"`
 }
 
 func (st SyncedTableStatus) MarshalJSON() ([]byte, error) {
@@ -3719,16 +3688,16 @@ type SyncedTableTriggeredUpdateStatus struct {
 	// The last source table Delta version that was successfully synced to the
 	// synced table.
 	// Wire name: 'last_processed_commit_version'
-	LastProcessedCommitVersion int64 ``
+	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
 	// The end timestamp of the last time any data was synchronized from the
 	// source table to the synced table. This is when the data is available in
 	// the synced table.
 	// Wire name: 'timestamp'
-	Timestamp string `` //legacy
+	Timestamp string `json:"timestamp,omitempty"` //legacy
 	// Progress of the active data synchronization pipeline.
 	// Wire name: 'triggered_update_progress'
-	TriggeredUpdateProgress *SyncedTablePipelineProgress ``
-	ForceSendFields         []string                     `tf:"-"`
+	TriggeredUpdateProgress *SyncedTablePipelineProgress `json:"triggered_update_progress,omitempty"`
+	ForceSendFields         []string                     `json:"-" tf:"-"`
 }
 
 func (st SyncedTableTriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
@@ -3801,14 +3770,12 @@ func SyncedTableTriggeredUpdateStatusFromPb(pb *databasepb.SyncedTableTriggeredU
 type UpdateDatabaseInstanceRequest struct {
 
 	// Wire name: 'database_instance'
-	DatabaseInstance DatabaseInstance ``
+	DatabaseInstance DatabaseInstance `json:"database_instance"`
 	// The name of the instance. This is the unique identifier for the instance.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// The list of fields to update. This field is not yet supported, and is
 	// ignored by the server.
-	// Wire name: 'update_mask'
-	UpdateMask string `tf:"-"` //legacy
+	UpdateMask string `json:"-" tf:"-"` //legacy
 
 }
 

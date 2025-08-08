@@ -14,11 +14,11 @@ import (
 type AnomalyDetectionConfig struct {
 	// Run id of the last run of the workflow
 	// Wire name: 'last_run_id'
-	LastRunId string ``
+	LastRunId string `json:"last_run_id,omitempty"`
 	// The status of the last run of the workflow.
 	// Wire name: 'latest_run_status'
-	LatestRunStatus AnomalyDetectionRunStatus ``
-	ForceSendFields []string                  `tf:"-"`
+	LatestRunStatus AnomalyDetectionRunStatus `json:"latest_run_status,omitempty"`
+	ForceSendFields []string                  `json:"-" tf:"-"`
 }
 
 func (st AnomalyDetectionConfig) MarshalJSON() ([]byte, error) {
@@ -161,7 +161,7 @@ func AnomalyDetectionRunStatusFromPb(pb *qualitymonitorv2pb.AnomalyDetectionRunS
 type CreateQualityMonitorRequest struct {
 
 	// Wire name: 'quality_monitor'
-	QualityMonitor QualityMonitor ``
+	QualityMonitor QualityMonitor `json:"quality_monitor"`
 }
 
 func (st CreateQualityMonitorRequest) MarshalJSON() ([]byte, error) {
@@ -223,11 +223,9 @@ func CreateQualityMonitorRequestFromPb(pb *qualitymonitorv2pb.CreateQualityMonit
 
 type DeleteQualityMonitorRequest struct {
 	// The uuid of the request object. For example, schema id.
-	// Wire name: 'object_id'
-	ObjectId string `tf:"-"`
+	ObjectId string `json:"-" tf:"-"`
 	// The type of the monitored object. Can be one of the following: schema.
-	// Wire name: 'object_type'
-	ObjectType string `tf:"-"`
+	ObjectType string `json:"-" tf:"-"`
 }
 
 func (st DeleteQualityMonitorRequest) MarshalJSON() ([]byte, error) {
@@ -279,11 +277,9 @@ func DeleteQualityMonitorRequestFromPb(pb *qualitymonitorv2pb.DeleteQualityMonit
 
 type GetQualityMonitorRequest struct {
 	// The uuid of the request object. For example, schema id.
-	// Wire name: 'object_id'
-	ObjectId string `tf:"-"`
+	ObjectId string `json:"-" tf:"-"`
 	// The type of the monitored object. Can be one of the following: schema.
-	// Wire name: 'object_type'
-	ObjectType string `tf:"-"`
+	ObjectType string `json:"-" tf:"-"`
 }
 
 func (st GetQualityMonitorRequest) MarshalJSON() ([]byte, error) {
@@ -334,13 +330,10 @@ func GetQualityMonitorRequestFromPb(pb *qualitymonitorv2pb.GetQualityMonitorRequ
 }
 
 type ListQualityMonitorRequest struct {
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListQualityMonitorRequest) MarshalJSON() ([]byte, error) {
@@ -399,11 +392,11 @@ func ListQualityMonitorRequestFromPb(pb *qualitymonitorv2pb.ListQualityMonitorRe
 type ListQualityMonitorResponse struct {
 
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'quality_monitors'
-	QualityMonitors []QualityMonitor ``
-	ForceSendFields []string         `tf:"-"`
+	QualityMonitors []QualityMonitor `json:"quality_monitors,omitempty"`
+	ForceSendFields []string         `json:"-" tf:"-"`
 }
 
 func (st ListQualityMonitorResponse) MarshalJSON() ([]byte, error) {
@@ -484,13 +477,13 @@ func ListQualityMonitorResponseFromPb(pb *qualitymonitorv2pb.ListQualityMonitorR
 type QualityMonitor struct {
 
 	// Wire name: 'anomaly_detection_config'
-	AnomalyDetectionConfig *AnomalyDetectionConfig ``
+	AnomalyDetectionConfig *AnomalyDetectionConfig `json:"anomaly_detection_config,omitempty"`
 	// The uuid of the request object. For example, schema id.
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id"`
 	// The type of the monitored object. Can be one of the following: schema.
 	// Wire name: 'object_type'
-	ObjectType string ``
+	ObjectType string `json:"object_type"`
 }
 
 func (st QualityMonitor) MarshalJSON() ([]byte, error) {
@@ -556,14 +549,12 @@ func QualityMonitorFromPb(pb *qualitymonitorv2pb.QualityMonitorPb) (*QualityMoni
 
 type UpdateQualityMonitorRequest struct {
 	// The uuid of the request object. For example, schema id.
-	// Wire name: 'object_id'
-	ObjectId string `tf:"-"`
+	ObjectId string `json:"-" tf:"-"`
 	// The type of the monitored object. Can be one of the following: schema.
-	// Wire name: 'object_type'
-	ObjectType string `tf:"-"`
+	ObjectType string `json:"-" tf:"-"`
 
 	// Wire name: 'quality_monitor'
-	QualityMonitor QualityMonitor ``
+	QualityMonitor QualityMonitor `json:"quality_monitor"`
 }
 
 func (st UpdateQualityMonitorRequest) MarshalJSON() ([]byte, error) {

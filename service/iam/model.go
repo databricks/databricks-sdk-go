@@ -14,17 +14,17 @@ import (
 type AccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel PermissionLevel ``
+	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -99,20 +99,20 @@ func AccessControlRequestFromPb(pb *iampb.AccessControlRequestPb) (*AccessContro
 type AccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []Permission ``
+	AllPermissions []Permission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -202,8 +202,8 @@ func AccessControlResponseFromPb(pb *iampb.AccessControlResponsePb) (*AccessCont
 type Actor struct {
 
 	// Wire name: 'actor_id'
-	ActorId         int64    ``
-	ForceSendFields []string `tf:"-"`
+	ActorId         int64    `json:"actor_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Actor) MarshalJSON() ([]byte, error) {
@@ -258,27 +258,20 @@ func ActorFromPb(pb *iampb.ActorPb) (*Actor, error) {
 }
 
 type CheckPolicyRequest struct {
+	Actor Actor `json:"-" tf:"-"`
 
-	// Wire name: 'actor'
-	Actor Actor `tf:"-"`
+	AuthzIdentity RequestAuthzIdentity `json:"-" tf:"-"`
 
-	// Wire name: 'authz_identity'
-	AuthzIdentity RequestAuthzIdentity `tf:"-"`
+	ConsistencyToken ConsistencyToken `json:"-" tf:"-"`
 
-	// Wire name: 'consistency_token'
-	ConsistencyToken ConsistencyToken `tf:"-"`
-
-	// Wire name: 'permission'
-	Permission string `tf:"-"`
+	Permission string `json:"-" tf:"-"`
 	// Ex: (servicePrincipal/use,
 	// accounts/<account-id>/servicePrincipals/<sp-id>) Ex:
 	// (servicePrincipal.ruleSet/update,
 	// accounts/<account-id>/servicePrincipals/<sp-id>/ruleSets/default)
-	// Wire name: 'resource'
-	Resource string `tf:"-"`
+	Resource string `json:"-" tf:"-"`
 
-	// Wire name: 'resource_info'
-	ResourceInfo *ResourceInfo `tf:"-"`
+	ResourceInfo *ResourceInfo `json:"-" tf:"-"`
 }
 
 func (st CheckPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -387,11 +380,11 @@ func CheckPolicyRequestFromPb(pb *iampb.CheckPolicyRequestPb) (*CheckPolicyReque
 type CheckPolicyResponse struct {
 
 	// Wire name: 'consistency_token'
-	ConsistencyToken ConsistencyToken ``
+	ConsistencyToken ConsistencyToken `json:"consistency_token"`
 
 	// Wire name: 'is_permitted'
-	IsPermitted     bool     ``
-	ForceSendFields []string `tf:"-"`
+	IsPermitted     bool     `json:"is_permitted,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CheckPolicyResponse) MarshalJSON() ([]byte, error) {
@@ -462,20 +455,20 @@ func CheckPolicyResponseFromPb(pb *iampb.CheckPolicyResponsePb) (*CheckPolicyRes
 type ComplexValue struct {
 
 	// Wire name: 'display'
-	Display string ``
+	Display string `json:"display,omitempty"`
 
 	// Wire name: 'primary'
-	Primary bool ``
+	Primary bool `json:"primary,omitempty"`
 
 	// Wire name: '$ref'
-	Ref string ``
+	Ref string `json:"$ref,omitempty"`
 
 	// Wire name: 'type'
-	Type string ``
+	Type string `json:"type,omitempty"`
 
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ComplexValue) MarshalJSON() ([]byte, error) {
@@ -540,7 +533,7 @@ func ComplexValueFromPb(pb *iampb.ComplexValuePb) (*ComplexValue, error) {
 type ConsistencyToken struct {
 
 	// Wire name: 'value'
-	Value string ``
+	Value string `json:"value"`
 }
 
 func (st ConsistencyToken) MarshalJSON() ([]byte, error) {
@@ -590,8 +583,7 @@ func ConsistencyTokenFromPb(pb *iampb.ConsistencyTokenPb) (*ConsistencyToken, er
 
 type DeleteAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteAccountGroupRequest) MarshalJSON() ([]byte, error) {
@@ -641,8 +633,7 @@ func DeleteAccountGroupRequestFromPb(pb *iampb.DeleteAccountGroupRequestPb) (*De
 
 type DeleteAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteAccountServicePrincipalRequest) MarshalJSON() ([]byte, error) {
@@ -692,8 +683,7 @@ func DeleteAccountServicePrincipalRequestFromPb(pb *iampb.DeleteAccountServicePr
 
 type DeleteAccountUserRequest struct {
 	// Unique ID for a user in the Databricks account.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteAccountUserRequest) MarshalJSON() ([]byte, error) {
@@ -743,8 +733,7 @@ func DeleteAccountUserRequestFromPb(pb *iampb.DeleteAccountUserRequestPb) (*Dele
 
 type DeleteGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteGroupRequest) MarshalJSON() ([]byte, error) {
@@ -794,8 +783,7 @@ func DeleteGroupRequestFromPb(pb *iampb.DeleteGroupRequestPb) (*DeleteGroupReque
 
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteServicePrincipalRequest) MarshalJSON() ([]byte, error) {
@@ -845,8 +833,7 @@ func DeleteServicePrincipalRequestFromPb(pb *iampb.DeleteServicePrincipalRequest
 
 type DeleteUserRequest struct {
 	// Unique ID for a user in the Databricks workspace.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteUserRequest) MarshalJSON() ([]byte, error) {
@@ -896,11 +883,9 @@ func DeleteUserRequestFromPb(pb *iampb.DeleteUserRequestPb) (*DeleteUserRequest,
 
 type DeleteWorkspaceAssignmentRequest struct {
 	// The ID of the user, service principal, or group.
-	// Wire name: 'principal_id'
-	PrincipalId int64 `tf:"-"`
+	PrincipalId int64 `json:"-" tf:"-"`
 	// The workspace ID for the account.
-	// Wire name: 'workspace_id'
-	WorkspaceId int64 `tf:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
 func (st DeleteWorkspaceAssignmentRequest) MarshalJSON() ([]byte, error) {
@@ -952,8 +937,7 @@ func DeleteWorkspaceAssignmentRequestFromPb(pb *iampb.DeleteWorkspaceAssignmentR
 
 type GetAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetAccountGroupRequest) MarshalJSON() ([]byte, error) {
@@ -1003,8 +987,7 @@ func GetAccountGroupRequestFromPb(pb *iampb.GetAccountGroupRequestPb) (*GetAccou
 
 type GetAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetAccountServicePrincipalRequest) MarshalJSON() ([]byte, error) {
@@ -1054,14 +1037,11 @@ func GetAccountServicePrincipalRequestFromPb(pb *iampb.GetAccountServicePrincipa
 
 type GetAccountUserRequest struct {
 	// Comma-separated list of attributes to return in response.
-	// Wire name: 'attributes'
-	Attributes string `tf:"-"`
+	Attributes string `json:"-" tf:"-"`
 	// Desired number of results per page. Default is 10000.
-	// Wire name: 'count'
-	Count int `tf:"-"`
+	Count int `json:"-" tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	// Wire name: 'excludedAttributes'
-	ExcludedAttributes string `tf:"-"`
+	ExcludedAttributes string `json:"-" tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -1069,22 +1049,17 @@ type GetAccountUserRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	// Wire name: 'filter'
-	Filter string `tf:"-"`
+	Filter string `json:"-" tf:"-"`
 	// Unique ID for a user in the Databricks account.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	// Wire name: 'sortBy'
-	SortBy string `tf:"-"`
+	SortBy string `json:"-" tf:"-"`
 	// The order to sort the results.
-	// Wire name: 'sortOrder'
-	SortOrder GetSortOrder `tf:"-"`
+	SortOrder GetSortOrder `json:"-" tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	// Wire name: 'startIndex'
-	StartIndex      int      `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	StartIndex      int      `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetAccountUserRequest) MarshalJSON() ([]byte, error) {
@@ -1172,8 +1147,7 @@ type GetAssignableRolesForResourceRequest struct {
 	// `resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>` | A resource name for
 	// the group. `resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>` | A
 	// resource name for the service principal.
-	// Wire name: 'resource'
-	Resource string `tf:"-"`
+	Resource string `json:"-" tf:"-"`
 }
 
 func (st GetAssignableRolesForResourceRequest) MarshalJSON() ([]byte, error) {
@@ -1224,7 +1198,7 @@ func GetAssignableRolesForResourceRequestFromPb(pb *iampb.GetAssignableRolesForR
 type GetAssignableRolesForResourceResponse struct {
 
 	// Wire name: 'roles'
-	Roles []Role ``
+	Roles []Role `json:"roles,omitempty"`
 }
 
 func (st GetAssignableRolesForResourceResponse) MarshalJSON() ([]byte, error) {
@@ -1296,8 +1270,7 @@ func GetAssignableRolesForResourceResponseFromPb(pb *iampb.GetAssignableRolesFor
 
 type GetGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetGroupRequest) MarshalJSON() ([]byte, error) {
@@ -1348,7 +1321,7 @@ func GetGroupRequestFromPb(pb *iampb.GetGroupRequestPb) (*GetGroupRequest, error
 type GetPasswordPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []PasswordPermissionsDescription ``
+	PermissionLevels []PasswordPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetPasswordPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -1419,16 +1392,13 @@ func GetPasswordPermissionLevelsResponseFromPb(pb *iampb.GetPasswordPermissionLe
 }
 
 type GetPermissionLevelsRequest struct {
-
-	// Wire name: 'request_object_id'
-	RequestObjectId string `tf:"-"`
+	RequestObjectId string `json:"-" tf:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
 	// dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
 	// notebooks, pipelines, queries, registered-models, repos,
 	// serving-endpoints, or warehouses.
-	// Wire name: 'request_object_type'
-	RequestObjectType string `tf:"-"`
+	RequestObjectType string `json:"-" tf:"-"`
 }
 
 func (st GetPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
@@ -1481,7 +1451,7 @@ func GetPermissionLevelsRequestFromPb(pb *iampb.GetPermissionLevelsRequestPb) (*
 type GetPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []PermissionsDescription ``
+	PermissionLevels []PermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -1553,15 +1523,13 @@ func GetPermissionLevelsResponseFromPb(pb *iampb.GetPermissionLevelsResponsePb) 
 
 type GetPermissionRequest struct {
 	// The id of the request object.
-	// Wire name: 'request_object_id'
-	RequestObjectId string `tf:"-"`
+	RequestObjectId string `json:"-" tf:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
 	// dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
 	// notebooks, pipelines, queries, registered-models, repos,
 	// serving-endpoints, or warehouses.
-	// Wire name: 'request_object_type'
-	RequestObjectType string `tf:"-"`
+	RequestObjectType string `json:"-" tf:"-"`
 }
 
 func (st GetPermissionRequest) MarshalJSON() ([]byte, error) {
@@ -1625,8 +1593,7 @@ type GetRuleSetRequest struct {
 	// in GET to indicate no freshness requirements.
 	// `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==` | An
 	// etag encoded a specific version of the rule set to get or to be updated.
-	// Wire name: 'etag'
-	Etag string `tf:"-"`
+	Etag string `json:"-" tf:"-"`
 	// The ruleset name associated with the request.
 	//
 	// Examples | Summary :--- | :---
@@ -1636,8 +1603,7 @@ type GetRuleSetRequest struct {
 	// for a rule set on the group.
 	// `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default`
 	// | A name for a rule set on the service principal.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetRuleSetRequest) MarshalJSON() ([]byte, error) {
@@ -1689,8 +1655,7 @@ func GetRuleSetRequestFromPb(pb *iampb.GetRuleSetRequestPb) (*GetRuleSetRequest,
 
 type GetServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetServicePrincipalRequest) MarshalJSON() ([]byte, error) {
@@ -1793,14 +1758,11 @@ func GetSortOrderFromPb(pb *iampb.GetSortOrderPb) (*GetSortOrder, error) {
 
 type GetUserRequest struct {
 	// Comma-separated list of attributes to return in response.
-	// Wire name: 'attributes'
-	Attributes string `tf:"-"`
+	Attributes string `json:"-" tf:"-"`
 	// Desired number of results per page.
-	// Wire name: 'count'
-	Count int `tf:"-"`
+	Count int `json:"-" tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	// Wire name: 'excludedAttributes'
-	ExcludedAttributes string `tf:"-"`
+	ExcludedAttributes string `json:"-" tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -1808,22 +1770,17 @@ type GetUserRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	// Wire name: 'filter'
-	Filter string `tf:"-"`
+	Filter string `json:"-" tf:"-"`
 	// Unique ID for a user in the Databricks workspace.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	// Wire name: 'sortBy'
-	SortBy string `tf:"-"`
+	SortBy string `json:"-" tf:"-"`
 	// The order to sort the results.
-	// Wire name: 'sortOrder'
-	SortOrder GetSortOrder `tf:"-"`
+	SortOrder GetSortOrder `json:"-" tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	// Wire name: 'startIndex'
-	StartIndex      int      `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	StartIndex      int      `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetUserRequest) MarshalJSON() ([]byte, error) {
@@ -1905,8 +1862,7 @@ func GetUserRequestFromPb(pb *iampb.GetUserRequestPb) (*GetUserRequest, error) {
 
 type GetWorkspaceAssignmentRequest struct {
 	// The workspace ID.
-	// Wire name: 'workspace_id'
-	WorkspaceId int64 `tf:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
 func (st GetWorkspaceAssignmentRequest) MarshalJSON() ([]byte, error) {
@@ -1961,10 +1917,10 @@ type GrantRule struct {
 	// users/<USERNAME> * groups/<GROUP_NAME> *
 	// servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>
 	// Wire name: 'principals'
-	Principals []string ``
+	Principals []string `json:"principals,omitempty"`
 	// Role that is assigned to the list of principals.
 	// Wire name: 'role'
-	Role string ``
+	Role string `json:"role"`
 }
 
 func (st GrantRule) MarshalJSON() ([]byte, error) {
@@ -2017,35 +1973,35 @@ func GrantRuleFromPb(pb *iampb.GrantRulePb) (*GrantRule, error) {
 type Group struct {
 	// String that represents a human-readable group name
 	// Wire name: 'displayName'
-	DisplayName string ``
+	DisplayName string `json:"displayName,omitempty"`
 	// Entitlements assigned to the group. See [assigning entitlements] for a
 	// full list of supported values.
 	//
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
 	// Wire name: 'entitlements'
-	Entitlements []ComplexValue ``
+	Entitlements []ComplexValue `json:"entitlements,omitempty"`
 
 	// Wire name: 'externalId'
-	ExternalId string ``
+	ExternalId string `json:"externalId,omitempty"`
 
 	// Wire name: 'groups'
-	Groups []ComplexValue ``
+	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks group ID
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 
 	// Wire name: 'members'
-	Members []ComplexValue ``
+	Members []ComplexValue `json:"members,omitempty"`
 	// Container for the group identifier. Workspace local versus account.
 	// Wire name: 'meta'
-	Meta *ResourceMeta ``
+	Meta *ResourceMeta `json:"meta,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
 	// Wire name: 'roles'
-	Roles []ComplexValue ``
+	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the group.
 	// Wire name: 'schemas'
-	Schemas         []GroupSchema ``
-	ForceSendFields []string      `tf:"-"`
+	Schemas         []GroupSchema `json:"schemas,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st Group) MarshalJSON() ([]byte, error) {
@@ -2289,14 +2245,11 @@ func GroupSchemaFromPb(pb *iampb.GroupSchemaPb) (*GroupSchema, error) {
 
 type ListAccountGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	// Wire name: 'attributes'
-	Attributes string `tf:"-"`
+	Attributes string `json:"-" tf:"-"`
 	// Desired number of results per page. Default is 10000.
-	// Wire name: 'count'
-	Count int64 `tf:"-"`
+	Count int64 `json:"-" tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	// Wire name: 'excludedAttributes'
-	ExcludedAttributes string `tf:"-"`
+	ExcludedAttributes string `json:"-" tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -2304,18 +2257,14 @@ type ListAccountGroupsRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	// Wire name: 'filter'
-	Filter string `tf:"-"`
+	Filter string `json:"-" tf:"-"`
 	// Attribute to sort the results.
-	// Wire name: 'sortBy'
-	SortBy string `tf:"-"`
+	SortBy string `json:"-" tf:"-"`
 	// The order to sort the results.
-	// Wire name: 'sortOrder'
-	SortOrder ListSortOrder `tf:"-"`
+	SortOrder ListSortOrder `json:"-" tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	// Wire name: 'startIndex'
-	StartIndex      int64    `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	StartIndex      int64    `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAccountGroupsRequest) MarshalJSON() ([]byte, error) {
@@ -2395,14 +2344,11 @@ func ListAccountGroupsRequestFromPb(pb *iampb.ListAccountGroupsRequestPb) (*List
 
 type ListAccountServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	// Wire name: 'attributes'
-	Attributes string `tf:"-"`
+	Attributes string `json:"-" tf:"-"`
 	// Desired number of results per page. Default is 10000.
-	// Wire name: 'count'
-	Count int64 `tf:"-"`
+	Count int64 `json:"-" tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	// Wire name: 'excludedAttributes'
-	ExcludedAttributes string `tf:"-"`
+	ExcludedAttributes string `json:"-" tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -2410,18 +2356,14 @@ type ListAccountServicePrincipalsRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	// Wire name: 'filter'
-	Filter string `tf:"-"`
+	Filter string `json:"-" tf:"-"`
 	// Attribute to sort the results.
-	// Wire name: 'sortBy'
-	SortBy string `tf:"-"`
+	SortBy string `json:"-" tf:"-"`
 	// The order to sort the results.
-	// Wire name: 'sortOrder'
-	SortOrder ListSortOrder `tf:"-"`
+	SortOrder ListSortOrder `json:"-" tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	// Wire name: 'startIndex'
-	StartIndex      int64    `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	StartIndex      int64    `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAccountServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
@@ -2501,14 +2443,11 @@ func ListAccountServicePrincipalsRequestFromPb(pb *iampb.ListAccountServicePrinc
 
 type ListAccountUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
-	// Wire name: 'attributes'
-	Attributes string `tf:"-"`
+	Attributes string `json:"-" tf:"-"`
 	// Desired number of results per page. Default is 10000.
-	// Wire name: 'count'
-	Count int64 `tf:"-"`
+	Count int64 `json:"-" tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	// Wire name: 'excludedAttributes'
-	ExcludedAttributes string `tf:"-"`
+	ExcludedAttributes string `json:"-" tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -2516,19 +2455,15 @@ type ListAccountUsersRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	// Wire name: 'filter'
-	Filter string `tf:"-"`
+	Filter string `json:"-" tf:"-"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	// Wire name: 'sortBy'
-	SortBy string `tf:"-"`
+	SortBy string `json:"-" tf:"-"`
 	// The order to sort the results.
-	// Wire name: 'sortOrder'
-	SortOrder ListSortOrder `tf:"-"`
+	SortOrder ListSortOrder `json:"-" tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	// Wire name: 'startIndex'
-	StartIndex      int64    `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	StartIndex      int64    `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAccountUsersRequest) MarshalJSON() ([]byte, error) {
@@ -2608,14 +2543,11 @@ func ListAccountUsersRequestFromPb(pb *iampb.ListAccountUsersRequestPb) (*ListAc
 
 type ListGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	// Wire name: 'attributes'
-	Attributes string `tf:"-"`
+	Attributes string `json:"-" tf:"-"`
 	// Desired number of results per page.
-	// Wire name: 'count'
-	Count int64 `tf:"-"`
+	Count int64 `json:"-" tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	// Wire name: 'excludedAttributes'
-	ExcludedAttributes string `tf:"-"`
+	ExcludedAttributes string `json:"-" tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -2623,18 +2555,14 @@ type ListGroupsRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	// Wire name: 'filter'
-	Filter string `tf:"-"`
+	Filter string `json:"-" tf:"-"`
 	// Attribute to sort the results.
-	// Wire name: 'sortBy'
-	SortBy string `tf:"-"`
+	SortBy string `json:"-" tf:"-"`
 	// The order to sort the results.
-	// Wire name: 'sortOrder'
-	SortOrder ListSortOrder `tf:"-"`
+	SortOrder ListSortOrder `json:"-" tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	// Wire name: 'startIndex'
-	StartIndex      int64    `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	StartIndex      int64    `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListGroupsRequest) MarshalJSON() ([]byte, error) {
@@ -2715,21 +2643,21 @@ func ListGroupsRequestFromPb(pb *iampb.ListGroupsRequestPb) (*ListGroupsRequest,
 type ListGroupsResponse struct {
 	// Total results returned in the response.
 	// Wire name: 'itemsPerPage'
-	ItemsPerPage int64 ``
+	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
 	// User objects returned in the response.
 	// Wire name: 'Resources'
-	Resources []Group ``
+	Resources []Group `json:"Resources,omitempty"`
 	// The schema of the service principal.
 	// Wire name: 'schemas'
-	Schemas []ListResponseSchema ``
+	Schemas []ListResponseSchema `json:"schemas,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
 	// Wire name: 'startIndex'
-	StartIndex int64 ``
+	StartIndex int64 `json:"startIndex,omitempty"`
 	// Total results that match the request filters.
 	// Wire name: 'totalResults'
-	TotalResults    int64    ``
-	ForceSendFields []string `tf:"-"`
+	TotalResults    int64    `json:"totalResults,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListGroupsResponse) MarshalJSON() ([]byte, error) {
@@ -2888,21 +2816,21 @@ func ListResponseSchemaFromPb(pb *iampb.ListResponseSchemaPb) (*ListResponseSche
 type ListServicePrincipalResponse struct {
 	// Total results returned in the response.
 	// Wire name: 'itemsPerPage'
-	ItemsPerPage int64 ``
+	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
 	// User objects returned in the response.
 	// Wire name: 'Resources'
-	Resources []ServicePrincipal ``
+	Resources []ServicePrincipal `json:"Resources,omitempty"`
 	// The schema of the List response.
 	// Wire name: 'schemas'
-	Schemas []ListResponseSchema ``
+	Schemas []ListResponseSchema `json:"schemas,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
 	// Wire name: 'startIndex'
-	StartIndex int64 ``
+	StartIndex int64 `json:"startIndex,omitempty"`
 	// Total results that match the request filters.
 	// Wire name: 'totalResults'
-	TotalResults    int64    ``
-	ForceSendFields []string `tf:"-"`
+	TotalResults    int64    `json:"totalResults,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListServicePrincipalResponse) MarshalJSON() ([]byte, error) {
@@ -3010,14 +2938,11 @@ func ListServicePrincipalResponseFromPb(pb *iampb.ListServicePrincipalResponsePb
 
 type ListServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	// Wire name: 'attributes'
-	Attributes string `tf:"-"`
+	Attributes string `json:"-" tf:"-"`
 	// Desired number of results per page.
-	// Wire name: 'count'
-	Count int64 `tf:"-"`
+	Count int64 `json:"-" tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	// Wire name: 'excludedAttributes'
-	ExcludedAttributes string `tf:"-"`
+	ExcludedAttributes string `json:"-" tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -3025,18 +2950,14 @@ type ListServicePrincipalsRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	// Wire name: 'filter'
-	Filter string `tf:"-"`
+	Filter string `json:"-" tf:"-"`
 	// Attribute to sort the results.
-	// Wire name: 'sortBy'
-	SortBy string `tf:"-"`
+	SortBy string `json:"-" tf:"-"`
 	// The order to sort the results.
-	// Wire name: 'sortOrder'
-	SortOrder ListSortOrder `tf:"-"`
+	SortOrder ListSortOrder `json:"-" tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	// Wire name: 'startIndex'
-	StartIndex      int64    `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	StartIndex      int64    `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
@@ -3169,14 +3090,11 @@ func ListSortOrderFromPb(pb *iampb.ListSortOrderPb) (*ListSortOrder, error) {
 
 type ListUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
-	// Wire name: 'attributes'
-	Attributes string `tf:"-"`
+	Attributes string `json:"-" tf:"-"`
 	// Desired number of results per page.
-	// Wire name: 'count'
-	Count int64 `tf:"-"`
+	Count int64 `json:"-" tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	// Wire name: 'excludedAttributes'
-	ExcludedAttributes string `tf:"-"`
+	ExcludedAttributes string `json:"-" tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -3184,19 +3102,15 @@ type ListUsersRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	// Wire name: 'filter'
-	Filter string `tf:"-"`
+	Filter string `json:"-" tf:"-"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	// Wire name: 'sortBy'
-	SortBy string `tf:"-"`
+	SortBy string `json:"-" tf:"-"`
 	// The order to sort the results.
-	// Wire name: 'sortOrder'
-	SortOrder ListSortOrder `tf:"-"`
+	SortOrder ListSortOrder `json:"-" tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	// Wire name: 'startIndex'
-	StartIndex      int64    `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	StartIndex      int64    `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListUsersRequest) MarshalJSON() ([]byte, error) {
@@ -3277,21 +3191,21 @@ func ListUsersRequestFromPb(pb *iampb.ListUsersRequestPb) (*ListUsersRequest, er
 type ListUsersResponse struct {
 	// Total results returned in the response.
 	// Wire name: 'itemsPerPage'
-	ItemsPerPage int64 ``
+	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
 	// User objects returned in the response.
 	// Wire name: 'Resources'
-	Resources []User ``
+	Resources []User `json:"Resources,omitempty"`
 	// The schema of the List response.
 	// Wire name: 'schemas'
-	Schemas []ListResponseSchema ``
+	Schemas []ListResponseSchema `json:"schemas,omitempty"`
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
 	// Wire name: 'startIndex'
-	StartIndex int64 ``
+	StartIndex int64 `json:"startIndex,omitempty"`
 	// Total results that match the request filters.
 	// Wire name: 'totalResults'
-	TotalResults    int64    ``
-	ForceSendFields []string `tf:"-"`
+	TotalResults    int64    `json:"totalResults,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListUsersResponse) MarshalJSON() ([]byte, error) {
@@ -3399,8 +3313,7 @@ func ListUsersResponseFromPb(pb *iampb.ListUsersResponsePb) (*ListUsersResponse,
 
 type ListWorkspaceAssignmentRequest struct {
 	// The workspace ID for the account.
-	// Wire name: 'workspace_id'
-	WorkspaceId int64 `tf:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
 func (st ListWorkspaceAssignmentRequest) MarshalJSON() ([]byte, error) {
@@ -3451,18 +3364,18 @@ func ListWorkspaceAssignmentRequestFromPb(pb *iampb.ListWorkspaceAssignmentReque
 type MigratePermissionsRequest struct {
 	// The name of the workspace group that permissions will be migrated from.
 	// Wire name: 'from_workspace_group_name'
-	FromWorkspaceGroupName string ``
+	FromWorkspaceGroupName string `json:"from_workspace_group_name"`
 	// The maximum number of permissions that will be migrated.
 	// Wire name: 'size'
-	Size int ``
+	Size int `json:"size,omitempty"`
 	// The name of the account group that permissions will be migrated to.
 	// Wire name: 'to_account_group_name'
-	ToAccountGroupName string ``
+	ToAccountGroupName string `json:"to_account_group_name"`
 	// WorkspaceId of the associated workspace where the permission migration
 	// will occur.
 	// Wire name: 'workspace_id'
-	WorkspaceId     int64    ``
-	ForceSendFields []string `tf:"-"`
+	WorkspaceId     int64    `json:"workspace_id"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st MigratePermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -3525,8 +3438,8 @@ func MigratePermissionsRequestFromPb(pb *iampb.MigratePermissionsRequestPb) (*Mi
 type MigratePermissionsResponse struct {
 	// Number of permissions migrated.
 	// Wire name: 'permissions_migrated'
-	PermissionsMigrated int      ``
-	ForceSendFields     []string `tf:"-"`
+	PermissionsMigrated int      `json:"permissions_migrated,omitempty"`
+	ForceSendFields     []string `json:"-" tf:"-"`
 }
 
 func (st MigratePermissionsResponse) MarshalJSON() ([]byte, error) {
@@ -3583,11 +3496,11 @@ func MigratePermissionsResponseFromPb(pb *iampb.MigratePermissionsResponsePb) (*
 type Name struct {
 	// Family name of the Databricks user.
 	// Wire name: 'familyName'
-	FamilyName string ``
+	FamilyName string `json:"familyName,omitempty"`
 	// Given name of the Databricks user.
 	// Wire name: 'givenName'
-	GivenName       string   ``
-	ForceSendFields []string `tf:"-"`
+	GivenName       string   `json:"givenName,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Name) MarshalJSON() ([]byte, error) {
@@ -3646,14 +3559,14 @@ func NameFromPb(pb *iampb.NamePb) (*Name, error) {
 type ObjectPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []AccessControlResponse ``
+	AccessControlList []AccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ObjectPermissions) MarshalJSON() ([]byte, error) {
@@ -3735,15 +3648,14 @@ func ObjectPermissionsFromPb(pb *iampb.ObjectPermissionsPb) (*ObjectPermissions,
 
 type PartialUpdate struct {
 	// Unique ID in the Databricks workspace.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 
 	// Wire name: 'Operations'
-	Operations []Patch ``
+	Operations []Patch `json:"Operations,omitempty"`
 	// The schema of the patch request. Must be
 	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
 	// Wire name: 'schemas'
-	Schemas []PatchSchema ``
+	Schemas []PatchSchema `json:"schemas,omitempty"`
 }
 
 func (st PartialUpdate) MarshalJSON() ([]byte, error) {
@@ -3842,17 +3754,17 @@ func PartialUpdateFromPb(pb *iampb.PartialUpdatePb) (*PartialUpdate, error) {
 type PasswordAccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Permission level
 	// Wire name: 'permission_level'
-	PermissionLevel PasswordPermissionLevel ``
+	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PasswordAccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -3927,20 +3839,20 @@ func PasswordAccessControlRequestFromPb(pb *iampb.PasswordAccessControlRequestPb
 type PasswordAccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []PasswordPermission ``
+	AllPermissions []PasswordPermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PasswordAccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -4027,14 +3939,14 @@ func PasswordAccessControlResponseFromPb(pb *iampb.PasswordAccessControlResponse
 type PasswordPermission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
 	// Wire name: 'permission_level'
-	PermissionLevel PasswordPermissionLevel ``
-	ForceSendFields []string                `tf:"-"`
+	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                `json:"-" tf:"-"`
 }
 
 func (st PasswordPermission) MarshalJSON() ([]byte, error) {
@@ -4158,14 +4070,14 @@ func PasswordPermissionLevelFromPb(pb *iampb.PasswordPermissionLevelPb) (*Passwo
 type PasswordPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []PasswordAccessControlResponse ``
+	AccessControlList []PasswordAccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PasswordPermissions) MarshalJSON() ([]byte, error) {
@@ -4248,11 +4160,11 @@ func PasswordPermissionsFromPb(pb *iampb.PasswordPermissionsPb) (*PasswordPermis
 type PasswordPermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Permission level
 	// Wire name: 'permission_level'
-	PermissionLevel PasswordPermissionLevel ``
-	ForceSendFields []string                `tf:"-"`
+	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                `json:"-" tf:"-"`
 }
 
 func (st PasswordPermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -4323,7 +4235,7 @@ func PasswordPermissionsDescriptionFromPb(pb *iampb.PasswordPermissionsDescripti
 type PasswordPermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []PasswordAccessControlRequest ``
+	AccessControlList []PasswordAccessControlRequest `json:"access_control_list,omitempty"`
 }
 
 func (st PasswordPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -4396,14 +4308,14 @@ func PasswordPermissionsRequestFromPb(pb *iampb.PasswordPermissionsRequestPb) (*
 type Patch struct {
 	// Type of patch operation.
 	// Wire name: 'op'
-	Op PatchOp ``
+	Op PatchOp `json:"op,omitempty"`
 	// Selection of patch operation
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path,omitempty"`
 	// Value to modify
 	// Wire name: 'value'
-	Value           any      ``
-	ForceSendFields []string `tf:"-"`
+	Value           any      `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Patch) MarshalJSON() ([]byte, error) {
@@ -4583,14 +4495,14 @@ func PatchSchemaFromPb(pb *iampb.PatchSchemaPb) (*PatchSchema, error) {
 type Permission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel PermissionLevel ``
-	ForceSendFields []string        `tf:"-"`
+	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string        `json:"-" tf:"-"`
 }
 
 func (st Permission) MarshalJSON() ([]byte, error) {
@@ -4665,14 +4577,14 @@ func PermissionFromPb(pb *iampb.PermissionPb) (*Permission, error) {
 type PermissionAssignment struct {
 	// Error response associated with a workspace permission assignment, if any.
 	// Wire name: 'error'
-	Error string ``
+	Error string `json:"error,omitempty"`
 	// The permissions level of the principal.
 	// Wire name: 'permissions'
-	Permissions []WorkspacePermission ``
+	Permissions []WorkspacePermission `json:"permissions,omitempty"`
 	// Information about the principal assigned to the workspace.
 	// Wire name: 'principal'
-	Principal       *PrincipalOutput ``
-	ForceSendFields []string         `tf:"-"`
+	Principal       *PrincipalOutput `json:"principal,omitempty"`
+	ForceSendFields []string         `json:"-" tf:"-"`
 }
 
 func (st PermissionAssignment) MarshalJSON() ([]byte, error) {
@@ -4767,7 +4679,7 @@ func PermissionAssignmentFromPb(pb *iampb.PermissionAssignmentPb) (*PermissionAs
 type PermissionAssignments struct {
 	// Array of permissions assignments defined for a workspace.
 	// Wire name: 'permission_assignments'
-	PermissionAssignments []PermissionAssignment ``
+	PermissionAssignments []PermissionAssignment `json:"permission_assignments,omitempty"`
 }
 
 func (st PermissionAssignments) MarshalJSON() ([]byte, error) {
@@ -4945,11 +4857,11 @@ func PermissionLevelFromPb(pb *iampb.PermissionLevelPb) (*PermissionLevel, error
 type PermissionOutput struct {
 	// The results of a permissions query.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel WorkspacePermission ``
-	ForceSendFields []string            `tf:"-"`
+	PermissionLevel WorkspacePermission `json:"permission_level,omitempty"`
+	ForceSendFields []string            `json:"-" tf:"-"`
 }
 
 func (st PermissionOutput) MarshalJSON() ([]byte, error) {
@@ -5020,11 +4932,11 @@ func PermissionOutputFromPb(pb *iampb.PermissionOutputPb) (*PermissionOutput, er
 type PermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel PermissionLevel ``
-	ForceSendFields []string        `tf:"-"`
+	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string        `json:"-" tf:"-"`
 }
 
 func (st PermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -5096,21 +5008,21 @@ func PermissionsDescriptionFromPb(pb *iampb.PermissionsDescriptionPb) (*Permissi
 type PrincipalOutput struct {
 	// The display name of the principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// The group name of the group. Present only if the principal is a group.
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// The unique, opaque id of the principal.
 	// Wire name: 'principal_id'
-	PrincipalId int64 ``
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The name of the service principal. Present only if the principal is a
 	// service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// The username of the user. Present only if the principal is a user.
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PrincipalOutput) MarshalJSON() ([]byte, error) {
@@ -5230,15 +5142,15 @@ func RequestAuthzIdentityFromPb(pb *iampb.RequestAuthzIdentityPb) (*RequestAuthz
 type ResourceInfo struct {
 	// Id of the current resource.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id"`
 	// The legacy acl path of the current resource.
 	// Wire name: 'legacy_acl_path'
-	LegacyAclPath string ``
+	LegacyAclPath string `json:"legacy_acl_path,omitempty"`
 	// Parent resource info for the current resource. The parent may have
 	// another parent.
 	// Wire name: 'parent_resource_info'
-	ParentResourceInfo *ResourceInfo ``
-	ForceSendFields    []string      `tf:"-"`
+	ParentResourceInfo *ResourceInfo `json:"parent_resource_info,omitempty"`
+	ForceSendFields    []string      `json:"-" tf:"-"`
 }
 
 func (st ResourceInfo) MarshalJSON() ([]byte, error) {
@@ -5312,8 +5224,8 @@ type ResourceMeta struct {
 	// Identifier for group type. Can be local workspace group
 	// (`WorkspaceGroup`) or account group (`Group`).
 	// Wire name: 'resourceType'
-	ResourceType    string   ``
-	ForceSendFields []string `tf:"-"`
+	ResourceType    string   `json:"resourceType,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ResourceMeta) MarshalJSON() ([]byte, error) {
@@ -5370,7 +5282,7 @@ func ResourceMetaFromPb(pb *iampb.ResourceMetaPb) (*ResourceMeta, error) {
 type Role struct {
 	// Role to assign to a principal or a list of principals on a resource.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 }
 
 func (st Role) MarshalJSON() ([]byte, error) {
@@ -5429,13 +5341,13 @@ type RuleSetResponse struct {
 	// it with the PUT update request to identify the rule set version you are
 	// updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 
 	// Wire name: 'grant_rules'
-	GrantRules []GrantRule ``
+	GrantRules []GrantRule `json:"grant_rules,omitempty"`
 	// Name of the rule set.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 }
 
 func (st RuleSetResponse) MarshalJSON() ([]byte, error) {
@@ -5520,13 +5432,13 @@ type RuleSetUpdateRequest struct {
 	// it with the PUT update request to identify the rule set version you are
 	// updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 
 	// Wire name: 'grant_rules'
-	GrantRules []GrantRule ``
+	GrantRules []GrantRule `json:"grant_rules,omitempty"`
 	// Name of the rule set.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 }
 
 func (st RuleSetUpdateRequest) MarshalJSON() ([]byte, error) {
@@ -5603,35 +5515,35 @@ func RuleSetUpdateRequestFromPb(pb *iampb.RuleSetUpdateRequestPb) (*RuleSetUpdat
 type ServicePrincipal struct {
 	// If this user is active
 	// Wire name: 'active'
-	Active bool ``
+	Active bool `json:"active,omitempty"`
 	// UUID relating to the service principal
 	// Wire name: 'applicationId'
-	ApplicationId string ``
+	ApplicationId string `json:"applicationId,omitempty"`
 	// String that represents a concatenation of given and family names.
 	// Wire name: 'displayName'
-	DisplayName string ``
+	DisplayName string `json:"displayName,omitempty"`
 	// Entitlements assigned to the service principal. See [assigning
 	// entitlements] for a full list of supported values.
 	//
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
 	// Wire name: 'entitlements'
-	Entitlements []ComplexValue ``
+	Entitlements []ComplexValue `json:"entitlements,omitempty"`
 
 	// Wire name: 'externalId'
-	ExternalId string ``
+	ExternalId string `json:"externalId,omitempty"`
 
 	// Wire name: 'groups'
-	Groups []ComplexValue ``
+	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks service principal ID.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
 	// Wire name: 'roles'
-	Roles []ComplexValue ``
+	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the List response.
 	// Wire name: 'schemas'
-	Schemas         []ServicePrincipalSchema ``
-	ForceSendFields []string                 `tf:"-"`
+	Schemas         []ServicePrincipalSchema `json:"schemas,omitempty"`
+	ForceSendFields []string                 `json:"-" tf:"-"`
 }
 
 func (st ServicePrincipal) MarshalJSON() ([]byte, error) {
@@ -5842,17 +5754,15 @@ func ServicePrincipalSchemaFromPb(pb *iampb.ServicePrincipalSchemaPb) (*ServiceP
 type SetObjectPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []AccessControlRequest ``
+	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
 	// The id of the request object.
-	// Wire name: 'request_object_id'
-	RequestObjectId string `tf:"-"`
+	RequestObjectId string `json:"-" tf:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
 	// dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
 	// notebooks, pipelines, queries, registered-models, repos,
 	// serving-endpoints, or warehouses.
-	// Wire name: 'request_object_type'
-	RequestObjectType string `tf:"-"`
+	RequestObjectType string `json:"-" tf:"-"`
 }
 
 func (st SetObjectPermissions) MarshalJSON() ([]byte, error) {
@@ -5929,17 +5839,15 @@ func SetObjectPermissionsFromPb(pb *iampb.SetObjectPermissionsPb) (*SetObjectPer
 type UpdateObjectPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []AccessControlRequest ``
+	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
 	// The id of the request object.
-	// Wire name: 'request_object_id'
-	RequestObjectId string `tf:"-"`
+	RequestObjectId string `json:"-" tf:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// alertsv2, authorization, clusters, cluster-policies, dashboards,
 	// dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
 	// notebooks, pipelines, queries, registered-models, repos,
 	// serving-endpoints, or warehouses.
-	// Wire name: 'request_object_type'
-	RequestObjectType string `tf:"-"`
+	RequestObjectType string `json:"-" tf:"-"`
 }
 
 func (st UpdateObjectPermissions) MarshalJSON() ([]byte, error) {
@@ -6016,10 +5924,10 @@ func UpdateObjectPermissionsFromPb(pb *iampb.UpdateObjectPermissionsPb) (*Update
 type UpdateRuleSetRequest struct {
 	// Name of the rule set.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 
 	// Wire name: 'rule_set'
-	RuleSet RuleSetUpdateRequest ``
+	RuleSet RuleSetUpdateRequest `json:"rule_set"`
 }
 
 func (st UpdateRuleSetRequest) MarshalJSON() ([]byte, error) {
@@ -6089,13 +5997,11 @@ type UpdateWorkspaceAssignments struct {
 	// same effect as providing an empty list, which will result in the deletion
 	// of all permissions for the principal.
 	// Wire name: 'permissions'
-	Permissions []WorkspacePermission ``
+	Permissions []WorkspacePermission `json:"permissions,omitempty"`
 	// The ID of the user, service principal, or group.
-	// Wire name: 'principal_id'
-	PrincipalId int64 `tf:"-"`
+	PrincipalId int64 `json:"-" tf:"-"`
 	// The workspace ID.
-	// Wire name: 'workspace_id'
-	WorkspaceId int64 `tf:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
 func (st UpdateWorkspaceAssignments) MarshalJSON() ([]byte, error) {
@@ -6172,7 +6078,7 @@ func UpdateWorkspaceAssignmentsFromPb(pb *iampb.UpdateWorkspaceAssignmentsPb) (*
 type User struct {
 	// If this user is active
 	// Wire name: 'active'
-	Active bool ``
+	Active bool `json:"active,omitempty"`
 	// String that represents a concatenation of given and family names. For
 	// example `John Smith`. This field cannot be updated through the Workspace
 	// SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to
@@ -6180,38 +6086,38 @@ type User struct {
 	//
 	// [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
 	// Wire name: 'displayName'
-	DisplayName string ``
+	DisplayName string `json:"displayName,omitempty"`
 	// All the emails associated with the Databricks user.
 	// Wire name: 'emails'
-	Emails []ComplexValue ``
+	Emails []ComplexValue `json:"emails,omitempty"`
 	// Entitlements assigned to the user. See [assigning entitlements] for a
 	// full list of supported values.
 	//
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
 	// Wire name: 'entitlements'
-	Entitlements []ComplexValue ``
+	Entitlements []ComplexValue `json:"entitlements,omitempty"`
 	// External ID is not currently supported. It is reserved for future use.
 	// Wire name: 'externalId'
-	ExternalId string ``
+	ExternalId string `json:"externalId,omitempty"`
 
 	// Wire name: 'groups'
-	Groups []ComplexValue ``
+	Groups []ComplexValue `json:"groups,omitempty"`
 	// Databricks user ID.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 
 	// Wire name: 'name'
-	Name *Name ``
+	Name *Name `json:"name,omitempty"`
 	// Corresponds to AWS instance profile/arn role.
 	// Wire name: 'roles'
-	Roles []ComplexValue ``
+	Roles []ComplexValue `json:"roles,omitempty"`
 	// The schema of the user.
 	// Wire name: 'schemas'
-	Schemas []UserSchema ``
+	Schemas []UserSchema `json:"schemas,omitempty"`
 	// Email address of the Databricks user.
 	// Wire name: 'userName'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"userName,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st User) MarshalJSON() ([]byte, error) {
@@ -6519,7 +6425,7 @@ func WorkspacePermissionFromPb(pb *iampb.WorkspacePermissionPb) (*WorkspacePermi
 type WorkspacePermissions struct {
 	// Array of permissions defined for a workspace.
 	// Wire name: 'permissions'
-	Permissions []PermissionOutput ``
+	Permissions []PermissionOutput `json:"permissions,omitempty"`
 }
 
 func (st WorkspacePermissions) MarshalJSON() ([]byte, error) {

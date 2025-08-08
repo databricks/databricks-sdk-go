@@ -14,7 +14,7 @@ import (
 type AccountsCreateMetastore struct {
 
 	// Wire name: 'metastore_info'
-	MetastoreInfo *CreateMetastore ``
+	MetastoreInfo *CreateMetastore `json:"metastore_info,omitempty"`
 }
 
 func (st AccountsCreateMetastore) MarshalJSON() ([]byte, error) {
@@ -77,13 +77,11 @@ func AccountsCreateMetastoreFromPb(pb *catalogpb.AccountsCreateMetastorePb) (*Ac
 type AccountsCreateMetastoreAssignment struct {
 
 	// Wire name: 'metastore_assignment'
-	MetastoreAssignment *CreateMetastoreAssignment ``
+	MetastoreAssignment *CreateMetastoreAssignment `json:"metastore_assignment,omitempty"`
 	// Unity Catalog metastore ID
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Workspace ID.
-	// Wire name: 'workspace_id'
-	WorkspaceId int64 `tf:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
 func (st AccountsCreateMetastoreAssignment) MarshalJSON() ([]byte, error) {
@@ -150,10 +148,9 @@ func AccountsCreateMetastoreAssignmentFromPb(pb *catalogpb.AccountsCreateMetasto
 type AccountsCreateStorageCredential struct {
 
 	// Wire name: 'credential_info'
-	CredentialInfo *CreateStorageCredential ``
+	CredentialInfo *CreateStorageCredential `json:"credential_info,omitempty"`
 	// Unity Catalog metastore ID
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 }
 
 func (st AccountsCreateStorageCredential) MarshalJSON() ([]byte, error) {
@@ -218,7 +215,7 @@ func AccountsCreateStorageCredentialFromPb(pb *catalogpb.AccountsCreateStorageCr
 type AccountsMetastoreAssignment struct {
 
 	// Wire name: 'metastore_assignment'
-	MetastoreAssignment *MetastoreAssignment ``
+	MetastoreAssignment *MetastoreAssignment `json:"metastore_assignment,omitempty"`
 }
 
 func (st AccountsMetastoreAssignment) MarshalJSON() ([]byte, error) {
@@ -281,7 +278,7 @@ func AccountsMetastoreAssignmentFromPb(pb *catalogpb.AccountsMetastoreAssignment
 type AccountsMetastoreInfo struct {
 
 	// Wire name: 'metastore_info'
-	MetastoreInfo *MetastoreInfo ``
+	MetastoreInfo *MetastoreInfo `json:"metastore_info,omitempty"`
 }
 
 func (st AccountsMetastoreInfo) MarshalJSON() ([]byte, error) {
@@ -344,7 +341,7 @@ func AccountsMetastoreInfoFromPb(pb *catalogpb.AccountsMetastoreInfoPb) (*Accoun
 type AccountsStorageCredentialInfo struct {
 
 	// Wire name: 'credential_info'
-	CredentialInfo *StorageCredentialInfo ``
+	CredentialInfo *StorageCredentialInfo `json:"credential_info,omitempty"`
 }
 
 func (st AccountsStorageCredentialInfo) MarshalJSON() ([]byte, error) {
@@ -406,11 +403,10 @@ func AccountsStorageCredentialInfoFromPb(pb *catalogpb.AccountsStorageCredential
 
 type AccountsUpdateMetastore struct {
 	// Unity Catalog metastore ID
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 
 	// Wire name: 'metastore_info'
-	MetastoreInfo *UpdateMetastore ``
+	MetastoreInfo *UpdateMetastore `json:"metastore_info,omitempty"`
 }
 
 func (st AccountsUpdateMetastore) MarshalJSON() ([]byte, error) {
@@ -475,13 +471,11 @@ func AccountsUpdateMetastoreFromPb(pb *catalogpb.AccountsUpdateMetastorePb) (*Ac
 type AccountsUpdateMetastoreAssignment struct {
 
 	// Wire name: 'metastore_assignment'
-	MetastoreAssignment *UpdateMetastoreAssignment ``
+	MetastoreAssignment *UpdateMetastoreAssignment `json:"metastore_assignment,omitempty"`
 	// Unity Catalog metastore ID
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Workspace ID.
-	// Wire name: 'workspace_id'
-	WorkspaceId int64 `tf:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
 func (st AccountsUpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
@@ -548,13 +542,11 @@ func AccountsUpdateMetastoreAssignmentFromPb(pb *catalogpb.AccountsUpdateMetasto
 type AccountsUpdateStorageCredential struct {
 
 	// Wire name: 'credential_info'
-	CredentialInfo *UpdateStorageCredential ``
+	CredentialInfo *UpdateStorageCredential `json:"credential_info,omitempty"`
 	// Unity Catalog metastore ID
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Name of the storage credential.
-	// Wire name: 'storage_credential_name'
-	StorageCredentialName string `tf:"-"`
+	StorageCredentialName string `json:"-" tf:"-"`
 }
 
 func (st AccountsUpdateStorageCredential) MarshalJSON() ([]byte, error) {
@@ -621,17 +613,17 @@ func AccountsUpdateStorageCredentialFromPb(pb *catalogpb.AccountsUpdateStorageCr
 type ArtifactAllowlistInfo struct {
 	// A list of allowed artifact match patterns.
 	// Wire name: 'artifact_matchers'
-	ArtifactMatchers []ArtifactMatcher ``
+	ArtifactMatchers []ArtifactMatcher `json:"artifact_matchers,omitempty"`
 	// Time at which this artifact allowlist was set, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of the user who set the artifact allowlist.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// Unique identifier of parent metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId     string   ``
-	ForceSendFields []string `tf:"-"`
+	MetastoreId     string   `json:"metastore_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ArtifactAllowlistInfo) MarshalJSON() ([]byte, error) {
@@ -716,10 +708,10 @@ func ArtifactAllowlistInfoFromPb(pb *catalogpb.ArtifactAllowlistInfoPb) (*Artifa
 type ArtifactMatcher struct {
 	// The artifact path or maven coordinate
 	// Wire name: 'artifact'
-	Artifact string ``
+	Artifact string `json:"artifact"`
 	// The pattern matching type of the artifact
 	// Wire name: 'match_type'
-	MatchType MatchType ``
+	MatchType MatchType `json:"match_type"`
 }
 
 func (st ArtifactMatcher) MarshalJSON() ([]byte, error) {
@@ -843,19 +835,19 @@ func ArtifactTypeFromPb(pb *catalogpb.ArtifactTypePb) (*ArtifactType, error) {
 type AwsCredentials struct {
 	// The access key ID that identifies the temporary credentials.
 	// Wire name: 'access_key_id'
-	AccessKeyId string ``
+	AccessKeyId string `json:"access_key_id,omitempty"`
 	// The Amazon Resource Name (ARN) of the S3 access point for temporary
 	// credentials related the external location.
 	// Wire name: 'access_point'
-	AccessPoint string ``
+	AccessPoint string `json:"access_point,omitempty"`
 	// The secret access key that can be used to sign AWS API requests.
 	// Wire name: 'secret_access_key'
-	SecretAccessKey string ``
+	SecretAccessKey string `json:"secret_access_key,omitempty"`
 	// The token that users must pass to AWS API to use the temporary
 	// credentials.
 	// Wire name: 'session_token'
-	SessionToken    string   ``
-	ForceSendFields []string `tf:"-"`
+	SessionToken    string   `json:"session_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AwsCredentials) MarshalJSON() ([]byte, error) {
@@ -920,16 +912,16 @@ type AwsIamRole struct {
 	// The external ID used in role assumption to prevent the confused deputy
 	// problem.
 	// Wire name: 'external_id'
-	ExternalId string ``
+	ExternalId string `json:"external_id,omitempty"`
 	// The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary
 	// credentials.
 	// Wire name: 'role_arn'
-	RoleArn string ``
+	RoleArn string `json:"role_arn,omitempty"`
 	// The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
 	// This is the identity that is going to assume the AWS IAM role.
 	// Wire name: 'unity_catalog_iam_arn'
-	UnityCatalogIamArn string   ``
-	ForceSendFields    []string `tf:"-"`
+	UnityCatalogIamArn string   `json:"unity_catalog_iam_arn,omitempty"`
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
 func (st AwsIamRole) MarshalJSON() ([]byte, error) {
@@ -992,7 +984,7 @@ type AwsIamRoleRequest struct {
 	// The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary
 	// credentials.
 	// Wire name: 'role_arn'
-	RoleArn string ``
+	RoleArn string `json:"role_arn"`
 }
 
 func (st AwsIamRoleRequest) MarshalJSON() ([]byte, error) {
@@ -1045,16 +1037,16 @@ type AwsIamRoleResponse struct {
 	// The external ID used in role assumption to prevent the confused deputy
 	// problem.
 	// Wire name: 'external_id'
-	ExternalId string ``
+	ExternalId string `json:"external_id,omitempty"`
 	// The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary
 	// credentials.
 	// Wire name: 'role_arn'
-	RoleArn string ``
+	RoleArn string `json:"role_arn"`
 	// The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
 	// This is the identity that is going to assume the AWS IAM role.
 	// Wire name: 'unity_catalog_iam_arn'
-	UnityCatalogIamArn string   ``
-	ForceSendFields    []string `tf:"-"`
+	UnityCatalogIamArn string   `json:"unity_catalog_iam_arn,omitempty"`
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
 func (st AwsIamRoleResponse) MarshalJSON() ([]byte, error) {
@@ -1116,13 +1108,13 @@ type AwsSqsQueue struct {
 	// Unique identifier included in the name of file events managed cloud
 	// resources.
 	// Wire name: 'managed_resource_id'
-	ManagedResourceId string ``
+	ManagedResourceId string `json:"managed_resource_id,omitempty"`
 	// The AQS queue url in the format
 	// https://sqs.{region}.amazonaws.com/{account id}/{queue name} Required for
 	// provided_sqs.
 	// Wire name: 'queue_url'
-	QueueUrl        string   ``
-	ForceSendFields []string `tf:"-"`
+	QueueUrl        string   `json:"queue_url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AwsSqsQueue) MarshalJSON() ([]byte, error) {
@@ -1185,8 +1177,8 @@ type AzureActiveDirectoryToken struct {
 	// Opaque token that contains claims that you can use in Azure Active
 	// Directory to access cloud services.
 	// Wire name: 'aad_token'
-	AadToken        string   ``
-	ForceSendFields []string `tf:"-"`
+	AadToken        string   `json:"aad_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AzureActiveDirectoryToken) MarshalJSON() ([]byte, error) {
@@ -1246,10 +1238,10 @@ type AzureManagedIdentity struct {
 	// format
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
 	// Wire name: 'access_connector_id'
-	AccessConnectorId string ``
+	AccessConnectorId string `json:"access_connector_id"`
 	// The Databricks internal ID that represents this managed identity.
 	// Wire name: 'credential_id'
-	CredentialId string ``
+	CredentialId string `json:"credential_id,omitempty"`
 	// The Azure resource ID of the managed identity. Use the format,
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
 	// This is only available for user-assgined identities. For system-assigned
@@ -1257,8 +1249,8 @@ type AzureManagedIdentity struct {
 	// this field is not provided, then we assume the AzureManagedIdentity is
 	// using the system-assigned identity.
 	// Wire name: 'managed_identity_id'
-	ManagedIdentityId string   ``
-	ForceSendFields   []string `tf:"-"`
+	ManagedIdentityId string   `json:"managed_identity_id,omitempty"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
 func (st AzureManagedIdentity) MarshalJSON() ([]byte, error) {
@@ -1322,7 +1314,7 @@ type AzureManagedIdentityRequest struct {
 	// format
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
 	// Wire name: 'access_connector_id'
-	AccessConnectorId string ``
+	AccessConnectorId string `json:"access_connector_id"`
 	// The Azure resource ID of the managed identity. Use the format,
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
 	// This is only available for user-assgined identities. For system-assigned
@@ -1330,8 +1322,8 @@ type AzureManagedIdentityRequest struct {
 	// this field is not provided, then we assume the AzureManagedIdentity is
 	// using the system-assigned identity.
 	// Wire name: 'managed_identity_id'
-	ManagedIdentityId string   ``
-	ForceSendFields   []string `tf:"-"`
+	ManagedIdentityId string   `json:"managed_identity_id,omitempty"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
 func (st AzureManagedIdentityRequest) MarshalJSON() ([]byte, error) {
@@ -1393,10 +1385,10 @@ type AzureManagedIdentityResponse struct {
 	// format
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
 	// Wire name: 'access_connector_id'
-	AccessConnectorId string ``
+	AccessConnectorId string `json:"access_connector_id"`
 	// The Databricks internal ID that represents this managed identity.
 	// Wire name: 'credential_id'
-	CredentialId string ``
+	CredentialId string `json:"credential_id,omitempty"`
 	// The Azure resource ID of the managed identity. Use the format,
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
 	// This is only available for user-assgined identities. For system-assigned
@@ -1404,8 +1396,8 @@ type AzureManagedIdentityResponse struct {
 	// this field is not provided, then we assume the AzureManagedIdentity is
 	// using the system-assigned identity.
 	// Wire name: 'managed_identity_id'
-	ManagedIdentityId string   ``
-	ForceSendFields   []string `tf:"-"`
+	ManagedIdentityId string   `json:"managed_identity_id,omitempty"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
 func (st AzureManagedIdentityResponse) MarshalJSON() ([]byte, error) {
@@ -1467,22 +1459,22 @@ type AzureQueueStorage struct {
 	// Unique identifier included in the name of file events managed cloud
 	// resources.
 	// Wire name: 'managed_resource_id'
-	ManagedResourceId string ``
+	ManagedResourceId string `json:"managed_resource_id,omitempty"`
 	// The AQS queue url in the format https://{storage
 	// account}.queue.core.windows.net/{queue name} Required for provided_aqs.
 	// Wire name: 'queue_url'
-	QueueUrl string ``
+	QueueUrl string `json:"queue_url,omitempty"`
 	// The resource group for the queue, event grid subscription, and external
 	// location storage account. Only required for locations with a service
 	// principal storage credential
 	// Wire name: 'resource_group'
-	ResourceGroup string ``
+	ResourceGroup string `json:"resource_group,omitempty"`
 	// Optional subscription id for the queue, event grid subscription, and
 	// external location storage account. Required for locations with a service
 	// principal storage credential
 	// Wire name: 'subscription_id'
-	SubscriptionId  string   ``
-	ForceSendFields []string `tf:"-"`
+	SubscriptionId  string   `json:"subscription_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AzureQueueStorage) MarshalJSON() ([]byte, error) {
@@ -1548,14 +1540,14 @@ type AzureServicePrincipal struct {
 	// The application ID of the application registration within the referenced
 	// AAD tenant.
 	// Wire name: 'application_id'
-	ApplicationId string ``
+	ApplicationId string `json:"application_id"`
 	// The client secret generated for the above app ID in AAD.
 	// Wire name: 'client_secret'
-	ClientSecret string ``
+	ClientSecret string `json:"client_secret"`
 	// The directory ID corresponding to the Azure Active Directory (AAD) tenant
 	// of the application.
 	// Wire name: 'directory_id'
-	DirectoryId string ``
+	DirectoryId string `json:"directory_id"`
 }
 
 func (st AzureServicePrincipal) MarshalJSON() ([]byte, error) {
@@ -1612,8 +1604,8 @@ func AzureServicePrincipalFromPb(pb *catalogpb.AzureServicePrincipalPb) (*AzureS
 type AzureUserDelegationSas struct {
 	// The signed URI (SAS Token) used to access blob services for a given path
 	// Wire name: 'sas_token'
-	SasToken        string   ``
-	ForceSendFields []string `tf:"-"`
+	SasToken        string   `json:"sas_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AzureUserDelegationSas) MarshalJSON() ([]byte, error) {
@@ -1668,13 +1660,10 @@ func AzureUserDelegationSasFromPb(pb *catalogpb.AzureUserDelegationSasPb) (*Azur
 }
 
 type CancelRefreshRequest struct {
-
-	// Wire name: 'refresh_id'
-	RefreshId int64 `tf:"-"`
+	RefreshId int64 `json:"-" tf:"-"`
 	// UC table name in format `catalog.schema.table_name`. table_name is case
 	// insensitive and spaces are disallowed.
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 }
 
 func (st CancelRefreshRequest) MarshalJSON() ([]byte, error) {
@@ -1729,79 +1718,79 @@ type CatalogInfo struct {
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
 	// Wire name: 'browse_only'
-	BrowseOnly bool ``
+	BrowseOnly bool `json:"browse_only,omitempty"`
 
 	// Wire name: 'catalog_type'
-	CatalogType CatalogType ``
+	CatalogType CatalogType `json:"catalog_type,omitempty"`
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The name of the connection to an external data source.
 	// Wire name: 'connection_name'
-	ConnectionName string ``
+	ConnectionName string `json:"connection_name,omitempty"`
 	// Time at which this catalog was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of catalog creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 
 	// Wire name: 'effective_predictive_optimization_flag'
-	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag ``
+	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	// Wire name: 'enable_predictive_optimization'
-	EnablePredictiveOptimization EnablePredictiveOptimization ``
+	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// The full name of the catalog. Corresponds with the name field.
 	// Wire name: 'full_name'
-	FullName string ``
+	FullName string `json:"full_name,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	// Wire name: 'isolation_mode'
-	IsolationMode CatalogIsolationMode ``
+	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of parent metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of catalog.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'options'
-	Options map[string]string ``
+	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of catalog.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'properties'
-	Properties map[string]string ``
+	Properties map[string]string `json:"properties,omitempty"`
 	// The name of delta sharing provider.
 	//
 	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
 	// remote sharing server.
 	// Wire name: 'provider_name'
-	ProviderName string ``
+	ProviderName string `json:"provider_name,omitempty"`
 
 	// Wire name: 'provisioning_info'
-	ProvisioningInfo *ProvisioningInfo ``
+	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
 
 	// Wire name: 'securable_type'
-	SecurableType SecurableType ``
+	SecurableType SecurableType `json:"securable_type,omitempty"`
 	// The name of the share under the share provider.
 	// Wire name: 'share_name'
-	ShareName string ``
+	ShareName string `json:"share_name,omitempty"`
 	// Storage Location URL (full path) for managed tables within catalog.
 	// Wire name: 'storage_location'
-	StorageLocation string ``
+	StorageLocation string `json:"storage_location,omitempty"`
 	// Storage root URL for managed tables within catalog.
 	// Wire name: 'storage_root'
-	StorageRoot string ``
+	StorageRoot string `json:"storage_root,omitempty"`
 	// Time at which this catalog was last modified, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified catalog.
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CatalogInfo) MarshalJSON() ([]byte, error) {
@@ -2095,13 +2084,13 @@ func CatalogTypeFromPb(pb *catalogpb.CatalogTypePb) (*CatalogType, error) {
 type CloudflareApiToken struct {
 	// The access key ID associated with the API token.
 	// Wire name: 'access_key_id'
-	AccessKeyId string ``
+	AccessKeyId string `json:"access_key_id"`
 	// The ID of the account associated with the API token.
 	// Wire name: 'account_id'
-	AccountId string ``
+	AccountId string `json:"account_id"`
 	// The secret access token generated for the above access key ID.
 	// Wire name: 'secret_access_key'
-	SecretAccessKey string ``
+	SecretAccessKey string `json:"secret_access_key"`
 }
 
 func (st CloudflareApiToken) MarshalJSON() ([]byte, error) {
@@ -2156,41 +2145,41 @@ func CloudflareApiTokenFromPb(pb *catalogpb.CloudflareApiTokenPb) (*CloudflareAp
 type ColumnInfo struct {
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 
 	// Wire name: 'mask'
-	Mask *ColumnMask ``
+	Mask *ColumnMask `json:"mask,omitempty"`
 	// Name of Column.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Whether field may be Null (default: true).
 	// Wire name: 'nullable'
-	Nullable bool ``
+	Nullable bool `json:"nullable,omitempty"`
 	// Partition index for column.
 	// Wire name: 'partition_index'
-	PartitionIndex int ``
+	PartitionIndex int `json:"partition_index,omitempty"`
 	// Ordinal position of column (starting at position 0).
 	// Wire name: 'position'
-	Position int ``
+	Position int `json:"position,omitempty"`
 	// Format of IntervalType.
 	// Wire name: 'type_interval_type'
-	TypeIntervalType string ``
+	TypeIntervalType string `json:"type_interval_type,omitempty"`
 	// Full data type specification, JSON-serialized.
 	// Wire name: 'type_json'
-	TypeJson string ``
+	TypeJson string `json:"type_json,omitempty"`
 
 	// Wire name: 'type_name'
-	TypeName ColumnTypeName ``
+	TypeName ColumnTypeName `json:"type_name,omitempty"`
 	// Digits of precision; required for DecimalTypes.
 	// Wire name: 'type_precision'
-	TypePrecision int ``
+	TypePrecision int `json:"type_precision,omitempty"`
 	// Digits to right of decimal; Required for DecimalTypes.
 	// Wire name: 'type_scale'
-	TypeScale int ``
+	TypeScale int `json:"type_scale,omitempty"`
 	// Full data type specification as SQL/catalogString text.
 	// Wire name: 'type_text'
-	TypeText        string   ``
-	ForceSendFields []string `tf:"-"`
+	TypeText        string   `json:"type_text,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ColumnInfo) MarshalJSON() ([]byte, error) {
@@ -2293,14 +2282,14 @@ func ColumnInfoFromPb(pb *catalogpb.ColumnInfoPb) (*ColumnInfo, error) {
 type ColumnMask struct {
 	// The full name of the column mask SQL UDF.
 	// Wire name: 'function_name'
-	FunctionName string ``
+	FunctionName string `json:"function_name,omitempty"`
 	// The list of additional table columns to be passed as input to the column
 	// mask function. The first arg of the mask function should be of the type
 	// of the column being masked and the types of the rest of the args should
 	// match the types of columns in 'using_column_names'.
 	// Wire name: 'using_column_names'
-	UsingColumnNames []string ``
-	ForceSendFields  []string `tf:"-"`
+	UsingColumnNames []string `json:"using_column_names,omitempty"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st ColumnMask) MarshalJSON() ([]byte, error) {
@@ -2359,11 +2348,11 @@ func ColumnMaskFromPb(pb *catalogpb.ColumnMaskPb) (*ColumnMask, error) {
 type ColumnRelationship struct {
 
 	// Wire name: 'source'
-	Source string ``
+	Source string `json:"source,omitempty"`
 
 	// Wire name: 'target'
-	Target          string   ``
-	ForceSendFields []string `tf:"-"`
+	Target          string   `json:"target,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ColumnRelationship) MarshalJSON() ([]byte, error) {
@@ -2543,8 +2532,8 @@ type ConnectionDependency struct {
 	// Full name of the dependent connection, in the form of
 	// __connection_name__.
 	// Wire name: 'connection_name'
-	ConnectionName  string   ``
-	ForceSendFields []string `tf:"-"`
+	ConnectionName  string   `json:"connection_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ConnectionDependency) MarshalJSON() ([]byte, error) {
@@ -2602,63 +2591,63 @@ func ConnectionDependencyFromPb(pb *catalogpb.ConnectionDependencyPb) (*Connecti
 type ConnectionInfo struct {
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Unique identifier of the Connection.
 	// Wire name: 'connection_id'
-	ConnectionId string ``
+	ConnectionId string `json:"connection_id,omitempty"`
 	// The type of connection.
 	// Wire name: 'connection_type'
-	ConnectionType ConnectionType ``
+	ConnectionType ConnectionType `json:"connection_type,omitempty"`
 	// Time at which this connection was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of connection creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// The type of credential.
 	// Wire name: 'credential_type'
-	CredentialType CredentialType ``
+	CredentialType CredentialType `json:"credential_type,omitempty"`
 	// [Create,Update:OPT] Connection environment settings as
 	// EnvironmentSettings object.
 	// Wire name: 'environment_settings'
-	EnvironmentSettings *EnvironmentSettings ``
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Full name of connection.
 	// Wire name: 'full_name'
-	FullName string ``
+	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of the connection.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'options'
-	Options map[string]string ``
+	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of the connection.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'properties'
-	Properties map[string]string ``
+	Properties map[string]string `json:"properties,omitempty"`
 
 	// Wire name: 'provisioning_info'
-	ProvisioningInfo *ProvisioningInfo ``
+	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
 	// If the connection is read only.
 	// Wire name: 'read_only'
-	ReadOnly bool ``
+	ReadOnly bool `json:"read_only,omitempty"`
 
 	// Wire name: 'securable_type'
-	SecurableType SecurableType ``
+	SecurableType SecurableType `json:"securable_type,omitempty"`
 	// Time at which this connection was updated, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified connection.
 	// Wire name: 'updated_by'
-	UpdatedBy string ``
+	UpdatedBy string `json:"updated_by,omitempty"`
 	// URL of the remote data source, extracted from options.
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ConnectionInfo) MarshalJSON() ([]byte, error) {
@@ -2921,17 +2910,17 @@ func ConnectionTypeFromPb(pb *catalogpb.ConnectionTypePb) (*ConnectionType, erro
 type ContinuousUpdateStatus struct {
 	// Progress of the initial data synchronization.
 	// Wire name: 'initial_pipeline_sync_progress'
-	InitialPipelineSyncProgress *PipelineProgress ``
+	InitialPipelineSyncProgress *PipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
 	// The last source table Delta version that was synced to the online table.
 	// Note that this Delta version may not be completely synced to the online
 	// table yet.
 	// Wire name: 'last_processed_commit_version'
-	LastProcessedCommitVersion int64 ``
+	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
 	// The timestamp of the last time any data was synchronized from the source
 	// table to the online table.
 	// Wire name: 'timestamp'
-	Timestamp       string   `` //legacy
-	ForceSendFields []string `tf:"-"`
+	Timestamp       string   `json:"timestamp,omitempty"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
@@ -3004,32 +2993,32 @@ func ContinuousUpdateStatusFromPb(pb *catalogpb.ContinuousUpdateStatusPb) (*Cont
 type CreateCatalog struct {
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The name of the connection to an external data source.
 	// Wire name: 'connection_name'
-	ConnectionName string ``
+	ConnectionName string `json:"connection_name,omitempty"`
 	// Name of catalog.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'options'
-	Options map[string]string ``
+	Options map[string]string `json:"options,omitempty"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'properties'
-	Properties map[string]string ``
+	Properties map[string]string `json:"properties,omitempty"`
 	// The name of delta sharing provider.
 	//
 	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
 	// remote sharing server.
 	// Wire name: 'provider_name'
-	ProviderName string ``
+	ProviderName string `json:"provider_name,omitempty"`
 	// The name of the share under the share provider.
 	// Wire name: 'share_name'
-	ShareName string ``
+	ShareName string `json:"share_name,omitempty"`
 	// Storage root URL for managed tables within catalog.
 	// Wire name: 'storage_root'
-	StorageRoot     string   ``
-	ForceSendFields []string `tf:"-"`
+	StorageRoot     string   `json:"storage_root,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateCatalog) MarshalJSON() ([]byte, error) {
@@ -3100,27 +3089,27 @@ func CreateCatalogFromPb(pb *catalogpb.CreateCatalogPb) (*CreateCatalog, error) 
 type CreateConnection struct {
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The type of connection.
 	// Wire name: 'connection_type'
-	ConnectionType ConnectionType ``
+	ConnectionType ConnectionType `json:"connection_type"`
 	// [Create,Update:OPT] Connection environment settings as
 	// EnvironmentSettings object.
 	// Wire name: 'environment_settings'
-	EnvironmentSettings *EnvironmentSettings ``
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'options'
-	Options map[string]string ``
+	Options map[string]string `json:"options"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'properties'
-	Properties map[string]string ``
+	Properties map[string]string `json:"properties,omitempty"`
 	// If the connection is read only.
 	// Wire name: 'read_only'
-	ReadOnly        bool     ``
-	ForceSendFields []string `tf:"-"`
+	ReadOnly        bool     `json:"read_only,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateConnection) MarshalJSON() ([]byte, error) {
@@ -3213,35 +3202,35 @@ func CreateConnectionFromPb(pb *catalogpb.CreateConnectionPb) (*CreateConnection
 type CreateCredentialRequest struct {
 	// The AWS IAM role configuration.
 	// Wire name: 'aws_iam_role'
-	AwsIamRole *AwsIamRole ``
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	// Wire name: 'azure_managed_identity'
-	AzureManagedIdentity *AzureManagedIdentity ``
+	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	// Wire name: 'azure_service_principal'
-	AzureServicePrincipal *AzureServicePrincipal ``
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The Databricks managed GCP service account configuration.
 	// Wire name: 'databricks_gcp_service_account'
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount ``
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Indicates the purpose of the credential.
 	// Wire name: 'purpose'
-	Purpose CredentialPurpose ``
+	Purpose CredentialPurpose `json:"purpose,omitempty"`
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
 	// Wire name: 'read_only'
-	ReadOnly bool ``
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Optional. Supplying true to this argument skips validation of the created
 	// set of credentials.
 	// Wire name: 'skip_validation'
-	SkipValidation  bool     ``
-	ForceSendFields []string `tf:"-"`
+	SkipValidation  bool     `json:"skip_validation,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateCredentialRequest) MarshalJSON() ([]byte, error) {
@@ -3374,7 +3363,7 @@ func CreateCredentialRequestFromPb(pb *catalogpb.CreateCredentialRequestPb) (*Cr
 type CreateExternalLineageRelationshipRequest struct {
 
 	// Wire name: 'external_lineage_relationship'
-	ExternalLineageRelationship CreateRequestExternalLineage ``
+	ExternalLineageRelationship CreateRequestExternalLineage `json:"external_lineage_relationship"`
 }
 
 func (st CreateExternalLineageRelationshipRequest) MarshalJSON() ([]byte, error) {
@@ -3437,38 +3426,38 @@ func CreateExternalLineageRelationshipRequestFromPb(pb *catalogpb.CreateExternal
 type CreateExternalLocation struct {
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
 	// Wire name: 'credential_name'
-	CredentialName string ``
+	CredentialName string `json:"credential_name"`
 	// Whether to enable file events on this external location.
 	// Wire name: 'enable_file_events'
-	EnableFileEvents bool ``
+	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
 	// Wire name: 'encryption_details'
-	EncryptionDetails *EncryptionDetails ``
+	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	// Wire name: 'fallback'
-	Fallback bool ``
+	Fallback bool `json:"fallback,omitempty"`
 	// File event queue settings.
 	// Wire name: 'file_event_queue'
-	FileEventQueue *FileEventQueue ``
+	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Name of the external location.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Indicates whether the external location is read-only.
 	// Wire name: 'read_only'
-	ReadOnly bool ``
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Skips validation of the storage credential associated with the external
 	// location.
 	// Wire name: 'skip_validation'
-	SkipValidation bool ``
+	SkipValidation bool `json:"skip_validation,omitempty"`
 	// Path URL of the external location.
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateExternalLocation) MarshalJSON() ([]byte, error) {
@@ -3567,7 +3556,7 @@ func CreateExternalLocationFromPb(pb *catalogpb.CreateExternalLocationPb) (*Crea
 type CreateExternalMetadataRequest struct {
 
 	// Wire name: 'external_metadata'
-	ExternalMetadata ExternalMetadata ``
+	ExternalMetadata ExternalMetadata `json:"external_metadata"`
 }
 
 func (st CreateExternalMetadataRequest) MarshalJSON() ([]byte, error) {
@@ -3630,72 +3619,72 @@ func CreateExternalMetadataRequestFromPb(pb *catalogpb.CreateExternalMetadataReq
 type CreateFunction struct {
 	// Name of parent catalog.
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name"`
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Scalar function return data type.
 	// Wire name: 'data_type'
-	DataType ColumnTypeName ``
+	DataType ColumnTypeName `json:"data_type"`
 	// External function language.
 	// Wire name: 'external_language'
-	ExternalLanguage string ``
+	ExternalLanguage string `json:"external_language,omitempty"`
 	// External function name.
 	// Wire name: 'external_name'
-	ExternalName string ``
+	ExternalName string `json:"external_name,omitempty"`
 	// Pretty printed function data type.
 	// Wire name: 'full_data_type'
-	FullDataType string ``
+	FullDataType string `json:"full_data_type"`
 
 	// Wire name: 'input_params'
-	InputParams FunctionParameterInfos ``
+	InputParams FunctionParameterInfos `json:"input_params"`
 	// Whether the function is deterministic.
 	// Wire name: 'is_deterministic'
-	IsDeterministic bool ``
+	IsDeterministic bool `json:"is_deterministic"`
 	// Function null call.
 	// Wire name: 'is_null_call'
-	IsNullCall bool ``
+	IsNullCall bool `json:"is_null_call"`
 	// Name of function, relative to parent schema.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Function parameter style. **S** is the value for SQL.
 	// Wire name: 'parameter_style'
-	ParameterStyle CreateFunctionParameterStyle ``
+	ParameterStyle CreateFunctionParameterStyle `json:"parameter_style"`
 	// JSON-serialized key-value pair map, encoded (escaped) as a string.
 	// Wire name: 'properties'
-	Properties string ``
+	Properties string `json:"properties,omitempty"`
 	// Table function return parameters.
 	// Wire name: 'return_params'
-	ReturnParams *FunctionParameterInfos ``
+	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
 	// Function language. When **EXTERNAL** is used, the language of the routine
 	// function should be specified in the __external_language__ field, and the
 	// __return_params__ of the function cannot be used (as **TABLE** return
 	// type is not supported), and the __sql_data_access__ field must be
 	// **NO_SQL**.
 	// Wire name: 'routine_body'
-	RoutineBody CreateFunctionRoutineBody ``
+	RoutineBody CreateFunctionRoutineBody `json:"routine_body"`
 	// Function body.
 	// Wire name: 'routine_definition'
-	RoutineDefinition string ``
+	RoutineDefinition string `json:"routine_definition"`
 	// Function dependencies.
 	// Wire name: 'routine_dependencies'
-	RoutineDependencies *DependencyList ``
+	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
 	// Name of parent schema relative to its parent catalog.
 	// Wire name: 'schema_name'
-	SchemaName string ``
+	SchemaName string `json:"schema_name"`
 	// Function security type.
 	// Wire name: 'security_type'
-	SecurityType CreateFunctionSecurityType ``
+	SecurityType CreateFunctionSecurityType `json:"security_type"`
 	// Specific name of the function; Reserved for future use.
 	// Wire name: 'specific_name'
-	SpecificName string ``
+	SpecificName string `json:"specific_name"`
 	// Function SQL data access.
 	// Wire name: 'sql_data_access'
-	SqlDataAccess CreateFunctionSqlDataAccess ``
+	SqlDataAccess CreateFunctionSqlDataAccess `json:"sql_data_access"`
 	// List of schemes whose objects can be referenced without qualification.
 	// Wire name: 'sql_path'
-	SqlPath         string   ``
-	ForceSendFields []string `tf:"-"`
+	SqlPath         string   `json:"sql_path,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateFunction) MarshalJSON() ([]byte, error) {
@@ -3939,7 +3928,7 @@ func CreateFunctionParameterStyleFromPb(pb *catalogpb.CreateFunctionParameterSty
 type CreateFunctionRequest struct {
 	// Partial __FunctionInfo__ specifying the function to be created.
 	// Wire name: 'function_info'
-	FunctionInfo CreateFunction ``
+	FunctionInfo CreateFunction `json:"function_info"`
 }
 
 func (st CreateFunctionRequest) MarshalJSON() ([]byte, error) {
@@ -4167,14 +4156,14 @@ func CreateFunctionSqlDataAccessFromPb(pb *catalogpb.CreateFunctionSqlDataAccess
 type CreateMetastore struct {
 	// The user-specified name of the metastore.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
 	// Wire name: 'region'
-	Region string ``
+	Region string `json:"region,omitempty"`
 	// The storage root URL for metastore
 	// Wire name: 'storage_root'
-	StorageRoot     string   ``
-	ForceSendFields []string `tf:"-"`
+	StorageRoot     string   `json:"storage_root,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateMetastore) MarshalJSON() ([]byte, error) {
@@ -4237,13 +4226,12 @@ type CreateMetastoreAssignment struct {
 	// deprecated. Please use "Default Namespace API" to configure the default
 	// catalog for a Databricks workspace.
 	// Wire name: 'default_catalog_name'
-	DefaultCatalogName string ``
+	DefaultCatalogName string `json:"default_catalog_name"`
 	// The unique ID of the metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id"`
 	// A workspace ID.
-	// Wire name: 'workspace_id'
-	WorkspaceId int64 `tf:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
 func (st CreateMetastoreAssignment) MarshalJSON() ([]byte, error) {
@@ -4300,38 +4288,38 @@ type CreateMonitor struct {
 	// custom directory to store data-monitoring assets. Normally prepopulated
 	// to a default user location via UI and Python APIs.
 	// Wire name: 'assets_dir'
-	AssetsDir string ``
+	AssetsDir string `json:"assets_dir"`
 	// [Create:OPT Update:OPT] Baseline table name. Baseline data is used to
 	// compute drift from the data in the monitored `table_name`. The baseline
 	// table and the monitored table shall have the same schema.
 	// Wire name: 'baseline_table_name'
-	BaselineTableName string ``
+	BaselineTableName string `json:"baseline_table_name,omitempty"`
 	// [Create:OPT Update:OPT] Custom metrics.
 	// Wire name: 'custom_metrics'
-	CustomMetrics []MonitorMetric ``
+	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
 	// [Create:OPT Update:OPT] Data classification related config.
 	// Wire name: 'data_classification_config'
-	DataClassificationConfig *MonitorDataClassificationConfig ``
+	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
 
 	// Wire name: 'inference_log'
-	InferenceLog *MonitorInferenceLog ``
+	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
 	// [Create:ERR Update:IGN] The latest error message for a monitor failure.
 	// Wire name: 'latest_monitor_failure_msg'
-	LatestMonitorFailureMsg string ``
+	LatestMonitorFailureMsg string `json:"latest_monitor_failure_msg,omitempty"`
 	// [Create:OPT Update:OPT] Field for specifying notification settings.
 	// Wire name: 'notifications'
-	Notifications *MonitorNotifications ``
+	Notifications *MonitorNotifications `json:"notifications,omitempty"`
 	// [Create:REQ Update:REQ] Schema where output tables are created. Needs to
 	// be in 2-level format {catalog}.{schema}
 	// Wire name: 'output_schema_name'
-	OutputSchemaName string ``
+	OutputSchemaName string `json:"output_schema_name"`
 	// [Create:OPT Update:OPT] The monitor schedule.
 	// Wire name: 'schedule'
-	Schedule *MonitorCronSchedule ``
+	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
 	// Whether to skip creating a default dashboard summarizing data quality
 	// metrics.
 	// Wire name: 'skip_builtin_dashboard'
-	SkipBuiltinDashboard bool ``
+	SkipBuiltinDashboard bool `json:"skip_builtin_dashboard,omitempty"`
 	// [Create:OPT Update:OPT] List of column expressions to slice data with for
 	// targeted analysis. The data is grouped by each expression independently,
 	// resulting in a separate slice for each predicate and its complements. For
@@ -4340,22 +4328,21 @@ type CreateMonitor struct {
 	// slice per unique value in `col1`. For high-cardinality columns, only the
 	// top 100 unique values by frequency will generate slices.
 	// Wire name: 'slicing_exprs'
-	SlicingExprs []string ``
+	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
 	// Wire name: 'snapshot'
-	Snapshot *MonitorSnapshot ``
+	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
 	// UC table name in format `catalog.schema.table_name`. This field
 	// corresponds to the {full_table_name_arg} arg in the endpoint path.
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 	// Configuration for monitoring time series tables.
 	// Wire name: 'time_series'
-	TimeSeries *MonitorTimeSeries ``
+	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
 	// Optional argument to specify the warehouse for dashboard creation. If not
 	// specified, the first running warehouse will be used.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateMonitor) MarshalJSON() ([]byte, error) {
@@ -4534,7 +4521,7 @@ func CreateMonitorFromPb(pb *catalogpb.CreateMonitorPb) (*CreateMonitor, error) 
 type CreateOnlineTableRequest struct {
 	// Specification of the online table to be created.
 	// Wire name: 'table'
-	Table OnlineTable ``
+	Table OnlineTable `json:"table"`
 }
 
 func (st CreateOnlineTableRequest) MarshalJSON() ([]byte, error) {
@@ -4597,21 +4584,21 @@ func CreateOnlineTableRequestFromPb(pb *catalogpb.CreateOnlineTableRequestPb) (*
 type CreateRegisteredModelRequest struct {
 	// The name of the catalog where the schema and the registered model reside
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name"`
 	// The comment attached to the registered model
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The name of the registered model
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// The name of the schema where the registered model resides
 	// Wire name: 'schema_name'
-	SchemaName string ``
+	SchemaName string `json:"schema_name"`
 	// The storage location on the cloud under which model version data files
 	// are stored
 	// Wire name: 'storage_location'
-	StorageLocation string   ``
-	ForceSendFields []string `tf:"-"`
+	StorageLocation string   `json:"storage_location,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
@@ -4676,20 +4663,20 @@ func CreateRegisteredModelRequestFromPb(pb *catalogpb.CreateRegisteredModelReque
 type CreateRequestExternalLineage struct {
 	// List of column relationships between source and target objects.
 	// Wire name: 'columns'
-	Columns []ColumnRelationship ``
+	Columns []ColumnRelationship `json:"columns,omitempty"`
 	// Unique identifier of the external lineage relationship.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Key-value properties associated with the external lineage relationship.
 	// Wire name: 'properties'
-	Properties map[string]string ``
+	Properties map[string]string `json:"properties,omitempty"`
 	// Source object of the external lineage relationship.
 	// Wire name: 'source'
-	Source ExternalLineageObject ``
+	Source ExternalLineageObject `json:"source"`
 	// Target object of the external lineage relationship.
 	// Wire name: 'target'
-	Target          ExternalLineageObject ``
-	ForceSendFields []string              `tf:"-"`
+	Target          ExternalLineageObject `json:"target"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st CreateRequestExternalLineage) MarshalJSON() ([]byte, error) {
@@ -4800,20 +4787,20 @@ func CreateRequestExternalLineageFromPb(pb *catalogpb.CreateRequestExternalLinea
 type CreateSchema struct {
 	// Name of parent catalog.
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name"`
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Name of schema, relative to parent catalog.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'properties'
-	Properties map[string]string ``
+	Properties map[string]string `json:"properties,omitempty"`
 	// Storage root URL for managed tables within schema.
 	// Wire name: 'storage_root'
-	StorageRoot     string   ``
-	ForceSendFields []string `tf:"-"`
+	StorageRoot     string   `json:"storage_root,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateSchema) MarshalJSON() ([]byte, error) {
@@ -4878,35 +4865,35 @@ func CreateSchemaFromPb(pb *catalogpb.CreateSchemaPb) (*CreateSchema, error) {
 type CreateStorageCredential struct {
 	// The AWS IAM role configuration.
 	// Wire name: 'aws_iam_role'
-	AwsIamRole *AwsIamRoleRequest ``
+	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	// Wire name: 'azure_managed_identity'
-	AzureManagedIdentity *AzureManagedIdentityRequest ``
+	AzureManagedIdentity *AzureManagedIdentityRequest `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	// Wire name: 'azure_service_principal'
-	AzureServicePrincipal *AzureServicePrincipal ``
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// The Cloudflare API token configuration.
 	// Wire name: 'cloudflare_api_token'
-	CloudflareApiToken *CloudflareApiToken ``
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The Databricks managed GCP service account configuration.
 	// Wire name: 'databricks_gcp_service_account'
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest ``
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
 	// Wire name: 'read_only'
-	ReadOnly bool ``
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Supplying true to this argument skips validation of the created
 	// credential.
 	// Wire name: 'skip_validation'
-	SkipValidation  bool     ``
-	ForceSendFields []string `tf:"-"`
+	SkipValidation  bool     `json:"skip_validation,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateStorageCredential) MarshalJSON() ([]byte, error) {
@@ -5039,10 +5026,10 @@ func CreateStorageCredentialFromPb(pb *catalogpb.CreateStorageCredentialPb) (*Cr
 type CreateTableConstraint struct {
 
 	// Wire name: 'constraint'
-	Constraint TableConstraint ``
+	Constraint TableConstraint `json:"constraint"`
 	// The full name of the table referenced by the constraint.
 	// Wire name: 'full_name_arg'
-	FullNameArg string ``
+	FullNameArg string `json:"full_name_arg"`
 }
 
 func (st CreateTableConstraint) MarshalJSON() ([]byte, error) {
@@ -5107,23 +5094,23 @@ func CreateTableConstraintFromPb(pb *catalogpb.CreateTableConstraintPb) (*Create
 type CreateVolumeRequestContent struct {
 	// The name of the catalog where the schema and the volume are
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name"`
 	// The comment attached to the volume
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The name of the volume
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// The name of the schema where the volume is
 	// Wire name: 'schema_name'
-	SchemaName string ``
+	SchemaName string `json:"schema_name"`
 	// The storage location on the cloud
 	// Wire name: 'storage_location'
-	StorageLocation string ``
+	StorageLocation string `json:"storage_location,omitempty"`
 
 	// Wire name: 'volume_type'
-	VolumeType      VolumeType ``
-	ForceSendFields []string   `tf:"-"`
+	VolumeType      VolumeType `json:"volume_type"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
 func (st CreateVolumeRequestContent) MarshalJSON() ([]byte, error) {
@@ -5204,8 +5191,8 @@ type CredentialDependency struct {
 	// Full name of the dependent credential, in the form of
 	// __credential_name__.
 	// Wire name: 'credential_name'
-	CredentialName  string   ``
-	ForceSendFields []string `tf:"-"`
+	CredentialName  string   `json:"credential_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CredentialDependency) MarshalJSON() ([]byte, error) {
@@ -5262,63 +5249,63 @@ func CredentialDependencyFromPb(pb *catalogpb.CredentialDependencyPb) (*Credenti
 type CredentialInfo struct {
 	// The AWS IAM role configuration.
 	// Wire name: 'aws_iam_role'
-	AwsIamRole *AwsIamRole ``
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	// Wire name: 'azure_managed_identity'
-	AzureManagedIdentity *AzureManagedIdentity ``
+	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	// Wire name: 'azure_service_principal'
-	AzureServicePrincipal *AzureServicePrincipal ``
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Time at which this credential was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of credential creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// The Databricks managed GCP service account configuration.
 	// Wire name: 'databricks_gcp_service_account'
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount ``
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
 	// The full name of the credential.
 	// Wire name: 'full_name'
-	FullName string ``
+	FullName string `json:"full_name,omitempty"`
 	// The unique identifier of the credential.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	// Wire name: 'isolation_mode'
-	IsolationMode IsolationMode ``
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of the parent metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Username of current owner of credential.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Indicates the purpose of the credential.
 	// Wire name: 'purpose'
-	Purpose CredentialPurpose ``
+	Purpose CredentialPurpose `json:"purpose,omitempty"`
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
 	// Wire name: 'read_only'
-	ReadOnly bool ``
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Time at which this credential was last modified, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the credential.
 	// Wire name: 'updated_by'
-	UpdatedBy string ``
+	UpdatedBy string `json:"updated_by,omitempty"`
 	// Whether this credential is the current metastore's root storage
 	// credential. Only applicable when purpose is **STORAGE**.
 	// Wire name: 'used_for_managed_storage'
-	UsedForManagedStorage bool     ``
-	ForceSendFields       []string `tf:"-"`
+	UsedForManagedStorage bool     `json:"used_for_managed_storage,omitempty"`
+	ForceSendFields       []string `json:"-" tf:"-"`
 }
 
 func (st CredentialInfo) MarshalJSON() ([]byte, error) {
@@ -5621,11 +5608,11 @@ func CredentialTypeFromPb(pb *catalogpb.CredentialTypePb) (*CredentialType, erro
 type CredentialValidationResult struct {
 	// Error message would exist when the result does not equal to **PASS**.
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 	// The results of the tested operation.
 	// Wire name: 'result'
-	Result          ValidateCredentialResult ``
-	ForceSendFields []string                 `tf:"-"`
+	Result          ValidateCredentialResult `json:"result,omitempty"`
+	ForceSendFields []string                 `json:"-" tf:"-"`
 }
 
 func (st CredentialValidationResult) MarshalJSON() ([]byte, error) {
@@ -5836,14 +5823,14 @@ func DataSourceFormatFromPb(pb *catalogpb.DataSourceFormatPb) (*DataSourceFormat
 type DatabricksGcpServiceAccount struct {
 	// The Databricks internal ID that represents this managed identity.
 	// Wire name: 'credential_id'
-	CredentialId string ``
+	CredentialId string `json:"credential_id,omitempty"`
 	// The email of the service account.
 	// Wire name: 'email'
-	Email string ``
+	Email string `json:"email,omitempty"`
 	// The ID that represents the private key for this Service Account
 	// Wire name: 'private_key_id'
-	PrivateKeyId    string   ``
-	ForceSendFields []string `tf:"-"`
+	PrivateKeyId    string   `json:"private_key_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DatabricksGcpServiceAccount) MarshalJSON() ([]byte, error) {
@@ -5954,11 +5941,11 @@ func DatabricksGcpServiceAccountRequestFromPb(pb *catalogpb.DatabricksGcpService
 type DatabricksGcpServiceAccountResponse struct {
 	// The Databricks internal ID that represents this managed identity.
 	// Wire name: 'credential_id'
-	CredentialId string ``
+	CredentialId string `json:"credential_id,omitempty"`
 	// The email of the service account.
 	// Wire name: 'email'
-	Email           string   ``
-	ForceSendFields []string `tf:"-"`
+	Email           string   `json:"email,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DatabricksGcpServiceAccountResponse) MarshalJSON() ([]byte, error) {
@@ -6016,11 +6003,9 @@ func DatabricksGcpServiceAccountResponseFromPb(pb *catalogpb.DatabricksGcpServic
 
 type DeleteAccountMetastoreAssignmentRequest struct {
 	// Unity Catalog metastore ID
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Workspace ID.
-	// Wire name: 'workspace_id'
-	WorkspaceId int64 `tf:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
 func (st DeleteAccountMetastoreAssignmentRequest) MarshalJSON() ([]byte, error) {
@@ -6072,12 +6057,10 @@ func DeleteAccountMetastoreAssignmentRequestFromPb(pb *catalogpb.DeleteAccountMe
 
 type DeleteAccountMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
-	// Wire name: 'force'
-	Force bool `tf:"-"`
+	Force bool `json:"-" tf:"-"`
 	// Unity Catalog metastore ID
-	// Wire name: 'metastore_id'
-	MetastoreId     string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	MetastoreId     string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteAccountMetastoreRequest) MarshalJSON() ([]byte, error) {
@@ -6136,15 +6119,12 @@ func DeleteAccountMetastoreRequestFromPb(pb *catalogpb.DeleteAccountMetastoreReq
 type DeleteAccountStorageCredentialRequest struct {
 	// Force deletion even if the Storage Credential is not empty. Default is
 	// false.
-	// Wire name: 'force'
-	Force bool `tf:"-"`
+	Force bool `json:"-" tf:"-"`
 	// Unity Catalog metastore ID
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Name of the storage credential.
-	// Wire name: 'storage_credential_name'
-	StorageCredentialName string   `tf:"-"`
-	ForceSendFields       []string `tf:"-"`
+	StorageCredentialName string   `json:"-" tf:"-"`
+	ForceSendFields       []string `json:"-" tf:"-"`
 }
 
 func (st DeleteAccountStorageCredentialRequest) MarshalJSON() ([]byte, error) {
@@ -6204,11 +6184,9 @@ func DeleteAccountStorageCredentialRequestFromPb(pb *catalogpb.DeleteAccountStor
 
 type DeleteAliasRequest struct {
 	// The name of the alias
-	// Wire name: 'alias'
-	Alias string `tf:"-"`
+	Alias string `json:"-" tf:"-"`
 	// The three-level (fully qualified) name of the registered model
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 }
 
 func (st DeleteAliasRequest) MarshalJSON() ([]byte, error) {
@@ -6260,12 +6238,10 @@ func DeleteAliasRequestFromPb(pb *catalogpb.DeleteAliasRequestPb) (*DeleteAliasR
 
 type DeleteCatalogRequest struct {
 	// Force deletion even if the catalog is not empty.
-	// Wire name: 'force'
-	Force bool `tf:"-"`
+	Force bool `json:"-" tf:"-"`
 	// The name of the catalog.
-	// Wire name: 'name'
-	Name            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteCatalogRequest) MarshalJSON() ([]byte, error) {
@@ -6323,8 +6299,7 @@ func DeleteCatalogRequestFromPb(pb *catalogpb.DeleteCatalogRequestPb) (*DeleteCa
 
 type DeleteConnectionRequest struct {
 	// The name of the connection to be deleted.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteConnectionRequest) MarshalJSON() ([]byte, error) {
@@ -6376,12 +6351,10 @@ type DeleteCredentialRequest struct {
 	// Force an update even if there are dependent services (when purpose is
 	// **SERVICE**) or dependent external locations and external tables (when
 	// purpose is **STORAGE**).
-	// Wire name: 'force'
-	Force bool `tf:"-"`
+	Force bool `json:"-" tf:"-"`
 	// Name of the credential.
-	// Wire name: 'name_arg'
-	NameArg         string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	NameArg         string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
@@ -6438,9 +6411,7 @@ func DeleteCredentialRequestFromPb(pb *catalogpb.DeleteCredentialRequestPb) (*De
 }
 
 type DeleteExternalLineageRelationshipRequest struct {
-
-	// Wire name: 'external_lineage_relationship'
-	ExternalLineageRelationship DeleteRequestExternalLineage `tf:"-"`
+	ExternalLineageRelationship DeleteRequestExternalLineage `json:"-" tf:"-"`
 }
 
 func (st DeleteExternalLineageRelationshipRequest) MarshalJSON() ([]byte, error) {
@@ -6502,12 +6473,10 @@ func DeleteExternalLineageRelationshipRequestFromPb(pb *catalogpb.DeleteExternal
 
 type DeleteExternalLocationRequest struct {
 	// Force deletion even if there are dependent external tables or mounts.
-	// Wire name: 'force'
-	Force bool `tf:"-"`
+	Force bool `json:"-" tf:"-"`
 	// Name of the external location.
-	// Wire name: 'name'
-	Name            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteExternalLocationRequest) MarshalJSON() ([]byte, error) {
@@ -6564,9 +6533,7 @@ func DeleteExternalLocationRequestFromPb(pb *catalogpb.DeleteExternalLocationReq
 }
 
 type DeleteExternalMetadataRequest struct {
-
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteExternalMetadataRequest) MarshalJSON() ([]byte, error) {
@@ -6616,13 +6583,11 @@ func DeleteExternalMetadataRequestFromPb(pb *catalogpb.DeleteExternalMetadataReq
 
 type DeleteFunctionRequest struct {
 	// Force deletion even if the function is notempty.
-	// Wire name: 'force'
-	Force bool `tf:"-"`
+	Force bool `json:"-" tf:"-"`
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
-	// Wire name: 'name'
-	Name            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteFunctionRequest) MarshalJSON() ([]byte, error) {
@@ -6680,12 +6645,10 @@ func DeleteFunctionRequestFromPb(pb *catalogpb.DeleteFunctionRequestPb) (*Delete
 
 type DeleteMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
-	// Wire name: 'force'
-	Force bool `tf:"-"`
+	Force bool `json:"-" tf:"-"`
 	// Unique ID of the metastore.
-	// Wire name: 'id'
-	Id              string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Id              string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteMetastoreRequest) MarshalJSON() ([]byte, error) {
@@ -6743,11 +6706,9 @@ func DeleteMetastoreRequestFromPb(pb *catalogpb.DeleteMetastoreRequestPb) (*Dele
 
 type DeleteModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// The integer version number of the model version
-	// Wire name: 'version'
-	Version int `tf:"-"`
+	Version int `json:"-" tf:"-"`
 }
 
 func (st DeleteModelVersionRequest) MarshalJSON() ([]byte, error) {
@@ -6845,8 +6806,7 @@ func DeleteMonitorResponseFromPb(pb *catalogpb.DeleteMonitorResponsePb) (*Delete
 
 type DeleteOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteOnlineTableRequest) MarshalJSON() ([]byte, error) {
@@ -6897,8 +6857,7 @@ func DeleteOnlineTableRequestFromPb(pb *catalogpb.DeleteOnlineTableRequestPb) (*
 type DeleteQualityMonitorRequest struct {
 	// UC table name in format `catalog.schema.table_name`. This field
 	// corresponds to the {full_table_name_arg} arg in the endpoint path.
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 }
 
 func (st DeleteQualityMonitorRequest) MarshalJSON() ([]byte, error) {
@@ -6948,8 +6907,7 @@ func DeleteQualityMonitorRequestFromPb(pb *catalogpb.DeleteQualityMonitorRequest
 
 type DeleteRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 }
 
 func (st DeleteRegisteredModelRequest) MarshalJSON() ([]byte, error) {
@@ -7000,14 +6958,14 @@ func DeleteRegisteredModelRequestFromPb(pb *catalogpb.DeleteRegisteredModelReque
 type DeleteRequestExternalLineage struct {
 	// Unique identifier of the external lineage relationship.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Source object of the external lineage relationship.
 	// Wire name: 'source'
-	Source ExternalLineageObject ``
+	Source ExternalLineageObject `json:"source"`
 	// Target object of the external lineage relationship.
 	// Wire name: 'target'
-	Target          ExternalLineageObject ``
-	ForceSendFields []string              `tf:"-"`
+	Target          ExternalLineageObject `json:"target"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st DeleteRequestExternalLineage) MarshalJSON() ([]byte, error) {
@@ -7091,12 +7049,10 @@ func DeleteRequestExternalLineageFromPb(pb *catalogpb.DeleteRequestExternalLinea
 
 type DeleteSchemaRequest struct {
 	// Force deletion even if the schema is not empty.
-	// Wire name: 'force'
-	Force bool `tf:"-"`
+	Force bool `json:"-" tf:"-"`
 	// Full name of the schema.
-	// Wire name: 'full_name'
-	FullName        string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	FullName        string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteSchemaRequest) MarshalJSON() ([]byte, error) {
@@ -7156,12 +7112,10 @@ type DeleteStorageCredentialRequest struct {
 	// Force an update even if there are dependent external locations or
 	// external tables (when purpose is **STORAGE**) or dependent services (when
 	// purpose is **SERVICE**).
-	// Wire name: 'force'
-	Force bool `tf:"-"`
+	Force bool `json:"-" tf:"-"`
 	// Name of the storage credential.
-	// Wire name: 'name'
-	Name            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteStorageCredentialRequest) MarshalJSON() ([]byte, error) {
@@ -7221,14 +7175,11 @@ type DeleteTableConstraintRequest struct {
 	// If true, try deleting all child constraints of the current constraint. If
 	// false, reject this operation if the current constraint has any child
 	// constraints.
-	// Wire name: 'cascade'
-	Cascade bool `tf:"-"`
+	Cascade bool `json:"-" tf:"-"`
 	// The name of the constraint to delete.
-	// Wire name: 'constraint_name'
-	ConstraintName string `tf:"-"`
+	ConstraintName string `json:"-" tf:"-"`
 	// Full name of the table referenced by the constraint.
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 }
 
 func (st DeleteTableConstraintRequest) MarshalJSON() ([]byte, error) {
@@ -7282,8 +7233,7 @@ func DeleteTableConstraintRequestFromPb(pb *catalogpb.DeleteTableConstraintReque
 
 type DeleteTableRequest struct {
 	// Full name of the table.
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 }
 
 func (st DeleteTableRequest) MarshalJSON() ([]byte, error) {
@@ -7333,8 +7283,7 @@ func DeleteTableRequestFromPb(pb *catalogpb.DeleteTableRequestPb) (*DeleteTableR
 
 type DeleteVolumeRequest struct {
 	// The three-level (fully qualified) name of the volume
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteVolumeRequest) MarshalJSON() ([]byte, error) {
@@ -7388,7 +7337,7 @@ func DeleteVolumeRequestFromPb(pb *catalogpb.DeleteVolumeRequestPb) (*DeleteVolu
 type DeltaRuntimePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'delta_runtime_properties'
-	DeltaRuntimeProperties map[string]string ``
+	DeltaRuntimeProperties map[string]string `json:"delta_runtime_properties"`
 }
 
 func (st DeltaRuntimePropertiesKvPairs) MarshalJSON() ([]byte, error) {
@@ -7494,16 +7443,16 @@ func DeltaSharingScopeEnumFromPb(pb *catalogpb.DeltaSharingScopeEnumPb) (*DeltaS
 type Dependency struct {
 
 	// Wire name: 'connection'
-	Connection *ConnectionDependency ``
+	Connection *ConnectionDependency `json:"connection,omitempty"`
 
 	// Wire name: 'credential'
-	Credential *CredentialDependency ``
+	Credential *CredentialDependency `json:"credential,omitempty"`
 
 	// Wire name: 'function'
-	Function *FunctionDependency ``
+	Function *FunctionDependency `json:"function,omitempty"`
 
 	// Wire name: 'table'
-	Table *TableDependency ``
+	Table *TableDependency `json:"table,omitempty"`
 }
 
 func (st Dependency) MarshalJSON() ([]byte, error) {
@@ -7609,7 +7558,7 @@ func DependencyFromPb(pb *catalogpb.DependencyPb) (*Dependency, error) {
 type DependencyList struct {
 	// Array of dependencies.
 	// Wire name: 'dependencies'
-	Dependencies []Dependency ``
+	Dependencies []Dependency `json:"dependencies,omitempty"`
 }
 
 func (st DependencyList) MarshalJSON() ([]byte, error) {
@@ -7681,11 +7630,9 @@ func DependencyListFromPb(pb *catalogpb.DependencyListPb) (*DependencyList, erro
 
 type DisableRequest struct {
 	// The metastore ID under which the system schema lives.
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Full name of the system schema.
-	// Wire name: 'schema_name'
-	SchemaName string `tf:"-"`
+	SchemaName string `json:"-" tf:"-"`
 }
 
 func (st DisableRequest) MarshalJSON() ([]byte, error) {
@@ -7740,12 +7687,12 @@ type EffectivePermissionsList struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// The privileges conveyed to each principal (either directly or via
 	// inheritance)
 	// Wire name: 'privilege_assignments'
-	PrivilegeAssignments []EffectivePrivilegeAssignment ``
-	ForceSendFields      []string                       `tf:"-"`
+	PrivilegeAssignments []EffectivePrivilegeAssignment `json:"privilege_assignments,omitempty"`
+	ForceSendFields      []string                       `json:"-" tf:"-"`
 }
 
 func (st EffectivePermissionsList) MarshalJSON() ([]byte, error) {
@@ -7827,16 +7774,16 @@ type EffectivePredictiveOptimizationFlag struct {
 	// The name of the object from which the flag was inherited. If there was no
 	// inheritance, this field is left blank.
 	// Wire name: 'inherited_from_name'
-	InheritedFromName string ``
+	InheritedFromName string `json:"inherited_from_name,omitempty"`
 	// The type of the object from which the flag was inherited. If there was no
 	// inheritance, this field is left blank.
 	// Wire name: 'inherited_from_type'
-	InheritedFromType EffectivePredictiveOptimizationFlagInheritedFromType ``
+	InheritedFromType EffectivePredictiveOptimizationFlagInheritedFromType `json:"inherited_from_type,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	// Wire name: 'value'
-	Value           EnablePredictiveOptimization ``
-	ForceSendFields []string                     `tf:"-"`
+	Value           EnablePredictiveOptimization `json:"value"`
+	ForceSendFields []string                     `json:"-" tf:"-"`
 }
 
 func (st EffectivePredictiveOptimizationFlag) MarshalJSON() ([]byte, error) {
@@ -7978,16 +7925,16 @@ type EffectivePrivilege struct {
 	// This field is omitted when privilege is not inherited (it's assigned to
 	// the securable itself).
 	// Wire name: 'inherited_from_name'
-	InheritedFromName string ``
+	InheritedFromName string `json:"inherited_from_name,omitempty"`
 	// The type of the object that conveys this privilege via inheritance. This
 	// field is omitted when privilege is not inherited (it's assigned to the
 	// securable itself).
 	// Wire name: 'inherited_from_type'
-	InheritedFromType SecurableType ``
+	InheritedFromType SecurableType `json:"inherited_from_type,omitempty"`
 	// The privilege assigned to the principal.
 	// Wire name: 'privilege'
-	Privilege       Privilege ``
-	ForceSendFields []string  `tf:"-"`
+	Privilege       Privilege `json:"privilege,omitempty"`
+	ForceSendFields []string  `json:"-" tf:"-"`
 }
 
 func (st EffectivePrivilege) MarshalJSON() ([]byte, error) {
@@ -8072,12 +8019,12 @@ func EffectivePrivilegeFromPb(pb *catalogpb.EffectivePrivilegePb) (*EffectivePri
 type EffectivePrivilegeAssignment struct {
 	// The principal (user email address or group name).
 	// Wire name: 'principal'
-	Principal string ``
+	Principal string `json:"principal,omitempty"`
 	// The privileges conveyed to the principal (either directly or via
 	// inheritance).
 	// Wire name: 'privileges'
-	Privileges      []EffectivePrivilege ``
-	ForceSendFields []string             `tf:"-"`
+	Privileges      []EffectivePrivilege `json:"privileges,omitempty"`
+	ForceSendFields []string             `json:"-" tf:"-"`
 }
 
 func (st EffectivePrivilegeAssignment) MarshalJSON() ([]byte, error) {
@@ -8214,14 +8161,12 @@ func EnablePredictiveOptimizationFromPb(pb *catalogpb.EnablePredictiveOptimizati
 type EnableRequest struct {
 	// the catalog for which the system schema is to enabled in
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name,omitempty"`
 	// The metastore ID under which the system schema lives.
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Full name of the system schema.
-	// Wire name: 'schema_name'
-	SchemaName      string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	SchemaName      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EnableRequest) MarshalJSON() ([]byte, error) {
@@ -8283,7 +8228,7 @@ func EnableRequestFromPb(pb *catalogpb.EnableRequestPb) (*EnableRequest, error) 
 type EncryptionDetails struct {
 	// Server-Side Encryption properties for clients communicating with AWS s3.
 	// Wire name: 'sse_encryption_details'
-	SseEncryptionDetails *SseEncryptionDetails ``
+	SseEncryptionDetails *SseEncryptionDetails `json:"sse_encryption_details,omitempty"`
 }
 
 func (st EncryptionDetails) MarshalJSON() ([]byte, error) {
@@ -8346,11 +8291,11 @@ func EncryptionDetailsFromPb(pb *catalogpb.EncryptionDetailsPb) (*EncryptionDeta
 type EnvironmentSettings struct {
 
 	// Wire name: 'environment_version'
-	EnvironmentVersion string ``
+	EnvironmentVersion string `json:"environment_version,omitempty"`
 
 	// Wire name: 'java_dependencies'
-	JavaDependencies []string ``
-	ForceSendFields  []string `tf:"-"`
+	JavaDependencies []string `json:"java_dependencies,omitempty"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st EnvironmentSettings) MarshalJSON() ([]byte, error) {
@@ -8408,8 +8353,7 @@ func EnvironmentSettingsFromPb(pb *catalogpb.EnvironmentSettingsPb) (*Environmen
 
 type ExistsRequest struct {
 	// Full name of the table.
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 }
 
 func (st ExistsRequest) MarshalJSON() ([]byte, error) {
@@ -8460,8 +8404,8 @@ func ExistsRequestFromPb(pb *catalogpb.ExistsRequestPb) (*ExistsRequest, error) 
 type ExternalLineageExternalMetadata struct {
 
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExternalLineageExternalMetadata) MarshalJSON() ([]byte, error) {
@@ -8519,17 +8463,17 @@ func ExternalLineageExternalMetadataFromPb(pb *catalogpb.ExternalLineageExternal
 type ExternalLineageExternalMetadataInfo struct {
 	// Type of entity represented by the external metadata object.
 	// Wire name: 'entity_type'
-	EntityType string ``
+	EntityType string `json:"entity_type,omitempty"`
 	// Timestamp of the lineage event.
 	// Wire name: 'event_time'
-	EventTime string `` //legacy
+	EventTime string `json:"event_time,omitempty"` //legacy
 	// Name of the external metadata object.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Type of external system.
 	// Wire name: 'system_type'
-	SystemType      SystemType ``
-	ForceSendFields []string   `tf:"-"`
+	SystemType      SystemType `json:"system_type,omitempty"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
 func (st ExternalLineageExternalMetadataInfo) MarshalJSON() ([]byte, error) {
@@ -8605,20 +8549,20 @@ func ExternalLineageExternalMetadataInfoFromPb(pb *catalogpb.ExternalLineageExte
 type ExternalLineageFileInfo struct {
 	// Timestamp of the lineage event.
 	// Wire name: 'event_time'
-	EventTime string `` //legacy
+	EventTime string `json:"event_time,omitempty"` //legacy
 	// URL of the path.
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path,omitempty"`
 	// The full name of the securable on the path.
 	// Wire name: 'securable_name'
-	SecurableName string ``
+	SecurableName string `json:"securable_name,omitempty"`
 	// The securable type of the securable on the path.
 	// Wire name: 'securable_type'
-	SecurableType string ``
+	SecurableType string `json:"securable_type,omitempty"`
 	// The storage location associated with securable on the path.
 	// Wire name: 'storage_location'
-	StorageLocation string   ``
-	ForceSendFields []string `tf:"-"`
+	StorageLocation string   `json:"storage_location,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExternalLineageFileInfo) MarshalJSON() ([]byte, error) {
@@ -8684,19 +8628,19 @@ func ExternalLineageFileInfoFromPb(pb *catalogpb.ExternalLineageFileInfoPb) (*Ex
 type ExternalLineageInfo struct {
 	// Information about the edge metadata of the external lineage relationship.
 	// Wire name: 'external_lineage_info'
-	ExternalLineageInfo *ExternalLineageRelationshipInfo ``
+	ExternalLineageInfo *ExternalLineageRelationshipInfo `json:"external_lineage_info,omitempty"`
 	// Information about external metadata involved in the lineage relationship.
 	// Wire name: 'external_metadata_info'
-	ExternalMetadataInfo *ExternalLineageExternalMetadataInfo ``
+	ExternalMetadataInfo *ExternalLineageExternalMetadataInfo `json:"external_metadata_info,omitempty"`
 	// Information about the file involved in the lineage relationship.
 	// Wire name: 'file_info'
-	FileInfo *ExternalLineageFileInfo ``
+	FileInfo *ExternalLineageFileInfo `json:"file_info,omitempty"`
 	// Information about the model version involved in the lineage relationship.
 	// Wire name: 'model_info'
-	ModelInfo *ExternalLineageModelVersionInfo ``
+	ModelInfo *ExternalLineageModelVersionInfo `json:"model_info,omitempty"`
 	// Information about the table involved in the lineage relationship.
 	// Wire name: 'table_info'
-	TableInfo *ExternalLineageTableInfo ``
+	TableInfo *ExternalLineageTableInfo `json:"table_info,omitempty"`
 }
 
 func (st ExternalLineageInfo) MarshalJSON() ([]byte, error) {
@@ -8815,11 +8759,11 @@ func ExternalLineageInfoFromPb(pb *catalogpb.ExternalLineageInfoPb) (*ExternalLi
 type ExternalLineageModelVersion struct {
 
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 
 	// Wire name: 'version'
-	Version         string   ``
-	ForceSendFields []string `tf:"-"`
+	Version         string   `json:"version,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExternalLineageModelVersion) MarshalJSON() ([]byte, error) {
@@ -8879,14 +8823,14 @@ func ExternalLineageModelVersionFromPb(pb *catalogpb.ExternalLineageModelVersion
 type ExternalLineageModelVersionInfo struct {
 	// Timestamp of the lineage event.
 	// Wire name: 'event_time'
-	EventTime string `` //legacy
+	EventTime string `json:"event_time,omitempty"` //legacy
 	// Name of the model.
 	// Wire name: 'model_name'
-	ModelName string ``
+	ModelName string `json:"model_name,omitempty"`
 	// Version number of the model.
 	// Wire name: 'version'
-	Version         int64    ``
-	ForceSendFields []string `tf:"-"`
+	Version         int64    `json:"version,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExternalLineageModelVersionInfo) MarshalJSON() ([]byte, error) {
@@ -8947,16 +8891,16 @@ func ExternalLineageModelVersionInfoFromPb(pb *catalogpb.ExternalLineageModelVer
 type ExternalLineageObject struct {
 
 	// Wire name: 'external_metadata'
-	ExternalMetadata *ExternalLineageExternalMetadata ``
+	ExternalMetadata *ExternalLineageExternalMetadata `json:"external_metadata,omitempty"`
 
 	// Wire name: 'model_version'
-	ModelVersion *ExternalLineageModelVersion ``
+	ModelVersion *ExternalLineageModelVersion `json:"model_version,omitempty"`
 
 	// Wire name: 'path'
-	Path *ExternalLineagePath ``
+	Path *ExternalLineagePath `json:"path,omitempty"`
 
 	// Wire name: 'table'
-	Table *ExternalLineageTable ``
+	Table *ExternalLineageTable `json:"table,omitempty"`
 }
 
 func (st ExternalLineageObject) MarshalJSON() ([]byte, error) {
@@ -9061,8 +9005,8 @@ func ExternalLineageObjectFromPb(pb *catalogpb.ExternalLineageObjectPb) (*Extern
 type ExternalLineagePath struct {
 
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExternalLineagePath) MarshalJSON() ([]byte, error) {
@@ -9119,20 +9063,20 @@ func ExternalLineagePathFromPb(pb *catalogpb.ExternalLineagePathPb) (*ExternalLi
 type ExternalLineageRelationship struct {
 	// List of column relationships between source and target objects.
 	// Wire name: 'columns'
-	Columns []ColumnRelationship ``
+	Columns []ColumnRelationship `json:"columns,omitempty"`
 	// Unique identifier of the external lineage relationship.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Key-value properties associated with the external lineage relationship.
 	// Wire name: 'properties'
-	Properties map[string]string ``
+	Properties map[string]string `json:"properties,omitempty"`
 	// Source object of the external lineage relationship.
 	// Wire name: 'source'
-	Source ExternalLineageObject ``
+	Source ExternalLineageObject `json:"source"`
 	// Target object of the external lineage relationship.
 	// Wire name: 'target'
-	Target          ExternalLineageObject ``
-	ForceSendFields []string              `tf:"-"`
+	Target          ExternalLineageObject `json:"target"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st ExternalLineageRelationship) MarshalJSON() ([]byte, error) {
@@ -9243,20 +9187,20 @@ func ExternalLineageRelationshipFromPb(pb *catalogpb.ExternalLineageRelationship
 type ExternalLineageRelationshipInfo struct {
 	// List of column relationships between source and target objects.
 	// Wire name: 'columns'
-	Columns []ColumnRelationship ``
+	Columns []ColumnRelationship `json:"columns,omitempty"`
 	// Unique identifier of the external lineage relationship.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Key-value properties associated with the external lineage relationship.
 	// Wire name: 'properties'
-	Properties map[string]string ``
+	Properties map[string]string `json:"properties,omitempty"`
 	// Source object of the external lineage relationship.
 	// Wire name: 'source'
-	Source ExternalLineageObject ``
+	Source ExternalLineageObject `json:"source"`
 	// Target object of the external lineage relationship.
 	// Wire name: 'target'
-	Target          ExternalLineageObject ``
-	ForceSendFields []string              `tf:"-"`
+	Target          ExternalLineageObject `json:"target"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st ExternalLineageRelationshipInfo) MarshalJSON() ([]byte, error) {
@@ -9367,8 +9311,8 @@ func ExternalLineageRelationshipInfoFromPb(pb *catalogpb.ExternalLineageRelation
 type ExternalLineageTable struct {
 
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExternalLineageTable) MarshalJSON() ([]byte, error) {
@@ -9426,17 +9370,17 @@ func ExternalLineageTableFromPb(pb *catalogpb.ExternalLineageTablePb) (*External
 type ExternalLineageTableInfo struct {
 	// Name of Catalog.
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name,omitempty"`
 	// Timestamp of the lineage event.
 	// Wire name: 'event_time'
-	EventTime string `` //legacy
+	EventTime string `json:"event_time,omitempty"` //legacy
 	// Name of Table.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Name of Schema.
 	// Wire name: 'schema_name'
-	SchemaName      string   ``
-	ForceSendFields []string `tf:"-"`
+	SchemaName      string   `json:"schema_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExternalLineageTableInfo) MarshalJSON() ([]byte, error) {
@@ -9501,62 +9445,62 @@ type ExternalLocationInfo struct {
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
 	// Wire name: 'browse_only'
-	BrowseOnly bool ``
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Time at which this external location was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of external location creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// Unique ID of the location's storage credential.
 	// Wire name: 'credential_id'
-	CredentialId string ``
+	CredentialId string `json:"credential_id,omitempty"`
 	// Name of the storage credential used with this location.
 	// Wire name: 'credential_name'
-	CredentialName string ``
+	CredentialName string `json:"credential_name,omitempty"`
 	// Whether to enable file events on this external location.
 	// Wire name: 'enable_file_events'
-	EnableFileEvents bool ``
+	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
 	// Wire name: 'encryption_details'
-	EncryptionDetails *EncryptionDetails ``
+	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	// Wire name: 'fallback'
-	Fallback bool ``
+	Fallback bool `json:"fallback,omitempty"`
 	// File event queue settings.
 	// Wire name: 'file_event_queue'
-	FileEventQueue *FileEventQueue ``
+	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 
 	// Wire name: 'isolation_mode'
-	IsolationMode IsolationMode ``
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of metastore hosting the external location.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of the external location.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The owner of the external location.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Indicates whether the external location is read-only.
 	// Wire name: 'read_only'
-	ReadOnly bool ``
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Time at which external location this was last modified, in epoch
 	// milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the external location.
 	// Wire name: 'updated_by'
-	UpdatedBy string ``
+	UpdatedBy string `json:"updated_by,omitempty"`
 	// Path URL of the external location.
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExternalLocationInfo) MarshalJSON() ([]byte, error) {
@@ -9683,47 +9627,47 @@ func ExternalLocationInfoFromPb(pb *catalogpb.ExternalLocationInfoPb) (*External
 type ExternalMetadata struct {
 	// List of columns associated with the external metadata object.
 	// Wire name: 'columns'
-	Columns []string ``
+	Columns []string `json:"columns,omitempty"`
 	// Time at which this external metadata object was created.
 	// Wire name: 'create_time'
-	CreateTime string `` //legacy
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// Username of external metadata object creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// User-provided free-form text description.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Type of entity within the external system.
 	// Wire name: 'entity_type'
-	EntityType string ``
+	EntityType string `json:"entity_type"`
 	// Unique identifier of the external metadata object.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Unique identifier of parent metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of the external metadata object.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Owner of the external metadata object.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the external metadata object.
 	// Wire name: 'properties'
-	Properties map[string]string ``
+	Properties map[string]string `json:"properties,omitempty"`
 	// Type of external system.
 	// Wire name: 'system_type'
-	SystemType SystemType ``
+	SystemType SystemType `json:"system_type"`
 	// Time at which this external metadata object was last modified.
 	// Wire name: 'update_time'
-	UpdateTime string `` //legacy
+	UpdateTime string `json:"update_time,omitempty"` //legacy
 	// Username of user who last modified external metadata object.
 	// Wire name: 'updated_by'
-	UpdatedBy string ``
+	UpdatedBy string `json:"updated_by,omitempty"`
 	// URL associated with the external metadata object.
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExternalMetadata) MarshalJSON() ([]byte, error) {
@@ -9823,13 +9767,13 @@ type FailedStatus struct {
 	// table. Only populated if the table is still online and available for
 	// serving.
 	// Wire name: 'last_processed_commit_version'
-	LastProcessedCommitVersion int64 ``
+	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
 	// The timestamp of the last time any data was synchronized from the source
 	// table to the online table. Only populated if the table is still online
 	// and available for serving.
 	// Wire name: 'timestamp'
-	Timestamp       string   `` //legacy
-	ForceSendFields []string `tf:"-"`
+	Timestamp       string   `json:"timestamp,omitempty"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FailedStatus) MarshalJSON() ([]byte, error) {
@@ -9888,22 +9832,22 @@ func FailedStatusFromPb(pb *catalogpb.FailedStatusPb) (*FailedStatus, error) {
 type FileEventQueue struct {
 
 	// Wire name: 'managed_aqs'
-	ManagedAqs *AzureQueueStorage ``
+	ManagedAqs *AzureQueueStorage `json:"managed_aqs,omitempty"`
 
 	// Wire name: 'managed_pubsub'
-	ManagedPubsub *GcpPubsub ``
+	ManagedPubsub *GcpPubsub `json:"managed_pubsub,omitempty"`
 
 	// Wire name: 'managed_sqs'
-	ManagedSqs *AwsSqsQueue ``
+	ManagedSqs *AwsSqsQueue `json:"managed_sqs,omitempty"`
 
 	// Wire name: 'provided_aqs'
-	ProvidedAqs *AzureQueueStorage ``
+	ProvidedAqs *AzureQueueStorage `json:"provided_aqs,omitempty"`
 
 	// Wire name: 'provided_pubsub'
-	ProvidedPubsub *GcpPubsub ``
+	ProvidedPubsub *GcpPubsub `json:"provided_pubsub,omitempty"`
 
 	// Wire name: 'provided_sqs'
-	ProvidedSqs *AwsSqsQueue ``
+	ProvidedSqs *AwsSqsQueue `json:"provided_sqs,omitempty"`
 }
 
 func (st FileEventQueue) MarshalJSON() ([]byte, error) {
@@ -10036,20 +9980,20 @@ func FileEventQueueFromPb(pb *catalogpb.FileEventQueuePb) (*FileEventQueue, erro
 type ForeignKeyConstraint struct {
 	// Column names for this constraint.
 	// Wire name: 'child_columns'
-	ChildColumns []string ``
+	ChildColumns []string `json:"child_columns"`
 	// The name of the constraint.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Column names for this constraint.
 	// Wire name: 'parent_columns'
-	ParentColumns []string ``
+	ParentColumns []string `json:"parent_columns"`
 	// The full name of the parent constraint.
 	// Wire name: 'parent_table'
-	ParentTable string ``
+	ParentTable string `json:"parent_table"`
 	// True if the constraint is RELY, false or unset if NORELY.
 	// Wire name: 'rely'
-	Rely            bool     ``
-	ForceSendFields []string `tf:"-"`
+	Rely            bool     `json:"rely,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ForeignKeyConstraint) MarshalJSON() ([]byte, error) {
@@ -10116,7 +10060,7 @@ type FunctionDependency struct {
 	// Full name of the dependent function, in the form of
 	// __catalog_name__.__schema_name__.__function_name__.
 	// Wire name: 'function_full_name'
-	FunctionFullName string ``
+	FunctionFullName string `json:"function_full_name"`
 }
 
 func (st FunctionDependency) MarshalJSON() ([]byte, error) {
@@ -10169,100 +10113,100 @@ type FunctionInfo struct {
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
 	// Wire name: 'browse_only'
-	BrowseOnly bool ``
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// Name of parent catalog.
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name,omitempty"`
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Time at which this function was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of function creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// Scalar function return data type.
 	// Wire name: 'data_type'
-	DataType ColumnTypeName ``
+	DataType ColumnTypeName `json:"data_type,omitempty"`
 	// External function language.
 	// Wire name: 'external_language'
-	ExternalLanguage string ``
+	ExternalLanguage string `json:"external_language,omitempty"`
 	// External function name.
 	// Wire name: 'external_name'
-	ExternalName string ``
+	ExternalName string `json:"external_name,omitempty"`
 	// Pretty printed function data type.
 	// Wire name: 'full_data_type'
-	FullDataType string ``
+	FullDataType string `json:"full_data_type,omitempty"`
 	// Full name of function, in form of
 	// __catalog_name__.__schema_name__.__function__name__
 	// Wire name: 'full_name'
-	FullName string ``
+	FullName string `json:"full_name,omitempty"`
 	// Id of Function, relative to parent schema.
 	// Wire name: 'function_id'
-	FunctionId string ``
+	FunctionId string `json:"function_id,omitempty"`
 
 	// Wire name: 'input_params'
-	InputParams *FunctionParameterInfos ``
+	InputParams *FunctionParameterInfos `json:"input_params,omitempty"`
 	// Whether the function is deterministic.
 	// Wire name: 'is_deterministic'
-	IsDeterministic bool ``
+	IsDeterministic bool `json:"is_deterministic,omitempty"`
 	// Function null call.
 	// Wire name: 'is_null_call'
-	IsNullCall bool ``
+	IsNullCall bool `json:"is_null_call,omitempty"`
 	// Unique identifier of parent metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of function, relative to parent schema.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Username of current owner of function.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Function parameter style. **S** is the value for SQL.
 	// Wire name: 'parameter_style'
-	ParameterStyle FunctionInfoParameterStyle ``
+	ParameterStyle FunctionInfoParameterStyle `json:"parameter_style,omitempty"`
 	// JSON-serialized key-value pair map, encoded (escaped) as a string.
 	// Wire name: 'properties'
-	Properties string ``
+	Properties string `json:"properties,omitempty"`
 	// Table function return parameters.
 	// Wire name: 'return_params'
-	ReturnParams *FunctionParameterInfos ``
+	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
 	// Function language. When **EXTERNAL** is used, the language of the routine
 	// function should be specified in the __external_language__ field, and the
 	// __return_params__ of the function cannot be used (as **TABLE** return
 	// type is not supported), and the __sql_data_access__ field must be
 	// **NO_SQL**.
 	// Wire name: 'routine_body'
-	RoutineBody FunctionInfoRoutineBody ``
+	RoutineBody FunctionInfoRoutineBody `json:"routine_body,omitempty"`
 	// Function body.
 	// Wire name: 'routine_definition'
-	RoutineDefinition string ``
+	RoutineDefinition string `json:"routine_definition,omitempty"`
 	// Function dependencies.
 	// Wire name: 'routine_dependencies'
-	RoutineDependencies *DependencyList ``
+	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
 	// Name of parent schema relative to its parent catalog.
 	// Wire name: 'schema_name'
-	SchemaName string ``
+	SchemaName string `json:"schema_name,omitempty"`
 	// Function security type.
 	// Wire name: 'security_type'
-	SecurityType FunctionInfoSecurityType ``
+	SecurityType FunctionInfoSecurityType `json:"security_type,omitempty"`
 	// Specific name of the function; Reserved for future use.
 	// Wire name: 'specific_name'
-	SpecificName string ``
+	SpecificName string `json:"specific_name,omitempty"`
 	// Function SQL data access.
 	// Wire name: 'sql_data_access'
-	SqlDataAccess FunctionInfoSqlDataAccess ``
+	SqlDataAccess FunctionInfoSqlDataAccess `json:"sql_data_access,omitempty"`
 	// List of schemes whose objects can be referenced without qualification.
 	// Wire name: 'sql_path'
-	SqlPath string ``
+	SqlPath string `json:"sql_path,omitempty"`
 	// Time at which this function was created, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified function.
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FunctionInfo) MarshalJSON() ([]byte, error) {
@@ -10689,41 +10633,41 @@ func FunctionInfoSqlDataAccessFromPb(pb *catalogpb.FunctionInfoSqlDataAccessPb) 
 type FunctionParameterInfo struct {
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Name of parameter.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Default value of the parameter.
 	// Wire name: 'parameter_default'
-	ParameterDefault string ``
+	ParameterDefault string `json:"parameter_default,omitempty"`
 
 	// Wire name: 'parameter_mode'
-	ParameterMode FunctionParameterMode ``
+	ParameterMode FunctionParameterMode `json:"parameter_mode,omitempty"`
 
 	// Wire name: 'parameter_type'
-	ParameterType FunctionParameterType ``
+	ParameterType FunctionParameterType `json:"parameter_type,omitempty"`
 	// Ordinal position of column (starting at position 0).
 	// Wire name: 'position'
-	Position int ``
+	Position int `json:"position"`
 	// Format of IntervalType.
 	// Wire name: 'type_interval_type'
-	TypeIntervalType string ``
+	TypeIntervalType string `json:"type_interval_type,omitempty"`
 	// Full data type spec, JSON-serialized.
 	// Wire name: 'type_json'
-	TypeJson string ``
+	TypeJson string `json:"type_json,omitempty"`
 
 	// Wire name: 'type_name'
-	TypeName ColumnTypeName ``
+	TypeName ColumnTypeName `json:"type_name"`
 	// Digits of precision; required on Create for DecimalTypes.
 	// Wire name: 'type_precision'
-	TypePrecision int ``
+	TypePrecision int `json:"type_precision,omitempty"`
 	// Digits to right of decimal; Required on Create for DecimalTypes.
 	// Wire name: 'type_scale'
-	TypeScale int ``
+	TypeScale int `json:"type_scale,omitempty"`
 	// Full data type spec, SQL/catalogString text.
 	// Wire name: 'type_text'
-	TypeText        string   ``
-	ForceSendFields []string `tf:"-"`
+	TypeText        string   `json:"type_text"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FunctionParameterInfo) MarshalJSON() ([]byte, error) {
@@ -10839,7 +10783,7 @@ type FunctionParameterInfos struct {
 	// The array of __FunctionParameterInfo__ definitions of the function's
 	// parameters.
 	// Wire name: 'parameters'
-	Parameters []FunctionParameterInfo ``
+	Parameters []FunctionParameterInfo `json:"parameters,omitempty"`
 }
 
 func (st FunctionParameterInfos) MarshalJSON() ([]byte, error) {
@@ -11019,8 +10963,8 @@ func FunctionParameterTypeFromPb(pb *catalogpb.FunctionParameterTypePb) (*Functi
 type GcpOauthToken struct {
 
 	// Wire name: 'oauth_token'
-	OauthToken      string   ``
-	ForceSendFields []string `tf:"-"`
+	OauthToken      string   `json:"oauth_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GcpOauthToken) MarshalJSON() ([]byte, error) {
@@ -11078,13 +11022,13 @@ type GcpPubsub struct {
 	// Unique identifier included in the name of file events managed cloud
 	// resources.
 	// Wire name: 'managed_resource_id'
-	ManagedResourceId string ``
+	ManagedResourceId string `json:"managed_resource_id,omitempty"`
 	// The Pub/Sub subscription name in the format
 	// projects/{project}/subscriptions/{subscription name} Required for
 	// provided_pubsub.
 	// Wire name: 'subscription_name'
-	SubscriptionName string   ``
-	ForceSendFields  []string `tf:"-"`
+	SubscriptionName string   `json:"subscription_name,omitempty"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st GcpPubsub) MarshalJSON() ([]byte, error) {
@@ -11146,7 +11090,7 @@ type GenerateTemporaryServiceCredentialAzureOptions struct {
 	// resources are the scopes that are passed to the token provider (see
 	// https://learn.microsoft.com/python/api/azure-core/azure.core.credentials.tokencredential?view=azure-python)
 	// Wire name: 'resources'
-	Resources []string ``
+	Resources []string `json:"resources,omitempty"`
 }
 
 func (st GenerateTemporaryServiceCredentialAzureOptions) MarshalJSON() ([]byte, error) {
@@ -11200,7 +11144,7 @@ type GenerateTemporaryServiceCredentialGcpOptions struct {
 	// resources are the scopes that are passed to the token provider (see
 	// https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.credentials.Credentials)
 	// Wire name: 'scopes'
-	Scopes []string ``
+	Scopes []string `json:"scopes,omitempty"`
 }
 
 func (st GenerateTemporaryServiceCredentialGcpOptions) MarshalJSON() ([]byte, error) {
@@ -11251,14 +11195,14 @@ func GenerateTemporaryServiceCredentialGcpOptionsFromPb(pb *catalogpb.GenerateTe
 type GenerateTemporaryServiceCredentialRequest struct {
 
 	// Wire name: 'azure_options'
-	AzureOptions *GenerateTemporaryServiceCredentialAzureOptions ``
+	AzureOptions *GenerateTemporaryServiceCredentialAzureOptions `json:"azure_options,omitempty"`
 	// The name of the service credential used to generate a temporary
 	// credential
 	// Wire name: 'credential_name'
-	CredentialName string ``
+	CredentialName string `json:"credential_name"`
 
 	// Wire name: 'gcp_options'
-	GcpOptions *GenerateTemporaryServiceCredentialGcpOptions ``
+	GcpOptions *GenerateTemporaryServiceCredentialGcpOptions `json:"gcp_options,omitempty"`
 }
 
 func (st GenerateTemporaryServiceCredentialRequest) MarshalJSON() ([]byte, error) {
@@ -11339,11 +11283,11 @@ type GenerateTemporaryTableCredentialRequest struct {
 	// READ_WRITE. If READ_WRITE is specified, the credentials returned will
 	// have write permissions, otherwise, it will be read only.
 	// Wire name: 'operation'
-	Operation TableOperation ``
+	Operation TableOperation `json:"operation,omitempty"`
 	// UUID of the table to read or write.
 	// Wire name: 'table_id'
-	TableId         string   ``
-	ForceSendFields []string `tf:"-"`
+	TableId         string   `json:"table_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GenerateTemporaryTableCredentialRequest) MarshalJSON() ([]byte, error) {
@@ -11414,27 +11358,27 @@ func GenerateTemporaryTableCredentialRequestFromPb(pb *catalogpb.GenerateTempora
 type GenerateTemporaryTableCredentialResponse struct {
 
 	// Wire name: 'aws_temp_credentials'
-	AwsTempCredentials *AwsCredentials ``
+	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
 
 	// Wire name: 'azure_aad'
-	AzureAad *AzureActiveDirectoryToken ``
+	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
 
 	// Wire name: 'azure_user_delegation_sas'
-	AzureUserDelegationSas *AzureUserDelegationSas ``
+	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
 	// Wire name: 'expiration_time'
-	ExpirationTime int64 ``
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
 
 	// Wire name: 'gcp_oauth_token'
-	GcpOauthToken *GcpOauthToken ``
+	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
 
 	// Wire name: 'r2_temp_credentials'
-	R2TempCredentials *R2Credentials ``
+	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
 	// The URL of the storage path accessible by the temporary credential.
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GenerateTemporaryTableCredentialResponse) MarshalJSON() ([]byte, error) {
@@ -11562,8 +11506,7 @@ func GenerateTemporaryTableCredentialResponseFromPb(pb *catalogpb.GenerateTempor
 
 type GetAccountMetastoreAssignmentRequest struct {
 	// Workspace ID.
-	// Wire name: 'workspace_id'
-	WorkspaceId int64 `tf:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
 func (st GetAccountMetastoreAssignmentRequest) MarshalJSON() ([]byte, error) {
@@ -11613,8 +11556,7 @@ func GetAccountMetastoreAssignmentRequestFromPb(pb *catalogpb.GetAccountMetastor
 
 type GetAccountMetastoreRequest struct {
 	// Unity Catalog metastore ID
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 }
 
 func (st GetAccountMetastoreRequest) MarshalJSON() ([]byte, error) {
@@ -11664,11 +11606,9 @@ func GetAccountMetastoreRequestFromPb(pb *catalogpb.GetAccountMetastoreRequestPb
 
 type GetAccountStorageCredentialRequest struct {
 	// Unity Catalog metastore ID
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Name of the storage credential.
-	// Wire name: 'storage_credential_name'
-	StorageCredentialName string `tf:"-"`
+	StorageCredentialName string `json:"-" tf:"-"`
 }
 
 func (st GetAccountStorageCredentialRequest) MarshalJSON() ([]byte, error) {
@@ -11720,8 +11660,7 @@ func GetAccountStorageCredentialRequestFromPb(pb *catalogpb.GetAccountStorageCre
 
 type GetArtifactAllowlistRequest struct {
 	// The artifact type of the allowlist.
-	// Wire name: 'artifact_type'
-	ArtifactType ArtifactType `tf:"-"`
+	ArtifactType ArtifactType `json:"-" tf:"-"`
 }
 
 func (st GetArtifactAllowlistRequest) MarshalJSON() ([]byte, error) {
@@ -11788,19 +11727,15 @@ type GetBindingsRequest struct {
 	// server configured value; - When set to a value less than 0, an invalid
 	// parameter error is returned; - If not set, all the workspace bindings are
 	// returned (not recommended).
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// The name of the securable.
-	// Wire name: 'securable_name'
-	SecurableName string `tf:"-"`
+	SecurableName string `json:"-" tf:"-"`
 	// The type of the securable to bind to a workspace (catalog,
 	// storage_credential, credential, or external_location).
-	// Wire name: 'securable_type'
-	SecurableType   string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	SecurableType   string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetBindingsRequest) MarshalJSON() ([]byte, error) {
@@ -11862,16 +11797,13 @@ func GetBindingsRequestFromPb(pb *catalogpb.GetBindingsRequestPb) (*GetBindingsR
 
 type GetByAliasRequest struct {
 	// The name of the alias
-	// Wire name: 'alias'
-	Alias string `tf:"-"`
+	Alias string `json:"-" tf:"-"`
 	// The three-level (fully qualified) name of the registered model
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Whether to include aliases associated with the model version in the
 	// response
-	// Wire name: 'include_aliases'
-	IncludeAliases  bool     `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	IncludeAliases  bool     `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetByAliasRequest) MarshalJSON() ([]byte, error) {
@@ -11932,12 +11864,10 @@ func GetByAliasRequestFromPb(pb *catalogpb.GetByAliasRequestPb) (*GetByAliasRequ
 type GetCatalogRequest struct {
 	// Whether to include catalogs in the response for which the principal can
 	// only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// The name of the catalog.
-	// Wire name: 'name'
-	Name            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetCatalogRequest) MarshalJSON() ([]byte, error) {
@@ -11996,7 +11926,7 @@ func GetCatalogRequestFromPb(pb *catalogpb.GetCatalogRequestPb) (*GetCatalogRequ
 type GetCatalogWorkspaceBindingsResponse struct {
 	// A list of workspace IDs
 	// Wire name: 'workspaces'
-	Workspaces []int64 ``
+	Workspaces []int64 `json:"workspaces,omitempty"`
 }
 
 func (st GetCatalogWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
@@ -12046,8 +11976,7 @@ func GetCatalogWorkspaceBindingsResponseFromPb(pb *catalogpb.GetCatalogWorkspace
 
 type GetConnectionRequest struct {
 	// Name of the connection.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetConnectionRequest) MarshalJSON() ([]byte, error) {
@@ -12097,8 +12026,7 @@ func GetConnectionRequestFromPb(pb *catalogpb.GetConnectionRequestPb) (*GetConne
 
 type GetCredentialRequest struct {
 	// Name of the credential.
-	// Wire name: 'name_arg'
-	NameArg string `tf:"-"`
+	NameArg string `json:"-" tf:"-"`
 }
 
 func (st GetCredentialRequest) MarshalJSON() ([]byte, error) {
@@ -12148,8 +12076,7 @@ func GetCredentialRequestFromPb(pb *catalogpb.GetCredentialRequestPb) (*GetCrede
 
 type GetEffectiveRequest struct {
 	// Full name of securable.
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Specifies the maximum number of privileges to return (page length). Every
 	// EffectivePrivilegeAssignment present in a single page response is
 	// guaranteed to contain all the effective privileges granted on (or
@@ -12162,19 +12089,15 @@ type GetEffectiveRequest struct {
 	// one complete EffectivePrivilegeAssignment in a single page response) -
 	// greater than (or equal to) 150: page length is the minimum of this value
 	// and a server configured value
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque token for the next page of results (pagination).
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// If provided, only the effective permissions for the specified principal
 	// (user or group) are returned.
-	// Wire name: 'principal'
-	Principal string `tf:"-"`
+	Principal string `json:"-" tf:"-"`
 	// Type of securable.
-	// Wire name: 'securable_type'
-	SecurableType   string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	SecurableType   string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetEffectiveRequest) MarshalJSON() ([]byte, error) {
@@ -12239,12 +12162,10 @@ func GetEffectiveRequestFromPb(pb *catalogpb.GetEffectiveRequestPb) (*GetEffecti
 type GetExternalLocationRequest struct {
 	// Whether to include external locations in the response for which the
 	// principal can only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Name of the external location.
-	// Wire name: 'name'
-	Name            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetExternalLocationRequest) MarshalJSON() ([]byte, error) {
@@ -12301,9 +12222,7 @@ func GetExternalLocationRequestFromPb(pb *catalogpb.GetExternalLocationRequestPb
 }
 
 type GetExternalMetadataRequest struct {
-
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetExternalMetadataRequest) MarshalJSON() ([]byte, error) {
@@ -12354,13 +12273,11 @@ func GetExternalMetadataRequestFromPb(pb *catalogpb.GetExternalMetadataRequestPb
 type GetFunctionRequest struct {
 	// Whether to include functions in the response for which the principal can
 	// only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
-	// Wire name: 'name'
-	Name            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetFunctionRequest) MarshalJSON() ([]byte, error) {
@@ -12418,8 +12335,7 @@ func GetFunctionRequestFromPb(pb *catalogpb.GetFunctionRequestPb) (*GetFunctionR
 
 type GetGrantRequest struct {
 	// Full name of securable.
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Specifies the maximum number of privileges to return (page length). Every
 	// PrivilegeAssignment present in a single page response is guaranteed to
 	// contain all the privileges granted on the requested Securable for the
@@ -12432,19 +12348,15 @@ type GetGrantRequest struct {
 	// PrivilegeAssignment in a single page response) - greater than (or equal
 	// to) 150: page length is the minimum of this value and a server configured
 	// value
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// If provided, only the permissions for the specified principal (user or
 	// group) are returned.
-	// Wire name: 'principal'
-	Principal string `tf:"-"`
+	Principal string `json:"-" tf:"-"`
 	// Type of securable.
-	// Wire name: 'securable_type'
-	SecurableType   string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	SecurableType   string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetGrantRequest) MarshalJSON() ([]byte, error) {
@@ -12508,8 +12420,7 @@ func GetGrantRequestFromPb(pb *catalogpb.GetGrantRequestPb) (*GetGrantRequest, e
 
 type GetMetastoreRequest struct {
 	// Unique ID of the metastore.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetMetastoreRequest) MarshalJSON() ([]byte, error) {
@@ -12560,66 +12471,66 @@ func GetMetastoreRequestFromPb(pb *catalogpb.GetMetastoreRequestPb) (*GetMetasto
 type GetMetastoreSummaryResponse struct {
 	// Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`).
 	// Wire name: 'cloud'
-	Cloud string ``
+	Cloud string `json:"cloud,omitempty"`
 	// Time at which this metastore was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of metastore creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// Unique identifier of the metastore's (Default) Data Access Configuration.
 	// Wire name: 'default_data_access_config_id'
-	DefaultDataAccessConfigId string ``
+	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
 	// The organization name of a Delta Sharing entity, to be used in
 	// Databricks-to-Databricks Delta Sharing as the official name.
 	// Wire name: 'delta_sharing_organization_name'
-	DeltaSharingOrganizationName string ``
+	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
 	// The lifetime of delta sharing recipient token in seconds.
 	// Wire name: 'delta_sharing_recipient_token_lifetime_in_seconds'
-	DeltaSharingRecipientTokenLifetimeInSeconds int64 ``
+	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
 	// Wire name: 'delta_sharing_scope'
-	DeltaSharingScope DeltaSharingScopeEnum ``
+	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
 	// Whether to allow non-DBR clients to directly access entities under the
 	// metastore.
 	// Wire name: 'external_access_enabled'
-	ExternalAccessEnabled bool ``
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// Globally unique metastore ID across clouds and regions, of the form
 	// `cloud:region:metastore_id`.
 	// Wire name: 'global_metastore_id'
-	GlobalMetastoreId string ``
+	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
 	// Unique identifier of metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// The user-specified name of the metastore.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The owner of the metastore.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Privilege model version of the metastore, of the form `major.minor`
 	// (e.g., `1.0`).
 	// Wire name: 'privilege_model_version'
-	PrivilegeModelVersion string ``
+	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
 	// Wire name: 'region'
-	Region string ``
+	Region string `json:"region,omitempty"`
 	// The storage root URL for metastore
 	// Wire name: 'storage_root'
-	StorageRoot string ``
+	StorageRoot string `json:"storage_root,omitempty"`
 	// UUID of storage credential to access the metastore storage_root.
 	// Wire name: 'storage_root_credential_id'
-	StorageRootCredentialId string ``
+	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
 	// Name of the storage credential to access the metastore storage_root.
 	// Wire name: 'storage_root_credential_name'
-	StorageRootCredentialName string ``
+	StorageRootCredentialName string `json:"storage_root_credential_name,omitempty"`
 	// Time at which the metastore was last modified, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the metastore.
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetMetastoreSummaryResponse) MarshalJSON() ([]byte, error) {
@@ -12723,20 +12634,16 @@ func GetMetastoreSummaryResponseFromPb(pb *catalogpb.GetMetastoreSummaryResponse
 
 type GetModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Whether to include aliases associated with the model version in the
 	// response
-	// Wire name: 'include_aliases'
-	IncludeAliases bool `tf:"-"`
+	IncludeAliases bool `json:"-" tf:"-"`
 	// Whether to include model versions in the response for which the principal
 	// can only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// The integer version number of the model version
-	// Wire name: 'version'
-	Version         int      `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Version         int      `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetModelVersionRequest) MarshalJSON() ([]byte, error) {
@@ -12798,8 +12705,7 @@ func GetModelVersionRequestFromPb(pb *catalogpb.GetModelVersionRequestPb) (*GetM
 
 type GetOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetOnlineTableRequest) MarshalJSON() ([]byte, error) {
@@ -12852,11 +12758,11 @@ type GetPermissionsResponse struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// The privileges assigned to each principal
 	// Wire name: 'privilege_assignments'
-	PrivilegeAssignments []PrivilegeAssignment ``
-	ForceSendFields      []string              `tf:"-"`
+	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
+	ForceSendFields      []string              `json:"-" tf:"-"`
 }
 
 func (st GetPermissionsResponse) MarshalJSON() ([]byte, error) {
@@ -12937,8 +12843,7 @@ func GetPermissionsResponseFromPb(pb *catalogpb.GetPermissionsResponsePb) (*GetP
 type GetQualityMonitorRequest struct {
 	// UC table name in format `catalog.schema.table_name`. This field
 	// corresponds to the {full_table_name_arg} arg in the endpoint path.
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 }
 
 func (st GetQualityMonitorRequest) MarshalJSON() ([]byte, error) {
@@ -12989,15 +12894,12 @@ func GetQualityMonitorRequestFromPb(pb *catalogpb.GetQualityMonitorRequestPb) (*
 type GetQuotaRequest struct {
 	// Full name of the parent resource. Provide the metastore ID if the parent
 	// is a metastore.
-	// Wire name: 'parent_full_name'
-	ParentFullName string `tf:"-"`
+	ParentFullName string `json:"-" tf:"-"`
 	// Securable type of the quota parent.
-	// Wire name: 'parent_securable_type'
-	ParentSecurableType string `tf:"-"`
+	ParentSecurableType string `json:"-" tf:"-"`
 	// Name of the quota. Follows the pattern of the quota type, with "-quota"
 	// added as a suffix.
-	// Wire name: 'quota_name'
-	QuotaName string `tf:"-"`
+	QuotaName string `json:"-" tf:"-"`
 }
 
 func (st GetQuotaRequest) MarshalJSON() ([]byte, error) {
@@ -13052,7 +12954,7 @@ func GetQuotaRequestFromPb(pb *catalogpb.GetQuotaRequestPb) (*GetQuotaRequest, e
 type GetQuotaResponse struct {
 	// The returned QuotaInfo.
 	// Wire name: 'quota_info'
-	QuotaInfo *QuotaInfo ``
+	QuotaInfo *QuotaInfo `json:"quota_info,omitempty"`
 }
 
 func (st GetQuotaResponse) MarshalJSON() ([]byte, error) {
@@ -13114,11 +13016,9 @@ func GetQuotaResponseFromPb(pb *catalogpb.GetQuotaResponsePb) (*GetQuotaResponse
 
 type GetRefreshRequest struct {
 	// ID of the refresh.
-	// Wire name: 'refresh_id'
-	RefreshId int64 `tf:"-"`
+	RefreshId int64 `json:"-" tf:"-"`
 	// Full name of the table.
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 }
 
 func (st GetRefreshRequest) MarshalJSON() ([]byte, error) {
@@ -13170,16 +13070,13 @@ func GetRefreshRequestFromPb(pb *catalogpb.GetRefreshRequestPb) (*GetRefreshRequ
 
 type GetRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Whether to include registered model aliases in the response
-	// Wire name: 'include_aliases'
-	IncludeAliases bool `tf:"-"`
+	IncludeAliases bool `json:"-" tf:"-"`
 	// Whether to include registered models in the response for which the
 	// principal can only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse   bool     `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	IncludeBrowse   bool     `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetRegisteredModelRequest) MarshalJSON() ([]byte, error) {
@@ -13239,13 +13136,11 @@ func GetRegisteredModelRequestFromPb(pb *catalogpb.GetRegisteredModelRequestPb) 
 
 type GetSchemaRequest struct {
 	// Full name of the schema.
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Whether to include schemas in the response for which the principal can
 	// only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse   bool     `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	IncludeBrowse   bool     `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetSchemaRequest) MarshalJSON() ([]byte, error) {
@@ -13303,8 +13198,7 @@ func GetSchemaRequestFromPb(pb *catalogpb.GetSchemaRequestPb) (*GetSchemaRequest
 
 type GetStorageCredentialRequest struct {
 	// Name of the storage credential.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetStorageCredentialRequest) MarshalJSON() ([]byte, error) {
@@ -13354,20 +13248,16 @@ func GetStorageCredentialRequestFromPb(pb *catalogpb.GetStorageCredentialRequest
 
 type GetTableRequest struct {
 	// Full name of the table.
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Whether to include tables in the response for which the principal can
 	// only access selective metadata for.
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Whether delta metadata should be included in the response.
-	// Wire name: 'include_delta_metadata'
-	IncludeDeltaMetadata bool `tf:"-"`
+	IncludeDeltaMetadata bool `json:"-" tf:"-"`
 	// Whether to include a manifest containing table capabilities in the
 	// response.
-	// Wire name: 'include_manifest_capabilities'
-	IncludeManifestCapabilities bool     `tf:"-"`
-	ForceSendFields             []string `tf:"-"`
+	IncludeManifestCapabilities bool     `json:"-" tf:"-"`
+	ForceSendFields             []string `json:"-" tf:"-"`
 }
 
 func (st GetTableRequest) MarshalJSON() ([]byte, error) {
@@ -13429,8 +13319,7 @@ func GetTableRequestFromPb(pb *catalogpb.GetTableRequestPb) (*GetTableRequest, e
 
 type GetWorkspaceBindingRequest struct {
 	// The name of the catalog.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetWorkspaceBindingRequest) MarshalJSON() ([]byte, error) {
@@ -13481,13 +13370,13 @@ func GetWorkspaceBindingRequestFromPb(pb *catalogpb.GetWorkspaceBindingRequestPb
 type GetWorkspaceBindingsResponse struct {
 	// List of workspace bindings
 	// Wire name: 'bindings'
-	Bindings []WorkspaceBinding ``
+	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
@@ -13673,8 +13562,7 @@ func LineageDirectionFromPb(pb *catalogpb.LineageDirectionPb) (*LineageDirection
 
 type ListAccountMetastoreAssignmentsRequest struct {
 	// Unity Catalog metastore ID
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 }
 
 func (st ListAccountMetastoreAssignmentsRequest) MarshalJSON() ([]byte, error) {
@@ -13726,7 +13614,7 @@ func ListAccountMetastoreAssignmentsRequestFromPb(pb *catalogpb.ListAccountMetas
 type ListAccountMetastoreAssignmentsResponse struct {
 
 	// Wire name: 'workspace_ids'
-	WorkspaceIds []int64 ``
+	WorkspaceIds []int64 `json:"workspace_ids,omitempty"`
 }
 
 func (st ListAccountMetastoreAssignmentsResponse) MarshalJSON() ([]byte, error) {
@@ -13776,8 +13664,7 @@ func ListAccountMetastoreAssignmentsResponseFromPb(pb *catalogpb.ListAccountMeta
 
 type ListAccountStorageCredentialsRequest struct {
 	// Unity Catalog metastore ID
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 }
 
 func (st ListAccountStorageCredentialsRequest) MarshalJSON() ([]byte, error) {
@@ -13828,7 +13715,7 @@ func ListAccountStorageCredentialsRequestFromPb(pb *catalogpb.ListAccountStorage
 type ListAccountStorageCredentialsResponse struct {
 	// An array of metastore storage credentials.
 	// Wire name: 'storage_credentials'
-	StorageCredentials []StorageCredentialInfo ``
+	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
 }
 
 func (st ListAccountStorageCredentialsResponse) MarshalJSON() ([]byte, error) {
@@ -13901,8 +13788,7 @@ func ListAccountStorageCredentialsResponseFromPb(pb *catalogpb.ListAccountStorag
 type ListCatalogsRequest struct {
 	// Whether to include catalogs in the response for which the principal can
 	// only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Maximum number of catalogs to return. - when set to 0, the page length is
 	// set to a server configured value (recommended); - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
@@ -13912,12 +13798,10 @@ type ListCatalogsRequest struct {
 	// the specified max_results size, even zero. The only definitive indication
 	// that no further catalogs can be fetched is when the next_page_token is
 	// unset from the response.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListCatalogsRequest) MarshalJSON() ([]byte, error) {
@@ -13978,13 +13862,13 @@ func ListCatalogsRequestFromPb(pb *catalogpb.ListCatalogsRequestPb) (*ListCatalo
 type ListCatalogsResponse struct {
 	// An array of catalog information objects.
 	// Wire name: 'catalogs'
-	Catalogs []CatalogInfo ``
+	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListCatalogsResponse) MarshalJSON() ([]byte, error) {
@@ -14069,12 +13953,10 @@ type ListConnectionsRequest struct {
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListConnectionsRequest) MarshalJSON() ([]byte, error) {
@@ -14133,13 +14015,13 @@ func ListConnectionsRequestFromPb(pb *catalogpb.ListConnectionsRequestPb) (*List
 type ListConnectionsResponse struct {
 	// An array of connection information objects.
 	// Wire name: 'connections'
-	Connections []ConnectionInfo ``
+	Connections []ConnectionInfo `json:"connections,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListConnectionsResponse) MarshalJSON() ([]byte, error) {
@@ -14223,15 +14105,12 @@ type ListCredentialsRequest struct {
 	// is the minimum of this value and a server-configured value. - When set to
 	// 0, the page length is set to a server-configured value (recommended). -
 	// When set to a value less than 0, an invalid parameter error is returned.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque token to retrieve the next page of results.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// Return only credentials for the specified purpose.
-	// Wire name: 'purpose'
-	Purpose         CredentialPurpose `tf:"-"`
-	ForceSendFields []string          `tf:"-"`
+	Purpose         CredentialPurpose `json:"-" tf:"-"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
 func (st ListCredentialsRequest) MarshalJSON() ([]byte, error) {
@@ -14304,13 +14183,13 @@ func ListCredentialsRequestFromPb(pb *catalogpb.ListCredentialsRequestPb) (*List
 type ListCredentialsResponse struct {
 
 	// Wire name: 'credentials'
-	Credentials []CredentialInfo ``
+	Credentials []CredentialInfo `json:"credentials,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListCredentialsResponse) MarshalJSON() ([]byte, error) {
@@ -14390,22 +14269,18 @@ func ListCredentialsResponseFromPb(pb *catalogpb.ListCredentialsResponsePb) (*Li
 
 type ListExternalLineageRelationshipsRequest struct {
 	// The lineage direction to filter on.
-	// Wire name: 'lineage_direction'
-	LineageDirection LineageDirection `tf:"-"`
+	LineageDirection LineageDirection `json:"-" tf:"-"`
 	// The object to query external lineage relationships for. Since this field
 	// is a query parameter, please flatten the nested fields. For example, if
 	// the object is a table, the query parameter should look like:
 	// `object_info.table.name=main.sales.customers`
-	// Wire name: 'object_info'
-	ObjectInfo ExternalLineageObject `tf:"-"`
+	ObjectInfo ExternalLineageObject `json:"-" tf:"-"`
 	// Specifies the maximum number of external lineage relationships to return
 	// in a single response. The value must be less than or equal to 1000.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExternalLineageRelationshipsRequest) MarshalJSON() ([]byte, error) {
@@ -14492,11 +14367,11 @@ func ListExternalLineageRelationshipsRequestFromPb(pb *catalogpb.ListExternalLin
 type ListExternalLineageRelationshipsResponse struct {
 
 	// Wire name: 'external_lineage_relationships'
-	ExternalLineageRelationships []ExternalLineageInfo ``
+	ExternalLineageRelationships []ExternalLineageInfo `json:"external_lineage_relationships,omitempty"`
 
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExternalLineageRelationshipsResponse) MarshalJSON() ([]byte, error) {
@@ -14577,20 +14452,17 @@ func ListExternalLineageRelationshipsResponseFromPb(pb *catalogpb.ListExternalLi
 type ListExternalLocationsRequest struct {
 	// Whether to include external locations in the response for which the
 	// principal can only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Maximum number of external locations to return. If not set, all the
 	// external locations are returned (not recommended). - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
 	// configured value; - when set to 0, the page length is set to a server
 	// configured value (recommended); - when set to a value less than 0, an
 	// invalid parameter error is returned;
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExternalLocationsRequest) MarshalJSON() ([]byte, error) {
@@ -14651,13 +14523,13 @@ func ListExternalLocationsRequestFromPb(pb *catalogpb.ListExternalLocationsReque
 type ListExternalLocationsResponse struct {
 	// An array of external locations.
 	// Wire name: 'external_locations'
-	ExternalLocations []ExternalLocationInfo ``
+	ExternalLocations []ExternalLocationInfo `json:"external_locations,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExternalLocationsResponse) MarshalJSON() ([]byte, error) {
@@ -14738,12 +14610,10 @@ func ListExternalLocationsResponseFromPb(pb *catalogpb.ListExternalLocationsResp
 type ListExternalMetadataRequest struct {
 	// Specifies the maximum number of external metadata objects to return in a
 	// single response. The value must be less than or equal to 1000.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExternalMetadataRequest) MarshalJSON() ([]byte, error) {
@@ -14802,11 +14672,11 @@ func ListExternalMetadataRequestFromPb(pb *catalogpb.ListExternalMetadataRequest
 type ListExternalMetadataResponse struct {
 
 	// Wire name: 'external_metadata'
-	ExternalMetadata []ExternalMetadata ``
+	ExternalMetadata []ExternalMetadata `json:"external_metadata,omitempty"`
 
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExternalMetadataResponse) MarshalJSON() ([]byte, error) {
@@ -14886,27 +14756,22 @@ func ListExternalMetadataResponseFromPb(pb *catalogpb.ListExternalMetadataRespon
 
 type ListFunctionsRequest struct {
 	// Name of parent catalog for functions of interest.
-	// Wire name: 'catalog_name'
-	CatalogName string `tf:"-"`
+	CatalogName string `json:"-" tf:"-"`
 	// Whether to include functions in the response for which the principal can
 	// only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Maximum number of functions to return. If not set, all the functions are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// Parent schema of functions.
-	// Wire name: 'schema_name'
-	SchemaName      string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	SchemaName      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListFunctionsRequest) MarshalJSON() ([]byte, error) {
@@ -14971,13 +14836,13 @@ func ListFunctionsRequestFromPb(pb *catalogpb.ListFunctionsRequestPb) (*ListFunc
 type ListFunctionsResponse struct {
 	// An array of function information objects.
 	// Wire name: 'functions'
-	Functions []FunctionInfo ``
+	Functions []FunctionInfo `json:"functions,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListFunctionsResponse) MarshalJSON() ([]byte, error) {
@@ -15065,12 +14930,10 @@ type ListMetastoresRequest struct {
 	// might be less than the specified max_results size, even zero. The only
 	// definitive indication that no further metastores can be fetched is when
 	// the next_page_token is unset from the response.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListMetastoresRequest) MarshalJSON() ([]byte, error) {
@@ -15129,13 +14992,13 @@ func ListMetastoresRequestFromPb(pb *catalogpb.ListMetastoresRequestPb) (*ListMe
 type ListMetastoresResponse struct {
 	// An array of metastore information objects.
 	// Wire name: 'metastores'
-	Metastores []MetastoreInfo ``
+	Metastores []MetastoreInfo `json:"metastores,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListMetastoresResponse) MarshalJSON() ([]byte, error) {
@@ -15216,12 +15079,10 @@ func ListMetastoresResponseFromPb(pb *catalogpb.ListMetastoresResponsePb) (*List
 type ListModelVersionsRequest struct {
 	// The full three-level name of the registered model under which to list
 	// model versions
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Whether to include model versions in the response for which the principal
 	// can only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Maximum number of model versions to return. If not set, the page length
 	// is set to a server configured value (100, as of 1/3/2024). - when set to
 	// a value greater than 0, the page length is the minimum of this value and
@@ -15229,12 +15090,10 @@ type ListModelVersionsRequest struct {
 	// page length is set to a server configured value (100, as of 1/3/2024)
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListModelVersionsRequest) MarshalJSON() ([]byte, error) {
@@ -15297,13 +15156,13 @@ func ListModelVersionsRequestFromPb(pb *catalogpb.ListModelVersionsRequestPb) (*
 type ListModelVersionsResponse struct {
 
 	// Wire name: 'model_versions'
-	ModelVersions []ModelVersionInfo ``
+	ModelVersions []ModelVersionInfo `json:"model_versions,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListModelVersionsResponse) MarshalJSON() ([]byte, error) {
@@ -15383,12 +15242,10 @@ func ListModelVersionsResponseFromPb(pb *catalogpb.ListModelVersionsResponsePb) 
 
 type ListQuotasRequest struct {
 	// The number of quotas to return.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque token for the next page of results.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListQuotasRequest) MarshalJSON() ([]byte, error) {
@@ -15449,11 +15306,11 @@ type ListQuotasResponse struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of returned QuotaInfos.
 	// Wire name: 'quotas'
-	Quotas          []QuotaInfo ``
-	ForceSendFields []string    `tf:"-"`
+	Quotas          []QuotaInfo `json:"quotas,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
 func (st ListQuotasResponse) MarshalJSON() ([]byte, error) {
@@ -15534,8 +15391,7 @@ func ListQuotasResponseFromPb(pb *catalogpb.ListQuotasResponsePb) (*ListQuotasRe
 type ListRefreshesRequest struct {
 	// UC table name in format `catalog.schema.table_name`. table_name is case
 	// insensitive and spaces are disallowed.
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 }
 
 func (st ListRefreshesRequest) MarshalJSON() ([]byte, error) {
@@ -15586,12 +15442,10 @@ func ListRefreshesRequestFromPb(pb *catalogpb.ListRefreshesRequestPb) (*ListRefr
 type ListRegisteredModelsRequest struct {
 	// The identifier of the catalog under which to list registered models. If
 	// specified, schema_name must be specified.
-	// Wire name: 'catalog_name'
-	CatalogName string `tf:"-"`
+	CatalogName string `json:"-" tf:"-"`
 	// Whether to include registered models in the response for which the
 	// principal can only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Max number of registered models to return.
 	//
 	// If both catalog and schema are specified: - when max_results is not
@@ -15609,16 +15463,13 @@ type ListRegisteredModelsRequest struct {
 	// 4/2/2024); - when set to 0, the page length is set to a server configured
 	// value (100, as of 4/2/2024); - when set to a value less than 0, an
 	// invalid parameter error is returned;
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque token to send for the next page of results (pagination).
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// The identifier of the schema under which to list registered models. If
 	// specified, catalog_name must be specified.
-	// Wire name: 'schema_name'
-	SchemaName      string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	SchemaName      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListRegisteredModelsRequest) MarshalJSON() ([]byte, error) {
@@ -15684,11 +15535,11 @@ type ListRegisteredModelsResponse struct {
 	// Opaque token for pagination. Omitted if there are no more results.
 	// page_token should be set to this value for fetching the next page.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'registered_models'
-	RegisteredModels []RegisteredModelInfo ``
-	ForceSendFields  []string              `tf:"-"`
+	RegisteredModels []RegisteredModelInfo `json:"registered_models,omitempty"`
+	ForceSendFields  []string              `json:"-" tf:"-"`
 }
 
 func (st ListRegisteredModelsResponse) MarshalJSON() ([]byte, error) {
@@ -15768,24 +15619,20 @@ func ListRegisteredModelsResponseFromPb(pb *catalogpb.ListRegisteredModelsRespon
 
 type ListSchemasRequest struct {
 	// Parent catalog for schemas of interest.
-	// Wire name: 'catalog_name'
-	CatalogName string `tf:"-"`
+	CatalogName string `json:"-" tf:"-"`
 	// Whether to include schemas in the response for which the principal can
 	// only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Maximum number of schemas to return. If not set, all the schemas are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListSchemasRequest) MarshalJSON() ([]byte, error) {
@@ -15850,11 +15697,11 @@ type ListSchemasResponse struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of schema information objects.
 	// Wire name: 'schemas'
-	Schemas         []SchemaInfo ``
-	ForceSendFields []string     `tf:"-"`
+	Schemas         []SchemaInfo `json:"schemas,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
 func (st ListSchemasResponse) MarshalJSON() ([]byte, error) {
@@ -15939,12 +15786,10 @@ type ListStorageCredentialsRequest struct {
 	// configured value; - when set to 0, the page length is set to a server
 	// configured value (recommended); - when set to a value less than 0, an
 	// invalid parameter error is returned;
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListStorageCredentialsRequest) MarshalJSON() ([]byte, error) {
@@ -16005,11 +15850,11 @@ type ListStorageCredentialsResponse struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'storage_credentials'
-	StorageCredentials []StorageCredentialInfo ``
-	ForceSendFields    []string                `tf:"-"`
+	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
+	ForceSendFields    []string                `json:"-" tf:"-"`
 }
 
 func (st ListStorageCredentialsResponse) MarshalJSON() ([]byte, error) {
@@ -16089,12 +15934,10 @@ func ListStorageCredentialsResponseFromPb(pb *catalogpb.ListStorageCredentialsRe
 
 type ListSummariesRequest struct {
 	// Name of parent catalog for tables of interest.
-	// Wire name: 'catalog_name'
-	CatalogName string `tf:"-"`
+	CatalogName string `json:"-" tf:"-"`
 	// Whether to include a manifest containing table capabilities in the
 	// response.
-	// Wire name: 'include_manifest_capabilities'
-	IncludeManifestCapabilities bool `tf:"-"`
+	IncludeManifestCapabilities bool `json:"-" tf:"-"`
 	// Maximum number of summaries for tables to return. If not set, the page
 	// length is set to a server configured value (10000, as of 1/5/2024). -
 	// when set to a value greater than 0, the page length is the minimum of
@@ -16102,20 +15945,16 @@ type ListSummariesRequest struct {
 	// set to 0, the page length is set to a server configured value (10000, as
 	// of 1/5/2024) (recommended); - when set to a value less than 0, an invalid
 	// parameter error is returned;
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// A sql LIKE pattern (% and _) for schema names. All schemas will be
 	// returned if not set or empty.
-	// Wire name: 'schema_name_pattern'
-	SchemaNamePattern string `tf:"-"`
+	SchemaNamePattern string `json:"-" tf:"-"`
 	// A sql LIKE pattern (% and _) for table names. All tables will be returned
 	// if not set or empty.
-	// Wire name: 'table_name_pattern'
-	TableNamePattern string   `tf:"-"`
-	ForceSendFields  []string `tf:"-"`
+	TableNamePattern string   `json:"-" tf:"-"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st ListSummariesRequest) MarshalJSON() ([]byte, error) {
@@ -16186,15 +16025,12 @@ type ListSystemSchemasRequest struct {
 	// configured value; - When set to a value less than 0, an invalid parameter
 	// error is returned; - If not set, all the schemas are returned (not
 	// recommended).
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// The ID for the metastore in which the system schema resides.
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListSystemSchemasRequest) MarshalJSON() ([]byte, error) {
@@ -16257,11 +16093,11 @@ type ListSystemSchemasResponse struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of system schema information objects.
 	// Wire name: 'schemas'
-	Schemas         []SystemSchemaInfo ``
-	ForceSendFields []string           `tf:"-"`
+	Schemas         []SystemSchemaInfo `json:"schemas,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
 func (st ListSystemSchemasResponse) MarshalJSON() ([]byte, error) {
@@ -16344,11 +16180,11 @@ type ListTableSummariesResponse struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// List of table summaries.
 	// Wire name: 'tables'
-	Tables          []TableSummary ``
-	ForceSendFields []string       `tf:"-"`
+	Tables          []TableSummary `json:"tables,omitempty"`
+	ForceSendFields []string       `json:"-" tf:"-"`
 }
 
 func (st ListTableSummariesResponse) MarshalJSON() ([]byte, error) {
@@ -16428,41 +16264,32 @@ func ListTableSummariesResponseFromPb(pb *catalogpb.ListTableSummariesResponsePb
 
 type ListTablesRequest struct {
 	// Name of parent catalog for tables of interest.
-	// Wire name: 'catalog_name'
-	CatalogName string `tf:"-"`
+	CatalogName string `json:"-" tf:"-"`
 	// Whether to include tables in the response for which the principal can
 	// only access selective metadata for.
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Whether to include a manifest containing table capabilities in the
 	// response.
-	// Wire name: 'include_manifest_capabilities'
-	IncludeManifestCapabilities bool `tf:"-"`
+	IncludeManifestCapabilities bool `json:"-" tf:"-"`
 	// Maximum number of tables to return. If not set, all the tables are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Whether to omit the columns of the table from the response or not.
-	// Wire name: 'omit_columns'
-	OmitColumns bool `tf:"-"`
+	OmitColumns bool `json:"-" tf:"-"`
 	// Whether to omit the properties of the table from the response or not.
-	// Wire name: 'omit_properties'
-	OmitProperties bool `tf:"-"`
+	OmitProperties bool `json:"-" tf:"-"`
 	// Whether to omit the username of the table (e.g. owner, updated_by,
 	// created_by) from the response or not.
-	// Wire name: 'omit_username'
-	OmitUsername bool `tf:"-"`
+	OmitUsername bool `json:"-" tf:"-"`
 	// Opaque token to send for the next page of results (pagination).
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// Parent schema of tables.
-	// Wire name: 'schema_name'
-	SchemaName      string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	SchemaName      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListTablesRequest) MarshalJSON() ([]byte, error) {
@@ -16537,11 +16364,11 @@ type ListTablesResponse struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of table information objects.
 	// Wire name: 'tables'
-	Tables          []TableInfo ``
-	ForceSendFields []string    `tf:"-"`
+	Tables          []TableInfo `json:"tables,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
 func (st ListTablesResponse) MarshalJSON() ([]byte, error) {
@@ -16621,12 +16448,10 @@ func ListTablesResponseFromPb(pb *catalogpb.ListTablesResponsePb) (*ListTablesRe
 
 type ListVolumesRequest struct {
 	// The identifier of the catalog
-	// Wire name: 'catalog_name'
-	CatalogName string `tf:"-"`
+	CatalogName string `json:"-" tf:"-"`
 	// Whether to include volumes in the response for which the principal can
 	// only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Maximum number of volumes to return (page length).
 	//
 	// If not set, the page length is set to a server configured value (10000,
@@ -16639,16 +16464,13 @@ type ListVolumesRequest struct {
 	// Note: this parameter controls only the maximum number of volumes to
 	// return. The actual number of volumes returned in a page may be smaller
 	// than this value, including 0, even if there are more pages.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque token returned by a previous request. It must be included in the
 	// request to retrieve the next page of results (pagination).
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// The identifier of the schema
-	// Wire name: 'schema_name'
-	SchemaName      string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	SchemaName      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListVolumesRequest) MarshalJSON() ([]byte, error) {
@@ -16715,11 +16537,11 @@ type ListVolumesResponseContent struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request to retrieve the next page of results.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'volumes'
-	Volumes         []VolumeInfo ``
-	ForceSendFields []string     `tf:"-"`
+	Volumes         []VolumeInfo `json:"volumes,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
 func (st ListVolumesResponseContent) MarshalJSON() ([]byte, error) {
@@ -16851,14 +16673,14 @@ func MatchTypeFromPb(pb *catalogpb.MatchTypePb) (*MatchType, error) {
 type MetastoreAssignment struct {
 	// The name of the default catalog in the metastore.
 	// Wire name: 'default_catalog_name'
-	DefaultCatalogName string ``
+	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
 	// The unique ID of the metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id"`
 	// The unique ID of the Databricks workspace.
 	// Wire name: 'workspace_id'
-	WorkspaceId     int64    ``
-	ForceSendFields []string `tf:"-"`
+	WorkspaceId     int64    `json:"workspace_id"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st MetastoreAssignment) MarshalJSON() ([]byte, error) {
@@ -16919,66 +16741,66 @@ func MetastoreAssignmentFromPb(pb *catalogpb.MetastoreAssignmentPb) (*MetastoreA
 type MetastoreInfo struct {
 	// Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`).
 	// Wire name: 'cloud'
-	Cloud string ``
+	Cloud string `json:"cloud,omitempty"`
 	// Time at which this metastore was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of metastore creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// Unique identifier of the metastore's (Default) Data Access Configuration.
 	// Wire name: 'default_data_access_config_id'
-	DefaultDataAccessConfigId string ``
+	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
 	// The organization name of a Delta Sharing entity, to be used in
 	// Databricks-to-Databricks Delta Sharing as the official name.
 	// Wire name: 'delta_sharing_organization_name'
-	DeltaSharingOrganizationName string ``
+	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
 	// The lifetime of delta sharing recipient token in seconds.
 	// Wire name: 'delta_sharing_recipient_token_lifetime_in_seconds'
-	DeltaSharingRecipientTokenLifetimeInSeconds int64 ``
+	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
 	// Wire name: 'delta_sharing_scope'
-	DeltaSharingScope DeltaSharingScopeEnum ``
+	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
 	// Whether to allow non-DBR clients to directly access entities under the
 	// metastore.
 	// Wire name: 'external_access_enabled'
-	ExternalAccessEnabled bool ``
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// Globally unique metastore ID across clouds and regions, of the form
 	// `cloud:region:metastore_id`.
 	// Wire name: 'global_metastore_id'
-	GlobalMetastoreId string ``
+	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
 	// Unique identifier of metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// The user-specified name of the metastore.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The owner of the metastore.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Privilege model version of the metastore, of the form `major.minor`
 	// (e.g., `1.0`).
 	// Wire name: 'privilege_model_version'
-	PrivilegeModelVersion string ``
+	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
 	// Wire name: 'region'
-	Region string ``
+	Region string `json:"region,omitempty"`
 	// The storage root URL for metastore
 	// Wire name: 'storage_root'
-	StorageRoot string ``
+	StorageRoot string `json:"storage_root,omitempty"`
 	// UUID of storage credential to access the metastore storage_root.
 	// Wire name: 'storage_root_credential_id'
-	StorageRootCredentialId string ``
+	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
 	// Name of the storage credential to access the metastore storage_root.
 	// Wire name: 'storage_root_credential_name'
-	StorageRootCredentialName string ``
+	StorageRootCredentialName string `json:"storage_root_credential_name,omitempty"`
 	// Time at which the metastore was last modified, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the metastore.
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st MetastoreInfo) MarshalJSON() ([]byte, error) {
@@ -17083,74 +16905,74 @@ func MetastoreInfoFromPb(pb *catalogpb.MetastoreInfoPb) (*MetastoreInfo, error) 
 type ModelVersionInfo struct {
 	// List of aliases associated with the model version
 	// Wire name: 'aliases'
-	Aliases []RegisteredModelAlias ``
+	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
 	// Wire name: 'browse_only'
-	BrowseOnly bool ``
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The name of the catalog containing the model version
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the model version
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// The identifier of the user who created the model version
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// The unique identifier of the model version
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// The unique identifier of the metastore containing the model version
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// The name of the parent registered model of the model version, relative to
 	// parent schema
 	// Wire name: 'model_name'
-	ModelName string ``
+	ModelName string `json:"model_name,omitempty"`
 	// Model version dependencies, for feature-store packaged models
 	// Wire name: 'model_version_dependencies'
-	ModelVersionDependencies *DependencyList ``
+	ModelVersionDependencies *DependencyList `json:"model_version_dependencies,omitempty"`
 	// MLflow run ID used when creating the model version, if ``source`` was
 	// generated by an experiment run stored in an MLflow tracking server
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id,omitempty"`
 	// ID of the Databricks workspace containing the MLflow run that generated
 	// this model version, if applicable
 	// Wire name: 'run_workspace_id'
-	RunWorkspaceId int ``
+	RunWorkspaceId int `json:"run_workspace_id,omitempty"`
 	// The name of the schema containing the model version, relative to parent
 	// catalog
 	// Wire name: 'schema_name'
-	SchemaName string ``
+	SchemaName string `json:"schema_name,omitempty"`
 	// URI indicating the location of the source artifacts (files) for the model
 	// version
 	// Wire name: 'source'
-	Source string ``
+	Source string `json:"source,omitempty"`
 	// Current status of the model version. Newly created model versions start
 	// in PENDING_REGISTRATION status, then move to READY status once the model
 	// version files are uploaded and the model version is finalized. Only model
 	// versions in READY status can be loaded for inference or served.
 	// Wire name: 'status'
-	Status ModelVersionInfoStatus ``
+	Status ModelVersionInfoStatus `json:"status,omitempty"`
 	// The storage location on the cloud under which model version data files
 	// are stored
 	// Wire name: 'storage_location'
-	StorageLocation string ``
+	StorageLocation string `json:"storage_location,omitempty"`
 
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// The identifier of the user who updated the model version last time
 	// Wire name: 'updated_by'
-	UpdatedBy string ``
+	UpdatedBy string `json:"updated_by,omitempty"`
 	// Integer model version number, used to reference the model version in API
 	// requests.
 	// Wire name: 'version'
-	Version         int      ``
-	ForceSendFields []string `tf:"-"`
+	Version         int      `json:"version,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ModelVersionInfo) MarshalJSON() ([]byte, error) {
@@ -17349,16 +17171,16 @@ func ModelVersionInfoStatusFromPb(pb *catalogpb.ModelVersionInfoStatusPb) (*Mode
 type MonitorCronSchedule struct {
 	// Read only field that indicates whether a schedule is paused or not.
 	// Wire name: 'pause_status'
-	PauseStatus MonitorCronSchedulePauseStatus ``
+	PauseStatus MonitorCronSchedulePauseStatus `json:"pause_status,omitempty"`
 	// The expression that determines when to run the monitor. See [examples].
 	//
 	// [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
 	// Wire name: 'quartz_cron_expression'
-	QuartzCronExpression string ``
+	QuartzCronExpression string `json:"quartz_cron_expression"`
 	// The timezone id (e.g., ``PST``) in which to evaluate the quartz
 	// expression.
 	// Wire name: 'timezone_id'
-	TimezoneId string ``
+	TimezoneId string `json:"timezone_id"`
 }
 
 func (st MonitorCronSchedule) MarshalJSON() ([]byte, error) {
@@ -17485,8 +17307,8 @@ func MonitorCronSchedulePauseStatusFromPb(pb *catalogpb.MonitorCronSchedulePause
 type MonitorDataClassificationConfig struct {
 	// Whether to enable data classification.
 	// Wire name: 'enabled'
-	Enabled         bool     ``
-	ForceSendFields []string `tf:"-"`
+	Enabled         bool     `json:"enabled,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st MonitorDataClassificationConfig) MarshalJSON() ([]byte, error) {
@@ -17544,7 +17366,7 @@ type MonitorDestination struct {
 	// The list of email addresses to send the notification to. A maximum of 5
 	// email addresses is supported.
 	// Wire name: 'email_addresses'
-	EmailAddresses []string ``
+	EmailAddresses []string `json:"email_addresses,omitempty"`
 }
 
 func (st MonitorDestination) MarshalJSON() ([]byte, error) {
@@ -17596,26 +17418,26 @@ type MonitorInferenceLog struct {
 	// List of granularities to use when aggregating data into time windows
 	// based on their timestamp.
 	// Wire name: 'granularities'
-	Granularities []string ``
+	Granularities []string `json:"granularities"`
 	// Column for the label.
 	// Wire name: 'label_col'
-	LabelCol string ``
+	LabelCol string `json:"label_col,omitempty"`
 	// Column for the model identifier.
 	// Wire name: 'model_id_col'
-	ModelIdCol string ``
+	ModelIdCol string `json:"model_id_col"`
 	// Column for the prediction.
 	// Wire name: 'prediction_col'
-	PredictionCol string ``
+	PredictionCol string `json:"prediction_col"`
 	// Column for prediction probabilities
 	// Wire name: 'prediction_proba_col'
-	PredictionProbaCol string ``
+	PredictionProbaCol string `json:"prediction_proba_col,omitempty"`
 	// Problem type the model aims to solve.
 	// Wire name: 'problem_type'
-	ProblemType MonitorInferenceLogProblemType ``
+	ProblemType MonitorInferenceLogProblemType `json:"problem_type"`
 	// Column for the timestamp.
 	// Wire name: 'timestamp_col'
-	TimestampCol    string   ``
-	ForceSendFields []string `tf:"-"`
+	TimestampCol    string   `json:"timestamp_col"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st MonitorInferenceLog) MarshalJSON() ([]byte, error) {
@@ -17751,52 +17573,52 @@ type MonitorInfo struct {
 	// custom directory to store data-monitoring assets. Normally prepopulated
 	// to a default user location via UI and Python APIs.
 	// Wire name: 'assets_dir'
-	AssetsDir string ``
+	AssetsDir string `json:"assets_dir,omitempty"`
 	// [Create:OPT Update:OPT] Baseline table name. Baseline data is used to
 	// compute drift from the data in the monitored `table_name`. The baseline
 	// table and the monitored table shall have the same schema.
 	// Wire name: 'baseline_table_name'
-	BaselineTableName string ``
+	BaselineTableName string `json:"baseline_table_name,omitempty"`
 	// [Create:OPT Update:OPT] Custom metrics.
 	// Wire name: 'custom_metrics'
-	CustomMetrics []MonitorMetric ``
+	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
 	// [Create:ERR Update:OPT] Id of dashboard that visualizes the computed
 	// metrics. This can be empty if the monitor is in PENDING state.
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id,omitempty"`
 	// [Create:OPT Update:OPT] Data classification related config.
 	// Wire name: 'data_classification_config'
-	DataClassificationConfig *MonitorDataClassificationConfig ``
+	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
 	// [Create:ERR Update:IGN] Table that stores drift metrics data. Format:
 	// `catalog.schema.table_name`.
 	// Wire name: 'drift_metrics_table_name'
-	DriftMetricsTableName string ``
+	DriftMetricsTableName string `json:"drift_metrics_table_name"`
 
 	// Wire name: 'inference_log'
-	InferenceLog *MonitorInferenceLog ``
+	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
 	// [Create:ERR Update:IGN] The latest error message for a monitor failure.
 	// Wire name: 'latest_monitor_failure_msg'
-	LatestMonitorFailureMsg string ``
+	LatestMonitorFailureMsg string `json:"latest_monitor_failure_msg,omitempty"`
 	// [Create:ERR Update:IGN] Represents the current monitor configuration
 	// version in use. The version will be represented in a numeric fashion
 	// (1,2,3...). The field has flexibility to take on negative values, which
 	// can indicate corrupted monitor_version numbers.
 	// Wire name: 'monitor_version'
-	MonitorVersion int64 ``
+	MonitorVersion int64 `json:"monitor_version"`
 	// [Create:OPT Update:OPT] Field for specifying notification settings.
 	// Wire name: 'notifications'
-	Notifications *MonitorNotifications ``
+	Notifications *MonitorNotifications `json:"notifications,omitempty"`
 	// [Create:REQ Update:REQ] Schema where output tables are created. Needs to
 	// be in 2-level format {catalog}.{schema}
 	// Wire name: 'output_schema_name'
-	OutputSchemaName string ``
+	OutputSchemaName string `json:"output_schema_name"`
 	// [Create:ERR Update:IGN] Table that stores profile metrics data. Format:
 	// `catalog.schema.table_name`.
 	// Wire name: 'profile_metrics_table_name'
-	ProfileMetricsTableName string ``
+	ProfileMetricsTableName string `json:"profile_metrics_table_name"`
 	// [Create:OPT Update:OPT] The monitor schedule.
 	// Wire name: 'schedule'
-	Schedule *MonitorCronSchedule ``
+	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
 	// [Create:OPT Update:OPT] List of column expressions to slice data with for
 	// targeted analysis. The data is grouped by each expression independently,
 	// resulting in a separate slice for each predicate and its complements. For
@@ -17805,21 +17627,21 @@ type MonitorInfo struct {
 	// slice per unique value in `col1`. For high-cardinality columns, only the
 	// top 100 unique values by frequency will generate slices.
 	// Wire name: 'slicing_exprs'
-	SlicingExprs []string ``
+	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
 	// Wire name: 'snapshot'
-	Snapshot *MonitorSnapshot ``
+	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
 	// [Create:ERR Update:IGN] The monitor status.
 	// Wire name: 'status'
-	Status MonitorInfoStatus ``
+	Status MonitorInfoStatus `json:"status"`
 	// [Create:ERR Update:IGN] UC table to monitor. Format:
 	// `catalog.schema.table_name`
 	// Wire name: 'table_name'
-	TableName string ``
+	TableName string `json:"table_name"`
 	// Configuration for monitoring time series tables.
 	// Wire name: 'time_series'
-	TimeSeries      *MonitorTimeSeries ``
-	ForceSendFields []string           `tf:"-"`
+	TimeSeries      *MonitorTimeSeries `json:"time_series,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
 func (st MonitorInfo) MarshalJSON() ([]byte, error) {
@@ -18082,18 +17904,18 @@ type MonitorMetric struct {
 	//
 	// [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition
 	// Wire name: 'definition'
-	Definition string ``
+	Definition string `json:"definition"`
 	// A list of column names in the input table the metric should be computed
 	// for. Can use ``":table"`` to indicate that the metric needs information
 	// from multiple columns.
 	// Wire name: 'input_columns'
-	InputColumns []string ``
+	InputColumns []string `json:"input_columns"`
 	// Name of the metric in the output tables.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// The output type of the custom metric.
 	// Wire name: 'output_data_type'
-	OutputDataType string ``
+	OutputDataType string `json:"output_data_type"`
 	// Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``,
 	// ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The
 	// ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and ``"CUSTOM_METRIC_TYPE_DERIVED"``
@@ -18105,7 +17927,7 @@ type MonitorMetric struct {
 	// aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously
 	// computed aggregate or derived metrics
 	// Wire name: 'type'
-	Type MonitorMetricType ``
+	Type MonitorMetricType `json:"type"`
 }
 
 func (st MonitorMetric) MarshalJSON() ([]byte, error) {
@@ -18242,10 +18064,10 @@ func MonitorMetricTypeFromPb(pb *catalogpb.MonitorMetricTypePb) (*MonitorMetricT
 type MonitorNotifications struct {
 	// Destinations to send notifications on failure/timeout.
 	// Wire name: 'on_failure'
-	OnFailure *MonitorDestination ``
+	OnFailure *MonitorDestination `json:"on_failure,omitempty"`
 	// Destinations to send notifications on new classification tag detected.
 	// Wire name: 'on_new_classification_tag_detected'
-	OnNewClassificationTagDetected *MonitorDestination ``
+	OnNewClassificationTagDetected *MonitorDestination `json:"on_new_classification_tag_detected,omitempty"`
 }
 
 func (st MonitorNotifications) MarshalJSON() ([]byte, error) {
@@ -18323,25 +18145,25 @@ type MonitorRefreshInfo struct {
 	// Time at which refresh operation completed (milliseconds since 1/1/1970
 	// UTC).
 	// Wire name: 'end_time_ms'
-	EndTimeMs int64 ``
+	EndTimeMs int64 `json:"end_time_ms,omitempty"`
 	// An optional message to give insight into the current state of the job
 	// (e.g. FAILURE messages).
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 	// Unique id of the refresh operation.
 	// Wire name: 'refresh_id'
-	RefreshId int64 ``
+	RefreshId int64 `json:"refresh_id"`
 	// Time at which refresh operation was initiated (milliseconds since
 	// 1/1/1970 UTC).
 	// Wire name: 'start_time_ms'
-	StartTimeMs int64 ``
+	StartTimeMs int64 `json:"start_time_ms"`
 	// The current state of the refresh.
 	// Wire name: 'state'
-	State MonitorRefreshInfoState ``
+	State MonitorRefreshInfoState `json:"state"`
 	// The method by which the refresh was triggered.
 	// Wire name: 'trigger'
-	Trigger         MonitorRefreshInfoTrigger ``
-	ForceSendFields []string                  `tf:"-"`
+	Trigger         MonitorRefreshInfoTrigger `json:"trigger,omitempty"`
+	ForceSendFields []string                  `json:"-" tf:"-"`
 }
 
 func (st MonitorRefreshInfo) MarshalJSON() ([]byte, error) {
@@ -18554,7 +18376,7 @@ func MonitorRefreshInfoTriggerFromPb(pb *catalogpb.MonitorRefreshInfoTriggerPb) 
 type MonitorRefreshListResponse struct {
 	// List of refreshes.
 	// Wire name: 'refreshes'
-	Refreshes []MonitorRefreshInfo ``
+	Refreshes []MonitorRefreshInfo `json:"refreshes,omitempty"`
 }
 
 func (st MonitorRefreshListResponse) MarshalJSON() ([]byte, error) {
@@ -18678,10 +18500,10 @@ type MonitorTimeSeries struct {
 	// {``\"5 minutes\"``, ``\"30 minutes\"``, ``\"1 hour\"``, ``\"1 day\"``,
 	// ``\"\u003cn\u003e week(s)\"``, ``\"1 month\"``, ``\"1 year\"``}.
 	// Wire name: 'granularities'
-	Granularities []string ``
+	Granularities []string `json:"granularities"`
 	// Column for the timestamp.
 	// Wire name: 'timestamp_col'
-	TimestampCol string ``
+	TimestampCol string `json:"timestamp_col"`
 }
 
 func (st MonitorTimeSeries) MarshalJSON() ([]byte, error) {
@@ -18734,7 +18556,7 @@ func MonitorTimeSeriesFromPb(pb *catalogpb.MonitorTimeSeriesPb) (*MonitorTimeSer
 type NamedTableConstraint struct {
 	// The name of the constraint.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 }
 
 func (st NamedTableConstraint) MarshalJSON() ([]byte, error) {
@@ -18786,23 +18608,23 @@ func NamedTableConstraintFromPb(pb *catalogpb.NamedTableConstraintPb) (*NamedTab
 type OnlineTable struct {
 	// Full three-part (catalog, schema, table) name of the table.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Specification of the online table.
 	// Wire name: 'spec'
-	Spec *OnlineTableSpec ``
+	Spec *OnlineTableSpec `json:"spec,omitempty"`
 	// Online Table data synchronization status
 	// Wire name: 'status'
-	Status *OnlineTableStatus ``
+	Status *OnlineTableStatus `json:"status,omitempty"`
 	// Data serving REST API URL for this table
 	// Wire name: 'table_serving_url'
-	TableServingUrl string ``
+	TableServingUrl string `json:"table_serving_url,omitempty"`
 	// The provisioning state of the online table entity in Unity Catalog. This
 	// is distinct from the state of the data synchronization pipeline (i.e. the
 	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
 	// runs asynchronously).
 	// Wire name: 'unity_catalog_provisioning_state'
-	UnityCatalogProvisioningState ProvisioningInfoState ``
-	ForceSendFields               []string              `tf:"-"`
+	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
+	ForceSendFields               []string              `json:"-" tf:"-"`
 }
 
 func (st OnlineTable) MarshalJSON() ([]byte, error) {
@@ -18910,29 +18732,29 @@ type OnlineTableSpec struct {
 	// useful for syncing views or tables without CDFs to online tables. Note
 	// that the full-copy pipeline only supports "triggered" scheduling policy.
 	// Wire name: 'perform_full_copy'
-	PerformFullCopy bool ``
+	PerformFullCopy bool `json:"perform_full_copy,omitempty"`
 	// ID of the associated pipeline. Generated by the server - cannot be set by
 	// the caller.
 	// Wire name: 'pipeline_id'
-	PipelineId string ``
+	PipelineId string `json:"pipeline_id,omitempty"`
 	// Primary Key columns to be used for data insert/update in the destination.
 	// Wire name: 'primary_key_columns'
-	PrimaryKeyColumns []string ``
+	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
 	// Pipeline runs continuously after generating the initial data.
 	// Wire name: 'run_continuously'
-	RunContinuously *OnlineTableSpecContinuousSchedulingPolicy ``
+	RunContinuously *OnlineTableSpecContinuousSchedulingPolicy `json:"run_continuously,omitempty"`
 	// Pipeline stops after generating the initial data and can be triggered
 	// later (manually, through a cron job or through data triggers)
 	// Wire name: 'run_triggered'
-	RunTriggered *OnlineTableSpecTriggeredSchedulingPolicy ``
+	RunTriggered *OnlineTableSpecTriggeredSchedulingPolicy `json:"run_triggered,omitempty"`
 	// Three-part (catalog, schema, table) name of the source Delta table.
 	// Wire name: 'source_table_full_name'
-	SourceTableFullName string ``
+	SourceTableFullName string `json:"source_table_full_name,omitempty"`
 	// Time series key to deduplicate (tie-break) rows with the same primary
 	// key.
 	// Wire name: 'timeseries_key'
-	TimeseriesKey   string   ``
-	ForceSendFields []string `tf:"-"`
+	TimeseriesKey   string   `json:"timeseries_key,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st OnlineTableSpec) MarshalJSON() ([]byte, error) {
@@ -19199,23 +19021,23 @@ func OnlineTableStateFromPb(pb *catalogpb.OnlineTableStatePb) (*OnlineTableState
 type OnlineTableStatus struct {
 
 	// Wire name: 'continuous_update_status'
-	ContinuousUpdateStatus *ContinuousUpdateStatus ``
+	ContinuousUpdateStatus *ContinuousUpdateStatus `json:"continuous_update_status,omitempty"`
 	// The state of the online table.
 	// Wire name: 'detailed_state'
-	DetailedState OnlineTableState ``
+	DetailedState OnlineTableState `json:"detailed_state,omitempty"`
 
 	// Wire name: 'failed_status'
-	FailedStatus *FailedStatus ``
+	FailedStatus *FailedStatus `json:"failed_status,omitempty"`
 	// A text description of the current state of the online table.
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 
 	// Wire name: 'provisioning_status'
-	ProvisioningStatus *ProvisioningStatus ``
+	ProvisioningStatus *ProvisioningStatus `json:"provisioning_status,omitempty"`
 
 	// Wire name: 'triggered_update_status'
-	TriggeredUpdateStatus *TriggeredUpdateStatus ``
-	ForceSendFields       []string               `tf:"-"`
+	TriggeredUpdateStatus *TriggeredUpdateStatus `json:"triggered_update_status,omitempty"`
+	ForceSendFields       []string               `json:"-" tf:"-"`
 }
 
 func (st OnlineTableStatus) MarshalJSON() ([]byte, error) {
@@ -19347,55 +19169,55 @@ type OptionSpec struct {
 	// possible input values, it can also be used by other option types to limit
 	// input selections.
 	// Wire name: 'allowed_values'
-	AllowedValues []string ``
+	AllowedValues []string `json:"allowed_values,omitempty"`
 	// The default value of the option, for example, value '443' for 'port'
 	// option.
 	// Wire name: 'default_value'
-	DefaultValue string ``
+	DefaultValue string `json:"default_value,omitempty"`
 	// A concise user facing description of what the input value of this option
 	// should look like.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// The hint is used on the UI to suggest what the input value can possibly
 	// be like, for example: example.com for 'host' option. Unlike default
 	// value, it will not be applied automatically without user input.
 	// Wire name: 'hint'
-	Hint string ``
+	Hint string `json:"hint,omitempty"`
 	// Indicates whether an option should be displayed with copy button on the
 	// UI.
 	// Wire name: 'is_copiable'
-	IsCopiable bool ``
+	IsCopiable bool `json:"is_copiable,omitempty"`
 	// Indicates whether an option can be provided by users in the create/update
 	// path of an entity.
 	// Wire name: 'is_creatable'
-	IsCreatable bool ``
+	IsCreatable bool `json:"is_creatable,omitempty"`
 	// Is the option value not user settable and is thus not shown on the UI.
 	// Wire name: 'is_hidden'
-	IsHidden bool ``
+	IsHidden bool `json:"is_hidden,omitempty"`
 	// Specifies whether this option is safe to log, i.e. no sensitive
 	// information.
 	// Wire name: 'is_loggable'
-	IsLoggable bool ``
+	IsLoggable bool `json:"is_loggable,omitempty"`
 	// Is the option required.
 	// Wire name: 'is_required'
-	IsRequired bool ``
+	IsRequired bool `json:"is_required,omitempty"`
 	// Is the option value considered secret and thus redacted on the UI.
 	// Wire name: 'is_secret'
-	IsSecret bool ``
+	IsSecret bool `json:"is_secret,omitempty"`
 	// Is the option updatable by users.
 	// Wire name: 'is_updatable'
-	IsUpdatable bool ``
+	IsUpdatable bool `json:"is_updatable,omitempty"`
 	// The unique name of the option.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Specifies when the option value is displayed on the UI within the OAuth
 	// flow.
 	// Wire name: 'oauth_stage'
-	OauthStage OptionSpecOauthStage ``
+	OauthStage OptionSpecOauthStage `json:"oauth_stage,omitempty"`
 	// The type of the option.
 	// Wire name: 'type'
-	Type            OptionSpecOptionType ``
-	ForceSendFields []string             `tf:"-"`
+	Type            OptionSpecOptionType `json:"type,omitempty"`
+	ForceSendFields []string             `json:"-" tf:"-"`
 }
 
 func (st OptionSpec) MarshalJSON() ([]byte, error) {
@@ -19632,15 +19454,15 @@ func OptionSpecOptionTypeFromPb(pb *catalogpb.OptionSpecOptionTypePb) (*OptionSp
 type PermissionsChange struct {
 	// The set of privileges to add.
 	// Wire name: 'add'
-	Add []Privilege ``
+	Add []Privilege `json:"add,omitempty"`
 	// The principal whose privileges we are changing. Only one of principal or
 	// principal_id should be specified, never both at the same time.
 	// Wire name: 'principal'
-	Principal string ``
+	Principal string `json:"principal,omitempty"`
 	// The set of privileges to remove.
 	// Wire name: 'remove'
-	Remove          []Privilege ``
-	ForceSendFields []string    `tf:"-"`
+	Remove          []Privilege `json:"remove,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
 func (st PermissionsChange) MarshalJSON() ([]byte, error) {
@@ -19746,22 +19568,22 @@ func PermissionsChangeFromPb(pb *catalogpb.PermissionsChangePb) (*PermissionsCha
 type PipelineProgress struct {
 	// The estimated time remaining to complete this update in seconds.
 	// Wire name: 'estimated_completion_time_seconds'
-	EstimatedCompletionTimeSeconds float64 ``
+	EstimatedCompletionTimeSeconds float64 `json:"estimated_completion_time_seconds,omitempty"`
 	// The source table Delta version that was last processed by the pipeline.
 	// The pipeline may not have completely processed this version yet.
 	// Wire name: 'latest_version_currently_processing'
-	LatestVersionCurrentlyProcessing int64 ``
+	LatestVersionCurrentlyProcessing int64 `json:"latest_version_currently_processing,omitempty"`
 	// The completion ratio of this update. This is a number between 0 and 1.
 	// Wire name: 'sync_progress_completion'
-	SyncProgressCompletion float64 ``
+	SyncProgressCompletion float64 `json:"sync_progress_completion,omitempty"`
 	// The number of rows that have been synced in this update.
 	// Wire name: 'synced_row_count'
-	SyncedRowCount int64 ``
+	SyncedRowCount int64 `json:"synced_row_count,omitempty"`
 	// The total number of rows that need to be synced in this update. This
 	// number may be an estimate.
 	// Wire name: 'total_row_count'
-	TotalRowCount   int64    ``
-	ForceSendFields []string `tf:"-"`
+	TotalRowCount   int64    `json:"total_row_count,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PipelineProgress) MarshalJSON() ([]byte, error) {
@@ -19826,17 +19648,17 @@ func PipelineProgressFromPb(pb *catalogpb.PipelineProgressPb) (*PipelineProgress
 type PrimaryKeyConstraint struct {
 	// Column names for this constraint.
 	// Wire name: 'child_columns'
-	ChildColumns []string ``
+	ChildColumns []string `json:"child_columns"`
 	// The name of the constraint.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// True if the constraint is RELY, false or unset if NORELY.
 	// Wire name: 'rely'
-	Rely bool ``
+	Rely bool `json:"rely,omitempty"`
 	// Column names that represent a timeseries.
 	// Wire name: 'timeseries_columns'
-	TimeseriesColumns []string ``
-	ForceSendFields   []string `tf:"-"`
+	TimeseriesColumns []string `json:"timeseries_columns,omitempty"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
 func (st PrimaryKeyConstraint) MarshalJSON() ([]byte, error) {
@@ -20094,11 +19916,11 @@ type PrivilegeAssignment struct {
 	// The principal (user email address or group name). For deleted principals,
 	// `principal` is empty while `principal_id` is populated.
 	// Wire name: 'principal'
-	Principal string ``
+	Principal string `json:"principal,omitempty"`
 	// The privileges assigned to the principal.
 	// Wire name: 'privileges'
-	Privileges      []Privilege ``
-	ForceSendFields []string    `tf:"-"`
+	Privileges      []Privilege `json:"privileges,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
 func (st PrivilegeAssignment) MarshalJSON() ([]byte, error) {
@@ -20180,7 +20002,7 @@ func PrivilegeAssignmentFromPb(pb *catalogpb.PrivilegeAssignmentPb) (*PrivilegeA
 type ProvisioningInfo struct {
 	// The provisioning state of the resource.
 	// Wire name: 'state'
-	State ProvisioningInfoState ``
+	State ProvisioningInfoState `json:"state,omitempty"`
 }
 
 func (st ProvisioningInfo) MarshalJSON() ([]byte, error) {
@@ -20311,7 +20133,7 @@ type ProvisioningStatus struct {
 	// Details about initial data synchronization. Only populated when in the
 	// PROVISIONING_INITIAL_SNAPSHOT state.
 	// Wire name: 'initial_pipeline_sync_progress'
-	InitialPipelineSyncProgress *PipelineProgress ``
+	InitialPipelineSyncProgress *PipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
 }
 
 func (st ProvisioningStatus) MarshalJSON() ([]byte, error) {
@@ -20374,24 +20196,24 @@ func ProvisioningStatusFromPb(pb *catalogpb.ProvisioningStatusPb) (*Provisioning
 type QuotaInfo struct {
 	// The timestamp that indicates when the quota count was last updated.
 	// Wire name: 'last_refreshed_at'
-	LastRefreshedAt int64 ``
+	LastRefreshedAt int64 `json:"last_refreshed_at,omitempty"`
 	// Name of the parent resource. Returns metastore ID if the parent is a
 	// metastore.
 	// Wire name: 'parent_full_name'
-	ParentFullName string ``
+	ParentFullName string `json:"parent_full_name,omitempty"`
 	// The quota parent securable type.
 	// Wire name: 'parent_securable_type'
-	ParentSecurableType SecurableType ``
+	ParentSecurableType SecurableType `json:"parent_securable_type,omitempty"`
 	// The current usage of the resource quota.
 	// Wire name: 'quota_count'
-	QuotaCount int ``
+	QuotaCount int `json:"quota_count,omitempty"`
 	// The current limit of the resource quota.
 	// Wire name: 'quota_limit'
-	QuotaLimit int ``
+	QuotaLimit int `json:"quota_limit,omitempty"`
 	// The name of the quota.
 	// Wire name: 'quota_name'
-	QuotaName       string   ``
-	ForceSendFields []string `tf:"-"`
+	QuotaName       string   `json:"quota_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st QuotaInfo) MarshalJSON() ([]byte, error) {
@@ -20472,14 +20294,14 @@ func QuotaInfoFromPb(pb *catalogpb.QuotaInfoPb) (*QuotaInfo, error) {
 type R2Credentials struct {
 	// The access key ID that identifies the temporary credentials.
 	// Wire name: 'access_key_id'
-	AccessKeyId string ``
+	AccessKeyId string `json:"access_key_id,omitempty"`
 	// The secret access key associated with the access key.
 	// Wire name: 'secret_access_key'
-	SecretAccessKey string ``
+	SecretAccessKey string `json:"secret_access_key,omitempty"`
 	// The generated JWT that users must pass to use the temporary credentials.
 	// Wire name: 'session_token'
-	SessionToken    string   ``
-	ForceSendFields []string `tf:"-"`
+	SessionToken    string   `json:"session_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st R2Credentials) MarshalJSON() ([]byte, error) {
@@ -20540,12 +20362,10 @@ func R2CredentialsFromPb(pb *catalogpb.R2CredentialsPb) (*R2Credentials, error) 
 type ReadVolumeRequest struct {
 	// Whether to include volumes in the response for which the principal can
 	// only access selective metadata for
-	// Wire name: 'include_browse'
-	IncludeBrowse bool `tf:"-"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// The three-level (fully qualified) name of the volume
-	// Wire name: 'name'
-	Name            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ReadVolumeRequest) MarshalJSON() ([]byte, error) {
@@ -20604,13 +20424,12 @@ func ReadVolumeRequestFromPb(pb *catalogpb.ReadVolumeRequestPb) (*ReadVolumeRequ
 type RegenerateDashboardRequest struct {
 	// UC table name in format `catalog.schema.table_name`. This field
 	// corresponds to the {full_table_name_arg} arg in the endpoint path.
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 	// Optional argument to specify the warehouse for dashboard regeneration. If
 	// not specified, the first running warehouse will be used.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RegenerateDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -20669,11 +20488,11 @@ func RegenerateDashboardRequestFromPb(pb *catalogpb.RegenerateDashboardRequestPb
 type RegenerateDashboardResponse struct {
 
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id,omitempty"`
 	// Parent folder is equivalent to {assets_dir}/{tableName}
 	// Wire name: 'parent_folder'
-	ParentFolder    string   ``
-	ForceSendFields []string `tf:"-"`
+	ParentFolder    string   `json:"parent_folder,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RegenerateDashboardResponse) MarshalJSON() ([]byte, error) {
@@ -20733,11 +20552,11 @@ func RegenerateDashboardResponseFromPb(pb *catalogpb.RegenerateDashboardResponse
 type RegisteredModelAlias struct {
 	// Name of the alias, e.g. 'champion' or 'latest_stable'
 	// Wire name: 'alias_name'
-	AliasName string ``
+	AliasName string `json:"alias_name,omitempty"`
 	// Integer version number of the model version to which this alias points.
 	// Wire name: 'version_num'
-	VersionNum      int      ``
-	ForceSendFields []string `tf:"-"`
+	VersionNum      int      `json:"version_num,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RegisteredModelAlias) MarshalJSON() ([]byte, error) {
@@ -20796,52 +20615,52 @@ func RegisteredModelAliasFromPb(pb *catalogpb.RegisteredModelAliasPb) (*Register
 type RegisteredModelInfo struct {
 	// List of aliases associated with the registered model
 	// Wire name: 'aliases'
-	Aliases []RegisteredModelAlias ``
+	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
 	// Wire name: 'browse_only'
-	BrowseOnly bool ``
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The name of the catalog where the schema and the registered model reside
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the registered model
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Creation timestamp of the registered model in milliseconds since the Unix
 	// epoch
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// The identifier of the user who created the registered model
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// The three-level (fully qualified) name of the registered model
 	// Wire name: 'full_name'
-	FullName string ``
+	FullName string `json:"full_name,omitempty"`
 	// The unique identifier of the metastore
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// The name of the registered model
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The identifier of the user who owns the registered model
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// The name of the schema where the registered model resides
 	// Wire name: 'schema_name'
-	SchemaName string ``
+	SchemaName string `json:"schema_name,omitempty"`
 	// The storage location on the cloud under which model version data files
 	// are stored
 	// Wire name: 'storage_location'
-	StorageLocation string ``
+	StorageLocation string `json:"storage_location,omitempty"`
 	// Last-update timestamp of the registered model in milliseconds since the
 	// Unix epoch
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// The identifier of the user who updated the registered model last time
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RegisteredModelInfo) MarshalJSON() ([]byte, error) {
@@ -20946,8 +20765,7 @@ func RegisteredModelInfoFromPb(pb *catalogpb.RegisteredModelInfoPb) (*Registered
 type RunRefreshRequest struct {
 	// UC table name in format `catalog.schema.table_name`. table_name is case
 	// insensitive and spaces are disallowed.
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 }
 
 func (st RunRefreshRequest) MarshalJSON() ([]byte, error) {
@@ -21001,60 +20819,60 @@ type SchemaInfo struct {
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
 	// Wire name: 'browse_only'
-	BrowseOnly bool ``
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// Name of parent catalog.
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name,omitempty"`
 	// The type of the parent catalog.
 	// Wire name: 'catalog_type'
-	CatalogType CatalogType ``
+	CatalogType CatalogType `json:"catalog_type,omitempty"`
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Time at which this schema was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of schema creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 
 	// Wire name: 'effective_predictive_optimization_flag'
-	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag ``
+	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	// Wire name: 'enable_predictive_optimization'
-	EnablePredictiveOptimization EnablePredictiveOptimization ``
+	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Full name of schema, in form of __catalog_name__.__schema_name__.
 	// Wire name: 'full_name'
-	FullName string ``
+	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of schema, relative to parent catalog.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Username of current owner of schema.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'properties'
-	Properties map[string]string ``
+	Properties map[string]string `json:"properties,omitempty"`
 	// The unique identifier of the schema.
 	// Wire name: 'schema_id'
-	SchemaId string ``
+	SchemaId string `json:"schema_id,omitempty"`
 	// Storage location for managed tables within schema.
 	// Wire name: 'storage_location'
-	StorageLocation string ``
+	StorageLocation string `json:"storage_location,omitempty"`
 	// Storage root URL for managed tables within schema.
 	// Wire name: 'storage_root'
-	StorageRoot string ``
+	StorageRoot string `json:"storage_root,omitempty"`
 	// Time at which this schema was created, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified schema.
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SchemaInfo) MarshalJSON() ([]byte, error) {
@@ -21410,19 +21228,19 @@ func SecurableKindFromPb(pb *catalogpb.SecurableKindPb) (*SecurableKind, error) 
 type SecurableKindManifest struct {
 	// Privileges that can be assigned to the securable.
 	// Wire name: 'assignable_privileges'
-	AssignablePrivileges []string ``
+	AssignablePrivileges []string `json:"assignable_privileges,omitempty"`
 	// A list of capabilities in the securable kind.
 	// Wire name: 'capabilities'
-	Capabilities []string ``
+	Capabilities []string `json:"capabilities,omitempty"`
 	// Detailed specs of allowed options.
 	// Wire name: 'options'
-	Options []OptionSpec ``
+	Options []OptionSpec `json:"options,omitempty"`
 	// Securable kind to get manifest of.
 	// Wire name: 'securable_kind'
-	SecurableKind SecurableKind ``
+	SecurableKind SecurableKind `json:"securable_kind,omitempty"`
 	// Securable Type of the kind.
 	// Wire name: 'securable_type'
-	SecurableType SecurableType ``
+	SecurableType SecurableType `json:"securable_type,omitempty"`
 }
 
 func (st SecurableKindManifest) MarshalJSON() ([]byte, error) {
@@ -21626,20 +21444,19 @@ func SecurableTypeFromPb(pb *catalogpb.SecurableTypePb) (*SecurableType, error) 
 type SetArtifactAllowlist struct {
 	// A list of allowed artifact match patterns.
 	// Wire name: 'artifact_matchers'
-	ArtifactMatchers []ArtifactMatcher ``
+	ArtifactMatchers []ArtifactMatcher `json:"artifact_matchers"`
 	// The artifact type of the allowlist.
-	// Wire name: 'artifact_type'
-	ArtifactType ArtifactType `tf:"-"`
+	ArtifactType ArtifactType `json:"-" tf:"-"`
 	// Time at which this artifact allowlist was set, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of the user who set the artifact allowlist.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// Unique identifier of parent metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId     string   ``
-	ForceSendFields []string `tf:"-"`
+	MetastoreId     string   `json:"metastore_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SetArtifactAllowlist) MarshalJSON() ([]byte, error) {
@@ -21738,13 +21555,13 @@ func SetArtifactAllowlistFromPb(pb *catalogpb.SetArtifactAllowlistPb) (*SetArtif
 type SetRegisteredModelAliasRequest struct {
 	// The name of the alias
 	// Wire name: 'alias'
-	Alias string ``
+	Alias string `json:"alias"`
 	// Full name of the registered model
 	// Wire name: 'full_name'
-	FullName string ``
+	FullName string `json:"full_name"`
 	// The version number of the model version to which the alias points
 	// Wire name: 'version_num'
-	VersionNum int ``
+	VersionNum int `json:"version_num"`
 }
 
 func (st SetRegisteredModelAliasRequest) MarshalJSON() ([]byte, error) {
@@ -21801,13 +21618,13 @@ type SseEncryptionDetails struct {
 	// Sets the value of the 'x-amz-server-side-encryption' header in S3
 	// request.
 	// Wire name: 'algorithm'
-	Algorithm SseEncryptionDetailsAlgorithm ``
+	Algorithm SseEncryptionDetailsAlgorithm `json:"algorithm,omitempty"`
 	// Optional. The ARN of the SSE-KMS key used with the S3 location, when
 	// algorithm = "SSE-KMS". Sets the value of the
 	// 'x-amz-server-side-encryption-aws-kms-key-id' header.
 	// Wire name: 'aws_kms_key_arn'
-	AwsKmsKeyArn    string   ``
-	ForceSendFields []string `tf:"-"`
+	AwsKmsKeyArn    string   `json:"aws_kms_key_arn,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SseEncryptionDetails) MarshalJSON() ([]byte, error) {
@@ -21931,63 +21748,63 @@ func SseEncryptionDetailsAlgorithmFromPb(pb *catalogpb.SseEncryptionDetailsAlgor
 type StorageCredentialInfo struct {
 	// The AWS IAM role configuration.
 	// Wire name: 'aws_iam_role'
-	AwsIamRole *AwsIamRoleResponse ``
+	AwsIamRole *AwsIamRoleResponse `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	// Wire name: 'azure_managed_identity'
-	AzureManagedIdentity *AzureManagedIdentityResponse ``
+	AzureManagedIdentity *AzureManagedIdentityResponse `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	// Wire name: 'azure_service_principal'
-	AzureServicePrincipal *AzureServicePrincipal ``
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// The Cloudflare API token configuration.
 	// Wire name: 'cloudflare_api_token'
-	CloudflareApiToken *CloudflareApiToken ``
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Time at which this credential was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of credential creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// The Databricks managed GCP service account configuration.
 	// Wire name: 'databricks_gcp_service_account'
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountResponse ``
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountResponse `json:"databricks_gcp_service_account,omitempty"`
 	// The full name of the credential.
 	// Wire name: 'full_name'
-	FullName string ``
+	FullName string `json:"full_name,omitempty"`
 	// The unique identifier of the credential.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	// Wire name: 'isolation_mode'
-	IsolationMode IsolationMode ``
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of the parent metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Username of current owner of credential.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
 	// Wire name: 'read_only'
-	ReadOnly bool ``
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Time at which this credential was last modified, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the credential.
 	// Wire name: 'updated_by'
-	UpdatedBy string ``
+	UpdatedBy string `json:"updated_by,omitempty"`
 	// Whether this credential is the current metastore's root storage
 	// credential. Only applicable when purpose is **STORAGE**.
 	// Wire name: 'used_for_managed_storage'
-	UsedForManagedStorage bool     ``
-	ForceSendFields       []string `tf:"-"`
+	UsedForManagedStorage bool     `json:"used_for_managed_storage,omitempty"`
+	ForceSendFields       []string `json:"-" tf:"-"`
 }
 
 func (st StorageCredentialInfo) MarshalJSON() ([]byte, error) {
@@ -22150,13 +21967,13 @@ func StorageCredentialInfoFromPb(pb *catalogpb.StorageCredentialInfoPb) (*Storag
 type SystemSchemaInfo struct {
 	// Name of the system schema.
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema"`
 	// The current state of enablement for the system schema. An empty string
 	// means the system schema is available and ready for opt-in. Possible
 	// values: AVAILABLE | ENABLE_INITIALIZED | ENABLE_COMPLETED |
 	// DISABLE_INITIALIZED | UNAVAILABLE
 	// Wire name: 'state'
-	State string ``
+	State string `json:"state"`
 }
 
 func (st SystemSchemaInfo) MarshalJSON() ([]byte, error) {
@@ -22325,13 +22142,13 @@ func SystemTypeFromPb(pb *catalogpb.SystemTypePb) (*SystemType, error) {
 type TableConstraint struct {
 
 	// Wire name: 'foreign_key_constraint'
-	ForeignKeyConstraint *ForeignKeyConstraint ``
+	ForeignKeyConstraint *ForeignKeyConstraint `json:"foreign_key_constraint,omitempty"`
 
 	// Wire name: 'named_table_constraint'
-	NamedTableConstraint *NamedTableConstraint ``
+	NamedTableConstraint *NamedTableConstraint `json:"named_table_constraint,omitempty"`
 
 	// Wire name: 'primary_key_constraint'
-	PrimaryKeyConstraint *PrimaryKeyConstraint ``
+	PrimaryKeyConstraint *PrimaryKeyConstraint `json:"primary_key_constraint,omitempty"`
 }
 
 func (st TableConstraint) MarshalJSON() ([]byte, error) {
@@ -22424,7 +22241,7 @@ type TableDependency struct {
 	// Full name of the dependent table, in the form of
 	// __catalog_name__.__schema_name__.__table_name__.
 	// Wire name: 'table_full_name'
-	TableFullName string ``
+	TableFullName string `json:"table_full_name"`
 }
 
 func (st TableDependency) MarshalJSON() ([]byte, error) {
@@ -22475,8 +22292,8 @@ func TableDependencyFromPb(pb *catalogpb.TableDependencyPb) (*TableDependency, e
 type TableExistsResponse struct {
 	// Whether the table exists or not.
 	// Wire name: 'table_exists'
-	TableExists     bool     ``
-	ForceSendFields []string `tf:"-"`
+	TableExists     bool     `json:"table_exists,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TableExistsResponse) MarshalJSON() ([]byte, error) {
@@ -22533,116 +22350,116 @@ func TableExistsResponseFromPb(pb *catalogpb.TableExistsResponsePb) (*TableExist
 type TableInfo struct {
 	// The AWS access point to use when accesing s3 for this external location.
 	// Wire name: 'access_point'
-	AccessPoint string ``
+	AccessPoint string `json:"access_point,omitempty"`
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
 	// Wire name: 'browse_only'
-	BrowseOnly bool ``
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// Name of parent catalog.
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name,omitempty"`
 	// The array of __ColumnInfo__ definitions of the table's columns.
 	// Wire name: 'columns'
-	Columns []ColumnInfo ``
+	Columns []ColumnInfo `json:"columns,omitempty"`
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Time at which this table was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of table creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// Unique ID of the Data Access Configuration to use with the table data.
 	// Wire name: 'data_access_configuration_id'
-	DataAccessConfigurationId string ``
+	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
 
 	// Wire name: 'data_source_format'
-	DataSourceFormat DataSourceFormat ``
+	DataSourceFormat DataSourceFormat `json:"data_source_format,omitempty"`
 	// Time at which this table was deleted, in epoch milliseconds. Field is
 	// omitted if table is not deleted.
 	// Wire name: 'deleted_at'
-	DeletedAt int64 ``
+	DeletedAt int64 `json:"deleted_at,omitempty"`
 	// Information pertaining to current state of the delta table.
 	// Wire name: 'delta_runtime_properties_kvpairs'
-	DeltaRuntimePropertiesKvpairs *DeltaRuntimePropertiesKvPairs ``
+	DeltaRuntimePropertiesKvpairs *DeltaRuntimePropertiesKvPairs `json:"delta_runtime_properties_kvpairs,omitempty"`
 
 	// Wire name: 'effective_predictive_optimization_flag'
-	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag ``
+	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
 
 	// Wire name: 'enable_predictive_optimization'
-	EnablePredictiveOptimization EnablePredictiveOptimization ``
+	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 
 	// Wire name: 'encryption_details'
-	EncryptionDetails *EncryptionDetails ``
+	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Full name of table, in form of
 	// __catalog_name__.__schema_name__.__table_name__
 	// Wire name: 'full_name'
-	FullName string ``
+	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of table, relative to parent schema.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Username of current owner of table.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// The pipeline ID of the table. Applicable for tables created by pipelines
 	// (Materialized View, Streaming Table, etc.).
 	// Wire name: 'pipeline_id'
-	PipelineId string ``
+	PipelineId string `json:"pipeline_id,omitempty"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'properties'
-	Properties map[string]string ``
+	Properties map[string]string `json:"properties,omitempty"`
 
 	// Wire name: 'row_filter'
-	RowFilter *TableRowFilter ``
+	RowFilter *TableRowFilter `json:"row_filter,omitempty"`
 	// Name of parent schema relative to its parent catalog.
 	// Wire name: 'schema_name'
-	SchemaName string ``
+	SchemaName string `json:"schema_name,omitempty"`
 	// SecurableKindManifest of table, including capabilities the table has.
 	// Wire name: 'securable_kind_manifest'
-	SecurableKindManifest *SecurableKindManifest ``
+	SecurableKindManifest *SecurableKindManifest `json:"securable_kind_manifest,omitempty"`
 	// List of schemes whose objects can be referenced without qualification.
 	// Wire name: 'sql_path'
-	SqlPath string ``
+	SqlPath string `json:"sql_path,omitempty"`
 	// Name of the storage credential, when a storage credential is configured
 	// for use with this table.
 	// Wire name: 'storage_credential_name'
-	StorageCredentialName string ``
+	StorageCredentialName string `json:"storage_credential_name,omitempty"`
 	// Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
 	// Wire name: 'storage_location'
-	StorageLocation string ``
+	StorageLocation string `json:"storage_location,omitempty"`
 	// List of table constraints. Note: this field is not set in the output of
 	// the __listTables__ API.
 	// Wire name: 'table_constraints'
-	TableConstraints []TableConstraint ``
+	TableConstraints []TableConstraint `json:"table_constraints,omitempty"`
 	// The unique identifier of the table.
 	// Wire name: 'table_id'
-	TableId string ``
+	TableId string `json:"table_id,omitempty"`
 
 	// Wire name: 'table_type'
-	TableType TableType ``
+	TableType TableType `json:"table_type,omitempty"`
 	// Time at which this table was last modified, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the table.
 	// Wire name: 'updated_by'
-	UpdatedBy string ``
+	UpdatedBy string `json:"updated_by,omitempty"`
 	// View definition SQL (when __table_type__ is **VIEW**,
 	// **MATERIALIZED_VIEW**, or **STREAMING_TABLE**)
 	// Wire name: 'view_definition'
-	ViewDefinition string ``
+	ViewDefinition string `json:"view_definition,omitempty"`
 	// View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**,
 	// **STREAMING_TABLE**) - when DependencyList is None, the dependency is not
 	// provided; - when DependencyList is an empty list, the dependency is
 	// provided but is empty; - when DependencyList is not an empty list,
 	// dependencies are provided and recorded.
 	// Wire name: 'view_dependencies'
-	ViewDependencies *DependencyList ``
-	ForceSendFields  []string        `tf:"-"`
+	ViewDependencies *DependencyList `json:"view_dependencies,omitempty"`
+	ForceSendFields  []string        `json:"-" tf:"-"`
 }
 
 func (st TableInfo) MarshalJSON() ([]byte, error) {
@@ -22968,12 +22785,12 @@ func TableOperationFromPb(pb *catalogpb.TableOperationPb) (*TableOperation, erro
 type TableRowFilter struct {
 	// The full name of the row filter SQL UDF.
 	// Wire name: 'function_name'
-	FunctionName string ``
+	FunctionName string `json:"function_name"`
 	// The list of table columns to be passed as input to the row filter
 	// function. The column types should match the types of the filter function
 	// arguments.
 	// Wire name: 'input_column_names'
-	InputColumnNames []string ``
+	InputColumnNames []string `json:"input_column_names"`
 }
 
 func (st TableRowFilter) MarshalJSON() ([]byte, error) {
@@ -23026,14 +22843,14 @@ func TableRowFilterFromPb(pb *catalogpb.TableRowFilterPb) (*TableRowFilter, erro
 type TableSummary struct {
 	// The full name of the table.
 	// Wire name: 'full_name'
-	FullName string ``
+	FullName string `json:"full_name,omitempty"`
 	// SecurableKindManifest of table, including capabilities the table has.
 	// Wire name: 'securable_kind_manifest'
-	SecurableKindManifest *SecurableKindManifest ``
+	SecurableKindManifest *SecurableKindManifest `json:"securable_kind_manifest,omitempty"`
 
 	// Wire name: 'table_type'
-	TableType       TableType ``
-	ForceSendFields []string  `tf:"-"`
+	TableType       TableType `json:"table_type,omitempty"`
+	ForceSendFields []string  `json:"-" tf:"-"`
 }
 
 func (st TableSummary) MarshalJSON() ([]byte, error) {
@@ -23192,11 +23009,11 @@ func TableTypeFromPb(pb *catalogpb.TableTypePb) (*TableType, error) {
 type TagKeyValue struct {
 	// name of the tag
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 	// value of the tag associated with the key, could be optional
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TagKeyValue) MarshalJSON() ([]byte, error) {
@@ -23255,18 +23072,18 @@ func TagKeyValueFromPb(pb *catalogpb.TagKeyValuePb) (*TagKeyValue, error) {
 type TemporaryCredentials struct {
 
 	// Wire name: 'aws_temp_credentials'
-	AwsTempCredentials *AwsCredentials ``
+	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
 
 	// Wire name: 'azure_aad'
-	AzureAad *AzureActiveDirectoryToken ``
+	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
 	// Wire name: 'expiration_time'
-	ExpirationTime int64 ``
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
 
 	// Wire name: 'gcp_oauth_token'
-	GcpOauthToken   *GcpOauthToken ``
-	ForceSendFields []string       `tf:"-"`
+	GcpOauthToken   *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
+	ForceSendFields []string       `json:"-" tf:"-"`
 }
 
 func (st TemporaryCredentials) MarshalJSON() ([]byte, error) {
@@ -23369,15 +23186,15 @@ type TriggeredUpdateStatus struct {
 	// Note that this Delta version may not be completely synced to the online
 	// table yet.
 	// Wire name: 'last_processed_commit_version'
-	LastProcessedCommitVersion int64 ``
+	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
 	// The timestamp of the last time any data was synchronized from the source
 	// table to the online table.
 	// Wire name: 'timestamp'
-	Timestamp string `` //legacy
+	Timestamp string `json:"timestamp,omitempty"` //legacy
 	// Progress of the active data synchronization pipeline.
 	// Wire name: 'triggered_update_progress'
-	TriggeredUpdateProgress *PipelineProgress ``
-	ForceSendFields         []string          `tf:"-"`
+	TriggeredUpdateProgress *PipelineProgress `json:"triggered_update_progress,omitempty"`
+	ForceSendFields         []string          `json:"-" tf:"-"`
 }
 
 func (st TriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
@@ -23449,11 +23266,9 @@ func TriggeredUpdateStatusFromPb(pb *catalogpb.TriggeredUpdateStatusPb) (*Trigge
 
 type UnassignRequest struct {
 	// Query for the ID of the metastore to delete.
-	// Wire name: 'metastore_id'
-	MetastoreId string `tf:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// A workspace ID.
-	// Wire name: 'workspace_id'
-	WorkspaceId int64 `tf:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
 func (st UnassignRequest) MarshalJSON() ([]byte, error) {
@@ -23506,31 +23321,30 @@ func UnassignRequestFromPb(pb *catalogpb.UnassignRequestPb) (*UnassignRequest, e
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	// Wire name: 'enable_predictive_optimization'
-	EnablePredictiveOptimization EnablePredictiveOptimization ``
+	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	// Wire name: 'isolation_mode'
-	IsolationMode CatalogIsolationMode ``
+	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
 	// The name of the catalog.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// New name for the catalog.
 	// Wire name: 'new_name'
-	NewName string ``
+	NewName string `json:"new_name,omitempty"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'options'
-	Options map[string]string ``
+	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of catalog.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'properties'
-	Properties      map[string]string ``
-	ForceSendFields []string          `tf:"-"`
+	Properties      map[string]string `json:"properties,omitempty"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
 func (st UpdateCatalog) MarshalJSON() ([]byte, error) {
@@ -23625,7 +23439,7 @@ func UpdateCatalogFromPb(pb *catalogpb.UpdateCatalogPb) (*UpdateCatalog, error) 
 type UpdateCatalogWorkspaceBindingsResponse struct {
 	// A list of workspace IDs
 	// Wire name: 'workspaces'
-	Workspaces []int64 ``
+	Workspaces []int64 `json:"workspaces,omitempty"`
 }
 
 func (st UpdateCatalogWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
@@ -23677,20 +23491,19 @@ type UpdateConnection struct {
 	// [Create,Update:OPT] Connection environment settings as
 	// EnvironmentSettings object.
 	// Wire name: 'environment_settings'
-	EnvironmentSettings *EnvironmentSettings ``
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// New name for the connection.
 	// Wire name: 'new_name'
-	NewName string ``
+	NewName string `json:"new_name,omitempty"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'options'
-	Options map[string]string ``
+	Options map[string]string `json:"options"`
 	// Username of current owner of the connection.
 	// Wire name: 'owner'
-	Owner           string   ``
-	ForceSendFields []string `tf:"-"`
+	Owner           string   `json:"owner,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateConnection) MarshalJSON() ([]byte, error) {
@@ -23767,46 +23580,45 @@ func UpdateConnectionFromPb(pb *catalogpb.UpdateConnectionPb) (*UpdateConnection
 type UpdateCredentialRequest struct {
 	// The AWS IAM role configuration.
 	// Wire name: 'aws_iam_role'
-	AwsIamRole *AwsIamRole ``
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	// Wire name: 'azure_managed_identity'
-	AzureManagedIdentity *AzureManagedIdentity ``
+	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	// Wire name: 'azure_service_principal'
-	AzureServicePrincipal *AzureServicePrincipal ``
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The Databricks managed GCP service account configuration.
 	// Wire name: 'databricks_gcp_service_account'
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount ``
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
 	// Force an update even if there are dependent services (when purpose is
 	// **SERVICE**) or dependent external locations and external tables (when
 	// purpose is **STORAGE**).
 	// Wire name: 'force'
-	Force bool ``
+	Force bool `json:"force,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	// Wire name: 'isolation_mode'
-	IsolationMode IsolationMode ``
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of the credential.
-	// Wire name: 'name_arg'
-	NameArg string `tf:"-"`
+	NameArg string `json:"-" tf:"-"`
 	// New name of credential.
 	// Wire name: 'new_name'
-	NewName string ``
+	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of credential.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
 	// Wire name: 'read_only'
-	ReadOnly bool ``
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Supply true to this argument to skip validation of the updated
 	// credential.
 	// Wire name: 'skip_validation'
-	SkipValidation  bool     ``
-	ForceSendFields []string `tf:"-"`
+	SkipValidation  bool     `json:"skip_validation,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateCredentialRequest) MarshalJSON() ([]byte, error) {
@@ -23945,7 +23757,7 @@ func UpdateCredentialRequestFromPb(pb *catalogpb.UpdateCredentialRequestPb) (*Up
 type UpdateExternalLineageRelationshipRequest struct {
 
 	// Wire name: 'external_lineage_relationship'
-	ExternalLineageRelationship UpdateRequestExternalLineage ``
+	ExternalLineageRelationship UpdateRequestExternalLineage `json:"external_lineage_relationship"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -23957,8 +23769,7 @@ type UpdateExternalLineageRelationshipRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
-	// Wire name: 'update_mask'
-	UpdateMask string `tf:"-"` //legacy
+	UpdateMask string `json:"-" tf:"-"` //legacy
 
 }
 
@@ -24024,51 +23835,50 @@ func UpdateExternalLineageRelationshipRequestFromPb(pb *catalogpb.UpdateExternal
 type UpdateExternalLocation struct {
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
 	// Wire name: 'credential_name'
-	CredentialName string ``
+	CredentialName string `json:"credential_name,omitempty"`
 	// Whether to enable file events on this external location.
 	// Wire name: 'enable_file_events'
-	EnableFileEvents bool ``
+	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
 	// Wire name: 'encryption_details'
-	EncryptionDetails *EncryptionDetails ``
+	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	// Wire name: 'fallback'
-	Fallback bool ``
+	Fallback bool `json:"fallback,omitempty"`
 	// File event queue settings.
 	// Wire name: 'file_event_queue'
-	FileEventQueue *FileEventQueue ``
+	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
 	// Wire name: 'force'
-	Force bool ``
+	Force bool `json:"force,omitempty"`
 
 	// Wire name: 'isolation_mode'
-	IsolationMode IsolationMode ``
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of the external location.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// New name for the external location.
 	// Wire name: 'new_name'
-	NewName string ``
+	NewName string `json:"new_name,omitempty"`
 	// The owner of the external location.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Indicates whether the external location is read-only.
 	// Wire name: 'read_only'
-	ReadOnly bool ``
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Skips validation of the storage credential associated with the external
 	// location.
 	// Wire name: 'skip_validation'
-	SkipValidation bool ``
+	SkipValidation bool `json:"skip_validation,omitempty"`
 	// Path URL of the external location.
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateExternalLocation) MarshalJSON() ([]byte, error) {
@@ -24187,10 +23997,9 @@ func UpdateExternalLocationFromPb(pb *catalogpb.UpdateExternalLocationPb) (*Upda
 type UpdateExternalMetadataRequest struct {
 
 	// Wire name: 'external_metadata'
-	ExternalMetadata ExternalMetadata ``
+	ExternalMetadata ExternalMetadata `json:"external_metadata"`
 	// Name of the external metadata object.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -24202,8 +24011,7 @@ type UpdateExternalMetadataRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
-	// Wire name: 'update_mask'
-	UpdateMask string `tf:"-"` //legacy
+	UpdateMask string `json:"-" tf:"-"` //legacy
 
 }
 
@@ -24271,12 +24079,11 @@ func UpdateExternalMetadataRequestFromPb(pb *catalogpb.UpdateExternalMetadataReq
 type UpdateFunction struct {
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Username of current owner of function.
 	// Wire name: 'owner'
-	Owner           string   ``
-	ForceSendFields []string `tf:"-"`
+	Owner           string   `json:"owner,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateFunction) MarshalJSON() ([]byte, error) {
@@ -24336,30 +24143,29 @@ type UpdateMetastore struct {
 	// The organization name of a Delta Sharing entity, to be used in
 	// Databricks-to-Databricks Delta Sharing as the official name.
 	// Wire name: 'delta_sharing_organization_name'
-	DeltaSharingOrganizationName string ``
+	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
 	// The lifetime of delta sharing recipient token in seconds.
 	// Wire name: 'delta_sharing_recipient_token_lifetime_in_seconds'
-	DeltaSharingRecipientTokenLifetimeInSeconds int64 ``
+	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
 	// Wire name: 'delta_sharing_scope'
-	DeltaSharingScope DeltaSharingScopeEnum ``
+	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
 	// Unique ID of the metastore.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 	// New name for the metastore.
 	// Wire name: 'new_name'
-	NewName string ``
+	NewName string `json:"new_name,omitempty"`
 	// The owner of the metastore.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Privilege model version of the metastore, of the form `major.minor`
 	// (e.g., `1.0`).
 	// Wire name: 'privilege_model_version'
-	PrivilegeModelVersion string ``
+	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
 	// UUID of storage credential to access the metastore storage_root.
 	// Wire name: 'storage_root_credential_id'
-	StorageRootCredentialId string   ``
-	ForceSendFields         []string `tf:"-"`
+	StorageRootCredentialId string   `json:"storage_root_credential_id,omitempty"`
+	ForceSendFields         []string `json:"-" tf:"-"`
 }
 
 func (st UpdateMetastore) MarshalJSON() ([]byte, error) {
@@ -24444,14 +24250,13 @@ type UpdateMetastoreAssignment struct {
 	// deprecated. Please use "Default Namespace API" to configure the default
 	// catalog for a Databricks workspace.
 	// Wire name: 'default_catalog_name'
-	DefaultCatalogName string ``
+	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
 	// The unique ID of the metastore.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// A workspace ID.
-	// Wire name: 'workspace_id'
-	WorkspaceId     int64    `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	WorkspaceId     int64    `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
@@ -24512,14 +24317,12 @@ func UpdateMetastoreAssignmentFromPb(pb *catalogpb.UpdateMetastoreAssignmentPb) 
 type UpdateModelVersionRequest struct {
 	// The comment attached to the model version
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The three-level (fully qualified) name of the model version
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// The integer version number of the model version
-	// Wire name: 'version'
-	Version         int      `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Version         int      `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
@@ -24582,33 +24385,33 @@ type UpdateMonitor struct {
 	// compute drift from the data in the monitored `table_name`. The baseline
 	// table and the monitored table shall have the same schema.
 	// Wire name: 'baseline_table_name'
-	BaselineTableName string ``
+	BaselineTableName string `json:"baseline_table_name,omitempty"`
 	// [Create:OPT Update:OPT] Custom metrics.
 	// Wire name: 'custom_metrics'
-	CustomMetrics []MonitorMetric ``
+	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
 	// [Create:ERR Update:OPT] Id of dashboard that visualizes the computed
 	// metrics. This can be empty if the monitor is in PENDING state.
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id,omitempty"`
 	// [Create:OPT Update:OPT] Data classification related config.
 	// Wire name: 'data_classification_config'
-	DataClassificationConfig *MonitorDataClassificationConfig ``
+	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
 
 	// Wire name: 'inference_log'
-	InferenceLog *MonitorInferenceLog ``
+	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
 	// [Create:ERR Update:IGN] The latest error message for a monitor failure.
 	// Wire name: 'latest_monitor_failure_msg'
-	LatestMonitorFailureMsg string ``
+	LatestMonitorFailureMsg string `json:"latest_monitor_failure_msg,omitempty"`
 	// [Create:OPT Update:OPT] Field for specifying notification settings.
 	// Wire name: 'notifications'
-	Notifications *MonitorNotifications ``
+	Notifications *MonitorNotifications `json:"notifications,omitempty"`
 	// [Create:REQ Update:REQ] Schema where output tables are created. Needs to
 	// be in 2-level format {catalog}.{schema}
 	// Wire name: 'output_schema_name'
-	OutputSchemaName string ``
+	OutputSchemaName string `json:"output_schema_name"`
 	// [Create:OPT Update:OPT] The monitor schedule.
 	// Wire name: 'schedule'
-	Schedule *MonitorCronSchedule ``
+	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
 	// [Create:OPT Update:OPT] List of column expressions to slice data with for
 	// targeted analysis. The data is grouped by each expression independently,
 	// resulting in a separate slice for each predicate and its complements. For
@@ -24617,18 +24420,17 @@ type UpdateMonitor struct {
 	// slice per unique value in `col1`. For high-cardinality columns, only the
 	// top 100 unique values by frequency will generate slices.
 	// Wire name: 'slicing_exprs'
-	SlicingExprs []string ``
+	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
 	// Wire name: 'snapshot'
-	Snapshot *MonitorSnapshot ``
+	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
 	// UC table name in format `catalog.schema.table_name`. This field
 	// corresponds to the {full_table_name_arg} arg in the endpoint path.
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 	// Configuration for monitoring time series tables.
 	// Wire name: 'time_series'
-	TimeSeries      *MonitorTimeSeries ``
-	ForceSendFields []string           `tf:"-"`
+	TimeSeries      *MonitorTimeSeries `json:"time_series,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
 func (st UpdateMonitor) MarshalJSON() ([]byte, error) {
@@ -24803,13 +24605,11 @@ func UpdateMonitorFromPb(pb *catalogpb.UpdateMonitorPb) (*UpdateMonitor, error) 
 type UpdatePermissions struct {
 	// Array of permissions change objects.
 	// Wire name: 'changes'
-	Changes []PermissionsChange ``
+	Changes []PermissionsChange `json:"changes,omitempty"`
 	// Full name of securable.
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Type of securable.
-	// Wire name: 'securable_type'
-	SecurableType string `tf:"-"`
+	SecurableType string `json:"-" tf:"-"`
 }
 
 func (st UpdatePermissions) MarshalJSON() ([]byte, error) {
@@ -24886,7 +24686,7 @@ func UpdatePermissionsFromPb(pb *catalogpb.UpdatePermissionsPb) (*UpdatePermissi
 type UpdatePermissionsResponse struct {
 	// The privileges assigned to each principal
 	// Wire name: 'privilege_assignments'
-	PrivilegeAssignments []PrivilegeAssignment ``
+	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
 }
 
 func (st UpdatePermissionsResponse) MarshalJSON() ([]byte, error) {
@@ -24959,17 +24759,16 @@ func UpdatePermissionsResponseFromPb(pb *catalogpb.UpdatePermissionsResponsePb) 
 type UpdateRegisteredModelRequest struct {
 	// The comment attached to the registered model
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The three-level (fully qualified) name of the registered model
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// New name for the registered model.
 	// Wire name: 'new_name'
-	NewName string ``
+	NewName string `json:"new_name,omitempty"`
 	// The identifier of the user who owns the registered model
 	// Wire name: 'owner'
-	Owner           string   ``
-	ForceSendFields []string `tf:"-"`
+	Owner           string   `json:"owner,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
@@ -25032,20 +24831,20 @@ func UpdateRegisteredModelRequestFromPb(pb *catalogpb.UpdateRegisteredModelReque
 type UpdateRequestExternalLineage struct {
 	// List of column relationships between source and target objects.
 	// Wire name: 'columns'
-	Columns []ColumnRelationship ``
+	Columns []ColumnRelationship `json:"columns,omitempty"`
 	// Unique identifier of the external lineage relationship.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Key-value properties associated with the external lineage relationship.
 	// Wire name: 'properties'
-	Properties map[string]string ``
+	Properties map[string]string `json:"properties,omitempty"`
 	// Source object of the external lineage relationship.
 	// Wire name: 'source'
-	Source ExternalLineageObject ``
+	Source ExternalLineageObject `json:"source"`
 	// Target object of the external lineage relationship.
 	// Wire name: 'target'
-	Target          ExternalLineageObject ``
-	ForceSendFields []string              `tf:"-"`
+	Target          ExternalLineageObject `json:"target"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st UpdateRequestExternalLineage) MarshalJSON() ([]byte, error) {
@@ -25156,24 +24955,23 @@ func UpdateRequestExternalLineageFromPb(pb *catalogpb.UpdateRequestExternalLinea
 type UpdateSchema struct {
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	// Wire name: 'enable_predictive_optimization'
-	EnablePredictiveOptimization EnablePredictiveOptimization ``
+	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Full name of the schema.
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// New name for the schema.
 	// Wire name: 'new_name'
-	NewName string ``
+	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of schema.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'properties'
-	Properties      map[string]string ``
-	ForceSendFields []string          `tf:"-"`
+	Properties      map[string]string `json:"properties,omitempty"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
 func (st UpdateSchema) MarshalJSON() ([]byte, error) {
@@ -25252,48 +25050,47 @@ func UpdateSchemaFromPb(pb *catalogpb.UpdateSchemaPb) (*UpdateSchema, error) {
 type UpdateStorageCredential struct {
 	// The AWS IAM role configuration.
 	// Wire name: 'aws_iam_role'
-	AwsIamRole *AwsIamRoleRequest ``
+	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	// Wire name: 'azure_managed_identity'
-	AzureManagedIdentity *AzureManagedIdentityResponse ``
+	AzureManagedIdentity *AzureManagedIdentityResponse `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	// Wire name: 'azure_service_principal'
-	AzureServicePrincipal *AzureServicePrincipal ``
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// The Cloudflare API token configuration.
 	// Wire name: 'cloudflare_api_token'
-	CloudflareApiToken *CloudflareApiToken ``
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The Databricks managed GCP service account configuration.
 	// Wire name: 'databricks_gcp_service_account'
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest ``
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// Force update even if there are dependent external locations or external
 	// tables.
 	// Wire name: 'force'
-	Force bool ``
+	Force bool `json:"force,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
 	// Wire name: 'isolation_mode'
-	IsolationMode IsolationMode ``
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of the storage credential.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// New name for the storage credential.
 	// Wire name: 'new_name'
-	NewName string ``
+	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of credential.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
 	// Wire name: 'read_only'
-	ReadOnly bool ``
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Supplying true to this argument skips validation of the updated
 	// credential.
 	// Wire name: 'skip_validation'
-	SkipValidation  bool     ``
-	ForceSendFields []string `tf:"-"`
+	SkipValidation  bool     `json:"skip_validation,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateStorageCredential) MarshalJSON() ([]byte, error) {
@@ -25445,12 +25242,11 @@ func UpdateStorageCredentialFromPb(pb *catalogpb.UpdateStorageCredentialPb) (*Up
 
 type UpdateTableRequest struct {
 	// Full name of the table.
-	// Wire name: 'full_name'
-	FullName string `tf:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Username of current owner of table.
 	// Wire name: 'owner'
-	Owner           string   ``
-	ForceSendFields []string `tf:"-"`
+	Owner           string   `json:"owner,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateTableRequest) MarshalJSON() ([]byte, error) {
@@ -25509,17 +25305,16 @@ func UpdateTableRequestFromPb(pb *catalogpb.UpdateTableRequestPb) (*UpdateTableR
 type UpdateVolumeRequestContent struct {
 	// The comment attached to the volume
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The three-level (fully qualified) name of the volume
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// New name for the volume.
 	// Wire name: 'new_name'
-	NewName string ``
+	NewName string `json:"new_name,omitempty"`
 	// The identifier of the user who owns the volume
 	// Wire name: 'owner'
-	Owner           string   ``
-	ForceSendFields []string `tf:"-"`
+	Owner           string   `json:"owner,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateVolumeRequestContent) MarshalJSON() ([]byte, error) {
@@ -25582,13 +25377,12 @@ func UpdateVolumeRequestContentFromPb(pb *catalogpb.UpdateVolumeRequestContentPb
 type UpdateWorkspaceBindings struct {
 	// A list of workspace IDs.
 	// Wire name: 'assign_workspaces'
-	AssignWorkspaces []int64 ``
+	AssignWorkspaces []int64 `json:"assign_workspaces,omitempty"`
 	// The name of the catalog.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// A list of workspace IDs.
 	// Wire name: 'unassign_workspaces'
-	UnassignWorkspaces []int64 ``
+	UnassignWorkspaces []int64 `json:"unassign_workspaces,omitempty"`
 }
 
 func (st UpdateWorkspaceBindings) MarshalJSON() ([]byte, error) {
@@ -25643,17 +25437,15 @@ func UpdateWorkspaceBindingsFromPb(pb *catalogpb.UpdateWorkspaceBindingsPb) (*Up
 type UpdateWorkspaceBindingsParameters struct {
 	// List of workspace bindings.
 	// Wire name: 'add'
-	Add []WorkspaceBinding ``
+	Add []WorkspaceBinding `json:"add,omitempty"`
 	// List of workspace bindings.
 	// Wire name: 'remove'
-	Remove []WorkspaceBinding ``
+	Remove []WorkspaceBinding `json:"remove,omitempty"`
 	// The name of the securable.
-	// Wire name: 'securable_name'
-	SecurableName string `tf:"-"`
+	SecurableName string `json:"-" tf:"-"`
 	// The type of the securable to bind to a workspace (catalog,
 	// storage_credential, credential, or external_location).
-	// Wire name: 'securable_type'
-	SecurableType string `tf:"-"`
+	SecurableType string `json:"-" tf:"-"`
 }
 
 func (st UpdateWorkspaceBindingsParameters) MarshalJSON() ([]byte, error) {
@@ -25755,7 +25547,7 @@ func UpdateWorkspaceBindingsParametersFromPb(pb *catalogpb.UpdateWorkspaceBindin
 type UpdateWorkspaceBindingsResponse struct {
 	// List of workspace bindings.
 	// Wire name: 'bindings'
-	Bindings []WorkspaceBinding ``
+	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
 }
 
 func (st UpdateWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
@@ -25829,34 +25621,34 @@ func UpdateWorkspaceBindingsResponseFromPb(pb *catalogpb.UpdateWorkspaceBindings
 type ValidateCredentialRequest struct {
 
 	// Wire name: 'aws_iam_role'
-	AwsIamRole *AwsIamRole ``
+	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 
 	// Wire name: 'azure_managed_identity'
-	AzureManagedIdentity *AzureManagedIdentity ``
+	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// Required. The name of an existing credential or long-lived cloud
 	// credential to validate.
 	// Wire name: 'credential_name'
-	CredentialName string ``
+	CredentialName string `json:"credential_name,omitempty"`
 
 	// Wire name: 'databricks_gcp_service_account'
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount ``
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate. Only applicable
 	// for storage credentials (purpose is **STORAGE**.)
 	// Wire name: 'external_location_name'
-	ExternalLocationName string ``
+	ExternalLocationName string `json:"external_location_name,omitempty"`
 	// The purpose of the credential. This should only be used when the
 	// credential is specified.
 	// Wire name: 'purpose'
-	Purpose CredentialPurpose ``
+	Purpose CredentialPurpose `json:"purpose,omitempty"`
 	// Whether the credential is only usable for read operations. Only
 	// applicable for storage credentials (purpose is **STORAGE**.)
 	// Wire name: 'read_only'
-	ReadOnly bool ``
+	ReadOnly bool `json:"read_only,omitempty"`
 	// The external location url to validate. Only applicable when purpose is
 	// **STORAGE**.
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ValidateCredentialRequest) MarshalJSON() ([]byte, error) {
@@ -25976,11 +25768,11 @@ type ValidateCredentialResponse struct {
 	// Whether the tested location is a directory in cloud storage. Only
 	// applicable for when purpose is **STORAGE**.
 	// Wire name: 'isDir'
-	IsDir bool ``
+	IsDir bool `json:"isDir,omitempty"`
 	// The results of the validation check.
 	// Wire name: 'results'
-	Results         []CredentialValidationResult ``
-	ForceSendFields []string                     `tf:"-"`
+	Results         []CredentialValidationResult `json:"results,omitempty"`
+	ForceSendFields []string                     `json:"-" tf:"-"`
 }
 
 func (st ValidateCredentialResponse) MarshalJSON() ([]byte, error) {
@@ -26118,33 +25910,33 @@ func ValidateCredentialResultFromPb(pb *catalogpb.ValidateCredentialResultPb) (*
 type ValidateStorageCredential struct {
 	// The AWS IAM role configuration.
 	// Wire name: 'aws_iam_role'
-	AwsIamRole *AwsIamRoleRequest ``
+	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
 	// Wire name: 'azure_managed_identity'
-	AzureManagedIdentity *AzureManagedIdentityRequest ``
+	AzureManagedIdentity *AzureManagedIdentityRequest `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
 	// Wire name: 'azure_service_principal'
-	AzureServicePrincipal *AzureServicePrincipal ``
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// The Cloudflare API token configuration.
 	// Wire name: 'cloudflare_api_token'
-	CloudflareApiToken *CloudflareApiToken ``
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// The Databricks created GCP service account configuration.
 	// Wire name: 'databricks_gcp_service_account'
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest ``
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate.
 	// Wire name: 'external_location_name'
-	ExternalLocationName string ``
+	ExternalLocationName string `json:"external_location_name,omitempty"`
 	// Whether the storage credential is only usable for read operations.
 	// Wire name: 'read_only'
-	ReadOnly bool ``
+	ReadOnly bool `json:"read_only,omitempty"`
 	// Required. The name of an existing credential or long-lived cloud
 	// credential to validate.
 	// Wire name: 'storage_credential_name'
-	StorageCredentialName string ``
+	StorageCredentialName string `json:"storage_credential_name,omitempty"`
 	// The external location url to validate.
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ValidateStorageCredential) MarshalJSON() ([]byte, error) {
@@ -26277,11 +26069,11 @@ func ValidateStorageCredentialFromPb(pb *catalogpb.ValidateStorageCredentialPb) 
 type ValidateStorageCredentialResponse struct {
 	// Whether the tested location is a directory in cloud storage.
 	// Wire name: 'isDir'
-	IsDir bool ``
+	IsDir bool `json:"isDir,omitempty"`
 	// The results of the validation check.
 	// Wire name: 'results'
-	Results         []ValidationResult ``
-	ForceSendFields []string           `tf:"-"`
+	Results         []ValidationResult `json:"results,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
 func (st ValidateStorageCredentialResponse) MarshalJSON() ([]byte, error) {
@@ -26362,14 +26154,14 @@ func ValidateStorageCredentialResponseFromPb(pb *catalogpb.ValidateStorageCreden
 type ValidationResult struct {
 	// Error message would exist when the result does not equal to **PASS**.
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 	// The operation tested.
 	// Wire name: 'operation'
-	Operation ValidationResultOperation ``
+	Operation ValidationResultOperation `json:"operation,omitempty"`
 	// The results of the tested operation.
 	// Wire name: 'result'
-	Result          ValidationResultResult ``
-	ForceSendFields []string               `tf:"-"`
+	Result          ValidationResultResult `json:"result,omitempty"`
+	ForceSendFields []string               `json:"-" tf:"-"`
 }
 
 func (st ValidationResult) MarshalJSON() ([]byte, error) {
@@ -26575,58 +26367,58 @@ func ValidationResultResultFromPb(pb *catalogpb.ValidationResultResultPb) (*Vali
 type VolumeInfo struct {
 	// The AWS access point to use when accesing s3 for this external location.
 	// Wire name: 'access_point'
-	AccessPoint string ``
+	AccessPoint string `json:"access_point,omitempty"`
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
 	// Wire name: 'browse_only'
-	BrowseOnly bool ``
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The name of the catalog where the schema and the volume are
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the volume
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// The identifier of the user who created the volume
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 
 	// Wire name: 'encryption_details'
-	EncryptionDetails *EncryptionDetails ``
+	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// The three-level (fully qualified) name of the volume
 	// Wire name: 'full_name'
-	FullName string ``
+	FullName string `json:"full_name,omitempty"`
 	// The unique identifier of the metastore
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// The name of the volume
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The identifier of the user who owns the volume
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// The name of the schema where the volume is
 	// Wire name: 'schema_name'
-	SchemaName string ``
+	SchemaName string `json:"schema_name,omitempty"`
 	// The storage location on the cloud
 	// Wire name: 'storage_location'
-	StorageLocation string ``
+	StorageLocation string `json:"storage_location,omitempty"`
 
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// The identifier of the user who updated the volume last time
 	// Wire name: 'updated_by'
-	UpdatedBy string ``
+	UpdatedBy string `json:"updated_by,omitempty"`
 	// The unique identifier of the volume
 	// Wire name: 'volume_id'
-	VolumeId string ``
+	VolumeId string `json:"volume_id,omitempty"`
 
 	// Wire name: 'volume_type'
-	VolumeType      VolumeType ``
-	ForceSendFields []string   `tf:"-"`
+	VolumeType      VolumeType `json:"volume_type,omitempty"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
 func (st VolumeInfo) MarshalJSON() ([]byte, error) {
@@ -26798,10 +26590,10 @@ func VolumeTypeFromPb(pb *catalogpb.VolumeTypePb) (*VolumeType, error) {
 type WorkspaceBinding struct {
 	// One of READ_WRITE/READ_ONLY. Default is READ_WRITE.
 	// Wire name: 'binding_type'
-	BindingType WorkspaceBindingBindingType ``
+	BindingType WorkspaceBindingBindingType `json:"binding_type,omitempty"`
 	// Required
 	// Wire name: 'workspace_id'
-	WorkspaceId int64 ``
+	WorkspaceId int64 `json:"workspace_id"`
 }
 
 func (st WorkspaceBinding) MarshalJSON() ([]byte, error) {

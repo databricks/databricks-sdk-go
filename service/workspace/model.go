@@ -16,10 +16,10 @@ import (
 type AclItem struct {
 	// The permission level applied to the principal.
 	// Wire name: 'permission'
-	Permission AclPermission ``
+	Permission AclPermission `json:"permission"`
 	// The principal in which the permission is applied.
 	// Wire name: 'principal'
-	Principal string ``
+	Principal string `json:"principal"`
 }
 
 func (st AclItem) MarshalJSON() ([]byte, error) {
@@ -143,11 +143,11 @@ func AclPermissionFromPb(pb *workspacepb.AclPermissionPb) (*AclPermission, error
 type AzureKeyVaultSecretScopeMetadata struct {
 	// The DNS of the KeyVault
 	// Wire name: 'dns_name'
-	DnsName string ``
+	DnsName string `json:"dns_name"`
 	// The resource id of the azure KeyVault that user wants to associate the
 	// scope with.
 	// Wire name: 'resource_id'
-	ResourceId string ``
+	ResourceId string `json:"resource_id"`
 }
 
 func (st AzureKeyVaultSecretScopeMetadata) MarshalJSON() ([]byte, error) {
@@ -203,7 +203,7 @@ type CreateCredentialsRequest struct {
 	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
 	// `awsCodeCommit`.
 	// Wire name: 'git_provider'
-	GitProvider string ``
+	GitProvider string `json:"git_provider"`
 	// The username or email provided with your Git provider account, depending
 	// on which provider you are using. For GitHub, GitHub Enterprise Server, or
 	// Azure DevOps Services, either email or username may be used. For GitLab,
@@ -212,22 +212,22 @@ type CreateCredentialsRequest struct {
 	// providers please see your provider's Personal Access Token authentication
 	// documentation to see what is supported.
 	// Wire name: 'git_username'
-	GitUsername string ``
+	GitUsername string `json:"git_username,omitempty"`
 	// if the credential is the default for the given provider
 	// Wire name: 'is_default_for_provider'
-	IsDefaultForProvider bool ``
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
 	// the name of the git credential, used for identification and ease of
 	// lookup
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of
 	// scoped access tokens. [Learn more].
 	//
 	// [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 	// Wire name: 'personal_access_token'
-	PersonalAccessToken string   ``
-	ForceSendFields     []string `tf:"-"`
+	PersonalAccessToken string   `json:"personal_access_token,omitempty"`
+	ForceSendFields     []string `json:"-" tf:"-"`
 }
 
 func (st CreateCredentialsRequest) MarshalJSON() ([]byte, error) {
@@ -292,22 +292,22 @@ func CreateCredentialsRequestFromPb(pb *workspacepb.CreateCredentialsRequestPb) 
 type CreateCredentialsResponse struct {
 	// ID of the credential object in the workspace.
 	// Wire name: 'credential_id'
-	CredentialId int64 ``
+	CredentialId int64 `json:"credential_id"`
 	// The Git provider associated with the credential.
 	// Wire name: 'git_provider'
-	GitProvider string ``
+	GitProvider string `json:"git_provider"`
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
 	// Wire name: 'git_username'
-	GitUsername string ``
+	GitUsername string `json:"git_username,omitempty"`
 	// if the credential is the default for the given provider
 	// Wire name: 'is_default_for_provider'
-	IsDefaultForProvider bool ``
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
 	// the name of the git credential, used for identification and ease of
 	// lookup
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateCredentialsResponse) MarshalJSON() ([]byte, error) {
@@ -374,21 +374,21 @@ type CreateRepoRequest struct {
 	// workspace can be chosen. If repo is created in `/Repos`, path must be in
 	// the format `/Repos/{folder}/{repo-name}`.
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path,omitempty"`
 	// Git provider. This field is case-insensitive. The available Git providers
 	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
 	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
 	// `awsCodeCommit`.
 	// Wire name: 'provider'
-	Provider string ``
+	Provider string `json:"provider"`
 	// If specified, the repo will be created with sparse checkout enabled. You
 	// cannot enable/disable sparse checkout after the repo is created.
 	// Wire name: 'sparse_checkout'
-	SparseCheckout *SparseCheckout ``
+	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
 	// URL of the Git repository to be linked.
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateRepoRequest) MarshalJSON() ([]byte, error) {
@@ -463,27 +463,27 @@ func CreateRepoRequestFromPb(pb *workspacepb.CreateRepoRequestPb) (*CreateRepoRe
 type CreateRepoResponse struct {
 	// Branch that the Git folder (repo) is checked out to.
 	// Wire name: 'branch'
-	Branch string ``
+	Branch string `json:"branch,omitempty"`
 	// SHA-1 hash representing the commit ID of the current HEAD of the Git
 	// folder (repo).
 	// Wire name: 'head_commit_id'
-	HeadCommitId string ``
+	HeadCommitId string `json:"head_commit_id,omitempty"`
 	// ID of the Git folder (repo) object in the workspace.
 	// Wire name: 'id'
-	Id int64 ``
+	Id int64 `json:"id,omitempty"`
 	// Path of the Git folder (repo) in the workspace.
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path,omitempty"`
 	// Git provider of the linked Git repository.
 	// Wire name: 'provider'
-	Provider string ``
+	Provider string `json:"provider,omitempty"`
 	// Sparse checkout settings for the Git folder (repo).
 	// Wire name: 'sparse_checkout'
-	SparseCheckout *SparseCheckout ``
+	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
 	// URL of the linked Git repository.
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateRepoResponse) MarshalJSON() ([]byte, error) {
@@ -564,19 +564,19 @@ func CreateRepoResponseFromPb(pb *workspacepb.CreateRepoResponsePb) (*CreateRepo
 type CreateScope struct {
 	// The metadata for the secret scope if the type is ``AZURE_KEYVAULT``
 	// Wire name: 'backend_azure_keyvault'
-	BackendAzureKeyvault *AzureKeyVaultSecretScopeMetadata ``
+	BackendAzureKeyvault *AzureKeyVaultSecretScopeMetadata `json:"backend_azure_keyvault,omitempty"`
 	// The principal that is initially granted ``MANAGE`` permission to the
 	// created scope.
 	// Wire name: 'initial_manage_principal'
-	InitialManagePrincipal string ``
+	InitialManagePrincipal string `json:"initial_manage_principal,omitempty"`
 	// Scope name requested by the user. Scope names are unique.
 	// Wire name: 'scope'
-	Scope string ``
+	Scope string `json:"scope"`
 	// The backend type the scope will be created with. If not specified, will
 	// default to ``DATABRICKS``
 	// Wire name: 'scope_backend_type'
-	ScopeBackendType ScopeBackendType ``
-	ForceSendFields  []string         `tf:"-"`
+	ScopeBackendType ScopeBackendType `json:"scope_backend_type,omitempty"`
+	ForceSendFields  []string         `json:"-" tf:"-"`
 }
 
 func (st CreateScope) MarshalJSON() ([]byte, error) {
@@ -663,22 +663,22 @@ func CreateScopeFromPb(pb *workspacepb.CreateScopePb) (*CreateScope, error) {
 type CredentialInfo struct {
 	// ID of the credential object in the workspace.
 	// Wire name: 'credential_id'
-	CredentialId int64 ``
+	CredentialId int64 `json:"credential_id"`
 	// The Git provider associated with the credential.
 	// Wire name: 'git_provider'
-	GitProvider string ``
+	GitProvider string `json:"git_provider,omitempty"`
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
 	// Wire name: 'git_username'
-	GitUsername string ``
+	GitUsername string `json:"git_username,omitempty"`
 	// if the credential is the default for the given provider
 	// Wire name: 'is_default_for_provider'
-	IsDefaultForProvider bool ``
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
 	// the name of the git credential, used for identification and ease of
 	// lookup
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CredentialInfo) MarshalJSON() ([]byte, error) {
@@ -743,14 +743,14 @@ func CredentialInfoFromPb(pb *workspacepb.CredentialInfoPb) (*CredentialInfo, er
 type Delete struct {
 	// The absolute path of the notebook or directory.
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path"`
 	// The flag that specifies whether to delete the object recursively. It is
 	// `false` by default. Please note this deleting directory is not atomic. If
 	// it fails in the middle, some of objects under this directory may be
 	// deleted and cannot be undone.
 	// Wire name: 'recursive'
-	Recursive       bool     ``
-	ForceSendFields []string `tf:"-"`
+	Recursive       bool     `json:"recursive,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Delete) MarshalJSON() ([]byte, error) {
@@ -809,10 +809,10 @@ func DeleteFromPb(pb *workspacepb.DeletePb) (*Delete, error) {
 type DeleteAcl struct {
 	// The principal to remove an existing ACL from.
 	// Wire name: 'principal'
-	Principal string ``
+	Principal string `json:"principal"`
 	// The name of the scope to remove permissions from.
 	// Wire name: 'scope'
-	Scope string ``
+	Scope string `json:"scope"`
 }
 
 func (st DeleteAcl) MarshalJSON() ([]byte, error) {
@@ -864,8 +864,7 @@ func DeleteAclFromPb(pb *workspacepb.DeleteAclPb) (*DeleteAcl, error) {
 
 type DeleteCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
-	// Wire name: 'credential_id'
-	CredentialId int64 `tf:"-"`
+	CredentialId int64 `json:"-" tf:"-"`
 }
 
 func (st DeleteCredentialsRequest) MarshalJSON() ([]byte, error) {
@@ -915,8 +914,7 @@ func DeleteCredentialsRequestFromPb(pb *workspacepb.DeleteCredentialsRequestPb) 
 
 type DeleteRepoRequest struct {
 	// The ID for the corresponding repo to delete.
-	// Wire name: 'repo_id'
-	RepoId int64 `tf:"-"`
+	RepoId int64 `json:"-" tf:"-"`
 }
 
 func (st DeleteRepoRequest) MarshalJSON() ([]byte, error) {
@@ -967,7 +965,7 @@ func DeleteRepoRequestFromPb(pb *workspacepb.DeleteRepoRequestPb) (*DeleteRepoRe
 type DeleteScope struct {
 	// Name of the scope to delete.
 	// Wire name: 'scope'
-	Scope string ``
+	Scope string `json:"scope"`
 }
 
 func (st DeleteScope) MarshalJSON() ([]byte, error) {
@@ -1018,10 +1016,10 @@ func DeleteScopeFromPb(pb *workspacepb.DeleteScopePb) (*DeleteScope, error) {
 type DeleteSecret struct {
 	// Name of the secret to delete.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 	// The name of the scope that contains the secret to delete.
 	// Wire name: 'scope'
-	Scope string ``
+	Scope string `json:"scope"`
 }
 
 func (st DeleteSecret) MarshalJSON() ([]byte, error) {
@@ -1155,12 +1153,10 @@ type ExportRequest struct {
 	// Markdown format. - `AUTO`: The object or directory is exported depending
 	// on the objects type. Directory exports will include notebooks and
 	// workspace files.
-	// Wire name: 'format'
-	Format ExportFormat `tf:"-"`
+	Format ExportFormat `json:"-" tf:"-"`
 	// The absolute path of the object or directory. Exporting a directory is
 	// only supported for the `DBC`, `SOURCE`, and `AUTO` format.
-	// Wire name: 'path'
-	Path string `tf:"-"`
+	Path string `json:"-" tf:"-"`
 }
 
 func (st ExportRequest) MarshalJSON() ([]byte, error) {
@@ -1228,11 +1224,11 @@ type ExportResponse struct {
 	// The base64-encoded content. If the limit (10MB) is exceeded, exception
 	// with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.
 	// Wire name: 'content'
-	Content string ``
+	Content string `json:"content,omitempty"`
 	// The file type of the exported file.
 	// Wire name: 'file_type'
-	FileType        string   ``
-	ForceSendFields []string `tf:"-"`
+	FileType        string   `json:"file_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExportResponse) MarshalJSON() ([]byte, error) {
@@ -1290,11 +1286,9 @@ func ExportResponseFromPb(pb *workspacepb.ExportResponsePb) (*ExportResponse, er
 
 type GetAclRequest struct {
 	// The principal to fetch ACL information for.
-	// Wire name: 'principal'
-	Principal string `tf:"-"`
+	Principal string `json:"-" tf:"-"`
 	// The name of the scope to fetch ACL information from.
-	// Wire name: 'scope'
-	Scope string `tf:"-"`
+	Scope string `json:"-" tf:"-"`
 }
 
 func (st GetAclRequest) MarshalJSON() ([]byte, error) {
@@ -1346,8 +1340,7 @@ func GetAclRequestFromPb(pb *workspacepb.GetAclRequestPb) (*GetAclRequest, error
 
 type GetCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
-	// Wire name: 'credential_id'
-	CredentialId int64 `tf:"-"`
+	CredentialId int64 `json:"-" tf:"-"`
 }
 
 func (st GetCredentialsRequest) MarshalJSON() ([]byte, error) {
@@ -1398,22 +1391,22 @@ func GetCredentialsRequestFromPb(pb *workspacepb.GetCredentialsRequestPb) (*GetC
 type GetCredentialsResponse struct {
 	// ID of the credential object in the workspace.
 	// Wire name: 'credential_id'
-	CredentialId int64 ``
+	CredentialId int64 `json:"credential_id"`
 	// The Git provider associated with the credential.
 	// Wire name: 'git_provider'
-	GitProvider string ``
+	GitProvider string `json:"git_provider,omitempty"`
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
 	// Wire name: 'git_username'
-	GitUsername string ``
+	GitUsername string `json:"git_username,omitempty"`
 	// if the credential is the default for the given provider
 	// Wire name: 'is_default_for_provider'
-	IsDefaultForProvider bool ``
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
 	// the name of the git credential, used for identification and ease of
 	// lookup
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetCredentialsResponse) MarshalJSON() ([]byte, error) {
@@ -1477,8 +1470,7 @@ func GetCredentialsResponseFromPb(pb *workspacepb.GetCredentialsResponsePb) (*Ge
 
 type GetRepoPermissionLevelsRequest struct {
 	// The repo for which to get or manage permissions.
-	// Wire name: 'repo_id'
-	RepoId string `tf:"-"`
+	RepoId string `json:"-" tf:"-"`
 }
 
 func (st GetRepoPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
@@ -1529,7 +1521,7 @@ func GetRepoPermissionLevelsRequestFromPb(pb *workspacepb.GetRepoPermissionLevel
 type GetRepoPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []RepoPermissionsDescription ``
+	PermissionLevels []RepoPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetRepoPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -1601,8 +1593,7 @@ func GetRepoPermissionLevelsResponseFromPb(pb *workspacepb.GetRepoPermissionLeve
 
 type GetRepoPermissionsRequest struct {
 	// The repo for which to get or manage permissions.
-	// Wire name: 'repo_id'
-	RepoId string `tf:"-"`
+	RepoId string `json:"-" tf:"-"`
 }
 
 func (st GetRepoPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -1652,8 +1643,7 @@ func GetRepoPermissionsRequestFromPb(pb *workspacepb.GetRepoPermissionsRequestPb
 
 type GetRepoRequest struct {
 	// ID of the Git folder (repo) object in the workspace.
-	// Wire name: 'repo_id'
-	RepoId int64 `tf:"-"`
+	RepoId int64 `json:"-" tf:"-"`
 }
 
 func (st GetRepoRequest) MarshalJSON() ([]byte, error) {
@@ -1704,26 +1694,26 @@ func GetRepoRequestFromPb(pb *workspacepb.GetRepoRequestPb) (*GetRepoRequest, er
 type GetRepoResponse struct {
 	// Branch that the local version of the repo is checked out to.
 	// Wire name: 'branch'
-	Branch string ``
+	Branch string `json:"branch,omitempty"`
 	// SHA-1 hash representing the commit ID of the current HEAD of the repo.
 	// Wire name: 'head_commit_id'
-	HeadCommitId string ``
+	HeadCommitId string `json:"head_commit_id,omitempty"`
 	// ID of the Git folder (repo) object in the workspace.
 	// Wire name: 'id'
-	Id int64 ``
+	Id int64 `json:"id,omitempty"`
 	// Path of the Git folder (repo) in the workspace.
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path,omitempty"`
 	// Git provider of the linked Git repository.
 	// Wire name: 'provider'
-	Provider string ``
+	Provider string `json:"provider,omitempty"`
 	// Sparse checkout settings for the Git folder (repo).
 	// Wire name: 'sparse_checkout'
-	SparseCheckout *SparseCheckout ``
+	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
 	// URL of the linked Git repository.
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetRepoResponse) MarshalJSON() ([]byte, error) {
@@ -1803,11 +1793,9 @@ func GetRepoResponseFromPb(pb *workspacepb.GetRepoResponsePb) (*GetRepoResponse,
 
 type GetSecretRequest struct {
 	// Name of the secret to fetch value information.
-	// Wire name: 'key'
-	Key string `tf:"-"`
+	Key string `json:"-" tf:"-"`
 	// The name of the scope that contains the secret.
-	// Wire name: 'scope'
-	Scope string `tf:"-"`
+	Scope string `json:"-" tf:"-"`
 }
 
 func (st GetSecretRequest) MarshalJSON() ([]byte, error) {
@@ -1860,11 +1848,11 @@ func GetSecretRequestFromPb(pb *workspacepb.GetSecretRequestPb) (*GetSecretReque
 type GetSecretResponse struct {
 	// A unique name to identify the secret.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 	// The value of the secret in its byte representation.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetSecretResponse) MarshalJSON() ([]byte, error) {
@@ -1922,8 +1910,7 @@ func GetSecretResponseFromPb(pb *workspacepb.GetSecretResponsePb) (*GetSecretRes
 
 type GetStatusRequest struct {
 	// The absolute path of the notebook or directory.
-	// Wire name: 'path'
-	Path string `tf:"-"`
+	Path string `json:"-" tf:"-"`
 }
 
 func (st GetStatusRequest) MarshalJSON() ([]byte, error) {
@@ -1973,11 +1960,9 @@ func GetStatusRequestFromPb(pb *workspacepb.GetStatusRequestPb) (*GetStatusReque
 
 type GetWorkspaceObjectPermissionLevelsRequest struct {
 	// The workspace object for which to get or manage permissions.
-	// Wire name: 'workspace_object_id'
-	WorkspaceObjectId string `tf:"-"`
+	WorkspaceObjectId string `json:"-" tf:"-"`
 	// The workspace object type for which to get or manage permissions.
-	// Wire name: 'workspace_object_type'
-	WorkspaceObjectType string `tf:"-"`
+	WorkspaceObjectType string `json:"-" tf:"-"`
 }
 
 func (st GetWorkspaceObjectPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
@@ -2030,7 +2015,7 @@ func GetWorkspaceObjectPermissionLevelsRequestFromPb(pb *workspacepb.GetWorkspac
 type GetWorkspaceObjectPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []WorkspaceObjectPermissionsDescription ``
+	PermissionLevels []WorkspaceObjectPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetWorkspaceObjectPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -2102,11 +2087,9 @@ func GetWorkspaceObjectPermissionLevelsResponseFromPb(pb *workspacepb.GetWorkspa
 
 type GetWorkspaceObjectPermissionsRequest struct {
 	// The workspace object for which to get or manage permissions.
-	// Wire name: 'workspace_object_id'
-	WorkspaceObjectId string `tf:"-"`
+	WorkspaceObjectId string `json:"-" tf:"-"`
 	// The workspace object type for which to get or manage permissions.
-	// Wire name: 'workspace_object_type'
-	WorkspaceObjectType string `tf:"-"`
+	WorkspaceObjectType string `json:"-" tf:"-"`
 }
 
 func (st GetWorkspaceObjectPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -2163,7 +2146,7 @@ type Import struct {
 	// **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown. This parameter might be absent,
 	// and instead a posted file is used.
 	// Wire name: 'content'
-	Content string ``
+	Content string `json:"content,omitempty"`
 	// This specifies the format of the file to be imported.
 	//
 	// The value is case sensitive.
@@ -2178,21 +2161,21 @@ type Import struct {
 	// directories. - `R_MARKDOWN`: The notebook is imported from R Markdown
 	// format.
 	// Wire name: 'format'
-	Format ImportFormat ``
+	Format ImportFormat `json:"format,omitempty"`
 	// The language of the object. This value is set only if the object type is
 	// `NOTEBOOK`.
 	// Wire name: 'language'
-	Language Language ``
+	Language Language `json:"language,omitempty"`
 	// The flag that specifies whether to overwrite existing object. It is
 	// `false` by default. For `DBC` format, `overwrite` is not supported since
 	// it may contain a directory.
 	// Wire name: 'overwrite'
-	Overwrite bool ``
+	Overwrite bool `json:"overwrite,omitempty"`
 	// The absolute path of the object or directory. Importing a directory is
 	// only supported for the `DBC` and `SOURCE` formats.
 	// Wire name: 'path'
-	Path            string   ``
-	ForceSendFields []string `tf:"-"`
+	Path            string   `json:"path"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Import) MarshalJSON() ([]byte, error) {
@@ -2409,8 +2392,7 @@ func LanguageFromPb(pb *workspacepb.LanguagePb) (*Language, error) {
 
 type ListAclsRequest struct {
 	// The name of the scope to fetch ACL information from.
-	// Wire name: 'scope'
-	Scope string `tf:"-"`
+	Scope string `json:"-" tf:"-"`
 }
 
 func (st ListAclsRequest) MarshalJSON() ([]byte, error) {
@@ -2461,7 +2443,7 @@ func ListAclsRequestFromPb(pb *workspacepb.ListAclsRequestPb) (*ListAclsRequest,
 type ListAclsResponse struct {
 	// The associated ACLs rule applied to principals in the given scope.
 	// Wire name: 'items'
-	Items []AclItem ``
+	Items []AclItem `json:"items,omitempty"`
 }
 
 func (st ListAclsResponse) MarshalJSON() ([]byte, error) {
@@ -2534,7 +2516,7 @@ func ListAclsResponseFromPb(pb *workspacepb.ListAclsResponsePb) (*ListAclsRespon
 type ListCredentialsResponse struct {
 	// List of credentials.
 	// Wire name: 'credentials'
-	Credentials []CredentialInfo ``
+	Credentials []CredentialInfo `json:"credentials,omitempty"`
 }
 
 func (st ListCredentialsResponse) MarshalJSON() ([]byte, error) {
@@ -2608,14 +2590,12 @@ type ListReposRequest struct {
 	// Token used to get the next page of results. If not specified, returns the
 	// first page of results as well as a next page token if there are more
 	// results.
-	// Wire name: 'next_page_token'
-	NextPageToken string `tf:"-"`
+	NextPageToken string `json:"-" tf:"-"`
 	// Filters repos that have paths starting with the given path prefix. If not
 	// provided or when provided an effectively empty prefix (`/` or
 	// `/Workspace`) Git folders (repos) from `/Workspace/Repos` will be served.
-	// Wire name: 'path_prefix'
-	PathPrefix      string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PathPrefix      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListReposRequest) MarshalJSON() ([]byte, error) {
@@ -2675,11 +2655,11 @@ type ListReposResponse struct {
 	// Token that can be specified as a query parameter to the `GET /repos`
 	// endpoint to retrieve the next page of results.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// List of Git folders (repos).
 	// Wire name: 'repos'
-	Repos           []RepoInfo ``
-	ForceSendFields []string   `tf:"-"`
+	Repos           []RepoInfo `json:"repos,omitempty"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
 func (st ListReposResponse) MarshalJSON() ([]byte, error) {
@@ -2760,7 +2740,7 @@ func ListReposResponseFromPb(pb *workspacepb.ListReposResponsePb) (*ListReposRes
 type ListResponse struct {
 	// List of objects.
 	// Wire name: 'objects'
-	Objects []ObjectInfo ``
+	Objects []ObjectInfo `json:"objects,omitempty"`
 }
 
 func (st ListResponse) MarshalJSON() ([]byte, error) {
@@ -2833,7 +2813,7 @@ func ListResponseFromPb(pb *workspacepb.ListResponsePb) (*ListResponse, error) {
 type ListScopesResponse struct {
 	// The available secret scopes.
 	// Wire name: 'scopes'
-	Scopes []SecretScope ``
+	Scopes []SecretScope `json:"scopes,omitempty"`
 }
 
 func (st ListScopesResponse) MarshalJSON() ([]byte, error) {
@@ -2905,8 +2885,7 @@ func ListScopesResponseFromPb(pb *workspacepb.ListScopesResponsePb) (*ListScopes
 
 type ListSecretsRequest struct {
 	// The name of the scope to list secrets within.
-	// Wire name: 'scope'
-	Scope string `tf:"-"`
+	Scope string `json:"-" tf:"-"`
 }
 
 func (st ListSecretsRequest) MarshalJSON() ([]byte, error) {
@@ -2957,7 +2936,7 @@ func ListSecretsRequestFromPb(pb *workspacepb.ListSecretsRequestPb) (*ListSecret
 type ListSecretsResponse struct {
 	// Metadata information of all secrets contained within the given scope.
 	// Wire name: 'secrets'
-	Secrets []SecretMetadata ``
+	Secrets []SecretMetadata `json:"secrets,omitempty"`
 }
 
 func (st ListSecretsResponse) MarshalJSON() ([]byte, error) {
@@ -3029,12 +3008,10 @@ func ListSecretsResponseFromPb(pb *workspacepb.ListSecretsResponsePb) (*ListSecr
 
 type ListWorkspaceRequest struct {
 	// UTC timestamp in milliseconds
-	// Wire name: 'notebooks_modified_after'
-	NotebooksModifiedAfter int64 `tf:"-"`
+	NotebooksModifiedAfter int64 `json:"-" tf:"-"`
 	// The absolute path of the notebook or directory.
-	// Wire name: 'path'
-	Path            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Path            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListWorkspaceRequest) MarshalJSON() ([]byte, error) {
@@ -3095,7 +3072,7 @@ type Mkdirs struct {
 	// exist, it will also create them. If the directory already exists, this
 	// command will do nothing and succeed.
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path"`
 }
 
 func (st Mkdirs) MarshalJSON() ([]byte, error) {
@@ -3148,35 +3125,35 @@ func MkdirsFromPb(pb *workspacepb.MkdirsPb) (*Mkdirs, error) {
 type ObjectInfo struct {
 	// Only applicable to files. The creation UTC timestamp.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// The language of the object. This value is set only if the object type is
 	// ``NOTEBOOK``.
 	// Wire name: 'language'
-	Language Language ``
+	Language Language `json:"language,omitempty"`
 	// Only applicable to files, the last modified UTC timestamp.
 	// Wire name: 'modified_at'
-	ModifiedAt int64 ``
+	ModifiedAt int64 `json:"modified_at,omitempty"`
 	// Unique identifier for the object.
 	// Wire name: 'object_id'
-	ObjectId int64 ``
+	ObjectId int64 `json:"object_id,omitempty"`
 	// The type of the object in workspace.
 	//
 	// - `NOTEBOOK`: document that contains runnable code, visualizations, and
 	// explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`:
 	// file - `REPO`: repository - `DASHBOARD`: Lakeview dashboard
 	// Wire name: 'object_type'
-	ObjectType ObjectType ``
+	ObjectType ObjectType `json:"object_type,omitempty"`
 	// The absolute path of the object.
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path,omitempty"`
 	// A unique identifier for the object that is consistent across all
 	// Databricks APIs.
 	// Wire name: 'resource_id'
-	ResourceId string ``
+	ResourceId string `json:"resource_id,omitempty"`
 	// Only applicable to files. The file size in bytes can be returned.
 	// Wire name: 'size'
-	Size            int64    ``
-	ForceSendFields []string `tf:"-"`
+	Size            int64    `json:"size,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ObjectInfo) MarshalJSON() ([]byte, error) {
@@ -3337,13 +3314,13 @@ func ObjectTypeFromPb(pb *workspacepb.ObjectTypePb) (*ObjectType, error) {
 type PutAcl struct {
 	// The permission level applied to the principal.
 	// Wire name: 'permission'
-	Permission AclPermission ``
+	Permission AclPermission `json:"permission"`
 	// The principal in which the permission is applied.
 	// Wire name: 'principal'
-	Principal string ``
+	Principal string `json:"principal"`
 	// The name of the scope to apply permissions to.
 	// Wire name: 'scope'
-	Scope string ``
+	Scope string `json:"scope"`
 }
 
 func (st PutAcl) MarshalJSON() ([]byte, error) {
@@ -3410,17 +3387,17 @@ func PutAclFromPb(pb *workspacepb.PutAclPb) (*PutAcl, error) {
 type PutSecret struct {
 	// If specified, value will be stored as bytes.
 	// Wire name: 'bytes_value'
-	BytesValue string ``
+	BytesValue string `json:"bytes_value,omitempty"`
 	// A unique name to identify the secret.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 	// The name of the scope to which the secret will be associated with.
 	// Wire name: 'scope'
-	Scope string ``
+	Scope string `json:"scope"`
 	// If specified, note that the value will be stored in UTF-8 (MB4) form.
 	// Wire name: 'string_value'
-	StringValue     string   ``
-	ForceSendFields []string `tf:"-"`
+	StringValue     string   `json:"string_value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PutSecret) MarshalJSON() ([]byte, error) {
@@ -3483,17 +3460,17 @@ func PutSecretFromPb(pb *workspacepb.PutSecretPb) (*PutSecret, error) {
 type RepoAccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel RepoPermissionLevel ``
+	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RepoAccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -3568,20 +3545,20 @@ func RepoAccessControlRequestFromPb(pb *workspacepb.RepoAccessControlRequestPb) 
 type RepoAccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []RepoPermission ``
+	AllPermissions []RepoPermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RepoAccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -3669,26 +3646,26 @@ func RepoAccessControlResponseFromPb(pb *workspacepb.RepoAccessControlResponsePb
 type RepoInfo struct {
 	// Name of the current git branch of the git folder (repo).
 	// Wire name: 'branch'
-	Branch string ``
+	Branch string `json:"branch,omitempty"`
 	// Current git commit id of the git folder (repo).
 	// Wire name: 'head_commit_id'
-	HeadCommitId string ``
+	HeadCommitId string `json:"head_commit_id,omitempty"`
 	// Id of the git folder (repo) in the Workspace.
 	// Wire name: 'id'
-	Id int64 ``
+	Id int64 `json:"id,omitempty"`
 	// Root path of the git folder (repo) in the Workspace.
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path,omitempty"`
 	// Git provider of the remote git repository, e.g. `gitHub`.
 	// Wire name: 'provider'
-	Provider string ``
+	Provider string `json:"provider,omitempty"`
 	// Sparse checkout config for the git folder (repo).
 	// Wire name: 'sparse_checkout'
-	SparseCheckout *SparseCheckout ``
+	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
 	// URL of the remote git repository.
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RepoInfo) MarshalJSON() ([]byte, error) {
@@ -3769,14 +3746,14 @@ func RepoInfoFromPb(pb *workspacepb.RepoInfoPb) (*RepoInfo, error) {
 type RepoPermission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel RepoPermissionLevel ``
-	ForceSendFields []string            `tf:"-"`
+	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string            `json:"-" tf:"-"`
 }
 
 func (st RepoPermission) MarshalJSON() ([]byte, error) {
@@ -3909,14 +3886,14 @@ func RepoPermissionLevelFromPb(pb *workspacepb.RepoPermissionLevelPb) (*RepoPerm
 type RepoPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []RepoAccessControlResponse ``
+	AccessControlList []RepoAccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RepoPermissions) MarshalJSON() ([]byte, error) {
@@ -3999,11 +3976,11 @@ func RepoPermissionsFromPb(pb *workspacepb.RepoPermissionsPb) (*RepoPermissions,
 type RepoPermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel RepoPermissionLevel ``
-	ForceSendFields []string            `tf:"-"`
+	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string            `json:"-" tf:"-"`
 }
 
 func (st RepoPermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -4074,10 +4051,9 @@ func RepoPermissionsDescriptionFromPb(pb *workspacepb.RepoPermissionsDescription
 type RepoPermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []RepoAccessControlRequest ``
+	AccessControlList []RepoAccessControlRequest `json:"access_control_list,omitempty"`
 	// The repo for which to get or manage permissions.
-	// Wire name: 'repo_id'
-	RepoId string `tf:"-"`
+	RepoId string `json:"-" tf:"-"`
 }
 
 func (st RepoPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -4209,11 +4185,11 @@ func ScopeBackendTypeFromPb(pb *workspacepb.ScopeBackendTypePb) (*ScopeBackendTy
 type SecretMetadata struct {
 	// A unique name to identify the secret.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 	// The last updated timestamp (in milliseconds) for the secret.
 	// Wire name: 'last_updated_timestamp'
-	LastUpdatedTimestamp int64    ``
-	ForceSendFields      []string `tf:"-"`
+	LastUpdatedTimestamp int64    `json:"last_updated_timestamp,omitempty"`
+	ForceSendFields      []string `json:"-" tf:"-"`
 }
 
 func (st SecretMetadata) MarshalJSON() ([]byte, error) {
@@ -4275,14 +4251,14 @@ func SecretMetadataFromPb(pb *workspacepb.SecretMetadataPb) (*SecretMetadata, er
 type SecretScope struct {
 	// The type of secret scope backend.
 	// Wire name: 'backend_type'
-	BackendType ScopeBackendType ``
+	BackendType ScopeBackendType `json:"backend_type,omitempty"`
 	// The metadata for the secret scope if the type is ``AZURE_KEYVAULT``
 	// Wire name: 'keyvault_metadata'
-	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata ``
+	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata `json:"keyvault_metadata,omitempty"`
 	// A unique name to identify the secret scope.
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SecretScope) MarshalJSON() ([]byte, error) {
@@ -4371,7 +4347,7 @@ type SparseCheckout struct {
 	//
 	// [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling
 	// Wire name: 'patterns'
-	Patterns []string ``
+	Patterns []string `json:"patterns,omitempty"`
 }
 
 func (st SparseCheckout) MarshalJSON() ([]byte, error) {
@@ -4426,7 +4402,7 @@ type SparseCheckoutUpdate struct {
 	//
 	// [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling
 	// Wire name: 'patterns'
-	Patterns []string ``
+	Patterns []string `json:"patterns,omitempty"`
 }
 
 func (st SparseCheckoutUpdate) MarshalJSON() ([]byte, error) {
@@ -4476,14 +4452,13 @@ func SparseCheckoutUpdateFromPb(pb *workspacepb.SparseCheckoutUpdatePb) (*Sparse
 
 type UpdateCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
-	// Wire name: 'credential_id'
-	CredentialId int64 `tf:"-"`
+	CredentialId int64 `json:"-" tf:"-"`
 	// Git provider. This field is case-insensitive. The available Git providers
 	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
 	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
 	// `awsCodeCommit`.
 	// Wire name: 'git_provider'
-	GitProvider string ``
+	GitProvider string `json:"git_provider"`
 	// The username or email provided with your Git provider account, depending
 	// on which provider you are using. For GitHub, GitHub Enterprise Server, or
 	// Azure DevOps Services, either email or username may be used. For GitLab,
@@ -4492,22 +4467,22 @@ type UpdateCredentialsRequest struct {
 	// providers please see your provider's Personal Access Token authentication
 	// documentation to see what is supported.
 	// Wire name: 'git_username'
-	GitUsername string ``
+	GitUsername string `json:"git_username,omitempty"`
 	// if the credential is the default for the given provider
 	// Wire name: 'is_default_for_provider'
-	IsDefaultForProvider bool ``
+	IsDefaultForProvider bool `json:"is_default_for_provider,omitempty"`
 	// the name of the git credential, used for identification and ease of
 	// lookup
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of
 	// scoped access tokens. [Learn more].
 	//
 	// [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 	// Wire name: 'personal_access_token'
-	PersonalAccessToken string   ``
-	ForceSendFields     []string `tf:"-"`
+	PersonalAccessToken string   `json:"personal_access_token,omitempty"`
+	ForceSendFields     []string `json:"-" tf:"-"`
 }
 
 func (st UpdateCredentialsRequest) MarshalJSON() ([]byte, error) {
@@ -4574,21 +4549,20 @@ func UpdateCredentialsRequestFromPb(pb *workspacepb.UpdateCredentialsRequestPb) 
 type UpdateRepoRequest struct {
 	// Branch that the local version of the repo is checked out to.
 	// Wire name: 'branch'
-	Branch string ``
+	Branch string `json:"branch,omitempty"`
 	// ID of the Git folder (repo) object in the workspace.
-	// Wire name: 'repo_id'
-	RepoId int64 `tf:"-"`
+	RepoId int64 `json:"-" tf:"-"`
 	// If specified, update the sparse checkout settings. The update will fail
 	// if sparse checkout is not enabled for the repo.
 	// Wire name: 'sparse_checkout'
-	SparseCheckout *SparseCheckoutUpdate ``
+	SparseCheckout *SparseCheckoutUpdate `json:"sparse_checkout,omitempty"`
 	// Tag that the local version of the repo is checked out to. Updating the
 	// repo to a tag puts the repo in a detached HEAD state. Before committing
 	// new changes, you must update the repo to a branch instead of the detached
 	// HEAD.
 	// Wire name: 'tag'
-	Tag             string   ``
-	ForceSendFields []string `tf:"-"`
+	Tag             string   `json:"tag,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateRepoRequest) MarshalJSON() ([]byte, error) {
@@ -4663,17 +4637,17 @@ func UpdateRepoRequestFromPb(pb *workspacepb.UpdateRepoRequestPb) (*UpdateRepoRe
 type WorkspaceObjectAccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel WorkspaceObjectPermissionLevel ``
+	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st WorkspaceObjectAccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -4748,20 +4722,20 @@ func WorkspaceObjectAccessControlRequestFromPb(pb *workspacepb.WorkspaceObjectAc
 type WorkspaceObjectAccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []WorkspaceObjectPermission ``
+	AllPermissions []WorkspaceObjectPermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st WorkspaceObjectAccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -4848,14 +4822,14 @@ func WorkspaceObjectAccessControlResponseFromPb(pb *workspacepb.WorkspaceObjectA
 type WorkspaceObjectPermission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel WorkspaceObjectPermissionLevel ``
-	ForceSendFields []string                       `tf:"-"`
+	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                       `json:"-" tf:"-"`
 }
 
 func (st WorkspaceObjectPermission) MarshalJSON() ([]byte, error) {
@@ -4988,14 +4962,14 @@ func WorkspaceObjectPermissionLevelFromPb(pb *workspacepb.WorkspaceObjectPermiss
 type WorkspaceObjectPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []WorkspaceObjectAccessControlResponse ``
+	AccessControlList []WorkspaceObjectAccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st WorkspaceObjectPermissions) MarshalJSON() ([]byte, error) {
@@ -5078,11 +5052,11 @@ func WorkspaceObjectPermissionsFromPb(pb *workspacepb.WorkspaceObjectPermissions
 type WorkspaceObjectPermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel WorkspaceObjectPermissionLevel ``
-	ForceSendFields []string                       `tf:"-"`
+	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                       `json:"-" tf:"-"`
 }
 
 func (st WorkspaceObjectPermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -5153,13 +5127,11 @@ func WorkspaceObjectPermissionsDescriptionFromPb(pb *workspacepb.WorkspaceObject
 type WorkspaceObjectPermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []WorkspaceObjectAccessControlRequest ``
+	AccessControlList []WorkspaceObjectAccessControlRequest `json:"access_control_list,omitempty"`
 	// The workspace object for which to get or manage permissions.
-	// Wire name: 'workspace_object_id'
-	WorkspaceObjectId string `tf:"-"`
+	WorkspaceObjectId string `json:"-" tf:"-"`
 	// The workspace object type for which to get or manage permissions.
-	// Wire name: 'workspace_object_type'
-	WorkspaceObjectType string `tf:"-"`
+	WorkspaceObjectType string `json:"-" tf:"-"`
 }
 
 func (st WorkspaceObjectPermissionsRequest) MarshalJSON() ([]byte, error) {

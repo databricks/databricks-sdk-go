@@ -16,10 +16,10 @@ type AddBlock struct {
 	// The base64-encoded data to append to the stream. This has a limit of 1
 	// MB.
 	// Wire name: 'data'
-	Data string ``
+	Data string `json:"data"`
 	// The handle on an open stream.
 	// Wire name: 'handle'
-	Handle int64 ``
+	Handle int64 `json:"handle"`
 }
 
 func (st AddBlock) MarshalJSON() ([]byte, error) {
@@ -72,7 +72,7 @@ func AddBlockFromPb(pb *filespb.AddBlockPb) (*AddBlock, error) {
 type Close struct {
 	// The handle on an open stream.
 	// Wire name: 'handle'
-	Handle int64 ``
+	Handle int64 `json:"handle"`
 }
 
 func (st Close) MarshalJSON() ([]byte, error) {
@@ -123,11 +123,11 @@ func CloseFromPb(pb *filespb.ClosePb) (*Close, error) {
 type Create struct {
 	// The flag that specifies whether to overwrite existing file/files.
 	// Wire name: 'overwrite'
-	Overwrite bool ``
+	Overwrite bool `json:"overwrite,omitempty"`
 	// The path of the new file. The path should be the absolute DBFS path.
 	// Wire name: 'path'
-	Path            string   ``
-	ForceSendFields []string `tf:"-"`
+	Path            string   `json:"path"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Create) MarshalJSON() ([]byte, error) {
@@ -185,8 +185,7 @@ func CreateFromPb(pb *filespb.CreatePb) (*Create, error) {
 
 type CreateDirectoryRequest struct {
 	// The absolute path of a directory.
-	// Wire name: 'directory_path'
-	DirectoryPath string `tf:"-"`
+	DirectoryPath string `json:"-" tf:"-"`
 }
 
 func (st CreateDirectoryRequest) MarshalJSON() ([]byte, error) {
@@ -238,8 +237,8 @@ type CreateResponse struct {
 	// Handle which should subsequently be passed into the AddBlock and Close
 	// calls when writing to a file through a stream.
 	// Wire name: 'handle'
-	Handle          int64    ``
-	ForceSendFields []string `tf:"-"`
+	Handle          int64    `json:"handle,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateResponse) MarshalJSON() ([]byte, error) {
@@ -297,12 +296,12 @@ type Delete struct {
 	// The path of the file or directory to delete. The path should be the
 	// absolute DBFS path.
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path"`
 	// Whether or not to recursively delete the directory's contents. Deleting
 	// empty directories can be done without providing the recursive flag.
 	// Wire name: 'recursive'
-	Recursive       bool     ``
-	ForceSendFields []string `tf:"-"`
+	Recursive       bool     `json:"recursive,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Delete) MarshalJSON() ([]byte, error) {
@@ -360,8 +359,7 @@ func DeleteFromPb(pb *filespb.DeletePb) (*Delete, error) {
 
 type DeleteDirectoryRequest struct {
 	// The absolute path of a directory.
-	// Wire name: 'directory_path'
-	DirectoryPath string `tf:"-"`
+	DirectoryPath string `json:"-" tf:"-"`
 }
 
 func (st DeleteDirectoryRequest) MarshalJSON() ([]byte, error) {
@@ -411,8 +409,7 @@ func DeleteDirectoryRequestFromPb(pb *filespb.DeleteDirectoryRequestPb) (*Delete
 
 type DeleteFileRequest struct {
 	// The absolute path of the file.
-	// Wire name: 'file_path'
-	FilePath string `tf:"-"`
+	FilePath string `json:"-" tf:"-"`
 }
 
 func (st DeleteFileRequest) MarshalJSON() ([]byte, error) {
@@ -463,21 +460,21 @@ func DeleteFileRequestFromPb(pb *filespb.DeleteFileRequestPb) (*DeleteFileReques
 type DirectoryEntry struct {
 	// The length of the file in bytes. This field is omitted for directories.
 	// Wire name: 'file_size'
-	FileSize int64 ``
+	FileSize int64 `json:"file_size,omitempty"`
 	// True if the path is a directory.
 	// Wire name: 'is_directory'
-	IsDirectory bool ``
+	IsDirectory bool `json:"is_directory,omitempty"`
 	// Last modification time of given file in milliseconds since unix epoch.
 	// Wire name: 'last_modified'
-	LastModified int64 ``
+	LastModified int64 `json:"last_modified,omitempty"`
 	// The name of the file or directory. This is the last component of the
 	// path.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The absolute path of the file or directory.
 	// Wire name: 'path'
-	Path            string   ``
-	ForceSendFields []string `tf:"-"`
+	Path            string   `json:"path,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DirectoryEntry) MarshalJSON() ([]byte, error) {
@@ -541,8 +538,7 @@ func DirectoryEntryFromPb(pb *filespb.DirectoryEntryPb) (*DirectoryEntry, error)
 
 type DownloadRequest struct {
 	// The absolute path of the file.
-	// Wire name: 'file_path'
-	FilePath string `tf:"-"`
+	FilePath string `json:"-" tf:"-"`
 }
 
 func (st DownloadRequest) MarshalJSON() ([]byte, error) {
@@ -592,18 +588,14 @@ func DownloadRequestFromPb(pb *filespb.DownloadRequestPb) (*DownloadRequest, err
 
 type DownloadResponse struct {
 	// The length of the HTTP response body in bytes.
-	// Wire name: 'content-length'
-	ContentLength int64 `tf:"-"`
+	ContentLength int64 `json:"-" tf:"-"`
 
-	// Wire name: 'content-type'
-	ContentType string `tf:"-"`
+	ContentType string `json:"-" tf:"-"`
 
-	// Wire name: 'contents'
-	Contents io.ReadCloser `tf:"-"`
+	Contents io.ReadCloser `json:"-" tf:"-"`
 	// The last modified time of the file in HTTP-date (RFC 7231) format.
-	// Wire name: 'last-modified'
-	LastModified    string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	LastModified    string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DownloadResponse) MarshalJSON() ([]byte, error) {
@@ -666,17 +658,17 @@ func DownloadResponseFromPb(pb *filespb.DownloadResponsePb) (*DownloadResponse, 
 type FileInfo struct {
 	// The length of the file in bytes. This field is omitted for directories.
 	// Wire name: 'file_size'
-	FileSize int64 ``
+	FileSize int64 `json:"file_size,omitempty"`
 	// True if the path is a directory.
 	// Wire name: 'is_dir'
-	IsDir bool ``
+	IsDir bool `json:"is_dir,omitempty"`
 	// Last modification time of given file in milliseconds since epoch.
 	// Wire name: 'modification_time'
-	ModificationTime int64 ``
+	ModificationTime int64 `json:"modification_time,omitempty"`
 	// The absolute path of the file or directory.
 	// Wire name: 'path'
-	Path            string   ``
-	ForceSendFields []string `tf:"-"`
+	Path            string   `json:"path,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FileInfo) MarshalJSON() ([]byte, error) {
@@ -738,8 +730,7 @@ func FileInfoFromPb(pb *filespb.FileInfoPb) (*FileInfo, error) {
 
 type GetDirectoryMetadataRequest struct {
 	// The absolute path of a directory.
-	// Wire name: 'directory_path'
-	DirectoryPath string `tf:"-"`
+	DirectoryPath string `json:"-" tf:"-"`
 }
 
 func (st GetDirectoryMetadataRequest) MarshalJSON() ([]byte, error) {
@@ -789,8 +780,7 @@ func GetDirectoryMetadataRequestFromPb(pb *filespb.GetDirectoryMetadataRequestPb
 
 type GetMetadataRequest struct {
 	// The absolute path of the file.
-	// Wire name: 'file_path'
-	FilePath string `tf:"-"`
+	FilePath string `json:"-" tf:"-"`
 }
 
 func (st GetMetadataRequest) MarshalJSON() ([]byte, error) {
@@ -840,15 +830,12 @@ func GetMetadataRequestFromPb(pb *filespb.GetMetadataRequestPb) (*GetMetadataReq
 
 type GetMetadataResponse struct {
 	// The length of the HTTP response body in bytes.
-	// Wire name: 'content-length'
-	ContentLength int64 `tf:"-"`
+	ContentLength int64 `json:"-" tf:"-"`
 
-	// Wire name: 'content-type'
-	ContentType string `tf:"-"`
+	ContentType string `json:"-" tf:"-"`
 	// The last modified time of the file in HTTP-date (RFC 7231) format.
-	// Wire name: 'last-modified'
-	LastModified    string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	LastModified    string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetMetadataResponse) MarshalJSON() ([]byte, error) {
@@ -909,8 +896,7 @@ func GetMetadataResponseFromPb(pb *filespb.GetMetadataResponsePb) (*GetMetadataR
 type GetStatusRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
-	// Wire name: 'path'
-	Path string `tf:"-"`
+	Path string `json:"-" tf:"-"`
 }
 
 func (st GetStatusRequest) MarshalJSON() ([]byte, error) {
@@ -961,8 +947,7 @@ func GetStatusRequestFromPb(pb *filespb.GetStatusRequestPb) (*GetStatusRequest, 
 type ListDbfsRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
-	// Wire name: 'path'
-	Path string `tf:"-"`
+	Path string `json:"-" tf:"-"`
 }
 
 func (st ListDbfsRequest) MarshalJSON() ([]byte, error) {
@@ -1012,8 +997,7 @@ func ListDbfsRequestFromPb(pb *filespb.ListDbfsRequestPb) (*ListDbfsRequest, err
 
 type ListDirectoryContentsRequest struct {
 	// The absolute path of a directory.
-	// Wire name: 'directory_path'
-	DirectoryPath string `tf:"-"`
+	DirectoryPath string `json:"-" tf:"-"`
 	// The maximum number of directory entries to return. The response may
 	// contain fewer entries. If the response contains a `next_page_token`,
 	// there may be more entries, even if fewer than `page_size` entries are in
@@ -1024,8 +1008,7 @@ type ListDirectoryContentsRequest struct {
 	//
 	// If unspecified, at most 1000 directory entries will be returned. The
 	// maximum value is 1000. Values above 1000 will be coerced to 1000.
-	// Wire name: 'page_size'
-	PageSize int64 `tf:"-"`
+	PageSize int64 `json:"-" tf:"-"`
 	// An opaque page token which was the `next_page_token` in the response of
 	// the previous request to list the contents of this directory. Provide this
 	// token to retrieve the next page of directory entries. When providing a
@@ -1034,9 +1017,8 @@ type ListDirectoryContentsRequest struct {
 	// necessary to continue requesting pages of entries until the response
 	// contains no `next_page_token`. Note that the number of entries returned
 	// must not be used to determine when the listing is complete.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListDirectoryContentsRequest) MarshalJSON() ([]byte, error) {
@@ -1097,11 +1079,11 @@ func ListDirectoryContentsRequestFromPb(pb *filespb.ListDirectoryContentsRequest
 type ListDirectoryResponse struct {
 	// Array of DirectoryEntry.
 	// Wire name: 'contents'
-	Contents []DirectoryEntry ``
+	Contents []DirectoryEntry `json:"contents,omitempty"`
 	// A token, which can be sent as `page_token` to retrieve the next page.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListDirectoryResponse) MarshalJSON() ([]byte, error) {
@@ -1183,7 +1165,7 @@ type ListStatusResponse struct {
 	// A list of FileInfo's that describe contents of directory or file. See
 	// example above.
 	// Wire name: 'files'
-	Files []FileInfo ``
+	Files []FileInfo `json:"files,omitempty"`
 }
 
 func (st ListStatusResponse) MarshalJSON() ([]byte, error) {
@@ -1256,7 +1238,7 @@ func ListStatusResponseFromPb(pb *filespb.ListStatusResponsePb) (*ListStatusResp
 type MkDirs struct {
 	// The path of the new directory. The path should be the absolute DBFS path.
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path"`
 }
 
 func (st MkDirs) MarshalJSON() ([]byte, error) {
@@ -1308,11 +1290,11 @@ type Move struct {
 	// The destination path of the file or directory. The path should be the
 	// absolute DBFS path.
 	// Wire name: 'destination_path'
-	DestinationPath string ``
+	DestinationPath string `json:"destination_path"`
 	// The source path of the file or directory. The path should be the absolute
 	// DBFS path.
 	// Wire name: 'source_path'
-	SourcePath string ``
+	SourcePath string `json:"source_path"`
 }
 
 func (st Move) MarshalJSON() ([]byte, error) {
@@ -1365,14 +1347,14 @@ func MoveFromPb(pb *filespb.MovePb) (*Move, error) {
 type Put struct {
 	// This parameter might be absent, and instead a posted file will be used.
 	// Wire name: 'contents'
-	Contents string ``
+	Contents string `json:"contents,omitempty"`
 	// The flag that specifies whether to overwrite existing file/files.
 	// Wire name: 'overwrite'
-	Overwrite bool ``
+	Overwrite bool `json:"overwrite,omitempty"`
 	// The path of the new file. The path should be the absolute DBFS path.
 	// Wire name: 'path'
-	Path            string   ``
-	ForceSendFields []string `tf:"-"`
+	Path            string   `json:"path"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Put) MarshalJSON() ([]byte, error) {
@@ -1433,15 +1415,12 @@ func PutFromPb(pb *filespb.PutPb) (*Put, error) {
 type ReadDbfsRequest struct {
 	// The number of bytes to read starting from the offset. This has a limit of
 	// 1 MB, and a default value of 0.5 MB.
-	// Wire name: 'length'
-	Length int64 `tf:"-"`
+	Length int64 `json:"-" tf:"-"`
 	// The offset to read from in bytes.
-	// Wire name: 'offset'
-	Offset int64 `tf:"-"`
+	Offset int64 `json:"-" tf:"-"`
 	// The path of the file to read. The path should be the absolute DBFS path.
-	// Wire name: 'path'
-	Path            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Path            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ReadDbfsRequest) MarshalJSON() ([]byte, error) {
@@ -1504,11 +1483,11 @@ type ReadResponse struct {
 	// file). This refers to number of bytes read in unencoded version (response
 	// data is base64-encoded).
 	// Wire name: 'bytes_read'
-	BytesRead int64 ``
+	BytesRead int64 `json:"bytes_read,omitempty"`
 	// The base64-encoded contents of the file read.
 	// Wire name: 'data'
-	Data            string   ``
-	ForceSendFields []string `tf:"-"`
+	Data            string   `json:"data,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ReadResponse) MarshalJSON() ([]byte, error) {
@@ -1565,17 +1544,13 @@ func ReadResponseFromPb(pb *filespb.ReadResponsePb) (*ReadResponse, error) {
 }
 
 type UploadRequest struct {
-
-	// Wire name: 'contents'
-	Contents io.ReadCloser `tf:"-"`
+	Contents io.ReadCloser `json:"-" tf:"-"`
 	// The absolute path of the file.
-	// Wire name: 'file_path'
-	FilePath string `tf:"-"`
+	FilePath string `json:"-" tf:"-"`
 	// If true or unspecified, an existing file will be overwritten. If false,
 	// an error will be returned if the path points to an existing file.
-	// Wire name: 'overwrite'
-	Overwrite       bool     `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Overwrite       bool     `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UploadRequest) MarshalJSON() ([]byte, error) {

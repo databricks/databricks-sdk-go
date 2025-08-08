@@ -14,11 +14,11 @@ import (
 type ComplexQueryParam struct {
 
 	// Wire name: 'nested_optional_query_param'
-	NestedOptionalQueryParam string ``
+	NestedOptionalQueryParam string `json:"nested_optional_query_param,omitempty"`
 
 	// Wire name: 'nested_repeated_query_param'
-	NestedRepeatedQueryParam []string ``
-	ForceSendFields          []string `tf:"-"`
+	NestedRepeatedQueryParam []string `json:"nested_repeated_query_param,omitempty"`
+	ForceSendFields          []string `json:"-" tf:"-"`
 }
 
 func (st ComplexQueryParam) MarshalJSON() ([]byte, error) {
@@ -78,17 +78,14 @@ func ComplexQueryParamFromPb(pb *httpcallv2pb.ComplexQueryParamPb) (*ComplexQuer
 type CreateResourceRequest struct {
 	// Body element
 	// Wire name: 'body_field'
-	BodyField string ``
+	BodyField string `json:"body_field,omitempty"`
 
-	// Wire name: 'path_param_bool'
-	PathParamBool bool `tf:"-"`
+	PathParamBool bool `json:"-" tf:"-"`
 
-	// Wire name: 'path_param_int'
-	PathParamInt int `tf:"-"`
+	PathParamInt int `json:"-" tf:"-"`
 
-	// Wire name: 'path_param_string'
-	PathParamString string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PathParamString string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateResourceRequest) MarshalJSON() ([]byte, error) {
@@ -155,36 +152,26 @@ type GetResourceRequest struct {
 	// Specification of elements in sequence or map fields is not allowed, as
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
-	// Wire name: 'field_mask'
-	FieldMask []string `tf:"-"`
+	FieldMask []string `json:"-" tf:"-"`
 
-	// Wire name: 'optional_complex_query_param'
-	OptionalComplexQueryParam *ComplexQueryParam `tf:"-"`
+	OptionalComplexQueryParam *ComplexQueryParam `json:"-" tf:"-"`
 
-	// Wire name: 'path_param_bool'
-	PathParamBool bool `tf:"-"`
+	PathParamBool bool `json:"-" tf:"-"`
 
-	// Wire name: 'path_param_int'
-	PathParamInt int `tf:"-"`
+	PathParamInt int `json:"-" tf:"-"`
 
-	// Wire name: 'path_param_string'
-	PathParamString string `tf:"-"`
+	PathParamString string `json:"-" tf:"-"`
 
-	// Wire name: 'query_param_bool'
-	QueryParamBool bool `tf:"-"`
+	QueryParamBool bool `json:"-" tf:"-"`
 
-	// Wire name: 'query_param_int'
-	QueryParamInt int `tf:"-"`
+	QueryParamInt int `json:"-" tf:"-"`
 
-	// Wire name: 'query_param_string'
-	QueryParamString string `tf:"-"`
+	QueryParamString string `json:"-" tf:"-"`
 
-	// Wire name: 'repeated_complex_query_param'
-	RepeatedComplexQueryParam []ComplexQueryParam `tf:"-"`
+	RepeatedComplexQueryParam []ComplexQueryParam `json:"-" tf:"-"`
 
-	// Wire name: 'repeated_query_param'
-	RepeatedQueryParam []string `tf:"-"`
-	ForceSendFields    []string `tf:"-"`
+	RepeatedQueryParam []string `json:"-" tf:"-"`
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
 func (st GetResourceRequest) MarshalJSON() ([]byte, error) {
@@ -305,17 +292,17 @@ func GetResourceRequestFromPb(pb *httpcallv2pb.GetResourceRequestPb) (*GetResour
 type Resource struct {
 
 	// Wire name: 'body_field'
-	BodyField string ``
+	BodyField string `json:"body_field,omitempty"`
 
 	// Wire name: 'nested_path_param_bool'
-	NestedPathParamBool bool ``
+	NestedPathParamBool bool `json:"nested_path_param_bool,omitempty"`
 
 	// Wire name: 'nested_path_param_int'
-	NestedPathParamInt int ``
+	NestedPathParamInt int `json:"nested_path_param_int,omitempty"`
 
 	// Wire name: 'nested_path_param_string'
-	NestedPathParamString string   ``
-	ForceSendFields       []string `tf:"-"`
+	NestedPathParamString string   `json:"nested_path_param_string,omitempty"`
+	ForceSendFields       []string `json:"-" tf:"-"`
 }
 
 func (st Resource) MarshalJSON() ([]byte, error) {
@@ -382,39 +369,29 @@ type UpdateResourceRequest struct {
 	// Specification of elements in sequence or map fields is not allowed, as
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
-	// Wire name: 'field_mask'
-	FieldMask []string `tf:"-"`
+	FieldMask []string `json:"-" tf:"-"`
 
-	// Wire name: 'nested_path_param_bool'
-	NestedPathParamBool bool `tf:"-"`
+	NestedPathParamBool bool `json:"-" tf:"-"`
 
-	// Wire name: 'nested_path_param_int'
-	NestedPathParamInt int `tf:"-"`
+	NestedPathParamInt int `json:"-" tf:"-"`
 
-	// Wire name: 'nested_path_param_string'
-	NestedPathParamString string `tf:"-"`
+	NestedPathParamString string `json:"-" tf:"-"`
 
-	// Wire name: 'optional_complex_query_param'
-	OptionalComplexQueryParam *ComplexQueryParam `tf:"-"`
+	OptionalComplexQueryParam *ComplexQueryParam `json:"-" tf:"-"`
 
-	// Wire name: 'query_param_bool'
-	QueryParamBool bool `tf:"-"`
+	QueryParamBool bool `json:"-" tf:"-"`
 
-	// Wire name: 'query_param_int'
-	QueryParamInt int `tf:"-"`
+	QueryParamInt int `json:"-" tf:"-"`
 
-	// Wire name: 'query_param_string'
-	QueryParamString string `tf:"-"`
+	QueryParamString string `json:"-" tf:"-"`
 
-	// Wire name: 'repeated_complex_query_param'
-	RepeatedComplexQueryParam []ComplexQueryParam `tf:"-"`
+	RepeatedComplexQueryParam []ComplexQueryParam `json:"-" tf:"-"`
 
-	// Wire name: 'repeated_query_param'
-	RepeatedQueryParam []string `tf:"-"`
+	RepeatedQueryParam []string `json:"-" tf:"-"`
 	// Body element
 	// Wire name: 'resource'
-	Resource        Resource ``
-	ForceSendFields []string `tf:"-"`
+	Resource        Resource `json:"resource"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateResourceRequest) MarshalJSON() ([]byte, error) {

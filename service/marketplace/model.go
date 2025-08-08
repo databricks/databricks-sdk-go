@@ -14,10 +14,10 @@ import (
 type AddExchangeForListingRequest struct {
 
 	// Wire name: 'exchange_id'
-	ExchangeId string ``
+	ExchangeId string `json:"exchange_id"`
 
 	// Wire name: 'listing_id'
-	ListingId string ``
+	ListingId string `json:"listing_id"`
 }
 
 func (st AddExchangeForListingRequest) MarshalJSON() ([]byte, error) {
@@ -70,7 +70,7 @@ func AddExchangeForListingRequestFromPb(pb *marketplacepb.AddExchangeForListingR
 type AddExchangeForListingResponse struct {
 
 	// Wire name: 'exchange_for_listing'
-	ExchangeForListing *ExchangeListing ``
+	ExchangeForListing *ExchangeListing `json:"exchange_for_listing,omitempty"`
 }
 
 func (st AddExchangeForListingResponse) MarshalJSON() ([]byte, error) {
@@ -199,9 +199,7 @@ func AssetTypeFromPb(pb *marketplacepb.AssetTypePb) (*AssetType, error) {
 }
 
 type BatchGetListingsRequest struct {
-
-	// Wire name: 'ids'
-	Ids []string `tf:"-"`
+	Ids []string `json:"-" tf:"-"`
 }
 
 func (st BatchGetListingsRequest) MarshalJSON() ([]byte, error) {
@@ -252,7 +250,7 @@ func BatchGetListingsRequestFromPb(pb *marketplacepb.BatchGetListingsRequestPb) 
 type BatchGetListingsResponse struct {
 
 	// Wire name: 'listings'
-	Listings []Listing ``
+	Listings []Listing `json:"listings,omitempty"`
 }
 
 func (st BatchGetListingsResponse) MarshalJSON() ([]byte, error) {
@@ -323,9 +321,7 @@ func BatchGetListingsResponseFromPb(pb *marketplacepb.BatchGetListingsResponsePb
 }
 
 type BatchGetProvidersRequest struct {
-
-	// Wire name: 'ids'
-	Ids []string `tf:"-"`
+	Ids []string `json:"-" tf:"-"`
 }
 
 func (st BatchGetProvidersRequest) MarshalJSON() ([]byte, error) {
@@ -376,7 +372,7 @@ func BatchGetProvidersRequestFromPb(pb *marketplacepb.BatchGetProvidersRequestPb
 type BatchGetProvidersResponse struct {
 
 	// Wire name: 'providers'
-	Providers []ProviderInfo ``
+	Providers []ProviderInfo `json:"providers,omitempty"`
 }
 
 func (st BatchGetProvidersResponse) MarshalJSON() ([]byte, error) {
@@ -562,7 +558,7 @@ func CategoryFromPb(pb *marketplacepb.CategoryPb) (*Category, error) {
 type ConsumerTerms struct {
 
 	// Wire name: 'version'
-	Version string ``
+	Version string `json:"version"`
 }
 
 func (st ConsumerTerms) MarshalJSON() ([]byte, error) {
@@ -615,17 +611,17 @@ func ConsumerTermsFromPb(pb *marketplacepb.ConsumerTermsPb) (*ConsumerTerms, err
 type ContactInfo struct {
 
 	// Wire name: 'company'
-	Company string ``
+	Company string `json:"company,omitempty"`
 
 	// Wire name: 'email'
-	Email string ``
+	Email string `json:"email,omitempty"`
 
 	// Wire name: 'first_name'
-	FirstName string ``
+	FirstName string `json:"first_name,omitempty"`
 
 	// Wire name: 'last_name'
-	LastName        string   ``
-	ForceSendFields []string `tf:"-"`
+	LastName        string   `json:"last_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ContactInfo) MarshalJSON() ([]byte, error) {
@@ -741,7 +737,7 @@ func CostFromPb(pb *marketplacepb.CostPb) (*Cost, error) {
 type CreateExchangeFilterRequest struct {
 
 	// Wire name: 'filter'
-	Filter ExchangeFilter ``
+	Filter ExchangeFilter `json:"filter"`
 }
 
 func (st CreateExchangeFilterRequest) MarshalJSON() ([]byte, error) {
@@ -804,8 +800,8 @@ func CreateExchangeFilterRequestFromPb(pb *marketplacepb.CreateExchangeFilterReq
 type CreateExchangeFilterResponse struct {
 
 	// Wire name: 'filter_id'
-	FilterId        string   ``
-	ForceSendFields []string `tf:"-"`
+	FilterId        string   `json:"filter_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateExchangeFilterResponse) MarshalJSON() ([]byte, error) {
@@ -862,7 +858,7 @@ func CreateExchangeFilterResponseFromPb(pb *marketplacepb.CreateExchangeFilterRe
 type CreateExchangeRequest struct {
 
 	// Wire name: 'exchange'
-	Exchange Exchange ``
+	Exchange Exchange `json:"exchange"`
 }
 
 func (st CreateExchangeRequest) MarshalJSON() ([]byte, error) {
@@ -925,8 +921,8 @@ func CreateExchangeRequestFromPb(pb *marketplacepb.CreateExchangeRequestPb) (*Cr
 type CreateExchangeResponse struct {
 
 	// Wire name: 'exchange_id'
-	ExchangeId      string   ``
-	ForceSendFields []string `tf:"-"`
+	ExchangeId      string   `json:"exchange_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateExchangeResponse) MarshalJSON() ([]byte, error) {
@@ -983,17 +979,17 @@ func CreateExchangeResponseFromPb(pb *marketplacepb.CreateExchangeResponsePb) (*
 type CreateFileRequest struct {
 
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 
 	// Wire name: 'file_parent'
-	FileParent FileParent ``
+	FileParent FileParent `json:"file_parent"`
 
 	// Wire name: 'marketplace_file_type'
-	MarketplaceFileType MarketplaceFileType ``
+	MarketplaceFileType MarketplaceFileType `json:"marketplace_file_type"`
 
 	// Wire name: 'mime_type'
-	MimeType        string   ``
-	ForceSendFields []string `tf:"-"`
+	MimeType        string   `json:"mime_type"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateFileRequest) MarshalJSON() ([]byte, error) {
@@ -1080,11 +1076,11 @@ func CreateFileRequestFromPb(pb *marketplacepb.CreateFileRequestPb) (*CreateFile
 type CreateFileResponse struct {
 
 	// Wire name: 'file_info'
-	FileInfo *FileInfo ``
+	FileInfo *FileInfo `json:"file_info,omitempty"`
 	// Pre-signed POST URL to blob storage
 	// Wire name: 'upload_url'
-	UploadUrl       string   ``
-	ForceSendFields []string `tf:"-"`
+	UploadUrl       string   `json:"upload_url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateFileResponse) MarshalJSON() ([]byte, error) {
@@ -1155,23 +1151,22 @@ func CreateFileResponseFromPb(pb *marketplacepb.CreateFileResponsePb) (*CreateFi
 type CreateInstallationRequest struct {
 
 	// Wire name: 'accepted_consumer_terms'
-	AcceptedConsumerTerms *ConsumerTerms ``
+	AcceptedConsumerTerms *ConsumerTerms `json:"accepted_consumer_terms,omitempty"`
 
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name,omitempty"`
 
-	// Wire name: 'listing_id'
-	ListingId string `tf:"-"`
+	ListingId string `json:"-" tf:"-"`
 
 	// Wire name: 'recipient_type'
-	RecipientType DeltaSharingRecipientType ``
+	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
 	// for git repo installations
 	// Wire name: 'repo_detail'
-	RepoDetail *RepoInstallation ``
+	RepoDetail *RepoInstallation `json:"repo_detail,omitempty"`
 
 	// Wire name: 'share_name'
-	ShareName       string   ``
-	ForceSendFields []string `tf:"-"`
+	ShareName       string   `json:"share_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateInstallationRequest) MarshalJSON() ([]byte, error) {
@@ -1274,7 +1269,7 @@ func CreateInstallationRequestFromPb(pb *marketplacepb.CreateInstallationRequest
 type CreateListingRequest struct {
 
 	// Wire name: 'listing'
-	Listing Listing ``
+	Listing Listing `json:"listing"`
 }
 
 func (st CreateListingRequest) MarshalJSON() ([]byte, error) {
@@ -1337,8 +1332,8 @@ func CreateListingRequestFromPb(pb *marketplacepb.CreateListingRequestPb) (*Crea
 type CreateListingResponse struct {
 
 	// Wire name: 'listing_id'
-	ListingId       string   ``
-	ForceSendFields []string `tf:"-"`
+	ListingId       string   `json:"listing_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateListingResponse) MarshalJSON() ([]byte, error) {
@@ -1396,32 +1391,31 @@ func CreateListingResponseFromPb(pb *marketplacepb.CreateListingResponsePb) (*Cr
 type CreatePersonalizationRequest struct {
 
 	// Wire name: 'accepted_consumer_terms'
-	AcceptedConsumerTerms ConsumerTerms ``
+	AcceptedConsumerTerms ConsumerTerms `json:"accepted_consumer_terms"`
 
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 
 	// Wire name: 'company'
-	Company string ``
+	Company string `json:"company,omitempty"`
 
 	// Wire name: 'first_name'
-	FirstName string ``
+	FirstName string `json:"first_name,omitempty"`
 
 	// Wire name: 'intended_use'
-	IntendedUse string ``
+	IntendedUse string `json:"intended_use"`
 
 	// Wire name: 'is_from_lighthouse'
-	IsFromLighthouse bool ``
+	IsFromLighthouse bool `json:"is_from_lighthouse,omitempty"`
 
 	// Wire name: 'last_name'
-	LastName string ``
+	LastName string `json:"last_name,omitempty"`
 
-	// Wire name: 'listing_id'
-	ListingId string `tf:"-"`
+	ListingId string `json:"-" tf:"-"`
 
 	// Wire name: 'recipient_type'
-	RecipientType   DeltaSharingRecipientType ``
-	ForceSendFields []string                  `tf:"-"`
+	RecipientType   DeltaSharingRecipientType `json:"recipient_type,omitempty"`
+	ForceSendFields []string                  `json:"-" tf:"-"`
 }
 
 func (st CreatePersonalizationRequest) MarshalJSON() ([]byte, error) {
@@ -1518,8 +1512,8 @@ func CreatePersonalizationRequestFromPb(pb *marketplacepb.CreatePersonalizationR
 type CreatePersonalizationRequestResponse struct {
 
 	// Wire name: 'id'
-	Id              string   ``
-	ForceSendFields []string `tf:"-"`
+	Id              string   `json:"id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreatePersonalizationRequestResponse) MarshalJSON() ([]byte, error) {
@@ -1576,7 +1570,7 @@ func CreatePersonalizationRequestResponseFromPb(pb *marketplacepb.CreatePersonal
 type CreateProviderRequest struct {
 
 	// Wire name: 'provider'
-	Provider ProviderInfo ``
+	Provider ProviderInfo `json:"provider"`
 }
 
 func (st CreateProviderRequest) MarshalJSON() ([]byte, error) {
@@ -1639,8 +1633,8 @@ func CreateProviderRequestFromPb(pb *marketplacepb.CreateProviderRequestPb) (*Cr
 type CreateProviderResponse struct {
 
 	// Wire name: 'id'
-	Id              string   ``
-	ForceSendFields []string `tf:"-"`
+	Id              string   `json:"id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateProviderResponse) MarshalJSON() ([]byte, error) {
@@ -1771,10 +1765,10 @@ func DataRefreshFromPb(pb *marketplacepb.DataRefreshPb) (*DataRefresh, error) {
 type DataRefreshInfo struct {
 
 	// Wire name: 'interval'
-	Interval int64 ``
+	Interval int64 `json:"interval"`
 
 	// Wire name: 'unit'
-	Unit DataRefresh ``
+	Unit DataRefresh `json:"unit"`
 }
 
 func (st DataRefreshInfo) MarshalJSON() ([]byte, error) {
@@ -1837,9 +1831,7 @@ func DataRefreshInfoFromPb(pb *marketplacepb.DataRefreshInfoPb) (*DataRefreshInf
 }
 
 type DeleteExchangeFilterRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteExchangeFilterRequest) MarshalJSON() ([]byte, error) {
@@ -1888,9 +1880,7 @@ func DeleteExchangeFilterRequestFromPb(pb *marketplacepb.DeleteExchangeFilterReq
 }
 
 type DeleteExchangeRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteExchangeRequest) MarshalJSON() ([]byte, error) {
@@ -1939,9 +1929,7 @@ func DeleteExchangeRequestFromPb(pb *marketplacepb.DeleteExchangeRequestPb) (*De
 }
 
 type DeleteFileRequest struct {
-
-	// Wire name: 'file_id'
-	FileId string `tf:"-"`
+	FileId string `json:"-" tf:"-"`
 }
 
 func (st DeleteFileRequest) MarshalJSON() ([]byte, error) {
@@ -1990,12 +1978,9 @@ func DeleteFileRequestFromPb(pb *marketplacepb.DeleteFileRequestPb) (*DeleteFile
 }
 
 type DeleteInstallationRequest struct {
+	InstallationId string `json:"-" tf:"-"`
 
-	// Wire name: 'installation_id'
-	InstallationId string `tf:"-"`
-
-	// Wire name: 'listing_id'
-	ListingId string `tf:"-"`
+	ListingId string `json:"-" tf:"-"`
 }
 
 func (st DeleteInstallationRequest) MarshalJSON() ([]byte, error) {
@@ -2046,9 +2031,7 @@ func DeleteInstallationRequestFromPb(pb *marketplacepb.DeleteInstallationRequest
 }
 
 type DeleteListingRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteListingRequest) MarshalJSON() ([]byte, error) {
@@ -2097,9 +2080,7 @@ func DeleteListingRequestFromPb(pb *marketplacepb.DeleteListingRequestPb) (*Dele
 }
 
 type DeleteProviderRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteProviderRequest) MarshalJSON() ([]byte, error) {
@@ -2203,32 +2184,32 @@ func DeltaSharingRecipientTypeFromPb(pb *marketplacepb.DeltaSharingRecipientType
 type Exchange struct {
 
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 
 	// Wire name: 'filters'
-	Filters []ExchangeFilter ``
+	Filters []ExchangeFilter `json:"filters,omitempty"`
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 
 	// Wire name: 'linked_listings'
-	LinkedListings []ExchangeListing ``
+	LinkedListings []ExchangeListing `json:"linked_listings,omitempty"`
 
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Exchange) MarshalJSON() ([]byte, error) {
@@ -2345,32 +2326,32 @@ func ExchangeFromPb(pb *marketplacepb.ExchangePb) (*Exchange, error) {
 type ExchangeFilter struct {
 
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 
 	// Wire name: 'exchange_id'
-	ExchangeId string ``
+	ExchangeId string `json:"exchange_id"`
 
 	// Wire name: 'filter_type'
-	FilterType ExchangeFilterType ``
+	FilterType ExchangeFilterType `json:"filter_type"`
 
 	// Wire name: 'filter_value'
-	FilterValue string ``
+	FilterValue string `json:"filter_value"`
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExchangeFilter) MarshalJSON() ([]byte, error) {
@@ -2505,26 +2486,26 @@ func ExchangeFilterTypeFromPb(pb *marketplacepb.ExchangeFilterTypePb) (*Exchange
 type ExchangeListing struct {
 
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 
 	// Wire name: 'exchange_id'
-	ExchangeId string ``
+	ExchangeId string `json:"exchange_id,omitempty"`
 
 	// Wire name: 'exchange_name'
-	ExchangeName string ``
+	ExchangeName string `json:"exchange_name,omitempty"`
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 
 	// Wire name: 'listing_id'
-	ListingId string ``
+	ListingId string `json:"listing_id,omitempty"`
 
 	// Wire name: 'listing_name'
-	ListingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	ListingName     string   `json:"listing_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExchangeListing) MarshalJSON() ([]byte, error) {
@@ -2593,36 +2574,36 @@ func ExchangeListingFromPb(pb *marketplacepb.ExchangeListingPb) (*ExchangeListin
 type FileInfo struct {
 
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Name displayed to users for applicable files, e.g. embedded notebooks
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 
 	// Wire name: 'download_link'
-	DownloadLink string ``
+	DownloadLink string `json:"download_link,omitempty"`
 
 	// Wire name: 'file_parent'
-	FileParent *FileParent ``
+	FileParent *FileParent `json:"file_parent,omitempty"`
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 
 	// Wire name: 'marketplace_file_type'
-	MarketplaceFileType MarketplaceFileType ``
+	MarketplaceFileType MarketplaceFileType `json:"marketplace_file_type,omitempty"`
 
 	// Wire name: 'mime_type'
-	MimeType string ``
+	MimeType string `json:"mime_type,omitempty"`
 
 	// Wire name: 'status'
-	Status FileStatus ``
+	Status FileStatus `json:"status,omitempty"`
 	// Populated if status is in a failed state with more information on reason
 	// for the failure.
 	// Wire name: 'status_message'
-	StatusMessage string ``
+	StatusMessage string `json:"status_message,omitempty"`
 
 	// Wire name: 'updated_at'
-	UpdatedAt       int64    ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedAt       int64    `json:"updated_at,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FileInfo) MarshalJSON() ([]byte, error) {
@@ -2733,11 +2714,11 @@ func FileInfoFromPb(pb *marketplacepb.FileInfoPb) (*FileInfo, error) {
 type FileParent struct {
 
 	// Wire name: 'file_parent_type'
-	FileParentType FileParentType ``
+	FileParentType FileParentType `json:"file_parent_type,omitempty"`
 	// TODO make the following fields required
 	// Wire name: 'parent_id'
-	ParentId        string   ``
-	ForceSendFields []string `tf:"-"`
+	ParentId        string   `json:"parent_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FileParent) MarshalJSON() ([]byte, error) {
@@ -2974,9 +2955,7 @@ func FulfillmentTypeFromPb(pb *marketplacepb.FulfillmentTypePb) (*FulfillmentTyp
 }
 
 type GetExchangeRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetExchangeRequest) MarshalJSON() ([]byte, error) {
@@ -3027,7 +3006,7 @@ func GetExchangeRequestFromPb(pb *marketplacepb.GetExchangeRequestPb) (*GetExcha
 type GetExchangeResponse struct {
 
 	// Wire name: 'exchange'
-	Exchange *Exchange ``
+	Exchange *Exchange `json:"exchange,omitempty"`
 }
 
 func (st GetExchangeResponse) MarshalJSON() ([]byte, error) {
@@ -3088,9 +3067,7 @@ func GetExchangeResponseFromPb(pb *marketplacepb.GetExchangeResponsePb) (*GetExc
 }
 
 type GetFileRequest struct {
-
-	// Wire name: 'file_id'
-	FileId string `tf:"-"`
+	FileId string `json:"-" tf:"-"`
 }
 
 func (st GetFileRequest) MarshalJSON() ([]byte, error) {
@@ -3141,7 +3118,7 @@ func GetFileRequestFromPb(pb *marketplacepb.GetFileRequestPb) (*GetFileRequest, 
 type GetFileResponse struct {
 
 	// Wire name: 'file_info'
-	FileInfo *FileInfo ``
+	FileInfo *FileInfo `json:"file_info,omitempty"`
 }
 
 func (st GetFileResponse) MarshalJSON() ([]byte, error) {
@@ -3204,8 +3181,8 @@ func GetFileResponseFromPb(pb *marketplacepb.GetFileResponsePb) (*GetFileRespons
 type GetLatestVersionProviderAnalyticsDashboardResponse struct {
 	// version here is latest logical version of the dashboard template
 	// Wire name: 'version'
-	Version         int64    ``
-	ForceSendFields []string `tf:"-"`
+	Version         int64    `json:"version,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetLatestVersionProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
@@ -3260,16 +3237,12 @@ func GetLatestVersionProviderAnalyticsDashboardResponseFromPb(pb *marketplacepb.
 }
 
 type GetListingContentMetadataRequest struct {
+	ListingId string `json:"-" tf:"-"`
 
-	// Wire name: 'listing_id'
-	ListingId string `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetListingContentMetadataRequest) MarshalJSON() ([]byte, error) {
@@ -3330,11 +3303,11 @@ func GetListingContentMetadataRequestFromPb(pb *marketplacepb.GetListingContentM
 type GetListingContentMetadataResponse struct {
 
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'shared_data_objects'
-	SharedDataObjects []SharedDataObject ``
-	ForceSendFields   []string           `tf:"-"`
+	SharedDataObjects []SharedDataObject `json:"shared_data_objects,omitempty"`
+	ForceSendFields   []string           `json:"-" tf:"-"`
 }
 
 func (st GetListingContentMetadataResponse) MarshalJSON() ([]byte, error) {
@@ -3413,9 +3386,7 @@ func GetListingContentMetadataResponseFromPb(pb *marketplacepb.GetListingContent
 }
 
 type GetListingRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetListingRequest) MarshalJSON() ([]byte, error) {
@@ -3466,7 +3437,7 @@ func GetListingRequestFromPb(pb *marketplacepb.GetListingRequestPb) (*GetListing
 type GetListingResponse struct {
 
 	// Wire name: 'listing'
-	Listing *Listing ``
+	Listing *Listing `json:"listing,omitempty"`
 }
 
 func (st GetListingResponse) MarshalJSON() ([]byte, error) {
@@ -3527,13 +3498,10 @@ func GetListingResponseFromPb(pb *marketplacepb.GetListingResponsePb) (*GetListi
 }
 
 type GetListingsRequest struct {
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetListingsRequest) MarshalJSON() ([]byte, error) {
@@ -3592,11 +3560,11 @@ func GetListingsRequestFromPb(pb *marketplacepb.GetListingsRequestPb) (*GetListi
 type GetListingsResponse struct {
 
 	// Wire name: 'listings'
-	Listings []Listing ``
+	Listings []Listing `json:"listings,omitempty"`
 
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetListingsResponse) MarshalJSON() ([]byte, error) {
@@ -3675,9 +3643,7 @@ func GetListingsResponseFromPb(pb *marketplacepb.GetListingsResponsePb) (*GetLis
 }
 
 type GetPersonalizationRequestRequest struct {
-
-	// Wire name: 'listing_id'
-	ListingId string `tf:"-"`
+	ListingId string `json:"-" tf:"-"`
 }
 
 func (st GetPersonalizationRequestRequest) MarshalJSON() ([]byte, error) {
@@ -3728,7 +3694,7 @@ func GetPersonalizationRequestRequestFromPb(pb *marketplacepb.GetPersonalization
 type GetPersonalizationRequestResponse struct {
 
 	// Wire name: 'personalization_requests'
-	PersonalizationRequests []PersonalizationRequest ``
+	PersonalizationRequests []PersonalizationRequest `json:"personalization_requests,omitempty"`
 }
 
 func (st GetPersonalizationRequestResponse) MarshalJSON() ([]byte, error) {
@@ -3799,9 +3765,7 @@ func GetPersonalizationRequestResponseFromPb(pb *marketplacepb.GetPersonalizatio
 }
 
 type GetProviderRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetProviderRequest) MarshalJSON() ([]byte, error) {
@@ -3852,7 +3816,7 @@ func GetProviderRequestFromPb(pb *marketplacepb.GetProviderRequestPb) (*GetProvi
 type GetProviderResponse struct {
 
 	// Wire name: 'provider'
-	Provider *ProviderInfo ``
+	Provider *ProviderInfo `json:"provider,omitempty"`
 }
 
 func (st GetProviderResponse) MarshalJSON() ([]byte, error) {
@@ -3915,7 +3879,7 @@ func GetProviderResponseFromPb(pb *marketplacepb.GetProviderResponsePb) (*GetPro
 type Installation struct {
 
 	// Wire name: 'installation'
-	Installation *InstallationDetail ``
+	Installation *InstallationDetail `json:"installation,omitempty"`
 }
 
 func (st Installation) MarshalJSON() ([]byte, error) {
@@ -3978,44 +3942,44 @@ func InstallationFromPb(pb *marketplacepb.InstallationPb) (*Installation, error)
 type InstallationDetail struct {
 
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name,omitempty"`
 
 	// Wire name: 'error_message'
-	ErrorMessage string ``
+	ErrorMessage string `json:"error_message,omitempty"`
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 
 	// Wire name: 'installed_on'
-	InstalledOn int64 ``
+	InstalledOn int64 `json:"installed_on,omitempty"`
 
 	// Wire name: 'listing_id'
-	ListingId string ``
+	ListingId string `json:"listing_id,omitempty"`
 
 	// Wire name: 'listing_name'
-	ListingName string ``
+	ListingName string `json:"listing_name,omitempty"`
 
 	// Wire name: 'recipient_type'
-	RecipientType DeltaSharingRecipientType ``
+	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
 
 	// Wire name: 'repo_name'
-	RepoName string ``
+	RepoName string `json:"repo_name,omitempty"`
 
 	// Wire name: 'repo_path'
-	RepoPath string ``
+	RepoPath string `json:"repo_path,omitempty"`
 
 	// Wire name: 'share_name'
-	ShareName string ``
+	ShareName string `json:"share_name,omitempty"`
 
 	// Wire name: 'status'
-	Status InstallationStatus ``
+	Status InstallationStatus `json:"status,omitempty"`
 
 	// Wire name: 'token_detail'
-	TokenDetail *TokenDetail ``
+	TokenDetail *TokenDetail `json:"token_detail,omitempty"`
 
 	// Wire name: 'tokens'
-	Tokens          []TokenInfo ``
-	ForceSendFields []string    `tf:"-"`
+	Tokens          []TokenInfo `json:"tokens,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
 func (st InstallationDetail) MarshalJSON() ([]byte, error) {
@@ -4205,13 +4169,10 @@ func InstallationStatusFromPb(pb *marketplacepb.InstallationStatusPb) (*Installa
 }
 
 type ListAllInstallationsRequest struct {
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAllInstallationsRequest) MarshalJSON() ([]byte, error) {
@@ -4270,11 +4231,11 @@ func ListAllInstallationsRequestFromPb(pb *marketplacepb.ListAllInstallationsReq
 type ListAllInstallationsResponse struct {
 
 	// Wire name: 'installations'
-	Installations []InstallationDetail ``
+	Installations []InstallationDetail `json:"installations,omitempty"`
 
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAllInstallationsResponse) MarshalJSON() ([]byte, error) {
@@ -4353,13 +4314,10 @@ func ListAllInstallationsResponseFromPb(pb *marketplacepb.ListAllInstallationsRe
 }
 
 type ListAllPersonalizationRequestsRequest struct {
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAllPersonalizationRequestsRequest) MarshalJSON() ([]byte, error) {
@@ -4418,11 +4376,11 @@ func ListAllPersonalizationRequestsRequestFromPb(pb *marketplacepb.ListAllPerson
 type ListAllPersonalizationRequestsResponse struct {
 
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'personalization_requests'
-	PersonalizationRequests []PersonalizationRequest ``
-	ForceSendFields         []string                 `tf:"-"`
+	PersonalizationRequests []PersonalizationRequest `json:"personalization_requests,omitempty"`
+	ForceSendFields         []string                 `json:"-" tf:"-"`
 }
 
 func (st ListAllPersonalizationRequestsResponse) MarshalJSON() ([]byte, error) {
@@ -4501,16 +4459,12 @@ func ListAllPersonalizationRequestsResponseFromPb(pb *marketplacepb.ListAllPerso
 }
 
 type ListExchangeFiltersRequest struct {
+	ExchangeId string `json:"-" tf:"-"`
 
-	// Wire name: 'exchange_id'
-	ExchangeId string `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExchangeFiltersRequest) MarshalJSON() ([]byte, error) {
@@ -4571,11 +4525,11 @@ func ListExchangeFiltersRequestFromPb(pb *marketplacepb.ListExchangeFiltersReque
 type ListExchangeFiltersResponse struct {
 
 	// Wire name: 'filters'
-	Filters []ExchangeFilter ``
+	Filters []ExchangeFilter `json:"filters,omitempty"`
 
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExchangeFiltersResponse) MarshalJSON() ([]byte, error) {
@@ -4654,16 +4608,12 @@ func ListExchangeFiltersResponseFromPb(pb *marketplacepb.ListExchangeFiltersResp
 }
 
 type ListExchangesForListingRequest struct {
+	ListingId string `json:"-" tf:"-"`
 
-	// Wire name: 'listing_id'
-	ListingId string `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExchangesForListingRequest) MarshalJSON() ([]byte, error) {
@@ -4724,11 +4674,11 @@ func ListExchangesForListingRequestFromPb(pb *marketplacepb.ListExchangesForList
 type ListExchangesForListingResponse struct {
 
 	// Wire name: 'exchange_listing'
-	ExchangeListing []ExchangeListing ``
+	ExchangeListing []ExchangeListing `json:"exchange_listing,omitempty"`
 
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExchangesForListingResponse) MarshalJSON() ([]byte, error) {
@@ -4807,13 +4757,10 @@ func ListExchangesForListingResponseFromPb(pb *marketplacepb.ListExchangesForLis
 }
 
 type ListExchangesRequest struct {
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExchangesRequest) MarshalJSON() ([]byte, error) {
@@ -4872,11 +4819,11 @@ func ListExchangesRequestFromPb(pb *marketplacepb.ListExchangesRequestPb) (*List
 type ListExchangesResponse struct {
 
 	// Wire name: 'exchanges'
-	Exchanges []Exchange ``
+	Exchanges []Exchange `json:"exchanges,omitempty"`
 
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExchangesResponse) MarshalJSON() ([]byte, error) {
@@ -4955,16 +4902,12 @@ func ListExchangesResponseFromPb(pb *marketplacepb.ListExchangesResponsePb) (*Li
 }
 
 type ListFilesRequest struct {
+	FileParent FileParent `json:"-" tf:"-"`
 
-	// Wire name: 'file_parent'
-	FileParent FileParent `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListFilesRequest) MarshalJSON() ([]byte, error) {
@@ -5037,11 +4980,11 @@ func ListFilesRequestFromPb(pb *marketplacepb.ListFilesRequestPb) (*ListFilesReq
 type ListFilesResponse struct {
 
 	// Wire name: 'file_infos'
-	FileInfos []FileInfo ``
+	FileInfos []FileInfo `json:"file_infos,omitempty"`
 
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListFilesResponse) MarshalJSON() ([]byte, error) {
@@ -5120,16 +5063,12 @@ func ListFilesResponseFromPb(pb *marketplacepb.ListFilesResponsePb) (*ListFilesR
 }
 
 type ListFulfillmentsRequest struct {
+	ListingId string `json:"-" tf:"-"`
 
-	// Wire name: 'listing_id'
-	ListingId string `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListFulfillmentsRequest) MarshalJSON() ([]byte, error) {
@@ -5190,11 +5129,11 @@ func ListFulfillmentsRequestFromPb(pb *marketplacepb.ListFulfillmentsRequestPb) 
 type ListFulfillmentsResponse struct {
 
 	// Wire name: 'fulfillments'
-	Fulfillments []ListingFulfillment ``
+	Fulfillments []ListingFulfillment `json:"fulfillments,omitempty"`
 
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListFulfillmentsResponse) MarshalJSON() ([]byte, error) {
@@ -5273,16 +5212,12 @@ func ListFulfillmentsResponseFromPb(pb *marketplacepb.ListFulfillmentsResponsePb
 }
 
 type ListInstallationsRequest struct {
+	ListingId string `json:"-" tf:"-"`
 
-	// Wire name: 'listing_id'
-	ListingId string `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListInstallationsRequest) MarshalJSON() ([]byte, error) {
@@ -5343,11 +5278,11 @@ func ListInstallationsRequestFromPb(pb *marketplacepb.ListInstallationsRequestPb
 type ListInstallationsResponse struct {
 
 	// Wire name: 'installations'
-	Installations []InstallationDetail ``
+	Installations []InstallationDetail `json:"installations,omitempty"`
 
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListInstallationsResponse) MarshalJSON() ([]byte, error) {
@@ -5426,16 +5361,12 @@ func ListInstallationsResponseFromPb(pb *marketplacepb.ListInstallationsResponse
 }
 
 type ListListingsForExchangeRequest struct {
+	ExchangeId string `json:"-" tf:"-"`
 
-	// Wire name: 'exchange_id'
-	ExchangeId string `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListListingsForExchangeRequest) MarshalJSON() ([]byte, error) {
@@ -5496,11 +5427,11 @@ func ListListingsForExchangeRequestFromPb(pb *marketplacepb.ListListingsForExcha
 type ListListingsForExchangeResponse struct {
 
 	// Wire name: 'exchange_listings'
-	ExchangeListings []ExchangeListing ``
+	ExchangeListings []ExchangeListing `json:"exchange_listings,omitempty"`
 
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListListingsForExchangeResponse) MarshalJSON() ([]byte, error) {
@@ -5580,33 +5511,24 @@ func ListListingsForExchangeResponseFromPb(pb *marketplacepb.ListListingsForExch
 
 type ListListingsRequest struct {
 	// Matches any of the following asset types
-	// Wire name: 'assets'
-	Assets []AssetType `tf:"-"`
+	Assets []AssetType `json:"-" tf:"-"`
 	// Matches any of the following categories
-	// Wire name: 'categories'
-	Categories []Category `tf:"-"`
+	Categories []Category `json:"-" tf:"-"`
 	// Filters each listing based on if it is free.
-	// Wire name: 'is_free'
-	IsFree bool `tf:"-"`
+	IsFree bool `json:"-" tf:"-"`
 	// Filters each listing based on if it is a private exchange.
-	// Wire name: 'is_private_exchange'
-	IsPrivateExchange bool `tf:"-"`
+	IsPrivateExchange bool `json:"-" tf:"-"`
 	// Filters each listing based on whether it is a staff pick.
-	// Wire name: 'is_staff_pick'
-	IsStaffPick bool `tf:"-"`
+	IsStaffPick bool `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// Matches any of the following provider ids
-	// Wire name: 'provider_ids'
-	ProviderIds []string `tf:"-"`
+	ProviderIds []string `json:"-" tf:"-"`
 	// Matches any of the following tags
-	// Wire name: 'tags'
-	Tags            []ListingTag `tf:"-"`
-	ForceSendFields []string     `tf:"-"`
+	Tags            []ListingTag `json:"-" tf:"-"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
 func (st ListListingsRequest) MarshalJSON() ([]byte, error) {
@@ -5745,11 +5667,11 @@ func ListListingsRequestFromPb(pb *marketplacepb.ListListingsRequestPb) (*ListLi
 type ListListingsResponse struct {
 
 	// Wire name: 'listings'
-	Listings []Listing ``
+	Listings []Listing `json:"listings,omitempty"`
 
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListListingsResponse) MarshalJSON() ([]byte, error) {
@@ -5830,14 +5752,14 @@ func ListListingsResponseFromPb(pb *marketplacepb.ListListingsResponsePb) (*List
 type ListProviderAnalyticsDashboardResponse struct {
 	// dashboard_id will be used to open Lakeview dashboard.
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id"`
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id"`
 
 	// Wire name: 'version'
-	Version         int64    ``
-	ForceSendFields []string `tf:"-"`
+	Version         int64    `json:"version,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
@@ -5896,16 +5818,12 @@ func ListProviderAnalyticsDashboardResponseFromPb(pb *marketplacepb.ListProvider
 }
 
 type ListProvidersRequest struct {
+	IsFeatured bool `json:"-" tf:"-"`
 
-	// Wire name: 'is_featured'
-	IsFeatured bool `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListProvidersRequest) MarshalJSON() ([]byte, error) {
@@ -5966,11 +5884,11 @@ func ListProvidersRequestFromPb(pb *marketplacepb.ListProvidersRequestPb) (*List
 type ListProvidersResponse struct {
 
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'providers'
-	Providers       []ProviderInfo ``
-	ForceSendFields []string       `tf:"-"`
+	Providers       []ProviderInfo `json:"providers,omitempty"`
+	ForceSendFields []string       `json:"-" tf:"-"`
 }
 
 func (st ListProvidersResponse) MarshalJSON() ([]byte, error) {
@@ -6051,14 +5969,14 @@ func ListProvidersResponseFromPb(pb *marketplacepb.ListProvidersResponsePb) (*Li
 type Listing struct {
 
 	// Wire name: 'detail'
-	Detail *ListingDetail ``
+	Detail *ListingDetail `json:"detail,omitempty"`
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 
 	// Wire name: 'summary'
-	Summary         ListingSummary ``
-	ForceSendFields []string       `tf:"-"`
+	Summary         ListingSummary `json:"summary"`
+	ForceSendFields []string       `json:"-" tf:"-"`
 }
 
 func (st Listing) MarshalJSON() ([]byte, error) {
@@ -6144,55 +6062,55 @@ type ListingDetail struct {
 	// Type of assets included in the listing. eg. GIT_REPO, DATA_TABLE, MODEL,
 	// NOTEBOOK
 	// Wire name: 'assets'
-	Assets []AssetType ``
+	Assets []AssetType `json:"assets,omitempty"`
 	// The ending date timestamp for when the data spans
 	// Wire name: 'collection_date_end'
-	CollectionDateEnd int64 ``
+	CollectionDateEnd int64 `json:"collection_date_end,omitempty"`
 	// The starting date timestamp for when the data spans
 	// Wire name: 'collection_date_start'
-	CollectionDateStart int64 ``
+	CollectionDateStart int64 `json:"collection_date_start,omitempty"`
 	// Smallest unit of time in the dataset
 	// Wire name: 'collection_granularity'
-	CollectionGranularity *DataRefreshInfo ``
+	CollectionGranularity *DataRefreshInfo `json:"collection_granularity,omitempty"`
 	// Whether the dataset is free or paid
 	// Wire name: 'cost'
-	Cost Cost ``
+	Cost Cost `json:"cost,omitempty"`
 	// Where/how the data is sourced
 	// Wire name: 'data_source'
-	DataSource string ``
+	DataSource string `json:"data_source,omitempty"`
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'documentation_link'
-	DocumentationLink string ``
+	DocumentationLink string `json:"documentation_link,omitempty"`
 
 	// Wire name: 'embedded_notebook_file_infos'
-	EmbeddedNotebookFileInfos []FileInfo ``
+	EmbeddedNotebookFileInfos []FileInfo `json:"embedded_notebook_file_infos,omitempty"`
 
 	// Wire name: 'file_ids'
-	FileIds []string ``
+	FileIds []string `json:"file_ids,omitempty"`
 	// Which geo region the listing data is collected from
 	// Wire name: 'geographical_coverage'
-	GeographicalCoverage string ``
+	GeographicalCoverage string `json:"geographical_coverage,omitempty"`
 	// ID 20, 21 removed don't use License of the data asset - Required for
 	// listings with model based assets
 	// Wire name: 'license'
-	License string ``
+	License string `json:"license,omitempty"`
 	// What the pricing model is (e.g. paid, subscription, paid upfront); should
 	// only be present if cost is paid TODO: Not used yet, should deprecate if
 	// we will never use it
 	// Wire name: 'pricing_model'
-	PricingModel string ``
+	PricingModel string `json:"pricing_model,omitempty"`
 
 	// Wire name: 'privacy_policy_link'
-	PrivacyPolicyLink string ``
+	PrivacyPolicyLink string `json:"privacy_policy_link,omitempty"`
 	// size of the dataset in GB
 	// Wire name: 'size'
-	Size float64 ``
+	Size float64 `json:"size,omitempty"`
 
 	// Wire name: 'support_link'
-	SupportLink string ``
+	SupportLink string `json:"support_link,omitempty"`
 	// Listing tags - Simple key value pair to annotate listings. When should I
 	// use tags vs dedicated fields? Using tags avoids the need to add new
 	// columns in the database for new annotations. However, this should be used
@@ -6201,14 +6119,14 @@ type ListingDetail struct {
 	// The value is fairly fixed, static and low cardinality (eg. enums). 3. The
 	// value won't be used in filters or joins with other tables.
 	// Wire name: 'tags'
-	Tags []ListingTag ``
+	Tags []ListingTag `json:"tags,omitempty"`
 
 	// Wire name: 'terms_of_service'
-	TermsOfService string ``
+	TermsOfService string `json:"terms_of_service,omitempty"`
 	// How often data is updated
 	// Wire name: 'update_frequency'
-	UpdateFrequency *DataRefreshInfo ``
-	ForceSendFields []string         `tf:"-"`
+	UpdateFrequency *DataRefreshInfo `json:"update_frequency,omitempty"`
+	ForceSendFields []string         `json:"-" tf:"-"`
 }
 
 func (st ListingDetail) MarshalJSON() ([]byte, error) {
@@ -6403,19 +6321,19 @@ func ListingDetailFromPb(pb *marketplacepb.ListingDetailPb) (*ListingDetail, err
 type ListingFulfillment struct {
 
 	// Wire name: 'fulfillment_type'
-	FulfillmentType FulfillmentType ``
+	FulfillmentType FulfillmentType `json:"fulfillment_type,omitempty"`
 
 	// Wire name: 'listing_id'
-	ListingId string ``
+	ListingId string `json:"listing_id"`
 
 	// Wire name: 'recipient_type'
-	RecipientType DeltaSharingRecipientType ``
+	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
 
 	// Wire name: 'repo_info'
-	RepoInfo *RepoInfo ``
+	RepoInfo *RepoInfo `json:"repo_info,omitempty"`
 
 	// Wire name: 'share_info'
-	ShareInfo *ShareInfo ``
+	ShareInfo *ShareInfo `json:"share_info,omitempty"`
 }
 
 func (st ListingFulfillment) MarshalJSON() ([]byte, error) {
@@ -6522,7 +6440,7 @@ func ListingFulfillmentFromPb(pb *marketplacepb.ListingFulfillmentPb) (*ListingF
 type ListingSetting struct {
 
 	// Wire name: 'visibility'
-	Visibility Visibility ``
+	Visibility Visibility `json:"visibility,omitempty"`
 }
 
 func (st ListingSetting) MarshalJSON() ([]byte, error) {
@@ -6698,63 +6616,63 @@ func ListingStatusFromPb(pb *marketplacepb.ListingStatusPb) (*ListingStatus, err
 type ListingSummary struct {
 
 	// Wire name: 'categories'
-	Categories []Category ``
+	Categories []Category `json:"categories,omitempty"`
 
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 
 	// Wire name: 'created_by_id'
-	CreatedById int64 ``
+	CreatedById int64 `json:"created_by_id,omitempty"`
 
 	// Wire name: 'exchange_ids'
-	ExchangeIds []string ``
+	ExchangeIds []string `json:"exchange_ids,omitempty"`
 	// if a git repo is being created, a listing will be initialized with this
 	// field as opposed to a share
 	// Wire name: 'git_repo'
-	GitRepo *RepoInfo ``
+	GitRepo *RepoInfo `json:"git_repo,omitempty"`
 
 	// Wire name: 'listingType'
-	ListingType ListingType ``
+	ListingType ListingType `json:"listingType"`
 
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 
 	// Wire name: 'provider_id'
-	ProviderId string ``
+	ProviderId string `json:"provider_id,omitempty"`
 
 	// Wire name: 'provider_region'
-	ProviderRegion *RegionInfo ``
+	ProviderRegion *RegionInfo `json:"provider_region,omitempty"`
 
 	// Wire name: 'published_at'
-	PublishedAt int64 ``
+	PublishedAt int64 `json:"published_at,omitempty"`
 
 	// Wire name: 'published_by'
-	PublishedBy string ``
+	PublishedBy string `json:"published_by,omitempty"`
 
 	// Wire name: 'setting'
-	Setting *ListingSetting ``
+	Setting *ListingSetting `json:"setting,omitempty"`
 
 	// Wire name: 'share'
-	Share *ShareInfo ``
+	Share *ShareInfo `json:"share,omitempty"`
 
 	// Wire name: 'status'
-	Status ListingStatus ``
+	Status ListingStatus `json:"status,omitempty"`
 
 	// Wire name: 'subtitle'
-	Subtitle string ``
+	Subtitle string `json:"subtitle,omitempty"`
 
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 
 	// Wire name: 'updated_by'
-	UpdatedBy string ``
+	UpdatedBy string `json:"updated_by,omitempty"`
 
 	// Wire name: 'updated_by_id'
-	UpdatedById     int64    ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedById     int64    `json:"updated_by_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListingSummary) MarshalJSON() ([]byte, error) {
@@ -6941,11 +6859,11 @@ func ListingSummaryFromPb(pb *marketplacepb.ListingSummaryPb) (*ListingSummary, 
 type ListingTag struct {
 	// Tag name (enum)
 	// Wire name: 'tag_name'
-	TagName ListingTagType ``
+	TagName ListingTagType `json:"tag_name,omitempty"`
 	// String representation of the tag value. Values should be string literals
 	// (no complex types)
 	// Wire name: 'tag_values'
-	TagValues []string ``
+	TagValues []string `json:"tag_values,omitempty"`
 }
 
 func (st ListingTag) MarshalJSON() ([]byte, error) {
@@ -7172,53 +7090,53 @@ func MarketplaceFileTypeFromPb(pb *marketplacepb.MarketplaceFileTypePb) (*Market
 type PersonalizationRequest struct {
 
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 
 	// Wire name: 'consumer_region'
-	ConsumerRegion RegionInfo ``
+	ConsumerRegion RegionInfo `json:"consumer_region"`
 
 	// Wire name: 'contact_info'
-	ContactInfo *ContactInfo ``
+	ContactInfo *ContactInfo `json:"contact_info,omitempty"`
 
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 
 	// Wire name: 'intended_use'
-	IntendedUse string ``
+	IntendedUse string `json:"intended_use,omitempty"`
 
 	// Wire name: 'is_from_lighthouse'
-	IsFromLighthouse bool ``
+	IsFromLighthouse bool `json:"is_from_lighthouse,omitempty"`
 
 	// Wire name: 'listing_id'
-	ListingId string ``
+	ListingId string `json:"listing_id,omitempty"`
 
 	// Wire name: 'listing_name'
-	ListingName string ``
+	ListingName string `json:"listing_name,omitempty"`
 
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 
 	// Wire name: 'provider_id'
-	ProviderId string ``
+	ProviderId string `json:"provider_id,omitempty"`
 
 	// Wire name: 'recipient_type'
-	RecipientType DeltaSharingRecipientType ``
+	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
 
 	// Wire name: 'share'
-	Share *ShareInfo ``
+	Share *ShareInfo `json:"share,omitempty"`
 
 	// Wire name: 'status'
-	Status PersonalizationRequestStatus ``
+	Status PersonalizationRequestStatus `json:"status,omitempty"`
 
 	// Wire name: 'status_message'
-	StatusMessage string ``
+	StatusMessage string `json:"status_message,omitempty"`
 
 	// Wire name: 'updated_at'
-	UpdatedAt       int64    ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedAt       int64    `json:"updated_at,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PersonalizationRequest) MarshalJSON() ([]byte, error) {
@@ -7424,7 +7342,7 @@ func PersonalizationRequestStatusFromPb(pb *marketplacepb.PersonalizationRequest
 type ProviderAnalyticsDashboard struct {
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id"`
 }
 
 func (st ProviderAnalyticsDashboard) MarshalJSON() ([]byte, error) {
@@ -7475,47 +7393,47 @@ func ProviderAnalyticsDashboardFromPb(pb *marketplacepb.ProviderAnalyticsDashboa
 type ProviderInfo struct {
 
 	// Wire name: 'business_contact_email'
-	BusinessContactEmail string ``
+	BusinessContactEmail string `json:"business_contact_email"`
 
 	// Wire name: 'company_website_link'
-	CompanyWebsiteLink string ``
+	CompanyWebsiteLink string `json:"company_website_link,omitempty"`
 
 	// Wire name: 'dark_mode_icon_file_id'
-	DarkModeIconFileId string ``
+	DarkModeIconFileId string `json:"dark_mode_icon_file_id,omitempty"`
 
 	// Wire name: 'dark_mode_icon_file_path'
-	DarkModeIconFilePath string ``
+	DarkModeIconFilePath string `json:"dark_mode_icon_file_path,omitempty"`
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'icon_file_id'
-	IconFileId string ``
+	IconFileId string `json:"icon_file_id,omitempty"`
 
 	// Wire name: 'icon_file_path'
-	IconFilePath string ``
+	IconFilePath string `json:"icon_file_path,omitempty"`
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// is_featured is accessible by consumers only
 	// Wire name: 'is_featured'
-	IsFeatured bool ``
+	IsFeatured bool `json:"is_featured,omitempty"`
 
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 
 	// Wire name: 'privacy_policy_link'
-	PrivacyPolicyLink string ``
+	PrivacyPolicyLink string `json:"privacy_policy_link"`
 	// published_by is only applicable to data aggregators (e.g. Crux)
 	// Wire name: 'published_by'
-	PublishedBy string ``
+	PublishedBy string `json:"published_by,omitempty"`
 
 	// Wire name: 'support_contact_email'
-	SupportContactEmail string ``
+	SupportContactEmail string `json:"support_contact_email,omitempty"`
 
 	// Wire name: 'term_of_service_link'
-	TermOfServiceLink string   ``
-	ForceSendFields   []string `tf:"-"`
+	TermOfServiceLink string   `json:"term_of_service_link"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
 func (st ProviderInfo) MarshalJSON() ([]byte, error) {
@@ -7598,11 +7516,11 @@ func ProviderInfoFromPb(pb *marketplacepb.ProviderInfoPb) (*ProviderInfo, error)
 type RegionInfo struct {
 
 	// Wire name: 'cloud'
-	Cloud string ``
+	Cloud string `json:"cloud,omitempty"`
 
 	// Wire name: 'region'
-	Region          string   ``
-	ForceSendFields []string `tf:"-"`
+	Region          string   `json:"region,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RegionInfo) MarshalJSON() ([]byte, error) {
@@ -7659,9 +7577,7 @@ func RegionInfoFromPb(pb *marketplacepb.RegionInfoPb) (*RegionInfo, error) {
 }
 
 type RemoveExchangeForListingRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st RemoveExchangeForListingRequest) MarshalJSON() ([]byte, error) {
@@ -7712,7 +7628,7 @@ func RemoveExchangeForListingRequestFromPb(pb *marketplacepb.RemoveExchangeForLi
 type RepoInfo struct {
 	// the git repo url e.g. https://github.com/databrickslabs/dolly.git
 	// Wire name: 'git_repo_url'
-	GitRepoUrl string ``
+	GitRepoUrl string `json:"git_repo_url"`
 }
 
 func (st RepoInfo) MarshalJSON() ([]byte, error) {
@@ -7763,12 +7679,12 @@ func RepoInfoFromPb(pb *marketplacepb.RepoInfoPb) (*RepoInfo, error) {
 type RepoInstallation struct {
 	// the user-specified repo name for their installed git repo listing
 	// Wire name: 'repo_name'
-	RepoName string ``
+	RepoName string `json:"repo_name"`
 	// refers to the full url file path that navigates the user to the repo's
 	// entrypoint (e.g. a README.md file, or the repo file view in the unified
 	// UI) should just be a relative path
 	// Wire name: 'repo_path'
-	RepoPath string ``
+	RepoPath string `json:"repo_path"`
 }
 
 func (st RepoInstallation) MarshalJSON() ([]byte, error) {
@@ -7820,30 +7736,22 @@ func RepoInstallationFromPb(pb *marketplacepb.RepoInstallationPb) (*RepoInstalla
 
 type SearchListingsRequest struct {
 	// Matches any of the following asset types
-	// Wire name: 'assets'
-	Assets []AssetType `tf:"-"`
+	Assets []AssetType `json:"-" tf:"-"`
 	// Matches any of the following categories
-	// Wire name: 'categories'
-	Categories []Category `tf:"-"`
+	Categories []Category `json:"-" tf:"-"`
 
-	// Wire name: 'is_free'
-	IsFree bool `tf:"-"`
+	IsFree bool `json:"-" tf:"-"`
 
-	// Wire name: 'is_private_exchange'
-	IsPrivateExchange bool `tf:"-"`
+	IsPrivateExchange bool `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// Matches any of the following provider ids
-	// Wire name: 'provider_ids'
-	ProviderIds []string `tf:"-"`
+	ProviderIds []string `json:"-" tf:"-"`
 	// Fuzzy matches query
-	// Wire name: 'query'
-	Query           string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Query           string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SearchListingsRequest) MarshalJSON() ([]byte, error) {
@@ -7958,11 +7866,11 @@ func SearchListingsRequestFromPb(pb *marketplacepb.SearchListingsRequestPb) (*Se
 type SearchListingsResponse struct {
 
 	// Wire name: 'listings'
-	Listings []Listing ``
+	Listings []Listing `json:"listings,omitempty"`
 
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SearchListingsResponse) MarshalJSON() ([]byte, error) {
@@ -8043,10 +7951,10 @@ func SearchListingsResponseFromPb(pb *marketplacepb.SearchListingsResponsePb) (*
 type ShareInfo struct {
 
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 
 	// Wire name: 'type'
-	Type ListingShareType ``
+	Type ListingShareType `json:"type"`
 }
 
 func (st ShareInfo) MarshalJSON() ([]byte, error) {
@@ -8112,11 +8020,11 @@ type SharedDataObject struct {
 	// The type of the data object. Could be one of: TABLE, SCHEMA,
 	// NOTEBOOK_FILE, MODEL, VOLUME
 	// Wire name: 'data_object_type'
-	DataObjectType string ``
+	DataObjectType string `json:"data_object_type,omitempty"`
 	// Name of the shared object
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SharedDataObject) MarshalJSON() ([]byte, error) {
@@ -8175,19 +8083,19 @@ func SharedDataObjectFromPb(pb *marketplacepb.SharedDataObjectPb) (*SharedDataOb
 type TokenDetail struct {
 
 	// Wire name: 'bearerToken'
-	BearerToken string ``
+	BearerToken string `json:"bearerToken,omitempty"`
 
 	// Wire name: 'endpoint'
-	Endpoint string ``
+	Endpoint string `json:"endpoint,omitempty"`
 
 	// Wire name: 'expirationTime'
-	ExpirationTime string ``
+	ExpirationTime string `json:"expirationTime,omitempty"`
 	// These field names must follow the delta sharing protocol. Original
 	// message: RetrieveToken.Response in
 	// managed-catalog/api/messages/recipient.proto
 	// Wire name: 'shareCredentialsVersion'
-	ShareCredentialsVersion int      ``
-	ForceSendFields         []string `tf:"-"`
+	ShareCredentialsVersion int      `json:"shareCredentialsVersion,omitempty"`
+	ForceSendFields         []string `json:"-" tf:"-"`
 }
 
 func (st TokenDetail) MarshalJSON() ([]byte, error) {
@@ -8251,26 +8159,26 @@ type TokenInfo struct {
 	// Full activation url to retrieve the access token. It will be empty if the
 	// token is already retrieved.
 	// Wire name: 'activation_url'
-	ActivationUrl string ``
+	ActivationUrl string `json:"activation_url,omitempty"`
 	// Time at which this Recipient Token was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of Recipient Token creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// Expiration timestamp of the token in epoch milliseconds.
 	// Wire name: 'expiration_time'
-	ExpirationTime int64 ``
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
 	// Unique id of the Recipient Token.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Time at which this Recipient Token was updated, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of Recipient Token updater.
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TokenInfo) MarshalJSON() ([]byte, error) {
@@ -8339,10 +8247,9 @@ func TokenInfoFromPb(pb *marketplacepb.TokenInfoPb) (*TokenInfo, error) {
 type UpdateExchangeFilterRequest struct {
 
 	// Wire name: 'filter'
-	Filter ExchangeFilter ``
+	Filter ExchangeFilter `json:"filter"`
 
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st UpdateExchangeFilterRequest) MarshalJSON() ([]byte, error) {
@@ -8407,7 +8314,7 @@ func UpdateExchangeFilterRequestFromPb(pb *marketplacepb.UpdateExchangeFilterReq
 type UpdateExchangeFilterResponse struct {
 
 	// Wire name: 'filter'
-	Filter *ExchangeFilter ``
+	Filter *ExchangeFilter `json:"filter,omitempty"`
 }
 
 func (st UpdateExchangeFilterResponse) MarshalJSON() ([]byte, error) {
@@ -8470,10 +8377,9 @@ func UpdateExchangeFilterResponseFromPb(pb *marketplacepb.UpdateExchangeFilterRe
 type UpdateExchangeRequest struct {
 
 	// Wire name: 'exchange'
-	Exchange Exchange ``
+	Exchange Exchange `json:"exchange"`
 
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st UpdateExchangeRequest) MarshalJSON() ([]byte, error) {
@@ -8538,7 +8444,7 @@ func UpdateExchangeRequestFromPb(pb *marketplacepb.UpdateExchangeRequestPb) (*Up
 type UpdateExchangeResponse struct {
 
 	// Wire name: 'exchange'
-	Exchange *Exchange ``
+	Exchange *Exchange `json:"exchange,omitempty"`
 }
 
 func (st UpdateExchangeResponse) MarshalJSON() ([]byte, error) {
@@ -8601,17 +8507,15 @@ func UpdateExchangeResponseFromPb(pb *marketplacepb.UpdateExchangeResponsePb) (*
 type UpdateInstallationRequest struct {
 
 	// Wire name: 'installation'
-	Installation InstallationDetail ``
+	Installation InstallationDetail `json:"installation"`
 
-	// Wire name: 'installation_id'
-	InstallationId string `tf:"-"`
+	InstallationId string `json:"-" tf:"-"`
 
-	// Wire name: 'listing_id'
-	ListingId string `tf:"-"`
+	ListingId string `json:"-" tf:"-"`
 
 	// Wire name: 'rotate_token'
-	RotateToken     bool     ``
-	ForceSendFields []string `tf:"-"`
+	RotateToken     bool     `json:"rotate_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateInstallationRequest) MarshalJSON() ([]byte, error) {
@@ -8686,7 +8590,7 @@ func UpdateInstallationRequestFromPb(pb *marketplacepb.UpdateInstallationRequest
 type UpdateInstallationResponse struct {
 
 	// Wire name: 'installation'
-	Installation *InstallationDetail ``
+	Installation *InstallationDetail `json:"installation,omitempty"`
 }
 
 func (st UpdateInstallationResponse) MarshalJSON() ([]byte, error) {
@@ -8747,12 +8651,10 @@ func UpdateInstallationResponseFromPb(pb *marketplacepb.UpdateInstallationRespon
 }
 
 type UpdateListingRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 
 	// Wire name: 'listing'
-	Listing Listing ``
+	Listing Listing `json:"listing"`
 }
 
 func (st UpdateListingRequest) MarshalJSON() ([]byte, error) {
@@ -8817,7 +8719,7 @@ func UpdateListingRequestFromPb(pb *marketplacepb.UpdateListingRequestPb) (*Upda
 type UpdateListingResponse struct {
 
 	// Wire name: 'listing'
-	Listing *Listing ``
+	Listing *Listing `json:"listing,omitempty"`
 }
 
 func (st UpdateListingResponse) MarshalJSON() ([]byte, error) {
@@ -8878,22 +8780,19 @@ func UpdateListingResponseFromPb(pb *marketplacepb.UpdateListingResponsePb) (*Up
 }
 
 type UpdatePersonalizationRequestRequest struct {
-
-	// Wire name: 'listing_id'
-	ListingId string `tf:"-"`
+	ListingId string `json:"-" tf:"-"`
 
 	// Wire name: 'reason'
-	Reason string ``
+	Reason string `json:"reason,omitempty"`
 
-	// Wire name: 'request_id'
-	RequestId string `tf:"-"`
+	RequestId string `json:"-" tf:"-"`
 
 	// Wire name: 'share'
-	Share *ShareInfo ``
+	Share *ShareInfo `json:"share,omitempty"`
 
 	// Wire name: 'status'
-	Status          PersonalizationRequestStatus ``
-	ForceSendFields []string                     `tf:"-"`
+	Status          PersonalizationRequestStatus `json:"status"`
+	ForceSendFields []string                     `json:"-" tf:"-"`
 }
 
 func (st UpdatePersonalizationRequestRequest) MarshalJSON() ([]byte, error) {
@@ -8982,7 +8881,7 @@ func UpdatePersonalizationRequestRequestFromPb(pb *marketplacepb.UpdatePersonali
 type UpdatePersonalizationRequestResponse struct {
 
 	// Wire name: 'request'
-	Request *PersonalizationRequest ``
+	Request *PersonalizationRequest `json:"request,omitempty"`
 }
 
 func (st UpdatePersonalizationRequestResponse) MarshalJSON() ([]byte, error) {
@@ -9044,14 +8943,13 @@ func UpdatePersonalizationRequestResponseFromPb(pb *marketplacepb.UpdatePersonal
 
 type UpdateProviderAnalyticsDashboardRequest struct {
 	// id is immutable property and can't be updated.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 	// this is the version of the dashboard template we want to update our user
 	// to current expectation is that it should be equal to latest version of
 	// the dashboard template
 	// Wire name: 'version'
-	Version         int64    ``
-	ForceSendFields []string `tf:"-"`
+	Version         int64    `json:"version,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateProviderAnalyticsDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -9110,14 +9008,14 @@ func UpdateProviderAnalyticsDashboardRequestFromPb(pb *marketplacepb.UpdateProvi
 type UpdateProviderAnalyticsDashboardResponse struct {
 	// this is newly created Lakeview dashboard for the user
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id"`
 	// id & version should be the same as the request
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id"`
 
 	// Wire name: 'version'
-	Version         int64    ``
-	ForceSendFields []string `tf:"-"`
+	Version         int64    `json:"version,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
@@ -9176,12 +9074,10 @@ func UpdateProviderAnalyticsDashboardResponseFromPb(pb *marketplacepb.UpdateProv
 }
 
 type UpdateProviderRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 
 	// Wire name: 'provider'
-	Provider ProviderInfo ``
+	Provider ProviderInfo `json:"provider"`
 }
 
 func (st UpdateProviderRequest) MarshalJSON() ([]byte, error) {
@@ -9246,7 +9142,7 @@ func UpdateProviderRequestFromPb(pb *marketplacepb.UpdateProviderRequestPb) (*Up
 type UpdateProviderResponse struct {
 
 	// Wire name: 'provider'
-	Provider *ProviderInfo ``
+	Provider *ProviderInfo `json:"provider,omitempty"`
 }
 
 func (st UpdateProviderResponse) MarshalJSON() ([]byte, error) {

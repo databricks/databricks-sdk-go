@@ -3,21 +3,43 @@
 package jsonmarshallv2
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/internal/testspecs/service/jsonmarshallv2/jsonmarshallv2pb"
-	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
 type GetResourceRequest struct {
-
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Description.
-	// Wire name: 'resource'
-	Resource Resource `tf:"-"`
+	Resource Resource `json:"-" tf:"-"`
+}
+
+func (st GetResourceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetResourceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetResourceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &jsonmarshallv2pb.GetResourceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetResourceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func GetResourceRequestToPb(st *GetResourceRequest) (*jsonmarshallv2pb.GetResourceRequestPb, error) {
@@ -57,22 +79,39 @@ func GetResourceRequestFromPb(pb *jsonmarshallv2pb.GetResourceRequestPb) (*GetRe
 type NestedMessage struct {
 
 	// Wire name: 'optional_duration'
-	OptionalDuration *time.Duration ``
+	OptionalDuration *time.Duration `json:"optional_duration,omitempty"`
 
 	// Wire name: 'optional_string'
-	OptionalString string ``
+	OptionalString string `json:"optional_string,omitempty"`
 
 	// Wire name: 'optional_timestamp'
-	OptionalTimestamp *time.Time ``
-	ForceSendFields   []string   `tf:"-"`
+	OptionalTimestamp *time.Time `json:"optional_timestamp,omitempty"`
+	ForceSendFields   []string   `json:"-" tf:"-"`
 }
 
-func (s *NestedMessage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st NestedMessage) MarshalJSON() ([]byte, error) {
+	pb, err := NestedMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s NestedMessage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *NestedMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &jsonmarshallv2pb.NestedMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NestedMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func NestedMessageToPb(st *NestedMessage) (*jsonmarshallv2pb.NestedMessagePb, error) {
@@ -96,7 +135,9 @@ func NestedMessageToPb(st *NestedMessage) (*jsonmarshallv2pb.NestedMessagePb, er
 		pb.OptionalTimestamp = *optionalTimestampPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -121,14 +162,16 @@ func NestedMessageFromPb(pb *jsonmarshallv2pb.NestedMessagePb) (*NestedMessage, 
 		st.OptionalTimestamp = optionalTimestampField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
 type OptionalFields struct {
 
 	// Wire name: 'duration'
-	Duration *time.Duration ``
+	Duration *time.Duration `json:"duration,omitempty"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -136,41 +179,58 @@ type OptionalFields struct {
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
 	// Wire name: 'field_mask'
-	FieldMask *[]string ``
+	FieldMask []string `json:"field_mask,omitempty"`
 	// Lint disable reason: This is a dummy field used to test SDK Generation
 	// logic.
 	// Wire name: 'map'
-	Map map[string]string ``
+	Map map[string]string `json:"map,omitempty"`
 
 	// Wire name: 'optional_bool'
-	OptionalBool bool ``
+	OptionalBool bool `json:"optional_bool,omitempty"`
 
 	// Wire name: 'optional_int32'
-	OptionalInt32 int ``
+	OptionalInt32 int `json:"optional_int32,omitempty"`
 
 	// Wire name: 'optional_int64'
-	OptionalInt64 int64 ``
+	OptionalInt64 int64 `json:"optional_int64,omitempty"`
 
 	// Wire name: 'optional_message'
-	OptionalMessage *NestedMessage ``
+	OptionalMessage *NestedMessage `json:"optional_message,omitempty"`
 
 	// Wire name: 'optional_string'
-	OptionalString string ``
+	OptionalString string `json:"optional_string,omitempty"`
 
 	// Wire name: 'test_enum'
-	TestEnum TestEnum ``
+	TestEnum TestEnum `json:"test_enum,omitempty"`
 
 	// Wire name: 'timestamp'
-	Timestamp       *time.Time ``
-	ForceSendFields []string   `tf:"-"`
+	Timestamp       *time.Time `json:"timestamp,omitempty"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
-func (s *OptionalFields) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st OptionalFields) MarshalJSON() ([]byte, error) {
+	pb, err := OptionalFieldsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s OptionalFields) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *OptionalFields) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &jsonmarshallv2pb.OptionalFieldsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := OptionalFieldsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func OptionalFieldsToPb(st *OptionalFields) (*jsonmarshallv2pb.OptionalFieldsPb, error) {
@@ -185,7 +245,7 @@ func OptionalFieldsToPb(st *OptionalFields) (*jsonmarshallv2pb.OptionalFieldsPb,
 	if durationPb != nil {
 		pb.Duration = *durationPb
 	}
-	fieldMaskPb, err := fieldMaskToPb(st.FieldMask)
+	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
 	if err != nil {
 		return nil, err
 	}
@@ -219,7 +279,9 @@ func OptionalFieldsToPb(st *OptionalFields) (*jsonmarshallv2pb.OptionalFieldsPb,
 		pb.Timestamp = *timestampPb
 	}
 
-	pb.ForceSendFields = st.ForceSendFields
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
 	return pb, nil
 }
 
@@ -240,7 +302,7 @@ func OptionalFieldsFromPb(pb *jsonmarshallv2pb.OptionalFieldsPb) (*OptionalField
 		return nil, err
 	}
 	if fieldMaskField != nil {
-		st.FieldMask = fieldMaskField
+		st.FieldMask = *fieldMaskField
 	}
 	st.Map = pb.Map
 	st.OptionalBool = pb.OptionalBool
@@ -269,38 +331,65 @@ func OptionalFieldsFromPb(pb *jsonmarshallv2pb.OptionalFieldsPb) (*OptionalField
 		st.Timestamp = timestampField
 	}
 
-	st.ForceSendFields = pb.ForceSendFields
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
 	return st, nil
 }
 
 type RepeatedFields struct {
 
 	// Wire name: 'repeated_bool'
-	RepeatedBool []bool ``
+	RepeatedBool []bool `json:"repeated_bool,omitempty"`
 
 	// Wire name: 'repeated_duration'
-	RepeatedDuration []time.Duration ``
+	RepeatedDuration []time.Duration `json:"repeated_duration,omitempty"`
 
 	// Wire name: 'repeated_field_mask'
-	RepeatedFieldMask [][]string ``
+	RepeatedFieldMask [][]string `json:"repeated_field_mask,omitempty"`
 
 	// Wire name: 'repeated_int32'
-	RepeatedInt32 []int ``
+	RepeatedInt32 []int `json:"repeated_int32,omitempty"`
 
 	// Wire name: 'repeated_int64'
-	RepeatedInt64 []int64 ``
+	RepeatedInt64 []int64 `json:"repeated_int64,omitempty"`
 
 	// Wire name: 'repeated_message'
-	RepeatedMessage []NestedMessage ``
+	RepeatedMessage []NestedMessage `json:"repeated_message,omitempty"`
 
 	// Wire name: 'repeated_string'
-	RepeatedString []string ``
+	RepeatedString []string `json:"repeated_string,omitempty"`
 
 	// Wire name: 'repeated_timestamp'
-	RepeatedTimestamp []time.Time ``
+	RepeatedTimestamp []time.Time `json:"repeated_timestamp,omitempty"`
 
 	// Wire name: 'test_repeated_enum'
-	TestRepeatedEnum []TestEnum ``
+	TestRepeatedEnum []TestEnum `json:"test_repeated_enum,omitempty"`
+}
+
+func (st RepeatedFields) MarshalJSON() ([]byte, error) {
+	pb, err := RepeatedFieldsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RepeatedFields) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &jsonmarshallv2pb.RepeatedFieldsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RepeatedFieldsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RepeatedFieldsToPb(st *RepeatedFields) (*jsonmarshallv2pb.RepeatedFieldsPb, error) {
@@ -452,10 +541,10 @@ func RepeatedFieldsFromPb(pb *jsonmarshallv2pb.RepeatedFieldsPb) (*RepeatedField
 type RequiredFields struct {
 
 	// Wire name: 'required_bool'
-	RequiredBool bool ``
+	RequiredBool bool `json:"required_bool"`
 
 	// Wire name: 'required_duration'
-	RequiredDuration time.Duration ``
+	RequiredDuration time.Duration `json:"required_duration"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -463,25 +552,50 @@ type RequiredFields struct {
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
 	// Wire name: 'required_field_mask'
-	RequiredFieldMask []string ``
+	RequiredFieldMask []string `json:"required_field_mask"`
 
 	// Wire name: 'required_int32'
-	RequiredInt32 int ``
+	RequiredInt32 int `json:"required_int32"`
 
 	// Wire name: 'required_int64'
-	RequiredInt64 int64 ``
+	RequiredInt64 int64 `json:"required_int64"`
 
 	// Wire name: 'required_message'
-	RequiredMessage NestedMessage ``
+	RequiredMessage NestedMessage `json:"required_message"`
 
 	// Wire name: 'required_string'
-	RequiredString string ``
+	RequiredString string `json:"required_string"`
 
 	// Wire name: 'required_timestamp'
-	RequiredTimestamp time.Time ``
+	RequiredTimestamp time.Time `json:"required_timestamp"`
 
 	// Wire name: 'test_required_enum'
-	TestRequiredEnum TestEnum ``
+	TestRequiredEnum TestEnum `json:"test_required_enum"`
+}
+
+func (st RequiredFields) MarshalJSON() ([]byte, error) {
+	pb, err := RequiredFieldsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RequiredFields) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &jsonmarshallv2pb.RequiredFieldsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RequiredFieldsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func RequiredFieldsToPb(st *RequiredFields) (*jsonmarshallv2pb.RequiredFieldsPb, error) {
@@ -586,13 +700,38 @@ func RequiredFieldsFromPb(pb *jsonmarshallv2pb.RequiredFieldsPb) (*RequiredField
 type Resource struct {
 
 	// Wire name: 'optional_fields'
-	OptionalFields *OptionalFields ``
+	OptionalFields *OptionalFields `json:"optional_fields,omitempty"`
 
 	// Wire name: 'repeated_fields'
-	RepeatedFields *RepeatedFields ``
+	RepeatedFields *RepeatedFields `json:"repeated_fields,omitempty"`
 
 	// Wire name: 'required_fields'
-	RequiredFields *RequiredFields ``
+	RequiredFields *RequiredFields `json:"required_fields,omitempty"`
+}
+
+func (st Resource) MarshalJSON() ([]byte, error) {
+	pb, err := ResourceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Resource) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &jsonmarshallv2pb.ResourcePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ResourceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
 func ResourceToPb(st *Resource) (*jsonmarshallv2pb.ResourcePb, error) {

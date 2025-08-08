@@ -17,107 +17,107 @@ type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
 	// Wire name: 'allow_duplicate_names'
-	AllowDuplicateNames bool ``
+	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
 	// Budget policy of this pipeline.
 	// Wire name: 'budget_policy_id'
-	BudgetPolicyId string ``
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// A catalog in Unity Catalog to publish data from this pipeline to. If
 	// `target` is specified, tables in this pipeline are published to a
 	// `target` schema inside `catalog` (for example,
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
 	// Wire name: 'catalog'
-	Catalog string ``
+	Catalog string `json:"catalog,omitempty"`
 	// DLT Release Channel that specifies which version to use.
 	// Wire name: 'channel'
-	Channel string ``
+	Channel string `json:"channel,omitempty"`
 	// Cluster settings for this pipeline deployment.
 	// Wire name: 'clusters'
-	Clusters []PipelineCluster ``
+	Clusters []PipelineCluster `json:"clusters,omitempty"`
 	// String-String configuration for this pipeline execution.
 	// Wire name: 'configuration'
-	Configuration map[string]string ``
+	Configuration map[string]string `json:"configuration,omitempty"`
 	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
 	// Wire name: 'continuous'
-	Continuous bool ``
+	Continuous bool `json:"continuous,omitempty"`
 	// Deployment type of this pipeline.
 	// Wire name: 'deployment'
-	Deployment *PipelineDeployment ``
+	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
 	// Wire name: 'development'
-	Development bool ``
+	Development bool `json:"development,omitempty"`
 
 	// Wire name: 'dry_run'
-	DryRun bool ``
+	DryRun bool `json:"dry_run,omitempty"`
 	// Pipeline product edition.
 	// Wire name: 'edition'
-	Edition string ``
+	Edition string `json:"edition,omitempty"`
 	// Environment specification for this pipeline used to install dependencies.
 	// Wire name: 'environment'
-	Environment *PipelinesEnvironment ``
+	Environment *PipelinesEnvironment `json:"environment,omitempty"`
 	// Event log configuration for this pipeline
 	// Wire name: 'event_log'
-	EventLog *EventLogSpec ``
+	EventLog *EventLogSpec `json:"event_log,omitempty"`
 	// Filters on which Pipeline packages to include in the deployed graph.
 	// Wire name: 'filters'
-	Filters *Filters ``
+	Filters *Filters `json:"filters,omitempty"`
 	// The definition of a gateway pipeline to support change data capture.
 	// Wire name: 'gateway_definition'
-	GatewayDefinition *IngestionGatewayPipelineDefinition ``
+	GatewayDefinition *IngestionGatewayPipelineDefinition `json:"gateway_definition,omitempty"`
 	// Unique identifier for this pipeline.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
 	// be used with the 'libraries', 'schema', 'target', or 'catalog' settings.
 	// Wire name: 'ingestion_definition'
-	IngestionDefinition *IngestionPipelineDefinition ``
+	IngestionDefinition *IngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	// Wire name: 'libraries'
-	Libraries []PipelineLibrary ``
+	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// List of notification settings for this pipeline.
 	// Wire name: 'notifications'
-	Notifications []Notifications ``
+	Notifications []Notifications `json:"notifications,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	// Wire name: 'photon'
-	Photon bool ``
+	Photon bool `json:"photon,omitempty"`
 	// Restart window of this pipeline.
 	// Wire name: 'restart_window'
-	RestartWindow *RestartWindow ``
+	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
 	// Root path for this pipeline. This is used as the root directory when
 	// editing the pipeline in the Databricks user interface and it is added to
 	// sys.path when executing Python sources during pipeline execution.
 	// Wire name: 'root_path'
-	RootPath string ``
+	RootPath string `json:"root_path,omitempty"`
 
 	// Wire name: 'run_as'
-	RunAs *RunAs ``
+	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	// Wire name: 'serverless'
-	Serverless bool ``
+	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	// Wire name: 'storage'
-	Storage string ``
+	Storage string `json:"storage,omitempty"`
 	// A map of tags associated with the pipeline. These are forwarded to the
 	// cluster as cluster tags, and are therefore subject to the same
 	// limitations. A maximum of 25 tags can be added to the pipeline.
 	// Wire name: 'tags'
-	Tags map[string]string ``
+	Tags map[string]string `json:"tags,omitempty"`
 	// Target schema (database) to add tables in this pipeline to. Exactly one
 	// of `schema` or `target` must be specified. To publish to Unity Catalog,
 	// also specify `catalog`. This legacy field is deprecated for pipeline
 	// creation in favor of the `schema` field.
 	// Wire name: 'target'
-	Target string ``
+	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	// Wire name: 'trigger'
-	Trigger         *PipelineTrigger ``
-	ForceSendFields []string         `tf:"-"`
+	Trigger         *PipelineTrigger `json:"trigger,omitempty"`
+	ForceSendFields []string         `json:"-" tf:"-"`
 }
 
 func (st CreatePipeline) MarshalJSON() ([]byte, error) {
@@ -406,12 +406,12 @@ func CreatePipelineFromPb(pb *pipelinespb.CreatePipelinePb) (*CreatePipeline, er
 type CreatePipelineResponse struct {
 	// Only returned when dry_run is true.
 	// Wire name: 'effective_settings'
-	EffectiveSettings *PipelineSpec ``
+	EffectiveSettings *PipelineSpec `json:"effective_settings,omitempty"`
 	// The unique identifier for the newly created pipeline. Only returned when
 	// dry_run is false.
 	// Wire name: 'pipeline_id'
-	PipelineId      string   ``
-	ForceSendFields []string `tf:"-"`
+	PipelineId      string   `json:"pipeline_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreatePipelineResponse) MarshalJSON() ([]byte, error) {
@@ -482,11 +482,11 @@ func CreatePipelineResponseFromPb(pb *pipelinespb.CreatePipelineResponsePb) (*Cr
 type CronTrigger struct {
 
 	// Wire name: 'quartz_cron_schedule'
-	QuartzCronSchedule string ``
+	QuartzCronSchedule string `json:"quartz_cron_schedule,omitempty"`
 
 	// Wire name: 'timezone_id'
-	TimezoneId      string   ``
-	ForceSendFields []string `tf:"-"`
+	TimezoneId      string   `json:"timezone_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CronTrigger) MarshalJSON() ([]byte, error) {
@@ -545,11 +545,11 @@ func CronTriggerFromPb(pb *pipelinespb.CronTriggerPb) (*CronTrigger, error) {
 type DataPlaneId struct {
 	// The instance name of the data plane emitting an event.
 	// Wire name: 'instance'
-	Instance string ``
+	Instance string `json:"instance,omitempty"`
 	// A sequence number, unique and increasing within the data plane instance.
 	// Wire name: 'seq_no'
-	SeqNo           int64    ``
-	ForceSendFields []string `tf:"-"`
+	SeqNo           int64    `json:"seq_no,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DataPlaneId) MarshalJSON() ([]byte, error) {
@@ -677,9 +677,7 @@ func DayOfWeekFromPb(pb *pipelinespb.DayOfWeekPb) (*DayOfWeek, error) {
 }
 
 type DeletePipelineRequest struct {
-
-	// Wire name: 'pipeline_id'
-	PipelineId string `tf:"-"`
+	PipelineId string `json:"-" tf:"-"`
 }
 
 func (st DeletePipelineRequest) MarshalJSON() ([]byte, error) {
@@ -783,112 +781,111 @@ type EditPipeline struct {
 	// If false, deployment will fail if name has changed and conflicts the name
 	// of another pipeline.
 	// Wire name: 'allow_duplicate_names'
-	AllowDuplicateNames bool ``
+	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
 	// Budget policy of this pipeline.
 	// Wire name: 'budget_policy_id'
-	BudgetPolicyId string ``
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// A catalog in Unity Catalog to publish data from this pipeline to. If
 	// `target` is specified, tables in this pipeline are published to a
 	// `target` schema inside `catalog` (for example,
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
 	// Wire name: 'catalog'
-	Catalog string ``
+	Catalog string `json:"catalog,omitempty"`
 	// DLT Release Channel that specifies which version to use.
 	// Wire name: 'channel'
-	Channel string ``
+	Channel string `json:"channel,omitempty"`
 	// Cluster settings for this pipeline deployment.
 	// Wire name: 'clusters'
-	Clusters []PipelineCluster ``
+	Clusters []PipelineCluster `json:"clusters,omitempty"`
 	// String-String configuration for this pipeline execution.
 	// Wire name: 'configuration'
-	Configuration map[string]string ``
+	Configuration map[string]string `json:"configuration,omitempty"`
 	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
 	// Wire name: 'continuous'
-	Continuous bool ``
+	Continuous bool `json:"continuous,omitempty"`
 	// Deployment type of this pipeline.
 	// Wire name: 'deployment'
-	Deployment *PipelineDeployment ``
+	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
 	// Wire name: 'development'
-	Development bool ``
+	Development bool `json:"development,omitempty"`
 	// Pipeline product edition.
 	// Wire name: 'edition'
-	Edition string ``
+	Edition string `json:"edition,omitempty"`
 	// Environment specification for this pipeline used to install dependencies.
 	// Wire name: 'environment'
-	Environment *PipelinesEnvironment ``
+	Environment *PipelinesEnvironment `json:"environment,omitempty"`
 	// Event log configuration for this pipeline
 	// Wire name: 'event_log'
-	EventLog *EventLogSpec ``
+	EventLog *EventLogSpec `json:"event_log,omitempty"`
 	// If present, the last-modified time of the pipeline settings before the
 	// edit. If the settings were modified after that time, then the request
 	// will fail with a conflict.
 	// Wire name: 'expected_last_modified'
-	ExpectedLastModified int64 ``
+	ExpectedLastModified int64 `json:"expected_last_modified,omitempty"`
 	// Filters on which Pipeline packages to include in the deployed graph.
 	// Wire name: 'filters'
-	Filters *Filters ``
+	Filters *Filters `json:"filters,omitempty"`
 	// The definition of a gateway pipeline to support change data capture.
 	// Wire name: 'gateway_definition'
-	GatewayDefinition *IngestionGatewayPipelineDefinition ``
+	GatewayDefinition *IngestionGatewayPipelineDefinition `json:"gateway_definition,omitempty"`
 	// Unique identifier for this pipeline.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
 	// be used with the 'libraries', 'schema', 'target', or 'catalog' settings.
 	// Wire name: 'ingestion_definition'
-	IngestionDefinition *IngestionPipelineDefinition ``
+	IngestionDefinition *IngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	// Wire name: 'libraries'
-	Libraries []PipelineLibrary ``
+	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// List of notification settings for this pipeline.
 	// Wire name: 'notifications'
-	Notifications []Notifications ``
+	Notifications []Notifications `json:"notifications,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	// Wire name: 'photon'
-	Photon bool ``
+	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
-	// Wire name: 'pipeline_id'
-	PipelineId string `tf:"-"`
+	PipelineId string `json:"-" tf:"-"`
 	// Restart window of this pipeline.
 	// Wire name: 'restart_window'
-	RestartWindow *RestartWindow ``
+	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
 	// Root path for this pipeline. This is used as the root directory when
 	// editing the pipeline in the Databricks user interface and it is added to
 	// sys.path when executing Python sources during pipeline execution.
 	// Wire name: 'root_path'
-	RootPath string ``
+	RootPath string `json:"root_path,omitempty"`
 
 	// Wire name: 'run_as'
-	RunAs *RunAs ``
+	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	// Wire name: 'serverless'
-	Serverless bool ``
+	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	// Wire name: 'storage'
-	Storage string ``
+	Storage string `json:"storage,omitempty"`
 	// A map of tags associated with the pipeline. These are forwarded to the
 	// cluster as cluster tags, and are therefore subject to the same
 	// limitations. A maximum of 25 tags can be added to the pipeline.
 	// Wire name: 'tags'
-	Tags map[string]string ``
+	Tags map[string]string `json:"tags,omitempty"`
 	// Target schema (database) to add tables in this pipeline to. Exactly one
 	// of `schema` or `target` must be specified. To publish to Unity Catalog,
 	// also specify `catalog`. This legacy field is deprecated for pipeline
 	// creation in favor of the `schema` field.
 	// Wire name: 'target'
-	Target string ``
+	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	// Wire name: 'trigger'
-	Trigger         *PipelineTrigger ``
-	ForceSendFields []string         `tf:"-"`
+	Trigger         *PipelineTrigger `json:"trigger,omitempty"`
+	ForceSendFields []string         `json:"-" tf:"-"`
 }
 
 func (st EditPipeline) MarshalJSON() ([]byte, error) {
@@ -1179,11 +1176,11 @@ func EditPipelineFromPb(pb *pipelinespb.EditPipelinePb) (*EditPipeline, error) {
 type ErrorDetail struct {
 	// The exception thrown for this error, with its chain of cause.
 	// Wire name: 'exceptions'
-	Exceptions []SerializedException ``
+	Exceptions []SerializedException `json:"exceptions,omitempty"`
 	// Whether this error is considered fatal, that is, unrecoverable.
 	// Wire name: 'fatal'
-	Fatal           bool     ``
-	ForceSendFields []string `tf:"-"`
+	Fatal           bool     `json:"fatal,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ErrorDetail) MarshalJSON() ([]byte, error) {
@@ -1325,14 +1322,14 @@ func EventLevelFromPb(pb *pipelinespb.EventLevelPb) (*EventLevel, error) {
 type EventLogSpec struct {
 	// The UC catalog the event log is published under.
 	// Wire name: 'catalog'
-	Catalog string ``
+	Catalog string `json:"catalog,omitempty"`
 	// The name the event log is published to in UC.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The UC schema the event log is published under.
 	// Wire name: 'schema'
-	Schema          string   ``
-	ForceSendFields []string `tf:"-"`
+	Schema          string   `json:"schema,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EventLogSpec) MarshalJSON() ([]byte, error) {
@@ -1393,8 +1390,8 @@ func EventLogSpecFromPb(pb *pipelinespb.EventLogSpecPb) (*EventLogSpec, error) {
 type FileLibrary struct {
 	// The absolute path of the source code.
 	// Wire name: 'path'
-	Path            string   ``
-	ForceSendFields []string `tf:"-"`
+	Path            string   `json:"path,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FileLibrary) MarshalJSON() ([]byte, error) {
@@ -1451,10 +1448,10 @@ func FileLibraryFromPb(pb *pipelinespb.FileLibraryPb) (*FileLibrary, error) {
 type Filters struct {
 	// Paths to exclude.
 	// Wire name: 'exclude'
-	Exclude []string ``
+	Exclude []string `json:"exclude,omitempty"`
 	// Paths to include.
 	// Wire name: 'include'
-	Include []string ``
+	Include []string `json:"include,omitempty"`
 }
 
 func (st Filters) MarshalJSON() ([]byte, error) {
@@ -1506,8 +1503,7 @@ func FiltersFromPb(pb *pipelinespb.FiltersPb) (*Filters, error) {
 
 type GetPipelinePermissionLevelsRequest struct {
 	// The pipeline for which to get or manage permissions.
-	// Wire name: 'pipeline_id'
-	PipelineId string `tf:"-"`
+	PipelineId string `json:"-" tf:"-"`
 }
 
 func (st GetPipelinePermissionLevelsRequest) MarshalJSON() ([]byte, error) {
@@ -1558,7 +1554,7 @@ func GetPipelinePermissionLevelsRequestFromPb(pb *pipelinespb.GetPipelinePermiss
 type GetPipelinePermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []PipelinePermissionsDescription ``
+	PermissionLevels []PipelinePermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetPipelinePermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -1630,8 +1626,7 @@ func GetPipelinePermissionLevelsResponseFromPb(pb *pipelinespb.GetPipelinePermis
 
 type GetPipelinePermissionsRequest struct {
 	// The pipeline for which to get or manage permissions.
-	// Wire name: 'pipeline_id'
-	PipelineId string `tf:"-"`
+	PipelineId string `json:"-" tf:"-"`
 }
 
 func (st GetPipelinePermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -1680,9 +1675,7 @@ func GetPipelinePermissionsRequestFromPb(pb *pipelinespb.GetPipelinePermissionsR
 }
 
 type GetPipelineRequest struct {
-
-	// Wire name: 'pipeline_id'
-	PipelineId string `tf:"-"`
+	PipelineId string `json:"-" tf:"-"`
 }
 
 func (st GetPipelineRequest) MarshalJSON() ([]byte, error) {
@@ -1733,49 +1726,49 @@ func GetPipelineRequestFromPb(pb *pipelinespb.GetPipelineRequestPb) (*GetPipelin
 type GetPipelineResponse struct {
 	// An optional message detailing the cause of the pipeline state.
 	// Wire name: 'cause'
-	Cause string ``
+	Cause string `json:"cause,omitempty"`
 	// The ID of the cluster that the pipeline is running on.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id,omitempty"`
 	// The username of the pipeline creator.
 	// Wire name: 'creator_user_name'
-	CreatorUserName string ``
+	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Serverless budget policy ID of this pipeline.
 	// Wire name: 'effective_budget_policy_id'
-	EffectiveBudgetPolicyId string ``
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The health of a pipeline.
 	// Wire name: 'health'
-	Health GetPipelineResponseHealth ``
+	Health GetPipelineResponseHealth `json:"health,omitempty"`
 	// The last time the pipeline settings were modified or created.
 	// Wire name: 'last_modified'
-	LastModified int64 ``
+	LastModified int64 `json:"last_modified,omitempty"`
 	// Status of the latest updates for the pipeline. Ordered with the newest
 	// update first.
 	// Wire name: 'latest_updates'
-	LatestUpdates []UpdateStateInfo ``
+	LatestUpdates []UpdateStateInfo `json:"latest_updates,omitempty"`
 	// A human friendly identifier for the pipeline, taken from the `spec`.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The ID of the pipeline.
 	// Wire name: 'pipeline_id'
-	PipelineId string ``
+	PipelineId string `json:"pipeline_id,omitempty"`
 	// The user or service principal that the pipeline runs as, if specified in
 	// the request. This field indicates the explicit configuration of `run_as`
 	// for the pipeline. To find the value in all cases, explicit or implicit,
 	// use `run_as_user_name`.
 	// Wire name: 'run_as'
-	RunAs *RunAs ``
+	RunAs *RunAs `json:"run_as,omitempty"`
 	// Username of the user that the pipeline will run on behalf of.
 	// Wire name: 'run_as_user_name'
-	RunAsUserName string ``
+	RunAsUserName string `json:"run_as_user_name,omitempty"`
 	// The pipeline specification. This field is not returned when called by
 	// `ListPipelines`.
 	// Wire name: 'spec'
-	Spec *PipelineSpec ``
+	Spec *PipelineSpec `json:"spec,omitempty"`
 	// The pipeline state.
 	// Wire name: 'state'
-	State           PipelineState ``
-	ForceSendFields []string      `tf:"-"`
+	State           PipelineState `json:"state,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st GetPipelineResponse) MarshalJSON() ([]byte, error) {
@@ -1979,11 +1972,9 @@ func GetPipelineResponseHealthFromPb(pb *pipelinespb.GetPipelineResponseHealthPb
 
 type GetUpdateRequest struct {
 	// The ID of the pipeline.
-	// Wire name: 'pipeline_id'
-	PipelineId string `tf:"-"`
+	PipelineId string `json:"-" tf:"-"`
 	// The ID of the update.
-	// Wire name: 'update_id'
-	UpdateId string `tf:"-"`
+	UpdateId string `json:"-" tf:"-"`
 }
 
 func (st GetUpdateRequest) MarshalJSON() ([]byte, error) {
@@ -2036,7 +2027,7 @@ func GetUpdateRequestFromPb(pb *pipelinespb.GetUpdateRequestPb) (*GetUpdateReque
 type GetUpdateResponse struct {
 	// The current update info.
 	// Wire name: 'update'
-	Update *UpdateInfo ``
+	Update *UpdateInfo `json:"update,omitempty"`
 }
 
 func (st GetUpdateResponse) MarshalJSON() ([]byte, error) {
@@ -2099,13 +2090,13 @@ func GetUpdateResponseFromPb(pb *pipelinespb.GetUpdateResponsePb) (*GetUpdateRes
 type IngestionConfig struct {
 	// Select a specific source report.
 	// Wire name: 'report'
-	Report *ReportSpec ``
+	Report *ReportSpec `json:"report,omitempty"`
 	// Select all tables from a specific source schema.
 	// Wire name: 'schema'
-	Schema *SchemaSpec ``
+	Schema *SchemaSpec `json:"schema,omitempty"`
 	// Select a specific source table.
 	// Wire name: 'table'
-	Table *TableSpec ``
+	Table *TableSpec `json:"table,omitempty"`
 }
 
 func (st IngestionConfig) MarshalJSON() ([]byte, error) {
@@ -2198,26 +2189,26 @@ type IngestionGatewayPipelineDefinition struct {
 	// connection that this gateway pipeline uses to communicate with the
 	// source.
 	// Wire name: 'connection_id'
-	ConnectionId string ``
+	ConnectionId string `json:"connection_id,omitempty"`
 	// Immutable. The Unity Catalog connection that this gateway pipeline uses
 	// to communicate with the source.
 	// Wire name: 'connection_name'
-	ConnectionName string ``
+	ConnectionName string `json:"connection_name"`
 	// Required, Immutable. The name of the catalog for the gateway pipeline's
 	// storage location.
 	// Wire name: 'gateway_storage_catalog'
-	GatewayStorageCatalog string ``
+	GatewayStorageCatalog string `json:"gateway_storage_catalog"`
 	// Optional. The Unity Catalog-compatible name for the gateway storage
 	// location. This is the destination to use for the data that is extracted
 	// by the gateway. Delta Live Tables system will automatically create the
 	// storage location under the catalog and schema.
 	// Wire name: 'gateway_storage_name'
-	GatewayStorageName string ``
+	GatewayStorageName string `json:"gateway_storage_name,omitempty"`
 	// Required, Immutable. The name of the schema for the gateway pipelines's
 	// storage location.
 	// Wire name: 'gateway_storage_schema'
-	GatewayStorageSchema string   ``
-	ForceSendFields      []string `tf:"-"`
+	GatewayStorageSchema string   `json:"gateway_storage_schema"`
+	ForceSendFields      []string `json:"-" tf:"-"`
 }
 
 func (st IngestionGatewayPipelineDefinition) MarshalJSON() ([]byte, error) {
@@ -2284,26 +2275,26 @@ type IngestionPipelineDefinition struct {
 	// to communicate with the source. This is used with connectors for
 	// applications like Salesforce, Workday, and so on.
 	// Wire name: 'connection_name'
-	ConnectionName string ``
+	ConnectionName string `json:"connection_name,omitempty"`
 	// Immutable. Identifier for the gateway that is used by this ingestion
 	// pipeline to communicate with the source database. This is used with
 	// connectors to databases like SQL Server.
 	// Wire name: 'ingestion_gateway_id'
-	IngestionGatewayId string ``
+	IngestionGatewayId string `json:"ingestion_gateway_id,omitempty"`
 	// Required. Settings specifying tables to replicate and the destination for
 	// the replicated tables.
 	// Wire name: 'objects'
-	Objects []IngestionConfig ``
+	Objects []IngestionConfig `json:"objects,omitempty"`
 	// The type of the foreign source. The source type will be inferred from the
 	// source connection or ingestion gateway. This field is output only and
 	// will be ignored if provided.
 	// Wire name: 'source_type'
-	SourceType IngestionSourceType ``
+	SourceType IngestionSourceType `json:"source_type,omitempty"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// are applied to all tables in the pipeline.
 	// Wire name: 'table_configuration'
-	TableConfiguration *TableSpecificConfig ``
-	ForceSendFields    []string             `tf:"-"`
+	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
+	ForceSendFields    []string             `json:"-" tf:"-"`
 }
 
 func (st IngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
@@ -2421,7 +2412,7 @@ type IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig str
 	// implicitly define the `sequence_by` behavior. You can still explicitly
 	// set `sequence_by` to override this default.
 	// Wire name: 'cursor_columns'
-	CursorColumns []string ``
+	CursorColumns []string `json:"cursor_columns,omitempty"`
 	// Specifies a SQL WHERE condition that specifies that the source row has
 	// been deleted. This is sometimes referred to as "soft-deletes". For
 	// example: "Operation = 'DELETE'" or "is_deleted = true". This field is
@@ -2430,7 +2421,7 @@ type IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig str
 	// hard_deletion_sync_min_interval_in_seconds field for handling of "hard
 	// deletes" where the source rows are physically removed from the table.
 	// Wire name: 'deletion_condition'
-	DeletionCondition string ``
+	DeletionCondition string `json:"deletion_condition,omitempty"`
 	// Specifies the minimum interval (in seconds) between snapshots on primary
 	// keys for detecting and synchronizing hard deletions—i.e., rows that
 	// have been physically removed from the source table. This interval acts as
@@ -2440,8 +2431,8 @@ type IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig str
 	// synchronization via snapshots is disabled. This field is mutable and can
 	// be updated without triggering a full snapshot.
 	// Wire name: 'hard_deletion_sync_min_interval_in_seconds'
-	HardDeletionSyncMinIntervalInSeconds int64    ``
-	ForceSendFields                      []string `tf:"-"`
+	HardDeletionSyncMinIntervalInSeconds int64    `json:"hard_deletion_sync_min_interval_in_seconds,omitempty"`
+	ForceSendFields                      []string `json:"-" tf:"-"`
 }
 
 func (st IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig) MarshalJSON() ([]byte, error) {
@@ -2608,28 +2599,23 @@ type ListPipelineEventsRequest struct {
 	//
 	// Composite expressions are supported, for example: level in ('ERROR',
 	// 'WARN') AND timestamp> '2021-07-22T06:37:33.083Z'
-	// Wire name: 'filter'
-	Filter string `tf:"-"`
+	Filter string `json:"-" tf:"-"`
 	// Max number of entries to return in a single page. The system may return
 	// fewer than max_results events in a response, even if there are more
 	// events available.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// A string indicating a sort order by timestamp for the results, for
 	// example, ["timestamp asc"]. The sort order can be ascending or
 	// descending. By default, events are returned in descending order by
 	// timestamp.
-	// Wire name: 'order_by'
-	OrderBy []string `tf:"-"`
+	OrderBy []string `json:"-" tf:"-"`
 	// Page token returned by previous call. This field is mutually exclusive
 	// with all fields in this request except max_results. An error is returned
 	// if any fields other than max_results are set when this field is set.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// The pipeline to return events for.
-	// Wire name: 'pipeline_id'
-	PipelineId      string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PipelineId      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListPipelineEventsRequest) MarshalJSON() ([]byte, error) {
@@ -2694,14 +2680,14 @@ func ListPipelineEventsRequestFromPb(pb *pipelinespb.ListPipelineEventsRequestPb
 type ListPipelineEventsResponse struct {
 	// The list of events matching the request criteria.
 	// Wire name: 'events'
-	Events []PipelineEvent ``
+	Events []PipelineEvent `json:"events,omitempty"`
 	// If present, a token to fetch the next page of events.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// If present, a token to fetch the previous page of events.
 	// Wire name: 'prev_page_token'
-	PrevPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	PrevPageToken   string   `json:"prev_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListPipelineEventsResponse) MarshalJSON() ([]byte, error) {
@@ -2791,23 +2777,19 @@ type ListPipelinesRequest struct {
 	// '%shopping%'`
 	//
 	// Composite filters are not supported. This field is optional.
-	// Wire name: 'filter'
-	Filter string `tf:"-"`
+	Filter string `json:"-" tf:"-"`
 	// The maximum number of entries to return in a single page. The system may
 	// return fewer than max_results events in a response, even if there are
 	// more events available. This field is optional. The default value is 25.
 	// The maximum value is 100. An error is returned if the value of
 	// max_results is greater than 100.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// A list of strings specifying the order of results. Supported order_by
 	// fields are id and name. The default is id asc. This field is optional.
-	// Wire name: 'order_by'
-	OrderBy []string `tf:"-"`
+	OrderBy []string `json:"-" tf:"-"`
 	// Page token returned by previous call
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListPipelinesRequest) MarshalJSON() ([]byte, error) {
@@ -2870,11 +2852,11 @@ func ListPipelinesRequestFromPb(pb *pipelinespb.ListPipelinesRequestPb) (*ListPi
 type ListPipelinesResponse struct {
 	// If present, a token to fetch the next page of events.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// The list of events matching the request criteria.
 	// Wire name: 'statuses'
-	Statuses        []PipelineStateInfo ``
-	ForceSendFields []string            `tf:"-"`
+	Statuses        []PipelineStateInfo `json:"statuses,omitempty"`
+	ForceSendFields []string            `json:"-" tf:"-"`
 }
 
 func (st ListPipelinesResponse) MarshalJSON() ([]byte, error) {
@@ -2954,18 +2936,14 @@ func ListPipelinesResponseFromPb(pb *pipelinespb.ListPipelinesResponsePb) (*List
 
 type ListUpdatesRequest struct {
 	// Max number of entries to return in a single page.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Page token returned by previous call
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// The pipeline to return updates for.
-	// Wire name: 'pipeline_id'
-	PipelineId string `tf:"-"`
+	PipelineId string `json:"-" tf:"-"`
 	// If present, returns updates until and including this update_id.
-	// Wire name: 'until_update_id'
-	UntilUpdateId   string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	UntilUpdateId   string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListUpdatesRequest) MarshalJSON() ([]byte, error) {
@@ -3029,15 +3007,15 @@ type ListUpdatesResponse struct {
 	// If present, then there are more results, and this a token to be used in a
 	// subsequent request to fetch the next page.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// If present, then this token can be used in a subsequent request to fetch
 	// the previous page.
 	// Wire name: 'prev_page_token'
-	PrevPageToken string ``
+	PrevPageToken string `json:"prev_page_token,omitempty"`
 
 	// Wire name: 'updates'
-	Updates         []UpdateInfo ``
-	ForceSendFields []string     `tf:"-"`
+	Updates         []UpdateInfo `json:"updates,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
 func (st ListUpdatesResponse) MarshalJSON() ([]byte, error) {
@@ -3223,8 +3201,8 @@ func MaturityLevelFromPb(pb *pipelinespb.MaturityLevelPb) (*MaturityLevel, error
 type NotebookLibrary struct {
 	// The absolute path of the source code.
 	// Wire name: 'path'
-	Path            string   ``
-	ForceSendFields []string `tf:"-"`
+	Path            string   `json:"path,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st NotebookLibrary) MarshalJSON() ([]byte, error) {
@@ -3287,10 +3265,10 @@ type Notifications struct {
 	// `on-update-fatal-failure`: A pipeline update fails with a non-retryable
 	// (fatal) error. * `on-flow-failure`: A single data flow fails.
 	// Wire name: 'alerts'
-	Alerts []string ``
+	Alerts []string `json:"alerts,omitempty"`
 	// A list of email addresses notified when a configured alert is triggered.
 	// Wire name: 'email_recipients'
-	EmailRecipients []string ``
+	EmailRecipients []string `json:"email_recipients,omitempty"`
 }
 
 func (st Notifications) MarshalJSON() ([]byte, error) {
@@ -3343,57 +3321,57 @@ func NotificationsFromPb(pb *pipelinespb.NotificationsPb) (*Notifications, error
 type Origin struct {
 	// The id of a batch. Unique within a flow.
 	// Wire name: 'batch_id'
-	BatchId int64 ``
+	BatchId int64 `json:"batch_id,omitempty"`
 	// The cloud provider, e.g., AWS or Azure.
 	// Wire name: 'cloud'
-	Cloud string ``
+	Cloud string `json:"cloud,omitempty"`
 	// The id of the cluster where an execution happens. Unique within a region.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id,omitempty"`
 	// The name of a dataset. Unique within a pipeline.
 	// Wire name: 'dataset_name'
-	DatasetName string ``
+	DatasetName string `json:"dataset_name,omitempty"`
 	// The id of the flow. Globally unique. Incremental queries will generally
 	// reuse the same id while complete queries will have a new id per update.
 	// Wire name: 'flow_id'
-	FlowId string ``
+	FlowId string `json:"flow_id,omitempty"`
 	// The name of the flow. Not unique.
 	// Wire name: 'flow_name'
-	FlowName string ``
+	FlowName string `json:"flow_name,omitempty"`
 	// The optional host name where the event was triggered
 	// Wire name: 'host'
-	Host string ``
+	Host string `json:"host,omitempty"`
 	// The id of a maintenance run. Globally unique.
 	// Wire name: 'maintenance_id'
-	MaintenanceId string ``
+	MaintenanceId string `json:"maintenance_id,omitempty"`
 	// Materialization name.
 	// Wire name: 'materialization_name'
-	MaterializationName string ``
+	MaterializationName string `json:"materialization_name,omitempty"`
 	// The org id of the user. Unique within a cloud.
 	// Wire name: 'org_id'
-	OrgId int64 ``
+	OrgId int64 `json:"org_id,omitempty"`
 	// The id of the pipeline. Globally unique.
 	// Wire name: 'pipeline_id'
-	PipelineId string ``
+	PipelineId string `json:"pipeline_id,omitempty"`
 	// The name of the pipeline. Not unique.
 	// Wire name: 'pipeline_name'
-	PipelineName string ``
+	PipelineName string `json:"pipeline_name,omitempty"`
 	// The cloud region.
 	// Wire name: 'region'
-	Region string ``
+	Region string `json:"region,omitempty"`
 	// The id of the request that caused an update.
 	// Wire name: 'request_id'
-	RequestId string ``
+	RequestId string `json:"request_id,omitempty"`
 	// The id of a (delta) table. Globally unique.
 	// Wire name: 'table_id'
-	TableId string ``
+	TableId string `json:"table_id,omitempty"`
 	// The Unity Catalog id of the MV or ST being updated.
 	// Wire name: 'uc_resource_id'
-	UcResourceId string ``
+	UcResourceId string `json:"uc_resource_id,omitempty"`
 	// The id of an execution. Globally unique.
 	// Wire name: 'update_id'
-	UpdateId        string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdateId        string   `json:"update_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Origin) MarshalJSON() ([]byte, error) {
@@ -3482,8 +3460,8 @@ func OriginFromPb(pb *pipelinespb.OriginPb) (*Origin, error) {
 type PathPattern struct {
 	// The source code to include for pipelines
 	// Wire name: 'include'
-	Include         string   ``
-	ForceSendFields []string `tf:"-"`
+	Include         string   `json:"include,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PathPattern) MarshalJSON() ([]byte, error) {
@@ -3540,17 +3518,17 @@ func PathPatternFromPb(pb *pipelinespb.PathPatternPb) (*PathPattern, error) {
 type PipelineAccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel PipelinePermissionLevel ``
+	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PipelineAccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -3625,20 +3603,20 @@ func PipelineAccessControlRequestFromPb(pb *pipelinespb.PipelineAccessControlReq
 type PipelineAccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []PipelinePermission ``
+	AllPermissions []PipelinePermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PipelineAccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -3726,20 +3704,20 @@ type PipelineCluster struct {
 	// Note: This field won't be persisted. Only API users will check this
 	// field.
 	// Wire name: 'apply_policy_default_values'
-	ApplyPolicyDefaultValues bool ``
+	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
 	// Wire name: 'autoscale'
-	Autoscale *PipelineClusterAutoscale ``
+	Autoscale *PipelineClusterAutoscale `json:"autoscale,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'aws_attributes'
-	AwsAttributes *compute.AwsAttributes ``
+	AwsAttributes *compute.AwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'azure_attributes'
-	AzureAttributes *compute.AzureAttributes ``
+	AzureAttributes *compute.AzureAttributes `json:"azure_attributes,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Only dbfs destinations are supported. Only one destination
 	// can be specified for one cluster. If the conf is given, the logs will be
@@ -3747,7 +3725,7 @@ type PipelineCluster struct {
 	// logs is `$destination/$clusterId/driver`, while the destination of
 	// executor logs is `$destination/$clusterId/executor`.
 	// Wire name: 'cluster_log_conf'
-	ClusterLogConf *compute.ClusterLogConf ``
+	ClusterLogConf *compute.ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -3757,45 +3735,45 @@ type PipelineCluster struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	// Wire name: 'custom_tags'
-	CustomTags map[string]string ``
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
 	// Wire name: 'driver_instance_pool_id'
-	DriverInstancePoolId string ``
+	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
 	// Wire name: 'driver_node_type_id'
-	DriverNodeTypeId string ``
+	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Whether to enable local disk encryption for the cluster.
 	// Wire name: 'enable_local_disk_encryption'
-	EnableLocalDiskEncryption bool ``
+	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'gcp_attributes'
-	GcpAttributes *compute.GcpAttributes ``
+	GcpAttributes *compute.GcpAttributes `json:"gcp_attributes,omitempty"`
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
 	// Wire name: 'init_scripts'
-	InitScripts []compute.InitScriptInfo ``
+	InitScripts []compute.InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	// Wire name: 'instance_pool_id'
-	InstancePoolId string ``
+	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// A label for the cluster specification, either `default` to configure the
 	// default cluster, or `maintenance` to configure the maintenance cluster.
 	// This field is optional. The default value is `default`.
 	// Wire name: 'label'
-	Label string ``
+	Label string `json:"label,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	// Wire name: 'node_type_id'
-	NodeTypeId string ``
+	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
 	// Spark nodes.
@@ -3807,15 +3785,15 @@ type PipelineCluster struct {
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	// Wire name: 'num_workers'
-	NumWorkers int ``
+	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	// Wire name: 'policy_id'
-	PolicyId string ``
+	PolicyId string `json:"policy_id,omitempty"`
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. See :method:clusters/create for more
 	// details.
 	// Wire name: 'spark_conf'
-	SparkConf map[string]string ``
+	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
 	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
@@ -3830,13 +3808,13 @@ type PipelineCluster struct {
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
 	// Wire name: 'spark_env_vars'
-	SparkEnvVars map[string]string ``
+	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	// Wire name: 'ssh_public_keys'
-	SshPublicKeys   []string ``
-	ForceSendFields []string `tf:"-"`
+	SshPublicKeys   []string `json:"ssh_public_keys,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PipelineCluster) MarshalJSON() ([]byte, error) {
@@ -4012,19 +3990,19 @@ type PipelineClusterAutoscale struct {
 	// The maximum number of workers to which the cluster can scale up when
 	// overloaded. `max_workers` must be strictly greater than `min_workers`.
 	// Wire name: 'max_workers'
-	MaxWorkers int ``
+	MaxWorkers int `json:"max_workers"`
 	// The minimum number of workers the cluster can scale down to when
 	// underutilized. It is also the initial number of workers the cluster will
 	// have after creation.
 	// Wire name: 'min_workers'
-	MinWorkers int ``
+	MinWorkers int `json:"min_workers"`
 	// Databricks Enhanced Autoscaling optimizes cluster utilization by
 	// automatically allocating cluster resources based on workload volume, with
 	// minimal impact to the data processing latency of your pipelines. Enhanced
 	// Autoscaling is available for `updates` clusters only. The legacy
 	// autoscaling feature is used for `maintenance` clusters.
 	// Wire name: 'mode'
-	Mode PipelineClusterAutoscaleMode ``
+	Mode PipelineClusterAutoscaleMode `json:"mode,omitempty"`
 }
 
 func (st PipelineClusterAutoscale) MarshalJSON() ([]byte, error) {
@@ -4149,11 +4127,11 @@ func PipelineClusterAutoscaleModeFromPb(pb *pipelinespb.PipelineClusterAutoscale
 type PipelineDeployment struct {
 	// The deployment method that manages the pipeline.
 	// Wire name: 'kind'
-	Kind DeploymentKind ``
+	Kind DeploymentKind `json:"kind"`
 	// The path to the file containing metadata about the deployment.
 	// Wire name: 'metadata_file_path'
-	MetadataFilePath string   ``
-	ForceSendFields  []string `tf:"-"`
+	MetadataFilePath string   `json:"metadata_file_path,omitempty"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st PipelineDeployment) MarshalJSON() ([]byte, error) {
@@ -4224,32 +4202,32 @@ func PipelineDeploymentFromPb(pb *pipelinespb.PipelineDeploymentPb) (*PipelineDe
 type PipelineEvent struct {
 	// Information about an error captured by the event.
 	// Wire name: 'error'
-	Error *ErrorDetail ``
+	Error *ErrorDetail `json:"error,omitempty"`
 	// The event type. Should always correspond to the details
 	// Wire name: 'event_type'
-	EventType string ``
+	EventType string `json:"event_type,omitempty"`
 	// A time-based, globally unique id.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// The severity level of the event.
 	// Wire name: 'level'
-	Level EventLevel ``
+	Level EventLevel `json:"level,omitempty"`
 	// Maturity level for event_type.
 	// Wire name: 'maturity_level'
-	MaturityLevel MaturityLevel ``
+	MaturityLevel MaturityLevel `json:"maturity_level,omitempty"`
 	// The display message associated with the event.
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 	// Describes where the event originates from.
 	// Wire name: 'origin'
-	Origin *Origin ``
+	Origin *Origin `json:"origin,omitempty"`
 	// A sequencing object to identify and order events.
 	// Wire name: 'sequence'
-	Sequence *Sequencing ``
+	Sequence *Sequencing `json:"sequence,omitempty"`
 	// The time of the event.
 	// Wire name: 'timestamp'
-	Timestamp       string   ``
-	ForceSendFields []string `tf:"-"`
+	Timestamp       string   `json:"timestamp,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PipelineEvent) MarshalJSON() ([]byte, error) {
@@ -4383,26 +4361,26 @@ type PipelineLibrary struct {
 	// The path to a file that defines a pipeline and is stored in the
 	// Databricks Repos.
 	// Wire name: 'file'
-	File *FileLibrary ``
+	File *FileLibrary `json:"file,omitempty"`
 	// The unified field to include source codes. Each entry can be a notebook
 	// path, a file path, or a folder path that ends `/**`. This field cannot be
 	// used together with `notebook` or `file`.
 	// Wire name: 'glob'
-	Glob *PathPattern ``
+	Glob *PathPattern `json:"glob,omitempty"`
 	// URI of the jar to be installed. Currently only DBFS is supported.
 	// Wire name: 'jar'
-	Jar string ``
+	Jar string `json:"jar,omitempty"`
 	// Specification of a maven library to be installed.
 	// Wire name: 'maven'
-	Maven *compute.MavenLibrary ``
+	Maven *compute.MavenLibrary `json:"maven,omitempty"`
 	// The path to a notebook that defines a pipeline and is stored in the
 	// Databricks workspace.
 	// Wire name: 'notebook'
-	Notebook *NotebookLibrary ``
+	Notebook *NotebookLibrary `json:"notebook,omitempty"`
 	// URI of the whl to be installed.
 	// Wire name: 'whl'
-	Whl             string   ``
-	ForceSendFields []string `tf:"-"`
+	Whl             string   `json:"whl,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PipelineLibrary) MarshalJSON() ([]byte, error) {
@@ -4517,14 +4495,14 @@ func PipelineLibraryFromPb(pb *pipelinespb.PipelineLibraryPb) (*PipelineLibrary,
 type PipelinePermission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel PipelinePermissionLevel ``
-	ForceSendFields []string                `tf:"-"`
+	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                `json:"-" tf:"-"`
 }
 
 func (st PipelinePermission) MarshalJSON() ([]byte, error) {
@@ -4657,14 +4635,14 @@ func PipelinePermissionLevelFromPb(pb *pipelinespb.PipelinePermissionLevelPb) (*
 type PipelinePermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []PipelineAccessControlResponse ``
+	AccessControlList []PipelineAccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PipelinePermissions) MarshalJSON() ([]byte, error) {
@@ -4747,11 +4725,11 @@ func PipelinePermissionsFromPb(pb *pipelinespb.PipelinePermissionsPb) (*Pipeline
 type PipelinePermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel PipelinePermissionLevel ``
-	ForceSendFields []string                `tf:"-"`
+	PermissionLevel PipelinePermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                `json:"-" tf:"-"`
 }
 
 func (st PipelinePermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -4822,10 +4800,9 @@ func PipelinePermissionsDescriptionFromPb(pb *pipelinespb.PipelinePermissionsDes
 type PipelinePermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []PipelineAccessControlRequest ``
+	AccessControlList []PipelineAccessControlRequest `json:"access_control_list,omitempty"`
 	// The pipeline for which to get or manage permissions.
-	// Wire name: 'pipeline_id'
-	PipelineId string `tf:"-"`
+	PipelineId string `json:"-" tf:"-"`
 }
 
 func (st PipelinePermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -4900,98 +4877,98 @@ func PipelinePermissionsRequestFromPb(pb *pipelinespb.PipelinePermissionsRequest
 type PipelineSpec struct {
 	// Budget policy of this pipeline.
 	// Wire name: 'budget_policy_id'
-	BudgetPolicyId string ``
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// A catalog in Unity Catalog to publish data from this pipeline to. If
 	// `target` is specified, tables in this pipeline are published to a
 	// `target` schema inside `catalog` (for example,
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
 	// Wire name: 'catalog'
-	Catalog string ``
+	Catalog string `json:"catalog,omitempty"`
 	// DLT Release Channel that specifies which version to use.
 	// Wire name: 'channel'
-	Channel string ``
+	Channel string `json:"channel,omitempty"`
 	// Cluster settings for this pipeline deployment.
 	// Wire name: 'clusters'
-	Clusters []PipelineCluster ``
+	Clusters []PipelineCluster `json:"clusters,omitempty"`
 	// String-String configuration for this pipeline execution.
 	// Wire name: 'configuration'
-	Configuration map[string]string ``
+	Configuration map[string]string `json:"configuration,omitempty"`
 	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
 	// Wire name: 'continuous'
-	Continuous bool ``
+	Continuous bool `json:"continuous,omitempty"`
 	// Deployment type of this pipeline.
 	// Wire name: 'deployment'
-	Deployment *PipelineDeployment ``
+	Deployment *PipelineDeployment `json:"deployment,omitempty"`
 	// Whether the pipeline is in Development mode. Defaults to false.
 	// Wire name: 'development'
-	Development bool ``
+	Development bool `json:"development,omitempty"`
 	// Pipeline product edition.
 	// Wire name: 'edition'
-	Edition string ``
+	Edition string `json:"edition,omitempty"`
 	// Environment specification for this pipeline used to install dependencies.
 	// Wire name: 'environment'
-	Environment *PipelinesEnvironment ``
+	Environment *PipelinesEnvironment `json:"environment,omitempty"`
 	// Event log configuration for this pipeline
 	// Wire name: 'event_log'
-	EventLog *EventLogSpec ``
+	EventLog *EventLogSpec `json:"event_log,omitempty"`
 	// Filters on which Pipeline packages to include in the deployed graph.
 	// Wire name: 'filters'
-	Filters *Filters ``
+	Filters *Filters `json:"filters,omitempty"`
 	// The definition of a gateway pipeline to support change data capture.
 	// Wire name: 'gateway_definition'
-	GatewayDefinition *IngestionGatewayPipelineDefinition ``
+	GatewayDefinition *IngestionGatewayPipelineDefinition `json:"gateway_definition,omitempty"`
 	// Unique identifier for this pipeline.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
 	// be used with the 'libraries', 'schema', 'target', or 'catalog' settings.
 	// Wire name: 'ingestion_definition'
-	IngestionDefinition *IngestionPipelineDefinition ``
+	IngestionDefinition *IngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	// Wire name: 'libraries'
-	Libraries []PipelineLibrary ``
+	Libraries []PipelineLibrary `json:"libraries,omitempty"`
 	// Friendly identifier for this pipeline.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// List of notification settings for this pipeline.
 	// Wire name: 'notifications'
-	Notifications []Notifications ``
+	Notifications []Notifications `json:"notifications,omitempty"`
 	// Whether Photon is enabled for this pipeline.
 	// Wire name: 'photon'
-	Photon bool ``
+	Photon bool `json:"photon,omitempty"`
 	// Restart window of this pipeline.
 	// Wire name: 'restart_window'
-	RestartWindow *RestartWindow ``
+	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
 	// Root path for this pipeline. This is used as the root directory when
 	// editing the pipeline in the Databricks user interface and it is added to
 	// sys.path when executing Python sources during pipeline execution.
 	// Wire name: 'root_path'
-	RootPath string ``
+	RootPath string `json:"root_path,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	// Wire name: 'serverless'
-	Serverless bool ``
+	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	// Wire name: 'storage'
-	Storage string ``
+	Storage string `json:"storage,omitempty"`
 	// A map of tags associated with the pipeline. These are forwarded to the
 	// cluster as cluster tags, and are therefore subject to the same
 	// limitations. A maximum of 25 tags can be added to the pipeline.
 	// Wire name: 'tags'
-	Tags map[string]string ``
+	Tags map[string]string `json:"tags,omitempty"`
 	// Target schema (database) to add tables in this pipeline to. Exactly one
 	// of `schema` or `target` must be specified. To publish to Unity Catalog,
 	// also specify `catalog`. This legacy field is deprecated for pipeline
 	// creation in favor of the `schema` field.
 	// Wire name: 'target'
-	Target string ``
+	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	// Wire name: 'trigger'
-	Trigger         *PipelineTrigger ``
-	ForceSendFields []string         `tf:"-"`
+	Trigger         *PipelineTrigger `json:"trigger,omitempty"`
+	ForceSendFields []string         `json:"-" tf:"-"`
 }
 
 func (st PipelineSpec) MarshalJSON() ([]byte, error) {
@@ -5337,31 +5314,31 @@ func PipelineStateFromPb(pb *pipelinespb.PipelineStatePb) (*PipelineState, error
 type PipelineStateInfo struct {
 	// The unique identifier of the cluster running the pipeline.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id,omitempty"`
 	// The username of the pipeline creator.
 	// Wire name: 'creator_user_name'
-	CreatorUserName string ``
+	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// The health of a pipeline.
 	// Wire name: 'health'
-	Health PipelineStateInfoHealth ``
+	Health PipelineStateInfoHealth `json:"health,omitempty"`
 	// Status of the latest updates for the pipeline. Ordered with the newest
 	// update first.
 	// Wire name: 'latest_updates'
-	LatestUpdates []UpdateStateInfo ``
+	LatestUpdates []UpdateStateInfo `json:"latest_updates,omitempty"`
 	// The user-friendly name of the pipeline.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The unique identifier of the pipeline.
 	// Wire name: 'pipeline_id'
-	PipelineId string ``
+	PipelineId string `json:"pipeline_id,omitempty"`
 	// The username that the pipeline runs as. This is a read only value derived
 	// from the pipeline owner.
 	// Wire name: 'run_as_user_name'
-	RunAsUserName string ``
+	RunAsUserName string `json:"run_as_user_name,omitempty"`
 
 	// Wire name: 'state'
-	State           PipelineState ``
-	ForceSendFields []string      `tf:"-"`
+	State           PipelineState `json:"state,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st PipelineStateInfo) MarshalJSON() ([]byte, error) {
@@ -5532,10 +5509,10 @@ func PipelineStateInfoHealthFromPb(pb *pipelinespb.PipelineStateInfoHealthPb) (*
 type PipelineTrigger struct {
 
 	// Wire name: 'cron'
-	Cron *CronTrigger ``
+	Cron *CronTrigger `json:"cron,omitempty"`
 
 	// Wire name: 'manual'
-	Manual *ManualTrigger ``
+	Manual *ManualTrigger `json:"manual,omitempty"`
 }
 
 func (st PipelineTrigger) MarshalJSON() ([]byte, error) {
@@ -5620,7 +5597,7 @@ type PipelinesEnvironment struct {
 	// dependency could be <requirement specifier>, <archive url/path>, <local
 	// project path>(WSFS or Volumes in Databricks), <vcs project url>
 	// Wire name: 'dependencies'
-	Dependencies []string ``
+	Dependencies []string `json:"dependencies,omitempty"`
 }
 
 func (st PipelinesEnvironment) MarshalJSON() ([]byte, error) {
@@ -5671,23 +5648,23 @@ func PipelinesEnvironmentFromPb(pb *pipelinespb.PipelinesEnvironmentPb) (*Pipeli
 type ReportSpec struct {
 	// Required. Destination catalog to store table.
 	// Wire name: 'destination_catalog'
-	DestinationCatalog string ``
+	DestinationCatalog string `json:"destination_catalog"`
 	// Required. Destination schema to store table.
 	// Wire name: 'destination_schema'
-	DestinationSchema string ``
+	DestinationSchema string `json:"destination_schema"`
 	// Required. Destination table name. The pipeline fails if a table with that
 	// name already exists.
 	// Wire name: 'destination_table'
-	DestinationTable string ``
+	DestinationTable string `json:"destination_table,omitempty"`
 	// Required. Report URL in the source system.
 	// Wire name: 'source_url'
-	SourceUrl string ``
+	SourceUrl string `json:"source_url"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// override the table_configuration defined in the
 	// IngestionPipelineDefinition object.
 	// Wire name: 'table_configuration'
-	TableConfiguration *TableSpecificConfig ``
-	ForceSendFields    []string             `tf:"-"`
+	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
+	ForceSendFields    []string             `json:"-" tf:"-"`
 }
 
 func (st ReportSpec) MarshalJSON() ([]byte, error) {
@@ -5766,18 +5743,18 @@ type RestartWindow struct {
 	// five-hour window starting at start_hour). If not specified all days of
 	// the week will be used.
 	// Wire name: 'days_of_week'
-	DaysOfWeek []DayOfWeek ``
+	DaysOfWeek []DayOfWeek `json:"days_of_week,omitempty"`
 	// An integer between 0 and 23 denoting the start hour for the restart
 	// window in the 24-hour day. Continuous pipeline restart is triggered only
 	// within a five-hour window starting at this hour.
 	// Wire name: 'start_hour'
-	StartHour int ``
+	StartHour int `json:"start_hour"`
 	// Time zone id of restart window. See
 	// https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
 	// for details. If not specified, UTC will be used.
 	// Wire name: 'time_zone_id'
-	TimeZoneId      string   ``
-	ForceSendFields []string `tf:"-"`
+	TimeZoneId      string   `json:"time_zone_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RestartWindow) MarshalJSON() ([]byte, error) {
@@ -5867,12 +5844,12 @@ type RunAs struct {
 	// Application ID of an active service principal. Setting this field
 	// requires the `servicePrincipal/user` role.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// The email of an active workspace user. Users can only set this field to
 	// their own email.
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RunAs) MarshalJSON() ([]byte, error) {
@@ -5931,25 +5908,25 @@ func RunAsFromPb(pb *pipelinespb.RunAsPb) (*RunAs, error) {
 type SchemaSpec struct {
 	// Required. Destination catalog to store tables.
 	// Wire name: 'destination_catalog'
-	DestinationCatalog string ``
+	DestinationCatalog string `json:"destination_catalog"`
 	// Required. Destination schema to store tables in. Tables with the same
 	// name as the source tables are created in this destination schema. The
 	// pipeline fails If a table with the same name already exists.
 	// Wire name: 'destination_schema'
-	DestinationSchema string ``
+	DestinationSchema string `json:"destination_schema"`
 	// The source catalog name. Might be optional depending on the type of
 	// source.
 	// Wire name: 'source_catalog'
-	SourceCatalog string ``
+	SourceCatalog string `json:"source_catalog,omitempty"`
 	// Required. Schema name in the source database.
 	// Wire name: 'source_schema'
-	SourceSchema string ``
+	SourceSchema string `json:"source_schema"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// are applied to all tables in this schema and override the
 	// table_configuration defined in the IngestionPipelineDefinition object.
 	// Wire name: 'table_configuration'
-	TableConfiguration *TableSpecificConfig ``
-	ForceSendFields    []string             `tf:"-"`
+	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
+	ForceSendFields    []string             `json:"-" tf:"-"`
 }
 
 func (st SchemaSpec) MarshalJSON() ([]byte, error) {
@@ -6026,11 +6003,11 @@ func SchemaSpecFromPb(pb *pipelinespb.SchemaSpecPb) (*SchemaSpec, error) {
 type Sequencing struct {
 	// A sequence number, unique and increasing per pipeline.
 	// Wire name: 'control_plane_seq_no'
-	ControlPlaneSeqNo int64 ``
+	ControlPlaneSeqNo int64 `json:"control_plane_seq_no,omitempty"`
 	// the ID assigned by the data plane.
 	// Wire name: 'data_plane_id'
-	DataPlaneId     *DataPlaneId ``
-	ForceSendFields []string     `tf:"-"`
+	DataPlaneId     *DataPlaneId `json:"data_plane_id,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
 func (st Sequencing) MarshalJSON() ([]byte, error) {
@@ -6101,14 +6078,14 @@ func SequencingFromPb(pb *pipelinespb.SequencingPb) (*Sequencing, error) {
 type SerializedException struct {
 	// Runtime class of the exception
 	// Wire name: 'class_name'
-	ClassName string ``
+	ClassName string `json:"class_name,omitempty"`
 	// Exception message
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 	// Stack trace consisting of a list of stack frames
 	// Wire name: 'stack'
-	Stack           []StackFrame ``
-	ForceSendFields []string     `tf:"-"`
+	Stack           []StackFrame `json:"stack,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
 func (st SerializedException) MarshalJSON() ([]byte, error) {
@@ -6191,17 +6168,17 @@ func SerializedExceptionFromPb(pb *pipelinespb.SerializedExceptionPb) (*Serializ
 type StackFrame struct {
 	// Class from which the method call originated
 	// Wire name: 'declaring_class'
-	DeclaringClass string ``
+	DeclaringClass string `json:"declaring_class,omitempty"`
 	// File where the method is defined
 	// Wire name: 'file_name'
-	FileName string ``
+	FileName string `json:"file_name,omitempty"`
 	// Line from which the method was called
 	// Wire name: 'line_number'
-	LineNumber int ``
+	LineNumber int `json:"line_number,omitempty"`
 	// Name of the method which was called
 	// Wire name: 'method_name'
-	MethodName      string   ``
-	ForceSendFields []string `tf:"-"`
+	MethodName      string   `json:"method_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st StackFrame) MarshalJSON() ([]byte, error) {
@@ -6264,30 +6241,29 @@ func StackFrameFromPb(pb *pipelinespb.StackFramePb) (*StackFrame, error) {
 type StartUpdate struct {
 
 	// Wire name: 'cause'
-	Cause StartUpdateCause ``
+	Cause StartUpdateCause `json:"cause,omitempty"`
 	// If true, this update will reset all tables before running.
 	// Wire name: 'full_refresh'
-	FullRefresh bool ``
+	FullRefresh bool `json:"full_refresh,omitempty"`
 	// A list of tables to update with fullRefresh. If both refresh_selection
 	// and full_refresh_selection are empty, this is a full graph update. Full
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	// Wire name: 'full_refresh_selection'
-	FullRefreshSelection []string ``
+	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
 
-	// Wire name: 'pipeline_id'
-	PipelineId string `tf:"-"`
+	PipelineId string `json:"-" tf:"-"`
 	// A list of tables to update without fullRefresh. If both refresh_selection
 	// and full_refresh_selection are empty, this is a full graph update. Full
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	// Wire name: 'refresh_selection'
-	RefreshSelection []string ``
+	RefreshSelection []string `json:"refresh_selection,omitempty"`
 	// If true, this update only validates the correctness of pipeline source
 	// code but does not materialize or publish any datasets.
 	// Wire name: 'validate_only'
-	ValidateOnly    bool     ``
-	ForceSendFields []string `tf:"-"`
+	ValidateOnly    bool     `json:"validate_only,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st StartUpdate) MarshalJSON() ([]byte, error) {
@@ -6435,8 +6411,8 @@ func StartUpdateCauseFromPb(pb *pipelinespb.StartUpdateCausePb) (*StartUpdateCau
 type StartUpdateResponse struct {
 
 	// Wire name: 'update_id'
-	UpdateId        string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdateId        string   `json:"update_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st StartUpdateResponse) MarshalJSON() ([]byte, error) {
@@ -6491,9 +6467,7 @@ func StartUpdateResponseFromPb(pb *pipelinespb.StartUpdateResponsePb) (*StartUpd
 }
 
 type StopRequest struct {
-
-	// Wire name: 'pipeline_id'
-	PipelineId string `tf:"-"`
+	PipelineId string `json:"-" tf:"-"`
 }
 
 func (st StopRequest) MarshalJSON() ([]byte, error) {
@@ -6544,30 +6518,30 @@ func StopRequestFromPb(pb *pipelinespb.StopRequestPb) (*StopRequest, error) {
 type TableSpec struct {
 	// Required. Destination catalog to store table.
 	// Wire name: 'destination_catalog'
-	DestinationCatalog string ``
+	DestinationCatalog string `json:"destination_catalog"`
 	// Required. Destination schema to store table.
 	// Wire name: 'destination_schema'
-	DestinationSchema string ``
+	DestinationSchema string `json:"destination_schema"`
 	// Optional. Destination table name. The pipeline fails if a table with that
 	// name already exists. If not set, the source table name is used.
 	// Wire name: 'destination_table'
-	DestinationTable string ``
+	DestinationTable string `json:"destination_table,omitempty"`
 	// Source catalog name. Might be optional depending on the type of source.
 	// Wire name: 'source_catalog'
-	SourceCatalog string ``
+	SourceCatalog string `json:"source_catalog,omitempty"`
 	// Schema name in the source database. Might be optional depending on the
 	// type of source.
 	// Wire name: 'source_schema'
-	SourceSchema string ``
+	SourceSchema string `json:"source_schema,omitempty"`
 	// Required. Table name in the source database.
 	// Wire name: 'source_table'
-	SourceTable string ``
+	SourceTable string `json:"source_table"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// override the table_configuration defined in the
 	// IngestionPipelineDefinition object and the SchemaSpec.
 	// Wire name: 'table_configuration'
-	TableConfiguration *TableSpecificConfig ``
-	ForceSendFields    []string             `tf:"-"`
+	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
+	ForceSendFields    []string             `json:"-" tf:"-"`
 }
 
 func (st TableSpec) MarshalJSON() ([]byte, error) {
@@ -6652,33 +6626,33 @@ type TableSpecificConfig struct {
 	// automatically included for ingestion. This field in mutually exclusive
 	// with `include_columns`.
 	// Wire name: 'exclude_columns'
-	ExcludeColumns []string ``
+	ExcludeColumns []string `json:"exclude_columns,omitempty"`
 	// A list of column names to be included for the ingestion. When not
 	// specified, all columns except ones in exclude_columns will be included.
 	// Future columns will be automatically included. When specified, all other
 	// future columns will be automatically excluded from ingestion. This field
 	// in mutually exclusive with `exclude_columns`.
 	// Wire name: 'include_columns'
-	IncludeColumns []string ``
+	IncludeColumns []string `json:"include_columns,omitempty"`
 	// The primary key of the table used to apply changes.
 	// Wire name: 'primary_keys'
-	PrimaryKeys []string ``
+	PrimaryKeys []string `json:"primary_keys,omitempty"`
 
 	// Wire name: 'query_based_connector_config'
-	QueryBasedConnectorConfig *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig ``
+	QueryBasedConnectorConfig *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig `json:"query_based_connector_config,omitempty"`
 	// If true, formula fields defined in the table are included in the
 	// ingestion. This setting is only valid for the Salesforce connector
 	// Wire name: 'salesforce_include_formula_fields'
-	SalesforceIncludeFormulaFields bool ``
+	SalesforceIncludeFormulaFields bool `json:"salesforce_include_formula_fields,omitempty"`
 	// The SCD type to use to ingest the table.
 	// Wire name: 'scd_type'
-	ScdType TableSpecificConfigScdType ``
+	ScdType TableSpecificConfigScdType `json:"scd_type,omitempty"`
 	// The column names specifying the logical order of events in the source
 	// data. Delta Live Tables uses this sequencing to handle change events that
 	// arrive out of order.
 	// Wire name: 'sequence_by'
-	SequenceBy      []string ``
-	ForceSendFields []string `tf:"-"`
+	SequenceBy      []string `json:"sequence_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TableSpecificConfig) MarshalJSON() ([]byte, error) {
@@ -6828,46 +6802,46 @@ func TableSpecificConfigScdTypeFromPb(pb *pipelinespb.TableSpecificConfigScdType
 type UpdateInfo struct {
 	// What triggered this update.
 	// Wire name: 'cause'
-	Cause UpdateInfoCause ``
+	Cause UpdateInfoCause `json:"cause,omitempty"`
 	// The ID of the cluster that the update is running on.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id,omitempty"`
 	// The pipeline configuration with system defaults applied where unspecified
 	// by the user. Not returned by ListUpdates.
 	// Wire name: 'config'
-	Config *PipelineSpec ``
+	Config *PipelineSpec `json:"config,omitempty"`
 	// The time when this update was created.
 	// Wire name: 'creation_time'
-	CreationTime int64 ``
+	CreationTime int64 `json:"creation_time,omitempty"`
 	// If true, this update will reset all tables before running.
 	// Wire name: 'full_refresh'
-	FullRefresh bool ``
+	FullRefresh bool `json:"full_refresh,omitempty"`
 	// A list of tables to update with fullRefresh. If both refresh_selection
 	// and full_refresh_selection are empty, this is a full graph update. Full
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	// Wire name: 'full_refresh_selection'
-	FullRefreshSelection []string ``
+	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
 	// The ID of the pipeline.
 	// Wire name: 'pipeline_id'
-	PipelineId string ``
+	PipelineId string `json:"pipeline_id,omitempty"`
 	// A list of tables to update without fullRefresh. If both refresh_selection
 	// and full_refresh_selection are empty, this is a full graph update. Full
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	// Wire name: 'refresh_selection'
-	RefreshSelection []string ``
+	RefreshSelection []string `json:"refresh_selection,omitempty"`
 	// The update state.
 	// Wire name: 'state'
-	State UpdateInfoState ``
+	State UpdateInfoState `json:"state,omitempty"`
 	// The ID of this update.
 	// Wire name: 'update_id'
-	UpdateId string ``
+	UpdateId string `json:"update_id,omitempty"`
 	// If true, this update only validates the correctness of pipeline source
 	// code but does not materialize or publish any datasets.
 	// Wire name: 'validate_only'
-	ValidateOnly    bool     ``
-	ForceSendFields []string `tf:"-"`
+	ValidateOnly    bool     `json:"validate_only,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateInfo) MarshalJSON() ([]byte, error) {
@@ -7130,14 +7104,14 @@ func UpdateInfoStateFromPb(pb *pipelinespb.UpdateInfoStatePb) (*UpdateInfoState,
 type UpdateStateInfo struct {
 
 	// Wire name: 'creation_time'
-	CreationTime string ``
+	CreationTime string `json:"creation_time,omitempty"`
 
 	// Wire name: 'state'
-	State UpdateStateInfoState ``
+	State UpdateStateInfoState `json:"state,omitempty"`
 
 	// Wire name: 'update_id'
-	UpdateId        string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdateId        string   `json:"update_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateStateInfo) MarshalJSON() ([]byte, error) {

@@ -12,9 +12,7 @@ import (
 )
 
 type CancelCustomLlmOptimizationRunRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st CancelCustomLlmOptimizationRunRequest) MarshalJSON() ([]byte, error) {
@@ -67,21 +65,21 @@ type CreateCustomLlmRequest struct {
 	// you only have read permissions, please provide a destination path where
 	// you have write permissions. Please provide this in catalog.schema format.
 	// Wire name: 'agent_artifact_path'
-	AgentArtifactPath string ``
+	AgentArtifactPath string `json:"agent_artifact_path,omitempty"`
 	// Datasets used for training and evaluating the model, not for inference.
 	// Currently, only 1 dataset is accepted.
 	// Wire name: 'datasets'
-	Datasets []Dataset ``
+	Datasets []Dataset `json:"datasets,omitempty"`
 	// Guidelines for the custom LLM to adhere to
 	// Wire name: 'guidelines'
-	Guidelines []string ``
+	Guidelines []string `json:"guidelines,omitempty"`
 	// Instructions for the custom LLM to follow
 	// Wire name: 'instructions'
-	Instructions string ``
+	Instructions string `json:"instructions"`
 	// Name of the custom LLM. Only alphanumeric characters and dashes allowed.
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateCustomLlmRequest) MarshalJSON() ([]byte, error) {
@@ -168,35 +166,35 @@ func CreateCustomLlmRequestFromPb(pb *agentbrickspb.CreateCustomLlmRequestPb) (*
 type CustomLlm struct {
 
 	// Wire name: 'agent_artifact_path'
-	AgentArtifactPath string ``
+	AgentArtifactPath string `json:"agent_artifact_path,omitempty"`
 	// Creation timestamp of the custom LLM
 	// Wire name: 'creation_time'
-	CreationTime string `` //legacy
+	CreationTime string `json:"creation_time,omitempty"` //legacy
 	// Creator of the custom LLM
 	// Wire name: 'creator'
-	Creator string ``
+	Creator string `json:"creator,omitempty"`
 	// Datasets used for training and evaluating the model, not for inference
 	// Wire name: 'datasets'
-	Datasets []Dataset ``
+	Datasets []Dataset `json:"datasets,omitempty"`
 	// Name of the endpoint that will be used to serve the custom LLM
 	// Wire name: 'endpoint_name'
-	EndpointName string ``
+	EndpointName string `json:"endpoint_name,omitempty"`
 	// Guidelines for the custom LLM to adhere to
 	// Wire name: 'guidelines'
-	Guidelines []string ``
+	Guidelines []string `json:"guidelines,omitempty"`
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Instructions for the custom LLM to follow
 	// Wire name: 'instructions'
-	Instructions string ``
+	Instructions string `json:"instructions"`
 	// Name of the custom LLM
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// If optimization is kicked off, tracks the state of the custom LLM
 	// Wire name: 'optimization_state'
-	OptimizationState State    ``
-	ForceSendFields   []string `tf:"-"`
+	OptimizationState State    `json:"optimization_state,omitempty"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
 func (st CustomLlm) MarshalJSON() ([]byte, error) {
@@ -305,7 +303,7 @@ func CustomLlmFromPb(pb *agentbrickspb.CustomLlmPb) (*CustomLlm, error) {
 type Dataset struct {
 
 	// Wire name: 'table'
-	Table Table ``
+	Table Table `json:"table"`
 }
 
 func (st Dataset) MarshalJSON() ([]byte, error) {
@@ -367,8 +365,7 @@ func DatasetFromPb(pb *agentbrickspb.DatasetPb) (*Dataset, error) {
 
 type DeleteCustomLlmRequest struct {
 	// The id of the custom llm
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteCustomLlmRequest) MarshalJSON() ([]byte, error) {
@@ -418,8 +415,7 @@ func DeleteCustomLlmRequestFromPb(pb *agentbrickspb.DeleteCustomLlmRequestPb) (*
 
 type GetCustomLlmRequest struct {
 	// The id of the custom llm
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetCustomLlmRequest) MarshalJSON() ([]byte, error) {
@@ -469,8 +465,7 @@ func GetCustomLlmRequestFromPb(pb *agentbrickspb.GetCustomLlmRequestPb) (*GetCus
 
 type StartCustomLlmOptimizationRunRequest struct {
 	// The Id of the tile.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st StartCustomLlmOptimizationRunRequest) MarshalJSON() ([]byte, error) {
@@ -587,14 +582,14 @@ func StateFromPb(pb *agentbrickspb.StatePb) (*State, error) {
 type Table struct {
 	// Name of the request column
 	// Wire name: 'request_col'
-	RequestCol string ``
+	RequestCol string `json:"request_col"`
 	// Optional: Name of the response column if the data is labeled
 	// Wire name: 'response_col'
-	ResponseCol string ``
+	ResponseCol string `json:"response_col,omitempty"`
 	// Full UC table path in catalog.schema.table_name format
 	// Wire name: 'table_path'
-	TablePath       string   ``
-	ForceSendFields []string `tf:"-"`
+	TablePath       string   `json:"table_path"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Table) MarshalJSON() ([]byte, error) {
@@ -655,10 +650,9 @@ func TableFromPb(pb *agentbrickspb.TablePb) (*Table, error) {
 type UpdateCustomLlmRequest struct {
 	// The CustomLlm containing the fields which should be updated.
 	// Wire name: 'custom_llm'
-	CustomLlm CustomLlm ``
+	CustomLlm CustomLlm `json:"custom_llm"`
 	// The id of the custom llm
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 	// The list of the CustomLlm fields to update. These should correspond to
 	// the values (or lack thereof) present in `custom_llm`.
 	//
@@ -674,7 +668,7 @@ type UpdateCustomLlmRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'update_mask'
-	UpdateMask string `` //legacy
+	UpdateMask string `json:"update_mask"` //legacy
 
 }
 

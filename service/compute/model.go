@@ -21,18 +21,18 @@ type AddInstanceProfile struct {
 	//
 	// [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
 	// Wire name: 'iam_role_arn'
-	IamRoleArn string ``
+	IamRoleArn string `json:"iam_role_arn,omitempty"`
 	// The AWS ARN of the instance profile to register with Databricks. This
 	// field is required.
 	// Wire name: 'instance_profile_arn'
-	InstanceProfileArn string ``
+	InstanceProfileArn string `json:"instance_profile_arn"`
 	// Boolean flag indicating whether the instance profile should only be used
 	// in credential passthrough scenarios. If true, it means the instance
 	// profile contains an meta IAM role which could assume a wide range of
 	// roles. Therefore it should always be used with authorization. This field
 	// is optional, the default value is `false`.
 	// Wire name: 'is_meta_instance_profile'
-	IsMetaInstanceProfile bool ``
+	IsMetaInstanceProfile bool `json:"is_meta_instance_profile,omitempty"`
 	// By default, Databricks validates that it has sufficient permissions to
 	// launch instances with the instance profile. This validation uses AWS
 	// dry-run mode for the RunInstances API. If validation fails with an error
@@ -41,8 +41,8 @@ type AddInstanceProfile struct {
 	// availability zone”), you can pass this flag to skip the validation and
 	// forcibly add the instance profile.
 	// Wire name: 'skip_validation'
-	SkipValidation  bool     ``
-	ForceSendFields []string `tf:"-"`
+	SkipValidation  bool     `json:"skip_validation,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AddInstanceProfile) MarshalJSON() ([]byte, error) {
@@ -107,7 +107,7 @@ type Adlsgen2Info struct {
 	// abfss destination, e.g.
 	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`.
 	// Wire name: 'destination'
-	Destination string ``
+	Destination string `json:"destination"`
 }
 
 func (st Adlsgen2Info) MarshalJSON() ([]byte, error) {
@@ -160,13 +160,13 @@ type AutoScale struct {
 	// overloaded. Note that `max_workers` must be strictly greater than
 	// `min_workers`.
 	// Wire name: 'max_workers'
-	MaxWorkers int ``
+	MaxWorkers int `json:"max_workers,omitempty"`
 	// The minimum number of workers to which the cluster can scale down when
 	// underutilized. It is also the initial number of workers the cluster will
 	// have after creation.
 	// Wire name: 'min_workers'
-	MinWorkers      int      ``
-	ForceSendFields []string `tf:"-"`
+	MinWorkers      int      `json:"min_workers,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AutoScale) MarshalJSON() ([]byte, error) {
@@ -227,7 +227,7 @@ func AutoScaleFromPb(pb *computepb.AutoScalePb) (*AutoScale, error) {
 type AwsAttributes struct {
 
 	// Wire name: 'availability'
-	Availability AwsAvailability ``
+	Availability AwsAvailability `json:"availability,omitempty"`
 	// The number of volumes launched for each instance. Users can choose up to
 	// 10 volumes. This feature is only enabled for supported node types. Legacy
 	// node types cannot specify custom EBS volumes. For node types with no
@@ -245,25 +245,25 @@ type AwsAttributes struct {
 	// Please note that if EBS volumes are specified, then the Spark
 	// configuration `spark.local.dir` will be overridden.
 	// Wire name: 'ebs_volume_count'
-	EbsVolumeCount int ``
+	EbsVolumeCount int `json:"ebs_volume_count,omitempty"`
 	// If using gp3 volumes, what IOPS to use for the disk. If this is not set,
 	// the maximum performance of a gp2 volume with the same volume size will be
 	// used.
 	// Wire name: 'ebs_volume_iops'
-	EbsVolumeIops int ``
+	EbsVolumeIops int `json:"ebs_volume_iops,omitempty"`
 	// The size of each EBS volume (in GiB) launched for each instance. For
 	// general purpose SSD, this value must be within the range 100 - 4096. For
 	// throughput optimized HDD, this value must be within the range 500 - 4096.
 	// Wire name: 'ebs_volume_size'
-	EbsVolumeSize int ``
+	EbsVolumeSize int `json:"ebs_volume_size,omitempty"`
 	// If using gp3 volumes, what throughput to use for the disk. If this is not
 	// set, the maximum performance of a gp2 volume with the same volume size
 	// will be used.
 	// Wire name: 'ebs_volume_throughput'
-	EbsVolumeThroughput int ``
+	EbsVolumeThroughput int `json:"ebs_volume_throughput,omitempty"`
 	// The type of EBS volumes that will be launched with this cluster.
 	// Wire name: 'ebs_volume_type'
-	EbsVolumeType EbsVolumeType ``
+	EbsVolumeType EbsVolumeType `json:"ebs_volume_type,omitempty"`
 	// The first `first_on_demand` nodes of the cluster will be placed on
 	// on-demand instances. If this value is greater than 0, the cluster driver
 	// node in particular will be placed on an on-demand instance. If this value
@@ -274,7 +274,7 @@ type AwsAttributes struct {
 	// Note that this value does not affect cluster size and cannot currently be
 	// mutated over the lifetime of a cluster.
 	// Wire name: 'first_on_demand'
-	FirstOnDemand int ``
+	FirstOnDemand int `json:"first_on_demand,omitempty"`
 	// Nodes for this cluster will only be placed on AWS instances with this
 	// instance profile. If ommitted, nodes will be placed on instances without
 	// an IAM instance profile. The instance profile must have previously been
@@ -282,7 +282,7 @@ type AwsAttributes struct {
 	//
 	// This feature may only be available to certain customer plans.
 	// Wire name: 'instance_profile_arn'
-	InstanceProfileArn string ``
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// The bid price for AWS spot instances, as a percentage of the
 	// corresponding instance type's on-demand price. For example, if this field
 	// is set to 50, and the cluster needs a new `r3.xlarge` spot instance, then
@@ -294,7 +294,7 @@ type AwsAttributes struct {
 	// considered. Note that, for safety, we enforce this field to be no more
 	// than 10000.
 	// Wire name: 'spot_bid_price_percent'
-	SpotBidPricePercent int ``
+	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
 	// Identifier for the availability zone/datacenter in which the cluster
 	// resides. This string will be of a form like "us-west-2a". The provided
 	// availability zone must be in the same region as the Databricks
@@ -308,8 +308,8 @@ type AwsAttributes struct {
 	// The list of available zones as well as the default value can be found by
 	// using the `List Zones` method.
 	// Wire name: 'zone_id'
-	ZoneId          string   ``
-	ForceSendFields []string `tf:"-"`
+	ZoneId          string   `json:"zone_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AwsAttributes) MarshalJSON() ([]byte, error) {
@@ -472,7 +472,7 @@ type AzureAttributes struct {
 	// `first_on_demand` ones. Note: If `first_on_demand` is zero, this
 	// availability type will be used for the entire cluster.
 	// Wire name: 'availability'
-	Availability AzureAvailability ``
+	Availability AzureAvailability `json:"availability,omitempty"`
 	// The first `first_on_demand` nodes of the cluster will be placed on
 	// on-demand instances. This value should be greater than 0, to make sure
 	// the cluster driver node is placed on an on-demand instance. If this value
@@ -483,18 +483,18 @@ type AzureAttributes struct {
 	// Note that this value does not affect cluster size and cannot currently be
 	// mutated over the lifetime of a cluster.
 	// Wire name: 'first_on_demand'
-	FirstOnDemand int ``
+	FirstOnDemand int `json:"first_on_demand,omitempty"`
 	// Defines values necessary to configure and run Azure Log Analytics agent
 	// Wire name: 'log_analytics_info'
-	LogAnalyticsInfo *LogAnalyticsInfo ``
+	LogAnalyticsInfo *LogAnalyticsInfo `json:"log_analytics_info,omitempty"`
 	// The max bid price to be used for Azure spot instances. The Max price for
 	// the bid cannot be higher than the on-demand price of the instance. If not
 	// specified, the default value is -1, which specifies that the instance
 	// cannot be evicted on the basis of price, and only on the basis of
 	// availability. Further, the value should > 0 or -1.
 	// Wire name: 'spot_bid_max_price'
-	SpotBidMaxPrice float64  ``
-	ForceSendFields []string `tf:"-"`
+	SpotBidMaxPrice float64  `json:"spot_bid_max_price,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AzureAttributes) MarshalJSON() ([]byte, error) {
@@ -640,14 +640,14 @@ func AzureAvailabilityFromPb(pb *computepb.AzureAvailabilityPb) (*AzureAvailabil
 type CancelCommand struct {
 
 	// Wire name: 'clusterId'
-	ClusterId string ``
+	ClusterId string `json:"clusterId,omitempty"`
 
 	// Wire name: 'commandId'
-	CommandId string ``
+	CommandId string `json:"commandId,omitempty"`
 
 	// Wire name: 'contextId'
-	ContextId       string   ``
-	ForceSendFields []string `tf:"-"`
+	ContextId       string   `json:"contextId,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CancelCommand) MarshalJSON() ([]byte, error) {
@@ -708,10 +708,10 @@ func CancelCommandFromPb(pb *computepb.CancelCommandPb) (*CancelCommand, error) 
 type ChangeClusterOwner struct {
 
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 	// New owner of the cluster_id after this RPC.
 	// Wire name: 'owner_username'
-	OwnerUsername string ``
+	OwnerUsername string `json:"owner_username"`
 }
 
 func (st ChangeClusterOwner) MarshalJSON() ([]byte, error) {
@@ -764,11 +764,11 @@ func ChangeClusterOwnerFromPb(pb *computepb.ChangeClusterOwnerPb) (*ChangeCluste
 type ClientsTypes struct {
 	// With jobs set, the cluster can be used for jobs
 	// Wire name: 'jobs'
-	Jobs bool ``
+	Jobs bool `json:"jobs,omitempty"`
 	// With notebooks set, this cluster can be used for notebooks
 	// Wire name: 'notebooks'
-	Notebooks       bool     ``
-	ForceSendFields []string `tf:"-"`
+	Notebooks       bool     `json:"notebooks,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ClientsTypes) MarshalJSON() ([]byte, error) {
@@ -827,7 +827,7 @@ func ClientsTypesFromPb(pb *computepb.ClientsTypesPb) (*ClientsTypes, error) {
 type CloneCluster struct {
 	// The cluster that is being cloned.
 	// Wire name: 'source_cluster_id'
-	SourceClusterId string ``
+	SourceClusterId string `json:"source_cluster_id"`
 }
 
 func (st CloneCluster) MarshalJSON() ([]byte, error) {
@@ -878,7 +878,7 @@ func CloneClusterFromPb(pb *computepb.CloneClusterPb) (*CloneCluster, error) {
 type CloudProviderNodeInfo struct {
 	// Status as reported by the cloud provider
 	// Wire name: 'status'
-	Status []CloudProviderNodeStatus ``
+	Status []CloudProviderNodeStatus `json:"status,omitempty"`
 }
 
 func (st CloudProviderNodeInfo) MarshalJSON() ([]byte, error) {
@@ -1004,17 +1004,17 @@ func CloudProviderNodeStatusFromPb(pb *computepb.CloudProviderNodeStatusPb) (*Cl
 type ClusterAccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel ClusterPermissionLevel ``
+	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ClusterAccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -1089,20 +1089,20 @@ func ClusterAccessControlRequestFromPb(pb *computepb.ClusterAccessControlRequest
 type ClusterAccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []ClusterPermission ``
+	AllPermissions []ClusterPermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ClusterAccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -1195,15 +1195,15 @@ type ClusterAttributes struct {
 	// minutes. Users can also set this value to 0 to explicitly disable
 	// automatic termination.
 	// Wire name: 'autotermination_minutes'
-	AutoterminationMinutes int ``
+	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'aws_attributes'
-	AwsAttributes *AwsAttributes ``
+	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'azure_attributes'
-	AzureAttributes *AzureAttributes ``
+	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
 	// volumes) are supported. Only one destination can be specified for one
@@ -1212,13 +1212,13 @@ type ClusterAttributes struct {
 	// `$destination/$clusterId/driver`, while the destination of executor logs
 	// is `$destination/$clusterId/executor`.
 	// Wire name: 'cluster_log_conf'
-	ClusterLogConf *ClusterLogConf ``
+	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string. For
 	// job clusters, the cluster name is automatically set based on the job and
 	// job run IDs.
 	// Wire name: 'cluster_name'
-	ClusterName string ``
+	ClusterName string `json:"cluster_name,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -1228,18 +1228,18 @@ type ClusterAttributes struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	// Wire name: 'custom_tags'
-	CustomTags map[string]string ``
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	// Wire name: 'data_security_mode'
-	DataSecurityMode DataSecurityMode ``
+	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Custom docker image BYOC
 	// Wire name: 'docker_image'
-	DockerImage *DockerImage ``
+	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
 	// Wire name: 'driver_instance_pool_id'
-	DriverInstancePoolId string ``
+	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
@@ -1249,52 +1249,52 @@ type ClusterAttributes struct {
 	// and virtual_cluster_size are specified, driver_node_type_id and
 	// node_type_id take precedence.
 	// Wire name: 'driver_node_type_id'
-	DriverNodeTypeId string ``
+	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
 	// correctly - refer to the User Guide for more details.
 	// Wire name: 'enable_elastic_disk'
-	EnableElasticDisk bool ``
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Whether to enable LUKS on cluster VMs' local disks
 	// Wire name: 'enable_local_disk_encryption'
-	EnableLocalDiskEncryption bool ``
+	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'gcp_attributes'
-	GcpAttributes *GcpAttributes ``
+	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
 	// Wire name: 'init_scripts'
-	InitScripts []InitScriptInfo ``
+	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	// Wire name: 'instance_pool_id'
-	InstancePoolId string ``
+	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	// Wire name: 'is_single_node'
-	IsSingleNode bool ``
+	IsSingleNode bool `json:"is_single_node,omitempty"`
 
 	// Wire name: 'kind'
-	Kind Kind ``
+	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	// Wire name: 'node_type_id'
-	NodeTypeId string ``
+	NodeTypeId string `json:"node_type_id,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	// Wire name: 'policy_id'
-	PolicyId string ``
+	PolicyId string `json:"policy_id,omitempty"`
 	// If set, what the configurable throughput (in Mb/s) for the remote disk
 	// is. Currently only supported for GCP HYPERDISK_BALANCED disks.
 	// Wire name: 'remote_disk_throughput'
-	RemoteDiskThroughput int ``
+	RemoteDiskThroughput int `json:"remote_disk_throughput,omitempty"`
 	// Determines the cluster's runtime engine, either standard or Photon.
 	//
 	// This field is not compatible with legacy `spark_version` values that
@@ -1304,17 +1304,17 @@ type ClusterAttributes struct {
 	// If left unspecified, the runtime engine defaults to standard unless the
 	// spark_version contains -photon-, in which case Photon will be used.
 	// Wire name: 'runtime_engine'
-	RuntimeEngine RuntimeEngine ``
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// Single user name if data_security_mode is `SINGLE_USER`
 	// Wire name: 'single_user_name'
-	SingleUserName string ``
+	SingleUserName string `json:"single_user_name,omitempty"`
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
 	// Wire name: 'spark_conf'
-	SparkConf map[string]string ``
+	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
 	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
@@ -1329,32 +1329,32 @@ type ClusterAttributes struct {
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
 	// Wire name: 'spark_env_vars'
-	SparkEnvVars map[string]string ``
+	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	// Wire name: 'spark_version'
-	SparkVersion string ``
+	SparkVersion string `json:"spark_version"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	// Wire name: 'ssh_public_keys'
-	SshPublicKeys []string ``
+	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
 	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
 	// Wire name: 'total_initial_remote_disk_size'
-	TotalInitialRemoteDiskSize int ``
+	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	// Wire name: 'use_ml_runtime'
-	UseMlRuntime bool ``
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 
 	// Wire name: 'workload_type'
-	WorkloadType    *WorkloadType ``
-	ForceSendFields []string      `tf:"-"`
+	WorkloadType    *WorkloadType `json:"workload_type,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st ClusterAttributes) MarshalJSON() ([]byte, error) {
@@ -1597,18 +1597,18 @@ func ClusterAttributesFromPb(pb *computepb.ClusterAttributesPb) (*ClusterAttribu
 type ClusterCompliance struct {
 	// Canonical unique identifier for a cluster.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 	// Whether this cluster is in compliance with the latest version of its
 	// policy.
 	// Wire name: 'is_compliant'
-	IsCompliant bool ``
+	IsCompliant bool `json:"is_compliant,omitempty"`
 	// An object containing key-value mappings representing the first 200 policy
 	// validation errors. The keys indicate the path where the policy validation
 	// error is occurring. The values indicate an error message describing the
 	// policy validation error.
 	// Wire name: 'violations'
-	Violations      map[string]string ``
-	ForceSendFields []string          `tf:"-"`
+	Violations      map[string]string `json:"violations,omitempty"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
 func (st ClusterCompliance) MarshalJSON() ([]byte, error) {
@@ -1672,31 +1672,31 @@ type ClusterDetails struct {
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
 	// Wire name: 'autoscale'
-	Autoscale *AutoScale ``
+	Autoscale *AutoScale `json:"autoscale,omitempty"`
 	// Automatically terminates the cluster after it is inactive for this time
 	// in minutes. If not set, this cluster will not be automatically
 	// terminated. If specified, the threshold must be between 10 and 10000
 	// minutes. Users can also set this value to 0 to explicitly disable
 	// automatic termination.
 	// Wire name: 'autotermination_minutes'
-	AutoterminationMinutes int ``
+	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'aws_attributes'
-	AwsAttributes *AwsAttributes ``
+	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'azure_attributes'
-	AzureAttributes *AzureAttributes ``
+	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
 	// Number of CPU cores available for this cluster. Note that this can be
 	// fractional, e.g. 7.5 cores, since certain node types are configured to
 	// share cores between Spark nodes on the same instance.
 	// Wire name: 'cluster_cores'
-	ClusterCores float64 ``
+	ClusterCores float64 `json:"cluster_cores,omitempty"`
 	// Canonical identifier for the cluster. This id is retained during cluster
 	// restarts and resizes, while each new cluster has a globally unique id.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
 	// volumes) are supported. Only one destination can be specified for one
@@ -1705,27 +1705,27 @@ type ClusterDetails struct {
 	// `$destination/$clusterId/driver`, while the destination of executor logs
 	// is `$destination/$clusterId/executor`.
 	// Wire name: 'cluster_log_conf'
-	ClusterLogConf *ClusterLogConf ``
+	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster log delivery status.
 	// Wire name: 'cluster_log_status'
-	ClusterLogStatus *LogSyncStatus ``
+	ClusterLogStatus *LogSyncStatus `json:"cluster_log_status,omitempty"`
 	// Total amount of cluster memory, in megabytes
 	// Wire name: 'cluster_memory_mb'
-	ClusterMemoryMb int64 ``
+	ClusterMemoryMb int64 `json:"cluster_memory_mb,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string. For
 	// job clusters, the cluster name is automatically set based on the job and
 	// job run IDs.
 	// Wire name: 'cluster_name'
-	ClusterName string ``
+	ClusterName string `json:"cluster_name,omitempty"`
 	// Determines whether the cluster was created by a user through the UI,
 	// created by the Databricks Jobs Scheduler, or through an API request.
 	// Wire name: 'cluster_source'
-	ClusterSource ClusterSource ``
+	ClusterSource ClusterSource `json:"cluster_source,omitempty"`
 	// Creator user name. The field won't be included in the response if the
 	// user has already been deleted.
 	// Wire name: 'creator_user_name'
-	CreatorUserName string ``
+	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -1735,10 +1735,10 @@ type ClusterDetails struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	// Wire name: 'custom_tags'
-	CustomTags map[string]string ``
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	// Wire name: 'data_security_mode'
-	DataSecurityMode DataSecurityMode ``
+	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
 	//
@@ -1752,20 +1752,20 @@ type ClusterDetails struct {
 	//
 	// - Name: <Databricks internal use>
 	// Wire name: 'default_tags'
-	DefaultTags map[string]string ``
+	DefaultTags map[string]string `json:"default_tags,omitempty"`
 	// Custom docker image BYOC
 	// Wire name: 'docker_image'
-	DockerImage *DockerImage ``
+	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// Node on which the Spark driver resides. The driver node contains the
 	// Spark master and the Databricks application that manages the per-notebook
 	// Spark REPLs.
 	// Wire name: 'driver'
-	Driver *SparkNode ``
+	Driver *SparkNode `json:"driver,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
 	// Wire name: 'driver_instance_pool_id'
-	DriverInstancePoolId string ``
+	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
@@ -1775,59 +1775,59 @@ type ClusterDetails struct {
 	// and virtual_cluster_size are specified, driver_node_type_id and
 	// node_type_id take precedence.
 	// Wire name: 'driver_node_type_id'
-	DriverNodeTypeId string ``
+	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
 	// correctly - refer to the User Guide for more details.
 	// Wire name: 'enable_elastic_disk'
-	EnableElasticDisk bool ``
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Whether to enable LUKS on cluster VMs' local disks
 	// Wire name: 'enable_local_disk_encryption'
-	EnableLocalDiskEncryption bool ``
+	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
 	// Nodes on which the Spark executors reside.
 	// Wire name: 'executors'
-	Executors []SparkNode ``
+	Executors []SparkNode `json:"executors,omitempty"`
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'gcp_attributes'
-	GcpAttributes *GcpAttributes ``
+	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
 	// Wire name: 'init_scripts'
-	InitScripts []InitScriptInfo ``
+	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	// Wire name: 'instance_pool_id'
-	InstancePoolId string ``
+	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	// Wire name: 'is_single_node'
-	IsSingleNode bool ``
+	IsSingleNode bool `json:"is_single_node,omitempty"`
 	// Port on which Spark JDBC server is listening, in the driver nod. No
 	// service will be listeningon on this port in executor nodes.
 	// Wire name: 'jdbc_port'
-	JdbcPort int ``
+	JdbcPort int `json:"jdbc_port,omitempty"`
 
 	// Wire name: 'kind'
-	Kind Kind ``
+	Kind Kind `json:"kind,omitempty"`
 	// the timestamp that the cluster was started/restarted
 	// Wire name: 'last_restarted_time'
-	LastRestartedTime int64 ``
+	LastRestartedTime int64 `json:"last_restarted_time,omitempty"`
 	// Time when the cluster driver last lost its state (due to a restart or
 	// driver failure).
 	// Wire name: 'last_state_loss_time'
-	LastStateLossTime int64 ``
+	LastStateLossTime int64 `json:"last_state_loss_time,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	// Wire name: 'node_type_id'
-	NodeTypeId string ``
+	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
 	// Spark nodes.
@@ -1839,14 +1839,14 @@ type ClusterDetails struct {
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	// Wire name: 'num_workers'
-	NumWorkers int ``
+	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	// Wire name: 'policy_id'
-	PolicyId string ``
+	PolicyId string `json:"policy_id,omitempty"`
 	// If set, what the configurable throughput (in Mb/s) for the remote disk
 	// is. Currently only supported for GCP HYPERDISK_BALANCED disks.
 	// Wire name: 'remote_disk_throughput'
-	RemoteDiskThroughput int ``
+	RemoteDiskThroughput int `json:"remote_disk_throughput,omitempty"`
 	// Determines the cluster's runtime engine, either standard or Photon.
 	//
 	// This field is not compatible with legacy `spark_version` values that
@@ -1856,22 +1856,22 @@ type ClusterDetails struct {
 	// If left unspecified, the runtime engine defaults to standard unless the
 	// spark_version contains -photon-, in which case Photon will be used.
 	// Wire name: 'runtime_engine'
-	RuntimeEngine RuntimeEngine ``
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// Single user name if data_security_mode is `SINGLE_USER`
 	// Wire name: 'single_user_name'
-	SingleUserName string ``
+	SingleUserName string `json:"single_user_name,omitempty"`
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
 	// Wire name: 'spark_conf'
-	SparkConf map[string]string ``
+	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// A canonical SparkContext identifier. This value *does* change when the
 	// Spark driver restarts. The pair `(cluster_id, spark_context_id)` is a
 	// globally unique identifier over all Spark contexts.
 	// Wire name: 'spark_context_id'
-	SparkContextId int64 ``
+	SparkContextId int64 `json:"spark_context_id,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
 	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
@@ -1886,56 +1886,56 @@ type ClusterDetails struct {
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
 	// Wire name: 'spark_env_vars'
-	SparkEnvVars map[string]string ``
+	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	// Wire name: 'spark_version'
-	SparkVersion string ``
+	SparkVersion string `json:"spark_version,omitempty"`
 	// The spec contains a snapshot of the latest user specified settings that
 	// were used to create/edit the cluster. Note: not included in the response
 	// of the ListClusters API.
 	// Wire name: 'spec'
-	Spec *ClusterSpec ``
+	Spec *ClusterSpec `json:"spec,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	// Wire name: 'ssh_public_keys'
-	SshPublicKeys []string ``
+	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// Time (in epoch milliseconds) when the cluster creation request was
 	// received (when the cluster entered a `PENDING` state).
 	// Wire name: 'start_time'
-	StartTime int64 ``
+	StartTime int64 `json:"start_time,omitempty"`
 	// Current state of the cluster.
 	// Wire name: 'state'
-	State State ``
+	State State `json:"state,omitempty"`
 	// A message associated with the most recent state transition (e.g., the
 	// reason why the cluster entered a `TERMINATED` state).
 	// Wire name: 'state_message'
-	StateMessage string ``
+	StateMessage string `json:"state_message,omitempty"`
 	// Time (in epoch milliseconds) when the cluster was terminated, if
 	// applicable.
 	// Wire name: 'terminated_time'
-	TerminatedTime int64 ``
+	TerminatedTime int64 `json:"terminated_time,omitempty"`
 	// Information about why the cluster was terminated. This field only appears
 	// when the cluster is in a `TERMINATING` or `TERMINATED` state.
 	// Wire name: 'termination_reason'
-	TerminationReason *TerminationReason ``
+	TerminationReason *TerminationReason `json:"termination_reason,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
 	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
 	// Wire name: 'total_initial_remote_disk_size'
-	TotalInitialRemoteDiskSize int ``
+	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	// Wire name: 'use_ml_runtime'
-	UseMlRuntime bool ``
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 
 	// Wire name: 'workload_type'
-	WorkloadType    *WorkloadType ``
-	ForceSendFields []string      `tf:"-"`
+	WorkloadType    *WorkloadType `json:"workload_type,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st ClusterDetails) MarshalJSON() ([]byte, error) {
@@ -2326,22 +2326,22 @@ func ClusterDetailsFromPb(pb *computepb.ClusterDetailsPb) (*ClusterDetails, erro
 type ClusterEvent struct {
 
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 
 	// Wire name: 'data_plane_event_details'
-	DataPlaneEventDetails *DataPlaneEventDetails ``
+	DataPlaneEventDetails *DataPlaneEventDetails `json:"data_plane_event_details,omitempty"`
 
 	// Wire name: 'details'
-	Details *EventDetails ``
+	Details *EventDetails `json:"details,omitempty"`
 	// The timestamp when the event occurred, stored as the number of
 	// milliseconds since the Unix epoch. If not provided, this will be assigned
 	// by the Timeline service.
 	// Wire name: 'timestamp'
-	Timestamp int64 ``
+	Timestamp int64 `json:"timestamp,omitempty"`
 
 	// Wire name: 'type'
-	Type            EventType ``
-	ForceSendFields []string  `tf:"-"`
+	Type            EventType `json:"type,omitempty"`
+	ForceSendFields []string  `json:"-" tf:"-"`
 }
 
 func (st ClusterEvent) MarshalJSON() ([]byte, error) {
@@ -2442,11 +2442,11 @@ func ClusterEventFromPb(pb *computepb.ClusterEventPb) (*ClusterEvent, error) {
 type ClusterLibraryStatuses struct {
 	// Unique identifier for the cluster.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id,omitempty"`
 	// Status of all libraries on the cluster.
 	// Wire name: 'library_statuses'
-	LibraryStatuses []LibraryFullStatus ``
-	ForceSendFields []string            `tf:"-"`
+	LibraryStatuses []LibraryFullStatus `json:"library_statuses,omitempty"`
+	ForceSendFields []string            `json:"-" tf:"-"`
 }
 
 func (st ClusterLibraryStatuses) MarshalJSON() ([]byte, error) {
@@ -2529,18 +2529,18 @@ type ClusterLogConf struct {
 	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
 	// "dbfs:/home/cluster_log" } }`
 	// Wire name: 'dbfs'
-	Dbfs *DbfsStorageInfo ``
+	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
 	// destination and either the region or endpoint need to be provided. e.g.
 	// `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
 	// "us-west-2" } }` Cluster iam role is used to access s3, please make sure
 	// the cluster iam role in `instance_profile_arn` has permission to write
 	// data to the s3 destination.
 	// Wire name: 's3'
-	S3 *S3StorageInfo ``
+	S3 *S3StorageInfo `json:"s3,omitempty"`
 	// destination needs to be provided, e.g. `{ "volumes": { "destination":
 	// "/Volumes/catalog/schema/volume/cluster_log" } }`
 	// Wire name: 'volumes'
-	Volumes *VolumesStorageInfo ``
+	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
 }
 
 func (st ClusterLogConf) MarshalJSON() ([]byte, error) {
@@ -2631,14 +2631,14 @@ func ClusterLogConfFromPb(pb *computepb.ClusterLogConfPb) (*ClusterLogConf, erro
 type ClusterPermission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel ClusterPermissionLevel ``
-	ForceSendFields []string               `tf:"-"`
+	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string               `json:"-" tf:"-"`
 }
 
 func (st ClusterPermission) MarshalJSON() ([]byte, error) {
@@ -2768,14 +2768,14 @@ func ClusterPermissionLevelFromPb(pb *computepb.ClusterPermissionLevelPb) (*Clus
 type ClusterPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []ClusterAccessControlResponse ``
+	AccessControlList []ClusterAccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ClusterPermissions) MarshalJSON() ([]byte, error) {
@@ -2858,11 +2858,11 @@ func ClusterPermissionsFromPb(pb *computepb.ClusterPermissionsPb) (*ClusterPermi
 type ClusterPermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel ClusterPermissionLevel ``
-	ForceSendFields []string               `tf:"-"`
+	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string               `json:"-" tf:"-"`
 }
 
 func (st ClusterPermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -2933,10 +2933,9 @@ func ClusterPermissionsDescriptionFromPb(pb *computepb.ClusterPermissionsDescrip
 type ClusterPermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []ClusterAccessControlRequest ``
+	AccessControlList []ClusterAccessControlRequest `json:"access_control_list,omitempty"`
 	// The cluster for which to get or manage permissions.
-	// Wire name: 'cluster_id'
-	ClusterId string `tf:"-"`
+	ClusterId string `json:"-" tf:"-"`
 }
 
 func (st ClusterPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -3011,17 +3010,17 @@ func ClusterPermissionsRequestFromPb(pb *computepb.ClusterPermissionsRequestPb) 
 type ClusterPolicyAccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel ClusterPolicyPermissionLevel ``
+	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ClusterPolicyAccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -3096,20 +3095,20 @@ func ClusterPolicyAccessControlRequestFromPb(pb *computepb.ClusterPolicyAccessCo
 type ClusterPolicyAccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []ClusterPolicyPermission ``
+	AllPermissions []ClusterPolicyPermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ClusterPolicyAccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -3196,14 +3195,14 @@ func ClusterPolicyAccessControlResponseFromPb(pb *computepb.ClusterPolicyAccessC
 type ClusterPolicyPermission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel ClusterPolicyPermissionLevel ``
-	ForceSendFields []string                     `tf:"-"`
+	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                     `json:"-" tf:"-"`
 }
 
 func (st ClusterPolicyPermission) MarshalJSON() ([]byte, error) {
@@ -3327,14 +3326,14 @@ func ClusterPolicyPermissionLevelFromPb(pb *computepb.ClusterPolicyPermissionLev
 type ClusterPolicyPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []ClusterPolicyAccessControlResponse ``
+	AccessControlList []ClusterPolicyAccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ClusterPolicyPermissions) MarshalJSON() ([]byte, error) {
@@ -3417,11 +3416,11 @@ func ClusterPolicyPermissionsFromPb(pb *computepb.ClusterPolicyPermissionsPb) (*
 type ClusterPolicyPermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel ClusterPolicyPermissionLevel ``
-	ForceSendFields []string                     `tf:"-"`
+	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                     `json:"-" tf:"-"`
 }
 
 func (st ClusterPolicyPermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -3492,10 +3491,9 @@ func ClusterPolicyPermissionsDescriptionFromPb(pb *computepb.ClusterPolicyPermis
 type ClusterPolicyPermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []ClusterPolicyAccessControlRequest ``
+	AccessControlList []ClusterPolicyAccessControlRequest `json:"access_control_list,omitempty"`
 	// The cluster policy for which to get or manage permissions.
-	// Wire name: 'cluster_policy_id'
-	ClusterPolicyId string `tf:"-"`
+	ClusterPolicyId string `json:"-" tf:"-"`
 }
 
 func (st ClusterPolicyPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -3572,20 +3570,20 @@ func ClusterPolicyPermissionsRequestFromPb(pb *computepb.ClusterPolicyPermission
 type ClusterSettingsChange struct {
 	// The field where this change would be made.
 	// Wire name: 'field'
-	Field string ``
+	Field string `json:"field,omitempty"`
 	// The new value of this field after enforcing policy compliance (either a
 	// number, a boolean, or a string) converted to a string. This is intended
 	// to be read by a human. The typed new value of this field can be retrieved
 	// by reading the settings field in the API response.
 	// Wire name: 'new_value'
-	NewValue string ``
+	NewValue string `json:"new_value,omitempty"`
 	// The previous value of this field before enforcing policy compliance
 	// (either a number, a boolean, or a string) converted to a string. This is
 	// intended to be read by a human. The type of the field can be retrieved by
 	// reading the settings field in the API response.
 	// Wire name: 'previous_value'
-	PreviousValue   string   ``
-	ForceSendFields []string `tf:"-"`
+	PreviousValue   string   `json:"previous_value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ClusterSettingsChange) MarshalJSON() ([]byte, error) {
@@ -3648,7 +3646,7 @@ type ClusterSize struct {
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
 	// Wire name: 'autoscale'
-	Autoscale *AutoScale ``
+	Autoscale *AutoScale `json:"autoscale,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
 	// Spark nodes.
@@ -3660,8 +3658,8 @@ type ClusterSize struct {
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	// Wire name: 'num_workers'
-	NumWorkers      int      ``
-	ForceSendFields []string `tf:"-"`
+	NumWorkers      int      `json:"num_workers,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ClusterSize) MarshalJSON() ([]byte, error) {
@@ -3807,27 +3805,27 @@ type ClusterSpec struct {
 	// for fields that are omitted. When set to false, only fixed values from
 	// the policy will be applied.
 	// Wire name: 'apply_policy_default_values'
-	ApplyPolicyDefaultValues bool ``
+	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
 	// Wire name: 'autoscale'
-	Autoscale *AutoScale ``
+	Autoscale *AutoScale `json:"autoscale,omitempty"`
 	// Automatically terminates the cluster after it is inactive for this time
 	// in minutes. If not set, this cluster will not be automatically
 	// terminated. If specified, the threshold must be between 10 and 10000
 	// minutes. Users can also set this value to 0 to explicitly disable
 	// automatic termination.
 	// Wire name: 'autotermination_minutes'
-	AutoterminationMinutes int ``
+	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'aws_attributes'
-	AwsAttributes *AwsAttributes ``
+	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'azure_attributes'
-	AzureAttributes *AzureAttributes ``
+	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
 	// volumes) are supported. Only one destination can be specified for one
@@ -3836,13 +3834,13 @@ type ClusterSpec struct {
 	// `$destination/$clusterId/driver`, while the destination of executor logs
 	// is `$destination/$clusterId/executor`.
 	// Wire name: 'cluster_log_conf'
-	ClusterLogConf *ClusterLogConf ``
+	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string. For
 	// job clusters, the cluster name is automatically set based on the job and
 	// job run IDs.
 	// Wire name: 'cluster_name'
-	ClusterName string ``
+	ClusterName string `json:"cluster_name,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -3852,18 +3850,18 @@ type ClusterSpec struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	// Wire name: 'custom_tags'
-	CustomTags map[string]string ``
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	// Wire name: 'data_security_mode'
-	DataSecurityMode DataSecurityMode ``
+	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Custom docker image BYOC
 	// Wire name: 'docker_image'
-	DockerImage *DockerImage ``
+	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
 	// Wire name: 'driver_instance_pool_id'
-	DriverInstancePoolId string ``
+	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
@@ -3873,45 +3871,45 @@ type ClusterSpec struct {
 	// and virtual_cluster_size are specified, driver_node_type_id and
 	// node_type_id take precedence.
 	// Wire name: 'driver_node_type_id'
-	DriverNodeTypeId string ``
+	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
 	// correctly - refer to the User Guide for more details.
 	// Wire name: 'enable_elastic_disk'
-	EnableElasticDisk bool ``
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Whether to enable LUKS on cluster VMs' local disks
 	// Wire name: 'enable_local_disk_encryption'
-	EnableLocalDiskEncryption bool ``
+	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'gcp_attributes'
-	GcpAttributes *GcpAttributes ``
+	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
 	// Wire name: 'init_scripts'
-	InitScripts []InitScriptInfo ``
+	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	// Wire name: 'instance_pool_id'
-	InstancePoolId string ``
+	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	// Wire name: 'is_single_node'
-	IsSingleNode bool ``
+	IsSingleNode bool `json:"is_single_node,omitempty"`
 
 	// Wire name: 'kind'
-	Kind Kind ``
+	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	// Wire name: 'node_type_id'
-	NodeTypeId string ``
+	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
 	// Spark nodes.
@@ -3923,14 +3921,14 @@ type ClusterSpec struct {
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	// Wire name: 'num_workers'
-	NumWorkers int ``
+	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	// Wire name: 'policy_id'
-	PolicyId string ``
+	PolicyId string `json:"policy_id,omitempty"`
 	// If set, what the configurable throughput (in Mb/s) for the remote disk
 	// is. Currently only supported for GCP HYPERDISK_BALANCED disks.
 	// Wire name: 'remote_disk_throughput'
-	RemoteDiskThroughput int ``
+	RemoteDiskThroughput int `json:"remote_disk_throughput,omitempty"`
 	// Determines the cluster's runtime engine, either standard or Photon.
 	//
 	// This field is not compatible with legacy `spark_version` values that
@@ -3940,17 +3938,17 @@ type ClusterSpec struct {
 	// If left unspecified, the runtime engine defaults to standard unless the
 	// spark_version contains -photon-, in which case Photon will be used.
 	// Wire name: 'runtime_engine'
-	RuntimeEngine RuntimeEngine ``
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// Single user name if data_security_mode is `SINGLE_USER`
 	// Wire name: 'single_user_name'
-	SingleUserName string ``
+	SingleUserName string `json:"single_user_name,omitempty"`
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
 	// Wire name: 'spark_conf'
-	SparkConf map[string]string ``
+	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
 	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
@@ -3965,32 +3963,32 @@ type ClusterSpec struct {
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
 	// Wire name: 'spark_env_vars'
-	SparkEnvVars map[string]string ``
+	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	// Wire name: 'spark_version'
-	SparkVersion string ``
+	SparkVersion string `json:"spark_version,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	// Wire name: 'ssh_public_keys'
-	SshPublicKeys []string ``
+	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
 	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
 	// Wire name: 'total_initial_remote_disk_size'
-	TotalInitialRemoteDiskSize int ``
+	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	// Wire name: 'use_ml_runtime'
-	UseMlRuntime bool ``
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 
 	// Wire name: 'workload_type'
-	WorkloadType    *WorkloadType ``
-	ForceSendFields []string      `tf:"-"`
+	WorkloadType    *WorkloadType `json:"workload_type,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st ClusterSpec) MarshalJSON() ([]byte, error) {
@@ -4250,8 +4248,7 @@ func ClusterSpecFromPb(pb *computepb.ClusterSpecPb) (*ClusterSpec, error) {
 
 type ClusterStatus struct {
 	// Unique identifier of the cluster whose status should be retrieved.
-	// Wire name: 'cluster_id'
-	ClusterId string `tf:"-"`
+	ClusterId string `json:"-" tf:"-"`
 }
 
 func (st ClusterStatus) MarshalJSON() ([]byte, error) {
@@ -4302,17 +4299,17 @@ func ClusterStatusFromPb(pb *computepb.ClusterStatusPb) (*ClusterStatus, error) 
 type Command struct {
 	// Running cluster id
 	// Wire name: 'clusterId'
-	ClusterId string ``
+	ClusterId string `json:"clusterId,omitempty"`
 	// Executable code
 	// Wire name: 'command'
-	Command string ``
+	Command string `json:"command,omitempty"`
 	// Running context id
 	// Wire name: 'contextId'
-	ContextId string ``
+	ContextId string `json:"contextId,omitempty"`
 
 	// Wire name: 'language'
-	Language        Language ``
-	ForceSendFields []string `tf:"-"`
+	Language        Language `json:"language,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Command) MarshalJSON() ([]byte, error) {
@@ -4450,15 +4447,11 @@ func CommandStatusFromPb(pb *computepb.CommandStatusPb) (*CommandStatus, error) 
 }
 
 type CommandStatusRequest struct {
+	ClusterId string `json:"-" tf:"-"`
 
-	// Wire name: 'clusterId'
-	ClusterId string `tf:"-"`
+	CommandId string `json:"-" tf:"-"`
 
-	// Wire name: 'commandId'
-	CommandId string `tf:"-"`
-
-	// Wire name: 'contextId'
-	ContextId string `tf:"-"`
+	ContextId string `json:"-" tf:"-"`
 }
 
 func (st CommandStatusRequest) MarshalJSON() ([]byte, error) {
@@ -4513,14 +4506,14 @@ func CommandStatusRequestFromPb(pb *computepb.CommandStatusRequestPb) (*CommandS
 type CommandStatusResponse struct {
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 
 	// Wire name: 'results'
-	Results *Results ``
+	Results *Results `json:"results,omitempty"`
 
 	// Wire name: 'status'
-	Status          CommandStatus ``
-	ForceSendFields []string      `tf:"-"`
+	Status          CommandStatus `json:"status,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st CommandStatusResponse) MarshalJSON() ([]byte, error) {
@@ -4659,12 +4652,9 @@ func ContextStatusFromPb(pb *computepb.ContextStatusPb) (*ContextStatus, error) 
 }
 
 type ContextStatusRequest struct {
+	ClusterId string `json:"-" tf:"-"`
 
-	// Wire name: 'clusterId'
-	ClusterId string `tf:"-"`
-
-	// Wire name: 'contextId'
-	ContextId string `tf:"-"`
+	ContextId string `json:"-" tf:"-"`
 }
 
 func (st ContextStatusRequest) MarshalJSON() ([]byte, error) {
@@ -4717,11 +4707,11 @@ func ContextStatusRequestFromPb(pb *computepb.ContextStatusRequestPb) (*ContextS
 type ContextStatusResponse struct {
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 
 	// Wire name: 'status'
-	Status          ContextStatus ``
-	ForceSendFields []string      `tf:"-"`
+	Status          ContextStatus `json:"status,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st ContextStatusResponse) MarshalJSON() ([]byte, error) {
@@ -4794,31 +4784,31 @@ type CreateCluster struct {
 	// for fields that are omitted. When set to false, only fixed values from
 	// the policy will be applied.
 	// Wire name: 'apply_policy_default_values'
-	ApplyPolicyDefaultValues bool ``
+	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
 	// Wire name: 'autoscale'
-	Autoscale *AutoScale ``
+	Autoscale *AutoScale `json:"autoscale,omitempty"`
 	// Automatically terminates the cluster after it is inactive for this time
 	// in minutes. If not set, this cluster will not be automatically
 	// terminated. If specified, the threshold must be between 10 and 10000
 	// minutes. Users can also set this value to 0 to explicitly disable
 	// automatic termination.
 	// Wire name: 'autotermination_minutes'
-	AutoterminationMinutes int ``
+	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'aws_attributes'
-	AwsAttributes *AwsAttributes ``
+	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'azure_attributes'
-	AzureAttributes *AzureAttributes ``
+	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
 	// When specified, this clones libraries from a source cluster during the
 	// creation of a new cluster.
 	// Wire name: 'clone_from'
-	CloneFrom *CloneCluster ``
+	CloneFrom *CloneCluster `json:"clone_from,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
 	// volumes) are supported. Only one destination can be specified for one
@@ -4827,13 +4817,13 @@ type CreateCluster struct {
 	// `$destination/$clusterId/driver`, while the destination of executor logs
 	// is `$destination/$clusterId/executor`.
 	// Wire name: 'cluster_log_conf'
-	ClusterLogConf *ClusterLogConf ``
+	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string. For
 	// job clusters, the cluster name is automatically set based on the job and
 	// job run IDs.
 	// Wire name: 'cluster_name'
-	ClusterName string ``
+	ClusterName string `json:"cluster_name,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -4843,18 +4833,18 @@ type CreateCluster struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	// Wire name: 'custom_tags'
-	CustomTags map[string]string ``
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	// Wire name: 'data_security_mode'
-	DataSecurityMode DataSecurityMode ``
+	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Custom docker image BYOC
 	// Wire name: 'docker_image'
-	DockerImage *DockerImage ``
+	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
 	// Wire name: 'driver_instance_pool_id'
-	DriverInstancePoolId string ``
+	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
@@ -4864,45 +4854,45 @@ type CreateCluster struct {
 	// and virtual_cluster_size are specified, driver_node_type_id and
 	// node_type_id take precedence.
 	// Wire name: 'driver_node_type_id'
-	DriverNodeTypeId string ``
+	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
 	// correctly - refer to the User Guide for more details.
 	// Wire name: 'enable_elastic_disk'
-	EnableElasticDisk bool ``
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Whether to enable LUKS on cluster VMs' local disks
 	// Wire name: 'enable_local_disk_encryption'
-	EnableLocalDiskEncryption bool ``
+	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'gcp_attributes'
-	GcpAttributes *GcpAttributes ``
+	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
 	// Wire name: 'init_scripts'
-	InitScripts []InitScriptInfo ``
+	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	// Wire name: 'instance_pool_id'
-	InstancePoolId string ``
+	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	// Wire name: 'is_single_node'
-	IsSingleNode bool ``
+	IsSingleNode bool `json:"is_single_node,omitempty"`
 
 	// Wire name: 'kind'
-	Kind Kind ``
+	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	// Wire name: 'node_type_id'
-	NodeTypeId string ``
+	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
 	// Spark nodes.
@@ -4914,14 +4904,14 @@ type CreateCluster struct {
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	// Wire name: 'num_workers'
-	NumWorkers int ``
+	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	// Wire name: 'policy_id'
-	PolicyId string ``
+	PolicyId string `json:"policy_id,omitempty"`
 	// If set, what the configurable throughput (in Mb/s) for the remote disk
 	// is. Currently only supported for GCP HYPERDISK_BALANCED disks.
 	// Wire name: 'remote_disk_throughput'
-	RemoteDiskThroughput int ``
+	RemoteDiskThroughput int `json:"remote_disk_throughput,omitempty"`
 	// Determines the cluster's runtime engine, either standard or Photon.
 	//
 	// This field is not compatible with legacy `spark_version` values that
@@ -4931,17 +4921,17 @@ type CreateCluster struct {
 	// If left unspecified, the runtime engine defaults to standard unless the
 	// spark_version contains -photon-, in which case Photon will be used.
 	// Wire name: 'runtime_engine'
-	RuntimeEngine RuntimeEngine ``
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// Single user name if data_security_mode is `SINGLE_USER`
 	// Wire name: 'single_user_name'
-	SingleUserName string ``
+	SingleUserName string `json:"single_user_name,omitempty"`
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
 	// Wire name: 'spark_conf'
-	SparkConf map[string]string ``
+	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
 	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
@@ -4956,32 +4946,32 @@ type CreateCluster struct {
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
 	// Wire name: 'spark_env_vars'
-	SparkEnvVars map[string]string ``
+	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	// Wire name: 'spark_version'
-	SparkVersion string ``
+	SparkVersion string `json:"spark_version"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	// Wire name: 'ssh_public_keys'
-	SshPublicKeys []string ``
+	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
 	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
 	// Wire name: 'total_initial_remote_disk_size'
-	TotalInitialRemoteDiskSize int ``
+	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	// Wire name: 'use_ml_runtime'
-	UseMlRuntime bool ``
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 
 	// Wire name: 'workload_type'
-	WorkloadType    *WorkloadType ``
-	ForceSendFields []string      `tf:"-"`
+	WorkloadType    *WorkloadType `json:"workload_type,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st CreateCluster) MarshalJSON() ([]byte, error) {
@@ -5256,8 +5246,8 @@ func CreateClusterFromPb(pb *computepb.CreateClusterPb) (*CreateCluster, error) 
 type CreateClusterResponse struct {
 
 	// Wire name: 'cluster_id'
-	ClusterId       string   ``
-	ForceSendFields []string `tf:"-"`
+	ClusterId       string   `json:"cluster_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateClusterResponse) MarshalJSON() ([]byte, error) {
@@ -5314,11 +5304,11 @@ func CreateClusterResponseFromPb(pb *computepb.CreateClusterResponsePb) (*Create
 type CreateContext struct {
 	// Running cluster id
 	// Wire name: 'clusterId'
-	ClusterId string ``
+	ClusterId string `json:"clusterId,omitempty"`
 
 	// Wire name: 'language'
-	Language        Language ``
-	ForceSendFields []string `tf:"-"`
+	Language        Language `json:"language,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateContext) MarshalJSON() ([]byte, error) {
@@ -5390,33 +5380,33 @@ type CreateInstancePool struct {
 	// Attributes related to instance pools running on Amazon Web Services. If
 	// not specified at pool creation, a set of default values will be used.
 	// Wire name: 'aws_attributes'
-	AwsAttributes *InstancePoolAwsAttributes ``
+	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to instance pools running on Azure. If not specified
 	// at pool creation, a set of default values will be used.
 	// Wire name: 'azure_attributes'
-	AzureAttributes *InstancePoolAzureAttributes ``
+	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	// Wire name: 'custom_tags'
-	CustomTags map[string]string ``
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// Defines the specification of the disks that will be attached to all spark
 	// containers.
 	// Wire name: 'disk_spec'
-	DiskSpec *DiskSpec ``
+	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
 	// Autoscaling Local Storage: when enabled, this instances in this pool will
 	// dynamically acquire additional disk space when its Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
 	// permissions to function correctly - refer to the User Guide for more
 	// details.
 	// Wire name: 'enable_elastic_disk'
-	EnableElasticDisk bool ``
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Attributes related to instance pools running on Google Cloud Platform. If
 	// not specified at pool creation, a set of default values will be used.
 	// Wire name: 'gcp_attributes'
-	GcpAttributes *InstancePoolGcpAttributes ``
+	GcpAttributes *InstancePoolGcpAttributes `json:"gcp_attributes,omitempty"`
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
 	// is already met. If not set, the extra pool instances will be
@@ -5425,44 +5415,44 @@ type CreateInstancePool struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	// Wire name: 'idle_instance_autotermination_minutes'
-	IdleInstanceAutoterminationMinutes int ``
+	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
 	// Wire name: 'instance_pool_name'
-	InstancePoolName string ``
+	InstancePoolName string `json:"instance_pool_name"`
 	// Maximum number of outstanding instances to keep in the pool, including
 	// both instances used by clusters and idle instances. Clusters that require
 	// further instance provisioning will fail during upsize requests.
 	// Wire name: 'max_capacity'
-	MaxCapacity int ``
+	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	// Wire name: 'min_idle_instances'
-	MinIdleInstances int ``
+	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	// Wire name: 'node_type_id'
-	NodeTypeId string ``
+	NodeTypeId string `json:"node_type_id"`
 	// Custom Docker Image BYOC
 	// Wire name: 'preloaded_docker_images'
-	PreloadedDockerImages []DockerImage ``
+	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
 	// A list containing at most one preloaded Spark image version for the pool.
 	// Pool-backed clusters started with the preloaded Spark version will start
 	// faster. A list of available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	// Wire name: 'preloaded_spark_versions'
-	PreloadedSparkVersions []string ``
+	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 	// If set, what the configurable throughput (in Mb/s) for the remote disk
 	// is. Currently only supported for GCP HYPERDISK_BALANCED types.
 	// Wire name: 'remote_disk_throughput'
-	RemoteDiskThroughput int ``
+	RemoteDiskThroughput int `json:"remote_disk_throughput,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
 	// should be. Currently only supported for GCP HYPERDISK_BALANCED types.
 	// Wire name: 'total_initial_remote_disk_size'
-	TotalInitialRemoteDiskSize int      ``
-	ForceSendFields            []string `tf:"-"`
+	TotalInitialRemoteDiskSize int      `json:"total_initial_remote_disk_size,omitempty"`
+	ForceSendFields            []string `json:"-" tf:"-"`
 }
 
 func (st CreateInstancePool) MarshalJSON() ([]byte, error) {
@@ -5617,8 +5607,8 @@ func CreateInstancePoolFromPb(pb *computepb.CreateInstancePoolPb) (*CreateInstan
 type CreateInstancePoolResponse struct {
 	// The ID of the created instance pool.
 	// Wire name: 'instance_pool_id'
-	InstancePoolId  string   ``
-	ForceSendFields []string `tf:"-"`
+	InstancePoolId  string   `json:"instance_pool_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateInstancePoolResponse) MarshalJSON() ([]byte, error) {
@@ -5678,22 +5668,22 @@ type CreatePolicy struct {
 	//
 	// [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	// Wire name: 'definition'
-	Definition string ``
+	Definition string `json:"definition,omitempty"`
 	// Additional human-readable description of the cluster policy.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// A list of libraries to be installed on the next cluster restart that uses
 	// this policy. The maximum number of libraries is 500.
 	// Wire name: 'libraries'
-	Libraries []Library ``
+	Libraries []Library `json:"libraries,omitempty"`
 	// Max number of clusters per user that can be active using this policy. If
 	// not present, there is no max limit.
 	// Wire name: 'max_clusters_per_user'
-	MaxClustersPerUser int64 ``
+	MaxClustersPerUser int64 `json:"max_clusters_per_user,omitempty"`
 	// Cluster Policy name requested by the user. This has to be unique. Length
 	// must be between 1 and 100 characters.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Policy definition JSON document expressed in [Databricks Policy
 	// Definition Language]. The JSON document must be passed as a string and
 	// cannot be embedded in the requests.
@@ -5704,7 +5694,7 @@ type CreatePolicy struct {
 	//
 	// [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	// Wire name: 'policy_family_definition_overrides'
-	PolicyFamilyDefinitionOverrides string ``
+	PolicyFamilyDefinitionOverrides string `json:"policy_family_definition_overrides,omitempty"`
 	// ID of the policy family. The cluster policy's policy definition inherits
 	// the policy family's policy definition.
 	//
@@ -5712,8 +5702,8 @@ type CreatePolicy struct {
 	// `policy_family_definition_overrides` instead to customize the policy
 	// definition.
 	// Wire name: 'policy_family_id'
-	PolicyFamilyId  string   ``
-	ForceSendFields []string `tf:"-"`
+	PolicyFamilyId  string   `json:"policy_family_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreatePolicy) MarshalJSON() ([]byte, error) {
@@ -5804,8 +5794,8 @@ func CreatePolicyFromPb(pb *computepb.CreatePolicyPb) (*CreatePolicy, error) {
 type CreatePolicyResponse struct {
 	// Canonical unique identifier for the cluster policy.
 	// Wire name: 'policy_id'
-	PolicyId        string   ``
-	ForceSendFields []string `tf:"-"`
+	PolicyId        string   `json:"policy_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreatePolicyResponse) MarshalJSON() ([]byte, error) {
@@ -5862,8 +5852,8 @@ func CreatePolicyResponseFromPb(pb *computepb.CreatePolicyResponsePb) (*CreatePo
 type CreateResponse struct {
 	// The global init script ID.
 	// Wire name: 'script_id'
-	ScriptId        string   ``
-	ForceSendFields []string `tf:"-"`
+	ScriptId        string   `json:"script_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateResponse) MarshalJSON() ([]byte, error) {
@@ -5920,8 +5910,8 @@ func CreateResponseFromPb(pb *computepb.CreateResponsePb) (*CreateResponse, erro
 type Created struct {
 
 	// Wire name: 'id'
-	Id              string   ``
-	ForceSendFields []string `tf:"-"`
+	Id              string   `json:"id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Created) MarshalJSON() ([]byte, error) {
@@ -5980,11 +5970,11 @@ type CustomPolicyTag struct {
 	// policy - Cannot be “budget-policy-name”, “budget-policy-id” or
 	// "budget-policy-resolution-result" - these tags are preserved.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 	// The value of the tag.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CustomPolicyTag) MarshalJSON() ([]byte, error) {
@@ -6043,17 +6033,17 @@ func CustomPolicyTagFromPb(pb *computepb.CustomPolicyTagPb) (*CustomPolicyTag, e
 type DataPlaneEventDetails struct {
 
 	// Wire name: 'event_type'
-	EventType DataPlaneEventDetailsEventType ``
+	EventType DataPlaneEventDetailsEventType `json:"event_type,omitempty"`
 
 	// Wire name: 'executor_failures'
-	ExecutorFailures int ``
+	ExecutorFailures int `json:"executor_failures,omitempty"`
 
 	// Wire name: 'host_id'
-	HostId string ``
+	HostId string `json:"host_id,omitempty"`
 
 	// Wire name: 'timestamp'
-	Timestamp       int64    ``
-	ForceSendFields []string `tf:"-"`
+	Timestamp       int64    `json:"timestamp,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DataPlaneEventDetails) MarshalJSON() ([]byte, error) {
@@ -6307,7 +6297,7 @@ func DataSecurityModeFromPb(pb *computepb.DataSecurityModePb) (*DataSecurityMode
 type DbfsStorageInfo struct {
 	// dbfs destination, e.g. `dbfs:/my/path`
 	// Wire name: 'destination'
-	Destination string ``
+	Destination string `json:"destination"`
 }
 
 func (st DbfsStorageInfo) MarshalJSON() ([]byte, error) {
@@ -6358,7 +6348,7 @@ func DbfsStorageInfoFromPb(pb *computepb.DbfsStorageInfoPb) (*DbfsStorageInfo, e
 type DeleteCluster struct {
 	// The cluster to be terminated.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 }
 
 func (st DeleteCluster) MarshalJSON() ([]byte, error) {
@@ -6408,8 +6398,7 @@ func DeleteClusterFromPb(pb *computepb.DeleteClusterPb) (*DeleteCluster, error) 
 
 type DeleteGlobalInitScriptRequest struct {
 	// The ID of the global init script.
-	// Wire name: 'script_id'
-	ScriptId string `tf:"-"`
+	ScriptId string `json:"-" tf:"-"`
 }
 
 func (st DeleteGlobalInitScriptRequest) MarshalJSON() ([]byte, error) {
@@ -6460,7 +6449,7 @@ func DeleteGlobalInitScriptRequestFromPb(pb *computepb.DeleteGlobalInitScriptReq
 type DeleteInstancePool struct {
 	// The instance pool to be terminated.
 	// Wire name: 'instance_pool_id'
-	InstancePoolId string ``
+	InstancePoolId string `json:"instance_pool_id"`
 }
 
 func (st DeleteInstancePool) MarshalJSON() ([]byte, error) {
@@ -6511,7 +6500,7 @@ func DeleteInstancePoolFromPb(pb *computepb.DeleteInstancePoolPb) (*DeleteInstan
 type DeletePolicy struct {
 	// The ID of the policy to delete.
 	// Wire name: 'policy_id'
-	PolicyId string ``
+	PolicyId string `json:"policy_id"`
 }
 
 func (st DeletePolicy) MarshalJSON() ([]byte, error) {
@@ -6562,10 +6551,10 @@ func DeletePolicyFromPb(pb *computepb.DeletePolicyPb) (*DeletePolicy, error) {
 type DestroyContext struct {
 
 	// Wire name: 'clusterId'
-	ClusterId string ``
+	ClusterId string `json:"clusterId"`
 
 	// Wire name: 'contextId'
-	ContextId string ``
+	ContextId string `json:"contextId"`
 }
 
 func (st DestroyContext) MarshalJSON() ([]byte, error) {
@@ -6637,10 +6626,10 @@ type DiskSpec struct {
 	// Disks will be mounted at: - For AWS: `/ebs0`, `/ebs1`, and etc. - For
 	// Azure: `/remote_volume0`, `/remote_volume1`, and etc.
 	// Wire name: 'disk_count'
-	DiskCount int ``
+	DiskCount int `json:"disk_count,omitempty"`
 
 	// Wire name: 'disk_iops'
-	DiskIops int ``
+	DiskIops int `json:"disk_iops,omitempty"`
 	// The size of each disk (in GiB) launched for each instance. Values must
 	// fall into the supported range for a particular instance type.
 	//
@@ -6650,14 +6639,14 @@ type DiskSpec struct {
 	// For Azure: - Premium LRS (SSD): 1 - 1023 GiB - Standard LRS (HDD): 1-
 	// 1023 GiB
 	// Wire name: 'disk_size'
-	DiskSize int ``
+	DiskSize int `json:"disk_size,omitempty"`
 
 	// Wire name: 'disk_throughput'
-	DiskThroughput int ``
+	DiskThroughput int `json:"disk_throughput,omitempty"`
 	// The type of disks that will be launched with this cluster.
 	// Wire name: 'disk_type'
-	DiskType        *DiskType ``
-	ForceSendFields []string  `tf:"-"`
+	DiskType        *DiskType `json:"disk_type,omitempty"`
+	ForceSendFields []string  `json:"-" tf:"-"`
 }
 
 func (st DiskSpec) MarshalJSON() ([]byte, error) {
@@ -6735,10 +6724,10 @@ func DiskSpecFromPb(pb *computepb.DiskSpecPb) (*DiskSpec, error) {
 type DiskType struct {
 
 	// Wire name: 'azure_disk_volume_type'
-	AzureDiskVolumeType DiskTypeAzureDiskVolumeType ``
+	AzureDiskVolumeType DiskTypeAzureDiskVolumeType `json:"azure_disk_volume_type,omitempty"`
 
 	// Wire name: 'ebs_volume_type'
-	EbsVolumeType DiskTypeEbsVolumeType ``
+	EbsVolumeType DiskTypeEbsVolumeType `json:"ebs_volume_type,omitempty"`
 }
 
 func (st DiskType) MarshalJSON() ([]byte, error) {
@@ -6925,11 +6914,11 @@ func DiskTypeEbsVolumeTypeFromPb(pb *computepb.DiskTypeEbsVolumeTypePb) (*DiskTy
 type DockerBasicAuth struct {
 	// Password of the user
 	// Wire name: 'password'
-	Password string ``
+	Password string `json:"password,omitempty"`
 	// Name of the user
 	// Wire name: 'username'
-	Username        string   ``
-	ForceSendFields []string `tf:"-"`
+	Username        string   `json:"username,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DockerBasicAuth) MarshalJSON() ([]byte, error) {
@@ -6988,11 +6977,11 @@ func DockerBasicAuthFromPb(pb *computepb.DockerBasicAuthPb) (*DockerBasicAuth, e
 type DockerImage struct {
 	// Basic auth with username and password
 	// Wire name: 'basic_auth'
-	BasicAuth *DockerBasicAuth ``
+	BasicAuth *DockerBasicAuth `json:"basic_auth,omitempty"`
 	// URL of the docker image.
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DockerImage) MarshalJSON() ([]byte, error) {
@@ -7120,30 +7109,30 @@ type EditCluster struct {
 	// for fields that are omitted. When set to false, only fixed values from
 	// the policy will be applied.
 	// Wire name: 'apply_policy_default_values'
-	ApplyPolicyDefaultValues bool ``
+	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
 	// Wire name: 'autoscale'
-	Autoscale *AutoScale ``
+	Autoscale *AutoScale `json:"autoscale,omitempty"`
 	// Automatically terminates the cluster after it is inactive for this time
 	// in minutes. If not set, this cluster will not be automatically
 	// terminated. If specified, the threshold must be between 10 and 10000
 	// minutes. Users can also set this value to 0 to explicitly disable
 	// automatic termination.
 	// Wire name: 'autotermination_minutes'
-	AutoterminationMinutes int ``
+	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'aws_attributes'
-	AwsAttributes *AwsAttributes ``
+	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'azure_attributes'
-	AzureAttributes *AzureAttributes ``
+	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
 	// ID of the cluster
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
 	// volumes) are supported. Only one destination can be specified for one
@@ -7152,13 +7141,13 @@ type EditCluster struct {
 	// `$destination/$clusterId/driver`, while the destination of executor logs
 	// is `$destination/$clusterId/executor`.
 	// Wire name: 'cluster_log_conf'
-	ClusterLogConf *ClusterLogConf ``
+	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string. For
 	// job clusters, the cluster name is automatically set based on the job and
 	// job run IDs.
 	// Wire name: 'cluster_name'
-	ClusterName string ``
+	ClusterName string `json:"cluster_name,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -7168,18 +7157,18 @@ type EditCluster struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	// Wire name: 'custom_tags'
-	CustomTags map[string]string ``
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	// Wire name: 'data_security_mode'
-	DataSecurityMode DataSecurityMode ``
+	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Custom docker image BYOC
 	// Wire name: 'docker_image'
-	DockerImage *DockerImage ``
+	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
 	// Wire name: 'driver_instance_pool_id'
-	DriverInstancePoolId string ``
+	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
@@ -7189,45 +7178,45 @@ type EditCluster struct {
 	// and virtual_cluster_size are specified, driver_node_type_id and
 	// node_type_id take precedence.
 	// Wire name: 'driver_node_type_id'
-	DriverNodeTypeId string ``
+	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
 	// correctly - refer to the User Guide for more details.
 	// Wire name: 'enable_elastic_disk'
-	EnableElasticDisk bool ``
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Whether to enable LUKS on cluster VMs' local disks
 	// Wire name: 'enable_local_disk_encryption'
-	EnableLocalDiskEncryption bool ``
+	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'gcp_attributes'
-	GcpAttributes *GcpAttributes ``
+	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
 	// Wire name: 'init_scripts'
-	InitScripts []InitScriptInfo ``
+	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	// Wire name: 'instance_pool_id'
-	InstancePoolId string ``
+	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	// Wire name: 'is_single_node'
-	IsSingleNode bool ``
+	IsSingleNode bool `json:"is_single_node,omitempty"`
 
 	// Wire name: 'kind'
-	Kind Kind ``
+	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	// Wire name: 'node_type_id'
-	NodeTypeId string ``
+	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
 	// Spark nodes.
@@ -7239,14 +7228,14 @@ type EditCluster struct {
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	// Wire name: 'num_workers'
-	NumWorkers int ``
+	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	// Wire name: 'policy_id'
-	PolicyId string ``
+	PolicyId string `json:"policy_id,omitempty"`
 	// If set, what the configurable throughput (in Mb/s) for the remote disk
 	// is. Currently only supported for GCP HYPERDISK_BALANCED disks.
 	// Wire name: 'remote_disk_throughput'
-	RemoteDiskThroughput int ``
+	RemoteDiskThroughput int `json:"remote_disk_throughput,omitempty"`
 	// Determines the cluster's runtime engine, either standard or Photon.
 	//
 	// This field is not compatible with legacy `spark_version` values that
@@ -7256,17 +7245,17 @@ type EditCluster struct {
 	// If left unspecified, the runtime engine defaults to standard unless the
 	// spark_version contains -photon-, in which case Photon will be used.
 	// Wire name: 'runtime_engine'
-	RuntimeEngine RuntimeEngine ``
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// Single user name if data_security_mode is `SINGLE_USER`
 	// Wire name: 'single_user_name'
-	SingleUserName string ``
+	SingleUserName string `json:"single_user_name,omitempty"`
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
 	// Wire name: 'spark_conf'
-	SparkConf map[string]string ``
+	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
 	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
@@ -7281,32 +7270,32 @@ type EditCluster struct {
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
 	// Wire name: 'spark_env_vars'
-	SparkEnvVars map[string]string ``
+	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	// Wire name: 'spark_version'
-	SparkVersion string ``
+	SparkVersion string `json:"spark_version"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	// Wire name: 'ssh_public_keys'
-	SshPublicKeys []string ``
+	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
 	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
 	// Wire name: 'total_initial_remote_disk_size'
-	TotalInitialRemoteDiskSize int ``
+	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	// Wire name: 'use_ml_runtime'
-	UseMlRuntime bool ``
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 
 	// Wire name: 'workload_type'
-	WorkloadType    *WorkloadType ``
-	ForceSendFields []string      `tf:"-"`
+	WorkloadType    *WorkloadType `json:"workload_type,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st EditCluster) MarshalJSON() ([]byte, error) {
@@ -7573,7 +7562,7 @@ type EditInstancePool struct {
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	// Wire name: 'custom_tags'
-	CustomTags map[string]string ``
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
 	// is already met. If not set, the extra pool instances will be
@@ -7582,38 +7571,38 @@ type EditInstancePool struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	// Wire name: 'idle_instance_autotermination_minutes'
-	IdleInstanceAutoterminationMinutes int ``
+	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
 	// Instance pool ID
 	// Wire name: 'instance_pool_id'
-	InstancePoolId string ``
+	InstancePoolId string `json:"instance_pool_id"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
 	// Wire name: 'instance_pool_name'
-	InstancePoolName string ``
+	InstancePoolName string `json:"instance_pool_name"`
 	// Maximum number of outstanding instances to keep in the pool, including
 	// both instances used by clusters and idle instances. Clusters that require
 	// further instance provisioning will fail during upsize requests.
 	// Wire name: 'max_capacity'
-	MaxCapacity int ``
+	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	// Wire name: 'min_idle_instances'
-	MinIdleInstances int ``
+	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	// Wire name: 'node_type_id'
-	NodeTypeId string ``
+	NodeTypeId string `json:"node_type_id"`
 	// If set, what the configurable throughput (in Mb/s) for the remote disk
 	// is. Currently only supported for GCP HYPERDISK_BALANCED types.
 	// Wire name: 'remote_disk_throughput'
-	RemoteDiskThroughput int ``
+	RemoteDiskThroughput int `json:"remote_disk_throughput,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
 	// should be. Currently only supported for GCP HYPERDISK_BALANCED types.
 	// Wire name: 'total_initial_remote_disk_size'
-	TotalInitialRemoteDiskSize int      ``
-	ForceSendFields            []string `tf:"-"`
+	TotalInitialRemoteDiskSize int      `json:"total_initial_remote_disk_size,omitempty"`
+	ForceSendFields            []string `json:"-" tf:"-"`
 }
 
 func (st EditInstancePool) MarshalJSON() ([]byte, error) {
@@ -7689,22 +7678,22 @@ type EditPolicy struct {
 	//
 	// [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	// Wire name: 'definition'
-	Definition string ``
+	Definition string `json:"definition,omitempty"`
 	// Additional human-readable description of the cluster policy.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// A list of libraries to be installed on the next cluster restart that uses
 	// this policy. The maximum number of libraries is 500.
 	// Wire name: 'libraries'
-	Libraries []Library ``
+	Libraries []Library `json:"libraries,omitempty"`
 	// Max number of clusters per user that can be active using this policy. If
 	// not present, there is no max limit.
 	// Wire name: 'max_clusters_per_user'
-	MaxClustersPerUser int64 ``
+	MaxClustersPerUser int64 `json:"max_clusters_per_user,omitempty"`
 	// Cluster Policy name requested by the user. This has to be unique. Length
 	// must be between 1 and 100 characters.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Policy definition JSON document expressed in [Databricks Policy
 	// Definition Language]. The JSON document must be passed as a string and
 	// cannot be embedded in the requests.
@@ -7715,7 +7704,7 @@ type EditPolicy struct {
 	//
 	// [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	// Wire name: 'policy_family_definition_overrides'
-	PolicyFamilyDefinitionOverrides string ``
+	PolicyFamilyDefinitionOverrides string `json:"policy_family_definition_overrides,omitempty"`
 	// ID of the policy family. The cluster policy's policy definition inherits
 	// the policy family's policy definition.
 	//
@@ -7723,11 +7712,11 @@ type EditPolicy struct {
 	// `policy_family_definition_overrides` instead to customize the policy
 	// definition.
 	// Wire name: 'policy_family_id'
-	PolicyFamilyId string ``
+	PolicyFamilyId string `json:"policy_family_id,omitempty"`
 	// The ID of the policy to update.
 	// Wire name: 'policy_id'
-	PolicyId        string   ``
-	ForceSendFields []string `tf:"-"`
+	PolicyId        string   `json:"policy_id"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EditPolicy) MarshalJSON() ([]byte, error) {
@@ -7820,12 +7809,12 @@ func EditPolicyFromPb(pb *computepb.EditPolicyPb) (*EditPolicy, error) {
 type EnforceClusterComplianceRequest struct {
 	// The ID of the cluster you want to enforce policy compliance on.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 	// If set, previews the changes that would be made to a cluster to enforce
 	// compliance but does not update the cluster.
 	// Wire name: 'validate_only'
-	ValidateOnly    bool     ``
-	ForceSendFields []string `tf:"-"`
+	ValidateOnly    bool     `json:"validate_only,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EnforceClusterComplianceRequest) MarshalJSON() ([]byte, error) {
@@ -7885,12 +7874,12 @@ type EnforceClusterComplianceResponse struct {
 	// A list of changes that have been made to the cluster settings for the
 	// cluster to become compliant with its policy.
 	// Wire name: 'changes'
-	Changes []ClusterSettingsChange ``
+	Changes []ClusterSettingsChange `json:"changes,omitempty"`
 	// Whether any changes have been made to the cluster settings for the
 	// cluster to become compliant with its policy.
 	// Wire name: 'has_changes'
-	HasChanges      bool     ``
-	ForceSendFields []string `tf:"-"`
+	HasChanges      bool     `json:"has_changes,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EnforceClusterComplianceResponse) MarshalJSON() ([]byte, error) {
@@ -7975,7 +7964,7 @@ func EnforceClusterComplianceResponseFromPb(pb *computepb.EnforceClusterComplian
 type Environment struct {
 	// Use `environment_version` instead.
 	// Wire name: 'client'
-	Client string ``
+	Client string `json:"client,omitempty"`
 	// List of pip dependencies, as supported by the version of pip in this
 	// environment. Each dependency is a valid pip requirements file line per
 	// https://pip.pypa.io/en/stable/reference/requirements-file-format/.
@@ -7983,17 +7972,17 @@ type Environment struct {
 	// local project path (such as WSFS or UC Volumes in Databricks), or a VCS
 	// project URL.
 	// Wire name: 'dependencies'
-	Dependencies []string ``
+	Dependencies []string `json:"dependencies,omitempty"`
 	// Required. Environment version used by the environment. Each version comes
 	// with a specific Python version and a set of Python packages. The version
 	// is a string, consisting of an integer.
 	// Wire name: 'environment_version'
-	EnvironmentVersion string ``
+	EnvironmentVersion string `json:"environment_version,omitempty"`
 	// List of jar dependencies, should be string representing volume paths. For
 	// example: `/Volumes/path/to/test.jar`.
 	// Wire name: 'jar_dependencies'
-	JarDependencies []string ``
-	ForceSendFields []string `tf:"-"`
+	JarDependencies []string `json:"jar_dependencies,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Environment) MarshalJSON() ([]byte, error) {
@@ -8057,72 +8046,72 @@ type EventDetails struct {
 	// * For created clusters, the attributes of the cluster. * For edited
 	// clusters, the new attributes of the cluster.
 	// Wire name: 'attributes'
-	Attributes *ClusterAttributes ``
+	Attributes *ClusterAttributes `json:"attributes,omitempty"`
 	// The cause of a change in target size.
 	// Wire name: 'cause'
-	Cause EventDetailsCause ``
+	Cause EventDetailsCause `json:"cause,omitempty"`
 	// The actual cluster size that was set in the cluster creation or edit.
 	// Wire name: 'cluster_size'
-	ClusterSize *ClusterSize ``
+	ClusterSize *ClusterSize `json:"cluster_size,omitempty"`
 	// The current number of vCPUs in the cluster.
 	// Wire name: 'current_num_vcpus'
-	CurrentNumVcpus int ``
+	CurrentNumVcpus int `json:"current_num_vcpus,omitempty"`
 	// The current number of nodes in the cluster.
 	// Wire name: 'current_num_workers'
-	CurrentNumWorkers int ``
+	CurrentNumWorkers int `json:"current_num_workers,omitempty"`
 
 	// Wire name: 'did_not_expand_reason'
-	DidNotExpandReason string ``
+	DidNotExpandReason string `json:"did_not_expand_reason,omitempty"`
 	// Current disk size in bytes
 	// Wire name: 'disk_size'
-	DiskSize int64 ``
+	DiskSize int64 `json:"disk_size,omitempty"`
 	// More details about the change in driver's state
 	// Wire name: 'driver_state_message'
-	DriverStateMessage string ``
+	DriverStateMessage string `json:"driver_state_message,omitempty"`
 	// Whether or not a blocklisted node should be terminated. For
 	// ClusterEventType NODE_BLACKLISTED.
 	// Wire name: 'enable_termination_for_node_blocklisted'
-	EnableTerminationForNodeBlocklisted bool ``
+	EnableTerminationForNodeBlocklisted bool `json:"enable_termination_for_node_blocklisted,omitempty"`
 
 	// Wire name: 'free_space'
-	FreeSpace int64 ``
+	FreeSpace int64 `json:"free_space,omitempty"`
 	// List of global and cluster init scripts associated with this cluster
 	// event.
 	// Wire name: 'init_scripts'
-	InitScripts *InitScriptEventDetails ``
+	InitScripts *InitScriptEventDetails `json:"init_scripts,omitempty"`
 	// Instance Id where the event originated from
 	// Wire name: 'instance_id'
-	InstanceId string ``
+	InstanceId string `json:"instance_id,omitempty"`
 	// Unique identifier of the specific job run associated with this cluster
 	// event * For clusters created for jobs, this will be the same as the
 	// cluster name
 	// Wire name: 'job_run_name'
-	JobRunName string ``
+	JobRunName string `json:"job_run_name,omitempty"`
 	// The cluster attributes before a cluster was edited.
 	// Wire name: 'previous_attributes'
-	PreviousAttributes *ClusterAttributes ``
+	PreviousAttributes *ClusterAttributes `json:"previous_attributes,omitempty"`
 	// The size of the cluster before an edit or resize.
 	// Wire name: 'previous_cluster_size'
-	PreviousClusterSize *ClusterSize ``
+	PreviousClusterSize *ClusterSize `json:"previous_cluster_size,omitempty"`
 	// Previous disk size in bytes
 	// Wire name: 'previous_disk_size'
-	PreviousDiskSize int64 ``
+	PreviousDiskSize int64 `json:"previous_disk_size,omitempty"`
 	// A termination reason: * On a TERMINATED event, this is the reason of the
 	// termination. * On a RESIZE_COMPLETE event, this indicates the reason that
 	// we failed to acquire some nodes.
 	// Wire name: 'reason'
-	Reason *TerminationReason ``
+	Reason *TerminationReason `json:"reason,omitempty"`
 	// The targeted number of vCPUs in the cluster.
 	// Wire name: 'target_num_vcpus'
-	TargetNumVcpus int ``
+	TargetNumVcpus int `json:"target_num_vcpus,omitempty"`
 	// The targeted number of nodes in the cluster.
 	// Wire name: 'target_num_workers'
-	TargetNumWorkers int ``
+	TargetNumWorkers int `json:"target_num_workers,omitempty"`
 	// The user that caused the event to occur. (Empty if it was done by the
 	// control plane.)
 	// Wire name: 'user'
-	User            string   ``
-	ForceSendFields []string `tf:"-"`
+	User            string   `json:"user,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EventDetails) MarshalJSON() ([]byte, error) {
@@ -8501,16 +8490,16 @@ type GcpAttributes struct {
 	// run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback
 	// to on-demand VMs if the former is unavailable.
 	// Wire name: 'availability'
-	Availability GcpAvailability ``
+	Availability GcpAvailability `json:"availability,omitempty"`
 	// Boot disk size in GB
 	// Wire name: 'boot_disk_size'
-	BootDiskSize int ``
+	BootDiskSize int `json:"boot_disk_size,omitempty"`
 	// If provided, the cluster will impersonate the google service account when
 	// accessing gcloud services (like GCS). The google service account must
 	// have previously been added to the Databricks environment by an account
 	// administrator.
 	// Wire name: 'google_service_account'
-	GoogleServiceAccount string ``
+	GoogleServiceAccount string `json:"google_service_account,omitempty"`
 	// If provided, each node (workers and driver) in the cluster will have this
 	// number of local SSDs attached. Each local SSD is 375GB in size. Refer to
 	// [GCP documentation] for the supported number of local SSDs for each
@@ -8518,13 +8507,13 @@ type GcpAttributes struct {
 	//
 	// [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
 	// Wire name: 'local_ssd_count'
-	LocalSsdCount int ``
+	LocalSsdCount int `json:"local_ssd_count,omitempty"`
 	// This field determines whether the spark executors will be scheduled to
 	// run on preemptible VMs (when set to true) versus standard compute engine
 	// VMs (when set to false; default). Note: Soon to be deprecated, use the
 	// 'availability' field instead.
 	// Wire name: 'use_preemptible_executors'
-	UsePreemptibleExecutors bool ``
+	UsePreemptibleExecutors bool `json:"use_preemptible_executors,omitempty"`
 	// Identifier for the availability zone in which the cluster resides. This
 	// can be one of the following: - "HA" => High availability, spread nodes
 	// across availability zones for a Databricks deployment region [default]. -
@@ -8533,8 +8522,8 @@ type GcpAttributes struct {
 	// (machine type + region) from
 	// https://cloud.google.com/compute/docs/regions-zones.
 	// Wire name: 'zone_id'
-	ZoneId          string   ``
-	ForceSendFields []string `tf:"-"`
+	ZoneId          string   `json:"zone_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GcpAttributes) MarshalJSON() ([]byte, error) {
@@ -8673,7 +8662,7 @@ func GcpAvailabilityFromPb(pb *computepb.GcpAvailabilityPb) (*GcpAvailability, e
 type GcsStorageInfo struct {
 	// GCS destination/URI, e.g. `gs://my-bucket/some-prefix`
 	// Wire name: 'destination'
-	Destination string ``
+	Destination string `json:"destination"`
 }
 
 func (st GcsStorageInfo) MarshalJSON() ([]byte, error) {
@@ -8723,8 +8712,7 @@ func GcsStorageInfoFromPb(pb *computepb.GcsStorageInfoPb) (*GcsStorageInfo, erro
 
 type GetClusterComplianceRequest struct {
 	// The ID of the cluster to get the compliance status
-	// Wire name: 'cluster_id'
-	ClusterId string `tf:"-"`
+	ClusterId string `json:"-" tf:"-"`
 }
 
 func (st GetClusterComplianceRequest) MarshalJSON() ([]byte, error) {
@@ -8777,14 +8765,14 @@ type GetClusterComplianceResponse struct {
 	// be out of compliance if the policy was updated after the cluster was last
 	// edited.
 	// Wire name: 'is_compliant'
-	IsCompliant bool ``
+	IsCompliant bool `json:"is_compliant,omitempty"`
 	// An object containing key-value mappings representing the first 200 policy
 	// validation errors. The keys indicate the path where the policy validation
 	// error is occurring. The values indicate an error message describing the
 	// policy validation error.
 	// Wire name: 'violations'
-	Violations      map[string]string ``
-	ForceSendFields []string          `tf:"-"`
+	Violations      map[string]string `json:"violations,omitempty"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
 func (st GetClusterComplianceResponse) MarshalJSON() ([]byte, error) {
@@ -8842,8 +8830,7 @@ func GetClusterComplianceResponseFromPb(pb *computepb.GetClusterComplianceRespon
 
 type GetClusterPermissionLevelsRequest struct {
 	// The cluster for which to get or manage permissions.
-	// Wire name: 'cluster_id'
-	ClusterId string `tf:"-"`
+	ClusterId string `json:"-" tf:"-"`
 }
 
 func (st GetClusterPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
@@ -8894,7 +8881,7 @@ func GetClusterPermissionLevelsRequestFromPb(pb *computepb.GetClusterPermissionL
 type GetClusterPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []ClusterPermissionsDescription ``
+	PermissionLevels []ClusterPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetClusterPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -8966,8 +8953,7 @@ func GetClusterPermissionLevelsResponseFromPb(pb *computepb.GetClusterPermission
 
 type GetClusterPermissionsRequest struct {
 	// The cluster for which to get or manage permissions.
-	// Wire name: 'cluster_id'
-	ClusterId string `tf:"-"`
+	ClusterId string `json:"-" tf:"-"`
 }
 
 func (st GetClusterPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -9017,8 +9003,7 @@ func GetClusterPermissionsRequestFromPb(pb *computepb.GetClusterPermissionsReque
 
 type GetClusterPolicyPermissionLevelsRequest struct {
 	// The cluster policy for which to get or manage permissions.
-	// Wire name: 'cluster_policy_id'
-	ClusterPolicyId string `tf:"-"`
+	ClusterPolicyId string `json:"-" tf:"-"`
 }
 
 func (st GetClusterPolicyPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
@@ -9069,7 +9054,7 @@ func GetClusterPolicyPermissionLevelsRequestFromPb(pb *computepb.GetClusterPolic
 type GetClusterPolicyPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []ClusterPolicyPermissionsDescription ``
+	PermissionLevels []ClusterPolicyPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetClusterPolicyPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -9141,8 +9126,7 @@ func GetClusterPolicyPermissionLevelsResponseFromPb(pb *computepb.GetClusterPoli
 
 type GetClusterPolicyPermissionsRequest struct {
 	// The cluster policy for which to get or manage permissions.
-	// Wire name: 'cluster_policy_id'
-	ClusterPolicyId string `tf:"-"`
+	ClusterPolicyId string `json:"-" tf:"-"`
 }
 
 func (st GetClusterPolicyPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -9192,8 +9176,7 @@ func GetClusterPolicyPermissionsRequestFromPb(pb *computepb.GetClusterPolicyPerm
 
 type GetClusterPolicyRequest struct {
 	// Canonical unique identifier for the Cluster Policy.
-	// Wire name: 'policy_id'
-	PolicyId string `tf:"-"`
+	PolicyId string `json:"-" tf:"-"`
 }
 
 func (st GetClusterPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -9243,8 +9226,7 @@ func GetClusterPolicyRequestFromPb(pb *computepb.GetClusterPolicyRequestPb) (*Ge
 
 type GetClusterRequest struct {
 	// The cluster about which to retrieve information.
-	// Wire name: 'cluster_id'
-	ClusterId string `tf:"-"`
+	ClusterId string `json:"-" tf:"-"`
 }
 
 func (st GetClusterRequest) MarshalJSON() ([]byte, error) {
@@ -9295,48 +9277,48 @@ func GetClusterRequestFromPb(pb *computepb.GetClusterRequestPb) (*GetClusterRequ
 type GetEvents struct {
 	// The ID of the cluster to retrieve events about.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 	// The end time in epoch milliseconds. If empty, returns events up to the
 	// current time.
 	// Wire name: 'end_time'
-	EndTime int64 ``
+	EndTime int64 `json:"end_time,omitempty"`
 	// An optional set of event types to filter on. If empty, all event types
 	// are returned.
 	// Wire name: 'event_types'
-	EventTypes []EventType ``
+	EventTypes []EventType `json:"event_types,omitempty"`
 	// Deprecated: use page_token in combination with page_size instead.
 	//
 	// The maximum number of events to include in a page of events. Defaults to
 	// 50, and maximum allowed value is 500.
 	// Wire name: 'limit'
-	Limit int64 ``
+	Limit int64 `json:"limit,omitempty"`
 	// Deprecated: use page_token in combination with page_size instead.
 	//
 	// The offset in the result set. Defaults to 0 (no offset). When an offset
 	// is specified and the results are requested in descending order, the
 	// end_time field is required.
 	// Wire name: 'offset'
-	Offset int64 ``
+	Offset int64 `json:"offset,omitempty"`
 	// The order to list events in; either "ASC" or "DESC". Defaults to "DESC".
 	// Wire name: 'order'
-	Order GetEventsOrder ``
+	Order GetEventsOrder `json:"order,omitempty"`
 	// The maximum number of events to include in a page of events. The server
 	// may further constrain the maximum number of results returned in a single
 	// page. If the page_size is empty or 0, the server will decide the number
 	// of results to be returned. The field has to be in the range [0,500]. If
 	// the value is outside the range, the server enforces 0 or 500.
 	// Wire name: 'page_size'
-	PageSize int ``
+	PageSize int `json:"page_size,omitempty"`
 	// Use next_page_token or prev_page_token returned from the previous request
 	// to list the next or previous page of events respectively. If page_token
 	// is empty, the first page is returned.
 	// Wire name: 'page_token'
-	PageToken string ``
+	PageToken string `json:"page_token,omitempty"`
 	// The start time in epoch milliseconds. If empty, returns events starting
 	// from the beginning of time.
 	// Wire name: 'start_time'
-	StartTime       int64    ``
-	ForceSendFields []string `tf:"-"`
+	StartTime       int64    `json:"start_time,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetEvents) MarshalJSON() ([]byte, error) {
@@ -9496,30 +9478,30 @@ func GetEventsOrderFromPb(pb *computepb.GetEventsOrderPb) (*GetEventsOrder, erro
 type GetEventsResponse struct {
 
 	// Wire name: 'events'
-	Events []ClusterEvent ``
+	Events []ClusterEvent `json:"events,omitempty"`
 	// Deprecated: use next_page_token or prev_page_token instead.
 	//
 	// The parameters required to retrieve the next page of events. Omitted if
 	// there are no more events to read.
 	// Wire name: 'next_page'
-	NextPage *GetEvents ``
+	NextPage *GetEvents `json:"next_page,omitempty"`
 	// This field represents the pagination token to retrieve the next page of
 	// results. If the value is "", it means no further results for the request.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// This field represents the pagination token to retrieve the previous page
 	// of results. If the value is "", it means no further results for the
 	// request.
 	// Wire name: 'prev_page_token'
-	PrevPageToken string ``
+	PrevPageToken string `json:"prev_page_token,omitempty"`
 	// Deprecated: Returns 0 when request uses page_token. Will start returning
 	// zero when request uses offset/limit soon.
 	//
 	// The total number of events filtered by the start_time, end_time, and
 	// event_types.
 	// Wire name: 'total_count'
-	TotalCount      int64    ``
-	ForceSendFields []string `tf:"-"`
+	TotalCount      int64    `json:"total_count,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetEventsResponse) MarshalJSON() ([]byte, error) {
@@ -9617,8 +9599,7 @@ func GetEventsResponseFromPb(pb *computepb.GetEventsResponsePb) (*GetEventsRespo
 
 type GetGlobalInitScriptRequest struct {
 	// The ID of the global init script.
-	// Wire name: 'script_id'
-	ScriptId string `tf:"-"`
+	ScriptId string `json:"-" tf:"-"`
 }
 
 func (st GetGlobalInitScriptRequest) MarshalJSON() ([]byte, error) {
@@ -9670,18 +9651,18 @@ type GetInstancePool struct {
 	// Attributes related to instance pools running on Amazon Web Services. If
 	// not specified at pool creation, a set of default values will be used.
 	// Wire name: 'aws_attributes'
-	AwsAttributes *InstancePoolAwsAttributes ``
+	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to instance pools running on Azure. If not specified
 	// at pool creation, a set of default values will be used.
 	// Wire name: 'azure_attributes'
-	AzureAttributes *InstancePoolAzureAttributes ``
+	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	// Wire name: 'custom_tags'
-	CustomTags map[string]string ``
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// Tags that are added by Databricks regardless of any ``custom_tags``,
 	// including:
 	//
@@ -9693,22 +9674,22 @@ type GetInstancePool struct {
 	//
 	// - InstancePoolId: <id_of_pool>
 	// Wire name: 'default_tags'
-	DefaultTags map[string]string ``
+	DefaultTags map[string]string `json:"default_tags,omitempty"`
 	// Defines the specification of the disks that will be attached to all spark
 	// containers.
 	// Wire name: 'disk_spec'
-	DiskSpec *DiskSpec ``
+	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
 	// Autoscaling Local Storage: when enabled, this instances in this pool will
 	// dynamically acquire additional disk space when its Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
 	// permissions to function correctly - refer to the User Guide for more
 	// details.
 	// Wire name: 'enable_elastic_disk'
-	EnableElasticDisk bool ``
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Attributes related to instance pools running on Google Cloud Platform. If
 	// not specified at pool creation, a set of default values will be used.
 	// Wire name: 'gcp_attributes'
-	GcpAttributes *InstancePoolGcpAttributes ``
+	GcpAttributes *InstancePoolGcpAttributes `json:"gcp_attributes,omitempty"`
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
 	// is already met. If not set, the extra pool instances will be
@@ -9717,56 +9698,56 @@ type GetInstancePool struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	// Wire name: 'idle_instance_autotermination_minutes'
-	IdleInstanceAutoterminationMinutes int ``
+	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
 	// Canonical unique identifier for the pool.
 	// Wire name: 'instance_pool_id'
-	InstancePoolId string ``
+	InstancePoolId string `json:"instance_pool_id"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
 	// Wire name: 'instance_pool_name'
-	InstancePoolName string ``
+	InstancePoolName string `json:"instance_pool_name,omitempty"`
 	// Maximum number of outstanding instances to keep in the pool, including
 	// both instances used by clusters and idle instances. Clusters that require
 	// further instance provisioning will fail during upsize requests.
 	// Wire name: 'max_capacity'
-	MaxCapacity int ``
+	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	// Wire name: 'min_idle_instances'
-	MinIdleInstances int ``
+	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	// Wire name: 'node_type_id'
-	NodeTypeId string ``
+	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Custom Docker Image BYOC
 	// Wire name: 'preloaded_docker_images'
-	PreloadedDockerImages []DockerImage ``
+	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
 	// A list containing at most one preloaded Spark image version for the pool.
 	// Pool-backed clusters started with the preloaded Spark version will start
 	// faster. A list of available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	// Wire name: 'preloaded_spark_versions'
-	PreloadedSparkVersions []string ``
+	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 	// If set, what the configurable throughput (in Mb/s) for the remote disk
 	// is. Currently only supported for GCP HYPERDISK_BALANCED types.
 	// Wire name: 'remote_disk_throughput'
-	RemoteDiskThroughput int ``
+	RemoteDiskThroughput int `json:"remote_disk_throughput,omitempty"`
 	// Current state of the instance pool.
 	// Wire name: 'state'
-	State InstancePoolState ``
+	State InstancePoolState `json:"state,omitempty"`
 	// Usage statistics about the instance pool.
 	// Wire name: 'stats'
-	Stats *InstancePoolStats ``
+	Stats *InstancePoolStats `json:"stats,omitempty"`
 	// Status of failed pending instances in the pool.
 	// Wire name: 'status'
-	Status *InstancePoolStatus ``
+	Status *InstancePoolStatus `json:"status,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
 	// should be. Currently only supported for GCP HYPERDISK_BALANCED types.
 	// Wire name: 'total_initial_remote_disk_size'
-	TotalInitialRemoteDiskSize int      ``
-	ForceSendFields            []string `tf:"-"`
+	TotalInitialRemoteDiskSize int      `json:"total_initial_remote_disk_size,omitempty"`
+	ForceSendFields            []string `json:"-" tf:"-"`
 }
 
 func (st GetInstancePool) MarshalJSON() ([]byte, error) {
@@ -9966,8 +9947,7 @@ func GetInstancePoolFromPb(pb *computepb.GetInstancePoolPb) (*GetInstancePool, e
 
 type GetInstancePoolPermissionLevelsRequest struct {
 	// The instance pool for which to get or manage permissions.
-	// Wire name: 'instance_pool_id'
-	InstancePoolId string `tf:"-"`
+	InstancePoolId string `json:"-" tf:"-"`
 }
 
 func (st GetInstancePoolPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
@@ -10018,7 +9998,7 @@ func GetInstancePoolPermissionLevelsRequestFromPb(pb *computepb.GetInstancePoolP
 type GetInstancePoolPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []InstancePoolPermissionsDescription ``
+	PermissionLevels []InstancePoolPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetInstancePoolPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -10090,8 +10070,7 @@ func GetInstancePoolPermissionLevelsResponseFromPb(pb *computepb.GetInstancePool
 
 type GetInstancePoolPermissionsRequest struct {
 	// The instance pool for which to get or manage permissions.
-	// Wire name: 'instance_pool_id'
-	InstancePoolId string `tf:"-"`
+	InstancePoolId string `json:"-" tf:"-"`
 }
 
 func (st GetInstancePoolPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -10141,8 +10120,7 @@ func GetInstancePoolPermissionsRequestFromPb(pb *computepb.GetInstancePoolPermis
 
 type GetInstancePoolRequest struct {
 	// The canonical unique identifier for the instance pool.
-	// Wire name: 'instance_pool_id'
-	InstancePoolId string `tf:"-"`
+	InstancePoolId string `json:"-" tf:"-"`
 }
 
 func (st GetInstancePoolRequest) MarshalJSON() ([]byte, error) {
@@ -10192,13 +10170,11 @@ func GetInstancePoolRequestFromPb(pb *computepb.GetInstancePoolRequestPb) (*GetI
 
 type GetPolicyFamilyRequest struct {
 	// The family ID about which to retrieve information.
-	// Wire name: 'policy_family_id'
-	PolicyFamilyId string `tf:"-"`
+	PolicyFamilyId string `json:"-" tf:"-"`
 	// The version number for the family to fetch. Defaults to the latest
 	// version.
-	// Wire name: 'version'
-	Version         int64    `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Version         int64    `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetPolicyFamilyRequest) MarshalJSON() ([]byte, error) {
@@ -10257,7 +10233,7 @@ func GetPolicyFamilyRequestFromPb(pb *computepb.GetPolicyFamilyRequestPb) (*GetP
 type GetSparkVersionsResponse struct {
 	// All the available Spark versions.
 	// Wire name: 'versions'
-	Versions []SparkVersion ``
+	Versions []SparkVersion `json:"versions,omitempty"`
 }
 
 func (st GetSparkVersionsResponse) MarshalJSON() ([]byte, error) {
@@ -10330,10 +10306,10 @@ func GetSparkVersionsResponseFromPb(pb *computepb.GetSparkVersionsResponsePb) (*
 type GlobalInitScriptCreateRequest struct {
 	// Specifies whether the script is enabled. The script runs only if enabled.
 	// Wire name: 'enabled'
-	Enabled bool ``
+	Enabled bool `json:"enabled,omitempty"`
 	// The name of the script
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// The position of a global init script, where 0 represents the first script
 	// to run, 1 is the second script to run, in ascending order.
 	//
@@ -10346,11 +10322,11 @@ type GlobalInitScriptCreateRequest struct {
 	// value, your request succeeds, but the original script at that position
 	// and all later scripts have their positions incremented by 1.
 	// Wire name: 'position'
-	Position int ``
+	Position int `json:"position,omitempty"`
 	// The Base64-encoded content of the script.
 	// Wire name: 'script'
-	Script          string   ``
-	ForceSendFields []string `tf:"-"`
+	Script          string   `json:"script"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GlobalInitScriptCreateRequest) MarshalJSON() ([]byte, error) {
@@ -10414,31 +10390,31 @@ type GlobalInitScriptDetails struct {
 	// Time when the script was created, represented as a Unix timestamp in
 	// milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int ``
+	CreatedAt int `json:"created_at,omitempty"`
 	// The username of the user who created the script.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// Specifies whether the script is enabled. The script runs only if enabled.
 	// Wire name: 'enabled'
-	Enabled bool ``
+	Enabled bool `json:"enabled,omitempty"`
 	// The name of the script
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The position of a script, where 0 represents the first script to run, 1
 	// is the second script to run, in ascending order.
 	// Wire name: 'position'
-	Position int ``
+	Position int `json:"position,omitempty"`
 	// The global init script ID.
 	// Wire name: 'script_id'
-	ScriptId string ``
+	ScriptId string `json:"script_id,omitempty"`
 	// Time when the script was updated, represented as a Unix timestamp in
 	// milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int ``
+	UpdatedAt int `json:"updated_at,omitempty"`
 	// The username of the user who last updated the script
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GlobalInitScriptDetails) MarshalJSON() ([]byte, error) {
@@ -10510,34 +10486,34 @@ type GlobalInitScriptDetailsWithContent struct {
 	// Time when the script was created, represented as a Unix timestamp in
 	// milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int ``
+	CreatedAt int `json:"created_at,omitempty"`
 	// The username of the user who created the script.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// Specifies whether the script is enabled. The script runs only if enabled.
 	// Wire name: 'enabled'
-	Enabled bool ``
+	Enabled bool `json:"enabled,omitempty"`
 	// The name of the script
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The position of a script, where 0 represents the first script to run, 1
 	// is the second script to run, in ascending order.
 	// Wire name: 'position'
-	Position int ``
+	Position int `json:"position,omitempty"`
 	// The Base64-encoded content of the script.
 	// Wire name: 'script'
-	Script string ``
+	Script string `json:"script,omitempty"`
 	// The global init script ID.
 	// Wire name: 'script_id'
-	ScriptId string ``
+	ScriptId string `json:"script_id,omitempty"`
 	// Time when the script was updated, represented as a Unix timestamp in
 	// milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int ``
+	UpdatedAt int `json:"updated_at,omitempty"`
 	// The username of the user who last updated the script
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GlobalInitScriptDetailsWithContent) MarshalJSON() ([]byte, error) {
@@ -10610,10 +10586,10 @@ func GlobalInitScriptDetailsWithContentFromPb(pb *computepb.GlobalInitScriptDeta
 type GlobalInitScriptUpdateRequest struct {
 	// Specifies whether the script is enabled. The script runs only if enabled.
 	// Wire name: 'enabled'
-	Enabled bool ``
+	Enabled bool `json:"enabled,omitempty"`
 	// The name of the script
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// The position of a script, where 0 represents the first script to run, 1
 	// is the second script to run, in ascending order. To move the script to
 	// run first, set its position to 0.
@@ -10627,14 +10603,13 @@ type GlobalInitScriptUpdateRequest struct {
 	// request succeeds, but the original script at that position and all later
 	// scripts have their positions incremented by 1.
 	// Wire name: 'position'
-	Position int ``
+	Position int `json:"position,omitempty"`
 	// The Base64-encoded content of the script.
 	// Wire name: 'script'
-	Script string ``
+	Script string `json:"script"`
 	// The ID of the global init script.
-	// Wire name: 'script_id'
-	ScriptId        string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	ScriptId        string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GlobalInitScriptUpdateRequest) MarshalJSON() ([]byte, error) {
@@ -10699,10 +10674,10 @@ func GlobalInitScriptUpdateRequestFromPb(pb *computepb.GlobalInitScriptUpdateReq
 type InitScriptEventDetails struct {
 	// The cluster scoped init scripts associated with this cluster event.
 	// Wire name: 'cluster'
-	Cluster []InitScriptInfoAndExecutionDetails ``
+	Cluster []InitScriptInfoAndExecutionDetails `json:"cluster,omitempty"`
 	// The global init scripts associated with this cluster event.
 	// Wire name: 'global'
-	Global []InitScriptInfoAndExecutionDetails ``
+	Global []InitScriptInfoAndExecutionDetails `json:"global,omitempty"`
 	// The private ip of the node we are reporting init script execution details
 	// for (we will select the execution details from only one node rather than
 	// reporting the execution details from every node to keep these event
@@ -10710,8 +10685,8 @@ type InitScriptEventDetails struct {
 	//
 	// This should only be defined for the INIT_SCRIPTS_FINISHED event
 	// Wire name: 'reported_for_node'
-	ReportedForNode string   ``
-	ForceSendFields []string `tf:"-"`
+	ReportedForNode string   `json:"reported_for_node,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st InitScriptEventDetails) MarshalJSON() ([]byte, error) {
@@ -10887,34 +10862,34 @@ type InitScriptInfo struct {
 	// destination needs to be provided, e.g.
 	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`
 	// Wire name: 'abfss'
-	Abfss *Adlsgen2Info ``
+	Abfss *Adlsgen2Info `json:"abfss,omitempty"`
 	// destination needs to be provided. e.g. `{ "dbfs": { "destination" :
 	// "dbfs:/home/cluster_log" } }`
 	// Wire name: 'dbfs'
-	Dbfs *DbfsStorageInfo ``
+	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
 	// destination needs to be provided, e.g. `{ "file": { "destination":
 	// "file:/my/local/file.sh" } }`
 	// Wire name: 'file'
-	File *LocalFileInfo ``
+	File *LocalFileInfo `json:"file,omitempty"`
 	// destination needs to be provided, e.g. `{ "gcs": { "destination":
 	// "gs://my-bucket/file.sh" } }`
 	// Wire name: 'gcs'
-	Gcs *GcsStorageInfo ``
+	Gcs *GcsStorageInfo `json:"gcs,omitempty"`
 	// destination and either the region or endpoint need to be provided. e.g.
 	// `{ \"s3\": { \"destination\": \"s3://cluster_log_bucket/prefix\",
 	// \"region\": \"us-west-2\" } }` Cluster iam role is used to access s3,
 	// please make sure the cluster iam role in `instance_profile_arn` has
 	// permission to write data to the s3 destination.
 	// Wire name: 's3'
-	S3 *S3StorageInfo ``
+	S3 *S3StorageInfo `json:"s3,omitempty"`
 	// destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\"
 	// : \"/Volumes/my-init.sh\" } }`
 	// Wire name: 'volumes'
-	Volumes *VolumesStorageInfo ``
+	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
 	// destination needs to be provided, e.g. `{ "workspace": { "destination":
 	// "/cluster-init-scripts/setup-datadog.sh" } }`
 	// Wire name: 'workspace'
-	Workspace *WorkspaceStorageInfo ``
+	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
 }
 
 func (st InitScriptInfo) MarshalJSON() ([]byte, error) {
@@ -11062,46 +11037,46 @@ type InitScriptInfoAndExecutionDetails struct {
 	// destination needs to be provided, e.g.
 	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`
 	// Wire name: 'abfss'
-	Abfss *Adlsgen2Info ``
+	Abfss *Adlsgen2Info `json:"abfss,omitempty"`
 	// destination needs to be provided. e.g. `{ "dbfs": { "destination" :
 	// "dbfs:/home/cluster_log" } }`
 	// Wire name: 'dbfs'
-	Dbfs *DbfsStorageInfo ``
+	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
 	// Additional details regarding errors (such as a file not found message if
 	// the status is FAILED_FETCH). This field should only be used to provide
 	// *additional* information to the status field, not duplicate it.
 	// Wire name: 'error_message'
-	ErrorMessage string ``
+	ErrorMessage string `json:"error_message,omitempty"`
 	// The number duration of the script execution in seconds
 	// Wire name: 'execution_duration_seconds'
-	ExecutionDurationSeconds int ``
+	ExecutionDurationSeconds int `json:"execution_duration_seconds,omitempty"`
 	// destination needs to be provided, e.g. `{ "file": { "destination":
 	// "file:/my/local/file.sh" } }`
 	// Wire name: 'file'
-	File *LocalFileInfo ``
+	File *LocalFileInfo `json:"file,omitempty"`
 	// destination needs to be provided, e.g. `{ "gcs": { "destination":
 	// "gs://my-bucket/file.sh" } }`
 	// Wire name: 'gcs'
-	Gcs *GcsStorageInfo ``
+	Gcs *GcsStorageInfo `json:"gcs,omitempty"`
 	// destination and either the region or endpoint need to be provided. e.g.
 	// `{ \"s3\": { \"destination\": \"s3://cluster_log_bucket/prefix\",
 	// \"region\": \"us-west-2\" } }` Cluster iam role is used to access s3,
 	// please make sure the cluster iam role in `instance_profile_arn` has
 	// permission to write data to the s3 destination.
 	// Wire name: 's3'
-	S3 *S3StorageInfo ``
+	S3 *S3StorageInfo `json:"s3,omitempty"`
 	// The current status of the script
 	// Wire name: 'status'
-	Status InitScriptExecutionDetailsInitScriptExecutionStatus ``
+	Status InitScriptExecutionDetailsInitScriptExecutionStatus `json:"status,omitempty"`
 	// destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\"
 	// : \"/Volumes/my-init.sh\" } }`
 	// Wire name: 'volumes'
-	Volumes *VolumesStorageInfo ``
+	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
 	// destination needs to be provided, e.g. `{ "workspace": { "destination":
 	// "/cluster-init-scripts/setup-datadog.sh" } }`
 	// Wire name: 'workspace'
-	Workspace       *WorkspaceStorageInfo ``
-	ForceSendFields []string              `tf:"-"`
+	Workspace       *WorkspaceStorageInfo `json:"workspace,omitempty"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st InitScriptInfoAndExecutionDetails) MarshalJSON() ([]byte, error) {
@@ -11272,10 +11247,10 @@ func InitScriptInfoAndExecutionDetailsFromPb(pb *computepb.InitScriptInfoAndExec
 type InstallLibraries struct {
 	// Unique identifier for the cluster on which to install these libraries.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 	// The libraries to install.
 	// Wire name: 'libraries'
-	Libraries []Library ``
+	Libraries []Library `json:"libraries"`
 }
 
 func (st InstallLibraries) MarshalJSON() ([]byte, error) {
@@ -11350,17 +11325,17 @@ func InstallLibrariesFromPb(pb *computepb.InstallLibrariesPb) (*InstallLibraries
 type InstancePoolAccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel InstancePoolPermissionLevel ``
+	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st InstancePoolAccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -11435,20 +11410,20 @@ func InstancePoolAccessControlRequestFromPb(pb *computepb.InstancePoolAccessCont
 type InstancePoolAccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []InstancePoolPermission ``
+	AllPermissions []InstancePoolPermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st InstancePoolAccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -11536,18 +11511,18 @@ type InstancePoolAndStats struct {
 	// Attributes related to instance pools running on Amazon Web Services. If
 	// not specified at pool creation, a set of default values will be used.
 	// Wire name: 'aws_attributes'
-	AwsAttributes *InstancePoolAwsAttributes ``
+	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to instance pools running on Azure. If not specified
 	// at pool creation, a set of default values will be used.
 	// Wire name: 'azure_attributes'
-	AzureAttributes *InstancePoolAzureAttributes ``
+	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
 	// Wire name: 'custom_tags'
-	CustomTags map[string]string ``
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 	// Tags that are added by Databricks regardless of any ``custom_tags``,
 	// including:
 	//
@@ -11559,22 +11534,22 @@ type InstancePoolAndStats struct {
 	//
 	// - InstancePoolId: <id_of_pool>
 	// Wire name: 'default_tags'
-	DefaultTags map[string]string ``
+	DefaultTags map[string]string `json:"default_tags,omitempty"`
 	// Defines the specification of the disks that will be attached to all spark
 	// containers.
 	// Wire name: 'disk_spec'
-	DiskSpec *DiskSpec ``
+	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
 	// Autoscaling Local Storage: when enabled, this instances in this pool will
 	// dynamically acquire additional disk space when its Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
 	// permissions to function correctly - refer to the User Guide for more
 	// details.
 	// Wire name: 'enable_elastic_disk'
-	EnableElasticDisk bool ``
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Attributes related to instance pools running on Google Cloud Platform. If
 	// not specified at pool creation, a set of default values will be used.
 	// Wire name: 'gcp_attributes'
-	GcpAttributes *InstancePoolGcpAttributes ``
+	GcpAttributes *InstancePoolGcpAttributes `json:"gcp_attributes,omitempty"`
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
 	// is already met. If not set, the extra pool instances will be
@@ -11583,56 +11558,56 @@ type InstancePoolAndStats struct {
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
 	// Wire name: 'idle_instance_autotermination_minutes'
-	IdleInstanceAutoterminationMinutes int ``
+	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
 	// Canonical unique identifier for the pool.
 	// Wire name: 'instance_pool_id'
-	InstancePoolId string ``
+	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
 	// Wire name: 'instance_pool_name'
-	InstancePoolName string ``
+	InstancePoolName string `json:"instance_pool_name,omitempty"`
 	// Maximum number of outstanding instances to keep in the pool, including
 	// both instances used by clusters and idle instances. Clusters that require
 	// further instance provisioning will fail during upsize requests.
 	// Wire name: 'max_capacity'
-	MaxCapacity int ``
+	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	// Wire name: 'min_idle_instances'
-	MinIdleInstances int ``
+	MinIdleInstances int `json:"min_idle_instances,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	// Wire name: 'node_type_id'
-	NodeTypeId string ``
+	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Custom Docker Image BYOC
 	// Wire name: 'preloaded_docker_images'
-	PreloadedDockerImages []DockerImage ``
+	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
 	// A list containing at most one preloaded Spark image version for the pool.
 	// Pool-backed clusters started with the preloaded Spark version will start
 	// faster. A list of available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	// Wire name: 'preloaded_spark_versions'
-	PreloadedSparkVersions []string ``
+	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
 	// If set, what the configurable throughput (in Mb/s) for the remote disk
 	// is. Currently only supported for GCP HYPERDISK_BALANCED types.
 	// Wire name: 'remote_disk_throughput'
-	RemoteDiskThroughput int ``
+	RemoteDiskThroughput int `json:"remote_disk_throughput,omitempty"`
 	// Current state of the instance pool.
 	// Wire name: 'state'
-	State InstancePoolState ``
+	State InstancePoolState `json:"state,omitempty"`
 	// Usage statistics about the instance pool.
 	// Wire name: 'stats'
-	Stats *InstancePoolStats ``
+	Stats *InstancePoolStats `json:"stats,omitempty"`
 	// Status of failed pending instances in the pool.
 	// Wire name: 'status'
-	Status *InstancePoolStatus ``
+	Status *InstancePoolStatus `json:"status,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
 	// should be. Currently only supported for GCP HYPERDISK_BALANCED types.
 	// Wire name: 'total_initial_remote_disk_size'
-	TotalInitialRemoteDiskSize int      ``
-	ForceSendFields            []string `tf:"-"`
+	TotalInitialRemoteDiskSize int      `json:"total_initial_remote_disk_size,omitempty"`
+	ForceSendFields            []string `json:"-" tf:"-"`
 }
 
 func (st InstancePoolAndStats) MarshalJSON() ([]byte, error) {
@@ -11835,7 +11810,7 @@ func InstancePoolAndStatsFromPb(pb *computepb.InstancePoolAndStatsPb) (*Instance
 type InstancePoolAwsAttributes struct {
 	// Availability type used for the spot nodes.
 	// Wire name: 'availability'
-	Availability InstancePoolAwsAttributesAvailability ``
+	Availability InstancePoolAwsAttributesAvailability `json:"availability,omitempty"`
 	// Calculates the bid price for AWS spot instances, as a percentage of the
 	// corresponding instance type's on-demand price. For example, if this field
 	// is set to 50, and the cluster needs a new `r3.xlarge` spot instance, then
@@ -11847,7 +11822,7 @@ type InstancePoolAwsAttributes struct {
 	// considered. Note that, for safety, we enforce this field to be no more
 	// than 10000.
 	// Wire name: 'spot_bid_price_percent'
-	SpotBidPricePercent int ``
+	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
 	// Identifier for the availability zone/datacenter in which the cluster
 	// resides. This string will be of a form like "us-west-2a". The provided
 	// availability zone must be in the same region as the Databricks
@@ -11857,8 +11832,8 @@ type InstancePoolAwsAttributes struct {
 	// will be used. The list of available zones as well as the default value
 	// can be found by using the `List Zones` method.
 	// Wire name: 'zone_id'
-	ZoneId          string   ``
-	ForceSendFields []string `tf:"-"`
+	ZoneId          string   `json:"zone_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st InstancePoolAwsAttributes) MarshalJSON() ([]byte, error) {
@@ -11987,7 +11962,7 @@ func InstancePoolAwsAttributesAvailabilityFromPb(pb *computepb.InstancePoolAwsAt
 type InstancePoolAzureAttributes struct {
 	// Availability type used for the spot nodes.
 	// Wire name: 'availability'
-	Availability InstancePoolAzureAttributesAvailability ``
+	Availability InstancePoolAzureAttributesAvailability `json:"availability,omitempty"`
 	// With variable pricing, you have option to set a max price, in US dollars
 	// (USD) For example, the value 2 would be a max price of $2.00 USD per
 	// hour. If you set the max price to be -1, the VM won't be evicted based on
@@ -11995,8 +11970,8 @@ type InstancePoolAzureAttributes struct {
 	// price for a standard VM, which ever is less, as long as there is capacity
 	// and quota available.
 	// Wire name: 'spot_bid_max_price'
-	SpotBidMaxPrice float64  ``
-	ForceSendFields []string `tf:"-"`
+	SpotBidMaxPrice float64  `json:"spot_bid_max_price,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st InstancePoolAzureAttributes) MarshalJSON() ([]byte, error) {
@@ -12123,7 +12098,7 @@ func InstancePoolAzureAttributesAvailabilityFromPb(pb *computepb.InstancePoolAzu
 type InstancePoolGcpAttributes struct {
 
 	// Wire name: 'gcp_availability'
-	GcpAvailability GcpAvailability ``
+	GcpAvailability GcpAvailability `json:"gcp_availability,omitempty"`
 	// If provided, each node in the instance pool will have this number of
 	// local SSDs attached. Each local SSD is 375GB in size. Refer to [GCP
 	// documentation] for the supported number of local SSDs for each instance
@@ -12131,7 +12106,7 @@ type InstancePoolGcpAttributes struct {
 	//
 	// [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
 	// Wire name: 'local_ssd_count'
-	LocalSsdCount int ``
+	LocalSsdCount int `json:"local_ssd_count,omitempty"`
 	// Identifier for the availability zone/datacenter in which the cluster
 	// resides. This string will be of a form like "us-west1-a". The provided
 	// availability zone must be in the same region as the Databricks workspace.
@@ -12149,8 +12124,8 @@ type InstancePoolGcpAttributes struct {
 	// If empty, Databricks picks an availability zone to schedule the cluster
 	// on.
 	// Wire name: 'zone_id'
-	ZoneId          string   ``
-	ForceSendFields []string `tf:"-"`
+	ZoneId          string   `json:"zone_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st InstancePoolGcpAttributes) MarshalJSON() ([]byte, error) {
@@ -12223,14 +12198,14 @@ func InstancePoolGcpAttributesFromPb(pb *computepb.InstancePoolGcpAttributesPb) 
 type InstancePoolPermission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel InstancePoolPermissionLevel ``
-	ForceSendFields []string                    `tf:"-"`
+	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                    `json:"-" tf:"-"`
 }
 
 func (st InstancePoolPermission) MarshalJSON() ([]byte, error) {
@@ -12357,14 +12332,14 @@ func InstancePoolPermissionLevelFromPb(pb *computepb.InstancePoolPermissionLevel
 type InstancePoolPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []InstancePoolAccessControlResponse ``
+	AccessControlList []InstancePoolAccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st InstancePoolPermissions) MarshalJSON() ([]byte, error) {
@@ -12447,11 +12422,11 @@ func InstancePoolPermissionsFromPb(pb *computepb.InstancePoolPermissionsPb) (*In
 type InstancePoolPermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel InstancePoolPermissionLevel ``
-	ForceSendFields []string                    `tf:"-"`
+	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                    `json:"-" tf:"-"`
 }
 
 func (st InstancePoolPermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -12522,10 +12497,9 @@ func InstancePoolPermissionsDescriptionFromPb(pb *computepb.InstancePoolPermissi
 type InstancePoolPermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []InstancePoolAccessControlRequest ``
+	AccessControlList []InstancePoolAccessControlRequest `json:"access_control_list,omitempty"`
 	// The instance pool for which to get or manage permissions.
-	// Wire name: 'instance_pool_id'
-	InstancePoolId string `tf:"-"`
+	InstancePoolId string `json:"-" tf:"-"`
 }
 
 func (st InstancePoolPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -12661,17 +12635,17 @@ func InstancePoolStateFromPb(pb *computepb.InstancePoolStatePb) (*InstancePoolSt
 type InstancePoolStats struct {
 	// Number of active instances in the pool that are NOT part of a cluster.
 	// Wire name: 'idle_count'
-	IdleCount int ``
+	IdleCount int `json:"idle_count,omitempty"`
 	// Number of pending instances in the pool that are NOT part of a cluster.
 	// Wire name: 'pending_idle_count'
-	PendingIdleCount int ``
+	PendingIdleCount int `json:"pending_idle_count,omitempty"`
 	// Number of pending instances in the pool that are part of a cluster.
 	// Wire name: 'pending_used_count'
-	PendingUsedCount int ``
+	PendingUsedCount int `json:"pending_used_count,omitempty"`
 	// Number of active instances in the pool that are part of a cluster.
 	// Wire name: 'used_count'
-	UsedCount       int      ``
-	ForceSendFields []string `tf:"-"`
+	UsedCount       int      `json:"used_count,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st InstancePoolStats) MarshalJSON() ([]byte, error) {
@@ -12737,7 +12711,7 @@ type InstancePoolStatus struct {
 	// of the pool. The pending_instance_errors is emptied once the number of
 	// exiting available instances reaches the min_idle of the pool.
 	// Wire name: 'pending_instance_errors'
-	PendingInstanceErrors []PendingInstanceError ``
+	PendingInstanceErrors []PendingInstanceError `json:"pending_instance_errors,omitempty"`
 }
 
 func (st InstancePoolStatus) MarshalJSON() ([]byte, error) {
@@ -12817,19 +12791,19 @@ type InstanceProfile struct {
 	//
 	// [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
 	// Wire name: 'iam_role_arn'
-	IamRoleArn string ``
+	IamRoleArn string `json:"iam_role_arn,omitempty"`
 	// The AWS ARN of the instance profile to register with Databricks. This
 	// field is required.
 	// Wire name: 'instance_profile_arn'
-	InstanceProfileArn string ``
+	InstanceProfileArn string `json:"instance_profile_arn"`
 	// Boolean flag indicating whether the instance profile should only be used
 	// in credential passthrough scenarios. If true, it means the instance
 	// profile contains an meta IAM role which could assume a wide range of
 	// roles. Therefore it should always be used with authorization. This field
 	// is optional, the default value is `false`.
 	// Wire name: 'is_meta_instance_profile'
-	IsMetaInstanceProfile bool     ``
-	ForceSendFields       []string `tf:"-"`
+	IsMetaInstanceProfile bool     `json:"is_meta_instance_profile,omitempty"`
+	ForceSendFields       []string `json:"-" tf:"-"`
 }
 
 func (st InstanceProfile) MarshalJSON() ([]byte, error) {
@@ -13016,12 +12990,12 @@ func LanguageFromPb(pb *computepb.LanguagePb) (*Language, error) {
 type Library struct {
 	// Specification of a CRAN library to be installed as part of the library
 	// Wire name: 'cran'
-	Cran *RCranLibrary ``
+	Cran *RCranLibrary `json:"cran,omitempty"`
 	// Deprecated. URI of the egg library to install. Installing Python egg
 	// files is deprecated and is not supported in Databricks Runtime 14.0 and
 	// above.
 	// Wire name: 'egg'
-	Egg string ``
+	Egg string `json:"egg,omitempty"`
 	// URI of the JAR library to install. Supported URIs include Workspace
 	// paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "jar":
 	// "/Workspace/path/to/library.jar" }`, `{ "jar" :
@@ -13030,21 +13004,21 @@ type Library struct {
 	// cluster has read access on the library. You may need to launch the
 	// cluster with an IAM role to access the S3 URI.
 	// Wire name: 'jar'
-	Jar string ``
+	Jar string `json:"jar,omitempty"`
 	// Specification of a maven library to be installed. For example: `{
 	// "coordinates": "org.jsoup:jsoup:1.7.2" }`
 	// Wire name: 'maven'
-	Maven *MavenLibrary ``
+	Maven *MavenLibrary `json:"maven,omitempty"`
 	// Specification of a PyPi library to be installed. For example: `{
 	// "package": "simplejson" }`
 	// Wire name: 'pypi'
-	Pypi *PythonPyPiLibrary ``
+	Pypi *PythonPyPiLibrary `json:"pypi,omitempty"`
 	// URI of the requirements.txt file to install. Only Workspace paths and
 	// Unity Catalog Volumes paths are supported. For example: `{
 	// "requirements": "/Workspace/path/to/requirements.txt" }` or `{
 	// "requirements" : "/Volumes/path/to/requirements.txt" }`
 	// Wire name: 'requirements'
-	Requirements string ``
+	Requirements string `json:"requirements,omitempty"`
 	// URI of the wheel library to install. Supported URIs include Workspace
 	// paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "whl":
 	// "/Workspace/path/to/library.whl" }`, `{ "whl" :
@@ -13053,8 +13027,8 @@ type Library struct {
 	// cluster has read access on the library. You may need to launch the
 	// cluster with an IAM role to access the S3 URI.
 	// Wire name: 'whl'
-	Whl             string   ``
-	ForceSendFields []string `tf:"-"`
+	Whl             string   `json:"whl,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Library) MarshalJSON() ([]byte, error) {
@@ -13161,18 +13135,18 @@ type LibraryFullStatus struct {
 	// Whether the library was set to be installed on all clusters via the
 	// libraries UI.
 	// Wire name: 'is_library_for_all_clusters'
-	IsLibraryForAllClusters bool ``
+	IsLibraryForAllClusters bool `json:"is_library_for_all_clusters,omitempty"`
 	// Unique identifier for the library.
 	// Wire name: 'library'
-	Library *Library ``
+	Library *Library `json:"library,omitempty"`
 	// All the info and warning messages that have occurred so far for this
 	// library.
 	// Wire name: 'messages'
-	Messages []string ``
+	Messages []string `json:"messages,omitempty"`
 	// Status of installing the library on the cluster.
 	// Wire name: 'status'
-	Status          LibraryInstallStatus ``
-	ForceSendFields []string             `tf:"-"`
+	Status          LibraryInstallStatus `json:"status,omitempty"`
+	ForceSendFields []string             `json:"-" tf:"-"`
 }
 
 func (st LibraryFullStatus) MarshalJSON() ([]byte, error) {
@@ -13331,7 +13305,7 @@ func LibraryInstallStatusFromPb(pb *computepb.LibraryInstallStatusPb) (*LibraryI
 type ListAllClusterLibraryStatusesResponse struct {
 	// A list of cluster statuses.
 	// Wire name: 'statuses'
-	Statuses []ClusterLibraryStatuses ``
+	Statuses []ClusterLibraryStatuses `json:"statuses,omitempty"`
 }
 
 func (st ListAllClusterLibraryStatusesResponse) MarshalJSON() ([]byte, error) {
@@ -13405,11 +13379,11 @@ type ListAvailableZonesResponse struct {
 	// The availability zone if no ``zone_id`` is provided in the cluster
 	// creation request.
 	// Wire name: 'default_zone'
-	DefaultZone string ``
+	DefaultZone string `json:"default_zone,omitempty"`
 	// The list of available zones (e.g., ['us-west-2c', 'us-east-2']).
 	// Wire name: 'zones'
-	Zones           []string ``
-	ForceSendFields []string `tf:"-"`
+	Zones           []string `json:"zones,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAvailableZonesResponse) MarshalJSON() ([]byte, error) {
@@ -13469,16 +13443,13 @@ type ListClusterCompliancesRequest struct {
 	// Use this field to specify the maximum number of results to be returned by
 	// the server. The server may further constrain the maximum number of
 	// results returned in a single page.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// A page token that can be used to navigate to the next page or previous
 	// page as returned by `next_page_token` or `prev_page_token`.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// Canonical unique identifier for the cluster policy.
-	// Wire name: 'policy_id'
-	PolicyId        string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PolicyId        string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListClusterCompliancesRequest) MarshalJSON() ([]byte, error) {
@@ -13539,17 +13510,17 @@ func ListClusterCompliancesRequestFromPb(pb *computepb.ListClusterCompliancesReq
 type ListClusterCompliancesResponse struct {
 	// A list of clusters and their policy compliance statuses.
 	// Wire name: 'clusters'
-	Clusters []ClusterCompliance ``
+	Clusters []ClusterCompliance `json:"clusters,omitempty"`
 	// This field represents the pagination token to retrieve the next page of
 	// results. If the value is "", it means no further results for the request.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// This field represents the pagination token to retrieve the previous page
 	// of results. If the value is "", it means no further results for the
 	// request.
 	// Wire name: 'prev_page_token'
-	PrevPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	PrevPageToken   string   `json:"prev_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListClusterCompliancesResponse) MarshalJSON() ([]byte, error) {
@@ -13633,12 +13604,10 @@ type ListClusterPoliciesRequest struct {
 	// The cluster policy attribute to sort by. * `POLICY_CREATION_TIME` - Sort
 	// result list by policy creation time. * `POLICY_NAME` - Sort result list
 	// by policy name.
-	// Wire name: 'sort_column'
-	SortColumn ListSortColumn `tf:"-"`
+	SortColumn ListSortColumn `json:"-" tf:"-"`
 	// The order in which the policies get listed. * `DESC` - Sort result list
 	// in descending order. * `ASC` - Sort result list in ascending order.
-	// Wire name: 'sort_order'
-	SortOrder ListSortOrder `tf:"-"`
+	SortOrder ListSortOrder `json:"-" tf:"-"`
 }
 
 func (st ListClusterPoliciesRequest) MarshalJSON() ([]byte, error) {
@@ -13715,17 +13684,17 @@ func ListClusterPoliciesRequestFromPb(pb *computepb.ListClusterPoliciesRequestPb
 type ListClustersFilterBy struct {
 	// The source of cluster creation.
 	// Wire name: 'cluster_sources'
-	ClusterSources []ClusterSource ``
+	ClusterSources []ClusterSource `json:"cluster_sources,omitempty"`
 	// The current state of the clusters.
 	// Wire name: 'cluster_states'
-	ClusterStates []State ``
+	ClusterStates []State `json:"cluster_states,omitempty"`
 	// Whether the clusters are pinned or not.
 	// Wire name: 'is_pinned'
-	IsPinned bool ``
+	IsPinned bool `json:"is_pinned,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	// Wire name: 'policy_id'
-	PolicyId        string   ``
-	ForceSendFields []string `tf:"-"`
+	PolicyId        string   `json:"policy_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListClustersFilterBy) MarshalJSON() ([]byte, error) {
@@ -13831,21 +13800,17 @@ func ListClustersFilterByFromPb(pb *computepb.ListClustersFilterByPb) (*ListClus
 
 type ListClustersRequest struct {
 	// Filters to apply to the list of clusters.
-	// Wire name: 'filter_by'
-	FilterBy *ListClustersFilterBy `tf:"-"`
+	FilterBy *ListClustersFilterBy `json:"-" tf:"-"`
 	// Use this field to specify the maximum number of results to be returned by
 	// the server. The server may further constrain the maximum number of
 	// results returned in a single page.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Use next_page_token or prev_page_token returned from the previous request
 	// to list the next or previous page of clusters respectively.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// Sort the list of clusters by a specific criteria.
-	// Wire name: 'sort_by'
-	SortBy          *ListClustersSortBy `tf:"-"`
-	ForceSendFields []string            `tf:"-"`
+	SortBy          *ListClustersSortBy `json:"-" tf:"-"`
+	ForceSendFields []string            `json:"-" tf:"-"`
 }
 
 func (st ListClustersRequest) MarshalJSON() ([]byte, error) {
@@ -13932,17 +13897,17 @@ func ListClustersRequestFromPb(pb *computepb.ListClustersRequestPb) (*ListCluste
 type ListClustersResponse struct {
 
 	// Wire name: 'clusters'
-	Clusters []ClusterDetails ``
+	Clusters []ClusterDetails `json:"clusters,omitempty"`
 	// This field represents the pagination token to retrieve the next page of
 	// results. If the value is "", it means no further results for the request.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// This field represents the pagination token to retrieve the previous page
 	// of results. If the value is "", it means no further results for the
 	// request.
 	// Wire name: 'prev_page_token'
-	PrevPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	PrevPageToken   string   `json:"prev_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListClustersResponse) MarshalJSON() ([]byte, error) {
@@ -14025,12 +13990,12 @@ func ListClustersResponseFromPb(pb *computepb.ListClustersResponsePb) (*ListClus
 type ListClustersSortBy struct {
 	// The direction to sort by.
 	// Wire name: 'direction'
-	Direction ListClustersSortByDirection ``
+	Direction ListClustersSortByDirection `json:"direction,omitempty"`
 	// The sorting criteria. By default, clusters are sorted by 3 columns from
 	// highest to lowest precedence: cluster state, pinned or unpinned, then
 	// cluster name.
 	// Wire name: 'field'
-	Field ListClustersSortByField ``
+	Field ListClustersSortByField `json:"field,omitempty"`
 }
 
 func (st ListClustersSortBy) MarshalJSON() ([]byte, error) {
@@ -14213,7 +14178,7 @@ func ListClustersSortByFieldFromPb(pb *computepb.ListClustersSortByFieldPb) (*Li
 type ListGlobalInitScriptsResponse struct {
 
 	// Wire name: 'scripts'
-	Scripts []GlobalInitScriptDetails ``
+	Scripts []GlobalInitScriptDetails `json:"scripts,omitempty"`
 }
 
 func (st ListGlobalInitScriptsResponse) MarshalJSON() ([]byte, error) {
@@ -14286,7 +14251,7 @@ func ListGlobalInitScriptsResponseFromPb(pb *computepb.ListGlobalInitScriptsResp
 type ListInstancePools struct {
 
 	// Wire name: 'instance_pools'
-	InstancePools []InstancePoolAndStats ``
+	InstancePools []InstancePoolAndStats `json:"instance_pools,omitempty"`
 }
 
 func (st ListInstancePools) MarshalJSON() ([]byte, error) {
@@ -14359,7 +14324,7 @@ func ListInstancePoolsFromPb(pb *computepb.ListInstancePoolsPb) (*ListInstancePo
 type ListInstanceProfilesResponse struct {
 	// A list of instance profiles that the user can access.
 	// Wire name: 'instance_profiles'
-	InstanceProfiles []InstanceProfile ``
+	InstanceProfiles []InstanceProfile `json:"instance_profiles,omitempty"`
 }
 
 func (st ListInstanceProfilesResponse) MarshalJSON() ([]byte, error) {
@@ -14432,7 +14397,7 @@ func ListInstanceProfilesResponseFromPb(pb *computepb.ListInstanceProfilesRespon
 type ListNodeTypesResponse struct {
 	// The list of available Spark node types.
 	// Wire name: 'node_types'
-	NodeTypes []NodeType ``
+	NodeTypes []NodeType `json:"node_types,omitempty"`
 }
 
 func (st ListNodeTypesResponse) MarshalJSON() ([]byte, error) {
@@ -14505,7 +14470,7 @@ func ListNodeTypesResponseFromPb(pb *computepb.ListNodeTypesResponsePb) (*ListNo
 type ListPoliciesResponse struct {
 	// List of policies.
 	// Wire name: 'policies'
-	Policies []Policy ``
+	Policies []Policy `json:"policies,omitempty"`
 }
 
 func (st ListPoliciesResponse) MarshalJSON() ([]byte, error) {
@@ -14577,12 +14542,10 @@ func ListPoliciesResponseFromPb(pb *computepb.ListPoliciesResponsePb) (*ListPoli
 
 type ListPolicyFamiliesRequest struct {
 	// Maximum number of policy families to return.
-	// Wire name: 'max_results'
-	MaxResults int64 `tf:"-"`
+	MaxResults int64 `json:"-" tf:"-"`
 	// A token that can be used to get the next page of results.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListPolicyFamiliesRequest) MarshalJSON() ([]byte, error) {
@@ -14642,11 +14605,11 @@ type ListPolicyFamiliesResponse struct {
 	// A token that can be used to get the next page of results. If not present,
 	// there are no more results to show.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// List of policy families.
 	// Wire name: 'policy_families'
-	PolicyFamilies  []PolicyFamily ``
-	ForceSendFields []string       `tf:"-"`
+	PolicyFamilies  []PolicyFamily `json:"policy_families,omitempty"`
+	ForceSendFields []string       `json:"-" tf:"-"`
 }
 
 func (st ListPolicyFamiliesResponse) MarshalJSON() ([]byte, error) {
@@ -14833,7 +14796,7 @@ func ListSortOrderFromPb(pb *computepb.ListSortOrderPb) (*ListSortOrder, error) 
 type LocalFileInfo struct {
 	// local file destination, e.g. `file:/my/local/file.sh`
 	// Wire name: 'destination'
-	Destination string ``
+	Destination string `json:"destination"`
 }
 
 func (st LocalFileInfo) MarshalJSON() ([]byte, error) {
@@ -14884,11 +14847,11 @@ func LocalFileInfoFromPb(pb *computepb.LocalFileInfoPb) (*LocalFileInfo, error) 
 type LogAnalyticsInfo struct {
 
 	// Wire name: 'log_analytics_primary_key'
-	LogAnalyticsPrimaryKey string ``
+	LogAnalyticsPrimaryKey string `json:"log_analytics_primary_key,omitempty"`
 
 	// Wire name: 'log_analytics_workspace_id'
-	LogAnalyticsWorkspaceId string   ``
-	ForceSendFields         []string `tf:"-"`
+	LogAnalyticsWorkspaceId string   `json:"log_analytics_workspace_id,omitempty"`
+	ForceSendFields         []string `json:"-" tf:"-"`
 }
 
 func (st LogAnalyticsInfo) MarshalJSON() ([]byte, error) {
@@ -14949,12 +14912,12 @@ type LogSyncStatus struct {
 	// The timestamp of last attempt. If the last attempt fails,
 	// `last_exception` will contain the exception in the last attempt.
 	// Wire name: 'last_attempted'
-	LastAttempted int64 ``
+	LastAttempted int64 `json:"last_attempted,omitempty"`
 	// The exception thrown in the last attempt, it would be null (omitted in
 	// the response) if there is no exception in last attempted.
 	// Wire name: 'last_exception'
-	LastException   string   ``
-	ForceSendFields []string `tf:"-"`
+	LastException   string   `json:"last_exception,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st LogSyncStatus) MarshalJSON() ([]byte, error) {
@@ -15031,19 +14994,19 @@ func MapAnyFromPb(stPb *computepb.MapAnyPb) (*MapAny, error) {
 type MavenLibrary struct {
 	// Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2".
 	// Wire name: 'coordinates'
-	Coordinates string ``
+	Coordinates string `json:"coordinates"`
 	// List of dependences to exclude. For example: `["slf4j:slf4j",
 	// "*:hadoop-client"]`.
 	//
 	// Maven dependency exclusions:
 	// https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html.
 	// Wire name: 'exclusions'
-	Exclusions []string ``
+	Exclusions []string `json:"exclusions,omitempty"`
 	// Maven repo to install the Maven package from. If omitted, both Maven
 	// Central Repository and Spark Packages are searched.
 	// Wire name: 'repo'
-	Repo            string   ``
-	ForceSendFields []string `tf:"-"`
+	Repo            string   `json:"repo,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st MavenLibrary) MarshalJSON() ([]byte, error) {
@@ -15107,22 +15070,22 @@ func MavenLibraryFromPb(pb *computepb.MavenLibraryPb) (*MavenLibrary, error) {
 type NodeInstanceType struct {
 	// Unique identifier across instance types
 	// Wire name: 'instance_type_id'
-	InstanceTypeId string ``
+	InstanceTypeId string `json:"instance_type_id"`
 	// Size of the individual local disks attached to this instance (i.e. per
 	// local disk).
 	// Wire name: 'local_disk_size_gb'
-	LocalDiskSizeGb int ``
+	LocalDiskSizeGb int `json:"local_disk_size_gb,omitempty"`
 	// Number of local disks that are present on this instance.
 	// Wire name: 'local_disks'
-	LocalDisks int ``
+	LocalDisks int `json:"local_disks,omitempty"`
 	// Size of the individual local nvme disks attached to this instance (i.e.
 	// per local disk).
 	// Wire name: 'local_nvme_disk_size_gb'
-	LocalNvmeDiskSizeGb int ``
+	LocalNvmeDiskSizeGb int `json:"local_nvme_disk_size_gb,omitempty"`
 	// Number of local nvme disks that are present on this instance.
 	// Wire name: 'local_nvme_disks'
-	LocalNvmeDisks  int      ``
-	ForceSendFields []string `tf:"-"`
+	LocalNvmeDisks  int      `json:"local_nvme_disks,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st NodeInstanceType) MarshalJSON() ([]byte, error) {
@@ -15190,73 +15153,73 @@ type NodeType struct {
 	// A descriptive category for this node type. Examples include "Memory
 	// Optimized" and "Compute Optimized".
 	// Wire name: 'category'
-	Category string ``
+	Category string `json:"category"`
 	// A string description associated with this node type, e.g., "r3.xlarge".
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description"`
 	// An optional hint at the display order of node types in the UI. Within a
 	// node type category, lowest numbers come first.
 	// Wire name: 'display_order'
-	DisplayOrder int ``
+	DisplayOrder int `json:"display_order,omitempty"`
 	// An identifier for the type of hardware that this node runs on, e.g.,
 	// "r3.2xlarge" in AWS.
 	// Wire name: 'instance_type_id'
-	InstanceTypeId string ``
+	InstanceTypeId string `json:"instance_type_id"`
 	// Whether the node type is deprecated. Non-deprecated node types offer
 	// greater performance.
 	// Wire name: 'is_deprecated'
-	IsDeprecated bool ``
+	IsDeprecated bool `json:"is_deprecated,omitempty"`
 	// AWS specific, whether this instance supports encryption in transit, used
 	// for hipaa and pci workloads.
 	// Wire name: 'is_encrypted_in_transit'
-	IsEncryptedInTransit bool ``
+	IsEncryptedInTransit bool `json:"is_encrypted_in_transit,omitempty"`
 	// Whether this is an Arm-based instance.
 	// Wire name: 'is_graviton'
-	IsGraviton bool ``
+	IsGraviton bool `json:"is_graviton,omitempty"`
 	// Whether this node is hidden from presentation in the UI.
 	// Wire name: 'is_hidden'
-	IsHidden bool ``
+	IsHidden bool `json:"is_hidden,omitempty"`
 	// Whether this node comes with IO cache enabled by default.
 	// Wire name: 'is_io_cache_enabled'
-	IsIoCacheEnabled bool ``
+	IsIoCacheEnabled bool `json:"is_io_cache_enabled,omitempty"`
 	// Memory (in MB) available for this node type.
 	// Wire name: 'memory_mb'
-	MemoryMb int ``
+	MemoryMb int `json:"memory_mb"`
 	// A collection of node type info reported by the cloud provider
 	// Wire name: 'node_info'
-	NodeInfo *CloudProviderNodeInfo ``
+	NodeInfo *CloudProviderNodeInfo `json:"node_info,omitempty"`
 	// The NodeInstanceType object corresponding to instance_type_id
 	// Wire name: 'node_instance_type'
-	NodeInstanceType *NodeInstanceType ``
+	NodeInstanceType *NodeInstanceType `json:"node_instance_type,omitempty"`
 	// Unique identifier for this node type.
 	// Wire name: 'node_type_id'
-	NodeTypeId string ``
+	NodeTypeId string `json:"node_type_id"`
 	// Number of CPU cores available for this node type. Note that this can be
 	// fractional, e.g., 2.5 cores, if the the number of cores on a machine
 	// instance is not divisible by the number of Spark nodes on that machine.
 	// Wire name: 'num_cores'
-	NumCores float64 ``
+	NumCores float64 `json:"num_cores"`
 	// Number of GPUs available for this node type.
 	// Wire name: 'num_gpus'
-	NumGpus int ``
+	NumGpus int `json:"num_gpus,omitempty"`
 
 	// Wire name: 'photon_driver_capable'
-	PhotonDriverCapable bool ``
+	PhotonDriverCapable bool `json:"photon_driver_capable,omitempty"`
 
 	// Wire name: 'photon_worker_capable'
-	PhotonWorkerCapable bool ``
+	PhotonWorkerCapable bool `json:"photon_worker_capable,omitempty"`
 	// Whether this node type support cluster tags.
 	// Wire name: 'support_cluster_tags'
-	SupportClusterTags bool ``
+	SupportClusterTags bool `json:"support_cluster_tags,omitempty"`
 	// Whether this node type support EBS volumes. EBS volumes is disabled for
 	// node types that we could place multiple corresponding containers on the
 	// same hosting instance.
 	// Wire name: 'support_ebs_volumes'
-	SupportEbsVolumes bool ``
+	SupportEbsVolumes bool `json:"support_ebs_volumes,omitempty"`
 	// Whether this node type supports port forwarding.
 	// Wire name: 'support_port_forwarding'
-	SupportPortForwarding bool     ``
-	ForceSendFields       []string `tf:"-"`
+	SupportPortForwarding bool     `json:"support_port_forwarding,omitempty"`
+	ForceSendFields       []string `json:"-" tf:"-"`
 }
 
 func (st NodeType) MarshalJSON() ([]byte, error) {
@@ -15376,11 +15339,11 @@ func NodeTypeFromPb(pb *computepb.NodeTypePb) (*NodeType, error) {
 type PendingInstanceError struct {
 
 	// Wire name: 'instance_id'
-	InstanceId string ``
+	InstanceId string `json:"instance_id,omitempty"`
 
 	// Wire name: 'message'
-	Message         string   ``
-	ForceSendFields []string `tf:"-"`
+	Message         string   `json:"message,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PendingInstanceError) MarshalJSON() ([]byte, error) {
@@ -15439,7 +15402,7 @@ func PendingInstanceErrorFromPb(pb *computepb.PendingInstanceErrorPb) (*PendingI
 type PermanentDeleteCluster struct {
 	// The cluster to be deleted.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 }
 
 func (st PermanentDeleteCluster) MarshalJSON() ([]byte, error) {
@@ -15490,7 +15453,7 @@ func PermanentDeleteClusterFromPb(pb *computepb.PermanentDeleteClusterPb) (*Perm
 type PinCluster struct {
 
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 }
 
 func (st PinCluster) MarshalJSON() ([]byte, error) {
@@ -15543,37 +15506,37 @@ type Policy struct {
 	// Creation time. The timestamp (in millisecond) when this Cluster Policy
 	// was created.
 	// Wire name: 'created_at_timestamp'
-	CreatedAtTimestamp int64 ``
+	CreatedAtTimestamp int64 `json:"created_at_timestamp,omitempty"`
 	// Creator user name. The field won't be included in the response if the
 	// user has already been deleted.
 	// Wire name: 'creator_user_name'
-	CreatorUserName string ``
+	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Policy definition document expressed in [Databricks Cluster Policy
 	// Definition Language].
 	//
 	// [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	// Wire name: 'definition'
-	Definition string ``
+	Definition string `json:"definition,omitempty"`
 	// Additional human-readable description of the cluster policy.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// If true, policy is a default policy created and managed by Databricks.
 	// Default policies cannot be deleted, and their policy families cannot be
 	// changed.
 	// Wire name: 'is_default'
-	IsDefault bool ``
+	IsDefault bool `json:"is_default,omitempty"`
 	// A list of libraries to be installed on the next cluster restart that uses
 	// this policy. The maximum number of libraries is 500.
 	// Wire name: 'libraries'
-	Libraries []Library ``
+	Libraries []Library `json:"libraries,omitempty"`
 	// Max number of clusters per user that can be active using this policy. If
 	// not present, there is no max limit.
 	// Wire name: 'max_clusters_per_user'
-	MaxClustersPerUser int64 ``
+	MaxClustersPerUser int64 `json:"max_clusters_per_user,omitempty"`
 	// Cluster Policy name requested by the user. This has to be unique. Length
 	// must be between 1 and 100 characters.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Policy definition JSON document expressed in [Databricks Policy
 	// Definition Language]. The JSON document must be passed as a string and
 	// cannot be embedded in the requests.
@@ -15584,7 +15547,7 @@ type Policy struct {
 	//
 	// [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	// Wire name: 'policy_family_definition_overrides'
-	PolicyFamilyDefinitionOverrides string ``
+	PolicyFamilyDefinitionOverrides string `json:"policy_family_definition_overrides,omitempty"`
 	// ID of the policy family. The cluster policy's policy definition inherits
 	// the policy family's policy definition.
 	//
@@ -15592,11 +15555,11 @@ type Policy struct {
 	// `policy_family_definition_overrides` instead to customize the policy
 	// definition.
 	// Wire name: 'policy_family_id'
-	PolicyFamilyId string ``
+	PolicyFamilyId string `json:"policy_family_id,omitempty"`
 	// Canonical unique identifier for the Cluster Policy.
 	// Wire name: 'policy_id'
-	PolicyId        string   ``
-	ForceSendFields []string `tf:"-"`
+	PolicyId        string   `json:"policy_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Policy) MarshalJSON() ([]byte, error) {
@@ -15698,17 +15661,17 @@ type PolicyFamily struct {
 	//
 	// [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
 	// Wire name: 'definition'
-	Definition string ``
+	Definition string `json:"definition,omitempty"`
 	// Human-readable description of the purpose of the policy family.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Name of the policy family.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Unique identifier for the policy family.
 	// Wire name: 'policy_family_id'
-	PolicyFamilyId  string   ``
-	ForceSendFields []string `tf:"-"`
+	PolicyFamilyId  string   `json:"policy_family_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PolicyFamily) MarshalJSON() ([]byte, error) {
@@ -15773,12 +15736,12 @@ type PythonPyPiLibrary struct {
 	// specification is also supported. Examples: "simplejson" and
 	// "simplejson==3.8.0".
 	// Wire name: 'package'
-	Package string ``
+	Package string `json:"package"`
 	// The repository where the package can be found. If not specified, the
 	// default pip index is used.
 	// Wire name: 'repo'
-	Repo            string   ``
-	ForceSendFields []string `tf:"-"`
+	Repo            string   `json:"repo,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PythonPyPiLibrary) MarshalJSON() ([]byte, error) {
@@ -15837,12 +15800,12 @@ func PythonPyPiLibraryFromPb(pb *computepb.PythonPyPiLibraryPb) (*PythonPyPiLibr
 type RCranLibrary struct {
 	// The name of the CRAN package to install.
 	// Wire name: 'package'
-	Package string ``
+	Package string `json:"package"`
 	// The repository where the package can be found. If not specified, the
 	// default CRAN repo is used.
 	// Wire name: 'repo'
-	Repo            string   ``
-	ForceSendFields []string `tf:"-"`
+	Repo            string   `json:"repo,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RCranLibrary) MarshalJSON() ([]byte, error) {
@@ -15901,7 +15864,7 @@ func RCranLibraryFromPb(pb *computepb.RCranLibraryPb) (*RCranLibrary, error) {
 type RemoveInstanceProfile struct {
 	// The ARN of the instance profile to remove. This field is required.
 	// Wire name: 'instance_profile_arn'
-	InstanceProfileArn string ``
+	InstanceProfileArn string `json:"instance_profile_arn"`
 }
 
 func (st RemoveInstanceProfile) MarshalJSON() ([]byte, error) {
@@ -15954,10 +15917,10 @@ type ResizeCluster struct {
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
 	// Wire name: 'autoscale'
-	Autoscale *AutoScale ``
+	Autoscale *AutoScale `json:"autoscale,omitempty"`
 	// The cluster to be resized.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
 	// Spark nodes.
@@ -15969,8 +15932,8 @@ type ResizeCluster struct {
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	// Wire name: 'num_workers'
-	NumWorkers      int      ``
-	ForceSendFields []string `tf:"-"`
+	NumWorkers      int      `json:"num_workers,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ResizeCluster) MarshalJSON() ([]byte, error) {
@@ -16043,11 +16006,11 @@ func ResizeClusterFromPb(pb *computepb.ResizeClusterPb) (*ResizeCluster, error) 
 type RestartCluster struct {
 	// The cluster to be started.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 
 	// Wire name: 'restart_user'
-	RestartUser     string   ``
-	ForceSendFields []string `tf:"-"`
+	RestartUser     string   `json:"restart_user,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RestartCluster) MarshalJSON() ([]byte, error) {
@@ -16168,36 +16131,36 @@ func ResultTypeFromPb(pb *computepb.ResultTypePb) (*ResultType, error) {
 type Results struct {
 	// The cause of the error
 	// Wire name: 'cause'
-	Cause string ``
+	Cause string `json:"cause,omitempty"`
 
 	// Wire name: 'data'
-	Data any ``
+	Data any `json:"data,omitempty"`
 	// The image filename
 	// Wire name: 'fileName'
-	FileName string ``
+	FileName string `json:"fileName,omitempty"`
 
 	// Wire name: 'fileNames'
-	FileNames []string ``
+	FileNames []string `json:"fileNames,omitempty"`
 	// true if a JSON schema is returned instead of a string representation of
 	// the Hive type.
 	// Wire name: 'isJsonSchema'
-	IsJsonSchema bool ``
+	IsJsonSchema bool `json:"isJsonSchema,omitempty"`
 	// internal field used by SDK
 	// Wire name: 'pos'
-	Pos int ``
+	Pos int `json:"pos,omitempty"`
 
 	// Wire name: 'resultType'
-	ResultType ResultType ``
+	ResultType ResultType `json:"resultType,omitempty"`
 	// The table schema
 	// Wire name: 'schema'
-	Schema []map[string]any ``
+	Schema []map[string]any `json:"schema,omitempty"`
 	// The summary of the error
 	// Wire name: 'summary'
-	Summary string ``
+	Summary string `json:"summary,omitempty"`
 	// true if partial results are returned.
 	// Wire name: 'truncated'
-	Truncated       bool     ``
-	ForceSendFields []string `tf:"-"`
+	Truncated       bool     `json:"truncated,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Results) MarshalJSON() ([]byte, error) {
@@ -16349,34 +16312,34 @@ type S3StorageInfo struct {
 	// want to set `bucket-owner-full-control` to make bucket owner able to read
 	// the logs.
 	// Wire name: 'canned_acl'
-	CannedAcl string ``
+	CannedAcl string `json:"canned_acl,omitempty"`
 	// S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be
 	// delivered using cluster iam role, please make sure you set cluster iam
 	// role and the role has write access to the destination. Please also note
 	// that you cannot use AWS keys to deliver logs.
 	// Wire name: 'destination'
-	Destination string ``
+	Destination string `json:"destination"`
 	// (Optional) Flag to enable server side encryption, `false` by default.
 	// Wire name: 'enable_encryption'
-	EnableEncryption bool ``
+	EnableEncryption bool `json:"enable_encryption,omitempty"`
 	// (Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It
 	// will be used only when encryption is enabled and the default type is
 	// `sse-s3`.
 	// Wire name: 'encryption_type'
-	EncryptionType string ``
+	EncryptionType string `json:"encryption_type,omitempty"`
 	// S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or
 	// endpoint needs to be set. If both are set, endpoint will be used.
 	// Wire name: 'endpoint'
-	Endpoint string ``
+	Endpoint string `json:"endpoint,omitempty"`
 	// (Optional) Kms key which will be used if encryption is enabled and
 	// encryption type is set to `sse-kms`.
 	// Wire name: 'kms_key'
-	KmsKey string ``
+	KmsKey string `json:"kms_key,omitempty"`
 	// S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set.
 	// If both are set, endpoint will be used.
 	// Wire name: 'region'
-	Region          string   ``
-	ForceSendFields []string `tf:"-"`
+	Region          string   `json:"region,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st S3StorageInfo) MarshalJSON() ([]byte, error) {
@@ -16446,30 +16409,30 @@ func S3StorageInfoFromPb(pb *computepb.S3StorageInfoPb) (*S3StorageInfo, error) 
 type SparkNode struct {
 	// The private IP address of the host instance.
 	// Wire name: 'host_private_ip'
-	HostPrivateIp string ``
+	HostPrivateIp string `json:"host_private_ip,omitempty"`
 	// Globally unique identifier for the host instance from the cloud provider.
 	// Wire name: 'instance_id'
-	InstanceId string ``
+	InstanceId string `json:"instance_id,omitempty"`
 	// Attributes specific to AWS for a Spark node.
 	// Wire name: 'node_aws_attributes'
-	NodeAwsAttributes *SparkNodeAwsAttributes ``
+	NodeAwsAttributes *SparkNodeAwsAttributes `json:"node_aws_attributes,omitempty"`
 	// Globally unique identifier for this node.
 	// Wire name: 'node_id'
-	NodeId string ``
+	NodeId string `json:"node_id,omitempty"`
 	// Private IP address (typically a 10.x.x.x address) of the Spark node. Note
 	// that this is different from the private IP address of the host instance.
 	// Wire name: 'private_ip'
-	PrivateIp string ``
+	PrivateIp string `json:"private_ip,omitempty"`
 	// Public DNS address of this node. This address can be used to access the
 	// Spark JDBC server on the driver node. To communicate with the JDBC
 	// server, traffic must be manually authorized by adding security group
 	// rules to the "worker-unmanaged" security group via the AWS console.
 	// Wire name: 'public_dns'
-	PublicDns string ``
+	PublicDns string `json:"public_dns,omitempty"`
 	// The timestamp (in millisecond) when the Spark node is launched.
 	// Wire name: 'start_timestamp'
-	StartTimestamp  int64    ``
-	ForceSendFields []string `tf:"-"`
+	StartTimestamp  int64    `json:"start_timestamp,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SparkNode) MarshalJSON() ([]byte, error) {
@@ -16551,8 +16514,8 @@ func SparkNodeFromPb(pb *computepb.SparkNodePb) (*SparkNode, error) {
 type SparkNodeAwsAttributes struct {
 	// Whether this node is on an Amazon spot instance.
 	// Wire name: 'is_spot'
-	IsSpot          bool     ``
-	ForceSendFields []string `tf:"-"`
+	IsSpot          bool     `json:"is_spot,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SparkNodeAwsAttributes) MarshalJSON() ([]byte, error) {
@@ -16613,11 +16576,11 @@ type SparkVersion struct {
 	// version (i.e., "2.1.x-scala2.11" is a "wildcard" version) with minor bug
 	// fixes.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 	// A descriptive name for this Spark version, for example "Spark 2.1".
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SparkVersion) MarshalJSON() ([]byte, error) {
@@ -16676,7 +16639,7 @@ func SparkVersionFromPb(pb *computepb.SparkVersionPb) (*SparkVersion, error) {
 type StartCluster struct {
 	// The cluster to be started.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 }
 
 func (st StartCluster) MarshalJSON() ([]byte, error) {
@@ -16805,14 +16768,14 @@ func StateFromPb(pb *computepb.StatePb) (*State, error) {
 type TerminationReason struct {
 	// status code indicating why the cluster was terminated
 	// Wire name: 'code'
-	Code TerminationReasonCode ``
+	Code TerminationReasonCode `json:"code,omitempty"`
 	// list of parameters that provide additional information about why the
 	// cluster was terminated
 	// Wire name: 'parameters'
-	Parameters map[string]string ``
+	Parameters map[string]string `json:"parameters,omitempty"`
 	// type of the termination
 	// Wire name: 'type'
-	Type TerminationReasonType ``
+	Type TerminationReasonType `json:"type,omitempty"`
 }
 
 func (st TerminationReason) MarshalJSON() ([]byte, error) {
@@ -17521,10 +17484,10 @@ func TerminationReasonTypeFromPb(pb *computepb.TerminationReasonTypePb) (*Termin
 type UninstallLibraries struct {
 	// Unique identifier for the cluster on which to uninstall these libraries.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 	// The libraries to uninstall.
 	// Wire name: 'libraries'
-	Libraries []Library ``
+	Libraries []Library `json:"libraries"`
 }
 
 func (st UninstallLibraries) MarshalJSON() ([]byte, error) {
@@ -17599,7 +17562,7 @@ func UninstallLibrariesFromPb(pb *computepb.UninstallLibrariesPb) (*UninstallLib
 type UnpinCluster struct {
 
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 }
 
 func (st UnpinCluster) MarshalJSON() ([]byte, error) {
@@ -17650,10 +17613,10 @@ func UnpinClusterFromPb(pb *computepb.UnpinClusterPb) (*UnpinCluster, error) {
 type UpdateCluster struct {
 	// The cluster to be updated.
 	// Wire name: 'cluster'
-	Cluster *UpdateClusterResource ``
+	Cluster *UpdateClusterResource `json:"cluster,omitempty"`
 	// ID of the cluster.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id"`
 	// Used to specify which cluster attributes and size fields to update. See
 	// https://google.aip.dev/161 for more details.
 	//
@@ -17669,7 +17632,7 @@ type UpdateCluster struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'update_mask'
-	UpdateMask string `` //legacy
+	UpdateMask string `json:"update_mask"` //legacy
 
 }
 
@@ -17739,22 +17702,22 @@ type UpdateClusterResource struct {
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
 	// Wire name: 'autoscale'
-	Autoscale *AutoScale ``
+	Autoscale *AutoScale `json:"autoscale,omitempty"`
 	// Automatically terminates the cluster after it is inactive for this time
 	// in minutes. If not set, this cluster will not be automatically
 	// terminated. If specified, the threshold must be between 10 and 10000
 	// minutes. Users can also set this value to 0 to explicitly disable
 	// automatic termination.
 	// Wire name: 'autotermination_minutes'
-	AutoterminationMinutes int ``
+	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'aws_attributes'
-	AwsAttributes *AwsAttributes ``
+	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'azure_attributes'
-	AzureAttributes *AzureAttributes ``
+	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
 	// volumes) are supported. Only one destination can be specified for one
@@ -17763,13 +17726,13 @@ type UpdateClusterResource struct {
 	// `$destination/$clusterId/driver`, while the destination of executor logs
 	// is `$destination/$clusterId/executor`.
 	// Wire name: 'cluster_log_conf'
-	ClusterLogConf *ClusterLogConf ``
+	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string. For
 	// job clusters, the cluster name is automatically set based on the job and
 	// job run IDs.
 	// Wire name: 'cluster_name'
-	ClusterName string ``
+	ClusterName string `json:"cluster_name,omitempty"`
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
@@ -17779,18 +17742,18 @@ type UpdateClusterResource struct {
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
 	// Wire name: 'custom_tags'
-	CustomTags map[string]string ``
+	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	// Wire name: 'data_security_mode'
-	DataSecurityMode DataSecurityMode ``
+	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
 	// Custom docker image BYOC
 	// Wire name: 'docker_image'
-	DockerImage *DockerImage ``
+	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
 	// Wire name: 'driver_instance_pool_id'
-	DriverInstancePoolId string ``
+	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
@@ -17800,45 +17763,45 @@ type UpdateClusterResource struct {
 	// and virtual_cluster_size are specified, driver_node_type_id and
 	// node_type_id take precedence.
 	// Wire name: 'driver_node_type_id'
-	DriverNodeTypeId string ``
+	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
 	// correctly - refer to the User Guide for more details.
 	// Wire name: 'enable_elastic_disk'
-	EnableElasticDisk bool ``
+	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Whether to enable LUKS on cluster VMs' local disks
 	// Wire name: 'enable_local_disk_encryption'
-	EnableLocalDiskEncryption bool ``
+	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
 	// Wire name: 'gcp_attributes'
-	GcpAttributes *GcpAttributes ``
+	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
 	// Wire name: 'init_scripts'
-	InitScripts []InitScriptInfo ``
+	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
 	// The optional ID of the instance pool to which the cluster belongs.
 	// Wire name: 'instance_pool_id'
-	InstancePoolId string ``
+	InstancePoolId string `json:"instance_pool_id,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
 	// Wire name: 'is_single_node'
-	IsSingleNode bool ``
+	IsSingleNode bool `json:"is_single_node,omitempty"`
 
 	// Wire name: 'kind'
-	Kind Kind ``
+	Kind Kind `json:"kind,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
 	// Wire name: 'node_type_id'
-	NodeTypeId string ``
+	NodeTypeId string `json:"node_type_id,omitempty"`
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
 	// Spark nodes.
@@ -17850,14 +17813,14 @@ type UpdateClusterResource struct {
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
 	// Wire name: 'num_workers'
-	NumWorkers int ``
+	NumWorkers int `json:"num_workers,omitempty"`
 	// The ID of the cluster policy used to create the cluster if applicable.
 	// Wire name: 'policy_id'
-	PolicyId string ``
+	PolicyId string `json:"policy_id,omitempty"`
 	// If set, what the configurable throughput (in Mb/s) for the remote disk
 	// is. Currently only supported for GCP HYPERDISK_BALANCED disks.
 	// Wire name: 'remote_disk_throughput'
-	RemoteDiskThroughput int ``
+	RemoteDiskThroughput int `json:"remote_disk_throughput,omitempty"`
 	// Determines the cluster's runtime engine, either standard or Photon.
 	//
 	// This field is not compatible with legacy `spark_version` values that
@@ -17867,17 +17830,17 @@ type UpdateClusterResource struct {
 	// If left unspecified, the runtime engine defaults to standard unless the
 	// spark_version contains -photon-, in which case Photon will be used.
 	// Wire name: 'runtime_engine'
-	RuntimeEngine RuntimeEngine ``
+	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
 	// Single user name if data_security_mode is `SINGLE_USER`
 	// Wire name: 'single_user_name'
-	SingleUserName string ``
+	SingleUserName string `json:"single_user_name,omitempty"`
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
 	// Wire name: 'spark_conf'
-	SparkConf map[string]string ``
+	SparkConf map[string]string `json:"spark_conf,omitempty"`
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
 	// (X,Y) will be exported as is (i.e., `export X='Y'`) while launching the
@@ -17892,32 +17855,32 @@ type UpdateClusterResource struct {
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
 	// Wire name: 'spark_env_vars'
-	SparkEnvVars map[string]string ``
+	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	// Wire name: 'spark_version'
-	SparkVersion string ``
+	SparkVersion string `json:"spark_version,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
 	// Wire name: 'ssh_public_keys'
-	SshPublicKeys []string ``
+	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
 	// If set, what the total initial volume size (in GB) of the remote disks
 	// should be. Currently only supported for GCP HYPERDISK_BALANCED disks.
 	// Wire name: 'total_initial_remote_disk_size'
-	TotalInitialRemoteDiskSize int ``
+	TotalInitialRemoteDiskSize int `json:"total_initial_remote_disk_size,omitempty"`
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	// Wire name: 'use_ml_runtime'
-	UseMlRuntime bool ``
+	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
 
 	// Wire name: 'workload_type'
-	WorkloadType    *WorkloadType ``
-	ForceSendFields []string      `tf:"-"`
+	WorkloadType    *WorkloadType `json:"workload_type,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st UpdateClusterResource) MarshalJSON() ([]byte, error) {
@@ -18179,7 +18142,7 @@ type VolumesStorageInfo struct {
 	// `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or
 	// `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`
 	// Wire name: 'destination'
-	Destination string ``
+	Destination string `json:"destination"`
 }
 
 func (st VolumesStorageInfo) MarshalJSON() ([]byte, error) {
@@ -18231,7 +18194,7 @@ func VolumesStorageInfoFromPb(pb *computepb.VolumesStorageInfoPb) (*VolumesStora
 type WorkloadType struct {
 	// defined what type of clients can use the cluster. E.g. Notebooks, Jobs
 	// Wire name: 'clients'
-	Clients ClientsTypes ``
+	Clients ClientsTypes `json:"clients"`
 }
 
 func (st WorkloadType) MarshalJSON() ([]byte, error) {
@@ -18295,7 +18258,7 @@ func WorkloadTypeFromPb(pb *computepb.WorkloadTypePb) (*WorkloadType, error) {
 type WorkspaceStorageInfo struct {
 	// wsfs destination, e.g. `workspace:/cluster-init-scripts/setup-datadog.sh`
 	// Wire name: 'destination'
-	Destination string ``
+	Destination string `json:"destination"`
 }
 
 func (st WorkspaceStorageInfo) MarshalJSON() ([]byte, error) {

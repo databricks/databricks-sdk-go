@@ -14,15 +14,15 @@ import (
 type AccessControl struct {
 
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
 	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
 	// Wire name: 'permission_level'
-	PermissionLevel PermissionLevel ``
+	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AccessControl) MarshalJSON() ([]byte, error) {
@@ -166,63 +166,63 @@ func AggregationFromPb(pb *sqlpb.AggregationPb) (*Aggregation, error) {
 type Alert struct {
 	// Trigger conditions of the alert.
 	// Wire name: 'condition'
-	Condition *AlertCondition ``
+	Condition *AlertCondition `json:"condition,omitempty"`
 	// The timestamp indicating when the alert was created.
 	// Wire name: 'create_time'
-	CreateTime string `` //legacy
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// Custom body of alert notification, if it exists. See [here] for custom
 	// templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	// Wire name: 'custom_body'
-	CustomBody string ``
+	CustomBody string `json:"custom_body,omitempty"`
 	// Custom subject of alert notification, if it exists. This can include
 	// email subject entries and Slack notification headers, for example. See
 	// [here] for custom templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	// Wire name: 'custom_subject'
-	CustomSubject string ``
+	CustomSubject string `json:"custom_subject,omitempty"`
 	// The display name of the alert.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// UUID identifying the alert.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// The workspace state of the alert. Used for tracking trashed status.
 	// Wire name: 'lifecycle_state'
-	LifecycleState LifecycleState ``
+	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
 	// Whether to notify alert subscribers when alert returns back to normal.
 	// Wire name: 'notify_on_ok'
-	NotifyOnOk bool ``
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	// Wire name: 'owner_user_name'
-	OwnerUserName string ``
+	OwnerUserName string `json:"owner_user_name,omitempty"`
 	// The workspace path of the folder containing the alert.
 	// Wire name: 'parent_path'
-	ParentPath string ``
+	ParentPath string `json:"parent_path,omitempty"`
 	// UUID of the query attached to the alert.
 	// Wire name: 'query_id'
-	QueryId string ``
+	QueryId string `json:"query_id,omitempty"`
 	// Number of seconds an alert must wait after being triggered to rearm
 	// itself. After rearming, it can be triggered again. If 0 or not specified,
 	// the alert will not be triggered again.
 	// Wire name: 'seconds_to_retrigger'
-	SecondsToRetrigger int ``
+	SecondsToRetrigger int `json:"seconds_to_retrigger,omitempty"`
 	// Current state of the alert's trigger status. This field is set to UNKNOWN
 	// if the alert has not yet been evaluated or ran into an error during the
 	// last evaluation.
 	// Wire name: 'state'
-	State AlertState ``
+	State AlertState `json:"state,omitempty"`
 	// Timestamp when the alert was last triggered, if the alert has been
 	// triggered before.
 	// Wire name: 'trigger_time'
-	TriggerTime string `` //legacy
+	TriggerTime string `json:"trigger_time,omitempty"` //legacy
 	// The timestamp indicating when the alert was updated.
 	// Wire name: 'update_time'
-	UpdateTime      string   `` //legacy
-	ForceSendFields []string `tf:"-"`
+	UpdateTime      string   `json:"update_time,omitempty"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Alert) MarshalJSON() ([]byte, error) {
@@ -343,17 +343,17 @@ func AlertFromPb(pb *sqlpb.AlertPb) (*Alert, error) {
 type AlertCondition struct {
 	// Alert state if result is empty.
 	// Wire name: 'empty_result_state'
-	EmptyResultState AlertState ``
+	EmptyResultState AlertState `json:"empty_result_state,omitempty"`
 	// Operator used for comparison in alert evaluation.
 	// Wire name: 'op'
-	Op AlertOperator ``
+	Op AlertOperator `json:"op,omitempty"`
 	// Name of the column from the query result to use for comparison in alert
 	// evaluation.
 	// Wire name: 'operand'
-	Operand *AlertConditionOperand ``
+	Operand *AlertConditionOperand `json:"operand,omitempty"`
 	// Threshold value used for comparison in alert evaluation.
 	// Wire name: 'threshold'
-	Threshold *AlertConditionThreshold ``
+	Threshold *AlertConditionThreshold `json:"threshold,omitempty"`
 }
 
 func (st AlertCondition) MarshalJSON() ([]byte, error) {
@@ -458,7 +458,7 @@ func AlertConditionFromPb(pb *sqlpb.AlertConditionPb) (*AlertCondition, error) {
 type AlertConditionOperand struct {
 
 	// Wire name: 'column'
-	Column *AlertOperandColumn ``
+	Column *AlertOperandColumn `json:"column,omitempty"`
 }
 
 func (st AlertConditionOperand) MarshalJSON() ([]byte, error) {
@@ -521,7 +521,7 @@ func AlertConditionOperandFromPb(pb *sqlpb.AlertConditionOperandPb) (*AlertCondi
 type AlertConditionThreshold struct {
 
 	// Wire name: 'value'
-	Value *AlertOperandValue ``
+	Value *AlertOperandValue `json:"value,omitempty"`
 }
 
 func (st AlertConditionThreshold) MarshalJSON() ([]byte, error) {
@@ -646,8 +646,8 @@ func AlertEvaluationStateFromPb(pb *sqlpb.AlertEvaluationStatePb) (*AlertEvaluat
 type AlertOperandColumn struct {
 
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AlertOperandColumn) MarshalJSON() ([]byte, error) {
@@ -704,14 +704,14 @@ func AlertOperandColumnFromPb(pb *sqlpb.AlertOperandColumnPb) (*AlertOperandColu
 type AlertOperandValue struct {
 
 	// Wire name: 'bool_value'
-	BoolValue bool ``
+	BoolValue bool `json:"bool_value,omitempty"`
 
 	// Wire name: 'double_value'
-	DoubleValue float64 ``
+	DoubleValue float64 `json:"double_value,omitempty"`
 
 	// Wire name: 'string_value'
-	StringValue     string   ``
-	ForceSendFields []string `tf:"-"`
+	StringValue     string   `json:"string_value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AlertOperandValue) MarshalJSON() ([]byte, error) {
@@ -841,36 +841,36 @@ func AlertOperatorFromPb(pb *sqlpb.AlertOperatorPb) (*AlertOperator, error) {
 type AlertOptions struct {
 	// Name of column in the query result to compare in alert evaluation.
 	// Wire name: 'column'
-	Column string ``
+	Column string `json:"column"`
 	// Custom body of alert notification, if it exists. See [here] for custom
 	// templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	// Wire name: 'custom_body'
-	CustomBody string ``
+	CustomBody string `json:"custom_body,omitempty"`
 	// Custom subject of alert notification, if it exists. This includes email
 	// subject, Slack notification header, etc. See [here] for custom templating
 	// instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	// Wire name: 'custom_subject'
-	CustomSubject string ``
+	CustomSubject string `json:"custom_subject,omitempty"`
 	// State that alert evaluates to when query result is empty.
 	// Wire name: 'empty_result_state'
-	EmptyResultState AlertOptionsEmptyResultState ``
+	EmptyResultState AlertOptionsEmptyResultState `json:"empty_result_state,omitempty"`
 	// Whether or not the alert is muted. If an alert is muted, it will not
 	// notify users and notification destinations when triggered.
 	// Wire name: 'muted'
-	Muted bool ``
+	Muted bool `json:"muted,omitempty"`
 	// Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`,
 	// `!=`
 	// Wire name: 'op'
-	Op string ``
+	Op string `json:"op"`
 	// Value used to compare in alert evaluation. Supported types include
 	// strings (eg. 'foobar'), floats (eg. 123.4), and booleans (true).
 	// Wire name: 'value'
-	Value           any      ``
-	ForceSendFields []string `tf:"-"`
+	Value           any      `json:"value"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AlertOptions) MarshalJSON() ([]byte, error) {
@@ -1008,57 +1008,57 @@ func AlertOptionsEmptyResultStateFromPb(pb *sqlpb.AlertOptionsEmptyResultStatePb
 type AlertQuery struct {
 	// The timestamp when this query was created.
 	// Wire name: 'created_at'
-	CreatedAt string ``
+	CreatedAt string `json:"created_at,omitempty"`
 	// Data source ID maps to the ID of the data source used by the resource and
 	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	// Wire name: 'data_source_id'
-	DataSourceId string ``
+	DataSourceId string `json:"data_source_id,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Query ID.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Indicates whether the query is trashed. Trashed queries can't be used in
 	// dashboards, or appear in search results. If this boolean is `true`, the
 	// `options` property for this query includes a `moved_to_trash_at`
 	// timestamp. Trashed queries are permanently deleted after 30 days.
 	// Wire name: 'is_archived'
-	IsArchived bool ``
+	IsArchived bool `json:"is_archived,omitempty"`
 	// Whether the query is a draft. Draft queries only appear in list views for
 	// their owners. Visualizations from draft queries cannot appear on
 	// dashboards.
 	// Wire name: 'is_draft'
-	IsDraft bool ``
+	IsDraft bool `json:"is_draft,omitempty"`
 	// Text parameter types are not safe from SQL injection for all types of
 	// data source. Set this Boolean parameter to `true` if a query either does
 	// not use any text type parameters or uses a data source type where text
 	// type parameters are handled safely.
 	// Wire name: 'is_safe'
-	IsSafe bool ``
+	IsSafe bool `json:"is_safe,omitempty"`
 	// The title of this query that appears in list views, widget headings, and
 	// on the query page.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 
 	// Wire name: 'options'
-	Options *QueryOptions ``
+	Options *QueryOptions `json:"options,omitempty"`
 	// The text of the query to be run.
 	// Wire name: 'query'
-	Query string ``
+	Query string `json:"query,omitempty"`
 
 	// Wire name: 'tags'
-	Tags []string ``
+	Tags []string `json:"tags,omitempty"`
 	// The timestamp at which this query was last updated.
 	// Wire name: 'updated_at'
-	UpdatedAt string ``
+	UpdatedAt string `json:"updated_at,omitempty"`
 	// The ID of the user who owns the query.
 	// Wire name: 'user_id'
-	UserId          int      ``
-	ForceSendFields []string `tf:"-"`
+	UserId          int      `json:"user_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AlertQuery) MarshalJSON() ([]byte, error) {
@@ -1207,51 +1207,51 @@ func AlertStateFromPb(pb *sqlpb.AlertStatePb) (*AlertState, error) {
 type AlertV2 struct {
 	// The timestamp indicating when the alert was created.
 	// Wire name: 'create_time'
-	CreateTime string `` //legacy
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// Custom description for the alert. support mustache template.
 	// Wire name: 'custom_description'
-	CustomDescription string ``
+	CustomDescription string `json:"custom_description,omitempty"`
 	// Custom summary for the alert. support mustache template.
 	// Wire name: 'custom_summary'
-	CustomSummary string ``
+	CustomSummary string `json:"custom_summary,omitempty"`
 	// The display name of the alert.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 
 	// Wire name: 'evaluation'
-	Evaluation *AlertV2Evaluation ``
+	Evaluation *AlertV2Evaluation `json:"evaluation,omitempty"`
 	// UUID identifying the alert.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Indicates whether the query is trashed.
 	// Wire name: 'lifecycle_state'
-	LifecycleState LifecycleState ``
+	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	// Wire name: 'owner_user_name'
-	OwnerUserName string ``
+	OwnerUserName string `json:"owner_user_name,omitempty"`
 	// The workspace path of the folder containing the alert. Can only be set on
 	// create, and cannot be updated.
 	// Wire name: 'parent_path'
-	ParentPath string ``
+	ParentPath string `json:"parent_path,omitempty"`
 	// Text of the query to be run.
 	// Wire name: 'query_text'
-	QueryText string ``
+	QueryText string `json:"query_text,omitempty"`
 	// The run as username or application ID of service principal. On Create and
 	// Update, this field can be set to application ID of an active service
 	// principal. Setting this field requires the servicePrincipal/user role.
 	// Wire name: 'run_as_user_name'
-	RunAsUserName string ``
+	RunAsUserName string `json:"run_as_user_name,omitempty"`
 
 	// Wire name: 'schedule'
-	Schedule *CronSchedule ``
+	Schedule *CronSchedule `json:"schedule,omitempty"`
 	// The timestamp indicating when the alert was updated.
 	// Wire name: 'update_time'
-	UpdateTime string `` //legacy
+	UpdateTime string `json:"update_time,omitempty"` //legacy
 	// ID of the SQL warehouse attached to the alert.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AlertV2) MarshalJSON() ([]byte, error) {
@@ -1370,26 +1370,26 @@ func AlertV2FromPb(pb *sqlpb.AlertV2Pb) (*AlertV2, error) {
 type AlertV2Evaluation struct {
 	// Operator used for comparison in alert evaluation.
 	// Wire name: 'comparison_operator'
-	ComparisonOperator ComparisonOperator ``
+	ComparisonOperator ComparisonOperator `json:"comparison_operator,omitempty"`
 	// Alert state if result is empty.
 	// Wire name: 'empty_result_state'
-	EmptyResultState AlertEvaluationState ``
+	EmptyResultState AlertEvaluationState `json:"empty_result_state,omitempty"`
 	// Timestamp of the last evaluation.
 	// Wire name: 'last_evaluated_at'
-	LastEvaluatedAt string `` //legacy
+	LastEvaluatedAt string `json:"last_evaluated_at,omitempty"` //legacy
 	// User or Notification Destination to notify when alert is triggered.
 	// Wire name: 'notification'
-	Notification *AlertV2Notification ``
+	Notification *AlertV2Notification `json:"notification,omitempty"`
 	// Source column from result to use to evaluate alert
 	// Wire name: 'source'
-	Source *AlertV2OperandColumn ``
+	Source *AlertV2OperandColumn `json:"source,omitempty"`
 	// Latest state of alert evaluation.
 	// Wire name: 'state'
-	State AlertEvaluationState ``
+	State AlertEvaluationState `json:"state,omitempty"`
 	// Threshold to user for alert evaluation, can be a column or a value.
 	// Wire name: 'threshold'
-	Threshold       *AlertV2Operand ``
-	ForceSendFields []string        `tf:"-"`
+	Threshold       *AlertV2Operand `json:"threshold,omitempty"`
+	ForceSendFields []string        `json:"-" tf:"-"`
 }
 
 func (st AlertV2Evaluation) MarshalJSON() ([]byte, error) {
@@ -1530,16 +1530,16 @@ func AlertV2EvaluationFromPb(pb *sqlpb.AlertV2EvaluationPb) (*AlertV2Evaluation,
 type AlertV2Notification struct {
 	// Whether to notify alert subscribers when alert returns back to normal.
 	// Wire name: 'notify_on_ok'
-	NotifyOnOk bool ``
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// Number of seconds an alert must wait after being triggered to rearm
 	// itself. After rearming, it can be triggered again. If 0 or not specified,
 	// the alert will not be triggered again.
 	// Wire name: 'retrigger_seconds'
-	RetriggerSeconds int ``
+	RetriggerSeconds int `json:"retrigger_seconds,omitempty"`
 
 	// Wire name: 'subscriptions'
-	Subscriptions   []AlertV2Subscription ``
-	ForceSendFields []string              `tf:"-"`
+	Subscriptions   []AlertV2Subscription `json:"subscriptions,omitempty"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st AlertV2Notification) MarshalJSON() ([]byte, error) {
@@ -1622,10 +1622,10 @@ func AlertV2NotificationFromPb(pb *sqlpb.AlertV2NotificationPb) (*AlertV2Notific
 type AlertV2Operand struct {
 
 	// Wire name: 'column'
-	Column *AlertV2OperandColumn ``
+	Column *AlertV2OperandColumn `json:"column,omitempty"`
 
 	// Wire name: 'value'
-	Value *AlertV2OperandValue ``
+	Value *AlertV2OperandValue `json:"value,omitempty"`
 }
 
 func (st AlertV2Operand) MarshalJSON() ([]byte, error) {
@@ -1702,14 +1702,14 @@ func AlertV2OperandFromPb(pb *sqlpb.AlertV2OperandPb) (*AlertV2Operand, error) {
 type AlertV2OperandColumn struct {
 
 	// Wire name: 'aggregation'
-	Aggregation Aggregation ``
+	Aggregation Aggregation `json:"aggregation,omitempty"`
 
 	// Wire name: 'display'
-	Display string ``
+	Display string `json:"display,omitempty"`
 
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AlertV2OperandColumn) MarshalJSON() ([]byte, error) {
@@ -1782,14 +1782,14 @@ func AlertV2OperandColumnFromPb(pb *sqlpb.AlertV2OperandColumnPb) (*AlertV2Opera
 type AlertV2OperandValue struct {
 
 	// Wire name: 'bool_value'
-	BoolValue bool ``
+	BoolValue bool `json:"bool_value,omitempty"`
 
 	// Wire name: 'double_value'
-	DoubleValue float64 ``
+	DoubleValue float64 `json:"double_value,omitempty"`
 
 	// Wire name: 'string_value'
-	StringValue     string   ``
-	ForceSendFields []string `tf:"-"`
+	StringValue     string   `json:"string_value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AlertV2OperandValue) MarshalJSON() ([]byte, error) {
@@ -1850,11 +1850,11 @@ func AlertV2OperandValueFromPb(pb *sqlpb.AlertV2OperandValuePb) (*AlertV2Operand
 type AlertV2Subscription struct {
 
 	// Wire name: 'destination_id'
-	DestinationId string ``
+	DestinationId string `json:"destination_id,omitempty"`
 
 	// Wire name: 'user_email'
-	UserEmail       string   ``
-	ForceSendFields []string `tf:"-"`
+	UserEmail       string   `json:"user_email,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AlertV2Subscription) MarshalJSON() ([]byte, error) {
@@ -1917,17 +1917,17 @@ type BaseChunkInfo struct {
 	// The number of bytes in the result chunk. This field is not available when
 	// using `INLINE` disposition.
 	// Wire name: 'byte_count'
-	ByteCount int64 ``
+	ByteCount int64 `json:"byte_count,omitempty"`
 	// The position within the sequence of result set chunks.
 	// Wire name: 'chunk_index'
-	ChunkIndex int ``
+	ChunkIndex int `json:"chunk_index,omitempty"`
 	// The number of rows within the result chunk.
 	// Wire name: 'row_count'
-	RowCount int64 ``
+	RowCount int64 `json:"row_count,omitempty"`
 	// The starting row offset within the result set.
 	// Wire name: 'row_offset'
-	RowOffset       int64    ``
-	ForceSendFields []string `tf:"-"`
+	RowOffset       int64    `json:"row_offset,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st BaseChunkInfo) MarshalJSON() ([]byte, error) {
@@ -1990,8 +1990,7 @@ func BaseChunkInfoFromPb(pb *sqlpb.BaseChunkInfoPb) (*BaseChunkInfo, error) {
 type CancelExecutionRequest struct {
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
-	// Wire name: 'statement_id'
-	StatementId string `tf:"-"`
+	StatementId string `json:"-" tf:"-"`
 }
 
 func (st CancelExecutionRequest) MarshalJSON() ([]byte, error) {
@@ -2044,11 +2043,11 @@ func CancelExecutionRequestFromPb(pb *sqlpb.CancelExecutionRequestPb) (*CancelEx
 type Channel struct {
 
 	// Wire name: 'dbsql_version'
-	DbsqlVersion string ``
+	DbsqlVersion string `json:"dbsql_version,omitempty"`
 
 	// Wire name: 'name'
-	Name            ChannelName ``
-	ForceSendFields []string    `tf:"-"`
+	Name            ChannelName `json:"name,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
 func (st Channel) MarshalJSON() ([]byte, error) {
@@ -2120,11 +2119,11 @@ func ChannelFromPb(pb *sqlpb.ChannelPb) (*Channel, error) {
 type ChannelInfo struct {
 	// DB SQL Version the Channel is mapped to.
 	// Wire name: 'dbsql_version'
-	DbsqlVersion string ``
+	DbsqlVersion string `json:"dbsql_version,omitempty"`
 	// Name of the channel
 	// Wire name: 'name'
-	Name            ChannelName ``
-	ForceSendFields []string    `tf:"-"`
+	Name            ChannelName `json:"name,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
 func (st ChannelInfo) MarshalJSON() ([]byte, error) {
@@ -2254,35 +2253,35 @@ func ChannelNameFromPb(pb *sqlpb.ChannelNamePb) (*ChannelName, error) {
 type ClientConfig struct {
 
 	// Wire name: 'allow_custom_js_visualizations'
-	AllowCustomJsVisualizations bool ``
+	AllowCustomJsVisualizations bool `json:"allow_custom_js_visualizations,omitempty"`
 
 	// Wire name: 'allow_downloads'
-	AllowDownloads bool ``
+	AllowDownloads bool `json:"allow_downloads,omitempty"`
 
 	// Wire name: 'allow_external_shares'
-	AllowExternalShares bool ``
+	AllowExternalShares bool `json:"allow_external_shares,omitempty"`
 
 	// Wire name: 'allow_subscriptions'
-	AllowSubscriptions bool ``
+	AllowSubscriptions bool `json:"allow_subscriptions,omitempty"`
 
 	// Wire name: 'date_format'
-	DateFormat string ``
+	DateFormat string `json:"date_format,omitempty"`
 
 	// Wire name: 'date_time_format'
-	DateTimeFormat string ``
+	DateTimeFormat string `json:"date_time_format,omitempty"`
 
 	// Wire name: 'disable_publish'
-	DisablePublish bool ``
+	DisablePublish bool `json:"disable_publish,omitempty"`
 
 	// Wire name: 'enable_legacy_autodetect_types'
-	EnableLegacyAutodetectTypes bool ``
+	EnableLegacyAutodetectTypes bool `json:"enable_legacy_autodetect_types,omitempty"`
 
 	// Wire name: 'feature_show_permissions_control'
-	FeatureShowPermissionsControl bool ``
+	FeatureShowPermissionsControl bool `json:"feature_show_permissions_control,omitempty"`
 
 	// Wire name: 'hide_plotly_mode_bar'
-	HidePlotlyModeBar bool     ``
-	ForceSendFields   []string `tf:"-"`
+	HidePlotlyModeBar bool     `json:"hide_plotly_mode_bar,omitempty"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
 func (st ClientConfig) MarshalJSON() ([]byte, error) {
@@ -2357,29 +2356,29 @@ func ClientConfigFromPb(pb *sqlpb.ClientConfigPb) (*ClientConfig, error) {
 type ColumnInfo struct {
 	// The name of the column.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The ordinal position of the column (starting at position 0).
 	// Wire name: 'position'
-	Position int ``
+	Position int `json:"position,omitempty"`
 	// The format of the interval type.
 	// Wire name: 'type_interval_type'
-	TypeIntervalType string ``
+	TypeIntervalType string `json:"type_interval_type,omitempty"`
 	// The name of the base data type. This doesn't include details for complex
 	// types such as STRUCT, MAP or ARRAY.
 	// Wire name: 'type_name'
-	TypeName ColumnInfoTypeName ``
+	TypeName ColumnInfoTypeName `json:"type_name,omitempty"`
 	// Specifies the number of digits in a number. This applies to the DECIMAL
 	// type.
 	// Wire name: 'type_precision'
-	TypePrecision int ``
+	TypePrecision int `json:"type_precision,omitempty"`
 	// Specifies the number of digits to the right of the decimal point in a
 	// number. This applies to the DECIMAL type.
 	// Wire name: 'type_scale'
-	TypeScale int ``
+	TypeScale int `json:"type_scale,omitempty"`
 	// The full SQL type specification.
 	// Wire name: 'type_text'
-	TypeText        string   ``
-	ForceSendFields []string `tf:"-"`
+	TypeText        string   `json:"type_text,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ColumnInfo) MarshalJSON() ([]byte, error) {
@@ -2637,22 +2636,22 @@ func ComparisonOperatorFromPb(pb *sqlpb.ComparisonOperatorPb) (*ComparisonOperat
 type CreateAlert struct {
 	// Name of the alert.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Alert configuration options.
 	// Wire name: 'options'
-	Options AlertOptions ``
+	Options AlertOptions `json:"options"`
 	// The identifier of the workspace folder containing the object.
 	// Wire name: 'parent'
-	Parent string ``
+	Parent string `json:"parent,omitempty"`
 	// Query ID.
 	// Wire name: 'query_id'
-	QueryId string ``
+	QueryId string `json:"query_id"`
 	// Number of seconds after being triggered before the alert rearms itself
 	// and can be triggered again. If `null`, alert will never be triggered
 	// again.
 	// Wire name: 'rearm'
-	Rearm           int      ``
-	ForceSendFields []string `tf:"-"`
+	Rearm           int      `json:"rearm,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateAlert) MarshalJSON() ([]byte, error) {
@@ -2729,13 +2728,13 @@ func CreateAlertFromPb(pb *sqlpb.CreateAlertPb) (*CreateAlert, error) {
 type CreateAlertRequest struct {
 
 	// Wire name: 'alert'
-	Alert *CreateAlertRequestAlert ``
+	Alert *CreateAlertRequestAlert `json:"alert,omitempty"`
 	// If true, automatically resolve alert display name conflicts. Otherwise,
 	// fail the request if the alert's display name conflicts with an existing
 	// alert's display name.
 	// Wire name: 'auto_resolve_display_name'
-	AutoResolveDisplayName bool     ``
-	ForceSendFields        []string `tf:"-"`
+	AutoResolveDisplayName bool     `json:"auto_resolve_display_name,omitempty"`
+	ForceSendFields        []string `json:"-" tf:"-"`
 }
 
 func (st CreateAlertRequest) MarshalJSON() ([]byte, error) {
@@ -2806,38 +2805,38 @@ func CreateAlertRequestFromPb(pb *sqlpb.CreateAlertRequestPb) (*CreateAlertReque
 type CreateAlertRequestAlert struct {
 	// Trigger conditions of the alert.
 	// Wire name: 'condition'
-	Condition *AlertCondition ``
+	Condition *AlertCondition `json:"condition,omitempty"`
 	// Custom body of alert notification, if it exists. See [here] for custom
 	// templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	// Wire name: 'custom_body'
-	CustomBody string ``
+	CustomBody string `json:"custom_body,omitempty"`
 	// Custom subject of alert notification, if it exists. This can include
 	// email subject entries and Slack notification headers, for example. See
 	// [here] for custom templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	// Wire name: 'custom_subject'
-	CustomSubject string ``
+	CustomSubject string `json:"custom_subject,omitempty"`
 	// The display name of the alert.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// Whether to notify alert subscribers when alert returns back to normal.
 	// Wire name: 'notify_on_ok'
-	NotifyOnOk bool ``
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The workspace path of the folder containing the alert.
 	// Wire name: 'parent_path'
-	ParentPath string ``
+	ParentPath string `json:"parent_path,omitempty"`
 	// UUID of the query attached to the alert.
 	// Wire name: 'query_id'
-	QueryId string ``
+	QueryId string `json:"query_id,omitempty"`
 	// Number of seconds an alert must wait after being triggered to rearm
 	// itself. After rearming, it can be triggered again. If 0 or not specified,
 	// the alert will not be triggered again.
 	// Wire name: 'seconds_to_retrigger'
-	SecondsToRetrigger int      ``
-	ForceSendFields    []string `tf:"-"`
+	SecondsToRetrigger int      `json:"seconds_to_retrigger,omitempty"`
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
 func (st CreateAlertRequestAlert) MarshalJSON() ([]byte, error) {
@@ -2920,7 +2919,7 @@ func CreateAlertRequestAlertFromPb(pb *sqlpb.CreateAlertRequestAlertPb) (*Create
 type CreateAlertV2Request struct {
 
 	// Wire name: 'alert'
-	Alert AlertV2 ``
+	Alert AlertV2 `json:"alert"`
 }
 
 func (st CreateAlertV2Request) MarshalJSON() ([]byte, error) {
@@ -2985,11 +2984,11 @@ type CreateQueryRequest struct {
 	// fail the request if the query's display name conflicts with an existing
 	// query's display name.
 	// Wire name: 'auto_resolve_display_name'
-	AutoResolveDisplayName bool ``
+	AutoResolveDisplayName bool `json:"auto_resolve_display_name,omitempty"`
 
 	// Wire name: 'query'
-	Query           *CreateQueryRequestQuery ``
-	ForceSendFields []string                 `tf:"-"`
+	Query           *CreateQueryRequestQuery `json:"query,omitempty"`
+	ForceSendFields []string                 `json:"-" tf:"-"`
 }
 
 func (st CreateQueryRequest) MarshalJSON() ([]byte, error) {
@@ -3060,40 +3059,40 @@ func CreateQueryRequestFromPb(pb *sqlpb.CreateQueryRequestPb) (*CreateQueryReque
 type CreateQueryRequestQuery struct {
 	// Whether to apply a 1000 row limit to the query result.
 	// Wire name: 'apply_auto_limit'
-	ApplyAutoLimit bool ``
+	ApplyAutoLimit bool `json:"apply_auto_limit,omitempty"`
 	// Name of the catalog where this query will be executed.
 	// Wire name: 'catalog'
-	Catalog string ``
+	Catalog string `json:"catalog,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Display name of the query that appears in list views, widget headings,
 	// and on the query page.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// List of query parameter definitions.
 	// Wire name: 'parameters'
-	Parameters []QueryParameter ``
+	Parameters []QueryParameter `json:"parameters,omitempty"`
 	// Workspace path of the workspace folder containing the object.
 	// Wire name: 'parent_path'
-	ParentPath string ``
+	ParentPath string `json:"parent_path,omitempty"`
 	// Text of the query to be run.
 	// Wire name: 'query_text'
-	QueryText string ``
+	QueryText string `json:"query_text,omitempty"`
 	// Sets the "Run as" role for the object.
 	// Wire name: 'run_as_mode'
-	RunAsMode RunAsMode ``
+	RunAsMode RunAsMode `json:"run_as_mode,omitempty"`
 	// Name of the schema where this query will be executed.
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 
 	// Wire name: 'tags'
-	Tags []string ``
+	Tags []string `json:"tags,omitempty"`
 	// ID of the SQL warehouse attached to the query.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateQueryRequestQuery) MarshalJSON() ([]byte, error) {
@@ -3206,23 +3205,23 @@ type CreateQueryVisualizationsLegacyRequest struct {
 	// A short description of this visualization. This is not displayed in the
 	// UI.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// The name of the visualization that appears on dashboards and the query
 	// screen.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The options object varies widely from one visualization type to the next
 	// and is unsupported. Databricks does not recommend modifying visualization
 	// settings in JSON.
 	// Wire name: 'options'
-	Options any ``
+	Options any `json:"options"`
 	// The identifier returned by :method:queries/create
 	// Wire name: 'query_id'
-	QueryId string ``
+	QueryId string `json:"query_id"`
 	// The type of visualization: chart, table, pivot table, and so on.
 	// Wire name: 'type'
-	Type            string   ``
-	ForceSendFields []string `tf:"-"`
+	Type            string   `json:"type"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateQueryVisualizationsLegacyRequest) MarshalJSON() ([]byte, error) {
@@ -3287,7 +3286,7 @@ func CreateQueryVisualizationsLegacyRequestFromPb(pb *sqlpb.CreateQueryVisualiza
 type CreateVisualizationRequest struct {
 
 	// Wire name: 'visualization'
-	Visualization *CreateVisualizationRequestVisualization ``
+	Visualization *CreateVisualizationRequestVisualization `json:"visualization,omitempty"`
 }
 
 func (st CreateVisualizationRequest) MarshalJSON() ([]byte, error) {
@@ -3350,24 +3349,24 @@ func CreateVisualizationRequestFromPb(pb *sqlpb.CreateVisualizationRequestPb) (*
 type CreateVisualizationRequestVisualization struct {
 	// The display name of the visualization.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// UUID of the query that the visualization is attached to.
 	// Wire name: 'query_id'
-	QueryId string ``
+	QueryId string `json:"query_id,omitempty"`
 	// The visualization options varies widely from one visualization type to
 	// the next and is unsupported. Databricks does not recommend modifying
 	// visualization options directly.
 	// Wire name: 'serialized_options'
-	SerializedOptions string ``
+	SerializedOptions string `json:"serialized_options,omitempty"`
 	// The visualization query plan varies widely from one visualization type to
 	// the next and is unsupported. Databricks does not recommend modifying the
 	// visualization query plan directly.
 	// Wire name: 'serialized_query_plan'
-	SerializedQueryPlan string ``
+	SerializedQueryPlan string `json:"serialized_query_plan,omitempty"`
 	// The type of visualization: counter, table, funnel, and so on.
 	// Wire name: 'type'
-	Type            string   ``
-	ForceSendFields []string `tf:"-"`
+	Type            string   `json:"type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateVisualizationRequestVisualization) MarshalJSON() ([]byte, error) {
@@ -3439,10 +3438,10 @@ type CreateWarehouseRequest struct {
 	//
 	// Defaults to 120 mins
 	// Wire name: 'auto_stop_mins'
-	AutoStopMins int ``
+	AutoStopMins int `json:"auto_stop_mins,omitempty"`
 	// Channel Details
 	// Wire name: 'channel'
-	Channel *Channel ``
+	Channel *Channel `json:"channel,omitempty"`
 	// Size of the clusters allocated for this warehouse. Increasing the size of
 	// a spark cluster allows you to run larger queries on it. If you want to
 	// increase the number of concurrent queries, please tune max_num_clusters.
@@ -3450,21 +3449,21 @@ type CreateWarehouseRequest struct {
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
 	// - 2X-Large - 3X-Large - 4X-Large
 	// Wire name: 'cluster_size'
-	ClusterSize string ``
+	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	// Wire name: 'creator_name'
-	CreatorName string ``
+	CreatorName string `json:"creator_name,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to false.
 	// Wire name: 'enable_photon'
-	EnablePhoton bool ``
+	EnablePhoton bool `json:"enable_photon,omitempty"`
 	// Configures whether the warehouse should use serverless compute
 	// Wire name: 'enable_serverless_compute'
-	EnableServerlessCompute bool ``
+	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	// Wire name: 'instance_profile_arn'
-	InstanceProfileArn string ``
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
@@ -3472,7 +3471,7 @@ type CreateWarehouseRequest struct {
 	//
 	// Defaults to min_clusters if unset.
 	// Wire name: 'max_num_clusters'
-	MaxNumClusters int ``
+	MaxNumClusters int `json:"max_num_clusters,omitempty"`
 	// Minimum number of available clusters that will be maintained for this SQL
 	// warehouse. Increasing this will ensure that a larger number of clusters
 	// are always running and therefore may reduce the cold start time for new
@@ -3483,26 +3482,26 @@ type CreateWarehouseRequest struct {
 	//
 	// Defaults to 1
 	// Wire name: 'min_num_clusters'
-	MinNumClusters int ``
+	MinNumClusters int `json:"min_num_clusters,omitempty"`
 	// Logical name for the cluster.
 	//
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 
 	// Wire name: 'spot_instance_policy'
-	SpotInstancePolicy SpotInstancePolicy ``
+	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
 	// Wire name: 'tags'
-	Tags *EndpointTags ``
+	Tags *EndpointTags `json:"tags,omitempty"`
 
 	// Wire name: 'warehouse_type'
-	WarehouseType   CreateWarehouseRequestWarehouseType ``
-	ForceSendFields []string                            `tf:"-"`
+	WarehouseType   CreateWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
+	ForceSendFields []string                            `json:"-" tf:"-"`
 }
 
 func (st CreateWarehouseRequest) MarshalJSON() ([]byte, error) {
@@ -3690,8 +3689,8 @@ func CreateWarehouseRequestWarehouseTypeFromPb(pb *sqlpb.CreateWarehouseRequestW
 type CreateWarehouseResponse struct {
 	// Id for the SQL warehouse. This value is unique across all SQL warehouses.
 	// Wire name: 'id'
-	Id              string   ``
-	ForceSendFields []string `tf:"-"`
+	Id              string   `json:"id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateWarehouseResponse) MarshalJSON() ([]byte, error) {
@@ -3748,22 +3747,22 @@ func CreateWarehouseResponseFromPb(pb *sqlpb.CreateWarehouseResponsePb) (*Create
 type CreateWidget struct {
 	// Dashboard ID returned by :method:dashboards/create.
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id"`
 
 	// Wire name: 'options'
-	Options WidgetOptions ``
+	Options WidgetOptions `json:"options"`
 	// If this is a textbox widget, the application displays this text. This
 	// field is ignored if the widget contains a visualization in the
 	// `visualization` field.
 	// Wire name: 'text'
-	Text string ``
+	Text string `json:"text,omitempty"`
 	// Query Vizualization ID returned by :method:queryvisualizations/create.
 	// Wire name: 'visualization_id'
-	VisualizationId string ``
+	VisualizationId string `json:"visualization_id,omitempty"`
 	// Width of a widget
 	// Wire name: 'width'
-	Width           int      ``
-	ForceSendFields []string `tf:"-"`
+	Width           int      `json:"width"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateWidget) MarshalJSON() ([]byte, error) {
@@ -3840,20 +3839,20 @@ func CreateWidgetFromPb(pb *sqlpb.CreateWidgetPb) (*CreateWidget, error) {
 type CronSchedule struct {
 	// Indicate whether this schedule is paused or not.
 	// Wire name: 'pause_status'
-	PauseStatus SchedulePauseStatus ``
+	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
 	// A cron expression using quartz syntax that specifies the schedule for
 	// this pipeline. Should use the quartz format described here:
 	// http://www.quartz-scheduler.org/documentation/quartz-2.1.7/tutorials/tutorial-lesson-06.html
 	// Wire name: 'quartz_cron_schedule'
-	QuartzCronSchedule string ``
+	QuartzCronSchedule string `json:"quartz_cron_schedule,omitempty"`
 	// A Java timezone id. The schedule will be resolved using this timezone.
 	// This will be combined with the quartz_cron_schedule to determine the
 	// schedule. See
 	// https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
 	// for details.
 	// Wire name: 'timezone_id'
-	TimezoneId      string   ``
-	ForceSendFields []string `tf:"-"`
+	TimezoneId      string   `json:"timezone_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CronSchedule) MarshalJSON() ([]byte, error) {
@@ -3928,66 +3927,66 @@ func CronScheduleFromPb(pb *sqlpb.CronSchedulePb) (*CronSchedule, error) {
 type Dashboard struct {
 	// Whether the authenticated user can edit the query definition.
 	// Wire name: 'can_edit'
-	CanEdit bool ``
+	CanEdit bool `json:"can_edit,omitempty"`
 	// Timestamp when this dashboard was created.
 	// Wire name: 'created_at'
-	CreatedAt string ``
+	CreatedAt string `json:"created_at,omitempty"`
 	// In the web application, query filters that share a name are coupled to a
 	// single selection box if this value is `true`.
 	// Wire name: 'dashboard_filters_enabled'
-	DashboardFiltersEnabled bool ``
+	DashboardFiltersEnabled bool `json:"dashboard_filters_enabled,omitempty"`
 	// The ID for this dashboard.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Indicates whether a dashboard is trashed. Trashed dashboards won't appear
 	// in list views. If this boolean is `true`, the `options` property for this
 	// dashboard includes a `moved_to_trash_at` timestamp. Items in trash are
 	// permanently deleted after 30 days.
 	// Wire name: 'is_archived'
-	IsArchived bool ``
+	IsArchived bool `json:"is_archived,omitempty"`
 	// Whether a dashboard is a draft. Draft dashboards only appear in list
 	// views for their owners.
 	// Wire name: 'is_draft'
-	IsDraft bool ``
+	IsDraft bool `json:"is_draft,omitempty"`
 	// Indicates whether this query object appears in the current user's
 	// favorites list. This flag determines whether the star icon for favorites
 	// is selected.
 	// Wire name: 'is_favorite'
-	IsFavorite bool ``
+	IsFavorite bool `json:"is_favorite,omitempty"`
 	// The title of the dashboard that appears in list views and at the top of
 	// the dashboard page.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 
 	// Wire name: 'options'
-	Options *DashboardOptions ``
+	Options *DashboardOptions `json:"options,omitempty"`
 	// The identifier of the workspace folder containing the object.
 	// Wire name: 'parent'
-	Parent string ``
+	Parent string `json:"parent,omitempty"`
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
 	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
 	// Wire name: 'permission_tier'
-	PermissionTier PermissionLevel ``
+	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// URL slug. Usually mirrors the query name with dashes (`-`) instead of
 	// spaces. Appears in the URL for this query.
 	// Wire name: 'slug'
-	Slug string ``
+	Slug string `json:"slug,omitempty"`
 
 	// Wire name: 'tags'
-	Tags []string ``
+	Tags []string `json:"tags,omitempty"`
 	// Timestamp when this dashboard was last updated.
 	// Wire name: 'updated_at'
-	UpdatedAt string ``
+	UpdatedAt string `json:"updated_at,omitempty"`
 
 	// Wire name: 'user'
-	User *User ``
+	User *User `json:"user,omitempty"`
 	// The ID of the user who owns the dashboard.
 	// Wire name: 'user_id'
-	UserId int ``
+	UserId int `json:"user_id,omitempty"`
 
 	// Wire name: 'widgets'
-	Widgets         []Widget ``
-	ForceSendFields []string `tf:"-"`
+	Widgets         []Widget `json:"widgets,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Dashboard) MarshalJSON() ([]byte, error) {
@@ -4132,22 +4131,20 @@ func DashboardFromPb(pb *sqlpb.DashboardPb) (*Dashboard, error) {
 }
 
 type DashboardEditContent struct {
-
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 	// The title of this dashboard that appears in list views and at the top of
 	// the dashboard page.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
 	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
 	// owner" behavior)
 	// Wire name: 'run_as_role'
-	RunAsRole RunAsRole ``
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
 	// Wire name: 'tags'
-	Tags            []string ``
-	ForceSendFields []string `tf:"-"`
+	Tags            []string `json:"tags,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DashboardEditContent) MarshalJSON() ([]byte, error) {
@@ -4224,8 +4221,8 @@ type DashboardOptions struct {
 	// the `is_archived` property is `true`. Trashed items are deleted after
 	// thirty days.
 	// Wire name: 'moved_to_trash_at'
-	MovedToTrashAt  string   ``
-	ForceSendFields []string `tf:"-"`
+	MovedToTrashAt  string   `json:"moved_to_trash_at,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DashboardOptions) MarshalJSON() ([]byte, error) {
@@ -4286,35 +4283,35 @@ type DataSource struct {
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// The string name of this data source / SQL warehouse as it appears in the
 	// Databricks SQL web application.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Reserved for internal use.
 	// Wire name: 'pause_reason'
-	PauseReason string ``
+	PauseReason string `json:"pause_reason,omitempty"`
 	// Reserved for internal use.
 	// Wire name: 'paused'
-	Paused int ``
+	Paused int `json:"paused,omitempty"`
 	// Reserved for internal use.
 	// Wire name: 'supports_auto_limit'
-	SupportsAutoLimit bool ``
+	SupportsAutoLimit bool `json:"supports_auto_limit,omitempty"`
 	// Reserved for internal use.
 	// Wire name: 'syntax'
-	Syntax string ``
+	Syntax string `json:"syntax,omitempty"`
 	// The type of data source. For SQL warehouses, this will be
 	// `databricks_internal`.
 	// Wire name: 'type'
-	Type string ``
+	Type string `json:"type,omitempty"`
 	// Reserved for internal use.
 	// Wire name: 'view_only'
-	ViewOnly bool ``
+	ViewOnly bool `json:"view_only,omitempty"`
 	// The ID of the associated SQL warehouse, if this data source is backed by
 	// a SQL warehouse.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DataSource) MarshalJSON() ([]byte, error) {
@@ -4443,10 +4440,10 @@ func DatePrecisionFromPb(pb *sqlpb.DatePrecisionPb) (*DatePrecision, error) {
 type DateRange struct {
 
 	// Wire name: 'end'
-	End string ``
+	End string `json:"end"`
 
 	// Wire name: 'start'
-	Start string ``
+	Start string `json:"start"`
 }
 
 func (st DateRange) MarshalJSON() ([]byte, error) {
@@ -4499,18 +4496,18 @@ func DateRangeFromPb(pb *sqlpb.DateRangePb) (*DateRange, error) {
 type DateRangeValue struct {
 	// Manually specified date-time range value.
 	// Wire name: 'date_range_value'
-	DateRangeValue *DateRange ``
+	DateRangeValue *DateRange `json:"date_range_value,omitempty"`
 	// Dynamic date-time range value based on current date-time.
 	// Wire name: 'dynamic_date_range_value'
-	DynamicDateRangeValue DateRangeValueDynamicDateRange ``
+	DynamicDateRangeValue DateRangeValueDynamicDateRange `json:"dynamic_date_range_value,omitempty"`
 	// Date-time precision to format the value into when the query is run.
 	// Defaults to DAY_PRECISION (YYYY-MM-DD).
 	// Wire name: 'precision'
-	Precision DatePrecision ``
+	Precision DatePrecision `json:"precision,omitempty"`
 
 	// Wire name: 'start_day_of_week'
-	StartDayOfWeek  int      ``
-	ForceSendFields []string `tf:"-"`
+	StartDayOfWeek  int      `json:"start_day_of_week,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DateRangeValue) MarshalJSON() ([]byte, error) {
@@ -4707,15 +4704,15 @@ func DateRangeValueDynamicDateRangeFromPb(pb *sqlpb.DateRangeValueDynamicDateRan
 type DateValue struct {
 	// Manually specified date-time value.
 	// Wire name: 'date_value'
-	DateValue string ``
+	DateValue string `json:"date_value,omitempty"`
 	// Dynamic date-time value based on current date-time.
 	// Wire name: 'dynamic_date_value'
-	DynamicDateValue DateValueDynamicDate ``
+	DynamicDateValue DateValueDynamicDate `json:"dynamic_date_value,omitempty"`
 	// Date-time precision to format the value into when the query is run.
 	// Defaults to DAY_PRECISION (YYYY-MM-DD).
 	// Wire name: 'precision'
-	Precision       DatePrecision ``
-	ForceSendFields []string      `tf:"-"`
+	Precision       DatePrecision `json:"precision,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st DateValue) MarshalJSON() ([]byte, error) {
@@ -4851,9 +4848,7 @@ func DateValueDynamicDateFromPb(pb *sqlpb.DateValueDynamicDatePb) (*DateValueDyn
 }
 
 type DeleteAlertsLegacyRequest struct {
-
-	// Wire name: 'alert_id'
-	AlertId string `tf:"-"`
+	AlertId string `json:"-" tf:"-"`
 }
 
 func (st DeleteAlertsLegacyRequest) MarshalJSON() ([]byte, error) {
@@ -4902,9 +4897,7 @@ func DeleteAlertsLegacyRequestFromPb(pb *sqlpb.DeleteAlertsLegacyRequestPb) (*De
 }
 
 type DeleteDashboardRequest struct {
-
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 }
 
 func (st DeleteDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -4954,8 +4947,7 @@ func DeleteDashboardRequestFromPb(pb *sqlpb.DeleteDashboardRequestPb) (*DeleteDa
 
 type DeleteDashboardWidgetRequest struct {
 	// Widget ID returned by :method:dashboardwidgets/create
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteDashboardWidgetRequest) MarshalJSON() ([]byte, error) {
@@ -5004,9 +4996,7 @@ func DeleteDashboardWidgetRequestFromPb(pb *sqlpb.DeleteDashboardWidgetRequestPb
 }
 
 type DeleteQueriesLegacyRequest struct {
-
-	// Wire name: 'query_id'
-	QueryId string `tf:"-"`
+	QueryId string `json:"-" tf:"-"`
 }
 
 func (st DeleteQueriesLegacyRequest) MarshalJSON() ([]byte, error) {
@@ -5056,8 +5046,7 @@ func DeleteQueriesLegacyRequestFromPb(pb *sqlpb.DeleteQueriesLegacyRequestPb) (*
 
 type DeleteQueryVisualizationsLegacyRequest struct {
 	// Widget ID returned by :method:queryvisualizations/create
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteQueryVisualizationsLegacyRequest) MarshalJSON() ([]byte, error) {
@@ -5106,9 +5095,7 @@ func DeleteQueryVisualizationsLegacyRequestFromPb(pb *sqlpb.DeleteQueryVisualiza
 }
 
 type DeleteVisualizationRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteVisualizationRequest) MarshalJSON() ([]byte, error) {
@@ -5158,8 +5145,7 @@ func DeleteVisualizationRequestFromPb(pb *sqlpb.DeleteVisualizationRequestPb) (*
 
 type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteWarehouseRequest) MarshalJSON() ([]byte, error) {
@@ -5261,24 +5247,22 @@ func DispositionFromPb(pb *sqlpb.DispositionPb) (*Disposition, error) {
 }
 
 type EditAlert struct {
-
-	// Wire name: 'alert_id'
-	AlertId string `tf:"-"`
+	AlertId string `json:"-" tf:"-"`
 	// Name of the alert.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Alert configuration options.
 	// Wire name: 'options'
-	Options AlertOptions ``
+	Options AlertOptions `json:"options"`
 	// Query ID.
 	// Wire name: 'query_id'
-	QueryId string ``
+	QueryId string `json:"query_id"`
 	// Number of seconds after being triggered before the alert rearms itself
 	// and can be triggered again. If `null`, alert will never be triggered
 	// again.
 	// Wire name: 'rearm'
-	Rearm           int      ``
-	ForceSendFields []string `tf:"-"`
+	Rearm           int      `json:"rearm,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EditAlert) MarshalJSON() ([]byte, error) {
@@ -5360,10 +5344,10 @@ type EditWarehouseRequest struct {
 	//
 	// Defaults to 120 mins
 	// Wire name: 'auto_stop_mins'
-	AutoStopMins int ``
+	AutoStopMins int `json:"auto_stop_mins,omitempty"`
 	// Channel Details
 	// Wire name: 'channel'
-	Channel *Channel ``
+	Channel *Channel `json:"channel,omitempty"`
 	// Size of the clusters allocated for this warehouse. Increasing the size of
 	// a spark cluster allows you to run larger queries on it. If you want to
 	// increase the number of concurrent queries, please tune max_num_clusters.
@@ -5371,24 +5355,23 @@ type EditWarehouseRequest struct {
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
 	// - 2X-Large - 3X-Large - 4X-Large
 	// Wire name: 'cluster_size'
-	ClusterSize string ``
+	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	// Wire name: 'creator_name'
-	CreatorName string ``
+	CreatorName string `json:"creator_name,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to false.
 	// Wire name: 'enable_photon'
-	EnablePhoton bool ``
+	EnablePhoton bool `json:"enable_photon,omitempty"`
 	// Configures whether the warehouse should use serverless compute.
 	// Wire name: 'enable_serverless_compute'
-	EnableServerlessCompute bool ``
+	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// Required. Id of the warehouse to configure.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	// Wire name: 'instance_profile_arn'
-	InstanceProfileArn string ``
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
@@ -5396,7 +5379,7 @@ type EditWarehouseRequest struct {
 	//
 	// Defaults to min_clusters if unset.
 	// Wire name: 'max_num_clusters'
-	MaxNumClusters int ``
+	MaxNumClusters int `json:"max_num_clusters,omitempty"`
 	// Minimum number of available clusters that will be maintained for this SQL
 	// warehouse. Increasing this will ensure that a larger number of clusters
 	// are always running and therefore may reduce the cold start time for new
@@ -5407,26 +5390,26 @@ type EditWarehouseRequest struct {
 	//
 	// Defaults to 1
 	// Wire name: 'min_num_clusters'
-	MinNumClusters int ``
+	MinNumClusters int `json:"min_num_clusters,omitempty"`
 	// Logical name for the cluster.
 	//
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 
 	// Wire name: 'spot_instance_policy'
-	SpotInstancePolicy SpotInstancePolicy ``
+	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
 	// Wire name: 'tags'
-	Tags *EndpointTags ``
+	Tags *EndpointTags `json:"tags,omitempty"`
 
 	// Wire name: 'warehouse_type'
-	WarehouseType   EditWarehouseRequestWarehouseType ``
-	ForceSendFields []string                          `tf:"-"`
+	WarehouseType   EditWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
+	ForceSendFields []string                          `json:"-" tf:"-"`
 }
 
 func (st EditWarehouseRequest) MarshalJSON() ([]byte, error) {
@@ -5616,11 +5599,11 @@ func EditWarehouseRequestWarehouseTypeFromPb(pb *sqlpb.EditWarehouseRequestWareh
 type EndpointConfPair struct {
 
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EndpointConfPair) MarshalJSON() ([]byte, error) {
@@ -5679,22 +5662,22 @@ func EndpointConfPairFromPb(pb *sqlpb.EndpointConfPairPb) (*EndpointConfPair, er
 type EndpointHealth struct {
 	// Details about errors that are causing current degraded/failed status.
 	// Wire name: 'details'
-	Details string ``
+	Details string `json:"details,omitempty"`
 	// The reason for failure to bring up clusters for this warehouse. This is
 	// available when status is 'FAILED' and sometimes when it is DEGRADED.
 	// Wire name: 'failure_reason'
-	FailureReason *TerminationReason ``
+	FailureReason *TerminationReason `json:"failure_reason,omitempty"`
 	// Deprecated. split into summary and details for security
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 
 	// Wire name: 'status'
-	Status Status ``
+	Status Status `json:"status,omitempty"`
 	// A short summary of the health status in case of degraded/failed
 	// warehouses.
 	// Wire name: 'summary'
-	Summary         string   ``
-	ForceSendFields []string `tf:"-"`
+	Summary         string   `json:"summary,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EndpointHealth) MarshalJSON() ([]byte, error) {
@@ -5788,10 +5771,10 @@ type EndpointInfo struct {
 	//
 	// Defaults to 120 mins
 	// Wire name: 'auto_stop_mins'
-	AutoStopMins int ``
+	AutoStopMins int `json:"auto_stop_mins,omitempty"`
 	// Channel Details
 	// Wire name: 'channel'
-	Channel *Channel ``
+	Channel *Channel `json:"channel,omitempty"`
 	// Size of the clusters allocated for this warehouse. Increasing the size of
 	// a spark cluster allows you to run larger queries on it. If you want to
 	// increase the number of concurrent queries, please tune max_num_clusters.
@@ -5799,31 +5782,31 @@ type EndpointInfo struct {
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
 	// - 2X-Large - 3X-Large - 4X-Large
 	// Wire name: 'cluster_size'
-	ClusterSize string ``
+	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	// Wire name: 'creator_name'
-	CreatorName string ``
+	CreatorName string `json:"creator_name,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to false.
 	// Wire name: 'enable_photon'
-	EnablePhoton bool ``
+	EnablePhoton bool `json:"enable_photon,omitempty"`
 	// Configures whether the warehouse should use serverless compute
 	// Wire name: 'enable_serverless_compute'
-	EnableServerlessCompute bool ``
+	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// Optional health status. Assume the warehouse is healthy if this field is
 	// not set.
 	// Wire name: 'health'
-	Health *EndpointHealth ``
+	Health *EndpointHealth `json:"health,omitempty"`
 	// unique identifier for warehouse
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	// Wire name: 'instance_profile_arn'
-	InstanceProfileArn string ``
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// the jdbc connection string for this warehouse
 	// Wire name: 'jdbc_url'
-	JdbcUrl string ``
+	JdbcUrl string `json:"jdbc_url,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
@@ -5831,7 +5814,7 @@ type EndpointInfo struct {
 	//
 	// Defaults to min_clusters if unset.
 	// Wire name: 'max_num_clusters'
-	MaxNumClusters int ``
+	MaxNumClusters int `json:"max_num_clusters,omitempty"`
 	// Minimum number of available clusters that will be maintained for this SQL
 	// warehouse. Increasing this will ensure that a larger number of clusters
 	// are always running and therefore may reduce the cold start time for new
@@ -5842,40 +5825,40 @@ type EndpointInfo struct {
 	//
 	// Defaults to 1
 	// Wire name: 'min_num_clusters'
-	MinNumClusters int ``
+	MinNumClusters int `json:"min_num_clusters,omitempty"`
 	// Logical name for the cluster.
 	//
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Deprecated. current number of active sessions for the warehouse
 	// Wire name: 'num_active_sessions'
-	NumActiveSessions int64 ``
+	NumActiveSessions int64 `json:"num_active_sessions,omitempty"`
 	// current number of clusters running for the service
 	// Wire name: 'num_clusters'
-	NumClusters int ``
+	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the SQL warehouse
 	// Wire name: 'odbc_params'
-	OdbcParams *OdbcParams ``
+	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
 
 	// Wire name: 'spot_instance_policy'
-	SpotInstancePolicy SpotInstancePolicy ``
+	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 
 	// Wire name: 'state'
-	State State ``
+	State State `json:"state,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
 	// Wire name: 'tags'
-	Tags *EndpointTags ``
+	Tags *EndpointTags `json:"tags,omitempty"`
 	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
 	// Wire name: 'warehouse_type'
-	WarehouseType   EndpointInfoWarehouseType ``
-	ForceSendFields []string                  `tf:"-"`
+	WarehouseType   EndpointInfoWarehouseType `json:"warehouse_type,omitempty"`
+	ForceSendFields []string                  `json:"-" tf:"-"`
 }
 
 func (st EndpointInfo) MarshalJSON() ([]byte, error) {
@@ -6113,11 +6096,11 @@ func EndpointInfoWarehouseTypeFromPb(pb *sqlpb.EndpointInfoWarehouseTypePb) (*En
 type EndpointTagPair struct {
 
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EndpointTagPair) MarshalJSON() ([]byte, error) {
@@ -6176,7 +6159,7 @@ func EndpointTagPairFromPb(pb *sqlpb.EndpointTagPairPb) (*EndpointTagPair, error
 type EndpointTags struct {
 
 	// Wire name: 'custom_tags'
-	CustomTags []EndpointTagPair ``
+	CustomTags []EndpointTagPair `json:"custom_tags,omitempty"`
 }
 
 func (st EndpointTags) MarshalJSON() ([]byte, error) {
@@ -6249,14 +6232,14 @@ func EndpointTagsFromPb(pb *sqlpb.EndpointTagsPb) (*EndpointTags, error) {
 type EnumValue struct {
 	// List of valid query parameter values, newline delimited.
 	// Wire name: 'enum_options'
-	EnumOptions string ``
+	EnumOptions string `json:"enum_options,omitempty"`
 	// If specified, allows multiple values to be selected for this parameter.
 	// Wire name: 'multi_values_options'
-	MultiValuesOptions *MultiValuesOptions ``
+	MultiValuesOptions *MultiValuesOptions `json:"multi_values_options,omitempty"`
 	// List of selected query parameter values.
 	// Wire name: 'values'
-	Values          []string ``
-	ForceSendFields []string `tf:"-"`
+	Values          []string `json:"values,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EnumValue) MarshalJSON() ([]byte, error) {
@@ -6334,16 +6317,16 @@ type ExecuteStatementRequest struct {
 	// `EXTERNAL_LINKS` disposition, a default `byte_limit` of 100 GiB is
 	// applied if `byte_limit` is not explcitly set.
 	// Wire name: 'byte_limit'
-	ByteLimit int64 ``
+	ByteLimit int64 `json:"byte_limit,omitempty"`
 	// Sets default catalog for statement execution, similar to [`USE CATALOG`]
 	// in SQL.
 	//
 	// [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
 	// Wire name: 'catalog'
-	Catalog string ``
+	Catalog string `json:"catalog,omitempty"`
 
 	// Wire name: 'disposition'
-	Disposition Disposition ``
+	Disposition Disposition `json:"disposition,omitempty"`
 	// Statement execution supports three result formats: `JSON_ARRAY`
 	// (default), `ARROW_STREAM`, and `CSV`.
 	//
@@ -6381,7 +6364,7 @@ type ExecuteStatementRequest struct {
 	// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
 	// [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
 	// Wire name: 'format'
-	Format Format ``
+	Format Format `json:"format,omitempty"`
 	// When `wait_timeout > 0s`, the call will block up to the specified time.
 	// If the statement execution doesn't finish within this time,
 	// `on_wait_timeout` determines whether the execution should continue or be
@@ -6391,7 +6374,7 @@ type ExecuteStatementRequest struct {
 	// `CANCEL`, the statement execution is canceled and the call returns with a
 	// `CANCELED` state.
 	// Wire name: 'on_wait_timeout'
-	OnWaitTimeout ExecuteStatementRequestOnWaitTimeout ``
+	OnWaitTimeout ExecuteStatementRequestOnWaitTimeout `json:"on_wait_timeout,omitempty"`
 	// A list of parameters to pass into a SQL statement containing parameter
 	// markers. A parameter consists of a name, a value, and optionally a type.
 	// To represent a NULL value, the `value` field may be omitted or set to
@@ -6423,22 +6406,22 @@ type ExecuteStatementRequest struct {
 	// [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
 	// [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
 	// Wire name: 'parameters'
-	Parameters []StatementParameterListItem ``
+	Parameters []StatementParameterListItem `json:"parameters,omitempty"`
 	// Applies the given row limit to the statement's result set, but unlike the
 	// `LIMIT` clause in SQL, it also sets the `truncated` field in the response
 	// to indicate whether the result was trimmed due to the limit or not.
 	// Wire name: 'row_limit'
-	RowLimit int64 ``
+	RowLimit int64 `json:"row_limit,omitempty"`
 	// Sets default schema for statement execution, similar to [`USE SCHEMA`] in
 	// SQL.
 	//
 	// [`USE SCHEMA`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-schema.html
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 	// The SQL statement to execute. The statement can optionally be
 	// parameterized, see `parameters`. The maximum query text size is 16 MiB.
 	// Wire name: 'statement'
-	Statement string ``
+	Statement string `json:"statement"`
 	// The time in seconds the call will wait for the statement's result set as
 	// `Ns`, where `N` can be set to 0 or to a value between 5 and 50.
 	//
@@ -6454,14 +6437,14 @@ type ExecuteStatementRequest struct {
 	// error). If the statement takes longer to execute, `on_wait_timeout`
 	// determines what should happen after the timeout is reached.
 	// Wire name: 'wait_timeout'
-	WaitTimeout string ``
+	WaitTimeout string `json:"wait_timeout,omitempty"`
 	// Warehouse upon which to execute a statement. See also [What are SQL
 	// warehouses?]
 	//
 	// [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExecuteStatementRequest) MarshalJSON() ([]byte, error) {
@@ -6657,43 +6640,43 @@ type ExternalLink struct {
 	// The number of bytes in the result chunk. This field is not available when
 	// using `INLINE` disposition.
 	// Wire name: 'byte_count'
-	ByteCount int64 ``
+	ByteCount int64 `json:"byte_count,omitempty"`
 	// The position within the sequence of result set chunks.
 	// Wire name: 'chunk_index'
-	ChunkIndex int ``
+	ChunkIndex int `json:"chunk_index,omitempty"`
 	// Indicates the date-time that the given external link will expire and
 	// becomes invalid, after which point a new `external_link` must be
 	// requested.
 	// Wire name: 'expiration'
-	Expiration string ``
+	Expiration string `json:"expiration,omitempty"`
 
 	// Wire name: 'external_link'
-	ExternalLink string ``
+	ExternalLink string `json:"external_link,omitempty"`
 	// HTTP headers that must be included with a GET request to the
 	// `external_link`. Each header is provided as a key-value pair. Headers are
 	// typically used to pass a decryption key to the external service. The
 	// values of these headers should be considered sensitive and the client
 	// should not expose these values in a log.
 	// Wire name: 'http_headers'
-	HttpHeaders map[string]string ``
+	HttpHeaders map[string]string `json:"http_headers,omitempty"`
 	// When fetching, provides the `chunk_index` for the _next_ chunk. If
 	// absent, indicates there are no more chunks. The next chunk can be fetched
 	// with a :method:statementexecution/getStatementResultChunkN request.
 	// Wire name: 'next_chunk_index'
-	NextChunkIndex int ``
+	NextChunkIndex int `json:"next_chunk_index,omitempty"`
 	// When fetching, provides a link to fetch the _next_ chunk. If absent,
 	// indicates there are no more chunks. This link is an absolute `path` to be
 	// joined with your `$DATABRICKS_HOST`, and should be treated as an opaque
 	// link. This is an alternative to using `next_chunk_index`.
 	// Wire name: 'next_chunk_internal_link'
-	NextChunkInternalLink string ``
+	NextChunkInternalLink string `json:"next_chunk_internal_link,omitempty"`
 	// The number of rows within the result chunk.
 	// Wire name: 'row_count'
-	RowCount int64 ``
+	RowCount int64 `json:"row_count,omitempty"`
 	// The starting row offset within the result set.
 	// Wire name: 'row_offset'
-	RowOffset       int64    ``
-	ForceSendFields []string `tf:"-"`
+	RowOffset       int64    `json:"row_offset,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExternalLink) MarshalJSON() ([]byte, error) {
@@ -6766,26 +6749,26 @@ func ExternalLinkFromPb(pb *sqlpb.ExternalLinkPb) (*ExternalLink, error) {
 type ExternalQuerySource struct {
 	// The canonical identifier for this SQL alert
 	// Wire name: 'alert_id'
-	AlertId string ``
+	AlertId string `json:"alert_id,omitempty"`
 	// The canonical identifier for this Lakeview dashboard
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id,omitempty"`
 	// The canonical identifier for this Genie space
 	// Wire name: 'genie_space_id'
-	GenieSpaceId string ``
+	GenieSpaceId string `json:"genie_space_id,omitempty"`
 
 	// Wire name: 'job_info'
-	JobInfo *ExternalQuerySourceJobInfo ``
+	JobInfo *ExternalQuerySourceJobInfo `json:"job_info,omitempty"`
 	// The canonical identifier for this legacy dashboard
 	// Wire name: 'legacy_dashboard_id'
-	LegacyDashboardId string ``
+	LegacyDashboardId string `json:"legacy_dashboard_id,omitempty"`
 	// The canonical identifier for this notebook
 	// Wire name: 'notebook_id'
-	NotebookId string ``
+	NotebookId string `json:"notebook_id,omitempty"`
 	// The canonical identifier for this SQL query
 	// Wire name: 'sql_query_id'
-	SqlQueryId      string   ``
-	ForceSendFields []string `tf:"-"`
+	SqlQueryId      string   `json:"sql_query_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExternalQuerySource) MarshalJSON() ([]byte, error) {
@@ -6866,15 +6849,15 @@ func ExternalQuerySourceFromPb(pb *sqlpb.ExternalQuerySourcePb) (*ExternalQueryS
 type ExternalQuerySourceJobInfo struct {
 	// The canonical identifier for this job.
 	// Wire name: 'job_id'
-	JobId string ``
+	JobId string `json:"job_id,omitempty"`
 	// The canonical identifier of the run. This ID is unique across all runs of
 	// all jobs.
 	// Wire name: 'job_run_id'
-	JobRunId string ``
+	JobRunId string `json:"job_run_id,omitempty"`
 	// The canonical identifier of the task run.
 	// Wire name: 'job_task_run_id'
-	JobTaskRunId    string   ``
-	ForceSendFields []string `tf:"-"`
+	JobTaskRunId    string   `json:"job_task_run_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExternalQuerySourceJobInfo) MarshalJSON() ([]byte, error) {
@@ -6989,9 +6972,7 @@ func FormatFromPb(pb *sqlpb.FormatPb) (*Format, error) {
 }
 
 type GetAlertRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetAlertRequest) MarshalJSON() ([]byte, error) {
@@ -7040,9 +7021,7 @@ func GetAlertRequestFromPb(pb *sqlpb.GetAlertRequestPb) (*GetAlertRequest, error
 }
 
 type GetAlertV2Request struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetAlertV2Request) MarshalJSON() ([]byte, error) {
@@ -7091,9 +7070,7 @@ func GetAlertV2RequestFromPb(pb *sqlpb.GetAlertV2RequestPb) (*GetAlertV2Request,
 }
 
 type GetAlertsLegacyRequest struct {
-
-	// Wire name: 'alert_id'
-	AlertId string `tf:"-"`
+	AlertId string `json:"-" tf:"-"`
 }
 
 func (st GetAlertsLegacyRequest) MarshalJSON() ([]byte, error) {
@@ -7142,9 +7119,7 @@ func GetAlertsLegacyRequestFromPb(pb *sqlpb.GetAlertsLegacyRequestPb) (*GetAlert
 }
 
 type GetDashboardRequest struct {
-
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 }
 
 func (st GetDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -7194,11 +7169,9 @@ func GetDashboardRequestFromPb(pb *sqlpb.GetDashboardRequestPb) (*GetDashboardRe
 
 type GetDbsqlPermissionRequest struct {
 	// Object ID. An ACL is returned for the object with this UUID.
-	// Wire name: 'objectId'
-	ObjectId string `tf:"-"`
+	ObjectId string `json:"-" tf:"-"`
 	// The type of object permissions to check.
-	// Wire name: 'objectType'
-	ObjectType ObjectTypePlural `tf:"-"`
+	ObjectType ObjectTypePlural `json:"-" tf:"-"`
 }
 
 func (st GetDbsqlPermissionRequest) MarshalJSON() ([]byte, error) {
@@ -7261,9 +7234,7 @@ func GetDbsqlPermissionRequestFromPb(pb *sqlpb.GetDbsqlPermissionRequestPb) (*Ge
 }
 
 type GetQueriesLegacyRequest struct {
-
-	// Wire name: 'query_id'
-	QueryId string `tf:"-"`
+	QueryId string `json:"-" tf:"-"`
 }
 
 func (st GetQueriesLegacyRequest) MarshalJSON() ([]byte, error) {
@@ -7312,9 +7283,7 @@ func GetQueriesLegacyRequestFromPb(pb *sqlpb.GetQueriesLegacyRequestPb) (*GetQue
 }
 
 type GetQueryRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetQueryRequest) MarshalJSON() ([]byte, error) {
@@ -7365,14 +7334,14 @@ func GetQueryRequestFromPb(pb *sqlpb.GetQueryRequestPb) (*GetQueryRequest, error
 type GetResponse struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []AccessControl ``
+	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
 	// An object's type and UUID, separated by a forward slash (/) character.
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 	// A singular noun object type.
 	// Wire name: 'object_type'
-	ObjectType      ObjectType ``
-	ForceSendFields []string   `tf:"-"`
+	ObjectType      ObjectType `json:"object_type,omitempty"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
 func (st GetResponse) MarshalJSON() ([]byte, error) {
@@ -7467,8 +7436,7 @@ func GetResponseFromPb(pb *sqlpb.GetResponsePb) (*GetResponse, error) {
 type GetStatementRequest struct {
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
-	// Wire name: 'statement_id'
-	StatementId string `tf:"-"`
+	StatementId string `json:"-" tf:"-"`
 }
 
 func (st GetStatementRequest) MarshalJSON() ([]byte, error) {
@@ -7517,13 +7485,10 @@ func GetStatementRequestFromPb(pb *sqlpb.GetStatementRequestPb) (*GetStatementRe
 }
 
 type GetStatementResultChunkNRequest struct {
-
-	// Wire name: 'chunk_index'
-	ChunkIndex int `tf:"-"`
+	ChunkIndex int `json:"-" tf:"-"`
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
-	// Wire name: 'statement_id'
-	StatementId string `tf:"-"`
+	StatementId string `json:"-" tf:"-"`
 }
 
 func (st GetStatementResultChunkNRequest) MarshalJSON() ([]byte, error) {
@@ -7575,8 +7540,7 @@ func GetStatementResultChunkNRequestFromPb(pb *sqlpb.GetStatementResultChunkNReq
 
 type GetWarehousePermissionLevelsRequest struct {
 	// The SQL warehouse for which to get or manage permissions.
-	// Wire name: 'warehouse_id'
-	WarehouseId string `tf:"-"`
+	WarehouseId string `json:"-" tf:"-"`
 }
 
 func (st GetWarehousePermissionLevelsRequest) MarshalJSON() ([]byte, error) {
@@ -7627,7 +7591,7 @@ func GetWarehousePermissionLevelsRequestFromPb(pb *sqlpb.GetWarehousePermissionL
 type GetWarehousePermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []WarehousePermissionsDescription ``
+	PermissionLevels []WarehousePermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetWarehousePermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -7699,8 +7663,7 @@ func GetWarehousePermissionLevelsResponseFromPb(pb *sqlpb.GetWarehousePermission
 
 type GetWarehousePermissionsRequest struct {
 	// The SQL warehouse for which to get or manage permissions.
-	// Wire name: 'warehouse_id'
-	WarehouseId string `tf:"-"`
+	WarehouseId string `json:"-" tf:"-"`
 }
 
 func (st GetWarehousePermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -7750,8 +7713,7 @@ func GetWarehousePermissionsRequestFromPb(pb *sqlpb.GetWarehousePermissionsReque
 
 type GetWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetWarehouseRequest) MarshalJSON() ([]byte, error) {
@@ -7807,10 +7769,10 @@ type GetWarehouseResponse struct {
 	//
 	// Defaults to 120 mins
 	// Wire name: 'auto_stop_mins'
-	AutoStopMins int ``
+	AutoStopMins int `json:"auto_stop_mins,omitempty"`
 	// Channel Details
 	// Wire name: 'channel'
-	Channel *Channel ``
+	Channel *Channel `json:"channel,omitempty"`
 	// Size of the clusters allocated for this warehouse. Increasing the size of
 	// a spark cluster allows you to run larger queries on it. If you want to
 	// increase the number of concurrent queries, please tune max_num_clusters.
@@ -7818,31 +7780,31 @@ type GetWarehouseResponse struct {
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
 	// - 2X-Large - 3X-Large - 4X-Large
 	// Wire name: 'cluster_size'
-	ClusterSize string ``
+	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	// Wire name: 'creator_name'
-	CreatorName string ``
+	CreatorName string `json:"creator_name,omitempty"`
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to false.
 	// Wire name: 'enable_photon'
-	EnablePhoton bool ``
+	EnablePhoton bool `json:"enable_photon,omitempty"`
 	// Configures whether the warehouse should use serverless compute
 	// Wire name: 'enable_serverless_compute'
-	EnableServerlessCompute bool ``
+	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// Optional health status. Assume the warehouse is healthy if this field is
 	// not set.
 	// Wire name: 'health'
-	Health *EndpointHealth ``
+	Health *EndpointHealth `json:"health,omitempty"`
 	// unique identifier for warehouse
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
 	// Wire name: 'instance_profile_arn'
-	InstanceProfileArn string ``
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// the jdbc connection string for this warehouse
 	// Wire name: 'jdbc_url'
-	JdbcUrl string ``
+	JdbcUrl string `json:"jdbc_url,omitempty"`
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
@@ -7850,7 +7812,7 @@ type GetWarehouseResponse struct {
 	//
 	// Defaults to min_clusters if unset.
 	// Wire name: 'max_num_clusters'
-	MaxNumClusters int ``
+	MaxNumClusters int `json:"max_num_clusters,omitempty"`
 	// Minimum number of available clusters that will be maintained for this SQL
 	// warehouse. Increasing this will ensure that a larger number of clusters
 	// are always running and therefore may reduce the cold start time for new
@@ -7861,38 +7823,38 @@ type GetWarehouseResponse struct {
 	//
 	// Defaults to 1
 	// Wire name: 'min_num_clusters'
-	MinNumClusters int ``
+	MinNumClusters int `json:"min_num_clusters,omitempty"`
 	// Logical name for the cluster.
 	//
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Deprecated. current number of active sessions for the warehouse
 	// Wire name: 'num_active_sessions'
-	NumActiveSessions int64 ``
+	NumActiveSessions int64 `json:"num_active_sessions,omitempty"`
 	// current number of clusters running for the service
 	// Wire name: 'num_clusters'
-	NumClusters int ``
+	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the SQL warehouse
 	// Wire name: 'odbc_params'
-	OdbcParams *OdbcParams ``
+	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
 
 	// Wire name: 'spot_instance_policy'
-	SpotInstancePolicy SpotInstancePolicy ``
+	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 
 	// Wire name: 'state'
-	State State ``
+	State State `json:"state,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
 	// Wire name: 'tags'
-	Tags *EndpointTags ``
+	Tags *EndpointTags `json:"tags,omitempty"`
 
 	// Wire name: 'warehouse_type'
-	WarehouseType   GetWarehouseResponseWarehouseType ``
-	ForceSendFields []string                          `tf:"-"`
+	WarehouseType   GetWarehouseResponseWarehouseType `json:"warehouse_type,omitempty"`
+	ForceSendFields []string                          `json:"-" tf:"-"`
 }
 
 func (st GetWarehouseResponse) MarshalJSON() ([]byte, error) {
@@ -8130,14 +8092,14 @@ func GetWarehouseResponseWarehouseTypeFromPb(pb *sqlpb.GetWarehouseResponseWareh
 type GetWorkspaceWarehouseConfigResponse struct {
 	// Optional: Channel selection details
 	// Wire name: 'channel'
-	Channel *Channel ``
+	Channel *Channel `json:"channel,omitempty"`
 	// Deprecated: Use sql_configuration_parameters
 	// Wire name: 'config_param'
-	ConfigParam *RepeatedEndpointConfPairs ``
+	ConfigParam *RepeatedEndpointConfPairs `json:"config_param,omitempty"`
 	// Spark confs for external hive metastore configuration JSON serialized
 	// size must be less than <= 512K
 	// Wire name: 'data_access_config'
-	DataAccessConfig []EndpointConfPair ``
+	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
 	// List of Warehouse Types allowed in this workspace (limits allowed value
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types
 	// cannot be disabled, they don't need to be specified in
@@ -8145,24 +8107,24 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	// warehouses to be converted to another type. Used by frontend to save
 	// specific type availability in the warehouse create and edit form UI.
 	// Wire name: 'enabled_warehouse_types'
-	EnabledWarehouseTypes []WarehouseTypePair ``
+	EnabledWarehouseTypes []WarehouseTypePair `json:"enabled_warehouse_types,omitempty"`
 	// Deprecated: Use sql_configuration_parameters
 	// Wire name: 'global_param'
-	GlobalParam *RepeatedEndpointConfPairs ``
+	GlobalParam *RepeatedEndpointConfPairs `json:"global_param,omitempty"`
 	// GCP only: Google Service Account used to pass to cluster to access Google
 	// Cloud Storage
 	// Wire name: 'google_service_account'
-	GoogleServiceAccount string ``
+	GoogleServiceAccount string `json:"google_service_account,omitempty"`
 	// AWS Only: Instance profile used to pass IAM role to the cluster
 	// Wire name: 'instance_profile_arn'
-	InstanceProfileArn string ``
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Security policy for warehouses
 	// Wire name: 'security_policy'
-	SecurityPolicy GetWorkspaceWarehouseConfigResponseSecurityPolicy ``
+	SecurityPolicy GetWorkspaceWarehouseConfigResponseSecurityPolicy `json:"security_policy,omitempty"`
 	// SQL configuration parameters
 	// Wire name: 'sql_configuration_parameters'
-	SqlConfigurationParameters *RepeatedEndpointConfPairs ``
-	ForceSendFields            []string                   `tf:"-"`
+	SqlConfigurationParameters *RepeatedEndpointConfPairs `json:"sql_configuration_parameters,omitempty"`
+	ForceSendFields            []string                   `json:"-" tf:"-"`
 }
 
 func (st GetWorkspaceWarehouseConfigResponse) MarshalJSON() ([]byte, error) {
@@ -8396,42 +8358,42 @@ func GetWorkspaceWarehouseConfigResponseSecurityPolicyFromPb(pb *sqlpb.GetWorksp
 type LegacyAlert struct {
 	// Timestamp when the alert was created.
 	// Wire name: 'created_at'
-	CreatedAt string ``
+	CreatedAt string `json:"created_at,omitempty"`
 	// Alert ID.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Timestamp when the alert was last triggered.
 	// Wire name: 'last_triggered_at'
-	LastTriggeredAt string ``
+	LastTriggeredAt string `json:"last_triggered_at,omitempty"`
 	// Name of the alert.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Alert configuration options.
 	// Wire name: 'options'
-	Options *AlertOptions ``
+	Options *AlertOptions `json:"options,omitempty"`
 	// The identifier of the workspace folder containing the object.
 	// Wire name: 'parent'
-	Parent string ``
+	Parent string `json:"parent,omitempty"`
 
 	// Wire name: 'query'
-	Query *AlertQuery ``
+	Query *AlertQuery `json:"query,omitempty"`
 	// Number of seconds after being triggered before the alert rearms itself
 	// and can be triggered again. If `null`, alert will never be triggered
 	// again.
 	// Wire name: 'rearm'
-	Rearm int ``
+	Rearm int `json:"rearm,omitempty"`
 	// State of the alert. Possible values are: `unknown` (yet to be evaluated),
 	// `triggered` (evaluated and fulfilled trigger conditions), or `ok`
 	// (evaluated and did not fulfill trigger conditions).
 	// Wire name: 'state'
-	State LegacyAlertState ``
+	State LegacyAlertState `json:"state,omitempty"`
 	// Timestamp when the alert was last updated.
 	// Wire name: 'updated_at'
-	UpdatedAt string ``
+	UpdatedAt string `json:"updated_at,omitempty"`
 
 	// Wire name: 'user'
-	User            *User    ``
-	ForceSendFields []string `tf:"-"`
+	User            *User    `json:"user,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st LegacyAlert) MarshalJSON() ([]byte, error) {
@@ -8613,96 +8575,96 @@ type LegacyQuery struct {
 	// Describes whether the authenticated user is allowed to edit the
 	// definition of this query.
 	// Wire name: 'can_edit'
-	CanEdit bool ``
+	CanEdit bool `json:"can_edit,omitempty"`
 	// The timestamp when this query was created.
 	// Wire name: 'created_at'
-	CreatedAt string ``
+	CreatedAt string `json:"created_at,omitempty"`
 	// Data source ID maps to the ID of the data source used by the resource and
 	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	// Wire name: 'data_source_id'
-	DataSourceId string ``
+	DataSourceId string `json:"data_source_id,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Query ID.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Indicates whether the query is trashed. Trashed queries can't be used in
 	// dashboards, or appear in search results. If this boolean is `true`, the
 	// `options` property for this query includes a `moved_to_trash_at`
 	// timestamp. Trashed queries are permanently deleted after 30 days.
 	// Wire name: 'is_archived'
-	IsArchived bool ``
+	IsArchived bool `json:"is_archived,omitempty"`
 	// Whether the query is a draft. Draft queries only appear in list views for
 	// their owners. Visualizations from draft queries cannot appear on
 	// dashboards.
 	// Wire name: 'is_draft'
-	IsDraft bool ``
+	IsDraft bool `json:"is_draft,omitempty"`
 	// Whether this query object appears in the current user's favorites list.
 	// This flag determines whether the star icon for favorites is selected.
 	// Wire name: 'is_favorite'
-	IsFavorite bool ``
+	IsFavorite bool `json:"is_favorite,omitempty"`
 	// Text parameter types are not safe from SQL injection for all types of
 	// data source. Set this Boolean parameter to `true` if a query either does
 	// not use any text type parameters or uses a data source type where text
 	// type parameters are handled safely.
 	// Wire name: 'is_safe'
-	IsSafe bool ``
+	IsSafe bool `json:"is_safe,omitempty"`
 
 	// Wire name: 'last_modified_by'
-	LastModifiedBy *User ``
+	LastModifiedBy *User `json:"last_modified_by,omitempty"`
 	// The ID of the user who last saved changes to this query.
 	// Wire name: 'last_modified_by_id'
-	LastModifiedById int ``
+	LastModifiedById int `json:"last_modified_by_id,omitempty"`
 	// If there is a cached result for this query and user, this field includes
 	// the query result ID. If this query uses parameters, this field is always
 	// null.
 	// Wire name: 'latest_query_data_id'
-	LatestQueryDataId string ``
+	LatestQueryDataId string `json:"latest_query_data_id,omitempty"`
 	// The title of this query that appears in list views, widget headings, and
 	// on the query page.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 
 	// Wire name: 'options'
-	Options *QueryOptions ``
+	Options *QueryOptions `json:"options,omitempty"`
 	// The identifier of the workspace folder containing the object.
 	// Wire name: 'parent'
-	Parent string ``
+	Parent string `json:"parent,omitempty"`
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
 	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
 	// Wire name: 'permission_tier'
-	PermissionTier PermissionLevel ``
+	PermissionTier PermissionLevel `json:"permission_tier,omitempty"`
 	// The text of the query to be run.
 	// Wire name: 'query'
-	Query string ``
+	Query string `json:"query,omitempty"`
 	// A SHA-256 hash of the query text along with the authenticated user ID.
 	// Wire name: 'query_hash'
-	QueryHash string ``
+	QueryHash string `json:"query_hash,omitempty"`
 	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
 	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
 	// owner" behavior)
 	// Wire name: 'run_as_role'
-	RunAsRole RunAsRole ``
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
 	// Wire name: 'tags'
-	Tags []string ``
+	Tags []string `json:"tags,omitempty"`
 	// The timestamp at which this query was last updated.
 	// Wire name: 'updated_at'
-	UpdatedAt string ``
+	UpdatedAt string `json:"updated_at,omitempty"`
 
 	// Wire name: 'user'
-	User *User ``
+	User *User `json:"user,omitempty"`
 	// The ID of the user who owns the query.
 	// Wire name: 'user_id'
-	UserId int ``
+	UserId int `json:"user_id,omitempty"`
 
 	// Wire name: 'visualizations'
-	Visualizations  []LegacyVisualization ``
-	ForceSendFields []string              `tf:"-"`
+	Visualizations  []LegacyVisualization `json:"visualizations,omitempty"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st LegacyQuery) MarshalJSON() ([]byte, error) {
@@ -8892,33 +8854,33 @@ func LegacyQueryFromPb(pb *sqlpb.LegacyQueryPb) (*LegacyQuery, error) {
 type LegacyVisualization struct {
 
 	// Wire name: 'created_at'
-	CreatedAt string ``
+	CreatedAt string `json:"created_at,omitempty"`
 	// A short description of this visualization. This is not displayed in the
 	// UI.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// The UUID for this visualization.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// The name of the visualization that appears on dashboards and the query
 	// screen.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The options object varies widely from one visualization type to the next
 	// and is unsupported. Databricks does not recommend modifying visualization
 	// settings in JSON.
 	// Wire name: 'options'
-	Options any ``
+	Options any `json:"options,omitempty"`
 
 	// Wire name: 'query'
-	Query *LegacyQuery ``
+	Query *LegacyQuery `json:"query,omitempty"`
 	// The type of visualization: chart, table, pivot table, and so on.
 	// Wire name: 'type'
-	Type string ``
+	Type string `json:"type,omitempty"`
 
 	// Wire name: 'updated_at'
-	UpdatedAt       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedAt       string   `json:"updated_at,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st LegacyVisualization) MarshalJSON() ([]byte, error) {
@@ -9052,13 +9014,10 @@ func LifecycleStateFromPb(pb *sqlpb.LifecycleStatePb) (*LifecycleState, error) {
 }
 
 type ListAlertsRequest struct {
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAlertsRequest) MarshalJSON() ([]byte, error) {
@@ -9117,11 +9076,11 @@ func ListAlertsRequestFromPb(pb *sqlpb.ListAlertsRequestPb) (*ListAlertsRequest,
 type ListAlertsResponse struct {
 
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'results'
-	Results         []ListAlertsResponseAlert ``
-	ForceSendFields []string                  `tf:"-"`
+	Results         []ListAlertsResponseAlert `json:"results,omitempty"`
+	ForceSendFields []string                  `json:"-" tf:"-"`
 }
 
 func (st ListAlertsResponse) MarshalJSON() ([]byte, error) {
@@ -9202,60 +9161,60 @@ func ListAlertsResponseFromPb(pb *sqlpb.ListAlertsResponsePb) (*ListAlertsRespon
 type ListAlertsResponseAlert struct {
 	// Trigger conditions of the alert.
 	// Wire name: 'condition'
-	Condition *AlertCondition ``
+	Condition *AlertCondition `json:"condition,omitempty"`
 	// The timestamp indicating when the alert was created.
 	// Wire name: 'create_time'
-	CreateTime string `` //legacy
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// Custom body of alert notification, if it exists. See [here] for custom
 	// templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	// Wire name: 'custom_body'
-	CustomBody string ``
+	CustomBody string `json:"custom_body,omitempty"`
 	// Custom subject of alert notification, if it exists. This can include
 	// email subject entries and Slack notification headers, for example. See
 	// [here] for custom templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	// Wire name: 'custom_subject'
-	CustomSubject string ``
+	CustomSubject string `json:"custom_subject,omitempty"`
 	// The display name of the alert.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// UUID identifying the alert.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// The workspace state of the alert. Used for tracking trashed status.
 	// Wire name: 'lifecycle_state'
-	LifecycleState LifecycleState ``
+	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
 	// Whether to notify alert subscribers when alert returns back to normal.
 	// Wire name: 'notify_on_ok'
-	NotifyOnOk bool ``
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	// Wire name: 'owner_user_name'
-	OwnerUserName string ``
+	OwnerUserName string `json:"owner_user_name,omitempty"`
 	// UUID of the query attached to the alert.
 	// Wire name: 'query_id'
-	QueryId string ``
+	QueryId string `json:"query_id,omitempty"`
 	// Number of seconds an alert must wait after being triggered to rearm
 	// itself. After rearming, it can be triggered again. If 0 or not specified,
 	// the alert will not be triggered again.
 	// Wire name: 'seconds_to_retrigger'
-	SecondsToRetrigger int ``
+	SecondsToRetrigger int `json:"seconds_to_retrigger,omitempty"`
 	// Current state of the alert's trigger status. This field is set to UNKNOWN
 	// if the alert has not yet been evaluated or ran into an error during the
 	// last evaluation.
 	// Wire name: 'state'
-	State AlertState ``
+	State AlertState `json:"state,omitempty"`
 	// Timestamp when the alert was last triggered, if the alert has been
 	// triggered before.
 	// Wire name: 'trigger_time'
-	TriggerTime string `` //legacy
+	TriggerTime string `json:"trigger_time,omitempty"` //legacy
 	// The timestamp indicating when the alert was updated.
 	// Wire name: 'update_time'
-	UpdateTime      string   `` //legacy
-	ForceSendFields []string `tf:"-"`
+	UpdateTime      string   `json:"update_time,omitempty"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAlertsResponseAlert) MarshalJSON() ([]byte, error) {
@@ -9372,13 +9331,10 @@ func ListAlertsResponseAlertFromPb(pb *sqlpb.ListAlertsResponseAlertPb) (*ListAl
 }
 
 type ListAlertsV2Request struct {
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAlertsV2Request) MarshalJSON() ([]byte, error) {
@@ -9437,11 +9393,11 @@ func ListAlertsV2RequestFromPb(pb *sqlpb.ListAlertsV2RequestPb) (*ListAlertsV2Re
 type ListAlertsV2Response struct {
 
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'results'
-	Results         []AlertV2 ``
-	ForceSendFields []string  `tf:"-"`
+	Results         []AlertV2 `json:"results,omitempty"`
+	ForceSendFields []string  `json:"-" tf:"-"`
 }
 
 func (st ListAlertsV2Response) MarshalJSON() ([]byte, error) {
@@ -9521,18 +9477,14 @@ func ListAlertsV2ResponseFromPb(pb *sqlpb.ListAlertsV2ResponsePb) (*ListAlertsV2
 
 type ListDashboardsRequest struct {
 	// Name of dashboard attribute to order by.
-	// Wire name: 'order'
-	Order ListOrder `tf:"-"`
+	Order ListOrder `json:"-" tf:"-"`
 	// Page number to retrieve.
-	// Wire name: 'page'
-	Page int `tf:"-"`
+	Page int `json:"-" tf:"-"`
 	// Number of dashboards to return per page.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Full text search term.
-	// Wire name: 'q'
-	Q               string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Q               string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListDashboardsRequest) MarshalJSON() ([]byte, error) {
@@ -9672,18 +9624,14 @@ type ListQueriesLegacyRequest struct {
 	// - `executed_at`: The timestamp when the query was last run.
 	//
 	// - `created_by`: The user name of the user that created the query.
-	// Wire name: 'order'
-	Order string `tf:"-"`
+	Order string `json:"-" tf:"-"`
 	// Page number to retrieve.
-	// Wire name: 'page'
-	Page int `tf:"-"`
+	Page int `json:"-" tf:"-"`
 	// Number of queries to return per page.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Full text search term
-	// Wire name: 'q'
-	Q               string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Q               string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListQueriesLegacyRequest) MarshalJSON() ([]byte, error) {
@@ -9744,13 +9692,10 @@ func ListQueriesLegacyRequestFromPb(pb *sqlpb.ListQueriesLegacyRequestPb) (*List
 }
 
 type ListQueriesRequest struct {
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListQueriesRequest) MarshalJSON() ([]byte, error) {
@@ -9809,14 +9754,14 @@ func ListQueriesRequestFromPb(pb *sqlpb.ListQueriesRequestPb) (*ListQueriesReque
 type ListQueriesResponse struct {
 	// Whether there is another page of results.
 	// Wire name: 'has_next_page'
-	HasNextPage bool ``
+	HasNextPage bool `json:"has_next_page,omitempty"`
 	// A token that can be used to get the next page of results.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'res'
-	Res             []QueryInfo ``
-	ForceSendFields []string    `tf:"-"`
+	Res             []QueryInfo `json:"res,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
 func (st ListQueriesResponse) MarshalJSON() ([]byte, error) {
@@ -9901,23 +9846,19 @@ type ListQueryHistoryRequest struct {
 	// parameters such as user IDs, endpoint IDs, and statuses to narrow the
 	// returned data. In a URL, the parameters of this filter are specified with
 	// dot notation. For example: `filter_by.statement_ids`.
-	// Wire name: 'filter_by'
-	FilterBy *QueryFilter `tf:"-"`
+	FilterBy *QueryFilter `json:"-" tf:"-"`
 	// Whether to include the query metrics with each query. Only use this for a
 	// small subset of queries (max_results). Defaults to false.
-	// Wire name: 'include_metrics'
-	IncludeMetrics bool `tf:"-"`
+	IncludeMetrics bool `json:"-" tf:"-"`
 	// Limit the number of results returned in one page. Must be less than 1000
 	// and the default is 100.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// A token that can be used to get the next page of results. The token can
 	// contains characters that need to be encoded before using it in a URL. For
 	// example, the character '+' needs to be replaced by %2B. This field is
 	// optional.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListQueryHistoryRequest) MarshalJSON() ([]byte, error) {
@@ -9992,11 +9933,11 @@ func ListQueryHistoryRequestFromPb(pb *sqlpb.ListQueryHistoryRequestPb) (*ListQu
 type ListQueryObjectsResponse struct {
 
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'results'
-	Results         []ListQueryObjectsResponseQuery ``
-	ForceSendFields []string                        `tf:"-"`
+	Results         []ListQueryObjectsResponseQuery `json:"results,omitempty"`
+	ForceSendFields []string                        `json:"-" tf:"-"`
 }
 
 func (st ListQueryObjectsResponse) MarshalJSON() ([]byte, error) {
@@ -10077,55 +10018,55 @@ func ListQueryObjectsResponseFromPb(pb *sqlpb.ListQueryObjectsResponsePb) (*List
 type ListQueryObjectsResponseQuery struct {
 	// Whether to apply a 1000 row limit to the query result.
 	// Wire name: 'apply_auto_limit'
-	ApplyAutoLimit bool ``
+	ApplyAutoLimit bool `json:"apply_auto_limit,omitempty"`
 	// Name of the catalog where this query will be executed.
 	// Wire name: 'catalog'
-	Catalog string ``
+	Catalog string `json:"catalog,omitempty"`
 	// Timestamp when this query was created.
 	// Wire name: 'create_time'
-	CreateTime string `` //legacy
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// General description that conveys additional information about this query
 	// such as usage notes.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Display name of the query that appears in list views, widget headings,
 	// and on the query page.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// UUID identifying the query.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Username of the user who last saved changes to this query.
 	// Wire name: 'last_modifier_user_name'
-	LastModifierUserName string ``
+	LastModifierUserName string `json:"last_modifier_user_name,omitempty"`
 	// Indicates whether the query is trashed.
 	// Wire name: 'lifecycle_state'
-	LifecycleState LifecycleState ``
+	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
 	// Username of the user that owns the query.
 	// Wire name: 'owner_user_name'
-	OwnerUserName string ``
+	OwnerUserName string `json:"owner_user_name,omitempty"`
 	// List of query parameter definitions.
 	// Wire name: 'parameters'
-	Parameters []QueryParameter ``
+	Parameters []QueryParameter `json:"parameters,omitempty"`
 	// Text of the query to be run.
 	// Wire name: 'query_text'
-	QueryText string ``
+	QueryText string `json:"query_text,omitempty"`
 	// Sets the "Run as" role for the object.
 	// Wire name: 'run_as_mode'
-	RunAsMode RunAsMode ``
+	RunAsMode RunAsMode `json:"run_as_mode,omitempty"`
 	// Name of the schema where this query will be executed.
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 
 	// Wire name: 'tags'
-	Tags []string ``
+	Tags []string `json:"tags,omitempty"`
 	// Timestamp when this query was last updated.
 	// Wire name: 'update_time'
-	UpdateTime string `` //legacy
+	UpdateTime string `json:"update_time,omitempty"` //legacy
 	// ID of the SQL warehouse attached to the query.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListQueryObjectsResponseQuery) MarshalJSON() ([]byte, error) {
@@ -10258,17 +10199,17 @@ func ListQueryObjectsResponseQueryFromPb(pb *sqlpb.ListQueryObjectsResponseQuery
 type ListResponse struct {
 	// The total number of dashboards.
 	// Wire name: 'count'
-	Count int ``
+	Count int `json:"count,omitempty"`
 	// The current page being displayed.
 	// Wire name: 'page'
-	Page int ``
+	Page int `json:"page,omitempty"`
 	// The number of dashboards per page.
 	// Wire name: 'page_size'
-	PageSize int ``
+	PageSize int `json:"page_size,omitempty"`
 	// List of dashboards returned.
 	// Wire name: 'results'
-	Results         []Dashboard ``
-	ForceSendFields []string    `tf:"-"`
+	Results         []Dashboard `json:"results,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
 func (st ListResponse) MarshalJSON() ([]byte, error) {
@@ -10351,16 +10292,12 @@ func ListResponseFromPb(pb *sqlpb.ListResponsePb) (*ListResponse, error) {
 }
 
 type ListVisualizationsForQueryRequest struct {
+	Id string `json:"-" tf:"-"`
 
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListVisualizationsForQueryRequest) MarshalJSON() ([]byte, error) {
@@ -10421,11 +10358,11 @@ func ListVisualizationsForQueryRequestFromPb(pb *sqlpb.ListVisualizationsForQuer
 type ListVisualizationsForQueryResponse struct {
 
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'results'
-	Results         []Visualization ``
-	ForceSendFields []string        `tf:"-"`
+	Results         []Visualization `json:"results,omitempty"`
+	ForceSendFields []string        `json:"-" tf:"-"`
 }
 
 func (st ListVisualizationsForQueryResponse) MarshalJSON() ([]byte, error) {
@@ -10506,9 +10443,8 @@ func ListVisualizationsForQueryResponseFromPb(pb *sqlpb.ListVisualizationsForQue
 type ListWarehousesRequest struct {
 	// Service Principal which will be used to fetch the list of warehouses. If
 	// not specified, the user from the session header is used.
-	// Wire name: 'run_as_user_id'
-	RunAsUserId     int      `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	RunAsUserId     int      `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListWarehousesRequest) MarshalJSON() ([]byte, error) {
@@ -10565,7 +10501,7 @@ func ListWarehousesRequestFromPb(pb *sqlpb.ListWarehousesRequestPb) (*ListWareho
 type ListWarehousesResponse struct {
 	// A list of warehouses and their configurations.
 	// Wire name: 'warehouses'
-	Warehouses []EndpointInfo ``
+	Warehouses []EndpointInfo `json:"warehouses,omitempty"`
 }
 
 func (st ListWarehousesResponse) MarshalJSON() ([]byte, error) {
@@ -10638,15 +10574,15 @@ func ListWarehousesResponseFromPb(pb *sqlpb.ListWarehousesResponsePb) (*ListWare
 type MultiValuesOptions struct {
 	// Character that prefixes each selected parameter value.
 	// Wire name: 'prefix'
-	Prefix string ``
+	Prefix string `json:"prefix,omitempty"`
 	// Character that separates each selected parameter value. Defaults to a
 	// comma.
 	// Wire name: 'separator'
-	Separator string ``
+	Separator string `json:"separator,omitempty"`
 	// Character that suffixes each selected parameter value.
 	// Wire name: 'suffix'
-	Suffix          string   ``
-	ForceSendFields []string `tf:"-"`
+	Suffix          string   `json:"suffix,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st MultiValuesOptions) MarshalJSON() ([]byte, error) {
@@ -10707,8 +10643,8 @@ func MultiValuesOptionsFromPb(pb *sqlpb.MultiValuesOptionsPb) (*MultiValuesOptio
 type NumericValue struct {
 
 	// Wire name: 'value'
-	Value           float64  ``
-	ForceSendFields []string `tf:"-"`
+	Value           float64  `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st NumericValue) MarshalJSON() ([]byte, error) {
@@ -10885,17 +10821,17 @@ func ObjectTypePluralFromPb(pb *sqlpb.ObjectTypePluralPb) (*ObjectTypePlural, er
 type OdbcParams struct {
 
 	// Wire name: 'hostname'
-	Hostname string ``
+	Hostname string `json:"hostname,omitempty"`
 
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path,omitempty"`
 
 	// Wire name: 'port'
-	Port int ``
+	Port int `json:"port,omitempty"`
 
 	// Wire name: 'protocol'
-	Protocol        string   ``
-	ForceSendFields []string `tf:"-"`
+	Protocol        string   `json:"protocol,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st OdbcParams) MarshalJSON() ([]byte, error) {
@@ -11015,29 +10951,29 @@ type Parameter struct {
 	// List of valid parameter values, newline delimited. Only applies for
 	// dropdown list parameters.
 	// Wire name: 'enumOptions'
-	EnumOptions string ``
+	EnumOptions string `json:"enumOptions,omitempty"`
 	// If specified, allows multiple values to be selected for this parameter.
 	// Only applies to dropdown list and query-based dropdown list parameters.
 	// Wire name: 'multiValuesOptions'
-	MultiValuesOptions *MultiValuesOptions ``
+	MultiValuesOptions *MultiValuesOptions `json:"multiValuesOptions,omitempty"`
 	// The literal parameter marker that appears between double curly braces in
 	// the query text.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The UUID of the query that provides the parameter values. Only applies
 	// for query-based dropdown list parameters.
 	// Wire name: 'queryId'
-	QueryId string ``
+	QueryId string `json:"queryId,omitempty"`
 	// The text displayed in a parameter picking widget.
 	// Wire name: 'title'
-	Title string ``
+	Title string `json:"title,omitempty"`
 	// Parameters can have several different types.
 	// Wire name: 'type'
-	Type ParameterType ``
+	Type ParameterType `json:"type,omitempty"`
 	// The default value for this parameter.
 	// Wire name: 'value'
-	Value           any      ``
-	ForceSendFields []string `tf:"-"`
+	Value           any      `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Parameter) MarshalJSON() ([]byte, error) {
@@ -11323,58 +11259,58 @@ func PlansStateFromPb(pb *sqlpb.PlansStatePb) (*PlansState, error) {
 type Query struct {
 	// Whether to apply a 1000 row limit to the query result.
 	// Wire name: 'apply_auto_limit'
-	ApplyAutoLimit bool ``
+	ApplyAutoLimit bool `json:"apply_auto_limit,omitempty"`
 	// Name of the catalog where this query will be executed.
 	// Wire name: 'catalog'
-	Catalog string ``
+	Catalog string `json:"catalog,omitempty"`
 	// Timestamp when this query was created.
 	// Wire name: 'create_time'
-	CreateTime string `` //legacy
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// General description that conveys additional information about this query
 	// such as usage notes.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Display name of the query that appears in list views, widget headings,
 	// and on the query page.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// UUID identifying the query.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Username of the user who last saved changes to this query.
 	// Wire name: 'last_modifier_user_name'
-	LastModifierUserName string ``
+	LastModifierUserName string `json:"last_modifier_user_name,omitempty"`
 	// Indicates whether the query is trashed.
 	// Wire name: 'lifecycle_state'
-	LifecycleState LifecycleState ``
+	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
 	// Username of the user that owns the query.
 	// Wire name: 'owner_user_name'
-	OwnerUserName string ``
+	OwnerUserName string `json:"owner_user_name,omitempty"`
 	// List of query parameter definitions.
 	// Wire name: 'parameters'
-	Parameters []QueryParameter ``
+	Parameters []QueryParameter `json:"parameters,omitempty"`
 	// Workspace path of the workspace folder containing the object.
 	// Wire name: 'parent_path'
-	ParentPath string ``
+	ParentPath string `json:"parent_path,omitempty"`
 	// Text of the query to be run.
 	// Wire name: 'query_text'
-	QueryText string ``
+	QueryText string `json:"query_text,omitempty"`
 	// Sets the "Run as" role for the object.
 	// Wire name: 'run_as_mode'
-	RunAsMode RunAsMode ``
+	RunAsMode RunAsMode `json:"run_as_mode,omitempty"`
 	// Name of the schema where this query will be executed.
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 
 	// Wire name: 'tags'
-	Tags []string ``
+	Tags []string `json:"tags,omitempty"`
 	// Timestamp when this query was last updated.
 	// Wire name: 'update_time'
-	UpdateTime string `` //legacy
+	UpdateTime string `json:"update_time,omitempty"` //legacy
 	// ID of the SQL warehouse attached to the query.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Query) MarshalJSON() ([]byte, error) {
@@ -11509,14 +11445,14 @@ func QueryFromPb(pb *sqlpb.QueryPb) (*Query, error) {
 type QueryBackedValue struct {
 	// If specified, allows multiple values to be selected for this parameter.
 	// Wire name: 'multi_values_options'
-	MultiValuesOptions *MultiValuesOptions ``
+	MultiValuesOptions *MultiValuesOptions `json:"multi_values_options,omitempty"`
 	// UUID of the query that provides the parameter values.
 	// Wire name: 'query_id'
-	QueryId string ``
+	QueryId string `json:"query_id,omitempty"`
 	// List of selected query parameter values.
 	// Wire name: 'values'
-	Values          []string ``
-	ForceSendFields []string `tf:"-"`
+	Values          []string `json:"values,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st QueryBackedValue) MarshalJSON() ([]byte, error) {
@@ -11592,35 +11528,34 @@ type QueryEditContent struct {
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	// Wire name: 'data_source_id'
-	DataSourceId string ``
+	DataSourceId string `json:"data_source_id,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// The title of this query that appears in list views, widget headings, and
 	// on the query page.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Exclusively used for storing a list parameter definitions. A parameter is
 	// an object with `title`, `name`, `type`, and `value` properties. The
 	// `value` field here is the default value. It can be overridden at runtime.
 	// Wire name: 'options'
-	Options any ``
+	Options any `json:"options,omitempty"`
 	// The text of the query to be run.
 	// Wire name: 'query'
-	Query string ``
+	Query string `json:"query,omitempty"`
 
-	// Wire name: 'query_id'
-	QueryId string `tf:"-"`
+	QueryId string `json:"-" tf:"-"`
 	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
 	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
 	// owner" behavior)
 	// Wire name: 'run_as_role'
-	RunAsRole RunAsRole ``
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
 	// Wire name: 'tags'
-	Tags            []string ``
-	ForceSendFields []string `tf:"-"`
+	Tags            []string `json:"tags,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st QueryEditContent) MarshalJSON() ([]byte, error) {
@@ -11704,22 +11639,22 @@ type QueryFilter struct {
 	// A range filter for query submitted time. The time range must be less than
 	// or equal to 30 days.
 	// Wire name: 'query_start_time_range'
-	QueryStartTimeRange *TimeRange ``
+	QueryStartTimeRange *TimeRange `json:"query_start_time_range,omitempty"`
 	// A list of statement IDs.
 	// Wire name: 'statement_ids'
-	StatementIds []string ``
+	StatementIds []string `json:"statement_ids,omitempty"`
 	// A list of statuses (QUEUED, RUNNING, CANCELED, FAILED, FINISHED) to match
 	// query results. Corresponds to the `status` field in the response.
 	// Filtering for multiple statuses is not recommended. Instead, opt to
 	// filter by a single status multiple times and then combine the results.
 	// Wire name: 'statuses'
-	Statuses []QueryStatus ``
+	Statuses []QueryStatus `json:"statuses,omitempty"`
 	// A list of user IDs who ran the queries.
 	// Wire name: 'user_ids'
-	UserIds []int64 ``
+	UserIds []int64 `json:"user_ids,omitempty"`
 	// A list of warehouse IDs.
 	// Wire name: 'warehouse_ids'
-	WarehouseIds []string ``
+	WarehouseIds []string `json:"warehouse_ids,omitempty"`
 }
 
 func (st QueryFilter) MarshalJSON() ([]byte, error) {
@@ -11812,89 +11747,89 @@ func QueryFilterFromPb(pb *sqlpb.QueryFilterPb) (*QueryFilter, error) {
 type QueryInfo struct {
 	// SQL Warehouse channel information at the time of query execution
 	// Wire name: 'channel_used'
-	ChannelUsed *ChannelInfo ``
+	ChannelUsed *ChannelInfo `json:"channel_used,omitempty"`
 	// Client application that ran the statement. For example: Databricks SQL
 	// Editor, Tableau, and Power BI. This field is derived from information
 	// provided by client applications. While values are expected to remain
 	// static over time, this cannot be guaranteed.
 	// Wire name: 'client_application'
-	ClientApplication string ``
+	ClientApplication string `json:"client_application,omitempty"`
 	// Total time of the statement execution. This value does not include the
 	// time taken to retrieve the results, which can result in a discrepancy
 	// between this value and the start-to-finish wall-clock time.
 	// Wire name: 'duration'
-	Duration int64 ``
+	Duration int64 `json:"duration,omitempty"`
 	// Alias for `warehouse_id`.
 	// Wire name: 'endpoint_id'
-	EndpointId string ``
+	EndpointId string `json:"endpoint_id,omitempty"`
 	// Message describing why the query could not complete.
 	// Wire name: 'error_message'
-	ErrorMessage string ``
+	ErrorMessage string `json:"error_message,omitempty"`
 	// The ID of the user whose credentials were used to run the query.
 	// Wire name: 'executed_as_user_id'
-	ExecutedAsUserId int64 ``
+	ExecutedAsUserId int64 `json:"executed_as_user_id,omitempty"`
 	// The email address or username of the user whose credentials were used to
 	// run the query.
 	// Wire name: 'executed_as_user_name'
-	ExecutedAsUserName string ``
+	ExecutedAsUserName string `json:"executed_as_user_name,omitempty"`
 	// The time execution of the query ended.
 	// Wire name: 'execution_end_time_ms'
-	ExecutionEndTimeMs int64 ``
+	ExecutionEndTimeMs int64 `json:"execution_end_time_ms,omitempty"`
 	// Whether more updates for the query are expected.
 	// Wire name: 'is_final'
-	IsFinal bool ``
+	IsFinal bool `json:"is_final,omitempty"`
 	// A key that can be used to look up query details.
 	// Wire name: 'lookup_key'
-	LookupKey string ``
+	LookupKey string `json:"lookup_key,omitempty"`
 	// Metrics about query execution.
 	// Wire name: 'metrics'
-	Metrics *QueryMetrics ``
+	Metrics *QueryMetrics `json:"metrics,omitempty"`
 	// Whether plans exist for the execution, or the reason why they are missing
 	// Wire name: 'plans_state'
-	PlansState PlansState ``
+	PlansState PlansState `json:"plans_state,omitempty"`
 	// The time the query ended.
 	// Wire name: 'query_end_time_ms'
-	QueryEndTimeMs int64 ``
+	QueryEndTimeMs int64 `json:"query_end_time_ms,omitempty"`
 	// The query ID.
 	// Wire name: 'query_id'
-	QueryId string ``
+	QueryId string `json:"query_id,omitempty"`
 	// A struct that contains key-value pairs representing Databricks entities
 	// that were involved in the execution of this statement, such as jobs,
 	// notebooks, or dashboards. This field only records Databricks entities.
 	// Wire name: 'query_source'
-	QuerySource *ExternalQuerySource ``
+	QuerySource *ExternalQuerySource `json:"query_source,omitempty"`
 	// The time the query started.
 	// Wire name: 'query_start_time_ms'
-	QueryStartTimeMs int64 ``
+	QueryStartTimeMs int64 `json:"query_start_time_ms,omitempty"`
 	// The text of the query.
 	// Wire name: 'query_text'
-	QueryText string ``
+	QueryText string `json:"query_text,omitempty"`
 	// The number of results returned by the query.
 	// Wire name: 'rows_produced'
-	RowsProduced int64 ``
+	RowsProduced int64 `json:"rows_produced,omitempty"`
 	// URL to the Spark UI query plan.
 	// Wire name: 'spark_ui_url'
-	SparkUiUrl string ``
+	SparkUiUrl string `json:"spark_ui_url,omitempty"`
 	// Type of statement for this query
 	// Wire name: 'statement_type'
-	StatementType QueryStatementType ``
+	StatementType QueryStatementType `json:"statement_type,omitempty"`
 	// Query status with one the following values:
 	//
 	// - `QUEUED`: Query has been received and queued. - `RUNNING`: Query has
 	// started. - `CANCELED`: Query has been cancelled by the user. - `FAILED`:
 	// Query has failed. - `FINISHED`: Query has completed.
 	// Wire name: 'status'
-	Status QueryStatus ``
+	Status QueryStatus `json:"status,omitempty"`
 	// The ID of the user who ran the query.
 	// Wire name: 'user_id'
-	UserId int64 ``
+	UserId int64 `json:"user_id,omitempty"`
 	// The email address or username of the user who ran the query.
 	// Wire name: 'user_name'
-	UserName string ``
+	UserName string `json:"user_name,omitempty"`
 	// Warehouse ID.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st QueryInfo) MarshalJSON() ([]byte, error) {
@@ -12069,17 +12004,17 @@ func QueryInfoFromPb(pb *sqlpb.QueryInfoPb) (*QueryInfo, error) {
 type QueryList struct {
 	// The total number of queries.
 	// Wire name: 'count'
-	Count int ``
+	Count int `json:"count,omitempty"`
 	// The page number that is currently displayed.
 	// Wire name: 'page'
-	Page int ``
+	Page int `json:"page,omitempty"`
 	// The number of queries per page.
 	// Wire name: 'page_size'
-	PageSize int ``
+	PageSize int `json:"page_size,omitempty"`
 	// List of queries returned.
 	// Wire name: 'results'
-	Results         []LegacyQuery ``
-	ForceSendFields []string      `tf:"-"`
+	Results         []LegacyQuery `json:"results,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st QueryList) MarshalJSON() ([]byte, error) {
@@ -12166,105 +12101,105 @@ func QueryListFromPb(pb *sqlpb.QueryListPb) (*QueryList, error) {
 type QueryMetrics struct {
 	// Time spent loading metadata and optimizing the query, in milliseconds.
 	// Wire name: 'compilation_time_ms'
-	CompilationTimeMs int64 ``
+	CompilationTimeMs int64 `json:"compilation_time_ms,omitempty"`
 	// Time spent executing the query, in milliseconds.
 	// Wire name: 'execution_time_ms'
-	ExecutionTimeMs int64 ``
+	ExecutionTimeMs int64 `json:"execution_time_ms,omitempty"`
 	// Total amount of data sent over the network between executor nodes during
 	// shuffle, in bytes.
 	// Wire name: 'network_sent_bytes'
-	NetworkSentBytes int64 ``
+	NetworkSentBytes int64 `json:"network_sent_bytes,omitempty"`
 	// Timestamp of when the query was enqueued waiting while the warehouse was
 	// at max load. This field is optional and will not appear if the query
 	// skipped the overloading queue.
 	// Wire name: 'overloading_queue_start_timestamp'
-	OverloadingQueueStartTimestamp int64 ``
+	OverloadingQueueStartTimestamp int64 `json:"overloading_queue_start_timestamp,omitempty"`
 	// Total execution time for all individual Photon query engine tasks in the
 	// query, in milliseconds.
 	// Wire name: 'photon_total_time_ms'
-	PhotonTotalTimeMs int64 ``
+	PhotonTotalTimeMs int64 `json:"photon_total_time_ms,omitempty"`
 	// projected remaining work to be done aggregated across all stages in the
 	// query, in milliseconds
 	// Wire name: 'projected_remaining_task_total_time_ms'
-	ProjectedRemainingTaskTotalTimeMs int64 ``
+	ProjectedRemainingTaskTotalTimeMs int64 `json:"projected_remaining_task_total_time_ms,omitempty"`
 	// Timestamp of when the query was enqueued waiting for a cluster to be
 	// provisioned for the warehouse. This field is optional and will not appear
 	// if the query skipped the provisioning queue.
 	// Wire name: 'provisioning_queue_start_timestamp'
-	ProvisioningQueueStartTimestamp int64 ``
+	ProvisioningQueueStartTimestamp int64 `json:"provisioning_queue_start_timestamp,omitempty"`
 	// Total number of bytes in all tables not read due to pruning
 	// Wire name: 'pruned_bytes'
-	PrunedBytes int64 ``
+	PrunedBytes int64 `json:"pruned_bytes,omitempty"`
 	// Total number of files from all tables not read due to pruning
 	// Wire name: 'pruned_files_count'
-	PrunedFilesCount int64 ``
+	PrunedFilesCount int64 `json:"pruned_files_count,omitempty"`
 	// Timestamp of when the underlying compute started compilation of the
 	// query.
 	// Wire name: 'query_compilation_start_timestamp'
-	QueryCompilationStartTimestamp int64 ``
+	QueryCompilationStartTimestamp int64 `json:"query_compilation_start_timestamp,omitempty"`
 	// Total size of data read by the query, in bytes.
 	// Wire name: 'read_bytes'
-	ReadBytes int64 ``
+	ReadBytes int64 `json:"read_bytes,omitempty"`
 	// Size of persistent data read from the cache, in bytes.
 	// Wire name: 'read_cache_bytes'
-	ReadCacheBytes int64 ``
+	ReadCacheBytes int64 `json:"read_cache_bytes,omitempty"`
 	// Number of files read after pruning
 	// Wire name: 'read_files_count'
-	ReadFilesCount int64 ``
+	ReadFilesCount int64 `json:"read_files_count,omitempty"`
 	// Number of partitions read after pruning.
 	// Wire name: 'read_partitions_count'
-	ReadPartitionsCount int64 ``
+	ReadPartitionsCount int64 `json:"read_partitions_count,omitempty"`
 	// Size of persistent data read from cloud object storage on your cloud
 	// tenant, in bytes.
 	// Wire name: 'read_remote_bytes'
-	ReadRemoteBytes int64 ``
+	ReadRemoteBytes int64 `json:"read_remote_bytes,omitempty"`
 	// number of remaining tasks to complete this is based on the current status
 	// and could be bigger or smaller in the future based on future updates
 	// Wire name: 'remaining_task_count'
-	RemainingTaskCount int64 ``
+	RemainingTaskCount int64 `json:"remaining_task_count,omitempty"`
 	// Time spent fetching the query results after the execution finished, in
 	// milliseconds.
 	// Wire name: 'result_fetch_time_ms'
-	ResultFetchTimeMs int64 ``
+	ResultFetchTimeMs int64 `json:"result_fetch_time_ms,omitempty"`
 	// `true` if the query result was fetched from cache, `false` otherwise.
 	// Wire name: 'result_from_cache'
-	ResultFromCache bool ``
+	ResultFromCache bool `json:"result_from_cache,omitempty"`
 	// Total number of rows returned by the query.
 	// Wire name: 'rows_produced_count'
-	RowsProducedCount int64 ``
+	RowsProducedCount int64 `json:"rows_produced_count,omitempty"`
 	// Total number of rows read by the query.
 	// Wire name: 'rows_read_count'
-	RowsReadCount int64 ``
+	RowsReadCount int64 `json:"rows_read_count,omitempty"`
 	// number of remaining tasks to complete, calculated by autoscaler
 	// StatementAnalysis.scala deprecated: use remaining_task_count instead
 	// Wire name: 'runnable_tasks'
-	RunnableTasks int64 ``
+	RunnableTasks int64 `json:"runnable_tasks,omitempty"`
 	// Size of data temporarily written to disk while executing the query, in
 	// bytes.
 	// Wire name: 'spill_to_disk_bytes'
-	SpillToDiskBytes int64 ``
+	SpillToDiskBytes int64 `json:"spill_to_disk_bytes,omitempty"`
 	// sum of task times completed in a range of wall clock time, approximated
 	// to a configurable number of points aggregated over all stages and jobs in
 	// the query (based on task_total_time_ms)
 	// Wire name: 'task_time_over_time_range'
-	TaskTimeOverTimeRange *TaskTimeOverRange ``
+	TaskTimeOverTimeRange *TaskTimeOverRange `json:"task_time_over_time_range,omitempty"`
 	// Sum of execution time for all of the query’s tasks, in milliseconds.
 	// Wire name: 'task_total_time_ms'
-	TaskTotalTimeMs int64 ``
+	TaskTotalTimeMs int64 `json:"task_total_time_ms,omitempty"`
 	// Total execution time of the query from the client’s point of view, in
 	// milliseconds.
 	// Wire name: 'total_time_ms'
-	TotalTimeMs int64 ``
+	TotalTimeMs int64 `json:"total_time_ms,omitempty"`
 	// remaining work to be done across all stages in the query, calculated by
 	// autoscaler StatementAnalysis.scala, in milliseconds deprecated: using
 	// projected_remaining_task_total_time_ms instead
 	// Wire name: 'work_to_be_done'
-	WorkToBeDone int64 ``
+	WorkToBeDone int64 `json:"work_to_be_done,omitempty"`
 	// Size pf persistent data written to cloud object storage in your cloud
 	// tenant, in bytes.
 	// Wire name: 'write_remote_bytes'
-	WriteRemoteBytes int64    ``
-	ForceSendFields  []string `tf:"-"`
+	WriteRemoteBytes int64    `json:"write_remote_bytes,omitempty"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st QueryMetrics) MarshalJSON() ([]byte, error) {
@@ -12385,19 +12320,19 @@ func QueryMetricsFromPb(pb *sqlpb.QueryMetricsPb) (*QueryMetrics, error) {
 type QueryOptions struct {
 	// The name of the catalog to execute this query in.
 	// Wire name: 'catalog'
-	Catalog string ``
+	Catalog string `json:"catalog,omitempty"`
 	// The timestamp when this query was moved to trash. Only present when the
 	// `is_archived` property is `true`. Trashed items are deleted after thirty
 	// days.
 	// Wire name: 'moved_to_trash_at'
-	MovedToTrashAt string ``
+	MovedToTrashAt string `json:"moved_to_trash_at,omitempty"`
 
 	// Wire name: 'parameters'
-	Parameters []Parameter ``
+	Parameters []Parameter `json:"parameters,omitempty"`
 	// The name of the schema to execute this query in.
 	// Wire name: 'schema'
-	Schema          string   ``
-	ForceSendFields []string `tf:"-"`
+	Schema          string   `json:"schema,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st QueryOptions) MarshalJSON() ([]byte, error) {
@@ -12483,31 +12418,31 @@ type QueryParameter struct {
 	// Date-range query parameter value. Can only specify one of
 	// `dynamic_date_range_value` or `date_range_value`.
 	// Wire name: 'date_range_value'
-	DateRangeValue *DateRangeValue ``
+	DateRangeValue *DateRangeValue `json:"date_range_value,omitempty"`
 	// Date query parameter value. Can only specify one of `dynamic_date_value`
 	// or `date_value`.
 	// Wire name: 'date_value'
-	DateValue *DateValue ``
+	DateValue *DateValue `json:"date_value,omitempty"`
 	// Dropdown query parameter value.
 	// Wire name: 'enum_value'
-	EnumValue *EnumValue ``
+	EnumValue *EnumValue `json:"enum_value,omitempty"`
 	// Literal parameter marker that appears between double curly braces in the
 	// query text.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Numeric query parameter value.
 	// Wire name: 'numeric_value'
-	NumericValue *NumericValue ``
+	NumericValue *NumericValue `json:"numeric_value,omitempty"`
 	// Query-based dropdown query parameter value.
 	// Wire name: 'query_backed_value'
-	QueryBackedValue *QueryBackedValue ``
+	QueryBackedValue *QueryBackedValue `json:"query_backed_value,omitempty"`
 	// Text query parameter value.
 	// Wire name: 'text_value'
-	TextValue *TextValue ``
+	TextValue *TextValue `json:"text_value,omitempty"`
 	// Text displayed in the user-facing parameter widget in the UI.
 	// Wire name: 'title'
-	Title           string   ``
-	ForceSendFields []string `tf:"-"`
+	Title           string   `json:"title,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st QueryParameter) MarshalJSON() ([]byte, error) {
@@ -12653,35 +12588,35 @@ type QueryPostContent struct {
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
 	// Wire name: 'data_source_id'
-	DataSourceId string ``
+	DataSourceId string `json:"data_source_id,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// The title of this query that appears in list views, widget headings, and
 	// on the query page.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Exclusively used for storing a list parameter definitions. A parameter is
 	// an object with `title`, `name`, `type`, and `value` properties. The
 	// `value` field here is the default value. It can be overridden at runtime.
 	// Wire name: 'options'
-	Options any ``
+	Options any `json:"options,omitempty"`
 	// The identifier of the workspace folder containing the object.
 	// Wire name: 'parent'
-	Parent string ``
+	Parent string `json:"parent,omitempty"`
 	// The text of the query to be run.
 	// Wire name: 'query'
-	Query string ``
+	Query string `json:"query,omitempty"`
 	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
 	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
 	// owner" behavior)
 	// Wire name: 'run_as_role'
-	RunAsRole RunAsRole ``
+	RunAsRole RunAsRole `json:"run_as_role,omitempty"`
 
 	// Wire name: 'tags'
-	Tags            []string ``
-	ForceSendFields []string `tf:"-"`
+	Tags            []string `json:"tags,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st QueryPostContent) MarshalJSON() ([]byte, error) {
@@ -12949,10 +12884,10 @@ func QueryStatusFromPb(pb *sqlpb.QueryStatusPb) (*QueryStatus, error) {
 type RepeatedEndpointConfPairs struct {
 	// Deprecated: Use configuration_pairs
 	// Wire name: 'config_pair'
-	ConfigPair []EndpointConfPair ``
+	ConfigPair []EndpointConfPair `json:"config_pair,omitempty"`
 
 	// Wire name: 'configuration_pairs'
-	ConfigurationPairs []EndpointConfPair ``
+	ConfigurationPairs []EndpointConfPair `json:"configuration_pairs,omitempty"`
 }
 
 func (st RepeatedEndpointConfPairs) MarshalJSON() ([]byte, error) {
@@ -13047,9 +12982,7 @@ func RepeatedEndpointConfPairsFromPb(pb *sqlpb.RepeatedEndpointConfPairsPb) (*Re
 }
 
 type RestoreDashboardRequest struct {
-
-	// Wire name: 'dashboard_id'
-	DashboardId string `tf:"-"`
+	DashboardId string `json:"-" tf:"-"`
 }
 
 func (st RestoreDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -13098,9 +13031,7 @@ func RestoreDashboardRequestFromPb(pb *sqlpb.RestoreDashboardRequestPb) (*Restor
 }
 
 type RestoreQueriesLegacyRequest struct {
-
-	// Wire name: 'query_id'
-	QueryId string `tf:"-"`
+	QueryId string `json:"-" tf:"-"`
 }
 
 func (st RestoreQueriesLegacyRequest) MarshalJSON() ([]byte, error) {
@@ -13152,36 +13083,36 @@ type ResultData struct {
 	// The number of bytes in the result chunk. This field is not available when
 	// using `INLINE` disposition.
 	// Wire name: 'byte_count'
-	ByteCount int64 ``
+	ByteCount int64 `json:"byte_count,omitempty"`
 	// The position within the sequence of result set chunks.
 	// Wire name: 'chunk_index'
-	ChunkIndex int ``
+	ChunkIndex int `json:"chunk_index,omitempty"`
 	// The `JSON_ARRAY` format is an array of arrays of values, where each
 	// non-null value is formatted as a string. Null values are encoded as JSON
 	// `null`.
 	// Wire name: 'data_array'
-	DataArray [][]string ``
+	DataArray [][]string `json:"data_array,omitempty"`
 
 	// Wire name: 'external_links'
-	ExternalLinks []ExternalLink ``
+	ExternalLinks []ExternalLink `json:"external_links,omitempty"`
 	// When fetching, provides the `chunk_index` for the _next_ chunk. If
 	// absent, indicates there are no more chunks. The next chunk can be fetched
 	// with a :method:statementexecution/getStatementResultChunkN request.
 	// Wire name: 'next_chunk_index'
-	NextChunkIndex int ``
+	NextChunkIndex int `json:"next_chunk_index,omitempty"`
 	// When fetching, provides a link to fetch the _next_ chunk. If absent,
 	// indicates there are no more chunks. This link is an absolute `path` to be
 	// joined with your `$DATABRICKS_HOST`, and should be treated as an opaque
 	// link. This is an alternative to using `next_chunk_index`.
 	// Wire name: 'next_chunk_internal_link'
-	NextChunkInternalLink string ``
+	NextChunkInternalLink string `json:"next_chunk_internal_link,omitempty"`
 	// The number of rows within the result chunk.
 	// Wire name: 'row_count'
-	RowCount int64 ``
+	RowCount int64 `json:"row_count,omitempty"`
 	// The starting row offset within the result set.
 	// Wire name: 'row_offset'
-	RowOffset       int64    ``
-	ForceSendFields []string `tf:"-"`
+	RowOffset       int64    `json:"row_offset,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ResultData) MarshalJSON() ([]byte, error) {
@@ -13275,28 +13206,28 @@ func ResultDataFromPb(pb *sqlpb.ResultDataPb) (*ResultData, error) {
 type ResultManifest struct {
 	// Array of result set chunk metadata.
 	// Wire name: 'chunks'
-	Chunks []BaseChunkInfo ``
+	Chunks []BaseChunkInfo `json:"chunks,omitempty"`
 
 	// Wire name: 'format'
-	Format Format ``
+	Format Format `json:"format,omitempty"`
 
 	// Wire name: 'schema'
-	Schema *ResultSchema ``
+	Schema *ResultSchema `json:"schema,omitempty"`
 	// The total number of bytes in the result set. This field is not available
 	// when using `INLINE` disposition.
 	// Wire name: 'total_byte_count'
-	TotalByteCount int64 ``
+	TotalByteCount int64 `json:"total_byte_count,omitempty"`
 	// The total number of chunks that the result set has been divided into.
 	// Wire name: 'total_chunk_count'
-	TotalChunkCount int ``
+	TotalChunkCount int `json:"total_chunk_count,omitempty"`
 	// The total number of rows in the result set.
 	// Wire name: 'total_row_count'
-	TotalRowCount int64 ``
+	TotalRowCount int64 `json:"total_row_count,omitempty"`
 	// Indicates whether the result is truncated due to `row_limit` or
 	// `byte_limit`.
 	// Wire name: 'truncated'
-	Truncated       bool     ``
-	ForceSendFields []string `tf:"-"`
+	Truncated       bool     `json:"truncated,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ResultManifest) MarshalJSON() ([]byte, error) {
@@ -13412,11 +13343,11 @@ func ResultManifestFromPb(pb *sqlpb.ResultManifestPb) (*ResultManifest, error) {
 type ResultSchema struct {
 
 	// Wire name: 'column_count'
-	ColumnCount int ``
+	ColumnCount int `json:"column_count,omitempty"`
 
 	// Wire name: 'columns'
-	Columns         []ColumnInfo ``
-	ForceSendFields []string     `tf:"-"`
+	Columns         []ColumnInfo `json:"columns,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
 func (st ResultSchema) MarshalJSON() ([]byte, error) {
@@ -13656,11 +13587,11 @@ func SchedulePauseStatusFromPb(pb *sqlpb.SchedulePauseStatusPb) (*SchedulePauseS
 type ServiceError struct {
 
 	// Wire name: 'error_code'
-	ErrorCode ServiceErrorCode ``
+	ErrorCode ServiceErrorCode `json:"error_code,omitempty"`
 	// A brief summary of the error condition.
 	// Wire name: 'message'
-	Message         string   ``
-	ForceSendFields []string `tf:"-"`
+	Message         string   `json:"message,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ServiceError) MarshalJSON() ([]byte, error) {
@@ -13821,14 +13752,12 @@ func ServiceErrorCodeFromPb(pb *sqlpb.ServiceErrorCodePb) (*ServiceErrorCode, er
 type SetRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []AccessControl ``
+	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
 	// Object ID. The ACL for the object with this UUID is overwritten by this
 	// request's POST content.
-	// Wire name: 'objectId'
-	ObjectId string `tf:"-"`
+	ObjectId string `json:"-" tf:"-"`
 	// The type of object permission to set.
-	// Wire name: 'objectType'
-	ObjectType ObjectTypePlural `tf:"-"`
+	ObjectType ObjectTypePlural `json:"-" tf:"-"`
 }
 
 func (st SetRequest) MarshalJSON() ([]byte, error) {
@@ -13917,14 +13846,14 @@ func SetRequestFromPb(pb *sqlpb.SetRequestPb) (*SetRequest, error) {
 type SetResponse struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []AccessControl ``
+	AccessControlList []AccessControl `json:"access_control_list,omitempty"`
 	// An object's type and UUID, separated by a forward slash (/) character.
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 	// A singular noun object type.
 	// Wire name: 'object_type'
-	ObjectType      ObjectType ``
-	ForceSendFields []string   `tf:"-"`
+	ObjectType      ObjectType `json:"object_type,omitempty"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
 func (st SetResponse) MarshalJSON() ([]byte, error) {
@@ -14019,14 +13948,14 @@ func SetResponseFromPb(pb *sqlpb.SetResponsePb) (*SetResponse, error) {
 type SetWorkspaceWarehouseConfigRequest struct {
 	// Optional: Channel selection details
 	// Wire name: 'channel'
-	Channel *Channel ``
+	Channel *Channel `json:"channel,omitempty"`
 	// Deprecated: Use sql_configuration_parameters
 	// Wire name: 'config_param'
-	ConfigParam *RepeatedEndpointConfPairs ``
+	ConfigParam *RepeatedEndpointConfPairs `json:"config_param,omitempty"`
 	// Spark confs for external hive metastore configuration JSON serialized
 	// size must be less than <= 512K
 	// Wire name: 'data_access_config'
-	DataAccessConfig []EndpointConfPair ``
+	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
 	// List of Warehouse Types allowed in this workspace (limits allowed value
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types
 	// cannot be disabled, they don't need to be specified in
@@ -14034,24 +13963,24 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	// warehouses to be converted to another type. Used by frontend to save
 	// specific type availability in the warehouse create and edit form UI.
 	// Wire name: 'enabled_warehouse_types'
-	EnabledWarehouseTypes []WarehouseTypePair ``
+	EnabledWarehouseTypes []WarehouseTypePair `json:"enabled_warehouse_types,omitempty"`
 	// Deprecated: Use sql_configuration_parameters
 	// Wire name: 'global_param'
-	GlobalParam *RepeatedEndpointConfPairs ``
+	GlobalParam *RepeatedEndpointConfPairs `json:"global_param,omitempty"`
 	// GCP only: Google Service Account used to pass to cluster to access Google
 	// Cloud Storage
 	// Wire name: 'google_service_account'
-	GoogleServiceAccount string ``
+	GoogleServiceAccount string `json:"google_service_account,omitempty"`
 	// AWS Only: Instance profile used to pass IAM role to the cluster
 	// Wire name: 'instance_profile_arn'
-	InstanceProfileArn string ``
+	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Security policy for warehouses
 	// Wire name: 'security_policy'
-	SecurityPolicy SetWorkspaceWarehouseConfigRequestSecurityPolicy ``
+	SecurityPolicy SetWorkspaceWarehouseConfigRequestSecurityPolicy `json:"security_policy,omitempty"`
 	// SQL configuration parameters
 	// Wire name: 'sql_configuration_parameters'
-	SqlConfigurationParameters *RepeatedEndpointConfPairs ``
-	ForceSendFields            []string                   `tf:"-"`
+	SqlConfigurationParameters *RepeatedEndpointConfPairs `json:"sql_configuration_parameters,omitempty"`
+	ForceSendFields            []string                   `json:"-" tf:"-"`
 }
 
 func (st SetWorkspaceWarehouseConfigRequest) MarshalJSON() ([]byte, error) {
@@ -14341,8 +14270,7 @@ func SpotInstancePolicyFromPb(pb *sqlpb.SpotInstancePolicyPb) (*SpotInstancePoli
 
 type StartRequest struct {
 	// Required. Id of the SQL warehouse.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st StartRequest) MarshalJSON() ([]byte, error) {
@@ -14459,7 +14387,7 @@ func StateFromPb(pb *sqlpb.StatePb) (*State, error) {
 type StatementParameterListItem struct {
 	// The name of a parameter marker to be substituted in the statement.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// The data type, given as a string. For example: `INT`, `STRING`,
 	// `DECIMAL(10,2)`. If no type is given the type is assumed to be `STRING`.
 	// Complex types, such as `ARRAY`, `MAP`, and `STRUCT` are not supported.
@@ -14468,12 +14396,12 @@ type StatementParameterListItem struct {
 	//
 	// [Data types]: https://docs.databricks.com/sql/language-manual/functions/cast.html
 	// Wire name: 'type'
-	Type string ``
+	Type string `json:"type,omitempty"`
 	// The value to substitute, represented as a string. If omitted, the value
 	// is interpreted as NULL.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st StatementParameterListItem) MarshalJSON() ([]byte, error) {
@@ -14534,18 +14462,18 @@ func StatementParameterListItemFromPb(pb *sqlpb.StatementParameterListItemPb) (*
 type StatementResponse struct {
 
 	// Wire name: 'manifest'
-	Manifest *ResultManifest ``
+	Manifest *ResultManifest `json:"manifest,omitempty"`
 
 	// Wire name: 'result'
-	Result *ResultData ``
+	Result *ResultData `json:"result,omitempty"`
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
 	// Wire name: 'statement_id'
-	StatementId string ``
+	StatementId string `json:"statement_id,omitempty"`
 
 	// Wire name: 'status'
-	Status          *StatementStatus ``
-	ForceSendFields []string         `tf:"-"`
+	Status          *StatementStatus `json:"status,omitempty"`
+	ForceSendFields []string         `json:"-" tf:"-"`
 }
 
 func (st StatementResponse) MarshalJSON() ([]byte, error) {
@@ -14725,10 +14653,10 @@ func StatementStateFromPb(pb *sqlpb.StatementStatePb) (*StatementState, error) {
 type StatementStatus struct {
 
 	// Wire name: 'error'
-	Error *ServiceError ``
+	Error *ServiceError `json:"error,omitempty"`
 
 	// Wire name: 'state'
-	State StatementState ``
+	State StatementState `json:"state,omitempty"`
 }
 
 func (st StatementStatus) MarshalJSON() ([]byte, error) {
@@ -14864,8 +14792,7 @@ func StatusFromPb(pb *sqlpb.StatusPb) (*Status, error) {
 
 type StopRequest struct {
 	// Required. Id of the SQL warehouse.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st StopRequest) MarshalJSON() ([]byte, error) {
@@ -14916,7 +14843,7 @@ func StopRequestFromPb(pb *sqlpb.StopRequestPb) (*StopRequest, error) {
 type Success struct {
 
 	// Wire name: 'message'
-	Message SuccessMessage ``
+	Message SuccessMessage `json:"message,omitempty"`
 }
 
 func (st Success) MarshalJSON() ([]byte, error) {
@@ -15029,13 +14956,13 @@ func SuccessMessageFromPb(pb *sqlpb.SuccessMessagePb) (*SuccessMessage, error) {
 type TaskTimeOverRange struct {
 
 	// Wire name: 'entries'
-	Entries []TaskTimeOverRangeEntry ``
+	Entries []TaskTimeOverRangeEntry `json:"entries,omitempty"`
 	// interval length for all entries (difference in start time and end time of
 	// an entry range) the same for all entries start time of first interval is
 	// query_start_time_ms
 	// Wire name: 'interval'
-	Interval        int64    ``
-	ForceSendFields []string `tf:"-"`
+	Interval        int64    `json:"interval,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TaskTimeOverRange) MarshalJSON() ([]byte, error) {
@@ -15117,8 +15044,8 @@ type TaskTimeOverRangeEntry struct {
 	// total task completion time in this time range, aggregated over all stages
 	// and jobs in the query
 	// Wire name: 'task_completed_time_ms'
-	TaskCompletedTimeMs int64    ``
-	ForceSendFields     []string `tf:"-"`
+	TaskCompletedTimeMs int64    `json:"task_completed_time_ms,omitempty"`
+	ForceSendFields     []string `json:"-" tf:"-"`
 }
 
 func (st TaskTimeOverRangeEntry) MarshalJSON() ([]byte, error) {
@@ -15175,14 +15102,14 @@ func TaskTimeOverRangeEntryFromPb(pb *sqlpb.TaskTimeOverRangeEntryPb) (*TaskTime
 type TerminationReason struct {
 	// status code indicating why the cluster was terminated
 	// Wire name: 'code'
-	Code TerminationReasonCode ``
+	Code TerminationReasonCode `json:"code,omitempty"`
 	// list of parameters that provide additional information about why the
 	// cluster was terminated
 	// Wire name: 'parameters'
-	Parameters map[string]string ``
+	Parameters map[string]string `json:"parameters,omitempty"`
 	// type of the termination
 	// Wire name: 'type'
-	Type TerminationReasonType ``
+	Type TerminationReasonType `json:"type,omitempty"`
 }
 
 func (st TerminationReason) MarshalJSON() ([]byte, error) {
@@ -15606,8 +15533,8 @@ func TerminationReasonTypeFromPb(pb *sqlpb.TerminationReasonTypePb) (*Terminatio
 type TextValue struct {
 
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TextValue) MarshalJSON() ([]byte, error) {
@@ -15664,11 +15591,11 @@ func TextValueFromPb(pb *sqlpb.TextValuePb) (*TextValue, error) {
 type TimeRange struct {
 	// The end time in milliseconds.
 	// Wire name: 'end_time_ms'
-	EndTimeMs int64 ``
+	EndTimeMs int64 `json:"end_time_ms,omitempty"`
 	// The start time in milliseconds.
 	// Wire name: 'start_time_ms'
-	StartTimeMs     int64    ``
-	ForceSendFields []string `tf:"-"`
+	StartTimeMs     int64    `json:"start_time_ms,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TimeRange) MarshalJSON() ([]byte, error) {
@@ -15727,8 +15654,8 @@ func TimeRangeFromPb(pb *sqlpb.TimeRangePb) (*TimeRange, error) {
 type TransferOwnershipObjectId struct {
 	// Email address for the new owner, who must exist in the workspace.
 	// Wire name: 'new_owner'
-	NewOwner        string   ``
-	ForceSendFields []string `tf:"-"`
+	NewOwner        string   `json:"new_owner,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TransferOwnershipObjectId) MarshalJSON() ([]byte, error) {
@@ -15785,14 +15712,12 @@ func TransferOwnershipObjectIdFromPb(pb *sqlpb.TransferOwnershipObjectIdPb) (*Tr
 type TransferOwnershipRequest struct {
 	// Email address for the new owner, who must exist in the workspace.
 	// Wire name: 'new_owner'
-	NewOwner string ``
+	NewOwner string `json:"new_owner,omitempty"`
 	// The ID of the object on which to change ownership.
-	// Wire name: 'objectId'
-	ObjectId TransferOwnershipObjectId `tf:"-"`
+	ObjectId TransferOwnershipObjectId `json:"-" tf:"-"`
 	// The type of object on which to change ownership.
-	// Wire name: 'objectType'
-	ObjectType      OwnableObjectType `tf:"-"`
-	ForceSendFields []string          `tf:"-"`
+	ObjectType      OwnableObjectType `json:"-" tf:"-"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
 func (st TransferOwnershipRequest) MarshalJSON() ([]byte, error) {
@@ -15875,9 +15800,7 @@ func TransferOwnershipRequestFromPb(pb *sqlpb.TransferOwnershipRequestPb) (*Tran
 }
 
 type TrashAlertRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st TrashAlertRequest) MarshalJSON() ([]byte, error) {
@@ -15926,9 +15849,7 @@ func TrashAlertRequestFromPb(pb *sqlpb.TrashAlertRequestPb) (*TrashAlertRequest,
 }
 
 type TrashAlertV2Request struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st TrashAlertV2Request) MarshalJSON() ([]byte, error) {
@@ -15977,9 +15898,7 @@ func TrashAlertV2RequestFromPb(pb *sqlpb.TrashAlertV2RequestPb) (*TrashAlertV2Re
 }
 
 type TrashQueryRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st TrashQueryRequest) MarshalJSON() ([]byte, error) {
@@ -16030,15 +15949,14 @@ func TrashQueryRequestFromPb(pb *sqlpb.TrashQueryRequestPb) (*TrashQueryRequest,
 type UpdateAlertRequest struct {
 
 	// Wire name: 'alert'
-	Alert *UpdateAlertRequestAlert ``
+	Alert *UpdateAlertRequestAlert `json:"alert,omitempty"`
 	// If true, automatically resolve alert display name conflicts. Otherwise,
 	// fail the request if the alert's display name conflicts with an existing
 	// alert's display name.
 	// Wire name: 'auto_resolve_display_name'
-	AutoResolveDisplayName bool ``
+	AutoResolveDisplayName bool `json:"auto_resolve_display_name,omitempty"`
 
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -16051,8 +15969,8 @@ type UpdateAlertRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'update_mask'
-	UpdateMask      string   `` //legacy
-	ForceSendFields []string `tf:"-"`
+	UpdateMask      string   `json:"update_mask"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateAlertRequest) MarshalJSON() ([]byte, error) {
@@ -16127,39 +16045,39 @@ func UpdateAlertRequestFromPb(pb *sqlpb.UpdateAlertRequestPb) (*UpdateAlertReque
 type UpdateAlertRequestAlert struct {
 	// Trigger conditions of the alert.
 	// Wire name: 'condition'
-	Condition *AlertCondition ``
+	Condition *AlertCondition `json:"condition,omitempty"`
 	// Custom body of alert notification, if it exists. See [here] for custom
 	// templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	// Wire name: 'custom_body'
-	CustomBody string ``
+	CustomBody string `json:"custom_body,omitempty"`
 	// Custom subject of alert notification, if it exists. This can include
 	// email subject entries and Slack notification headers, for example. See
 	// [here] for custom templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
 	// Wire name: 'custom_subject'
-	CustomSubject string ``
+	CustomSubject string `json:"custom_subject,omitempty"`
 	// The display name of the alert.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// Whether to notify alert subscribers when alert returns back to normal.
 	// Wire name: 'notify_on_ok'
-	NotifyOnOk bool ``
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
 	// Wire name: 'owner_user_name'
-	OwnerUserName string ``
+	OwnerUserName string `json:"owner_user_name,omitempty"`
 	// UUID of the query attached to the alert.
 	// Wire name: 'query_id'
-	QueryId string ``
+	QueryId string `json:"query_id,omitempty"`
 	// Number of seconds an alert must wait after being triggered to rearm
 	// itself. After rearming, it can be triggered again. If 0 or not specified,
 	// the alert will not be triggered again.
 	// Wire name: 'seconds_to_retrigger'
-	SecondsToRetrigger int      ``
-	ForceSendFields    []string `tf:"-"`
+	SecondsToRetrigger int      `json:"seconds_to_retrigger,omitempty"`
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
 func (st UpdateAlertRequestAlert) MarshalJSON() ([]byte, error) {
@@ -16242,10 +16160,9 @@ func UpdateAlertRequestAlertFromPb(pb *sqlpb.UpdateAlertRequestAlertPb) (*Update
 type UpdateAlertV2Request struct {
 
 	// Wire name: 'alert'
-	Alert AlertV2 ``
+	Alert AlertV2 `json:"alert"`
 	// UUID identifying the alert.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -16257,8 +16174,7 @@ type UpdateAlertV2Request struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
-	// Wire name: 'update_mask'
-	UpdateMask string `tf:"-"` //legacy
+	UpdateMask string `json:"-" tf:"-"` //legacy
 
 }
 
@@ -16328,13 +16244,12 @@ type UpdateQueryRequest struct {
 	// fail the request if the alert's display name conflicts with an existing
 	// alert's display name.
 	// Wire name: 'auto_resolve_display_name'
-	AutoResolveDisplayName bool ``
+	AutoResolveDisplayName bool `json:"auto_resolve_display_name,omitempty"`
 
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 
 	// Wire name: 'query'
-	Query *UpdateQueryRequestQuery ``
+	Query *UpdateQueryRequestQuery `json:"query,omitempty"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -16347,8 +16262,8 @@ type UpdateQueryRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'update_mask'
-	UpdateMask      string   `` //legacy
-	ForceSendFields []string `tf:"-"`
+	UpdateMask      string   `json:"update_mask"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateQueryRequest) MarshalJSON() ([]byte, error) {
@@ -16423,40 +16338,40 @@ func UpdateQueryRequestFromPb(pb *sqlpb.UpdateQueryRequestPb) (*UpdateQueryReque
 type UpdateQueryRequestQuery struct {
 	// Whether to apply a 1000 row limit to the query result.
 	// Wire name: 'apply_auto_limit'
-	ApplyAutoLimit bool ``
+	ApplyAutoLimit bool `json:"apply_auto_limit,omitempty"`
 	// Name of the catalog where this query will be executed.
 	// Wire name: 'catalog'
-	Catalog string ``
+	Catalog string `json:"catalog,omitempty"`
 	// General description that conveys additional information about this query
 	// such as usage notes.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Display name of the query that appears in list views, widget headings,
 	// and on the query page.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// Username of the user that owns the query.
 	// Wire name: 'owner_user_name'
-	OwnerUserName string ``
+	OwnerUserName string `json:"owner_user_name,omitempty"`
 	// List of query parameter definitions.
 	// Wire name: 'parameters'
-	Parameters []QueryParameter ``
+	Parameters []QueryParameter `json:"parameters,omitempty"`
 	// Text of the query to be run.
 	// Wire name: 'query_text'
-	QueryText string ``
+	QueryText string `json:"query_text,omitempty"`
 	// Sets the "Run as" role for the object.
 	// Wire name: 'run_as_mode'
-	RunAsMode RunAsMode ``
+	RunAsMode RunAsMode `json:"run_as_mode,omitempty"`
 	// Name of the schema where this query will be executed.
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 
 	// Wire name: 'tags'
-	Tags []string ``
+	Tags []string `json:"tags,omitempty"`
 	// ID of the SQL warehouse attached to the query.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateQueryRequestQuery) MarshalJSON() ([]byte, error) {
@@ -16565,9 +16480,7 @@ func UpdateQueryRequestQueryFromPb(pb *sqlpb.UpdateQueryRequestQueryPb) (*Update
 }
 
 type UpdateVisualizationRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -16580,10 +16493,10 @@ type UpdateVisualizationRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'update_mask'
-	UpdateMask string `` //legacy
+	UpdateMask string `json:"update_mask"` //legacy
 
 	// Wire name: 'visualization'
-	Visualization *UpdateVisualizationRequestVisualization ``
+	Visualization *UpdateVisualizationRequestVisualization `json:"visualization,omitempty"`
 }
 
 func (st UpdateVisualizationRequest) MarshalJSON() ([]byte, error) {
@@ -16650,21 +16563,21 @@ func UpdateVisualizationRequestFromPb(pb *sqlpb.UpdateVisualizationRequestPb) (*
 type UpdateVisualizationRequestVisualization struct {
 	// The display name of the visualization.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// The visualization options varies widely from one visualization type to
 	// the next and is unsupported. Databricks does not recommend modifying
 	// visualization options directly.
 	// Wire name: 'serialized_options'
-	SerializedOptions string ``
+	SerializedOptions string `json:"serialized_options,omitempty"`
 	// The visualization query plan varies widely from one visualization type to
 	// the next and is unsupported. Databricks does not recommend modifying the
 	// visualization query plan directly.
 	// Wire name: 'serialized_query_plan'
-	SerializedQueryPlan string ``
+	SerializedQueryPlan string `json:"serialized_query_plan,omitempty"`
 	// The type of visualization: counter, table, funnel, and so on.
 	// Wire name: 'type'
-	Type            string   ``
-	ForceSendFields []string `tf:"-"`
+	Type            string   `json:"type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateVisualizationRequestVisualization) MarshalJSON() ([]byte, error) {
@@ -16727,25 +16640,24 @@ func UpdateVisualizationRequestVisualizationFromPb(pb *sqlpb.UpdateVisualization
 type UpdateWidgetRequest struct {
 	// Dashboard ID returned by :method:dashboards/create.
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id"`
 	// Widget ID returned by :method:dashboardwidgets/create
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 
 	// Wire name: 'options'
-	Options WidgetOptions ``
+	Options WidgetOptions `json:"options"`
 	// If this is a textbox widget, the application displays this text. This
 	// field is ignored if the widget contains a visualization in the
 	// `visualization` field.
 	// Wire name: 'text'
-	Text string ``
+	Text string `json:"text,omitempty"`
 	// Query Vizualization ID returned by :method:queryvisualizations/create.
 	// Wire name: 'visualization_id'
-	VisualizationId string ``
+	VisualizationId string `json:"visualization_id,omitempty"`
 	// Width of a widget
 	// Wire name: 'width'
-	Width           int      ``
-	ForceSendFields []string `tf:"-"`
+	Width           int      `json:"width"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateWidgetRequest) MarshalJSON() ([]byte, error) {
@@ -16824,14 +16736,14 @@ func UpdateWidgetRequestFromPb(pb *sqlpb.UpdateWidgetRequestPb) (*UpdateWidgetRe
 type User struct {
 
 	// Wire name: 'email'
-	Email string ``
+	Email string `json:"email,omitempty"`
 
 	// Wire name: 'id'
-	Id int ``
+	Id int `json:"id,omitempty"`
 
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st User) MarshalJSON() ([]byte, error) {
@@ -16892,33 +16804,33 @@ func UserFromPb(pb *sqlpb.UserPb) (*User, error) {
 type Visualization struct {
 	// The timestamp indicating when the visualization was created.
 	// Wire name: 'create_time'
-	CreateTime string `` //legacy
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// The display name of the visualization.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// UUID identifying the visualization.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// UUID of the query that the visualization is attached to.
 	// Wire name: 'query_id'
-	QueryId string ``
+	QueryId string `json:"query_id,omitempty"`
 	// The visualization options varies widely from one visualization type to
 	// the next and is unsupported. Databricks does not recommend modifying
 	// visualization options directly.
 	// Wire name: 'serialized_options'
-	SerializedOptions string ``
+	SerializedOptions string `json:"serialized_options,omitempty"`
 	// The visualization query plan varies widely from one visualization type to
 	// the next and is unsupported. Databricks does not recommend modifying the
 	// visualization query plan directly.
 	// Wire name: 'serialized_query_plan'
-	SerializedQueryPlan string ``
+	SerializedQueryPlan string `json:"serialized_query_plan,omitempty"`
 	// The type of visualization: counter, table, funnel, and so on.
 	// Wire name: 'type'
-	Type string ``
+	Type string `json:"type,omitempty"`
 	// The timestamp indicating when the visualization was updated.
 	// Wire name: 'update_time'
-	UpdateTime      string   `` //legacy
-	ForceSendFields []string `tf:"-"`
+	UpdateTime      string   `json:"update_time,omitempty"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Visualization) MarshalJSON() ([]byte, error) {
@@ -16989,17 +16901,17 @@ func VisualizationFromPb(pb *sqlpb.VisualizationPb) (*Visualization, error) {
 type WarehouseAccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel WarehousePermissionLevel ``
+	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st WarehouseAccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -17074,20 +16986,20 @@ func WarehouseAccessControlRequestFromPb(pb *sqlpb.WarehouseAccessControlRequest
 type WarehouseAccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []WarehousePermission ``
+	AllPermissions []WarehousePermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st WarehouseAccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -17174,14 +17086,14 @@ func WarehouseAccessControlResponseFromPb(pb *sqlpb.WarehouseAccessControlRespon
 type WarehousePermission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel WarehousePermissionLevel ``
-	ForceSendFields []string                 `tf:"-"`
+	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                 `json:"-" tf:"-"`
 }
 
 func (st WarehousePermission) MarshalJSON() ([]byte, error) {
@@ -17317,14 +17229,14 @@ func WarehousePermissionLevelFromPb(pb *sqlpb.WarehousePermissionLevelPb) (*Ware
 type WarehousePermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []WarehouseAccessControlResponse ``
+	AccessControlList []WarehouseAccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st WarehousePermissions) MarshalJSON() ([]byte, error) {
@@ -17407,11 +17319,11 @@ func WarehousePermissionsFromPb(pb *sqlpb.WarehousePermissionsPb) (*WarehousePer
 type WarehousePermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel WarehousePermissionLevel ``
-	ForceSendFields []string                 `tf:"-"`
+	PermissionLevel WarehousePermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                 `json:"-" tf:"-"`
 }
 
 func (st WarehousePermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -17482,10 +17394,9 @@ func WarehousePermissionsDescriptionFromPb(pb *sqlpb.WarehousePermissionsDescrip
 type WarehousePermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []WarehouseAccessControlRequest ``
+	AccessControlList []WarehouseAccessControlRequest `json:"access_control_list,omitempty"`
 	// The SQL warehouse for which to get or manage permissions.
-	// Wire name: 'warehouse_id'
-	WarehouseId string `tf:"-"`
+	WarehouseId string `json:"-" tf:"-"`
 }
 
 func (st WarehousePermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -17561,11 +17472,11 @@ type WarehouseTypePair struct {
 	// If set to false the specific warehouse type will not be be allowed as a
 	// value for warehouse_type in CreateWarehouse and EditWarehouse
 	// Wire name: 'enabled'
-	Enabled bool ``
+	Enabled bool `json:"enabled,omitempty"`
 	// Warehouse type: `PRO` or `CLASSIC`.
 	// Wire name: 'warehouse_type'
-	WarehouseType   WarehouseTypePairWarehouseType ``
-	ForceSendFields []string                       `tf:"-"`
+	WarehouseType   WarehouseTypePairWarehouseType `json:"warehouse_type,omitempty"`
+	ForceSendFields []string                       `json:"-" tf:"-"`
 }
 
 func (st WarehouseTypePair) MarshalJSON() ([]byte, error) {
@@ -17693,21 +17604,21 @@ func WarehouseTypePairWarehouseTypeFromPb(pb *sqlpb.WarehouseTypePairWarehouseTy
 type Widget struct {
 	// The unique ID for this widget.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 
 	// Wire name: 'options'
-	Options *WidgetOptions ``
+	Options *WidgetOptions `json:"options,omitempty"`
 	// The visualization description API changes frequently and is unsupported.
 	// You can duplicate a visualization by copying description objects received
 	// _from the API_ and then using them to create a new one with a POST
 	// request to the same endpoint. Databricks does not recommend constructing
 	// ad-hoc visualizations entirely in JSON.
 	// Wire name: 'visualization'
-	Visualization *LegacyVisualization ``
+	Visualization *LegacyVisualization `json:"visualization,omitempty"`
 	// Unused field.
 	// Wire name: 'width'
-	Width           int      ``
-	ForceSendFields []string `tf:"-"`
+	Width           int      `json:"width,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Widget) MarshalJSON() ([]byte, error) {
@@ -17794,29 +17705,29 @@ func WidgetFromPb(pb *sqlpb.WidgetPb) (*Widget, error) {
 type WidgetOptions struct {
 	// Timestamp when this object was created
 	// Wire name: 'created_at'
-	CreatedAt string ``
+	CreatedAt string `json:"created_at,omitempty"`
 	// Custom description of the widget
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Whether this widget is hidden on the dashboard.
 	// Wire name: 'isHidden'
-	IsHidden bool ``
+	IsHidden bool `json:"isHidden,omitempty"`
 	// How parameters used by the visualization in this widget relate to other
 	// widgets on the dashboard. Databricks does not recommend modifying this
 	// definition in JSON.
 	// Wire name: 'parameterMappings'
-	ParameterMappings any ``
+	ParameterMappings any `json:"parameterMappings,omitempty"`
 	// Coordinates of this widget on a dashboard. This portion of the API
 	// changes frequently and is unsupported.
 	// Wire name: 'position'
-	Position *WidgetPosition ``
+	Position *WidgetPosition `json:"position,omitempty"`
 	// Custom title of the widget
 	// Wire name: 'title'
-	Title string ``
+	Title string `json:"title,omitempty"`
 	// Timestamp of the last time this object was updated.
 	// Wire name: 'updated_at'
-	UpdatedAt       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedAt       string   `json:"updated_at,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st WidgetOptions) MarshalJSON() ([]byte, error) {
@@ -17899,20 +17810,20 @@ func WidgetOptionsFromPb(pb *sqlpb.WidgetOptionsPb) (*WidgetOptions, error) {
 type WidgetPosition struct {
 	// reserved for internal use
 	// Wire name: 'autoHeight'
-	AutoHeight bool ``
+	AutoHeight bool `json:"autoHeight,omitempty"`
 	// column in the dashboard grid. Values start with 0
 	// Wire name: 'col'
-	Col int ``
+	Col int `json:"col,omitempty"`
 	// row in the dashboard grid. Values start with 0
 	// Wire name: 'row'
-	Row int ``
+	Row int `json:"row,omitempty"`
 	// width of the widget measured in dashboard grid cells
 	// Wire name: 'sizeX'
-	SizeX int ``
+	SizeX int `json:"sizeX,omitempty"`
 	// height of the widget measured in dashboard grid cells
 	// Wire name: 'sizeY'
-	SizeY           int      ``
-	ForceSendFields []string `tf:"-"`
+	SizeY           int      `json:"sizeY,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st WidgetPosition) MarshalJSON() ([]byte, error) {

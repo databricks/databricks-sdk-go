@@ -15,78 +15,78 @@ type App struct {
 	// The active deployment of the app. A deployment is considered active when
 	// it has been deployed to the app compute.
 	// Wire name: 'active_deployment'
-	ActiveDeployment *AppDeployment ``
+	ActiveDeployment *AppDeployment `json:"active_deployment,omitempty"`
 
 	// Wire name: 'app_status'
-	AppStatus *ApplicationStatus ``
+	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
 
 	// Wire name: 'budget_policy_id'
-	BudgetPolicyId string ``
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 
 	// Wire name: 'compute_status'
-	ComputeStatus *ComputeStatus ``
+	ComputeStatus *ComputeStatus `json:"compute_status,omitempty"`
 	// The creation time of the app. Formatted timestamp in ISO 6801.
 	// Wire name: 'create_time'
-	CreateTime string `` //legacy
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// The email of the user that created the app.
 	// Wire name: 'creator'
-	Creator string ``
+	Creator string `json:"creator,omitempty"`
 	// The default workspace file system path of the source code from which app
 	// deployment are created. This field tracks the workspace source code path
 	// of the last active deployment.
 	// Wire name: 'default_source_code_path'
-	DefaultSourceCodePath string ``
+	DefaultSourceCodePath string `json:"default_source_code_path,omitempty"`
 	// The description of the app.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'effective_budget_policy_id'
-	EffectiveBudgetPolicyId string ``
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// The effective api scopes granted to the user access token.
 	// Wire name: 'effective_user_api_scopes'
-	EffectiveUserApiScopes []string ``
+	EffectiveUserApiScopes []string `json:"effective_user_api_scopes,omitempty"`
 	// The unique identifier of the app.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 
 	// Wire name: 'oauth2_app_client_id'
-	Oauth2AppClientId string ``
+	Oauth2AppClientId string `json:"oauth2_app_client_id,omitempty"`
 
 	// Wire name: 'oauth2_app_integration_id'
-	Oauth2AppIntegrationId string ``
+	Oauth2AppIntegrationId string `json:"oauth2_app_integration_id,omitempty"`
 	// The pending deployment of the app. A deployment is considered pending
 	// when it is being prepared for deployment to the app compute.
 	// Wire name: 'pending_deployment'
-	PendingDeployment *AppDeployment ``
+	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
 	// Resources for the app.
 	// Wire name: 'resources'
-	Resources []AppResource ``
+	Resources []AppResource `json:"resources,omitempty"`
 
 	// Wire name: 'service_principal_client_id'
-	ServicePrincipalClientId string ``
+	ServicePrincipalClientId string `json:"service_principal_client_id,omitempty"`
 
 	// Wire name: 'service_principal_id'
-	ServicePrincipalId int64 ``
+	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
 
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// The update time of the app. Formatted timestamp in ISO 6801.
 	// Wire name: 'update_time'
-	UpdateTime string `` //legacy
+	UpdateTime string `json:"update_time,omitempty"` //legacy
 	// The email of the user that last updated the app.
 	// Wire name: 'updater'
-	Updater string ``
+	Updater string `json:"updater,omitempty"`
 	// The URL of the app once it is deployed.
 	// Wire name: 'url'
-	Url string ``
+	Url string `json:"url,omitempty"`
 
 	// Wire name: 'user_api_scopes'
-	UserApiScopes   []string ``
-	ForceSendFields []string `tf:"-"`
+	UserApiScopes   []string `json:"user_api_scopes,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st App) MarshalJSON() ([]byte, error) {
@@ -257,17 +257,17 @@ func AppFromPb(pb *appspb.AppPb) (*App, error) {
 type AppAccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel AppPermissionLevel ``
+	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AppAccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -342,20 +342,20 @@ func AppAccessControlRequestFromPb(pb *appspb.AppAccessControlRequestPb) (*AppAc
 type AppAccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []AppPermission ``
+	AllPermissions []AppPermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AppAccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -442,19 +442,19 @@ func AppAccessControlResponseFromPb(pb *appspb.AppAccessControlResponsePb) (*App
 type AppDeployment struct {
 	// The creation time of the deployment. Formatted timestamp in ISO 6801.
 	// Wire name: 'create_time'
-	CreateTime string `` //legacy
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// The email of the user creates the deployment.
 	// Wire name: 'creator'
-	Creator string ``
+	Creator string `json:"creator,omitempty"`
 	// The deployment artifacts for an app.
 	// Wire name: 'deployment_artifacts'
-	DeploymentArtifacts *AppDeploymentArtifacts ``
+	DeploymentArtifacts *AppDeploymentArtifacts `json:"deployment_artifacts,omitempty"`
 	// The unique id of the deployment.
 	// Wire name: 'deployment_id'
-	DeploymentId string ``
+	DeploymentId string `json:"deployment_id,omitempty"`
 	// The mode of which the deployment will manage the source code.
 	// Wire name: 'mode'
-	Mode AppDeploymentMode ``
+	Mode AppDeploymentMode `json:"mode,omitempty"`
 	// The workspace file system path of the source code used to create the app
 	// deployment. This is different from
 	// `deployment_artifacts.source_code_path`, which is the path used by the
@@ -463,14 +463,14 @@ type AppDeployment struct {
 	// provides a system generated stable snapshotted source code path used by
 	// the deployment.
 	// Wire name: 'source_code_path'
-	SourceCodePath string ``
+	SourceCodePath string `json:"source_code_path,omitempty"`
 	// Status and status message of the deployment
 	// Wire name: 'status'
-	Status *AppDeploymentStatus ``
+	Status *AppDeploymentStatus `json:"status,omitempty"`
 	// The update time of the deployment. Formatted timestamp in ISO 6801.
 	// Wire name: 'update_time'
-	UpdateTime      string   `` //legacy
-	ForceSendFields []string `tf:"-"`
+	UpdateTime      string   `json:"update_time,omitempty"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AppDeployment) MarshalJSON() ([]byte, error) {
@@ -578,8 +578,8 @@ type AppDeploymentArtifacts struct {
 	// The snapshotted workspace file system path of the source code loaded by
 	// the deployed app.
 	// Wire name: 'source_code_path'
-	SourceCodePath  string   ``
-	ForceSendFields []string `tf:"-"`
+	SourceCodePath  string   `json:"source_code_path,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AppDeploymentArtifacts) MarshalJSON() ([]byte, error) {
@@ -748,11 +748,11 @@ func AppDeploymentStateFromPb(pb *appspb.AppDeploymentStatePb) (*AppDeploymentSt
 type AppDeploymentStatus struct {
 	// Message corresponding with the deployment state.
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 	// State of the deployment.
 	// Wire name: 'state'
-	State           AppDeploymentState ``
-	ForceSendFields []string           `tf:"-"`
+	State           AppDeploymentState `json:"state,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
 func (st AppDeploymentStatus) MarshalJSON() ([]byte, error) {
@@ -823,14 +823,14 @@ func AppDeploymentStatusFromPb(pb *appspb.AppDeploymentStatusPb) (*AppDeployment
 type AppPermission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel AppPermissionLevel ``
-	ForceSendFields []string           `tf:"-"`
+	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
 func (st AppPermission) MarshalJSON() ([]byte, error) {
@@ -957,14 +957,14 @@ func AppPermissionLevelFromPb(pb *appspb.AppPermissionLevelPb) (*AppPermissionLe
 type AppPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []AppAccessControlResponse ``
+	AccessControlList []AppAccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AppPermissions) MarshalJSON() ([]byte, error) {
@@ -1047,11 +1047,11 @@ func AppPermissionsFromPb(pb *appspb.AppPermissionsPb) (*AppPermissions, error) 
 type AppPermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel AppPermissionLevel ``
-	ForceSendFields []string           `tf:"-"`
+	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
 func (st AppPermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -1122,10 +1122,9 @@ func AppPermissionsDescriptionFromPb(pb *appspb.AppPermissionsDescriptionPb) (*A
 type AppPermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []AppAccessControlRequest ``
+	AccessControlList []AppAccessControlRequest `json:"access_control_list,omitempty"`
 	// The app for which to get or manage permissions.
-	// Wire name: 'app_name'
-	AppName string `tf:"-"`
+	AppName string `json:"-" tf:"-"`
 }
 
 func (st AppPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -1200,29 +1199,29 @@ func AppPermissionsRequestFromPb(pb *appspb.AppPermissionsRequestPb) (*AppPermis
 type AppResource struct {
 
 	// Wire name: 'database'
-	Database *AppResourceDatabase ``
+	Database *AppResourceDatabase `json:"database,omitempty"`
 	// Description of the App Resource.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'job'
-	Job *AppResourceJob ``
+	Job *AppResourceJob `json:"job,omitempty"`
 	// Name of the App Resource.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 
 	// Wire name: 'secret'
-	Secret *AppResourceSecret ``
+	Secret *AppResourceSecret `json:"secret,omitempty"`
 
 	// Wire name: 'serving_endpoint'
-	ServingEndpoint *AppResourceServingEndpoint ``
+	ServingEndpoint *AppResourceServingEndpoint `json:"serving_endpoint,omitempty"`
 
 	// Wire name: 'sql_warehouse'
-	SqlWarehouse *AppResourceSqlWarehouse ``
+	SqlWarehouse *AppResourceSqlWarehouse `json:"sql_warehouse,omitempty"`
 
 	// Wire name: 'uc_securable'
-	UcSecurable     *AppResourceUcSecurable ``
-	ForceSendFields []string                `tf:"-"`
+	UcSecurable     *AppResourceUcSecurable `json:"uc_securable,omitempty"`
+	ForceSendFields []string                `json:"-" tf:"-"`
 }
 
 func (st AppResource) MarshalJSON() ([]byte, error) {
@@ -1365,13 +1364,13 @@ func AppResourceFromPb(pb *appspb.AppResourcePb) (*AppResource, error) {
 type AppResourceDatabase struct {
 
 	// Wire name: 'database_name'
-	DatabaseName string ``
+	DatabaseName string `json:"database_name"`
 
 	// Wire name: 'instance_name'
-	InstanceName string ``
+	InstanceName string `json:"instance_name"`
 
 	// Wire name: 'permission'
-	Permission AppResourceDatabaseDatabasePermission ``
+	Permission AppResourceDatabaseDatabasePermission `json:"permission"`
 }
 
 func (st AppResourceDatabase) MarshalJSON() ([]byte, error) {
@@ -1488,11 +1487,11 @@ func AppResourceDatabaseDatabasePermissionFromPb(pb *appspb.AppResourceDatabaseD
 type AppResourceJob struct {
 	// Id of the job to grant permission on.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id"`
 	// Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE",
 	// "IS_OWNER", "CAN_MANAGE_RUN", "CAN_VIEW".
 	// Wire name: 'permission'
-	Permission AppResourceJobJobPermission ``
+	Permission AppResourceJobJobPermission `json:"permission"`
 }
 
 func (st AppResourceJob) MarshalJSON() ([]byte, error) {
@@ -1616,14 +1615,14 @@ func AppResourceJobJobPermissionFromPb(pb *appspb.AppResourceJobJobPermissionPb)
 type AppResourceSecret struct {
 	// Key of the secret to grant permission on.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 	// Permission to grant on the secret scope. For secrets, only one permission
 	// is allowed. Permission must be one of: "READ", "WRITE", "MANAGE".
 	// Wire name: 'permission'
-	Permission AppResourceSecretSecretPermission ``
+	Permission AppResourceSecretSecretPermission `json:"permission"`
 	// Scope of the secret to grant permission on.
 	// Wire name: 'scope'
-	Scope string ``
+	Scope string `json:"scope"`
 }
 
 func (st AppResourceSecret) MarshalJSON() ([]byte, error) {
@@ -1748,11 +1747,11 @@ func AppResourceSecretSecretPermissionFromPb(pb *appspb.AppResourceSecretSecretP
 type AppResourceServingEndpoint struct {
 	// Name of the serving endpoint to grant permission on.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Permission to grant on the serving endpoint. Supported permissions are:
 	// "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW".
 	// Wire name: 'permission'
-	Permission AppResourceServingEndpointServingEndpointPermission ``
+	Permission AppResourceServingEndpointServingEndpointPermission `json:"permission"`
 }
 
 func (st AppResourceServingEndpoint) MarshalJSON() ([]byte, error) {
@@ -1873,11 +1872,11 @@ func AppResourceServingEndpointServingEndpointPermissionFromPb(pb *appspb.AppRes
 type AppResourceSqlWarehouse struct {
 	// Id of the SQL warehouse to grant permission on.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id"`
 	// Permission to grant on the SQL warehouse. Supported permissions are:
 	// "CAN_MANAGE", "CAN_USE", "IS_OWNER".
 	// Wire name: 'permission'
-	Permission AppResourceSqlWarehouseSqlWarehousePermission ``
+	Permission AppResourceSqlWarehouseSqlWarehousePermission `json:"permission"`
 }
 
 func (st AppResourceSqlWarehouse) MarshalJSON() ([]byte, error) {
@@ -1998,13 +1997,13 @@ func AppResourceSqlWarehouseSqlWarehousePermissionFromPb(pb *appspb.AppResourceS
 type AppResourceUcSecurable struct {
 
 	// Wire name: 'permission'
-	Permission AppResourceUcSecurableUcSecurablePermission ``
+	Permission AppResourceUcSecurableUcSecurablePermission `json:"permission"`
 
 	// Wire name: 'securable_full_name'
-	SecurableFullName string ``
+	SecurableFullName string `json:"securable_full_name"`
 
 	// Wire name: 'securable_type'
-	SecurableType AppResourceUcSecurableUcSecurableType ``
+	SecurableType AppResourceUcSecurableUcSecurableType `json:"securable_type"`
 }
 
 func (st AppResourceUcSecurable) MarshalJSON() ([]byte, error) {
@@ -2245,11 +2244,11 @@ func ApplicationStateFromPb(pb *appspb.ApplicationStatePb) (*ApplicationState, e
 type ApplicationStatus struct {
 	// Application status message
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 	// State of the application.
 	// Wire name: 'state'
-	State           ApplicationState ``
-	ForceSendFields []string         `tf:"-"`
+	State           ApplicationState `json:"state,omitempty"`
+	ForceSendFields []string         `json:"-" tf:"-"`
 }
 
 func (st ApplicationStatus) MarshalJSON() ([]byte, error) {
@@ -2388,11 +2387,11 @@ func ComputeStateFromPb(pb *appspb.ComputeStatePb) (*ComputeState, error) {
 type ComputeStatus struct {
 	// Compute status message
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 	// State of the app compute.
 	// Wire name: 'state'
-	State           ComputeState ``
-	ForceSendFields []string     `tf:"-"`
+	State           ComputeState `json:"state,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
 func (st ComputeStatus) MarshalJSON() ([]byte, error) {
@@ -2463,10 +2462,9 @@ func ComputeStatusFromPb(pb *appspb.ComputeStatusPb) (*ComputeStatus, error) {
 type CreateAppDeploymentRequest struct {
 	// The app deployment configuration.
 	// Wire name: 'app_deployment'
-	AppDeployment AppDeployment ``
+	AppDeployment AppDeployment `json:"app_deployment"`
 	// The name of the app.
-	// Wire name: 'app_name'
-	AppName string `tf:"-"`
+	AppName string `json:"-" tf:"-"`
 }
 
 func (st CreateAppDeploymentRequest) MarshalJSON() ([]byte, error) {
@@ -2531,11 +2529,10 @@ func CreateAppDeploymentRequestFromPb(pb *appspb.CreateAppDeploymentRequestPb) (
 type CreateAppRequest struct {
 
 	// Wire name: 'app'
-	App App ``
+	App App `json:"app"`
 	// If true, the app will not be started after creation.
-	// Wire name: 'no_compute'
-	NoCompute       bool     `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	NoCompute       bool     `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateAppRequest) MarshalJSON() ([]byte, error) {
@@ -2605,8 +2602,7 @@ func CreateAppRequestFromPb(pb *appspb.CreateAppRequestPb) (*CreateAppRequest, e
 
 type DeleteAppRequest struct {
 	// The name of the app.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteAppRequest) MarshalJSON() ([]byte, error) {
@@ -2656,11 +2652,9 @@ func DeleteAppRequestFromPb(pb *appspb.DeleteAppRequestPb) (*DeleteAppRequest, e
 
 type GetAppDeploymentRequest struct {
 	// The name of the app.
-	// Wire name: 'app_name'
-	AppName string `tf:"-"`
+	AppName string `json:"-" tf:"-"`
 	// The unique id of the deployment.
-	// Wire name: 'deployment_id'
-	DeploymentId string `tf:"-"`
+	DeploymentId string `json:"-" tf:"-"`
 }
 
 func (st GetAppDeploymentRequest) MarshalJSON() ([]byte, error) {
@@ -2712,8 +2706,7 @@ func GetAppDeploymentRequestFromPb(pb *appspb.GetAppDeploymentRequestPb) (*GetAp
 
 type GetAppPermissionLevelsRequest struct {
 	// The app for which to get or manage permissions.
-	// Wire name: 'app_name'
-	AppName string `tf:"-"`
+	AppName string `json:"-" tf:"-"`
 }
 
 func (st GetAppPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
@@ -2764,7 +2757,7 @@ func GetAppPermissionLevelsRequestFromPb(pb *appspb.GetAppPermissionLevelsReques
 type GetAppPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []AppPermissionsDescription ``
+	PermissionLevels []AppPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetAppPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -2836,8 +2829,7 @@ func GetAppPermissionLevelsResponseFromPb(pb *appspb.GetAppPermissionLevelsRespo
 
 type GetAppPermissionsRequest struct {
 	// The app for which to get or manage permissions.
-	// Wire name: 'app_name'
-	AppName string `tf:"-"`
+	AppName string `json:"-" tf:"-"`
 }
 
 func (st GetAppPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -2887,8 +2879,7 @@ func GetAppPermissionsRequestFromPb(pb *appspb.GetAppPermissionsRequestPb) (*Get
 
 type GetAppRequest struct {
 	// The name of the app.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetAppRequest) MarshalJSON() ([]byte, error) {
@@ -2938,16 +2929,13 @@ func GetAppRequestFromPb(pb *appspb.GetAppRequestPb) (*GetAppRequest, error) {
 
 type ListAppDeploymentsRequest struct {
 	// The name of the app.
-	// Wire name: 'app_name'
-	AppName string `tf:"-"`
+	AppName string `json:"-" tf:"-"`
 	// Upper bound for items returned.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Pagination token to go to the next page of apps. Requests first page if
 	// absent.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAppDeploymentsRequest) MarshalJSON() ([]byte, error) {
@@ -3008,11 +2996,11 @@ func ListAppDeploymentsRequestFromPb(pb *appspb.ListAppDeploymentsRequestPb) (*L
 type ListAppDeploymentsResponse struct {
 	// Deployment history of the app.
 	// Wire name: 'app_deployments'
-	AppDeployments []AppDeployment ``
+	AppDeployments []AppDeployment `json:"app_deployments,omitempty"`
 	// Pagination token to request the next page of apps.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAppDeploymentsResponse) MarshalJSON() ([]byte, error) {
@@ -3092,13 +3080,11 @@ func ListAppDeploymentsResponseFromPb(pb *appspb.ListAppDeploymentsResponsePb) (
 
 type ListAppsRequest struct {
 	// Upper bound for items returned.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Pagination token to go to the next page of apps. Requests first page if
 	// absent.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAppsRequest) MarshalJSON() ([]byte, error) {
@@ -3157,11 +3143,11 @@ func ListAppsRequestFromPb(pb *appspb.ListAppsRequestPb) (*ListAppsRequest, erro
 type ListAppsResponse struct {
 
 	// Wire name: 'apps'
-	Apps []App ``
+	Apps []App `json:"apps,omitempty"`
 	// Pagination token to request the next page of apps.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListAppsResponse) MarshalJSON() ([]byte, error) {
@@ -3241,8 +3227,7 @@ func ListAppsResponseFromPb(pb *appspb.ListAppsResponsePb) (*ListAppsResponse, e
 
 type StartAppRequest struct {
 	// The name of the app.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st StartAppRequest) MarshalJSON() ([]byte, error) {
@@ -3292,8 +3277,7 @@ func StartAppRequestFromPb(pb *appspb.StartAppRequestPb) (*StartAppRequest, erro
 
 type StopAppRequest struct {
 	// The name of the app.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st StopAppRequest) MarshalJSON() ([]byte, error) {
@@ -3344,11 +3328,10 @@ func StopAppRequestFromPb(pb *appspb.StopAppRequestPb) (*StopAppRequest, error) 
 type UpdateAppRequest struct {
 
 	// Wire name: 'app'
-	App App ``
+	App App `json:"app"`
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st UpdateAppRequest) MarshalJSON() ([]byte, error) {

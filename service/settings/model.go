@@ -14,7 +14,7 @@ import (
 type AccountIpAccessEnable struct {
 
 	// Wire name: 'acct_ip_acl_enable'
-	AcctIpAclEnable BooleanMessage ``
+	AcctIpAclEnable BooleanMessage `json:"acct_ip_acl_enable"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -23,15 +23,15 @@ type AccountIpAccessEnable struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AccountIpAccessEnable) MarshalJSON() ([]byte, error) {
@@ -104,14 +104,14 @@ func AccountIpAccessEnableFromPb(pb *settingspb.AccountIpAccessEnablePb) (*Accou
 type AccountNetworkPolicy struct {
 	// The associated account ID for this Network Policy object.
 	// Wire name: 'account_id'
-	AccountId string ``
+	AccountId string `json:"account_id,omitempty"`
 	// The network policies applying for egress traffic.
 	// Wire name: 'egress'
-	Egress *NetworkPolicyEgress ``
+	Egress *NetworkPolicyEgress `json:"egress,omitempty"`
 	// The unique identifier for the network policy.
 	// Wire name: 'network_policy_id'
-	NetworkPolicyId string   ``
-	ForceSendFields []string `tf:"-"`
+	NetworkPolicyId string   `json:"network_policy_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AccountNetworkPolicy) MarshalJSON() ([]byte, error) {
@@ -184,7 +184,7 @@ func AccountNetworkPolicyFromPb(pb *settingspb.AccountNetworkPolicyPb) (*Account
 type AibiDashboardEmbeddingAccessPolicy struct {
 
 	// Wire name: 'access_policy_type'
-	AccessPolicyType AibiDashboardEmbeddingAccessPolicyAccessPolicyType ``
+	AccessPolicyType AibiDashboardEmbeddingAccessPolicyAccessPolicyType `json:"access_policy_type"`
 }
 
 func (st AibiDashboardEmbeddingAccessPolicy) MarshalJSON() ([]byte, error) {
@@ -303,7 +303,7 @@ func AibiDashboardEmbeddingAccessPolicyAccessPolicyTypeFromPb(pb *settingspb.Aib
 type AibiDashboardEmbeddingAccessPolicySetting struct {
 
 	// Wire name: 'aibi_dashboard_embedding_access_policy'
-	AibiDashboardEmbeddingAccessPolicy AibiDashboardEmbeddingAccessPolicy ``
+	AibiDashboardEmbeddingAccessPolicy AibiDashboardEmbeddingAccessPolicy `json:"aibi_dashboard_embedding_access_policy"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -312,15 +312,15 @@ type AibiDashboardEmbeddingAccessPolicySetting struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AibiDashboardEmbeddingAccessPolicySetting) MarshalJSON() ([]byte, error) {
@@ -393,7 +393,7 @@ func AibiDashboardEmbeddingAccessPolicySettingFromPb(pb *settingspb.AibiDashboar
 type AibiDashboardEmbeddingApprovedDomains struct {
 
 	// Wire name: 'approved_domains'
-	ApprovedDomains []string ``
+	ApprovedDomains []string `json:"approved_domains,omitempty"`
 }
 
 func (st AibiDashboardEmbeddingApprovedDomains) MarshalJSON() ([]byte, error) {
@@ -444,7 +444,7 @@ func AibiDashboardEmbeddingApprovedDomainsFromPb(pb *settingspb.AibiDashboardEmb
 type AibiDashboardEmbeddingApprovedDomainsSetting struct {
 
 	// Wire name: 'aibi_dashboard_embedding_approved_domains'
-	AibiDashboardEmbeddingApprovedDomains AibiDashboardEmbeddingApprovedDomains ``
+	AibiDashboardEmbeddingApprovedDomains AibiDashboardEmbeddingApprovedDomains `json:"aibi_dashboard_embedding_approved_domains"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -453,15 +453,15 @@ type AibiDashboardEmbeddingApprovedDomainsSetting struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AibiDashboardEmbeddingApprovedDomainsSetting) MarshalJSON() ([]byte, error) {
@@ -534,7 +534,7 @@ func AibiDashboardEmbeddingApprovedDomainsSettingFromPb(pb *settingspb.AibiDashb
 type AutomaticClusterUpdateSetting struct {
 
 	// Wire name: 'automatic_cluster_update_workspace'
-	AutomaticClusterUpdateWorkspace ClusterAutoRestartMessage ``
+	AutomaticClusterUpdateWorkspace ClusterAutoRestartMessage `json:"automatic_cluster_update_workspace"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -543,15 +543,15 @@ type AutomaticClusterUpdateSetting struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st AutomaticClusterUpdateSetting) MarshalJSON() ([]byte, error) {
@@ -624,8 +624,8 @@ func AutomaticClusterUpdateSettingFromPb(pb *settingspb.AutomaticClusterUpdateSe
 type BooleanMessage struct {
 
 	// Wire name: 'value'
-	Value           bool     ``
-	ForceSendFields []string `tf:"-"`
+	Value           bool     `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st BooleanMessage) MarshalJSON() ([]byte, error) {
@@ -682,20 +682,20 @@ func BooleanMessageFromPb(pb *settingspb.BooleanMessagePb) (*BooleanMessage, err
 type ClusterAutoRestartMessage struct {
 
 	// Wire name: 'can_toggle'
-	CanToggle bool ``
+	CanToggle bool `json:"can_toggle,omitempty"`
 
 	// Wire name: 'enabled'
-	Enabled bool ``
+	Enabled bool `json:"enabled,omitempty"`
 
 	// Wire name: 'enablement_details'
-	EnablementDetails *ClusterAutoRestartMessageEnablementDetails ``
+	EnablementDetails *ClusterAutoRestartMessageEnablementDetails `json:"enablement_details,omitempty"`
 
 	// Wire name: 'maintenance_window'
-	MaintenanceWindow *ClusterAutoRestartMessageMaintenanceWindow ``
+	MaintenanceWindow *ClusterAutoRestartMessageMaintenanceWindow `json:"maintenance_window,omitempty"`
 
 	// Wire name: 'restart_even_if_no_updates_available'
-	RestartEvenIfNoUpdatesAvailable bool     ``
-	ForceSendFields                 []string `tf:"-"`
+	RestartEvenIfNoUpdatesAvailable bool     `json:"restart_even_if_no_updates_available,omitempty"`
+	ForceSendFields                 []string `json:"-" tf:"-"`
 }
 
 func (st ClusterAutoRestartMessage) MarshalJSON() ([]byte, error) {
@@ -790,15 +790,15 @@ func ClusterAutoRestartMessageFromPb(pb *settingspb.ClusterAutoRestartMessagePb)
 type ClusterAutoRestartMessageEnablementDetails struct {
 	// The feature is force enabled if compliance mode is active
 	// Wire name: 'forced_for_compliance_mode'
-	ForcedForComplianceMode bool ``
+	ForcedForComplianceMode bool `json:"forced_for_compliance_mode,omitempty"`
 	// The feature is unavailable if the corresponding entitlement disabled (see
 	// getShieldEntitlementEnable)
 	// Wire name: 'unavailable_for_disabled_entitlement'
-	UnavailableForDisabledEntitlement bool ``
+	UnavailableForDisabledEntitlement bool `json:"unavailable_for_disabled_entitlement,omitempty"`
 	// The feature is unavailable if the customer doesn't have enterprise tier
 	// Wire name: 'unavailable_for_non_enterprise_tier'
-	UnavailableForNonEnterpriseTier bool     ``
-	ForceSendFields                 []string `tf:"-"`
+	UnavailableForNonEnterpriseTier bool     `json:"unavailable_for_non_enterprise_tier,omitempty"`
+	ForceSendFields                 []string `json:"-" tf:"-"`
 }
 
 func (st ClusterAutoRestartMessageEnablementDetails) MarshalJSON() ([]byte, error) {
@@ -859,7 +859,7 @@ func ClusterAutoRestartMessageEnablementDetailsFromPb(pb *settingspb.ClusterAuto
 type ClusterAutoRestartMessageMaintenanceWindow struct {
 
 	// Wire name: 'week_day_based_schedule'
-	WeekDayBasedSchedule *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule ``
+	WeekDayBasedSchedule *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule `json:"week_day_based_schedule,omitempty"`
 }
 
 func (st ClusterAutoRestartMessageMaintenanceWindow) MarshalJSON() ([]byte, error) {
@@ -990,13 +990,13 @@ func ClusterAutoRestartMessageMaintenanceWindowDayOfWeekFromPb(pb *settingspb.Cl
 type ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule struct {
 
 	// Wire name: 'day_of_week'
-	DayOfWeek ClusterAutoRestartMessageMaintenanceWindowDayOfWeek ``
+	DayOfWeek ClusterAutoRestartMessageMaintenanceWindowDayOfWeek `json:"day_of_week,omitempty"`
 
 	// Wire name: 'frequency'
-	Frequency ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency ``
+	Frequency ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency `json:"frequency,omitempty"`
 
 	// Wire name: 'window_start_time'
-	WindowStartTime *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime ``
+	WindowStartTime *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime `json:"window_start_time,omitempty"`
 }
 
 func (st ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule) MarshalJSON() ([]byte, error) {
@@ -1155,11 +1155,11 @@ func ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyFromPb(pb *settin
 type ClusterAutoRestartMessageMaintenanceWindowWindowStartTime struct {
 
 	// Wire name: 'hours'
-	Hours int ``
+	Hours int `json:"hours,omitempty"`
 
 	// Wire name: 'minutes'
-	Minutes         int      ``
-	ForceSendFields []string `tf:"-"`
+	Minutes         int      `json:"minutes,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) MarshalJSON() ([]byte, error) {
@@ -1219,11 +1219,11 @@ func ClusterAutoRestartMessageMaintenanceWindowWindowStartTimeFromPb(pb *setting
 type ComplianceSecurityProfile struct {
 	// Set by customers when they request Compliance Security Profile (CSP)
 	// Wire name: 'compliance_standards'
-	ComplianceStandards []ComplianceStandard ``
+	ComplianceStandards []ComplianceStandard `json:"compliance_standards,omitempty"`
 
 	// Wire name: 'is_enabled'
-	IsEnabled       bool     ``
-	ForceSendFields []string `tf:"-"`
+	IsEnabled       bool     `json:"is_enabled,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
@@ -1304,7 +1304,7 @@ func ComplianceSecurityProfileFromPb(pb *settingspb.ComplianceSecurityProfilePb)
 type ComplianceSecurityProfileSetting struct {
 
 	// Wire name: 'compliance_security_profile_workspace'
-	ComplianceSecurityProfileWorkspace ComplianceSecurityProfile ``
+	ComplianceSecurityProfileWorkspace ComplianceSecurityProfile `json:"compliance_security_profile_workspace"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -1313,15 +1313,15 @@ type ComplianceSecurityProfileSetting struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ComplianceSecurityProfileSetting) MarshalJSON() ([]byte, error) {
@@ -1484,19 +1484,19 @@ func ComplianceStandardFromPb(pb *settingspb.ComplianceStandardPb) (*ComplianceS
 type Config struct {
 
 	// Wire name: 'email'
-	Email *EmailConfig ``
+	Email *EmailConfig `json:"email,omitempty"`
 
 	// Wire name: 'generic_webhook'
-	GenericWebhook *GenericWebhookConfig ``
+	GenericWebhook *GenericWebhookConfig `json:"generic_webhook,omitempty"`
 
 	// Wire name: 'microsoft_teams'
-	MicrosoftTeams *MicrosoftTeamsConfig ``
+	MicrosoftTeams *MicrosoftTeamsConfig `json:"microsoft_teams,omitempty"`
 
 	// Wire name: 'pagerduty'
-	Pagerduty *PagerdutyConfig ``
+	Pagerduty *PagerdutyConfig `json:"pagerduty,omitempty"`
 
 	// Wire name: 'slack'
-	Slack *SlackConfig ``
+	Slack *SlackConfig `json:"slack,omitempty"`
 }
 
 func (st Config) MarshalJSON() ([]byte, error) {
@@ -1616,13 +1616,13 @@ func ConfigFromPb(pb *settingspb.ConfigPb) (*Config, error) {
 type CreateIpAccessList struct {
 
 	// Wire name: 'ip_addresses'
-	IpAddresses []string ``
+	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
 	// Wire name: 'label'
-	Label string ``
+	Label string `json:"label"`
 
 	// Wire name: 'list_type'
-	ListType ListType ``
+	ListType ListType `json:"list_type"`
 }
 
 func (st CreateIpAccessList) MarshalJSON() ([]byte, error) {
@@ -1690,7 +1690,7 @@ func CreateIpAccessListFromPb(pb *settingspb.CreateIpAccessListPb) (*CreateIpAcc
 type CreateIpAccessListResponse struct {
 
 	// Wire name: 'ip_access_list'
-	IpAccessList *IpAccessListInfo ``
+	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
 func (st CreateIpAccessListResponse) MarshalJSON() ([]byte, error) {
@@ -1753,7 +1753,7 @@ func CreateIpAccessListResponseFromPb(pb *settingspb.CreateIpAccessListResponseP
 type CreateNetworkConnectivityConfigRequest struct {
 
 	// Wire name: 'network_connectivity_config'
-	NetworkConnectivityConfig CreateNetworkConnectivityConfiguration ``
+	NetworkConnectivityConfig CreateNetworkConnectivityConfiguration `json:"network_connectivity_config"`
 }
 
 func (st CreateNetworkConnectivityConfigRequest) MarshalJSON() ([]byte, error) {
@@ -1820,12 +1820,12 @@ type CreateNetworkConnectivityConfiguration struct {
 	// between 3 and 30 characters. The name must match the regular expression
 	// ^[0-9a-zA-Z-_]{3,30}$
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// The region for the network connectivity configuration. Only workspaces in
 	// the same region can be attached to the network connectivity
 	// configuration.
 	// Wire name: 'region'
-	Region string ``
+	Region string `json:"region"`
 }
 
 func (st CreateNetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
@@ -1878,7 +1878,7 @@ func CreateNetworkConnectivityConfigurationFromPb(pb *settingspb.CreateNetworkCo
 type CreateNetworkPolicyRequest struct {
 	// Network policy configuration details.
 	// Wire name: 'network_policy'
-	NetworkPolicy AccountNetworkPolicy ``
+	NetworkPolicy AccountNetworkPolicy `json:"network_policy"`
 }
 
 func (st CreateNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -1942,11 +1942,11 @@ type CreateNotificationDestinationRequest struct {
 	// The configuration for the notification destination. Must wrap EXACTLY one
 	// of the nested configs.
 	// Wire name: 'config'
-	Config *Config ``
+	Config *Config `json:"config,omitempty"`
 	// The display name for the notification destination.
 	// Wire name: 'display_name'
-	DisplayName     string   ``
-	ForceSendFields []string `tf:"-"`
+	DisplayName     string   `json:"display_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
@@ -2018,14 +2018,14 @@ func CreateNotificationDestinationRequestFromPb(pb *settingspb.CreateNotificatio
 type CreateOboTokenRequest struct {
 	// Application ID of the service principal.
 	// Wire name: 'application_id'
-	ApplicationId string ``
+	ApplicationId string `json:"application_id"`
 	// Comment that describes the purpose of the token.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The number of seconds before the token expires.
 	// Wire name: 'lifetime_seconds'
-	LifetimeSeconds int64    ``
-	ForceSendFields []string `tf:"-"`
+	LifetimeSeconds int64    `json:"lifetime_seconds,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateOboTokenRequest) MarshalJSON() ([]byte, error) {
@@ -2087,11 +2087,11 @@ func CreateOboTokenRequestFromPb(pb *settingspb.CreateOboTokenRequestPb) (*Creat
 type CreateOboTokenResponse struct {
 
 	// Wire name: 'token_info'
-	TokenInfo *TokenInfo ``
+	TokenInfo *TokenInfo `json:"token_info,omitempty"`
 	// Value of the token.
 	// Wire name: 'token_value'
-	TokenValue      string   ``
-	ForceSendFields []string `tf:"-"`
+	TokenValue      string   `json:"token_value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateOboTokenResponse) MarshalJSON() ([]byte, error) {
@@ -2168,21 +2168,21 @@ type CreatePrivateEndpointRule struct {
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
 	// Wire name: 'domain_names'
-	DomainNames []string ``
+	DomainNames []string `json:"domain_names,omitempty"`
 	// The full target AWS endpoint service name that connects to the
 	// destination resources of the private endpoint.
 	// Wire name: 'endpoint_service'
-	EndpointService string ``
+	EndpointService string `json:"endpoint_service,omitempty"`
 	// Not used by customer-managed private endpoint services.
 	//
 	// The sub-resource type (group ID) of the target resource. Note that to
 	// connect to workspace root storage (root DBFS), you need two endpoints,
 	// one for blob and one for dfs.
 	// Wire name: 'group_id'
-	GroupId string ``
+	GroupId string `json:"group_id,omitempty"`
 	// The Azure resource ID of the target resource.
 	// Wire name: 'resource_id'
-	ResourceId string ``
+	ResourceId string `json:"resource_id,omitempty"`
 	// Only used by private endpoints towards AWS S3 service.
 	//
 	// The globally unique S3 bucket names that will be accessed via the VPC
@@ -2190,8 +2190,8 @@ type CreatePrivateEndpointRule struct {
 	// service. When updating this field, we perform full update on this field.
 	// Please ensure a full list of desired resource_names is provided.
 	// Wire name: 'resource_names'
-	ResourceNames   []string ``
-	ForceSendFields []string `tf:"-"`
+	ResourceNames   []string `json:"resource_names,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
@@ -2255,11 +2255,10 @@ func CreatePrivateEndpointRuleFromPb(pb *settingspb.CreatePrivateEndpointRulePb)
 
 type CreatePrivateEndpointRuleRequest struct {
 	// Your Network Connectivity Configuration ID.
-	// Wire name: 'network_connectivity_config_id'
-	NetworkConnectivityConfigId string `tf:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 
 	// Wire name: 'private_endpoint_rule'
-	PrivateEndpointRule CreatePrivateEndpointRule ``
+	PrivateEndpointRule CreatePrivateEndpointRule `json:"private_endpoint_rule"`
 }
 
 func (st CreatePrivateEndpointRuleRequest) MarshalJSON() ([]byte, error) {
@@ -2324,13 +2323,13 @@ func CreatePrivateEndpointRuleRequestFromPb(pb *settingspb.CreatePrivateEndpoint
 type CreateTokenRequest struct {
 	// Optional description to attach to the token.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The lifetime of the token, in seconds.
 	//
 	// If the lifetime is not specified, this token remains valid indefinitely.
 	// Wire name: 'lifetime_seconds'
-	LifetimeSeconds int64    ``
-	ForceSendFields []string `tf:"-"`
+	LifetimeSeconds int64    `json:"lifetime_seconds,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateTokenRequest) MarshalJSON() ([]byte, error) {
@@ -2389,11 +2388,11 @@ func CreateTokenRequestFromPb(pb *settingspb.CreateTokenRequestPb) (*CreateToken
 type CreateTokenResponse struct {
 	// The information for the new token.
 	// Wire name: 'token_info'
-	TokenInfo *PublicTokenInfo ``
+	TokenInfo *PublicTokenInfo `json:"token_info,omitempty"`
 	// The value of the new token.
 	// Wire name: 'token_value'
-	TokenValue      string   ``
-	ForceSendFields []string `tf:"-"`
+	TokenValue      string   `json:"token_value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateTokenResponse) MarshalJSON() ([]byte, error) {
@@ -2466,11 +2465,11 @@ type CspEnablementAccount struct {
 	// Set by customers when they request Compliance Security Profile (CSP)
 	// Invariants are enforced in Settings policy.
 	// Wire name: 'compliance_standards'
-	ComplianceStandards []ComplianceStandard ``
+	ComplianceStandards []ComplianceStandard `json:"compliance_standards,omitempty"`
 	// Enforced = it cannot be overriden at workspace level.
 	// Wire name: 'is_enforced'
-	IsEnforced      bool     ``
-	ForceSendFields []string `tf:"-"`
+	IsEnforced      bool     `json:"is_enforced,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CspEnablementAccount) MarshalJSON() ([]byte, error) {
@@ -2551,7 +2550,7 @@ func CspEnablementAccountFromPb(pb *settingspb.CspEnablementAccountPb) (*CspEnab
 type CspEnablementAccountSetting struct {
 
 	// Wire name: 'csp_enablement_account'
-	CspEnablementAccount CspEnablementAccount ``
+	CspEnablementAccount CspEnablementAccount `json:"csp_enablement_account"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -2560,15 +2559,15 @@ type CspEnablementAccountSetting struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
@@ -2645,7 +2644,7 @@ type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule struct {
 	// Databricks account ID. You can find your account ID from the Accounts
 	// Console.
 	// Wire name: 'account_id'
-	AccountId string ``
+	AccountId string `json:"account_id,omitempty"`
 	// The current status of this private endpoint. The private endpoint rules
 	// are effective only if the connection state is ESTABLISHED. Remember that
 	// you must approve new endpoints on your resources in the AWS console
@@ -2658,16 +2657,16 @@ type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule struct {
 	// clean-up. - EXPIRED: If the endpoint is created but not approved in 14
 	// days, it is EXPIRED.
 	// Wire name: 'connection_state'
-	ConnectionState CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState ``
+	ConnectionState CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState `json:"connection_state,omitempty"`
 	// Time in epoch milliseconds when this object was created.
 	// Wire name: 'creation_time'
-	CreationTime int64 ``
+	CreationTime int64 `json:"creation_time,omitempty"`
 	// Whether this private endpoint is deactivated.
 	// Wire name: 'deactivated'
-	Deactivated bool ``
+	Deactivated bool `json:"deactivated,omitempty"`
 	// Time in epoch milliseconds when this object was deactivated.
 	// Wire name: 'deactivated_at'
-	DeactivatedAt int64 ``
+	DeactivatedAt int64 `json:"deactivated_at,omitempty"`
 	// Only used by private endpoints towards a VPC endpoint service for
 	// customer-managed VPC endpoint service.
 	//
@@ -2675,21 +2674,21 @@ type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule struct {
 	// When updating this field, we perform full update on this field. Please
 	// ensure a full list of desired domain_names is provided.
 	// Wire name: 'domain_names'
-	DomainNames []string ``
+	DomainNames []string `json:"domain_names,omitempty"`
 	// Only used by private endpoints towards an AWS S3 service.
 	//
 	// Update this field to activate/deactivate this private endpoint to allow
 	// egress access from serverless compute resources.
 	// Wire name: 'enabled'
-	Enabled bool ``
+	Enabled bool `json:"enabled,omitempty"`
 	// The full target AWS endpoint service name that connects to the
 	// destination resources of the private endpoint.
 	// Wire name: 'endpoint_service'
-	EndpointService string ``
+	EndpointService string `json:"endpoint_service,omitempty"`
 	// The ID of a network connectivity configuration, which is the parent
 	// resource of this private endpoint rule object.
 	// Wire name: 'network_connectivity_config_id'
-	NetworkConnectivityConfigId string ``
+	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
 	// Only used by private endpoints towards AWS S3 service.
 	//
 	// The globally unique S3 bucket names that will be accessed via the VPC
@@ -2697,18 +2696,18 @@ type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule struct {
 	// service. When updating this field, we perform full update on this field.
 	// Please ensure a full list of desired resource_names is provided.
 	// Wire name: 'resource_names'
-	ResourceNames []string ``
+	ResourceNames []string `json:"resource_names,omitempty"`
 	// The ID of a private endpoint rule.
 	// Wire name: 'rule_id'
-	RuleId string ``
+	RuleId string `json:"rule_id,omitempty"`
 	// Time in epoch milliseconds when this object was updated.
 	// Wire name: 'updated_time'
-	UpdatedTime int64 ``
+	UpdatedTime int64 `json:"updated_time,omitempty"`
 	// The AWS VPC endpoint ID. You can use this ID to identify VPC endpoint
 	// created by Databricks.
 	// Wire name: 'vpc_endpoint_id'
-	VpcEndpointId   string   ``
-	ForceSendFields []string `tf:"-"`
+	VpcEndpointId   string   `json:"vpc_endpoint_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) MarshalJSON() ([]byte, error) {
@@ -2863,7 +2862,7 @@ func CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkCon
 type DashboardEmailSubscriptions struct {
 
 	// Wire name: 'boolean_val'
-	BooleanVal BooleanMessage ``
+	BooleanVal BooleanMessage `json:"boolean_val"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -2872,15 +2871,15 @@ type DashboardEmailSubscriptions struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DashboardEmailSubscriptions) MarshalJSON() ([]byte, error) {
@@ -2968,18 +2967,18 @@ type DefaultNamespaceSetting struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 
 	// Wire name: 'namespace'
-	Namespace StringMessage ``
+	Namespace StringMessage `json:"namespace"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DefaultNamespaceSetting) MarshalJSON() ([]byte, error) {
@@ -3058,18 +3057,18 @@ type DefaultWarehouseId struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName string ``
+	SettingName string `json:"setting_name,omitempty"`
 
 	// Wire name: 'string_val'
-	StringVal       StringMessage ``
-	ForceSendFields []string      `tf:"-"`
+	StringVal       StringMessage `json:"string_val"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st DefaultWarehouseId) MarshalJSON() ([]byte, error) {
@@ -3147,9 +3146,8 @@ type DeleteAccountIpAccessEnableRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
@@ -3213,7 +3211,7 @@ type DeleteAccountIpAccessEnableResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 }
 
 func (st DeleteAccountIpAccessEnableResponse) MarshalJSON() ([]byte, error) {
@@ -3263,8 +3261,7 @@ func DeleteAccountIpAccessEnableResponseFromPb(pb *settingspb.DeleteAccountIpAcc
 
 type DeleteAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
-	// Wire name: 'ip_access_list_id'
-	IpAccessListId string `tf:"-"`
+	IpAccessListId string `json:"-" tf:"-"`
 }
 
 func (st DeleteAccountIpAccessListRequest) MarshalJSON() ([]byte, error) {
@@ -3320,9 +3317,8 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
@@ -3386,7 +3382,7 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 }
 
 func (st DeleteAibiDashboardEmbeddingAccessPolicySettingResponse) MarshalJSON() ([]byte, error) {
@@ -3442,9 +3438,8 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
@@ -3508,7 +3503,7 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 }
 
 func (st DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse) MarshalJSON() ([]byte, error) {
@@ -3564,9 +3559,8 @@ type DeleteDashboardEmailSubscriptionsRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
@@ -3630,7 +3624,7 @@ type DeleteDashboardEmailSubscriptionsResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 }
 
 func (st DeleteDashboardEmailSubscriptionsResponse) MarshalJSON() ([]byte, error) {
@@ -3686,9 +3680,8 @@ type DeleteDefaultNamespaceSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
@@ -3752,7 +3745,7 @@ type DeleteDefaultNamespaceSettingResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 }
 
 func (st DeleteDefaultNamespaceSettingResponse) MarshalJSON() ([]byte, error) {
@@ -3808,9 +3801,8 @@ type DeleteDefaultWarehouseIdRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteDefaultWarehouseIdRequest) MarshalJSON() ([]byte, error) {
@@ -3874,7 +3866,7 @@ type DeleteDefaultWarehouseIdResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 }
 
 func (st DeleteDefaultWarehouseIdResponse) MarshalJSON() ([]byte, error) {
@@ -3930,9 +3922,8 @@ type DeleteDisableLegacyAccessRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
@@ -3996,7 +3987,7 @@ type DeleteDisableLegacyAccessResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 }
 
 func (st DeleteDisableLegacyAccessResponse) MarshalJSON() ([]byte, error) {
@@ -4052,9 +4043,8 @@ type DeleteDisableLegacyDbfsRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
@@ -4118,7 +4108,7 @@ type DeleteDisableLegacyDbfsResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 }
 
 func (st DeleteDisableLegacyDbfsResponse) MarshalJSON() ([]byte, error) {
@@ -4174,9 +4164,8 @@ type DeleteDisableLegacyFeaturesRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
@@ -4240,7 +4229,7 @@ type DeleteDisableLegacyFeaturesResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 }
 
 func (st DeleteDisableLegacyFeaturesResponse) MarshalJSON() ([]byte, error) {
@@ -4290,8 +4279,7 @@ func DeleteDisableLegacyFeaturesResponseFromPb(pb *settingspb.DeleteDisableLegac
 
 type DeleteIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
-	// Wire name: 'ip_access_list_id'
-	IpAccessListId string `tf:"-"`
+	IpAccessListId string `json:"-" tf:"-"`
 }
 
 func (st DeleteIpAccessListRequest) MarshalJSON() ([]byte, error) {
@@ -4347,9 +4335,8 @@ type DeleteLlmProxyPartnerPoweredWorkspaceRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
@@ -4413,7 +4400,7 @@ type DeleteLlmProxyPartnerPoweredWorkspaceResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 }
 
 func (st DeleteLlmProxyPartnerPoweredWorkspaceResponse) MarshalJSON() ([]byte, error) {
@@ -4463,8 +4450,7 @@ func DeleteLlmProxyPartnerPoweredWorkspaceResponseFromPb(pb *settingspb.DeleteLl
 
 type DeleteNetworkConnectivityConfigurationRequest struct {
 	// Your Network Connectivity Configuration ID.
-	// Wire name: 'network_connectivity_config_id'
-	NetworkConnectivityConfigId string `tf:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 }
 
 func (st DeleteNetworkConnectivityConfigurationRequest) MarshalJSON() ([]byte, error) {
@@ -4514,8 +4500,7 @@ func DeleteNetworkConnectivityConfigurationRequestFromPb(pb *settingspb.DeleteNe
 
 type DeleteNetworkPolicyRequest struct {
 	// The unique identifier of the network policy to delete.
-	// Wire name: 'network_policy_id'
-	NetworkPolicyId string `tf:"-"`
+	NetworkPolicyId string `json:"-" tf:"-"`
 }
 
 func (st DeleteNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -4564,9 +4549,7 @@ func DeleteNetworkPolicyRequestFromPb(pb *settingspb.DeleteNetworkPolicyRequestP
 }
 
 type DeleteNotificationDestinationRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
@@ -4622,9 +4605,8 @@ type DeletePersonalComputeSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeletePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
@@ -4688,7 +4670,7 @@ type DeletePersonalComputeSettingResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 }
 
 func (st DeletePersonalComputeSettingResponse) MarshalJSON() ([]byte, error) {
@@ -4738,11 +4720,9 @@ func DeletePersonalComputeSettingResponseFromPb(pb *settingspb.DeletePersonalCom
 
 type DeletePrivateEndpointRuleRequest struct {
 	// Your Network Connectvity Configuration ID.
-	// Wire name: 'network_connectivity_config_id'
-	NetworkConnectivityConfigId string `tf:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 	// Your private endpoint rule ID.
-	// Wire name: 'private_endpoint_rule_id'
-	PrivateEndpointRuleId string `tf:"-"`
+	PrivateEndpointRuleId string `json:"-" tf:"-"`
 }
 
 func (st DeletePrivateEndpointRuleRequest) MarshalJSON() ([]byte, error) {
@@ -4800,9 +4780,8 @@ type DeleteRestrictWorkspaceAdminsSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
@@ -4866,7 +4845,7 @@ type DeleteRestrictWorkspaceAdminsSettingResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 }
 
 func (st DeleteRestrictWorkspaceAdminsSettingResponse) MarshalJSON() ([]byte, error) {
@@ -4922,9 +4901,8 @@ type DeleteSqlResultsDownloadRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
@@ -4988,7 +4966,7 @@ type DeleteSqlResultsDownloadResponse struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 }
 
 func (st DeleteSqlResultsDownloadResponse) MarshalJSON() ([]byte, error) {
@@ -5038,8 +5016,7 @@ func DeleteSqlResultsDownloadResponseFromPb(pb *settingspb.DeleteSqlResultsDownl
 
 type DeleteTokenManagementRequest struct {
 	// The ID of the token to revoke.
-	// Wire name: 'token_id'
-	TokenId string `tf:"-"`
+	TokenId string `json:"-" tf:"-"`
 }
 
 func (st DeleteTokenManagementRequest) MarshalJSON() ([]byte, error) {
@@ -5152,7 +5129,7 @@ func DestinationTypeFromPb(pb *settingspb.DestinationTypePb) (*DestinationType, 
 type DisableLegacyAccess struct {
 
 	// Wire name: 'disable_legacy_access'
-	DisableLegacyAccess BooleanMessage ``
+	DisableLegacyAccess BooleanMessage `json:"disable_legacy_access"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -5161,15 +5138,15 @@ type DisableLegacyAccess struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DisableLegacyAccess) MarshalJSON() ([]byte, error) {
@@ -5242,7 +5219,7 @@ func DisableLegacyAccessFromPb(pb *settingspb.DisableLegacyAccessPb) (*DisableLe
 type DisableLegacyDbfs struct {
 
 	// Wire name: 'disable_legacy_dbfs'
-	DisableLegacyDbfs BooleanMessage ``
+	DisableLegacyDbfs BooleanMessage `json:"disable_legacy_dbfs"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -5251,15 +5228,15 @@ type DisableLegacyDbfs struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DisableLegacyDbfs) MarshalJSON() ([]byte, error) {
@@ -5332,7 +5309,7 @@ func DisableLegacyDbfsFromPb(pb *settingspb.DisableLegacyDbfsPb) (*DisableLegacy
 type DisableLegacyFeatures struct {
 
 	// Wire name: 'disable_legacy_features'
-	DisableLegacyFeatures BooleanMessage ``
+	DisableLegacyFeatures BooleanMessage `json:"disable_legacy_features"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -5341,15 +5318,15 @@ type DisableLegacyFeatures struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DisableLegacyFeatures) MarshalJSON() ([]byte, error) {
@@ -5426,7 +5403,7 @@ func DisableLegacyFeaturesFromPb(pb *settingspb.DisableLegacyFeaturesPb) (*Disab
 type EgressNetworkPolicy struct {
 	// The access policy enforced for egress traffic to the internet.
 	// Wire name: 'internet_access'
-	InternetAccess *EgressNetworkPolicyInternetAccessPolicy ``
+	InternetAccess *EgressNetworkPolicyInternetAccessPolicy `json:"internet_access,omitempty"`
 }
 
 func (st EgressNetworkPolicy) MarshalJSON() ([]byte, error) {
@@ -5489,17 +5466,17 @@ func EgressNetworkPolicyFromPb(pb *settingspb.EgressNetworkPolicyPb) (*EgressNet
 type EgressNetworkPolicyInternetAccessPolicy struct {
 
 	// Wire name: 'allowed_internet_destinations'
-	AllowedInternetDestinations []EgressNetworkPolicyInternetAccessPolicyInternetDestination ``
+	AllowedInternetDestinations []EgressNetworkPolicyInternetAccessPolicyInternetDestination `json:"allowed_internet_destinations,omitempty"`
 
 	// Wire name: 'allowed_storage_destinations'
-	AllowedStorageDestinations []EgressNetworkPolicyInternetAccessPolicyStorageDestination ``
+	AllowedStorageDestinations []EgressNetworkPolicyInternetAccessPolicyStorageDestination `json:"allowed_storage_destinations,omitempty"`
 	// Optional. If not specified, assume the policy is enforced for all
 	// workloads.
 	// Wire name: 'log_only_mode'
-	LogOnlyMode *EgressNetworkPolicyInternetAccessPolicyLogOnlyMode ``
+	LogOnlyMode *EgressNetworkPolicyInternetAccessPolicyLogOnlyMode `json:"log_only_mode,omitempty"`
 
 	// Wire name: 'restriction_mode'
-	RestrictionMode EgressNetworkPolicyInternetAccessPolicyRestrictionMode ``
+	RestrictionMode EgressNetworkPolicyInternetAccessPolicyRestrictionMode `json:"restriction_mode,omitempty"`
 }
 
 func (st EgressNetworkPolicyInternetAccessPolicy) MarshalJSON() ([]byte, error) {
@@ -5627,14 +5604,14 @@ func EgressNetworkPolicyInternetAccessPolicyFromPb(pb *settingspb.EgressNetworkP
 type EgressNetworkPolicyInternetAccessPolicyInternetDestination struct {
 
 	// Wire name: 'destination'
-	Destination string ``
+	Destination string `json:"destination,omitempty"`
 
 	// Wire name: 'protocol'
-	Protocol EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol ``
+	Protocol EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol `json:"protocol,omitempty"`
 
 	// Wire name: 'type'
-	Type            EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType ``
-	ForceSendFields []string                                                                          `tf:"-"`
+	Type            EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType `json:"type,omitempty"`
+	ForceSendFields []string                                                                          `json:"-" tf:"-"`
 }
 
 func (st EgressNetworkPolicyInternetAccessPolicyInternetDestination) MarshalJSON() ([]byte, error) {
@@ -5824,10 +5801,10 @@ func EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinati
 type EgressNetworkPolicyInternetAccessPolicyLogOnlyMode struct {
 
 	// Wire name: 'log_only_mode_type'
-	LogOnlyModeType EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType ``
+	LogOnlyModeType EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType `json:"log_only_mode_type,omitempty"`
 
 	// Wire name: 'workloads'
-	Workloads []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType ``
+	Workloads []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType `json:"workloads,omitempty"`
 }
 
 func (st EgressNetworkPolicyInternetAccessPolicyLogOnlyMode) MarshalJSON() ([]byte, error) {
@@ -6084,29 +6061,29 @@ func EgressNetworkPolicyInternetAccessPolicyRestrictionModeFromPb(pb *settingspb
 type EgressNetworkPolicyInternetAccessPolicyStorageDestination struct {
 
 	// Wire name: 'allowed_paths'
-	AllowedPaths []string ``
+	AllowedPaths []string `json:"allowed_paths,omitempty"`
 
 	// Wire name: 'azure_container'
-	AzureContainer string ``
+	AzureContainer string `json:"azure_container,omitempty"`
 
 	// Wire name: 'azure_dns_zone'
-	AzureDnsZone string ``
+	AzureDnsZone string `json:"azure_dns_zone,omitempty"`
 
 	// Wire name: 'azure_storage_account'
-	AzureStorageAccount string ``
+	AzureStorageAccount string `json:"azure_storage_account,omitempty"`
 
 	// Wire name: 'azure_storage_service'
-	AzureStorageService string ``
+	AzureStorageService string `json:"azure_storage_service,omitempty"`
 
 	// Wire name: 'bucket_name'
-	BucketName string ``
+	BucketName string `json:"bucket_name,omitempty"`
 
 	// Wire name: 'region'
-	Region string ``
+	Region string `json:"region,omitempty"`
 
 	// Wire name: 'type'
-	Type            EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType ``
-	ForceSendFields []string                                                                        `tf:"-"`
+	Type            EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType `json:"type,omitempty"`
+	ForceSendFields []string                                                                        `json:"-" tf:"-"`
 }
 
 func (st EgressNetworkPolicyInternetAccessPolicyStorageDestination) MarshalJSON() ([]byte, error) {
@@ -6249,19 +6226,19 @@ type EgressNetworkPolicyNetworkAccessPolicy struct {
 	// List of internet destinations that serverless workloads are allowed to
 	// access when in RESTRICTED_ACCESS mode.
 	// Wire name: 'allowed_internet_destinations'
-	AllowedInternetDestinations []EgressNetworkPolicyNetworkAccessPolicyInternetDestination ``
+	AllowedInternetDestinations []EgressNetworkPolicyNetworkAccessPolicyInternetDestination `json:"allowed_internet_destinations,omitempty"`
 	// List of storage destinations that serverless workloads are allowed to
 	// access when in RESTRICTED_ACCESS mode.
 	// Wire name: 'allowed_storage_destinations'
-	AllowedStorageDestinations []EgressNetworkPolicyNetworkAccessPolicyStorageDestination ``
+	AllowedStorageDestinations []EgressNetworkPolicyNetworkAccessPolicyStorageDestination `json:"allowed_storage_destinations,omitempty"`
 	// Optional. When policy_enforcement is not provided, we default to
 	// ENFORCE_MODE_ALL_SERVICES
 	// Wire name: 'policy_enforcement'
-	PolicyEnforcement *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement ``
+	PolicyEnforcement *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement `json:"policy_enforcement,omitempty"`
 	// The restriction mode that controls how serverless workloads can access
 	// the internet.
 	// Wire name: 'restriction_mode'
-	RestrictionMode EgressNetworkPolicyNetworkAccessPolicyRestrictionMode ``
+	RestrictionMode EgressNetworkPolicyNetworkAccessPolicyRestrictionMode `json:"restriction_mode"`
 }
 
 func (st EgressNetworkPolicyNetworkAccessPolicy) MarshalJSON() ([]byte, error) {
@@ -6390,11 +6367,11 @@ type EgressNetworkPolicyNetworkAccessPolicyInternetDestination struct {
 	// The internet destination to which access will be allowed. Format
 	// dependent on the destination type.
 	// Wire name: 'destination'
-	Destination string ``
+	Destination string `json:"destination,omitempty"`
 	// The type of internet destination. Currently only DNS_NAME is supported.
 	// Wire name: 'internet_destination_type'
-	InternetDestinationType EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType ``
-	ForceSendFields         []string                                                                         `tf:"-"`
+	InternetDestinationType EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType `json:"internet_destination_type,omitempty"`
+	ForceSendFields         []string                                                                         `json:"-" tf:"-"`
 }
 
 func (st EgressNetworkPolicyNetworkAccessPolicyInternetDestination) MarshalJSON() ([]byte, error) {
@@ -6517,12 +6494,12 @@ type EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement struct {
 	// dry run for specific products and for the other products, they will run
 	// in enforced mode.
 	// Wire name: 'dry_run_mode_product_filter'
-	DryRunModeProductFilter []EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter ``
+	DryRunModeProductFilter []EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter `json:"dry_run_mode_product_filter,omitempty"`
 	// The mode of policy enforcement. ENFORCED blocks traffic that violates
 	// policy, while DRY_RUN only logs violations without blocking. When not
 	// specified, defaults to ENFORCED.
 	// Wire name: 'enforcement_mode'
-	EnforcementMode EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode ``
+	EnforcementMode EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode `json:"enforcement_mode,omitempty"`
 }
 
 func (st EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement) MarshalJSON() ([]byte, error) {
@@ -6774,20 +6751,20 @@ func EgressNetworkPolicyNetworkAccessPolicyRestrictionModeFromPb(pb *settingspb.
 type EgressNetworkPolicyNetworkAccessPolicyStorageDestination struct {
 	// The Azure storage account name.
 	// Wire name: 'azure_storage_account'
-	AzureStorageAccount string ``
+	AzureStorageAccount string `json:"azure_storage_account,omitempty"`
 	// The Azure storage service type (blob, dfs, etc.).
 	// Wire name: 'azure_storage_service'
-	AzureStorageService string ``
+	AzureStorageService string `json:"azure_storage_service,omitempty"`
 
 	// Wire name: 'bucket_name'
-	BucketName string ``
+	BucketName string `json:"bucket_name,omitempty"`
 
 	// Wire name: 'region'
-	Region string ``
+	Region string `json:"region,omitempty"`
 	// The type of storage destination.
 	// Wire name: 'storage_destination_type'
-	StorageDestinationType EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType ``
-	ForceSendFields        []string                                                                       `tf:"-"`
+	StorageDestinationType EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType `json:"storage_destination_type,omitempty"`
+	ForceSendFields        []string                                                                       `json:"-" tf:"-"`
 }
 
 func (st EgressNetworkPolicyNetworkAccessPolicyStorageDestination) MarshalJSON() ([]byte, error) {
@@ -6974,7 +6951,7 @@ func EgressResourceTypeFromPb(pb *settingspb.EgressResourceTypePb) (*EgressResou
 type EmailConfig struct {
 	// Email addresses to notify.
 	// Wire name: 'addresses'
-	Addresses []string ``
+	Addresses []string `json:"addresses,omitempty"`
 }
 
 func (st EmailConfig) MarshalJSON() ([]byte, error) {
@@ -7025,15 +7002,15 @@ func EmailConfigFromPb(pb *settingspb.EmailConfigPb) (*EmailConfig, error) {
 type EnableExportNotebook struct {
 
 	// Wire name: 'boolean_val'
-	BooleanVal *BooleanMessage ``
+	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EnableExportNotebook) MarshalJSON() ([]byte, error) {
@@ -7104,15 +7081,15 @@ func EnableExportNotebookFromPb(pb *settingspb.EnableExportNotebookPb) (*EnableE
 type EnableNotebookTableClipboard struct {
 
 	// Wire name: 'boolean_val'
-	BooleanVal *BooleanMessage ``
+	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EnableNotebookTableClipboard) MarshalJSON() ([]byte, error) {
@@ -7183,15 +7160,15 @@ func EnableNotebookTableClipboardFromPb(pb *settingspb.EnableNotebookTableClipbo
 type EnableResultsDownloading struct {
 
 	// Wire name: 'boolean_val'
-	BooleanVal *BooleanMessage ``
+	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EnableResultsDownloading) MarshalJSON() ([]byte, error) {
@@ -7263,8 +7240,8 @@ func EnableResultsDownloadingFromPb(pb *settingspb.EnableResultsDownloadingPb) (
 type EnhancedSecurityMonitoring struct {
 
 	// Wire name: 'is_enabled'
-	IsEnabled       bool     ``
-	ForceSendFields []string `tf:"-"`
+	IsEnabled       bool     `json:"is_enabled,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EnhancedSecurityMonitoring) MarshalJSON() ([]byte, error) {
@@ -7321,7 +7298,7 @@ func EnhancedSecurityMonitoringFromPb(pb *settingspb.EnhancedSecurityMonitoringP
 type EnhancedSecurityMonitoringSetting struct {
 
 	// Wire name: 'enhanced_security_monitoring_workspace'
-	EnhancedSecurityMonitoringWorkspace EnhancedSecurityMonitoring ``
+	EnhancedSecurityMonitoringWorkspace EnhancedSecurityMonitoring `json:"enhanced_security_monitoring_workspace"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -7330,15 +7307,15 @@ type EnhancedSecurityMonitoringSetting struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EnhancedSecurityMonitoringSetting) MarshalJSON() ([]byte, error) {
@@ -7412,8 +7389,8 @@ func EnhancedSecurityMonitoringSettingFromPb(pb *settingspb.EnhancedSecurityMoni
 type EsmEnablementAccount struct {
 
 	// Wire name: 'is_enforced'
-	IsEnforced      bool     ``
-	ForceSendFields []string `tf:"-"`
+	IsEnforced      bool     `json:"is_enforced,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EsmEnablementAccount) MarshalJSON() ([]byte, error) {
@@ -7470,7 +7447,7 @@ func EsmEnablementAccountFromPb(pb *settingspb.EsmEnablementAccountPb) (*EsmEnab
 type EsmEnablementAccountSetting struct {
 
 	// Wire name: 'esm_enablement_account'
-	EsmEnablementAccount EsmEnablementAccount ``
+	EsmEnablementAccount EsmEnablementAccount `json:"esm_enablement_account"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -7479,15 +7456,15 @@ type EsmEnablementAccountSetting struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EsmEnablementAccountSetting) MarshalJSON() ([]byte, error) {
@@ -7561,21 +7538,21 @@ func EsmEnablementAccountSettingFromPb(pb *settingspb.EsmEnablementAccountSettin
 type ExchangeToken struct {
 	// The requested token.
 	// Wire name: 'credential'
-	Credential string ``
+	Credential string `json:"credential,omitempty"`
 	// The end-of-life timestamp of the token. The value is in milliseconds
 	// since the Unix epoch.
 	// Wire name: 'credentialEolTime'
-	CredentialEolTime int64 ``
+	CredentialEolTime int64 `json:"credentialEolTime,omitempty"`
 	// User ID of the user that owns this token.
 	// Wire name: 'ownerId'
-	OwnerId int64 ``
+	OwnerId int64 `json:"ownerId,omitempty"`
 	// The scopes of access granted in the token.
 	// Wire name: 'scopes'
-	Scopes []string ``
+	Scopes []string `json:"scopes,omitempty"`
 	// The type of this exchange token
 	// Wire name: 'tokenType'
-	TokenType       TokenType ``
-	ForceSendFields []string  `tf:"-"`
+	TokenType       TokenType `json:"tokenType,omitempty"`
+	ForceSendFields []string  `json:"-" tf:"-"`
 }
 
 func (st ExchangeToken) MarshalJSON() ([]byte, error) {
@@ -7653,13 +7630,13 @@ func ExchangeTokenFromPb(pb *settingspb.ExchangeTokenPb) (*ExchangeToken, error)
 type ExchangeTokenRequest struct {
 	// The partition of Credentials store
 	// Wire name: 'partitionId'
-	PartitionId PartitionId ``
+	PartitionId PartitionId `json:"partitionId"`
 	// Array of scopes for the token request.
 	// Wire name: 'scopes'
-	Scopes []string ``
+	Scopes []string `json:"scopes"`
 	// A list of token types being requested
 	// Wire name: 'tokenType'
-	TokenType []TokenType ``
+	TokenType []TokenType `json:"tokenType"`
 }
 
 func (st ExchangeTokenRequest) MarshalJSON() ([]byte, error) {
@@ -7749,7 +7726,7 @@ func ExchangeTokenRequestFromPb(pb *settingspb.ExchangeTokenRequestPb) (*Exchang
 type ExchangeTokenResponse struct {
 
 	// Wire name: 'values'
-	Values []ExchangeToken ``
+	Values []ExchangeToken `json:"values,omitempty"`
 }
 
 func (st ExchangeTokenResponse) MarshalJSON() ([]byte, error) {
@@ -7823,7 +7800,7 @@ func ExchangeTokenResponseFromPb(pb *settingspb.ExchangeTokenResponsePb) (*Excha
 type FetchIpAccessListResponse struct {
 
 	// Wire name: 'ip_access_list'
-	IpAccessList *IpAccessListInfo ``
+	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
 func (st FetchIpAccessListResponse) MarshalJSON() ([]byte, error) {
@@ -7886,23 +7863,23 @@ func FetchIpAccessListResponseFromPb(pb *settingspb.FetchIpAccessListResponsePb)
 type GenericWebhookConfig struct {
 	// [Input-Only][Optional] Password for webhook.
 	// Wire name: 'password'
-	Password string ``
+	Password string `json:"password,omitempty"`
 	// [Output-Only] Whether password is set.
 	// Wire name: 'password_set'
-	PasswordSet bool ``
+	PasswordSet bool `json:"password_set,omitempty"`
 	// [Input-Only] URL for webhook.
 	// Wire name: 'url'
-	Url string ``
+	Url string `json:"url,omitempty"`
 	// [Output-Only] Whether URL is set.
 	// Wire name: 'url_set'
-	UrlSet bool ``
+	UrlSet bool `json:"url_set,omitempty"`
 	// [Input-Only][Optional] Username for webhook.
 	// Wire name: 'username'
-	Username string ``
+	Username string `json:"username,omitempty"`
 	// [Output-Only] Whether username is set.
 	// Wire name: 'username_set'
-	UsernameSet     bool     ``
-	ForceSendFields []string `tf:"-"`
+	UsernameSet     bool     `json:"username_set,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GenericWebhookConfig) MarshalJSON() ([]byte, error) {
@@ -7974,9 +7951,8 @@ type GetAccountIpAccessEnableRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
@@ -8032,8 +8008,7 @@ func GetAccountIpAccessEnableRequestFromPb(pb *settingspb.GetAccountIpAccessEnab
 
 type GetAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
-	// Wire name: 'ip_access_list_id'
-	IpAccessListId string `tf:"-"`
+	IpAccessListId string `json:"-" tf:"-"`
 }
 
 func (st GetAccountIpAccessListRequest) MarshalJSON() ([]byte, error) {
@@ -8089,9 +8064,8 @@ type GetAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
@@ -8153,9 +8127,8 @@ type GetAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
@@ -8217,9 +8190,8 @@ type GetAutomaticClusterUpdateSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetAutomaticClusterUpdateSettingRequest) MarshalJSON() ([]byte, error) {
@@ -8281,9 +8253,8 @@ type GetComplianceSecurityProfileSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetComplianceSecurityProfileSettingRequest) MarshalJSON() ([]byte, error) {
@@ -8345,9 +8316,8 @@ type GetCspEnablementAccountSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetCspEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
@@ -8409,9 +8379,8 @@ type GetDashboardEmailSubscriptionsRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
@@ -8473,9 +8442,8 @@ type GetDefaultNamespaceSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
@@ -8537,9 +8505,8 @@ type GetDefaultWarehouseIdRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetDefaultWarehouseIdRequest) MarshalJSON() ([]byte, error) {
@@ -8601,9 +8568,8 @@ type GetDisableLegacyAccessRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
@@ -8665,9 +8631,8 @@ type GetDisableLegacyDbfsRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
@@ -8729,9 +8694,8 @@ type GetDisableLegacyFeaturesRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
@@ -8793,9 +8757,8 @@ type GetEnhancedSecurityMonitoringSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetEnhancedSecurityMonitoringSettingRequest) MarshalJSON() ([]byte, error) {
@@ -8857,9 +8820,8 @@ type GetEsmEnablementAccountSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetEsmEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
@@ -8915,8 +8877,7 @@ func GetEsmEnablementAccountSettingRequestFromPb(pb *settingspb.GetEsmEnablement
 
 type GetIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
-	// Wire name: 'ip_access_list_id'
-	IpAccessListId string `tf:"-"`
+	IpAccessListId string `json:"-" tf:"-"`
 }
 
 func (st GetIpAccessListRequest) MarshalJSON() ([]byte, error) {
@@ -8967,7 +8928,7 @@ func GetIpAccessListRequestFromPb(pb *settingspb.GetIpAccessListRequestPb) (*Get
 type GetIpAccessListResponse struct {
 
 	// Wire name: 'ip_access_list'
-	IpAccessList *IpAccessListInfo ``
+	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
 func (st GetIpAccessListResponse) MarshalJSON() ([]byte, error) {
@@ -9031,7 +8992,7 @@ func GetIpAccessListResponseFromPb(pb *settingspb.GetIpAccessListResponsePb) (*G
 type GetIpAccessListsResponse struct {
 
 	// Wire name: 'ip_access_lists'
-	IpAccessLists []IpAccessListInfo ``
+	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
 
 func (st GetIpAccessListsResponse) MarshalJSON() ([]byte, error) {
@@ -9109,9 +9070,8 @@ type GetLlmProxyPartnerPoweredAccountRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetLlmProxyPartnerPoweredAccountRequest) MarshalJSON() ([]byte, error) {
@@ -9173,9 +9133,8 @@ type GetLlmProxyPartnerPoweredEnforceRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetLlmProxyPartnerPoweredEnforceRequest) MarshalJSON() ([]byte, error) {
@@ -9237,9 +9196,8 @@ type GetLlmProxyPartnerPoweredWorkspaceRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
@@ -9295,8 +9253,7 @@ func GetLlmProxyPartnerPoweredWorkspaceRequestFromPb(pb *settingspb.GetLlmProxyP
 
 type GetNetworkConnectivityConfigurationRequest struct {
 	// Your Network Connectivity Configuration ID.
-	// Wire name: 'network_connectivity_config_id'
-	NetworkConnectivityConfigId string `tf:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 }
 
 func (st GetNetworkConnectivityConfigurationRequest) MarshalJSON() ([]byte, error) {
@@ -9346,8 +9303,7 @@ func GetNetworkConnectivityConfigurationRequestFromPb(pb *settingspb.GetNetworkC
 
 type GetNetworkPolicyRequest struct {
 	// The unique identifier of the network policy to retrieve.
-	// Wire name: 'network_policy_id'
-	NetworkPolicyId string `tf:"-"`
+	NetworkPolicyId string `json:"-" tf:"-"`
 }
 
 func (st GetNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -9396,9 +9352,7 @@ func GetNetworkPolicyRequestFromPb(pb *settingspb.GetNetworkPolicyRequestPb) (*G
 }
 
 type GetNotificationDestinationRequest struct {
-
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st GetNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
@@ -9454,9 +9408,8 @@ type GetPersonalComputeSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetPersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
@@ -9512,11 +9465,9 @@ func GetPersonalComputeSettingRequestFromPb(pb *settingspb.GetPersonalComputeSet
 
 type GetPrivateEndpointRuleRequest struct {
 	// Your Network Connectvity Configuration ID.
-	// Wire name: 'network_connectivity_config_id'
-	NetworkConnectivityConfigId string `tf:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 	// Your private endpoint rule ID.
-	// Wire name: 'private_endpoint_rule_id'
-	PrivateEndpointRuleId string `tf:"-"`
+	PrivateEndpointRuleId string `json:"-" tf:"-"`
 }
 
 func (st GetPrivateEndpointRuleRequest) MarshalJSON() ([]byte, error) {
@@ -9574,9 +9525,8 @@ type GetRestrictWorkspaceAdminsSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
@@ -9638,9 +9588,8 @@ type GetSqlResultsDownloadRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	// Wire name: 'etag'
-	Etag            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Etag            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
@@ -9695,9 +9644,7 @@ func GetSqlResultsDownloadRequestFromPb(pb *settingspb.GetSqlResultsDownloadRequ
 }
 
 type GetStatusRequest struct {
-
-	// Wire name: 'keys'
-	Keys string `tf:"-"`
+	Keys string `json:"-" tf:"-"`
 }
 
 func (st GetStatusRequest) MarshalJSON() ([]byte, error) {
@@ -9747,8 +9694,7 @@ func GetStatusRequestFromPb(pb *settingspb.GetStatusRequestPb) (*GetStatusReques
 
 type GetTokenManagementRequest struct {
 	// The ID of the token to get.
-	// Wire name: 'token_id'
-	TokenId string `tf:"-"`
+	TokenId string `json:"-" tf:"-"`
 }
 
 func (st GetTokenManagementRequest) MarshalJSON() ([]byte, error) {
@@ -9799,7 +9745,7 @@ func GetTokenManagementRequestFromPb(pb *settingspb.GetTokenManagementRequestPb)
 type GetTokenPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []TokenPermissionsDescription ``
+	PermissionLevels []TokenPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetTokenPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -9873,7 +9819,7 @@ func GetTokenPermissionLevelsResponseFromPb(pb *settingspb.GetTokenPermissionLev
 type GetTokenResponse struct {
 
 	// Wire name: 'token_info'
-	TokenInfo *TokenInfo ``
+	TokenInfo *TokenInfo `json:"token_info,omitempty"`
 }
 
 func (st GetTokenResponse) MarshalJSON() ([]byte, error) {
@@ -9935,8 +9881,7 @@ func GetTokenResponseFromPb(pb *settingspb.GetTokenResponsePb) (*GetTokenRespons
 
 type GetWorkspaceNetworkOptionRequest struct {
 	// The workspace ID.
-	// Wire name: 'workspace_id'
-	WorkspaceId int64 `tf:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
 }
 
 func (st GetWorkspaceNetworkOptionRequest) MarshalJSON() ([]byte, error) {
@@ -9988,35 +9933,35 @@ func GetWorkspaceNetworkOptionRequestFromPb(pb *settingspb.GetWorkspaceNetworkOp
 type IpAccessListInfo struct {
 	// Total number of IP or CIDR values.
 	// Wire name: 'address_count'
-	AddressCount int ``
+	AddressCount int `json:"address_count,omitempty"`
 	// Creation timestamp in milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// User ID of the user who created this list.
 	// Wire name: 'created_by'
-	CreatedBy int64 ``
+	CreatedBy int64 `json:"created_by,omitempty"`
 	// Specifies whether this IP access list is enabled.
 	// Wire name: 'enabled'
-	Enabled bool ``
+	Enabled bool `json:"enabled,omitempty"`
 
 	// Wire name: 'ip_addresses'
-	IpAddresses []string ``
+	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
 	// Wire name: 'label'
-	Label string ``
+	Label string `json:"label,omitempty"`
 	// Universally unique identifier (UUID) of the IP access list.
 	// Wire name: 'list_id'
-	ListId string ``
+	ListId string `json:"list_id,omitempty"`
 
 	// Wire name: 'list_type'
-	ListType ListType ``
+	ListType ListType `json:"list_type,omitempty"`
 	// Update timestamp in milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// User ID of the user who updated this list.
 	// Wire name: 'updated_by'
-	UpdatedBy       int64    ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       int64    `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st IpAccessListInfo) MarshalJSON() ([]byte, error) {
@@ -10104,7 +10049,7 @@ func IpAccessListInfoFromPb(pb *settingspb.IpAccessListInfoPb) (*IpAccessListInf
 type ListIpAccessListResponse struct {
 
 	// Wire name: 'ip_access_lists'
-	IpAccessLists []IpAccessListInfo ``
+	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
 
 func (st ListIpAccessListResponse) MarshalJSON() ([]byte, error) {
@@ -10176,9 +10121,8 @@ func ListIpAccessListResponseFromPb(pb *settingspb.ListIpAccessListResponsePb) (
 
 type ListNetworkConnectivityConfigurationsRequest struct {
 	// Pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListNetworkConnectivityConfigurationsRequest) MarshalJSON() ([]byte, error) {
@@ -10236,12 +10180,12 @@ func ListNetworkConnectivityConfigurationsRequestFromPb(pb *settingspb.ListNetwo
 type ListNetworkConnectivityConfigurationsResponse struct {
 
 	// Wire name: 'items'
-	Items []NetworkConnectivityConfiguration ``
+	Items []NetworkConnectivityConfiguration `json:"items,omitempty"`
 	// A token that can be used to get the next page of results. If null, there
 	// are no more results to show.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListNetworkConnectivityConfigurationsResponse) MarshalJSON() ([]byte, error) {
@@ -10321,9 +10265,8 @@ func ListNetworkConnectivityConfigurationsResponseFromPb(pb *settingspb.ListNetw
 
 type ListNetworkPoliciesRequest struct {
 	// Pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListNetworkPoliciesRequest) MarshalJSON() ([]byte, error) {
@@ -10380,12 +10323,12 @@ func ListNetworkPoliciesRequestFromPb(pb *settingspb.ListNetworkPoliciesRequestP
 type ListNetworkPoliciesResponse struct {
 	// List of network policies.
 	// Wire name: 'items'
-	Items []AccountNetworkPolicy ``
+	Items []AccountNetworkPolicy `json:"items,omitempty"`
 	// A token that can be used to get the next page of results. If null, there
 	// are no more results to show.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListNetworkPoliciesResponse) MarshalJSON() ([]byte, error) {
@@ -10464,13 +10407,10 @@ func ListNetworkPoliciesResponseFromPb(pb *settingspb.ListNetworkPoliciesRespons
 }
 
 type ListNotificationDestinationsRequest struct {
+	PageSize int64 `json:"-" tf:"-"`
 
-	// Wire name: 'page_size'
-	PageSize int64 `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListNotificationDestinationsRequest) MarshalJSON() ([]byte, error) {
@@ -10529,11 +10469,11 @@ func ListNotificationDestinationsRequestFromPb(pb *settingspb.ListNotificationDe
 type ListNotificationDestinationsResponse struct {
 	// Page token for next of results.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'results'
-	Results         []ListNotificationDestinationsResult ``
-	ForceSendFields []string                             `tf:"-"`
+	Results         []ListNotificationDestinationsResult `json:"results,omitempty"`
+	ForceSendFields []string                             `json:"-" tf:"-"`
 }
 
 func (st ListNotificationDestinationsResponse) MarshalJSON() ([]byte, error) {
@@ -10615,14 +10555,14 @@ type ListNotificationDestinationsResult struct {
 	// [Output-only] The type of the notification destination. The type can not
 	// be changed once set.
 	// Wire name: 'destination_type'
-	DestinationType DestinationType ``
+	DestinationType DestinationType `json:"destination_type,omitempty"`
 	// The display name for the notification destination.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// UUID identifying notification destination.
 	// Wire name: 'id'
-	Id              string   ``
-	ForceSendFields []string `tf:"-"`
+	Id              string   `json:"id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListNotificationDestinationsResult) MarshalJSON() ([]byte, error) {
@@ -10694,12 +10634,10 @@ func ListNotificationDestinationsResultFromPb(pb *settingspb.ListNotificationDes
 
 type ListPrivateEndpointRulesRequest struct {
 	// Your Network Connectvity Configuration ID.
-	// Wire name: 'network_connectivity_config_id'
-	NetworkConnectivityConfigId string `tf:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 	// Pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListPrivateEndpointRulesRequest) MarshalJSON() ([]byte, error) {
@@ -10759,12 +10697,12 @@ func ListPrivateEndpointRulesRequestFromPb(pb *settingspb.ListPrivateEndpointRul
 type ListPrivateEndpointRulesResponse struct {
 
 	// Wire name: 'items'
-	Items []NccPrivateEndpointRule ``
+	Items []NccPrivateEndpointRule `json:"items,omitempty"`
 	// A token that can be used to get the next page of results. If null, there
 	// are no more results to show.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListPrivateEndpointRulesResponse) MarshalJSON() ([]byte, error) {
@@ -10845,7 +10783,7 @@ func ListPrivateEndpointRulesResponseFromPb(pb *settingspb.ListPrivateEndpointRu
 type ListPublicTokensResponse struct {
 	// The information for each token.
 	// Wire name: 'token_infos'
-	TokenInfos []PublicTokenInfo ``
+	TokenInfos []PublicTokenInfo `json:"token_infos,omitempty"`
 }
 
 func (st ListPublicTokensResponse) MarshalJSON() ([]byte, error) {
@@ -10917,12 +10855,10 @@ func ListPublicTokensResponseFromPb(pb *settingspb.ListPublicTokensResponsePb) (
 
 type ListTokenManagementRequest struct {
 	// User ID of the user that created the token.
-	// Wire name: 'created_by_id'
-	CreatedById int64 `tf:"-"`
+	CreatedById int64 `json:"-" tf:"-"`
 	// Username of the user that created the token.
-	// Wire name: 'created_by_username'
-	CreatedByUsername string   `tf:"-"`
-	ForceSendFields   []string `tf:"-"`
+	CreatedByUsername string   `json:"-" tf:"-"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
 func (st ListTokenManagementRequest) MarshalJSON() ([]byte, error) {
@@ -10982,7 +10918,7 @@ func ListTokenManagementRequestFromPb(pb *settingspb.ListTokenManagementRequestP
 type ListTokensResponse struct {
 	// Token metadata of each user-created token in the workspace
 	// Wire name: 'token_infos'
-	TokenInfos []TokenInfo ``
+	TokenInfos []TokenInfo `json:"token_infos,omitempty"`
 }
 
 func (st ListTokensResponse) MarshalJSON() ([]byte, error) {
@@ -11116,7 +11052,7 @@ func ListTypeFromPb(pb *settingspb.ListTypePb) (*ListType, error) {
 type LlmProxyPartnerPoweredAccount struct {
 
 	// Wire name: 'boolean_val'
-	BooleanVal BooleanMessage ``
+	BooleanVal BooleanMessage `json:"boolean_val"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -11125,15 +11061,15 @@ type LlmProxyPartnerPoweredAccount struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st LlmProxyPartnerPoweredAccount) MarshalJSON() ([]byte, error) {
@@ -11206,7 +11142,7 @@ func LlmProxyPartnerPoweredAccountFromPb(pb *settingspb.LlmProxyPartnerPoweredAc
 type LlmProxyPartnerPoweredEnforce struct {
 
 	// Wire name: 'boolean_val'
-	BooleanVal BooleanMessage ``
+	BooleanVal BooleanMessage `json:"boolean_val"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -11215,15 +11151,15 @@ type LlmProxyPartnerPoweredEnforce struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st LlmProxyPartnerPoweredEnforce) MarshalJSON() ([]byte, error) {
@@ -11296,7 +11232,7 @@ func LlmProxyPartnerPoweredEnforceFromPb(pb *settingspb.LlmProxyPartnerPoweredEn
 type LlmProxyPartnerPoweredWorkspace struct {
 
 	// Wire name: 'boolean_val'
-	BooleanVal BooleanMessage ``
+	BooleanVal BooleanMessage `json:"boolean_val"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -11305,15 +11241,15 @@ type LlmProxyPartnerPoweredWorkspace struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st LlmProxyPartnerPoweredWorkspace) MarshalJSON() ([]byte, error) {
@@ -11386,11 +11322,11 @@ func LlmProxyPartnerPoweredWorkspaceFromPb(pb *settingspb.LlmProxyPartnerPowered
 type MicrosoftTeamsConfig struct {
 	// [Input-Only] URL for Microsoft Teams.
 	// Wire name: 'url'
-	Url string ``
+	Url string `json:"url,omitempty"`
 	// [Output-Only] Whether URL is set.
 	// Wire name: 'url_set'
-	UrlSet          bool     ``
-	ForceSendFields []string `tf:"-"`
+	UrlSet          bool     `json:"url_set,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st MicrosoftTeamsConfig) MarshalJSON() ([]byte, error) {
@@ -11452,7 +11388,7 @@ type NccAwsStableIpRule struct {
 	// The list of stable IP CIDR blocks from which Databricks network traffic
 	// originates when accessing your resources.
 	// Wire name: 'cidr_blocks'
-	CidrBlocks []string ``
+	CidrBlocks []string `json:"cidr_blocks,omitempty"`
 }
 
 func (st NccAwsStableIpRule) MarshalJSON() ([]byte, error) {
@@ -11516,46 +11452,46 @@ type NccAzurePrivateEndpointRule struct {
 	// be deleted for clean-up. - EXPIRED: If the endpoint was created but not
 	// approved in 14 days, it will be EXPIRED.
 	// Wire name: 'connection_state'
-	ConnectionState NccAzurePrivateEndpointRuleConnectionState ``
+	ConnectionState NccAzurePrivateEndpointRuleConnectionState `json:"connection_state,omitempty"`
 	// Time in epoch milliseconds when this object was created.
 	// Wire name: 'creation_time'
-	CreationTime int64 ``
+	CreationTime int64 `json:"creation_time,omitempty"`
 	// Whether this private endpoint is deactivated.
 	// Wire name: 'deactivated'
-	Deactivated bool ``
+	Deactivated bool `json:"deactivated,omitempty"`
 	// Time in epoch milliseconds when this object was deactivated.
 	// Wire name: 'deactivated_at'
-	DeactivatedAt int64 ``
+	DeactivatedAt int64 `json:"deactivated_at,omitempty"`
 	// Not used by customer-managed private endpoint services.
 	//
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
 	// Wire name: 'domain_names'
-	DomainNames []string ``
+	DomainNames []string `json:"domain_names,omitempty"`
 	// The name of the Azure private endpoint resource.
 	// Wire name: 'endpoint_name'
-	EndpointName string ``
+	EndpointName string `json:"endpoint_name,omitempty"`
 	// Only used by private endpoints to Azure first-party services.
 	//
 	// The sub-resource type (group ID) of the target resource. Note that to
 	// connect to workspace root storage (root DBFS), you need two endpoints,
 	// one for blob and one for dfs.
 	// Wire name: 'group_id'
-	GroupId string ``
+	GroupId string `json:"group_id,omitempty"`
 	// The ID of a network connectivity configuration, which is the parent
 	// resource of this private endpoint rule object.
 	// Wire name: 'network_connectivity_config_id'
-	NetworkConnectivityConfigId string ``
+	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
 	// The Azure resource ID of the target resource.
 	// Wire name: 'resource_id'
-	ResourceId string ``
+	ResourceId string `json:"resource_id,omitempty"`
 	// The ID of a private endpoint rule.
 	// Wire name: 'rule_id'
-	RuleId string ``
+	RuleId string `json:"rule_id,omitempty"`
 	// Time in epoch milliseconds when this object was updated.
 	// Wire name: 'updated_time'
-	UpdatedTime     int64    ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedTime     int64    `json:"updated_time,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st NccAzurePrivateEndpointRule) MarshalJSON() ([]byte, error) {
@@ -11713,14 +11649,14 @@ type NccAzureServiceEndpointRule struct {
 	// The list of subnets from which Databricks network traffic originates when
 	// accessing your Azure resources.
 	// Wire name: 'subnets'
-	Subnets []string ``
+	Subnets []string `json:"subnets,omitempty"`
 	// The Azure region in which this service endpoint rule applies..
 	// Wire name: 'target_region'
-	TargetRegion string ``
+	TargetRegion string `json:"target_region,omitempty"`
 	// The Azure services to which this service endpoint rule applies to.
 	// Wire name: 'target_services'
-	TargetServices  []EgressResourceType ``
-	ForceSendFields []string             `tf:"-"`
+	TargetServices  []EgressResourceType `json:"target_services,omitempty"`
+	ForceSendFields []string             `json:"-" tf:"-"`
 }
 
 func (st NccAzureServiceEndpointRule) MarshalJSON() ([]byte, error) {
@@ -11805,11 +11741,11 @@ type NccEgressConfig struct {
 	// resource specific configurations. You can find the stable network
 	// information of your serverless compute resources here.
 	// Wire name: 'default_rules'
-	DefaultRules *NccEgressDefaultRules ``
+	DefaultRules *NccEgressDefaultRules `json:"default_rules,omitempty"`
 	// The network connectivity rules that configured for each destinations.
 	// These rules override default rules.
 	// Wire name: 'target_rules'
-	TargetRules *NccEgressTargetRules ``
+	TargetRules *NccEgressTargetRules `json:"target_rules,omitempty"`
 }
 
 func (st NccEgressConfig) MarshalJSON() ([]byte, error) {
@@ -11887,10 +11823,10 @@ func NccEgressConfigFromPb(pb *settingspb.NccEgressConfigPb) (*NccEgressConfig, 
 type NccEgressDefaultRules struct {
 
 	// Wire name: 'aws_stable_ip_rule'
-	AwsStableIpRule *NccAwsStableIpRule ``
+	AwsStableIpRule *NccAwsStableIpRule `json:"aws_stable_ip_rule,omitempty"`
 
 	// Wire name: 'azure_service_endpoint_rule'
-	AzureServiceEndpointRule *NccAzureServiceEndpointRule ``
+	AzureServiceEndpointRule *NccAzureServiceEndpointRule `json:"azure_service_endpoint_rule,omitempty"`
 }
 
 func (st NccEgressDefaultRules) MarshalJSON() ([]byte, error) {
@@ -11970,10 +11906,10 @@ type NccEgressTargetRules struct {
 	// AWS private endpoint rule controls the AWS private endpoint based egress
 	// rules.
 	// Wire name: 'aws_private_endpoint_rules'
-	AwsPrivateEndpointRules []CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule ``
+	AwsPrivateEndpointRules []CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule `json:"aws_private_endpoint_rules,omitempty"`
 
 	// Wire name: 'azure_private_endpoint_rules'
-	AzurePrivateEndpointRules []NccAzurePrivateEndpointRule ``
+	AzurePrivateEndpointRules []NccAzurePrivateEndpointRule `json:"azure_private_endpoint_rules,omitempty"`
 }
 
 func (st NccEgressTargetRules) MarshalJSON() ([]byte, error) {
@@ -12073,7 +12009,7 @@ type NccPrivateEndpointRule struct {
 	// Databricks account ID. You can find your account ID from the Accounts
 	// Console.
 	// Wire name: 'account_id'
-	AccountId string ``
+	AccountId string `json:"account_id,omitempty"`
 	// The current status of this private endpoint. The private endpoint rules
 	// are effective only if the connection state is ESTABLISHED. Remember that
 	// you must approve new endpoints on your resources in the Cloud console
@@ -12086,50 +12022,50 @@ type NccPrivateEndpointRule struct {
 	// clean-up. - EXPIRED: If the endpoint was created but not approved in 14
 	// days, it will be EXPIRED.
 	// Wire name: 'connection_state'
-	ConnectionState NccPrivateEndpointRulePrivateLinkConnectionState ``
+	ConnectionState NccPrivateEndpointRulePrivateLinkConnectionState `json:"connection_state,omitempty"`
 	// Time in epoch milliseconds when this object was created.
 	// Wire name: 'creation_time'
-	CreationTime int64 ``
+	CreationTime int64 `json:"creation_time,omitempty"`
 	// Whether this private endpoint is deactivated.
 	// Wire name: 'deactivated'
-	Deactivated bool ``
+	Deactivated bool `json:"deactivated,omitempty"`
 	// Time in epoch milliseconds when this object was deactivated.
 	// Wire name: 'deactivated_at'
-	DeactivatedAt int64 ``
+	DeactivatedAt int64 `json:"deactivated_at,omitempty"`
 	// Only used by private endpoints to customer-managed private endpoint
 	// services.
 	//
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
 	// Wire name: 'domain_names'
-	DomainNames []string ``
+	DomainNames []string `json:"domain_names,omitempty"`
 	// Only used by private endpoints towards an AWS S3 service.
 	//
 	// Update this field to activate/deactivate this private endpoint to allow
 	// egress access from serverless compute resources.
 	// Wire name: 'enabled'
-	Enabled bool ``
+	Enabled bool `json:"enabled,omitempty"`
 	// The name of the Azure private endpoint resource.
 	// Wire name: 'endpoint_name'
-	EndpointName string ``
+	EndpointName string `json:"endpoint_name,omitempty"`
 	// The full target AWS endpoint service name that connects to the
 	// destination resources of the private endpoint.
 	// Wire name: 'endpoint_service'
-	EndpointService string ``
+	EndpointService string `json:"endpoint_service,omitempty"`
 	// Not used by customer-managed private endpoint services.
 	//
 	// The sub-resource type (group ID) of the target resource. Note that to
 	// connect to workspace root storage (root DBFS), you need two endpoints,
 	// one for blob and one for dfs.
 	// Wire name: 'group_id'
-	GroupId string ``
+	GroupId string `json:"group_id,omitempty"`
 	// The ID of a network connectivity configuration, which is the parent
 	// resource of this private endpoint rule object.
 	// Wire name: 'network_connectivity_config_id'
-	NetworkConnectivityConfigId string ``
+	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
 	// The Azure resource ID of the target resource.
 	// Wire name: 'resource_id'
-	ResourceId string ``
+	ResourceId string `json:"resource_id,omitempty"`
 	// Only used by private endpoints towards AWS S3 service.
 	//
 	// The globally unique S3 bucket names that will be accessed via the VPC
@@ -12137,18 +12073,18 @@ type NccPrivateEndpointRule struct {
 	// service. When updating this field, we perform full update on this field.
 	// Please ensure a full list of desired resource_names is provided.
 	// Wire name: 'resource_names'
-	ResourceNames []string ``
+	ResourceNames []string `json:"resource_names,omitempty"`
 	// The ID of a private endpoint rule.
 	// Wire name: 'rule_id'
-	RuleId string ``
+	RuleId string `json:"rule_id,omitempty"`
 	// Time in epoch milliseconds when this object was updated.
 	// Wire name: 'updated_time'
-	UpdatedTime int64 ``
+	UpdatedTime int64 `json:"updated_time,omitempty"`
 	// The AWS VPC endpoint ID. You can use this ID to identify the VPC endpoint
 	// created by Databricks.
 	// Wire name: 'vpc_endpoint_id'
-	VpcEndpointId   string   ``
-	ForceSendFields []string `tf:"-"`
+	VpcEndpointId   string   `json:"vpc_endpoint_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st NccPrivateEndpointRule) MarshalJSON() ([]byte, error) {
@@ -12311,32 +12247,32 @@ type NetworkConnectivityConfiguration struct {
 	// Your Databricks account ID. You can find your account ID in your
 	// Databricks accounts console.
 	// Wire name: 'account_id'
-	AccountId string ``
+	AccountId string `json:"account_id,omitempty"`
 	// Time in epoch milliseconds when this object was created.
 	// Wire name: 'creation_time'
-	CreationTime int64 ``
+	CreationTime int64 `json:"creation_time,omitempty"`
 	// The network connectivity rules that apply to network traffic from your
 	// serverless compute resources.
 	// Wire name: 'egress_config'
-	EgressConfig *NccEgressConfig ``
+	EgressConfig *NccEgressConfig `json:"egress_config,omitempty"`
 	// The name of the network connectivity configuration. The name can contain
 	// alphanumeric characters, hyphens, and underscores. The length must be
 	// between 3 and 30 characters. The name must match the regular expression
 	// ^[0-9a-zA-Z-_]{3,30}$
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Databricks network connectivity configuration ID.
 	// Wire name: 'network_connectivity_config_id'
-	NetworkConnectivityConfigId string ``
+	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
 	// The region for the network connectivity configuration. Only workspaces in
 	// the same region can be attached to the network connectivity
 	// configuration.
 	// Wire name: 'region'
-	Region string ``
+	Region string `json:"region,omitempty"`
 	// Time in epoch milliseconds when this object was updated.
 	// Wire name: 'updated_time'
-	UpdatedTime     int64    ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedTime     int64    `json:"updated_time,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st NetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
@@ -12424,7 +12360,7 @@ func NetworkConnectivityConfigurationFromPb(pb *settingspb.NetworkConnectivityCo
 type NetworkPolicyEgress struct {
 	// The access policy enforced for egress traffic to the internet.
 	// Wire name: 'network_access'
-	NetworkAccess *EgressNetworkPolicyNetworkAccessPolicy ``
+	NetworkAccess *EgressNetworkPolicyNetworkAccessPolicy `json:"network_access,omitempty"`
 }
 
 func (st NetworkPolicyEgress) MarshalJSON() ([]byte, error) {
@@ -12489,18 +12425,18 @@ type NotificationDestination struct {
 	// of the nested configs. Only returns for users with workspace admin
 	// permissions.
 	// Wire name: 'config'
-	Config *Config ``
+	Config *Config `json:"config,omitempty"`
 	// [Output-only] The type of the notification destination. The type can not
 	// be changed once set.
 	// Wire name: 'destination_type'
-	DestinationType DestinationType ``
+	DestinationType DestinationType `json:"destination_type,omitempty"`
 	// The display name for the notification destination.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// UUID identifying notification destination.
 	// Wire name: 'id'
-	Id              string   ``
-	ForceSendFields []string `tf:"-"`
+	Id              string   `json:"id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st NotificationDestination) MarshalJSON() ([]byte, error) {
@@ -12587,11 +12523,11 @@ func NotificationDestinationFromPb(pb *settingspb.NotificationDestinationPb) (*N
 type PagerdutyConfig struct {
 	// [Input-Only] Integration key for PagerDuty.
 	// Wire name: 'integration_key'
-	IntegrationKey string ``
+	IntegrationKey string `json:"integration_key,omitempty"`
 	// [Output-Only] Whether integration key is set.
 	// Wire name: 'integration_key_set'
-	IntegrationKeySet bool     ``
-	ForceSendFields   []string `tf:"-"`
+	IntegrationKeySet bool     `json:"integration_key_set,omitempty"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
 func (st PagerdutyConfig) MarshalJSON() ([]byte, error) {
@@ -12651,8 +12587,8 @@ func PagerdutyConfigFromPb(pb *settingspb.PagerdutyConfigPb) (*PagerdutyConfig, 
 type PartitionId struct {
 	// The ID of the workspace.
 	// Wire name: 'workspaceId'
-	WorkspaceId     int64    ``
-	ForceSendFields []string `tf:"-"`
+	WorkspaceId     int64    `json:"workspaceId,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PartitionId) MarshalJSON() ([]byte, error) {
@@ -12709,7 +12645,7 @@ func PartitionIdFromPb(pb *settingspb.PartitionIdPb) (*PartitionId, error) {
 type PersonalComputeMessage struct {
 
 	// Wire name: 'value'
-	Value PersonalComputeMessageEnum ``
+	Value PersonalComputeMessageEnum `json:"value"`
 }
 
 func (st PersonalComputeMessage) MarshalJSON() ([]byte, error) {
@@ -12837,18 +12773,18 @@ type PersonalComputeSetting struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 
 	// Wire name: 'personal_compute'
-	PersonalCompute PersonalComputeMessage ``
+	PersonalCompute PersonalComputeMessage `json:"personal_compute"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PersonalComputeSetting) MarshalJSON() ([]byte, error) {
@@ -12921,18 +12857,18 @@ func PersonalComputeSettingFromPb(pb *settingspb.PersonalComputeSettingPb) (*Per
 type PublicTokenInfo struct {
 	// Comment the token was created with, if applicable.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Server time (in epoch milliseconds) when the token was created.
 	// Wire name: 'creation_time'
-	CreationTime int64 ``
+	CreationTime int64 `json:"creation_time,omitempty"`
 	// Server time (in epoch milliseconds) when the token will expire, or -1 if
 	// not applicable.
 	// Wire name: 'expiry_time'
-	ExpiryTime int64 ``
+	ExpiryTime int64 `json:"expiry_time,omitempty"`
 	// The ID of this token.
 	// Wire name: 'token_id'
-	TokenId         string   ``
-	ForceSendFields []string `tf:"-"`
+	TokenId         string   `json:"token_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PublicTokenInfo) MarshalJSON() ([]byte, error) {
@@ -12996,19 +12932,18 @@ func PublicTokenInfoFromPb(pb *settingspb.PublicTokenInfoPb) (*PublicTokenInfo, 
 type ReplaceIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	// Wire name: 'enabled'
-	Enabled bool ``
+	Enabled bool `json:"enabled"`
 	// The ID for the corresponding IP access list
-	// Wire name: 'ip_access_list_id'
-	IpAccessListId string `tf:"-"`
+	IpAccessListId string `json:"-" tf:"-"`
 
 	// Wire name: 'ip_addresses'
-	IpAddresses []string ``
+	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
 	// Wire name: 'label'
-	Label string ``
+	Label string `json:"label"`
 
 	// Wire name: 'list_type'
-	ListType ListType ``
+	ListType ListType `json:"list_type"`
 }
 
 func (st ReplaceIpAccessList) MarshalJSON() ([]byte, error) {
@@ -13079,7 +13014,7 @@ func ReplaceIpAccessListFromPb(pb *settingspb.ReplaceIpAccessListPb) (*ReplaceIp
 type RestrictWorkspaceAdminsMessage struct {
 
 	// Wire name: 'status'
-	Status RestrictWorkspaceAdminsMessageStatus ``
+	Status RestrictWorkspaceAdminsMessageStatus `json:"status"`
 }
 
 func (st RestrictWorkspaceAdminsMessage) MarshalJSON() ([]byte, error) {
@@ -13201,18 +13136,18 @@ type RestrictWorkspaceAdminsSetting struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 
 	// Wire name: 'restrict_workspace_admins'
-	RestrictWorkspaceAdmins RestrictWorkspaceAdminsMessage ``
+	RestrictWorkspaceAdmins RestrictWorkspaceAdminsMessage `json:"restrict_workspace_admins"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RestrictWorkspaceAdminsSetting) MarshalJSON() ([]byte, error) {
@@ -13285,7 +13220,7 @@ func RestrictWorkspaceAdminsSettingFromPb(pb *settingspb.RestrictWorkspaceAdmins
 type RevokeTokenRequest struct {
 	// The ID of the token to be revoked.
 	// Wire name: 'token_id'
-	TokenId string ``
+	TokenId string `json:"token_id"`
 }
 
 func (st RevokeTokenRequest) MarshalJSON() ([]byte, error) {
@@ -13336,11 +13271,11 @@ func RevokeTokenRequestFromPb(pb *settingspb.RevokeTokenRequestPb) (*RevokeToken
 type SlackConfig struct {
 	// [Input-Only] URL for Slack destination.
 	// Wire name: 'url'
-	Url string ``
+	Url string `json:"url,omitempty"`
 	// [Output-Only] Whether URL is set.
 	// Wire name: 'url_set'
-	UrlSet          bool     ``
-	ForceSendFields []string `tf:"-"`
+	UrlSet          bool     `json:"url_set,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SlackConfig) MarshalJSON() ([]byte, error) {
@@ -13399,7 +13334,7 @@ func SlackConfigFromPb(pb *settingspb.SlackConfigPb) (*SlackConfig, error) {
 type SqlResultsDownload struct {
 
 	// Wire name: 'boolean_val'
-	BooleanVal BooleanMessage ``
+	BooleanVal BooleanMessage `json:"boolean_val"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -13408,15 +13343,15 @@ type SqlResultsDownload struct {
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
 	// Wire name: 'setting_name'
-	SettingName     string   ``
-	ForceSendFields []string `tf:"-"`
+	SettingName     string   `json:"setting_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SqlResultsDownload) MarshalJSON() ([]byte, error) {
@@ -13489,8 +13424,8 @@ func SqlResultsDownloadFromPb(pb *settingspb.SqlResultsDownloadPb) (*SqlResultsD
 type StringMessage struct {
 	// Represents a generic string value.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st StringMessage) MarshalJSON() ([]byte, error) {
@@ -13547,17 +13482,17 @@ func StringMessageFromPb(pb *settingspb.StringMessagePb) (*StringMessage, error)
 type TokenAccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel TokenPermissionLevel ``
+	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TokenAccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -13632,20 +13567,20 @@ func TokenAccessControlRequestFromPb(pb *settingspb.TokenAccessControlRequestPb)
 type TokenAccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []TokenPermission ``
+	AllPermissions []TokenPermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TokenAccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -13733,33 +13668,33 @@ type TokenInfo struct {
 	// Comment that describes the purpose of the token, specified by the token
 	// creator.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// User ID of the user that created the token.
 	// Wire name: 'created_by_id'
-	CreatedById int64 ``
+	CreatedById int64 `json:"created_by_id,omitempty"`
 	// Username of the user that created the token.
 	// Wire name: 'created_by_username'
-	CreatedByUsername string ``
+	CreatedByUsername string `json:"created_by_username,omitempty"`
 	// Timestamp when the token was created.
 	// Wire name: 'creation_time'
-	CreationTime int64 ``
+	CreationTime int64 `json:"creation_time,omitempty"`
 	// Timestamp when the token expires.
 	// Wire name: 'expiry_time'
-	ExpiryTime int64 ``
+	ExpiryTime int64 `json:"expiry_time,omitempty"`
 	// Approximate timestamp for the day the token was last used. Accurate up to
 	// 1 day.
 	// Wire name: 'last_used_day'
-	LastUsedDay int64 ``
+	LastUsedDay int64 `json:"last_used_day,omitempty"`
 	// User ID of the user that owns the token.
 	// Wire name: 'owner_id'
-	OwnerId int64 ``
+	OwnerId int64 `json:"owner_id,omitempty"`
 	// ID of the token.
 	// Wire name: 'token_id'
-	TokenId string ``
+	TokenId string `json:"token_id,omitempty"`
 	// If applicable, the ID of the workspace that the token was created in.
 	// Wire name: 'workspace_id'
-	WorkspaceId     int64    ``
-	ForceSendFields []string `tf:"-"`
+	WorkspaceId     int64    `json:"workspace_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TokenInfo) MarshalJSON() ([]byte, error) {
@@ -13832,14 +13767,14 @@ func TokenInfoFromPb(pb *settingspb.TokenInfoPb) (*TokenInfo, error) {
 type TokenPermission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel TokenPermissionLevel ``
-	ForceSendFields []string             `tf:"-"`
+	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string             `json:"-" tf:"-"`
 }
 
 func (st TokenPermission) MarshalJSON() ([]byte, error) {
@@ -13963,14 +13898,14 @@ func TokenPermissionLevelFromPb(pb *settingspb.TokenPermissionLevelPb) (*TokenPe
 type TokenPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []TokenAccessControlResponse ``
+	AccessControlList []TokenAccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TokenPermissions) MarshalJSON() ([]byte, error) {
@@ -14053,11 +13988,11 @@ func TokenPermissionsFromPb(pb *settingspb.TokenPermissionsPb) (*TokenPermission
 type TokenPermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel TokenPermissionLevel ``
-	ForceSendFields []string             `tf:"-"`
+	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string             `json:"-" tf:"-"`
 }
 
 func (st TokenPermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -14128,7 +14063,7 @@ func TokenPermissionsDescriptionFromPb(pb *settingspb.TokenPermissionsDescriptio
 type TokenPermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []TokenAccessControlRequest ``
+	AccessControlList []TokenAccessControlRequest `json:"access_control_list,omitempty"`
 }
 
 func (st TokenPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -14267,7 +14202,7 @@ type UpdateAccountIpAccessEnableRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -14280,10 +14215,10 @@ type UpdateAccountIpAccessEnableRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting AccountIpAccessEnable ``
+	Setting AccountIpAccessEnable `json:"setting"`
 }
 
 func (st UpdateAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
@@ -14352,7 +14287,7 @@ type UpdateAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -14365,10 +14300,10 @@ type UpdateAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting AibiDashboardEmbeddingAccessPolicySetting ``
+	Setting AibiDashboardEmbeddingAccessPolicySetting `json:"setting"`
 }
 
 func (st UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
@@ -14437,7 +14372,7 @@ type UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -14450,10 +14385,10 @@ type UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting AibiDashboardEmbeddingApprovedDomainsSetting ``
+	Setting AibiDashboardEmbeddingApprovedDomainsSetting `json:"setting"`
 }
 
 func (st UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
@@ -14522,7 +14457,7 @@ type UpdateAutomaticClusterUpdateSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -14535,10 +14470,10 @@ type UpdateAutomaticClusterUpdateSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting AutomaticClusterUpdateSetting ``
+	Setting AutomaticClusterUpdateSetting `json:"setting"`
 }
 
 func (st UpdateAutomaticClusterUpdateSettingRequest) MarshalJSON() ([]byte, error) {
@@ -14607,7 +14542,7 @@ type UpdateComplianceSecurityProfileSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -14620,10 +14555,10 @@ type UpdateComplianceSecurityProfileSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting ComplianceSecurityProfileSetting ``
+	Setting ComplianceSecurityProfileSetting `json:"setting"`
 }
 
 func (st UpdateComplianceSecurityProfileSettingRequest) MarshalJSON() ([]byte, error) {
@@ -14692,7 +14627,7 @@ type UpdateCspEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -14705,10 +14640,10 @@ type UpdateCspEnablementAccountSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting CspEnablementAccountSetting ``
+	Setting CspEnablementAccountSetting `json:"setting"`
 }
 
 func (st UpdateCspEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
@@ -14777,7 +14712,7 @@ type UpdateDashboardEmailSubscriptionsRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -14790,10 +14725,10 @@ type UpdateDashboardEmailSubscriptionsRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting DashboardEmailSubscriptions ``
+	Setting DashboardEmailSubscriptions `json:"setting"`
 }
 
 func (st UpdateDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
@@ -14862,7 +14797,7 @@ type UpdateDefaultNamespaceSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -14875,10 +14810,10 @@ type UpdateDefaultNamespaceSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting DefaultNamespaceSetting ``
+	Setting DefaultNamespaceSetting `json:"setting"`
 }
 
 func (st UpdateDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
@@ -14947,7 +14882,7 @@ type UpdateDefaultWarehouseIdRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -14960,10 +14895,10 @@ type UpdateDefaultWarehouseIdRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting DefaultWarehouseId ``
+	Setting DefaultWarehouseId `json:"setting"`
 }
 
 func (st UpdateDefaultWarehouseIdRequest) MarshalJSON() ([]byte, error) {
@@ -15032,7 +14967,7 @@ type UpdateDisableLegacyAccessRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -15045,10 +14980,10 @@ type UpdateDisableLegacyAccessRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting DisableLegacyAccess ``
+	Setting DisableLegacyAccess `json:"setting"`
 }
 
 func (st UpdateDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
@@ -15117,7 +15052,7 @@ type UpdateDisableLegacyDbfsRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -15130,10 +15065,10 @@ type UpdateDisableLegacyDbfsRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting DisableLegacyDbfs ``
+	Setting DisableLegacyDbfs `json:"setting"`
 }
 
 func (st UpdateDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
@@ -15202,7 +15137,7 @@ type UpdateDisableLegacyFeaturesRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -15215,10 +15150,10 @@ type UpdateDisableLegacyFeaturesRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting DisableLegacyFeatures ``
+	Setting DisableLegacyFeatures `json:"setting"`
 }
 
 func (st UpdateDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
@@ -15287,7 +15222,7 @@ type UpdateEnableExportNotebookRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -15300,10 +15235,10 @@ type UpdateEnableExportNotebookRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting EnableExportNotebook ``
+	Setting EnableExportNotebook `json:"setting"`
 }
 
 func (st UpdateEnableExportNotebookRequest) MarshalJSON() ([]byte, error) {
@@ -15372,7 +15307,7 @@ type UpdateEnableNotebookTableClipboardRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -15385,10 +15320,10 @@ type UpdateEnableNotebookTableClipboardRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting EnableNotebookTableClipboard ``
+	Setting EnableNotebookTableClipboard `json:"setting"`
 }
 
 func (st UpdateEnableNotebookTableClipboardRequest) MarshalJSON() ([]byte, error) {
@@ -15457,7 +15392,7 @@ type UpdateEnableResultsDownloadingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -15470,10 +15405,10 @@ type UpdateEnableResultsDownloadingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting EnableResultsDownloading ``
+	Setting EnableResultsDownloading `json:"setting"`
 }
 
 func (st UpdateEnableResultsDownloadingRequest) MarshalJSON() ([]byte, error) {
@@ -15542,7 +15477,7 @@ type UpdateEnhancedSecurityMonitoringSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -15555,10 +15490,10 @@ type UpdateEnhancedSecurityMonitoringSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting EnhancedSecurityMonitoringSetting ``
+	Setting EnhancedSecurityMonitoringSetting `json:"setting"`
 }
 
 func (st UpdateEnhancedSecurityMonitoringSettingRequest) MarshalJSON() ([]byte, error) {
@@ -15627,7 +15562,7 @@ type UpdateEsmEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -15640,10 +15575,10 @@ type UpdateEsmEnablementAccountSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting EsmEnablementAccountSetting ``
+	Setting EsmEnablementAccountSetting `json:"setting"`
 }
 
 func (st UpdateEsmEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
@@ -15711,20 +15646,19 @@ func UpdateEsmEnablementAccountSettingRequestFromPb(pb *settingspb.UpdateEsmEnab
 type UpdateIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
 	// Wire name: 'enabled'
-	Enabled bool ``
+	Enabled bool `json:"enabled,omitempty"`
 	// The ID for the corresponding IP access list
-	// Wire name: 'ip_access_list_id'
-	IpAccessListId string `tf:"-"`
+	IpAccessListId string `json:"-" tf:"-"`
 
 	// Wire name: 'ip_addresses'
-	IpAddresses []string ``
+	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
 	// Wire name: 'label'
-	Label string ``
+	Label string `json:"label,omitempty"`
 
 	// Wire name: 'list_type'
-	ListType        ListType ``
-	ForceSendFields []string `tf:"-"`
+	ListType        ListType `json:"list_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateIpAccessList) MarshalJSON() ([]byte, error) {
@@ -15803,7 +15737,7 @@ type UpdateLlmProxyPartnerPoweredAccountRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -15816,10 +15750,10 @@ type UpdateLlmProxyPartnerPoweredAccountRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting LlmProxyPartnerPoweredAccount ``
+	Setting LlmProxyPartnerPoweredAccount `json:"setting"`
 }
 
 func (st UpdateLlmProxyPartnerPoweredAccountRequest) MarshalJSON() ([]byte, error) {
@@ -15888,7 +15822,7 @@ type UpdateLlmProxyPartnerPoweredEnforceRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -15901,10 +15835,10 @@ type UpdateLlmProxyPartnerPoweredEnforceRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting LlmProxyPartnerPoweredEnforce ``
+	Setting LlmProxyPartnerPoweredEnforce `json:"setting"`
 }
 
 func (st UpdateLlmProxyPartnerPoweredEnforceRequest) MarshalJSON() ([]byte, error) {
@@ -15973,7 +15907,7 @@ type UpdateLlmProxyPartnerPoweredWorkspaceRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -15986,10 +15920,10 @@ type UpdateLlmProxyPartnerPoweredWorkspaceRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting LlmProxyPartnerPoweredWorkspace ``
+	Setting LlmProxyPartnerPoweredWorkspace `json:"setting"`
 }
 
 func (st UpdateLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
@@ -16056,22 +15990,19 @@ func UpdateLlmProxyPartnerPoweredWorkspaceRequestFromPb(pb *settingspb.UpdateLlm
 type UpdateNccPrivateEndpointRuleRequest struct {
 	// The ID of a network connectivity configuration, which is the parent
 	// resource of this private endpoint rule object.
-	// Wire name: 'network_connectivity_config_id'
-	NetworkConnectivityConfigId string `tf:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 
 	// Wire name: 'private_endpoint_rule'
-	PrivateEndpointRule UpdatePrivateEndpointRule ``
+	PrivateEndpointRule UpdatePrivateEndpointRule `json:"private_endpoint_rule"`
 	// Your private endpoint rule ID.
-	// Wire name: 'private_endpoint_rule_id'
-	PrivateEndpointRuleId string `tf:"-"`
+	PrivateEndpointRuleId string `json:"-" tf:"-"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
 	// Specification of elements in sequence or map fields is not allowed, as
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
-	// Wire name: 'update_mask'
-	UpdateMask string `tf:"-"` //legacy
+	UpdateMask string `json:"-" tf:"-"` //legacy
 
 }
 
@@ -16141,10 +16072,9 @@ func UpdateNccPrivateEndpointRuleRequestFromPb(pb *settingspb.UpdateNccPrivateEn
 type UpdateNetworkPolicyRequest struct {
 	// Updated network policy configuration details.
 	// Wire name: 'network_policy'
-	NetworkPolicy AccountNetworkPolicy ``
+	NetworkPolicy AccountNetworkPolicy `json:"network_policy"`
 	// The unique identifier for the network policy.
-	// Wire name: 'network_policy_id'
-	NetworkPolicyId string `tf:"-"`
+	NetworkPolicyId string `json:"-" tf:"-"`
 }
 
 func (st UpdateNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -16210,14 +16140,13 @@ type UpdateNotificationDestinationRequest struct {
 	// The configuration for the notification destination. Must wrap EXACTLY one
 	// of the nested configs.
 	// Wire name: 'config'
-	Config *Config ``
+	Config *Config `json:"config,omitempty"`
 	// The display name for the notification destination.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// UUID identifying notification destination.
-	// Wire name: 'id'
-	Id              string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Id              string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
@@ -16292,7 +16221,7 @@ type UpdatePersonalComputeSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -16305,10 +16234,10 @@ type UpdatePersonalComputeSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting PersonalComputeSetting ``
+	Setting PersonalComputeSetting `json:"setting"`
 }
 
 func (st UpdatePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
@@ -16381,13 +16310,13 @@ type UpdatePrivateEndpointRule struct {
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
 	// Wire name: 'domain_names'
-	DomainNames []string ``
+	DomainNames []string `json:"domain_names,omitempty"`
 	// Only used by private endpoints towards an AWS S3 service.
 	//
 	// Update this field to activate/deactivate this private endpoint to allow
 	// egress access from serverless compute resources.
 	// Wire name: 'enabled'
-	Enabled bool ``
+	Enabled bool `json:"enabled,omitempty"`
 	// Only used by private endpoints towards AWS S3 service.
 	//
 	// The globally unique S3 bucket names that will be accessed via the VPC
@@ -16395,8 +16324,8 @@ type UpdatePrivateEndpointRule struct {
 	// service. When updating this field, we perform full update on this field.
 	// Please ensure a full list of desired resource_names is provided.
 	// Wire name: 'resource_names'
-	ResourceNames   []string ``
-	ForceSendFields []string `tf:"-"`
+	ResourceNames   []string `json:"resource_names,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
@@ -16459,7 +16388,7 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -16472,10 +16401,10 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting RestrictWorkspaceAdminsSetting ``
+	Setting RestrictWorkspaceAdminsSetting `json:"setting"`
 }
 
 func (st UpdateRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
@@ -16544,7 +16473,7 @@ type UpdateSqlResultsDownloadRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	// Wire name: 'allow_missing'
-	AllowMissing bool ``
+	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -16557,10 +16486,10 @@ type UpdateSqlResultsDownloadRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	// Wire name: 'field_mask'
-	FieldMask string `` //legacy
+	FieldMask string `json:"field_mask"` //legacy
 
 	// Wire name: 'setting'
-	Setting SqlResultsDownload ``
+	Setting SqlResultsDownload `json:"setting"`
 }
 
 func (st UpdateSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
@@ -16626,11 +16555,10 @@ func UpdateSqlResultsDownloadRequestFromPb(pb *settingspb.UpdateSqlResultsDownlo
 
 type UpdateWorkspaceNetworkOptionRequest struct {
 	// The workspace ID.
-	// Wire name: 'workspace_id'
-	WorkspaceId int64 `tf:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
 	// The network option details for the workspace.
 	// Wire name: 'workspace_network_option'
-	WorkspaceNetworkOption WorkspaceNetworkOption ``
+	WorkspaceNetworkOption WorkspaceNetworkOption `json:"workspace_network_option"`
 }
 
 func (st UpdateWorkspaceNetworkOptionRequest) MarshalJSON() ([]byte, error) {
@@ -16717,11 +16645,11 @@ type WorkspaceNetworkOption struct {
 	// no policy is explicitly assigned, the workspace will use
 	// 'default-policy'.
 	// Wire name: 'network_policy_id'
-	NetworkPolicyId string ``
+	NetworkPolicyId string `json:"network_policy_id,omitempty"`
 	// The workspace ID.
 	// Wire name: 'workspace_id'
-	WorkspaceId     int64    ``
-	ForceSendFields []string `tf:"-"`
+	WorkspaceId     int64    `json:"workspace_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st WorkspaceNetworkOption) MarshalJSON() ([]byte, error) {

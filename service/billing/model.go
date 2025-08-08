@@ -17,14 +17,14 @@ import (
 type ActionConfiguration struct {
 	// Databricks action configuration ID.
 	// Wire name: 'action_configuration_id'
-	ActionConfigurationId string ``
+	ActionConfigurationId string `json:"action_configuration_id,omitempty"`
 	// The type of the action.
 	// Wire name: 'action_type'
-	ActionType ActionConfigurationType ``
+	ActionType ActionConfigurationType `json:"action_type,omitempty"`
 	// Target for the action. For example, an email address.
 	// Wire name: 'target'
-	Target          string   ``
-	ForceSendFields []string `tf:"-"`
+	Target          string   `json:"target,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ActionConfiguration) MarshalJSON() ([]byte, error) {
@@ -148,26 +148,26 @@ type AlertConfiguration struct {
 	// Configured actions for this alert. These define what happens when an
 	// alert enters a triggered state.
 	// Wire name: 'action_configurations'
-	ActionConfigurations []ActionConfiguration ``
+	ActionConfigurations []ActionConfiguration `json:"action_configurations,omitempty"`
 	// Databricks alert configuration ID.
 	// Wire name: 'alert_configuration_id'
-	AlertConfigurationId string ``
+	AlertConfigurationId string `json:"alert_configuration_id,omitempty"`
 	// The threshold for the budget alert to determine if it is in a triggered
 	// state. The number is evaluated based on `quantity_type`.
 	// Wire name: 'quantity_threshold'
-	QuantityThreshold string ``
+	QuantityThreshold string `json:"quantity_threshold,omitempty"`
 	// The way to calculate cost for this budget alert. This is what
 	// `quantity_threshold` is measured in.
 	// Wire name: 'quantity_type'
-	QuantityType AlertConfigurationQuantityType ``
+	QuantityType AlertConfigurationQuantityType `json:"quantity_type,omitempty"`
 	// The time window of usage data for the budget.
 	// Wire name: 'time_period'
-	TimePeriod AlertConfigurationTimePeriod ``
+	TimePeriod AlertConfigurationTimePeriod `json:"time_period,omitempty"`
 	// The evaluation method to determine when this budget alert is in a
 	// triggered state.
 	// Wire name: 'trigger_type'
-	TriggerType     AlertConfigurationTriggerType ``
-	ForceSendFields []string                      `tf:"-"`
+	TriggerType     AlertConfigurationTriggerType `json:"trigger_type,omitempty"`
+	ForceSendFields []string                      `json:"-" tf:"-"`
 }
 
 func (st AlertConfiguration) MarshalJSON() ([]byte, error) {
@@ -442,30 +442,30 @@ func AlertConfigurationTriggerTypeFromPb(pb *billingpb.AlertConfigurationTrigger
 type BudgetConfiguration struct {
 	// Databricks account ID.
 	// Wire name: 'account_id'
-	AccountId string ``
+	AccountId string `json:"account_id,omitempty"`
 	// Alerts to configure when this budget is in a triggered state. Budgets
 	// must have exactly one alert configuration.
 	// Wire name: 'alert_configurations'
-	AlertConfigurations []AlertConfiguration ``
+	AlertConfigurations []AlertConfiguration `json:"alert_configurations,omitempty"`
 	// Databricks budget configuration ID.
 	// Wire name: 'budget_configuration_id'
-	BudgetConfigurationId string ``
+	BudgetConfigurationId string `json:"budget_configuration_id,omitempty"`
 	// Creation time of this budget configuration.
 	// Wire name: 'create_time'
-	CreateTime int64 ``
+	CreateTime int64 `json:"create_time,omitempty"`
 	// Human-readable name of budget configuration. Max Length: 128
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// Configured filters for this budget. These are applied to your account's
 	// usage to limit the scope of what is considered for this budget. Leave
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
 	// Wire name: 'filter'
-	Filter *BudgetConfigurationFilter ``
+	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
 	// Update time of this budget configuration.
 	// Wire name: 'update_time'
-	UpdateTime      int64    ``
-	ForceSendFields []string `tf:"-"`
+	UpdateTime      int64    `json:"update_time,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st BudgetConfiguration) MarshalJSON() ([]byte, error) {
@@ -570,10 +570,10 @@ type BudgetConfigurationFilter struct {
 	// includes those specific custom tags. Tags are case-sensitive and should
 	// be entered exactly as they appear in your usage data.
 	// Wire name: 'tags'
-	Tags []BudgetConfigurationFilterTagClause ``
+	Tags []BudgetConfigurationFilterTagClause `json:"tags,omitempty"`
 	// If provided, usage must match with the provided Databricks workspace IDs.
 	// Wire name: 'workspace_id'
-	WorkspaceId *BudgetConfigurationFilterWorkspaceIdClause ``
+	WorkspaceId *BudgetConfigurationFilterWorkspaceIdClause `json:"workspace_id,omitempty"`
 }
 
 func (st BudgetConfigurationFilter) MarshalJSON() ([]byte, error) {
@@ -660,10 +660,10 @@ func BudgetConfigurationFilterFromPb(pb *billingpb.BudgetConfigurationFilterPb) 
 type BudgetConfigurationFilterClause struct {
 
 	// Wire name: 'operator'
-	Operator BudgetConfigurationFilterOperator ``
+	Operator BudgetConfigurationFilterOperator `json:"operator,omitempty"`
 
 	// Wire name: 'values'
-	Values []string ``
+	Values []string `json:"values,omitempty"`
 }
 
 func (st BudgetConfigurationFilterClause) MarshalJSON() ([]byte, error) {
@@ -778,11 +778,11 @@ func BudgetConfigurationFilterOperatorFromPb(pb *billingpb.BudgetConfigurationFi
 type BudgetConfigurationFilterTagClause struct {
 
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 
 	// Wire name: 'value'
-	Value           *BudgetConfigurationFilterClause ``
-	ForceSendFields []string                         `tf:"-"`
+	Value           *BudgetConfigurationFilterClause `json:"value,omitempty"`
+	ForceSendFields []string                         `json:"-" tf:"-"`
 }
 
 func (st BudgetConfigurationFilterTagClause) MarshalJSON() ([]byte, error) {
@@ -853,10 +853,10 @@ func BudgetConfigurationFilterTagClauseFromPb(pb *billingpb.BudgetConfigurationF
 type BudgetConfigurationFilterWorkspaceIdClause struct {
 
 	// Wire name: 'operator'
-	Operator BudgetConfigurationFilterOperator ``
+	Operator BudgetConfigurationFilterOperator `json:"operator,omitempty"`
 
 	// Wire name: 'values'
-	Values []int64 ``
+	Values []int64 `json:"values,omitempty"`
 }
 
 func (st BudgetConfigurationFilterWorkspaceIdClause) MarshalJSON() ([]byte, error) {
@@ -924,21 +924,21 @@ type BudgetPolicy struct {
 	// An empty binding implies that this budget policy is open to any workspace
 	// in the account.
 	// Wire name: 'binding_workspace_ids'
-	BindingWorkspaceIds []int64 ``
+	BindingWorkspaceIds []int64 `json:"binding_workspace_ids,omitempty"`
 	// A list of tags defined by the customer. At most 20 entries are allowed
 	// per policy.
 	// Wire name: 'custom_tags'
-	CustomTags []compute.CustomPolicyTag ``
+	CustomTags []compute.CustomPolicyTag `json:"custom_tags,omitempty"`
 	// The Id of the policy. This field is generated by Databricks and globally
 	// unique.
 	// Wire name: 'policy_id'
-	PolicyId string ``
+	PolicyId string `json:"policy_id,omitempty"`
 	// The name of the policy. - Must be unique among active policies. - Can
 	// contain only characters from the ISO 8859-1 (latin1) set. - Can't start
 	// with reserved keywords such as `databricks:default-policy`.
 	// Wire name: 'policy_name'
-	PolicyName      string   ``
-	ForceSendFields []string `tf:"-"`
+	PolicyName      string   `json:"policy_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st BudgetPolicy) MarshalJSON() ([]byte, error) {
@@ -1025,12 +1025,12 @@ type CreateBillingUsageDashboardRequest struct {
 	// workspace ID. Global level usage dashboard shows usage data for all
 	// workspaces in the account.
 	// Wire name: 'dashboard_type'
-	DashboardType UsageDashboardType ``
+	DashboardType UsageDashboardType `json:"dashboard_type,omitempty"`
 	// The workspace ID of the workspace in which the usage dashboard is
 	// created.
 	// Wire name: 'workspace_id'
-	WorkspaceId     int64    ``
-	ForceSendFields []string `tf:"-"`
+	WorkspaceId     int64    `json:"workspace_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -1101,8 +1101,8 @@ func CreateBillingUsageDashboardRequestFromPb(pb *billingpb.CreateBillingUsageDa
 type CreateBillingUsageDashboardResponse struct {
 	// The unique id of the usage dashboard.
 	// Wire name: 'dashboard_id'
-	DashboardId     string   ``
-	ForceSendFields []string `tf:"-"`
+	DashboardId     string   `json:"dashboard_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
@@ -1159,21 +1159,21 @@ func CreateBillingUsageDashboardResponseFromPb(pb *billingpb.CreateBillingUsageD
 type CreateBudgetConfigurationBudget struct {
 	// Databricks account ID.
 	// Wire name: 'account_id'
-	AccountId string ``
+	AccountId string `json:"account_id,omitempty"`
 	// Alerts to configure when this budget is in a triggered state. Budgets
 	// must have exactly one alert configuration.
 	// Wire name: 'alert_configurations'
-	AlertConfigurations []CreateBudgetConfigurationBudgetAlertConfigurations ``
+	AlertConfigurations []CreateBudgetConfigurationBudgetAlertConfigurations `json:"alert_configurations,omitempty"`
 	// Human-readable name of budget configuration. Max Length: 128
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// Configured filters for this budget. These are applied to your account's
 	// usage to limit the scope of what is considered for this budget. Leave
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
 	// Wire name: 'filter'
-	Filter          *BudgetConfigurationFilter ``
-	ForceSendFields []string                   `tf:"-"`
+	Filter          *BudgetConfigurationFilter `json:"filter,omitempty"`
+	ForceSendFields []string                   `json:"-" tf:"-"`
 }
 
 func (st CreateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
@@ -1270,11 +1270,11 @@ func CreateBudgetConfigurationBudgetFromPb(pb *billingpb.CreateBudgetConfigurati
 type CreateBudgetConfigurationBudgetActionConfigurations struct {
 	// The type of the action.
 	// Wire name: 'action_type'
-	ActionType ActionConfigurationType ``
+	ActionType ActionConfigurationType `json:"action_type,omitempty"`
 	// Target for the action. For example, an email address.
 	// Wire name: 'target'
-	Target          string   ``
-	ForceSendFields []string `tf:"-"`
+	Target          string   `json:"target,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateBudgetConfigurationBudgetActionConfigurations) MarshalJSON() ([]byte, error) {
@@ -1346,23 +1346,23 @@ type CreateBudgetConfigurationBudgetAlertConfigurations struct {
 	// Configured actions for this alert. These define what happens when an
 	// alert enters a triggered state.
 	// Wire name: 'action_configurations'
-	ActionConfigurations []CreateBudgetConfigurationBudgetActionConfigurations ``
+	ActionConfigurations []CreateBudgetConfigurationBudgetActionConfigurations `json:"action_configurations,omitempty"`
 	// The threshold for the budget alert to determine if it is in a triggered
 	// state. The number is evaluated based on `quantity_type`.
 	// Wire name: 'quantity_threshold'
-	QuantityThreshold string ``
+	QuantityThreshold string `json:"quantity_threshold,omitempty"`
 	// The way to calculate cost for this budget alert. This is what
 	// `quantity_threshold` is measured in.
 	// Wire name: 'quantity_type'
-	QuantityType AlertConfigurationQuantityType ``
+	QuantityType AlertConfigurationQuantityType `json:"quantity_type,omitempty"`
 	// The time window of usage data for the budget.
 	// Wire name: 'time_period'
-	TimePeriod AlertConfigurationTimePeriod ``
+	TimePeriod AlertConfigurationTimePeriod `json:"time_period,omitempty"`
 	// The evaluation method to determine when this budget alert is in a
 	// triggered state.
 	// Wire name: 'trigger_type'
-	TriggerType     AlertConfigurationTriggerType ``
-	ForceSendFields []string                      `tf:"-"`
+	TriggerType     AlertConfigurationTriggerType `json:"trigger_type,omitempty"`
+	ForceSendFields []string                      `json:"-" tf:"-"`
 }
 
 func (st CreateBudgetConfigurationBudgetAlertConfigurations) MarshalJSON() ([]byte, error) {
@@ -1485,7 +1485,7 @@ func CreateBudgetConfigurationBudgetAlertConfigurationsFromPb(pb *billingpb.Crea
 type CreateBudgetConfigurationRequest struct {
 	// Properties of the new budget configuration.
 	// Wire name: 'budget'
-	Budget CreateBudgetConfigurationBudget ``
+	Budget CreateBudgetConfigurationBudget `json:"budget"`
 }
 
 func (st CreateBudgetConfigurationRequest) MarshalJSON() ([]byte, error) {
@@ -1548,7 +1548,7 @@ func CreateBudgetConfigurationRequestFromPb(pb *billingpb.CreateBudgetConfigurat
 type CreateBudgetConfigurationResponse struct {
 	// The created budget configuration.
 	// Wire name: 'budget'
-	Budget *BudgetConfiguration ``
+	Budget *BudgetConfiguration `json:"budget,omitempty"`
 }
 
 func (st CreateBudgetConfigurationResponse) MarshalJSON() ([]byte, error) {
@@ -1614,13 +1614,13 @@ type CreateBudgetPolicyRequest struct {
 	// generated `policy_name` must be provided, custom_tags may need to be
 	// provided depending on the cloud provider. All other fields are optional.
 	// Wire name: 'policy'
-	Policy *BudgetPolicy ``
+	Policy *BudgetPolicy `json:"policy,omitempty"`
 	// A unique identifier for this request. Restricted to 36 ASCII characters.
 	// A random UUID is recommended. This request is only idempotent if a
 	// `request_id` is provided.
 	// Wire name: 'request_id'
-	RequestId       string   ``
-	ForceSendFields []string `tf:"-"`
+	RequestId       string   `json:"request_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -1693,26 +1693,26 @@ type CreateLogDeliveryConfigurationParams struct {
 	// The optional human-readable name of the log delivery configuration.
 	// Defaults to empty.
 	// Wire name: 'config_name'
-	ConfigName string ``
+	ConfigName string `json:"config_name,omitempty"`
 	// The ID for a method:credentials/create that represents the AWS IAM role
 	// with policy and trust relationship as described in the main billable
 	// usage documentation page. See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	// Wire name: 'credentials_id'
-	CredentialsId string ``
+	CredentialsId string `json:"credentials_id"`
 	// The optional delivery path prefix within Amazon S3 storage. Defaults to
 	// empty, which means that logs are delivered to the root of the bucket.
 	// This must be a valid S3 object key. This must not start or end with a
 	// slash character.
 	// Wire name: 'delivery_path_prefix'
-	DeliveryPathPrefix string ``
+	DeliveryPathPrefix string `json:"delivery_path_prefix,omitempty"`
 	// This field applies only if log_type is BILLABLE_USAGE. This is the
 	// optional start month and year for delivery, specified in YYYY-MM format.
 	// Defaults to current year and month. BILLABLE_USAGE logs are not available
 	// for usage before March 2019 (2019-03).
 	// Wire name: 'delivery_start_time'
-	DeliveryStartTime string ``
+	DeliveryStartTime string `json:"delivery_start_time,omitempty"`
 	// Log delivery type. Supported values are: * `BILLABLE_USAGE` — Configure
 	// [billable usage log delivery]. For the CSV schema, see the [View billable
 	// usage]. * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON
@@ -1723,7 +1723,7 @@ type CreateLogDeliveryConfigurationParams struct {
 	// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	// Wire name: 'log_type'
-	LogType LogType ``
+	LogType LogType `json:"log_type"`
 	// The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`, this
 	// value must be `CSV`. Only the CSV (comma-separated values) format is
 	// supported. For the schema, see the [View billable usage] * If `log_type`
@@ -1734,21 +1734,21 @@ type CreateLogDeliveryConfigurationParams struct {
 	// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 	// Wire name: 'output_format'
-	OutputFormat OutputFormat ``
+	OutputFormat OutputFormat `json:"output_format"`
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
 	// the configuration](#operation/patch-log-delivery-config-status) later.
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	// Wire name: 'status'
-	Status LogDeliveryConfigStatus ``
+	Status LogDeliveryConfigStatus `json:"status,omitempty"`
 	// The ID for a method:storage/create that represents the S3 bucket with
 	// bucket policy as described in the main billable usage documentation page.
 	// See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	// Wire name: 'storage_configuration_id'
-	StorageConfigurationId string ``
+	StorageConfigurationId string `json:"storage_configuration_id"`
 	// Optional filter that specifies workspace IDs to deliver logs for. By
 	// default the workspace filter is empty and log delivery applies at the
 	// account level, delivering workspace-level logs for all workspaces in your
@@ -1763,8 +1763,8 @@ type CreateLogDeliveryConfigurationParams struct {
 	// deployments there is only one workspace per account ID, so this field is
 	// unnecessary.
 	// Wire name: 'workspace_ids_filter'
-	WorkspaceIdsFilter []int64  ``
-	ForceSendFields    []string `tf:"-"`
+	WorkspaceIdsFilter []int64  `json:"workspace_ids_filter,omitempty"`
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
 func (st CreateLogDeliveryConfigurationParams) MarshalJSON() ([]byte, error) {
@@ -1872,8 +1872,7 @@ func CreateLogDeliveryConfigurationParamsFromPb(pb *billingpb.CreateLogDeliveryC
 
 type DeleteBudgetConfigurationRequest struct {
 	// The Databricks budget configuration ID.
-	// Wire name: 'budget_id'
-	BudgetId string `tf:"-"`
+	BudgetId string `json:"-" tf:"-"`
 }
 
 func (st DeleteBudgetConfigurationRequest) MarshalJSON() ([]byte, error) {
@@ -1923,8 +1922,7 @@ func DeleteBudgetConfigurationRequestFromPb(pb *billingpb.DeleteBudgetConfigurat
 
 type DeleteBudgetPolicyRequest struct {
 	// The Id of the policy.
-	// Wire name: 'policy_id'
-	PolicyId string `tf:"-"`
+	PolicyId string `json:"-" tf:"-"`
 }
 
 func (st DeleteBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -2046,20 +2044,17 @@ func DeliveryStatusFromPb(pb *billingpb.DeliveryStatusPb) (*DeliveryStatus, erro
 type DownloadRequest struct {
 	// Format: `YYYY-MM`. Last month to return billable usage logs for. This
 	// field is required.
-	// Wire name: 'end_month'
-	EndMonth string `tf:"-"`
+	EndMonth string `json:"-" tf:"-"`
 	// Specify whether to include personally identifiable information in the
 	// billable usage logs, for example the email addresses of cluster creators.
 	// Handle this information with care. Defaults to false.
-	// Wire name: 'personal_data'
-	PersonalData bool `tf:"-"`
+	PersonalData bool `json:"-" tf:"-"`
 	// Format specification for month in the format `YYYY-MM`. This is used to
 	// specify billable usage `start_month` and `end_month` properties.
 	// **Note**: Billable usage logs are unavailable before March 2019
 	// (`2019-03`).
-	// Wire name: 'start_month'
-	StartMonth      string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	StartMonth      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DownloadRequest) MarshalJSON() ([]byte, error) {
@@ -2118,9 +2113,7 @@ func DownloadRequestFromPb(pb *billingpb.DownloadRequestPb) (*DownloadRequest, e
 }
 
 type DownloadResponse struct {
-
-	// Wire name: 'contents'
-	Contents io.ReadCloser `tf:"-"`
+	Contents io.ReadCloser `json:"-" tf:"-"`
 }
 
 func (st DownloadResponse) MarshalJSON() ([]byte, error) {
@@ -2174,16 +2167,16 @@ type Filter struct {
 	// The policy creator user id to be filtered on. If unspecified, all
 	// policies will be returned.
 	// Wire name: 'creator_user_id'
-	CreatorUserId int64 ``
+	CreatorUserId int64 `json:"creator_user_id,omitempty"`
 	// The policy creator user name to be filtered on. If unspecified, all
 	// policies will be returned.
 	// Wire name: 'creator_user_name'
-	CreatorUserName string ``
+	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// The partial name of policies to be filtered on. If unspecified, all
 	// policies will be returned.
 	// Wire name: 'policy_name'
-	PolicyName      string   ``
-	ForceSendFields []string `tf:"-"`
+	PolicyName      string   `json:"policy_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Filter) MarshalJSON() ([]byte, error) {
@@ -2245,13 +2238,11 @@ type GetBillingUsageDashboardRequest struct {
 	// Workspace level usage dashboard shows usage data for the specified
 	// workspace ID. Global level usage dashboard shows usage data for all
 	// workspaces in the account.
-	// Wire name: 'dashboard_type'
-	DashboardType UsageDashboardType `tf:"-"`
+	DashboardType UsageDashboardType `json:"-" tf:"-"`
 	// The workspace ID of the workspace in which the usage dashboard is
 	// created.
-	// Wire name: 'workspace_id'
-	WorkspaceId     int64    `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	WorkspaceId     int64    `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
@@ -2322,11 +2313,11 @@ func GetBillingUsageDashboardRequestFromPb(pb *billingpb.GetBillingUsageDashboar
 type GetBillingUsageDashboardResponse struct {
 	// The unique id of the usage dashboard.
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id,omitempty"`
 	// The URL of the usage dashboard.
 	// Wire name: 'dashboard_url'
-	DashboardUrl    string   ``
-	ForceSendFields []string `tf:"-"`
+	DashboardUrl    string   `json:"dashboard_url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
@@ -2384,8 +2375,7 @@ func GetBillingUsageDashboardResponseFromPb(pb *billingpb.GetBillingUsageDashboa
 
 type GetBudgetConfigurationRequest struct {
 	// The budget configuration ID
-	// Wire name: 'budget_id'
-	BudgetId string `tf:"-"`
+	BudgetId string `json:"-" tf:"-"`
 }
 
 func (st GetBudgetConfigurationRequest) MarshalJSON() ([]byte, error) {
@@ -2436,7 +2426,7 @@ func GetBudgetConfigurationRequestFromPb(pb *billingpb.GetBudgetConfigurationReq
 type GetBudgetConfigurationResponse struct {
 
 	// Wire name: 'budget'
-	Budget *BudgetConfiguration ``
+	Budget *BudgetConfiguration `json:"budget,omitempty"`
 }
 
 func (st GetBudgetConfigurationResponse) MarshalJSON() ([]byte, error) {
@@ -2498,8 +2488,7 @@ func GetBudgetConfigurationResponseFromPb(pb *billingpb.GetBudgetConfigurationRe
 
 type GetBudgetPolicyRequest struct {
 	// The Id of the policy.
-	// Wire name: 'policy_id'
-	PolicyId string `tf:"-"`
+	PolicyId string `json:"-" tf:"-"`
 }
 
 func (st GetBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -2550,7 +2539,7 @@ func GetBudgetPolicyRequestFromPb(pb *billingpb.GetBudgetPolicyRequestPb) (*GetB
 type GetLogDeliveryConfigurationResponse struct {
 	// The fetched log delivery configuration
 	// Wire name: 'log_delivery_configuration'
-	LogDeliveryConfiguration *LogDeliveryConfiguration ``
+	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
 }
 
 func (st GetLogDeliveryConfigurationResponse) MarshalJSON() ([]byte, error) {
@@ -2612,8 +2601,7 @@ func GetLogDeliveryConfigurationResponseFromPb(pb *billingpb.GetLogDeliveryConfi
 
 type GetLogDeliveryRequest struct {
 	// The log delivery configuration id of customer
-	// Wire name: 'log_delivery_configuration_id'
-	LogDeliveryConfigurationId string `tf:"-"`
+	LogDeliveryConfigurationId string `json:"-" tf:"-"`
 }
 
 func (st GetLogDeliveryRequest) MarshalJSON() ([]byte, error) {
@@ -2713,9 +2701,8 @@ type ListBudgetConfigurationsRequest struct {
 	// A page token received from a previous get all budget configurations call.
 	// This token can be used to retrieve the subsequent page. Requests first
 	// page if absent.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListBudgetConfigurationsRequest) MarshalJSON() ([]byte, error) {
@@ -2772,12 +2759,12 @@ func ListBudgetConfigurationsRequestFromPb(pb *billingpb.ListBudgetConfiguration
 type ListBudgetConfigurationsResponse struct {
 
 	// Wire name: 'budgets'
-	Budgets []BudgetConfiguration ``
+	Budgets []BudgetConfiguration `json:"budgets,omitempty"`
 	// Token which can be sent as `page_token` to retrieve the next page of
 	// results. If this field is omitted, there are no subsequent budgets.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListBudgetConfigurationsResponse) MarshalJSON() ([]byte, error) {
@@ -2857,13 +2844,11 @@ func ListBudgetConfigurationsResponseFromPb(pb *billingpb.ListBudgetConfiguratio
 
 type ListBudgetPoliciesRequest struct {
 	// A filter to apply to the list of policies.
-	// Wire name: 'filter_by'
-	FilterBy *Filter `tf:"-"`
+	FilterBy *Filter `json:"-" tf:"-"`
 	// The maximum number of budget policies to return. If unspecified, at most
 	// 100 budget policies will be returned. The maximum value is 1000; values
 	// above 1000 will be coerced to 1000.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// A page token, received from a previous `ListServerlessPolicies` call.
 	// Provide this to retrieve the subsequent page. If unspecified, the first
 	// page will be returned.
@@ -2871,12 +2856,10 @@ type ListBudgetPoliciesRequest struct {
 	// When paginating, all other parameters provided to
 	// `ListServerlessPoliciesRequest` must match the call that provided the
 	// page token.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// The sort specification.
-	// Wire name: 'sort_spec'
-	SortSpec        *SortSpec `tf:"-"`
-	ForceSendFields []string  `tf:"-"`
+	SortSpec        *SortSpec `json:"-" tf:"-"`
+	ForceSendFields []string  `json:"-" tf:"-"`
 }
 
 func (st ListBudgetPoliciesRequest) MarshalJSON() ([]byte, error) {
@@ -2965,15 +2948,15 @@ type ListBudgetPoliciesResponse struct {
 	// A token that can be sent as `page_token` to retrieve the next page. If
 	// this field is omitted, there are no subsequent pages.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'policies'
-	Policies []BudgetPolicy ``
+	Policies []BudgetPolicy `json:"policies,omitempty"`
 	// A token that can be sent as `page_token` to retrieve the previous page.
 	// In this field is omitted, there are no previous pages.
 	// Wire name: 'previous_page_token'
-	PreviousPageToken string   ``
-	ForceSendFields   []string `tf:"-"`
+	PreviousPageToken string   `json:"previous_page_token,omitempty"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
 func (st ListBudgetPoliciesResponse) MarshalJSON() ([]byte, error) {
@@ -3055,20 +3038,16 @@ func ListBudgetPoliciesResponseFromPb(pb *billingpb.ListBudgetPoliciesResponsePb
 
 type ListLogDeliveryRequest struct {
 	// The Credentials id to filter the search results with
-	// Wire name: 'credentials_id'
-	CredentialsId string `tf:"-"`
+	CredentialsId string `json:"-" tf:"-"`
 	// A page token received from a previous get all budget configurations call.
 	// This token can be used to retrieve the subsequent page. Requests first
 	// page if absent.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// The log delivery status to filter the search results with
-	// Wire name: 'status'
-	Status LogDeliveryConfigStatus `tf:"-"`
+	Status LogDeliveryConfigStatus `json:"-" tf:"-"`
 	// The Storage Configuration id to filter the search results with
-	// Wire name: 'storage_configuration_id'
-	StorageConfigurationId string   `tf:"-"`
-	ForceSendFields        []string `tf:"-"`
+	StorageConfigurationId string   `json:"-" tf:"-"`
+	ForceSendFields        []string `json:"-" tf:"-"`
 }
 
 func (st ListLogDeliveryRequest) MarshalJSON() ([]byte, error) {
@@ -3201,40 +3180,40 @@ func LogDeliveryConfigStatusFromPb(pb *billingpb.LogDeliveryConfigStatusPb) (*Lo
 type LogDeliveryConfiguration struct {
 	// Databricks account ID.
 	// Wire name: 'account_id'
-	AccountId string ``
+	AccountId string `json:"account_id"`
 	// The unique UUID of log delivery configuration
 	// Wire name: 'config_id'
-	ConfigId string ``
+	ConfigId string `json:"config_id,omitempty"`
 	// The optional human-readable name of the log delivery configuration.
 	// Defaults to empty.
 	// Wire name: 'config_name'
-	ConfigName string ``
+	ConfigName string `json:"config_name,omitempty"`
 	// Time in epoch milliseconds when the log delivery configuration was
 	// created.
 	// Wire name: 'creation_time'
-	CreationTime int64 ``
+	CreationTime int64 `json:"creation_time,omitempty"`
 	// The ID for a method:credentials/create that represents the AWS IAM role
 	// with policy and trust relationship as described in the main billable
 	// usage documentation page. See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	// Wire name: 'credentials_id'
-	CredentialsId string ``
+	CredentialsId string `json:"credentials_id"`
 	// The optional delivery path prefix within Amazon S3 storage. Defaults to
 	// empty, which means that logs are delivered to the root of the bucket.
 	// This must be a valid S3 object key. This must not start or end with a
 	// slash character.
 	// Wire name: 'delivery_path_prefix'
-	DeliveryPathPrefix string ``
+	DeliveryPathPrefix string `json:"delivery_path_prefix,omitempty"`
 	// This field applies only if log_type is BILLABLE_USAGE. This is the
 	// optional start month and year for delivery, specified in YYYY-MM format.
 	// Defaults to current year and month. BILLABLE_USAGE logs are not available
 	// for usage before March 2019 (2019-03).
 	// Wire name: 'delivery_start_time'
-	DeliveryStartTime string ``
+	DeliveryStartTime string `json:"delivery_start_time,omitempty"`
 	// The LogDeliveryStatus of this log delivery configuration
 	// Wire name: 'log_delivery_status'
-	LogDeliveryStatus *LogDeliveryStatus ``
+	LogDeliveryStatus *LogDeliveryStatus `json:"log_delivery_status,omitempty"`
 	// Log delivery type. Supported values are: * `BILLABLE_USAGE` — Configure
 	// [billable usage log delivery]. For the CSV schema, see the [View billable
 	// usage]. * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON
@@ -3245,7 +3224,7 @@ type LogDeliveryConfiguration struct {
 	// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	// Wire name: 'log_type'
-	LogType LogType ``
+	LogType LogType `json:"log_type"`
 	// The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`, this
 	// value must be `CSV`. Only the CSV (comma-separated values) format is
 	// supported. For the schema, see the [View billable usage] * If `log_type`
@@ -3256,25 +3235,25 @@ type LogDeliveryConfiguration struct {
 	// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 	// Wire name: 'output_format'
-	OutputFormat OutputFormat ``
+	OutputFormat OutputFormat `json:"output_format"`
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
 	// the configuration](#operation/patch-log-delivery-config-status) later.
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	// Wire name: 'status'
-	Status LogDeliveryConfigStatus ``
+	Status LogDeliveryConfigStatus `json:"status,omitempty"`
 	// The ID for a method:storage/create that represents the S3 bucket with
 	// bucket policy as described in the main billable usage documentation page.
 	// See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	// Wire name: 'storage_configuration_id'
-	StorageConfigurationId string ``
+	StorageConfigurationId string `json:"storage_configuration_id"`
 	// Time in epoch milliseconds when the log delivery configuration was
 	// updated.
 	// Wire name: 'update_time'
-	UpdateTime int64 ``
+	UpdateTime int64 `json:"update_time,omitempty"`
 	// Optional filter that specifies workspace IDs to deliver logs for. By
 	// default the workspace filter is empty and log delivery applies at the
 	// account level, delivering workspace-level logs for all workspaces in your
@@ -3289,8 +3268,8 @@ type LogDeliveryConfiguration struct {
 	// deployments there is only one workspace per account ID, so this field is
 	// unnecessary.
 	// Wire name: 'workspace_ids_filter'
-	WorkspaceIdsFilter []int64  ``
-	ForceSendFields    []string `tf:"-"`
+	WorkspaceIdsFilter []int64  `json:"workspace_ids_filter,omitempty"`
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
 func (st LogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
@@ -3421,15 +3400,15 @@ func LogDeliveryConfigurationFromPb(pb *billingpb.LogDeliveryConfigurationPb) (*
 type LogDeliveryStatus struct {
 	// The UTC time for the latest log delivery attempt.
 	// Wire name: 'last_attempt_time'
-	LastAttemptTime string ``
+	LastAttemptTime string `json:"last_attempt_time,omitempty"`
 	// The UTC time for the latest successful log delivery.
 	// Wire name: 'last_successful_attempt_time'
-	LastSuccessfulAttemptTime string ``
+	LastSuccessfulAttemptTime string `json:"last_successful_attempt_time,omitempty"`
 	// Informative message about the latest log delivery attempt. If the log
 	// delivery fails with USER_FAILURE, error details will be provided for
 	// fixing misconfigurations in cloud permissions.
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message"`
 	// Enum that describes the status. Possible values are: * `CREATED`: There
 	// were no log delivery attempts since the config was created. *
 	// `SUCCEEDED`: The latest attempt of log delivery has succeeded completely.
@@ -3441,8 +3420,8 @@ type LogDeliveryStatus struct {
 	// disabled since the release of this feature or there are no workspaces in
 	// the account.
 	// Wire name: 'status'
-	Status          DeliveryStatus ``
-	ForceSendFields []string       `tf:"-"`
+	Status          DeliveryStatus `json:"status"`
+	ForceSendFields []string       `json:"-" tf:"-"`
 }
 
 func (st LogDeliveryStatus) MarshalJSON() ([]byte, error) {
@@ -3625,11 +3604,11 @@ func OutputFormatFromPb(pb *billingpb.OutputFormatPb) (*OutputFormat, error) {
 type SortSpec struct {
 	// Whether to sort in descending order.
 	// Wire name: 'descending'
-	Descending bool ``
+	Descending bool `json:"descending,omitempty"`
 	// The filed to sort by
 	// Wire name: 'field'
-	Field           SortSpecField ``
-	ForceSendFields []string      `tf:"-"`
+	Field           SortSpecField `json:"field,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st SortSpec) MarshalJSON() ([]byte, error) {
@@ -3750,24 +3729,24 @@ func SortSpecFieldFromPb(pb *billingpb.SortSpecFieldPb) (*SortSpecField, error) 
 type UpdateBudgetConfigurationBudget struct {
 	// Databricks account ID.
 	// Wire name: 'account_id'
-	AccountId string ``
+	AccountId string `json:"account_id,omitempty"`
 	// Alerts to configure when this budget is in a triggered state. Budgets
 	// must have exactly one alert configuration.
 	// Wire name: 'alert_configurations'
-	AlertConfigurations []AlertConfiguration ``
+	AlertConfigurations []AlertConfiguration `json:"alert_configurations,omitempty"`
 	// Databricks budget configuration ID.
 	// Wire name: 'budget_configuration_id'
-	BudgetConfigurationId string ``
+	BudgetConfigurationId string `json:"budget_configuration_id,omitempty"`
 	// Human-readable name of budget configuration. Max Length: 128
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// Configured filters for this budget. These are applied to your account's
 	// usage to limit the scope of what is considered for this budget. Leave
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
 	// Wire name: 'filter'
-	Filter          *BudgetConfigurationFilter ``
-	ForceSendFields []string                   `tf:"-"`
+	Filter          *BudgetConfigurationFilter `json:"filter,omitempty"`
+	ForceSendFields []string                   `json:"-" tf:"-"`
 }
 
 func (st UpdateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
@@ -3867,10 +3846,9 @@ type UpdateBudgetConfigurationRequest struct {
 	// The updated budget. This will overwrite the budget specified by the
 	// budget ID.
 	// Wire name: 'budget'
-	Budget UpdateBudgetConfigurationBudget ``
+	Budget UpdateBudgetConfigurationBudget `json:"budget"`
 	// The Databricks budget configuration ID.
-	// Wire name: 'budget_id'
-	BudgetId string `tf:"-"`
+	BudgetId string `json:"-" tf:"-"`
 }
 
 func (st UpdateBudgetConfigurationRequest) MarshalJSON() ([]byte, error) {
@@ -3935,7 +3913,7 @@ func UpdateBudgetConfigurationRequestFromPb(pb *billingpb.UpdateBudgetConfigurat
 type UpdateBudgetConfigurationResponse struct {
 	// The updated budget.
 	// Wire name: 'budget'
-	Budget *BudgetConfiguration ``
+	Budget *BudgetConfiguration `json:"budget,omitempty"`
 }
 
 func (st UpdateBudgetConfigurationResponse) MarshalJSON() ([]byte, error) {
@@ -3998,17 +3976,15 @@ func UpdateBudgetConfigurationResponseFromPb(pb *billingpb.UpdateBudgetConfigura
 type UpdateBudgetPolicyRequest struct {
 	// DEPRECATED. This is redundant field as LimitConfig is part of the
 	// BudgetPolicy
-	// Wire name: 'limit_config'
-	LimitConfig *LimitConfig `tf:"-"`
+	LimitConfig *LimitConfig `json:"-" tf:"-"`
 	// The policy to update. `creator_user_id` cannot be specified in the
 	// request. All other fields must be specified even if not changed. The
 	// `policy_id` is used to identify the policy to update.
 	// Wire name: 'policy'
-	Policy BudgetPolicy ``
+	Policy BudgetPolicy `json:"policy"`
 	// The Id of the policy. This field is generated by Databricks and globally
 	// unique.
-	// Wire name: 'policy_id'
-	PolicyId string `tf:"-"`
+	PolicyId string `json:"-" tf:"-"`
 }
 
 func (st UpdateBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -4087,15 +4063,14 @@ func UpdateBudgetPolicyRequestFromPb(pb *billingpb.UpdateBudgetPolicyRequestPb) 
 // * Update Log Delivery Configuration
 type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// The log delivery configuration id of customer
-	// Wire name: 'log_delivery_configuration_id'
-	LogDeliveryConfigurationId string `tf:"-"`
+	LogDeliveryConfigurationId string `json:"-" tf:"-"`
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
 	// the configuration](#operation/patch-log-delivery-config-status) later.
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	// Wire name: 'status'
-	Status LogDeliveryConfigStatus ``
+	Status LogDeliveryConfigStatus `json:"status"`
 }
 
 func (st UpdateLogDeliveryConfigurationStatusRequest) MarshalJSON() ([]byte, error) {
@@ -4214,7 +4189,7 @@ func UsageDashboardTypeFromPb(pb *billingpb.UsageDashboardTypePb) (*UsageDashboa
 type WrappedCreateLogDeliveryConfiguration struct {
 
 	// Wire name: 'log_delivery_configuration'
-	LogDeliveryConfiguration CreateLogDeliveryConfigurationParams ``
+	LogDeliveryConfiguration CreateLogDeliveryConfigurationParams `json:"log_delivery_configuration"`
 }
 
 func (st WrappedCreateLogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
@@ -4277,7 +4252,7 @@ func WrappedCreateLogDeliveryConfigurationFromPb(pb *billingpb.WrappedCreateLogD
 type WrappedLogDeliveryConfiguration struct {
 	// The created log delivery configuration
 	// Wire name: 'log_delivery_configuration'
-	LogDeliveryConfiguration *LogDeliveryConfiguration ``
+	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
 }
 
 func (st WrappedLogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
@@ -4340,12 +4315,12 @@ func WrappedLogDeliveryConfigurationFromPb(pb *billingpb.WrappedLogDeliveryConfi
 type WrappedLogDeliveryConfigurations struct {
 	// Log delivery configurations were returned successfully.
 	// Wire name: 'log_delivery_configurations'
-	LogDeliveryConfigurations []LogDeliveryConfiguration ``
+	LogDeliveryConfigurations []LogDeliveryConfiguration `json:"log_delivery_configurations,omitempty"`
 	// Token which can be sent as `page_token` to retrieve the next page of
 	// results. If this field is omitted, there are no subsequent budgets.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st WrappedLogDeliveryConfigurations) MarshalJSON() ([]byte, error) {

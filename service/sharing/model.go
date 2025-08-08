@@ -191,11 +191,10 @@ func ColumnTypeNameFromPb(pb *sharingpb.ColumnTypeNamePb) (*ColumnTypeName, erro
 type CreateFederationPolicyRequest struct {
 	// Name of the policy. This is the name of the policy to be created.
 	// Wire name: 'policy'
-	Policy FederationPolicy ``
+	Policy FederationPolicy `json:"policy"`
 	// Name of the recipient. This is the name of the recipient for which the
 	// policy is being created.
-	// Wire name: 'recipient_name'
-	RecipientName string `tf:"-"`
+	RecipientName string `json:"-" tf:"-"`
 }
 
 func (st CreateFederationPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -260,18 +259,18 @@ func CreateFederationPolicyRequestFromPb(pb *sharingpb.CreateFederationPolicyReq
 type CreateProvider struct {
 
 	// Wire name: 'authentication_type'
-	AuthenticationType AuthenticationType ``
+	AuthenticationType AuthenticationType `json:"authentication_type"`
 	// Description about the provider.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The name of the Provider.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// This field is required when the __authentication_type__ is **TOKEN**,
 	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	// Wire name: 'recipient_profile_str'
-	RecipientProfileStr string   ``
-	ForceSendFields     []string `tf:"-"`
+	RecipientProfileStr string   `json:"recipient_profile_str,omitempty"`
+	ForceSendFields     []string `json:"-" tf:"-"`
 }
 
 func (st CreateProvider) MarshalJSON() ([]byte, error) {
@@ -346,39 +345,39 @@ func CreateProviderFromPb(pb *sharingpb.CreateProviderPb) (*CreateProvider, erro
 type CreateRecipient struct {
 
 	// Wire name: 'authentication_type'
-	AuthenticationType AuthenticationType ``
+	AuthenticationType AuthenticationType `json:"authentication_type"`
 	// Description about the recipient.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The global Unity Catalog metastore id provided by the data recipient.
 	// This field is only present when the __authentication_type__ is
 	// **DATABRICKS**. The identifier is of format
 	// __cloud__:__region__:__metastore-uuid__.
 	// Wire name: 'data_recipient_global_metastore_id'
-	DataRecipientGlobalMetastoreId string ``
+	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
 	// Expiration timestamp of the token, in epoch milliseconds.
 	// Wire name: 'expiration_time'
-	ExpirationTime int64 ``
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
 	// IP Access List
 	// Wire name: 'ip_access_list'
-	IpAccessList *IpAccessList ``
+	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// Name of Recipient.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Username of the recipient owner.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Recipient properties as map of string key-value pairs. When provided in
 	// update request, the specified properties will override the existing
 	// properties. To add and remove properties, one would need to perform a
 	// read-modify-write.
 	// Wire name: 'properties_kvpairs'
-	PropertiesKvpairs *SecurablePropertiesKvPairs ``
+	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
 	// The one-time sharing code provided by the data recipient. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
 	// Wire name: 'sharing_code'
-	SharingCode     string   ``
-	ForceSendFields []string `tf:"-"`
+	SharingCode     string   `json:"sharing_code,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateRecipient) MarshalJSON() ([]byte, error) {
@@ -487,14 +486,14 @@ func CreateRecipientFromPb(pb *sharingpb.CreateRecipientPb) (*CreateRecipient, e
 type CreateShare struct {
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Name of the share.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Storage root URL for the share.
 	// Wire name: 'storage_root'
-	StorageRoot     string   ``
-	ForceSendFields []string `tf:"-"`
+	StorageRoot     string   `json:"storage_root,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateShare) MarshalJSON() ([]byte, error) {
@@ -554,12 +553,10 @@ func CreateShareFromPb(pb *sharingpb.CreateSharePb) (*CreateShare, error) {
 
 type DeleteFederationPolicyRequest struct {
 	// Name of the policy. This is the name of the policy to be deleted.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Name of the recipient. This is the name of the recipient for which the
 	// policy is being deleted.
-	// Wire name: 'recipient_name'
-	RecipientName string `tf:"-"`
+	RecipientName string `json:"-" tf:"-"`
 }
 
 func (st DeleteFederationPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -611,8 +608,7 @@ func DeleteFederationPolicyRequestFromPb(pb *sharingpb.DeleteFederationPolicyReq
 
 type DeleteProviderRequest struct {
 	// Name of the provider.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteProviderRequest) MarshalJSON() ([]byte, error) {
@@ -662,8 +658,7 @@ func DeleteProviderRequestFromPb(pb *sharingpb.DeleteProviderRequestPb) (*Delete
 
 type DeleteRecipientRequest struct {
 	// Name of the recipient.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteRecipientRequest) MarshalJSON() ([]byte, error) {
@@ -713,8 +708,7 @@ func DeleteRecipientRequestFromPb(pb *sharingpb.DeleteRecipientRequestPb) (*Dele
 
 type DeleteShareRequest struct {
 	// The name of the share.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteShareRequest) MarshalJSON() ([]byte, error) {
@@ -766,10 +760,10 @@ func DeleteShareRequestFromPb(pb *sharingpb.DeleteShareRequestPb) (*DeleteShareR
 type DeltaSharingDependency struct {
 
 	// Wire name: 'function'
-	Function *DeltaSharingFunctionDependency ``
+	Function *DeltaSharingFunctionDependency `json:"function,omitempty"`
 
 	// Wire name: 'table'
-	Table *DeltaSharingTableDependency ``
+	Table *DeltaSharingTableDependency `json:"table,omitempty"`
 }
 
 func (st DeltaSharingDependency) MarshalJSON() ([]byte, error) {
@@ -847,7 +841,7 @@ func DeltaSharingDependencyFromPb(pb *sharingpb.DeltaSharingDependencyPb) (*Delt
 type DeltaSharingDependencyList struct {
 	// An array of Dependency.
 	// Wire name: 'dependencies'
-	Dependencies []DeltaSharingDependency ``
+	Dependencies []DeltaSharingDependency `json:"dependencies,omitempty"`
 }
 
 func (st DeltaSharingDependencyList) MarshalJSON() ([]byte, error) {
@@ -920,53 +914,53 @@ func DeltaSharingDependencyListFromPb(pb *sharingpb.DeltaSharingDependencyListPb
 type DeltaSharingFunction struct {
 	// The aliass of registered model.
 	// Wire name: 'aliases'
-	Aliases []RegisteredModelAlias ``
+	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
 	// The comment of the function.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The data type of the function.
 	// Wire name: 'data_type'
-	DataType ColumnTypeName ``
+	DataType ColumnTypeName `json:"data_type,omitempty"`
 	// The dependency list of the function.
 	// Wire name: 'dependency_list'
-	DependencyList *DeltaSharingDependencyList ``
+	DependencyList *DeltaSharingDependencyList `json:"dependency_list,omitempty"`
 	// The full data type of the function.
 	// Wire name: 'full_data_type'
-	FullDataType string ``
+	FullDataType string `json:"full_data_type,omitempty"`
 	// The id of the function.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// The function parameter information.
 	// Wire name: 'input_params'
-	InputParams *FunctionParameterInfos ``
+	InputParams *FunctionParameterInfos `json:"input_params,omitempty"`
 	// The name of the function.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The properties of the function.
 	// Wire name: 'properties'
-	Properties string ``
+	Properties string `json:"properties,omitempty"`
 	// The routine definition of the function.
 	// Wire name: 'routine_definition'
-	RoutineDefinition string ``
+	RoutineDefinition string `json:"routine_definition,omitempty"`
 	// The name of the schema that the function belongs to.
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 	// The securable kind of the function.
 	// Wire name: 'securable_kind'
-	SecurableKind SharedSecurableKind ``
+	SecurableKind SharedSecurableKind `json:"securable_kind,omitempty"`
 	// The name of the share that the function belongs to.
 	// Wire name: 'share'
-	Share string ``
+	Share string `json:"share,omitempty"`
 	// The id of the share that the function belongs to.
 	// Wire name: 'share_id'
-	ShareId string ``
+	ShareId string `json:"share_id,omitempty"`
 	// The storage location of the function.
 	// Wire name: 'storage_location'
-	StorageLocation string ``
+	StorageLocation string `json:"storage_location,omitempty"`
 	// The tags of the function.
 	// Wire name: 'tags'
-	Tags            []catalog.TagKeyValue ``
-	ForceSendFields []string              `tf:"-"`
+	Tags            []catalog.TagKeyValue `json:"tags,omitempty"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st DeltaSharingFunction) MarshalJSON() ([]byte, error) {
@@ -1146,11 +1140,11 @@ func DeltaSharingFunctionFromPb(pb *sharingpb.DeltaSharingFunctionPb) (*DeltaSha
 type DeltaSharingFunctionDependency struct {
 
 	// Wire name: 'function_name'
-	FunctionName string ``
+	FunctionName string `json:"function_name,omitempty"`
 
 	// Wire name: 'schema_name'
-	SchemaName      string   ``
-	ForceSendFields []string `tf:"-"`
+	SchemaName      string   `json:"schema_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeltaSharingFunctionDependency) MarshalJSON() ([]byte, error) {
@@ -1210,11 +1204,11 @@ func DeltaSharingFunctionDependencyFromPb(pb *sharingpb.DeltaSharingFunctionDepe
 type DeltaSharingTableDependency struct {
 
 	// Wire name: 'schema_name'
-	SchemaName string ``
+	SchemaName string `json:"schema_name,omitempty"`
 
 	// Wire name: 'table_name'
-	TableName       string   ``
-	ForceSendFields []string `tf:"-"`
+	TableName       string   `json:"table_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeltaSharingTableDependency) MarshalJSON() ([]byte, error) {
@@ -1273,26 +1267,26 @@ func DeltaSharingTableDependencyFromPb(pb *sharingpb.DeltaSharingTableDependency
 type FederationPolicy struct {
 	// Description of the policy. This is a user-provided description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// System-generated timestamp indicating when the policy was created.
 	// Wire name: 'create_time'
-	CreateTime string `` //legacy
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// Unique, immutable system-generated identifier for the federation policy.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Name of the federation policy. A recipient can have multiple policies
 	// with different names. The name must contain only lowercase alphanumeric
 	// characters, numbers, and hyphens.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Specifies the policy to use for validating OIDC claims in the federated
 	// tokens.
 	// Wire name: 'oidc_policy'
-	OidcPolicy *OidcFederationPolicy ``
+	OidcPolicy *OidcFederationPolicy `json:"oidc_policy,omitempty"`
 	// System-generated timestamp indicating when the policy was last updated.
 	// Wire name: 'update_time'
-	UpdateTime      string   `` //legacy
-	ForceSendFields []string `tf:"-"`
+	UpdateTime      string   `json:"update_time,omitempty"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FederationPolicy) MarshalJSON() ([]byte, error) {
@@ -1373,41 +1367,41 @@ func FederationPolicyFromPb(pb *sharingpb.FederationPolicyPb) (*FederationPolicy
 type FunctionParameterInfo struct {
 	// The comment of the parameter.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The name of the parameter.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The default value of the parameter.
 	// Wire name: 'parameter_default'
-	ParameterDefault string ``
+	ParameterDefault string `json:"parameter_default,omitempty"`
 	// The mode of the function parameter.
 	// Wire name: 'parameter_mode'
-	ParameterMode FunctionParameterMode ``
+	ParameterMode FunctionParameterMode `json:"parameter_mode,omitempty"`
 	// The type of the function parameter.
 	// Wire name: 'parameter_type'
-	ParameterType FunctionParameterType ``
+	ParameterType FunctionParameterType `json:"parameter_type,omitempty"`
 	// The position of the parameter.
 	// Wire name: 'position'
-	Position int ``
+	Position int `json:"position,omitempty"`
 	// The interval type of the parameter type.
 	// Wire name: 'type_interval_type'
-	TypeIntervalType string ``
+	TypeIntervalType string `json:"type_interval_type,omitempty"`
 	// The type of the parameter in JSON format.
 	// Wire name: 'type_json'
-	TypeJson string ``
+	TypeJson string `json:"type_json,omitempty"`
 	// The type of the parameter in Enum format.
 	// Wire name: 'type_name'
-	TypeName ColumnTypeName ``
+	TypeName ColumnTypeName `json:"type_name,omitempty"`
 	// The precision of the parameter type.
 	// Wire name: 'type_precision'
-	TypePrecision int ``
+	TypePrecision int `json:"type_precision,omitempty"`
 	// The scale of the parameter type.
 	// Wire name: 'type_scale'
-	TypeScale int ``
+	TypeScale int `json:"type_scale,omitempty"`
 	// The type of the parameter in text format.
 	// Wire name: 'type_text'
-	TypeText        string   ``
-	ForceSendFields []string `tf:"-"`
+	TypeText        string   `json:"type_text,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FunctionParameterInfo) MarshalJSON() ([]byte, error) {
@@ -1522,7 +1516,7 @@ func FunctionParameterInfoFromPb(pb *sharingpb.FunctionParameterInfoPb) (*Functi
 type FunctionParameterInfos struct {
 	// The list of parameters of the function.
 	// Wire name: 'parameters'
-	Parameters []FunctionParameterInfo ``
+	Parameters []FunctionParameterInfo `json:"parameters,omitempty"`
 }
 
 func (st FunctionParameterInfos) MarshalJSON() ([]byte, error) {
@@ -1703,8 +1697,7 @@ func FunctionParameterTypeFromPb(pb *sharingpb.FunctionParameterTypePb) (*Functi
 
 type GetActivationUrlInfoRequest struct {
 	// The one time activation url. It also accepts activation token.
-	// Wire name: 'activation_url'
-	ActivationUrl string `tf:"-"`
+	ActivationUrl string `json:"-" tf:"-"`
 }
 
 func (st GetActivationUrlInfoRequest) MarshalJSON() ([]byte, error) {
@@ -1754,12 +1747,10 @@ func GetActivationUrlInfoRequestFromPb(pb *sharingpb.GetActivationUrlInfoRequest
 
 type GetFederationPolicyRequest struct {
 	// Name of the policy. This is the name of the policy to be retrieved.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Name of the recipient. This is the name of the recipient for which the
 	// policy is being retrieved.
-	// Wire name: 'recipient_name'
-	RecipientName string `tf:"-"`
+	RecipientName string `json:"-" tf:"-"`
 }
 
 func (st GetFederationPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -1811,8 +1802,7 @@ func GetFederationPolicyRequestFromPb(pb *sharingpb.GetFederationPolicyRequestPb
 
 type GetProviderRequest struct {
 	// Name of the provider.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetProviderRequest) MarshalJSON() ([]byte, error) {
@@ -1862,8 +1852,7 @@ func GetProviderRequestFromPb(pb *sharingpb.GetProviderRequestPb) (*GetProviderR
 
 type GetRecipientRequest struct {
 	// Name of the recipient.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetRecipientRequest) MarshalJSON() ([]byte, error) {
@@ -1916,11 +1905,11 @@ type GetRecipientSharePermissionsResponse struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of data share permissions for a recipient.
 	// Wire name: 'permissions_out'
-	PermissionsOut  []ShareToPrivilegeAssignment ``
-	ForceSendFields []string                     `tf:"-"`
+	PermissionsOut  []ShareToPrivilegeAssignment `json:"permissions_out,omitempty"`
+	ForceSendFields []string                     `json:"-" tf:"-"`
 }
 
 func (st GetRecipientSharePermissionsResponse) MarshalJSON() ([]byte, error) {
@@ -2003,11 +1992,11 @@ type GetSharePermissionsResponse struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// The privileges assigned to each principal
 	// Wire name: 'privilege_assignments'
-	PrivilegeAssignments []PrivilegeAssignment ``
-	ForceSendFields      []string              `tf:"-"`
+	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
+	ForceSendFields      []string              `json:"-" tf:"-"`
 }
 
 func (st GetSharePermissionsResponse) MarshalJSON() ([]byte, error) {
@@ -2087,12 +2076,10 @@ func GetSharePermissionsResponseFromPb(pb *sharingpb.GetSharePermissionsResponse
 
 type GetShareRequest struct {
 	// Query for data to include in the share.
-	// Wire name: 'include_shared_data'
-	IncludeSharedData bool `tf:"-"`
+	IncludeSharedData bool `json:"-" tf:"-"`
 	// The name of the share.
-	// Wire name: 'name'
-	Name            string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetShareRequest) MarshalJSON() ([]byte, error) {
@@ -2151,7 +2138,7 @@ func GetShareRequestFromPb(pb *sharingpb.GetShareRequestPb) (*GetShareRequest, e
 type IpAccessList struct {
 	// Allowed IP Addresses in CIDR notation. Limit of 100.
 	// Wire name: 'allowed_ip_addresses'
-	AllowedIpAddresses []string ``
+	AllowedIpAddresses []string `json:"allowed_ip_addresses,omitempty"`
 }
 
 func (st IpAccessList) MarshalJSON() ([]byte, error) {
@@ -2200,17 +2187,13 @@ func IpAccessListFromPb(pb *sharingpb.IpAccessListPb) (*IpAccessList, error) {
 }
 
 type ListFederationPoliciesRequest struct {
+	MaxResults int `json:"-" tf:"-"`
 
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
-
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// Name of the recipient. This is the name of the recipient for which the
 	// policies are being listed.
-	// Wire name: 'recipient_name'
-	RecipientName   string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	RecipientName   string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListFederationPoliciesRequest) MarshalJSON() ([]byte, error) {
@@ -2271,11 +2254,11 @@ func ListFederationPoliciesRequestFromPb(pb *sharingpb.ListFederationPoliciesReq
 type ListFederationPoliciesResponse struct {
 
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'policies'
-	Policies        []FederationPolicy ``
-	ForceSendFields []string           `tf:"-"`
+	Policies        []FederationPolicy `json:"policies,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
 func (st ListFederationPoliciesResponse) MarshalJSON() ([]byte, error) {
@@ -2355,24 +2338,18 @@ func ListFederationPoliciesResponseFromPb(pb *sharingpb.ListFederationPoliciesRe
 
 type ListProviderShareAssetsRequest struct {
 	// Maximum number of functions to return.
-	// Wire name: 'function_max_results'
-	FunctionMaxResults int `tf:"-"`
+	FunctionMaxResults int `json:"-" tf:"-"`
 	// Maximum number of notebooks to return.
-	// Wire name: 'notebook_max_results'
-	NotebookMaxResults int `tf:"-"`
+	NotebookMaxResults int `json:"-" tf:"-"`
 	// The name of the provider who owns the share.
-	// Wire name: 'provider_name'
-	ProviderName string `tf:"-"`
+	ProviderName string `json:"-" tf:"-"`
 	// The name of the share.
-	// Wire name: 'share_name'
-	ShareName string `tf:"-"`
+	ShareName string `json:"-" tf:"-"`
 	// Maximum number of tables to return.
-	// Wire name: 'table_max_results'
-	TableMaxResults int `tf:"-"`
+	TableMaxResults int `json:"-" tf:"-"`
 	// Maximum number of volumes to return.
-	// Wire name: 'volume_max_results'
-	VolumeMaxResults int      `tf:"-"`
-	ForceSendFields  []string `tf:"-"`
+	VolumeMaxResults int      `json:"-" tf:"-"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st ListProviderShareAssetsRequest) MarshalJSON() ([]byte, error) {
@@ -2441,16 +2418,16 @@ func ListProviderShareAssetsRequestFromPb(pb *sharingpb.ListProviderShareAssetsR
 type ListProviderShareAssetsResponse struct {
 	// The list of functions in the share.
 	// Wire name: 'functions'
-	Functions []DeltaSharingFunction ``
+	Functions []DeltaSharingFunction `json:"functions,omitempty"`
 	// The list of notebooks in the share.
 	// Wire name: 'notebooks'
-	Notebooks []NotebookFile ``
+	Notebooks []NotebookFile `json:"notebooks,omitempty"`
 	// The list of tables in the share.
 	// Wire name: 'tables'
-	Tables []Table ``
+	Tables []Table `json:"tables,omitempty"`
 	// The list of volumes in the share.
 	// Wire name: 'volumes'
-	Volumes []Volume ``
+	Volumes []Volume `json:"volumes,omitempty"`
 }
 
 func (st ListProviderShareAssetsResponse) MarshalJSON() ([]byte, error) {
@@ -2597,11 +2574,11 @@ type ListProviderSharesResponse struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of provider shares.
 	// Wire name: 'shares'
-	Shares          []ProviderShare ``
-	ForceSendFields []string        `tf:"-"`
+	Shares          []ProviderShare `json:"shares,omitempty"`
+	ForceSendFields []string        `json:"-" tf:"-"`
 }
 
 func (st ListProviderSharesResponse) MarshalJSON() ([]byte, error) {
@@ -2682,8 +2659,7 @@ func ListProviderSharesResponseFromPb(pb *sharingpb.ListProviderSharesResponsePb
 type ListProvidersRequest struct {
 	// If not provided, all providers will be returned. If no providers exist
 	// with this ID, no results will be returned.
-	// Wire name: 'data_provider_global_metastore_id'
-	DataProviderGlobalMetastoreId string `tf:"-"`
+	DataProviderGlobalMetastoreId string `json:"-" tf:"-"`
 	// Maximum number of providers to return. - when set to 0, the page length
 	// is set to a server configured value (recommended); - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
@@ -2693,12 +2669,10 @@ type ListProvidersRequest struct {
 	// the specified max_results size, even zero. The only definitive indication
 	// that no further providers can be fetched is when the next_page_token is
 	// unset from the response.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListProvidersRequest) MarshalJSON() ([]byte, error) {
@@ -2761,11 +2735,11 @@ type ListProvidersResponse struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of provider information objects.
 	// Wire name: 'providers'
-	Providers       []ProviderInfo ``
-	ForceSendFields []string       `tf:"-"`
+	Providers       []ProviderInfo `json:"providers,omitempty"`
+	ForceSendFields []string       `json:"-" tf:"-"`
 }
 
 func (st ListProvidersResponse) MarshalJSON() ([]byte, error) {
@@ -2846,8 +2820,7 @@ func ListProvidersResponseFromPb(pb *sharingpb.ListProvidersResponsePb) (*ListPr
 type ListRecipientsRequest struct {
 	// If not provided, all recipients will be returned. If no recipients exist
 	// with this ID, no results will be returned.
-	// Wire name: 'data_recipient_global_metastore_id'
-	DataRecipientGlobalMetastoreId string `tf:"-"`
+	DataRecipientGlobalMetastoreId string `json:"-" tf:"-"`
 	// Maximum number of recipients to return. - when set to 0, the page length
 	// is set to a server configured value (recommended); - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
@@ -2857,12 +2830,10 @@ type ListRecipientsRequest struct {
 	// than the specified max_results size, even zero. The only definitive
 	// indication that no further recipients can be fetched is when the
 	// next_page_token is unset from the response.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListRecipientsRequest) MarshalJSON() ([]byte, error) {
@@ -2925,11 +2896,11 @@ type ListRecipientsResponse struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of recipient information objects.
 	// Wire name: 'recipients'
-	Recipients      []RecipientInfo ``
-	ForceSendFields []string        `tf:"-"`
+	Recipients      []RecipientInfo `json:"recipients,omitempty"`
+	ForceSendFields []string        `json:"-" tf:"-"`
 }
 
 func (st ListRecipientsResponse) MarshalJSON() ([]byte, error) {
@@ -3017,15 +2988,12 @@ type ListSharesRequest struct {
 	// the specified max_results size, even zero. The only definitive indication
 	// that no further shares can be fetched is when the next_page_token is
 	// unset from the response.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Name of the provider in which to list shares.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListSharesRequest) MarshalJSON() ([]byte, error) {
@@ -3088,11 +3056,11 @@ type ListSharesResponse struct {
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of data share information objects.
 	// Wire name: 'shares'
-	Shares          []ShareInfo ``
-	ForceSendFields []string    `tf:"-"`
+	Shares          []ShareInfo `json:"shares,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
 func (st ListSharesResponse) MarshalJSON() ([]byte, error) {
@@ -3173,23 +3141,23 @@ func ListSharesResponseFromPb(pb *sharingpb.ListSharesResponsePb) (*ListSharesRe
 type NotebookFile struct {
 	// The comment of the notebook file.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The id of the notebook file.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Name of the notebook file.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The name of the share that the notebook file belongs to.
 	// Wire name: 'share'
-	Share string ``
+	Share string `json:"share,omitempty"`
 	// The id of the share that the notebook file belongs to.
 	// Wire name: 'share_id'
-	ShareId string ``
+	ShareId string `json:"share_id,omitempty"`
 	// The tags of the notebook file.
 	// Wire name: 'tags'
-	Tags            []catalog.TagKeyValue ``
-	ForceSendFields []string              `tf:"-"`
+	Tags            []catalog.TagKeyValue `json:"tags,omitempty"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st NotebookFile) MarshalJSON() ([]byte, error) {
@@ -3285,11 +3253,11 @@ type OidcFederationPolicy struct {
 	// the token. Can be any non-empty string value. As long as the audience in
 	// the token matches at least one audience in the policy,
 	// Wire name: 'audiences'
-	Audiences []string ``
+	Audiences []string `json:"audiences,omitempty"`
 	// The required token issuer, as specified in the 'iss' claim of federated
 	// tokens.
 	// Wire name: 'issuer'
-	Issuer string ``
+	Issuer string `json:"issuer"`
 	// The required token subject, as specified in the subject claim of
 	// federated tokens. The subject claim identifies the identity of the user
 	// or machine accessing the resource. Examples for Entra ID (AAD): - U2M
@@ -3299,7 +3267,7 @@ type OidcFederationPolicy struct {
 	// ID. - M2M flow (OAuth App access): If the subject claim is `azp`, this
 	// must be the client ID of the OAuth app registered in Entra ID.
 	// Wire name: 'subject'
-	Subject string ``
+	Subject string `json:"subject"`
 	// The claim that contains the subject of the token. Depending on the
 	// identity provider and the use case (U2M or M2M), this can vary: - For
 	// Entra ID (AAD): * U2M flow (group access): Use `groups`. * U2M flow (user
@@ -3310,7 +3278,7 @@ type OidcFederationPolicy struct {
 	// `azp`: Client ID of the OAuth app. - `groups`: Object ID of the group. -
 	// `sub`: Subject identifier for other use cases.
 	// Wire name: 'subject_claim'
-	SubjectClaim string ``
+	SubjectClaim string `json:"subject_claim"`
 }
 
 func (st OidcFederationPolicy) MarshalJSON() ([]byte, error) {
@@ -3367,7 +3335,7 @@ func OidcFederationPolicyFromPb(pb *sharingpb.OidcFederationPolicyPb) (*OidcFede
 type Partition struct {
 	// An array of partition values.
 	// Wire name: 'values'
-	Values []PartitionValue ``
+	Values []PartitionValue `json:"values,omitempty"`
 }
 
 func (st Partition) MarshalJSON() ([]byte, error) {
@@ -3440,21 +3408,21 @@ func PartitionFromPb(pb *sharingpb.PartitionPb) (*Partition, error) {
 type PartitionValue struct {
 	// The name of the partition column.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The operator to apply for the value.
 	// Wire name: 'op'
-	Op PartitionValueOp ``
+	Op PartitionValueOp `json:"op,omitempty"`
 	// The key of a Delta Sharing recipient's property. For example
 	// "databricks-account-id". When this field is set, field `value` can not be
 	// set.
 	// Wire name: 'recipient_property_key'
-	RecipientPropertyKey string ``
+	RecipientPropertyKey string `json:"recipient_property_key,omitempty"`
 	// The value of the partition column. When this value is not set, it means
 	// `null` value. When this field is set, field `recipient_property_key` can
 	// not be set.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PartitionValue) MarshalJSON() ([]byte, error) {
@@ -3582,15 +3550,15 @@ func PartitionValueOpFromPb(pb *sharingpb.PartitionValueOpPb) (*PartitionValueOp
 type PermissionsChange struct {
 	// The set of privileges to add.
 	// Wire name: 'add'
-	Add []string ``
+	Add []string `json:"add,omitempty"`
 	// The principal whose privileges we are changing. Only one of principal or
 	// principal_id should be specified, never both at the same time.
 	// Wire name: 'principal'
-	Principal string ``
+	Principal string `json:"principal,omitempty"`
 	// The set of privileges to remove.
 	// Wire name: 'remove'
-	Remove          []string ``
-	ForceSendFields []string `tf:"-"`
+	Remove          []string `json:"remove,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PermissionsChange) MarshalJSON() ([]byte, error) {
@@ -3834,11 +3802,11 @@ type PrivilegeAssignment struct {
 	// The principal (user email address or group name). For deleted principals,
 	// `principal` is empty while `principal_id` is populated.
 	// Wire name: 'principal'
-	Principal string ``
+	Principal string `json:"principal,omitempty"`
 	// The privileges assigned to the principal.
 	// Wire name: 'privileges'
-	Privileges      []Privilege ``
-	ForceSendFields []string    `tf:"-"`
+	Privileges      []Privilege `json:"privileges,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
 func (st PrivilegeAssignment) MarshalJSON() ([]byte, error) {
@@ -3919,54 +3887,54 @@ func PrivilegeAssignmentFromPb(pb *sharingpb.PrivilegeAssignmentPb) (*PrivilegeA
 type ProviderInfo struct {
 
 	// Wire name: 'authentication_type'
-	AuthenticationType AuthenticationType ``
+	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
 	// Cloud vendor of the provider's UC metastore. This field is only present
 	// when the __authentication_type__ is **DATABRICKS**.
 	// Wire name: 'cloud'
-	Cloud string ``
+	Cloud string `json:"cloud,omitempty"`
 	// Description about the provider.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Time at which this Provider was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of Provider creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// The global UC metastore id of the data provider. This field is only
 	// present when the __authentication_type__ is **DATABRICKS**. The
 	// identifier is of format __cloud__:__region__:__metastore-uuid__.
 	// Wire name: 'data_provider_global_metastore_id'
-	DataProviderGlobalMetastoreId string ``
+	DataProviderGlobalMetastoreId string `json:"data_provider_global_metastore_id,omitempty"`
 	// UUID of the provider's UC metastore. This field is only present when the
 	// __authentication_type__ is **DATABRICKS**.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// The name of the Provider.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Username of Provider owner.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// The recipient profile. This field is only present when the
 	// authentication_type is `TOKEN` or `OAUTH_CLIENT_CREDENTIALS`.
 	// Wire name: 'recipient_profile'
-	RecipientProfile *RecipientProfile ``
+	RecipientProfile *RecipientProfile `json:"recipient_profile,omitempty"`
 	// This field is required when the __authentication_type__ is **TOKEN**,
 	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	// Wire name: 'recipient_profile_str'
-	RecipientProfileStr string ``
+	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 	// Cloud region of the provider's UC metastore. This field is only present
 	// when the __authentication_type__ is **DATABRICKS**.
 	// Wire name: 'region'
-	Region string ``
+	Region string `json:"region,omitempty"`
 	// Time at which this Provider was created, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified Provider.
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ProviderInfo) MarshalJSON() ([]byte, error) {
@@ -4073,8 +4041,8 @@ func ProviderInfoFromPb(pb *sharingpb.ProviderInfoPb) (*ProviderInfo, error) {
 type ProviderShare struct {
 	// The name of the Provider Share.
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ProviderShare) MarshalJSON() ([]byte, error) {
@@ -4132,73 +4100,73 @@ type RecipientInfo struct {
 	// A boolean status field showing whether the Recipient's activation URL has
 	// been exercised or not.
 	// Wire name: 'activated'
-	Activated bool ``
+	Activated bool `json:"activated,omitempty"`
 	// Full activation url to retrieve the access token. It will be empty if the
 	// token is already retrieved.
 	// Wire name: 'activation_url'
-	ActivationUrl string ``
+	ActivationUrl string `json:"activation_url,omitempty"`
 
 	// Wire name: 'authentication_type'
-	AuthenticationType AuthenticationType ``
+	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
 	// Cloud vendor of the recipient's Unity Catalog Metastore. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
 	// Wire name: 'cloud'
-	Cloud string ``
+	Cloud string `json:"cloud,omitempty"`
 	// Description about the recipient.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Time at which this recipient was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of recipient creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// The global Unity Catalog metastore id provided by the data recipient.
 	// This field is only present when the __authentication_type__ is
 	// **DATABRICKS**. The identifier is of format
 	// __cloud__:__region__:__metastore-uuid__.
 	// Wire name: 'data_recipient_global_metastore_id'
-	DataRecipientGlobalMetastoreId string ``
+	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
 	// Expiration timestamp of the token, in epoch milliseconds.
 	// Wire name: 'expiration_time'
-	ExpirationTime int64 ``
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
 	// IP Access List
 	// Wire name: 'ip_access_list'
-	IpAccessList *IpAccessList ``
+	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// Unique identifier of recipient's Unity Catalog Metastore. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
 	// Wire name: 'metastore_id'
-	MetastoreId string ``
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of Recipient.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Username of the recipient owner.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Recipient properties as map of string key-value pairs. When provided in
 	// update request, the specified properties will override the existing
 	// properties. To add and remove properties, one would need to perform a
 	// read-modify-write.
 	// Wire name: 'properties_kvpairs'
-	PropertiesKvpairs *SecurablePropertiesKvPairs ``
+	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
 	// Cloud region of the recipient's Unity Catalog Metastore. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
 	// Wire name: 'region'
-	Region string ``
+	Region string `json:"region,omitempty"`
 	// The one-time sharing code provided by the data recipient. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
 	// Wire name: 'sharing_code'
-	SharingCode string ``
+	SharingCode string `json:"sharing_code,omitempty"`
 	// This field is only present when the __authentication_type__ is **TOKEN**.
 	// Wire name: 'tokens'
-	Tokens []RecipientTokenInfo ``
+	Tokens []RecipientTokenInfo `json:"tokens,omitempty"`
 	// Time at which the recipient was updated, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of recipient updater.
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RecipientInfo) MarshalJSON() ([]byte, error) {
@@ -4349,14 +4317,14 @@ func RecipientInfoFromPb(pb *sharingpb.RecipientInfoPb) (*RecipientInfo, error) 
 type RecipientProfile struct {
 	// The token used to authorize the recipient.
 	// Wire name: 'bearer_token'
-	BearerToken string ``
+	BearerToken string `json:"bearer_token,omitempty"`
 	// The endpoint for the share to be used by the recipient.
 	// Wire name: 'endpoint'
-	Endpoint string ``
+	Endpoint string `json:"endpoint,omitempty"`
 	// The version number of the recipient's credentials on a share.
 	// Wire name: 'share_credentials_version'
-	ShareCredentialsVersion int      ``
-	ForceSendFields         []string `tf:"-"`
+	ShareCredentialsVersion int      `json:"share_credentials_version,omitempty"`
+	ForceSendFields         []string `json:"-" tf:"-"`
 }
 
 func (st RecipientProfile) MarshalJSON() ([]byte, error) {
@@ -4418,26 +4386,26 @@ type RecipientTokenInfo struct {
 	// Full activation URL to retrieve the access token. It will be empty if the
 	// token is already retrieved.
 	// Wire name: 'activation_url'
-	ActivationUrl string ``
+	ActivationUrl string `json:"activation_url,omitempty"`
 	// Time at which this recipient token was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of recipient token creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// Expiration timestamp of the token in epoch milliseconds.
 	// Wire name: 'expiration_time'
-	ExpirationTime int64 ``
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
 	// Unique ID of the recipient token.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Time at which this recipient token was updated, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of recipient token updater.
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RecipientTokenInfo) MarshalJSON() ([]byte, error) {
@@ -4506,11 +4474,11 @@ func RecipientTokenInfoFromPb(pb *sharingpb.RecipientTokenInfoPb) (*RecipientTok
 type RegisteredModelAlias struct {
 	// Name of the alias.
 	// Wire name: 'alias_name'
-	AliasName string ``
+	AliasName string `json:"alias_name,omitempty"`
 	// Numeric model version that alias will reference.
 	// Wire name: 'version_num'
-	VersionNum      int64    ``
-	ForceSendFields []string `tf:"-"`
+	VersionNum      int64    `json:"version_num,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RegisteredModelAlias) MarshalJSON() ([]byte, error) {
@@ -4568,8 +4536,7 @@ func RegisteredModelAliasFromPb(pb *sharingpb.RegisteredModelAliasPb) (*Register
 
 type RetrieveTokenRequest struct {
 	// The one time activation url. It also accepts activation token.
-	// Wire name: 'activation_url'
-	ActivationUrl string `tf:"-"`
+	ActivationUrl string `json:"-" tf:"-"`
 }
 
 func (st RetrieveTokenRequest) MarshalJSON() ([]byte, error) {
@@ -4620,17 +4587,17 @@ func RetrieveTokenRequestFromPb(pb *sharingpb.RetrieveTokenRequestPb) (*Retrieve
 type RetrieveTokenResponse struct {
 	// The token used to authorize the recipient.
 	// Wire name: 'bearerToken'
-	BearerToken string ``
+	BearerToken string `json:"bearerToken,omitempty"`
 	// The endpoint for the share to be used by the recipient.
 	// Wire name: 'endpoint'
-	Endpoint string ``
+	Endpoint string `json:"endpoint,omitempty"`
 	// Expiration timestamp of the token in epoch milliseconds.
 	// Wire name: 'expirationTime'
-	ExpirationTime string ``
+	ExpirationTime string `json:"expirationTime,omitempty"`
 	// These field names must follow the delta sharing protocol.
 	// Wire name: 'shareCredentialsVersion'
-	ShareCredentialsVersion int      ``
-	ForceSendFields         []string `tf:"-"`
+	ShareCredentialsVersion int      `json:"shareCredentialsVersion,omitempty"`
+	ForceSendFields         []string `json:"-" tf:"-"`
 }
 
 func (st RetrieveTokenResponse) MarshalJSON() ([]byte, error) {
@@ -4696,10 +4663,9 @@ type RotateRecipientToken struct {
 	// cannot extend the expiration_time. Use 0 to expire the existing token
 	// immediately, negative number will return an error.
 	// Wire name: 'existing_token_expire_in_seconds'
-	ExistingTokenExpireInSeconds int64 ``
+	ExistingTokenExpireInSeconds int64 `json:"existing_token_expire_in_seconds"`
 	// The name of the Recipient.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st RotateRecipientToken) MarshalJSON() ([]byte, error) {
@@ -4754,7 +4720,7 @@ func RotateRecipientTokenFromPb(pb *sharingpb.RotateRecipientTokenPb) (*RotateRe
 type SecurablePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
 	// Wire name: 'properties'
-	Properties map[string]string ``
+	Properties map[string]string `json:"properties"`
 }
 
 func (st SecurablePropertiesKvPairs) MarshalJSON() ([]byte, error) {
@@ -4805,35 +4771,35 @@ func SecurablePropertiesKvPairsFromPb(pb *sharingpb.SecurablePropertiesKvPairsPb
 type ShareInfo struct {
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Time at which this share was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of share creator.
 	// Wire name: 'created_by'
-	CreatedBy string ``
+	CreatedBy string `json:"created_by,omitempty"`
 	// Name of the share.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// A list of shared data objects within the share.
 	// Wire name: 'objects'
-	Objects []SharedDataObject ``
+	Objects []SharedDataObject `json:"objects,omitempty"`
 	// Username of current owner of share.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Storage Location URL (full path) for the share.
 	// Wire name: 'storage_location'
-	StorageLocation string ``
+	StorageLocation string `json:"storage_location,omitempty"`
 	// Storage root URL for the share.
 	// Wire name: 'storage_root'
-	StorageRoot string ``
+	StorageRoot string `json:"storage_root,omitempty"`
 	// Time at which this share was updated, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt int64 ``
+	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of share updater.
 	// Wire name: 'updated_by'
-	UpdatedBy       string   ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ShareInfo) MarshalJSON() ([]byte, error) {
@@ -4937,15 +4903,12 @@ type SharePermissionsRequest struct {
 	// than the specified max_results size, even zero. The only definitive
 	// indication that no further permissions can be fetched is when the
 	// next_page_token is unset from the response.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// The name of the Recipient.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SharePermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -5006,11 +4969,11 @@ func SharePermissionsRequestFromPb(pb *sharingpb.SharePermissionsRequestPb) (*Sh
 type ShareToPrivilegeAssignment struct {
 	// The privileges assigned to the principal.
 	// Wire name: 'privilege_assignments'
-	PrivilegeAssignments []PrivilegeAssignment ``
+	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
 	// The share name.
 	// Wire name: 'share_name'
-	ShareName       string   ``
-	ForceSendFields []string `tf:"-"`
+	ShareName       string   `json:"share_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ShareToPrivilegeAssignment) MarshalJSON() ([]byte, error) {
@@ -5092,42 +5055,42 @@ type SharedDataObject struct {
 	// The time when this data object is added to the share, in epoch
 	// milliseconds.
 	// Wire name: 'added_at'
-	AddedAt int64 ``
+	AddedAt int64 `json:"added_at,omitempty"`
 	// Username of the sharer.
 	// Wire name: 'added_by'
-	AddedBy string ``
+	AddedBy string `json:"added_by,omitempty"`
 	// Whether to enable cdf or indicate if cdf is enabled on the shared object.
 	// Wire name: 'cdf_enabled'
-	CdfEnabled bool ``
+	CdfEnabled bool `json:"cdf_enabled,omitempty"`
 	// A user-provided comment when adding the data object to the share.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The content of the notebook file when the data object type is
 	// NOTEBOOK_FILE. This should be base64 encoded. Required for adding a
 	// NOTEBOOK_FILE, optional for updating, ignored for other types.
 	// Wire name: 'content'
-	Content string ``
+	Content string `json:"content,omitempty"`
 	// The type of the data object.
 	// Wire name: 'data_object_type'
-	DataObjectType SharedDataObjectDataObjectType ``
+	DataObjectType SharedDataObjectDataObjectType `json:"data_object_type,omitempty"`
 	// Whether to enable or disable sharing of data history. If not specified,
 	// the default is **DISABLED**.
 	// Wire name: 'history_data_sharing_status'
-	HistoryDataSharingStatus SharedDataObjectHistoryDataSharingStatus ``
+	HistoryDataSharingStatus SharedDataObjectHistoryDataSharingStatus `json:"history_data_sharing_status,omitempty"`
 	// A fully qualified name that uniquely identifies a data object. For
 	// example, a table's fully qualified name is in the format of
 	// `<catalog>.<schema>.<table>`,
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Array of partitions for the shared data.
 	// Wire name: 'partitions'
-	Partitions []Partition ``
+	Partitions []Partition `json:"partitions,omitempty"`
 	// A user-provided new name for the data object within the share. If this
 	// new name is not provided, the object's original name will be used as the
 	// `shared_as` name. The `shared_as` name must be unique within a share. For
 	// tables, the new name must follow the format of `<schema>.<table>`.
 	// Wire name: 'shared_as'
-	SharedAs string ``
+	SharedAs string `json:"shared_as,omitempty"`
 	// The start version associated with the object. This allows data providers
 	// to control the lowest object version that is accessible by clients. If
 	// specified, clients can query snapshots or changes for versions >=
@@ -5136,18 +5099,18 @@ type SharedDataObject struct {
 	//
 	// NOTE: The start_version should be <= the `current` version of the object.
 	// Wire name: 'start_version'
-	StartVersion int64 ``
+	StartVersion int64 `json:"start_version,omitempty"`
 	// One of: **ACTIVE**, **PERMISSION_DENIED**.
 	// Wire name: 'status'
-	Status SharedDataObjectStatus ``
+	Status SharedDataObjectStatus `json:"status,omitempty"`
 	// A user-provided new name for the shared object within the share. If this
 	// new name is not not provided, the object's original name will be used as
 	// the `string_shared_as` name. The `string_shared_as` name must be unique
 	// for objects of the same type within a Share. For notebooks, the new name
 	// should be the new notebook file name.
 	// Wire name: 'string_shared_as'
-	StringSharedAs  string   ``
-	ForceSendFields []string `tf:"-"`
+	StringSharedAs  string   `json:"string_shared_as,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SharedDataObject) MarshalJSON() ([]byte, error) {
@@ -5466,11 +5429,11 @@ func SharedDataObjectStatusFromPb(pb *sharingpb.SharedDataObjectStatusPb) (*Shar
 type SharedDataObjectUpdate struct {
 	// One of: **ADD**, **REMOVE**, **UPDATE**.
 	// Wire name: 'action'
-	Action SharedDataObjectUpdateAction ``
+	Action SharedDataObjectUpdateAction `json:"action,omitempty"`
 	// The data object that is being added, removed, or updated. The maximum
 	// number update data objects allowed is a 100.
 	// Wire name: 'data_object'
-	DataObject *SharedDataObject ``
+	DataObject *SharedDataObject `json:"data_object,omitempty"`
 }
 
 func (st SharedDataObjectUpdate) MarshalJSON() ([]byte, error) {
@@ -5660,36 +5623,36 @@ func SharedSecurableKindFromPb(pb *sharingpb.SharedSecurableKindPb) (*SharedSecu
 type Table struct {
 	// The comment of the table.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The id of the table.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Internal information for D2D sharing that should not be disclosed to
 	// external users.
 	// Wire name: 'internal_attributes'
-	InternalAttributes *TableInternalAttributes ``
+	InternalAttributes *TableInternalAttributes `json:"internal_attributes,omitempty"`
 	// The catalog and schema of the materialized table
 	// Wire name: 'materialization_namespace'
-	MaterializationNamespace string ``
+	MaterializationNamespace string `json:"materialization_namespace,omitempty"`
 	// The name of a materialized table.
 	// Wire name: 'materialized_table_name'
-	MaterializedTableName string ``
+	MaterializedTableName string `json:"materialized_table_name,omitempty"`
 	// The name of the table.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The name of the schema that the table belongs to.
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 	// The name of the share that the table belongs to.
 	// Wire name: 'share'
-	Share string ``
+	Share string `json:"share,omitempty"`
 	// The id of the share that the table belongs to.
 	// Wire name: 'share_id'
-	ShareId string ``
+	ShareId string `json:"share_id,omitempty"`
 	// The Tags of the table.
 	// Wire name: 'tags'
-	Tags            []catalog.TagKeyValue ``
-	ForceSendFields []string              `tf:"-"`
+	Tags            []catalog.TagKeyValue `json:"tags,omitempty"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st Table) MarshalJSON() ([]byte, error) {
@@ -5807,18 +5770,18 @@ type TableInternalAttributes struct {
 	// workspace of the recipient, to allow the recipient users to query this
 	// shared VIEW/FOREIGN_TABLE.
 	// Wire name: 'parent_storage_location'
-	ParentStorageLocation string ``
+	ParentStorageLocation string `json:"parent_storage_location,omitempty"`
 	// The cloud storage location of a shard table with DIRECTORY_BASED_TABLE
 	// type.
 	// Wire name: 'storage_location'
-	StorageLocation string ``
+	StorageLocation string `json:"storage_location,omitempty"`
 	// The type of the shared table.
 	// Wire name: 'type'
-	Type TableInternalAttributesSharedTableType ``
+	Type TableInternalAttributesSharedTableType `json:"type,omitempty"`
 	// The view definition of a shared view. DEPRECATED.
 	// Wire name: 'view_definition'
-	ViewDefinition  string   ``
-	ForceSendFields []string `tf:"-"`
+	ViewDefinition  string   `json:"view_definition,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TableInternalAttributes) MarshalJSON() ([]byte, error) {
@@ -5960,24 +5923,21 @@ func TableInternalAttributesSharedTableTypeFromPb(pb *sharingpb.TableInternalAtt
 
 type UpdateFederationPolicyRequest struct {
 	// Name of the policy. This is the name of the current name of the policy.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 
 	// Wire name: 'policy'
-	Policy FederationPolicy ``
+	Policy FederationPolicy `json:"policy"`
 	// Name of the recipient. This is the name of the recipient for which the
 	// policy is being updated.
-	// Wire name: 'recipient_name'
-	RecipientName string `tf:"-"`
+	RecipientName string `json:"-" tf:"-"`
 	// The field mask specifies which fields of the policy to update. To specify
 	// multiple fields in the field mask, use comma as the separator (no space).
 	// The special value '*' indicates that all fields should be updated (full
 	// replacement). If unspecified, all fields that are set in the policy
 	// provided in the update request will overwrite the corresponding fields in
 	// the existing policy. Example value: 'comment,oidc_policy.audiences'.
-	// Wire name: 'update_mask'
-	UpdateMask      string   `tf:"-"` //legacy
-	ForceSendFields []string `tf:"-"`
+	UpdateMask      string   `json:"-" tf:"-"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateFederationPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -6052,21 +6012,20 @@ func UpdateFederationPolicyRequestFromPb(pb *sharingpb.UpdateFederationPolicyReq
 type UpdateProvider struct {
 	// Description about the provider.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Name of the provider.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// New name for the provider.
 	// Wire name: 'new_name'
-	NewName string ``
+	NewName string `json:"new_name,omitempty"`
 	// Username of Provider owner.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// This field is required when the __authentication_type__ is **TOKEN**,
 	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
 	// Wire name: 'recipient_profile_str'
-	RecipientProfileStr string   ``
-	ForceSendFields     []string `tf:"-"`
+	RecipientProfileStr string   `json:"recipient_profile_str,omitempty"`
+	ForceSendFields     []string `json:"-" tf:"-"`
 }
 
 func (st UpdateProvider) MarshalJSON() ([]byte, error) {
@@ -6131,29 +6090,28 @@ func UpdateProviderFromPb(pb *sharingpb.UpdateProviderPb) (*UpdateProvider, erro
 type UpdateRecipient struct {
 	// Description about the recipient.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Expiration timestamp of the token, in epoch milliseconds.
 	// Wire name: 'expiration_time'
-	ExpirationTime int64 ``
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
 	// IP Access List
 	// Wire name: 'ip_access_list'
-	IpAccessList *IpAccessList ``
+	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// Name of the recipient.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// New name for the recipient. .
 	// Wire name: 'new_name'
-	NewName string ``
+	NewName string `json:"new_name,omitempty"`
 	// Username of the recipient owner.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Recipient properties as map of string key-value pairs. When provided in
 	// update request, the specified properties will override the existing
 	// properties. To add and remove properties, one would need to perform a
 	// read-modify-write.
 	// Wire name: 'properties_kvpairs'
-	PropertiesKvpairs *SecurablePropertiesKvPairs ``
-	ForceSendFields   []string                    `tf:"-"`
+	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
+	ForceSendFields   []string                    `json:"-" tf:"-"`
 }
 
 func (st UpdateRecipient) MarshalJSON() ([]byte, error) {
@@ -6246,23 +6204,22 @@ func UpdateRecipientFromPb(pb *sharingpb.UpdateRecipientPb) (*UpdateRecipient, e
 type UpdateShare struct {
 	// User-provided free-form text description.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// The name of the share.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// New name for the share.
 	// Wire name: 'new_name'
-	NewName string ``
+	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of share.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Storage root URL for the share.
 	// Wire name: 'storage_root'
-	StorageRoot string ``
+	StorageRoot string `json:"storage_root,omitempty"`
 	// Array of shared data object updates.
 	// Wire name: 'updates'
-	Updates         []SharedDataObjectUpdate ``
-	ForceSendFields []string                 `tf:"-"`
+	Updates         []SharedDataObjectUpdate `json:"updates,omitempty"`
+	ForceSendFields []string                 `json:"-" tf:"-"`
 }
 
 func (st UpdateShare) MarshalJSON() ([]byte, error) {
@@ -6351,15 +6308,14 @@ func UpdateShareFromPb(pb *sharingpb.UpdateSharePb) (*UpdateShare, error) {
 type UpdateSharePermissions struct {
 	// Array of permissions change objects.
 	// Wire name: 'changes'
-	Changes []PermissionsChange ``
+	Changes []PermissionsChange `json:"changes,omitempty"`
 	// The name of the share.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Optional. Whether to return the latest permissions list of the share in
 	// the response.
 	// Wire name: 'omit_permissions_list'
-	OmitPermissionsList bool     ``
-	ForceSendFields     []string `tf:"-"`
+	OmitPermissionsList bool     `json:"omit_permissions_list,omitempty"`
+	ForceSendFields     []string `json:"-" tf:"-"`
 }
 
 func (st UpdateSharePermissions) MarshalJSON() ([]byte, error) {
@@ -6442,7 +6398,7 @@ func UpdateSharePermissionsFromPb(pb *sharingpb.UpdateSharePermissionsPb) (*Upda
 type UpdateSharePermissionsResponse struct {
 	// The privileges assigned to each principal
 	// Wire name: 'privilege_assignments'
-	PrivilegeAssignments []PrivilegeAssignment ``
+	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
 }
 
 func (st UpdateSharePermissionsResponse) MarshalJSON() ([]byte, error) {
@@ -6515,32 +6471,32 @@ func UpdateSharePermissionsResponseFromPb(pb *sharingpb.UpdateSharePermissionsRe
 type Volume struct {
 	// The comment of the volume.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// This id maps to the shared_volume_id in database Recipient needs
 	// shared_volume_id for recon to check if this volume is already in
 	// recipient's DB or not.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Internal attributes for D2D sharing that should not be disclosed to
 	// external users.
 	// Wire name: 'internal_attributes'
-	InternalAttributes *VolumeInternalAttributes ``
+	InternalAttributes *VolumeInternalAttributes `json:"internal_attributes,omitempty"`
 	// The name of the volume.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The name of the schema that the volume belongs to.
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 	// The name of the share that the volume belongs to.
 	// Wire name: 'share'
-	Share string ``
+	Share string `json:"share,omitempty"`
 	// / The id of the share that the volume belongs to.
 	// Wire name: 'share_id'
-	ShareId string ``
+	ShareId string `json:"share_id,omitempty"`
 	// The tags of the volume.
 	// Wire name: 'tags'
-	Tags            []catalog.TagKeyValue ``
-	ForceSendFields []string              `tf:"-"`
+	Tags            []catalog.TagKeyValue `json:"tags,omitempty"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st Volume) MarshalJSON() ([]byte, error) {
@@ -6647,11 +6603,11 @@ func VolumeFromPb(pb *sharingpb.VolumePb) (*Volume, error) {
 type VolumeInternalAttributes struct {
 	// The cloud storage location of the volume
 	// Wire name: 'storage_location'
-	StorageLocation string ``
+	StorageLocation string `json:"storage_location,omitempty"`
 	// The type of the shared volume.
 	// Wire name: 'type'
-	Type            string   ``
-	ForceSendFields []string `tf:"-"`
+	Type            string   `json:"type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st VolumeInternalAttributes) MarshalJSON() ([]byte, error) {

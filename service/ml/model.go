@@ -17,14 +17,14 @@ import (
 type Activity struct {
 
 	// Wire name: 'activity_type'
-	ActivityType ActivityType ``
+	ActivityType ActivityType `json:"activity_type,omitempty"`
 	// User-provided comment associated with the activity, comment, or
 	// transition request.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Creation time of the object, as a Unix timestamp in milliseconds.
 	// Wire name: 'creation_timestamp'
-	CreationTimestamp int64 ``
+	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// Source stage of the transition (if the activity is stage transition
 	// related). Valid values are:
 	//
@@ -36,19 +36,19 @@ type Activity struct {
 	//
 	// * `Archived`: Archived stage.
 	// Wire name: 'from_stage'
-	FromStage string ``
+	FromStage string `json:"from_stage,omitempty"`
 	// Unique identifier for the object.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Time of the object at last update, as a Unix timestamp in milliseconds.
 	// Wire name: 'last_updated_timestamp'
-	LastUpdatedTimestamp int64 ``
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Comment made by system, for example explaining an activity of type
 	// `SYSTEM_TRANSITION`. It usually describes a side effect, such as a
 	// version being archived as part of another version's stage transition, and
 	// may not be returned for some activity types.
 	// Wire name: 'system_comment'
-	SystemComment string ``
+	SystemComment string `json:"system_comment,omitempty"`
 	// Target stage of the transition (if the activity is stage transition
 	// related). Valid values are:
 	//
@@ -60,11 +60,11 @@ type Activity struct {
 	//
 	// * `Archived`: Archived stage.
 	// Wire name: 'to_stage'
-	ToStage string ``
+	ToStage string `json:"to_stage,omitempty"`
 	// The username of the user that created the object.
 	// Wire name: 'user_id'
-	UserId          string   ``
-	ForceSendFields []string `tf:"-"`
+	UserId          string   `json:"user_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Activity) MarshalJSON() ([]byte, error) {
@@ -320,13 +320,13 @@ type ApproveTransitionRequest struct {
 	// Specifies whether to archive all current model versions in the target
 	// stage.
 	// Wire name: 'archive_existing_versions'
-	ArchiveExistingVersions bool ``
+	ArchiveExistingVersions bool `json:"archive_existing_versions"`
 	// User-provided comment on the action.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Name of the model.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Target stage of the transition. Valid values are:
 	//
 	// * `None`: The initial stage of a model version.
@@ -337,11 +337,11 @@ type ApproveTransitionRequest struct {
 	//
 	// * `Archived`: Archived stage.
 	// Wire name: 'stage'
-	Stage string ``
+	Stage string `json:"stage"`
 	// Version of the model.
 	// Wire name: 'version'
-	Version         string   ``
-	ForceSendFields []string `tf:"-"`
+	Version         string   `json:"version"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ApproveTransitionRequest) MarshalJSON() ([]byte, error) {
@@ -406,7 +406,7 @@ func ApproveTransitionRequestFromPb(pb *mlpb.ApproveTransitionRequestPb) (*Appro
 type ApproveTransitionRequestResponse struct {
 	// New activity generated as a result of this operation.
 	// Wire name: 'activity'
-	Activity *Activity ``
+	Activity *Activity `json:"activity,omitempty"`
 }
 
 func (st ApproveTransitionRequestResponse) MarshalJSON() ([]byte, error) {
@@ -552,24 +552,24 @@ func CommentActivityActionFromPb(pb *mlpb.CommentActivityActionPb) (*CommentActi
 type CommentObject struct {
 	// Array of actions on the activity allowed for the current viewer.
 	// Wire name: 'available_actions'
-	AvailableActions []CommentActivityAction ``
+	AvailableActions []CommentActivityAction `json:"available_actions,omitempty"`
 	// User-provided comment associated with the activity, comment, or
 	// transition request.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Creation time of the object, as a Unix timestamp in milliseconds.
 	// Wire name: 'creation_timestamp'
-	CreationTimestamp int64 ``
+	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// Unique identifier for the object.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Time of the object at last update, as a Unix timestamp in milliseconds.
 	// Wire name: 'last_updated_timestamp'
-	LastUpdatedTimestamp int64 ``
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// The username of the user that created the object.
 	// Wire name: 'user_id'
-	UserId          string   ``
-	ForceSendFields []string `tf:"-"`
+	UserId          string   `json:"user_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CommentObject) MarshalJSON() ([]byte, error) {
@@ -659,13 +659,13 @@ func CommentObjectFromPb(pb *mlpb.CommentObjectPb) (*CommentObject, error) {
 type CreateComment struct {
 	// User-provided comment on the action.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment"`
 	// Name of the model.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Version of the model.
 	// Wire name: 'version'
-	Version string ``
+	Version string `json:"version"`
 }
 
 func (st CreateComment) MarshalJSON() ([]byte, error) {
@@ -720,7 +720,7 @@ func CreateCommentFromPb(pb *mlpb.CreateCommentPb) (*CreateComment, error) {
 type CreateCommentResponse struct {
 	// New comment object
 	// Wire name: 'comment'
-	Comment *CommentObject ``
+	Comment *CommentObject `json:"comment,omitempty"`
 }
 
 func (st CreateCommentResponse) MarshalJSON() ([]byte, error) {
@@ -784,18 +784,18 @@ type CreateExperiment struct {
 	// Location where all artifacts for the experiment are stored. If not
 	// provided, the remote server will select an appropriate default.
 	// Wire name: 'artifact_location'
-	ArtifactLocation string ``
+	ArtifactLocation string `json:"artifact_location,omitempty"`
 	// Experiment name.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// A collection of tags to set on the experiment. Maximum tag size and
 	// number of tags per request depends on the storage backend. All storage
 	// backends are guaranteed to support tag keys up to 250 bytes in size and
 	// tag values up to 5000 bytes in size. All storage backends are also
 	// guaranteed to support up to 20 tags per request.
 	// Wire name: 'tags'
-	Tags            []ExperimentTag ``
-	ForceSendFields []string        `tf:"-"`
+	Tags            []ExperimentTag `json:"tags,omitempty"`
+	ForceSendFields []string        `json:"-" tf:"-"`
 }
 
 func (st CreateExperiment) MarshalJSON() ([]byte, error) {
@@ -878,8 +878,8 @@ func CreateExperimentFromPb(pb *mlpb.CreateExperimentPb) (*CreateExperiment, err
 type CreateExperimentResponse struct {
 	// Unique identifier for the experiment.
 	// Wire name: 'experiment_id'
-	ExperimentId    string   ``
-	ForceSendFields []string `tf:"-"`
+	ExperimentId    string   `json:"experiment_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateExperimentResponse) MarshalJSON() ([]byte, error) {
@@ -934,15 +934,12 @@ func CreateExperimentResponseFromPb(pb *mlpb.CreateExperimentResponsePb) (*Creat
 }
 
 type CreateFeatureTagRequest struct {
-
-	// Wire name: 'feature_name'
-	FeatureName string `tf:"-"`
+	FeatureName string `json:"-" tf:"-"`
 
 	// Wire name: 'feature_tag'
-	FeatureTag FeatureTag ``
+	FeatureTag FeatureTag `json:"feature_tag"`
 
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 }
 
 func (st CreateFeatureTagRequest) MarshalJSON() ([]byte, error) {
@@ -1010,30 +1007,30 @@ type CreateForecastingExperimentRequest struct {
 	// The column in the training table used to customize weights for each time
 	// series.
 	// Wire name: 'custom_weights_column'
-	CustomWeightsColumn string ``
+	CustomWeightsColumn string `json:"custom_weights_column,omitempty"`
 	// The path in the workspace to store the created experiment.
 	// Wire name: 'experiment_path'
-	ExperimentPath string ``
+	ExperimentPath string `json:"experiment_path,omitempty"`
 	// The time interval between consecutive rows in the time series data.
 	// Possible values include: '1 second', '1 minute', '5 minutes', '10
 	// minutes', '15 minutes', '30 minutes', 'Hourly', 'Daily', 'Weekly',
 	// 'Monthly', 'Quarterly', 'Yearly'.
 	// Wire name: 'forecast_granularity'
-	ForecastGranularity string ``
+	ForecastGranularity string `json:"forecast_granularity"`
 	// The number of time steps into the future to make predictions, calculated
 	// as a multiple of forecast_granularity. This value represents how far
 	// ahead the model should forecast.
 	// Wire name: 'forecast_horizon'
-	ForecastHorizon int64 ``
+	ForecastHorizon int64 `json:"forecast_horizon"`
 	// The fully qualified path of a Unity Catalog table, formatted as
 	// catalog_name.schema_name.table_name, used to store future feature data
 	// for predictions.
 	// Wire name: 'future_feature_data_path'
-	FutureFeatureDataPath string ``
+	FutureFeatureDataPath string `json:"future_feature_data_path,omitempty"`
 	// The region code(s) to automatically add holiday features. Currently
 	// supports only one region.
 	// Wire name: 'holiday_regions'
-	HolidayRegions []string ``
+	HolidayRegions []string `json:"holiday_regions,omitempty"`
 	// Specifies the list of feature columns to include in model training. These
 	// columns must exist in the training data and be of type string, numerical,
 	// or boolean. If not specified, no additional features will be included.
@@ -1041,50 +1038,50 @@ type CreateForecastingExperimentRequest struct {
 	// excluded: split_column, target_column, custom_weights_column. -
 	// Automatically included: time_column.
 	// Wire name: 'include_features'
-	IncludeFeatures []string ``
+	IncludeFeatures []string `json:"include_features,omitempty"`
 	// The maximum duration for the experiment in minutes. The experiment stops
 	// automatically if it exceeds this limit.
 	// Wire name: 'max_runtime'
-	MaxRuntime int64 ``
+	MaxRuntime int64 `json:"max_runtime,omitempty"`
 	// The fully qualified path of a Unity Catalog table, formatted as
 	// catalog_name.schema_name.table_name, used to store predictions.
 	// Wire name: 'prediction_data_path'
-	PredictionDataPath string ``
+	PredictionDataPath string `json:"prediction_data_path,omitempty"`
 	// The evaluation metric used to optimize the forecasting model.
 	// Wire name: 'primary_metric'
-	PrimaryMetric string ``
+	PrimaryMetric string `json:"primary_metric,omitempty"`
 	// The fully qualified path of a Unity Catalog model, formatted as
 	// catalog_name.schema_name.model_name, used to store the best model.
 	// Wire name: 'register_to'
-	RegisterTo string ``
+	RegisterTo string `json:"register_to,omitempty"`
 	// // The column in the training table used for custom data splits. Values
 	// must be 'train', 'validate', or 'test'.
 	// Wire name: 'split_column'
-	SplitColumn string ``
+	SplitColumn string `json:"split_column,omitempty"`
 	// The column in the input training table used as the prediction target for
 	// model training. The values in this column are used as the ground truth
 	// for model training.
 	// Wire name: 'target_column'
-	TargetColumn string ``
+	TargetColumn string `json:"target_column"`
 	// The column in the input training table that represents each row's
 	// timestamp.
 	// Wire name: 'time_column'
-	TimeColumn string ``
+	TimeColumn string `json:"time_column"`
 	// The column in the training table used to group the dataset for predicting
 	// individual time series.
 	// Wire name: 'timeseries_identifier_columns'
-	TimeseriesIdentifierColumns []string ``
+	TimeseriesIdentifierColumns []string `json:"timeseries_identifier_columns,omitempty"`
 	// The fully qualified path of a Unity Catalog table, formatted as
 	// catalog_name.schema_name.table_name, used as training data for the
 	// forecasting model.
 	// Wire name: 'train_data_path'
-	TrainDataPath string ``
+	TrainDataPath string `json:"train_data_path"`
 	// List of frameworks to include for model tuning. Possible values are
 	// 'Prophet', 'ARIMA', 'DeepAR'. An empty list includes all supported
 	// frameworks.
 	// Wire name: 'training_frameworks'
-	TrainingFrameworks []string ``
-	ForceSendFields    []string `tf:"-"`
+	TrainingFrameworks []string `json:"training_frameworks,omitempty"`
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
 func (st CreateForecastingExperimentRequest) MarshalJSON() ([]byte, error) {
@@ -1173,8 +1170,8 @@ func CreateForecastingExperimentRequestFromPb(pb *mlpb.CreateForecastingExperime
 type CreateForecastingExperimentResponse struct {
 	// The unique ID of the created forecasting experiment
 	// Wire name: 'experiment_id'
-	ExperimentId    string   ``
-	ForceSendFields []string `tf:"-"`
+	ExperimentId    string   `json:"experiment_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateForecastingExperimentResponse) MarshalJSON() ([]byte, error) {
@@ -1231,23 +1228,23 @@ func CreateForecastingExperimentResponseFromPb(pb *mlpb.CreateForecastingExperim
 type CreateLoggedModelRequest struct {
 	// The ID of the experiment that owns the model.
 	// Wire name: 'experiment_id'
-	ExperimentId string ``
+	ExperimentId string `json:"experiment_id"`
 	// The type of the model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``.
 	// Wire name: 'model_type'
-	ModelType string ``
+	ModelType string `json:"model_type,omitempty"`
 	// The name of the model (optional). If not specified one will be generated.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Parameters attached to the model.
 	// Wire name: 'params'
-	Params []LoggedModelParameter ``
+	Params []LoggedModelParameter `json:"params,omitempty"`
 	// The ID of the run that created the model.
 	// Wire name: 'source_run_id'
-	SourceRunId string ``
+	SourceRunId string `json:"source_run_id,omitempty"`
 	// Tags attached to the model.
 	// Wire name: 'tags'
-	Tags            []LoggedModelTag ``
-	ForceSendFields []string         `tf:"-"`
+	Tags            []LoggedModelTag `json:"tags,omitempty"`
+	ForceSendFields []string         `json:"-" tf:"-"`
 }
 
 func (st CreateLoggedModelRequest) MarshalJSON() ([]byte, error) {
@@ -1358,7 +1355,7 @@ func CreateLoggedModelRequestFromPb(pb *mlpb.CreateLoggedModelRequestPb) (*Creat
 type CreateLoggedModelResponse struct {
 	// The newly created logged model.
 	// Wire name: 'model'
-	Model *LoggedModel ``
+	Model *LoggedModel `json:"model,omitempty"`
 }
 
 func (st CreateLoggedModelResponse) MarshalJSON() ([]byte, error) {
@@ -1421,14 +1418,14 @@ func CreateLoggedModelResponseFromPb(pb *mlpb.CreateLoggedModelResponsePb) (*Cre
 type CreateModelRequest struct {
 	// Optional description for registered model.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Register models under this name
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Additional metadata for registered model.
 	// Wire name: 'tags'
-	Tags            []ModelTag ``
-	ForceSendFields []string   `tf:"-"`
+	Tags            []ModelTag `json:"tags,omitempty"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
 func (st CreateModelRequest) MarshalJSON() ([]byte, error) {
@@ -1511,7 +1508,7 @@ func CreateModelRequestFromPb(pb *mlpb.CreateModelRequestPb) (*CreateModelReques
 type CreateModelResponse struct {
 
 	// Wire name: 'registered_model'
-	RegisteredModel *Model ``
+	RegisteredModel *Model `json:"registered_model,omitempty"`
 }
 
 func (st CreateModelResponse) MarshalJSON() ([]byte, error) {
@@ -1574,25 +1571,25 @@ func CreateModelResponseFromPb(pb *mlpb.CreateModelResponsePb) (*CreateModelResp
 type CreateModelVersionRequest struct {
 	// Optional description for model version.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Register model under this name
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// MLflow run ID for correlation, if `source` was generated by an experiment
 	// run in MLflow tracking server
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id,omitempty"`
 	// MLflow run link - this is the exact link of the run that generated this
 	// model version, potentially hosted at another instance of MLflow.
 	// Wire name: 'run_link'
-	RunLink string ``
+	RunLink string `json:"run_link,omitempty"`
 	// URI indicating the location of the model artifacts.
 	// Wire name: 'source'
-	Source string ``
+	Source string `json:"source"`
 	// Additional metadata for model version.
 	// Wire name: 'tags'
-	Tags            []ModelVersionTag ``
-	ForceSendFields []string          `tf:"-"`
+	Tags            []ModelVersionTag `json:"tags,omitempty"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
 func (st CreateModelVersionRequest) MarshalJSON() ([]byte, error) {
@@ -1681,7 +1678,7 @@ func CreateModelVersionRequestFromPb(pb *mlpb.CreateModelVersionRequestPb) (*Cre
 type CreateModelVersionResponse struct {
 	// Return new version number generated for this model in registry.
 	// Wire name: 'model_version'
-	ModelVersion *ModelVersion ``
+	ModelVersion *ModelVersion `json:"model_version,omitempty"`
 }
 
 func (st CreateModelVersionResponse) MarshalJSON() ([]byte, error) {
@@ -1744,7 +1741,7 @@ func CreateModelVersionResponseFromPb(pb *mlpb.CreateModelVersionResponsePb) (*C
 type CreateOnlineStoreRequest struct {
 	// Online store to create.
 	// Wire name: 'online_store'
-	OnlineStore OnlineStore ``
+	OnlineStore OnlineStore `json:"online_store"`
 }
 
 func (st CreateOnlineStoreRequest) MarshalJSON() ([]byte, error) {
@@ -1808,7 +1805,7 @@ func CreateOnlineStoreRequestFromPb(pb *mlpb.CreateOnlineStoreRequestPb) (*Creat
 type CreateRegistryWebhook struct {
 	// User-specified description for the webhook.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A
 	// new model version was created for the associated model.
 	//
@@ -1843,18 +1840,18 @@ type CreateRegistryWebhook struct {
 	// * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model
 	// version be archived.
 	// Wire name: 'events'
-	Events []RegistryWebhookEvent ``
+	Events []RegistryWebhookEvent `json:"events"`
 	// External HTTPS URL called on event trigger (by using a POST request).
 	// Wire name: 'http_url_spec'
-	HttpUrlSpec *HttpUrlSpec ``
+	HttpUrlSpec *HttpUrlSpec `json:"http_url_spec,omitempty"`
 	// ID of the job that the webhook runs.
 	// Wire name: 'job_spec'
-	JobSpec *JobSpec ``
+	JobSpec *JobSpec `json:"job_spec,omitempty"`
 	// If model name is not specified, a registry-wide webhook is created that
 	// listens for the specified events across all versions of all registered
 	// models.
 	// Wire name: 'model_name'
-	ModelName string ``
+	ModelName string `json:"model_name,omitempty"`
 	// Enable or disable triggering the webhook, or put the webhook into test
 	// mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an
 	// associated event happens.
@@ -1864,8 +1861,8 @@ type CreateRegistryWebhook struct {
 	// * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is
 	// not triggered on a real event.
 	// Wire name: 'status'
-	Status          RegistryWebhookStatus ``
-	ForceSendFields []string              `tf:"-"`
+	Status          RegistryWebhookStatus `json:"status,omitempty"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st CreateRegistryWebhook) MarshalJSON() ([]byte, error) {
@@ -1990,22 +1987,22 @@ func CreateRegistryWebhookFromPb(pb *mlpb.CreateRegistryWebhookPb) (*CreateRegis
 type CreateRun struct {
 	// ID of the associated experiment.
 	// Wire name: 'experiment_id'
-	ExperimentId string ``
+	ExperimentId string `json:"experiment_id,omitempty"`
 	// The name of the run.
 	// Wire name: 'run_name'
-	RunName string ``
+	RunName string `json:"run_name,omitempty"`
 	// Unix timestamp in milliseconds of when the run started.
 	// Wire name: 'start_time'
-	StartTime int64 ``
+	StartTime int64 `json:"start_time,omitempty"`
 	// Additional metadata for run.
 	// Wire name: 'tags'
-	Tags []RunTag ``
+	Tags []RunTag `json:"tags,omitempty"`
 	// ID of the user executing the run. This field is deprecated as of MLflow
 	// 1.0, and will be removed in a future MLflow release. Use 'mlflow.user'
 	// tag instead.
 	// Wire name: 'user_id'
-	UserId          string   ``
-	ForceSendFields []string `tf:"-"`
+	UserId          string   `json:"user_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateRun) MarshalJSON() ([]byte, error) {
@@ -2092,7 +2089,7 @@ func CreateRunFromPb(pb *mlpb.CreateRunPb) (*CreateRun, error) {
 type CreateRunResponse struct {
 	// The newly created run.
 	// Wire name: 'run'
-	Run *Run ``
+	Run *Run `json:"run,omitempty"`
 }
 
 func (st CreateRunResponse) MarshalJSON() ([]byte, error) {
@@ -2156,10 +2153,10 @@ func CreateRunResponseFromPb(pb *mlpb.CreateRunResponsePb) (*CreateRunResponse, 
 type CreateTransitionRequest struct {
 	// User-provided comment on the action.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Name of the model.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Target stage of the transition. Valid values are:
 	//
 	// * `None`: The initial stage of a model version.
@@ -2170,11 +2167,11 @@ type CreateTransitionRequest struct {
 	//
 	// * `Archived`: Archived stage.
 	// Wire name: 'stage'
-	Stage string ``
+	Stage string `json:"stage"`
 	// Version of the model.
 	// Wire name: 'version'
-	Version         string   ``
-	ForceSendFields []string `tf:"-"`
+	Version         string   `json:"version"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateTransitionRequest) MarshalJSON() ([]byte, error) {
@@ -2237,7 +2234,7 @@ func CreateTransitionRequestFromPb(pb *mlpb.CreateTransitionRequestPb) (*CreateT
 type CreateTransitionRequestResponse struct {
 	// New activity generated for stage transition request.
 	// Wire name: 'request'
-	Request *TransitionRequest ``
+	Request *TransitionRequest `json:"request,omitempty"`
 }
 
 func (st CreateTransitionRequestResponse) MarshalJSON() ([]byte, error) {
@@ -2300,7 +2297,7 @@ func CreateTransitionRequestResponseFromPb(pb *mlpb.CreateTransitionRequestRespo
 type CreateWebhookResponse struct {
 
 	// Wire name: 'webhook'
-	Webhook *RegistryWebhook ``
+	Webhook *RegistryWebhook `json:"webhook,omitempty"`
 }
 
 func (st CreateWebhookResponse) MarshalJSON() ([]byte, error) {
@@ -2366,30 +2363,30 @@ type Dataset struct {
 	// Dataset digest, e.g. an md5 hash of the dataset that uniquely identifies
 	// it within datasets of the same name.
 	// Wire name: 'digest'
-	Digest string ``
+	Digest string `json:"digest"`
 	// The name of the dataset. E.g. “my.uc.table@2” “nyc-taxi-dataset”,
 	// “fantastic-elk-3”
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// The profile of the dataset. Summary statistics for the dataset, such as
 	// the number of rows in a table, the mean / std / mode of each column in a
 	// table, or the number of elements in an array.
 	// Wire name: 'profile'
-	Profile string ``
+	Profile string `json:"profile,omitempty"`
 	// The schema of the dataset. E.g., MLflow ColSpec JSON for a dataframe,
 	// MLflow TensorSpec JSON for an ndarray, or another schema format.
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 	// Source information for the dataset. Note that the source may not exactly
 	// reproduce the dataset if it was transformed / modified before use with
 	// MLflow.
 	// Wire name: 'source'
-	Source string ``
+	Source string `json:"source"`
 	// The type of the dataset source, e.g. ‘databricks-uc-table’,
 	// ‘DBFS’, ‘S3’, ...
 	// Wire name: 'source_type'
-	SourceType      string   ``
-	ForceSendFields []string `tf:"-"`
+	SourceType      string   `json:"source_type"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Dataset) MarshalJSON() ([]byte, error) {
@@ -2457,11 +2454,11 @@ func DatasetFromPb(pb *mlpb.DatasetPb) (*Dataset, error) {
 type DatasetInput struct {
 	// The dataset being used as a Run input.
 	// Wire name: 'dataset'
-	Dataset Dataset ``
+	Dataset Dataset `json:"dataset"`
 	// A list of tags for the dataset input, e.g. a “context” tag with value
 	// “training”
 	// Wire name: 'tags'
-	Tags []InputTag ``
+	Tags []InputTag `json:"tags,omitempty"`
 }
 
 func (st DatasetInput) MarshalJSON() ([]byte, error) {
@@ -2547,8 +2544,7 @@ func DatasetInputFromPb(pb *mlpb.DatasetInputPb) (*DatasetInput, error) {
 
 type DeleteCommentRequest struct {
 	// Unique identifier of an activity
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteCommentRequest) MarshalJSON() ([]byte, error) {
@@ -2599,7 +2595,7 @@ func DeleteCommentRequestFromPb(pb *mlpb.DeleteCommentRequestPb) (*DeleteComment
 type DeleteExperiment struct {
 	// ID of the associated experiment.
 	// Wire name: 'experiment_id'
-	ExperimentId string ``
+	ExperimentId string `json:"experiment_id"`
 }
 
 func (st DeleteExperiment) MarshalJSON() ([]byte, error) {
@@ -2649,14 +2645,11 @@ func DeleteExperimentFromPb(pb *mlpb.DeleteExperimentPb) (*DeleteExperiment, err
 
 type DeleteFeatureTagRequest struct {
 	// The name of the feature within the feature table.
-	// Wire name: 'feature_name'
-	FeatureName string `tf:"-"`
+	FeatureName string `json:"-" tf:"-"`
 	// The key of the tag to delete.
-	// Wire name: 'key'
-	Key string `tf:"-"`
+	Key string `json:"-" tf:"-"`
 	// The name of the feature table.
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 }
 
 func (st DeleteFeatureTagRequest) MarshalJSON() ([]byte, error) {
@@ -2710,8 +2703,7 @@ func DeleteFeatureTagRequestFromPb(pb *mlpb.DeleteFeatureTagRequestPb) (*DeleteF
 
 type DeleteLoggedModelRequest struct {
 	// The ID of the logged model to delete.
-	// Wire name: 'model_id'
-	ModelId string `tf:"-"`
+	ModelId string `json:"-" tf:"-"`
 }
 
 func (st DeleteLoggedModelRequest) MarshalJSON() ([]byte, error) {
@@ -2761,11 +2753,9 @@ func DeleteLoggedModelRequestFromPb(pb *mlpb.DeleteLoggedModelRequestPb) (*Delet
 
 type DeleteLoggedModelTagRequest struct {
 	// The ID of the logged model to delete the tag from.
-	// Wire name: 'model_id'
-	ModelId string `tf:"-"`
+	ModelId string `json:"-" tf:"-"`
 	// The tag key.
-	// Wire name: 'tag_key'
-	TagKey string `tf:"-"`
+	TagKey string `json:"-" tf:"-"`
 }
 
 func (st DeleteLoggedModelTagRequest) MarshalJSON() ([]byte, error) {
@@ -2817,8 +2807,7 @@ func DeleteLoggedModelTagRequestFromPb(pb *mlpb.DeleteLoggedModelTagRequestPb) (
 
 type DeleteModelRequest struct {
 	// Registered model unique name identifier.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteModelRequest) MarshalJSON() ([]byte, error) {
@@ -2869,11 +2858,9 @@ func DeleteModelRequestFromPb(pb *mlpb.DeleteModelRequestPb) (*DeleteModelReques
 type DeleteModelTagRequest struct {
 	// Name of the tag. The name must be an exact match; wild-card deletion is
 	// not supported. Maximum size is 250 bytes.
-	// Wire name: 'key'
-	Key string `tf:"-"`
+	Key string `json:"-" tf:"-"`
 	// Name of the registered model that the tag was logged under.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteModelTagRequest) MarshalJSON() ([]byte, error) {
@@ -2925,11 +2912,9 @@ func DeleteModelTagRequestFromPb(pb *mlpb.DeleteModelTagRequestPb) (*DeleteModel
 
 type DeleteModelVersionRequest struct {
 	// Name of the registered model
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Model version number
-	// Wire name: 'version'
-	Version string `tf:"-"`
+	Version string `json:"-" tf:"-"`
 }
 
 func (st DeleteModelVersionRequest) MarshalJSON() ([]byte, error) {
@@ -2982,14 +2967,11 @@ func DeleteModelVersionRequestFromPb(pb *mlpb.DeleteModelVersionRequestPb) (*Del
 type DeleteModelVersionTagRequest struct {
 	// Name of the tag. The name must be an exact match; wild-card deletion is
 	// not supported. Maximum size is 250 bytes.
-	// Wire name: 'key'
-	Key string `tf:"-"`
+	Key string `json:"-" tf:"-"`
 	// Name of the registered model that the tag was logged under.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Model version number that the tag was logged under.
-	// Wire name: 'version'
-	Version string `tf:"-"`
+	Version string `json:"-" tf:"-"`
 }
 
 func (st DeleteModelVersionTagRequest) MarshalJSON() ([]byte, error) {
@@ -3043,8 +3025,7 @@ func DeleteModelVersionTagRequestFromPb(pb *mlpb.DeleteModelVersionTagRequestPb)
 
 type DeleteOnlineStoreRequest struct {
 	// Name of the online store to delete.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteOnlineStoreRequest) MarshalJSON() ([]byte, error) {
@@ -3095,7 +3076,7 @@ func DeleteOnlineStoreRequestFromPb(pb *mlpb.DeleteOnlineStoreRequestPb) (*Delet
 type DeleteRun struct {
 	// ID of the run to delete.
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id"`
 }
 
 func (st DeleteRun) MarshalJSON() ([]byte, error) {
@@ -3146,17 +3127,17 @@ func DeleteRunFromPb(pb *mlpb.DeleteRunPb) (*DeleteRun, error) {
 type DeleteRuns struct {
 	// The ID of the experiment containing the runs to delete.
 	// Wire name: 'experiment_id'
-	ExperimentId string ``
+	ExperimentId string `json:"experiment_id"`
 	// An optional positive integer indicating the maximum number of runs to
 	// delete. The maximum allowed value for max_runs is 10000.
 	// Wire name: 'max_runs'
-	MaxRuns int ``
+	MaxRuns int `json:"max_runs,omitempty"`
 	// The maximum creation timestamp in milliseconds since the UNIX epoch for
 	// deleting runs. Only runs created prior to or at this timestamp are
 	// deleted.
 	// Wire name: 'max_timestamp_millis'
-	MaxTimestampMillis int64    ``
-	ForceSendFields    []string `tf:"-"`
+	MaxTimestampMillis int64    `json:"max_timestamp_millis"`
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
 func (st DeleteRuns) MarshalJSON() ([]byte, error) {
@@ -3217,8 +3198,8 @@ func DeleteRunsFromPb(pb *mlpb.DeleteRunsPb) (*DeleteRuns, error) {
 type DeleteRunsResponse struct {
 	// The number of runs deleted.
 	// Wire name: 'runs_deleted'
-	RunsDeleted     int      ``
-	ForceSendFields []string `tf:"-"`
+	RunsDeleted     int      `json:"runs_deleted,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteRunsResponse) MarshalJSON() ([]byte, error) {
@@ -3275,10 +3256,10 @@ func DeleteRunsResponseFromPb(pb *mlpb.DeleteRunsResponsePb) (*DeleteRunsRespons
 type DeleteTag struct {
 	// Name of the tag. Maximum size is 255 bytes. Must be provided.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 	// ID of the run that the tag was logged under. Must be provided.
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id"`
 }
 
 func (st DeleteTag) MarshalJSON() ([]byte, error) {
@@ -3330,16 +3311,13 @@ func DeleteTagFromPb(pb *mlpb.DeleteTagPb) (*DeleteTag, error) {
 
 type DeleteTransitionRequestRequest struct {
 	// User-provided comment on the action.
-	// Wire name: 'comment'
-	Comment string `tf:"-"`
+	Comment string `json:"-" tf:"-"`
 	// Username of the user who created this request. Of the transition requests
 	// matching the specified details, only the one transition created by this
 	// user will be deleted.
-	// Wire name: 'creator'
-	Creator string `tf:"-"`
+	Creator string `json:"-" tf:"-"`
 	// Name of the model.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Target stage of the transition request. Valid values are:
 	//
 	// * `None`: The initial stage of a model version.
@@ -3349,12 +3327,10 @@ type DeleteTransitionRequestRequest struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
-	// Wire name: 'stage'
-	Stage string `tf:"-"`
+	Stage string `json:"-" tf:"-"`
 	// Version of the model.
-	// Wire name: 'version'
-	Version         string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	Version         string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteTransitionRequestRequest) MarshalJSON() ([]byte, error) {
@@ -3419,7 +3395,7 @@ func DeleteTransitionRequestRequestFromPb(pb *mlpb.DeleteTransitionRequestReques
 type DeleteTransitionRequestResponse struct {
 	// New activity generated as a result of this operation.
 	// Wire name: 'activity'
-	Activity *Activity ``
+	Activity *Activity `json:"activity,omitempty"`
 }
 
 func (st DeleteTransitionRequestResponse) MarshalJSON() ([]byte, error) {
@@ -3481,8 +3457,7 @@ func DeleteTransitionRequestResponseFromPb(pb *mlpb.DeleteTransitionRequestRespo
 
 type DeleteWebhookRequest struct {
 	// Webhook ID required to delete a registry webhook.
-	// Wire name: 'id'
-	Id string `tf:"-"`
+	Id string `json:"-" tf:"-"`
 }
 
 func (st DeleteWebhookRequest) MarshalJSON() ([]byte, error) {
@@ -3534,27 +3509,27 @@ func DeleteWebhookRequestFromPb(pb *mlpb.DeleteWebhookRequestPb) (*DeleteWebhook
 type Experiment struct {
 	// Location where artifacts for the experiment are stored.
 	// Wire name: 'artifact_location'
-	ArtifactLocation string ``
+	ArtifactLocation string `json:"artifact_location,omitempty"`
 	// Creation time
 	// Wire name: 'creation_time'
-	CreationTime int64 ``
+	CreationTime int64 `json:"creation_time,omitempty"`
 	// Unique identifier for the experiment.
 	// Wire name: 'experiment_id'
-	ExperimentId string ``
+	ExperimentId string `json:"experiment_id,omitempty"`
 	// Last update time
 	// Wire name: 'last_update_time'
-	LastUpdateTime int64 ``
+	LastUpdateTime int64 `json:"last_update_time,omitempty"`
 	// Current life cycle stage of the experiment: "active" or "deleted".
 	// Deleted experiments are not returned by APIs.
 	// Wire name: 'lifecycle_stage'
-	LifecycleStage string ``
+	LifecycleStage string `json:"lifecycle_stage,omitempty"`
 	// Human readable name that identifies the experiment.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Tags: Additional metadata key-value pairs.
 	// Wire name: 'tags'
-	Tags            []ExperimentTag ``
-	ForceSendFields []string        `tf:"-"`
+	Tags            []ExperimentTag `json:"tags,omitempty"`
+	ForceSendFields []string        `json:"-" tf:"-"`
 }
 
 func (st Experiment) MarshalJSON() ([]byte, error) {
@@ -3645,17 +3620,17 @@ func ExperimentFromPb(pb *mlpb.ExperimentPb) (*Experiment, error) {
 type ExperimentAccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel ExperimentPermissionLevel ``
+	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExperimentAccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -3730,20 +3705,20 @@ func ExperimentAccessControlRequestFromPb(pb *mlpb.ExperimentAccessControlReques
 type ExperimentAccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []ExperimentPermission ``
+	AllPermissions []ExperimentPermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExperimentAccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -3830,14 +3805,14 @@ func ExperimentAccessControlResponseFromPb(pb *mlpb.ExperimentAccessControlRespo
 type ExperimentPermission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel ExperimentPermissionLevel ``
-	ForceSendFields []string                  `tf:"-"`
+	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                  `json:"-" tf:"-"`
 }
 
 func (st ExperimentPermission) MarshalJSON() ([]byte, error) {
@@ -3967,14 +3942,14 @@ func ExperimentPermissionLevelFromPb(pb *mlpb.ExperimentPermissionLevelPb) (*Exp
 type ExperimentPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []ExperimentAccessControlResponse ``
+	AccessControlList []ExperimentAccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExperimentPermissions) MarshalJSON() ([]byte, error) {
@@ -4057,11 +4032,11 @@ func ExperimentPermissionsFromPb(pb *mlpb.ExperimentPermissionsPb) (*ExperimentP
 type ExperimentPermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel ExperimentPermissionLevel ``
-	ForceSendFields []string                  `tf:"-"`
+	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                  `json:"-" tf:"-"`
 }
 
 func (st ExperimentPermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -4132,10 +4107,9 @@ func ExperimentPermissionsDescriptionFromPb(pb *mlpb.ExperimentPermissionsDescri
 type ExperimentPermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []ExperimentAccessControlRequest ``
+	AccessControlList []ExperimentAccessControlRequest `json:"access_control_list,omitempty"`
 	// The experiment for which to get or manage permissions.
-	// Wire name: 'experiment_id'
-	ExperimentId string `tf:"-"`
+	ExperimentId string `json:"-" tf:"-"`
 }
 
 func (st ExperimentPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -4211,11 +4185,11 @@ func ExperimentPermissionsRequestFromPb(pb *mlpb.ExperimentPermissionsRequestPb)
 type ExperimentTag struct {
 	// The tag key.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 	// The tag value.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ExperimentTag) MarshalJSON() ([]byte, error) {
@@ -4275,14 +4249,14 @@ func ExperimentTagFromPb(pb *mlpb.ExperimentTagPb) (*ExperimentTag, error) {
 type Feature struct {
 	// Feature name
 	// Wire name: 'feature_name'
-	FeatureName string ``
+	FeatureName string `json:"feature_name,omitempty"`
 	// Feature table id
 	// Wire name: 'feature_table_id'
-	FeatureTableId string ``
+	FeatureTableId string `json:"feature_table_id,omitempty"`
 	// Feature table name
 	// Wire name: 'feature_table_name'
-	FeatureTableName string   ``
-	ForceSendFields  []string `tf:"-"`
+	FeatureTableName string   `json:"feature_table_name,omitempty"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st Feature) MarshalJSON() ([]byte, error) {
@@ -4343,13 +4317,13 @@ func FeatureFromPb(pb *mlpb.FeaturePb) (*Feature, error) {
 type FeatureLineage struct {
 	// List of feature specs that contain this feature.
 	// Wire name: 'feature_specs'
-	FeatureSpecs []FeatureLineageFeatureSpec ``
+	FeatureSpecs []FeatureLineageFeatureSpec `json:"feature_specs,omitempty"`
 	// List of Unity Catalog models that were trained on this feature.
 	// Wire name: 'models'
-	Models []FeatureLineageModel ``
+	Models []FeatureLineageModel `json:"models,omitempty"`
 	// List of online features that use this feature as source.
 	// Wire name: 'online_features'
-	OnlineFeatures []FeatureLineageOnlineFeature ``
+	OnlineFeatures []FeatureLineageOnlineFeature `json:"online_features,omitempty"`
 }
 
 func (st FeatureLineage) MarshalJSON() ([]byte, error) {
@@ -4470,8 +4444,8 @@ func FeatureLineageFromPb(pb *mlpb.FeatureLineagePb) (*FeatureLineage, error) {
 type FeatureLineageFeatureSpec struct {
 	// The full name of the feature spec in Unity Catalog.
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FeatureLineageFeatureSpec) MarshalJSON() ([]byte, error) {
@@ -4528,11 +4502,11 @@ func FeatureLineageFeatureSpecFromPb(pb *mlpb.FeatureLineageFeatureSpecPb) (*Fea
 type FeatureLineageModel struct {
 	// The full name of the model in Unity Catalog.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The version of the model.
 	// Wire name: 'version'
-	Version         int64    ``
-	ForceSendFields []string `tf:"-"`
+	Version         int64    `json:"version,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FeatureLineageModel) MarshalJSON() ([]byte, error) {
@@ -4591,11 +4565,11 @@ func FeatureLineageModelFromPb(pb *mlpb.FeatureLineageModelPb) (*FeatureLineageM
 type FeatureLineageOnlineFeature struct {
 	// The name of the online feature (column name).
 	// Wire name: 'feature_name'
-	FeatureName string ``
+	FeatureName string `json:"feature_name,omitempty"`
 	// The full name of the online table in Unity Catalog.
 	// Wire name: 'table_name'
-	TableName       string   ``
-	ForceSendFields []string `tf:"-"`
+	TableName       string   `json:"table_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FeatureLineageOnlineFeature) MarshalJSON() ([]byte, error) {
@@ -4655,7 +4629,7 @@ func FeatureLineageOnlineFeatureFromPb(pb *mlpb.FeatureLineageOnlineFeaturePb) (
 type FeatureList struct {
 
 	// Wire name: 'features'
-	Features []Feature ``
+	Features []Feature `json:"features,omitempty"`
 }
 
 func (st FeatureList) MarshalJSON() ([]byte, error) {
@@ -4729,11 +4703,11 @@ func FeatureListFromPb(pb *mlpb.FeatureListPb) (*FeatureList, error) {
 type FeatureTag struct {
 
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FeatureTag) MarshalJSON() ([]byte, error) {
@@ -4793,14 +4767,14 @@ func FeatureTagFromPb(pb *mlpb.FeatureTagPb) (*FeatureTag, error) {
 type FileInfo struct {
 	// The size in bytes of the file. Unset for directories.
 	// Wire name: 'file_size'
-	FileSize int64 ``
+	FileSize int64 `json:"file_size,omitempty"`
 	// Whether the path is a directory.
 	// Wire name: 'is_dir'
-	IsDir bool ``
+	IsDir bool `json:"is_dir,omitempty"`
 	// The path relative to the root artifact directory run.
 	// Wire name: 'path'
-	Path            string   ``
-	ForceSendFields []string `tf:"-"`
+	Path            string   `json:"path,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FileInfo) MarshalJSON() ([]byte, error) {
@@ -4860,13 +4834,12 @@ func FileInfoFromPb(pb *mlpb.FileInfoPb) (*FileInfo, error) {
 
 type FinalizeLoggedModelRequest struct {
 	// The ID of the logged model to finalize.
-	// Wire name: 'model_id'
-	ModelId string `tf:"-"`
+	ModelId string `json:"-" tf:"-"`
 	// Whether or not the model is ready for use.
 	// ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that something went wrong when
 	// logging the model weights / agent code.
 	// Wire name: 'status'
-	Status LoggedModelStatus ``
+	Status LoggedModelStatus `json:"status"`
 }
 
 func (st FinalizeLoggedModelRequest) MarshalJSON() ([]byte, error) {
@@ -4931,7 +4904,7 @@ func FinalizeLoggedModelRequestFromPb(pb *mlpb.FinalizeLoggedModelRequestPb) (*F
 type FinalizeLoggedModelResponse struct {
 	// The updated logged model.
 	// Wire name: 'model'
-	Model *LoggedModel ``
+	Model *LoggedModel `json:"model,omitempty"`
 }
 
 func (st FinalizeLoggedModelResponse) MarshalJSON() ([]byte, error) {
@@ -4996,14 +4969,14 @@ func FinalizeLoggedModelResponseFromPb(pb *mlpb.FinalizeLoggedModelResponsePb) (
 type ForecastingExperiment struct {
 	// The unique ID for the forecasting experiment.
 	// Wire name: 'experiment_id'
-	ExperimentId string ``
+	ExperimentId string `json:"experiment_id,omitempty"`
 	// The URL to the forecasting experiment page.
 	// Wire name: 'experiment_page_url'
-	ExperimentPageUrl string ``
+	ExperimentPageUrl string `json:"experiment_page_url,omitempty"`
 	// The current state of the forecasting experiment.
 	// Wire name: 'state'
-	State           ForecastingExperimentState ``
-	ForceSendFields []string                   `tf:"-"`
+	State           ForecastingExperimentState `json:"state,omitempty"`
+	ForceSendFields []string                   `json:"-" tf:"-"`
 }
 
 func (st ForecastingExperiment) MarshalJSON() ([]byte, error) {
@@ -5137,8 +5110,7 @@ func ForecastingExperimentStateFromPb(pb *mlpb.ForecastingExperimentStatePb) (*F
 
 type GetByNameRequest struct {
 	// Name of the associated experiment.
-	// Wire name: 'experiment_name'
-	ExperimentName string `tf:"-"`
+	ExperimentName string `json:"-" tf:"-"`
 }
 
 func (st GetByNameRequest) MarshalJSON() ([]byte, error) {
@@ -5189,7 +5161,7 @@ func GetByNameRequestFromPb(pb *mlpb.GetByNameRequestPb) (*GetByNameRequest, err
 type GetExperimentByNameResponse struct {
 	// Experiment details.
 	// Wire name: 'experiment'
-	Experiment *Experiment ``
+	Experiment *Experiment `json:"experiment,omitempty"`
 }
 
 func (st GetExperimentByNameResponse) MarshalJSON() ([]byte, error) {
@@ -5251,8 +5223,7 @@ func GetExperimentByNameResponseFromPb(pb *mlpb.GetExperimentByNameResponsePb) (
 
 type GetExperimentPermissionLevelsRequest struct {
 	// The experiment for which to get or manage permissions.
-	// Wire name: 'experiment_id'
-	ExperimentId string `tf:"-"`
+	ExperimentId string `json:"-" tf:"-"`
 }
 
 func (st GetExperimentPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
@@ -5303,7 +5274,7 @@ func GetExperimentPermissionLevelsRequestFromPb(pb *mlpb.GetExperimentPermission
 type GetExperimentPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []ExperimentPermissionsDescription ``
+	PermissionLevels []ExperimentPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetExperimentPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -5375,8 +5346,7 @@ func GetExperimentPermissionLevelsResponseFromPb(pb *mlpb.GetExperimentPermissio
 
 type GetExperimentPermissionsRequest struct {
 	// The experiment for which to get or manage permissions.
-	// Wire name: 'experiment_id'
-	ExperimentId string `tf:"-"`
+	ExperimentId string `json:"-" tf:"-"`
 }
 
 func (st GetExperimentPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -5426,8 +5396,7 @@ func GetExperimentPermissionsRequestFromPb(pb *mlpb.GetExperimentPermissionsRequ
 
 type GetExperimentRequest struct {
 	// ID of the associated experiment.
-	// Wire name: 'experiment_id'
-	ExperimentId string `tf:"-"`
+	ExperimentId string `json:"-" tf:"-"`
 }
 
 func (st GetExperimentRequest) MarshalJSON() ([]byte, error) {
@@ -5478,7 +5447,7 @@ func GetExperimentRequestFromPb(pb *mlpb.GetExperimentRequestPb) (*GetExperiment
 type GetExperimentResponse struct {
 	// Experiment details.
 	// Wire name: 'experiment'
-	Experiment *Experiment ``
+	Experiment *Experiment `json:"experiment,omitempty"`
 }
 
 func (st GetExperimentResponse) MarshalJSON() ([]byte, error) {
@@ -5540,11 +5509,9 @@ func GetExperimentResponseFromPb(pb *mlpb.GetExperimentResponsePb) (*GetExperime
 
 type GetFeatureLineageRequest struct {
 	// The name of the feature.
-	// Wire name: 'feature_name'
-	FeatureName string `tf:"-"`
+	FeatureName string `json:"-" tf:"-"`
 	// The full name of the feature table in Unity Catalog.
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 }
 
 func (st GetFeatureLineageRequest) MarshalJSON() ([]byte, error) {
@@ -5595,15 +5562,11 @@ func GetFeatureLineageRequestFromPb(pb *mlpb.GetFeatureLineageRequestPb) (*GetFe
 }
 
 type GetFeatureTagRequest struct {
+	FeatureName string `json:"-" tf:"-"`
 
-	// Wire name: 'feature_name'
-	FeatureName string `tf:"-"`
+	Key string `json:"-" tf:"-"`
 
-	// Wire name: 'key'
-	Key string `tf:"-"`
-
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 }
 
 func (st GetFeatureTagRequest) MarshalJSON() ([]byte, error) {
@@ -5657,8 +5620,7 @@ func GetFeatureTagRequestFromPb(pb *mlpb.GetFeatureTagRequestPb) (*GetFeatureTag
 
 type GetForecastingExperimentRequest struct {
 	// The unique ID of a forecasting experiment
-	// Wire name: 'experiment_id'
-	ExperimentId string `tf:"-"`
+	ExperimentId string `json:"-" tf:"-"`
 }
 
 func (st GetForecastingExperimentRequest) MarshalJSON() ([]byte, error) {
@@ -5710,22 +5672,17 @@ type GetHistoryRequest struct {
 	// Maximum number of Metric records to return per paginated request. Default
 	// is set to 25,000. If set higher than 25,000, a request Exception will be
 	// raised.
-	// Wire name: 'max_results'
-	MaxResults int `tf:"-"`
+	MaxResults int `json:"-" tf:"-"`
 	// Name of the metric.
-	// Wire name: 'metric_key'
-	MetricKey string `tf:"-"`
+	MetricKey string `json:"-" tf:"-"`
 	// Token indicating the page of metric histories to fetch.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// ID of the run from which to fetch metric values. Must be provided.
-	// Wire name: 'run_id'
-	RunId string `tf:"-"`
+	RunId string `json:"-" tf:"-"`
 	// [Deprecated, use `run_id` instead] ID of the run from which to fetch
 	// metric values. This field will be removed in a future MLflow version.
-	// Wire name: 'run_uuid'
-	RunUuid         string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	RunUuid         string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetHistoryRequest) MarshalJSON() ([]byte, error) {
@@ -5790,10 +5747,10 @@ func GetHistoryRequestFromPb(pb *mlpb.GetHistoryRequestPb) (*GetHistoryRequest, 
 type GetLatestVersionsRequest struct {
 	// Registered model unique name identifier.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// List of stages.
 	// Wire name: 'stages'
-	Stages []string ``
+	Stages []string `json:"stages,omitempty"`
 }
 
 func (st GetLatestVersionsRequest) MarshalJSON() ([]byte, error) {
@@ -5848,7 +5805,7 @@ type GetLatestVersionsResponse struct {
 	// current `READY` status. If no `stages` provided, returns the latest
 	// version for each stage, including `"None"`.
 	// Wire name: 'model_versions'
-	ModelVersions []ModelVersion ``
+	ModelVersions []ModelVersion `json:"model_versions,omitempty"`
 }
 
 func (st GetLatestVersionsResponse) MarshalJSON() ([]byte, error) {
@@ -5920,8 +5877,7 @@ func GetLatestVersionsResponseFromPb(pb *mlpb.GetLatestVersionsResponsePb) (*Get
 
 type GetLoggedModelRequest struct {
 	// The ID of the logged model to retrieve.
-	// Wire name: 'model_id'
-	ModelId string `tf:"-"`
+	ModelId string `json:"-" tf:"-"`
 }
 
 func (st GetLoggedModelRequest) MarshalJSON() ([]byte, error) {
@@ -5972,7 +5928,7 @@ func GetLoggedModelRequestFromPb(pb *mlpb.GetLoggedModelRequestPb) (*GetLoggedMo
 type GetLoggedModelResponse struct {
 	// The retrieved logged model.
 	// Wire name: 'model'
-	Model *LoggedModel ``
+	Model *LoggedModel `json:"model,omitempty"`
 }
 
 func (st GetLoggedModelResponse) MarshalJSON() ([]byte, error) {
@@ -6038,13 +5994,13 @@ type GetMetricHistoryResponse struct {
 	// service level pagination threshold. Otherwise, this is one page of
 	// results.
 	// Wire name: 'metrics'
-	Metrics []Metric ``
+	Metrics []Metric `json:"metrics,omitempty"`
 	// A token that can be used to issue a query for the next page of metric
 	// history values. A missing token indicates that no additional metrics are
 	// available to fetch.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetMetricHistoryResponse) MarshalJSON() ([]byte, error) {
@@ -6124,8 +6080,7 @@ func GetMetricHistoryResponseFromPb(pb *mlpb.GetMetricHistoryResponsePb) (*GetMe
 
 type GetModelRequest struct {
 	// Registered model unique name identifier.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetModelRequest) MarshalJSON() ([]byte, error) {
@@ -6176,7 +6131,7 @@ func GetModelRequestFromPb(pb *mlpb.GetModelRequestPb) (*GetModelRequest, error)
 type GetModelResponse struct {
 
 	// Wire name: 'registered_model_databricks'
-	RegisteredModelDatabricks *ModelDatabricks ``
+	RegisteredModelDatabricks *ModelDatabricks `json:"registered_model_databricks,omitempty"`
 }
 
 func (st GetModelResponse) MarshalJSON() ([]byte, error) {
@@ -6238,11 +6193,9 @@ func GetModelResponseFromPb(pb *mlpb.GetModelResponsePb) (*GetModelResponse, err
 
 type GetModelVersionDownloadUriRequest struct {
 	// Name of the registered model
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Model version number
-	// Wire name: 'version'
-	Version string `tf:"-"`
+	Version string `json:"-" tf:"-"`
 }
 
 func (st GetModelVersionDownloadUriRequest) MarshalJSON() ([]byte, error) {
@@ -6295,8 +6248,8 @@ func GetModelVersionDownloadUriRequestFromPb(pb *mlpb.GetModelVersionDownloadUri
 type GetModelVersionDownloadUriResponse struct {
 	// URI corresponding to where artifacts for this model version are stored.
 	// Wire name: 'artifact_uri'
-	ArtifactUri     string   ``
-	ForceSendFields []string `tf:"-"`
+	ArtifactUri     string   `json:"artifact_uri,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetModelVersionDownloadUriResponse) MarshalJSON() ([]byte, error) {
@@ -6352,11 +6305,9 @@ func GetModelVersionDownloadUriResponseFromPb(pb *mlpb.GetModelVersionDownloadUr
 
 type GetModelVersionRequest struct {
 	// Name of the registered model
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Model version number
-	// Wire name: 'version'
-	Version string `tf:"-"`
+	Version string `json:"-" tf:"-"`
 }
 
 func (st GetModelVersionRequest) MarshalJSON() ([]byte, error) {
@@ -6409,7 +6360,7 @@ func GetModelVersionRequestFromPb(pb *mlpb.GetModelVersionRequestPb) (*GetModelV
 type GetModelVersionResponse struct {
 
 	// Wire name: 'model_version'
-	ModelVersion *ModelVersion ``
+	ModelVersion *ModelVersion `json:"model_version,omitempty"`
 }
 
 func (st GetModelVersionResponse) MarshalJSON() ([]byte, error) {
@@ -6471,8 +6422,7 @@ func GetModelVersionResponseFromPb(pb *mlpb.GetModelVersionResponsePb) (*GetMode
 
 type GetOnlineStoreRequest struct {
 	// Name of the online store to get.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetOnlineStoreRequest) MarshalJSON() ([]byte, error) {
@@ -6522,8 +6472,7 @@ func GetOnlineStoreRequestFromPb(pb *mlpb.GetOnlineStoreRequestPb) (*GetOnlineSt
 
 type GetRegisteredModelPermissionLevelsRequest struct {
 	// The registered model for which to get or manage permissions.
-	// Wire name: 'registered_model_id'
-	RegisteredModelId string `tf:"-"`
+	RegisteredModelId string `json:"-" tf:"-"`
 }
 
 func (st GetRegisteredModelPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
@@ -6574,7 +6523,7 @@ func GetRegisteredModelPermissionLevelsRequestFromPb(pb *mlpb.GetRegisteredModel
 type GetRegisteredModelPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []RegisteredModelPermissionsDescription ``
+	PermissionLevels []RegisteredModelPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetRegisteredModelPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -6646,8 +6595,7 @@ func GetRegisteredModelPermissionLevelsResponseFromPb(pb *mlpb.GetRegisteredMode
 
 type GetRegisteredModelPermissionsRequest struct {
 	// The registered model for which to get or manage permissions.
-	// Wire name: 'registered_model_id'
-	RegisteredModelId string `tf:"-"`
+	RegisteredModelId string `json:"-" tf:"-"`
 }
 
 func (st GetRegisteredModelPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -6697,13 +6645,11 @@ func GetRegisteredModelPermissionsRequestFromPb(pb *mlpb.GetRegisteredModelPermi
 
 type GetRunRequest struct {
 	// ID of the run to fetch. Must be provided.
-	// Wire name: 'run_id'
-	RunId string `tf:"-"`
+	RunId string `json:"-" tf:"-"`
 	// [Deprecated, use `run_id` instead] ID of the run to fetch. This field
 	// will be removed in a future MLflow version.
-	// Wire name: 'run_uuid'
-	RunUuid         string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	RunUuid         string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetRunRequest) MarshalJSON() ([]byte, error) {
@@ -6763,7 +6709,7 @@ type GetRunResponse struct {
 	// Run metadata (name, start time, etc) and data (metrics, params, and
 	// tags).
 	// Wire name: 'run'
-	Run *Run ``
+	Run *Run `json:"run,omitempty"`
 }
 
 func (st GetRunResponse) MarshalJSON() ([]byte, error) {
@@ -6829,7 +6775,7 @@ type HttpUrlSpec struct {
 	// If set to an empty string, no authorization header will be included in
 	// the request.
 	// Wire name: 'authorization'
-	Authorization string ``
+	Authorization string `json:"authorization,omitempty"`
 	// Enable/disable SSL certificate validation. Default is true. For
 	// self-signed certificates, this field must be false AND the destination
 	// server must disable certificate validation as well. For security
@@ -6838,16 +6784,16 @@ type HttpUrlSpec struct {
 	// with disabling hostname validation whereby it becomes more likely that
 	// requests can be maliciously routed to an unintended host.
 	// Wire name: 'enable_ssl_verification'
-	EnableSslVerification bool ``
+	EnableSslVerification bool `json:"enable_ssl_verification,omitempty"`
 	// Shared secret required for HMAC encoding payload. The HMAC-encoded
 	// payload will be sent in the header as: { "X-Databricks-Signature":
 	// $encoded_payload }.
 	// Wire name: 'secret'
-	Secret string ``
+	Secret string `json:"secret,omitempty"`
 	// External HTTPS URL called on event trigger (by using a POST request).
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st HttpUrlSpec) MarshalJSON() ([]byte, error) {
@@ -6916,11 +6862,11 @@ type HttpUrlSpecWithoutSecret struct {
 	// with disabling hostname validation whereby it becomes more likely that
 	// requests can be maliciously routed to an unintended host.
 	// Wire name: 'enable_ssl_verification'
-	EnableSslVerification bool ``
+	EnableSslVerification bool `json:"enable_ssl_verification,omitempty"`
 	// External HTTPS URL called on event trigger (by using a POST request).
 	// Wire name: 'url'
-	Url             string   ``
-	ForceSendFields []string `tf:"-"`
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st HttpUrlSpecWithoutSecret) MarshalJSON() ([]byte, error) {
@@ -6980,10 +6926,10 @@ func HttpUrlSpecWithoutSecretFromPb(pb *mlpb.HttpUrlSpecWithoutSecretPb) (*HttpU
 type InputTag struct {
 	// The tag key.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 	// The tag value.
 	// Wire name: 'value'
-	Value string ``
+	Value string `json:"value"`
 }
 
 func (st InputTag) MarshalJSON() ([]byte, error) {
@@ -7036,16 +6982,16 @@ func InputTagFromPb(pb *mlpb.InputTagPb) (*InputTag, error) {
 type JobSpec struct {
 	// The personal access token used to authorize webhook's job runs.
 	// Wire name: 'access_token'
-	AccessToken string ``
+	AccessToken string `json:"access_token"`
 	// ID of the job that the webhook runs.
 	// Wire name: 'job_id'
-	JobId string ``
+	JobId string `json:"job_id"`
 	// URL of the workspace containing the job that this webhook runs. If not
 	// specified, the job’s workspace URL is assumed to be the same as the
 	// workspace where the webhook is created.
 	// Wire name: 'workspace_url'
-	WorkspaceUrl    string   ``
-	ForceSendFields []string `tf:"-"`
+	WorkspaceUrl    string   `json:"workspace_url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st JobSpec) MarshalJSON() ([]byte, error) {
@@ -7106,13 +7052,13 @@ func JobSpecFromPb(pb *mlpb.JobSpecPb) (*JobSpec, error) {
 type JobSpecWithoutSecret struct {
 	// ID of the job that the webhook runs.
 	// Wire name: 'job_id'
-	JobId string ``
+	JobId string `json:"job_id,omitempty"`
 	// URL of the workspace containing the job that this webhook runs. If not
 	// specified, the job’s workspace URL is assumed to be the same as the
 	// workspace where the webhook is created.
 	// Wire name: 'workspace_url'
-	WorkspaceUrl    string   ``
-	ForceSendFields []string `tf:"-"`
+	WorkspaceUrl    string   `json:"workspace_url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st JobSpecWithoutSecret) MarshalJSON() ([]byte, error) {
@@ -7175,20 +7121,16 @@ type ListArtifactsRequest struct {
 	// `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC
 	// Volumes, which supports pagination. See [List directory contents | Files
 	// API](/api/workspace/files/listdirectorycontents).
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// Filter artifacts matching this path (a relative path from the root
 	// artifact directory).
-	// Wire name: 'path'
-	Path string `tf:"-"`
+	Path string `json:"-" tf:"-"`
 	// ID of the run whose artifacts to list. Must be provided.
-	// Wire name: 'run_id'
-	RunId string `tf:"-"`
+	RunId string `json:"-" tf:"-"`
 	// [Deprecated, use `run_id` instead] ID of the run whose artifacts to list.
 	// This field will be removed in a future MLflow version.
-	// Wire name: 'run_uuid'
-	RunUuid         string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	RunUuid         string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListArtifactsRequest) MarshalJSON() ([]byte, error) {
@@ -7251,14 +7193,14 @@ func ListArtifactsRequestFromPb(pb *mlpb.ListArtifactsRequestPb) (*ListArtifacts
 type ListArtifactsResponse struct {
 	// The file location and metadata for artifacts.
 	// Wire name: 'files'
-	Files []FileInfo ``
+	Files []FileInfo `json:"files,omitempty"`
 	// The token that can be used to retrieve the next page of artifact results.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// The root artifact directory for the run.
 	// Wire name: 'root_uri'
-	RootUri         string   ``
-	ForceSendFields []string `tf:"-"`
+	RootUri         string   `json:"root_uri,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListArtifactsResponse) MarshalJSON() ([]byte, error) {
@@ -7344,16 +7286,13 @@ type ListExperimentsRequest struct {
 	// automatically capped at 1000. Callers of this endpoint are encouraged to
 	// pass max_results explicitly and leverage page_token to iterate through
 	// experiments.
-	// Wire name: 'max_results'
-	MaxResults int64 `tf:"-"`
+	MaxResults int64 `json:"-" tf:"-"`
 	// Token indicating the page of experiments to fetch
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// Qualifier for type of experiments to be returned. If unspecified, return
 	// only active experiments.
-	// Wire name: 'view_type'
-	ViewType        ViewType `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	ViewType        ViewType `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExperimentsRequest) MarshalJSON() ([]byte, error) {
@@ -7427,12 +7366,12 @@ type ListExperimentsResponse struct {
 	// Paginated Experiments beginning with the first item on the requested
 	// page.
 	// Wire name: 'experiments'
-	Experiments []Experiment ``
+	Experiments []Experiment `json:"experiments,omitempty"`
 	// Token that can be used to retrieve the next page of experiments. Empty
 	// token means no more experiment is available for retrieval.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListExperimentsResponse) MarshalJSON() ([]byte, error) {
@@ -7511,19 +7450,14 @@ func ListExperimentsResponseFromPb(pb *mlpb.ListExperimentsResponsePb) (*ListExp
 }
 
 type ListFeatureTagsRequest struct {
-
-	// Wire name: 'feature_name'
-	FeatureName string `tf:"-"`
+	FeatureName string `json:"-" tf:"-"`
 	// The maximum number of results to return.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Pagination token to go to the next page based on a previous query.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 
-	// Wire name: 'table_name'
-	TableName       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	TableName       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListFeatureTagsRequest) MarshalJSON() ([]byte, error) {
@@ -7587,11 +7521,11 @@ func ListFeatureTagsRequestFromPb(pb *mlpb.ListFeatureTagsRequestPb) (*ListFeatu
 type ListFeatureTagsResponse struct {
 
 	// Wire name: 'feature_tags'
-	FeatureTags []FeatureTag ``
+	FeatureTags []FeatureTag `json:"feature_tags,omitempty"`
 	// Pagination token to request the next page of results for this query.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListFeatureTagsResponse) MarshalJSON() ([]byte, error) {
@@ -7671,12 +7605,10 @@ func ListFeatureTagsResponseFromPb(pb *mlpb.ListFeatureTagsResponsePb) (*ListFea
 
 type ListModelsRequest struct {
 	// Maximum number of registered models desired. Max threshold is 1000.
-	// Wire name: 'max_results'
-	MaxResults int64 `tf:"-"`
+	MaxResults int64 `json:"-" tf:"-"`
 	// Pagination token to go to the next page based on a previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListModelsRequest) MarshalJSON() ([]byte, error) {
@@ -7735,11 +7667,11 @@ func ListModelsRequestFromPb(pb *mlpb.ListModelsRequestPb) (*ListModelsRequest, 
 type ListModelsResponse struct {
 	// Pagination token to request next page of models for the same query.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'registered_models'
-	RegisteredModels []Model  ``
-	ForceSendFields  []string `tf:"-"`
+	RegisteredModels []Model  `json:"registered_models,omitempty"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st ListModelsResponse) MarshalJSON() ([]byte, error) {
@@ -7820,12 +7752,10 @@ func ListModelsResponseFromPb(pb *mlpb.ListModelsResponsePb) (*ListModelsRespons
 type ListOnlineStoresRequest struct {
 	// The maximum number of results to return. Defaults to 100 if not
 	// specified.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Pagination token to go to the next page based on a previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListOnlineStoresRequest) MarshalJSON() ([]byte, error) {
@@ -7884,11 +7814,11 @@ func ListOnlineStoresRequestFromPb(pb *mlpb.ListOnlineStoresRequestPb) (*ListOnl
 type ListOnlineStoresResponse struct {
 	// Pagination token to request the next page of results for this query.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// List of online stores.
 	// Wire name: 'online_stores'
-	OnlineStores    []OnlineStore ``
-	ForceSendFields []string      `tf:"-"`
+	OnlineStores    []OnlineStore `json:"online_stores,omitempty"`
+	ForceSendFields []string      `json:"-" tf:"-"`
 }
 
 func (st ListOnlineStoresResponse) MarshalJSON() ([]byte, error) {
@@ -7969,11 +7899,11 @@ func ListOnlineStoresResponseFromPb(pb *mlpb.ListOnlineStoresResponsePb) (*ListO
 type ListRegistryWebhooks struct {
 	// Token that can be used to retrieve the next page of artifact results
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// Array of registry webhooks.
 	// Wire name: 'webhooks'
-	Webhooks        []RegistryWebhook ``
-	ForceSendFields []string          `tf:"-"`
+	Webhooks        []RegistryWebhook `json:"webhooks,omitempty"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
 func (st ListRegistryWebhooks) MarshalJSON() ([]byte, error) {
@@ -8053,11 +7983,9 @@ func ListRegistryWebhooksFromPb(pb *mlpb.ListRegistryWebhooksPb) (*ListRegistryW
 
 type ListTransitionRequestsRequest struct {
 	// Name of the registered model.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Version of the model.
-	// Wire name: 'version'
-	Version string `tf:"-"`
+	Version string `json:"-" tf:"-"`
 }
 
 func (st ListTransitionRequestsRequest) MarshalJSON() ([]byte, error) {
@@ -8110,7 +8038,7 @@ func ListTransitionRequestsRequestFromPb(pb *mlpb.ListTransitionRequestsRequestP
 type ListTransitionRequestsResponse struct {
 	// Array of open transition requests.
 	// Wire name: 'requests'
-	Requests []Activity ``
+	Requests []Activity `json:"requests,omitempty"`
 }
 
 func (st ListTransitionRequestsResponse) MarshalJSON() ([]byte, error) {
@@ -8218,19 +8146,15 @@ type ListWebhooksRequest struct {
 	// If `events` is specified, any webhook with one or more of the specified
 	// trigger events is included in the output. If `events` is not specified,
 	// webhooks of all event types are included in the output.
-	// Wire name: 'events'
-	Events []RegistryWebhookEvent `tf:"-"`
+	Events []RegistryWebhookEvent `json:"-" tf:"-"`
 
-	// Wire name: 'max_results'
-	MaxResults int64 `tf:"-"`
+	MaxResults int64 `json:"-" tf:"-"`
 	// Registered model name If not specified, all webhooks associated with the
 	// specified events are listed, regardless of their associated model.
-	// Wire name: 'model_name'
-	ModelName string `tf:"-"`
+	ModelName string `json:"-" tf:"-"`
 	// Token indicating the page of artifact results to fetch
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListWebhooksRequest) MarshalJSON() ([]byte, error) {
@@ -8316,19 +8240,19 @@ type LogBatch struct {
 	// Metrics to log. A single request can contain up to 1000 metrics, and up
 	// to 1000 metrics, params, and tags in total.
 	// Wire name: 'metrics'
-	Metrics []Metric ``
+	Metrics []Metric `json:"metrics,omitempty"`
 	// Params to log. A single request can contain up to 100 params, and up to
 	// 1000 metrics, params, and tags in total.
 	// Wire name: 'params'
-	Params []Param ``
+	Params []Param `json:"params,omitempty"`
 	// ID of the run to log under
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id,omitempty"`
 	// Tags to log. A single request can contain up to 100 tags, and up to 1000
 	// metrics, params, and tags in total.
 	// Wire name: 'tags'
-	Tags            []RunTag ``
-	ForceSendFields []string `tf:"-"`
+	Tags            []RunTag `json:"tags,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st LogBatch) MarshalJSON() ([]byte, error) {
@@ -8457,13 +8381,13 @@ func LogBatchFromPb(pb *mlpb.LogBatchPb) (*LogBatch, error) {
 type LogInputs struct {
 	// Dataset inputs
 	// Wire name: 'datasets'
-	Datasets []DatasetInput ``
+	Datasets []DatasetInput `json:"datasets,omitempty"`
 	// Model inputs
 	// Wire name: 'models'
-	Models []ModelInput ``
+	Models []ModelInput `json:"models,omitempty"`
 	// ID of the run to log under
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id"`
 }
 
 func (st LogInputs) MarshalJSON() ([]byte, error) {
@@ -8561,11 +8485,10 @@ func LogInputsFromPb(pb *mlpb.LogInputsPb) (*LogInputs, error) {
 
 type LogLoggedModelParamsRequest struct {
 	// The ID of the logged model to log params for.
-	// Wire name: 'model_id'
-	ModelId string `tf:"-"`
+	ModelId string `json:"-" tf:"-"`
 	// Parameters to attach to the model.
 	// Wire name: 'params'
-	Params []LoggedModelParameter ``
+	Params []LoggedModelParameter `json:"params,omitempty"`
 }
 
 func (st LogLoggedModelParamsRequest) MarshalJSON() ([]byte, error) {
@@ -8642,34 +8565,34 @@ type LogMetric struct {
 	// hash of the dataset that uniquely identifies it within datasets of the
 	// same name.
 	// Wire name: 'dataset_digest'
-	DatasetDigest string ``
+	DatasetDigest string `json:"dataset_digest,omitempty"`
 	// The name of the dataset associated with the metric. E.g.
 	// “my.uc.table@2” “nyc-taxi-dataset”, “fantastic-elk-3”
 	// Wire name: 'dataset_name'
-	DatasetName string ``
+	DatasetName string `json:"dataset_name,omitempty"`
 	// Name of the metric.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 	// ID of the logged model associated with the metric, if applicable
 	// Wire name: 'model_id'
-	ModelId string ``
+	ModelId string `json:"model_id,omitempty"`
 	// ID of the run under which to log the metric. Must be provided.
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id,omitempty"`
 	// [Deprecated, use `run_id` instead] ID of the run under which to log the
 	// metric. This field will be removed in a future MLflow version.
 	// Wire name: 'run_uuid'
-	RunUuid string ``
+	RunUuid string `json:"run_uuid,omitempty"`
 	// Step at which to log the metric
 	// Wire name: 'step'
-	Step int64 ``
+	Step int64 `json:"step,omitempty"`
 	// Unix timestamp in milliseconds at the time metric was logged.
 	// Wire name: 'timestamp'
-	Timestamp int64 ``
+	Timestamp int64 `json:"timestamp"`
 	// Double value of the metric being logged.
 	// Wire name: 'value'
-	Value           float64  ``
-	ForceSendFields []string `tf:"-"`
+	Value           float64  `json:"value"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st LogMetric) MarshalJSON() ([]byte, error) {
@@ -8742,11 +8665,11 @@ func LogMetricFromPb(pb *mlpb.LogMetricPb) (*LogMetric, error) {
 type LogModel struct {
 	// MLmodel file in json format.
 	// Wire name: 'model_json'
-	ModelJson string ``
+	ModelJson string `json:"model_json,omitempty"`
 	// ID of the run to log under
 	// Wire name: 'run_id'
-	RunId           string   ``
-	ForceSendFields []string `tf:"-"`
+	RunId           string   `json:"run_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st LogModel) MarshalJSON() ([]byte, error) {
@@ -8805,10 +8728,10 @@ func LogModelFromPb(pb *mlpb.LogModelPb) (*LogModel, error) {
 type LogOutputsRequest struct {
 	// The model outputs from the Run.
 	// Wire name: 'models'
-	Models []ModelOutput ``
+	Models []ModelOutput `json:"models,omitempty"`
 	// The ID of the Run from which to log outputs.
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id"`
 }
 
 func (st LogOutputsRequest) MarshalJSON() ([]byte, error) {
@@ -8883,18 +8806,18 @@ func LogOutputsRequestFromPb(pb *mlpb.LogOutputsRequestPb) (*LogOutputsRequest, 
 type LogParam struct {
 	// Name of the param. Maximum size is 255 bytes.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 	// ID of the run under which to log the param. Must be provided.
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id,omitempty"`
 	// [Deprecated, use `run_id` instead] ID of the run under which to log the
 	// param. This field will be removed in a future MLflow version.
 	// Wire name: 'run_uuid'
-	RunUuid string ``
+	RunUuid string `json:"run_uuid,omitempty"`
 	// String value of the param being logged. Maximum size is 500 bytes.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st LogParam) MarshalJSON() ([]byte, error) {
@@ -8959,10 +8882,10 @@ func LogParamFromPb(pb *mlpb.LogParamPb) (*LogParam, error) {
 type LoggedModel struct {
 	// The params and metrics attached to the logged model.
 	// Wire name: 'data'
-	Data *LoggedModelData ``
+	Data *LoggedModelData `json:"data,omitempty"`
 	// The logged model attributes such as model ID, status, tags, etc.
 	// Wire name: 'info'
-	Info *LoggedModelInfo ``
+	Info *LoggedModelInfo `json:"info,omitempty"`
 }
 
 func (st LoggedModel) MarshalJSON() ([]byte, error) {
@@ -9040,10 +8963,10 @@ func LoggedModelFromPb(pb *mlpb.LoggedModelPb) (*LoggedModel, error) {
 type LoggedModelData struct {
 	// Performance metrics linked to the model.
 	// Wire name: 'metrics'
-	Metrics []Metric ``
+	Metrics []Metric `json:"metrics,omitempty"`
 	// Immutable string key-value pairs of the model.
 	// Wire name: 'params'
-	Params []LoggedModelParameter ``
+	Params []LoggedModelParameter `json:"params,omitempty"`
 }
 
 func (st LoggedModelData) MarshalJSON() ([]byte, error) {
@@ -9142,43 +9065,43 @@ func LoggedModelDataFromPb(pb *mlpb.LoggedModelDataPb) (*LoggedModelData, error)
 type LoggedModelInfo struct {
 	// The URI of the directory where model artifacts are stored.
 	// Wire name: 'artifact_uri'
-	ArtifactUri string ``
+	ArtifactUri string `json:"artifact_uri,omitempty"`
 	// The timestamp when the model was created in milliseconds since the UNIX
 	// epoch.
 	// Wire name: 'creation_timestamp_ms'
-	CreationTimestampMs int64 ``
+	CreationTimestampMs int64 `json:"creation_timestamp_ms,omitempty"`
 	// The ID of the user or principal that created the model.
 	// Wire name: 'creator_id'
-	CreatorId int64 ``
+	CreatorId int64 `json:"creator_id,omitempty"`
 	// The ID of the experiment that owns the model.
 	// Wire name: 'experiment_id'
-	ExperimentId string ``
+	ExperimentId string `json:"experiment_id,omitempty"`
 	// The timestamp when the model was last updated in milliseconds since the
 	// UNIX epoch.
 	// Wire name: 'last_updated_timestamp_ms'
-	LastUpdatedTimestampMs int64 ``
+	LastUpdatedTimestampMs int64 `json:"last_updated_timestamp_ms,omitempty"`
 	// The unique identifier for the logged model.
 	// Wire name: 'model_id'
-	ModelId string ``
+	ModelId string `json:"model_id,omitempty"`
 	// The type of model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``.
 	// Wire name: 'model_type'
-	ModelType string ``
+	ModelType string `json:"model_type,omitempty"`
 	// The name of the model.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The ID of the run that created the model.
 	// Wire name: 'source_run_id'
-	SourceRunId string ``
+	SourceRunId string `json:"source_run_id,omitempty"`
 	// The status of whether or not the model is ready for use.
 	// Wire name: 'status'
-	Status LoggedModelStatus ``
+	Status LoggedModelStatus `json:"status,omitempty"`
 	// Details on the current model status.
 	// Wire name: 'status_message'
-	StatusMessage string ``
+	StatusMessage string `json:"status_message,omitempty"`
 	// Mutable string key-value pairs set on the model.
 	// Wire name: 'tags'
-	Tags            []LoggedModelTag ``
-	ForceSendFields []string         `tf:"-"`
+	Tags            []LoggedModelTag `json:"tags,omitempty"`
+	ForceSendFields []string         `json:"-" tf:"-"`
 }
 
 func (st LoggedModelInfo) MarshalJSON() ([]byte, error) {
@@ -9292,11 +9215,11 @@ func LoggedModelInfoFromPb(pb *mlpb.LoggedModelInfoPb) (*LoggedModelInfo, error)
 type LoggedModelParameter struct {
 	// The key identifying this param.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 	// The value of this param.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st LoggedModelParameter) MarshalJSON() ([]byte, error) {
@@ -9413,11 +9336,11 @@ func LoggedModelStatusFromPb(pb *mlpb.LoggedModelStatusPb) (*LoggedModelStatus, 
 type LoggedModelTag struct {
 	// The tag key.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 	// The tag value.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st LoggedModelTag) MarshalJSON() ([]byte, error) {
@@ -9479,31 +9402,31 @@ type Metric struct {
 	// hash of the dataset that uniquely identifies it within datasets of the
 	// same name.
 	// Wire name: 'dataset_digest'
-	DatasetDigest string ``
+	DatasetDigest string `json:"dataset_digest,omitempty"`
 	// The name of the dataset associated with the metric. E.g.
 	// “my.uc.table@2” “nyc-taxi-dataset”, “fantastic-elk-3”
 	// Wire name: 'dataset_name'
-	DatasetName string ``
+	DatasetName string `json:"dataset_name,omitempty"`
 	// The key identifying the metric.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 	// The ID of the logged model or registered model version associated with
 	// the metric, if applicable.
 	// Wire name: 'model_id'
-	ModelId string ``
+	ModelId string `json:"model_id,omitempty"`
 	// The ID of the run containing the metric.
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id,omitempty"`
 	// The step at which the metric was logged.
 	// Wire name: 'step'
-	Step int64 ``
+	Step int64 `json:"step,omitempty"`
 	// The timestamp at which the metric was recorded.
 	// Wire name: 'timestamp'
-	Timestamp int64 ``
+	Timestamp int64 `json:"timestamp,omitempty"`
 	// The value of the metric.
 	// Wire name: 'value'
-	Value           float64  ``
-	ForceSendFields []string `tf:"-"`
+	Value           float64  `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Metric) MarshalJSON() ([]byte, error) {
@@ -9574,28 +9497,28 @@ func MetricFromPb(pb *mlpb.MetricPb) (*Metric, error) {
 type Model struct {
 	// Timestamp recorded when this `registered_model` was created.
 	// Wire name: 'creation_timestamp'
-	CreationTimestamp int64 ``
+	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// Description of this `registered_model`.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Timestamp recorded when metadata for this `registered_model` was last
 	// updated.
 	// Wire name: 'last_updated_timestamp'
-	LastUpdatedTimestamp int64 ``
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Collection of latest model versions for each stage. Only contains models
 	// with current `READY` status.
 	// Wire name: 'latest_versions'
-	LatestVersions []ModelVersion ``
+	LatestVersions []ModelVersion `json:"latest_versions,omitempty"`
 	// Unique name for the model.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Tags: Additional metadata key-value pairs for this `registered_model`.
 	// Wire name: 'tags'
-	Tags []ModelTag ``
+	Tags []ModelTag `json:"tags,omitempty"`
 	// User that created this `registered_model`
 	// Wire name: 'user_id'
-	UserId          string   ``
-	ForceSendFields []string `tf:"-"`
+	UserId          string   `json:"user_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Model) MarshalJSON() ([]byte, error) {
@@ -9708,32 +9631,32 @@ func ModelFromPb(pb *mlpb.ModelPb) (*Model, error) {
 type ModelDatabricks struct {
 	// Creation time of the object, as a Unix timestamp in milliseconds.
 	// Wire name: 'creation_timestamp'
-	CreationTimestamp int64 ``
+	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// User-specified description for the object.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Unique identifier for the object.
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Last update time of the object, as a Unix timestamp in milliseconds.
 	// Wire name: 'last_updated_timestamp'
-	LastUpdatedTimestamp int64 ``
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Array of model versions, each the latest version for its stage.
 	// Wire name: 'latest_versions'
-	LatestVersions []ModelVersion ``
+	LatestVersions []ModelVersion `json:"latest_versions,omitempty"`
 	// Name of the model.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Permission level granted for the requesting user on this registered model
 	// Wire name: 'permission_level'
-	PermissionLevel PermissionLevel ``
+	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 	// Array of tags associated with the model.
 	// Wire name: 'tags'
-	Tags []ModelTag ``
+	Tags []ModelTag `json:"tags,omitempty"`
 	// The username of the user that created the object.
 	// Wire name: 'user_id'
-	UserId          string   ``
-	ForceSendFields []string `tf:"-"`
+	UserId          string   `json:"user_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ModelDatabricks) MarshalJSON() ([]byte, error) {
@@ -9863,7 +9786,7 @@ func ModelDatabricksFromPb(pb *mlpb.ModelDatabricksPb) (*ModelDatabricks, error)
 type ModelInput struct {
 	// The unique identifier of the model.
 	// Wire name: 'model_id'
-	ModelId string ``
+	ModelId string `json:"model_id"`
 }
 
 func (st ModelInput) MarshalJSON() ([]byte, error) {
@@ -9915,10 +9838,10 @@ func ModelInputFromPb(pb *mlpb.ModelInputPb) (*ModelInput, error) {
 type ModelOutput struct {
 	// The unique identifier of the model.
 	// Wire name: 'model_id'
-	ModelId string ``
+	ModelId string `json:"model_id"`
 	// The step at which the model was produced.
 	// Wire name: 'step'
-	Step int64 ``
+	Step int64 `json:"step"`
 }
 
 func (st ModelOutput) MarshalJSON() ([]byte, error) {
@@ -9972,11 +9895,11 @@ func ModelOutputFromPb(pb *mlpb.ModelOutputPb) (*ModelOutput, error) {
 type ModelTag struct {
 	// The tag key.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 	// The tag value.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ModelTag) MarshalJSON() ([]byte, error) {
@@ -10035,47 +9958,47 @@ func ModelTagFromPb(pb *mlpb.ModelTagPb) (*ModelTag, error) {
 type ModelVersion struct {
 	// Timestamp recorded when this `model_version` was created.
 	// Wire name: 'creation_timestamp'
-	CreationTimestamp int64 ``
+	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// Current stage for this `model_version`.
 	// Wire name: 'current_stage'
-	CurrentStage string ``
+	CurrentStage string `json:"current_stage,omitempty"`
 	// Description of this `model_version`.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Timestamp recorded when metadata for this `model_version` was last
 	// updated.
 	// Wire name: 'last_updated_timestamp'
-	LastUpdatedTimestamp int64 ``
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Unique name of the model
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// MLflow run ID used when creating `model_version`, if `source` was
 	// generated by an experiment run stored in MLflow tracking server.
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id,omitempty"`
 	// Run Link: Direct link to the run that generated this version
 	// Wire name: 'run_link'
-	RunLink string ``
+	RunLink string `json:"run_link,omitempty"`
 	// URI indicating the location of the source model artifacts, used when
 	// creating `model_version`
 	// Wire name: 'source'
-	Source string ``
+	Source string `json:"source,omitempty"`
 	// Current status of `model_version`
 	// Wire name: 'status'
-	Status ModelVersionStatus ``
+	Status ModelVersionStatus `json:"status,omitempty"`
 	// Details on current `status`, if it is pending or failed.
 	// Wire name: 'status_message'
-	StatusMessage string ``
+	StatusMessage string `json:"status_message,omitempty"`
 	// Tags: Additional metadata key-value pairs for this `model_version`.
 	// Wire name: 'tags'
-	Tags []ModelVersionTag ``
+	Tags []ModelVersionTag `json:"tags,omitempty"`
 	// User that created this `model_version`.
 	// Wire name: 'user_id'
-	UserId string ``
+	UserId string `json:"user_id,omitempty"`
 	// Model's version number.
 	// Wire name: 'version'
-	Version         string   ``
-	ForceSendFields []string `tf:"-"`
+	Version         string   `json:"version,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ModelVersion) MarshalJSON() ([]byte, error) {
@@ -10190,64 +10113,64 @@ func ModelVersionFromPb(pb *mlpb.ModelVersionPb) (*ModelVersion, error) {
 type ModelVersionDatabricks struct {
 	// Creation time of the object, as a Unix timestamp in milliseconds.
 	// Wire name: 'creation_timestamp'
-	CreationTimestamp int64 ``
+	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 
 	// Wire name: 'current_stage'
-	CurrentStage string ``
+	CurrentStage string `json:"current_stage,omitempty"`
 	// User-specified description for the object.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Email Subscription Status: This is the subscription status of the user to
 	// the model version Users get subscribed by interacting with the model
 	// version.
 	// Wire name: 'email_subscription_status'
-	EmailSubscriptionStatus RegistryEmailSubscriptionType ``
+	EmailSubscriptionStatus RegistryEmailSubscriptionType `json:"email_subscription_status,omitempty"`
 	// Feature lineage of `model_version`.
 	// Wire name: 'feature_list'
-	FeatureList *FeatureList ``
+	FeatureList *FeatureList `json:"feature_list,omitempty"`
 	// Time of the object at last update, as a Unix timestamp in milliseconds.
 	// Wire name: 'last_updated_timestamp'
-	LastUpdatedTimestamp int64 ``
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Name of the model.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Open requests for this `model_versions`. Gap in sequence number is
 	// intentional and is done in order to match field sequence numbers of
 	// `ModelVersion` proto message
 	// Wire name: 'open_requests'
-	OpenRequests []Activity ``
+	OpenRequests []Activity `json:"open_requests,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel PermissionLevel ``
+	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 	// Unique identifier for the MLflow tracking run associated with the source
 	// model artifacts.
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id,omitempty"`
 	// URL of the run associated with the model artifacts. This field is set at
 	// model version creation time only for model versions whose source run is
 	// from a tracking server that is different from the registry server.
 	// Wire name: 'run_link'
-	RunLink string ``
+	RunLink string `json:"run_link,omitempty"`
 	// URI that indicates the location of the source model artifacts. This is
 	// used when creating the model version.
 	// Wire name: 'source'
-	Source string ``
+	Source string `json:"source,omitempty"`
 
 	// Wire name: 'status'
-	Status Status ``
+	Status Status `json:"status,omitempty"`
 	// Details on the current status, for example why registration failed.
 	// Wire name: 'status_message'
-	StatusMessage string ``
+	StatusMessage string `json:"status_message,omitempty"`
 	// Array of tags that are associated with the model version.
 	// Wire name: 'tags'
-	Tags []ModelVersionTag ``
+	Tags []ModelVersionTag `json:"tags,omitempty"`
 	// The username of the user that created the object.
 	// Wire name: 'user_id'
-	UserId string ``
+	UserId string `json:"user_id,omitempty"`
 	// Version of the model.
 	// Wire name: 'version'
-	Version         string   ``
-	ForceSendFields []string `tf:"-"`
+	Version         string   `json:"version,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ModelVersionDatabricks) MarshalJSON() ([]byte, error) {
@@ -10495,11 +10418,11 @@ func ModelVersionStatusFromPb(pb *mlpb.ModelVersionStatusPb) (*ModelVersionStatu
 type ModelVersionTag struct {
 	// The tag key.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 	// The tag value.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ModelVersionTag) MarshalJSON() ([]byte, error) {
@@ -10561,24 +10484,24 @@ type OnlineStore struct {
 	// The capacity of the online store. Valid values are "CU_1", "CU_2",
 	// "CU_4", "CU_8".
 	// Wire name: 'capacity'
-	Capacity string ``
+	Capacity string `json:"capacity"`
 	// The timestamp when the online store was created.
 	// Wire name: 'creation_time'
-	CreationTime string `` //legacy
+	CreationTime string `json:"creation_time,omitempty"` //legacy
 	// The email of the creator of the online store.
 	// Wire name: 'creator'
-	Creator string ``
+	Creator string `json:"creator,omitempty"`
 	// The name of the online store. This is the unique identifier for the
 	// online store.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// The number of read replicas for the online store. Defaults to 0.
 	// Wire name: 'read_replica_count'
-	ReadReplicaCount int ``
+	ReadReplicaCount int `json:"read_replica_count,omitempty"`
 	// The current state of the online store.
 	// Wire name: 'state'
-	State           OnlineStoreState ``
-	ForceSendFields []string         `tf:"-"`
+	State           OnlineStoreState `json:"state,omitempty"`
+	ForceSendFields []string         `json:"-" tf:"-"`
 }
 
 func (st OnlineStore) MarshalJSON() ([]byte, error) {
@@ -10723,11 +10646,11 @@ func OnlineStoreStateFromPb(pb *mlpb.OnlineStoreStatePb) (*OnlineStoreState, err
 type Param struct {
 	// Key identifying this param.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 	// Value associated with this param.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Param) MarshalJSON() ([]byte, error) {
@@ -10853,15 +10776,15 @@ func PermissionLevelFromPb(pb *mlpb.PermissionLevelPb) (*PermissionLevel, error)
 type PublishSpec struct {
 	// The name of the target online store.
 	// Wire name: 'online_store'
-	OnlineStore string ``
+	OnlineStore string `json:"online_store"`
 	// The full three-part (catalog, schema, table) name of the online table.
 	// Wire name: 'online_table_name'
-	OnlineTableName string ``
+	OnlineTableName string `json:"online_table_name"`
 	// The publish mode of the pipeline that syncs the online table with the
 	// source table. Defaults to TRIGGERED if not specified. All publish modes
 	// require the source table to have Change Data Feed (CDF) enabled.
 	// Wire name: 'publish_mode'
-	PublishMode PublishSpecPublishMode ``
+	PublishMode PublishSpecPublishMode `json:"publish_mode,omitempty"`
 }
 
 func (st PublishSpec) MarshalJSON() ([]byte, error) {
@@ -10981,10 +10904,9 @@ func PublishSpecPublishModeFromPb(pb *mlpb.PublishSpecPublishModePb) (*PublishSp
 type PublishTableRequest struct {
 	// The specification for publishing the online table from the source table.
 	// Wire name: 'publish_spec'
-	PublishSpec PublishSpec ``
+	PublishSpec PublishSpec `json:"publish_spec"`
 	// The full three-part (catalog, schema, table) name of the source table.
-	// Wire name: 'source_table_name'
-	SourceTableName string `tf:"-"`
+	SourceTableName string `json:"-" tf:"-"`
 }
 
 func (st PublishTableRequest) MarshalJSON() ([]byte, error) {
@@ -11049,11 +10971,11 @@ func PublishTableRequestFromPb(pb *mlpb.PublishTableRequestPb) (*PublishTableReq
 type PublishTableResponse struct {
 	// The full three-part (catalog, schema, table) name of the online table.
 	// Wire name: 'online_table_name'
-	OnlineTableName string ``
+	OnlineTableName string `json:"online_table_name,omitempty"`
 	// The ID of the pipeline that syncs the online table with the source table.
 	// Wire name: 'pipeline_id'
-	PipelineId      string   ``
-	ForceSendFields []string `tf:"-"`
+	PipelineId      string   `json:"pipeline_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PublishTableResponse) MarshalJSON() ([]byte, error) {
@@ -11112,17 +11034,17 @@ func PublishTableResponseFromPb(pb *mlpb.PublishTableResponsePb) (*PublishTableR
 type RegisteredModelAccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel RegisteredModelPermissionLevel ``
+	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RegisteredModelAccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -11197,20 +11119,20 @@ func RegisteredModelAccessControlRequestFromPb(pb *mlpb.RegisteredModelAccessCon
 type RegisteredModelAccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []RegisteredModelPermission ``
+	AllPermissions []RegisteredModelPermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RegisteredModelAccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -11297,14 +11219,14 @@ func RegisteredModelAccessControlResponseFromPb(pb *mlpb.RegisteredModelAccessCo
 type RegisteredModelPermission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel RegisteredModelPermissionLevel ``
-	ForceSendFields []string                       `tf:"-"`
+	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                       `json:"-" tf:"-"`
 }
 
 func (st RegisteredModelPermission) MarshalJSON() ([]byte, error) {
@@ -11440,14 +11362,14 @@ func RegisteredModelPermissionLevelFromPb(pb *mlpb.RegisteredModelPermissionLeve
 type RegisteredModelPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []RegisteredModelAccessControlResponse ``
+	AccessControlList []RegisteredModelAccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RegisteredModelPermissions) MarshalJSON() ([]byte, error) {
@@ -11530,11 +11452,11 @@ func RegisteredModelPermissionsFromPb(pb *mlpb.RegisteredModelPermissionsPb) (*R
 type RegisteredModelPermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel RegisteredModelPermissionLevel ``
-	ForceSendFields []string                       `tf:"-"`
+	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string                       `json:"-" tf:"-"`
 }
 
 func (st RegisteredModelPermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -11605,10 +11527,9 @@ func RegisteredModelPermissionsDescriptionFromPb(pb *mlpb.RegisteredModelPermiss
 type RegisteredModelPermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []RegisteredModelAccessControlRequest ``
+	AccessControlList []RegisteredModelAccessControlRequest `json:"access_control_list,omitempty"`
 	// The registered model for which to get or manage permissions.
-	// Wire name: 'registered_model_id'
-	RegisteredModelId string `tf:"-"`
+	RegisteredModelId string `json:"-" tf:"-"`
 }
 
 func (st RegisteredModelPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -11751,10 +11672,10 @@ func RegistryEmailSubscriptionTypeFromPb(pb *mlpb.RegistryEmailSubscriptionTypeP
 type RegistryWebhook struct {
 	// Creation time of the object, as a Unix timestamp in milliseconds.
 	// Wire name: 'creation_timestamp'
-	CreationTimestamp int64 ``
+	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// User-specified description for the webhook.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A
 	// new model version was created for the associated model.
 	//
@@ -11789,26 +11710,26 @@ type RegistryWebhook struct {
 	// * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model
 	// version be archived.
 	// Wire name: 'events'
-	Events []RegistryWebhookEvent ``
+	Events []RegistryWebhookEvent `json:"events,omitempty"`
 
 	// Wire name: 'http_url_spec'
-	HttpUrlSpec *HttpUrlSpecWithoutSecret ``
+	HttpUrlSpec *HttpUrlSpecWithoutSecret `json:"http_url_spec,omitempty"`
 	// Webhook ID
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 
 	// Wire name: 'job_spec'
-	JobSpec *JobSpecWithoutSecret ``
+	JobSpec *JobSpecWithoutSecret `json:"job_spec,omitempty"`
 	// Time of the object at last update, as a Unix timestamp in milliseconds.
 	// Wire name: 'last_updated_timestamp'
-	LastUpdatedTimestamp int64 ``
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// Name of the model whose events would trigger this webhook.
 	// Wire name: 'model_name'
-	ModelName string ``
+	ModelName string `json:"model_name,omitempty"`
 
 	// Wire name: 'status'
-	Status          RegistryWebhookStatus ``
-	ForceSendFields []string              `tf:"-"`
+	Status          RegistryWebhookStatus `json:"status,omitempty"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st RegistryWebhook) MarshalJSON() ([]byte, error) {
@@ -12092,10 +12013,10 @@ func RegistryWebhookStatusFromPb(pb *mlpb.RegistryWebhookStatusPb) (*RegistryWeb
 type RejectTransitionRequest struct {
 	// User-provided comment on the action.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Name of the model.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Target stage of the transition. Valid values are:
 	//
 	// * `None`: The initial stage of a model version.
@@ -12106,11 +12027,11 @@ type RejectTransitionRequest struct {
 	//
 	// * `Archived`: Archived stage.
 	// Wire name: 'stage'
-	Stage string ``
+	Stage string `json:"stage"`
 	// Version of the model.
 	// Wire name: 'version'
-	Version         string   ``
-	ForceSendFields []string `tf:"-"`
+	Version         string   `json:"version"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RejectTransitionRequest) MarshalJSON() ([]byte, error) {
@@ -12173,7 +12094,7 @@ func RejectTransitionRequestFromPb(pb *mlpb.RejectTransitionRequestPb) (*RejectT
 type RejectTransitionRequestResponse struct {
 	// New activity generated as a result of this operation.
 	// Wire name: 'activity'
-	Activity *Activity ``
+	Activity *Activity `json:"activity,omitempty"`
 }
 
 func (st RejectTransitionRequestResponse) MarshalJSON() ([]byte, error) {
@@ -12236,11 +12157,11 @@ func RejectTransitionRequestResponseFromPb(pb *mlpb.RejectTransitionRequestRespo
 type RenameModelRequest struct {
 	// Registered model unique name identifier.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// If provided, updates the name for this `registered_model`.
 	// Wire name: 'new_name'
-	NewName         string   ``
-	ForceSendFields []string `tf:"-"`
+	NewName         string   `json:"new_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RenameModelRequest) MarshalJSON() ([]byte, error) {
@@ -12299,7 +12220,7 @@ func RenameModelRequestFromPb(pb *mlpb.RenameModelRequestPb) (*RenameModelReques
 type RenameModelResponse struct {
 
 	// Wire name: 'registered_model'
-	RegisteredModel *Model ``
+	RegisteredModel *Model `json:"registered_model,omitempty"`
 }
 
 func (st RenameModelResponse) MarshalJSON() ([]byte, error) {
@@ -12362,7 +12283,7 @@ func RenameModelResponseFromPb(pb *mlpb.RenameModelResponsePb) (*RenameModelResp
 type RestoreExperiment struct {
 	// ID of the associated experiment.
 	// Wire name: 'experiment_id'
-	ExperimentId string ``
+	ExperimentId string `json:"experiment_id"`
 }
 
 func (st RestoreExperiment) MarshalJSON() ([]byte, error) {
@@ -12413,7 +12334,7 @@ func RestoreExperimentFromPb(pb *mlpb.RestoreExperimentPb) (*RestoreExperiment, 
 type RestoreRun struct {
 	// ID of the run to restore.
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id"`
 }
 
 func (st RestoreRun) MarshalJSON() ([]byte, error) {
@@ -12464,17 +12385,17 @@ func RestoreRunFromPb(pb *mlpb.RestoreRunPb) (*RestoreRun, error) {
 type RestoreRuns struct {
 	// The ID of the experiment containing the runs to restore.
 	// Wire name: 'experiment_id'
-	ExperimentId string ``
+	ExperimentId string `json:"experiment_id"`
 	// An optional positive integer indicating the maximum number of runs to
 	// restore. The maximum allowed value for max_runs is 10000.
 	// Wire name: 'max_runs'
-	MaxRuns int ``
+	MaxRuns int `json:"max_runs,omitempty"`
 	// The minimum deletion timestamp in milliseconds since the UNIX epoch for
 	// restoring runs. Only runs deleted no earlier than this timestamp are
 	// restored.
 	// Wire name: 'min_timestamp_millis'
-	MinTimestampMillis int64    ``
-	ForceSendFields    []string `tf:"-"`
+	MinTimestampMillis int64    `json:"min_timestamp_millis"`
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
 func (st RestoreRuns) MarshalJSON() ([]byte, error) {
@@ -12535,8 +12456,8 @@ func RestoreRunsFromPb(pb *mlpb.RestoreRunsPb) (*RestoreRuns, error) {
 type RestoreRunsResponse struct {
 	// The number of runs restored.
 	// Wire name: 'runs_restored'
-	RunsRestored    int      ``
-	ForceSendFields []string `tf:"-"`
+	RunsRestored    int      `json:"runs_restored,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RestoreRunsResponse) MarshalJSON() ([]byte, error) {
@@ -12594,13 +12515,13 @@ func RestoreRunsResponseFromPb(pb *mlpb.RestoreRunsResponsePb) (*RestoreRunsResp
 type Run struct {
 	// Run data.
 	// Wire name: 'data'
-	Data *RunData ``
+	Data *RunData `json:"data,omitempty"`
 	// Run metadata.
 	// Wire name: 'info'
-	Info *RunInfo ``
+	Info *RunInfo `json:"info,omitempty"`
 	// Run inputs.
 	// Wire name: 'inputs'
-	Inputs *RunInputs ``
+	Inputs *RunInputs `json:"inputs,omitempty"`
 }
 
 func (st Run) MarshalJSON() ([]byte, error) {
@@ -12692,13 +12613,13 @@ func RunFromPb(pb *mlpb.RunPb) (*Run, error) {
 type RunData struct {
 	// Run metrics.
 	// Wire name: 'metrics'
-	Metrics []Metric ``
+	Metrics []Metric `json:"metrics,omitempty"`
 	// Run parameters.
 	// Wire name: 'params'
-	Params []Param ``
+	Params []Param `json:"params,omitempty"`
 	// Additional metadata key-value pairs.
 	// Wire name: 'tags'
-	Tags []RunTag ``
+	Tags []RunTag `json:"tags,omitempty"`
 }
 
 func (st RunData) MarshalJSON() ([]byte, error) {
@@ -12823,38 +12744,38 @@ type RunInfo struct {
 	// like ``s3://bucket/directory`` or ``dbfs:/my/directory``. If not set, the
 	// local ``./mlruns`` directory is chosen.
 	// Wire name: 'artifact_uri'
-	ArtifactUri string ``
+	ArtifactUri string `json:"artifact_uri,omitempty"`
 	// Unix timestamp of when the run ended in milliseconds.
 	// Wire name: 'end_time'
-	EndTime int64 ``
+	EndTime int64 `json:"end_time,omitempty"`
 	// The experiment ID.
 	// Wire name: 'experiment_id'
-	ExperimentId string ``
+	ExperimentId string `json:"experiment_id,omitempty"`
 	// Current life cycle stage of the experiment : OneOf("active", "deleted")
 	// Wire name: 'lifecycle_stage'
-	LifecycleStage string ``
+	LifecycleStage string `json:"lifecycle_stage,omitempty"`
 	// Unique identifier for the run.
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id,omitempty"`
 	// The name of the run.
 	// Wire name: 'run_name'
-	RunName string ``
+	RunName string `json:"run_name,omitempty"`
 	// [Deprecated, use run_id instead] Unique identifier for the run. This
 	// field will be removed in a future MLflow version.
 	// Wire name: 'run_uuid'
-	RunUuid string ``
+	RunUuid string `json:"run_uuid,omitempty"`
 	// Unix timestamp of when the run started in milliseconds.
 	// Wire name: 'start_time'
-	StartTime int64 ``
+	StartTime int64 `json:"start_time,omitempty"`
 	// Current status of the run.
 	// Wire name: 'status'
-	Status RunInfoStatus ``
+	Status RunInfoStatus `json:"status,omitempty"`
 	// User who initiated the run. This field is deprecated as of MLflow 1.0,
 	// and will be removed in a future MLflow release. Use 'mlflow.user' tag
 	// instead.
 	// Wire name: 'user_id'
-	UserId          string   ``
-	ForceSendFields []string `tf:"-"`
+	UserId          string   `json:"user_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RunInfo) MarshalJSON() ([]byte, error) {
@@ -13005,10 +12926,10 @@ func RunInfoStatusFromPb(pb *mlpb.RunInfoStatusPb) (*RunInfoStatus, error) {
 type RunInputs struct {
 	// Run metrics.
 	// Wire name: 'dataset_inputs'
-	DatasetInputs []DatasetInput ``
+	DatasetInputs []DatasetInput `json:"dataset_inputs,omitempty"`
 	// Model inputs to the Run.
 	// Wire name: 'model_inputs'
-	ModelInputs []ModelInput ``
+	ModelInputs []ModelInput `json:"model_inputs,omitempty"`
 }
 
 func (st RunInputs) MarshalJSON() ([]byte, error) {
@@ -13106,11 +13027,11 @@ func RunInputsFromPb(pb *mlpb.RunInputsPb) (*RunInputs, error) {
 type RunTag struct {
 	// The tag key.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 	// The tag value.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RunTag) MarshalJSON() ([]byte, error) {
@@ -13170,24 +13091,24 @@ type SearchExperiments struct {
 	// String representing a SQL filter condition (e.g. "name ILIKE
 	// 'my-experiment%'")
 	// Wire name: 'filter'
-	Filter string ``
+	Filter string `json:"filter,omitempty"`
 	// Maximum number of experiments desired. Max threshold is 3000.
 	// Wire name: 'max_results'
-	MaxResults int64 ``
+	MaxResults int64 `json:"max_results,omitempty"`
 	// List of columns for ordering search results, which can include experiment
 	// name and last updated timestamp with an optional "DESC" or "ASC"
 	// annotation, where "ASC" is the default. Tiebreaks are done by experiment
 	// id DESC.
 	// Wire name: 'order_by'
-	OrderBy []string ``
+	OrderBy []string `json:"order_by,omitempty"`
 	// Token indicating the page of experiments to fetch
 	// Wire name: 'page_token'
-	PageToken string ``
+	PageToken string `json:"page_token,omitempty"`
 	// Qualifier for type of experiments to be returned. If unspecified, return
 	// only active experiments.
 	// Wire name: 'view_type'
-	ViewType        ViewType ``
-	ForceSendFields []string `tf:"-"`
+	ViewType        ViewType `json:"view_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SearchExperiments) MarshalJSON() ([]byte, error) {
@@ -13264,12 +13185,12 @@ func SearchExperimentsFromPb(pb *mlpb.SearchExperimentsPb) (*SearchExperiments, 
 type SearchExperimentsResponse struct {
 	// Experiments that match the search criteria
 	// Wire name: 'experiments'
-	Experiments []Experiment ``
+	Experiments []Experiment `json:"experiments,omitempty"`
 	// Token that can be used to retrieve the next page of experiments. An empty
 	// token means that no more experiments are available for retrieval.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SearchExperimentsResponse) MarshalJSON() ([]byte, error) {
@@ -13350,11 +13271,11 @@ func SearchExperimentsResponseFromPb(pb *mlpb.SearchExperimentsResponsePb) (*Sea
 type SearchLoggedModelsDataset struct {
 	// The digest of the dataset.
 	// Wire name: 'dataset_digest'
-	DatasetDigest string ``
+	DatasetDigest string `json:"dataset_digest,omitempty"`
 	// The name of the dataset.
 	// Wire name: 'dataset_name'
-	DatasetName     string   ``
-	ForceSendFields []string `tf:"-"`
+	DatasetName     string   `json:"dataset_name"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SearchLoggedModelsDataset) MarshalJSON() ([]byte, error) {
@@ -13413,23 +13334,23 @@ func SearchLoggedModelsDatasetFromPb(pb *mlpb.SearchLoggedModelsDatasetPb) (*Sea
 type SearchLoggedModelsOrderBy struct {
 	// Whether the search results order is ascending or not.
 	// Wire name: 'ascending'
-	Ascending bool ``
+	Ascending bool `json:"ascending,omitempty"`
 	// If ``field_name`` refers to a metric, this field specifies the digest of
 	// the dataset associated with the metric. Only metrics associated with the
 	// specified dataset name and digest will be considered for ordering. This
 	// field may only be set if ``dataset_name`` is also set.
 	// Wire name: 'dataset_digest'
-	DatasetDigest string ``
+	DatasetDigest string `json:"dataset_digest,omitempty"`
 	// If ``field_name`` refers to a metric, this field specifies the name of
 	// the dataset associated with the metric. Only metrics associated with the
 	// specified dataset name will be considered for ordering. This field may
 	// only be set if ``field_name`` refers to a metric.
 	// Wire name: 'dataset_name'
-	DatasetName string ``
+	DatasetName string `json:"dataset_name,omitempty"`
 	// The name of the field to order by, e.g. "metrics.accuracy".
 	// Wire name: 'field_name'
-	FieldName       string   ``
-	ForceSendFields []string `tf:"-"`
+	FieldName       string   `json:"field_name"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SearchLoggedModelsOrderBy) MarshalJSON() ([]byte, error) {
@@ -13497,28 +13418,28 @@ type SearchLoggedModelsRequest struct {
 	// criteria are considered. If no datasets are specified, then metrics
 	// across all datasets are considered in the filter.
 	// Wire name: 'datasets'
-	Datasets []SearchLoggedModelsDataset ``
+	Datasets []SearchLoggedModelsDataset `json:"datasets,omitempty"`
 	// The IDs of the experiments in which to search for logged models.
 	// Wire name: 'experiment_ids'
-	ExperimentIds []string ``
+	ExperimentIds []string `json:"experiment_ids,omitempty"`
 	// A filter expression over logged model info and data that allows returning
 	// a subset of logged models. The syntax is a subset of SQL that supports
 	// AND'ing together binary operations.
 	//
 	// Example: ``params.alpha < 0.3 AND metrics.accuracy > 0.9``.
 	// Wire name: 'filter'
-	Filter string ``
+	Filter string `json:"filter,omitempty"`
 	// The maximum number of Logged Models to return. The maximum limit is 50.
 	// Wire name: 'max_results'
-	MaxResults int ``
+	MaxResults int `json:"max_results,omitempty"`
 	// The list of columns for ordering the results, with additional fields for
 	// sorting criteria.
 	// Wire name: 'order_by'
-	OrderBy []SearchLoggedModelsOrderBy ``
+	OrderBy []SearchLoggedModelsOrderBy `json:"order_by,omitempty"`
 	// The token indicating the page of logged models to fetch.
 	// Wire name: 'page_token'
-	PageToken       string   ``
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SearchLoggedModelsRequest) MarshalJSON() ([]byte, error) {
@@ -13629,11 +13550,11 @@ func SearchLoggedModelsRequestFromPb(pb *mlpb.SearchLoggedModelsRequestPb) (*Sea
 type SearchLoggedModelsResponse struct {
 	// Logged models that match the search criteria.
 	// Wire name: 'models'
-	Models []LoggedModel ``
+	Models []LoggedModel `json:"models,omitempty"`
 	// The token that can be used to retrieve the next page of logged models.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SearchLoggedModelsResponse) MarshalJSON() ([]byte, error) {
@@ -13714,21 +13635,17 @@ func SearchLoggedModelsResponseFromPb(pb *mlpb.SearchLoggedModelsResponsePb) (*S
 type SearchModelVersionsRequest struct {
 	// String filter condition, like "name='my-model-name'". Must be a single
 	// boolean condition, with string values wrapped in single quotes.
-	// Wire name: 'filter'
-	Filter string `tf:"-"`
+	Filter string `json:"-" tf:"-"`
 	// Maximum number of models desired. Max threshold is 10K.
-	// Wire name: 'max_results'
-	MaxResults int64 `tf:"-"`
+	MaxResults int64 `json:"-" tf:"-"`
 	// List of columns to be ordered by including model name, version, stage
 	// with an optional "DESC" or "ASC" annotation, where "ASC" is the default.
 	// Tiebreaks are done by latest stage transition timestamp, followed by name
 	// ASC, followed by version DESC.
-	// Wire name: 'order_by'
-	OrderBy []string `tf:"-"`
+	OrderBy []string `json:"-" tf:"-"`
 	// Pagination token to go to next page based on previous search query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SearchModelVersionsRequest) MarshalJSON() ([]byte, error) {
@@ -13791,12 +13708,12 @@ func SearchModelVersionsRequestFromPb(pb *mlpb.SearchModelVersionsRequestPb) (*S
 type SearchModelVersionsResponse struct {
 	// Models that match the search criteria
 	// Wire name: 'model_versions'
-	ModelVersions []ModelVersion ``
+	ModelVersions []ModelVersion `json:"model_versions,omitempty"`
 	// Pagination token to request next page of models for the same search
 	// query.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SearchModelVersionsResponse) MarshalJSON() ([]byte, error) {
@@ -13878,20 +13795,16 @@ type SearchModelsRequest struct {
 	// String filter condition, like "name LIKE 'my-model-name'". Interpreted in
 	// the backend automatically as "name LIKE '%my-model-name%'". Single
 	// boolean condition, with string values wrapped in single quotes.
-	// Wire name: 'filter'
-	Filter string `tf:"-"`
+	Filter string `json:"-" tf:"-"`
 	// Maximum number of models desired. Default is 100. Max threshold is 1000.
-	// Wire name: 'max_results'
-	MaxResults int64 `tf:"-"`
+	MaxResults int64 `json:"-" tf:"-"`
 	// List of columns for ordering search results, which can include model name
 	// and last updated timestamp with an optional "DESC" or "ASC" annotation,
 	// where "ASC" is the default. Tiebreaks are done by model name ASC.
-	// Wire name: 'order_by'
-	OrderBy []string `tf:"-"`
+	OrderBy []string `json:"-" tf:"-"`
 	// Pagination token to go to the next page based on a previous search query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SearchModelsRequest) MarshalJSON() ([]byte, error) {
@@ -13954,11 +13867,11 @@ func SearchModelsRequestFromPb(pb *mlpb.SearchModelsRequestPb) (*SearchModelsReq
 type SearchModelsResponse struct {
 	// Pagination token to request the next page of models.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// Registered Models that match the search criteria.
 	// Wire name: 'registered_models'
-	RegisteredModels []Model  ``
-	ForceSendFields  []string `tf:"-"`
+	RegisteredModels []Model  `json:"registered_models,omitempty"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st SearchModelsResponse) MarshalJSON() ([]byte, error) {
@@ -14039,7 +13952,7 @@ func SearchModelsResponseFromPb(pb *mlpb.SearchModelsResponsePb) (*SearchModelsR
 type SearchRuns struct {
 	// List of experiment IDs to search over.
 	// Wire name: 'experiment_ids'
-	ExperimentIds []string ``
+	ExperimentIds []string `json:"experiment_ids,omitempty"`
 	// A filter expression over params, metrics, and tags, that allows returning
 	// a subset of runs. The syntax is a subset of SQL that supports ANDing
 	// together binary operations between a param, metric, or tag and a
@@ -14053,10 +13966,10 @@ type SearchRuns struct {
 	//
 	// Supported operators are `=`, `!=`, `>`, `>=`, `<`, and `<=`.
 	// Wire name: 'filter'
-	Filter string ``
+	Filter string `json:"filter,omitempty"`
 	// Maximum number of runs desired. Max threshold is 50000
 	// Wire name: 'max_results'
-	MaxResults int ``
+	MaxResults int `json:"max_results,omitempty"`
 	// List of columns to be ordered by, including attributes, params, metrics,
 	// and tags with an optional `"DESC"` or `"ASC"` annotation, where `"ASC"`
 	// is the default. Example: `["params.input DESC", "metrics.alpha ASC",
@@ -14064,15 +13977,15 @@ type SearchRuns struct {
 	// `run_id` for runs with the same start time (and this is the default
 	// ordering criterion if order_by is not provided).
 	// Wire name: 'order_by'
-	OrderBy []string ``
+	OrderBy []string `json:"order_by,omitempty"`
 	// Token for the current page of runs.
 	// Wire name: 'page_token'
-	PageToken string ``
+	PageToken string `json:"page_token,omitempty"`
 	// Whether to display only active, only deleted, or all runs. Defaults to
 	// only active runs.
 	// Wire name: 'run_view_type'
-	RunViewType     ViewType ``
-	ForceSendFields []string `tf:"-"`
+	RunViewType     ViewType `json:"run_view_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SearchRuns) MarshalJSON() ([]byte, error) {
@@ -14151,11 +14064,11 @@ func SearchRunsFromPb(pb *mlpb.SearchRunsPb) (*SearchRuns, error) {
 type SearchRunsResponse struct {
 	// Token for the next page of runs.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// Runs that match the search criteria.
 	// Wire name: 'runs'
-	Runs            []Run    ``
-	ForceSendFields []string `tf:"-"`
+	Runs            []Run    `json:"runs,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SearchRunsResponse) MarshalJSON() ([]byte, error) {
@@ -14236,14 +14149,14 @@ func SearchRunsResponseFromPb(pb *mlpb.SearchRunsResponsePb) (*SearchRunsRespons
 type SetExperimentTag struct {
 	// ID of the experiment under which to log the tag. Must be provided.
 	// Wire name: 'experiment_id'
-	ExperimentId string ``
+	ExperimentId string `json:"experiment_id"`
 	// Name of the tag. Keys up to 250 bytes in size are supported.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 	// String value of the tag being logged. Values up to 64KB in size are
 	// supported.
 	// Wire name: 'value'
-	Value string ``
+	Value string `json:"value"`
 }
 
 func (st SetExperimentTag) MarshalJSON() ([]byte, error) {
@@ -14297,11 +14210,10 @@ func SetExperimentTagFromPb(pb *mlpb.SetExperimentTagPb) (*SetExperimentTag, err
 
 type SetLoggedModelTagsRequest struct {
 	// The ID of the logged model to set the tags on.
-	// Wire name: 'model_id'
-	ModelId string `tf:"-"`
+	ModelId string `json:"-" tf:"-"`
 	// The tags to set on the logged model.
 	// Wire name: 'tags'
-	Tags []LoggedModelTag ``
+	Tags []LoggedModelTag `json:"tags,omitempty"`
 }
 
 func (st SetLoggedModelTagsRequest) MarshalJSON() ([]byte, error) {
@@ -14379,15 +14291,15 @@ type SetModelTagRequest struct {
 	// specified `value`. All storage backends are guaranteed to support key
 	// values up to 250 bytes in size.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 	// Unique name of the model.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// String value of the tag being logged. Maximum size depends on storage
 	// backend. All storage backends are guaranteed to support key values up to
 	// 5000 bytes in size.
 	// Wire name: 'value'
-	Value string ``
+	Value string `json:"value"`
 }
 
 func (st SetModelTagRequest) MarshalJSON() ([]byte, error) {
@@ -14445,18 +14357,18 @@ type SetModelVersionTagRequest struct {
 	// specified `value`. All storage backends are guaranteed to support key
 	// values up to 250 bytes in size.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 	// Unique name of the model.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// String value of the tag being logged. Maximum size depends on storage
 	// backend. All storage backends are guaranteed to support key values up to
 	// 5000 bytes in size.
 	// Wire name: 'value'
-	Value string ``
+	Value string `json:"value"`
 	// Model version number.
 	// Wire name: 'version'
-	Version string ``
+	Version string `json:"version"`
 }
 
 func (st SetModelVersionTagRequest) MarshalJSON() ([]byte, error) {
@@ -14513,19 +14425,19 @@ func SetModelVersionTagRequestFromPb(pb *mlpb.SetModelVersionTagRequestPb) (*Set
 type SetTag struct {
 	// Name of the tag. Keys up to 250 bytes in size are supported.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 	// ID of the run under which to log the tag. Must be provided.
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id,omitempty"`
 	// [Deprecated, use `run_id` instead] ID of the run under which to log the
 	// tag. This field will be removed in a future MLflow version.
 	// Wire name: 'run_uuid'
-	RunUuid string ``
+	RunUuid string `json:"run_uuid,omitempty"`
 	// String value of the tag being logged. Values up to 64KB in size are
 	// supported.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SetTag) MarshalJSON() ([]byte, error) {
@@ -14658,10 +14570,10 @@ type TestRegistryWebhookRequest struct {
 	// `event` is not specified, the test trigger uses a randomly chosen event
 	// associated with the webhook.
 	// Wire name: 'event'
-	Event RegistryWebhookEvent ``
+	Event RegistryWebhookEvent `json:"event,omitempty"`
 	// Webhook ID
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id"`
 }
 
 func (st TestRegistryWebhookRequest) MarshalJSON() ([]byte, error) {
@@ -14726,11 +14638,11 @@ func TestRegistryWebhookRequestFromPb(pb *mlpb.TestRegistryWebhookRequestPb) (*T
 type TestRegistryWebhookResponse struct {
 	// Body of the response from the webhook URL
 	// Wire name: 'body'
-	Body string ``
+	Body string `json:"body,omitempty"`
 	// Status code returned by the webhook URL
 	// Wire name: 'status_code'
-	StatusCode      int      ``
-	ForceSendFields []string `tf:"-"`
+	StatusCode      int      `json:"status_code,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TestRegistryWebhookResponse) MarshalJSON() ([]byte, error) {
@@ -14791,13 +14703,13 @@ type TransitionModelVersionStageDatabricks struct {
 	// Specifies whether to archive all current model versions in the target
 	// stage.
 	// Wire name: 'archive_existing_versions'
-	ArchiveExistingVersions bool ``
+	ArchiveExistingVersions bool `json:"archive_existing_versions"`
 	// User-provided comment on the action.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Name of the model.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Target stage of the transition. Valid values are:
 	//
 	// * `None`: The initial stage of a model version.
@@ -14808,11 +14720,11 @@ type TransitionModelVersionStageDatabricks struct {
 	//
 	// * `Archived`: Archived stage.
 	// Wire name: 'stage'
-	Stage string ``
+	Stage string `json:"stage"`
 	// Version of the model.
 	// Wire name: 'version'
-	Version         string   ``
-	ForceSendFields []string `tf:"-"`
+	Version         string   `json:"version"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TransitionModelVersionStageDatabricks) MarshalJSON() ([]byte, error) {
@@ -14880,14 +14792,14 @@ func TransitionModelVersionStageDatabricksFromPb(pb *mlpb.TransitionModelVersion
 type TransitionRequest struct {
 	// Array of actions on the activity allowed for the current viewer.
 	// Wire name: 'available_actions'
-	AvailableActions []ActivityAction ``
+	AvailableActions []ActivityAction `json:"available_actions,omitempty"`
 	// User-provided comment associated with the activity, comment, or
 	// transition request.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// Creation time of the object, as a Unix timestamp in milliseconds.
 	// Wire name: 'creation_timestamp'
-	CreationTimestamp int64 ``
+	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// Target stage of the transition (if the activity is stage transition
 	// related). Valid values are:
 	//
@@ -14899,11 +14811,11 @@ type TransitionRequest struct {
 	//
 	// * `Archived`: Archived stage.
 	// Wire name: 'to_stage'
-	ToStage string ``
+	ToStage string `json:"to_stage,omitempty"`
 	// The username of the user that created the object.
 	// Wire name: 'user_id'
-	UserId          string   ``
-	ForceSendFields []string `tf:"-"`
+	UserId          string   `json:"user_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TransitionRequest) MarshalJSON() ([]byte, error) {
@@ -14990,7 +14902,7 @@ func TransitionRequestFromPb(pb *mlpb.TransitionRequestPb) (*TransitionRequest, 
 type TransitionStageResponse struct {
 	// Updated model version
 	// Wire name: 'model_version_databricks'
-	ModelVersionDatabricks *ModelVersionDatabricks ``
+	ModelVersionDatabricks *ModelVersionDatabricks `json:"model_version_databricks,omitempty"`
 }
 
 func (st TransitionStageResponse) MarshalJSON() ([]byte, error) {
@@ -15054,10 +14966,10 @@ func TransitionStageResponseFromPb(pb *mlpb.TransitionStageResponsePb) (*Transit
 type UpdateComment struct {
 	// User-provided comment on the action.
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment"`
 	// Unique identifier of an activity
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id"`
 }
 
 func (st UpdateComment) MarshalJSON() ([]byte, error) {
@@ -15110,7 +15022,7 @@ func UpdateCommentFromPb(pb *mlpb.UpdateCommentPb) (*UpdateComment, error) {
 type UpdateCommentResponse struct {
 	// Updated comment object
 	// Wire name: 'comment'
-	Comment *CommentObject ``
+	Comment *CommentObject `json:"comment,omitempty"`
 }
 
 func (st UpdateCommentResponse) MarshalJSON() ([]byte, error) {
@@ -15173,12 +15085,12 @@ func UpdateCommentResponseFromPb(pb *mlpb.UpdateCommentResponsePb) (*UpdateComme
 type UpdateExperiment struct {
 	// ID of the associated experiment.
 	// Wire name: 'experiment_id'
-	ExperimentId string ``
+	ExperimentId string `json:"experiment_id"`
 	// If provided, the experiment's name is changed to the new name. The new
 	// name must be unique.
 	// Wire name: 'new_name'
-	NewName         string   ``
-	ForceSendFields []string `tf:"-"`
+	NewName         string   `json:"new_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateExperiment) MarshalJSON() ([]byte, error) {
@@ -15235,22 +15147,17 @@ func UpdateExperimentFromPb(pb *mlpb.UpdateExperimentPb) (*UpdateExperiment, err
 }
 
 type UpdateFeatureTagRequest struct {
-
-	// Wire name: 'feature_name'
-	FeatureName string `tf:"-"`
+	FeatureName string `json:"-" tf:"-"`
 
 	// Wire name: 'feature_tag'
-	FeatureTag FeatureTag ``
+	FeatureTag FeatureTag `json:"feature_tag"`
 
-	// Wire name: 'key'
-	Key string `tf:"-"`
+	Key string `json:"-" tf:"-"`
 
-	// Wire name: 'table_name'
-	TableName string `tf:"-"`
+	TableName string `json:"-" tf:"-"`
 	// The list of fields to update.
-	// Wire name: 'update_mask'
-	UpdateMask      string   `tf:"-"` //legacy
-	ForceSendFields []string `tf:"-"`
+	UpdateMask      string   `json:"-" tf:"-"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateFeatureTagRequest) MarshalJSON() ([]byte, error) {
@@ -15327,11 +15234,11 @@ func UpdateFeatureTagRequestFromPb(pb *mlpb.UpdateFeatureTagRequestPb) (*UpdateF
 type UpdateModelRequest struct {
 	// If provided, updates the description for this `registered_model`.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Registered model unique name identifier.
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateModelRequest) MarshalJSON() ([]byte, error) {
@@ -15390,7 +15297,7 @@ func UpdateModelRequestFromPb(pb *mlpb.UpdateModelRequestPb) (*UpdateModelReques
 type UpdateModelResponse struct {
 
 	// Wire name: 'registered_model'
-	RegisteredModel *Model ``
+	RegisteredModel *Model `json:"registered_model,omitempty"`
 }
 
 func (st UpdateModelResponse) MarshalJSON() ([]byte, error) {
@@ -15453,14 +15360,14 @@ func UpdateModelResponseFromPb(pb *mlpb.UpdateModelResponsePb) (*UpdateModelResp
 type UpdateModelVersionRequest struct {
 	// If provided, updates the description for this `registered_model`.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Name of the registered model
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Model version number
 	// Wire name: 'version'
-	Version         string   ``
-	ForceSendFields []string `tf:"-"`
+	Version         string   `json:"version"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
@@ -15521,7 +15428,7 @@ func UpdateModelVersionRequestFromPb(pb *mlpb.UpdateModelVersionRequestPb) (*Upd
 type UpdateModelVersionResponse struct {
 	// Return new version number generated for this model in registry.
 	// Wire name: 'model_version'
-	ModelVersion *ModelVersion ``
+	ModelVersion *ModelVersion `json:"model_version,omitempty"`
 }
 
 func (st UpdateModelVersionResponse) MarshalJSON() ([]byte, error) {
@@ -15584,14 +15491,12 @@ func UpdateModelVersionResponseFromPb(pb *mlpb.UpdateModelVersionResponsePb) (*U
 type UpdateOnlineStoreRequest struct {
 	// The name of the online store. This is the unique identifier for the
 	// online store.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Online store to update.
 	// Wire name: 'online_store'
-	OnlineStore OnlineStore ``
+	OnlineStore OnlineStore `json:"online_store"`
 	// The list of fields to update.
-	// Wire name: 'update_mask'
-	UpdateMask string `tf:"-"` //legacy
+	UpdateMask string `json:"-" tf:"-"` //legacy
 
 }
 
@@ -15662,7 +15567,7 @@ func UpdateOnlineStoreRequestFromPb(pb *mlpb.UpdateOnlineStoreRequestPb) (*Updat
 type UpdateRegistryWebhook struct {
 	// User-specified description for the webhook.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A
 	// new model version was created for the associated model.
 	//
@@ -15697,20 +15602,20 @@ type UpdateRegistryWebhook struct {
 	// * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model
 	// version be archived.
 	// Wire name: 'events'
-	Events []RegistryWebhookEvent ``
+	Events []RegistryWebhookEvent `json:"events,omitempty"`
 
 	// Wire name: 'http_url_spec'
-	HttpUrlSpec *HttpUrlSpec ``
+	HttpUrlSpec *HttpUrlSpec `json:"http_url_spec,omitempty"`
 	// Webhook ID
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id"`
 
 	// Wire name: 'job_spec'
-	JobSpec *JobSpec ``
+	JobSpec *JobSpec `json:"job_spec,omitempty"`
 
 	// Wire name: 'status'
-	Status          RegistryWebhookStatus ``
-	ForceSendFields []string              `tf:"-"`
+	Status          RegistryWebhookStatus `json:"status,omitempty"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st UpdateRegistryWebhook) MarshalJSON() ([]byte, error) {
@@ -15835,21 +15740,21 @@ func UpdateRegistryWebhookFromPb(pb *mlpb.UpdateRegistryWebhookPb) (*UpdateRegis
 type UpdateRun struct {
 	// Unix timestamp in milliseconds of when the run ended.
 	// Wire name: 'end_time'
-	EndTime int64 ``
+	EndTime int64 `json:"end_time,omitempty"`
 	// ID of the run to update. Must be provided.
 	// Wire name: 'run_id'
-	RunId string ``
+	RunId string `json:"run_id,omitempty"`
 	// Updated name of the run.
 	// Wire name: 'run_name'
-	RunName string ``
+	RunName string `json:"run_name,omitempty"`
 	// [Deprecated, use `run_id` instead] ID of the run to update. This field
 	// will be removed in a future MLflow version.
 	// Wire name: 'run_uuid'
-	RunUuid string ``
+	RunUuid string `json:"run_uuid,omitempty"`
 	// Updated status of the run.
 	// Wire name: 'status'
-	Status          UpdateRunStatus ``
-	ForceSendFields []string        `tf:"-"`
+	Status          UpdateRunStatus `json:"status,omitempty"`
+	ForceSendFields []string        `json:"-" tf:"-"`
 }
 
 func (st UpdateRun) MarshalJSON() ([]byte, error) {
@@ -15926,7 +15831,7 @@ func UpdateRunFromPb(pb *mlpb.UpdateRunPb) (*UpdateRun, error) {
 type UpdateRunResponse struct {
 	// Updated metadata of the run.
 	// Wire name: 'run_info'
-	RunInfo *RunInfo ``
+	RunInfo *RunInfo `json:"run_info,omitempty"`
 }
 
 func (st UpdateRunResponse) MarshalJSON() ([]byte, error) {
@@ -16052,7 +15957,7 @@ func UpdateRunStatusFromPb(pb *mlpb.UpdateRunStatusPb) (*UpdateRunStatus, error)
 type UpdateWebhookResponse struct {
 
 	// Wire name: 'webhook'
-	Webhook *RegistryWebhook ``
+	Webhook *RegistryWebhook `json:"webhook,omitempty"`
 }
 
 func (st UpdateWebhookResponse) MarshalJSON() ([]byte, error) {

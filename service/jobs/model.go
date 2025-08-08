@@ -70,11 +70,11 @@ type BaseJob struct {
 	// The time at which this job was created in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC).
 	// Wire name: 'created_time'
-	CreatedTime int64 ``
+	CreatedTime int64 `json:"created_time,omitempty"`
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	// Wire name: 'creator_user_name'
-	CreatorUserName string ``
+	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// The id of the budget policy used by this job for cost attribution
 	// purposes. This may be set through (in order of precedence): 1. Budget
 	// admins through the account or workspace console 2. Jobs UI in the job
@@ -82,24 +82,24 @@ type BaseJob struct {
 	// based on accessible budget policies of the run_as identity on job
 	// creation or modification.
 	// Wire name: 'effective_budget_policy_id'
-	EffectiveBudgetPolicyId string ``
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// Indicates if the job has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/get endpoint.
 	// It is only relevant for API 2.2 :method:jobs/list requests with
 	// `expand_tasks=true`.
 	// Wire name: 'has_more'
-	HasMore bool ``
+	HasMore bool `json:"has_more,omitempty"`
 	// The canonical identifier for this job.
 	// Wire name: 'job_id'
-	JobId int64 ``
+	JobId int64 `json:"job_id,omitempty"`
 	// Settings for this job and all of its runs. These settings can be updated
 	// using the `resetJob` method.
 	// Wire name: 'settings'
-	Settings *JobSettings ``
+	Settings *JobSettings `json:"settings,omitempty"`
 	// State of the trigger associated with the job.
 	// Wire name: 'trigger_state'
-	TriggerState    *TriggerStateProto ``
-	ForceSendFields []string           `tf:"-"`
+	TriggerState    *TriggerStateProto `json:"trigger_state,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
 func (st BaseJob) MarshalJSON() ([]byte, error) {
@@ -198,30 +198,30 @@ type BaseRun struct {
 	// retried only until they succeed, and the maximum `attempt_number` is the
 	// same as the `max_retries` value for the job.
 	// Wire name: 'attempt_number'
-	AttemptNumber int ``
+	AttemptNumber int `json:"attempt_number,omitempty"`
 	// The time in milliseconds it took to terminate the cluster and clean up
 	// any associated artifacts. The duration of a task run is the sum of the
 	// `setup_duration`, `execution_duration`, and the `cleanup_duration`. The
 	// `cleanup_duration` field is set to 0 for multitask job runs. The total
 	// duration of a multitask job run is the value of the `run_duration` field.
 	// Wire name: 'cleanup_duration'
-	CleanupDuration int64 ``
+	CleanupDuration int64 `json:"cleanup_duration,omitempty"`
 	// The cluster used for this run. If the run is specified to use a new
 	// cluster, this field is set once the Jobs service has requested a cluster
 	// for the run.
 	// Wire name: 'cluster_instance'
-	ClusterInstance *ClusterInstance ``
+	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
 	// A snapshot of the job’s cluster specification when this run was
 	// created.
 	// Wire name: 'cluster_spec'
-	ClusterSpec *ClusterSpec ``
+	ClusterSpec *ClusterSpec `json:"cluster_spec,omitempty"`
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	// Wire name: 'creator_user_name'
-	CreatorUserName string ``
+	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Description of the run
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// The actual performance target used by the serverless run during
 	// execution. This can differ from the client-set performance target on the
 	// request depending on whether the performance mode is supported by the job
@@ -231,11 +231,11 @@ type BaseRun struct {
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
 	// Wire name: 'effective_performance_target'
-	EffectivePerformanceTarget PerformanceTarget ``
+	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
 	// Wire name: 'end_time'
-	EndTime int64 ``
+	EndTime int64 `json:"end_time,omitempty"`
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
 	// encountered an unexpected error. The duration of a task run is the sum of
@@ -244,7 +244,7 @@ type BaseRun struct {
 	// total duration of a multitask job run is the value of the `run_duration`
 	// field.
 	// Wire name: 'execution_duration'
-	ExecutionDuration int64 ``
+	ExecutionDuration int64 `json:"execution_duration,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks.
@@ -256,71 +256,71 @@ type BaseRun struct {
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	// Wire name: 'git_source'
-	GitSource *GitSource ``
+	GitSource *GitSource `json:"git_source,omitempty"`
 	// Indicates if the run has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/getrun
 	// endpoint. It is only relevant for API 2.2 :method:jobs/listruns requests
 	// with `expand_tasks=true`.
 	// Wire name: 'has_more'
-	HasMore bool ``
+	HasMore bool `json:"has_more,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
 	// You must declare dependent libraries in task settings. If more than 100
 	// job clusters are available, you can paginate through them using
 	// :method:jobs/getrun.
 	// Wire name: 'job_clusters'
-	JobClusters []JobCluster ``
+	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// The canonical identifier of the job that contains this run.
 	// Wire name: 'job_id'
-	JobId int64 ``
+	JobId int64 `json:"job_id,omitempty"`
 	// Job-level parameters used in the run
 	// Wire name: 'job_parameters'
-	JobParameters []JobParameter ``
+	JobParameters []JobParameter `json:"job_parameters,omitempty"`
 	// ID of the job run that this run belongs to. For legacy and single-task
 	// job runs the field is populated with the job run ID. For task runs, the
 	// field is populated with the ID of the job run that the task run belongs
 	// to.
 	// Wire name: 'job_run_id'
-	JobRunId int64 ``
+	JobRunId int64 `json:"job_run_id,omitempty"`
 	// A unique identifier for this job run. This is set to the same value as
 	// `run_id`.
 	// Wire name: 'number_in_job'
-	NumberInJob int64 ``
+	NumberInJob int64 `json:"number_in_job,omitempty"`
 	// If this run is a retry of a prior run attempt, this field contains the
 	// run_id of the original attempt; otherwise, it is the same as the run_id.
 	// Wire name: 'original_attempt_run_id'
-	OriginalAttemptRunId int64 ``
+	OriginalAttemptRunId int64 `json:"original_attempt_run_id,omitempty"`
 	// The parameters used for this run.
 	// Wire name: 'overriding_parameters'
-	OverridingParameters *RunParameters ``
+	OverridingParameters *RunParameters `json:"overriding_parameters,omitempty"`
 	// The time in milliseconds that the run has spent in the queue.
 	// Wire name: 'queue_duration'
-	QueueDuration int64 ``
+	QueueDuration int64 `json:"queue_duration,omitempty"`
 	// The repair history of the run.
 	// Wire name: 'repair_history'
-	RepairHistory []RepairHistoryItem ``
+	RepairHistory []RepairHistoryItem `json:"repair_history,omitempty"`
 	// The time in milliseconds it took the job run and all of its repairs to
 	// finish.
 	// Wire name: 'run_duration'
-	RunDuration int64 ``
+	RunDuration int64 `json:"run_duration,omitempty"`
 	// The canonical identifier of the run. This ID is unique across all runs of
 	// all jobs.
 	// Wire name: 'run_id'
-	RunId int64 ``
+	RunId int64 `json:"run_id,omitempty"`
 	// An optional name for the run. The maximum length is 4096 bytes in UTF-8
 	// encoding.
 	// Wire name: 'run_name'
-	RunName string ``
+	RunName string `json:"run_name,omitempty"`
 	// The URL to the detail page of the run.
 	// Wire name: 'run_page_url'
-	RunPageUrl string ``
+	RunPageUrl string `json:"run_page_url,omitempty"`
 
 	// Wire name: 'run_type'
-	RunType RunType ``
+	RunType RunType `json:"run_type,omitempty"`
 	// The cron schedule that triggered this run if it was triggered by the
 	// periodic scheduler.
 	// Wire name: 'schedule'
-	Schedule *CronSchedule ``
+	Schedule *CronSchedule `json:"schedule,omitempty"`
 	// The time in milliseconds it took to set up the cluster. For runs that run
 	// on new clusters this is the cluster creation time, for runs that run on
 	// existing clusters this time should be very short. The duration of a task
@@ -329,33 +329,33 @@ type BaseRun struct {
 	// job runs. The total duration of a multitask job run is the value of the
 	// `run_duration` field.
 	// Wire name: 'setup_duration'
-	SetupDuration int64 ``
+	SetupDuration int64 `json:"setup_duration,omitempty"`
 	// The time at which this run was started in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC). This may not be the time when the job
 	// task starts executing, for example, if the job is scheduled to run on a
 	// new cluster, this is the time the cluster creation call is issued.
 	// Wire name: 'start_time'
-	StartTime int64 ``
+	StartTime int64 `json:"start_time,omitempty"`
 	// Deprecated. Please use the `status` field instead.
 	// Wire name: 'state'
-	State *RunState ``
+	State *RunState `json:"state,omitempty"`
 
 	// Wire name: 'status'
-	Status *RunStatus ``
+	Status *RunStatus `json:"status,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run resutls. If
 	// more than 100 tasks are available, you can paginate through them using
 	// :method:jobs/getrun. Use the `next_page_token` field at the object root
 	// to determine if more results are available.
 	// Wire name: 'tasks'
-	Tasks []RunTask ``
+	Tasks []RunTask `json:"tasks,omitempty"`
 
 	// Wire name: 'trigger'
-	Trigger TriggerType ``
+	Trigger TriggerType `json:"trigger,omitempty"`
 
 	// Wire name: 'trigger_info'
-	TriggerInfo     *TriggerInfo ``
-	ForceSendFields []string     `tf:"-"`
+	TriggerInfo     *TriggerInfo `json:"trigger_info,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
 func (st BaseRun) MarshalJSON() ([]byte, error) {
@@ -697,11 +697,11 @@ type CancelAllRuns struct {
 	// Optional boolean parameter to cancel all queued runs. If no job_id is
 	// provided, all queued runs in the workspace are canceled.
 	// Wire name: 'all_queued_runs'
-	AllQueuedRuns bool ``
+	AllQueuedRuns bool `json:"all_queued_runs,omitempty"`
 	// The canonical identifier of the job to cancel all runs of.
 	// Wire name: 'job_id'
-	JobId           int64    ``
-	ForceSendFields []string `tf:"-"`
+	JobId           int64    `json:"job_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CancelAllRuns) MarshalJSON() ([]byte, error) {
@@ -760,7 +760,7 @@ func CancelAllRunsFromPb(pb *jobspb.CancelAllRunsPb) (*CancelAllRuns, error) {
 type CancelRun struct {
 	// This field is required.
 	// Wire name: 'run_id'
-	RunId int64 ``
+	RunId int64 `json:"run_id"`
 }
 
 func (st CancelRun) MarshalJSON() ([]byte, error) {
@@ -981,12 +981,12 @@ type CleanRoomTaskRunState struct {
 	// always available in the response. Note: Additional states might be
 	// introduced in future releases.
 	// Wire name: 'life_cycle_state'
-	LifeCycleState CleanRoomTaskRunLifeCycleState ``
+	LifeCycleState CleanRoomTaskRunLifeCycleState `json:"life_cycle_state,omitempty"`
 	// A value indicating the run's result. This field is only available for
 	// terminal lifecycle states. Note: Additional states might be introduced in
 	// future releases.
 	// Wire name: 'result_state'
-	ResultState CleanRoomTaskRunResultState ``
+	ResultState CleanRoomTaskRunResultState `json:"result_state,omitempty"`
 }
 
 func (st CleanRoomTaskRunState) MarshalJSON() ([]byte, error) {
@@ -1063,19 +1063,19 @@ func CleanRoomTaskRunStateFromPb(pb *jobspb.CleanRoomTaskRunStatePb) (*CleanRoom
 type CleanRoomsNotebookTask struct {
 	// The clean room that the notebook belongs to.
 	// Wire name: 'clean_room_name'
-	CleanRoomName string ``
+	CleanRoomName string `json:"clean_room_name"`
 	// Checksum to validate the freshness of the notebook resource (i.e. the
 	// notebook being run is the latest version). It can be fetched by calling
 	// the :method:cleanroomassets/get API.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Base parameters to be used for the clean room notebook job.
 	// Wire name: 'notebook_base_parameters'
-	NotebookBaseParameters map[string]string ``
+	NotebookBaseParameters map[string]string `json:"notebook_base_parameters,omitempty"`
 	// Name of the notebook being run.
 	// Wire name: 'notebook_name'
-	NotebookName    string   ``
-	ForceSendFields []string `tf:"-"`
+	NotebookName    string   `json:"notebook_name"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CleanRoomsNotebookTask) MarshalJSON() ([]byte, error) {
@@ -1138,13 +1138,13 @@ func CleanRoomsNotebookTaskFromPb(pb *jobspb.CleanRoomsNotebookTaskPb) (*CleanRo
 type CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput struct {
 	// The run state of the clean rooms notebook task.
 	// Wire name: 'clean_room_job_run_state'
-	CleanRoomJobRunState *CleanRoomTaskRunState ``
+	CleanRoomJobRunState *CleanRoomTaskRunState `json:"clean_room_job_run_state,omitempty"`
 	// The notebook output for the clean room run
 	// Wire name: 'notebook_output'
-	NotebookOutput *NotebookOutput ``
+	NotebookOutput *NotebookOutput `json:"notebook_output,omitempty"`
 	// Information on how to access the output schema for the clean room run
 	// Wire name: 'output_schema_info'
-	OutputSchemaInfo *OutputSchemaInfo ``
+	OutputSchemaInfo *OutputSchemaInfo `json:"output_schema_info,omitempty"`
 }
 
 func (st CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput) MarshalJSON() ([]byte, error) {
@@ -1242,7 +1242,7 @@ type ClusterInstance struct {
 	// The response won’t include this field if the identifier is not
 	// available yet.
 	// Wire name: 'cluster_id'
-	ClusterId string ``
+	ClusterId string `json:"cluster_id,omitempty"`
 	// The canonical identifier for the Spark context used by a run. This field
 	// is filled in once the run begins execution. This value can be used to
 	// view the Spark UI by browsing to
@@ -1252,8 +1252,8 @@ type ClusterInstance struct {
 	// The response won’t include this field if the identifier is not
 	// available yet.
 	// Wire name: 'spark_context_id'
-	SparkContextId  string   ``
-	ForceSendFields []string `tf:"-"`
+	SparkContextId  string   `json:"spark_context_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ClusterInstance) MarshalJSON() ([]byte, error) {
@@ -1315,20 +1315,20 @@ type ClusterSpec struct {
 	// to manually restart the cluster if it stops responding. We suggest
 	// running jobs and tasks on new clusters for greater reliability
 	// Wire name: 'existing_cluster_id'
-	ExistingClusterId string ``
+	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// If job_cluster_key, this task is executed reusing the cluster specified
 	// in `job.settings.job_clusters`.
 	// Wire name: 'job_cluster_key'
-	JobClusterKey string ``
+	JobClusterKey string `json:"job_cluster_key,omitempty"`
 	// An optional list of libraries to be installed on the cluster. The default
 	// value is an empty list.
 	// Wire name: 'libraries'
-	Libraries []compute.Library ``
+	Libraries []compute.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
 	// Wire name: 'new_cluster'
-	NewCluster      *compute.ClusterSpec ``
-	ForceSendFields []string             `tf:"-"`
+	NewCluster      *compute.ClusterSpec `json:"new_cluster,omitempty"`
+	ForceSendFields []string             `json:"-" tf:"-"`
 }
 
 func (st ClusterSpec) MarshalJSON() ([]byte, error) {
@@ -1425,14 +1425,14 @@ func ClusterSpecFromPb(pb *jobspb.ClusterSpecPb) (*ClusterSpec, error) {
 type ComputeConfig struct {
 	// IDof the GPU pool to use.
 	// Wire name: 'gpu_node_pool_id'
-	GpuNodePoolId string ``
+	GpuNodePoolId string `json:"gpu_node_pool_id,omitempty"`
 	// GPU type.
 	// Wire name: 'gpu_type'
-	GpuType string ``
+	GpuType string `json:"gpu_type,omitempty"`
 	// Number of GPUs.
 	// Wire name: 'num_gpus'
-	NumGpus         int      ``
-	ForceSendFields []string `tf:"-"`
+	NumGpus         int      `json:"num_gpus"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ComputeConfig) MarshalJSON() ([]byte, error) {
@@ -1547,7 +1547,7 @@ type ConditionTask struct {
 	// The left operand of the condition task. Can be either a string value or a
 	// job state or parameter reference.
 	// Wire name: 'left'
-	Left string ``
+	Left string `json:"left"`
 	// * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
 	// operands. This means that `“12.0” == “12”` will evaluate to
 	// `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`,
@@ -1559,11 +1559,11 @@ type ConditionTask struct {
 	// `EQUAL_TO`, `NOT_EQUAL`. If a task value was set to a boolean value, it
 	// will be serialized to `“true”` or `“false”` for the comparison.
 	// Wire name: 'op'
-	Op ConditionTaskOp ``
+	Op ConditionTaskOp `json:"op"`
 	// The right operand of the condition task. Can be either a string value or
 	// a job state or parameter reference.
 	// Wire name: 'right'
-	Right string ``
+	Right string `json:"right"`
 }
 
 func (st ConditionTask) MarshalJSON() ([]byte, error) {
@@ -1706,7 +1706,7 @@ type Continuous struct {
 	// Indicate whether the continuous execution of the job is paused or not.
 	// Defaults to UNPAUSED.
 	// Wire name: 'pause_status'
-	PauseStatus PauseStatus ``
+	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 }
 
 func (st Continuous) MarshalJSON() ([]byte, error) {
@@ -1769,35 +1769,35 @@ func ContinuousFromPb(pb *jobspb.ContinuousPb) (*Continuous, error) {
 type CreateJob struct {
 	// List of permissions to set on the job.
 	// Wire name: 'access_control_list'
-	AccessControlList []JobAccessControlRequest ``
+	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
 	// The id of the user specified budget policy to use for this job. If not
 	// specified, a default budget policy may be applied when creating or
 	// modifying the job. See `effective_budget_policy_id` for the budget policy
 	// used by this workload.
 	// Wire name: 'budget_policy_id'
-	BudgetPolicyId string ``
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
 	// Wire name: 'continuous'
-	Continuous *Continuous ``
+	Continuous *Continuous `json:"continuous,omitempty"`
 	// Deployment information for jobs managed by external sources.
 	// Wire name: 'deployment'
-	Deployment *JobDeployment ``
+	Deployment *JobDeployment `json:"deployment,omitempty"`
 	// An optional description for the job. The maximum length is 27700
 	// characters in UTF-8 encoding.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Edit mode of the job.
 	//
 	// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
 	// `EDITABLE`: The job is in an editable state and can be modified.
 	// Wire name: 'edit_mode'
-	EditMode JobEditMode ``
+	EditMode JobEditMode `json:"edit_mode,omitempty"`
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
 	// Wire name: 'email_notifications'
-	EmailNotifications *JobEmailNotifications ``
+	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// A list of task execution environment specifications that can be
 	// referenced by serverless tasks of this job. An environment is required to
 	// be present for serverless tasks. For serverless notebook tasks, the
@@ -1805,12 +1805,12 @@ type CreateJob struct {
 	// serverless tasks, the task environment is required to be specified using
 	// environment_key in the task settings.
 	// Wire name: 'environments'
-	Environments []JobEnvironment ``
+	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
 	// always set to `"MULTI_TASK"`.
 	// Wire name: 'format'
-	Format Format ``
+	Format Format `json:"format,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks.
@@ -1822,15 +1822,15 @@ type CreateJob struct {
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	// Wire name: 'git_source'
-	GitSource *GitSource ``
+	GitSource *GitSource `json:"git_source,omitempty"`
 
 	// Wire name: 'health'
-	Health *JobsHealthRules ``
+	Health *JobsHealthRules `json:"health,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
 	// You must declare dependent libraries in task settings.
 	// Wire name: 'job_clusters'
-	JobClusters []JobCluster ``
+	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// An optional maximum allowed number of concurrent runs of the job. Set
 	// this value if you want to be able to execute multiple runs of the same
 	// job concurrently. This is useful for example if you trigger your job on a
@@ -1843,19 +1843,19 @@ type CreateJob struct {
 	// than 3 active runs. This value cannot exceed 1000. Setting this value to
 	// `0` causes all new runs to be skipped.
 	// Wire name: 'max_concurrent_runs'
-	MaxConcurrentRuns int ``
+	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
 	// An optional name for the job. The maximum length is 4096 bytes in UTF-8
 	// encoding.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// job.
 	// Wire name: 'notification_settings'
-	NotificationSettings *JobNotificationSettings ``
+	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	// Wire name: 'parameters'
-	Parameters []JobParameterDefinition ``
+	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
 	// The performance mode on a serverless job. This field determines the level
 	// of compute performance or cost-efficiency for the run.
 	//
@@ -1863,27 +1863,27 @@ type CreateJob struct {
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
 	// Wire name: 'performance_target'
-	PerformanceTarget PerformanceTarget ``
+	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the job.
 	// Wire name: 'queue'
-	Queue *QueueSettings ``
+	Queue *QueueSettings `json:"queue,omitempty"`
 	// The user or service principal that the job runs as, if specified in the
 	// request. This field indicates the explicit configuration of `run_as` for
 	// the job. To find the value in all cases, explicit or implicit, use
 	// `run_as_user_name`.
 	// Wire name: 'run_as'
-	RunAs *JobRunAs ``
+	RunAs *JobRunAs `json:"run_as,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
 	// or sending an API request to `runNow`.
 	// Wire name: 'schedule'
-	Schedule *CronSchedule ``
+	Schedule *CronSchedule `json:"schedule,omitempty"`
 	// A map of tags associated with the job. These are forwarded to the cluster
 	// as cluster tags for jobs clusters, and are subject to the same
 	// limitations as cluster tags. A maximum of 25 tags can be added to the
 	// job.
 	// Wire name: 'tags'
-	Tags map[string]string ``
+	Tags map[string]string `json:"tags,omitempty"`
 	// A list of task specifications to be executed by this job. It supports up
 	// to 1000 elements in write endpoints (:method:jobs/create,
 	// :method:jobs/reset, :method:jobs/update, :method:jobs/submit). Read
@@ -1892,21 +1892,21 @@ type CreateJob struct {
 	// `next_page_token` field at the object root to determine if more results
 	// are available.
 	// Wire name: 'tasks'
-	Tasks []Task ``
+	Tasks []Task `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
 	// Wire name: 'timeout_seconds'
-	TimeoutSeconds int ``
+	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 	// A configuration to trigger a run when certain conditions are met. The
 	// default behavior is that the job runs only when triggered by clicking
 	// “Run Now” in the Jobs UI or sending an API request to `runNow`.
 	// Wire name: 'trigger'
-	Trigger *TriggerSettings ``
+	Trigger *TriggerSettings `json:"trigger,omitempty"`
 	// A collection of system notification IDs to notify when runs of this job
 	// begin or complete.
 	// Wire name: 'webhook_notifications'
-	WebhookNotifications *WebhookNotifications ``
-	ForceSendFields      []string              `tf:"-"`
+	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+	ForceSendFields      []string              `json:"-" tf:"-"`
 }
 
 func (st CreateJob) MarshalJSON() ([]byte, error) {
@@ -2290,8 +2290,8 @@ func CreateJobFromPb(pb *jobspb.CreateJobPb) (*CreateJob, error) {
 type CreateResponse struct {
 	// The canonical identifier for the newly created job.
 	// Wire name: 'job_id'
-	JobId           int64    ``
-	ForceSendFields []string `tf:"-"`
+	JobId           int64    `json:"job_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateResponse) MarshalJSON() ([]byte, error) {
@@ -2348,19 +2348,19 @@ func CreateResponseFromPb(pb *jobspb.CreateResponsePb) (*CreateResponse, error) 
 type CronSchedule struct {
 	// Indicate whether this schedule is paused or not.
 	// Wire name: 'pause_status'
-	PauseStatus PauseStatus ``
+	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 	// A Cron expression using Quartz syntax that describes the schedule for a
 	// job. See [Cron Trigger] for details. This field is required.
 	//
 	// [Cron Trigger]: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
 	// Wire name: 'quartz_cron_expression'
-	QuartzCronExpression string ``
+	QuartzCronExpression string `json:"quartz_cron_expression"`
 	// A Java timezone ID. The schedule for a job is resolved with respect to
 	// this timezone. See [Java TimeZone] for details. This field is required.
 	//
 	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
 	// Wire name: 'timezone_id'
-	TimezoneId string ``
+	TimezoneId string `json:"timezone_id"`
 }
 
 func (st CronSchedule) MarshalJSON() ([]byte, error) {
@@ -2427,11 +2427,11 @@ func CronScheduleFromPb(pb *jobspb.CronSchedulePb) (*CronSchedule, error) {
 type DashboardPageSnapshot struct {
 
 	// Wire name: 'page_display_name'
-	PageDisplayName string ``
+	PageDisplayName string `json:"page_display_name,omitempty"`
 
 	// Wire name: 'widget_error_details'
-	WidgetErrorDetails []WidgetErrorDetail ``
-	ForceSendFields    []string            `tf:"-"`
+	WidgetErrorDetails []WidgetErrorDetail `json:"widget_error_details,omitempty"`
+	ForceSendFields    []string            `json:"-" tf:"-"`
 }
 
 func (st DashboardPageSnapshot) MarshalJSON() ([]byte, error) {
@@ -2513,16 +2513,16 @@ func DashboardPageSnapshotFromPb(pb *jobspb.DashboardPageSnapshotPb) (*Dashboard
 type DashboardTask struct {
 	// The identifier of the dashboard to refresh.
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id,omitempty"`
 	// Optional: subscription configuration for sending the dashboard snapshot.
 	// Wire name: 'subscription'
-	Subscription *Subscription ``
+	Subscription *Subscription `json:"subscription,omitempty"`
 	// Optional: The warehouse id to execute the dashboard with for the
 	// schedule. If not specified, the default warehouse of the dashboard will
 	// be used.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DashboardTask) MarshalJSON() ([]byte, error) {
@@ -2595,7 +2595,7 @@ func DashboardTaskFromPb(pb *jobspb.DashboardTaskPb) (*DashboardTask, error) {
 type DashboardTaskOutput struct {
 	// Should only be populated for manual PDF download jobs.
 	// Wire name: 'page_snapshots'
-	PageSnapshots []DashboardPageSnapshot ``
+	PageSnapshots []DashboardPageSnapshot `json:"page_snapshots,omitempty"`
 }
 
 func (st DashboardTaskOutput) MarshalJSON() ([]byte, error) {
@@ -2670,17 +2670,17 @@ func DashboardTaskOutputFromPb(pb *jobspb.DashboardTaskOutputPb) (*DashboardTask
 type DbtCloudJobRunStep struct {
 	// Orders the steps in the job
 	// Wire name: 'index'
-	Index int ``
+	Index int `json:"index,omitempty"`
 	// Output of the step
 	// Wire name: 'logs'
-	Logs string ``
+	Logs string `json:"logs,omitempty"`
 	// Name of the step in the job
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// State of the step
 	// Wire name: 'status'
-	Status          DbtPlatformRunStatus ``
-	ForceSendFields []string             `tf:"-"`
+	Status          DbtPlatformRunStatus `json:"status,omitempty"`
+	ForceSendFields []string             `json:"-" tf:"-"`
 }
 
 func (st DbtCloudJobRunStep) MarshalJSON() ([]byte, error) {
@@ -2757,11 +2757,11 @@ type DbtCloudTask struct {
 	// The resource name of the UC connection that authenticates the dbt Cloud
 	// for this task
 	// Wire name: 'connection_resource_name'
-	ConnectionResourceName string ``
+	ConnectionResourceName string `json:"connection_resource_name,omitempty"`
 	// Id of the dbt Cloud job to be triggered
 	// Wire name: 'dbt_cloud_job_id'
-	DbtCloudJobId   int64    ``
-	ForceSendFields []string `tf:"-"`
+	DbtCloudJobId   int64    `json:"dbt_cloud_job_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DbtCloudTask) MarshalJSON() ([]byte, error) {
@@ -2821,14 +2821,14 @@ func DbtCloudTaskFromPb(pb *jobspb.DbtCloudTaskPb) (*DbtCloudTask, error) {
 type DbtCloudTaskOutput struct {
 	// Id of the job run in dbt Cloud
 	// Wire name: 'dbt_cloud_job_run_id'
-	DbtCloudJobRunId int64 ``
+	DbtCloudJobRunId int64 `json:"dbt_cloud_job_run_id,omitempty"`
 	// Steps of the job run as received from dbt Cloud
 	// Wire name: 'dbt_cloud_job_run_output'
-	DbtCloudJobRunOutput []DbtCloudJobRunStep ``
+	DbtCloudJobRunOutput []DbtCloudJobRunStep `json:"dbt_cloud_job_run_output,omitempty"`
 	// Url where full run details can be viewed
 	// Wire name: 'dbt_cloud_job_run_url'
-	DbtCloudJobRunUrl string   ``
-	ForceSendFields   []string `tf:"-"`
+	DbtCloudJobRunUrl string   `json:"dbt_cloud_job_run_url,omitempty"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
 func (st DbtCloudTaskOutput) MarshalJSON() ([]byte, error) {
@@ -2912,13 +2912,13 @@ type DbtOutput struct {
 	// An optional map of headers to send when retrieving the artifact from the
 	// `artifacts_link`.
 	// Wire name: 'artifacts_headers'
-	ArtifactsHeaders map[string]string ``
+	ArtifactsHeaders map[string]string `json:"artifacts_headers,omitempty"`
 	// A pre-signed URL to download the (compressed) dbt artifacts. This link is
 	// valid for a limited time (30 minutes). This information is only available
 	// after the run has finished.
 	// Wire name: 'artifacts_link'
-	ArtifactsLink   string   ``
-	ForceSendFields []string `tf:"-"`
+	ArtifactsLink   string   `json:"artifacts_link,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DbtOutput) MarshalJSON() ([]byte, error) {
@@ -2978,25 +2978,25 @@ func DbtOutputFromPb(pb *jobspb.DbtOutputPb) (*DbtOutput, error) {
 type DbtPlatformJobRunStep struct {
 	// Orders the steps in the job
 	// Wire name: 'index'
-	Index int ``
+	Index int `json:"index,omitempty"`
 	// Output of the step
 	// Wire name: 'logs'
-	Logs string ``
+	Logs string `json:"logs,omitempty"`
 	// Whether the logs of this step have been truncated. If true, the logs has
 	// been truncated to 10000 characters.
 	// Wire name: 'logs_truncated'
-	LogsTruncated bool ``
+	LogsTruncated bool `json:"logs_truncated,omitempty"`
 	// Name of the step in the job
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Whether the name of the job has been truncated. If true, the name has
 	// been truncated to 100 characters.
 	// Wire name: 'name_truncated'
-	NameTruncated bool ``
+	NameTruncated bool `json:"name_truncated,omitempty"`
 	// State of the step
 	// Wire name: 'status'
-	Status          DbtPlatformRunStatus ``
-	ForceSendFields []string             `tf:"-"`
+	Status          DbtPlatformRunStatus `json:"status,omitempty"`
+	ForceSendFields []string             `json:"-" tf:"-"`
 }
 
 func (st DbtPlatformJobRunStep) MarshalJSON() ([]byte, error) {
@@ -3143,12 +3143,12 @@ type DbtPlatformTask struct {
 	// The resource name of the UC connection that authenticates the dbt
 	// platform for this task
 	// Wire name: 'connection_resource_name'
-	ConnectionResourceName string ``
+	ConnectionResourceName string `json:"connection_resource_name,omitempty"`
 	// Id of the dbt platform job to be triggered. Specified as a string for
 	// maximum compatibility with clients.
 	// Wire name: 'dbt_platform_job_id'
-	DbtPlatformJobId string   ``
-	ForceSendFields  []string `tf:"-"`
+	DbtPlatformJobId string   `json:"dbt_platform_job_id,omitempty"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st DbtPlatformTask) MarshalJSON() ([]byte, error) {
@@ -3208,18 +3208,18 @@ type DbtPlatformTaskOutput struct {
 	// Id of the job run in dbt platform. Specified as a string for maximum
 	// compatibility with clients.
 	// Wire name: 'dbt_platform_job_run_id'
-	DbtPlatformJobRunId string ``
+	DbtPlatformJobRunId string `json:"dbt_platform_job_run_id,omitempty"`
 	// Steps of the job run as received from dbt platform
 	// Wire name: 'dbt_platform_job_run_output'
-	DbtPlatformJobRunOutput []DbtPlatformJobRunStep ``
+	DbtPlatformJobRunOutput []DbtPlatformJobRunStep `json:"dbt_platform_job_run_output,omitempty"`
 	// Url where full run details can be viewed
 	// Wire name: 'dbt_platform_job_run_url'
-	DbtPlatformJobRunUrl string ``
+	DbtPlatformJobRunUrl string `json:"dbt_platform_job_run_url,omitempty"`
 	// Whether the number of steps in the output has been truncated. If true,
 	// the output will contain the first 20 steps of the output.
 	// Wire name: 'steps_truncated'
-	StepsTruncated  bool     ``
-	ForceSendFields []string `tf:"-"`
+	StepsTruncated  bool     `json:"steps_truncated,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DbtPlatformTaskOutput) MarshalJSON() ([]byte, error) {
@@ -3307,26 +3307,26 @@ type DbtTask struct {
 	// catalog value can only be specified if a warehouse_id is specified.
 	// Requires dbt-databricks >= 1.1.1.
 	// Wire name: 'catalog'
-	Catalog string ``
+	Catalog string `json:"catalog,omitempty"`
 	// A list of dbt commands to execute. All commands must start with `dbt`.
 	// This parameter must not be empty. A maximum of up to 10 commands can be
 	// provided.
 	// Wire name: 'commands'
-	Commands []string ``
+	Commands []string `json:"commands"`
 	// Optional (relative) path to the profiles directory. Can only be specified
 	// if no warehouse_id is specified. If no warehouse_id is specified and this
 	// folder is unset, the root directory is used.
 	// Wire name: 'profiles_directory'
-	ProfilesDirectory string ``
+	ProfilesDirectory string `json:"profiles_directory,omitempty"`
 	// Path to the project directory. Optional for Git sourced tasks, in which
 	// case if no value is provided, the root of the Git repository is used.
 	// Wire name: 'project_directory'
-	ProjectDirectory string ``
+	ProjectDirectory string `json:"project_directory,omitempty"`
 	// Optional schema to write to. This parameter is only used when a
 	// warehouse_id is also provided. If not provided, the `default` schema is
 	// used.
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 	// Optional location type of the project directory. When set to `WORKSPACE`,
 	// the project will be retrieved from the local Databricks workspace. When
 	// set to `GIT`, the project will be retrieved from a Git repository defined
@@ -3336,14 +3336,14 @@ type DbtTask struct {
 	// * `WORKSPACE`: Project is located in Databricks workspace. * `GIT`:
 	// Project is located in cloud Git provider.
 	// Wire name: 'source'
-	Source Source ``
+	Source Source `json:"source,omitempty"`
 	// ID of the SQL warehouse to connect to. If provided, we automatically
 	// generate and provide the profile and connection details to dbt. It can be
 	// overridden on a per-command basis by using the `--profiles-dir` command
 	// line argument.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DbtTask) MarshalJSON() ([]byte, error) {
@@ -3424,7 +3424,7 @@ func DbtTaskFromPb(pb *jobspb.DbtTaskPb) (*DbtTask, error) {
 type DeleteJob struct {
 	// The canonical identifier of the job to delete. This field is required.
 	// Wire name: 'job_id'
-	JobId int64 ``
+	JobId int64 `json:"job_id"`
 }
 
 func (st DeleteJob) MarshalJSON() ([]byte, error) {
@@ -3475,7 +3475,7 @@ func DeleteJobFromPb(pb *jobspb.DeleteJobPb) (*DeleteJob, error) {
 type DeleteRun struct {
 	// ID of the run to delete.
 	// Wire name: 'run_id'
-	RunId int64 ``
+	RunId int64 `json:"run_id"`
 }
 
 func (st DeleteRun) MarshalJSON() ([]byte, error) {
@@ -3529,20 +3529,20 @@ type EnforcePolicyComplianceForJobResponseJobClusterSettingsChange struct {
 	// The field where this change would be made, prepended with the job cluster
 	// key.
 	// Wire name: 'field'
-	Field string ``
+	Field string `json:"field,omitempty"`
 	// The new value of this field after enforcing policy compliance (either a
 	// number, a boolean, or a string) converted to a string. This is intended
 	// to be read by a human. The typed new value of this field can be retrieved
 	// by reading the settings field in the API response.
 	// Wire name: 'new_value'
-	NewValue string ``
+	NewValue string `json:"new_value,omitempty"`
 	// The previous value of this field before enforcing policy compliance
 	// (either a number, a boolean, or a string) converted to a string. This is
 	// intended to be read by a human. The type of the field can be retrieved by
 	// reading the settings field in the API response.
 	// Wire name: 'previous_value'
-	PreviousValue   string   ``
-	ForceSendFields []string `tf:"-"`
+	PreviousValue   string   `json:"previous_value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EnforcePolicyComplianceForJobResponseJobClusterSettingsChange) MarshalJSON() ([]byte, error) {
@@ -3603,12 +3603,12 @@ func EnforcePolicyComplianceForJobResponseJobClusterSettingsChangeFromPb(pb *job
 type EnforcePolicyComplianceRequest struct {
 	// The ID of the job you want to enforce policy compliance on.
 	// Wire name: 'job_id'
-	JobId int64 ``
+	JobId int64 `json:"job_id"`
 	// If set, previews changes made to the job to comply with its policy, but
 	// does not update the job.
 	// Wire name: 'validate_only'
-	ValidateOnly    bool     ``
-	ForceSendFields []string `tf:"-"`
+	ValidateOnly    bool     `json:"validate_only,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EnforcePolicyComplianceRequest) MarshalJSON() ([]byte, error) {
@@ -3668,12 +3668,12 @@ type EnforcePolicyComplianceResponse struct {
 	// Whether any changes have been made to the job cluster settings for the
 	// job to become compliant with its policies.
 	// Wire name: 'has_changes'
-	HasChanges bool ``
+	HasChanges bool `json:"has_changes,omitempty"`
 	// A list of job cluster changes that have been made to the job’s cluster
 	// settings in order for all job clusters to become compliant with their
 	// policies.
 	// Wire name: 'job_cluster_changes'
-	JobClusterChanges []EnforcePolicyComplianceForJobResponseJobClusterSettingsChange ``
+	JobClusterChanges []EnforcePolicyComplianceForJobResponseJobClusterSettingsChange `json:"job_cluster_changes,omitempty"`
 	// Updated job settings after policy enforcement. Policy enforcement only
 	// applies to job clusters that are created when running the job (which are
 	// specified in new_cluster) and does not apply to existing all-purpose
@@ -3681,8 +3681,8 @@ type EnforcePolicyComplianceResponse struct {
 	// values to the existing job clusters in order to satisfy policy
 	// requirements.
 	// Wire name: 'settings'
-	Settings        *JobSettings ``
-	ForceSendFields []string     `tf:"-"`
+	Settings        *JobSettings `json:"settings,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
 func (st EnforcePolicyComplianceResponse) MarshalJSON() ([]byte, error) {
@@ -3782,7 +3782,7 @@ type ExportRunOutput struct {
 	//
 	// [Python script]: https://docs.databricks.com/en/_static/examples/extract.py
 	// Wire name: 'views'
-	Views []ViewItem ``
+	Views []ViewItem `json:"views,omitempty"`
 }
 
 func (st ExportRunOutput) MarshalJSON() ([]byte, error) {
@@ -3854,11 +3854,9 @@ func ExportRunOutputFromPb(pb *jobspb.ExportRunOutputPb) (*ExportRunOutput, erro
 
 type ExportRunRequest struct {
 	// The canonical identifier for the run. This field is required.
-	// Wire name: 'run_id'
-	RunId int64 `tf:"-"`
+	RunId int64 `json:"-" tf:"-"`
 	// Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
-	// Wire name: 'views_to_export'
-	ViewsToExport ViewsToExport `tf:"-"`
+	ViewsToExport ViewsToExport `json:"-" tf:"-"`
 }
 
 func (st ExportRunRequest) MarshalJSON() ([]byte, error) {
@@ -3925,18 +3923,18 @@ type FileArrivalTriggerConfiguration struct {
 	// passed since the last time the trigger fired. The minimum allowed value
 	// is 60 seconds
 	// Wire name: 'min_time_between_triggers_seconds'
-	MinTimeBetweenTriggersSeconds int ``
+	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
 	// URL to be monitored for file arrivals. The path must point to the root or
 	// a subpath of the external location.
 	// Wire name: 'url'
-	Url string ``
+	Url string `json:"url"`
 	// If set, the trigger starts a run only after no file activity has occurred
 	// for the specified amount of time. This makes it possible to wait for a
 	// batch of incoming files to arrive before triggering a run. The minimum
 	// allowed value is 60 seconds.
 	// Wire name: 'wait_after_last_change_seconds'
-	WaitAfterLastChangeSeconds int      ``
-	ForceSendFields            []string `tf:"-"`
+	WaitAfterLastChangeSeconds int      `json:"wait_after_last_change_seconds,omitempty"`
+	ForceSendFields            []string `json:"-" tf:"-"`
 }
 
 func (st FileArrivalTriggerConfiguration) MarshalJSON() ([]byte, error) {
@@ -3998,8 +3996,8 @@ type FileArrivalTriggerState struct {
 	// Indicates whether the trigger leverages file events to detect file
 	// arrivals.
 	// Wire name: 'using_file_events'
-	UsingFileEvents bool     ``
-	ForceSendFields []string `tf:"-"`
+	UsingFileEvents bool     `json:"using_file_events,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st FileArrivalTriggerState) MarshalJSON() ([]byte, error) {
@@ -4056,10 +4054,10 @@ func FileArrivalTriggerStateFromPb(pb *jobspb.FileArrivalTriggerStatePb) (*FileA
 type ForEachStats struct {
 	// Sample of 3 most common error messages occurred during the iteration.
 	// Wire name: 'error_message_stats'
-	ErrorMessageStats []ForEachTaskErrorMessageStats ``
+	ErrorMessageStats []ForEachTaskErrorMessageStats `json:"error_message_stats,omitempty"`
 	// Describes stats of the iteration. Only latest retries are considered.
 	// Wire name: 'task_run_stats'
-	TaskRunStats *ForEachTaskTaskRunStats ``
+	TaskRunStats *ForEachTaskTaskRunStats `json:"task_run_stats,omitempty"`
 }
 
 func (st ForEachStats) MarshalJSON() ([]byte, error) {
@@ -4148,15 +4146,15 @@ type ForEachTask struct {
 	// this value if you want to be able to execute multiple runs of the task
 	// concurrently.
 	// Wire name: 'concurrency'
-	Concurrency int ``
+	Concurrency int `json:"concurrency,omitempty"`
 	// Array for task to iterate on. This can be a JSON string or a reference to
 	// an array parameter.
 	// Wire name: 'inputs'
-	Inputs string ``
+	Inputs string `json:"inputs"`
 	// Configuration for the task that will be run for each element in the array
 	// Wire name: 'task'
-	Task            Task     ``
-	ForceSendFields []string `tf:"-"`
+	Task            Task     `json:"task"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ForEachTask) MarshalJSON() ([]byte, error) {
@@ -4230,14 +4228,14 @@ type ForEachTaskErrorMessageStats struct {
 	// Describes the count of such error message encountered during the
 	// iterations.
 	// Wire name: 'count'
-	Count int ``
+	Count int `json:"count,omitempty"`
 	// Describes the error message occured during the iterations.
 	// Wire name: 'error_message'
-	ErrorMessage string ``
+	ErrorMessage string `json:"error_message,omitempty"`
 	// Describes the termination reason for the error message.
 	// Wire name: 'termination_category'
-	TerminationCategory string   ``
-	ForceSendFields     []string `tf:"-"`
+	TerminationCategory string   `json:"termination_category,omitempty"`
+	ForceSendFields     []string `json:"-" tf:"-"`
 }
 
 func (st ForEachTaskErrorMessageStats) MarshalJSON() ([]byte, error) {
@@ -4299,23 +4297,23 @@ type ForEachTaskTaskRunStats struct {
 	// Describes the iteration runs having an active lifecycle state or an
 	// active run sub state.
 	// Wire name: 'active_iterations'
-	ActiveIterations int ``
+	ActiveIterations int `json:"active_iterations,omitempty"`
 	// Describes the number of failed and succeeded iteration runs.
 	// Wire name: 'completed_iterations'
-	CompletedIterations int ``
+	CompletedIterations int `json:"completed_iterations,omitempty"`
 	// Describes the number of failed iteration runs.
 	// Wire name: 'failed_iterations'
-	FailedIterations int ``
+	FailedIterations int `json:"failed_iterations,omitempty"`
 	// Describes the number of iteration runs that have been scheduled.
 	// Wire name: 'scheduled_iterations'
-	ScheduledIterations int ``
+	ScheduledIterations int `json:"scheduled_iterations,omitempty"`
 	// Describes the number of succeeded iteration runs.
 	// Wire name: 'succeeded_iterations'
-	SucceededIterations int ``
+	SucceededIterations int `json:"succeeded_iterations,omitempty"`
 	// Describes the length of the list of items to iterate over.
 	// Wire name: 'total_iterations'
-	TotalIterations int      ``
-	ForceSendFields []string `tf:"-"`
+	TotalIterations int      `json:"total_iterations,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ForEachTaskTaskRunStats) MarshalJSON() ([]byte, error) {
@@ -4435,18 +4433,18 @@ func FormatFromPb(pb *jobspb.FormatPb) (*Format, error) {
 type GenAiComputeTask struct {
 	// Command launcher to run the actual script, e.g. bash, python etc.
 	// Wire name: 'command'
-	Command string ``
+	Command string `json:"command,omitempty"`
 
 	// Wire name: 'compute'
-	Compute *ComputeConfig ``
+	Compute *ComputeConfig `json:"compute,omitempty"`
 	// Runtime image
 	// Wire name: 'dl_runtime_image'
-	DlRuntimeImage string ``
+	DlRuntimeImage string `json:"dl_runtime_image"`
 	// Optional string containing the name of the MLflow experiment to log the
 	// run to. If name is not found, backend will create the mlflow experiment
 	// using the name.
 	// Wire name: 'mlflow_experiment_name'
-	MlflowExperimentName string ``
+	MlflowExperimentName string `json:"mlflow_experiment_name,omitempty"`
 	// Optional location type of the training script. When set to `WORKSPACE`,
 	// the script will be retrieved from the local Databricks workspace. When
 	// set to `GIT`, the script will be retrieved from a Git repository defined
@@ -4455,24 +4453,24 @@ type GenAiComputeTask struct {
 	// is located in Databricks workspace. * `GIT`: Script is located in cloud
 	// Git provider.
 	// Wire name: 'source'
-	Source Source ``
+	Source Source `json:"source,omitempty"`
 	// The training script file path to be executed. Cloud file URIs (such as
 	// dbfs:/, s3:/, adls:/, gcs:/) and workspace paths are supported. For
 	// python files stored in the Databricks workspace, the path must be
 	// absolute and begin with `/`. For files stored in a remote repository, the
 	// path must be relative. This field is required.
 	// Wire name: 'training_script_path'
-	TrainingScriptPath string ``
+	TrainingScriptPath string `json:"training_script_path,omitempty"`
 	// Optional string containing model parameters passed to the training script
 	// in yaml format. If present, then the content in yaml_parameters_file_path
 	// will be ignored.
 	// Wire name: 'yaml_parameters'
-	YamlParameters string ``
+	YamlParameters string `json:"yaml_parameters,omitempty"`
 	// Optional path to a YAML file containing model parameters passed to the
 	// training script.
 	// Wire name: 'yaml_parameters_file_path'
-	YamlParametersFilePath string   ``
-	ForceSendFields        []string `tf:"-"`
+	YamlParametersFilePath string   `json:"yaml_parameters_file_path,omitempty"`
+	ForceSendFields        []string `json:"-" tf:"-"`
 }
 
 func (st GenAiComputeTask) MarshalJSON() ([]byte, error) {
@@ -4566,8 +4564,7 @@ func GenAiComputeTaskFromPb(pb *jobspb.GenAiComputeTaskPb) (*GenAiComputeTask, e
 
 type GetJobPermissionLevelsRequest struct {
 	// The job for which to get or manage permissions.
-	// Wire name: 'job_id'
-	JobId string `tf:"-"`
+	JobId string `json:"-" tf:"-"`
 }
 
 func (st GetJobPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
@@ -4618,7 +4615,7 @@ func GetJobPermissionLevelsRequestFromPb(pb *jobspb.GetJobPermissionLevelsReques
 type GetJobPermissionLevelsResponse struct {
 	// Specific permission levels
 	// Wire name: 'permission_levels'
-	PermissionLevels []JobPermissionsDescription ``
+	PermissionLevels []JobPermissionsDescription `json:"permission_levels,omitempty"`
 }
 
 func (st GetJobPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
@@ -4690,8 +4687,7 @@ func GetJobPermissionLevelsResponseFromPb(pb *jobspb.GetJobPermissionLevelsRespo
 
 type GetJobPermissionsRequest struct {
 	// The job for which to get or manage permissions.
-	// Wire name: 'job_id'
-	JobId string `tf:"-"`
+	JobId string `json:"-" tf:"-"`
 }
 
 func (st GetJobPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -4742,13 +4738,11 @@ func GetJobPermissionsRequestFromPb(pb *jobspb.GetJobPermissionsRequestPb) (*Get
 type GetJobRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
-	// Wire name: 'job_id'
-	JobId int64 `tf:"-"`
+	JobId int64 `json:"-" tf:"-"`
 	// Use `next_page_token` returned from the previous GetJob response to
 	// request the next page of the job's array properties.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetJobRequest) MarshalJSON() ([]byte, error) {
@@ -4806,8 +4800,7 @@ func GetJobRequestFromPb(pb *jobspb.GetJobRequestPb) (*GetJobRequest, error) {
 
 type GetPolicyComplianceRequest struct {
 	// The ID of the job whose compliance status you are requesting.
-	// Wire name: 'job_id'
-	JobId int64 `tf:"-"`
+	JobId int64 `json:"-" tf:"-"`
 }
 
 func (st GetPolicyComplianceRequest) MarshalJSON() ([]byte, error) {
@@ -4861,15 +4854,15 @@ type GetPolicyComplianceResponse struct {
 	// last edited and some of its job clusters no longer comply with their
 	// updated policies.
 	// Wire name: 'is_compliant'
-	IsCompliant bool ``
+	IsCompliant bool `json:"is_compliant,omitempty"`
 	// An object containing key-value mappings representing the first 200 policy
 	// validation errors. The keys indicate the path where the policy validation
 	// error is occurring. An identifier for the job cluster is prepended to the
 	// path. The values indicate an error message describing the policy
 	// validation error.
 	// Wire name: 'violations'
-	Violations      map[string]string ``
-	ForceSendFields []string          `tf:"-"`
+	Violations      map[string]string `json:"violations,omitempty"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
 func (st GetPolicyComplianceResponse) MarshalJSON() ([]byte, error) {
@@ -4927,8 +4920,7 @@ func GetPolicyComplianceResponseFromPb(pb *jobspb.GetPolicyComplianceResponsePb)
 
 type GetRunOutputRequest struct {
 	// The canonical identifier for the run.
-	// Wire name: 'run_id'
-	RunId int64 `tf:"-"`
+	RunId int64 `json:"-" tf:"-"`
 }
 
 func (st GetRunOutputRequest) MarshalJSON() ([]byte, error) {
@@ -4978,20 +4970,16 @@ func GetRunOutputRequestFromPb(pb *jobspb.GetRunOutputRequestPb) (*GetRunOutputR
 
 type GetRunRequest struct {
 	// Whether to include the repair history in the response.
-	// Wire name: 'include_history'
-	IncludeHistory bool `tf:"-"`
+	IncludeHistory bool `json:"-" tf:"-"`
 	// Whether to include resolved parameter values in the response.
-	// Wire name: 'include_resolved_values'
-	IncludeResolvedValues bool `tf:"-"`
+	IncludeResolvedValues bool `json:"-" tf:"-"`
 	// Use `next_page_token` returned from the previous GetRun response to
 	// request the next page of the run's array properties.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
-	// Wire name: 'run_id'
-	RunId           int64    `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	RunId           int64    `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GetRunRequest) MarshalJSON() ([]byte, error) {
@@ -5129,8 +5117,8 @@ type GitSnapshot struct {
 	// this points to the HEAD of the branch at the time of the run; if git_tag
 	// was specified, this points to the commit the tag points to.
 	// Wire name: 'used_commit'
-	UsedCommit      string   ``
-	ForceSendFields []string `tf:"-"`
+	UsedCommit      string   `json:"used_commit,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st GitSnapshot) MarshalJSON() ([]byte, error) {
@@ -5198,30 +5186,30 @@ type GitSource struct {
 	// Name of the branch to be checked out and used by this job. This field
 	// cannot be specified in conjunction with git_tag or git_commit.
 	// Wire name: 'git_branch'
-	GitBranch string ``
+	GitBranch string `json:"git_branch,omitempty"`
 	// Commit to be checked out and used by this job. This field cannot be
 	// specified in conjunction with git_branch or git_tag.
 	// Wire name: 'git_commit'
-	GitCommit string ``
+	GitCommit string `json:"git_commit,omitempty"`
 	// Unique identifier of the service used to host the Git repository. The
 	// value is case insensitive.
 	// Wire name: 'git_provider'
-	GitProvider GitProvider ``
+	GitProvider GitProvider `json:"git_provider"`
 
 	// Wire name: 'git_snapshot'
-	GitSnapshot *GitSnapshot ``
+	GitSnapshot *GitSnapshot `json:"git_snapshot,omitempty"`
 	// Name of the tag to be checked out and used by this job. This field cannot
 	// be specified in conjunction with git_branch or git_commit.
 	// Wire name: 'git_tag'
-	GitTag string ``
+	GitTag string `json:"git_tag,omitempty"`
 	// URL of the repository to be cloned by this job.
 	// Wire name: 'git_url'
-	GitUrl string ``
+	GitUrl string `json:"git_url"`
 	// The source of the job specification in the remote repository when the job
 	// is source controlled.
 	// Wire name: 'job_source'
-	JobSource       *JobSource ``
-	ForceSendFields []string   `tf:"-"`
+	JobSource       *JobSource `json:"job_source,omitempty"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
 func (st GitSource) MarshalJSON() ([]byte, error) {
@@ -5328,11 +5316,11 @@ type Job struct {
 	// The time at which this job was created in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC).
 	// Wire name: 'created_time'
-	CreatedTime int64 ``
+	CreatedTime int64 `json:"created_time,omitempty"`
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	// Wire name: 'creator_user_name'
-	CreatorUserName string ``
+	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// The id of the budget policy used by this job for cost attribution
 	// purposes. This may be set through (in order of precedence): 1. Budget
 	// admins through the account or workspace console 2. Jobs UI in the job
@@ -5340,19 +5328,19 @@ type Job struct {
 	// based on accessible budget policies of the run_as identity on job
 	// creation or modification.
 	// Wire name: 'effective_budget_policy_id'
-	EffectiveBudgetPolicyId string ``
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// Indicates if the job has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/get endpoint.
 	// It is only relevant for API 2.2 :method:jobs/list requests with
 	// `expand_tasks=true`.
 	// Wire name: 'has_more'
-	HasMore bool ``
+	HasMore bool `json:"has_more,omitempty"`
 	// The canonical identifier for this job.
 	// Wire name: 'job_id'
-	JobId int64 ``
+	JobId int64 `json:"job_id,omitempty"`
 	// A token that can be used to list the next page of array properties.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// The email of an active workspace user or the application ID of a service
 	// principal that the job runs as. This value can be changed by setting the
 	// `run_as` field when creating or updating a job.
@@ -5361,15 +5349,15 @@ type Job struct {
 	// is set to the creator of the job if job access control is disabled or to
 	// the user with the `is_owner` permission if job access control is enabled.
 	// Wire name: 'run_as_user_name'
-	RunAsUserName string ``
+	RunAsUserName string `json:"run_as_user_name,omitempty"`
 	// Settings for this job and all of its runs. These settings can be updated
 	// using the `resetJob` method.
 	// Wire name: 'settings'
-	Settings *JobSettings ``
+	Settings *JobSettings `json:"settings,omitempty"`
 	// State of the trigger associated with the job.
 	// Wire name: 'trigger_state'
-	TriggerState    *TriggerStateProto ``
-	ForceSendFields []string           `tf:"-"`
+	TriggerState    *TriggerStateProto `json:"trigger_state,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
 func (st Job) MarshalJSON() ([]byte, error) {
@@ -5466,17 +5454,17 @@ func JobFromPb(pb *jobspb.JobPb) (*Job, error) {
 type JobAccessControlRequest struct {
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel JobPermissionLevel ``
+	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st JobAccessControlRequest) MarshalJSON() ([]byte, error) {
@@ -5551,20 +5539,20 @@ func JobAccessControlRequestFromPb(pb *jobspb.JobAccessControlRequestPb) (*JobAc
 type JobAccessControlResponse struct {
 	// All permissions.
 	// Wire name: 'all_permissions'
-	AllPermissions []JobPermission ``
+	AllPermissions []JobPermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
 	// Wire name: 'group_name'
-	GroupName string ``
+	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st JobAccessControlResponse) MarshalJSON() ([]byte, error) {
@@ -5653,10 +5641,10 @@ type JobCluster struct {
 	// unique within the job. `JobTaskSettings` may refer to this field to
 	// determine which cluster to launch for the task execution.
 	// Wire name: 'job_cluster_key'
-	JobClusterKey string ``
+	JobClusterKey string `json:"job_cluster_key"`
 	// If new_cluster, a description of a cluster that is created for each task.
 	// Wire name: 'new_cluster'
-	NewCluster compute.ClusterSpec ``
+	NewCluster compute.ClusterSpec `json:"new_cluster"`
 }
 
 func (st JobCluster) MarshalJSON() ([]byte, error) {
@@ -5721,18 +5709,18 @@ func JobClusterFromPb(pb *jobspb.JobClusterPb) (*JobCluster, error) {
 type JobCompliance struct {
 	// Whether this job is in compliance with the latest version of its policy.
 	// Wire name: 'is_compliant'
-	IsCompliant bool ``
+	IsCompliant bool `json:"is_compliant,omitempty"`
 	// Canonical unique identifier for a job.
 	// Wire name: 'job_id'
-	JobId int64 ``
+	JobId int64 `json:"job_id"`
 	// An object containing key-value mappings representing the first 200 policy
 	// validation errors. The keys indicate the path where the policy validation
 	// error is occurring. An identifier for the job cluster is prepended to the
 	// path. The values indicate an error message describing the policy
 	// validation error.
 	// Wire name: 'violations'
-	Violations      map[string]string ``
-	ForceSendFields []string          `tf:"-"`
+	Violations      map[string]string `json:"violations,omitempty"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
 func (st JobCompliance) MarshalJSON() ([]byte, error) {
@@ -5795,11 +5783,11 @@ type JobDeployment struct {
 	//
 	// * `BUNDLE`: The job is managed by Databricks Asset Bundle.
 	// Wire name: 'kind'
-	Kind JobDeploymentKind ``
+	Kind JobDeploymentKind `json:"kind"`
 	// Path of the file that contains deployment metadata.
 	// Wire name: 'metadata_file_path'
-	MetadataFilePath string   ``
-	ForceSendFields  []string `tf:"-"`
+	MetadataFilePath string   `json:"metadata_file_path,omitempty"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st JobDeployment) MarshalJSON() ([]byte, error) {
@@ -5983,25 +5971,25 @@ type JobEmailNotifications struct {
 	// run is skipped. This field is `deprecated`. Please use the
 	// `notification_settings.no_alert_for_skipped_runs` field.
 	// Wire name: 'no_alert_for_skipped_runs'
-	NoAlertForSkippedRuns bool ``
+	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
 	// A list of email addresses to be notified when the duration of a run
 	// exceeds the threshold specified for the `RUN_DURATION_SECONDS` metric in
 	// the `health` field. If no rule for the `RUN_DURATION_SECONDS` metric is
 	// specified in the `health` field for the job, notifications are not sent.
 	// Wire name: 'on_duration_warning_threshold_exceeded'
-	OnDurationWarningThresholdExceeded []string ``
+	OnDurationWarningThresholdExceeded []string `json:"on_duration_warning_threshold_exceeded,omitempty"`
 	// A list of email addresses to be notified when a run unsuccessfully
 	// completes. A run is considered to have completed unsuccessfully if it
 	// ends with an `INTERNAL_ERROR` `life_cycle_state` or a `FAILED`, or
 	// `TIMED_OUT` result_state. If this is not specified on job creation,
 	// reset, or update the list is empty, and notifications are not sent.
 	// Wire name: 'on_failure'
-	OnFailure []string ``
+	OnFailure []string `json:"on_failure,omitempty"`
 	// A list of email addresses to be notified when a run begins. If not
 	// specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
 	// Wire name: 'on_start'
-	OnStart []string ``
+	OnStart []string `json:"on_start,omitempty"`
 	// A list of email addresses to notify when any streaming backlog thresholds
 	// are exceeded for any stream. Streaming backlog thresholds can be set in
 	// the `health` field using the following metrics:
@@ -6010,15 +5998,15 @@ type JobEmailNotifications struct {
 	// based on the 10-minute average of these metrics. If the issue persists,
 	// notifications are resent every 30 minutes.
 	// Wire name: 'on_streaming_backlog_exceeded'
-	OnStreamingBacklogExceeded []string ``
+	OnStreamingBacklogExceeded []string `json:"on_streaming_backlog_exceeded,omitempty"`
 	// A list of email addresses to be notified when a run successfully
 	// completes. A run is considered to have completed successfully if it ends
 	// with a `TERMINATED` `life_cycle_state` and a `SUCCESS` result_state. If
 	// not specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
 	// Wire name: 'on_success'
-	OnSuccess       []string ``
-	ForceSendFields []string `tf:"-"`
+	OnSuccess       []string `json:"on_success,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st JobEmailNotifications) MarshalJSON() ([]byte, error) {
@@ -6085,10 +6073,10 @@ func JobEmailNotificationsFromPb(pb *jobspb.JobEmailNotificationsPb) (*JobEmailN
 type JobEnvironment struct {
 	// The key of an environment. It has to be unique within a job.
 	// Wire name: 'environment_key'
-	EnvironmentKey string ``
+	EnvironmentKey string `json:"environment_key"`
 
 	// Wire name: 'spec'
-	Spec *compute.Environment ``
+	Spec *compute.Environment `json:"spec,omitempty"`
 }
 
 func (st JobEnvironment) MarshalJSON() ([]byte, error) {
@@ -6154,12 +6142,12 @@ type JobNotificationSettings struct {
 	// If true, do not send notifications to recipients specified in
 	// `on_failure` if the run is canceled.
 	// Wire name: 'no_alert_for_canceled_runs'
-	NoAlertForCanceledRuns bool ``
+	NoAlertForCanceledRuns bool `json:"no_alert_for_canceled_runs,omitempty"`
 	// If true, do not send notifications to recipients specified in
 	// `on_failure` if the run is skipped.
 	// Wire name: 'no_alert_for_skipped_runs'
-	NoAlertForSkippedRuns bool     ``
-	ForceSendFields       []string `tf:"-"`
+	NoAlertForSkippedRuns bool     `json:"no_alert_for_skipped_runs,omitempty"`
+	ForceSendFields       []string `json:"-" tf:"-"`
 }
 
 func (st JobNotificationSettings) MarshalJSON() ([]byte, error) {
@@ -6218,14 +6206,14 @@ func JobNotificationSettingsFromPb(pb *jobspb.JobNotificationSettingsPb) (*JobNo
 type JobParameter struct {
 	// The optional default value of the parameter
 	// Wire name: 'default'
-	Default string ``
+	Default string `json:"default,omitempty"`
 	// The name of the parameter
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The value used in the run
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st JobParameter) MarshalJSON() ([]byte, error) {
@@ -6286,11 +6274,11 @@ func JobParameterFromPb(pb *jobspb.JobParameterPb) (*JobParameter, error) {
 type JobParameterDefinition struct {
 	// Default value of the parameter.
 	// Wire name: 'default'
-	Default string ``
+	Default string `json:"default"`
 	// The name of the defined parameter. May only contain alphanumeric
 	// characters, `_`, `-`, and `.`
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 }
 
 func (st JobParameterDefinition) MarshalJSON() ([]byte, error) {
@@ -6343,14 +6331,14 @@ func JobParameterDefinitionFromPb(pb *jobspb.JobParameterDefinitionPb) (*JobPara
 type JobPermission struct {
 
 	// Wire name: 'inherited'
-	Inherited bool ``
+	Inherited bool `json:"inherited,omitempty"`
 
 	// Wire name: 'inherited_from_object'
-	InheritedFromObject []string ``
+	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel JobPermissionLevel ``
-	ForceSendFields []string           `tf:"-"`
+	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
 func (st JobPermission) MarshalJSON() ([]byte, error) {
@@ -6483,14 +6471,14 @@ func JobPermissionLevelFromPb(pb *jobspb.JobPermissionLevelPb) (*JobPermissionLe
 type JobPermissions struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []JobAccessControlResponse ``
+	AccessControlList []JobAccessControlResponse `json:"access_control_list,omitempty"`
 
 	// Wire name: 'object_id'
-	ObjectId string ``
+	ObjectId string `json:"object_id,omitempty"`
 
 	// Wire name: 'object_type'
-	ObjectType      string   ``
-	ForceSendFields []string `tf:"-"`
+	ObjectType      string   `json:"object_type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st JobPermissions) MarshalJSON() ([]byte, error) {
@@ -6573,11 +6561,11 @@ func JobPermissionsFromPb(pb *jobspb.JobPermissionsPb) (*JobPermissions, error) 
 type JobPermissionsDescription struct {
 
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 
 	// Wire name: 'permission_level'
-	PermissionLevel JobPermissionLevel ``
-	ForceSendFields []string           `tf:"-"`
+	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
 func (st JobPermissionsDescription) MarshalJSON() ([]byte, error) {
@@ -6648,10 +6636,9 @@ func JobPermissionsDescriptionFromPb(pb *jobspb.JobPermissionsDescriptionPb) (*J
 type JobPermissionsRequest struct {
 
 	// Wire name: 'access_control_list'
-	AccessControlList []JobAccessControlRequest ``
+	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
 	// The job for which to get or manage permissions.
-	// Wire name: 'job_id'
-	JobId string `tf:"-"`
+	JobId string `json:"-" tf:"-"`
 }
 
 func (st JobPermissionsRequest) MarshalJSON() ([]byte, error) {
@@ -6732,12 +6719,12 @@ type JobRunAs struct {
 	// Application ID of an active service principal. Setting this field
 	// requires the `servicePrincipal/user` role.
 	// Wire name: 'service_principal_name'
-	ServicePrincipalName string ``
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// The email of an active workspace user. Non-admin users can only set this
 	// field to their own email.
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st JobRunAs) MarshalJSON() ([]byte, error) {
@@ -6799,29 +6786,29 @@ type JobSettings struct {
 	// modifying the job. See `effective_budget_policy_id` for the budget policy
 	// used by this workload.
 	// Wire name: 'budget_policy_id'
-	BudgetPolicyId string ``
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// An optional continuous property for this job. The continuous property
 	// will ensure that there is always one run executing. Only one of
 	// `schedule` and `continuous` can be used.
 	// Wire name: 'continuous'
-	Continuous *Continuous ``
+	Continuous *Continuous `json:"continuous,omitempty"`
 	// Deployment information for jobs managed by external sources.
 	// Wire name: 'deployment'
-	Deployment *JobDeployment ``
+	Deployment *JobDeployment `json:"deployment,omitempty"`
 	// An optional description for the job. The maximum length is 27700
 	// characters in UTF-8 encoding.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Edit mode of the job.
 	//
 	// * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
 	// `EDITABLE`: The job is in an editable state and can be modified.
 	// Wire name: 'edit_mode'
-	EditMode JobEditMode ``
+	EditMode JobEditMode `json:"edit_mode,omitempty"`
 	// An optional set of email addresses that is notified when runs of this job
 	// begin or complete as well as when this job is deleted.
 	// Wire name: 'email_notifications'
-	EmailNotifications *JobEmailNotifications ``
+	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// A list of task execution environment specifications that can be
 	// referenced by serverless tasks of this job. An environment is required to
 	// be present for serverless tasks. For serverless notebook tasks, the
@@ -6829,12 +6816,12 @@ type JobSettings struct {
 	// serverless tasks, the task environment is required to be specified using
 	// environment_key in the task settings.
 	// Wire name: 'environments'
-	Environments []JobEnvironment ``
+	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
 	// always set to `"MULTI_TASK"`.
 	// Wire name: 'format'
-	Format Format ``
+	Format Format `json:"format,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks.
@@ -6846,15 +6833,15 @@ type JobSettings struct {
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	// Wire name: 'git_source'
-	GitSource *GitSource ``
+	GitSource *GitSource `json:"git_source,omitempty"`
 
 	// Wire name: 'health'
-	Health *JobsHealthRules ``
+	Health *JobsHealthRules `json:"health,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
 	// You must declare dependent libraries in task settings.
 	// Wire name: 'job_clusters'
-	JobClusters []JobCluster ``
+	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// An optional maximum allowed number of concurrent runs of the job. Set
 	// this value if you want to be able to execute multiple runs of the same
 	// job concurrently. This is useful for example if you trigger your job on a
@@ -6867,19 +6854,19 @@ type JobSettings struct {
 	// than 3 active runs. This value cannot exceed 1000. Setting this value to
 	// `0` causes all new runs to be skipped.
 	// Wire name: 'max_concurrent_runs'
-	MaxConcurrentRuns int ``
+	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
 	// An optional name for the job. The maximum length is 4096 bytes in UTF-8
 	// encoding.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// job.
 	// Wire name: 'notification_settings'
-	NotificationSettings *JobNotificationSettings ``
+	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	// Wire name: 'parameters'
-	Parameters []JobParameterDefinition ``
+	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
 	// The performance mode on a serverless job. This field determines the level
 	// of compute performance or cost-efficiency for the run.
 	//
@@ -6887,27 +6874,27 @@ type JobSettings struct {
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
 	// Wire name: 'performance_target'
-	PerformanceTarget PerformanceTarget ``
+	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the job.
 	// Wire name: 'queue'
-	Queue *QueueSettings ``
+	Queue *QueueSettings `json:"queue,omitempty"`
 	// The user or service principal that the job runs as, if specified in the
 	// request. This field indicates the explicit configuration of `run_as` for
 	// the job. To find the value in all cases, explicit or implicit, use
 	// `run_as_user_name`.
 	// Wire name: 'run_as'
-	RunAs *JobRunAs ``
+	RunAs *JobRunAs `json:"run_as,omitempty"`
 	// An optional periodic schedule for this job. The default behavior is that
 	// the job only runs when triggered by clicking “Run Now” in the Jobs UI
 	// or sending an API request to `runNow`.
 	// Wire name: 'schedule'
-	Schedule *CronSchedule ``
+	Schedule *CronSchedule `json:"schedule,omitempty"`
 	// A map of tags associated with the job. These are forwarded to the cluster
 	// as cluster tags for jobs clusters, and are subject to the same
 	// limitations as cluster tags. A maximum of 25 tags can be added to the
 	// job.
 	// Wire name: 'tags'
-	Tags map[string]string ``
+	Tags map[string]string `json:"tags,omitempty"`
 	// A list of task specifications to be executed by this job. It supports up
 	// to 1000 elements in write endpoints (:method:jobs/create,
 	// :method:jobs/reset, :method:jobs/update, :method:jobs/submit). Read
@@ -6916,21 +6903,21 @@ type JobSettings struct {
 	// `next_page_token` field at the object root to determine if more results
 	// are available.
 	// Wire name: 'tasks'
-	Tasks []Task ``
+	Tasks []Task `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
 	// Wire name: 'timeout_seconds'
-	TimeoutSeconds int ``
+	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 	// A configuration to trigger a run when certain conditions are met. The
 	// default behavior is that the job runs only when triggered by clicking
 	// “Run Now” in the Jobs UI or sending an API request to `runNow`.
 	// Wire name: 'trigger'
-	Trigger *TriggerSettings ``
+	Trigger *TriggerSettings `json:"trigger,omitempty"`
 	// A collection of system notification IDs to notify when runs of this job
 	// begin or complete.
 	// Wire name: 'webhook_notifications'
-	WebhookNotifications *WebhookNotifications ``
-	ForceSendFields      []string              `tf:"-"`
+	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+	ForceSendFields      []string              `json:"-" tf:"-"`
 }
 
 func (st JobSettings) MarshalJSON() ([]byte, error) {
@@ -7299,13 +7286,13 @@ type JobSource struct {
 	// edit. Import the remote job specification again from UI to make the job
 	// fully synced.
 	// Wire name: 'dirty_state'
-	DirtyState JobSourceDirtyState ``
+	DirtyState JobSourceDirtyState `json:"dirty_state,omitempty"`
 	// Name of the branch which the job is imported from.
 	// Wire name: 'import_from_git_branch'
-	ImportFromGitBranch string ``
+	ImportFromGitBranch string `json:"import_from_git_branch"`
 	// Path of the job YAML file that contains the job specification.
 	// Wire name: 'job_config_path'
-	JobConfigPath string ``
+	JobConfigPath string `json:"job_config_path"`
 }
 
 func (st JobSource) MarshalJSON() ([]byte, error) {
@@ -7573,14 +7560,14 @@ func JobsHealthOperatorFromPb(pb *jobspb.JobsHealthOperatorPb) (*JobsHealthOpera
 type JobsHealthRule struct {
 
 	// Wire name: 'metric'
-	Metric JobsHealthMetric ``
+	Metric JobsHealthMetric `json:"metric"`
 
 	// Wire name: 'op'
-	Op JobsHealthOperator ``
+	Op JobsHealthOperator `json:"op"`
 	// Specifies the threshold value that the health metric should obey to
 	// satisfy the health rule.
 	// Wire name: 'value'
-	Value int64 ``
+	Value int64 `json:"value"`
 }
 
 func (st JobsHealthRule) MarshalJSON() ([]byte, error) {
@@ -7660,7 +7647,7 @@ func JobsHealthRuleFromPb(pb *jobspb.JobsHealthRulePb) (*JobsHealthRule, error) 
 type JobsHealthRules struct {
 
 	// Wire name: 'rules'
-	Rules []JobsHealthRule ``
+	Rules []JobsHealthRule `json:"rules,omitempty"`
 }
 
 func (st JobsHealthRules) MarshalJSON() ([]byte, error) {
@@ -7733,18 +7720,18 @@ func JobsHealthRulesFromPb(pb *jobspb.JobsHealthRulesPb) (*JobsHealthRules, erro
 type ListJobComplianceForPolicyResponse struct {
 	// A list of jobs and their policy compliance statuses.
 	// Wire name: 'jobs'
-	Jobs []JobCompliance ``
+	Jobs []JobCompliance `json:"jobs,omitempty"`
 	// This field represents the pagination token to retrieve the next page of
 	// results. If this field is not in the response, it means no further
 	// results for the request.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// This field represents the pagination token to retrieve the previous page
 	// of results. If this field is not in the response, it means no further
 	// results for the request.
 	// Wire name: 'prev_page_token'
-	PrevPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	PrevPageToken   string   `json:"prev_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListJobComplianceForPolicyResponse) MarshalJSON() ([]byte, error) {
@@ -7828,16 +7815,13 @@ type ListJobComplianceRequest struct {
 	// Use this field to specify the maximum number of results to be returned by
 	// the server. The server may further constrain the maximum number of
 	// results returned in a single page.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// A page token that can be used to navigate to the next page or previous
 	// page as returned by `next_page_token` or `prev_page_token`.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// Canonical unique identifier for the cluster policy.
-	// Wire name: 'policy_id'
-	PolicyId        string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PolicyId        string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListJobComplianceRequest) MarshalJSON() ([]byte, error) {
@@ -7899,25 +7883,20 @@ type ListJobsRequest struct {
 	// Whether to include task and cluster details in the response. Note that
 	// only the first 100 elements will be shown. Use :method:jobs/get to
 	// paginate through all tasks and clusters.
-	// Wire name: 'expand_tasks'
-	ExpandTasks bool `tf:"-"`
+	ExpandTasks bool `json:"-" tf:"-"`
 	// The number of jobs to return. This value must be greater than 0 and less
 	// or equal to 100. The default value is 20.
-	// Wire name: 'limit'
-	Limit int `tf:"-"`
+	Limit int `json:"-" tf:"-"`
 	// A filter on the list based on the exact (case insensitive) job name.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// The offset of the first job to return, relative to the most recently
 	// created job. Deprecated since June 2023. Use `page_token` to iterate
 	// through the pages instead.
-	// Wire name: 'offset'
-	Offset int `tf:"-"`
+	Offset int `json:"-" tf:"-"`
 	// Use `next_page_token` or `prev_page_token` returned from the previous
 	// request to list the next or previous page of jobs respectively.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListJobsRequest) MarshalJSON() ([]byte, error) {
@@ -7984,19 +7963,19 @@ type ListJobsResponse struct {
 	// If true, additional jobs matching the provided filter are available for
 	// listing.
 	// Wire name: 'has_more'
-	HasMore bool ``
+	HasMore bool `json:"has_more,omitempty"`
 	// The list of jobs. Only included in the response if there are jobs to
 	// list.
 	// Wire name: 'jobs'
-	Jobs []BaseJob ``
+	Jobs []BaseJob `json:"jobs,omitempty"`
 	// A token that can be used to list the next page of jobs (if applicable).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// A token that can be used to list the previous page of jobs (if
 	// applicable).
 	// Wire name: 'prev_page_token'
-	PrevPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	PrevPageToken   string   `json:"prev_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListJobsResponse) MarshalJSON() ([]byte, error) {
@@ -8083,51 +8062,41 @@ type ListRunsRequest struct {
 	// otherwise, lists both active and completed runs. An active run is a run
 	// in the `QUEUED`, `PENDING`, `RUNNING`, or `TERMINATING`. This field
 	// cannot be `true` when completed_only is `true`.
-	// Wire name: 'active_only'
-	ActiveOnly bool `tf:"-"`
+	ActiveOnly bool `json:"-" tf:"-"`
 	// If completed_only is `true`, only completed runs are included in the
 	// results; otherwise, lists both active and completed runs. This field
 	// cannot be `true` when active_only is `true`.
-	// Wire name: 'completed_only'
-	CompletedOnly bool `tf:"-"`
+	CompletedOnly bool `json:"-" tf:"-"`
 	// Whether to include task and cluster details in the response. Note that
 	// only the first 100 elements will be shown. Use :method:jobs/getrun to
 	// paginate through all tasks and clusters.
-	// Wire name: 'expand_tasks'
-	ExpandTasks bool `tf:"-"`
+	ExpandTasks bool `json:"-" tf:"-"`
 	// The job for which to list runs. If omitted, the Jobs service lists runs
 	// from all jobs.
-	// Wire name: 'job_id'
-	JobId int64 `tf:"-"`
+	JobId int64 `json:"-" tf:"-"`
 	// The number of runs to return. This value must be greater than 0 and less
 	// than 25. The default value is 20. If a request specifies a limit of 0,
 	// the service instead uses the maximum limit.
-	// Wire name: 'limit'
-	Limit int `tf:"-"`
+	Limit int `json:"-" tf:"-"`
 	// The offset of the first run to return, relative to the most recent run.
 	// Deprecated since June 2023. Use `page_token` to iterate through the pages
 	// instead.
-	// Wire name: 'offset'
-	Offset int `tf:"-"`
+	Offset int `json:"-" tf:"-"`
 	// Use `next_page_token` or `prev_page_token` returned from the previous
 	// request to list the next or previous page of runs respectively.
-	// Wire name: 'page_token'
-	PageToken string `tf:"-"`
+	PageToken string `json:"-" tf:"-"`
 	// The type of runs to return. For a description of run types, see
 	// :method:jobs/getRun.
-	// Wire name: 'run_type'
-	RunType RunType `tf:"-"`
+	RunType RunType `json:"-" tf:"-"`
 	// Show runs that started _at or after_ this value. The value must be a UTC
 	// timestamp in milliseconds. Can be combined with _start_time_to_ to filter
 	// by a time range.
-	// Wire name: 'start_time_from'
-	StartTimeFrom int64 `tf:"-"`
+	StartTimeFrom int64 `json:"-" tf:"-"`
 	// Show runs that started _at or before_ this value. The value must be a UTC
 	// timestamp in milliseconds. Can be combined with _start_time_from_ to
 	// filter by a time range.
-	// Wire name: 'start_time_to'
-	StartTimeTo     int64    `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	StartTimeTo     int64    `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListRunsRequest) MarshalJSON() ([]byte, error) {
@@ -8216,19 +8185,19 @@ type ListRunsResponse struct {
 	// If true, additional runs matching the provided filter are available for
 	// listing.
 	// Wire name: 'has_more'
-	HasMore bool ``
+	HasMore bool `json:"has_more,omitempty"`
 	// A token that can be used to list the next page of runs (if applicable).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// A token that can be used to list the previous page of runs (if
 	// applicable).
 	// Wire name: 'prev_page_token'
-	PrevPageToken string ``
+	PrevPageToken string `json:"prev_page_token,omitempty"`
 	// A list of runs, from most recently started to least. Only included in the
 	// response if there are runs to list.
 	// Wire name: 'runs'
-	Runs            []BaseRun ``
-	ForceSendFields []string  `tf:"-"`
+	Runs            []BaseRun `json:"runs,omitempty"`
+	ForceSendFields []string  `json:"-" tf:"-"`
 }
 
 func (st ListRunsResponse) MarshalJSON() ([]byte, error) {
@@ -8318,11 +8287,11 @@ type NotebookOutput struct {
 	// service. This field is absent if `dbutils.notebook.exit()` was never
 	// called.
 	// Wire name: 'result'
-	Result string ``
+	Result string `json:"result,omitempty"`
 	// Whether or not the result was truncated.
 	// Wire name: 'truncated'
-	Truncated       bool     ``
-	ForceSendFields []string `tf:"-"`
+	Truncated       bool     `json:"truncated,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st NotebookOutput) MarshalJSON() ([]byte, error) {
@@ -8397,13 +8366,13 @@ type NotebookTask struct {
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-widgets
 	// Wire name: 'base_parameters'
-	BaseParameters map[string]string ``
+	BaseParameters map[string]string `json:"base_parameters,omitempty"`
 	// The path of the notebook to be run in the Databricks workspace or remote
 	// repository. For notebooks stored in the Databricks workspace, the path
 	// must be absolute and begin with a slash. For notebooks stored in a remote
 	// repository, the path must be relative. This field is required.
 	// Wire name: 'notebook_path'
-	NotebookPath string ``
+	NotebookPath string `json:"notebook_path"`
 	// Optional location type of the notebook. When set to `WORKSPACE`, the
 	// notebook will be retrieved from the local Databricks workspace. When set
 	// to `GIT`, the notebook will be retrieved from a Git repository defined in
@@ -8412,7 +8381,7 @@ type NotebookTask struct {
 	// Notebook is located in Databricks workspace. * `GIT`: Notebook is located
 	// in cloud Git provider.
 	// Wire name: 'source'
-	Source Source ``
+	Source Source `json:"source,omitempty"`
 	// Optional `warehouse_id` to run the notebook on a SQL warehouse. Classic
 	// SQL warehouses are NOT supported, please use serverless or pro SQL
 	// warehouses.
@@ -8420,8 +8389,8 @@ type NotebookTask struct {
 	// Note that SQL warehouses only support SQL cells; if the notebook contains
 	// non-SQL cells, the run will fail.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st NotebookTask) MarshalJSON() ([]byte, error) {
@@ -8498,15 +8467,15 @@ func NotebookTaskFromPb(pb *jobspb.NotebookTaskPb) (*NotebookTask, error) {
 type OutputSchemaInfo struct {
 
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name,omitempty"`
 	// The expiration time for the output schema as a Unix timestamp in
 	// milliseconds.
 	// Wire name: 'expiration_time'
-	ExpirationTime int64 ``
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
 
 	// Wire name: 'schema_name'
-	SchemaName      string   ``
-	ForceSendFields []string `tf:"-"`
+	SchemaName      string   `json:"schema_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st OutputSchemaInfo) MarshalJSON() ([]byte, error) {
@@ -8677,10 +8646,10 @@ func PerformanceTargetFromPb(pb *jobspb.PerformanceTargetPb) (*PerformanceTarget
 type PeriodicTriggerConfiguration struct {
 	// The interval at which the trigger should run.
 	// Wire name: 'interval'
-	Interval int ``
+	Interval int `json:"interval"`
 	// The unit of time for the interval.
 	// Wire name: 'unit'
-	Unit PeriodicTriggerConfigurationTimeUnit ``
+	Unit PeriodicTriggerConfigurationTimeUnit `json:"unit"`
 }
 
 func (st PeriodicTriggerConfiguration) MarshalJSON() ([]byte, error) {
@@ -8801,8 +8770,8 @@ func PeriodicTriggerConfigurationTimeUnitFromPb(pb *jobspb.PeriodicTriggerConfig
 type PipelineParams struct {
 	// If true, triggers a full refresh on the delta live table.
 	// Wire name: 'full_refresh'
-	FullRefresh     bool     ``
-	ForceSendFields []string `tf:"-"`
+	FullRefresh     bool     `json:"full_refresh,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PipelineParams) MarshalJSON() ([]byte, error) {
@@ -8859,11 +8828,11 @@ func PipelineParamsFromPb(pb *jobspb.PipelineParamsPb) (*PipelineParams, error) 
 type PipelineTask struct {
 	// If true, triggers a full refresh on the delta live table.
 	// Wire name: 'full_refresh'
-	FullRefresh bool ``
+	FullRefresh bool `json:"full_refresh,omitempty"`
 	// The full name of the pipeline task to execute.
 	// Wire name: 'pipeline_id'
-	PipelineId      string   ``
-	ForceSendFields []string `tf:"-"`
+	PipelineId      string   `json:"pipeline_id"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PipelineTask) MarshalJSON() ([]byte, error) {
@@ -8922,20 +8891,20 @@ func PipelineTaskFromPb(pb *jobspb.PipelineTaskPb) (*PipelineTask, error) {
 type PowerBiModel struct {
 	// How the published Power BI model authenticates to Databricks
 	// Wire name: 'authentication_method'
-	AuthenticationMethod AuthenticationMethod ``
+	AuthenticationMethod AuthenticationMethod `json:"authentication_method,omitempty"`
 	// The name of the Power BI model
 	// Wire name: 'model_name'
-	ModelName string ``
+	ModelName string `json:"model_name,omitempty"`
 	// Whether to overwrite existing Power BI models
 	// Wire name: 'overwrite_existing'
-	OverwriteExisting bool ``
+	OverwriteExisting bool `json:"overwrite_existing,omitempty"`
 	// The default storage mode of the Power BI model
 	// Wire name: 'storage_mode'
-	StorageMode StorageMode ``
+	StorageMode StorageMode `json:"storage_mode,omitempty"`
 	// The name of the Power BI workspace of the model
 	// Wire name: 'workspace_name'
-	WorkspaceName   string   ``
-	ForceSendFields []string `tf:"-"`
+	WorkspaceName   string   `json:"workspace_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PowerBiModel) MarshalJSON() ([]byte, error) {
@@ -9024,17 +8993,17 @@ func PowerBiModelFromPb(pb *jobspb.PowerBiModelPb) (*PowerBiModel, error) {
 type PowerBiTable struct {
 	// The catalog name in Databricks
 	// Wire name: 'catalog'
-	Catalog string ``
+	Catalog string `json:"catalog,omitempty"`
 	// The table name in Databricks
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// The schema name in Databricks
 	// Wire name: 'schema'
-	Schema string ``
+	Schema string `json:"schema,omitempty"`
 	// The Power BI storage mode of the table
 	// Wire name: 'storage_mode'
-	StorageMode     StorageMode ``
-	ForceSendFields []string    `tf:"-"`
+	StorageMode     StorageMode `json:"storage_mode,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
 func (st PowerBiTable) MarshalJSON() ([]byte, error) {
@@ -9110,20 +9079,20 @@ type PowerBiTask struct {
 	// The resource name of the UC connection to authenticate from Databricks to
 	// Power BI
 	// Wire name: 'connection_resource_name'
-	ConnectionResourceName string ``
+	ConnectionResourceName string `json:"connection_resource_name,omitempty"`
 	// The semantic model to update
 	// Wire name: 'power_bi_model'
-	PowerBiModel *PowerBiModel ``
+	PowerBiModel *PowerBiModel `json:"power_bi_model,omitempty"`
 	// Whether the model should be refreshed after the update
 	// Wire name: 'refresh_after_update'
-	RefreshAfterUpdate bool ``
+	RefreshAfterUpdate bool `json:"refresh_after_update,omitempty"`
 	// The tables to be exported to Power BI
 	// Wire name: 'tables'
-	Tables []PowerBiTable ``
+	Tables []PowerBiTable `json:"tables,omitempty"`
 	// The SQL warehouse ID to use as the Power BI data source
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st PowerBiTask) MarshalJSON() ([]byte, error) {
@@ -9224,19 +9193,19 @@ type PythonWheelTask struct {
 	// package it executes the function from the package directly using
 	// `$packageName.$entryPoint()`
 	// Wire name: 'entry_point'
-	EntryPoint string ``
+	EntryPoint string `json:"entry_point"`
 	// Command-line parameters passed to Python wheel task in the form of
 	// `["--name=task", "--data=dbfs:/path/to/data.json"]`. Leave it empty if
 	// `parameters` is not null.
 	// Wire name: 'named_parameters'
-	NamedParameters map[string]string ``
+	NamedParameters map[string]string `json:"named_parameters,omitempty"`
 	// Name of the package to execute
 	// Wire name: 'package_name'
-	PackageName string ``
+	PackageName string `json:"package_name"`
 	// Command-line parameters passed to Python wheel task. Leave it empty if
 	// `named_parameters` is not null.
 	// Wire name: 'parameters'
-	Parameters []string ``
+	Parameters []string `json:"parameters,omitempty"`
 }
 
 func (st PythonWheelTask) MarshalJSON() ([]byte, error) {
@@ -9293,12 +9262,12 @@ func PythonWheelTaskFromPb(pb *jobspb.PythonWheelTaskPb) (*PythonWheelTask, erro
 type QueueDetails struct {
 
 	// Wire name: 'code'
-	Code QueueDetailsCodeCode ``
+	Code QueueDetailsCodeCode `json:"code,omitempty"`
 	// A descriptive message with the queuing details. This field is
 	// unstructured, and its exact format is subject to change.
 	// Wire name: 'message'
-	Message         string   ``
-	ForceSendFields []string `tf:"-"`
+	Message         string   `json:"message,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st QueueDetails) MarshalJSON() ([]byte, error) {
@@ -9434,7 +9403,7 @@ func QueueDetailsCodeCodeFromPb(pb *jobspb.QueueDetailsCodeCodePb) (*QueueDetail
 type QueueSettings struct {
 	// If true, enable queueing for the job. This is a required field.
 	// Wire name: 'enabled'
-	Enabled bool ``
+	Enabled bool `json:"enabled"`
 }
 
 func (st QueueSettings) MarshalJSON() ([]byte, error) {
@@ -9492,32 +9461,32 @@ type RepairHistoryItem struct {
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
 	// Wire name: 'effective_performance_target'
-	EffectivePerformanceTarget PerformanceTarget ``
+	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The end time of the (repaired) run.
 	// Wire name: 'end_time'
-	EndTime int64 ``
+	EndTime int64 `json:"end_time,omitempty"`
 	// The ID of the repair. Only returned for the items that represent a repair
 	// in `repair_history`.
 	// Wire name: 'id'
-	Id int64 ``
+	Id int64 `json:"id,omitempty"`
 	// The start time of the (repaired) run.
 	// Wire name: 'start_time'
-	StartTime int64 ``
+	StartTime int64 `json:"start_time,omitempty"`
 	// Deprecated. Please use the `status` field instead.
 	// Wire name: 'state'
-	State *RunState ``
+	State *RunState `json:"state,omitempty"`
 
 	// Wire name: 'status'
-	Status *RunStatus ``
+	Status *RunStatus `json:"status,omitempty"`
 	// The run IDs of the task runs that ran as part of this repair history
 	// item.
 	// Wire name: 'task_run_ids'
-	TaskRunIds []int64 ``
+	TaskRunIds []int64 `json:"task_run_ids,omitempty"`
 	// The repair history item type. Indicates whether a run is the original run
 	// or a repair run.
 	// Wire name: 'type'
-	Type            RepairHistoryItemType ``
-	ForceSendFields []string              `tf:"-"`
+	Type            RepairHistoryItemType `json:"type,omitempty"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st RepairHistoryItem) MarshalJSON() ([]byte, error) {
@@ -9693,7 +9662,7 @@ type RepairRun struct {
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt deps", "dbt seed", "dbt
 	// run"]`
 	// Wire name: 'dbt_commands'
-	DbtCommands []string ``
+	DbtCommands []string `json:"dbt_commands,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
@@ -9707,16 +9676,16 @@ type RepairRun struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'jar_params'
-	JarParams []string ``
+	JarParams []string `json:"jar_params,omitempty"`
 	// Job-level parameters used in the run. for example `"param":
 	// "overriding_val"`
 	// Wire name: 'job_parameters'
-	JobParameters map[string]string ``
+	JobParameters map[string]string `json:"job_parameters,omitempty"`
 	// The ID of the latest repair. This parameter is not required when
 	// repairing a run for the first time, but must be provided on subsequent
 	// requests to repair the same run.
 	// Wire name: 'latest_repair_id'
-	LatestRepairId int64 ``
+	LatestRepairId int64 `json:"latest_repair_id,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the [dbutils.widgets.get]
@@ -9737,7 +9706,7 @@ type RepairRun struct {
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
 	// Wire name: 'notebook_params'
-	NotebookParams map[string]string ``
+	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 	// The performance mode on a serverless job. The performance target
 	// determines the level of compute performance or cost-efficiency for the
 	// run. This field overrides the performance target defined on the job
@@ -9747,13 +9716,13 @@ type RepairRun struct {
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
 	// Wire name: 'performance_target'
-	PerformanceTarget PerformanceTarget ``
+	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	// Wire name: 'pipeline_params'
-	PipelineParams *PipelineParams ``
+	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 
 	// Wire name: 'python_named_params'
-	PythonNamedParams map[string]string ``
+	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
@@ -9772,22 +9741,22 @@ type RepairRun struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'python_params'
-	PythonParams []string ``
+	PythonParams []string `json:"python_params,omitempty"`
 	// If true, repair all failed tasks. Only one of `rerun_tasks` or
 	// `rerun_all_failed_tasks` can be used.
 	// Wire name: 'rerun_all_failed_tasks'
-	RerunAllFailedTasks bool ``
+	RerunAllFailedTasks bool `json:"rerun_all_failed_tasks,omitempty"`
 	// If true, repair all tasks that depend on the tasks in `rerun_tasks`, even
 	// if they were previously successful. Can be also used in combination with
 	// `rerun_all_failed_tasks`.
 	// Wire name: 'rerun_dependent_tasks'
-	RerunDependentTasks bool ``
+	RerunDependentTasks bool `json:"rerun_dependent_tasks,omitempty"`
 	// The task keys of the task runs to repair.
 	// Wire name: 'rerun_tasks'
-	RerunTasks []string ``
+	RerunTasks []string `json:"rerun_tasks,omitempty"`
 	// The job run ID of the run to repair. The run must not be in progress.
 	// Wire name: 'run_id'
-	RunId int64 ``
+	RunId int64 `json:"run_id"`
 	// A list of parameters for jobs with spark submit task, for example
 	// `"spark_submit_params": ["--class",
 	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
@@ -9807,13 +9776,13 @@ type RepairRun struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'spark_submit_params'
-	SparkSubmitParams []string ``
+	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
 	// Wire name: 'sql_params'
-	SqlParams       map[string]string ``
-	ForceSendFields []string          `tf:"-"`
+	SqlParams       map[string]string `json:"sql_params,omitempty"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
 func (st RepairRun) MarshalJSON() ([]byte, error) {
@@ -9924,8 +9893,8 @@ type RepairRunResponse struct {
 	// The ID of the repair. Must be provided in subsequent repairs using the
 	// `latest_repair_id` field to ensure sequential repairs.
 	// Wire name: 'repair_id'
-	RepairId        int64    ``
-	ForceSendFields []string `tf:"-"`
+	RepairId        int64    `json:"repair_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RepairRunResponse) MarshalJSON() ([]byte, error) {
@@ -9982,14 +9951,14 @@ func RepairRunResponseFromPb(pb *jobspb.RepairRunResponsePb) (*RepairRunResponse
 type ResetJob struct {
 	// The canonical identifier of the job to reset. This field is required.
 	// Wire name: 'job_id'
-	JobId int64 ``
+	JobId int64 `json:"job_id"`
 	// The new settings of the job. These settings completely replace the old
 	// settings.
 	//
 	// Changes to the field `JobBaseSettings.timeout_seconds` are applied to
 	// active runs. Changes to other fields are applied to future runs only.
 	// Wire name: 'new_settings'
-	NewSettings JobSettings ``
+	NewSettings JobSettings `json:"new_settings"`
 }
 
 func (st ResetJob) MarshalJSON() ([]byte, error) {
@@ -10054,11 +10023,11 @@ func ResetJobFromPb(pb *jobspb.ResetJobPb) (*ResetJob, error) {
 type ResolvedConditionTaskValues struct {
 
 	// Wire name: 'left'
-	Left string ``
+	Left string `json:"left,omitempty"`
 
 	// Wire name: 'right'
-	Right           string   ``
-	ForceSendFields []string `tf:"-"`
+	Right           string   `json:"right,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ResolvedConditionTaskValues) MarshalJSON() ([]byte, error) {
@@ -10117,7 +10086,7 @@ func ResolvedConditionTaskValuesFromPb(pb *jobspb.ResolvedConditionTaskValuesPb)
 type ResolvedDbtTaskValues struct {
 
 	// Wire name: 'commands'
-	Commands []string ``
+	Commands []string `json:"commands,omitempty"`
 }
 
 func (st ResolvedDbtTaskValues) MarshalJSON() ([]byte, error) {
@@ -10168,7 +10137,7 @@ func ResolvedDbtTaskValuesFromPb(pb *jobspb.ResolvedDbtTaskValuesPb) (*ResolvedD
 type ResolvedNotebookTaskValues struct {
 
 	// Wire name: 'base_parameters'
-	BaseParameters map[string]string ``
+	BaseParameters map[string]string `json:"base_parameters,omitempty"`
 }
 
 func (st ResolvedNotebookTaskValues) MarshalJSON() ([]byte, error) {
@@ -10219,7 +10188,7 @@ func ResolvedNotebookTaskValuesFromPb(pb *jobspb.ResolvedNotebookTaskValuesPb) (
 type ResolvedParamPairValues struct {
 
 	// Wire name: 'parameters'
-	Parameters map[string]string ``
+	Parameters map[string]string `json:"parameters,omitempty"`
 }
 
 func (st ResolvedParamPairValues) MarshalJSON() ([]byte, error) {
@@ -10270,10 +10239,10 @@ func ResolvedParamPairValuesFromPb(pb *jobspb.ResolvedParamPairValuesPb) (*Resol
 type ResolvedPythonWheelTaskValues struct {
 
 	// Wire name: 'named_parameters'
-	NamedParameters map[string]string ``
+	NamedParameters map[string]string `json:"named_parameters,omitempty"`
 
 	// Wire name: 'parameters'
-	Parameters []string ``
+	Parameters []string `json:"parameters,omitempty"`
 }
 
 func (st ResolvedPythonWheelTaskValues) MarshalJSON() ([]byte, error) {
@@ -10326,10 +10295,10 @@ func ResolvedPythonWheelTaskValuesFromPb(pb *jobspb.ResolvedPythonWheelTaskValue
 type ResolvedRunJobTaskValues struct {
 
 	// Wire name: 'job_parameters'
-	JobParameters map[string]string ``
+	JobParameters map[string]string `json:"job_parameters,omitempty"`
 
 	// Wire name: 'parameters'
-	Parameters map[string]string ``
+	Parameters map[string]string `json:"parameters,omitempty"`
 }
 
 func (st ResolvedRunJobTaskValues) MarshalJSON() ([]byte, error) {
@@ -10382,7 +10351,7 @@ func ResolvedRunJobTaskValuesFromPb(pb *jobspb.ResolvedRunJobTaskValuesPb) (*Res
 type ResolvedStringParamsValues struct {
 
 	// Wire name: 'parameters'
-	Parameters []string ``
+	Parameters []string `json:"parameters,omitempty"`
 }
 
 func (st ResolvedStringParamsValues) MarshalJSON() ([]byte, error) {
@@ -10433,34 +10402,34 @@ func ResolvedStringParamsValuesFromPb(pb *jobspb.ResolvedStringParamsValuesPb) (
 type ResolvedValues struct {
 
 	// Wire name: 'condition_task'
-	ConditionTask *ResolvedConditionTaskValues ``
+	ConditionTask *ResolvedConditionTaskValues `json:"condition_task,omitempty"`
 
 	// Wire name: 'dbt_task'
-	DbtTask *ResolvedDbtTaskValues ``
+	DbtTask *ResolvedDbtTaskValues `json:"dbt_task,omitempty"`
 
 	// Wire name: 'notebook_task'
-	NotebookTask *ResolvedNotebookTaskValues ``
+	NotebookTask *ResolvedNotebookTaskValues `json:"notebook_task,omitempty"`
 
 	// Wire name: 'python_wheel_task'
-	PythonWheelTask *ResolvedPythonWheelTaskValues ``
+	PythonWheelTask *ResolvedPythonWheelTaskValues `json:"python_wheel_task,omitempty"`
 
 	// Wire name: 'run_job_task'
-	RunJobTask *ResolvedRunJobTaskValues ``
+	RunJobTask *ResolvedRunJobTaskValues `json:"run_job_task,omitempty"`
 
 	// Wire name: 'simulation_task'
-	SimulationTask *ResolvedParamPairValues ``
+	SimulationTask *ResolvedParamPairValues `json:"simulation_task,omitempty"`
 
 	// Wire name: 'spark_jar_task'
-	SparkJarTask *ResolvedStringParamsValues ``
+	SparkJarTask *ResolvedStringParamsValues `json:"spark_jar_task,omitempty"`
 
 	// Wire name: 'spark_python_task'
-	SparkPythonTask *ResolvedStringParamsValues ``
+	SparkPythonTask *ResolvedStringParamsValues `json:"spark_python_task,omitempty"`
 
 	// Wire name: 'spark_submit_task'
-	SparkSubmitTask *ResolvedStringParamsValues ``
+	SparkSubmitTask *ResolvedStringParamsValues `json:"spark_submit_task,omitempty"`
 
 	// Wire name: 'sql_task'
-	SqlTask *ResolvedParamPairValues ``
+	SqlTask *ResolvedParamPairValues `json:"sql_task,omitempty"`
 }
 
 func (st ResolvedValues) MarshalJSON() ([]byte, error) {
@@ -10656,30 +10625,30 @@ type Run struct {
 	// retried only until they succeed, and the maximum `attempt_number` is the
 	// same as the `max_retries` value for the job.
 	// Wire name: 'attempt_number'
-	AttemptNumber int ``
+	AttemptNumber int `json:"attempt_number,omitempty"`
 	// The time in milliseconds it took to terminate the cluster and clean up
 	// any associated artifacts. The duration of a task run is the sum of the
 	// `setup_duration`, `execution_duration`, and the `cleanup_duration`. The
 	// `cleanup_duration` field is set to 0 for multitask job runs. The total
 	// duration of a multitask job run is the value of the `run_duration` field.
 	// Wire name: 'cleanup_duration'
-	CleanupDuration int64 ``
+	CleanupDuration int64 `json:"cleanup_duration,omitempty"`
 	// The cluster used for this run. If the run is specified to use a new
 	// cluster, this field is set once the Jobs service has requested a cluster
 	// for the run.
 	// Wire name: 'cluster_instance'
-	ClusterInstance *ClusterInstance ``
+	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
 	// A snapshot of the job’s cluster specification when this run was
 	// created.
 	// Wire name: 'cluster_spec'
-	ClusterSpec *ClusterSpec ``
+	ClusterSpec *ClusterSpec `json:"cluster_spec,omitempty"`
 	// The creator user name. This field won’t be included in the response if
 	// the user has already been deleted.
 	// Wire name: 'creator_user_name'
-	CreatorUserName string ``
+	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Description of the run
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// The actual performance target used by the serverless run during
 	// execution. This can differ from the client-set performance target on the
 	// request depending on whether the performance mode is supported by the job
@@ -10689,11 +10658,11 @@ type Run struct {
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
 	// Wire name: 'effective_performance_target'
-	EffectivePerformanceTarget PerformanceTarget ``
+	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
 	// Wire name: 'end_time'
-	EndTime int64 ``
+	EndTime int64 `json:"end_time,omitempty"`
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
 	// encountered an unexpected error. The duration of a task run is the sum of
@@ -10702,7 +10671,7 @@ type Run struct {
 	// total duration of a multitask job run is the value of the `run_duration`
 	// field.
 	// Wire name: 'execution_duration'
-	ExecutionDuration int64 ``
+	ExecutionDuration int64 `json:"execution_duration,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks.
@@ -10714,78 +10683,78 @@ type Run struct {
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	// Wire name: 'git_source'
-	GitSource *GitSource ``
+	GitSource *GitSource `json:"git_source,omitempty"`
 	// Indicates if the run has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/getrun
 	// endpoint. It is only relevant for API 2.2 :method:jobs/listruns requests
 	// with `expand_tasks=true`.
 	// Wire name: 'has_more'
-	HasMore bool ``
+	HasMore bool `json:"has_more,omitempty"`
 	// Only populated by for-each iterations. The parent for-each task is
 	// located in tasks array.
 	// Wire name: 'iterations'
-	Iterations []RunTask ``
+	Iterations []RunTask `json:"iterations,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
 	// You must declare dependent libraries in task settings. If more than 100
 	// job clusters are available, you can paginate through them using
 	// :method:jobs/getrun.
 	// Wire name: 'job_clusters'
-	JobClusters []JobCluster ``
+	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// The canonical identifier of the job that contains this run.
 	// Wire name: 'job_id'
-	JobId int64 ``
+	JobId int64 `json:"job_id,omitempty"`
 	// Job-level parameters used in the run
 	// Wire name: 'job_parameters'
-	JobParameters []JobParameter ``
+	JobParameters []JobParameter `json:"job_parameters,omitempty"`
 	// ID of the job run that this run belongs to. For legacy and single-task
 	// job runs the field is populated with the job run ID. For task runs, the
 	// field is populated with the ID of the job run that the task run belongs
 	// to.
 	// Wire name: 'job_run_id'
-	JobRunId int64 ``
+	JobRunId int64 `json:"job_run_id,omitempty"`
 	// A token that can be used to list the next page of array properties.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// A unique identifier for this job run. This is set to the same value as
 	// `run_id`.
 	// Wire name: 'number_in_job'
-	NumberInJob int64 ``
+	NumberInJob int64 `json:"number_in_job,omitempty"`
 	// If this run is a retry of a prior run attempt, this field contains the
 	// run_id of the original attempt; otherwise, it is the same as the run_id.
 	// Wire name: 'original_attempt_run_id'
-	OriginalAttemptRunId int64 ``
+	OriginalAttemptRunId int64 `json:"original_attempt_run_id,omitempty"`
 	// The parameters used for this run.
 	// Wire name: 'overriding_parameters'
-	OverridingParameters *RunParameters ``
+	OverridingParameters *RunParameters `json:"overriding_parameters,omitempty"`
 	// The time in milliseconds that the run has spent in the queue.
 	// Wire name: 'queue_duration'
-	QueueDuration int64 ``
+	QueueDuration int64 `json:"queue_duration,omitempty"`
 	// The repair history of the run.
 	// Wire name: 'repair_history'
-	RepairHistory []RepairHistoryItem ``
+	RepairHistory []RepairHistoryItem `json:"repair_history,omitempty"`
 	// The time in milliseconds it took the job run and all of its repairs to
 	// finish.
 	// Wire name: 'run_duration'
-	RunDuration int64 ``
+	RunDuration int64 `json:"run_duration,omitempty"`
 	// The canonical identifier of the run. This ID is unique across all runs of
 	// all jobs.
 	// Wire name: 'run_id'
-	RunId int64 ``
+	RunId int64 `json:"run_id,omitempty"`
 	// An optional name for the run. The maximum length is 4096 bytes in UTF-8
 	// encoding.
 	// Wire name: 'run_name'
-	RunName string ``
+	RunName string `json:"run_name,omitempty"`
 	// The URL to the detail page of the run.
 	// Wire name: 'run_page_url'
-	RunPageUrl string ``
+	RunPageUrl string `json:"run_page_url,omitempty"`
 
 	// Wire name: 'run_type'
-	RunType RunType ``
+	RunType RunType `json:"run_type,omitempty"`
 	// The cron schedule that triggered this run if it was triggered by the
 	// periodic scheduler.
 	// Wire name: 'schedule'
-	Schedule *CronSchedule ``
+	Schedule *CronSchedule `json:"schedule,omitempty"`
 	// The time in milliseconds it took to set up the cluster. For runs that run
 	// on new clusters this is the cluster creation time, for runs that run on
 	// existing clusters this time should be very short. The duration of a task
@@ -10794,33 +10763,33 @@ type Run struct {
 	// job runs. The total duration of a multitask job run is the value of the
 	// `run_duration` field.
 	// Wire name: 'setup_duration'
-	SetupDuration int64 ``
+	SetupDuration int64 `json:"setup_duration,omitempty"`
 	// The time at which this run was started in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC). This may not be the time when the job
 	// task starts executing, for example, if the job is scheduled to run on a
 	// new cluster, this is the time the cluster creation call is issued.
 	// Wire name: 'start_time'
-	StartTime int64 ``
+	StartTime int64 `json:"start_time,omitempty"`
 	// Deprecated. Please use the `status` field instead.
 	// Wire name: 'state'
-	State *RunState ``
+	State *RunState `json:"state,omitempty"`
 
 	// Wire name: 'status'
-	Status *RunStatus ``
+	Status *RunStatus `json:"status,omitempty"`
 	// The list of tasks performed by the run. Each task has its own `run_id`
 	// which you can use to call `JobsGetOutput` to retrieve the run resutls. If
 	// more than 100 tasks are available, you can paginate through them using
 	// :method:jobs/getrun. Use the `next_page_token` field at the object root
 	// to determine if more results are available.
 	// Wire name: 'tasks'
-	Tasks []RunTask ``
+	Tasks []RunTask `json:"tasks,omitempty"`
 
 	// Wire name: 'trigger'
-	Trigger TriggerType ``
+	Trigger TriggerType `json:"trigger,omitempty"`
 
 	// Wire name: 'trigger_info'
-	TriggerInfo     *TriggerInfo ``
-	ForceSendFields []string     `tf:"-"`
+	TriggerInfo     *TriggerInfo `json:"trigger_info,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
 func (st Run) MarshalJSON() ([]byte, error) {
@@ -11188,7 +11157,7 @@ type RunConditionTask struct {
 	// The left operand of the condition task. Can be either a string value or a
 	// job state or parameter reference.
 	// Wire name: 'left'
-	Left string ``
+	Left string `json:"left"`
 	// * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their
 	// operands. This means that `“12.0” == “12”` will evaluate to
 	// `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`,
@@ -11200,16 +11169,16 @@ type RunConditionTask struct {
 	// `EQUAL_TO`, `NOT_EQUAL`. If a task value was set to a boolean value, it
 	// will be serialized to `“true”` or `“false”` for the comparison.
 	// Wire name: 'op'
-	Op ConditionTaskOp ``
+	Op ConditionTaskOp `json:"op"`
 	// The condition expression evaluation result. Filled in if the task was
 	// successfully completed. Can be `"true"` or `"false"`
 	// Wire name: 'outcome'
-	Outcome string ``
+	Outcome string `json:"outcome,omitempty"`
 	// The right operand of the condition task. Can be either a string value or
 	// a job state or parameter reference.
 	// Wire name: 'right'
-	Right           string   ``
-	ForceSendFields []string `tf:"-"`
+	Right           string   `json:"right"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RunConditionTask) MarshalJSON() ([]byte, error) {
@@ -11286,19 +11255,19 @@ type RunForEachTask struct {
 	// this value if you want to be able to execute multiple runs of the task
 	// concurrently.
 	// Wire name: 'concurrency'
-	Concurrency int ``
+	Concurrency int `json:"concurrency,omitempty"`
 	// Array for task to iterate on. This can be a JSON string or a reference to
 	// an array parameter.
 	// Wire name: 'inputs'
-	Inputs string ``
+	Inputs string `json:"inputs"`
 	// Read only field. Populated for GetRun and ListRuns RPC calls and stores
 	// the execution stats of an For each task
 	// Wire name: 'stats'
-	Stats *ForEachStats ``
+	Stats *ForEachStats `json:"stats,omitempty"`
 	// Configuration for the task that will be run for each element in the array
 	// Wire name: 'task'
-	Task            Task     ``
-	ForceSendFields []string `tf:"-"`
+	Task            Task     `json:"task"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RunForEachTask) MarshalJSON() ([]byte, error) {
@@ -11466,8 +11435,8 @@ func RunIfFromPb(pb *jobspb.RunIfPb) (*RunIf, error) {
 type RunJobOutput struct {
 	// The run id of the triggered job run
 	// Wire name: 'run_id'
-	RunId           int64    ``
-	ForceSendFields []string `tf:"-"`
+	RunId           int64    `json:"run_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RunJobOutput) MarshalJSON() ([]byte, error) {
@@ -11526,7 +11495,7 @@ type RunJobTask struct {
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt deps", "dbt seed", "dbt
 	// run"]`
 	// Wire name: 'dbt_commands'
-	DbtCommands []string ``
+	DbtCommands []string `json:"dbt_commands,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
@@ -11540,13 +11509,13 @@ type RunJobTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'jar_params'
-	JarParams []string ``
+	JarParams []string `json:"jar_params,omitempty"`
 	// ID of the job to trigger.
 	// Wire name: 'job_id'
-	JobId int64 ``
+	JobId int64 `json:"job_id"`
 	// Job-level parameters used to trigger the job.
 	// Wire name: 'job_parameters'
-	JobParameters map[string]string ``
+	JobParameters map[string]string `json:"job_parameters,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the [dbutils.widgets.get]
@@ -11567,13 +11536,13 @@ type RunJobTask struct {
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
 	// Wire name: 'notebook_params'
-	NotebookParams map[string]string ``
+	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	// Wire name: 'pipeline_params'
-	PipelineParams *PipelineParams ``
+	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 
 	// Wire name: 'python_named_params'
-	PythonNamedParams map[string]string ``
+	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
@@ -11592,7 +11561,7 @@ type RunJobTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'python_params'
-	PythonParams []string ``
+	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
 	// `"spark_submit_params": ["--class",
 	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
@@ -11612,12 +11581,12 @@ type RunJobTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'spark_submit_params'
-	SparkSubmitParams []string ``
+	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
 	// Wire name: 'sql_params'
-	SqlParams map[string]string ``
+	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
 func (st RunJobTask) MarshalJSON() ([]byte, error) {
@@ -11873,7 +11842,7 @@ type RunNow struct {
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt deps", "dbt seed", "dbt
 	// run"]`
 	// Wire name: 'dbt_commands'
-	DbtCommands []string ``
+	DbtCommands []string `json:"dbt_commands,omitempty"`
 	// An optional token to guarantee the idempotency of job run requests. If a
 	// run with the provided token already exists, the request does not create a
 	// new run but returns the ID of the existing run instead. If a run with the
@@ -11889,7 +11858,7 @@ type RunNow struct {
 	//
 	// [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
 	// Wire name: 'idempotency_token'
-	IdempotencyToken string ``
+	IdempotencyToken string `json:"idempotency_token,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
@@ -11903,14 +11872,14 @@ type RunNow struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'jar_params'
-	JarParams []string ``
+	JarParams []string `json:"jar_params,omitempty"`
 	// The ID of the job to be executed
 	// Wire name: 'job_id'
-	JobId int64 ``
+	JobId int64 `json:"job_id"`
 	// Job-level parameters used in the run. for example `"param":
 	// "overriding_val"`
 	// Wire name: 'job_parameters'
-	JobParameters map[string]string ``
+	JobParameters map[string]string `json:"job_parameters,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the [dbutils.widgets.get]
@@ -11931,11 +11900,11 @@ type RunNow struct {
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
 	// Wire name: 'notebook_params'
-	NotebookParams map[string]string ``
+	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 	// A list of task keys to run inside of the job. If this field is not
 	// provided, all tasks in the job will be run.
 	// Wire name: 'only'
-	Only []string ``
+	Only []string `json:"only,omitempty"`
 	// The performance mode on a serverless job. The performance target
 	// determines the level of compute performance or cost-efficiency for the
 	// run. This field overrides the performance target defined on the job
@@ -11945,13 +11914,13 @@ type RunNow struct {
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
 	// Wire name: 'performance_target'
-	PerformanceTarget PerformanceTarget ``
+	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	// Wire name: 'pipeline_params'
-	PipelineParams *PipelineParams ``
+	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 
 	// Wire name: 'python_named_params'
-	PythonNamedParams map[string]string ``
+	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
@@ -11970,10 +11939,10 @@ type RunNow struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'python_params'
-	PythonParams []string ``
+	PythonParams []string `json:"python_params,omitempty"`
 	// The queue settings of the run.
 	// Wire name: 'queue'
-	Queue *QueueSettings ``
+	Queue *QueueSettings `json:"queue,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
 	// `"spark_submit_params": ["--class",
 	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
@@ -11993,13 +11962,13 @@ type RunNow struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'spark_submit_params'
-	SparkSubmitParams []string ``
+	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
 	// Wire name: 'sql_params'
-	SqlParams       map[string]string ``
-	ForceSendFields []string          `tf:"-"`
+	SqlParams       map[string]string `json:"sql_params,omitempty"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
 func (st RunNow) MarshalJSON() ([]byte, error) {
@@ -12120,11 +12089,11 @@ type RunNowResponse struct {
 	// A unique identifier for this job run. This is set to the same value as
 	// `run_id`.
 	// Wire name: 'number_in_job'
-	NumberInJob int64 ``
+	NumberInJob int64 `json:"number_in_job,omitempty"`
 	// The globally unique ID of the newly triggered run.
 	// Wire name: 'run_id'
-	RunId           int64    ``
-	ForceSendFields []string `tf:"-"`
+	RunId           int64    `json:"run_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st RunNowResponse) MarshalJSON() ([]byte, error) {
@@ -12184,31 +12153,31 @@ func RunNowResponseFromPb(pb *jobspb.RunNowResponsePb) (*RunNowResponse, error) 
 type RunOutput struct {
 	// The output of a clean rooms notebook task, if available
 	// Wire name: 'clean_rooms_notebook_output'
-	CleanRoomsNotebookOutput *CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput ``
+	CleanRoomsNotebookOutput *CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput `json:"clean_rooms_notebook_output,omitempty"`
 	// The output of a dashboard task, if available
 	// Wire name: 'dashboard_output'
-	DashboardOutput *DashboardTaskOutput ``
+	DashboardOutput *DashboardTaskOutput `json:"dashboard_output,omitempty"`
 	// Deprecated in favor of the new dbt_platform_output
 	// Wire name: 'dbt_cloud_output'
-	DbtCloudOutput *DbtCloudTaskOutput ``
+	DbtCloudOutput *DbtCloudTaskOutput `json:"dbt_cloud_output,omitempty"`
 	// The output of a dbt task, if available.
 	// Wire name: 'dbt_output'
-	DbtOutput *DbtOutput ``
+	DbtOutput *DbtOutput `json:"dbt_output,omitempty"`
 
 	// Wire name: 'dbt_platform_output'
-	DbtPlatformOutput *DbtPlatformTaskOutput ``
+	DbtPlatformOutput *DbtPlatformTaskOutput `json:"dbt_platform_output,omitempty"`
 	// An error message indicating why a task failed or why output is not
 	// available. The message is unstructured, and its exact format is subject
 	// to change.
 	// Wire name: 'error'
-	Error string ``
+	Error string `json:"error,omitempty"`
 	// If there was an error executing the run, this field contains any
 	// available stack traces.
 	// Wire name: 'error_trace'
-	ErrorTrace string ``
+	ErrorTrace string `json:"error_trace,omitempty"`
 
 	// Wire name: 'info'
-	Info string ``
+	Info string `json:"info,omitempty"`
 	// The output from tasks that write to standard streams (stdout/stderr) such
 	// as spark_jar_task, spark_python_task, python_wheel_task.
 	//
@@ -12217,13 +12186,13 @@ type RunOutput struct {
 	//
 	// Databricks restricts this API to return the last 5 MB of these logs.
 	// Wire name: 'logs'
-	Logs string ``
+	Logs string `json:"logs,omitempty"`
 	// Whether the logs are truncated.
 	// Wire name: 'logs_truncated'
-	LogsTruncated bool ``
+	LogsTruncated bool `json:"logs_truncated,omitempty"`
 	// All details of the run except for its output.
 	// Wire name: 'metadata'
-	Metadata *Run ``
+	Metadata *Run `json:"metadata,omitempty"`
 	// The output of a notebook task, if available. A notebook task that
 	// terminates (either successfully or with a failure) without calling
 	// `dbutils.notebook.exit()` is considered to have an empty output. This
@@ -12233,14 +12202,14 @@ type RunOutput struct {
 	//
 	// [ClusterLogConf]: https://docs.databricks.com/dev-tools/api/latest/clusters.html#clusterlogconf
 	// Wire name: 'notebook_output'
-	NotebookOutput *NotebookOutput ``
+	NotebookOutput *NotebookOutput `json:"notebook_output,omitempty"`
 	// The output of a run job task, if available
 	// Wire name: 'run_job_output'
-	RunJobOutput *RunJobOutput ``
+	RunJobOutput *RunJobOutput `json:"run_job_output,omitempty"`
 	// The output of a SQL task, if available.
 	// Wire name: 'sql_output'
-	SqlOutput       *SqlOutput ``
-	ForceSendFields []string   `tf:"-"`
+	SqlOutput       *SqlOutput `json:"sql_output,omitempty"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
 func (st RunOutput) MarshalJSON() ([]byte, error) {
@@ -12433,7 +12402,7 @@ type RunParameters struct {
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt deps", "dbt seed", "dbt
 	// run"]`
 	// Wire name: 'dbt_commands'
-	DbtCommands []string ``
+	DbtCommands []string `json:"dbt_commands,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
 	// main function of the main class specified in the Spark JAR task. If not
@@ -12447,7 +12416,7 @@ type RunParameters struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'jar_params'
-	JarParams []string ``
+	JarParams []string `json:"jar_params,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
 	// to the notebook and is accessible through the [dbutils.widgets.get]
@@ -12468,13 +12437,13 @@ type RunParameters struct {
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
 	// Wire name: 'notebook_params'
-	NotebookParams map[string]string ``
+	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	// Wire name: 'pipeline_params'
-	PipelineParams *PipelineParams ``
+	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 
 	// Wire name: 'python_named_params'
-	PythonNamedParams map[string]string ``
+	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
 	// A list of parameters for jobs with Python tasks, for example
 	// `"python_params": ["john doe", "35"]`. The parameters are passed to
 	// Python file as command-line parameters. If specified upon `run-now`, it
@@ -12493,7 +12462,7 @@ type RunParameters struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'python_params'
-	PythonParams []string ``
+	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
 	// `"spark_submit_params": ["--class",
 	// "org.apache.spark.examples.SparkPi"]`. The parameters are passed to
@@ -12513,12 +12482,12 @@ type RunParameters struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'spark_submit_params'
-	SparkSubmitParams []string ``
+	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
 	// Wire name: 'sql_params'
-	SqlParams map[string]string ``
+	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
 func (st RunParameters) MarshalJSON() ([]byte, error) {
@@ -12698,24 +12667,24 @@ type RunState struct {
 	// always available in the response. Note: Additional states might be
 	// introduced in future releases.
 	// Wire name: 'life_cycle_state'
-	LifeCycleState RunLifeCycleState ``
+	LifeCycleState RunLifeCycleState `json:"life_cycle_state,omitempty"`
 	// The reason indicating why the run was queued.
 	// Wire name: 'queue_reason'
-	QueueReason string ``
+	QueueReason string `json:"queue_reason,omitempty"`
 	// A value indicating the run's result. This field is only available for
 	// terminal lifecycle states. Note: Additional states might be introduced in
 	// future releases.
 	// Wire name: 'result_state'
-	ResultState RunResultState ``
+	ResultState RunResultState `json:"result_state,omitempty"`
 	// A descriptive message for the current state. This field is unstructured,
 	// and its exact format is subject to change.
 	// Wire name: 'state_message'
-	StateMessage string ``
+	StateMessage string `json:"state_message,omitempty"`
 	// A value indicating whether a run was canceled manually by a user or by
 	// the scheduler because the run timed out.
 	// Wire name: 'user_cancelled_or_timedout'
-	UserCancelledOrTimedout bool     ``
-	ForceSendFields         []string `tf:"-"`
+	UserCancelledOrTimedout bool     `json:"user_cancelled_or_timedout,omitempty"`
+	ForceSendFields         []string `json:"-" tf:"-"`
 }
 
 func (st RunState) MarshalJSON() ([]byte, error) {
@@ -12805,14 +12774,14 @@ func RunStateFromPb(pb *jobspb.RunStatePb) (*RunState, error) {
 type RunStatus struct {
 	// If the run was queued, details about the reason for queuing the run.
 	// Wire name: 'queue_details'
-	QueueDetails *QueueDetails ``
+	QueueDetails *QueueDetails `json:"queue_details,omitempty"`
 
 	// Wire name: 'state'
-	State RunLifecycleStateV2State ``
+	State RunLifecycleStateV2State `json:"state,omitempty"`
 	// If the run is in a TERMINATING or TERMINATED state, details about the
 	// reason for terminating the run.
 	// Wire name: 'termination_details'
-	TerminationDetails *TerminationDetails ``
+	TerminationDetails *TerminationDetails `json:"termination_details,omitempty"`
 }
 
 func (st RunStatus) MarshalJSON() ([]byte, error) {
@@ -12910,58 +12879,58 @@ type RunTask struct {
 	// retried only until they succeed, and the maximum `attempt_number` is the
 	// same as the `max_retries` value for the job.
 	// Wire name: 'attempt_number'
-	AttemptNumber int ``
+	AttemptNumber int `json:"attempt_number,omitempty"`
 	// The task runs a [clean rooms] notebook when the
 	// `clean_rooms_notebook_task` field is present.
 	//
 	// [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html
 	// Wire name: 'clean_rooms_notebook_task'
-	CleanRoomsNotebookTask *CleanRoomsNotebookTask ``
+	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
 	// The time in milliseconds it took to terminate the cluster and clean up
 	// any associated artifacts. The duration of a task run is the sum of the
 	// `setup_duration`, `execution_duration`, and the `cleanup_duration`. The
 	// `cleanup_duration` field is set to 0 for multitask job runs. The total
 	// duration of a multitask job run is the value of the `run_duration` field.
 	// Wire name: 'cleanup_duration'
-	CleanupDuration int64 ``
+	CleanupDuration int64 `json:"cleanup_duration,omitempty"`
 	// The cluster used for this run. If the run is specified to use a new
 	// cluster, this field is set once the Jobs service has requested a cluster
 	// for the run.
 	// Wire name: 'cluster_instance'
-	ClusterInstance *ClusterInstance ``
+	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
 	// The task evaluates a condition that can be used to control the execution
 	// of other tasks when the `condition_task` field is present. The condition
 	// task does not require a cluster to execute and does not support retries
 	// or notifications.
 	// Wire name: 'condition_task'
-	ConditionTask *RunConditionTask ``
+	ConditionTask *RunConditionTask `json:"condition_task,omitempty"`
 	// The task refreshes a dashboard and sends a snapshot to subscribers.
 	// Wire name: 'dashboard_task'
-	DashboardTask *DashboardTask ``
+	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
 	// Task type for dbt cloud, deprecated in favor of the new name
 	// dbt_platform_task
 	// Wire name: 'dbt_cloud_task'
-	DbtCloudTask *DbtCloudTask ``
+	DbtCloudTask *DbtCloudTask `json:"dbt_cloud_task,omitempty"`
 
 	// Wire name: 'dbt_platform_task'
-	DbtPlatformTask *DbtPlatformTask ``
+	DbtPlatformTask *DbtPlatformTask `json:"dbt_platform_task,omitempty"`
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
 	// a serverless or a pro SQL warehouse.
 	// Wire name: 'dbt_task'
-	DbtTask *DbtTask ``
+	DbtTask *DbtTask `json:"dbt_task,omitempty"`
 	// An optional array of objects specifying the dependency graph of the task.
 	// All tasks specified in this field must complete successfully before
 	// executing this task. The key is `task_key`, and the value is the name
 	// assigned to the dependent task.
 	// Wire name: 'depends_on'
-	DependsOn []TaskDependency ``
+	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// Deprecated, field was never used in production.
 	// Wire name: 'disabled'
-	Disabled bool ``
+	Disabled bool `json:"disabled,omitempty"`
 	// The actual performance target used by the serverless run during
 	// execution. This can differ from the client-set performance target on the
 	// request depending on whether the performance mode is supported by the job
@@ -12971,20 +12940,20 @@ type RunTask struct {
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
 	// Wire name: 'effective_performance_target'
-	EffectivePerformanceTarget PerformanceTarget ``
+	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
 	// Wire name: 'email_notifications'
-	EmailNotifications *JobEmailNotifications ``
+	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
 	// Wire name: 'end_time'
-	EndTime int64 ``
+	EndTime int64 `json:"end_time,omitempty"`
 	// The key that references an environment spec in a job. This field is
 	// required for Python script, Python wheel and dbt tasks when using
 	// serverless compute.
 	// Wire name: 'environment_key'
-	EnvironmentKey string ``
+	EnvironmentKey string `json:"environment_key,omitempty"`
 	// The time in milliseconds it took to execute the commands in the JAR or
 	// notebook until they completed, failed, timed out, were cancelled, or
 	// encountered an unexpected error. The duration of a task run is the sum of
@@ -12993,20 +12962,20 @@ type RunTask struct {
 	// total duration of a multitask job run is the value of the `run_duration`
 	// field.
 	// Wire name: 'execution_duration'
-	ExecutionDuration int64 ``
+	ExecutionDuration int64 `json:"execution_duration,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
 	// running jobs and tasks on new clusters for greater reliability
 	// Wire name: 'existing_cluster_id'
-	ExistingClusterId string ``
+	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	// Wire name: 'for_each_task'
-	ForEachTask *RunForEachTask ``
+	ForEachTask *RunForEachTask `json:"for_each_task,omitempty"`
 
 	// Wire name: 'gen_ai_compute_task'
-	GenAiComputeTask *GenAiComputeTask ``
+	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks. If `git_source` is set,
@@ -13016,64 +12985,64 @@ type RunTask struct {
 	// version-controlled sources. If dbt or SQL File tasks are used,
 	// `git_source` must be defined on the job.
 	// Wire name: 'git_source'
-	GitSource *GitSource ``
+	GitSource *GitSource `json:"git_source,omitempty"`
 	// If job_cluster_key, this task is executed reusing the cluster specified
 	// in `job.settings.job_clusters`.
 	// Wire name: 'job_cluster_key'
-	JobClusterKey string ``
+	JobClusterKey string `json:"job_cluster_key,omitempty"`
 	// An optional list of libraries to be installed on the cluster. The default
 	// value is an empty list.
 	// Wire name: 'libraries'
-	Libraries []compute.Library ``
+	Libraries []compute.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
 	// Wire name: 'new_cluster'
-	NewCluster *compute.ClusterSpec ``
+	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
 	// The task runs a notebook when the `notebook_task` field is present.
 	// Wire name: 'notebook_task'
-	NotebookTask *NotebookTask ``
+	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// task run.
 	// Wire name: 'notification_settings'
-	NotificationSettings *TaskNotificationSettings ``
+	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
 	// The task triggers a pipeline update when the `pipeline_task` field is
 	// present. Only pipelines configured to use triggered more are supported.
 	// Wire name: 'pipeline_task'
-	PipelineTask *PipelineTask ``
+	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
 	// The task triggers a Power BI semantic model update when the
 	// `power_bi_task` field is present.
 	// Wire name: 'power_bi_task'
-	PowerBiTask *PowerBiTask ``
+	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
 	// The task runs a Python wheel when the `python_wheel_task` field is
 	// present.
 	// Wire name: 'python_wheel_task'
-	PythonWheelTask *PythonWheelTask ``
+	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
 	// The time in milliseconds that the run has spent in the queue.
 	// Wire name: 'queue_duration'
-	QueueDuration int64 ``
+	QueueDuration int64 `json:"queue_duration,omitempty"`
 	// Parameter values including resolved references
 	// Wire name: 'resolved_values'
-	ResolvedValues *ResolvedValues ``
+	ResolvedValues *ResolvedValues `json:"resolved_values,omitempty"`
 	// The time in milliseconds it took the job run and all of its repairs to
 	// finish.
 	// Wire name: 'run_duration'
-	RunDuration int64 ``
+	RunDuration int64 `json:"run_duration,omitempty"`
 	// The ID of the task run.
 	// Wire name: 'run_id'
-	RunId int64 ``
+	RunId int64 `json:"run_id,omitempty"`
 	// An optional value indicating the condition that determines whether the
 	// task should be run once its dependencies have been completed. When
 	// omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of
 	// possible values.
 	// Wire name: 'run_if'
-	RunIf RunIf ``
+	RunIf RunIf `json:"run_if,omitempty"`
 	// The task triggers another job when the `run_job_task` field is present.
 	// Wire name: 'run_job_task'
-	RunJobTask *RunJobTask ``
+	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
 
 	// Wire name: 'run_page_url'
-	RunPageUrl string ``
+	RunPageUrl string `json:"run_page_url,omitempty"`
 	// The time in milliseconds it took to set up the cluster. For runs that run
 	// on new clusters this is the cluster creation time, for runs that run on
 	// existing clusters this time should be very short. The duration of a task
@@ -13082,14 +13051,14 @@ type RunTask struct {
 	// job runs. The total duration of a multitask job run is the value of the
 	// `run_duration` field.
 	// Wire name: 'setup_duration'
-	SetupDuration int64 ``
+	SetupDuration int64 `json:"setup_duration,omitempty"`
 	// The task runs a JAR when the `spark_jar_task` field is present.
 	// Wire name: 'spark_jar_task'
-	SparkJarTask *SparkJarTask ``
+	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
 	// The task runs a Python file when the `spark_python_task` field is
 	// present.
 	// Wire name: 'spark_python_task'
-	SparkPythonTask *SparkPythonTask ``
+	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
 	// (Legacy) The task runs the spark-submit script when the
 	// `spark_submit_task` field is present. This task can run only on new
 	// clusters and is not compatible with serverless compute.
@@ -13109,39 +13078,39 @@ type RunTask struct {
 	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
 	// paths.
 	// Wire name: 'spark_submit_task'
-	SparkSubmitTask *SparkSubmitTask ``
+	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// The task runs a SQL query or file, or it refreshes a SQL alert or a
 	// legacy SQL dashboard when the `sql_task` field is present.
 	// Wire name: 'sql_task'
-	SqlTask *SqlTask ``
+	SqlTask *SqlTask `json:"sql_task,omitempty"`
 	// The time at which this run was started in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC). This may not be the time when the job
 	// task starts executing, for example, if the job is scheduled to run on a
 	// new cluster, this is the time the cluster creation call is issued.
 	// Wire name: 'start_time'
-	StartTime int64 ``
+	StartTime int64 `json:"start_time,omitempty"`
 	// Deprecated. Please use the `status` field instead.
 	// Wire name: 'state'
-	State *RunState ``
+	State *RunState `json:"state,omitempty"`
 
 	// Wire name: 'status'
-	Status *RunStatus ``
+	Status *RunStatus `json:"status,omitempty"`
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
 	// job. On Update or Reset, this field is used to reference the tasks to be
 	// updated or reset.
 	// Wire name: 'task_key'
-	TaskKey string ``
+	TaskKey string `json:"task_key"`
 	// An optional timeout applied to each run of this job task. A value of `0`
 	// means no timeout.
 	// Wire name: 'timeout_seconds'
-	TimeoutSeconds int ``
+	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 	// A collection of system notification IDs to notify when the run begins or
 	// completes. The default behavior is to not send any system notifications.
 	// Task webhooks respect the task notification settings.
 	// Wire name: 'webhook_notifications'
-	WebhookNotifications *WebhookNotifications ``
-	ForceSendFields      []string              `tf:"-"`
+	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+	ForceSendFields      []string              `json:"-" tf:"-"`
 }
 
 func (st RunTask) MarshalJSON() ([]byte, error) {
@@ -13801,14 +13770,14 @@ type SparkJarTask struct {
 	// Deprecated since 04/2016. Provide a `jar` through the `libraries` field
 	// instead. For an example, see :method:jobs/create.
 	// Wire name: 'jar_uri'
-	JarUri string ``
+	JarUri string `json:"jar_uri,omitempty"`
 	// The full name of the class containing the main method to be executed.
 	// This class must be contained in a JAR provided as a library.
 	//
 	// The code must use `SparkContext.getOrCreate` to obtain a Spark context;
 	// otherwise, runs of the job fail.
 	// Wire name: 'main_class_name'
-	MainClassName string ``
+	MainClassName string `json:"main_class_name,omitempty"`
 	// Parameters passed to the main method.
 	//
 	// Use [Task parameter variables] to set parameters containing information
@@ -13816,11 +13785,11 @@ type SparkJarTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'parameters'
-	Parameters []string ``
+	Parameters []string `json:"parameters,omitempty"`
 	// Deprecated. A value of `false` is no longer supported.
 	// Wire name: 'run_as_repl'
-	RunAsRepl       bool     ``
-	ForceSendFields []string `tf:"-"`
+	RunAsRepl       bool     `json:"run_as_repl,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SparkJarTask) MarshalJSON() ([]byte, error) {
@@ -13888,14 +13857,14 @@ type SparkPythonTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'parameters'
-	Parameters []string ``
+	Parameters []string `json:"parameters,omitempty"`
 	// The Python file to be executed. Cloud file URIs (such as dbfs:/, s3:/,
 	// adls:/, gcs:/) and workspace paths are supported. For python files stored
 	// in the Databricks workspace, the path must be absolute and begin with
 	// `/`. For files stored in a remote repository, the path must be relative.
 	// This field is required.
 	// Wire name: 'python_file'
-	PythonFile string ``
+	PythonFile string `json:"python_file"`
 	// Optional location type of the Python file. When set to `WORKSPACE` or not
 	// specified, the file will be retrieved from the local Databricks workspace
 	// or cloud location (if the `python_file` has a URI format). When set to
@@ -13906,7 +13875,7 @@ type SparkPythonTask struct {
 	// a cloud filesystem URI. * `GIT`: The Python file is located in a remote
 	// Git repository.
 	// Wire name: 'source'
-	Source Source ``
+	Source Source `json:"source,omitempty"`
 }
 
 func (st SparkPythonTask) MarshalJSON() ([]byte, error) {
@@ -13978,7 +13947,7 @@ type SparkSubmitTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// Wire name: 'parameters'
-	Parameters []string ``
+	Parameters []string `json:"parameters,omitempty"`
 }
 
 func (st SparkSubmitTask) MarshalJSON() ([]byte, error) {
@@ -14029,21 +13998,21 @@ func SparkSubmitTaskFromPb(pb *jobspb.SparkSubmitTaskPb) (*SparkSubmitTask, erro
 type SqlAlertOutput struct {
 
 	// Wire name: 'alert_state'
-	AlertState SqlAlertState ``
+	AlertState SqlAlertState `json:"alert_state,omitempty"`
 	// The link to find the output results.
 	// Wire name: 'output_link'
-	OutputLink string ``
+	OutputLink string `json:"output_link,omitempty"`
 	// The text of the SQL query. Can Run permission of the SQL query associated
 	// with the SQL alert is required to view this field.
 	// Wire name: 'query_text'
-	QueryText string ``
+	QueryText string `json:"query_text,omitempty"`
 	// Information about SQL statements executed in the run.
 	// Wire name: 'sql_statements'
-	SqlStatements []SqlStatementOutput ``
+	SqlStatements []SqlStatementOutput `json:"sql_statements,omitempty"`
 	// The canonical identifier of the SQL warehouse.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SqlAlertOutput) MarshalJSON() ([]byte, error) {
@@ -14203,11 +14172,11 @@ func SqlAlertStateFromPb(pb *jobspb.SqlAlertStatePb) (*SqlAlertState, error) {
 type SqlDashboardOutput struct {
 	// The canonical identifier of the SQL warehouse.
 	// Wire name: 'warehouse_id'
-	WarehouseId string ``
+	WarehouseId string `json:"warehouse_id,omitempty"`
 	// Widgets executed in the run. Only SQL query based widgets are listed.
 	// Wire name: 'widgets'
-	Widgets         []SqlDashboardWidgetOutput ``
-	ForceSendFields []string                   `tf:"-"`
+	Widgets         []SqlDashboardWidgetOutput `json:"widgets,omitempty"`
+	ForceSendFields []string                   `json:"-" tf:"-"`
 }
 
 func (st SqlDashboardOutput) MarshalJSON() ([]byte, error) {
@@ -14288,26 +14257,26 @@ func SqlDashboardOutputFromPb(pb *jobspb.SqlDashboardOutputPb) (*SqlDashboardOut
 type SqlDashboardWidgetOutput struct {
 	// Time (in epoch milliseconds) when execution of the SQL widget ends.
 	// Wire name: 'end_time'
-	EndTime int64 ``
+	EndTime int64 `json:"end_time,omitempty"`
 	// The information about the error when execution fails.
 	// Wire name: 'error'
-	Error *SqlOutputError ``
+	Error *SqlOutputError `json:"error,omitempty"`
 	// The link to find the output results.
 	// Wire name: 'output_link'
-	OutputLink string ``
+	OutputLink string `json:"output_link,omitempty"`
 	// Time (in epoch milliseconds) when execution of the SQL widget starts.
 	// Wire name: 'start_time'
-	StartTime int64 ``
+	StartTime int64 `json:"start_time,omitempty"`
 	// The execution status of the SQL widget.
 	// Wire name: 'status'
-	Status SqlDashboardWidgetOutputStatus ``
+	Status SqlDashboardWidgetOutputStatus `json:"status,omitempty"`
 	// The canonical identifier of the SQL widget.
 	// Wire name: 'widget_id'
-	WidgetId string ``
+	WidgetId string `json:"widget_id,omitempty"`
 	// The title of the SQL widget.
 	// Wire name: 'widget_title'
-	WidgetTitle     string   ``
-	ForceSendFields []string `tf:"-"`
+	WidgetTitle     string   `json:"widget_title,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SqlDashboardWidgetOutput) MarshalJSON() ([]byte, error) {
@@ -14462,13 +14431,13 @@ func SqlDashboardWidgetOutputStatusFromPb(pb *jobspb.SqlDashboardWidgetOutputSta
 type SqlOutput struct {
 	// The output of a SQL alert task, if available.
 	// Wire name: 'alert_output'
-	AlertOutput *SqlAlertOutput ``
+	AlertOutput *SqlAlertOutput `json:"alert_output,omitempty"`
 	// The output of a SQL dashboard task, if available.
 	// Wire name: 'dashboard_output'
-	DashboardOutput *SqlDashboardOutput ``
+	DashboardOutput *SqlDashboardOutput `json:"dashboard_output,omitempty"`
 	// The output of a SQL query task, if available.
 	// Wire name: 'query_output'
-	QueryOutput *SqlQueryOutput ``
+	QueryOutput *SqlQueryOutput `json:"query_output,omitempty"`
 }
 
 func (st SqlOutput) MarshalJSON() ([]byte, error) {
@@ -14559,8 +14528,8 @@ func SqlOutputFromPb(pb *jobspb.SqlOutputPb) (*SqlOutput, error) {
 type SqlOutputError struct {
 	// The error message when execution fails.
 	// Wire name: 'message'
-	Message         string   ``
-	ForceSendFields []string `tf:"-"`
+	Message         string   `json:"message,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SqlOutputError) MarshalJSON() ([]byte, error) {
@@ -14617,21 +14586,21 @@ func SqlOutputErrorFromPb(pb *jobspb.SqlOutputErrorPb) (*SqlOutputError, error) 
 type SqlQueryOutput struct {
 
 	// Wire name: 'endpoint_id'
-	EndpointId string ``
+	EndpointId string `json:"endpoint_id,omitempty"`
 	// The link to find the output results.
 	// Wire name: 'output_link'
-	OutputLink string ``
+	OutputLink string `json:"output_link,omitempty"`
 	// The text of the SQL query. Can Run permission of the SQL query is
 	// required to view this field.
 	// Wire name: 'query_text'
-	QueryText string ``
+	QueryText string `json:"query_text,omitempty"`
 	// Information about SQL statements executed in the run.
 	// Wire name: 'sql_statements'
-	SqlStatements []SqlStatementOutput ``
+	SqlStatements []SqlStatementOutput `json:"sql_statements,omitempty"`
 	// The canonical identifier of the SQL warehouse.
 	// Wire name: 'warehouse_id'
-	WarehouseId     string   ``
-	ForceSendFields []string `tf:"-"`
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SqlQueryOutput) MarshalJSON() ([]byte, error) {
@@ -14718,8 +14687,8 @@ func SqlQueryOutputFromPb(pb *jobspb.SqlQueryOutputPb) (*SqlQueryOutput, error) 
 type SqlStatementOutput struct {
 	// A key that can be used to look up query details.
 	// Wire name: 'lookup_key'
-	LookupKey       string   ``
-	ForceSendFields []string `tf:"-"`
+	LookupKey       string   `json:"lookup_key,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SqlStatementOutput) MarshalJSON() ([]byte, error) {
@@ -14776,27 +14745,27 @@ func SqlStatementOutputFromPb(pb *jobspb.SqlStatementOutputPb) (*SqlStatementOut
 type SqlTask struct {
 	// If alert, indicates that this job must refresh a SQL alert.
 	// Wire name: 'alert'
-	Alert *SqlTaskAlert ``
+	Alert *SqlTaskAlert `json:"alert,omitempty"`
 	// If dashboard, indicates that this job must refresh a SQL dashboard.
 	// Wire name: 'dashboard'
-	Dashboard *SqlTaskDashboard ``
+	Dashboard *SqlTaskDashboard `json:"dashboard,omitempty"`
 	// If file, indicates that this job runs a SQL file in a remote Git
 	// repository.
 	// Wire name: 'file'
-	File *SqlTaskFile ``
+	File *SqlTaskFile `json:"file,omitempty"`
 	// Parameters to be used for each run of this job. The SQL alert task does
 	// not support custom parameters.
 	// Wire name: 'parameters'
-	Parameters map[string]string ``
+	Parameters map[string]string `json:"parameters,omitempty"`
 	// If query, indicates that this job must execute a SQL query.
 	// Wire name: 'query'
-	Query *SqlTaskQuery ``
+	Query *SqlTaskQuery `json:"query,omitempty"`
 	// The canonical identifier of the SQL warehouse. Recommended to use with
 	// serverless or pro SQL warehouses. Classic SQL warehouses are only
 	// supported for SQL alert, dashboard and query tasks and are limited to
 	// scheduled single-task jobs.
 	// Wire name: 'warehouse_id'
-	WarehouseId string ``
+	WarehouseId string `json:"warehouse_id"`
 }
 
 func (st SqlTask) MarshalJSON() ([]byte, error) {
@@ -14905,14 +14874,14 @@ func SqlTaskFromPb(pb *jobspb.SqlTaskPb) (*SqlTask, error) {
 type SqlTaskAlert struct {
 	// The canonical identifier of the SQL alert.
 	// Wire name: 'alert_id'
-	AlertId string ``
+	AlertId string `json:"alert_id"`
 	// If true, the alert notifications are not sent to subscribers.
 	// Wire name: 'pause_subscriptions'
-	PauseSubscriptions bool ``
+	PauseSubscriptions bool `json:"pause_subscriptions,omitempty"`
 	// If specified, alert notifications are sent to subscribers.
 	// Wire name: 'subscriptions'
-	Subscriptions   []SqlTaskSubscription ``
-	ForceSendFields []string              `tf:"-"`
+	Subscriptions   []SqlTaskSubscription `json:"subscriptions,omitempty"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st SqlTaskAlert) MarshalJSON() ([]byte, error) {
@@ -14995,18 +14964,18 @@ func SqlTaskAlertFromPb(pb *jobspb.SqlTaskAlertPb) (*SqlTaskAlert, error) {
 type SqlTaskDashboard struct {
 	// Subject of the email sent to subscribers of this task.
 	// Wire name: 'custom_subject'
-	CustomSubject string ``
+	CustomSubject string `json:"custom_subject,omitempty"`
 	// The canonical identifier of the SQL dashboard.
 	// Wire name: 'dashboard_id'
-	DashboardId string ``
+	DashboardId string `json:"dashboard_id"`
 	// If true, the dashboard snapshot is not taken, and emails are not sent to
 	// subscribers.
 	// Wire name: 'pause_subscriptions'
-	PauseSubscriptions bool ``
+	PauseSubscriptions bool `json:"pause_subscriptions,omitempty"`
 	// If specified, dashboard snapshots are sent to subscriptions.
 	// Wire name: 'subscriptions'
-	Subscriptions   []SqlTaskSubscription ``
-	ForceSendFields []string              `tf:"-"`
+	Subscriptions   []SqlTaskSubscription `json:"subscriptions,omitempty"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
 func (st SqlTaskDashboard) MarshalJSON() ([]byte, error) {
@@ -15092,7 +15061,7 @@ type SqlTaskFile struct {
 	// Path of the SQL file. Must be relative if the source is a remote Git
 	// repository and absolute for workspace paths.
 	// Wire name: 'path'
-	Path string ``
+	Path string `json:"path"`
 	// Optional location type of the SQL file. When set to `WORKSPACE`, the SQL
 	// file will be retrieved from the local Databricks workspace. When set to
 	// `GIT`, the SQL file will be retrieved from a Git repository defined in
@@ -15102,7 +15071,7 @@ type SqlTaskFile struct {
 	// * `WORKSPACE`: SQL file is located in Databricks workspace. * `GIT`: SQL
 	// file is located in cloud Git provider.
 	// Wire name: 'source'
-	Source Source ``
+	Source Source `json:"source,omitempty"`
 }
 
 func (st SqlTaskFile) MarshalJSON() ([]byte, error) {
@@ -15167,7 +15136,7 @@ func SqlTaskFileFromPb(pb *jobspb.SqlTaskFilePb) (*SqlTaskFile, error) {
 type SqlTaskQuery struct {
 	// The canonical identifier of the SQL query.
 	// Wire name: 'query_id'
-	QueryId string ``
+	QueryId string `json:"query_id"`
 }
 
 func (st SqlTaskQuery) MarshalJSON() ([]byte, error) {
@@ -15221,13 +15190,13 @@ type SqlTaskSubscription struct {
 	// cannot set both destination_id and user_name for subscription
 	// notifications.
 	// Wire name: 'destination_id'
-	DestinationId string ``
+	DestinationId string `json:"destination_id,omitempty"`
 	// The user name to receive the subscription email. This parameter is
 	// mutually exclusive with destination_id. You cannot set both
 	// destination_id and user_name for subscription notifications.
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SqlTaskSubscription) MarshalJSON() ([]byte, error) {
@@ -15342,19 +15311,19 @@ func StorageModeFromPb(pb *jobspb.StorageModePb) (*StorageMode, error) {
 type SubmitRun struct {
 	// List of permissions to set on the job.
 	// Wire name: 'access_control_list'
-	AccessControlList []JobAccessControlRequest ``
+	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
 	// The user specified id of the budget policy to use for this one-time run.
 	// If not specified, the run will be not be attributed to any budget policy.
 	// Wire name: 'budget_policy_id'
-	BudgetPolicyId string ``
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// An optional set of email addresses notified when the run begins or
 	// completes.
 	// Wire name: 'email_notifications'
-	EmailNotifications *JobEmailNotifications ``
+	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// A list of task execution environment specifications that can be
 	// referenced by tasks of this run.
 	// Wire name: 'environments'
-	Environments []JobEnvironment ``
+	Environments []JobEnvironment `json:"environments,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
 	// notebook, dbt, Python script, and SQL File tasks.
@@ -15366,10 +15335,10 @@ type SubmitRun struct {
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	// Wire name: 'git_source'
-	GitSource *GitSource ``
+	GitSource *GitSource `json:"git_source,omitempty"`
 
 	// Wire name: 'health'
-	Health *JobsHealthRules ``
+	Health *JobsHealthRules `json:"health,omitempty"`
 	// An optional token that can be used to guarantee the idempotency of job
 	// run requests. If a run with the provided token already exists, the
 	// request does not create a new run but returns the ID of the existing run
@@ -15386,34 +15355,34 @@ type SubmitRun struct {
 	//
 	// [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
 	// Wire name: 'idempotency_token'
-	IdempotencyToken string ``
+	IdempotencyToken string `json:"idempotency_token,omitempty"`
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// run.
 	// Wire name: 'notification_settings'
-	NotificationSettings *JobNotificationSettings ``
+	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// The queue settings of the one-time run.
 	// Wire name: 'queue'
-	Queue *QueueSettings ``
+	Queue *QueueSettings `json:"queue,omitempty"`
 	// Specifies the user or service principal that the job runs as. If not
 	// specified, the job runs as the user who submits the request.
 	// Wire name: 'run_as'
-	RunAs *JobRunAs ``
+	RunAs *JobRunAs `json:"run_as,omitempty"`
 	// An optional name for the run. The default value is `Untitled`.
 	// Wire name: 'run_name'
-	RunName string ``
+	RunName string `json:"run_name,omitempty"`
 
 	// Wire name: 'tasks'
-	Tasks []SubmitTask ``
+	Tasks []SubmitTask `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
 	// Wire name: 'timeout_seconds'
-	TimeoutSeconds int ``
+	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 	// A collection of system notification IDs to notify when the run begins or
 	// completes.
 	// Wire name: 'webhook_notifications'
-	WebhookNotifications *WebhookNotifications ``
-	ForceSendFields      []string              `tf:"-"`
+	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+	ForceSendFields      []string              `json:"-" tf:"-"`
 }
 
 func (st SubmitRun) MarshalJSON() ([]byte, error) {
@@ -15647,8 +15616,8 @@ func SubmitRunFromPb(pb *jobspb.SubmitRunPb) (*SubmitRun, error) {
 type SubmitRunResponse struct {
 	// The canonical identifier for the newly submitted run.
 	// Wire name: 'run_id'
-	RunId           int64    ``
-	ForceSendFields []string `tf:"-"`
+	RunId           int64    `json:"run_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SubmitRunResponse) MarshalJSON() ([]byte, error) {
@@ -15708,106 +15677,106 @@ type SubmitTask struct {
 	//
 	// [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html
 	// Wire name: 'clean_rooms_notebook_task'
-	CleanRoomsNotebookTask *CleanRoomsNotebookTask ``
+	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
 	// The task evaluates a condition that can be used to control the execution
 	// of other tasks when the `condition_task` field is present. The condition
 	// task does not require a cluster to execute and does not support retries
 	// or notifications.
 	// Wire name: 'condition_task'
-	ConditionTask *ConditionTask ``
+	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
 	// The task refreshes a dashboard and sends a snapshot to subscribers.
 	// Wire name: 'dashboard_task'
-	DashboardTask *DashboardTask ``
+	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
 	// Task type for dbt cloud, deprecated in favor of the new name
 	// dbt_platform_task
 	// Wire name: 'dbt_cloud_task'
-	DbtCloudTask *DbtCloudTask ``
+	DbtCloudTask *DbtCloudTask `json:"dbt_cloud_task,omitempty"`
 
 	// Wire name: 'dbt_platform_task'
-	DbtPlatformTask *DbtPlatformTask ``
+	DbtPlatformTask *DbtPlatformTask `json:"dbt_platform_task,omitempty"`
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
 	// a serverless or a pro SQL warehouse.
 	// Wire name: 'dbt_task'
-	DbtTask *DbtTask ``
+	DbtTask *DbtTask `json:"dbt_task,omitempty"`
 	// An optional array of objects specifying the dependency graph of the task.
 	// All tasks specified in this field must complete successfully before
 	// executing this task. The key is `task_key`, and the value is the name
 	// assigned to the dependent task.
 	// Wire name: 'depends_on'
-	DependsOn []TaskDependency ``
+	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
 	// Wire name: 'email_notifications'
-	EmailNotifications *JobEmailNotifications ``
+	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// The key that references an environment spec in a job. This field is
 	// required for Python script, Python wheel and dbt tasks when using
 	// serverless compute.
 	// Wire name: 'environment_key'
-	EnvironmentKey string ``
+	EnvironmentKey string `json:"environment_key,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
 	// running jobs and tasks on new clusters for greater reliability
 	// Wire name: 'existing_cluster_id'
-	ExistingClusterId string ``
+	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	// Wire name: 'for_each_task'
-	ForEachTask *ForEachTask ``
+	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
 
 	// Wire name: 'gen_ai_compute_task'
-	GenAiComputeTask *GenAiComputeTask ``
+	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 
 	// Wire name: 'health'
-	Health *JobsHealthRules ``
+	Health *JobsHealthRules `json:"health,omitempty"`
 	// An optional list of libraries to be installed on the cluster. The default
 	// value is an empty list.
 	// Wire name: 'libraries'
-	Libraries []compute.Library ``
+	Libraries []compute.Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
 	// Wire name: 'new_cluster'
-	NewCluster *compute.ClusterSpec ``
+	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
 	// The task runs a notebook when the `notebook_task` field is present.
 	// Wire name: 'notebook_task'
-	NotebookTask *NotebookTask ``
+	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// task run.
 	// Wire name: 'notification_settings'
-	NotificationSettings *TaskNotificationSettings ``
+	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
 	// The task triggers a pipeline update when the `pipeline_task` field is
 	// present. Only pipelines configured to use triggered more are supported.
 	// Wire name: 'pipeline_task'
-	PipelineTask *PipelineTask ``
+	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
 	// The task triggers a Power BI semantic model update when the
 	// `power_bi_task` field is present.
 	// Wire name: 'power_bi_task'
-	PowerBiTask *PowerBiTask ``
+	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
 	// The task runs a Python wheel when the `python_wheel_task` field is
 	// present.
 	// Wire name: 'python_wheel_task'
-	PythonWheelTask *PythonWheelTask ``
+	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
 	// An optional value indicating the condition that determines whether the
 	// task should be run once its dependencies have been completed. When
 	// omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of
 	// possible values.
 	// Wire name: 'run_if'
-	RunIf RunIf ``
+	RunIf RunIf `json:"run_if,omitempty"`
 	// The task triggers another job when the `run_job_task` field is present.
 	// Wire name: 'run_job_task'
-	RunJobTask *RunJobTask ``
+	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
 	// The task runs a JAR when the `spark_jar_task` field is present.
 	// Wire name: 'spark_jar_task'
-	SparkJarTask *SparkJarTask ``
+	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
 	// The task runs a Python file when the `spark_python_task` field is
 	// present.
 	// Wire name: 'spark_python_task'
-	SparkPythonTask *SparkPythonTask ``
+	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
 	// (Legacy) The task runs the spark-submit script when the
 	// `spark_submit_task` field is present. This task can run only on new
 	// clusters and is not compatible with serverless compute.
@@ -15827,27 +15796,27 @@ type SubmitTask struct {
 	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
 	// paths.
 	// Wire name: 'spark_submit_task'
-	SparkSubmitTask *SparkSubmitTask ``
+	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// The task runs a SQL query or file, or it refreshes a SQL alert or a
 	// legacy SQL dashboard when the `sql_task` field is present.
 	// Wire name: 'sql_task'
-	SqlTask *SqlTask ``
+	SqlTask *SqlTask `json:"sql_task,omitempty"`
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
 	// job. On Update or Reset, this field is used to reference the tasks to be
 	// updated or reset.
 	// Wire name: 'task_key'
-	TaskKey string ``
+	TaskKey string `json:"task_key"`
 	// An optional timeout applied to each run of this job task. A value of `0`
 	// means no timeout.
 	// Wire name: 'timeout_seconds'
-	TimeoutSeconds int ``
+	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 	// A collection of system notification IDs to notify when the run begins or
 	// completes. The default behavior is to not send any system notifications.
 	// Task webhooks respect the task notification settings.
 	// Wire name: 'webhook_notifications'
-	WebhookNotifications *WebhookNotifications ``
-	ForceSendFields      []string              `tf:"-"`
+	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+	ForceSendFields      []string              `json:"-" tf:"-"`
 }
 
 func (st SubmitTask) MarshalJSON() ([]byte, error) {
@@ -16283,14 +16252,14 @@ type Subscription struct {
 	// Optional: Allows users to specify a custom subject line on the email sent
 	// to subscribers.
 	// Wire name: 'custom_subject'
-	CustomSubject string ``
+	CustomSubject string `json:"custom_subject,omitempty"`
 	// When true, the subscription will not send emails.
 	// Wire name: 'paused'
-	Paused bool ``
+	Paused bool `json:"paused,omitempty"`
 	// The list of subscribers to send the snapshot of the dashboard to.
 	// Wire name: 'subscribers'
-	Subscribers     []SubscriptionSubscriber ``
-	ForceSendFields []string                 `tf:"-"`
+	Subscribers     []SubscriptionSubscriber `json:"subscribers,omitempty"`
+	ForceSendFields []string                 `json:"-" tf:"-"`
 }
 
 func (st Subscription) MarshalJSON() ([]byte, error) {
@@ -16374,12 +16343,12 @@ type SubscriptionSubscriber struct {
 	// A snapshot of the dashboard will be sent to the destination when the
 	// `destination_id` field is present.
 	// Wire name: 'destination_id'
-	DestinationId string ``
+	DestinationId string `json:"destination_id,omitempty"`
 	// A snapshot of the dashboard will be sent to the user's email when the
 	// `user_name` field is present.
 	// Wire name: 'user_name'
-	UserName        string   ``
-	ForceSendFields []string `tf:"-"`
+	UserName        string   `json:"user_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st SubscriptionSubscriber) MarshalJSON() ([]byte, error) {
@@ -16438,23 +16407,23 @@ func SubscriptionSubscriberFromPb(pb *jobspb.SubscriptionSubscriberPb) (*Subscri
 type TableUpdateTriggerConfiguration struct {
 	// The table(s) condition based on which to trigger a job run.
 	// Wire name: 'condition'
-	Condition Condition ``
+	Condition Condition `json:"condition,omitempty"`
 	// If set, the trigger starts a run only after the specified amount of time
 	// has passed since the last time the trigger fired. The minimum allowed
 	// value is 60 seconds.
 	// Wire name: 'min_time_between_triggers_seconds'
-	MinTimeBetweenTriggersSeconds int ``
+	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
 	// A list of Delta tables to monitor for changes. The table name must be in
 	// the format `catalog_name.schema_name.table_name`.
 	// Wire name: 'table_names'
-	TableNames []string ``
+	TableNames []string `json:"table_names,omitempty"`
 	// If set, the trigger starts a run only after no table updates have
 	// occurred for the specified time and can be used to wait for a series of
 	// table updates before triggering a run. The minimum allowed value is 60
 	// seconds.
 	// Wire name: 'wait_after_last_change_seconds'
-	WaitAfterLastChangeSeconds int      ``
-	ForceSendFields            []string `tf:"-"`
+	WaitAfterLastChangeSeconds int      `json:"wait_after_last_change_seconds,omitempty"`
+	ForceSendFields            []string `json:"-" tf:"-"`
 }
 
 func (st TableUpdateTriggerConfiguration) MarshalJSON() ([]byte, error) {
@@ -16532,113 +16501,113 @@ type Task struct {
 	//
 	// [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html
 	// Wire name: 'clean_rooms_notebook_task'
-	CleanRoomsNotebookTask *CleanRoomsNotebookTask ``
+	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
 	// The task evaluates a condition that can be used to control the execution
 	// of other tasks when the `condition_task` field is present. The condition
 	// task does not require a cluster to execute and does not support retries
 	// or notifications.
 	// Wire name: 'condition_task'
-	ConditionTask *ConditionTask ``
+	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
 	// The task refreshes a dashboard and sends a snapshot to subscribers.
 	// Wire name: 'dashboard_task'
-	DashboardTask *DashboardTask ``
+	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
 	// Task type for dbt cloud, deprecated in favor of the new name
 	// dbt_platform_task
 	// Wire name: 'dbt_cloud_task'
-	DbtCloudTask *DbtCloudTask ``
+	DbtCloudTask *DbtCloudTask `json:"dbt_cloud_task,omitempty"`
 
 	// Wire name: 'dbt_platform_task'
-	DbtPlatformTask *DbtPlatformTask ``
+	DbtPlatformTask *DbtPlatformTask `json:"dbt_platform_task,omitempty"`
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
 	// a serverless or a pro SQL warehouse.
 	// Wire name: 'dbt_task'
-	DbtTask *DbtTask ``
+	DbtTask *DbtTask `json:"dbt_task,omitempty"`
 	// An optional array of objects specifying the dependency graph of the task.
 	// All tasks specified in this field must complete before executing this
 	// task. The task will run only if the `run_if` condition is true. The key
 	// is `task_key`, and the value is the name assigned to the dependent task.
 	// Wire name: 'depends_on'
-	DependsOn []TaskDependency ``
+	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task.
 	// Wire name: 'description'
-	Description string ``
+	Description string `json:"description,omitempty"`
 	// An option to disable auto optimization in serverless
 	// Wire name: 'disable_auto_optimization'
-	DisableAutoOptimization bool ``
+	DisableAutoOptimization bool `json:"disable_auto_optimization,omitempty"`
 	// An optional set of email addresses that is notified when runs of this
 	// task begin or complete as well as when this task is deleted. The default
 	// behavior is to not send any emails.
 	// Wire name: 'email_notifications'
-	EmailNotifications *TaskEmailNotifications ``
+	EmailNotifications *TaskEmailNotifications `json:"email_notifications,omitempty"`
 	// The key that references an environment spec in a job. This field is
 	// required for Python script, Python wheel and dbt tasks when using
 	// serverless compute.
 	// Wire name: 'environment_key'
-	EnvironmentKey string ``
+	EnvironmentKey string `json:"environment_key,omitempty"`
 	// If existing_cluster_id, the ID of an existing cluster that is used for
 	// all runs. When running jobs or tasks on an existing cluster, you may need
 	// to manually restart the cluster if it stops responding. We suggest
 	// running jobs and tasks on new clusters for greater reliability
 	// Wire name: 'existing_cluster_id'
-	ExistingClusterId string ``
+	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	// Wire name: 'for_each_task'
-	ForEachTask *ForEachTask ``
+	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
 
 	// Wire name: 'gen_ai_compute_task'
-	GenAiComputeTask *GenAiComputeTask ``
+	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 
 	// Wire name: 'health'
-	Health *JobsHealthRules ``
+	Health *JobsHealthRules `json:"health,omitempty"`
 	// If job_cluster_key, this task is executed reusing the cluster specified
 	// in `job.settings.job_clusters`.
 	// Wire name: 'job_cluster_key'
-	JobClusterKey string ``
+	JobClusterKey string `json:"job_cluster_key,omitempty"`
 	// An optional list of libraries to be installed on the cluster. The default
 	// value is an empty list.
 	// Wire name: 'libraries'
-	Libraries []compute.Library ``
+	Libraries []compute.Library `json:"libraries,omitempty"`
 	// An optional maximum number of times to retry an unsuccessful run. A run
 	// is considered to be unsuccessful if it completes with the `FAILED`
 	// result_state or `INTERNAL_ERROR` `life_cycle_state`. The value `-1` means
 	// to retry indefinitely and the value `0` means to never retry.
 	// Wire name: 'max_retries'
-	MaxRetries int ``
+	MaxRetries int `json:"max_retries,omitempty"`
 	// An optional minimal interval in milliseconds between the start of the
 	// failed run and the subsequent retry run. The default behavior is that
 	// unsuccessful runs are immediately retried.
 	// Wire name: 'min_retry_interval_millis'
-	MinRetryIntervalMillis int ``
+	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
 	// Wire name: 'new_cluster'
-	NewCluster *compute.ClusterSpec ``
+	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
 	// The task runs a notebook when the `notebook_task` field is present.
 	// Wire name: 'notebook_task'
-	NotebookTask *NotebookTask ``
+	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
 	// to each of the `email_notifications` and `webhook_notifications` for this
 	// task.
 	// Wire name: 'notification_settings'
-	NotificationSettings *TaskNotificationSettings ``
+	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
 	// The task triggers a pipeline update when the `pipeline_task` field is
 	// present. Only pipelines configured to use triggered more are supported.
 	// Wire name: 'pipeline_task'
-	PipelineTask *PipelineTask ``
+	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
 	// The task triggers a Power BI semantic model update when the
 	// `power_bi_task` field is present.
 	// Wire name: 'power_bi_task'
-	PowerBiTask *PowerBiTask ``
+	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
 	// The task runs a Python wheel when the `python_wheel_task` field is
 	// present.
 	// Wire name: 'python_wheel_task'
-	PythonWheelTask *PythonWheelTask ``
+	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
 	// An optional policy to specify whether to retry a job when it times out.
 	// The default behavior is to not retry on timeout.
 	// Wire name: 'retry_on_timeout'
-	RetryOnTimeout bool ``
+	RetryOnTimeout bool `json:"retry_on_timeout,omitempty"`
 	// An optional value specifying the condition determining whether the task
 	// is run once its dependencies have been completed.
 	//
@@ -16649,17 +16618,17 @@ type Task struct {
 	// `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl
 	// dependencies have failed
 	// Wire name: 'run_if'
-	RunIf RunIf ``
+	RunIf RunIf `json:"run_if,omitempty"`
 	// The task triggers another job when the `run_job_task` field is present.
 	// Wire name: 'run_job_task'
-	RunJobTask *RunJobTask ``
+	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
 	// The task runs a JAR when the `spark_jar_task` field is present.
 	// Wire name: 'spark_jar_task'
-	SparkJarTask *SparkJarTask ``
+	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
 	// The task runs a Python file when the `spark_python_task` field is
 	// present.
 	// Wire name: 'spark_python_task'
-	SparkPythonTask *SparkPythonTask ``
+	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
 	// (Legacy) The task runs the spark-submit script when the
 	// `spark_submit_task` field is present. This task can run only on new
 	// clusters and is not compatible with serverless compute.
@@ -16679,27 +16648,27 @@ type Task struct {
 	// The `--jars`, `--py-files`, `--files` arguments support DBFS and S3
 	// paths.
 	// Wire name: 'spark_submit_task'
-	SparkSubmitTask *SparkSubmitTask ``
+	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// The task runs a SQL query or file, or it refreshes a SQL alert or a
 	// legacy SQL dashboard when the `sql_task` field is present.
 	// Wire name: 'sql_task'
-	SqlTask *SqlTask ``
+	SqlTask *SqlTask `json:"sql_task,omitempty"`
 	// A unique name for the task. This field is used to refer to this task from
 	// other tasks. This field is required and must be unique within its parent
 	// job. On Update or Reset, this field is used to reference the tasks to be
 	// updated or reset.
 	// Wire name: 'task_key'
-	TaskKey string ``
+	TaskKey string `json:"task_key"`
 	// An optional timeout applied to each run of this job task. A value of `0`
 	// means no timeout.
 	// Wire name: 'timeout_seconds'
-	TimeoutSeconds int ``
+	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
 	// A collection of system notification IDs to notify when runs of this task
 	// begin or complete. The default behavior is to not send any system
 	// notifications.
 	// Wire name: 'webhook_notifications'
-	WebhookNotifications *WebhookNotifications ``
-	ForceSendFields      []string              `tf:"-"`
+	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+	ForceSendFields      []string              `json:"-" tf:"-"`
 }
 
 func (st Task) MarshalJSON() ([]byte, error) {
@@ -17145,11 +17114,11 @@ type TaskDependency struct {
 	// Can only be specified on condition task dependencies. The outcome of the
 	// dependent task that must be met for this task to run.
 	// Wire name: 'outcome'
-	Outcome string ``
+	Outcome string `json:"outcome,omitempty"`
 	// The name of the task this task depends on.
 	// Wire name: 'task_key'
-	TaskKey         string   ``
-	ForceSendFields []string `tf:"-"`
+	TaskKey         string   `json:"task_key"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TaskDependency) MarshalJSON() ([]byte, error) {
@@ -17210,25 +17179,25 @@ type TaskEmailNotifications struct {
 	// run is skipped. This field is `deprecated`. Please use the
 	// `notification_settings.no_alert_for_skipped_runs` field.
 	// Wire name: 'no_alert_for_skipped_runs'
-	NoAlertForSkippedRuns bool ``
+	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
 	// A list of email addresses to be notified when the duration of a run
 	// exceeds the threshold specified for the `RUN_DURATION_SECONDS` metric in
 	// the `health` field. If no rule for the `RUN_DURATION_SECONDS` metric is
 	// specified in the `health` field for the job, notifications are not sent.
 	// Wire name: 'on_duration_warning_threshold_exceeded'
-	OnDurationWarningThresholdExceeded []string ``
+	OnDurationWarningThresholdExceeded []string `json:"on_duration_warning_threshold_exceeded,omitempty"`
 	// A list of email addresses to be notified when a run unsuccessfully
 	// completes. A run is considered to have completed unsuccessfully if it
 	// ends with an `INTERNAL_ERROR` `life_cycle_state` or a `FAILED`, or
 	// `TIMED_OUT` result_state. If this is not specified on job creation,
 	// reset, or update the list is empty, and notifications are not sent.
 	// Wire name: 'on_failure'
-	OnFailure []string ``
+	OnFailure []string `json:"on_failure,omitempty"`
 	// A list of email addresses to be notified when a run begins. If not
 	// specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
 	// Wire name: 'on_start'
-	OnStart []string ``
+	OnStart []string `json:"on_start,omitempty"`
 	// A list of email addresses to notify when any streaming backlog thresholds
 	// are exceeded for any stream. Streaming backlog thresholds can be set in
 	// the `health` field using the following metrics:
@@ -17237,15 +17206,15 @@ type TaskEmailNotifications struct {
 	// based on the 10-minute average of these metrics. If the issue persists,
 	// notifications are resent every 30 minutes.
 	// Wire name: 'on_streaming_backlog_exceeded'
-	OnStreamingBacklogExceeded []string ``
+	OnStreamingBacklogExceeded []string `json:"on_streaming_backlog_exceeded,omitempty"`
 	// A list of email addresses to be notified when a run successfully
 	// completes. A run is considered to have completed successfully if it ends
 	// with a `TERMINATED` `life_cycle_state` and a `SUCCESS` result_state. If
 	// not specified on job creation, reset, or update, the list is empty, and
 	// notifications are not sent.
 	// Wire name: 'on_success'
-	OnSuccess       []string ``
-	ForceSendFields []string `tf:"-"`
+	OnSuccess       []string `json:"on_success,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TaskEmailNotifications) MarshalJSON() ([]byte, error) {
@@ -17314,16 +17283,16 @@ type TaskNotificationSettings struct {
 	// for the retried runs and do not send notifications to recipients
 	// specified in `on_failure` until the last retry of the run.
 	// Wire name: 'alert_on_last_attempt'
-	AlertOnLastAttempt bool ``
+	AlertOnLastAttempt bool `json:"alert_on_last_attempt,omitempty"`
 	// If true, do not send notifications to recipients specified in
 	// `on_failure` if the run is canceled.
 	// Wire name: 'no_alert_for_canceled_runs'
-	NoAlertForCanceledRuns bool ``
+	NoAlertForCanceledRuns bool `json:"no_alert_for_canceled_runs,omitempty"`
 	// If true, do not send notifications to recipients specified in
 	// `on_failure` if the run is skipped.
 	// Wire name: 'no_alert_for_skipped_runs'
-	NoAlertForSkippedRuns bool     ``
-	ForceSendFields       []string `tf:"-"`
+	NoAlertForSkippedRuns bool     `json:"no_alert_for_skipped_runs,omitempty"`
+	ForceSendFields       []string `json:"-" tf:"-"`
 }
 
 func (st TaskNotificationSettings) MarshalJSON() ([]byte, error) {
@@ -17599,15 +17568,15 @@ func TerminationCodeCodeFromPb(pb *jobspb.TerminationCodeCodePb) (*TerminationCo
 type TerminationDetails struct {
 
 	// Wire name: 'code'
-	Code TerminationCodeCode ``
+	Code TerminationCodeCode `json:"code,omitempty"`
 	// A descriptive message with the termination details. This field is
 	// unstructured and the format might change.
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 
 	// Wire name: 'type'
-	Type            TerminationTypeType ``
-	ForceSendFields []string            `tf:"-"`
+	Type            TerminationTypeType `json:"type,omitempty"`
+	ForceSendFields []string            `json:"-" tf:"-"`
 }
 
 func (st TerminationDetails) MarshalJSON() ([]byte, error) {
@@ -17768,8 +17737,8 @@ func TerminationTypeTypeFromPb(pb *jobspb.TerminationTypeTypePb) (*TerminationTy
 type TriggerInfo struct {
 	// The run id of the Run Job task run
 	// Wire name: 'run_id'
-	RunId           int64    ``
-	ForceSendFields []string `tf:"-"`
+	RunId           int64    `json:"run_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st TriggerInfo) MarshalJSON() ([]byte, error) {
@@ -17826,19 +17795,19 @@ func TriggerInfoFromPb(pb *jobspb.TriggerInfoPb) (*TriggerInfo, error) {
 type TriggerSettings struct {
 	// File arrival trigger settings.
 	// Wire name: 'file_arrival'
-	FileArrival *FileArrivalTriggerConfiguration ``
+	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
 	// Whether this trigger is paused or not.
 	// Wire name: 'pause_status'
-	PauseStatus PauseStatus ``
+	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 	// Periodic trigger settings.
 	// Wire name: 'periodic'
-	Periodic *PeriodicTriggerConfiguration ``
+	Periodic *PeriodicTriggerConfiguration `json:"periodic,omitempty"`
 	// Old table trigger settings name. Deprecated in favor of `table_update`.
 	// Wire name: 'table'
-	Table *TableUpdateTriggerConfiguration ``
+	Table *TableUpdateTriggerConfiguration `json:"table,omitempty"`
 
 	// Wire name: 'table_update'
-	TableUpdate *TableUpdateTriggerConfiguration ``
+	TableUpdate *TableUpdateTriggerConfiguration `json:"table_update,omitempty"`
 }
 
 func (st TriggerSettings) MarshalJSON() ([]byte, error) {
@@ -17957,7 +17926,7 @@ func TriggerSettingsFromPb(pb *jobspb.TriggerSettingsPb) (*TriggerSettings, erro
 type TriggerStateProto struct {
 
 	// Wire name: 'file_arrival'
-	FileArrival *FileArrivalTriggerState ``
+	FileArrival *FileArrivalTriggerState `json:"file_arrival,omitempty"`
 }
 
 func (st TriggerStateProto) MarshalJSON() ([]byte, error) {
@@ -18117,10 +18086,10 @@ type UpdateJob struct {
 	// not supported, except for tasks and job clusters (`tasks/task_1`). This
 	// field is optional.
 	// Wire name: 'fields_to_remove'
-	FieldsToRemove []string ``
+	FieldsToRemove []string `json:"fields_to_remove,omitempty"`
 	// The canonical identifier of the job to update. This field is required.
 	// Wire name: 'job_id'
-	JobId int64 ``
+	JobId int64 `json:"job_id"`
 	// The new settings for the job.
 	//
 	// Top-level fields specified in `new_settings` are completely replaced,
@@ -18133,7 +18102,7 @@ type UpdateJob struct {
 	// Changes to the field `JobSettings.timeout_seconds` are applied to active
 	// runs. Changes to other fields are applied to future runs only.
 	// Wire name: 'new_settings'
-	NewSettings *JobSettings ``
+	NewSettings *JobSettings `json:"new_settings,omitempty"`
 }
 
 func (st UpdateJob) MarshalJSON() ([]byte, error) {
@@ -18200,16 +18169,16 @@ func UpdateJobFromPb(pb *jobspb.UpdateJobPb) (*UpdateJob, error) {
 type ViewItem struct {
 	// Content of the view.
 	// Wire name: 'content'
-	Content string ``
+	Content string `json:"content,omitempty"`
 	// Name of the view item. In the case of code view, it would be the
 	// notebook’s name. In the case of dashboard view, it would be the
 	// dashboard’s name.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Type of the view item.
 	// Wire name: 'type'
-	Type            ViewType ``
-	ForceSendFields []string `tf:"-"`
+	Type            ViewType `json:"type,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ViewItem) MarshalJSON() ([]byte, error) {
@@ -18399,7 +18368,7 @@ func ViewsToExportFromPb(pb *jobspb.ViewsToExportPb) (*ViewsToExport, error) {
 type Webhook struct {
 
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id"`
 }
 
 func (st Webhook) MarshalJSON() ([]byte, error) {
@@ -18453,15 +18422,15 @@ type WebhookNotifications struct {
 	// metric in the `health` field. A maximum of 3 destinations can be
 	// specified for the `on_duration_warning_threshold_exceeded` property.
 	// Wire name: 'on_duration_warning_threshold_exceeded'
-	OnDurationWarningThresholdExceeded []Webhook ``
+	OnDurationWarningThresholdExceeded []Webhook `json:"on_duration_warning_threshold_exceeded,omitempty"`
 	// An optional list of system notification IDs to call when the run fails. A
 	// maximum of 3 destinations can be specified for the `on_failure` property.
 	// Wire name: 'on_failure'
-	OnFailure []Webhook ``
+	OnFailure []Webhook `json:"on_failure,omitempty"`
 	// An optional list of system notification IDs to call when the run starts.
 	// A maximum of 3 destinations can be specified for the `on_start` property.
 	// Wire name: 'on_start'
-	OnStart []Webhook ``
+	OnStart []Webhook `json:"on_start,omitempty"`
 	// An optional list of system notification IDs to call when any streaming
 	// backlog thresholds are exceeded for any stream. Streaming backlog
 	// thresholds can be set in the `health` field using the following metrics:
@@ -18471,12 +18440,12 @@ type WebhookNotifications struct {
 	// notifications are resent every 30 minutes. A maximum of 3 destinations
 	// can be specified for the `on_streaming_backlog_exceeded` property.
 	// Wire name: 'on_streaming_backlog_exceeded'
-	OnStreamingBacklogExceeded []Webhook ``
+	OnStreamingBacklogExceeded []Webhook `json:"on_streaming_backlog_exceeded,omitempty"`
 	// An optional list of system notification IDs to call when the run
 	// completes successfully. A maximum of 3 destinations can be specified for
 	// the `on_success` property.
 	// Wire name: 'on_success'
-	OnSuccess []Webhook ``
+	OnSuccess []Webhook `json:"on_success,omitempty"`
 }
 
 func (st WebhookNotifications) MarshalJSON() ([]byte, error) {
@@ -18645,8 +18614,8 @@ func WebhookNotificationsFromPb(pb *jobspb.WebhookNotificationsPb) (*WebhookNoti
 type WidgetErrorDetail struct {
 
 	// Wire name: 'message'
-	Message         string   ``
-	ForceSendFields []string `tf:"-"`
+	Message         string   `json:"message,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st WidgetErrorDetail) MarshalJSON() ([]byte, error) {

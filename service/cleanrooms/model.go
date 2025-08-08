@@ -23,43 +23,43 @@ type CleanRoom struct {
 	//
 	// [CSP]: https://docs.databricks.com/en/security/privacy/security-profile.html
 	// Wire name: 'access_restricted'
-	AccessRestricted CleanRoomAccessRestricted ``
+	AccessRestricted CleanRoomAccessRestricted `json:"access_restricted,omitempty"`
 
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// When the clean room was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// The alias of the collaborator tied to the local clean room.
 	// Wire name: 'local_collaborator_alias'
-	LocalCollaboratorAlias string ``
+	LocalCollaboratorAlias string `json:"local_collaborator_alias,omitempty"`
 	// The name of the clean room. It should follow [UC securable naming
 	// requirements].
 	//
 	// [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Output catalog of the clean room. It is an output only field. Output
 	// catalog is manipulated using the separate CreateCleanRoomOutputCatalog
 	// API.
 	// Wire name: 'output_catalog'
-	OutputCatalog *CleanRoomOutputCatalog ``
+	OutputCatalog *CleanRoomOutputCatalog `json:"output_catalog,omitempty"`
 	// This is Databricks username of the owner of the local clean room
 	// securable for permission management.
 	// Wire name: 'owner'
-	Owner string ``
+	Owner string `json:"owner,omitempty"`
 	// Central clean room details. During creation, users need to specify
 	// cloud_vendor, region, and collaborators.global_metastore_id. This field
 	// will not be filled in the ListCleanRooms call.
 	// Wire name: 'remote_detailed_info'
-	RemoteDetailedInfo *CleanRoomRemoteDetail ``
+	RemoteDetailedInfo *CleanRoomRemoteDetail `json:"remote_detailed_info,omitempty"`
 	// Clean room status.
 	// Wire name: 'status'
-	Status CleanRoomStatusEnum ``
+	Status CleanRoomStatusEnum `json:"status,omitempty"`
 	// When the clean room was last updated, in epoch milliseconds.
 	// Wire name: 'updated_at'
-	UpdatedAt       int64    ``
-	ForceSendFields []string `tf:"-"`
+	UpdatedAt       int64    `json:"updated_at,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CleanRoom) MarshalJSON() ([]byte, error) {
@@ -236,22 +236,22 @@ func CleanRoomAccessRestrictedFromPb(pb *cleanroomspb.CleanRoomAccessRestrictedP
 type CleanRoomAsset struct {
 	// When the asset is added to the clean room, in epoch milliseconds.
 	// Wire name: 'added_at'
-	AddedAt int64 ``
+	AddedAt int64 `json:"added_at,omitempty"`
 	// The type of the asset.
 	// Wire name: 'asset_type'
-	AssetType CleanRoomAssetAssetType ``
+	AssetType CleanRoomAssetAssetType `json:"asset_type"`
 	// The name of the clean room this asset belongs to. This field is required
 	// for create operations and populated by the server for responses.
 	// Wire name: 'clean_room_name'
-	CleanRoomName string ``
+	CleanRoomName string `json:"clean_room_name,omitempty"`
 	// Foreign table details available to all collaborators of the clean room.
 	// Present if and only if **asset_type** is **FOREIGN_TABLE**
 	// Wire name: 'foreign_table'
-	ForeignTable *CleanRoomAssetForeignTable ``
+	ForeignTable *CleanRoomAssetForeignTable `json:"foreign_table,omitempty"`
 	// Local details for a foreign that are only available to its owner. Present
 	// if and only if **asset_type** is **FOREIGN_TABLE**
 	// Wire name: 'foreign_table_local_details'
-	ForeignTableLocalDetails *CleanRoomAssetForeignTableLocalDetails ``
+	ForeignTableLocalDetails *CleanRoomAssetForeignTableLocalDetails `json:"foreign_table_local_details,omitempty"`
 	// A fully qualified name that uniquely identifies the asset within the
 	// clean room. This is also the name displayed in the clean room UI.
 	//
@@ -260,38 +260,38 @@ type CleanRoomAsset struct {
 	//
 	// For notebooks, the name is the notebook file name.
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Notebook details available to all collaborators of the clean room.
 	// Present if and only if **asset_type** is **NOTEBOOK_FILE**
 	// Wire name: 'notebook'
-	Notebook *CleanRoomAssetNotebook ``
+	Notebook *CleanRoomAssetNotebook `json:"notebook,omitempty"`
 	// The alias of the collaborator who owns this asset
 	// Wire name: 'owner_collaborator_alias'
-	OwnerCollaboratorAlias string ``
+	OwnerCollaboratorAlias string `json:"owner_collaborator_alias,omitempty"`
 	// Status of the asset
 	// Wire name: 'status'
-	Status CleanRoomAssetStatusEnum ``
+	Status CleanRoomAssetStatusEnum `json:"status,omitempty"`
 	// Table details available to all collaborators of the clean room. Present
 	// if and only if **asset_type** is **TABLE**
 	// Wire name: 'table'
-	Table *CleanRoomAssetTable ``
+	Table *CleanRoomAssetTable `json:"table,omitempty"`
 	// Local details for a table that are only available to its owner. Present
 	// if and only if **asset_type** is **TABLE**
 	// Wire name: 'table_local_details'
-	TableLocalDetails *CleanRoomAssetTableLocalDetails ``
+	TableLocalDetails *CleanRoomAssetTableLocalDetails `json:"table_local_details,omitempty"`
 	// View details available to all collaborators of the clean room. Present if
 	// and only if **asset_type** is **VIEW**
 	// Wire name: 'view'
-	View *CleanRoomAssetView ``
+	View *CleanRoomAssetView `json:"view,omitempty"`
 	// Local details for a view that are only available to its owner. Present if
 	// and only if **asset_type** is **VIEW**
 	// Wire name: 'view_local_details'
-	ViewLocalDetails *CleanRoomAssetViewLocalDetails ``
+	ViewLocalDetails *CleanRoomAssetViewLocalDetails `json:"view_local_details,omitempty"`
 	// Local details for a volume that are only available to its owner. Present
 	// if and only if **asset_type** is **VOLUME**
 	// Wire name: 'volume_local_details'
-	VolumeLocalDetails *CleanRoomAssetVolumeLocalDetails ``
-	ForceSendFields    []string                          `tf:"-"`
+	VolumeLocalDetails *CleanRoomAssetVolumeLocalDetails `json:"volume_local_details,omitempty"`
+	ForceSendFields    []string                          `json:"-" tf:"-"`
 }
 
 func (st CleanRoomAsset) MarshalJSON() ([]byte, error) {
@@ -556,7 +556,7 @@ func CleanRoomAssetAssetTypeFromPb(pb *cleanroomspb.CleanRoomAssetAssetTypePb) (
 type CleanRoomAssetForeignTable struct {
 	// The metadata information of the columns in the foreign table
 	// Wire name: 'columns'
-	Columns []catalog.ColumnInfo ``
+	Columns []catalog.ColumnInfo `json:"columns,omitempty"`
 }
 
 func (st CleanRoomAssetForeignTable) MarshalJSON() ([]byte, error) {
@@ -630,7 +630,7 @@ type CleanRoomAssetForeignTableLocalDetails struct {
 	// The fully qualified name of the foreign table in its owner's local
 	// metastore, in the format of *catalog*.*schema*.*foreign_table_name*
 	// Wire name: 'local_name'
-	LocalName string ``
+	LocalName string `json:"local_name"`
 }
 
 func (st CleanRoomAssetForeignTableLocalDetails) MarshalJSON() ([]byte, error) {
@@ -681,21 +681,21 @@ func CleanRoomAssetForeignTableLocalDetailsFromPb(pb *cleanroomspb.CleanRoomAsse
 type CleanRoomAssetNotebook struct {
 	// Server generated etag that represents the notebook version.
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag,omitempty"`
 	// Base 64 representation of the notebook contents. This is the same format
 	// as returned by :method:workspace/export with the format of **HTML**.
 	// Wire name: 'notebook_content'
-	NotebookContent string ``
+	NotebookContent string `json:"notebook_content"`
 	// top-level status derived from all reviews
 	// Wire name: 'review_state'
-	ReviewState CleanRoomNotebookReviewNotebookReviewState ``
+	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
 	// All existing approvals or rejections
 	// Wire name: 'reviews'
-	Reviews []CleanRoomNotebookReview ``
+	Reviews []CleanRoomNotebookReview `json:"reviews,omitempty"`
 	// collaborators that can run the notebook
 	// Wire name: 'runner_collaborator_aliases'
-	RunnerCollaboratorAliases []string ``
-	ForceSendFields           []string `tf:"-"`
+	RunnerCollaboratorAliases []string `json:"runner_collaborator_aliases,omitempty"`
+	ForceSendFields           []string `json:"-" tf:"-"`
 }
 
 func (st CleanRoomAssetNotebook) MarshalJSON() ([]byte, error) {
@@ -850,7 +850,7 @@ func CleanRoomAssetStatusEnumFromPb(pb *cleanroomspb.CleanRoomAssetStatusEnumPb)
 type CleanRoomAssetTable struct {
 	// The metadata information of the columns in the table
 	// Wire name: 'columns'
-	Columns []catalog.ColumnInfo ``
+	Columns []catalog.ColumnInfo `json:"columns,omitempty"`
 }
 
 func (st CleanRoomAssetTable) MarshalJSON() ([]byte, error) {
@@ -924,10 +924,10 @@ type CleanRoomAssetTableLocalDetails struct {
 	// The fully qualified name of the table in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*table_name*
 	// Wire name: 'local_name'
-	LocalName string ``
+	LocalName string `json:"local_name"`
 	// Partition filtering specification for a shared table.
 	// Wire name: 'partitions'
-	Partitions []sharing.Partition ``
+	Partitions []sharing.Partition `json:"partitions,omitempty"`
 }
 
 func (st CleanRoomAssetTableLocalDetails) MarshalJSON() ([]byte, error) {
@@ -1002,7 +1002,7 @@ func CleanRoomAssetTableLocalDetailsFromPb(pb *cleanroomspb.CleanRoomAssetTableL
 type CleanRoomAssetView struct {
 	// The metadata information of the columns in the view
 	// Wire name: 'columns'
-	Columns []catalog.ColumnInfo ``
+	Columns []catalog.ColumnInfo `json:"columns,omitempty"`
 }
 
 func (st CleanRoomAssetView) MarshalJSON() ([]byte, error) {
@@ -1076,7 +1076,7 @@ type CleanRoomAssetViewLocalDetails struct {
 	// The fully qualified name of the view in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*view_name*
 	// Wire name: 'local_name'
-	LocalName string ``
+	LocalName string `json:"local_name"`
 }
 
 func (st CleanRoomAssetViewLocalDetails) MarshalJSON() ([]byte, error) {
@@ -1128,7 +1128,7 @@ type CleanRoomAssetVolumeLocalDetails struct {
 	// The fully qualified name of the volume in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*volume_name*
 	// Wire name: 'local_name'
-	LocalName string ``
+	LocalName string `json:"local_name"`
 }
 
 func (st CleanRoomAssetVolumeLocalDetails) MarshalJSON() ([]byte, error) {
@@ -1179,26 +1179,26 @@ func CleanRoomAssetVolumeLocalDetailsFromPb(pb *cleanroomspb.CleanRoomAssetVolum
 type CleanRoomAutoApprovalRule struct {
 
 	// Wire name: 'author_collaborator_alias'
-	AuthorCollaboratorAlias string ``
+	AuthorCollaboratorAlias string `json:"author_collaborator_alias,omitempty"`
 
 	// Wire name: 'author_scope'
-	AuthorScope CleanRoomAutoApprovalRuleAuthorScope ``
+	AuthorScope CleanRoomAutoApprovalRuleAuthorScope `json:"author_scope,omitempty"`
 	// The name of the clean room this auto-approval rule belongs to.
 	// Wire name: 'clean_room_name'
-	CleanRoomName string ``
+	CleanRoomName string `json:"clean_room_name,omitempty"`
 	// Timestamp of when the rule was created, in epoch milliseconds.
 	// Wire name: 'created_at'
-	CreatedAt int64 ``
+	CreatedAt int64 `json:"created_at,omitempty"`
 	// A generated UUID identifying the rule.
 	// Wire name: 'rule_id'
-	RuleId string ``
+	RuleId string `json:"rule_id,omitempty"`
 	// The owner of the rule to whom the rule applies.
 	// Wire name: 'rule_owner_collaborator_alias'
-	RuleOwnerCollaboratorAlias string ``
+	RuleOwnerCollaboratorAlias string `json:"rule_owner_collaborator_alias,omitempty"`
 
 	// Wire name: 'runner_collaborator_alias'
-	RunnerCollaboratorAlias string   ``
-	ForceSendFields         []string `tf:"-"`
+	RunnerCollaboratorAlias string   `json:"runner_collaborator_alias,omitempty"`
+	ForceSendFields         []string `json:"-" tf:"-"`
 }
 
 func (st CleanRoomAutoApprovalRule) MarshalJSON() ([]byte, error) {
@@ -1336,34 +1336,34 @@ type CleanRoomCollaborator struct {
 	//
 	// [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
 	// Wire name: 'collaborator_alias'
-	CollaboratorAlias string ``
+	CollaboratorAlias string `json:"collaborator_alias"`
 	// Generated display name for the collaborator. In the case of a single
 	// metastore clean room, it is the clean room name. For x-metastore clean
 	// rooms, it is the organization name of the metastore. It is not restricted
 	// to these values and could change in the future
 	// Wire name: 'display_name'
-	DisplayName string ``
+	DisplayName string `json:"display_name,omitempty"`
 	// The global Unity Catalog metastore id of the collaborator. The identifier
 	// is of format cloud:region:metastore-uuid.
 	// Wire name: 'global_metastore_id'
-	GlobalMetastoreId string ``
+	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
 	// Email of the user who is receiving the clean room "invitation". It should
 	// be empty for the creator of the clean room, and non-empty for the
 	// invitees of the clean room. It is only returned in the output when clean
 	// room creator calls GET
 	// Wire name: 'invite_recipient_email'
-	InviteRecipientEmail string ``
+	InviteRecipientEmail string `json:"invite_recipient_email,omitempty"`
 	// Workspace ID of the user who is receiving the clean room "invitation".
 	// Must be specified if invite_recipient_email is specified. It should be
 	// empty when the collaborator is the creator of the clean room.
 	// Wire name: 'invite_recipient_workspace_id'
-	InviteRecipientWorkspaceId int64 ``
+	InviteRecipientWorkspaceId int64 `json:"invite_recipient_workspace_id,omitempty"`
 	// [Organization
 	// name](:method:metastores/list#metastores-delta_sharing_organization_name)
 	// configured in the metastore
 	// Wire name: 'organization_name'
-	OrganizationName string   ``
-	ForceSendFields  []string `tf:"-"`
+	OrganizationName string   `json:"organization_name,omitempty"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
 func (st CleanRoomCollaborator) MarshalJSON() ([]byte, error) {
@@ -1430,20 +1430,20 @@ func CleanRoomCollaboratorFromPb(pb *cleanroomspb.CleanRoomCollaboratorPb) (*Cle
 type CleanRoomNotebookReview struct {
 	// review comment
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// timestamp of when the review was submitted
 	// Wire name: 'created_at_millis'
-	CreatedAtMillis int64 ``
+	CreatedAtMillis int64 `json:"created_at_millis,omitempty"`
 	// review outcome
 	// Wire name: 'review_state'
-	ReviewState CleanRoomNotebookReviewNotebookReviewState ``
+	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
 	// specified when the review was not explicitly made by a user
 	// Wire name: 'review_sub_reason'
-	ReviewSubReason CleanRoomNotebookReviewNotebookReviewSubReason ``
+	ReviewSubReason CleanRoomNotebookReviewNotebookReviewSubReason `json:"review_sub_reason,omitempty"`
 	// collaborator alias of the reviewer
 	// Wire name: 'reviewer_collaborator_alias'
-	ReviewerCollaboratorAlias string   ``
-	ForceSendFields           []string `tf:"-"`
+	ReviewerCollaboratorAlias string   `json:"reviewer_collaborator_alias,omitempty"`
+	ForceSendFields           []string `json:"-" tf:"-"`
 }
 
 func (st CleanRoomNotebookReview) MarshalJSON() ([]byte, error) {
@@ -1645,35 +1645,35 @@ type CleanRoomNotebookTaskRun struct {
 	// workspace the API is being called. If the task run was in a different
 	// workspace under the same metastore, only the workspace_id is included.
 	// Wire name: 'collaborator_job_run_info'
-	CollaboratorJobRunInfo *CollaboratorJobRunInfo ``
+	CollaboratorJobRunInfo *CollaboratorJobRunInfo `json:"collaborator_job_run_info,omitempty"`
 	// Etag of the notebook executed in this task run, used to identify the
 	// notebook version.
 	// Wire name: 'notebook_etag'
-	NotebookEtag string ``
+	NotebookEtag string `json:"notebook_etag,omitempty"`
 	// State of the task run.
 	// Wire name: 'notebook_job_run_state'
-	NotebookJobRunState *jobs.CleanRoomTaskRunState ``
+	NotebookJobRunState *jobs.CleanRoomTaskRunState `json:"notebook_job_run_state,omitempty"`
 	// Asset name of the notebook executed in this task run.
 	// Wire name: 'notebook_name'
-	NotebookName string ``
+	NotebookName string `json:"notebook_name,omitempty"`
 	// The timestamp of when the notebook was last updated.
 	// Wire name: 'notebook_updated_at'
-	NotebookUpdatedAt int64 ``
+	NotebookUpdatedAt int64 `json:"notebook_updated_at,omitempty"`
 	// Expiration time of the output schema of the task run (if any), in epoch
 	// milliseconds.
 	// Wire name: 'output_schema_expiration_time'
-	OutputSchemaExpirationTime int64 ``
+	OutputSchemaExpirationTime int64 `json:"output_schema_expiration_time,omitempty"`
 	// Name of the output schema associated with the clean rooms notebook task
 	// run.
 	// Wire name: 'output_schema_name'
-	OutputSchemaName string ``
+	OutputSchemaName string `json:"output_schema_name,omitempty"`
 	// Duration of the task run, in milliseconds.
 	// Wire name: 'run_duration'
-	RunDuration int64 ``
+	RunDuration int64 `json:"run_duration,omitempty"`
 	// When the task run started, in epoch milliseconds.
 	// Wire name: 'start_time'
-	StartTime       int64    ``
-	ForceSendFields []string `tf:"-"`
+	StartTime       int64    `json:"start_time,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CleanRoomNotebookTaskRun) MarshalJSON() ([]byte, error) {
@@ -1773,11 +1773,11 @@ type CleanRoomOutputCatalog struct {
 	//
 	// [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
 	// Wire name: 'catalog_name'
-	CatalogName string ``
+	CatalogName string `json:"catalog_name,omitempty"`
 
 	// Wire name: 'status'
-	Status          CleanRoomOutputCatalogOutputCatalogStatus ``
-	ForceSendFields []string                                  `tf:"-"`
+	Status          CleanRoomOutputCatalogOutputCatalogStatus `json:"status,omitempty"`
+	ForceSendFields []string                                  `json:"-" tf:"-"`
 }
 
 func (st CleanRoomOutputCatalog) MarshalJSON() ([]byte, error) {
@@ -1905,10 +1905,10 @@ func CleanRoomOutputCatalogOutputCatalogStatusFromPb(pb *cleanroomspb.CleanRoomO
 type CleanRoomRemoteDetail struct {
 	// Central clean room ID.
 	// Wire name: 'central_clean_room_id'
-	CentralCleanRoomId string ``
+	CentralCleanRoomId string `json:"central_clean_room_id,omitempty"`
 	// Cloud vendor (aws,azure,gcp) of the central clean room.
 	// Wire name: 'cloud_vendor'
-	CloudVendor string ``
+	CloudVendor string `json:"cloud_vendor,omitempty"`
 	// Collaborators in the central clean room. There should one and only one
 	// collaborator in the list that satisfies the owner condition:
 	//
@@ -1917,20 +1917,20 @@ type CleanRoomRemoteDetail struct {
 	//
 	// 2. Its invite_recipient_email is empty.
 	// Wire name: 'collaborators'
-	Collaborators []CleanRoomCollaborator ``
+	Collaborators []CleanRoomCollaborator `json:"collaborators,omitempty"`
 
 	// Wire name: 'compliance_security_profile'
-	ComplianceSecurityProfile *ComplianceSecurityProfile ``
+	ComplianceSecurityProfile *ComplianceSecurityProfile `json:"compliance_security_profile,omitempty"`
 	// Collaborator who creates the clean room.
 	// Wire name: 'creator'
-	Creator *CleanRoomCollaborator ``
+	Creator *CleanRoomCollaborator `json:"creator,omitempty"`
 	// Egress network policy to apply to the central clean room workspace.
 	// Wire name: 'egress_network_policy'
-	EgressNetworkPolicy *settings.EgressNetworkPolicy ``
+	EgressNetworkPolicy *settings.EgressNetworkPolicy `json:"egress_network_policy,omitempty"`
 	// Region of the central clean room.
 	// Wire name: 'region'
-	Region          string   ``
-	ForceSendFields []string `tf:"-"`
+	Region          string   `json:"region,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CleanRoomRemoteDetail) MarshalJSON() ([]byte, error) {
@@ -2116,20 +2116,20 @@ func CleanRoomStatusEnumFromPb(pb *cleanroomspb.CleanRoomStatusEnumPb) (*CleanRo
 type CollaboratorJobRunInfo struct {
 	// Alias of the collaborator that triggered the task run.
 	// Wire name: 'collaborator_alias'
-	CollaboratorAlias string ``
+	CollaboratorAlias string `json:"collaborator_alias,omitempty"`
 	// Job ID of the task run in the collaborator's workspace.
 	// Wire name: 'collaborator_job_id'
-	CollaboratorJobId int64 ``
+	CollaboratorJobId int64 `json:"collaborator_job_id,omitempty"`
 	// Job run ID of the task run in the collaborator's workspace.
 	// Wire name: 'collaborator_job_run_id'
-	CollaboratorJobRunId int64 ``
+	CollaboratorJobRunId int64 `json:"collaborator_job_run_id,omitempty"`
 	// Task run ID of the task run in the collaborator's workspace.
 	// Wire name: 'collaborator_task_run_id'
-	CollaboratorTaskRunId int64 ``
+	CollaboratorTaskRunId int64 `json:"collaborator_task_run_id,omitempty"`
 	// ID of the collaborator's workspace that triggered the task run.
 	// Wire name: 'collaborator_workspace_id'
-	CollaboratorWorkspaceId int64    ``
-	ForceSendFields         []string `tf:"-"`
+	CollaboratorWorkspaceId int64    `json:"collaborator_workspace_id,omitempty"`
+	ForceSendFields         []string `json:"-" tf:"-"`
 }
 
 func (st CollaboratorJobRunInfo) MarshalJSON() ([]byte, error) {
@@ -2197,11 +2197,11 @@ type ComplianceSecurityProfile struct {
 	// The list of compliance standards that the compliance security profile is
 	// configured to enforce.
 	// Wire name: 'compliance_standards'
-	ComplianceStandards []settings.ComplianceStandard ``
+	ComplianceStandards []settings.ComplianceStandard `json:"compliance_standards,omitempty"`
 	// Whether the compliance security profile is enabled.
 	// Wire name: 'is_enabled'
-	IsEnabled       bool     ``
-	ForceSendFields []string `tf:"-"`
+	IsEnabled       bool     `json:"is_enabled,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
@@ -2282,11 +2282,10 @@ func ComplianceSecurityProfileFromPb(pb *cleanroomspb.ComplianceSecurityProfileP
 type CreateCleanRoomAssetRequest struct {
 
 	// Wire name: 'asset'
-	Asset CleanRoomAsset ``
+	Asset CleanRoomAsset `json:"asset"`
 	// The name of the clean room this asset belongs to. This field is required
 	// for create operations and populated by the server for responses.
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
+	CleanRoomName string `json:"-" tf:"-"`
 }
 
 func (st CreateCleanRoomAssetRequest) MarshalJSON() ([]byte, error) {
@@ -2350,17 +2349,14 @@ func CreateCleanRoomAssetRequestFromPb(pb *cleanroomspb.CreateCleanRoomAssetRequ
 
 type CreateCleanRoomAssetReviewRequest struct {
 	// can only be NOTEBOOK_FILE for now
-	// Wire name: 'asset_type'
-	AssetType CleanRoomAssetAssetType `tf:"-"`
+	AssetType CleanRoomAssetAssetType `json:"-" tf:"-"`
 	// Name of the clean room
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
+	CleanRoomName string `json:"-" tf:"-"`
 	// Name of the asset
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 
 	// Wire name: 'notebook_review'
-	NotebookReview NotebookVersionReview ``
+	NotebookReview NotebookVersionReview `json:"notebook_review"`
 }
 
 func (st CreateCleanRoomAssetReviewRequest) MarshalJSON() ([]byte, error) {
@@ -2441,10 +2437,10 @@ func CreateCleanRoomAssetReviewRequestFromPb(pb *cleanroomspb.CreateCleanRoomAss
 type CreateCleanRoomAssetReviewResponse struct {
 	// top-level status derived from all reviews
 	// Wire name: 'notebook_review_state'
-	NotebookReviewState CleanRoomNotebookReviewNotebookReviewState ``
+	NotebookReviewState CleanRoomNotebookReviewNotebookReviewState `json:"notebook_review_state,omitempty"`
 	// All existing notebook approvals or rejections
 	// Wire name: 'notebook_reviews'
-	NotebookReviews []CleanRoomNotebookReview ``
+	NotebookReviews []CleanRoomNotebookReview `json:"notebook_reviews,omitempty"`
 }
 
 func (st CreateCleanRoomAssetReviewResponse) MarshalJSON() ([]byte, error) {
@@ -2531,10 +2527,9 @@ func CreateCleanRoomAssetReviewResponseFromPb(pb *cleanroomspb.CreateCleanRoomAs
 type CreateCleanRoomAutoApprovalRuleRequest struct {
 
 	// Wire name: 'auto_approval_rule'
-	AutoApprovalRule CleanRoomAutoApprovalRule ``
+	AutoApprovalRule CleanRoomAutoApprovalRule `json:"auto_approval_rule"`
 	// The name of the clean room this auto-approval rule belongs to.
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
+	CleanRoomName string `json:"-" tf:"-"`
 }
 
 func (st CreateCleanRoomAutoApprovalRuleRequest) MarshalJSON() ([]byte, error) {
@@ -2598,11 +2593,10 @@ func CreateCleanRoomAutoApprovalRuleRequestFromPb(pb *cleanroomspb.CreateCleanRo
 
 type CreateCleanRoomOutputCatalogRequest struct {
 	// Name of the clean room.
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
+	CleanRoomName string `json:"-" tf:"-"`
 
 	// Wire name: 'output_catalog'
-	OutputCatalog CleanRoomOutputCatalog ``
+	OutputCatalog CleanRoomOutputCatalog `json:"output_catalog"`
 }
 
 func (st CreateCleanRoomOutputCatalogRequest) MarshalJSON() ([]byte, error) {
@@ -2667,7 +2661,7 @@ func CreateCleanRoomOutputCatalogRequestFromPb(pb *cleanroomspb.CreateCleanRoomO
 type CreateCleanRoomOutputCatalogResponse struct {
 
 	// Wire name: 'output_catalog'
-	OutputCatalog *CleanRoomOutputCatalog ``
+	OutputCatalog *CleanRoomOutputCatalog `json:"output_catalog,omitempty"`
 }
 
 func (st CreateCleanRoomOutputCatalogResponse) MarshalJSON() ([]byte, error) {
@@ -2730,7 +2724,7 @@ func CreateCleanRoomOutputCatalogResponseFromPb(pb *cleanroomspb.CreateCleanRoom
 type CreateCleanRoomRequest struct {
 
 	// Wire name: 'clean_room'
-	CleanRoom CleanRoom ``
+	CleanRoom CleanRoom `json:"clean_room"`
 }
 
 func (st CreateCleanRoomRequest) MarshalJSON() ([]byte, error) {
@@ -2792,15 +2786,12 @@ func CreateCleanRoomRequestFromPb(pb *cleanroomspb.CreateCleanRoomRequestPb) (*C
 
 type DeleteCleanRoomAssetRequest struct {
 	// The type of the asset.
-	// Wire name: 'asset_type'
-	AssetType CleanRoomAssetAssetType `tf:"-"`
+	AssetType CleanRoomAssetAssetType `json:"-" tf:"-"`
 	// Name of the clean room.
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
+	CleanRoomName string `json:"-" tf:"-"`
 	// The fully qualified name of the asset, it is same as the name field in
 	// CleanRoomAsset.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteCleanRoomAssetRequest) MarshalJSON() ([]byte, error) {
@@ -2865,12 +2856,9 @@ func DeleteCleanRoomAssetRequestFromPb(pb *cleanroomspb.DeleteCleanRoomAssetRequ
 }
 
 type DeleteCleanRoomAutoApprovalRuleRequest struct {
+	CleanRoomName string `json:"-" tf:"-"`
 
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
-
-	// Wire name: 'rule_id'
-	RuleId string `tf:"-"`
+	RuleId string `json:"-" tf:"-"`
 }
 
 func (st DeleteCleanRoomAutoApprovalRuleRequest) MarshalJSON() ([]byte, error) {
@@ -2922,8 +2910,7 @@ func DeleteCleanRoomAutoApprovalRuleRequestFromPb(pb *cleanroomspb.DeleteCleanRo
 
 type DeleteCleanRoomRequest struct {
 	// Name of the clean room.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st DeleteCleanRoomRequest) MarshalJSON() ([]byte, error) {
@@ -2973,15 +2960,12 @@ func DeleteCleanRoomRequestFromPb(pb *cleanroomspb.DeleteCleanRoomRequestPb) (*D
 
 type GetCleanRoomAssetRequest struct {
 	// The type of the asset.
-	// Wire name: 'asset_type'
-	AssetType CleanRoomAssetAssetType `tf:"-"`
+	AssetType CleanRoomAssetAssetType `json:"-" tf:"-"`
 	// Name of the clean room.
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
+	CleanRoomName string `json:"-" tf:"-"`
 	// The fully qualified name of the asset, it is same as the name field in
 	// CleanRoomAsset.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetCleanRoomAssetRequest) MarshalJSON() ([]byte, error) {
@@ -3047,18 +3031,14 @@ func GetCleanRoomAssetRequestFromPb(pb *cleanroomspb.GetCleanRoomAssetRequestPb)
 
 type GetCleanRoomAssetRevisionRequest struct {
 	// Asset type. Only NOTEBOOK_FILE is supported.
-	// Wire name: 'asset_type'
-	AssetType CleanRoomAssetAssetType `tf:"-"`
+	AssetType CleanRoomAssetAssetType `json:"-" tf:"-"`
 	// Name of the clean room.
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
+	CleanRoomName string `json:"-" tf:"-"`
 	// Revision etag to fetch. If not provided, the latest revision will be
 	// returned.
-	// Wire name: 'etag'
-	Etag string `tf:"-"`
+	Etag string `json:"-" tf:"-"`
 	// Name of the asset.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetCleanRoomAssetRevisionRequest) MarshalJSON() ([]byte, error) {
@@ -3125,12 +3105,9 @@ func GetCleanRoomAssetRevisionRequestFromPb(pb *cleanroomspb.GetCleanRoomAssetRe
 }
 
 type GetCleanRoomAutoApprovalRuleRequest struct {
+	CleanRoomName string `json:"-" tf:"-"`
 
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
-
-	// Wire name: 'rule_id'
-	RuleId string `tf:"-"`
+	RuleId string `json:"-" tf:"-"`
 }
 
 func (st GetCleanRoomAutoApprovalRuleRequest) MarshalJSON() ([]byte, error) {
@@ -3181,9 +3158,7 @@ func GetCleanRoomAutoApprovalRuleRequestFromPb(pb *cleanroomspb.GetCleanRoomAuto
 }
 
 type GetCleanRoomRequest struct {
-
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st GetCleanRoomRequest) MarshalJSON() ([]byte, error) {
@@ -3233,21 +3208,16 @@ func GetCleanRoomRequestFromPb(pb *cleanroomspb.GetCleanRoomRequestPb) (*GetClea
 
 type ListCleanRoomAssetRevisionsRequest struct {
 	// Asset type. Only NOTEBOOK_FILE is supported.
-	// Wire name: 'asset_type'
-	AssetType CleanRoomAssetAssetType `tf:"-"`
+	AssetType CleanRoomAssetAssetType `json:"-" tf:"-"`
 	// Name of the clean room.
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
+	CleanRoomName string `json:"-" tf:"-"`
 	// Name of the asset.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 	// Maximum number of asset revisions to return. Defaults to 10.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on the previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListCleanRoomAssetRevisionsRequest) MarshalJSON() ([]byte, error) {
@@ -3324,11 +3294,11 @@ func ListCleanRoomAssetRevisionsRequestFromPb(pb *cleanroomspb.ListCleanRoomAsse
 type ListCleanRoomAssetRevisionsResponse struct {
 
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'revisions'
-	Revisions       []CleanRoomAsset ``
-	ForceSendFields []string         `tf:"-"`
+	Revisions       []CleanRoomAsset `json:"revisions,omitempty"`
+	ForceSendFields []string         `json:"-" tf:"-"`
 }
 
 func (st ListCleanRoomAssetRevisionsResponse) MarshalJSON() ([]byte, error) {
@@ -3408,12 +3378,10 @@ func ListCleanRoomAssetRevisionsResponseFromPb(pb *cleanroomspb.ListCleanRoomAss
 
 type ListCleanRoomAssetsRequest struct {
 	// Name of the clean room.
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
+	CleanRoomName string `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListCleanRoomAssetsRequest) MarshalJSON() ([]byte, error) {
@@ -3472,13 +3440,13 @@ func ListCleanRoomAssetsRequestFromPb(pb *cleanroomspb.ListCleanRoomAssetsReques
 type ListCleanRoomAssetsResponse struct {
 	// Assets in the clean room.
 	// Wire name: 'assets'
-	Assets []CleanRoomAsset ``
+	Assets []CleanRoomAsset `json:"assets,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. page_token should be set to this value for the next request
 	// (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListCleanRoomAssetsResponse) MarshalJSON() ([]byte, error) {
@@ -3557,16 +3525,12 @@ func ListCleanRoomAssetsResponseFromPb(pb *cleanroomspb.ListCleanRoomAssetsRespo
 }
 
 type ListCleanRoomAutoApprovalRulesRequest struct {
-
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
+	CleanRoomName string `json:"-" tf:"-"`
 	// Maximum number of auto-approval rules to return. Defaults to 100.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListCleanRoomAutoApprovalRulesRequest) MarshalJSON() ([]byte, error) {
@@ -3629,11 +3593,11 @@ type ListCleanRoomAutoApprovalRulesResponse struct {
 	// more pages. page_token should be set to this value for the next request
 	// (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'rules'
-	Rules           []CleanRoomAutoApprovalRule ``
-	ForceSendFields []string                    `tf:"-"`
+	Rules           []CleanRoomAutoApprovalRule `json:"rules,omitempty"`
+	ForceSendFields []string                    `json:"-" tf:"-"`
 }
 
 func (st ListCleanRoomAutoApprovalRulesResponse) MarshalJSON() ([]byte, error) {
@@ -3713,19 +3677,15 @@ func ListCleanRoomAutoApprovalRulesResponseFromPb(pb *cleanroomspb.ListCleanRoom
 
 type ListCleanRoomNotebookTaskRunsRequest struct {
 	// Name of the clean room.
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
+	CleanRoomName string `json:"-" tf:"-"`
 	// Notebook name
-	// Wire name: 'notebook_name'
-	NotebookName string `tf:"-"`
+	NotebookName string `json:"-" tf:"-"`
 	// The maximum number of task runs to return. Currently ignored - all runs
 	// will be returned.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListCleanRoomNotebookTaskRunsRequest) MarshalJSON() ([]byte, error) {
@@ -3790,11 +3750,11 @@ type ListCleanRoomNotebookTaskRunsResponse struct {
 	// more pages. page_token should be set to this value for the next request
 	// (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// Name of the clean room.
 	// Wire name: 'runs'
-	Runs            []CleanRoomNotebookTaskRun ``
-	ForceSendFields []string                   `tf:"-"`
+	Runs            []CleanRoomNotebookTaskRun `json:"runs,omitempty"`
+	ForceSendFields []string                   `json:"-" tf:"-"`
 }
 
 func (st ListCleanRoomNotebookTaskRunsResponse) MarshalJSON() ([]byte, error) {
@@ -3875,12 +3835,10 @@ func ListCleanRoomNotebookTaskRunsResponseFromPb(pb *cleanroomspb.ListCleanRoomN
 type ListCleanRoomsRequest struct {
 	// Maximum number of clean rooms to return (i.e., the page length). Defaults
 	// to 100.
-	// Wire name: 'page_size'
-	PageSize int `tf:"-"`
+	PageSize int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListCleanRoomsRequest) MarshalJSON() ([]byte, error) {
@@ -3939,13 +3897,13 @@ func ListCleanRoomsRequestFromPb(pb *cleanroomspb.ListCleanRoomsRequestPb) (*Lis
 type ListCleanRoomsResponse struct {
 
 	// Wire name: 'clean_rooms'
-	CleanRooms []CleanRoom ``
+	CleanRooms []CleanRoom `json:"clean_rooms,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. page_token should be set to this value for the next request
 	// (for the next page of results).
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
@@ -4026,14 +3984,14 @@ func ListCleanRoomsResponseFromPb(pb *cleanroomspb.ListCleanRoomsResponsePb) (*L
 type NotebookVersionReview struct {
 	// review comment
 	// Wire name: 'comment'
-	Comment string ``
+	Comment string `json:"comment,omitempty"`
 	// etag that identifies the notebook version
 	// Wire name: 'etag'
-	Etag string ``
+	Etag string `json:"etag"`
 	// review outcome
 	// Wire name: 'review_state'
-	ReviewState     CleanRoomNotebookReviewNotebookReviewState ``
-	ForceSendFields []string                                   `tf:"-"`
+	ReviewState     CleanRoomNotebookReviewNotebookReviewState `json:"review_state"`
+	ForceSendFields []string                                   `json:"-" tf:"-"`
 }
 
 func (st NotebookVersionReview) MarshalJSON() ([]byte, error) {
@@ -4107,13 +4065,11 @@ type UpdateCleanRoomAssetRequest struct {
 	// The asset to update. The asset's `name` and `asset_type` fields are used
 	// to identify the asset to update.
 	// Wire name: 'asset'
-	Asset CleanRoomAsset ``
+	Asset CleanRoomAsset `json:"asset"`
 	// The type of the asset.
-	// Wire name: 'asset_type'
-	AssetType CleanRoomAssetAssetType `tf:"-"`
+	AssetType CleanRoomAssetAssetType `json:"-" tf:"-"`
 	// Name of the clean room.
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
+	CleanRoomName string `json:"-" tf:"-"`
 	// A fully qualified name that uniquely identifies the asset within the
 	// clean room. This is also the name displayed in the clean room UI.
 	//
@@ -4121,8 +4077,7 @@ type UpdateCleanRoomAssetRequest struct {
 	// *shared_catalog*.*shared_schema*.*asset_name*
 	//
 	// For notebooks, the name is the notebook file name.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st UpdateCleanRoomAssetRequest) MarshalJSON() ([]byte, error) {
@@ -4204,13 +4159,11 @@ type UpdateCleanRoomAutoApprovalRuleRequest struct {
 	// The auto-approval rule to update. The rule_id field is used to identify
 	// the rule to update.
 	// Wire name: 'auto_approval_rule'
-	AutoApprovalRule CleanRoomAutoApprovalRule ``
+	AutoApprovalRule CleanRoomAutoApprovalRule `json:"auto_approval_rule"`
 	// The name of the clean room this auto-approval rule belongs to.
-	// Wire name: 'clean_room_name'
-	CleanRoomName string `tf:"-"`
+	CleanRoomName string `json:"-" tf:"-"`
 	// A generated UUID identifying the rule.
-	// Wire name: 'rule_id'
-	RuleId string `tf:"-"`
+	RuleId string `json:"-" tf:"-"`
 }
 
 func (st UpdateCleanRoomAutoApprovalRuleRequest) MarshalJSON() ([]byte, error) {
@@ -4277,10 +4230,9 @@ func UpdateCleanRoomAutoApprovalRuleRequestFromPb(pb *cleanroomspb.UpdateCleanRo
 type UpdateCleanRoomRequest struct {
 
 	// Wire name: 'clean_room'
-	CleanRoom *CleanRoom ``
+	CleanRoom *CleanRoom `json:"clean_room,omitempty"`
 	// Name of the clean room.
-	// Wire name: 'name'
-	Name string `tf:"-"`
+	Name string `json:"-" tf:"-"`
 }
 
 func (st UpdateCleanRoomRequest) MarshalJSON() ([]byte, error) {

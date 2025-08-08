@@ -14,8 +14,8 @@ import (
 type ColumnInfo struct {
 	// Name of the column.
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ColumnInfo) MarshalJSON() ([]byte, error) {
@@ -72,14 +72,14 @@ func ColumnInfoFromPb(pb *vectorsearchpb.ColumnInfoPb) (*ColumnInfo, error) {
 type CreateEndpoint struct {
 	// The budget policy id to be applied
 	// Wire name: 'budget_policy_id'
-	BudgetPolicyId string ``
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// Type of endpoint
 	// Wire name: 'endpoint_type'
-	EndpointType EndpointType ``
+	EndpointType EndpointType `json:"endpoint_type"`
 	// Name of the vector search endpoint
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CreateEndpoint) MarshalJSON() ([]byte, error) {
@@ -153,23 +153,23 @@ type CreateVectorIndexRequest struct {
 	// Specification for Delta Sync Index. Required if `index_type` is
 	// `DELTA_SYNC`.
 	// Wire name: 'delta_sync_index_spec'
-	DeltaSyncIndexSpec *DeltaSyncVectorIndexSpecRequest ``
+	DeltaSyncIndexSpec *DeltaSyncVectorIndexSpecRequest `json:"delta_sync_index_spec,omitempty"`
 	// Specification for Direct Vector Access Index. Required if `index_type` is
 	// `DIRECT_ACCESS`.
 	// Wire name: 'direct_access_index_spec'
-	DirectAccessIndexSpec *DirectAccessVectorIndexSpec ``
+	DirectAccessIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_index_spec,omitempty"`
 	// Name of the endpoint to be used for serving the index
 	// Wire name: 'endpoint_name'
-	EndpointName string ``
+	EndpointName string `json:"endpoint_name"`
 
 	// Wire name: 'index_type'
-	IndexType VectorIndexType ``
+	IndexType VectorIndexType `json:"index_type"`
 	// Name of the index
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name"`
 	// Primary key of the index
 	// Wire name: 'primary_key'
-	PrimaryKey string ``
+	PrimaryKey string `json:"primary_key"`
 }
 
 func (st CreateVectorIndexRequest) MarshalJSON() ([]byte, error) {
@@ -266,11 +266,11 @@ func CreateVectorIndexRequestFromPb(pb *vectorsearchpb.CreateVectorIndexRequestP
 type CustomTag struct {
 	// Key field for a vector search endpoint tag.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key"`
 	// [Optional] Value field for a vector search endpoint tag.
 	// Wire name: 'value'
-	Value           string   ``
-	ForceSendFields []string `tf:"-"`
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st CustomTag) MarshalJSON() ([]byte, error) {
@@ -329,11 +329,11 @@ func CustomTagFromPb(pb *vectorsearchpb.CustomTagPb) (*CustomTag, error) {
 type DeleteDataResult struct {
 	// List of primary keys for rows that failed to process.
 	// Wire name: 'failed_primary_keys'
-	FailedPrimaryKeys []string ``
+	FailedPrimaryKeys []string `json:"failed_primary_keys,omitempty"`
 	// Count of successfully processed rows.
 	// Wire name: 'success_row_count'
-	SuccessRowCount int64    ``
-	ForceSendFields []string `tf:"-"`
+	SuccessRowCount int64    `json:"success_row_count,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeleteDataResult) MarshalJSON() ([]byte, error) {
@@ -448,11 +448,9 @@ func DeleteDataStatusFromPb(pb *vectorsearchpb.DeleteDataStatusPb) (*DeleteDataS
 type DeleteDataVectorIndexRequest struct {
 	// Name of the vector index where data is to be deleted. Must be a Direct
 	// Vector Access Index.
-	// Wire name: 'index_name'
-	IndexName string `tf:"-"`
+	IndexName string `json:"-" tf:"-"`
 	// List of primary keys for the data to be deleted.
-	// Wire name: 'primary_keys'
-	PrimaryKeys []string `tf:"-"`
+	PrimaryKeys []string `json:"-" tf:"-"`
 }
 
 func (st DeleteDataVectorIndexRequest) MarshalJSON() ([]byte, error) {
@@ -505,10 +503,10 @@ func DeleteDataVectorIndexRequestFromPb(pb *vectorsearchpb.DeleteDataVectorIndex
 type DeleteDataVectorIndexResponse struct {
 	// Result of the upsert or delete operation.
 	// Wire name: 'result'
-	Result *DeleteDataResult ``
+	Result *DeleteDataResult `json:"result,omitempty"`
 	// Status of the delete operation.
 	// Wire name: 'status'
-	Status DeleteDataStatus ``
+	Status DeleteDataStatus `json:"status,omitempty"`
 }
 
 func (st DeleteDataVectorIndexResponse) MarshalJSON() ([]byte, error) {
@@ -584,8 +582,7 @@ func DeleteDataVectorIndexResponseFromPb(pb *vectorsearchpb.DeleteDataVectorInde
 
 type DeleteEndpointRequest struct {
 	// Name of the vector search endpoint
-	// Wire name: 'endpoint_name'
-	EndpointName string `tf:"-"`
+	EndpointName string `json:"-" tf:"-"`
 }
 
 func (st DeleteEndpointRequest) MarshalJSON() ([]byte, error) {
@@ -635,8 +632,7 @@ func DeleteEndpointRequestFromPb(pb *vectorsearchpb.DeleteEndpointRequestPb) (*D
 
 type DeleteIndexRequest struct {
 	// Name of the index
-	// Wire name: 'index_name'
-	IndexName string `tf:"-"`
+	IndexName string `json:"-" tf:"-"`
 }
 
 func (st DeleteIndexRequest) MarshalJSON() ([]byte, error) {
@@ -690,17 +686,17 @@ type DeltaSyncVectorIndexSpecRequest struct {
 	// index. The primary key column and embedding source column or embedding
 	// vector column are always synced.
 	// Wire name: 'columns_to_sync'
-	ColumnsToSync []string ``
+	ColumnsToSync []string `json:"columns_to_sync,omitempty"`
 	// The columns that contain the embedding source.
 	// Wire name: 'embedding_source_columns'
-	EmbeddingSourceColumns []EmbeddingSourceColumn ``
+	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
 	// The columns that contain the embedding vectors.
 	// Wire name: 'embedding_vector_columns'
-	EmbeddingVectorColumns []EmbeddingVectorColumn ``
+	EmbeddingVectorColumns []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
 	// [Optional] Name of the Delta table to sync the vector index contents and
 	// computed embeddings to.
 	// Wire name: 'embedding_writeback_table'
-	EmbeddingWritebackTable string ``
+	EmbeddingWritebackTable string `json:"embedding_writeback_table,omitempty"`
 	// Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the
 	// triggered execution mode, the system stops processing after successfully
 	// refreshing the source table in the pipeline once, ensuring the table is
@@ -709,11 +705,11 @@ type DeltaSyncVectorIndexSpecRequest struct {
 	// processes new data as it arrives in the source table to keep vector index
 	// fresh.
 	// Wire name: 'pipeline_type'
-	PipelineType PipelineType ``
+	PipelineType PipelineType `json:"pipeline_type,omitempty"`
 	// The name of the source table.
 	// Wire name: 'source_table'
-	SourceTable     string   ``
-	ForceSendFields []string `tf:"-"`
+	SourceTable     string   `json:"source_table,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeltaSyncVectorIndexSpecRequest) MarshalJSON() ([]byte, error) {
@@ -836,17 +832,17 @@ func DeltaSyncVectorIndexSpecRequestFromPb(pb *vectorsearchpb.DeltaSyncVectorInd
 type DeltaSyncVectorIndexSpecResponse struct {
 	// The columns that contain the embedding source.
 	// Wire name: 'embedding_source_columns'
-	EmbeddingSourceColumns []EmbeddingSourceColumn ``
+	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
 	// The columns that contain the embedding vectors.
 	// Wire name: 'embedding_vector_columns'
-	EmbeddingVectorColumns []EmbeddingVectorColumn ``
+	EmbeddingVectorColumns []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
 	// [Optional] Name of the Delta table to sync the vector index contents and
 	// computed embeddings to.
 	// Wire name: 'embedding_writeback_table'
-	EmbeddingWritebackTable string ``
+	EmbeddingWritebackTable string `json:"embedding_writeback_table,omitempty"`
 	// The ID of the pipeline that is used to sync the index.
 	// Wire name: 'pipeline_id'
-	PipelineId string ``
+	PipelineId string `json:"pipeline_id,omitempty"`
 	// Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the
 	// triggered execution mode, the system stops processing after successfully
 	// refreshing the source table in the pipeline once, ensuring the table is
@@ -855,11 +851,11 @@ type DeltaSyncVectorIndexSpecResponse struct {
 	// processes new data as it arrives in the source table to keep vector index
 	// fresh.
 	// Wire name: 'pipeline_type'
-	PipelineType PipelineType ``
+	PipelineType PipelineType `json:"pipeline_type,omitempty"`
 	// The name of the source table.
 	// Wire name: 'source_table'
-	SourceTable     string   ``
-	ForceSendFields []string `tf:"-"`
+	SourceTable     string   `json:"source_table,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DeltaSyncVectorIndexSpecResponse) MarshalJSON() ([]byte, error) {
@@ -983,17 +979,17 @@ type DirectAccessVectorIndexSpec struct {
 	// The columns that contain the embedding source. The format should be
 	// array[double].
 	// Wire name: 'embedding_source_columns'
-	EmbeddingSourceColumns []EmbeddingSourceColumn ``
+	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
 	// The columns that contain the embedding vectors. The format should be
 	// array[double].
 	// Wire name: 'embedding_vector_columns'
-	EmbeddingVectorColumns []EmbeddingVectorColumn ``
+	EmbeddingVectorColumns []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
 	// The schema of the index in JSON format. Supported types are `integer`,
 	// `long`, `float`, `double`, `boolean`, `string`, `date`, `timestamp`.
 	// Supported types for vector column: `array<float>`, `array<double>`,`.
 	// Wire name: 'schema_json'
-	SchemaJson      string   ``
-	ForceSendFields []string `tf:"-"`
+	SchemaJson      string   `json:"schema_json,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st DirectAccessVectorIndexSpec) MarshalJSON() ([]byte, error) {
@@ -1098,11 +1094,11 @@ func DirectAccessVectorIndexSpecFromPb(pb *vectorsearchpb.DirectAccessVectorInde
 type EmbeddingSourceColumn struct {
 	// Name of the embedding model endpoint
 	// Wire name: 'embedding_model_endpoint_name'
-	EmbeddingModelEndpointName string ``
+	EmbeddingModelEndpointName string `json:"embedding_model_endpoint_name,omitempty"`
 	// Name of the column
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EmbeddingSourceColumn) MarshalJSON() ([]byte, error) {
@@ -1161,11 +1157,11 @@ func EmbeddingSourceColumnFromPb(pb *vectorsearchpb.EmbeddingSourceColumnPb) (*E
 type EmbeddingVectorColumn struct {
 	// Dimension of the embedding vector
 	// Wire name: 'embedding_dimension'
-	EmbeddingDimension int ``
+	EmbeddingDimension int `json:"embedding_dimension,omitempty"`
 	// Name of the column
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EmbeddingVectorColumn) MarshalJSON() ([]byte, error) {
@@ -1224,38 +1220,38 @@ func EmbeddingVectorColumnFromPb(pb *vectorsearchpb.EmbeddingVectorColumnPb) (*E
 type EndpointInfo struct {
 	// Timestamp of endpoint creation
 	// Wire name: 'creation_timestamp'
-	CreationTimestamp int64 ``
+	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// Creator of the endpoint
 	// Wire name: 'creator'
-	Creator string ``
+	Creator string `json:"creator,omitempty"`
 	// The custom tags assigned to the endpoint
 	// Wire name: 'custom_tags'
-	CustomTags []CustomTag ``
+	CustomTags []CustomTag `json:"custom_tags,omitempty"`
 	// The budget policy id applied to the endpoint
 	// Wire name: 'effective_budget_policy_id'
-	EffectiveBudgetPolicyId string ``
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// Current status of the endpoint
 	// Wire name: 'endpoint_status'
-	EndpointStatus *EndpointStatus ``
+	EndpointStatus *EndpointStatus `json:"endpoint_status,omitempty"`
 	// Type of endpoint
 	// Wire name: 'endpoint_type'
-	EndpointType EndpointType ``
+	EndpointType EndpointType `json:"endpoint_type,omitempty"`
 	// Unique identifier of the endpoint
 	// Wire name: 'id'
-	Id string ``
+	Id string `json:"id,omitempty"`
 	// Timestamp of last update to the endpoint
 	// Wire name: 'last_updated_timestamp'
-	LastUpdatedTimestamp int64 ``
+	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// User who last updated the endpoint
 	// Wire name: 'last_updated_user'
-	LastUpdatedUser string ``
+	LastUpdatedUser string `json:"last_updated_user,omitempty"`
 	// Name of the vector search endpoint
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Number of indexes on the endpoint
 	// Wire name: 'num_indexes'
-	NumIndexes      int      ``
-	ForceSendFields []string `tf:"-"`
+	NumIndexes      int      `json:"num_indexes,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st EndpointInfo) MarshalJSON() ([]byte, error) {
@@ -1379,11 +1375,11 @@ func EndpointInfoFromPb(pb *vectorsearchpb.EndpointInfoPb) (*EndpointInfo, error
 type EndpointStatus struct {
 	// Additional status message
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 	// Current state of the endpoint
 	// Wire name: 'state'
-	State           EndpointStatusState ``
-	ForceSendFields []string            `tf:"-"`
+	State           EndpointStatusState `json:"state,omitempty"`
+	ForceSendFields []string            `json:"-" tf:"-"`
 }
 
 func (st EndpointStatus) MarshalJSON() ([]byte, error) {
@@ -1561,8 +1557,7 @@ func EndpointTypeFromPb(pb *vectorsearchpb.EndpointTypePb) (*EndpointType, error
 
 type GetEndpointRequest struct {
 	// Name of the endpoint
-	// Wire name: 'endpoint_name'
-	EndpointName string `tf:"-"`
+	EndpointName string `json:"-" tf:"-"`
 }
 
 func (st GetEndpointRequest) MarshalJSON() ([]byte, error) {
@@ -1612,8 +1607,7 @@ func GetEndpointRequestFromPb(pb *vectorsearchpb.GetEndpointRequestPb) (*GetEndp
 
 type GetIndexRequest struct {
 	// Name of the index
-	// Wire name: 'index_name'
-	IndexName string `tf:"-"`
+	IndexName string `json:"-" tf:"-"`
 }
 
 func (st GetIndexRequest) MarshalJSON() ([]byte, error) {
@@ -1664,12 +1658,12 @@ func GetIndexRequestFromPb(pb *vectorsearchpb.GetIndexRequestPb) (*GetIndexReque
 type ListEndpointResponse struct {
 	// An array of Endpoint objects
 	// Wire name: 'endpoints'
-	Endpoints []EndpointInfo ``
+	Endpoints []EndpointInfo `json:"endpoints,omitempty"`
 	// A token that can be used to get the next page of results. If not present,
 	// there are no more results to show.
 	// Wire name: 'next_page_token'
-	NextPageToken   string   ``
-	ForceSendFields []string `tf:"-"`
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListEndpointResponse) MarshalJSON() ([]byte, error) {
@@ -1749,9 +1743,8 @@ func ListEndpointResponseFromPb(pb *vectorsearchpb.ListEndpointResponsePb) (*Lis
 
 type ListEndpointsRequest struct {
 	// Token for pagination
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListEndpointsRequest) MarshalJSON() ([]byte, error) {
@@ -1807,12 +1800,10 @@ func ListEndpointsRequestFromPb(pb *vectorsearchpb.ListEndpointsRequestPb) (*Lis
 
 type ListIndexesRequest struct {
 	// Name of the endpoint
-	// Wire name: 'endpoint_name'
-	EndpointName string `tf:"-"`
+	EndpointName string `json:"-" tf:"-"`
 	// Token for pagination
-	// Wire name: 'page_token'
-	PageToken       string   `tf:"-"`
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ListIndexesRequest) MarshalJSON() ([]byte, error) {
@@ -1871,7 +1862,7 @@ func ListIndexesRequestFromPb(pb *vectorsearchpb.ListIndexesRequestPb) (*ListInd
 type ListValue struct {
 	// Repeated field of dynamically typed values.
 	// Wire name: 'values'
-	Values []Value ``
+	Values []Value `json:"values,omitempty"`
 }
 
 func (st ListValue) MarshalJSON() ([]byte, error) {
@@ -1945,11 +1936,11 @@ type ListVectorIndexesResponse struct {
 	// A token that can be used to get the next page of results. If not present,
 	// there are no more results to show.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 
 	// Wire name: 'vector_indexes'
-	VectorIndexes   []MiniVectorIndex ``
-	ForceSendFields []string          `tf:"-"`
+	VectorIndexes   []MiniVectorIndex `json:"vector_indexes,omitempty"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
 func (st ListVectorIndexesResponse) MarshalJSON() ([]byte, error) {
@@ -2031,11 +2022,11 @@ func ListVectorIndexesResponseFromPb(pb *vectorsearchpb.ListVectorIndexesRespons
 type MapStringValueEntry struct {
 	// Column name.
 	// Wire name: 'key'
-	Key string ``
+	Key string `json:"key,omitempty"`
 	// Column value, nullable.
 	// Wire name: 'value'
-	Value           *Value   ``
-	ForceSendFields []string `tf:"-"`
+	Value           *Value   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st MapStringValueEntry) MarshalJSON() ([]byte, error) {
@@ -2106,20 +2097,20 @@ func MapStringValueEntryFromPb(pb *vectorsearchpb.MapStringValueEntryPb) (*MapSt
 type MiniVectorIndex struct {
 	// The user who created the index.
 	// Wire name: 'creator'
-	Creator string ``
+	Creator string `json:"creator,omitempty"`
 	// Name of the endpoint associated with the index
 	// Wire name: 'endpoint_name'
-	EndpointName string ``
+	EndpointName string `json:"endpoint_name,omitempty"`
 
 	// Wire name: 'index_type'
-	IndexType VectorIndexType ``
+	IndexType VectorIndexType `json:"index_type,omitempty"`
 	// Name of the index
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Primary key of the index
 	// Wire name: 'primary_key'
-	PrimaryKey      string   ``
-	ForceSendFields []string `tf:"-"`
+	PrimaryKey      string   `json:"primary_key,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st MiniVectorIndex) MarshalJSON() ([]byte, error) {
@@ -2196,10 +2187,9 @@ func MiniVectorIndexFromPb(pb *vectorsearchpb.MiniVectorIndexPb) (*MiniVectorInd
 type PatchEndpointBudgetPolicyRequest struct {
 	// The budget policy id to be applied
 	// Wire name: 'budget_policy_id'
-	BudgetPolicyId string ``
+	BudgetPolicyId string `json:"budget_policy_id"`
 	// Name of the vector search endpoint
-	// Wire name: 'endpoint_name'
-	EndpointName string `tf:"-"`
+	EndpointName string `json:"-" tf:"-"`
 }
 
 func (st PatchEndpointBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
@@ -2252,8 +2242,8 @@ func PatchEndpointBudgetPolicyRequestFromPb(pb *vectorsearchpb.PatchEndpointBudg
 type PatchEndpointBudgetPolicyResponse struct {
 	// The budget policy applied to the vector search endpoint.
 	// Wire name: 'effective_budget_policy_id'
-	EffectiveBudgetPolicyId string   ``
-	ForceSendFields         []string `tf:"-"`
+	EffectiveBudgetPolicyId string   `json:"effective_budget_policy_id,omitempty"`
+	ForceSendFields         []string `json:"-" tf:"-"`
 }
 
 func (st PatchEndpointBudgetPolicyResponse) MarshalJSON() ([]byte, error) {
@@ -2376,15 +2366,14 @@ func PipelineTypeFromPb(pb *vectorsearchpb.PipelineTypePb) (*PipelineType, error
 type QueryVectorIndexNextPageRequest struct {
 	// Name of the endpoint.
 	// Wire name: 'endpoint_name'
-	EndpointName string ``
+	EndpointName string `json:"endpoint_name,omitempty"`
 	// Name of the vector index to query.
-	// Wire name: 'index_name'
-	IndexName string `tf:"-"`
+	IndexName string `json:"-" tf:"-"`
 	// Page token returned from previous `QueryVectorIndex` or
 	// `QueryVectorIndexNextPage` API.
 	// Wire name: 'page_token'
-	PageToken       string   ``
-	ForceSendFields []string `tf:"-"`
+	PageToken       string   `json:"page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st QueryVectorIndexNextPageRequest) MarshalJSON() ([]byte, error) {
@@ -2445,10 +2434,10 @@ func QueryVectorIndexNextPageRequestFromPb(pb *vectorsearchpb.QueryVectorIndexNe
 type QueryVectorIndexRequest struct {
 	// List of column names to include in the response.
 	// Wire name: 'columns'
-	Columns []string ``
+	Columns []string `json:"columns"`
 	// Column names used to retrieve data to send to the reranker.
 	// Wire name: 'columns_to_rerank'
-	ColumnsToRerank []string ``
+	ColumnsToRerank []string `json:"columns_to_rerank,omitempty"`
 	// JSON string representing query filters.
 	//
 	// Example filters:
@@ -2458,27 +2447,26 @@ type QueryVectorIndexRequest struct {
 	// - `{"id >=": 5}`: Filter for id greater than equal to 5. - `{"id": 5}`:
 	// Filter for id equal to 5.
 	// Wire name: 'filters_json'
-	FiltersJson string ``
+	FiltersJson string `json:"filters_json,omitempty"`
 	// Name of the vector index to query.
-	// Wire name: 'index_name'
-	IndexName string `tf:"-"`
+	IndexName string `json:"-" tf:"-"`
 	// Number of results to return. Defaults to 10.
 	// Wire name: 'num_results'
-	NumResults int ``
+	NumResults int `json:"num_results,omitempty"`
 	// Query text. Required for Delta Sync Index using model endpoint.
 	// Wire name: 'query_text'
-	QueryText string ``
+	QueryText string `json:"query_text,omitempty"`
 	// The query type to use. Choices are `ANN` and `HYBRID`. Defaults to `ANN`.
 	// Wire name: 'query_type'
-	QueryType string ``
+	QueryType string `json:"query_type,omitempty"`
 	// Query vector. Required for Direct Vector Access Index and Delta Sync
 	// Index using self-managed vectors.
 	// Wire name: 'query_vector'
-	QueryVector []float64 ``
+	QueryVector []float64 `json:"query_vector,omitempty"`
 	// Threshold for the approximate nearest neighbor search. Defaults to 0.0.
 	// Wire name: 'score_threshold'
-	ScoreThreshold  float64  ``
-	ForceSendFields []string `tf:"-"`
+	ScoreThreshold  float64  `json:"score_threshold,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st QueryVectorIndexRequest) MarshalJSON() ([]byte, error) {
@@ -2551,17 +2539,17 @@ func QueryVectorIndexRequestFromPb(pb *vectorsearchpb.QueryVectorIndexRequestPb)
 type QueryVectorIndexResponse struct {
 	// Metadata about the result set.
 	// Wire name: 'manifest'
-	Manifest *ResultManifest ``
+	Manifest *ResultManifest `json:"manifest,omitempty"`
 	// [Optional] Token that can be used in `QueryVectorIndexNextPage` API to
 	// get next page of results. If more than 1000 results satisfy the query,
 	// they are returned in groups of 1000. Empty value means no more results.
 	// The maximum number of results that can be returned is 10,000.
 	// Wire name: 'next_page_token'
-	NextPageToken string ``
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// Data returned in the query result.
 	// Wire name: 'result'
-	Result          *ResultData ``
-	ForceSendFields []string    `tf:"-"`
+	Result          *ResultData `json:"result,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
 func (st QueryVectorIndexResponse) MarshalJSON() ([]byte, error) {
@@ -2647,11 +2635,11 @@ func QueryVectorIndexResponseFromPb(pb *vectorsearchpb.QueryVectorIndexResponseP
 type ResultData struct {
 	// Data rows returned in the query.
 	// Wire name: 'data_array'
-	DataArray [][]string ``
+	DataArray [][]string `json:"data_array,omitempty"`
 	// Number of rows in the result set.
 	// Wire name: 'row_count'
-	RowCount        int      ``
-	ForceSendFields []string `tf:"-"`
+	RowCount        int      `json:"row_count,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ResultData) MarshalJSON() ([]byte, error) {
@@ -2711,11 +2699,11 @@ func ResultDataFromPb(pb *vectorsearchpb.ResultDataPb) (*ResultData, error) {
 type ResultManifest struct {
 	// Number of columns in the result set.
 	// Wire name: 'column_count'
-	ColumnCount int ``
+	ColumnCount int `json:"column_count,omitempty"`
 	// Information about each column in the result set.
 	// Wire name: 'columns'
-	Columns         []ColumnInfo ``
-	ForceSendFields []string     `tf:"-"`
+	Columns         []ColumnInfo `json:"columns,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
 func (st ResultManifest) MarshalJSON() ([]byte, error) {
@@ -2795,15 +2783,14 @@ func ResultManifestFromPb(pb *vectorsearchpb.ResultManifestPb) (*ResultManifest,
 
 type ScanVectorIndexRequest struct {
 	// Name of the vector index to scan.
-	// Wire name: 'index_name'
-	IndexName string `tf:"-"`
+	IndexName string `json:"-" tf:"-"`
 	// Primary key of the last entry returned in the previous scan.
 	// Wire name: 'last_primary_key'
-	LastPrimaryKey string ``
+	LastPrimaryKey string `json:"last_primary_key,omitempty"`
 	// Number of results to return. Defaults to 10.
 	// Wire name: 'num_results'
-	NumResults      int      ``
-	ForceSendFields []string `tf:"-"`
+	NumResults      int      `json:"num_results,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ScanVectorIndexRequest) MarshalJSON() ([]byte, error) {
@@ -2865,11 +2852,11 @@ func ScanVectorIndexRequestFromPb(pb *vectorsearchpb.ScanVectorIndexRequestPb) (
 type ScanVectorIndexResponse struct {
 	// List of data entries
 	// Wire name: 'data'
-	Data []Struct ``
+	Data []Struct `json:"data,omitempty"`
 	// Primary key of the last entry.
 	// Wire name: 'last_primary_key'
-	LastPrimaryKey  string   ``
-	ForceSendFields []string `tf:"-"`
+	LastPrimaryKey  string   `json:"last_primary_key,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st ScanVectorIndexResponse) MarshalJSON() ([]byte, error) {
@@ -2950,7 +2937,7 @@ func ScanVectorIndexResponseFromPb(pb *vectorsearchpb.ScanVectorIndexResponsePb)
 type Struct struct {
 	// Data entry, corresponding to a row in a vector index.
 	// Wire name: 'fields'
-	Fields []MapStringValueEntry ``
+	Fields []MapStringValueEntry `json:"fields,omitempty"`
 }
 
 func (st Struct) MarshalJSON() ([]byte, error) {
@@ -3022,8 +3009,7 @@ func StructFromPb(pb *vectorsearchpb.StructPb) (*Struct, error) {
 
 type SyncIndexRequest struct {
 	// Name of the vector index to synchronize. Must be a Delta Sync Index.
-	// Wire name: 'index_name'
-	IndexName string `tf:"-"`
+	IndexName string `json:"-" tf:"-"`
 }
 
 func (st SyncIndexRequest) MarshalJSON() ([]byte, error) {
@@ -3074,10 +3060,9 @@ func SyncIndexRequestFromPb(pb *vectorsearchpb.SyncIndexRequestPb) (*SyncIndexRe
 type UpdateEndpointCustomTagsRequest struct {
 	// The new custom tags for the vector search endpoint
 	// Wire name: 'custom_tags'
-	CustomTags []CustomTag ``
+	CustomTags []CustomTag `json:"custom_tags"`
 	// Name of the vector search endpoint
-	// Wire name: 'endpoint_name'
-	EndpointName string `tf:"-"`
+	EndpointName string `json:"-" tf:"-"`
 }
 
 func (st UpdateEndpointCustomTagsRequest) MarshalJSON() ([]byte, error) {
@@ -3152,11 +3137,11 @@ func UpdateEndpointCustomTagsRequestFromPb(pb *vectorsearchpb.UpdateEndpointCust
 type UpdateEndpointCustomTagsResponse struct {
 	// All the custom tags that are applied to the vector search endpoint.
 	// Wire name: 'custom_tags'
-	CustomTags []CustomTag ``
+	CustomTags []CustomTag `json:"custom_tags,omitempty"`
 	// The name of the vector search endpoint whose custom tags were updated.
 	// Wire name: 'name'
-	Name            string   ``
-	ForceSendFields []string `tf:"-"`
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpdateEndpointCustomTagsResponse) MarshalJSON() ([]byte, error) {
@@ -3237,11 +3222,11 @@ func UpdateEndpointCustomTagsResponseFromPb(pb *vectorsearchpb.UpdateEndpointCus
 type UpsertDataResult struct {
 	// List of primary keys for rows that failed to process.
 	// Wire name: 'failed_primary_keys'
-	FailedPrimaryKeys []string ``
+	FailedPrimaryKeys []string `json:"failed_primary_keys,omitempty"`
 	// Count of successfully processed rows.
 	// Wire name: 'success_row_count'
-	SuccessRowCount int64    ``
-	ForceSendFields []string `tf:"-"`
+	SuccessRowCount int64    `json:"success_row_count,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st UpsertDataResult) MarshalJSON() ([]byte, error) {
@@ -3356,11 +3341,10 @@ func UpsertDataStatusFromPb(pb *vectorsearchpb.UpsertDataStatusPb) (*UpsertDataS
 type UpsertDataVectorIndexRequest struct {
 	// Name of the vector index where data is to be upserted. Must be a Direct
 	// Vector Access Index.
-	// Wire name: 'index_name'
-	IndexName string `tf:"-"`
+	IndexName string `json:"-" tf:"-"`
 	// JSON string representing the data to be upserted.
 	// Wire name: 'inputs_json'
-	InputsJson string ``
+	InputsJson string `json:"inputs_json"`
 }
 
 func (st UpsertDataVectorIndexRequest) MarshalJSON() ([]byte, error) {
@@ -3413,10 +3397,10 @@ func UpsertDataVectorIndexRequestFromPb(pb *vectorsearchpb.UpsertDataVectorIndex
 type UpsertDataVectorIndexResponse struct {
 	// Result of the upsert or delete operation.
 	// Wire name: 'result'
-	Result *UpsertDataResult ``
+	Result *UpsertDataResult `json:"result,omitempty"`
 	// Status of the upsert operation.
 	// Wire name: 'status'
-	Status UpsertDataStatus ``
+	Status UpsertDataStatus `json:"status,omitempty"`
 }
 
 func (st UpsertDataVectorIndexResponse) MarshalJSON() ([]byte, error) {
@@ -3493,20 +3477,20 @@ func UpsertDataVectorIndexResponseFromPb(pb *vectorsearchpb.UpsertDataVectorInde
 type Value struct {
 
 	// Wire name: 'bool_value'
-	BoolValue bool ``
+	BoolValue bool `json:"bool_value,omitempty"`
 
 	// Wire name: 'list_value'
-	ListValue *ListValue ``
+	ListValue *ListValue `json:"list_value,omitempty"`
 
 	// Wire name: 'number_value'
-	NumberValue float64 ``
+	NumberValue float64 `json:"number_value,omitempty"`
 
 	// Wire name: 'string_value'
-	StringValue string ``
+	StringValue string `json:"string_value,omitempty"`
 
 	// Wire name: 'struct_value'
-	StructValue     *Struct  ``
-	ForceSendFields []string `tf:"-"`
+	StructValue     *Struct  `json:"struct_value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st Value) MarshalJSON() ([]byte, error) {
@@ -3595,29 +3579,29 @@ func ValueFromPb(pb *vectorsearchpb.ValuePb) (*Value, error) {
 type VectorIndex struct {
 	// The user who created the index.
 	// Wire name: 'creator'
-	Creator string ``
+	Creator string `json:"creator,omitempty"`
 
 	// Wire name: 'delta_sync_index_spec'
-	DeltaSyncIndexSpec *DeltaSyncVectorIndexSpecResponse ``
+	DeltaSyncIndexSpec *DeltaSyncVectorIndexSpecResponse `json:"delta_sync_index_spec,omitempty"`
 
 	// Wire name: 'direct_access_index_spec'
-	DirectAccessIndexSpec *DirectAccessVectorIndexSpec ``
+	DirectAccessIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_index_spec,omitempty"`
 	// Name of the endpoint associated with the index
 	// Wire name: 'endpoint_name'
-	EndpointName string ``
+	EndpointName string `json:"endpoint_name,omitempty"`
 
 	// Wire name: 'index_type'
-	IndexType VectorIndexType ``
+	IndexType VectorIndexType `json:"index_type,omitempty"`
 	// Name of the index
 	// Wire name: 'name'
-	Name string ``
+	Name string `json:"name,omitempty"`
 	// Primary key of the index
 	// Wire name: 'primary_key'
-	PrimaryKey string ``
+	PrimaryKey string `json:"primary_key,omitempty"`
 
 	// Wire name: 'status'
-	Status          *VectorIndexStatus ``
-	ForceSendFields []string           `tf:"-"`
+	Status          *VectorIndexStatus `json:"status,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
 func (st VectorIndex) MarshalJSON() ([]byte, error) {
@@ -3736,17 +3720,17 @@ func VectorIndexFromPb(pb *vectorsearchpb.VectorIndexPb) (*VectorIndex, error) {
 type VectorIndexStatus struct {
 	// Index API Url to be used to perform operations on the index
 	// Wire name: 'index_url'
-	IndexUrl string ``
+	IndexUrl string `json:"index_url,omitempty"`
 	// Number of rows indexed
 	// Wire name: 'indexed_row_count'
-	IndexedRowCount int64 ``
+	IndexedRowCount int64 `json:"indexed_row_count,omitempty"`
 	// Message associated with the index status
 	// Wire name: 'message'
-	Message string ``
+	Message string `json:"message,omitempty"`
 	// Whether the index is ready for search
 	// Wire name: 'ready'
-	Ready           bool     ``
-	ForceSendFields []string `tf:"-"`
+	Ready           bool     `json:"ready,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st VectorIndexStatus) MarshalJSON() ([]byte, error) {
