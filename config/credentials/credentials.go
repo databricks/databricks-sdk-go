@@ -31,7 +31,10 @@ func (c CredentialsProviderFn) SetHeaders(r *http.Request) error {
 }
 
 // FromCredentials returns a new CredentialsProvider that uses the given
-// Credentials to set headers on the request.
+// Credentials to set headers on the request. 
+//
+// The returned CredentialsProvider will override the headers if these 
+// are already set.
 func FromCredentials(c auth.Credentials) CredentialsProvider {
 	return CredentialsProviderFn(func(r *http.Request) error {
 		headers, err := c.AuthHeaders(context.Background())
