@@ -792,7 +792,7 @@ func (s RequestedResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next field marker: 12
+// Next field marker: 14
 type SyncedDatabaseTable struct {
 	// Synced Table data synchronization status
 	DataSynchronizationStatus *SyncedTableStatus `json:"data_synchronization_status,omitempty"`
@@ -803,6 +803,12 @@ type SyncedDatabaseTable struct {
 	// the database instance name MUST match that of the registered catalog (or
 	// the request will be rejected).
 	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
+	// The name of the database instance that this table is registered to. This
+	// field is always returned, and for tables inside database catalogs is
+	// inferred database instance associated with the catalog.
+	EffectiveDatabaseInstanceName string `json:"effective_database_instance_name,omitempty"`
+	// The name of the logical database that this table is registered to.
+	EffectiveLogicalDatabaseName string `json:"effective_logical_database_name,omitempty"`
 	// Target Postgres database object (logical database) name for this table.
 	//
 	// When creating a synced table in a registered Postgres catalog, the target

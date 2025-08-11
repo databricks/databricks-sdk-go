@@ -5142,6 +5142,41 @@ func (s SubscriptionSubscriber) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type TableState struct {
+	// Whether or not the table has seen updates since either the creation of
+	// the trigger or the last successful evaluation of the trigger
+	HasSeenUpdates bool `json:"has_seen_updates,omitempty"`
+	// Full table name of the table to monitor, e.g.
+	// `mycatalog.myschema.mytable`
+	TableName string `json:"table_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TableState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TableState) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type TableTriggerState struct {
+	LastSeenTableStates []TableState `json:"last_seen_table_states,omitempty"`
+	// Indicates whether the trigger is using scalable monitoring.
+	UsingScalableMonitoring bool `json:"using_scalable_monitoring,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TableTriggerState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TableTriggerState) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type TableUpdateTriggerConfiguration struct {
 	// The table(s) condition based on which to trigger a job run.
 	Condition Condition `json:"condition,omitempty"`
@@ -5714,6 +5749,8 @@ type TriggerSettings struct {
 
 type TriggerStateProto struct {
 	FileArrival *FileArrivalTriggerState `json:"file_arrival,omitempty"`
+
+	Table *TableTriggerState `json:"table,omitempty"`
 }
 
 // The type of trigger that fired this run.

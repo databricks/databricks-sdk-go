@@ -1103,6 +1103,24 @@ func (s ListAllPersonalizationRequestsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListConsumerProvidersRequest struct {
+	IsFeatured bool `json:"-" url:"is_featured,omitempty"`
+
+	PageSize int `json:"-" url:"page_size,omitempty"`
+
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListConsumerProvidersRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListConsumerProvidersRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListExchangeFiltersRequest struct {
 	ExchangeId string `json:"-" url:"exchange_id"`
 
@@ -1406,8 +1424,6 @@ func (s ListProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListProvidersRequest struct {
-	IsFeatured bool `json:"-" url:"is_featured,omitempty"`
-
 	PageSize int `json:"-" url:"page_size,omitempty"`
 
 	PageToken string `json:"-" url:"page_token,omitempty"`
