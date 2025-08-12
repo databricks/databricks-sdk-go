@@ -79,14 +79,14 @@ func GetResourceRequestFromPb(pb *jsonmarshallv2pb.GetResourceRequestPb) (*GetRe
 type NestedMessage struct {
 
 	// Wire name: 'optional_duration'
-	OptionalDuration *time.Duration `json:"optional_duration,omitempty"`
+	OptionalDuration string `json:"optional_duration,omitempty"` //legacy
 
 	// Wire name: 'optional_string'
 	OptionalString string `json:"optional_string,omitempty"`
 
 	// Wire name: 'optional_timestamp'
-	OptionalTimestamp *time.Time `json:"optional_timestamp,omitempty"`
-	ForceSendFields   []string   `json:"-" tf:"-"`
+	OptionalTimestamp string   `json:"optional_timestamp,omitempty"` //legacy
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
 func (st NestedMessage) MarshalJSON() ([]byte, error) {
@@ -119,21 +119,9 @@ func NestedMessageToPb(st *NestedMessage) (*jsonmarshallv2pb.NestedMessagePb, er
 		return nil, nil
 	}
 	pb := &jsonmarshallv2pb.NestedMessagePb{}
-	optionalDurationPb, err := durationToPb(st.OptionalDuration)
-	if err != nil {
-		return nil, err
-	}
-	if optionalDurationPb != nil {
-		pb.OptionalDuration = *optionalDurationPb
-	}
+	pb.OptionalDuration = st.OptionalDuration
 	pb.OptionalString = st.OptionalString
-	optionalTimestampPb, err := timestampToPb(st.OptionalTimestamp)
-	if err != nil {
-		return nil, err
-	}
-	if optionalTimestampPb != nil {
-		pb.OptionalTimestamp = *optionalTimestampPb
-	}
+	pb.OptionalTimestamp = st.OptionalTimestamp
 
 	if len(st.ForceSendFields) > 0 {
 		pb.ForceSendFields = st.ForceSendFields
@@ -146,21 +134,9 @@ func NestedMessageFromPb(pb *jsonmarshallv2pb.NestedMessagePb) (*NestedMessage, 
 		return nil, nil
 	}
 	st := &NestedMessage{}
-	optionalDurationField, err := durationFromPb(&pb.OptionalDuration)
-	if err != nil {
-		return nil, err
-	}
-	if optionalDurationField != nil {
-		st.OptionalDuration = optionalDurationField
-	}
+	st.OptionalDuration = pb.OptionalDuration
 	st.OptionalString = pb.OptionalString
-	optionalTimestampField, err := timestampFromPb(&pb.OptionalTimestamp)
-	if err != nil {
-		return nil, err
-	}
-	if optionalTimestampField != nil {
-		st.OptionalTimestamp = optionalTimestampField
-	}
+	st.OptionalTimestamp = pb.OptionalTimestamp
 
 	if len(pb.ForceSendFields) > 0 {
 		st.ForceSendFields = pb.ForceSendFields
@@ -171,7 +147,7 @@ func NestedMessageFromPb(pb *jsonmarshallv2pb.NestedMessagePb) (*NestedMessage, 
 type OptionalFields struct {
 
 	// Wire name: 'duration'
-	Duration *time.Duration `json:"duration,omitempty"`
+	Duration string `json:"duration,omitempty"` //legacy
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -179,7 +155,7 @@ type OptionalFields struct {
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
 	// Wire name: 'field_mask'
-	FieldMask []string `json:"field_mask,omitempty"`
+	FieldMask string `json:"field_mask,omitempty"` //legacy
 	// Lint disable reason: This is a dummy field used to test SDK Generation
 	// logic.
 	// Wire name: 'map'
@@ -204,8 +180,8 @@ type OptionalFields struct {
 	TestEnum TestEnum `json:"test_enum,omitempty"`
 
 	// Wire name: 'timestamp'
-	Timestamp       *time.Time `json:"timestamp,omitempty"`
-	ForceSendFields []string   `json:"-" tf:"-"`
+	Timestamp       string   `json:"timestamp,omitempty"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
 func (st OptionalFields) MarshalJSON() ([]byte, error) {
@@ -238,20 +214,8 @@ func OptionalFieldsToPb(st *OptionalFields) (*jsonmarshallv2pb.OptionalFieldsPb,
 		return nil, nil
 	}
 	pb := &jsonmarshallv2pb.OptionalFieldsPb{}
-	durationPb, err := durationToPb(st.Duration)
-	if err != nil {
-		return nil, err
-	}
-	if durationPb != nil {
-		pb.Duration = *durationPb
-	}
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.Duration = st.Duration
+	pb.FieldMask = st.FieldMask
 	pb.Map = st.Map
 	pb.OptionalBool = st.OptionalBool
 	pb.OptionalInt32 = st.OptionalInt32
@@ -271,13 +235,7 @@ func OptionalFieldsToPb(st *OptionalFields) (*jsonmarshallv2pb.OptionalFieldsPb,
 	if testEnumPb != nil {
 		pb.TestEnum = *testEnumPb
 	}
-	timestampPb, err := timestampToPb(st.Timestamp)
-	if err != nil {
-		return nil, err
-	}
-	if timestampPb != nil {
-		pb.Timestamp = *timestampPb
-	}
+	pb.Timestamp = st.Timestamp
 
 	if len(st.ForceSendFields) > 0 {
 		pb.ForceSendFields = st.ForceSendFields
@@ -290,20 +248,8 @@ func OptionalFieldsFromPb(pb *jsonmarshallv2pb.OptionalFieldsPb) (*OptionalField
 		return nil, nil
 	}
 	st := &OptionalFields{}
-	durationField, err := durationFromPb(&pb.Duration)
-	if err != nil {
-		return nil, err
-	}
-	if durationField != nil {
-		st.Duration = durationField
-	}
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.Duration = pb.Duration
+	st.FieldMask = pb.FieldMask
 	st.Map = pb.Map
 	st.OptionalBool = pb.OptionalBool
 	st.OptionalInt32 = pb.OptionalInt32
@@ -323,13 +269,7 @@ func OptionalFieldsFromPb(pb *jsonmarshallv2pb.OptionalFieldsPb) (*OptionalField
 	if testEnumField != nil {
 		st.TestEnum = *testEnumField
 	}
-	timestampField, err := timestampFromPb(&pb.Timestamp)
-	if err != nil {
-		return nil, err
-	}
-	if timestampField != nil {
-		st.Timestamp = timestampField
-	}
+	st.Timestamp = pb.Timestamp
 
 	if len(pb.ForceSendFields) > 0 {
 		st.ForceSendFields = pb.ForceSendFields
@@ -544,7 +484,7 @@ type RequiredFields struct {
 	RequiredBool bool `json:"required_bool"`
 
 	// Wire name: 'required_duration'
-	RequiredDuration time.Duration `json:"required_duration"`
+	RequiredDuration string `json:"required_duration"` //legacy
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -552,7 +492,7 @@ type RequiredFields struct {
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
 	// Wire name: 'required_field_mask'
-	RequiredFieldMask []string `json:"required_field_mask"`
+	RequiredFieldMask string `json:"required_field_mask"` //legacy
 
 	// Wire name: 'required_int32'
 	RequiredInt32 int `json:"required_int32"`
@@ -567,7 +507,7 @@ type RequiredFields struct {
 	RequiredString string `json:"required_string"`
 
 	// Wire name: 'required_timestamp'
-	RequiredTimestamp time.Time `json:"required_timestamp"`
+	RequiredTimestamp string `json:"required_timestamp"` //legacy
 
 	// Wire name: 'test_required_enum'
 	TestRequiredEnum TestEnum `json:"test_required_enum"`
@@ -604,20 +544,8 @@ func RequiredFieldsToPb(st *RequiredFields) (*jsonmarshallv2pb.RequiredFieldsPb,
 	}
 	pb := &jsonmarshallv2pb.RequiredFieldsPb{}
 	pb.RequiredBool = st.RequiredBool
-	requiredDurationPb, err := durationToPb(&st.RequiredDuration)
-	if err != nil {
-		return nil, err
-	}
-	if requiredDurationPb != nil {
-		pb.RequiredDuration = *requiredDurationPb
-	}
-	requiredFieldMaskPb, err := fieldMaskToPb(&st.RequiredFieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if requiredFieldMaskPb != nil {
-		pb.RequiredFieldMask = *requiredFieldMaskPb
-	}
+	pb.RequiredDuration = st.RequiredDuration
+	pb.RequiredFieldMask = st.RequiredFieldMask
 	pb.RequiredInt32 = st.RequiredInt32
 	pb.RequiredInt64 = st.RequiredInt64
 	requiredMessagePb, err := NestedMessageToPb(&st.RequiredMessage)
@@ -628,13 +556,7 @@ func RequiredFieldsToPb(st *RequiredFields) (*jsonmarshallv2pb.RequiredFieldsPb,
 		pb.RequiredMessage = *requiredMessagePb
 	}
 	pb.RequiredString = st.RequiredString
-	requiredTimestampPb, err := timestampToPb(&st.RequiredTimestamp)
-	if err != nil {
-		return nil, err
-	}
-	if requiredTimestampPb != nil {
-		pb.RequiredTimestamp = *requiredTimestampPb
-	}
+	pb.RequiredTimestamp = st.RequiredTimestamp
 	testRequiredEnumPb, err := TestEnumToPb(&st.TestRequiredEnum)
 	if err != nil {
 		return nil, err
@@ -652,20 +574,8 @@ func RequiredFieldsFromPb(pb *jsonmarshallv2pb.RequiredFieldsPb) (*RequiredField
 	}
 	st := &RequiredFields{}
 	st.RequiredBool = pb.RequiredBool
-	requiredDurationField, err := durationFromPb(&pb.RequiredDuration)
-	if err != nil {
-		return nil, err
-	}
-	if requiredDurationField != nil {
-		st.RequiredDuration = *requiredDurationField
-	}
-	requiredFieldMaskField, err := fieldMaskFromPb(&pb.RequiredFieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if requiredFieldMaskField != nil {
-		st.RequiredFieldMask = *requiredFieldMaskField
-	}
+	st.RequiredDuration = pb.RequiredDuration
+	st.RequiredFieldMask = pb.RequiredFieldMask
 	st.RequiredInt32 = pb.RequiredInt32
 	st.RequiredInt64 = pb.RequiredInt64
 	requiredMessageField, err := NestedMessageFromPb(&pb.RequiredMessage)
@@ -676,13 +586,7 @@ func RequiredFieldsFromPb(pb *jsonmarshallv2pb.RequiredFieldsPb) (*RequiredField
 		st.RequiredMessage = *requiredMessageField
 	}
 	st.RequiredString = pb.RequiredString
-	requiredTimestampField, err := timestampFromPb(&pb.RequiredTimestamp)
-	if err != nil {
-		return nil, err
-	}
-	if requiredTimestampField != nil {
-		st.RequiredTimestamp = *requiredTimestampField
-	}
+	st.RequiredTimestamp = pb.RequiredTimestamp
 	testRequiredEnumField, err := TestEnumFromPb(&pb.TestRequiredEnum)
 	if err != nil {
 		return nil, err

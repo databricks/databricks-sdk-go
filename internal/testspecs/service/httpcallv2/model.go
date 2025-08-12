@@ -152,7 +152,7 @@ type GetResourceRequest struct {
 	// Specification of elements in sequence or map fields is not allowed, as
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
-	FieldMask []string `json:"-" tf:"-"`
+	FieldMask string `json:"-" tf:"-"` //legacy
 
 	OptionalComplexQueryParam *ComplexQueryParam `json:"-" tf:"-"`
 
@@ -204,13 +204,7 @@ func GetResourceRequestToPb(st *GetResourceRequest) (*httpcallv2pb.GetResourceRe
 		return nil, nil
 	}
 	pb := &httpcallv2pb.GetResourceRequestPb{}
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	optionalComplexQueryParamPb, err := ComplexQueryParamToPb(st.OptionalComplexQueryParam)
 	if err != nil {
 		return nil, err
@@ -249,13 +243,7 @@ func GetResourceRequestFromPb(pb *httpcallv2pb.GetResourceRequestPb) (*GetResour
 		return nil, nil
 	}
 	st := &GetResourceRequest{}
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	optionalComplexQueryParamField, err := ComplexQueryParamFromPb(pb.OptionalComplexQueryParam)
 	if err != nil {
 		return nil, err
@@ -369,7 +357,7 @@ type UpdateResourceRequest struct {
 	// Specification of elements in sequence or map fields is not allowed, as
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
-	FieldMask []string `json:"-" tf:"-"`
+	FieldMask string `json:"-" tf:"-"` //legacy
 
 	NestedPathParamBool bool `json:"-" tf:"-"`
 
@@ -424,13 +412,7 @@ func UpdateResourceRequestToPb(st *UpdateResourceRequest) (*httpcallv2pb.UpdateR
 		return nil, nil
 	}
 	pb := &httpcallv2pb.UpdateResourceRequestPb{}
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 	pb.NestedPathParamBool = st.NestedPathParamBool
 	pb.NestedPathParamInt = st.NestedPathParamInt
 	pb.NestedPathParamString = st.NestedPathParamString
@@ -476,13 +458,7 @@ func UpdateResourceRequestFromPb(pb *httpcallv2pb.UpdateResourceRequestPb) (*Upd
 		return nil, nil
 	}
 	st := &UpdateResourceRequest{}
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.FieldMask = pb.FieldMask
 	st.NestedPathParamBool = pb.NestedPathParamBool
 	st.NestedPathParamInt = pb.NestedPathParamInt
 	st.NestedPathParamString = pb.NestedPathParamString
