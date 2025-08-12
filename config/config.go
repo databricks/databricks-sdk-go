@@ -91,6 +91,14 @@ type Config struct {
 	ActionsIDTokenRequestURL   string `name:"actions_id_token_request_url" env:"ACTIONS_ID_TOKEN_REQUEST_URL"`
 	ActionsIDTokenRequestToken string `name:"actions_id_token_request_token" env:"ACTIONS_ID_TOKEN_REQUEST_TOKEN"`
 
+	// Parameters to request Azure DevOps OIDC token on behalf of Azure DevOps Pipelines.
+	// Ref: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables
+	SystemAccessToken                 string `name:"system_access_token" env:"SYSTEM_ACCESSTOKEN"`
+	SystemTeamFoundationCollectionUri string `name:"system_team_foundation_collection_uri" env:"SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"`
+	SystemPlanId                      string `name:"system_plan_id" env:"SYSTEM_PLANID"`
+	SystemJobId                       string `name:"system_job_id" env:"SYSTEM_JOBID"`
+	SystemProject                     string `name:"system_project" env:"SYSTEM_TEAMPROJECT"`
+
 	// AzureEnvironment (PUBLIC, USGOVERNMENT, CHINA) has specific set of API endpoints. Starting from v0.26.0,
 	// the environment is determined based on the workspace hostname, if it's specified.
 	AzureEnvironment string `name:"azure_environment" env:"ARM_ENVIRONMENT"`
