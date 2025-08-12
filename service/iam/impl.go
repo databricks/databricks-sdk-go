@@ -9,6 +9,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
+	"github.com/databricks/databricks-sdk-go/service/iam/iampb"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
@@ -18,13 +19,33 @@ type accessControlImpl struct {
 }
 
 func (a *accessControlImpl) CheckPolicy(ctx context.Context, request CheckPolicyRequest) (*CheckPolicyResponse, error) {
-	var checkPolicyResponse CheckPolicyResponse
+	requestPb, pbErr := CheckPolicyRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var checkPolicyResponsePb iampb.CheckPolicyResponsePb
 	path := "/api/2.0/access-control/check-policy-v2"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &checkPolicyResponse)
-	return &checkPolicyResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&checkPolicyResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := CheckPolicyResponseFromPb(&checkPolicyResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just AccountAccessControl API methods
@@ -33,34 +54,94 @@ type accountAccessControlImpl struct {
 }
 
 func (a *accountAccessControlImpl) GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error) {
-	var getAssignableRolesForResourceResponse GetAssignableRolesForResourceResponse
+	requestPb, pbErr := GetAssignableRolesForResourceRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getAssignableRolesForResourceResponsePb iampb.GetAssignableRolesForResourceResponsePb
 	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/access-control/assignable-roles", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getAssignableRolesForResourceResponse)
-	return &getAssignableRolesForResourceResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getAssignableRolesForResourceResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GetAssignableRolesForResourceResponseFromPb(&getAssignableRolesForResourceResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountAccessControlImpl) GetRuleSet(ctx context.Context, request GetRuleSetRequest) (*RuleSetResponse, error) {
-	var ruleSetResponse RuleSetResponse
+	requestPb, pbErr := GetRuleSetRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var ruleSetResponsePb iampb.RuleSetResponsePb
 	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/access-control/rule-sets", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &ruleSetResponse)
-	return &ruleSetResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&ruleSetResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := RuleSetResponseFromPb(&ruleSetResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountAccessControlImpl) UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error) {
-	var ruleSetResponse RuleSetResponse
+	requestPb, pbErr := UpdateRuleSetRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var ruleSetResponsePb iampb.RuleSetResponsePb
 	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/access-control/rule-sets", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &ruleSetResponse)
-	return &ruleSetResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&ruleSetResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := RuleSetResponseFromPb(&ruleSetResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just AccountAccessControlProxy API methods
@@ -69,34 +150,94 @@ type accountAccessControlProxyImpl struct {
 }
 
 func (a *accountAccessControlProxyImpl) GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error) {
-	var getAssignableRolesForResourceResponse GetAssignableRolesForResourceResponse
+	requestPb, pbErr := GetAssignableRolesForResourceRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getAssignableRolesForResourceResponsePb iampb.GetAssignableRolesForResourceResponsePb
 	path := "/api/2.0/preview/accounts/access-control/assignable-roles"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getAssignableRolesForResourceResponse)
-	return &getAssignableRolesForResourceResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getAssignableRolesForResourceResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GetAssignableRolesForResourceResponseFromPb(&getAssignableRolesForResourceResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountAccessControlProxyImpl) GetRuleSet(ctx context.Context, request GetRuleSetRequest) (*RuleSetResponse, error) {
-	var ruleSetResponse RuleSetResponse
+	requestPb, pbErr := GetRuleSetRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var ruleSetResponsePb iampb.RuleSetResponsePb
 	path := "/api/2.0/preview/accounts/access-control/rule-sets"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &ruleSetResponse)
-	return &ruleSetResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&ruleSetResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := RuleSetResponseFromPb(&ruleSetResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountAccessControlProxyImpl) UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error) {
-	var ruleSetResponse RuleSetResponse
+	requestPb, pbErr := UpdateRuleSetRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var ruleSetResponsePb iampb.RuleSetResponsePb
 	path := "/api/2.0/preview/accounts/access-control/rule-sets"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &ruleSetResponse)
-	return &ruleSetResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&ruleSetResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := RuleSetResponseFromPb(&ruleSetResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just AccountGroups API methods
@@ -105,32 +246,88 @@ type accountGroupsImpl struct {
 }
 
 func (a *accountGroupsImpl) Create(ctx context.Context, request Group) (*Group, error) {
-	var group Group
+	requestPb, pbErr := GroupToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var groupPb iampb.GroupPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &group)
-	return &group, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&groupPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GroupFromPb(&groupPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountGroupsImpl) Delete(ctx context.Context, request DeleteAccountGroupRequest) error {
+	requestPb, pbErr := DeleteAccountGroupRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *accountGroupsImpl) Get(ctx context.Context, request GetAccountGroupRequest) (*Group, error) {
-	var group Group
+	requestPb, pbErr := GetAccountGroupRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var groupPb iampb.GroupPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &group)
-	return &group, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&groupPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GroupFromPb(&groupPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets all details of the groups associated with the Databricks account.
@@ -175,30 +372,82 @@ func (a *accountGroupsImpl) ListAll(ctx context.Context, request ListAccountGrou
 }
 
 func (a *accountGroupsImpl) internalList(ctx context.Context, request ListAccountGroupsRequest) (*ListGroupsResponse, error) {
-	var listGroupsResponse ListGroupsResponse
+	requestPb, pbErr := ListAccountGroupsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listGroupsResponsePb iampb.ListGroupsResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listGroupsResponse)
-	return &listGroupsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listGroupsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListGroupsResponseFromPb(&listGroupsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountGroupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
+	requestPb, pbErr := PartialUpdateToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *accountGroupsImpl) Update(ctx context.Context, request Group) error {
+	requestPb, pbErr := GroupToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
@@ -208,32 +457,88 @@ type accountServicePrincipalsImpl struct {
 }
 
 func (a *accountServicePrincipalsImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
-	var servicePrincipal ServicePrincipal
+	requestPb, pbErr := ServicePrincipalToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var servicePrincipalPb iampb.ServicePrincipalPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &servicePrincipal)
-	return &servicePrincipal, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&servicePrincipalPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ServicePrincipalFromPb(&servicePrincipalPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountServicePrincipalsImpl) Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) error {
+	requestPb, pbErr := DeleteAccountServicePrincipalRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *accountServicePrincipalsImpl) Get(ctx context.Context, request GetAccountServicePrincipalRequest) (*ServicePrincipal, error) {
-	var servicePrincipal ServicePrincipal
+	requestPb, pbErr := GetAccountServicePrincipalRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var servicePrincipalPb iampb.ServicePrincipalPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &servicePrincipal)
-	return &servicePrincipal, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&servicePrincipalPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ServicePrincipalFromPb(&servicePrincipalPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets the set of service principals associated with a Databricks account.
@@ -278,30 +583,82 @@ func (a *accountServicePrincipalsImpl) ListAll(ctx context.Context, request List
 }
 
 func (a *accountServicePrincipalsImpl) internalList(ctx context.Context, request ListAccountServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
-	var listServicePrincipalResponse ListServicePrincipalResponse
+	requestPb, pbErr := ListAccountServicePrincipalsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listServicePrincipalResponsePb iampb.ListServicePrincipalResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listServicePrincipalResponse)
-	return &listServicePrincipalResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listServicePrincipalResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListServicePrincipalResponseFromPb(&listServicePrincipalResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountServicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) error {
+	requestPb, pbErr := PartialUpdateToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) error {
+	requestPb, pbErr := ServicePrincipalToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
@@ -311,32 +668,88 @@ type accountUsersImpl struct {
 }
 
 func (a *accountUsersImpl) Create(ctx context.Context, request User) (*User, error) {
-	var user User
+	requestPb, pbErr := UserToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var userPb iampb.UserPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &user)
-	return &user, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&userPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := UserFromPb(&userPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountUsersImpl) Delete(ctx context.Context, request DeleteAccountUserRequest) error {
+	requestPb, pbErr := DeleteAccountUserRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *accountUsersImpl) Get(ctx context.Context, request GetAccountUserRequest) (*User, error) {
-	var user User
+	requestPb, pbErr := GetAccountUserRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var userPb iampb.UserPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &user)
-	return &user, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&userPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := UserFromPb(&userPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets details for all the users associated with a Databricks account.
@@ -381,30 +794,82 @@ func (a *accountUsersImpl) ListAll(ctx context.Context, request ListAccountUsers
 }
 
 func (a *accountUsersImpl) internalList(ctx context.Context, request ListAccountUsersRequest) (*ListUsersResponse, error) {
-	var listUsersResponse ListUsersResponse
+	requestPb, pbErr := ListAccountUsersRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listUsersResponsePb iampb.ListUsersResponsePb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listUsersResponse)
-	return &listUsersResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listUsersResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListUsersResponseFromPb(&listUsersResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *accountUsersImpl) Patch(ctx context.Context, request PartialUpdate) error {
+	requestPb, pbErr := PartialUpdateToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *accountUsersImpl) Update(ctx context.Context, request User) error {
+	requestPb, pbErr := UserToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
@@ -414,13 +879,29 @@ type currentUserImpl struct {
 }
 
 func (a *currentUserImpl) Me(ctx context.Context) (*User, error) {
-	var user User
+
+	var userPb iampb.UserPb
 	path := "/api/2.0/preview/scim/v2/Me"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &user)
-	return &user, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&userPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := UserFromPb(&userPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just Groups API methods
@@ -429,32 +910,88 @@ type groupsImpl struct {
 }
 
 func (a *groupsImpl) Create(ctx context.Context, request Group) (*Group, error) {
-	var group Group
+	requestPb, pbErr := GroupToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var groupPb iampb.GroupPb
 	path := "/api/2.0/preview/scim/v2/Groups"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &group)
-	return &group, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&groupPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GroupFromPb(&groupPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *groupsImpl) Delete(ctx context.Context, request DeleteGroupRequest) error {
+	requestPb, pbErr := DeleteGroupRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *groupsImpl) Get(ctx context.Context, request GetGroupRequest) (*Group, error) {
-	var group Group
+	requestPb, pbErr := GetGroupRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var groupPb iampb.GroupPb
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &group)
-	return &group, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&groupPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GroupFromPb(&groupPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets all details of the groups associated with the Databricks workspace.
@@ -499,30 +1036,82 @@ func (a *groupsImpl) ListAll(ctx context.Context, request ListGroupsRequest) ([]
 }
 
 func (a *groupsImpl) internalList(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
-	var listGroupsResponse ListGroupsResponse
+	requestPb, pbErr := ListGroupsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listGroupsResponsePb iampb.ListGroupsResponsePb
 	path := "/api/2.0/preview/scim/v2/Groups"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listGroupsResponse)
-	return &listGroupsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listGroupsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListGroupsResponseFromPb(&listGroupsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *groupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
+	requestPb, pbErr := PartialUpdateToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *groupsImpl) Update(ctx context.Context, request Group) error {
+	requestPb, pbErr := GroupToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
@@ -532,14 +1121,34 @@ type permissionMigrationImpl struct {
 }
 
 func (a *permissionMigrationImpl) MigratePermissions(ctx context.Context, request MigratePermissionsRequest) (*MigratePermissionsResponse, error) {
-	var migratePermissionsResponse MigratePermissionsResponse
+	requestPb, pbErr := MigratePermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var migratePermissionsResponsePb iampb.MigratePermissionsResponsePb
 	path := "/api/2.0/permissionmigration"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &migratePermissionsResponse)
-	return &migratePermissionsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&migratePermissionsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := MigratePermissionsResponseFromPb(&migratePermissionsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just Permissions API methods
@@ -548,45 +1157,125 @@ type permissionsImpl struct {
 }
 
 func (a *permissionsImpl) Get(ctx context.Context, request GetPermissionRequest) (*ObjectPermissions, error) {
-	var objectPermissions ObjectPermissions
+	requestPb, pbErr := GetPermissionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var objectPermissionsPb iampb.ObjectPermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &objectPermissions)
-	return &objectPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&objectPermissionsPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ObjectPermissionsFromPb(&objectPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *permissionsImpl) GetPermissionLevels(ctx context.Context, request GetPermissionLevelsRequest) (*GetPermissionLevelsResponse, error) {
-	var getPermissionLevelsResponse GetPermissionLevelsResponse
+	requestPb, pbErr := GetPermissionLevelsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getPermissionLevelsResponsePb iampb.GetPermissionLevelsResponsePb
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v/permissionLevels", request.RequestObjectType, request.RequestObjectId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPermissionLevelsResponse)
-	return &getPermissionLevelsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getPermissionLevelsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GetPermissionLevelsResponseFromPb(&getPermissionLevelsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *permissionsImpl) Set(ctx context.Context, request SetObjectPermissions) (*ObjectPermissions, error) {
-	var objectPermissions ObjectPermissions
+	requestPb, pbErr := SetObjectPermissionsToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var objectPermissionsPb iampb.ObjectPermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &objectPermissions)
-	return &objectPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&objectPermissionsPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ObjectPermissionsFromPb(&objectPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *permissionsImpl) Update(ctx context.Context, request UpdateObjectPermissions) (*ObjectPermissions, error) {
-	var objectPermissions ObjectPermissions
+	requestPb, pbErr := UpdateObjectPermissionsToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var objectPermissionsPb iampb.ObjectPermissionsPb
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &objectPermissions)
-	return &objectPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&objectPermissionsPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ObjectPermissionsFromPb(&objectPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just ServicePrincipals API methods
@@ -595,32 +1284,88 @@ type servicePrincipalsImpl struct {
 }
 
 func (a *servicePrincipalsImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
-	var servicePrincipal ServicePrincipal
+	requestPb, pbErr := ServicePrincipalToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var servicePrincipalPb iampb.ServicePrincipalPb
 	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &servicePrincipal)
-	return &servicePrincipal, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&servicePrincipalPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ServicePrincipalFromPb(&servicePrincipalPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servicePrincipalsImpl) Delete(ctx context.Context, request DeleteServicePrincipalRequest) error {
+	requestPb, pbErr := DeleteServicePrincipalRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *servicePrincipalsImpl) Get(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
-	var servicePrincipal ServicePrincipal
+	requestPb, pbErr := GetServicePrincipalRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var servicePrincipalPb iampb.ServicePrincipalPb
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &servicePrincipal)
-	return &servicePrincipal, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&servicePrincipalPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ServicePrincipalFromPb(&servicePrincipalPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets the set of service principals associated with a Databricks workspace.
@@ -665,30 +1410,82 @@ func (a *servicePrincipalsImpl) ListAll(ctx context.Context, request ListService
 }
 
 func (a *servicePrincipalsImpl) internalList(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
-	var listServicePrincipalResponse ListServicePrincipalResponse
+	requestPb, pbErr := ListServicePrincipalsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listServicePrincipalResponsePb iampb.ListServicePrincipalResponsePb
 	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listServicePrincipalResponse)
-	return &listServicePrincipalResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listServicePrincipalResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListServicePrincipalResponseFromPb(&listServicePrincipalResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *servicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) error {
+	requestPb, pbErr := PartialUpdateToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *servicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) error {
+	requestPb, pbErr := ServicePrincipalToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
@@ -698,52 +1495,140 @@ type usersImpl struct {
 }
 
 func (a *usersImpl) Create(ctx context.Context, request User) (*User, error) {
-	var user User
+	requestPb, pbErr := UserToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var userPb iampb.UserPb
 	path := "/api/2.0/preview/scim/v2/Users"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &user)
-	return &user, err
+	err := a.client.Do(ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&userPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := UserFromPb(&userPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *usersImpl) Delete(ctx context.Context, request DeleteUserRequest) error {
+	requestPb, pbErr := DeleteUserRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *usersImpl) Get(ctx context.Context, request GetUserRequest) (*User, error) {
-	var user User
+	requestPb, pbErr := GetUserRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var userPb iampb.UserPb
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &user)
-	return &user, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&userPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := UserFromPb(&userPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *usersImpl) GetPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error) {
-	var getPasswordPermissionLevelsResponse GetPasswordPermissionLevelsResponse
+
+	var getPasswordPermissionLevelsResponsePb iampb.GetPasswordPermissionLevelsResponsePb
 	path := "/api/2.0/permissions/authorization/passwords/permissionLevels"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getPasswordPermissionLevelsResponse)
-	return &getPasswordPermissionLevelsResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&getPasswordPermissionLevelsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := GetPasswordPermissionLevelsResponseFromPb(&getPasswordPermissionLevelsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *usersImpl) GetPermissions(ctx context.Context) (*PasswordPermissions, error) {
-	var passwordPermissions PasswordPermissions
+
+	var passwordPermissionsPb iampb.PasswordPermissionsPb
 	path := "/api/2.0/permissions/authorization/passwords"
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &passwordPermissions)
-	return &passwordPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&passwordPermissionsPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := PasswordPermissionsFromPb(&passwordPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Gets details for all the users associated with a Databricks workspace.
@@ -788,53 +1673,145 @@ func (a *usersImpl) ListAll(ctx context.Context, request ListUsersRequest) ([]Us
 }
 
 func (a *usersImpl) internalList(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
-	var listUsersResponse ListUsersResponse
+	requestPb, pbErr := ListUsersRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listUsersResponsePb iampb.ListUsersResponsePb
 	path := "/api/2.0/preview/scim/v2/Users"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listUsersResponse)
-	return &listUsersResponse, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listUsersResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := ListUsersResponseFromPb(&listUsersResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *usersImpl) Patch(ctx context.Context, request PartialUpdate) error {
+	requestPb, pbErr := PartialUpdateToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *usersImpl) SetPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
-	var passwordPermissions PasswordPermissions
+	requestPb, pbErr := PasswordPermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var passwordPermissionsPb iampb.PasswordPermissionsPb
 	path := "/api/2.0/permissions/authorization/passwords"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &passwordPermissions)
-	return &passwordPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&passwordPermissionsPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := PasswordPermissionsFromPb(&passwordPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *usersImpl) Update(ctx context.Context, request User) error {
+	requestPb, pbErr := UserToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *usersImpl) UpdatePermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
-	var passwordPermissions PasswordPermissions
+	requestPb, pbErr := PasswordPermissionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var passwordPermissionsPb iampb.PasswordPermissionsPb
 	path := "/api/2.0/permissions/authorization/passwords"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &passwordPermissions)
-	return &passwordPermissions, err
+	err := a.client.Do(ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&passwordPermissionsPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := PasswordPermissionsFromPb(&passwordPermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just WorkspaceAssignment API methods
@@ -843,22 +1820,58 @@ type workspaceAssignmentImpl struct {
 }
 
 func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
+	requestPb, pbErr := DeleteWorkspaceAssignmentRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	err := a.client.Do(ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *workspaceAssignmentImpl) Get(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspacePermissions, error) {
-	var workspacePermissions WorkspacePermissions
+	requestPb, pbErr := GetWorkspaceAssignmentRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var workspacePermissionsPb iampb.WorkspacePermissionsPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/permissions", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &workspacePermissions)
-	return &workspacePermissions, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&workspacePermissionsPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := WorkspacePermissionsFromPb(&workspacePermissionsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // Get the permission assignments for the specified Databricks account and
@@ -889,22 +1902,62 @@ func (a *workspaceAssignmentImpl) ListAll(ctx context.Context, request ListWorks
 }
 
 func (a *workspaceAssignmentImpl) internalList(ctx context.Context, request ListWorkspaceAssignmentRequest) (*PermissionAssignments, error) {
-	var permissionAssignments PermissionAssignments
+	requestPb, pbErr := ListWorkspaceAssignmentRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var permissionAssignmentsPb iampb.PermissionAssignmentsPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments", a.client.ConfiguredAccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &permissionAssignments)
-	return &permissionAssignments, err
+	err := a.client.Do(ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&permissionAssignmentsPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := PermissionAssignmentsFromPb(&permissionAssignmentsPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWorkspaceAssignments) (*PermissionAssignment, error) {
-	var permissionAssignment PermissionAssignment
+	requestPb, pbErr := UpdateWorkspaceAssignmentsToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var permissionAssignmentPb iampb.PermissionAssignmentPb
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &permissionAssignment)
-	return &permissionAssignment, err
+	err := a.client.Do(ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&permissionAssignmentPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := PermissionAssignmentFromPb(&permissionAssignmentPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }

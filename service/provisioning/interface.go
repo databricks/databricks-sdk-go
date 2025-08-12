@@ -175,7 +175,7 @@ type PrivateAccessService interface {
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-	Create(ctx context.Context, request CreatePrivateAccessSettingsRequest) (*PrivateAccessSettings, error)
+	Create(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*PrivateAccessSettings, error)
 
 	// Deletes a private access settings object, which determines how your
 	// workspace is accessed over [AWS PrivateLink].
@@ -224,7 +224,7 @@ type PrivateAccessService interface {
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-	Replace(ctx context.Context, request ReplacePrivateAccessSettingsRequest) error
+	Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) error
 }
 
 // These APIs manage storage configurations for this workspace. A root storage

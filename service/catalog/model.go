@@ -3,90 +3,774 @@
 package catalog
 
 import (
+	"encoding/json"
 	"fmt"
+	"strings"
+	"time"
 
-	"github.com/databricks/databricks-sdk-go/marshal"
+	"github.com/databricks/databricks-sdk-go/service/catalog/catalogpb"
 )
 
 type AccountsCreateMetastore struct {
+
+	// Wire name: 'metastore_info'
 	MetastoreInfo *CreateMetastore `json:"metastore_info,omitempty"`
 }
 
+func (st AccountsCreateMetastore) MarshalJSON() ([]byte, error) {
+	pb, err := AccountsCreateMetastoreToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AccountsCreateMetastore) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AccountsCreateMetastorePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccountsCreateMetastoreFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AccountsCreateMetastoreToPb(st *AccountsCreateMetastore) (*catalogpb.AccountsCreateMetastorePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AccountsCreateMetastorePb{}
+	metastoreInfoPb, err := CreateMetastoreToPb(st.MetastoreInfo)
+	if err != nil {
+		return nil, err
+	}
+	if metastoreInfoPb != nil {
+		pb.MetastoreInfo = metastoreInfoPb
+	}
+
+	return pb, nil
+}
+
+func AccountsCreateMetastoreFromPb(pb *catalogpb.AccountsCreateMetastorePb) (*AccountsCreateMetastore, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AccountsCreateMetastore{}
+	metastoreInfoField, err := CreateMetastoreFromPb(pb.MetastoreInfo)
+	if err != nil {
+		return nil, err
+	}
+	if metastoreInfoField != nil {
+		st.MetastoreInfo = metastoreInfoField
+	}
+
+	return st, nil
+}
+
 type AccountsCreateMetastoreAssignment struct {
+
+	// Wire name: 'metastore_assignment'
 	MetastoreAssignment *CreateMetastoreAssignment `json:"metastore_assignment,omitempty"`
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
+}
+
+func (st AccountsCreateMetastoreAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := AccountsCreateMetastoreAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AccountsCreateMetastoreAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AccountsCreateMetastoreAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccountsCreateMetastoreAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AccountsCreateMetastoreAssignmentToPb(st *AccountsCreateMetastoreAssignment) (*catalogpb.AccountsCreateMetastoreAssignmentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AccountsCreateMetastoreAssignmentPb{}
+	metastoreAssignmentPb, err := CreateMetastoreAssignmentToPb(st.MetastoreAssignment)
+	if err != nil {
+		return nil, err
+	}
+	if metastoreAssignmentPb != nil {
+		pb.MetastoreAssignment = metastoreAssignmentPb
+	}
+	pb.MetastoreId = st.MetastoreId
+	pb.WorkspaceId = st.WorkspaceId
+
+	return pb, nil
+}
+
+func AccountsCreateMetastoreAssignmentFromPb(pb *catalogpb.AccountsCreateMetastoreAssignmentPb) (*AccountsCreateMetastoreAssignment, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AccountsCreateMetastoreAssignment{}
+	metastoreAssignmentField, err := CreateMetastoreAssignmentFromPb(pb.MetastoreAssignment)
+	if err != nil {
+		return nil, err
+	}
+	if metastoreAssignmentField != nil {
+		st.MetastoreAssignment = metastoreAssignmentField
+	}
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
+
+	return st, nil
 }
 
 type AccountsCreateStorageCredential struct {
+
+	// Wire name: 'credential_info'
 	CredentialInfo *CreateStorageCredential `json:"credential_info,omitempty"`
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
+}
+
+func (st AccountsCreateStorageCredential) MarshalJSON() ([]byte, error) {
+	pb, err := AccountsCreateStorageCredentialToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AccountsCreateStorageCredential) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AccountsCreateStorageCredentialPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccountsCreateStorageCredentialFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AccountsCreateStorageCredentialToPb(st *AccountsCreateStorageCredential) (*catalogpb.AccountsCreateStorageCredentialPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AccountsCreateStorageCredentialPb{}
+	credentialInfoPb, err := CreateStorageCredentialToPb(st.CredentialInfo)
+	if err != nil {
+		return nil, err
+	}
+	if credentialInfoPb != nil {
+		pb.CredentialInfo = credentialInfoPb
+	}
+	pb.MetastoreId = st.MetastoreId
+
+	return pb, nil
+}
+
+func AccountsCreateStorageCredentialFromPb(pb *catalogpb.AccountsCreateStorageCredentialPb) (*AccountsCreateStorageCredential, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AccountsCreateStorageCredential{}
+	credentialInfoField, err := CreateStorageCredentialFromPb(pb.CredentialInfo)
+	if err != nil {
+		return nil, err
+	}
+	if credentialInfoField != nil {
+		st.CredentialInfo = credentialInfoField
+	}
+	st.MetastoreId = pb.MetastoreId
+
+	return st, nil
 }
 
 type AccountsMetastoreAssignment struct {
+
+	// Wire name: 'metastore_assignment'
 	MetastoreAssignment *MetastoreAssignment `json:"metastore_assignment,omitempty"`
 }
 
+func (st AccountsMetastoreAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := AccountsMetastoreAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AccountsMetastoreAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AccountsMetastoreAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccountsMetastoreAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AccountsMetastoreAssignmentToPb(st *AccountsMetastoreAssignment) (*catalogpb.AccountsMetastoreAssignmentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AccountsMetastoreAssignmentPb{}
+	metastoreAssignmentPb, err := MetastoreAssignmentToPb(st.MetastoreAssignment)
+	if err != nil {
+		return nil, err
+	}
+	if metastoreAssignmentPb != nil {
+		pb.MetastoreAssignment = metastoreAssignmentPb
+	}
+
+	return pb, nil
+}
+
+func AccountsMetastoreAssignmentFromPb(pb *catalogpb.AccountsMetastoreAssignmentPb) (*AccountsMetastoreAssignment, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AccountsMetastoreAssignment{}
+	metastoreAssignmentField, err := MetastoreAssignmentFromPb(pb.MetastoreAssignment)
+	if err != nil {
+		return nil, err
+	}
+	if metastoreAssignmentField != nil {
+		st.MetastoreAssignment = metastoreAssignmentField
+	}
+
+	return st, nil
+}
+
 type AccountsMetastoreInfo struct {
+
+	// Wire name: 'metastore_info'
 	MetastoreInfo *MetastoreInfo `json:"metastore_info,omitempty"`
 }
 
+func (st AccountsMetastoreInfo) MarshalJSON() ([]byte, error) {
+	pb, err := AccountsMetastoreInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AccountsMetastoreInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AccountsMetastoreInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccountsMetastoreInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AccountsMetastoreInfoToPb(st *AccountsMetastoreInfo) (*catalogpb.AccountsMetastoreInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AccountsMetastoreInfoPb{}
+	metastoreInfoPb, err := MetastoreInfoToPb(st.MetastoreInfo)
+	if err != nil {
+		return nil, err
+	}
+	if metastoreInfoPb != nil {
+		pb.MetastoreInfo = metastoreInfoPb
+	}
+
+	return pb, nil
+}
+
+func AccountsMetastoreInfoFromPb(pb *catalogpb.AccountsMetastoreInfoPb) (*AccountsMetastoreInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AccountsMetastoreInfo{}
+	metastoreInfoField, err := MetastoreInfoFromPb(pb.MetastoreInfo)
+	if err != nil {
+		return nil, err
+	}
+	if metastoreInfoField != nil {
+		st.MetastoreInfo = metastoreInfoField
+	}
+
+	return st, nil
+}
+
 type AccountsStorageCredentialInfo struct {
+
+	// Wire name: 'credential_info'
 	CredentialInfo *StorageCredentialInfo `json:"credential_info,omitempty"`
+}
+
+func (st AccountsStorageCredentialInfo) MarshalJSON() ([]byte, error) {
+	pb, err := AccountsStorageCredentialInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AccountsStorageCredentialInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AccountsStorageCredentialInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccountsStorageCredentialInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AccountsStorageCredentialInfoToPb(st *AccountsStorageCredentialInfo) (*catalogpb.AccountsStorageCredentialInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AccountsStorageCredentialInfoPb{}
+	credentialInfoPb, err := StorageCredentialInfoToPb(st.CredentialInfo)
+	if err != nil {
+		return nil, err
+	}
+	if credentialInfoPb != nil {
+		pb.CredentialInfo = credentialInfoPb
+	}
+
+	return pb, nil
+}
+
+func AccountsStorageCredentialInfoFromPb(pb *catalogpb.AccountsStorageCredentialInfoPb) (*AccountsStorageCredentialInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AccountsStorageCredentialInfo{}
+	credentialInfoField, err := StorageCredentialInfoFromPb(pb.CredentialInfo)
+	if err != nil {
+		return nil, err
+	}
+	if credentialInfoField != nil {
+		st.CredentialInfo = credentialInfoField
+	}
+
+	return st, nil
 }
 
 type AccountsUpdateMetastore struct {
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 
+	// Wire name: 'metastore_info'
 	MetastoreInfo *UpdateMetastore `json:"metastore_info,omitempty"`
 }
 
+func (st AccountsUpdateMetastore) MarshalJSON() ([]byte, error) {
+	pb, err := AccountsUpdateMetastoreToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AccountsUpdateMetastore) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AccountsUpdateMetastorePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccountsUpdateMetastoreFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AccountsUpdateMetastoreToPb(st *AccountsUpdateMetastore) (*catalogpb.AccountsUpdateMetastorePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AccountsUpdateMetastorePb{}
+	pb.MetastoreId = st.MetastoreId
+	metastoreInfoPb, err := UpdateMetastoreToPb(st.MetastoreInfo)
+	if err != nil {
+		return nil, err
+	}
+	if metastoreInfoPb != nil {
+		pb.MetastoreInfo = metastoreInfoPb
+	}
+
+	return pb, nil
+}
+
+func AccountsUpdateMetastoreFromPb(pb *catalogpb.AccountsUpdateMetastorePb) (*AccountsUpdateMetastore, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AccountsUpdateMetastore{}
+	st.MetastoreId = pb.MetastoreId
+	metastoreInfoField, err := UpdateMetastoreFromPb(pb.MetastoreInfo)
+	if err != nil {
+		return nil, err
+	}
+	if metastoreInfoField != nil {
+		st.MetastoreInfo = metastoreInfoField
+	}
+
+	return st, nil
+}
+
 type AccountsUpdateMetastoreAssignment struct {
+
+	// Wire name: 'metastore_assignment'
 	MetastoreAssignment *UpdateMetastoreAssignment `json:"metastore_assignment,omitempty"`
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
+}
+
+func (st AccountsUpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := AccountsUpdateMetastoreAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AccountsUpdateMetastoreAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AccountsUpdateMetastoreAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccountsUpdateMetastoreAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AccountsUpdateMetastoreAssignmentToPb(st *AccountsUpdateMetastoreAssignment) (*catalogpb.AccountsUpdateMetastoreAssignmentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AccountsUpdateMetastoreAssignmentPb{}
+	metastoreAssignmentPb, err := UpdateMetastoreAssignmentToPb(st.MetastoreAssignment)
+	if err != nil {
+		return nil, err
+	}
+	if metastoreAssignmentPb != nil {
+		pb.MetastoreAssignment = metastoreAssignmentPb
+	}
+	pb.MetastoreId = st.MetastoreId
+	pb.WorkspaceId = st.WorkspaceId
+
+	return pb, nil
+}
+
+func AccountsUpdateMetastoreAssignmentFromPb(pb *catalogpb.AccountsUpdateMetastoreAssignmentPb) (*AccountsUpdateMetastoreAssignment, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AccountsUpdateMetastoreAssignment{}
+	metastoreAssignmentField, err := UpdateMetastoreAssignmentFromPb(pb.MetastoreAssignment)
+	if err != nil {
+		return nil, err
+	}
+	if metastoreAssignmentField != nil {
+		st.MetastoreAssignment = metastoreAssignmentField
+	}
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
+
+	return st, nil
 }
 
 type AccountsUpdateStorageCredential struct {
+
+	// Wire name: 'credential_info'
 	CredentialInfo *UpdateStorageCredential `json:"credential_info,omitempty"`
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Name of the storage credential.
-	StorageCredentialName string `json:"-" url:"-"`
+	StorageCredentialName string `json:"-" tf:"-"`
+}
+
+func (st AccountsUpdateStorageCredential) MarshalJSON() ([]byte, error) {
+	pb, err := AccountsUpdateStorageCredentialToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AccountsUpdateStorageCredential) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AccountsUpdateStorageCredentialPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AccountsUpdateStorageCredentialFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AccountsUpdateStorageCredentialToPb(st *AccountsUpdateStorageCredential) (*catalogpb.AccountsUpdateStorageCredentialPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AccountsUpdateStorageCredentialPb{}
+	credentialInfoPb, err := UpdateStorageCredentialToPb(st.CredentialInfo)
+	if err != nil {
+		return nil, err
+	}
+	if credentialInfoPb != nil {
+		pb.CredentialInfo = credentialInfoPb
+	}
+	pb.MetastoreId = st.MetastoreId
+	pb.StorageCredentialName = st.StorageCredentialName
+
+	return pb, nil
+}
+
+func AccountsUpdateStorageCredentialFromPb(pb *catalogpb.AccountsUpdateStorageCredentialPb) (*AccountsUpdateStorageCredential, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AccountsUpdateStorageCredential{}
+	credentialInfoField, err := UpdateStorageCredentialFromPb(pb.CredentialInfo)
+	if err != nil {
+		return nil, err
+	}
+	if credentialInfoField != nil {
+		st.CredentialInfo = credentialInfoField
+	}
+	st.MetastoreId = pb.MetastoreId
+	st.StorageCredentialName = pb.StorageCredentialName
+
+	return st, nil
 }
 
 type ArtifactAllowlistInfo struct {
 	// A list of allowed artifact match patterns.
+	// Wire name: 'artifact_matchers'
 	ArtifactMatchers []ArtifactMatcher `json:"artifact_matchers,omitempty"`
 	// Time at which this artifact allowlist was set, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of the user who set the artifact allowlist.
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 	// Unique identifier of parent metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId     string   `json:"metastore_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ArtifactAllowlistInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ArtifactAllowlistInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ArtifactAllowlistInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ArtifactAllowlistInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ArtifactAllowlistInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ArtifactAllowlistInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ArtifactAllowlistInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ArtifactAllowlistInfoToPb(st *ArtifactAllowlistInfo) (*catalogpb.ArtifactAllowlistInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ArtifactAllowlistInfoPb{}
+
+	var artifactMatchersPb []catalogpb.ArtifactMatcherPb
+	for _, item := range st.ArtifactMatchers {
+		itemPb, err := ArtifactMatcherToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			artifactMatchersPb = append(artifactMatchersPb, *itemPb)
+		}
+	}
+	pb.ArtifactMatchers = artifactMatchersPb
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	pb.MetastoreId = st.MetastoreId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ArtifactAllowlistInfoFromPb(pb *catalogpb.ArtifactAllowlistInfoPb) (*ArtifactAllowlistInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ArtifactAllowlistInfo{}
+
+	var artifactMatchersField []ArtifactMatcher
+	for _, itemPb := range pb.ArtifactMatchers {
+		item, err := ArtifactMatcherFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			artifactMatchersField = append(artifactMatchersField, *item)
+		}
+	}
+	st.ArtifactMatchers = artifactMatchersField
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.MetastoreId = pb.MetastoreId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ArtifactMatcher struct {
 	// The artifact path or maven coordinate
+	// Wire name: 'artifact'
 	Artifact string `json:"artifact"`
 	// The pattern matching type of the artifact
+	// Wire name: 'match_type'
 	MatchType MatchType `json:"match_type"`
+}
+
+func (st ArtifactMatcher) MarshalJSON() ([]byte, error) {
+	pb, err := ArtifactMatcherToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ArtifactMatcher) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ArtifactMatcherPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ArtifactMatcherFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ArtifactMatcherToPb(st *ArtifactMatcher) (*catalogpb.ArtifactMatcherPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ArtifactMatcherPb{}
+	pb.Artifact = st.Artifact
+	matchTypePb, err := MatchTypeToPb(&st.MatchType)
+	if err != nil {
+		return nil, err
+	}
+	if matchTypePb != nil {
+		pb.MatchType = *matchTypePb
+	}
+
+	return pb, nil
+}
+
+func ArtifactMatcherFromPb(pb *catalogpb.ArtifactMatcherPb) (*ArtifactMatcher, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ArtifactMatcher{}
+	st.Artifact = pb.Artifact
+	matchTypeField, err := MatchTypeFromPb(&pb.MatchType)
+	if err != nil {
+		return nil, err
+	}
+	if matchTypeField != nil {
+		st.MatchType = *matchTypeField
+	}
+
+	return st, nil
 }
 
 // The artifact type
@@ -130,102 +814,360 @@ func (f *ArtifactType) Type() string {
 	return "ArtifactType"
 }
 
+func ArtifactTypeToPb(st *ArtifactType) (*catalogpb.ArtifactTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.ArtifactTypePb(*st)
+	return &pb, nil
+}
+
+func ArtifactTypeFromPb(pb *catalogpb.ArtifactTypePb) (*ArtifactType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ArtifactType(*pb)
+	return &st, nil
+}
+
 // AWS temporary credentials for API authentication. Read more at
 // https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
 type AwsCredentials struct {
 	// The access key ID that identifies the temporary credentials.
+	// Wire name: 'access_key_id'
 	AccessKeyId string `json:"access_key_id,omitempty"`
 	// The Amazon Resource Name (ARN) of the S3 access point for temporary
 	// credentials related the external location.
+	// Wire name: 'access_point'
 	AccessPoint string `json:"access_point,omitempty"`
 	// The secret access key that can be used to sign AWS API requests.
+	// Wire name: 'secret_access_key'
 	SecretAccessKey string `json:"secret_access_key,omitempty"`
 	// The token that users must pass to AWS API to use the temporary
 	// credentials.
-	SessionToken string `json:"session_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'session_token'
+	SessionToken    string   `json:"session_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *AwsCredentials) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AwsCredentials) MarshalJSON() ([]byte, error) {
+	pb, err := AwsCredentialsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AwsCredentials) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AwsCredentials) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AwsCredentialsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AwsCredentialsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AwsCredentialsToPb(st *AwsCredentials) (*catalogpb.AwsCredentialsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AwsCredentialsPb{}
+	pb.AccessKeyId = st.AccessKeyId
+	pb.AccessPoint = st.AccessPoint
+	pb.SecretAccessKey = st.SecretAccessKey
+	pb.SessionToken = st.SessionToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func AwsCredentialsFromPb(pb *catalogpb.AwsCredentialsPb) (*AwsCredentials, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AwsCredentials{}
+	st.AccessKeyId = pb.AccessKeyId
+	st.AccessPoint = pb.AccessPoint
+	st.SecretAccessKey = pb.SecretAccessKey
+	st.SessionToken = pb.SessionToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // The AWS IAM role configuration
 type AwsIamRole struct {
 	// The external ID used in role assumption to prevent the confused deputy
 	// problem.
+	// Wire name: 'external_id'
 	ExternalId string `json:"external_id,omitempty"`
 	// The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary
 	// credentials.
+	// Wire name: 'role_arn'
 	RoleArn string `json:"role_arn,omitempty"`
 	// The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
 	// This is the identity that is going to assume the AWS IAM role.
-	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'unity_catalog_iam_arn'
+	UnityCatalogIamArn string   `json:"unity_catalog_iam_arn,omitempty"`
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
-func (s *AwsIamRole) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AwsIamRole) MarshalJSON() ([]byte, error) {
+	pb, err := AwsIamRoleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AwsIamRole) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AwsIamRole) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AwsIamRolePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AwsIamRoleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AwsIamRoleToPb(st *AwsIamRole) (*catalogpb.AwsIamRolePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AwsIamRolePb{}
+	pb.ExternalId = st.ExternalId
+	pb.RoleArn = st.RoleArn
+	pb.UnityCatalogIamArn = st.UnityCatalogIamArn
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func AwsIamRoleFromPb(pb *catalogpb.AwsIamRolePb) (*AwsIamRole, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AwsIamRole{}
+	st.ExternalId = pb.ExternalId
+	st.RoleArn = pb.RoleArn
+	st.UnityCatalogIamArn = pb.UnityCatalogIamArn
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // The AWS IAM role configuration
 type AwsIamRoleRequest struct {
 	// The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary
 	// credentials.
+	// Wire name: 'role_arn'
 	RoleArn string `json:"role_arn"`
+}
+
+func (st AwsIamRoleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := AwsIamRoleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AwsIamRoleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AwsIamRoleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AwsIamRoleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AwsIamRoleRequestToPb(st *AwsIamRoleRequest) (*catalogpb.AwsIamRoleRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AwsIamRoleRequestPb{}
+	pb.RoleArn = st.RoleArn
+
+	return pb, nil
+}
+
+func AwsIamRoleRequestFromPb(pb *catalogpb.AwsIamRoleRequestPb) (*AwsIamRoleRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AwsIamRoleRequest{}
+	st.RoleArn = pb.RoleArn
+
+	return st, nil
 }
 
 // The AWS IAM role configuration
 type AwsIamRoleResponse struct {
 	// The external ID used in role assumption to prevent the confused deputy
 	// problem.
+	// Wire name: 'external_id'
 	ExternalId string `json:"external_id,omitempty"`
 	// The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary
 	// credentials.
+	// Wire name: 'role_arn'
 	RoleArn string `json:"role_arn"`
 	// The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
 	// This is the identity that is going to assume the AWS IAM role.
-	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'unity_catalog_iam_arn'
+	UnityCatalogIamArn string   `json:"unity_catalog_iam_arn,omitempty"`
+	ForceSendFields    []string `json:"-" tf:"-"`
 }
 
-func (s *AwsIamRoleResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AwsIamRoleResponse) MarshalJSON() ([]byte, error) {
+	pb, err := AwsIamRoleResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AwsIamRoleResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AwsIamRoleResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AwsIamRoleResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AwsIamRoleResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AwsIamRoleResponseToPb(st *AwsIamRoleResponse) (*catalogpb.AwsIamRoleResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AwsIamRoleResponsePb{}
+	pb.ExternalId = st.ExternalId
+	pb.RoleArn = st.RoleArn
+	pb.UnityCatalogIamArn = st.UnityCatalogIamArn
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func AwsIamRoleResponseFromPb(pb *catalogpb.AwsIamRoleResponsePb) (*AwsIamRoleResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AwsIamRoleResponse{}
+	st.ExternalId = pb.ExternalId
+	st.RoleArn = pb.RoleArn
+	st.UnityCatalogIamArn = pb.UnityCatalogIamArn
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type AwsSqsQueue struct {
 	// Unique identifier included in the name of file events managed cloud
 	// resources.
+	// Wire name: 'managed_resource_id'
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
 	// The AQS queue url in the format
 	// https://sqs.{region}.amazonaws.com/{account id}/{queue name} Required for
 	// provided_sqs.
-	QueueUrl string `json:"queue_url,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'queue_url'
+	QueueUrl        string   `json:"queue_url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *AwsSqsQueue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AwsSqsQueue) MarshalJSON() ([]byte, error) {
+	pb, err := AwsSqsQueueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AwsSqsQueue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AwsSqsQueue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AwsSqsQueuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AwsSqsQueueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AwsSqsQueueToPb(st *AwsSqsQueue) (*catalogpb.AwsSqsQueuePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AwsSqsQueuePb{}
+	pb.ManagedResourceId = st.ManagedResourceId
+	pb.QueueUrl = st.QueueUrl
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func AwsSqsQueueFromPb(pb *catalogpb.AwsSqsQueuePb) (*AwsSqsQueue, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AwsSqsQueue{}
+	st.ManagedResourceId = pb.ManagedResourceId
+	st.QueueUrl = pb.QueueUrl
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Azure Active Directory token, essentially the Oauth token for Azure Service
@@ -234,17 +1176,60 @@ func (s AwsSqsQueue) MarshalJSON() ([]byte, error) {
 type AzureActiveDirectoryToken struct {
 	// Opaque token that contains claims that you can use in Azure Active
 	// Directory to access cloud services.
-	AadToken string `json:"aad_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'aad_token'
+	AadToken        string   `json:"aad_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *AzureActiveDirectoryToken) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AzureActiveDirectoryToken) MarshalJSON() ([]byte, error) {
+	pb, err := AzureActiveDirectoryTokenToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AzureActiveDirectoryToken) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AzureActiveDirectoryToken) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AzureActiveDirectoryTokenPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AzureActiveDirectoryTokenFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AzureActiveDirectoryTokenToPb(st *AzureActiveDirectoryToken) (*catalogpb.AzureActiveDirectoryTokenPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AzureActiveDirectoryTokenPb{}
+	pb.AadToken = st.AadToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func AzureActiveDirectoryTokenFromPb(pb *catalogpb.AzureActiveDirectoryTokenPb) (*AzureActiveDirectoryToken, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AzureActiveDirectoryToken{}
+	st.AadToken = pb.AadToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // The Azure managed identity configuration.
@@ -252,8 +1237,10 @@ type AzureManagedIdentity struct {
 	// The Azure resource ID of the Azure Databricks Access Connector. Use the
 	// format
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
+	// Wire name: 'access_connector_id'
 	AccessConnectorId string `json:"access_connector_id"`
 	// The Databricks internal ID that represents this managed identity.
+	// Wire name: 'credential_id'
 	CredentialId string `json:"credential_id,omitempty"`
 	// The Azure resource ID of the managed identity. Use the format,
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
@@ -261,17 +1248,64 @@ type AzureManagedIdentity struct {
 	// identities, the access_connector_id is used to identify the identity. If
 	// this field is not provided, then we assume the AzureManagedIdentity is
 	// using the system-assigned identity.
-	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'managed_identity_id'
+	ManagedIdentityId string   `json:"managed_identity_id,omitempty"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
-func (s *AzureManagedIdentity) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AzureManagedIdentity) MarshalJSON() ([]byte, error) {
+	pb, err := AzureManagedIdentityToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AzureManagedIdentity) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AzureManagedIdentity) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AzureManagedIdentityPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AzureManagedIdentityFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AzureManagedIdentityToPb(st *AzureManagedIdentity) (*catalogpb.AzureManagedIdentityPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AzureManagedIdentityPb{}
+	pb.AccessConnectorId = st.AccessConnectorId
+	pb.CredentialId = st.CredentialId
+	pb.ManagedIdentityId = st.ManagedIdentityId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func AzureManagedIdentityFromPb(pb *catalogpb.AzureManagedIdentityPb) (*AzureManagedIdentity, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AzureManagedIdentity{}
+	st.AccessConnectorId = pb.AccessConnectorId
+	st.CredentialId = pb.CredentialId
+	st.ManagedIdentityId = pb.ManagedIdentityId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // The Azure managed identity configuration.
@@ -279,6 +1313,7 @@ type AzureManagedIdentityRequest struct {
 	// The Azure resource ID of the Azure Databricks Access Connector. Use the
 	// format
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
+	// Wire name: 'access_connector_id'
 	AccessConnectorId string `json:"access_connector_id"`
 	// The Azure resource ID of the managed identity. Use the format,
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
@@ -286,17 +1321,62 @@ type AzureManagedIdentityRequest struct {
 	// identities, the access_connector_id is used to identify the identity. If
 	// this field is not provided, then we assume the AzureManagedIdentity is
 	// using the system-assigned identity.
-	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'managed_identity_id'
+	ManagedIdentityId string   `json:"managed_identity_id,omitempty"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
-func (s *AzureManagedIdentityRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AzureManagedIdentityRequest) MarshalJSON() ([]byte, error) {
+	pb, err := AzureManagedIdentityRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AzureManagedIdentityRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AzureManagedIdentityRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AzureManagedIdentityRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AzureManagedIdentityRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AzureManagedIdentityRequestToPb(st *AzureManagedIdentityRequest) (*catalogpb.AzureManagedIdentityRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AzureManagedIdentityRequestPb{}
+	pb.AccessConnectorId = st.AccessConnectorId
+	pb.ManagedIdentityId = st.ManagedIdentityId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func AzureManagedIdentityRequestFromPb(pb *catalogpb.AzureManagedIdentityRequestPb) (*AzureManagedIdentityRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AzureManagedIdentityRequest{}
+	st.AccessConnectorId = pb.AccessConnectorId
+	st.ManagedIdentityId = pb.ManagedIdentityId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // The Azure managed identity configuration.
@@ -304,8 +1384,10 @@ type AzureManagedIdentityResponse struct {
 	// The Azure resource ID of the Azure Databricks Access Connector. Use the
 	// format
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
+	// Wire name: 'access_connector_id'
 	AccessConnectorId string `json:"access_connector_id"`
 	// The Databricks internal ID that represents this managed identity.
+	// Wire name: 'credential_id'
 	CredentialId string `json:"credential_id,omitempty"`
 	// The Azure resource ID of the managed identity. Use the format,
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
@@ -313,44 +1395,143 @@ type AzureManagedIdentityResponse struct {
 	// identities, the access_connector_id is used to identify the identity. If
 	// this field is not provided, then we assume the AzureManagedIdentity is
 	// using the system-assigned identity.
-	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'managed_identity_id'
+	ManagedIdentityId string   `json:"managed_identity_id,omitempty"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
-func (s *AzureManagedIdentityResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AzureManagedIdentityResponse) MarshalJSON() ([]byte, error) {
+	pb, err := AzureManagedIdentityResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AzureManagedIdentityResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AzureManagedIdentityResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AzureManagedIdentityResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AzureManagedIdentityResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AzureManagedIdentityResponseToPb(st *AzureManagedIdentityResponse) (*catalogpb.AzureManagedIdentityResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AzureManagedIdentityResponsePb{}
+	pb.AccessConnectorId = st.AccessConnectorId
+	pb.CredentialId = st.CredentialId
+	pb.ManagedIdentityId = st.ManagedIdentityId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func AzureManagedIdentityResponseFromPb(pb *catalogpb.AzureManagedIdentityResponsePb) (*AzureManagedIdentityResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AzureManagedIdentityResponse{}
+	st.AccessConnectorId = pb.AccessConnectorId
+	st.CredentialId = pb.CredentialId
+	st.ManagedIdentityId = pb.ManagedIdentityId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type AzureQueueStorage struct {
 	// Unique identifier included in the name of file events managed cloud
 	// resources.
+	// Wire name: 'managed_resource_id'
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
 	// The AQS queue url in the format https://{storage
 	// account}.queue.core.windows.net/{queue name} Required for provided_aqs.
+	// Wire name: 'queue_url'
 	QueueUrl string `json:"queue_url,omitempty"`
 	// The resource group for the queue, event grid subscription, and external
 	// location storage account. Only required for locations with a service
 	// principal storage credential
+	// Wire name: 'resource_group'
 	ResourceGroup string `json:"resource_group,omitempty"`
 	// Optional subscription id for the queue, event grid subscription, and
 	// external location storage account. Required for locations with a service
 	// principal storage credential
-	SubscriptionId string `json:"subscription_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'subscription_id'
+	SubscriptionId  string   `json:"subscription_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *AzureQueueStorage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AzureQueueStorage) MarshalJSON() ([]byte, error) {
+	pb, err := AzureQueueStorageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AzureQueueStorage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AzureQueueStorage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AzureQueueStoragePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AzureQueueStorageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AzureQueueStorageToPb(st *AzureQueueStorage) (*catalogpb.AzureQueueStoragePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AzureQueueStoragePb{}
+	pb.ManagedResourceId = st.ManagedResourceId
+	pb.QueueUrl = st.QueueUrl
+	pb.ResourceGroup = st.ResourceGroup
+	pb.SubscriptionId = st.SubscriptionId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func AzureQueueStorageFromPb(pb *catalogpb.AzureQueueStoragePb) (*AzureQueueStorage, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AzureQueueStorage{}
+	st.ManagedResourceId = pb.ManagedResourceId
+	st.QueueUrl = pb.QueueUrl
+	st.ResourceGroup = pb.ResourceGroup
+	st.SubscriptionId = pb.SubscriptionId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // The Azure service principal configuration. Only applicable when purpose is
@@ -358,102 +1539,425 @@ func (s AzureQueueStorage) MarshalJSON() ([]byte, error) {
 type AzureServicePrincipal struct {
 	// The application ID of the application registration within the referenced
 	// AAD tenant.
+	// Wire name: 'application_id'
 	ApplicationId string `json:"application_id"`
 	// The client secret generated for the above app ID in AAD.
+	// Wire name: 'client_secret'
 	ClientSecret string `json:"client_secret"`
 	// The directory ID corresponding to the Azure Active Directory (AAD) tenant
 	// of the application.
+	// Wire name: 'directory_id'
 	DirectoryId string `json:"directory_id"`
+}
+
+func (st AzureServicePrincipal) MarshalJSON() ([]byte, error) {
+	pb, err := AzureServicePrincipalToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *AzureServicePrincipal) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AzureServicePrincipalPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AzureServicePrincipalFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AzureServicePrincipalToPb(st *AzureServicePrincipal) (*catalogpb.AzureServicePrincipalPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AzureServicePrincipalPb{}
+	pb.ApplicationId = st.ApplicationId
+	pb.ClientSecret = st.ClientSecret
+	pb.DirectoryId = st.DirectoryId
+
+	return pb, nil
+}
+
+func AzureServicePrincipalFromPb(pb *catalogpb.AzureServicePrincipalPb) (*AzureServicePrincipal, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AzureServicePrincipal{}
+	st.ApplicationId = pb.ApplicationId
+	st.ClientSecret = pb.ClientSecret
+	st.DirectoryId = pb.DirectoryId
+
+	return st, nil
 }
 
 // Azure temporary credentials for API authentication. Read more at
 // https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
 type AzureUserDelegationSas struct {
 	// The signed URI (SAS Token) used to access blob services for a given path
-	SasToken string `json:"sas_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'sas_token'
+	SasToken        string   `json:"sas_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *AzureUserDelegationSas) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st AzureUserDelegationSas) MarshalJSON() ([]byte, error) {
+	pb, err := AzureUserDelegationSasToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s AzureUserDelegationSas) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *AzureUserDelegationSas) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.AzureUserDelegationSasPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := AzureUserDelegationSasFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func AzureUserDelegationSasToPb(st *AzureUserDelegationSas) (*catalogpb.AzureUserDelegationSasPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.AzureUserDelegationSasPb{}
+	pb.SasToken = st.SasToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func AzureUserDelegationSasFromPb(pb *catalogpb.AzureUserDelegationSasPb) (*AzureUserDelegationSas, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AzureUserDelegationSas{}
+	st.SasToken = pb.SasToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CancelRefreshRequest struct {
-	RefreshId int64 `json:"-" url:"-"`
+	RefreshId int64 `json:"-" tf:"-"`
 	// UC table name in format `catalog.schema.table_name`. table_name is case
 	// insensitive and spaces are disallowed.
-	TableName string `json:"-" url:"-"`
+	TableName string `json:"-" tf:"-"`
+}
+
+func (st CancelRefreshRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CancelRefreshRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CancelRefreshRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CancelRefreshRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CancelRefreshRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CancelRefreshRequestToPb(st *CancelRefreshRequest) (*catalogpb.CancelRefreshRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CancelRefreshRequestPb{}
+	pb.RefreshId = st.RefreshId
+	pb.TableName = st.TableName
+
+	return pb, nil
+}
+
+func CancelRefreshRequestFromPb(pb *catalogpb.CancelRefreshRequestPb) (*CancelRefreshRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CancelRefreshRequest{}
+	st.RefreshId = pb.RefreshId
+	st.TableName = pb.TableName
+
+	return st, nil
 }
 
 type CatalogInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool `json:"browse_only,omitempty"`
 
+	// Wire name: 'catalog_type'
 	CatalogType CatalogType `json:"catalog_type,omitempty"`
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The name of the connection to an external data source.
+	// Wire name: 'connection_name'
 	ConnectionName string `json:"connection_name,omitempty"`
 	// Time at which this catalog was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of catalog creator.
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 
+	// Wire name: 'effective_predictive_optimization_flag'
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
+	// Wire name: 'enable_predictive_optimization'
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// The full name of the catalog. Corresponds with the name field.
+	// Wire name: 'full_name'
 	FullName string `json:"full_name,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
+	// Wire name: 'isolation_mode'
 	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of catalog.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'options'
 	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of catalog.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string `json:"properties,omitempty"`
 	// The name of delta sharing provider.
 	//
 	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
 	// remote sharing server.
+	// Wire name: 'provider_name'
 	ProviderName string `json:"provider_name,omitempty"`
 
+	// Wire name: 'provisioning_info'
 	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
 
+	// Wire name: 'securable_type'
 	SecurableType SecurableType `json:"securable_type,omitempty"`
 	// The name of the share under the share provider.
+	// Wire name: 'share_name'
 	ShareName string `json:"share_name,omitempty"`
 	// Storage Location URL (full path) for managed tables within catalog.
+	// Wire name: 'storage_location'
 	StorageLocation string `json:"storage_location,omitempty"`
 	// Storage root URL for managed tables within catalog.
+	// Wire name: 'storage_root'
 	StorageRoot string `json:"storage_root,omitempty"`
 	// Time at which this catalog was last modified, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified catalog.
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'updated_by'
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CatalogInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CatalogInfo) MarshalJSON() ([]byte, error) {
+	pb, err := CatalogInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CatalogInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CatalogInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CatalogInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CatalogInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CatalogInfoToPb(st *CatalogInfo) (*catalogpb.CatalogInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CatalogInfoPb{}
+	pb.BrowseOnly = st.BrowseOnly
+	catalogTypePb, err := CatalogTypeToPb(&st.CatalogType)
+	if err != nil {
+		return nil, err
+	}
+	if catalogTypePb != nil {
+		pb.CatalogType = *catalogTypePb
+	}
+	pb.Comment = st.Comment
+	pb.ConnectionName = st.ConnectionName
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	effectivePredictiveOptimizationFlagPb, err := EffectivePredictiveOptimizationFlagToPb(st.EffectivePredictiveOptimizationFlag)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePredictiveOptimizationFlagPb != nil {
+		pb.EffectivePredictiveOptimizationFlag = effectivePredictiveOptimizationFlagPb
+	}
+	enablePredictiveOptimizationPb, err := EnablePredictiveOptimizationToPb(&st.EnablePredictiveOptimization)
+	if err != nil {
+		return nil, err
+	}
+	if enablePredictiveOptimizationPb != nil {
+		pb.EnablePredictiveOptimization = *enablePredictiveOptimizationPb
+	}
+	pb.FullName = st.FullName
+	isolationModePb, err := CatalogIsolationModeToPb(&st.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModePb != nil {
+		pb.IsolationMode = *isolationModePb
+	}
+	pb.MetastoreId = st.MetastoreId
+	pb.Name = st.Name
+	pb.Options = st.Options
+	pb.Owner = st.Owner
+	pb.Properties = st.Properties
+	pb.ProviderName = st.ProviderName
+	provisioningInfoPb, err := ProvisioningInfoToPb(st.ProvisioningInfo)
+	if err != nil {
+		return nil, err
+	}
+	if provisioningInfoPb != nil {
+		pb.ProvisioningInfo = provisioningInfoPb
+	}
+	securableTypePb, err := SecurableTypeToPb(&st.SecurableType)
+	if err != nil {
+		return nil, err
+	}
+	if securableTypePb != nil {
+		pb.SecurableType = *securableTypePb
+	}
+	pb.ShareName = st.ShareName
+	pb.StorageLocation = st.StorageLocation
+	pb.StorageRoot = st.StorageRoot
+	pb.UpdatedAt = st.UpdatedAt
+	pb.UpdatedBy = st.UpdatedBy
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CatalogInfoFromPb(pb *catalogpb.CatalogInfoPb) (*CatalogInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CatalogInfo{}
+	st.BrowseOnly = pb.BrowseOnly
+	catalogTypeField, err := CatalogTypeFromPb(&pb.CatalogType)
+	if err != nil {
+		return nil, err
+	}
+	if catalogTypeField != nil {
+		st.CatalogType = *catalogTypeField
+	}
+	st.Comment = pb.Comment
+	st.ConnectionName = pb.ConnectionName
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	effectivePredictiveOptimizationFlagField, err := EffectivePredictiveOptimizationFlagFromPb(pb.EffectivePredictiveOptimizationFlag)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePredictiveOptimizationFlagField != nil {
+		st.EffectivePredictiveOptimizationFlag = effectivePredictiveOptimizationFlagField
+	}
+	enablePredictiveOptimizationField, err := EnablePredictiveOptimizationFromPb(&pb.EnablePredictiveOptimization)
+	if err != nil {
+		return nil, err
+	}
+	if enablePredictiveOptimizationField != nil {
+		st.EnablePredictiveOptimization = *enablePredictiveOptimizationField
+	}
+	st.FullName = pb.FullName
+	isolationModeField, err := CatalogIsolationModeFromPb(&pb.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModeField != nil {
+		st.IsolationMode = *isolationModeField
+	}
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Options = pb.Options
+	st.Owner = pb.Owner
+	st.Properties = pb.Properties
+	st.ProviderName = pb.ProviderName
+	provisioningInfoField, err := ProvisioningInfoFromPb(pb.ProvisioningInfo)
+	if err != nil {
+		return nil, err
+	}
+	if provisioningInfoField != nil {
+		st.ProvisioningInfo = provisioningInfoField
+	}
+	securableTypeField, err := SecurableTypeFromPb(&pb.SecurableType)
+	if err != nil {
+		return nil, err
+	}
+	if securableTypeField != nil {
+		st.SecurableType = *securableTypeField
+	}
+	st.ShareName = pb.ShareName
+	st.StorageLocation = pb.StorageLocation
+	st.StorageRoot = pb.StorageRoot
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CatalogIsolationMode string
@@ -491,6 +1995,22 @@ func (f *CatalogIsolationMode) Values() []CatalogIsolationMode {
 // Type always returns CatalogIsolationMode to satisfy [pflag.Value] interface
 func (f *CatalogIsolationMode) Type() string {
 	return "CatalogIsolationMode"
+}
+
+func CatalogIsolationModeToPb(st *CatalogIsolationMode) (*catalogpb.CatalogIsolationModePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.CatalogIsolationModePb(*st)
+	return &pb, nil
+}
+
+func CatalogIsolationModeFromPb(pb *catalogpb.CatalogIsolationModePb) (*CatalogIsolationMode, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CatalogIsolationMode(*pb)
+	return &st, nil
 }
 
 // The type of the catalog.
@@ -543,88 +2063,349 @@ func (f *CatalogType) Type() string {
 	return "CatalogType"
 }
 
+func CatalogTypeToPb(st *CatalogType) (*catalogpb.CatalogTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.CatalogTypePb(*st)
+	return &pb, nil
+}
+
+func CatalogTypeFromPb(pb *catalogpb.CatalogTypePb) (*CatalogType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CatalogType(*pb)
+	return &st, nil
+}
+
 // The Cloudflare API token configuration. Read more at
 // https://developers.cloudflare.com/r2/api/s3/tokens/
 type CloudflareApiToken struct {
 	// The access key ID associated with the API token.
+	// Wire name: 'access_key_id'
 	AccessKeyId string `json:"access_key_id"`
 	// The ID of the account associated with the API token.
+	// Wire name: 'account_id'
 	AccountId string `json:"account_id"`
 	// The secret access token generated for the above access key ID.
+	// Wire name: 'secret_access_key'
 	SecretAccessKey string `json:"secret_access_key"`
+}
+
+func (st CloudflareApiToken) MarshalJSON() ([]byte, error) {
+	pb, err := CloudflareApiTokenToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CloudflareApiToken) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CloudflareApiTokenPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CloudflareApiTokenFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CloudflareApiTokenToPb(st *CloudflareApiToken) (*catalogpb.CloudflareApiTokenPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CloudflareApiTokenPb{}
+	pb.AccessKeyId = st.AccessKeyId
+	pb.AccountId = st.AccountId
+	pb.SecretAccessKey = st.SecretAccessKey
+
+	return pb, nil
+}
+
+func CloudflareApiTokenFromPb(pb *catalogpb.CloudflareApiTokenPb) (*CloudflareApiToken, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CloudflareApiToken{}
+	st.AccessKeyId = pb.AccessKeyId
+	st.AccountId = pb.AccountId
+	st.SecretAccessKey = pb.SecretAccessKey
+
+	return st, nil
 }
 
 type ColumnInfo struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 
+	// Wire name: 'mask'
 	Mask *ColumnMask `json:"mask,omitempty"`
 	// Name of Column.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// Whether field may be Null (default: true).
+	// Wire name: 'nullable'
 	Nullable bool `json:"nullable,omitempty"`
 	// Partition index for column.
+	// Wire name: 'partition_index'
 	PartitionIndex int `json:"partition_index,omitempty"`
 	// Ordinal position of column (starting at position 0).
+	// Wire name: 'position'
 	Position int `json:"position,omitempty"`
 	// Format of IntervalType.
+	// Wire name: 'type_interval_type'
 	TypeIntervalType string `json:"type_interval_type,omitempty"`
 	// Full data type specification, JSON-serialized.
+	// Wire name: 'type_json'
 	TypeJson string `json:"type_json,omitempty"`
 
+	// Wire name: 'type_name'
 	TypeName ColumnTypeName `json:"type_name,omitempty"`
 	// Digits of precision; required for DecimalTypes.
+	// Wire name: 'type_precision'
 	TypePrecision int `json:"type_precision,omitempty"`
 	// Digits to right of decimal; Required for DecimalTypes.
+	// Wire name: 'type_scale'
 	TypeScale int `json:"type_scale,omitempty"`
 	// Full data type specification as SQL/catalogString text.
-	TypeText string `json:"type_text,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'type_text'
+	TypeText        string   `json:"type_text,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ColumnInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ColumnInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ColumnInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ColumnInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ColumnInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ColumnInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ColumnInfoToPb(st *ColumnInfo) (*catalogpb.ColumnInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ColumnInfoPb{}
+	pb.Comment = st.Comment
+	maskPb, err := ColumnMaskToPb(st.Mask)
+	if err != nil {
+		return nil, err
+	}
+	if maskPb != nil {
+		pb.Mask = maskPb
+	}
+	pb.Name = st.Name
+	pb.Nullable = st.Nullable
+	pb.PartitionIndex = st.PartitionIndex
+	pb.Position = st.Position
+	pb.TypeIntervalType = st.TypeIntervalType
+	pb.TypeJson = st.TypeJson
+	typeNamePb, err := ColumnTypeNameToPb(&st.TypeName)
+	if err != nil {
+		return nil, err
+	}
+	if typeNamePb != nil {
+		pb.TypeName = *typeNamePb
+	}
+	pb.TypePrecision = st.TypePrecision
+	pb.TypeScale = st.TypeScale
+	pb.TypeText = st.TypeText
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ColumnInfoFromPb(pb *catalogpb.ColumnInfoPb) (*ColumnInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ColumnInfo{}
+	st.Comment = pb.Comment
+	maskField, err := ColumnMaskFromPb(pb.Mask)
+	if err != nil {
+		return nil, err
+	}
+	if maskField != nil {
+		st.Mask = maskField
+	}
+	st.Name = pb.Name
+	st.Nullable = pb.Nullable
+	st.PartitionIndex = pb.PartitionIndex
+	st.Position = pb.Position
+	st.TypeIntervalType = pb.TypeIntervalType
+	st.TypeJson = pb.TypeJson
+	typeNameField, err := ColumnTypeNameFromPb(&pb.TypeName)
+	if err != nil {
+		return nil, err
+	}
+	if typeNameField != nil {
+		st.TypeName = *typeNameField
+	}
+	st.TypePrecision = pb.TypePrecision
+	st.TypeScale = pb.TypeScale
+	st.TypeText = pb.TypeText
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ColumnMask struct {
 	// The full name of the column mask SQL UDF.
+	// Wire name: 'function_name'
 	FunctionName string `json:"function_name,omitempty"`
 	// The list of additional table columns to be passed as input to the column
 	// mask function. The first arg of the mask function should be of the type
 	// of the column being masked and the types of the rest of the args should
 	// match the types of columns in 'using_column_names'.
+	// Wire name: 'using_column_names'
 	UsingColumnNames []string `json:"using_column_names,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
-func (s *ColumnMask) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ColumnMask) MarshalJSON() ([]byte, error) {
+	pb, err := ColumnMaskToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ColumnMask) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ColumnMask) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ColumnMaskPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ColumnMaskFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ColumnMaskToPb(st *ColumnMask) (*catalogpb.ColumnMaskPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ColumnMaskPb{}
+	pb.FunctionName = st.FunctionName
+	pb.UsingColumnNames = st.UsingColumnNames
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ColumnMaskFromPb(pb *catalogpb.ColumnMaskPb) (*ColumnMask, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ColumnMask{}
+	st.FunctionName = pb.FunctionName
+	st.UsingColumnNames = pb.UsingColumnNames
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ColumnRelationship struct {
+
+	// Wire name: 'source'
 	Source string `json:"source,omitempty"`
 
-	Target string `json:"target,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'target'
+	Target          string   `json:"target,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ColumnRelationship) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ColumnRelationship) MarshalJSON() ([]byte, error) {
+	pb, err := ColumnRelationshipToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ColumnRelationship) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ColumnRelationship) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ColumnRelationshipPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ColumnRelationshipFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ColumnRelationshipToPb(st *ColumnRelationship) (*catalogpb.ColumnRelationshipPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ColumnRelationshipPb{}
+	pb.Source = st.Source
+	pb.Target = st.Target
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ColumnRelationshipFromPb(pb *catalogpb.ColumnRelationshipPb) (*ColumnRelationship, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ColumnRelationship{}
+	st.Source = pb.Source
+	st.Target = pb.Target
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ColumnTypeName string
@@ -730,74 +2511,290 @@ func (f *ColumnTypeName) Type() string {
 	return "ColumnTypeName"
 }
 
+func ColumnTypeNameToPb(st *ColumnTypeName) (*catalogpb.ColumnTypeNamePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.ColumnTypeNamePb(*st)
+	return &pb, nil
+}
+
+func ColumnTypeNameFromPb(pb *catalogpb.ColumnTypeNamePb) (*ColumnTypeName, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ColumnTypeName(*pb)
+	return &st, nil
+}
+
 // A connection that is dependent on a SQL object.
 type ConnectionDependency struct {
 	// Full name of the dependent connection, in the form of
 	// __connection_name__.
-	ConnectionName string `json:"connection_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'connection_name'
+	ConnectionName  string   `json:"connection_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ConnectionDependency) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ConnectionDependency) MarshalJSON() ([]byte, error) {
+	pb, err := ConnectionDependencyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ConnectionDependency) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ConnectionDependency) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ConnectionDependencyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ConnectionDependencyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ConnectionDependencyToPb(st *ConnectionDependency) (*catalogpb.ConnectionDependencyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ConnectionDependencyPb{}
+	pb.ConnectionName = st.ConnectionName
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ConnectionDependencyFromPb(pb *catalogpb.ConnectionDependencyPb) (*ConnectionDependency, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ConnectionDependency{}
+	st.ConnectionName = pb.ConnectionName
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Next ID: 23
 type ConnectionInfo struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Unique identifier of the Connection.
+	// Wire name: 'connection_id'
 	ConnectionId string `json:"connection_id,omitempty"`
 	// The type of connection.
+	// Wire name: 'connection_type'
 	ConnectionType ConnectionType `json:"connection_type,omitempty"`
 	// Time at which this connection was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of connection creator.
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 	// The type of credential.
+	// Wire name: 'credential_type'
 	CredentialType CredentialType `json:"credential_type,omitempty"`
 	// [Create,Update:OPT] Connection environment settings as
 	// EnvironmentSettings object.
+	// Wire name: 'environment_settings'
 	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Full name of connection.
+	// Wire name: 'full_name'
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of the connection.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'options'
 	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of the connection.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string `json:"properties,omitempty"`
 
+	// Wire name: 'provisioning_info'
 	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
 	// If the connection is read only.
+	// Wire name: 'read_only'
 	ReadOnly bool `json:"read_only,omitempty"`
 
+	// Wire name: 'securable_type'
 	SecurableType SecurableType `json:"securable_type,omitempty"`
 	// Time at which this connection was updated, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified connection.
+	// Wire name: 'updated_by'
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// URL of the remote data source, extracted from options.
-	Url string `json:"url,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'url'
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ConnectionInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ConnectionInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ConnectionInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ConnectionInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ConnectionInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ConnectionInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ConnectionInfoToPb(st *ConnectionInfo) (*catalogpb.ConnectionInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ConnectionInfoPb{}
+	pb.Comment = st.Comment
+	pb.ConnectionId = st.ConnectionId
+	connectionTypePb, err := ConnectionTypeToPb(&st.ConnectionType)
+	if err != nil {
+		return nil, err
+	}
+	if connectionTypePb != nil {
+		pb.ConnectionType = *connectionTypePb
+	}
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	credentialTypePb, err := CredentialTypeToPb(&st.CredentialType)
+	if err != nil {
+		return nil, err
+	}
+	if credentialTypePb != nil {
+		pb.CredentialType = *credentialTypePb
+	}
+	environmentSettingsPb, err := EnvironmentSettingsToPb(st.EnvironmentSettings)
+	if err != nil {
+		return nil, err
+	}
+	if environmentSettingsPb != nil {
+		pb.EnvironmentSettings = environmentSettingsPb
+	}
+	pb.FullName = st.FullName
+	pb.MetastoreId = st.MetastoreId
+	pb.Name = st.Name
+	pb.Options = st.Options
+	pb.Owner = st.Owner
+	pb.Properties = st.Properties
+	provisioningInfoPb, err := ProvisioningInfoToPb(st.ProvisioningInfo)
+	if err != nil {
+		return nil, err
+	}
+	if provisioningInfoPb != nil {
+		pb.ProvisioningInfo = provisioningInfoPb
+	}
+	pb.ReadOnly = st.ReadOnly
+	securableTypePb, err := SecurableTypeToPb(&st.SecurableType)
+	if err != nil {
+		return nil, err
+	}
+	if securableTypePb != nil {
+		pb.SecurableType = *securableTypePb
+	}
+	pb.UpdatedAt = st.UpdatedAt
+	pb.UpdatedBy = st.UpdatedBy
+	pb.Url = st.Url
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ConnectionInfoFromPb(pb *catalogpb.ConnectionInfoPb) (*ConnectionInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ConnectionInfo{}
+	st.Comment = pb.Comment
+	st.ConnectionId = pb.ConnectionId
+	connectionTypeField, err := ConnectionTypeFromPb(&pb.ConnectionType)
+	if err != nil {
+		return nil, err
+	}
+	if connectionTypeField != nil {
+		st.ConnectionType = *connectionTypeField
+	}
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	credentialTypeField, err := CredentialTypeFromPb(&pb.CredentialType)
+	if err != nil {
+		return nil, err
+	}
+	if credentialTypeField != nil {
+		st.CredentialType = *credentialTypeField
+	}
+	environmentSettingsField, err := EnvironmentSettingsFromPb(pb.EnvironmentSettings)
+	if err != nil {
+		return nil, err
+	}
+	if environmentSettingsField != nil {
+		st.EnvironmentSettings = environmentSettingsField
+	}
+	st.FullName = pb.FullName
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Options = pb.Options
+	st.Owner = pb.Owner
+	st.Properties = pb.Properties
+	provisioningInfoField, err := ProvisioningInfoFromPb(pb.ProvisioningInfo)
+	if err != nil {
+		return nil, err
+	}
+	if provisioningInfoField != nil {
+		st.ProvisioningInfo = provisioningInfoField
+	}
+	st.ReadOnly = pb.ReadOnly
+	securableTypeField, err := SecurableTypeFromPb(&pb.SecurableType)
+	if err != nil {
+		return nil, err
+	}
+	if securableTypeField != nil {
+		st.SecurableType = *securableTypeField
+	}
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.Url = pb.Url
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Next Id: 37
@@ -892,225 +2889,989 @@ func (f *ConnectionType) Type() string {
 	return "ConnectionType"
 }
 
+func ConnectionTypeToPb(st *ConnectionType) (*catalogpb.ConnectionTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.ConnectionTypePb(*st)
+	return &pb, nil
+}
+
+func ConnectionTypeFromPb(pb *catalogpb.ConnectionTypePb) (*ConnectionType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ConnectionType(*pb)
+	return &st, nil
+}
+
 // Detailed status of an online table. Shown if the online table is in the
 // ONLINE_CONTINUOUS_UPDATE or the ONLINE_UPDATING_PIPELINE_RESOURCES state.
 type ContinuousUpdateStatus struct {
 	// Progress of the initial data synchronization.
+	// Wire name: 'initial_pipeline_sync_progress'
 	InitialPipelineSyncProgress *PipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
 	// The last source table Delta version that was synced to the online table.
 	// Note that this Delta version may not be completely synced to the online
 	// table yet.
+	// Wire name: 'last_processed_commit_version'
 	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
 	// The timestamp of the last time any data was synchronized from the source
 	// table to the online table.
-	Timestamp string `json:"timestamp,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'timestamp'
+	Timestamp       string   `json:"timestamp,omitempty"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ContinuousUpdateStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
+	pb, err := ContinuousUpdateStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ContinuousUpdateStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ContinuousUpdateStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ContinuousUpdateStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ContinuousUpdateStatusToPb(st *ContinuousUpdateStatus) (*catalogpb.ContinuousUpdateStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ContinuousUpdateStatusPb{}
+	initialPipelineSyncProgressPb, err := PipelineProgressToPb(st.InitialPipelineSyncProgress)
+	if err != nil {
+		return nil, err
+	}
+	if initialPipelineSyncProgressPb != nil {
+		pb.InitialPipelineSyncProgress = initialPipelineSyncProgressPb
+	}
+	pb.LastProcessedCommitVersion = st.LastProcessedCommitVersion
+	pb.Timestamp = st.Timestamp
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ContinuousUpdateStatusFromPb(pb *catalogpb.ContinuousUpdateStatusPb) (*ContinuousUpdateStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ContinuousUpdateStatus{}
+	initialPipelineSyncProgressField, err := PipelineProgressFromPb(pb.InitialPipelineSyncProgress)
+	if err != nil {
+		return nil, err
+	}
+	if initialPipelineSyncProgressField != nil {
+		st.InitialPipelineSyncProgress = initialPipelineSyncProgressField
+	}
+	st.LastProcessedCommitVersion = pb.LastProcessedCommitVersion
+	st.Timestamp = pb.Timestamp
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CreateCatalog struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The name of the connection to an external data source.
+	// Wire name: 'connection_name'
 	ConnectionName string `json:"connection_name,omitempty"`
 	// Name of catalog.
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'options'
 	Options map[string]string `json:"options,omitempty"`
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string `json:"properties,omitempty"`
 	// The name of delta sharing provider.
 	//
 	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
 	// remote sharing server.
+	// Wire name: 'provider_name'
 	ProviderName string `json:"provider_name,omitempty"`
 	// The name of the share under the share provider.
+	// Wire name: 'share_name'
 	ShareName string `json:"share_name,omitempty"`
 	// Storage root URL for managed tables within catalog.
-	StorageRoot string `json:"storage_root,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'storage_root'
+	StorageRoot     string   `json:"storage_root,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateCatalog) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateCatalog) MarshalJSON() ([]byte, error) {
+	pb, err := CreateCatalogToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateCatalog) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateCatalog) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateCatalogPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateCatalogFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateCatalogToPb(st *CreateCatalog) (*catalogpb.CreateCatalogPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateCatalogPb{}
+	pb.Comment = st.Comment
+	pb.ConnectionName = st.ConnectionName
+	pb.Name = st.Name
+	pb.Options = st.Options
+	pb.Properties = st.Properties
+	pb.ProviderName = st.ProviderName
+	pb.ShareName = st.ShareName
+	pb.StorageRoot = st.StorageRoot
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CreateCatalogFromPb(pb *catalogpb.CreateCatalogPb) (*CreateCatalog, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateCatalog{}
+	st.Comment = pb.Comment
+	st.ConnectionName = pb.ConnectionName
+	st.Name = pb.Name
+	st.Options = pb.Options
+	st.Properties = pb.Properties
+	st.ProviderName = pb.ProviderName
+	st.ShareName = pb.ShareName
+	st.StorageRoot = pb.StorageRoot
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CreateConnection struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The type of connection.
+	// Wire name: 'connection_type'
 	ConnectionType ConnectionType `json:"connection_type"`
 	// [Create,Update:OPT] Connection environment settings as
 	// EnvironmentSettings object.
+	// Wire name: 'environment_settings'
 	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'options'
 	Options map[string]string `json:"options"`
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string `json:"properties,omitempty"`
 	// If the connection is read only.
-	ReadOnly bool `json:"read_only,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'read_only'
+	ReadOnly        bool     `json:"read_only,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateConnection) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateConnection) MarshalJSON() ([]byte, error) {
+	pb, err := CreateConnectionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateConnection) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateConnection) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateConnectionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateConnectionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateConnectionToPb(st *CreateConnection) (*catalogpb.CreateConnectionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateConnectionPb{}
+	pb.Comment = st.Comment
+	connectionTypePb, err := ConnectionTypeToPb(&st.ConnectionType)
+	if err != nil {
+		return nil, err
+	}
+	if connectionTypePb != nil {
+		pb.ConnectionType = *connectionTypePb
+	}
+	environmentSettingsPb, err := EnvironmentSettingsToPb(st.EnvironmentSettings)
+	if err != nil {
+		return nil, err
+	}
+	if environmentSettingsPb != nil {
+		pb.EnvironmentSettings = environmentSettingsPb
+	}
+	pb.Name = st.Name
+	pb.Options = st.Options
+	pb.Properties = st.Properties
+	pb.ReadOnly = st.ReadOnly
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CreateConnectionFromPb(pb *catalogpb.CreateConnectionPb) (*CreateConnection, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateConnection{}
+	st.Comment = pb.Comment
+	connectionTypeField, err := ConnectionTypeFromPb(&pb.ConnectionType)
+	if err != nil {
+		return nil, err
+	}
+	if connectionTypeField != nil {
+		st.ConnectionType = *connectionTypeField
+	}
+	environmentSettingsField, err := EnvironmentSettingsFromPb(pb.EnvironmentSettings)
+	if err != nil {
+		return nil, err
+	}
+	if environmentSettingsField != nil {
+		st.EnvironmentSettings = environmentSettingsField
+	}
+	st.Name = pb.Name
+	st.Options = pb.Options
+	st.Properties = pb.Properties
+	st.ReadOnly = pb.ReadOnly
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CreateCredentialRequest struct {
 	// The AWS IAM role configuration.
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The Databricks managed GCP service account configuration.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// Indicates the purpose of the credential.
+	// Wire name: 'purpose'
 	Purpose CredentialPurpose `json:"purpose,omitempty"`
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
+	// Wire name: 'read_only'
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Optional. Supplying true to this argument skips validation of the created
 	// set of credentials.
-	SkipValidation bool `json:"skip_validation,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'skip_validation'
+	SkipValidation  bool     `json:"skip_validation,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateCredentialRequestToPb(st *CreateCredentialRequest) (*catalogpb.CreateCredentialRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateCredentialRequestPb{}
+	awsIamRolePb, err := AwsIamRoleToPb(st.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRolePb != nil {
+		pb.AwsIamRole = awsIamRolePb
+	}
+	azureManagedIdentityPb, err := AzureManagedIdentityToPb(st.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityPb != nil {
+		pb.AzureManagedIdentity = azureManagedIdentityPb
+	}
+	azureServicePrincipalPb, err := AzureServicePrincipalToPb(st.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalPb != nil {
+		pb.AzureServicePrincipal = azureServicePrincipalPb
+	}
+	pb.Comment = st.Comment
+	databricksGcpServiceAccountPb, err := DatabricksGcpServiceAccountToPb(st.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountPb != nil {
+		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
+	}
+	pb.Name = st.Name
+	purposePb, err := CredentialPurposeToPb(&st.Purpose)
+	if err != nil {
+		return nil, err
+	}
+	if purposePb != nil {
+		pb.Purpose = *purposePb
+	}
+	pb.ReadOnly = st.ReadOnly
+	pb.SkipValidation = st.SkipValidation
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CreateCredentialRequestFromPb(pb *catalogpb.CreateCredentialRequestPb) (*CreateCredentialRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateCredentialRequest{}
+	awsIamRoleField, err := AwsIamRoleFromPb(pb.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRoleField != nil {
+		st.AwsIamRole = awsIamRoleField
+	}
+	azureManagedIdentityField, err := AzureManagedIdentityFromPb(pb.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityField != nil {
+		st.AzureManagedIdentity = azureManagedIdentityField
+	}
+	azureServicePrincipalField, err := AzureServicePrincipalFromPb(pb.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalField != nil {
+		st.AzureServicePrincipal = azureServicePrincipalField
+	}
+	st.Comment = pb.Comment
+	databricksGcpServiceAccountField, err := DatabricksGcpServiceAccountFromPb(pb.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountField != nil {
+		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
+	}
+	st.Name = pb.Name
+	purposeField, err := CredentialPurposeFromPb(&pb.Purpose)
+	if err != nil {
+		return nil, err
+	}
+	if purposeField != nil {
+		st.Purpose = *purposeField
+	}
+	st.ReadOnly = pb.ReadOnly
+	st.SkipValidation = pb.SkipValidation
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CreateExternalLineageRelationshipRequest struct {
+
+	// Wire name: 'external_lineage_relationship'
 	ExternalLineageRelationship CreateRequestExternalLineage `json:"external_lineage_relationship"`
+}
+
+func (st CreateExternalLineageRelationshipRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateExternalLineageRelationshipRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateExternalLineageRelationshipRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateExternalLineageRelationshipRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateExternalLineageRelationshipRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateExternalLineageRelationshipRequestToPb(st *CreateExternalLineageRelationshipRequest) (*catalogpb.CreateExternalLineageRelationshipRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateExternalLineageRelationshipRequestPb{}
+	externalLineageRelationshipPb, err := CreateRequestExternalLineageToPb(&st.ExternalLineageRelationship)
+	if err != nil {
+		return nil, err
+	}
+	if externalLineageRelationshipPb != nil {
+		pb.ExternalLineageRelationship = *externalLineageRelationshipPb
+	}
+
+	return pb, nil
+}
+
+func CreateExternalLineageRelationshipRequestFromPb(pb *catalogpb.CreateExternalLineageRelationshipRequestPb) (*CreateExternalLineageRelationshipRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateExternalLineageRelationshipRequest{}
+	externalLineageRelationshipField, err := CreateRequestExternalLineageFromPb(&pb.ExternalLineageRelationship)
+	if err != nil {
+		return nil, err
+	}
+	if externalLineageRelationshipField != nil {
+		st.ExternalLineageRelationship = *externalLineageRelationshipField
+	}
+
+	return st, nil
 }
 
 type CreateExternalLocation struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
+	// Wire name: 'credential_name'
 	CredentialName string `json:"credential_name"`
 	// Whether to enable file events on this external location.
+	// Wire name: 'enable_file_events'
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
+	// Wire name: 'encryption_details'
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
+	// Wire name: 'fallback'
 	Fallback bool `json:"fallback,omitempty"`
 	// File event queue settings.
+	// Wire name: 'file_event_queue'
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Name of the external location.
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// Indicates whether the external location is read-only.
+	// Wire name: 'read_only'
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Skips validation of the storage credential associated with the external
 	// location.
+	// Wire name: 'skip_validation'
 	SkipValidation bool `json:"skip_validation,omitempty"`
 	// Path URL of the external location.
-	Url string `json:"url"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'url'
+	Url             string   `json:"url"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateExternalLocation) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateExternalLocation) MarshalJSON() ([]byte, error) {
+	pb, err := CreateExternalLocationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateExternalLocation) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateExternalLocation) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateExternalLocationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateExternalLocationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateExternalLocationToPb(st *CreateExternalLocation) (*catalogpb.CreateExternalLocationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateExternalLocationPb{}
+	pb.Comment = st.Comment
+	pb.CredentialName = st.CredentialName
+	pb.EnableFileEvents = st.EnableFileEvents
+	encryptionDetailsPb, err := EncryptionDetailsToPb(st.EncryptionDetails)
+	if err != nil {
+		return nil, err
+	}
+	if encryptionDetailsPb != nil {
+		pb.EncryptionDetails = encryptionDetailsPb
+	}
+	pb.Fallback = st.Fallback
+	fileEventQueuePb, err := FileEventQueueToPb(st.FileEventQueue)
+	if err != nil {
+		return nil, err
+	}
+	if fileEventQueuePb != nil {
+		pb.FileEventQueue = fileEventQueuePb
+	}
+	pb.Name = st.Name
+	pb.ReadOnly = st.ReadOnly
+	pb.SkipValidation = st.SkipValidation
+	pb.Url = st.Url
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CreateExternalLocationFromPb(pb *catalogpb.CreateExternalLocationPb) (*CreateExternalLocation, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateExternalLocation{}
+	st.Comment = pb.Comment
+	st.CredentialName = pb.CredentialName
+	st.EnableFileEvents = pb.EnableFileEvents
+	encryptionDetailsField, err := EncryptionDetailsFromPb(pb.EncryptionDetails)
+	if err != nil {
+		return nil, err
+	}
+	if encryptionDetailsField != nil {
+		st.EncryptionDetails = encryptionDetailsField
+	}
+	st.Fallback = pb.Fallback
+	fileEventQueueField, err := FileEventQueueFromPb(pb.FileEventQueue)
+	if err != nil {
+		return nil, err
+	}
+	if fileEventQueueField != nil {
+		st.FileEventQueue = fileEventQueueField
+	}
+	st.Name = pb.Name
+	st.ReadOnly = pb.ReadOnly
+	st.SkipValidation = pb.SkipValidation
+	st.Url = pb.Url
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CreateExternalMetadataRequest struct {
+
+	// Wire name: 'external_metadata'
 	ExternalMetadata ExternalMetadata `json:"external_metadata"`
+}
+
+func (st CreateExternalMetadataRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateExternalMetadataRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateExternalMetadataRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateExternalMetadataRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateExternalMetadataRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateExternalMetadataRequestToPb(st *CreateExternalMetadataRequest) (*catalogpb.CreateExternalMetadataRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateExternalMetadataRequestPb{}
+	externalMetadataPb, err := ExternalMetadataToPb(&st.ExternalMetadata)
+	if err != nil {
+		return nil, err
+	}
+	if externalMetadataPb != nil {
+		pb.ExternalMetadata = *externalMetadataPb
+	}
+
+	return pb, nil
+}
+
+func CreateExternalMetadataRequestFromPb(pb *catalogpb.CreateExternalMetadataRequestPb) (*CreateExternalMetadataRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateExternalMetadataRequest{}
+	externalMetadataField, err := ExternalMetadataFromPb(&pb.ExternalMetadata)
+	if err != nil {
+		return nil, err
+	}
+	if externalMetadataField != nil {
+		st.ExternalMetadata = *externalMetadataField
+	}
+
+	return st, nil
 }
 
 type CreateFunction struct {
 	// Name of parent catalog.
+	// Wire name: 'catalog_name'
 	CatalogName string `json:"catalog_name"`
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Scalar function return data type.
+	// Wire name: 'data_type'
 	DataType ColumnTypeName `json:"data_type"`
 	// External function language.
+	// Wire name: 'external_language'
 	ExternalLanguage string `json:"external_language,omitempty"`
 	// External function name.
+	// Wire name: 'external_name'
 	ExternalName string `json:"external_name,omitempty"`
 	// Pretty printed function data type.
+	// Wire name: 'full_data_type'
 	FullDataType string `json:"full_data_type"`
 
+	// Wire name: 'input_params'
 	InputParams FunctionParameterInfos `json:"input_params"`
 	// Whether the function is deterministic.
+	// Wire name: 'is_deterministic'
 	IsDeterministic bool `json:"is_deterministic"`
 	// Function null call.
+	// Wire name: 'is_null_call'
 	IsNullCall bool `json:"is_null_call"`
 	// Name of function, relative to parent schema.
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// Function parameter style. **S** is the value for SQL.
+	// Wire name: 'parameter_style'
 	ParameterStyle CreateFunctionParameterStyle `json:"parameter_style"`
 	// JSON-serialized key-value pair map, encoded (escaped) as a string.
+	// Wire name: 'properties'
 	Properties string `json:"properties,omitempty"`
 	// Table function return parameters.
+	// Wire name: 'return_params'
 	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
 	// Function language. When **EXTERNAL** is used, the language of the routine
 	// function should be specified in the __external_language__ field, and the
 	// __return_params__ of the function cannot be used (as **TABLE** return
 	// type is not supported), and the __sql_data_access__ field must be
 	// **NO_SQL**.
+	// Wire name: 'routine_body'
 	RoutineBody CreateFunctionRoutineBody `json:"routine_body"`
 	// Function body.
+	// Wire name: 'routine_definition'
 	RoutineDefinition string `json:"routine_definition"`
 	// Function dependencies.
+	// Wire name: 'routine_dependencies'
 	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
 	// Name of parent schema relative to its parent catalog.
+	// Wire name: 'schema_name'
 	SchemaName string `json:"schema_name"`
 	// Function security type.
+	// Wire name: 'security_type'
 	SecurityType CreateFunctionSecurityType `json:"security_type"`
 	// Specific name of the function; Reserved for future use.
+	// Wire name: 'specific_name'
 	SpecificName string `json:"specific_name"`
 	// Function SQL data access.
+	// Wire name: 'sql_data_access'
 	SqlDataAccess CreateFunctionSqlDataAccess `json:"sql_data_access"`
 	// List of schemes whose objects can be referenced without qualification.
-	SqlPath string `json:"sql_path,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'sql_path'
+	SqlPath         string   `json:"sql_path,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateFunction) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateFunction) MarshalJSON() ([]byte, error) {
+	pb, err := CreateFunctionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateFunction) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateFunction) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateFunctionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateFunctionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateFunctionToPb(st *CreateFunction) (*catalogpb.CreateFunctionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateFunctionPb{}
+	pb.CatalogName = st.CatalogName
+	pb.Comment = st.Comment
+	dataTypePb, err := ColumnTypeNameToPb(&st.DataType)
+	if err != nil {
+		return nil, err
+	}
+	if dataTypePb != nil {
+		pb.DataType = *dataTypePb
+	}
+	pb.ExternalLanguage = st.ExternalLanguage
+	pb.ExternalName = st.ExternalName
+	pb.FullDataType = st.FullDataType
+	inputParamsPb, err := FunctionParameterInfosToPb(&st.InputParams)
+	if err != nil {
+		return nil, err
+	}
+	if inputParamsPb != nil {
+		pb.InputParams = *inputParamsPb
+	}
+	pb.IsDeterministic = st.IsDeterministic
+	pb.IsNullCall = st.IsNullCall
+	pb.Name = st.Name
+	parameterStylePb, err := CreateFunctionParameterStyleToPb(&st.ParameterStyle)
+	if err != nil {
+		return nil, err
+	}
+	if parameterStylePb != nil {
+		pb.ParameterStyle = *parameterStylePb
+	}
+	pb.Properties = st.Properties
+	returnParamsPb, err := FunctionParameterInfosToPb(st.ReturnParams)
+	if err != nil {
+		return nil, err
+	}
+	if returnParamsPb != nil {
+		pb.ReturnParams = returnParamsPb
+	}
+	routineBodyPb, err := CreateFunctionRoutineBodyToPb(&st.RoutineBody)
+	if err != nil {
+		return nil, err
+	}
+	if routineBodyPb != nil {
+		pb.RoutineBody = *routineBodyPb
+	}
+	pb.RoutineDefinition = st.RoutineDefinition
+	routineDependenciesPb, err := DependencyListToPb(st.RoutineDependencies)
+	if err != nil {
+		return nil, err
+	}
+	if routineDependenciesPb != nil {
+		pb.RoutineDependencies = routineDependenciesPb
+	}
+	pb.SchemaName = st.SchemaName
+	securityTypePb, err := CreateFunctionSecurityTypeToPb(&st.SecurityType)
+	if err != nil {
+		return nil, err
+	}
+	if securityTypePb != nil {
+		pb.SecurityType = *securityTypePb
+	}
+	pb.SpecificName = st.SpecificName
+	sqlDataAccessPb, err := CreateFunctionSqlDataAccessToPb(&st.SqlDataAccess)
+	if err != nil {
+		return nil, err
+	}
+	if sqlDataAccessPb != nil {
+		pb.SqlDataAccess = *sqlDataAccessPb
+	}
+	pb.SqlPath = st.SqlPath
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CreateFunctionFromPb(pb *catalogpb.CreateFunctionPb) (*CreateFunction, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateFunction{}
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	dataTypeField, err := ColumnTypeNameFromPb(&pb.DataType)
+	if err != nil {
+		return nil, err
+	}
+	if dataTypeField != nil {
+		st.DataType = *dataTypeField
+	}
+	st.ExternalLanguage = pb.ExternalLanguage
+	st.ExternalName = pb.ExternalName
+	st.FullDataType = pb.FullDataType
+	inputParamsField, err := FunctionParameterInfosFromPb(&pb.InputParams)
+	if err != nil {
+		return nil, err
+	}
+	if inputParamsField != nil {
+		st.InputParams = *inputParamsField
+	}
+	st.IsDeterministic = pb.IsDeterministic
+	st.IsNullCall = pb.IsNullCall
+	st.Name = pb.Name
+	parameterStyleField, err := CreateFunctionParameterStyleFromPb(&pb.ParameterStyle)
+	if err != nil {
+		return nil, err
+	}
+	if parameterStyleField != nil {
+		st.ParameterStyle = *parameterStyleField
+	}
+	st.Properties = pb.Properties
+	returnParamsField, err := FunctionParameterInfosFromPb(pb.ReturnParams)
+	if err != nil {
+		return nil, err
+	}
+	if returnParamsField != nil {
+		st.ReturnParams = returnParamsField
+	}
+	routineBodyField, err := CreateFunctionRoutineBodyFromPb(&pb.RoutineBody)
+	if err != nil {
+		return nil, err
+	}
+	if routineBodyField != nil {
+		st.RoutineBody = *routineBodyField
+	}
+	st.RoutineDefinition = pb.RoutineDefinition
+	routineDependenciesField, err := DependencyListFromPb(pb.RoutineDependencies)
+	if err != nil {
+		return nil, err
+	}
+	if routineDependenciesField != nil {
+		st.RoutineDependencies = routineDependenciesField
+	}
+	st.SchemaName = pb.SchemaName
+	securityTypeField, err := CreateFunctionSecurityTypeFromPb(&pb.SecurityType)
+	if err != nil {
+		return nil, err
+	}
+	if securityTypeField != nil {
+		st.SecurityType = *securityTypeField
+	}
+	st.SpecificName = pb.SpecificName
+	sqlDataAccessField, err := CreateFunctionSqlDataAccessFromPb(&pb.SqlDataAccess)
+	if err != nil {
+		return nil, err
+	}
+	if sqlDataAccessField != nil {
+		st.SqlDataAccess = *sqlDataAccessField
+	}
+	st.SqlPath = pb.SqlPath
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Function parameter style. **S** is the value for SQL.
@@ -1148,9 +3909,83 @@ func (f *CreateFunctionParameterStyle) Type() string {
 	return "CreateFunctionParameterStyle"
 }
 
+func CreateFunctionParameterStyleToPb(st *CreateFunctionParameterStyle) (*catalogpb.CreateFunctionParameterStylePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.CreateFunctionParameterStylePb(*st)
+	return &pb, nil
+}
+
+func CreateFunctionParameterStyleFromPb(pb *catalogpb.CreateFunctionParameterStylePb) (*CreateFunctionParameterStyle, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CreateFunctionParameterStyle(*pb)
+	return &st, nil
+}
+
 type CreateFunctionRequest struct {
 	// Partial __FunctionInfo__ specifying the function to be created.
+	// Wire name: 'function_info'
 	FunctionInfo CreateFunction `json:"function_info"`
+}
+
+func (st CreateFunctionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateFunctionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateFunctionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateFunctionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateFunctionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateFunctionRequestToPb(st *CreateFunctionRequest) (*catalogpb.CreateFunctionRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateFunctionRequestPb{}
+	functionInfoPb, err := CreateFunctionToPb(&st.FunctionInfo)
+	if err != nil {
+		return nil, err
+	}
+	if functionInfoPb != nil {
+		pb.FunctionInfo = *functionInfoPb
+	}
+
+	return pb, nil
+}
+
+func CreateFunctionRequestFromPb(pb *catalogpb.CreateFunctionRequestPb) (*CreateFunctionRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateFunctionRequest{}
+	functionInfoField, err := CreateFunctionFromPb(&pb.FunctionInfo)
+	if err != nil {
+		return nil, err
+	}
+	if functionInfoField != nil {
+		st.FunctionInfo = *functionInfoField
+	}
+
+	return st, nil
 }
 
 // Function language. When **EXTERNAL** is used, the language of the routine
@@ -1194,6 +4029,22 @@ func (f *CreateFunctionRoutineBody) Type() string {
 	return "CreateFunctionRoutineBody"
 }
 
+func CreateFunctionRoutineBodyToPb(st *CreateFunctionRoutineBody) (*catalogpb.CreateFunctionRoutineBodyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.CreateFunctionRoutineBodyPb(*st)
+	return &pb, nil
+}
+
+func CreateFunctionRoutineBodyFromPb(pb *catalogpb.CreateFunctionRoutineBodyPb) (*CreateFunctionRoutineBody, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CreateFunctionRoutineBody(*pb)
+	return &st, nil
+}
+
 // The security type of the function.
 type CreateFunctionSecurityType string
 
@@ -1227,6 +4078,22 @@ func (f *CreateFunctionSecurityType) Values() []CreateFunctionSecurityType {
 // Type always returns CreateFunctionSecurityType to satisfy [pflag.Value] interface
 func (f *CreateFunctionSecurityType) Type() string {
 	return "CreateFunctionSecurityType"
+}
+
+func CreateFunctionSecurityTypeToPb(st *CreateFunctionSecurityType) (*catalogpb.CreateFunctionSecurityTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.CreateFunctionSecurityTypePb(*st)
+	return &pb, nil
+}
+
+func CreateFunctionSecurityTypeFromPb(pb *catalogpb.CreateFunctionSecurityTypePb) (*CreateFunctionSecurityType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CreateFunctionSecurityType(*pb)
+	return &st, nil
 }
 
 // Function SQL data access.
@@ -1270,62 +4137,188 @@ func (f *CreateFunctionSqlDataAccess) Type() string {
 	return "CreateFunctionSqlDataAccess"
 }
 
+func CreateFunctionSqlDataAccessToPb(st *CreateFunctionSqlDataAccess) (*catalogpb.CreateFunctionSqlDataAccessPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.CreateFunctionSqlDataAccessPb(*st)
+	return &pb, nil
+}
+
+func CreateFunctionSqlDataAccessFromPb(pb *catalogpb.CreateFunctionSqlDataAccessPb) (*CreateFunctionSqlDataAccess, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CreateFunctionSqlDataAccess(*pb)
+	return &st, nil
+}
+
 type CreateMetastore struct {
 	// The user-specified name of the metastore.
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+	// Wire name: 'region'
 	Region string `json:"region,omitempty"`
 	// The storage root URL for metastore
-	StorageRoot string `json:"storage_root,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'storage_root'
+	StorageRoot     string   `json:"storage_root,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateMetastore) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateMetastore) MarshalJSON() ([]byte, error) {
+	pb, err := CreateMetastoreToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateMetastore) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateMetastore) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateMetastorePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateMetastoreFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateMetastoreToPb(st *CreateMetastore) (*catalogpb.CreateMetastorePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateMetastorePb{}
+	pb.Name = st.Name
+	pb.Region = st.Region
+	pb.StorageRoot = st.StorageRoot
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CreateMetastoreFromPb(pb *catalogpb.CreateMetastorePb) (*CreateMetastore, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateMetastore{}
+	st.Name = pb.Name
+	st.Region = pb.Region
+	st.StorageRoot = pb.StorageRoot
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CreateMetastoreAssignment struct {
 	// The name of the default catalog in the metastore. This field is
 	// deprecated. Please use "Default Namespace API" to configure the default
 	// catalog for a Databricks workspace.
+	// Wire name: 'default_catalog_name'
 	DefaultCatalogName string `json:"default_catalog_name"`
 	// The unique ID of the metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id"`
 	// A workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
+}
+
+func (st CreateMetastoreAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := CreateMetastoreAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateMetastoreAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateMetastoreAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateMetastoreAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateMetastoreAssignmentToPb(st *CreateMetastoreAssignment) (*catalogpb.CreateMetastoreAssignmentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateMetastoreAssignmentPb{}
+	pb.DefaultCatalogName = st.DefaultCatalogName
+	pb.MetastoreId = st.MetastoreId
+	pb.WorkspaceId = st.WorkspaceId
+
+	return pb, nil
+}
+
+func CreateMetastoreAssignmentFromPb(pb *catalogpb.CreateMetastoreAssignmentPb) (*CreateMetastoreAssignment, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateMetastoreAssignment{}
+	st.DefaultCatalogName = pb.DefaultCatalogName
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
+
+	return st, nil
 }
 
 type CreateMonitor struct {
 	// [Create:REQ Update:IGN] Field for specifying the absolute path to a
 	// custom directory to store data-monitoring assets. Normally prepopulated
 	// to a default user location via UI and Python APIs.
+	// Wire name: 'assets_dir'
 	AssetsDir string `json:"assets_dir"`
 	// [Create:OPT Update:OPT] Baseline table name. Baseline data is used to
 	// compute drift from the data in the monitored `table_name`. The baseline
 	// table and the monitored table shall have the same schema.
+	// Wire name: 'baseline_table_name'
 	BaselineTableName string `json:"baseline_table_name,omitempty"`
 	// [Create:OPT Update:OPT] Custom metrics.
+	// Wire name: 'custom_metrics'
 	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
 	// [Create:OPT Update:OPT] Data classification related config.
+	// Wire name: 'data_classification_config'
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
 
+	// Wire name: 'inference_log'
 	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
 	// [Create:ERR Update:IGN] The latest error message for a monitor failure.
+	// Wire name: 'latest_monitor_failure_msg'
 	LatestMonitorFailureMsg string `json:"latest_monitor_failure_msg,omitempty"`
 	// [Create:OPT Update:OPT] Field for specifying notification settings.
+	// Wire name: 'notifications'
 	Notifications *MonitorNotifications `json:"notifications,omitempty"`
 	// [Create:REQ Update:REQ] Schema where output tables are created. Needs to
 	// be in 2-level format {catalog}.{schema}
+	// Wire name: 'output_schema_name'
 	OutputSchemaName string `json:"output_schema_name"`
 	// [Create:OPT Update:OPT] The monitor schedule.
+	// Wire name: 'schedule'
 	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
 	// Whether to skip creating a default dashboard summarizing data quality
 	// metrics.
+	// Wire name: 'skip_builtin_dashboard'
 	SkipBuiltinDashboard bool `json:"skip_builtin_dashboard,omitempty"`
 	// [Create:OPT Update:OPT] List of column expressions to slice data with for
 	// targeted analysis. The data is grouped by each expression independently,
@@ -1334,237 +4327,1142 @@ type CreateMonitor struct {
 	// following slices: two slices for `col_2 > 10` (True and False), and one
 	// slice per unique value in `col1`. For high-cardinality columns, only the
 	// top 100 unique values by frequency will generate slices.
+	// Wire name: 'slicing_exprs'
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
+	// Wire name: 'snapshot'
 	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
 	// UC table name in format `catalog.schema.table_name`. This field
 	// corresponds to the {full_table_name_arg} arg in the endpoint path.
-	TableName string `json:"-" url:"-"`
+	TableName string `json:"-" tf:"-"`
 	// Configuration for monitoring time series tables.
+	// Wire name: 'time_series'
 	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
 	// Optional argument to specify the warehouse for dashboard creation. If not
 	// specified, the first running warehouse will be used.
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'warehouse_id'
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateMonitor) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateMonitor) MarshalJSON() ([]byte, error) {
+	pb, err := CreateMonitorToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateMonitor) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateMonitor) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateMonitorPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateMonitorFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateMonitorToPb(st *CreateMonitor) (*catalogpb.CreateMonitorPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateMonitorPb{}
+	pb.AssetsDir = st.AssetsDir
+	pb.BaselineTableName = st.BaselineTableName
+
+	var customMetricsPb []catalogpb.MonitorMetricPb
+	for _, item := range st.CustomMetrics {
+		itemPb, err := MonitorMetricToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			customMetricsPb = append(customMetricsPb, *itemPb)
+		}
+	}
+	pb.CustomMetrics = customMetricsPb
+	dataClassificationConfigPb, err := MonitorDataClassificationConfigToPb(st.DataClassificationConfig)
+	if err != nil {
+		return nil, err
+	}
+	if dataClassificationConfigPb != nil {
+		pb.DataClassificationConfig = dataClassificationConfigPb
+	}
+	inferenceLogPb, err := MonitorInferenceLogToPb(st.InferenceLog)
+	if err != nil {
+		return nil, err
+	}
+	if inferenceLogPb != nil {
+		pb.InferenceLog = inferenceLogPb
+	}
+	pb.LatestMonitorFailureMsg = st.LatestMonitorFailureMsg
+	notificationsPb, err := MonitorNotificationsToPb(st.Notifications)
+	if err != nil {
+		return nil, err
+	}
+	if notificationsPb != nil {
+		pb.Notifications = notificationsPb
+	}
+	pb.OutputSchemaName = st.OutputSchemaName
+	schedulePb, err := MonitorCronScheduleToPb(st.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if schedulePb != nil {
+		pb.Schedule = schedulePb
+	}
+	pb.SkipBuiltinDashboard = st.SkipBuiltinDashboard
+	pb.SlicingExprs = st.SlicingExprs
+	snapshotPb, err := MonitorSnapshotToPb(st.Snapshot)
+	if err != nil {
+		return nil, err
+	}
+	if snapshotPb != nil {
+		pb.Snapshot = snapshotPb
+	}
+	pb.TableName = st.TableName
+	timeSeriesPb, err := MonitorTimeSeriesToPb(st.TimeSeries)
+	if err != nil {
+		return nil, err
+	}
+	if timeSeriesPb != nil {
+		pb.TimeSeries = timeSeriesPb
+	}
+	pb.WarehouseId = st.WarehouseId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CreateMonitorFromPb(pb *catalogpb.CreateMonitorPb) (*CreateMonitor, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateMonitor{}
+	st.AssetsDir = pb.AssetsDir
+	st.BaselineTableName = pb.BaselineTableName
+
+	var customMetricsField []MonitorMetric
+	for _, itemPb := range pb.CustomMetrics {
+		item, err := MonitorMetricFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			customMetricsField = append(customMetricsField, *item)
+		}
+	}
+	st.CustomMetrics = customMetricsField
+	dataClassificationConfigField, err := MonitorDataClassificationConfigFromPb(pb.DataClassificationConfig)
+	if err != nil {
+		return nil, err
+	}
+	if dataClassificationConfigField != nil {
+		st.DataClassificationConfig = dataClassificationConfigField
+	}
+	inferenceLogField, err := MonitorInferenceLogFromPb(pb.InferenceLog)
+	if err != nil {
+		return nil, err
+	}
+	if inferenceLogField != nil {
+		st.InferenceLog = inferenceLogField
+	}
+	st.LatestMonitorFailureMsg = pb.LatestMonitorFailureMsg
+	notificationsField, err := MonitorNotificationsFromPb(pb.Notifications)
+	if err != nil {
+		return nil, err
+	}
+	if notificationsField != nil {
+		st.Notifications = notificationsField
+	}
+	st.OutputSchemaName = pb.OutputSchemaName
+	scheduleField, err := MonitorCronScheduleFromPb(pb.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if scheduleField != nil {
+		st.Schedule = scheduleField
+	}
+	st.SkipBuiltinDashboard = pb.SkipBuiltinDashboard
+	st.SlicingExprs = pb.SlicingExprs
+	snapshotField, err := MonitorSnapshotFromPb(pb.Snapshot)
+	if err != nil {
+		return nil, err
+	}
+	if snapshotField != nil {
+		st.Snapshot = snapshotField
+	}
+	st.TableName = pb.TableName
+	timeSeriesField, err := MonitorTimeSeriesFromPb(pb.TimeSeries)
+	if err != nil {
+		return nil, err
+	}
+	if timeSeriesField != nil {
+		st.TimeSeries = timeSeriesField
+	}
+	st.WarehouseId = pb.WarehouseId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CreateOnlineTableRequest struct {
 	// Specification of the online table to be created.
+	// Wire name: 'table'
 	Table OnlineTable `json:"table"`
+}
+
+func (st CreateOnlineTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateOnlineTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateOnlineTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateOnlineTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateOnlineTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateOnlineTableRequestToPb(st *CreateOnlineTableRequest) (*catalogpb.CreateOnlineTableRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateOnlineTableRequestPb{}
+	tablePb, err := OnlineTableToPb(&st.Table)
+	if err != nil {
+		return nil, err
+	}
+	if tablePb != nil {
+		pb.Table = *tablePb
+	}
+
+	return pb, nil
+}
+
+func CreateOnlineTableRequestFromPb(pb *catalogpb.CreateOnlineTableRequestPb) (*CreateOnlineTableRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateOnlineTableRequest{}
+	tableField, err := OnlineTableFromPb(&pb.Table)
+	if err != nil {
+		return nil, err
+	}
+	if tableField != nil {
+		st.Table = *tableField
+	}
+
+	return st, nil
 }
 
 type CreateRegisteredModelRequest struct {
 	// The name of the catalog where the schema and the registered model reside
+	// Wire name: 'catalog_name'
 	CatalogName string `json:"catalog_name"`
 	// The comment attached to the registered model
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The name of the registered model
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// The name of the schema where the registered model resides
+	// Wire name: 'schema_name'
 	SchemaName string `json:"schema_name"`
 	// The storage location on the cloud under which model version data files
 	// are stored
-	StorageLocation string `json:"storage_location,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'storage_location'
+	StorageLocation string   `json:"storage_location,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
+	pb, err := CreateRegisteredModelRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateRegisteredModelRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateRegisteredModelRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateRegisteredModelRequestToPb(st *CreateRegisteredModelRequest) (*catalogpb.CreateRegisteredModelRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateRegisteredModelRequestPb{}
+	pb.CatalogName = st.CatalogName
+	pb.Comment = st.Comment
+	pb.Name = st.Name
+	pb.SchemaName = st.SchemaName
+	pb.StorageLocation = st.StorageLocation
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CreateRegisteredModelRequestFromPb(pb *catalogpb.CreateRegisteredModelRequestPb) (*CreateRegisteredModelRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateRegisteredModelRequest{}
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.SchemaName = pb.SchemaName
+	st.StorageLocation = pb.StorageLocation
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CreateRequestExternalLineage struct {
 	// List of column relationships between source and target objects.
+	// Wire name: 'columns'
 	Columns []ColumnRelationship `json:"columns,omitempty"`
 	// Unique identifier of the external lineage relationship.
+	// Wire name: 'id'
 	Id string `json:"id,omitempty"`
 	// Key-value properties associated with the external lineage relationship.
+	// Wire name: 'properties'
 	Properties map[string]string `json:"properties,omitempty"`
 	// Source object of the external lineage relationship.
+	// Wire name: 'source'
 	Source ExternalLineageObject `json:"source"`
 	// Target object of the external lineage relationship.
-	Target ExternalLineageObject `json:"target"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'target'
+	Target          ExternalLineageObject `json:"target"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
-func (s *CreateRequestExternalLineage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateRequestExternalLineage) MarshalJSON() ([]byte, error) {
+	pb, err := CreateRequestExternalLineageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateRequestExternalLineage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateRequestExternalLineage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateRequestExternalLineagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateRequestExternalLineageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateRequestExternalLineageToPb(st *CreateRequestExternalLineage) (*catalogpb.CreateRequestExternalLineagePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateRequestExternalLineagePb{}
+
+	var columnsPb []catalogpb.ColumnRelationshipPb
+	for _, item := range st.Columns {
+		itemPb, err := ColumnRelationshipToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			columnsPb = append(columnsPb, *itemPb)
+		}
+	}
+	pb.Columns = columnsPb
+	pb.Id = st.Id
+	pb.Properties = st.Properties
+	sourcePb, err := ExternalLineageObjectToPb(&st.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourcePb != nil {
+		pb.Source = *sourcePb
+	}
+	targetPb, err := ExternalLineageObjectToPb(&st.Target)
+	if err != nil {
+		return nil, err
+	}
+	if targetPb != nil {
+		pb.Target = *targetPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CreateRequestExternalLineageFromPb(pb *catalogpb.CreateRequestExternalLineagePb) (*CreateRequestExternalLineage, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateRequestExternalLineage{}
+
+	var columnsField []ColumnRelationship
+	for _, itemPb := range pb.Columns {
+		item, err := ColumnRelationshipFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			columnsField = append(columnsField, *item)
+		}
+	}
+	st.Columns = columnsField
+	st.Id = pb.Id
+	st.Properties = pb.Properties
+	sourceField, err := ExternalLineageObjectFromPb(&pb.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourceField != nil {
+		st.Source = *sourceField
+	}
+	targetField, err := ExternalLineageObjectFromPb(&pb.Target)
+	if err != nil {
+		return nil, err
+	}
+	if targetField != nil {
+		st.Target = *targetField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CreateSchema struct {
 	// Name of parent catalog.
+	// Wire name: 'catalog_name'
 	CatalogName string `json:"catalog_name"`
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Name of schema, relative to parent catalog.
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string `json:"properties,omitempty"`
 	// Storage root URL for managed tables within schema.
-	StorageRoot string `json:"storage_root,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'storage_root'
+	StorageRoot     string   `json:"storage_root,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateSchema) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateSchema) MarshalJSON() ([]byte, error) {
+	pb, err := CreateSchemaToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateSchema) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateSchema) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateSchemaPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateSchemaFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateSchemaToPb(st *CreateSchema) (*catalogpb.CreateSchemaPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateSchemaPb{}
+	pb.CatalogName = st.CatalogName
+	pb.Comment = st.Comment
+	pb.Name = st.Name
+	pb.Properties = st.Properties
+	pb.StorageRoot = st.StorageRoot
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CreateSchemaFromPb(pb *catalogpb.CreateSchemaPb) (*CreateSchema, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateSchema{}
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.Properties = pb.Properties
+	st.StorageRoot = pb.StorageRoot
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CreateStorageCredential struct {
 	// The AWS IAM role configuration.
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentityRequest `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// The Cloudflare API token configuration.
+	// Wire name: 'cloudflare_api_token'
 	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The Databricks managed GCP service account configuration.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
+	// Wire name: 'read_only'
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Supplying true to this argument skips validation of the created
 	// credential.
-	SkipValidation bool `json:"skip_validation,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'skip_validation'
+	SkipValidation  bool     `json:"skip_validation,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateStorageCredential) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateStorageCredential) MarshalJSON() ([]byte, error) {
+	pb, err := CreateStorageCredentialToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateStorageCredential) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateStorageCredential) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateStorageCredentialPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateStorageCredentialFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateStorageCredentialToPb(st *CreateStorageCredential) (*catalogpb.CreateStorageCredentialPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateStorageCredentialPb{}
+	awsIamRolePb, err := AwsIamRoleRequestToPb(st.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRolePb != nil {
+		pb.AwsIamRole = awsIamRolePb
+	}
+	azureManagedIdentityPb, err := AzureManagedIdentityRequestToPb(st.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityPb != nil {
+		pb.AzureManagedIdentity = azureManagedIdentityPb
+	}
+	azureServicePrincipalPb, err := AzureServicePrincipalToPb(st.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalPb != nil {
+		pb.AzureServicePrincipal = azureServicePrincipalPb
+	}
+	cloudflareApiTokenPb, err := CloudflareApiTokenToPb(st.CloudflareApiToken)
+	if err != nil {
+		return nil, err
+	}
+	if cloudflareApiTokenPb != nil {
+		pb.CloudflareApiToken = cloudflareApiTokenPb
+	}
+	pb.Comment = st.Comment
+	databricksGcpServiceAccountPb, err := DatabricksGcpServiceAccountRequestToPb(st.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountPb != nil {
+		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
+	}
+	pb.Name = st.Name
+	pb.ReadOnly = st.ReadOnly
+	pb.SkipValidation = st.SkipValidation
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CreateStorageCredentialFromPb(pb *catalogpb.CreateStorageCredentialPb) (*CreateStorageCredential, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateStorageCredential{}
+	awsIamRoleField, err := AwsIamRoleRequestFromPb(pb.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRoleField != nil {
+		st.AwsIamRole = awsIamRoleField
+	}
+	azureManagedIdentityField, err := AzureManagedIdentityRequestFromPb(pb.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityField != nil {
+		st.AzureManagedIdentity = azureManagedIdentityField
+	}
+	azureServicePrincipalField, err := AzureServicePrincipalFromPb(pb.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalField != nil {
+		st.AzureServicePrincipal = azureServicePrincipalField
+	}
+	cloudflareApiTokenField, err := CloudflareApiTokenFromPb(pb.CloudflareApiToken)
+	if err != nil {
+		return nil, err
+	}
+	if cloudflareApiTokenField != nil {
+		st.CloudflareApiToken = cloudflareApiTokenField
+	}
+	st.Comment = pb.Comment
+	databricksGcpServiceAccountField, err := DatabricksGcpServiceAccountRequestFromPb(pb.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountField != nil {
+		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
+	}
+	st.Name = pb.Name
+	st.ReadOnly = pb.ReadOnly
+	st.SkipValidation = pb.SkipValidation
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CreateTableConstraint struct {
+
+	// Wire name: 'constraint'
 	Constraint TableConstraint `json:"constraint"`
 	// The full name of the table referenced by the constraint.
+	// Wire name: 'full_name_arg'
 	FullNameArg string `json:"full_name_arg"`
+}
+
+func (st CreateTableConstraint) MarshalJSON() ([]byte, error) {
+	pb, err := CreateTableConstraintToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *CreateTableConstraint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateTableConstraintPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateTableConstraintFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateTableConstraintToPb(st *CreateTableConstraint) (*catalogpb.CreateTableConstraintPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateTableConstraintPb{}
+	constraintPb, err := TableConstraintToPb(&st.Constraint)
+	if err != nil {
+		return nil, err
+	}
+	if constraintPb != nil {
+		pb.Constraint = *constraintPb
+	}
+	pb.FullNameArg = st.FullNameArg
+
+	return pb, nil
+}
+
+func CreateTableConstraintFromPb(pb *catalogpb.CreateTableConstraintPb) (*CreateTableConstraint, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateTableConstraint{}
+	constraintField, err := TableConstraintFromPb(&pb.Constraint)
+	if err != nil {
+		return nil, err
+	}
+	if constraintField != nil {
+		st.Constraint = *constraintField
+	}
+	st.FullNameArg = pb.FullNameArg
+
+	return st, nil
 }
 
 type CreateVolumeRequestContent struct {
 	// The name of the catalog where the schema and the volume are
+	// Wire name: 'catalog_name'
 	CatalogName string `json:"catalog_name"`
 	// The comment attached to the volume
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The name of the volume
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// The name of the schema where the volume is
+	// Wire name: 'schema_name'
 	SchemaName string `json:"schema_name"`
 	// The storage location on the cloud
+	// Wire name: 'storage_location'
 	StorageLocation string `json:"storage_location,omitempty"`
 
-	VolumeType VolumeType `json:"volume_type"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'volume_type'
+	VolumeType      VolumeType `json:"volume_type"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
-func (s *CreateVolumeRequestContent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CreateVolumeRequestContent) MarshalJSON() ([]byte, error) {
+	pb, err := CreateVolumeRequestContentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CreateVolumeRequestContent) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CreateVolumeRequestContent) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CreateVolumeRequestContentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CreateVolumeRequestContentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CreateVolumeRequestContentToPb(st *CreateVolumeRequestContent) (*catalogpb.CreateVolumeRequestContentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CreateVolumeRequestContentPb{}
+	pb.CatalogName = st.CatalogName
+	pb.Comment = st.Comment
+	pb.Name = st.Name
+	pb.SchemaName = st.SchemaName
+	pb.StorageLocation = st.StorageLocation
+	volumeTypePb, err := VolumeTypeToPb(&st.VolumeType)
+	if err != nil {
+		return nil, err
+	}
+	if volumeTypePb != nil {
+		pb.VolumeType = *volumeTypePb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CreateVolumeRequestContentFromPb(pb *catalogpb.CreateVolumeRequestContentPb) (*CreateVolumeRequestContent, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateVolumeRequestContent{}
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.SchemaName = pb.SchemaName
+	st.StorageLocation = pb.StorageLocation
+	volumeTypeField, err := VolumeTypeFromPb(&pb.VolumeType)
+	if err != nil {
+		return nil, err
+	}
+	if volumeTypeField != nil {
+		st.VolumeType = *volumeTypeField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // A credential that is dependent on a SQL object.
 type CredentialDependency struct {
 	// Full name of the dependent credential, in the form of
 	// __credential_name__.
-	CredentialName string `json:"credential_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'credential_name'
+	CredentialName  string   `json:"credential_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CredentialDependency) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CredentialDependency) MarshalJSON() ([]byte, error) {
+	pb, err := CredentialDependencyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CredentialDependency) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CredentialDependency) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CredentialDependencyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CredentialDependencyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CredentialDependencyToPb(st *CredentialDependency) (*catalogpb.CredentialDependencyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CredentialDependencyPb{}
+	pb.CredentialName = st.CredentialName
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CredentialDependencyFromPb(pb *catalogpb.CredentialDependencyPb) (*CredentialDependency, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CredentialDependency{}
+	st.CredentialName = pb.CredentialName
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CredentialInfo struct {
 	// The AWS IAM role configuration.
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Time at which this credential was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of credential creator.
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 	// The Databricks managed GCP service account configuration.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
 	// The full name of the credential.
+	// Wire name: 'full_name'
 	FullName string `json:"full_name,omitempty"`
 	// The unique identifier of the credential.
+	// Wire name: 'id'
 	Id string `json:"id,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
+	// Wire name: 'isolation_mode'
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of the parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// Username of current owner of credential.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// Indicates the purpose of the credential.
+	// Wire name: 'purpose'
 	Purpose CredentialPurpose `json:"purpose,omitempty"`
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
+	// Wire name: 'read_only'
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Time at which this credential was last modified, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the credential.
+	// Wire name: 'updated_by'
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// Whether this credential is the current metastore's root storage
 	// credential. Only applicable when purpose is **STORAGE**.
-	UsedForManagedStorage bool `json:"used_for_managed_storage,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'used_for_managed_storage'
+	UsedForManagedStorage bool     `json:"used_for_managed_storage,omitempty"`
+	ForceSendFields       []string `json:"-" tf:"-"`
 }
 
-func (s *CredentialInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CredentialInfo) MarshalJSON() ([]byte, error) {
+	pb, err := CredentialInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CredentialInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CredentialInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CredentialInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CredentialInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CredentialInfoToPb(st *CredentialInfo) (*catalogpb.CredentialInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CredentialInfoPb{}
+	awsIamRolePb, err := AwsIamRoleToPb(st.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRolePb != nil {
+		pb.AwsIamRole = awsIamRolePb
+	}
+	azureManagedIdentityPb, err := AzureManagedIdentityToPb(st.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityPb != nil {
+		pb.AzureManagedIdentity = azureManagedIdentityPb
+	}
+	azureServicePrincipalPb, err := AzureServicePrincipalToPb(st.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalPb != nil {
+		pb.AzureServicePrincipal = azureServicePrincipalPb
+	}
+	pb.Comment = st.Comment
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	databricksGcpServiceAccountPb, err := DatabricksGcpServiceAccountToPb(st.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountPb != nil {
+		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
+	}
+	pb.FullName = st.FullName
+	pb.Id = st.Id
+	isolationModePb, err := IsolationModeToPb(&st.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModePb != nil {
+		pb.IsolationMode = *isolationModePb
+	}
+	pb.MetastoreId = st.MetastoreId
+	pb.Name = st.Name
+	pb.Owner = st.Owner
+	purposePb, err := CredentialPurposeToPb(&st.Purpose)
+	if err != nil {
+		return nil, err
+	}
+	if purposePb != nil {
+		pb.Purpose = *purposePb
+	}
+	pb.ReadOnly = st.ReadOnly
+	pb.UpdatedAt = st.UpdatedAt
+	pb.UpdatedBy = st.UpdatedBy
+	pb.UsedForManagedStorage = st.UsedForManagedStorage
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CredentialInfoFromPb(pb *catalogpb.CredentialInfoPb) (*CredentialInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CredentialInfo{}
+	awsIamRoleField, err := AwsIamRoleFromPb(pb.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRoleField != nil {
+		st.AwsIamRole = awsIamRoleField
+	}
+	azureManagedIdentityField, err := AzureManagedIdentityFromPb(pb.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityField != nil {
+		st.AzureManagedIdentity = azureManagedIdentityField
+	}
+	azureServicePrincipalField, err := AzureServicePrincipalFromPb(pb.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalField != nil {
+		st.AzureServicePrincipal = azureServicePrincipalField
+	}
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	databricksGcpServiceAccountField, err := DatabricksGcpServiceAccountFromPb(pb.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountField != nil {
+		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
+	}
+	st.FullName = pb.FullName
+	st.Id = pb.Id
+	isolationModeField, err := IsolationModeFromPb(&pb.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModeField != nil {
+		st.IsolationMode = *isolationModeField
+	}
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	purposeField, err := CredentialPurposeFromPb(&pb.Purpose)
+	if err != nil {
+		return nil, err
+	}
+	if purposeField != nil {
+		st.Purpose = *purposeField
+	}
+	st.ReadOnly = pb.ReadOnly
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.UsedForManagedStorage = pb.UsedForManagedStorage
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type CredentialPurpose string
@@ -1602,6 +5500,22 @@ func (f *CredentialPurpose) Values() []CredentialPurpose {
 // Type always returns CredentialPurpose to satisfy [pflag.Value] interface
 func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
+}
+
+func CredentialPurposeToPb(st *CredentialPurpose) (*catalogpb.CredentialPurposePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.CredentialPurposePb(*st)
+	return &pb, nil
+}
+
+func CredentialPurposeFromPb(pb *catalogpb.CredentialPurposePb) (*CredentialPurpose, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CredentialPurpose(*pb)
+	return &st, nil
 }
 
 // Next Id: 13
@@ -1675,21 +5589,95 @@ func (f *CredentialType) Type() string {
 	return "CredentialType"
 }
 
+func CredentialTypeToPb(st *CredentialType) (*catalogpb.CredentialTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.CredentialTypePb(*st)
+	return &pb, nil
+}
+
+func CredentialTypeFromPb(pb *catalogpb.CredentialTypePb) (*CredentialType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CredentialType(*pb)
+	return &st, nil
+}
+
 type CredentialValidationResult struct {
 	// Error message would exist when the result does not equal to **PASS**.
+	// Wire name: 'message'
 	Message string `json:"message,omitempty"`
 	// The results of the tested operation.
-	Result ValidateCredentialResult `json:"result,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'result'
+	Result          ValidateCredentialResult `json:"result,omitempty"`
+	ForceSendFields []string                 `json:"-" tf:"-"`
 }
 
-func (s *CredentialValidationResult) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st CredentialValidationResult) MarshalJSON() ([]byte, error) {
+	pb, err := CredentialValidationResultToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s CredentialValidationResult) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *CredentialValidationResult) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.CredentialValidationResultPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := CredentialValidationResultFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func CredentialValidationResultToPb(st *CredentialValidationResult) (*catalogpb.CredentialValidationResultPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.CredentialValidationResultPb{}
+	pb.Message = st.Message
+	resultPb, err := ValidateCredentialResultToPb(&st.Result)
+	if err != nil {
+		return nil, err
+	}
+	if resultPb != nil {
+		pb.Result = *resultPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func CredentialValidationResultFromPb(pb *catalogpb.CredentialValidationResultPb) (*CredentialValidationResult, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CredentialValidationResult{}
+	st.Message = pb.Message
+	resultField, err := ValidateCredentialResultFromPb(&pb.Result)
+	if err != nil {
+		return nil, err
+	}
+	if resultField != nil {
+		st.Result = *resultField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Data source format
@@ -1814,25 +5802,90 @@ func (f *DataSourceFormat) Type() string {
 	return "DataSourceFormat"
 }
 
+func DataSourceFormatToPb(st *DataSourceFormat) (*catalogpb.DataSourceFormatPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.DataSourceFormatPb(*st)
+	return &pb, nil
+}
+
+func DataSourceFormatFromPb(pb *catalogpb.DataSourceFormatPb) (*DataSourceFormat, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := DataSourceFormat(*pb)
+	return &st, nil
+}
+
 // GCP long-lived credential. Databricks-created Google Cloud Storage service
 // account.
 type DatabricksGcpServiceAccount struct {
 	// The Databricks internal ID that represents this managed identity.
+	// Wire name: 'credential_id'
 	CredentialId string `json:"credential_id,omitempty"`
 	// The email of the service account.
+	// Wire name: 'email'
 	Email string `json:"email,omitempty"`
 	// The ID that represents the private key for this Service Account
-	PrivateKeyId string `json:"private_key_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'private_key_id'
+	PrivateKeyId    string   `json:"private_key_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DatabricksGcpServiceAccount) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DatabricksGcpServiceAccount) MarshalJSON() ([]byte, error) {
+	pb, err := DatabricksGcpServiceAccountToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DatabricksGcpServiceAccount) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DatabricksGcpServiceAccount) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DatabricksGcpServiceAccountPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DatabricksGcpServiceAccountFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DatabricksGcpServiceAccountToPb(st *DatabricksGcpServiceAccount) (*catalogpb.DatabricksGcpServiceAccountPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DatabricksGcpServiceAccountPb{}
+	pb.CredentialId = st.CredentialId
+	pb.Email = st.Email
+	pb.PrivateKeyId = st.PrivateKeyId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func DatabricksGcpServiceAccountFromPb(pb *catalogpb.DatabricksGcpServiceAccountPb) (*DatabricksGcpServiceAccount, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DatabricksGcpServiceAccount{}
+	st.CredentialId = pb.CredentialId
+	st.Email = pb.Email
+	st.PrivateKeyId = pb.PrivateKeyId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // GCP long-lived credential. Databricks-created Google Cloud Storage service
@@ -1840,277 +5893,1442 @@ func (s DatabricksGcpServiceAccount) MarshalJSON() ([]byte, error) {
 type DatabricksGcpServiceAccountRequest struct {
 }
 
+func (st DatabricksGcpServiceAccountRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DatabricksGcpServiceAccountRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DatabricksGcpServiceAccountRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DatabricksGcpServiceAccountRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DatabricksGcpServiceAccountRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DatabricksGcpServiceAccountRequestToPb(st *DatabricksGcpServiceAccountRequest) (*catalogpb.DatabricksGcpServiceAccountRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DatabricksGcpServiceAccountRequestPb{}
+
+	return pb, nil
+}
+
+func DatabricksGcpServiceAccountRequestFromPb(pb *catalogpb.DatabricksGcpServiceAccountRequestPb) (*DatabricksGcpServiceAccountRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DatabricksGcpServiceAccountRequest{}
+
+	return st, nil
+}
+
 // GCP long-lived credential. Databricks-created Google Cloud Storage service
 // account.
 type DatabricksGcpServiceAccountResponse struct {
 	// The Databricks internal ID that represents this managed identity.
+	// Wire name: 'credential_id'
 	CredentialId string `json:"credential_id,omitempty"`
 	// The email of the service account.
-	Email string `json:"email,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'email'
+	Email           string   `json:"email,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DatabricksGcpServiceAccountResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DatabricksGcpServiceAccountResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DatabricksGcpServiceAccountResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DatabricksGcpServiceAccountResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DatabricksGcpServiceAccountResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DatabricksGcpServiceAccountResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DatabricksGcpServiceAccountResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DatabricksGcpServiceAccountResponseToPb(st *DatabricksGcpServiceAccountResponse) (*catalogpb.DatabricksGcpServiceAccountResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DatabricksGcpServiceAccountResponsePb{}
+	pb.CredentialId = st.CredentialId
+	pb.Email = st.Email
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func DatabricksGcpServiceAccountResponseFromPb(pb *catalogpb.DatabricksGcpServiceAccountResponsePb) (*DatabricksGcpServiceAccountResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DatabricksGcpServiceAccountResponse{}
+	st.CredentialId = pb.CredentialId
+	st.Email = pb.Email
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type DeleteAccountMetastoreAssignmentRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
+}
+
+func (st DeleteAccountMetastoreAssignmentRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAccountMetastoreAssignmentRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteAccountMetastoreAssignmentRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteAccountMetastoreAssignmentRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAccountMetastoreAssignmentRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteAccountMetastoreAssignmentRequestToPb(st *DeleteAccountMetastoreAssignmentRequest) (*catalogpb.DeleteAccountMetastoreAssignmentRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteAccountMetastoreAssignmentRequestPb{}
+	pb.MetastoreId = st.MetastoreId
+	pb.WorkspaceId = st.WorkspaceId
+
+	return pb, nil
+}
+
+func DeleteAccountMetastoreAssignmentRequestFromPb(pb *catalogpb.DeleteAccountMetastoreAssignmentRequestPb) (*DeleteAccountMetastoreAssignmentRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteAccountMetastoreAssignmentRequest{}
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
+
+	return st, nil
 }
 
 type DeleteAccountMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
-	Force bool `json:"-" url:"force,omitempty"`
+	Force bool `json:"-" tf:"-"`
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	MetastoreId     string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteAccountMetastoreRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteAccountMetastoreRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAccountMetastoreRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteAccountMetastoreRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteAccountMetastoreRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteAccountMetastoreRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAccountMetastoreRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteAccountMetastoreRequestToPb(st *DeleteAccountMetastoreRequest) (*catalogpb.DeleteAccountMetastoreRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteAccountMetastoreRequestPb{}
+	pb.Force = st.Force
+	pb.MetastoreId = st.MetastoreId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func DeleteAccountMetastoreRequestFromPb(pb *catalogpb.DeleteAccountMetastoreRequestPb) (*DeleteAccountMetastoreRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteAccountMetastoreRequest{}
+	st.Force = pb.Force
+	st.MetastoreId = pb.MetastoreId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type DeleteAccountStorageCredentialRequest struct {
 	// Force deletion even if the Storage Credential is not empty. Default is
 	// false.
-	Force bool `json:"-" url:"force,omitempty"`
+	Force bool `json:"-" tf:"-"`
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Name of the storage credential.
-	StorageCredentialName string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	StorageCredentialName string   `json:"-" tf:"-"`
+	ForceSendFields       []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteAccountStorageCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteAccountStorageCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAccountStorageCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteAccountStorageCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteAccountStorageCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteAccountStorageCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAccountStorageCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteAccountStorageCredentialRequestToPb(st *DeleteAccountStorageCredentialRequest) (*catalogpb.DeleteAccountStorageCredentialRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteAccountStorageCredentialRequestPb{}
+	pb.Force = st.Force
+	pb.MetastoreId = st.MetastoreId
+	pb.StorageCredentialName = st.StorageCredentialName
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func DeleteAccountStorageCredentialRequestFromPb(pb *catalogpb.DeleteAccountStorageCredentialRequestPb) (*DeleteAccountStorageCredentialRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteAccountStorageCredentialRequest{}
+	st.Force = pb.Force
+	st.MetastoreId = pb.MetastoreId
+	st.StorageCredentialName = pb.StorageCredentialName
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type DeleteAliasRequest struct {
 	// The name of the alias
-	Alias string `json:"-" url:"-"`
+	Alias string `json:"-" tf:"-"`
 	// The three-level (fully qualified) name of the registered model
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
+}
+
+func (st DeleteAliasRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteAliasRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteAliasRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteAliasRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteAliasRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteAliasRequestToPb(st *DeleteAliasRequest) (*catalogpb.DeleteAliasRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteAliasRequestPb{}
+	pb.Alias = st.Alias
+	pb.FullName = st.FullName
+
+	return pb, nil
+}
+
+func DeleteAliasRequestFromPb(pb *catalogpb.DeleteAliasRequestPb) (*DeleteAliasRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteAliasRequest{}
+	st.Alias = pb.Alias
+	st.FullName = pb.FullName
+
+	return st, nil
 }
 
 type DeleteCatalogRequest struct {
 	// Force deletion even if the catalog is not empty.
-	Force bool `json:"-" url:"force,omitempty"`
+	Force bool `json:"-" tf:"-"`
 	// The name of the catalog.
-	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteCatalogRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteCatalogRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteCatalogRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteCatalogRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteCatalogRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteCatalogRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteCatalogRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteCatalogRequestToPb(st *DeleteCatalogRequest) (*catalogpb.DeleteCatalogRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteCatalogRequestPb{}
+	pb.Force = st.Force
+	pb.Name = st.Name
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func DeleteCatalogRequestFromPb(pb *catalogpb.DeleteCatalogRequestPb) (*DeleteCatalogRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteCatalogRequest{}
+	st.Force = pb.Force
+	st.Name = pb.Name
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type DeleteConnectionRequest struct {
 	// The name of the connection to be deleted.
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
+}
+
+func (st DeleteConnectionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteConnectionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteConnectionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteConnectionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteConnectionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteConnectionRequestToPb(st *DeleteConnectionRequest) (*catalogpb.DeleteConnectionRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteConnectionRequestPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func DeleteConnectionRequestFromPb(pb *catalogpb.DeleteConnectionRequestPb) (*DeleteConnectionRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteConnectionRequest{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 type DeleteCredentialRequest struct {
 	// Force an update even if there are dependent services (when purpose is
 	// **SERVICE**) or dependent external locations and external tables (when
 	// purpose is **STORAGE**).
-	Force bool `json:"-" url:"force,omitempty"`
+	Force bool `json:"-" tf:"-"`
 	// Name of the credential.
-	NameArg string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	NameArg         string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteCredentialRequestToPb(st *DeleteCredentialRequest) (*catalogpb.DeleteCredentialRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteCredentialRequestPb{}
+	pb.Force = st.Force
+	pb.NameArg = st.NameArg
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func DeleteCredentialRequestFromPb(pb *catalogpb.DeleteCredentialRequestPb) (*DeleteCredentialRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteCredentialRequest{}
+	st.Force = pb.Force
+	st.NameArg = pb.NameArg
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type DeleteExternalLineageRelationshipRequest struct {
-	ExternalLineageRelationship DeleteRequestExternalLineage `json:"-" url:"external_lineage_relationship"`
+	ExternalLineageRelationship DeleteRequestExternalLineage `json:"-" tf:"-"`
+}
+
+func (st DeleteExternalLineageRelationshipRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteExternalLineageRelationshipRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteExternalLineageRelationshipRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteExternalLineageRelationshipRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteExternalLineageRelationshipRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteExternalLineageRelationshipRequestToPb(st *DeleteExternalLineageRelationshipRequest) (*catalogpb.DeleteExternalLineageRelationshipRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteExternalLineageRelationshipRequestPb{}
+	externalLineageRelationshipPb, err := DeleteRequestExternalLineageToPb(&st.ExternalLineageRelationship)
+	if err != nil {
+		return nil, err
+	}
+	if externalLineageRelationshipPb != nil {
+		pb.ExternalLineageRelationship = *externalLineageRelationshipPb
+	}
+
+	return pb, nil
+}
+
+func DeleteExternalLineageRelationshipRequestFromPb(pb *catalogpb.DeleteExternalLineageRelationshipRequestPb) (*DeleteExternalLineageRelationshipRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteExternalLineageRelationshipRequest{}
+	externalLineageRelationshipField, err := DeleteRequestExternalLineageFromPb(&pb.ExternalLineageRelationship)
+	if err != nil {
+		return nil, err
+	}
+	if externalLineageRelationshipField != nil {
+		st.ExternalLineageRelationship = *externalLineageRelationshipField
+	}
+
+	return st, nil
 }
 
 type DeleteExternalLocationRequest struct {
 	// Force deletion even if there are dependent external tables or mounts.
-	Force bool `json:"-" url:"force,omitempty"`
+	Force bool `json:"-" tf:"-"`
 	// Name of the external location.
-	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteExternalLocationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteExternalLocationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteExternalLocationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteExternalLocationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteExternalLocationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteExternalLocationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteExternalLocationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteExternalLocationRequestToPb(st *DeleteExternalLocationRequest) (*catalogpb.DeleteExternalLocationRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteExternalLocationRequestPb{}
+	pb.Force = st.Force
+	pb.Name = st.Name
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func DeleteExternalLocationRequestFromPb(pb *catalogpb.DeleteExternalLocationRequestPb) (*DeleteExternalLocationRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteExternalLocationRequest{}
+	st.Force = pb.Force
+	st.Name = pb.Name
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type DeleteExternalMetadataRequest struct {
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
+}
+
+func (st DeleteExternalMetadataRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteExternalMetadataRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteExternalMetadataRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteExternalMetadataRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteExternalMetadataRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteExternalMetadataRequestToPb(st *DeleteExternalMetadataRequest) (*catalogpb.DeleteExternalMetadataRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteExternalMetadataRequestPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func DeleteExternalMetadataRequestFromPb(pb *catalogpb.DeleteExternalMetadataRequestPb) (*DeleteExternalMetadataRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteExternalMetadataRequest{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 type DeleteFunctionRequest struct {
 	// Force deletion even if the function is notempty.
-	Force bool `json:"-" url:"force,omitempty"`
+	Force bool `json:"-" tf:"-"`
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
-	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteFunctionRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteFunctionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteFunctionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteFunctionRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteFunctionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteFunctionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteFunctionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteFunctionRequestToPb(st *DeleteFunctionRequest) (*catalogpb.DeleteFunctionRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteFunctionRequestPb{}
+	pb.Force = st.Force
+	pb.Name = st.Name
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func DeleteFunctionRequestFromPb(pb *catalogpb.DeleteFunctionRequestPb) (*DeleteFunctionRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteFunctionRequest{}
+	st.Force = pb.Force
+	st.Name = pb.Name
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type DeleteMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
-	Force bool `json:"-" url:"force,omitempty"`
+	Force bool `json:"-" tf:"-"`
 	// Unique ID of the metastore.
-	Id string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	Id              string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteMetastoreRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteMetastoreRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteMetastoreRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteMetastoreRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteMetastoreRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteMetastoreRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteMetastoreRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteMetastoreRequestToPb(st *DeleteMetastoreRequest) (*catalogpb.DeleteMetastoreRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteMetastoreRequestPb{}
+	pb.Force = st.Force
+	pb.Id = st.Id
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func DeleteMetastoreRequestFromPb(pb *catalogpb.DeleteMetastoreRequestPb) (*DeleteMetastoreRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteMetastoreRequest{}
+	st.Force = pb.Force
+	st.Id = pb.Id
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type DeleteModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// The integer version number of the model version
-	Version int `json:"-" url:"-"`
+	Version int `json:"-" tf:"-"`
+}
+
+func (st DeleteModelVersionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteModelVersionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteModelVersionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteModelVersionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteModelVersionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteModelVersionRequestToPb(st *DeleteModelVersionRequest) (*catalogpb.DeleteModelVersionRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteModelVersionRequestPb{}
+	pb.FullName = st.FullName
+	pb.Version = st.Version
+
+	return pb, nil
+}
+
+func DeleteModelVersionRequestFromPb(pb *catalogpb.DeleteModelVersionRequestPb) (*DeleteModelVersionRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteModelVersionRequest{}
+	st.FullName = pb.FullName
+	st.Version = pb.Version
+
+	return st, nil
 }
 
 type DeleteMonitorResponse struct {
 }
 
+func (st DeleteMonitorResponse) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteMonitorResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteMonitorResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteMonitorResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteMonitorResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteMonitorResponseToPb(st *DeleteMonitorResponse) (*catalogpb.DeleteMonitorResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteMonitorResponsePb{}
+
+	return pb, nil
+}
+
+func DeleteMonitorResponseFromPb(pb *catalogpb.DeleteMonitorResponsePb) (*DeleteMonitorResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteMonitorResponse{}
+
+	return st, nil
+}
+
 type DeleteOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
+}
+
+func (st DeleteOnlineTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteOnlineTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteOnlineTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteOnlineTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteOnlineTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteOnlineTableRequestToPb(st *DeleteOnlineTableRequest) (*catalogpb.DeleteOnlineTableRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteOnlineTableRequestPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func DeleteOnlineTableRequestFromPb(pb *catalogpb.DeleteOnlineTableRequestPb) (*DeleteOnlineTableRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteOnlineTableRequest{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 type DeleteQualityMonitorRequest struct {
 	// UC table name in format `catalog.schema.table_name`. This field
 	// corresponds to the {full_table_name_arg} arg in the endpoint path.
-	TableName string `json:"-" url:"-"`
+	TableName string `json:"-" tf:"-"`
+}
+
+func (st DeleteQualityMonitorRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteQualityMonitorRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteQualityMonitorRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteQualityMonitorRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteQualityMonitorRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteQualityMonitorRequestToPb(st *DeleteQualityMonitorRequest) (*catalogpb.DeleteQualityMonitorRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteQualityMonitorRequestPb{}
+	pb.TableName = st.TableName
+
+	return pb, nil
+}
+
+func DeleteQualityMonitorRequestFromPb(pb *catalogpb.DeleteQualityMonitorRequestPb) (*DeleteQualityMonitorRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteQualityMonitorRequest{}
+	st.TableName = pb.TableName
+
+	return st, nil
 }
 
 type DeleteRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
+}
+
+func (st DeleteRegisteredModelRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteRegisteredModelRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteRegisteredModelRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteRegisteredModelRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteRegisteredModelRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteRegisteredModelRequestToPb(st *DeleteRegisteredModelRequest) (*catalogpb.DeleteRegisteredModelRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteRegisteredModelRequestPb{}
+	pb.FullName = st.FullName
+
+	return pb, nil
+}
+
+func DeleteRegisteredModelRequestFromPb(pb *catalogpb.DeleteRegisteredModelRequestPb) (*DeleteRegisteredModelRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteRegisteredModelRequest{}
+	st.FullName = pb.FullName
+
+	return st, nil
 }
 
 type DeleteRequestExternalLineage struct {
 	// Unique identifier of the external lineage relationship.
-	Id string `json:"id,omitempty" url:"id,omitempty"`
+	// Wire name: 'id'
+	Id string `json:"id,omitempty"`
 	// Source object of the external lineage relationship.
-	Source ExternalLineageObject `json:"source" url:"source"`
+	// Wire name: 'source'
+	Source ExternalLineageObject `json:"source"`
 	// Target object of the external lineage relationship.
-	Target ExternalLineageObject `json:"target" url:"target"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'target'
+	Target          ExternalLineageObject `json:"target"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
-func (s *DeleteRequestExternalLineage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteRequestExternalLineage) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteRequestExternalLineageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteRequestExternalLineage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteRequestExternalLineage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteRequestExternalLineagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteRequestExternalLineageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteRequestExternalLineageToPb(st *DeleteRequestExternalLineage) (*catalogpb.DeleteRequestExternalLineagePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteRequestExternalLineagePb{}
+	pb.Id = st.Id
+	sourcePb, err := ExternalLineageObjectToPb(&st.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourcePb != nil {
+		pb.Source = *sourcePb
+	}
+	targetPb, err := ExternalLineageObjectToPb(&st.Target)
+	if err != nil {
+		return nil, err
+	}
+	if targetPb != nil {
+		pb.Target = *targetPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func DeleteRequestExternalLineageFromPb(pb *catalogpb.DeleteRequestExternalLineagePb) (*DeleteRequestExternalLineage, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteRequestExternalLineage{}
+	st.Id = pb.Id
+	sourceField, err := ExternalLineageObjectFromPb(&pb.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourceField != nil {
+		st.Source = *sourceField
+	}
+	targetField, err := ExternalLineageObjectFromPb(&pb.Target)
+	if err != nil {
+		return nil, err
+	}
+	if targetField != nil {
+		st.Target = *targetField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type DeleteSchemaRequest struct {
 	// Force deletion even if the schema is not empty.
-	Force bool `json:"-" url:"force,omitempty"`
+	Force bool `json:"-" tf:"-"`
 	// Full name of the schema.
-	FullName string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	FullName        string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteSchemaRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteSchemaRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteSchemaRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteSchemaRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteSchemaRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteSchemaRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteSchemaRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteSchemaRequestToPb(st *DeleteSchemaRequest) (*catalogpb.DeleteSchemaRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteSchemaRequestPb{}
+	pb.Force = st.Force
+	pb.FullName = st.FullName
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func DeleteSchemaRequestFromPb(pb *catalogpb.DeleteSchemaRequestPb) (*DeleteSchemaRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteSchemaRequest{}
+	st.Force = pb.Force
+	st.FullName = pb.FullName
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type DeleteStorageCredentialRequest struct {
 	// Force an update even if there are dependent external locations or
 	// external tables (when purpose is **STORAGE**) or dependent services (when
 	// purpose is **SERVICE**).
-	Force bool `json:"-" url:"force,omitempty"`
+	Force bool `json:"-" tf:"-"`
 	// Name of the storage credential.
-	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteStorageCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st DeleteStorageCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteStorageCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s DeleteStorageCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *DeleteStorageCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteStorageCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteStorageCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteStorageCredentialRequestToPb(st *DeleteStorageCredentialRequest) (*catalogpb.DeleteStorageCredentialRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteStorageCredentialRequestPb{}
+	pb.Force = st.Force
+	pb.Name = st.Name
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func DeleteStorageCredentialRequestFromPb(pb *catalogpb.DeleteStorageCredentialRequestPb) (*DeleteStorageCredentialRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteStorageCredentialRequest{}
+	st.Force = pb.Force
+	st.Name = pb.Name
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type DeleteTableConstraintRequest struct {
 	// If true, try deleting all child constraints of the current constraint. If
 	// false, reject this operation if the current constraint has any child
 	// constraints.
-	Cascade bool `json:"-" url:"cascade"`
+	Cascade bool `json:"-" tf:"-"`
 	// The name of the constraint to delete.
-	ConstraintName string `json:"-" url:"constraint_name"`
+	ConstraintName string `json:"-" tf:"-"`
 	// Full name of the table referenced by the constraint.
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
+}
+
+func (st DeleteTableConstraintRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteTableConstraintRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteTableConstraintRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteTableConstraintRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteTableConstraintRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteTableConstraintRequestToPb(st *DeleteTableConstraintRequest) (*catalogpb.DeleteTableConstraintRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteTableConstraintRequestPb{}
+	pb.Cascade = st.Cascade
+	pb.ConstraintName = st.ConstraintName
+	pb.FullName = st.FullName
+
+	return pb, nil
+}
+
+func DeleteTableConstraintRequestFromPb(pb *catalogpb.DeleteTableConstraintRequestPb) (*DeleteTableConstraintRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteTableConstraintRequest{}
+	st.Cascade = pb.Cascade
+	st.ConstraintName = pb.ConstraintName
+	st.FullName = pb.FullName
+
+	return st, nil
 }
 
 type DeleteTableRequest struct {
 	// Full name of the table.
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
+}
+
+func (st DeleteTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteTableRequestToPb(st *DeleteTableRequest) (*catalogpb.DeleteTableRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteTableRequestPb{}
+	pb.FullName = st.FullName
+
+	return pb, nil
+}
+
+func DeleteTableRequestFromPb(pb *catalogpb.DeleteTableRequestPb) (*DeleteTableRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteTableRequest{}
+	st.FullName = pb.FullName
+
+	return st, nil
 }
 
 type DeleteVolumeRequest struct {
 	// The three-level (fully qualified) name of the volume
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
+}
+
+func (st DeleteVolumeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DeleteVolumeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeleteVolumeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeleteVolumeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeleteVolumeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeleteVolumeRequestToPb(st *DeleteVolumeRequest) (*catalogpb.DeleteVolumeRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeleteVolumeRequestPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func DeleteVolumeRequestFromPb(pb *catalogpb.DeleteVolumeRequestPb) (*DeleteVolumeRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteVolumeRequest{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 // Properties pertaining to the current state of the delta table as given by the
@@ -2118,7 +7336,53 @@ type DeleteVolumeRequest struct {
 // __TableInfo.properties__.
 type DeltaRuntimePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'delta_runtime_properties'
 	DeltaRuntimeProperties map[string]string `json:"delta_runtime_properties"`
+}
+
+func (st DeltaRuntimePropertiesKvPairs) MarshalJSON() ([]byte, error) {
+	pb, err := DeltaRuntimePropertiesKvPairsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DeltaRuntimePropertiesKvPairs) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DeltaRuntimePropertiesKvPairsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DeltaRuntimePropertiesKvPairsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DeltaRuntimePropertiesKvPairsToPb(st *DeltaRuntimePropertiesKvPairs) (*catalogpb.DeltaRuntimePropertiesKvPairsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DeltaRuntimePropertiesKvPairsPb{}
+	pb.DeltaRuntimeProperties = st.DeltaRuntimeProperties
+
+	return pb, nil
+}
+
+func DeltaRuntimePropertiesKvPairsFromPb(pb *catalogpb.DeltaRuntimePropertiesKvPairsPb) (*DeltaRuntimePropertiesKvPairs, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeltaRuntimePropertiesKvPairs{}
+	st.DeltaRuntimeProperties = pb.DeltaRuntimeProperties
+
+	return st, nil
 }
 
 type DeltaSharingScopeEnum string
@@ -2158,71 +7422,447 @@ func (f *DeltaSharingScopeEnum) Type() string {
 	return "DeltaSharingScopeEnum"
 }
 
+func DeltaSharingScopeEnumToPb(st *DeltaSharingScopeEnum) (*catalogpb.DeltaSharingScopeEnumPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.DeltaSharingScopeEnumPb(*st)
+	return &pb, nil
+}
+
+func DeltaSharingScopeEnumFromPb(pb *catalogpb.DeltaSharingScopeEnumPb) (*DeltaSharingScopeEnum, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := DeltaSharingScopeEnum(*pb)
+	return &st, nil
+}
+
 // A dependency of a SQL object. One of the following fields must be defined:
 // __table__, __function__, __connection__, or __credential__.
 type Dependency struct {
+
+	// Wire name: 'connection'
 	Connection *ConnectionDependency `json:"connection,omitempty"`
 
+	// Wire name: 'credential'
 	Credential *CredentialDependency `json:"credential,omitempty"`
 
+	// Wire name: 'function'
 	Function *FunctionDependency `json:"function,omitempty"`
 
+	// Wire name: 'table'
 	Table *TableDependency `json:"table,omitempty"`
+}
+
+func (st Dependency) MarshalJSON() ([]byte, error) {
+	pb, err := DependencyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *Dependency) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DependencyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DependencyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DependencyToPb(st *Dependency) (*catalogpb.DependencyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DependencyPb{}
+	connectionPb, err := ConnectionDependencyToPb(st.Connection)
+	if err != nil {
+		return nil, err
+	}
+	if connectionPb != nil {
+		pb.Connection = connectionPb
+	}
+	credentialPb, err := CredentialDependencyToPb(st.Credential)
+	if err != nil {
+		return nil, err
+	}
+	if credentialPb != nil {
+		pb.Credential = credentialPb
+	}
+	functionPb, err := FunctionDependencyToPb(st.Function)
+	if err != nil {
+		return nil, err
+	}
+	if functionPb != nil {
+		pb.Function = functionPb
+	}
+	tablePb, err := TableDependencyToPb(st.Table)
+	if err != nil {
+		return nil, err
+	}
+	if tablePb != nil {
+		pb.Table = tablePb
+	}
+
+	return pb, nil
+}
+
+func DependencyFromPb(pb *catalogpb.DependencyPb) (*Dependency, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &Dependency{}
+	connectionField, err := ConnectionDependencyFromPb(pb.Connection)
+	if err != nil {
+		return nil, err
+	}
+	if connectionField != nil {
+		st.Connection = connectionField
+	}
+	credentialField, err := CredentialDependencyFromPb(pb.Credential)
+	if err != nil {
+		return nil, err
+	}
+	if credentialField != nil {
+		st.Credential = credentialField
+	}
+	functionField, err := FunctionDependencyFromPb(pb.Function)
+	if err != nil {
+		return nil, err
+	}
+	if functionField != nil {
+		st.Function = functionField
+	}
+	tableField, err := TableDependencyFromPb(pb.Table)
+	if err != nil {
+		return nil, err
+	}
+	if tableField != nil {
+		st.Table = tableField
+	}
+
+	return st, nil
 }
 
 // A list of dependencies.
 type DependencyList struct {
 	// Array of dependencies.
+	// Wire name: 'dependencies'
 	Dependencies []Dependency `json:"dependencies,omitempty"`
+}
+
+func (st DependencyList) MarshalJSON() ([]byte, error) {
+	pb, err := DependencyListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DependencyList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DependencyListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DependencyListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DependencyListToPb(st *DependencyList) (*catalogpb.DependencyListPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DependencyListPb{}
+
+	var dependenciesPb []catalogpb.DependencyPb
+	for _, item := range st.Dependencies {
+		itemPb, err := DependencyToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			dependenciesPb = append(dependenciesPb, *itemPb)
+		}
+	}
+	pb.Dependencies = dependenciesPb
+
+	return pb, nil
+}
+
+func DependencyListFromPb(pb *catalogpb.DependencyListPb) (*DependencyList, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DependencyList{}
+
+	var dependenciesField []Dependency
+	for _, itemPb := range pb.Dependencies {
+		item, err := DependencyFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			dependenciesField = append(dependenciesField, *item)
+		}
+	}
+	st.Dependencies = dependenciesField
+
+	return st, nil
 }
 
 type DisableRequest struct {
 	// The metastore ID under which the system schema lives.
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Full name of the system schema.
-	SchemaName string `json:"-" url:"-"`
+	SchemaName string `json:"-" tf:"-"`
+}
+
+func (st DisableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := DisableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *DisableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.DisableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := DisableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func DisableRequestToPb(st *DisableRequest) (*catalogpb.DisableRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.DisableRequestPb{}
+	pb.MetastoreId = st.MetastoreId
+	pb.SchemaName = st.SchemaName
+
+	return pb, nil
+}
+
+func DisableRequestFromPb(pb *catalogpb.DisableRequestPb) (*DisableRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DisableRequest{}
+	st.MetastoreId = pb.MetastoreId
+	st.SchemaName = pb.SchemaName
+
+	return st, nil
 }
 
 type EffectivePermissionsList struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// The privileges conveyed to each principal (either directly or via
 	// inheritance)
+	// Wire name: 'privilege_assignments'
 	PrivilegeAssignments []EffectivePrivilegeAssignment `json:"privilege_assignments,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields      []string                       `json:"-" tf:"-"`
 }
 
-func (s *EffectivePermissionsList) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EffectivePermissionsList) MarshalJSON() ([]byte, error) {
+	pb, err := EffectivePermissionsListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EffectivePermissionsList) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EffectivePermissionsList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.EffectivePermissionsListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EffectivePermissionsListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func EffectivePermissionsListToPb(st *EffectivePermissionsList) (*catalogpb.EffectivePermissionsListPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.EffectivePermissionsListPb{}
+	pb.NextPageToken = st.NextPageToken
+
+	var privilegeAssignmentsPb []catalogpb.EffectivePrivilegeAssignmentPb
+	for _, item := range st.PrivilegeAssignments {
+		itemPb, err := EffectivePrivilegeAssignmentToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			privilegeAssignmentsPb = append(privilegeAssignmentsPb, *itemPb)
+		}
+	}
+	pb.PrivilegeAssignments = privilegeAssignmentsPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func EffectivePermissionsListFromPb(pb *catalogpb.EffectivePermissionsListPb) (*EffectivePermissionsList, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &EffectivePermissionsList{}
+	st.NextPageToken = pb.NextPageToken
+
+	var privilegeAssignmentsField []EffectivePrivilegeAssignment
+	for _, itemPb := range pb.PrivilegeAssignments {
+		item, err := EffectivePrivilegeAssignmentFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			privilegeAssignmentsField = append(privilegeAssignmentsField, *item)
+		}
+	}
+	st.PrivilegeAssignments = privilegeAssignmentsField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type EffectivePredictiveOptimizationFlag struct {
 	// The name of the object from which the flag was inherited. If there was no
 	// inheritance, this field is left blank.
+	// Wire name: 'inherited_from_name'
 	InheritedFromName string `json:"inherited_from_name,omitempty"`
 	// The type of the object from which the flag was inherited. If there was no
 	// inheritance, this field is left blank.
+	// Wire name: 'inherited_from_type'
 	InheritedFromType EffectivePredictiveOptimizationFlagInheritedFromType `json:"inherited_from_type,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
-	Value EnablePredictiveOptimization `json:"value"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'value'
+	Value           EnablePredictiveOptimization `json:"value"`
+	ForceSendFields []string                     `json:"-" tf:"-"`
 }
 
-func (s *EffectivePredictiveOptimizationFlag) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EffectivePredictiveOptimizationFlag) MarshalJSON() ([]byte, error) {
+	pb, err := EffectivePredictiveOptimizationFlagToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EffectivePredictiveOptimizationFlag) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EffectivePredictiveOptimizationFlag) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.EffectivePredictiveOptimizationFlagPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EffectivePredictiveOptimizationFlagFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func EffectivePredictiveOptimizationFlagToPb(st *EffectivePredictiveOptimizationFlag) (*catalogpb.EffectivePredictiveOptimizationFlagPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.EffectivePredictiveOptimizationFlagPb{}
+	pb.InheritedFromName = st.InheritedFromName
+	inheritedFromTypePb, err := EffectivePredictiveOptimizationFlagInheritedFromTypeToPb(&st.InheritedFromType)
+	if err != nil {
+		return nil, err
+	}
+	if inheritedFromTypePb != nil {
+		pb.InheritedFromType = *inheritedFromTypePb
+	}
+	valuePb, err := EnablePredictiveOptimizationToPb(&st.Value)
+	if err != nil {
+		return nil, err
+	}
+	if valuePb != nil {
+		pb.Value = *valuePb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func EffectivePredictiveOptimizationFlagFromPb(pb *catalogpb.EffectivePredictiveOptimizationFlagPb) (*EffectivePredictiveOptimizationFlag, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &EffectivePredictiveOptimizationFlag{}
+	st.InheritedFromName = pb.InheritedFromName
+	inheritedFromTypeField, err := EffectivePredictiveOptimizationFlagInheritedFromTypeFromPb(&pb.InheritedFromType)
+	if err != nil {
+		return nil, err
+	}
+	if inheritedFromTypeField != nil {
+		st.InheritedFromType = *inheritedFromTypeField
+	}
+	valueField, err := EnablePredictiveOptimizationFromPb(&pb.Value)
+	if err != nil {
+		return nil, err
+	}
+	if valueField != nil {
+		st.Value = *valueField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // The type of the object from which the flag was inherited. If there was no
@@ -2264,45 +7904,202 @@ func (f *EffectivePredictiveOptimizationFlagInheritedFromType) Type() string {
 	return "EffectivePredictiveOptimizationFlagInheritedFromType"
 }
 
+func EffectivePredictiveOptimizationFlagInheritedFromTypeToPb(st *EffectivePredictiveOptimizationFlagInheritedFromType) (*catalogpb.EffectivePredictiveOptimizationFlagInheritedFromTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.EffectivePredictiveOptimizationFlagInheritedFromTypePb(*st)
+	return &pb, nil
+}
+
+func EffectivePredictiveOptimizationFlagInheritedFromTypeFromPb(pb *catalogpb.EffectivePredictiveOptimizationFlagInheritedFromTypePb) (*EffectivePredictiveOptimizationFlagInheritedFromType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := EffectivePredictiveOptimizationFlagInheritedFromType(*pb)
+	return &st, nil
+}
+
 type EffectivePrivilege struct {
 	// The full name of the object that conveys this privilege via inheritance.
 	// This field is omitted when privilege is not inherited (it's assigned to
 	// the securable itself).
+	// Wire name: 'inherited_from_name'
 	InheritedFromName string `json:"inherited_from_name,omitempty"`
 	// The type of the object that conveys this privilege via inheritance. This
 	// field is omitted when privilege is not inherited (it's assigned to the
 	// securable itself).
+	// Wire name: 'inherited_from_type'
 	InheritedFromType SecurableType `json:"inherited_from_type,omitempty"`
 	// The privilege assigned to the principal.
-	Privilege Privilege `json:"privilege,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'privilege'
+	Privilege       Privilege `json:"privilege,omitempty"`
+	ForceSendFields []string  `json:"-" tf:"-"`
 }
 
-func (s *EffectivePrivilege) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EffectivePrivilege) MarshalJSON() ([]byte, error) {
+	pb, err := EffectivePrivilegeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EffectivePrivilege) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EffectivePrivilege) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.EffectivePrivilegePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EffectivePrivilegeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func EffectivePrivilegeToPb(st *EffectivePrivilege) (*catalogpb.EffectivePrivilegePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.EffectivePrivilegePb{}
+	pb.InheritedFromName = st.InheritedFromName
+	inheritedFromTypePb, err := SecurableTypeToPb(&st.InheritedFromType)
+	if err != nil {
+		return nil, err
+	}
+	if inheritedFromTypePb != nil {
+		pb.InheritedFromType = *inheritedFromTypePb
+	}
+	privilegePb, err := PrivilegeToPb(&st.Privilege)
+	if err != nil {
+		return nil, err
+	}
+	if privilegePb != nil {
+		pb.Privilege = *privilegePb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func EffectivePrivilegeFromPb(pb *catalogpb.EffectivePrivilegePb) (*EffectivePrivilege, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &EffectivePrivilege{}
+	st.InheritedFromName = pb.InheritedFromName
+	inheritedFromTypeField, err := SecurableTypeFromPb(&pb.InheritedFromType)
+	if err != nil {
+		return nil, err
+	}
+	if inheritedFromTypeField != nil {
+		st.InheritedFromType = *inheritedFromTypeField
+	}
+	privilegeField, err := PrivilegeFromPb(&pb.Privilege)
+	if err != nil {
+		return nil, err
+	}
+	if privilegeField != nil {
+		st.Privilege = *privilegeField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type EffectivePrivilegeAssignment struct {
 	// The principal (user email address or group name).
+	// Wire name: 'principal'
 	Principal string `json:"principal,omitempty"`
 	// The privileges conveyed to the principal (either directly or via
 	// inheritance).
-	Privileges []EffectivePrivilege `json:"privileges,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'privileges'
+	Privileges      []EffectivePrivilege `json:"privileges,omitempty"`
+	ForceSendFields []string             `json:"-" tf:"-"`
 }
 
-func (s *EffectivePrivilegeAssignment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EffectivePrivilegeAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := EffectivePrivilegeAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EffectivePrivilegeAssignment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EffectivePrivilegeAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.EffectivePrivilegeAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EffectivePrivilegeAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func EffectivePrivilegeAssignmentToPb(st *EffectivePrivilegeAssignment) (*catalogpb.EffectivePrivilegeAssignmentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.EffectivePrivilegeAssignmentPb{}
+	pb.Principal = st.Principal
+
+	var privilegesPb []catalogpb.EffectivePrivilegePb
+	for _, item := range st.Privileges {
+		itemPb, err := EffectivePrivilegeToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			privilegesPb = append(privilegesPb, *itemPb)
+		}
+	}
+	pb.Privileges = privilegesPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func EffectivePrivilegeAssignmentFromPb(pb *catalogpb.EffectivePrivilegeAssignmentPb) (*EffectivePrivilegeAssignment, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &EffectivePrivilegeAssignment{}
+	st.Principal = pb.Principal
+
+	var privilegesField []EffectivePrivilege
+	for _, itemPb := range pb.Privileges {
+		item, err := EffectivePrivilegeFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			privilegesField = append(privilegesField, *item)
+		}
+	}
+	st.Privileges = privilegesField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type EnablePredictiveOptimization string
@@ -2345,361 +8142,1621 @@ func (f *EnablePredictiveOptimization) Type() string {
 	return "EnablePredictiveOptimization"
 }
 
+func EnablePredictiveOptimizationToPb(st *EnablePredictiveOptimization) (*catalogpb.EnablePredictiveOptimizationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.EnablePredictiveOptimizationPb(*st)
+	return &pb, nil
+}
+
+func EnablePredictiveOptimizationFromPb(pb *catalogpb.EnablePredictiveOptimizationPb) (*EnablePredictiveOptimization, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := EnablePredictiveOptimization(*pb)
+	return &st, nil
+}
+
 type EnableRequest struct {
 	// the catalog for which the system schema is to enabled in
+	// Wire name: 'catalog_name'
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The metastore ID under which the system schema lives.
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Full name of the system schema.
-	SchemaName string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	SchemaName      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *EnableRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EnableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := EnableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EnableRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EnableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.EnableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EnableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func EnableRequestToPb(st *EnableRequest) (*catalogpb.EnableRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.EnableRequestPb{}
+	pb.CatalogName = st.CatalogName
+	pb.MetastoreId = st.MetastoreId
+	pb.SchemaName = st.SchemaName
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func EnableRequestFromPb(pb *catalogpb.EnableRequestPb) (*EnableRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &EnableRequest{}
+	st.CatalogName = pb.CatalogName
+	st.MetastoreId = pb.MetastoreId
+	st.SchemaName = pb.SchemaName
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Encryption options that apply to clients connecting to cloud storage.
 type EncryptionDetails struct {
 	// Server-Side Encryption properties for clients communicating with AWS s3.
+	// Wire name: 'sse_encryption_details'
 	SseEncryptionDetails *SseEncryptionDetails `json:"sse_encryption_details,omitempty"`
 }
 
+func (st EncryptionDetails) MarshalJSON() ([]byte, error) {
+	pb, err := EncryptionDetailsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *EncryptionDetails) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.EncryptionDetailsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EncryptionDetailsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func EncryptionDetailsToPb(st *EncryptionDetails) (*catalogpb.EncryptionDetailsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.EncryptionDetailsPb{}
+	sseEncryptionDetailsPb, err := SseEncryptionDetailsToPb(st.SseEncryptionDetails)
+	if err != nil {
+		return nil, err
+	}
+	if sseEncryptionDetailsPb != nil {
+		pb.SseEncryptionDetails = sseEncryptionDetailsPb
+	}
+
+	return pb, nil
+}
+
+func EncryptionDetailsFromPb(pb *catalogpb.EncryptionDetailsPb) (*EncryptionDetails, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &EncryptionDetails{}
+	sseEncryptionDetailsField, err := SseEncryptionDetailsFromPb(pb.SseEncryptionDetails)
+	if err != nil {
+		return nil, err
+	}
+	if sseEncryptionDetailsField != nil {
+		st.SseEncryptionDetails = sseEncryptionDetailsField
+	}
+
+	return st, nil
+}
+
 type EnvironmentSettings struct {
+
+	// Wire name: 'environment_version'
 	EnvironmentVersion string `json:"environment_version,omitempty"`
 
+	// Wire name: 'java_dependencies'
 	JavaDependencies []string `json:"java_dependencies,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
-func (s *EnvironmentSettings) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st EnvironmentSettings) MarshalJSON() ([]byte, error) {
+	pb, err := EnvironmentSettingsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s EnvironmentSettings) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *EnvironmentSettings) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.EnvironmentSettingsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := EnvironmentSettingsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func EnvironmentSettingsToPb(st *EnvironmentSettings) (*catalogpb.EnvironmentSettingsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.EnvironmentSettingsPb{}
+	pb.EnvironmentVersion = st.EnvironmentVersion
+	pb.JavaDependencies = st.JavaDependencies
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func EnvironmentSettingsFromPb(pb *catalogpb.EnvironmentSettingsPb) (*EnvironmentSettings, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &EnvironmentSettings{}
+	st.EnvironmentVersion = pb.EnvironmentVersion
+	st.JavaDependencies = pb.JavaDependencies
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ExistsRequest struct {
 	// Full name of the table.
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
+}
+
+func (st ExistsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ExistsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ExistsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExistsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExistsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExistsRequestToPb(st *ExistsRequest) (*catalogpb.ExistsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExistsRequestPb{}
+	pb.FullName = st.FullName
+
+	return pb, nil
+}
+
+func ExistsRequestFromPb(pb *catalogpb.ExistsRequestPb) (*ExistsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExistsRequest{}
+	st.FullName = pb.FullName
+
+	return st, nil
 }
 
 type ExternalLineageExternalMetadata struct {
-	Name string `json:"name,omitempty" url:"name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ExternalLineageExternalMetadata) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalLineageExternalMetadata) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLineageExternalMetadataToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalLineageExternalMetadata) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalLineageExternalMetadata) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalLineageExternalMetadataPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLineageExternalMetadataFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalLineageExternalMetadataToPb(st *ExternalLineageExternalMetadata) (*catalogpb.ExternalLineageExternalMetadataPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalLineageExternalMetadataPb{}
+	pb.Name = st.Name
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ExternalLineageExternalMetadataFromPb(pb *catalogpb.ExternalLineageExternalMetadataPb) (*ExternalLineageExternalMetadata, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalLineageExternalMetadata{}
+	st.Name = pb.Name
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Represents the external metadata object in the lineage event.
 type ExternalLineageExternalMetadataInfo struct {
 	// Type of entity represented by the external metadata object.
+	// Wire name: 'entity_type'
 	EntityType string `json:"entity_type,omitempty"`
 	// Timestamp of the lineage event.
-	EventTime string `json:"event_time,omitempty"`
+	// Wire name: 'event_time'
+	EventTime string `json:"event_time,omitempty"` //legacy
 	// Name of the external metadata object.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// Type of external system.
-	SystemType SystemType `json:"system_type,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'system_type'
+	SystemType      SystemType `json:"system_type,omitempty"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
-func (s *ExternalLineageExternalMetadataInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalLineageExternalMetadataInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLineageExternalMetadataInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalLineageExternalMetadataInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalLineageExternalMetadataInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalLineageExternalMetadataInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLineageExternalMetadataInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalLineageExternalMetadataInfoToPb(st *ExternalLineageExternalMetadataInfo) (*catalogpb.ExternalLineageExternalMetadataInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalLineageExternalMetadataInfoPb{}
+	pb.EntityType = st.EntityType
+	pb.EventTime = st.EventTime
+	pb.Name = st.Name
+	systemTypePb, err := SystemTypeToPb(&st.SystemType)
+	if err != nil {
+		return nil, err
+	}
+	if systemTypePb != nil {
+		pb.SystemType = *systemTypePb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ExternalLineageExternalMetadataInfoFromPb(pb *catalogpb.ExternalLineageExternalMetadataInfoPb) (*ExternalLineageExternalMetadataInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalLineageExternalMetadataInfo{}
+	st.EntityType = pb.EntityType
+	st.EventTime = pb.EventTime
+	st.Name = pb.Name
+	systemTypeField, err := SystemTypeFromPb(&pb.SystemType)
+	if err != nil {
+		return nil, err
+	}
+	if systemTypeField != nil {
+		st.SystemType = *systemTypeField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Represents the path information in the lineage event.
 type ExternalLineageFileInfo struct {
 	// Timestamp of the lineage event.
-	EventTime string `json:"event_time,omitempty"`
+	// Wire name: 'event_time'
+	EventTime string `json:"event_time,omitempty"` //legacy
 	// URL of the path.
+	// Wire name: 'path'
 	Path string `json:"path,omitempty"`
 	// The full name of the securable on the path.
+	// Wire name: 'securable_name'
 	SecurableName string `json:"securable_name,omitempty"`
 	// The securable type of the securable on the path.
+	// Wire name: 'securable_type'
 	SecurableType string `json:"securable_type,omitempty"`
 	// The storage location associated with securable on the path.
-	StorageLocation string `json:"storage_location,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'storage_location'
+	StorageLocation string   `json:"storage_location,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ExternalLineageFileInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalLineageFileInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLineageFileInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalLineageFileInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalLineageFileInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalLineageFileInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLineageFileInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalLineageFileInfoToPb(st *ExternalLineageFileInfo) (*catalogpb.ExternalLineageFileInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalLineageFileInfoPb{}
+	pb.EventTime = st.EventTime
+	pb.Path = st.Path
+	pb.SecurableName = st.SecurableName
+	pb.SecurableType = st.SecurableType
+	pb.StorageLocation = st.StorageLocation
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ExternalLineageFileInfoFromPb(pb *catalogpb.ExternalLineageFileInfoPb) (*ExternalLineageFileInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalLineageFileInfo{}
+	st.EventTime = pb.EventTime
+	st.Path = pb.Path
+	st.SecurableName = pb.SecurableName
+	st.SecurableType = pb.SecurableType
+	st.StorageLocation = pb.StorageLocation
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Lineage response containing lineage information of a data asset.
 type ExternalLineageInfo struct {
 	// Information about the edge metadata of the external lineage relationship.
+	// Wire name: 'external_lineage_info'
 	ExternalLineageInfo *ExternalLineageRelationshipInfo `json:"external_lineage_info,omitempty"`
 	// Information about external metadata involved in the lineage relationship.
+	// Wire name: 'external_metadata_info'
 	ExternalMetadataInfo *ExternalLineageExternalMetadataInfo `json:"external_metadata_info,omitempty"`
 	// Information about the file involved in the lineage relationship.
+	// Wire name: 'file_info'
 	FileInfo *ExternalLineageFileInfo `json:"file_info,omitempty"`
 	// Information about the model version involved in the lineage relationship.
+	// Wire name: 'model_info'
 	ModelInfo *ExternalLineageModelVersionInfo `json:"model_info,omitempty"`
 	// Information about the table involved in the lineage relationship.
+	// Wire name: 'table_info'
 	TableInfo *ExternalLineageTableInfo `json:"table_info,omitempty"`
 }
 
+func (st ExternalLineageInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLineageInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ExternalLineageInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalLineageInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLineageInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalLineageInfoToPb(st *ExternalLineageInfo) (*catalogpb.ExternalLineageInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalLineageInfoPb{}
+	externalLineageInfoPb, err := ExternalLineageRelationshipInfoToPb(st.ExternalLineageInfo)
+	if err != nil {
+		return nil, err
+	}
+	if externalLineageInfoPb != nil {
+		pb.ExternalLineageInfo = externalLineageInfoPb
+	}
+	externalMetadataInfoPb, err := ExternalLineageExternalMetadataInfoToPb(st.ExternalMetadataInfo)
+	if err != nil {
+		return nil, err
+	}
+	if externalMetadataInfoPb != nil {
+		pb.ExternalMetadataInfo = externalMetadataInfoPb
+	}
+	fileInfoPb, err := ExternalLineageFileInfoToPb(st.FileInfo)
+	if err != nil {
+		return nil, err
+	}
+	if fileInfoPb != nil {
+		pb.FileInfo = fileInfoPb
+	}
+	modelInfoPb, err := ExternalLineageModelVersionInfoToPb(st.ModelInfo)
+	if err != nil {
+		return nil, err
+	}
+	if modelInfoPb != nil {
+		pb.ModelInfo = modelInfoPb
+	}
+	tableInfoPb, err := ExternalLineageTableInfoToPb(st.TableInfo)
+	if err != nil {
+		return nil, err
+	}
+	if tableInfoPb != nil {
+		pb.TableInfo = tableInfoPb
+	}
+
+	return pb, nil
+}
+
+func ExternalLineageInfoFromPb(pb *catalogpb.ExternalLineageInfoPb) (*ExternalLineageInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalLineageInfo{}
+	externalLineageInfoField, err := ExternalLineageRelationshipInfoFromPb(pb.ExternalLineageInfo)
+	if err != nil {
+		return nil, err
+	}
+	if externalLineageInfoField != nil {
+		st.ExternalLineageInfo = externalLineageInfoField
+	}
+	externalMetadataInfoField, err := ExternalLineageExternalMetadataInfoFromPb(pb.ExternalMetadataInfo)
+	if err != nil {
+		return nil, err
+	}
+	if externalMetadataInfoField != nil {
+		st.ExternalMetadataInfo = externalMetadataInfoField
+	}
+	fileInfoField, err := ExternalLineageFileInfoFromPb(pb.FileInfo)
+	if err != nil {
+		return nil, err
+	}
+	if fileInfoField != nil {
+		st.FileInfo = fileInfoField
+	}
+	modelInfoField, err := ExternalLineageModelVersionInfoFromPb(pb.ModelInfo)
+	if err != nil {
+		return nil, err
+	}
+	if modelInfoField != nil {
+		st.ModelInfo = modelInfoField
+	}
+	tableInfoField, err := ExternalLineageTableInfoFromPb(pb.TableInfo)
+	if err != nil {
+		return nil, err
+	}
+	if tableInfoField != nil {
+		st.TableInfo = tableInfoField
+	}
+
+	return st, nil
+}
+
 type ExternalLineageModelVersion struct {
-	Name string `json:"name,omitempty" url:"name,omitempty"`
 
-	Version string `json:"version,omitempty" url:"version,omitempty"`
+	// Wire name: 'name'
+	Name string `json:"name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'version'
+	Version         string   `json:"version,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ExternalLineageModelVersion) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalLineageModelVersion) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLineageModelVersionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalLineageModelVersion) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalLineageModelVersion) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalLineageModelVersionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLineageModelVersionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalLineageModelVersionToPb(st *ExternalLineageModelVersion) (*catalogpb.ExternalLineageModelVersionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalLineageModelVersionPb{}
+	pb.Name = st.Name
+	pb.Version = st.Version
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ExternalLineageModelVersionFromPb(pb *catalogpb.ExternalLineageModelVersionPb) (*ExternalLineageModelVersion, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalLineageModelVersion{}
+	st.Name = pb.Name
+	st.Version = pb.Version
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Represents the model version information in the lineage event.
 type ExternalLineageModelVersionInfo struct {
 	// Timestamp of the lineage event.
-	EventTime string `json:"event_time,omitempty"`
+	// Wire name: 'event_time'
+	EventTime string `json:"event_time,omitempty"` //legacy
 	// Name of the model.
+	// Wire name: 'model_name'
 	ModelName string `json:"model_name,omitempty"`
 	// Version number of the model.
-	Version int64 `json:"version,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'version'
+	Version         int64    `json:"version,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ExternalLineageModelVersionInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalLineageModelVersionInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLineageModelVersionInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalLineageModelVersionInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalLineageModelVersionInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalLineageModelVersionInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLineageModelVersionInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalLineageModelVersionInfoToPb(st *ExternalLineageModelVersionInfo) (*catalogpb.ExternalLineageModelVersionInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalLineageModelVersionInfoPb{}
+	pb.EventTime = st.EventTime
+	pb.ModelName = st.ModelName
+	pb.Version = st.Version
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ExternalLineageModelVersionInfoFromPb(pb *catalogpb.ExternalLineageModelVersionInfoPb) (*ExternalLineageModelVersionInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalLineageModelVersionInfo{}
+	st.EventTime = pb.EventTime
+	st.ModelName = pb.ModelName
+	st.Version = pb.Version
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ExternalLineageObject struct {
-	ExternalMetadata *ExternalLineageExternalMetadata `json:"external_metadata,omitempty" url:"external_metadata,omitempty"`
 
-	ModelVersion *ExternalLineageModelVersion `json:"model_version,omitempty" url:"model_version,omitempty"`
+	// Wire name: 'external_metadata'
+	ExternalMetadata *ExternalLineageExternalMetadata `json:"external_metadata,omitempty"`
 
-	Path *ExternalLineagePath `json:"path,omitempty" url:"path,omitempty"`
+	// Wire name: 'model_version'
+	ModelVersion *ExternalLineageModelVersion `json:"model_version,omitempty"`
 
-	Table *ExternalLineageTable `json:"table,omitempty" url:"table,omitempty"`
+	// Wire name: 'path'
+	Path *ExternalLineagePath `json:"path,omitempty"`
+
+	// Wire name: 'table'
+	Table *ExternalLineageTable `json:"table,omitempty"`
+}
+
+func (st ExternalLineageObject) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLineageObjectToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ExternalLineageObject) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalLineageObjectPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLineageObjectFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalLineageObjectToPb(st *ExternalLineageObject) (*catalogpb.ExternalLineageObjectPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalLineageObjectPb{}
+	externalMetadataPb, err := ExternalLineageExternalMetadataToPb(st.ExternalMetadata)
+	if err != nil {
+		return nil, err
+	}
+	if externalMetadataPb != nil {
+		pb.ExternalMetadata = externalMetadataPb
+	}
+	modelVersionPb, err := ExternalLineageModelVersionToPb(st.ModelVersion)
+	if err != nil {
+		return nil, err
+	}
+	if modelVersionPb != nil {
+		pb.ModelVersion = modelVersionPb
+	}
+	pathPb, err := ExternalLineagePathToPb(st.Path)
+	if err != nil {
+		return nil, err
+	}
+	if pathPb != nil {
+		pb.Path = pathPb
+	}
+	tablePb, err := ExternalLineageTableToPb(st.Table)
+	if err != nil {
+		return nil, err
+	}
+	if tablePb != nil {
+		pb.Table = tablePb
+	}
+
+	return pb, nil
+}
+
+func ExternalLineageObjectFromPb(pb *catalogpb.ExternalLineageObjectPb) (*ExternalLineageObject, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalLineageObject{}
+	externalMetadataField, err := ExternalLineageExternalMetadataFromPb(pb.ExternalMetadata)
+	if err != nil {
+		return nil, err
+	}
+	if externalMetadataField != nil {
+		st.ExternalMetadata = externalMetadataField
+	}
+	modelVersionField, err := ExternalLineageModelVersionFromPb(pb.ModelVersion)
+	if err != nil {
+		return nil, err
+	}
+	if modelVersionField != nil {
+		st.ModelVersion = modelVersionField
+	}
+	pathField, err := ExternalLineagePathFromPb(pb.Path)
+	if err != nil {
+		return nil, err
+	}
+	if pathField != nil {
+		st.Path = pathField
+	}
+	tableField, err := ExternalLineageTableFromPb(pb.Table)
+	if err != nil {
+		return nil, err
+	}
+	if tableField != nil {
+		st.Table = tableField
+	}
+
+	return st, nil
 }
 
 type ExternalLineagePath struct {
-	Url string `json:"url,omitempty" url:"url,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'url'
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ExternalLineagePath) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalLineagePath) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLineagePathToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalLineagePath) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalLineagePath) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalLineagePathPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLineagePathFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalLineagePathToPb(st *ExternalLineagePath) (*catalogpb.ExternalLineagePathPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalLineagePathPb{}
+	pb.Url = st.Url
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ExternalLineagePathFromPb(pb *catalogpb.ExternalLineagePathPb) (*ExternalLineagePath, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalLineagePath{}
+	st.Url = pb.Url
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ExternalLineageRelationship struct {
 	// List of column relationships between source and target objects.
+	// Wire name: 'columns'
 	Columns []ColumnRelationship `json:"columns,omitempty"`
 	// Unique identifier of the external lineage relationship.
+	// Wire name: 'id'
 	Id string `json:"id,omitempty"`
 	// Key-value properties associated with the external lineage relationship.
+	// Wire name: 'properties'
 	Properties map[string]string `json:"properties,omitempty"`
 	// Source object of the external lineage relationship.
+	// Wire name: 'source'
 	Source ExternalLineageObject `json:"source"`
 	// Target object of the external lineage relationship.
-	Target ExternalLineageObject `json:"target"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'target'
+	Target          ExternalLineageObject `json:"target"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
-func (s *ExternalLineageRelationship) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalLineageRelationship) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLineageRelationshipToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalLineageRelationship) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalLineageRelationship) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalLineageRelationshipPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLineageRelationshipFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalLineageRelationshipToPb(st *ExternalLineageRelationship) (*catalogpb.ExternalLineageRelationshipPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalLineageRelationshipPb{}
+
+	var columnsPb []catalogpb.ColumnRelationshipPb
+	for _, item := range st.Columns {
+		itemPb, err := ColumnRelationshipToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			columnsPb = append(columnsPb, *itemPb)
+		}
+	}
+	pb.Columns = columnsPb
+	pb.Id = st.Id
+	pb.Properties = st.Properties
+	sourcePb, err := ExternalLineageObjectToPb(&st.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourcePb != nil {
+		pb.Source = *sourcePb
+	}
+	targetPb, err := ExternalLineageObjectToPb(&st.Target)
+	if err != nil {
+		return nil, err
+	}
+	if targetPb != nil {
+		pb.Target = *targetPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ExternalLineageRelationshipFromPb(pb *catalogpb.ExternalLineageRelationshipPb) (*ExternalLineageRelationship, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalLineageRelationship{}
+
+	var columnsField []ColumnRelationship
+	for _, itemPb := range pb.Columns {
+		item, err := ColumnRelationshipFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			columnsField = append(columnsField, *item)
+		}
+	}
+	st.Columns = columnsField
+	st.Id = pb.Id
+	st.Properties = pb.Properties
+	sourceField, err := ExternalLineageObjectFromPb(&pb.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourceField != nil {
+		st.Source = *sourceField
+	}
+	targetField, err := ExternalLineageObjectFromPb(&pb.Target)
+	if err != nil {
+		return nil, err
+	}
+	if targetField != nil {
+		st.Target = *targetField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ExternalLineageRelationshipInfo struct {
 	// List of column relationships between source and target objects.
+	// Wire name: 'columns'
 	Columns []ColumnRelationship `json:"columns,omitempty"`
 	// Unique identifier of the external lineage relationship.
+	// Wire name: 'id'
 	Id string `json:"id,omitempty"`
 	// Key-value properties associated with the external lineage relationship.
+	// Wire name: 'properties'
 	Properties map[string]string `json:"properties,omitempty"`
 	// Source object of the external lineage relationship.
+	// Wire name: 'source'
 	Source ExternalLineageObject `json:"source"`
 	// Target object of the external lineage relationship.
-	Target ExternalLineageObject `json:"target"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'target'
+	Target          ExternalLineageObject `json:"target"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
-func (s *ExternalLineageRelationshipInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalLineageRelationshipInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLineageRelationshipInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalLineageRelationshipInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalLineageRelationshipInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalLineageRelationshipInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLineageRelationshipInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalLineageRelationshipInfoToPb(st *ExternalLineageRelationshipInfo) (*catalogpb.ExternalLineageRelationshipInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalLineageRelationshipInfoPb{}
+
+	var columnsPb []catalogpb.ColumnRelationshipPb
+	for _, item := range st.Columns {
+		itemPb, err := ColumnRelationshipToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			columnsPb = append(columnsPb, *itemPb)
+		}
+	}
+	pb.Columns = columnsPb
+	pb.Id = st.Id
+	pb.Properties = st.Properties
+	sourcePb, err := ExternalLineageObjectToPb(&st.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourcePb != nil {
+		pb.Source = *sourcePb
+	}
+	targetPb, err := ExternalLineageObjectToPb(&st.Target)
+	if err != nil {
+		return nil, err
+	}
+	if targetPb != nil {
+		pb.Target = *targetPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ExternalLineageRelationshipInfoFromPb(pb *catalogpb.ExternalLineageRelationshipInfoPb) (*ExternalLineageRelationshipInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalLineageRelationshipInfo{}
+
+	var columnsField []ColumnRelationship
+	for _, itemPb := range pb.Columns {
+		item, err := ColumnRelationshipFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			columnsField = append(columnsField, *item)
+		}
+	}
+	st.Columns = columnsField
+	st.Id = pb.Id
+	st.Properties = pb.Properties
+	sourceField, err := ExternalLineageObjectFromPb(&pb.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourceField != nil {
+		st.Source = *sourceField
+	}
+	targetField, err := ExternalLineageObjectFromPb(&pb.Target)
+	if err != nil {
+		return nil, err
+	}
+	if targetField != nil {
+		st.Target = *targetField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ExternalLineageTable struct {
-	Name string `json:"name,omitempty" url:"name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name            string   `json:"name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ExternalLineageTable) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalLineageTable) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLineageTableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalLineageTable) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalLineageTable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalLineageTablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLineageTableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalLineageTableToPb(st *ExternalLineageTable) (*catalogpb.ExternalLineageTablePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalLineageTablePb{}
+	pb.Name = st.Name
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ExternalLineageTableFromPb(pb *catalogpb.ExternalLineageTablePb) (*ExternalLineageTable, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalLineageTable{}
+	st.Name = pb.Name
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Represents the table information in the lineage event.
 type ExternalLineageTableInfo struct {
 	// Name of Catalog.
+	// Wire name: 'catalog_name'
 	CatalogName string `json:"catalog_name,omitempty"`
 	// Timestamp of the lineage event.
-	EventTime string `json:"event_time,omitempty"`
+	// Wire name: 'event_time'
+	EventTime string `json:"event_time,omitempty"` //legacy
 	// Name of Table.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// Name of Schema.
-	SchemaName string `json:"schema_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'schema_name'
+	SchemaName      string   `json:"schema_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ExternalLineageTableInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalLineageTableInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLineageTableInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalLineageTableInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalLineageTableInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalLineageTableInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLineageTableInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalLineageTableInfoToPb(st *ExternalLineageTableInfo) (*catalogpb.ExternalLineageTableInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalLineageTableInfoPb{}
+	pb.CatalogName = st.CatalogName
+	pb.EventTime = st.EventTime
+	pb.Name = st.Name
+	pb.SchemaName = st.SchemaName
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ExternalLineageTableInfoFromPb(pb *catalogpb.ExternalLineageTableInfoPb) (*ExternalLineageTableInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalLineageTableInfo{}
+	st.CatalogName = pb.CatalogName
+	st.EventTime = pb.EventTime
+	st.Name = pb.Name
+	st.SchemaName = pb.SchemaName
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ExternalLocationInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool `json:"browse_only,omitempty"`
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Time at which this external location was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of external location creator.
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 	// Unique ID of the location's storage credential.
+	// Wire name: 'credential_id'
 	CredentialId string `json:"credential_id,omitempty"`
 	// Name of the storage credential used with this location.
+	// Wire name: 'credential_name'
 	CredentialName string `json:"credential_name,omitempty"`
 	// Whether to enable file events on this external location.
+	// Wire name: 'enable_file_events'
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
+	// Wire name: 'encryption_details'
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
+	// Wire name: 'fallback'
 	Fallback bool `json:"fallback,omitempty"`
 	// File event queue settings.
+	// Wire name: 'file_event_queue'
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 
+	// Wire name: 'isolation_mode'
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of metastore hosting the external location.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of the external location.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// The owner of the external location.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// Indicates whether the external location is read-only.
+	// Wire name: 'read_only'
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Time at which external location this was last modified, in epoch
 	// milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the external location.
+	// Wire name: 'updated_by'
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// Path URL of the external location.
-	Url string `json:"url,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'url'
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ExternalLocationInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalLocationInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalLocationInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalLocationInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalLocationInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalLocationInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalLocationInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalLocationInfoToPb(st *ExternalLocationInfo) (*catalogpb.ExternalLocationInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalLocationInfoPb{}
+	pb.BrowseOnly = st.BrowseOnly
+	pb.Comment = st.Comment
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	pb.CredentialId = st.CredentialId
+	pb.CredentialName = st.CredentialName
+	pb.EnableFileEvents = st.EnableFileEvents
+	encryptionDetailsPb, err := EncryptionDetailsToPb(st.EncryptionDetails)
+	if err != nil {
+		return nil, err
+	}
+	if encryptionDetailsPb != nil {
+		pb.EncryptionDetails = encryptionDetailsPb
+	}
+	pb.Fallback = st.Fallback
+	fileEventQueuePb, err := FileEventQueueToPb(st.FileEventQueue)
+	if err != nil {
+		return nil, err
+	}
+	if fileEventQueuePb != nil {
+		pb.FileEventQueue = fileEventQueuePb
+	}
+	isolationModePb, err := IsolationModeToPb(&st.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModePb != nil {
+		pb.IsolationMode = *isolationModePb
+	}
+	pb.MetastoreId = st.MetastoreId
+	pb.Name = st.Name
+	pb.Owner = st.Owner
+	pb.ReadOnly = st.ReadOnly
+	pb.UpdatedAt = st.UpdatedAt
+	pb.UpdatedBy = st.UpdatedBy
+	pb.Url = st.Url
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ExternalLocationInfoFromPb(pb *catalogpb.ExternalLocationInfoPb) (*ExternalLocationInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalLocationInfo{}
+	st.BrowseOnly = pb.BrowseOnly
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.CredentialId = pb.CredentialId
+	st.CredentialName = pb.CredentialName
+	st.EnableFileEvents = pb.EnableFileEvents
+	encryptionDetailsField, err := EncryptionDetailsFromPb(pb.EncryptionDetails)
+	if err != nil {
+		return nil, err
+	}
+	if encryptionDetailsField != nil {
+		st.EncryptionDetails = encryptionDetailsField
+	}
+	st.Fallback = pb.Fallback
+	fileEventQueueField, err := FileEventQueueFromPb(pb.FileEventQueue)
+	if err != nil {
+		return nil, err
+	}
+	if fileEventQueueField != nil {
+		st.FileEventQueue = fileEventQueueField
+	}
+	isolationModeField, err := IsolationModeFromPb(&pb.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModeField != nil {
+		st.IsolationMode = *isolationModeField
+	}
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.ReadOnly = pb.ReadOnly
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.Url = pb.Url
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ExternalMetadata struct {
 	// List of columns associated with the external metadata object.
+	// Wire name: 'columns'
 	Columns []string `json:"columns,omitempty"`
 	// Time at which this external metadata object was created.
-	CreateTime string `json:"create_time,omitempty"`
+	// Wire name: 'create_time'
+	CreateTime string `json:"create_time,omitempty"` //legacy
 	// Username of external metadata object creator.
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 	// User-provided free-form text description.
+	// Wire name: 'description'
 	Description string `json:"description,omitempty"`
 	// Type of entity within the external system.
+	// Wire name: 'entity_type'
 	EntityType string `json:"entity_type"`
 	// Unique identifier of the external metadata object.
+	// Wire name: 'id'
 	Id string `json:"id,omitempty"`
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of the external metadata object.
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// Owner of the external metadata object.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the external metadata object.
+	// Wire name: 'properties'
 	Properties map[string]string `json:"properties,omitempty"`
 	// Type of external system.
+	// Wire name: 'system_type'
 	SystemType SystemType `json:"system_type"`
 	// Time at which this external metadata object was last modified.
-	UpdateTime string `json:"update_time,omitempty"`
+	// Wire name: 'update_time'
+	UpdateTime string `json:"update_time,omitempty"` //legacy
 	// Username of user who last modified external metadata object.
+	// Wire name: 'updated_by'
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// URL associated with the external metadata object.
-	Url string `json:"url,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'url'
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ExternalMetadata) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ExternalMetadata) MarshalJSON() ([]byte, error) {
+	pb, err := ExternalMetadataToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ExternalMetadata) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ExternalMetadata) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ExternalMetadataPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ExternalMetadataFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ExternalMetadataToPb(st *ExternalMetadata) (*catalogpb.ExternalMetadataPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ExternalMetadataPb{}
+	pb.Columns = st.Columns
+	pb.CreateTime = st.CreateTime
+	pb.CreatedBy = st.CreatedBy
+	pb.Description = st.Description
+	pb.EntityType = st.EntityType
+	pb.Id = st.Id
+	pb.MetastoreId = st.MetastoreId
+	pb.Name = st.Name
+	pb.Owner = st.Owner
+	pb.Properties = st.Properties
+	systemTypePb, err := SystemTypeToPb(&st.SystemType)
+	if err != nil {
+		return nil, err
+	}
+	if systemTypePb != nil {
+		pb.SystemType = *systemTypePb
+	}
+	pb.UpdateTime = st.UpdateTime
+	pb.UpdatedBy = st.UpdatedBy
+	pb.Url = st.Url
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ExternalMetadataFromPb(pb *catalogpb.ExternalMetadataPb) (*ExternalMetadata, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ExternalMetadata{}
+	st.Columns = pb.Columns
+	st.CreateTime = pb.CreateTime
+	st.CreatedBy = pb.CreatedBy
+	st.Description = pb.Description
+	st.EntityType = pb.EntityType
+	st.Id = pb.Id
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.Properties = pb.Properties
+	systemTypeField, err := SystemTypeFromPb(&pb.SystemType)
+	if err != nil {
+		return nil, err
+	}
+	if systemTypeField != nil {
+		st.SystemType = *systemTypeField
+	}
+	st.UpdateTime = pb.UpdateTime
+	st.UpdatedBy = pb.UpdatedBy
+	st.Url = pb.Url
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Detailed status of an online table. Shown if the online table is in the
@@ -2709,145 +9766,652 @@ type FailedStatus struct {
 	// Note that this Delta version may only be partially synced to the online
 	// table. Only populated if the table is still online and available for
 	// serving.
+	// Wire name: 'last_processed_commit_version'
 	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
 	// The timestamp of the last time any data was synchronized from the source
 	// table to the online table. Only populated if the table is still online
 	// and available for serving.
-	Timestamp string `json:"timestamp,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'timestamp'
+	Timestamp       string   `json:"timestamp,omitempty"` //legacy
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *FailedStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st FailedStatus) MarshalJSON() ([]byte, error) {
+	pb, err := FailedStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s FailedStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *FailedStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.FailedStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FailedStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func FailedStatusToPb(st *FailedStatus) (*catalogpb.FailedStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.FailedStatusPb{}
+	pb.LastProcessedCommitVersion = st.LastProcessedCommitVersion
+	pb.Timestamp = st.Timestamp
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func FailedStatusFromPb(pb *catalogpb.FailedStatusPb) (*FailedStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &FailedStatus{}
+	st.LastProcessedCommitVersion = pb.LastProcessedCommitVersion
+	st.Timestamp = pb.Timestamp
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type FileEventQueue struct {
+
+	// Wire name: 'managed_aqs'
 	ManagedAqs *AzureQueueStorage `json:"managed_aqs,omitempty"`
 
+	// Wire name: 'managed_pubsub'
 	ManagedPubsub *GcpPubsub `json:"managed_pubsub,omitempty"`
 
+	// Wire name: 'managed_sqs'
 	ManagedSqs *AwsSqsQueue `json:"managed_sqs,omitempty"`
 
+	// Wire name: 'provided_aqs'
 	ProvidedAqs *AzureQueueStorage `json:"provided_aqs,omitempty"`
 
+	// Wire name: 'provided_pubsub'
 	ProvidedPubsub *GcpPubsub `json:"provided_pubsub,omitempty"`
 
+	// Wire name: 'provided_sqs'
 	ProvidedSqs *AwsSqsQueue `json:"provided_sqs,omitempty"`
+}
+
+func (st FileEventQueue) MarshalJSON() ([]byte, error) {
+	pb, err := FileEventQueueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *FileEventQueue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.FileEventQueuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FileEventQueueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func FileEventQueueToPb(st *FileEventQueue) (*catalogpb.FileEventQueuePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.FileEventQueuePb{}
+	managedAqsPb, err := AzureQueueStorageToPb(st.ManagedAqs)
+	if err != nil {
+		return nil, err
+	}
+	if managedAqsPb != nil {
+		pb.ManagedAqs = managedAqsPb
+	}
+	managedPubsubPb, err := GcpPubsubToPb(st.ManagedPubsub)
+	if err != nil {
+		return nil, err
+	}
+	if managedPubsubPb != nil {
+		pb.ManagedPubsub = managedPubsubPb
+	}
+	managedSqsPb, err := AwsSqsQueueToPb(st.ManagedSqs)
+	if err != nil {
+		return nil, err
+	}
+	if managedSqsPb != nil {
+		pb.ManagedSqs = managedSqsPb
+	}
+	providedAqsPb, err := AzureQueueStorageToPb(st.ProvidedAqs)
+	if err != nil {
+		return nil, err
+	}
+	if providedAqsPb != nil {
+		pb.ProvidedAqs = providedAqsPb
+	}
+	providedPubsubPb, err := GcpPubsubToPb(st.ProvidedPubsub)
+	if err != nil {
+		return nil, err
+	}
+	if providedPubsubPb != nil {
+		pb.ProvidedPubsub = providedPubsubPb
+	}
+	providedSqsPb, err := AwsSqsQueueToPb(st.ProvidedSqs)
+	if err != nil {
+		return nil, err
+	}
+	if providedSqsPb != nil {
+		pb.ProvidedSqs = providedSqsPb
+	}
+
+	return pb, nil
+}
+
+func FileEventQueueFromPb(pb *catalogpb.FileEventQueuePb) (*FileEventQueue, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &FileEventQueue{}
+	managedAqsField, err := AzureQueueStorageFromPb(pb.ManagedAqs)
+	if err != nil {
+		return nil, err
+	}
+	if managedAqsField != nil {
+		st.ManagedAqs = managedAqsField
+	}
+	managedPubsubField, err := GcpPubsubFromPb(pb.ManagedPubsub)
+	if err != nil {
+		return nil, err
+	}
+	if managedPubsubField != nil {
+		st.ManagedPubsub = managedPubsubField
+	}
+	managedSqsField, err := AwsSqsQueueFromPb(pb.ManagedSqs)
+	if err != nil {
+		return nil, err
+	}
+	if managedSqsField != nil {
+		st.ManagedSqs = managedSqsField
+	}
+	providedAqsField, err := AzureQueueStorageFromPb(pb.ProvidedAqs)
+	if err != nil {
+		return nil, err
+	}
+	if providedAqsField != nil {
+		st.ProvidedAqs = providedAqsField
+	}
+	providedPubsubField, err := GcpPubsubFromPb(pb.ProvidedPubsub)
+	if err != nil {
+		return nil, err
+	}
+	if providedPubsubField != nil {
+		st.ProvidedPubsub = providedPubsubField
+	}
+	providedSqsField, err := AwsSqsQueueFromPb(pb.ProvidedSqs)
+	if err != nil {
+		return nil, err
+	}
+	if providedSqsField != nil {
+		st.ProvidedSqs = providedSqsField
+	}
+
+	return st, nil
 }
 
 type ForeignKeyConstraint struct {
 	// Column names for this constraint.
+	// Wire name: 'child_columns'
 	ChildColumns []string `json:"child_columns"`
 	// The name of the constraint.
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// Column names for this constraint.
+	// Wire name: 'parent_columns'
 	ParentColumns []string `json:"parent_columns"`
 	// The full name of the parent constraint.
+	// Wire name: 'parent_table'
 	ParentTable string `json:"parent_table"`
 	// True if the constraint is RELY, false or unset if NORELY.
-	Rely bool `json:"rely,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'rely'
+	Rely            bool     `json:"rely,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ForeignKeyConstraint) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ForeignKeyConstraint) MarshalJSON() ([]byte, error) {
+	pb, err := ForeignKeyConstraintToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ForeignKeyConstraint) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ForeignKeyConstraint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ForeignKeyConstraintPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ForeignKeyConstraintFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ForeignKeyConstraintToPb(st *ForeignKeyConstraint) (*catalogpb.ForeignKeyConstraintPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ForeignKeyConstraintPb{}
+	pb.ChildColumns = st.ChildColumns
+	pb.Name = st.Name
+	pb.ParentColumns = st.ParentColumns
+	pb.ParentTable = st.ParentTable
+	pb.Rely = st.Rely
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ForeignKeyConstraintFromPb(pb *catalogpb.ForeignKeyConstraintPb) (*ForeignKeyConstraint, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ForeignKeyConstraint{}
+	st.ChildColumns = pb.ChildColumns
+	st.Name = pb.Name
+	st.ParentColumns = pb.ParentColumns
+	st.ParentTable = pb.ParentTable
+	st.Rely = pb.Rely
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // A function that is dependent on a SQL object.
 type FunctionDependency struct {
 	// Full name of the dependent function, in the form of
 	// __catalog_name__.__schema_name__.__function_name__.
+	// Wire name: 'function_full_name'
 	FunctionFullName string `json:"function_full_name"`
+}
+
+func (st FunctionDependency) MarshalJSON() ([]byte, error) {
+	pb, err := FunctionDependencyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *FunctionDependency) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.FunctionDependencyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FunctionDependencyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func FunctionDependencyToPb(st *FunctionDependency) (*catalogpb.FunctionDependencyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.FunctionDependencyPb{}
+	pb.FunctionFullName = st.FunctionFullName
+
+	return pb, nil
+}
+
+func FunctionDependencyFromPb(pb *catalogpb.FunctionDependencyPb) (*FunctionDependency, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &FunctionDependency{}
+	st.FunctionFullName = pb.FunctionFullName
+
+	return st, nil
 }
 
 type FunctionInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool `json:"browse_only,omitempty"`
 	// Name of parent catalog.
+	// Wire name: 'catalog_name'
 	CatalogName string `json:"catalog_name,omitempty"`
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Time at which this function was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of function creator.
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 	// Scalar function return data type.
+	// Wire name: 'data_type'
 	DataType ColumnTypeName `json:"data_type,omitempty"`
 	// External function language.
+	// Wire name: 'external_language'
 	ExternalLanguage string `json:"external_language,omitempty"`
 	// External function name.
+	// Wire name: 'external_name'
 	ExternalName string `json:"external_name,omitempty"`
 	// Pretty printed function data type.
+	// Wire name: 'full_data_type'
 	FullDataType string `json:"full_data_type,omitempty"`
 	// Full name of function, in form of
 	// __catalog_name__.__schema_name__.__function__name__
+	// Wire name: 'full_name'
 	FullName string `json:"full_name,omitempty"`
 	// Id of Function, relative to parent schema.
+	// Wire name: 'function_id'
 	FunctionId string `json:"function_id,omitempty"`
 
+	// Wire name: 'input_params'
 	InputParams *FunctionParameterInfos `json:"input_params,omitempty"`
 	// Whether the function is deterministic.
+	// Wire name: 'is_deterministic'
 	IsDeterministic bool `json:"is_deterministic,omitempty"`
 	// Function null call.
+	// Wire name: 'is_null_call'
 	IsNullCall bool `json:"is_null_call,omitempty"`
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of function, relative to parent schema.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// Username of current owner of function.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// Function parameter style. **S** is the value for SQL.
+	// Wire name: 'parameter_style'
 	ParameterStyle FunctionInfoParameterStyle `json:"parameter_style,omitempty"`
 	// JSON-serialized key-value pair map, encoded (escaped) as a string.
+	// Wire name: 'properties'
 	Properties string `json:"properties,omitempty"`
 	// Table function return parameters.
+	// Wire name: 'return_params'
 	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
 	// Function language. When **EXTERNAL** is used, the language of the routine
 	// function should be specified in the __external_language__ field, and the
 	// __return_params__ of the function cannot be used (as **TABLE** return
 	// type is not supported), and the __sql_data_access__ field must be
 	// **NO_SQL**.
+	// Wire name: 'routine_body'
 	RoutineBody FunctionInfoRoutineBody `json:"routine_body,omitempty"`
 	// Function body.
+	// Wire name: 'routine_definition'
 	RoutineDefinition string `json:"routine_definition,omitempty"`
 	// Function dependencies.
+	// Wire name: 'routine_dependencies'
 	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
 	// Name of parent schema relative to its parent catalog.
+	// Wire name: 'schema_name'
 	SchemaName string `json:"schema_name,omitempty"`
 	// Function security type.
+	// Wire name: 'security_type'
 	SecurityType FunctionInfoSecurityType `json:"security_type,omitempty"`
 	// Specific name of the function; Reserved for future use.
+	// Wire name: 'specific_name'
 	SpecificName string `json:"specific_name,omitempty"`
 	// Function SQL data access.
+	// Wire name: 'sql_data_access'
 	SqlDataAccess FunctionInfoSqlDataAccess `json:"sql_data_access,omitempty"`
 	// List of schemes whose objects can be referenced without qualification.
+	// Wire name: 'sql_path'
 	SqlPath string `json:"sql_path,omitempty"`
 	// Time at which this function was created, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified function.
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'updated_by'
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *FunctionInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st FunctionInfo) MarshalJSON() ([]byte, error) {
+	pb, err := FunctionInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s FunctionInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *FunctionInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.FunctionInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FunctionInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func FunctionInfoToPb(st *FunctionInfo) (*catalogpb.FunctionInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.FunctionInfoPb{}
+	pb.BrowseOnly = st.BrowseOnly
+	pb.CatalogName = st.CatalogName
+	pb.Comment = st.Comment
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	dataTypePb, err := ColumnTypeNameToPb(&st.DataType)
+	if err != nil {
+		return nil, err
+	}
+	if dataTypePb != nil {
+		pb.DataType = *dataTypePb
+	}
+	pb.ExternalLanguage = st.ExternalLanguage
+	pb.ExternalName = st.ExternalName
+	pb.FullDataType = st.FullDataType
+	pb.FullName = st.FullName
+	pb.FunctionId = st.FunctionId
+	inputParamsPb, err := FunctionParameterInfosToPb(st.InputParams)
+	if err != nil {
+		return nil, err
+	}
+	if inputParamsPb != nil {
+		pb.InputParams = inputParamsPb
+	}
+	pb.IsDeterministic = st.IsDeterministic
+	pb.IsNullCall = st.IsNullCall
+	pb.MetastoreId = st.MetastoreId
+	pb.Name = st.Name
+	pb.Owner = st.Owner
+	parameterStylePb, err := FunctionInfoParameterStyleToPb(&st.ParameterStyle)
+	if err != nil {
+		return nil, err
+	}
+	if parameterStylePb != nil {
+		pb.ParameterStyle = *parameterStylePb
+	}
+	pb.Properties = st.Properties
+	returnParamsPb, err := FunctionParameterInfosToPb(st.ReturnParams)
+	if err != nil {
+		return nil, err
+	}
+	if returnParamsPb != nil {
+		pb.ReturnParams = returnParamsPb
+	}
+	routineBodyPb, err := FunctionInfoRoutineBodyToPb(&st.RoutineBody)
+	if err != nil {
+		return nil, err
+	}
+	if routineBodyPb != nil {
+		pb.RoutineBody = *routineBodyPb
+	}
+	pb.RoutineDefinition = st.RoutineDefinition
+	routineDependenciesPb, err := DependencyListToPb(st.RoutineDependencies)
+	if err != nil {
+		return nil, err
+	}
+	if routineDependenciesPb != nil {
+		pb.RoutineDependencies = routineDependenciesPb
+	}
+	pb.SchemaName = st.SchemaName
+	securityTypePb, err := FunctionInfoSecurityTypeToPb(&st.SecurityType)
+	if err != nil {
+		return nil, err
+	}
+	if securityTypePb != nil {
+		pb.SecurityType = *securityTypePb
+	}
+	pb.SpecificName = st.SpecificName
+	sqlDataAccessPb, err := FunctionInfoSqlDataAccessToPb(&st.SqlDataAccess)
+	if err != nil {
+		return nil, err
+	}
+	if sqlDataAccessPb != nil {
+		pb.SqlDataAccess = *sqlDataAccessPb
+	}
+	pb.SqlPath = st.SqlPath
+	pb.UpdatedAt = st.UpdatedAt
+	pb.UpdatedBy = st.UpdatedBy
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func FunctionInfoFromPb(pb *catalogpb.FunctionInfoPb) (*FunctionInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &FunctionInfo{}
+	st.BrowseOnly = pb.BrowseOnly
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	dataTypeField, err := ColumnTypeNameFromPb(&pb.DataType)
+	if err != nil {
+		return nil, err
+	}
+	if dataTypeField != nil {
+		st.DataType = *dataTypeField
+	}
+	st.ExternalLanguage = pb.ExternalLanguage
+	st.ExternalName = pb.ExternalName
+	st.FullDataType = pb.FullDataType
+	st.FullName = pb.FullName
+	st.FunctionId = pb.FunctionId
+	inputParamsField, err := FunctionParameterInfosFromPb(pb.InputParams)
+	if err != nil {
+		return nil, err
+	}
+	if inputParamsField != nil {
+		st.InputParams = inputParamsField
+	}
+	st.IsDeterministic = pb.IsDeterministic
+	st.IsNullCall = pb.IsNullCall
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	parameterStyleField, err := FunctionInfoParameterStyleFromPb(&pb.ParameterStyle)
+	if err != nil {
+		return nil, err
+	}
+	if parameterStyleField != nil {
+		st.ParameterStyle = *parameterStyleField
+	}
+	st.Properties = pb.Properties
+	returnParamsField, err := FunctionParameterInfosFromPb(pb.ReturnParams)
+	if err != nil {
+		return nil, err
+	}
+	if returnParamsField != nil {
+		st.ReturnParams = returnParamsField
+	}
+	routineBodyField, err := FunctionInfoRoutineBodyFromPb(&pb.RoutineBody)
+	if err != nil {
+		return nil, err
+	}
+	if routineBodyField != nil {
+		st.RoutineBody = *routineBodyField
+	}
+	st.RoutineDefinition = pb.RoutineDefinition
+	routineDependenciesField, err := DependencyListFromPb(pb.RoutineDependencies)
+	if err != nil {
+		return nil, err
+	}
+	if routineDependenciesField != nil {
+		st.RoutineDependencies = routineDependenciesField
+	}
+	st.SchemaName = pb.SchemaName
+	securityTypeField, err := FunctionInfoSecurityTypeFromPb(&pb.SecurityType)
+	if err != nil {
+		return nil, err
+	}
+	if securityTypeField != nil {
+		st.SecurityType = *securityTypeField
+	}
+	st.SpecificName = pb.SpecificName
+	sqlDataAccessField, err := FunctionInfoSqlDataAccessFromPb(&pb.SqlDataAccess)
+	if err != nil {
+		return nil, err
+	}
+	if sqlDataAccessField != nil {
+		st.SqlDataAccess = *sqlDataAccessField
+	}
+	st.SqlPath = pb.SqlPath
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Function parameter style. **S** is the value for SQL.
@@ -2883,6 +10447,22 @@ func (f *FunctionInfoParameterStyle) Values() []FunctionInfoParameterStyle {
 // Type always returns FunctionInfoParameterStyle to satisfy [pflag.Value] interface
 func (f *FunctionInfoParameterStyle) Type() string {
 	return "FunctionInfoParameterStyle"
+}
+
+func FunctionInfoParameterStyleToPb(st *FunctionInfoParameterStyle) (*catalogpb.FunctionInfoParameterStylePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.FunctionInfoParameterStylePb(*st)
+	return &pb, nil
+}
+
+func FunctionInfoParameterStyleFromPb(pb *catalogpb.FunctionInfoParameterStylePb) (*FunctionInfoParameterStyle, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FunctionInfoParameterStyle(*pb)
+	return &st, nil
 }
 
 // Function language. When **EXTERNAL** is used, the language of the routine
@@ -2926,6 +10506,22 @@ func (f *FunctionInfoRoutineBody) Type() string {
 	return "FunctionInfoRoutineBody"
 }
 
+func FunctionInfoRoutineBodyToPb(st *FunctionInfoRoutineBody) (*catalogpb.FunctionInfoRoutineBodyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.FunctionInfoRoutineBodyPb(*st)
+	return &pb, nil
+}
+
+func FunctionInfoRoutineBodyFromPb(pb *catalogpb.FunctionInfoRoutineBodyPb) (*FunctionInfoRoutineBody, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FunctionInfoRoutineBody(*pb)
+	return &st, nil
+}
+
 // The security type of the function.
 type FunctionInfoSecurityType string
 
@@ -2959,6 +10555,22 @@ func (f *FunctionInfoSecurityType) Values() []FunctionInfoSecurityType {
 // Type always returns FunctionInfoSecurityType to satisfy [pflag.Value] interface
 func (f *FunctionInfoSecurityType) Type() string {
 	return "FunctionInfoSecurityType"
+}
+
+func FunctionInfoSecurityTypeToPb(st *FunctionInfoSecurityType) (*catalogpb.FunctionInfoSecurityTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.FunctionInfoSecurityTypePb(*st)
+	return &pb, nil
+}
+
+func FunctionInfoSecurityTypeFromPb(pb *catalogpb.FunctionInfoSecurityTypePb) (*FunctionInfoSecurityType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FunctionInfoSecurityType(*pb)
+	return &st, nil
 }
 
 // Function SQL data access.
@@ -3002,47 +10614,243 @@ func (f *FunctionInfoSqlDataAccess) Type() string {
 	return "FunctionInfoSqlDataAccess"
 }
 
+func FunctionInfoSqlDataAccessToPb(st *FunctionInfoSqlDataAccess) (*catalogpb.FunctionInfoSqlDataAccessPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.FunctionInfoSqlDataAccessPb(*st)
+	return &pb, nil
+}
+
+func FunctionInfoSqlDataAccessFromPb(pb *catalogpb.FunctionInfoSqlDataAccessPb) (*FunctionInfoSqlDataAccess, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FunctionInfoSqlDataAccess(*pb)
+	return &st, nil
+}
+
 type FunctionParameterInfo struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Name of parameter.
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// Default value of the parameter.
+	// Wire name: 'parameter_default'
 	ParameterDefault string `json:"parameter_default,omitempty"`
 
+	// Wire name: 'parameter_mode'
 	ParameterMode FunctionParameterMode `json:"parameter_mode,omitempty"`
 
+	// Wire name: 'parameter_type'
 	ParameterType FunctionParameterType `json:"parameter_type,omitempty"`
 	// Ordinal position of column (starting at position 0).
+	// Wire name: 'position'
 	Position int `json:"position"`
 	// Format of IntervalType.
+	// Wire name: 'type_interval_type'
 	TypeIntervalType string `json:"type_interval_type,omitempty"`
 	// Full data type spec, JSON-serialized.
+	// Wire name: 'type_json'
 	TypeJson string `json:"type_json,omitempty"`
 
+	// Wire name: 'type_name'
 	TypeName ColumnTypeName `json:"type_name"`
 	// Digits of precision; required on Create for DecimalTypes.
+	// Wire name: 'type_precision'
 	TypePrecision int `json:"type_precision,omitempty"`
 	// Digits to right of decimal; Required on Create for DecimalTypes.
+	// Wire name: 'type_scale'
 	TypeScale int `json:"type_scale,omitempty"`
 	// Full data type spec, SQL/catalogString text.
-	TypeText string `json:"type_text"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'type_text'
+	TypeText        string   `json:"type_text"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *FunctionParameterInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st FunctionParameterInfo) MarshalJSON() ([]byte, error) {
+	pb, err := FunctionParameterInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s FunctionParameterInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *FunctionParameterInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.FunctionParameterInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FunctionParameterInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func FunctionParameterInfoToPb(st *FunctionParameterInfo) (*catalogpb.FunctionParameterInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.FunctionParameterInfoPb{}
+	pb.Comment = st.Comment
+	pb.Name = st.Name
+	pb.ParameterDefault = st.ParameterDefault
+	parameterModePb, err := FunctionParameterModeToPb(&st.ParameterMode)
+	if err != nil {
+		return nil, err
+	}
+	if parameterModePb != nil {
+		pb.ParameterMode = *parameterModePb
+	}
+	parameterTypePb, err := FunctionParameterTypeToPb(&st.ParameterType)
+	if err != nil {
+		return nil, err
+	}
+	if parameterTypePb != nil {
+		pb.ParameterType = *parameterTypePb
+	}
+	pb.Position = st.Position
+	pb.TypeIntervalType = st.TypeIntervalType
+	pb.TypeJson = st.TypeJson
+	typeNamePb, err := ColumnTypeNameToPb(&st.TypeName)
+	if err != nil {
+		return nil, err
+	}
+	if typeNamePb != nil {
+		pb.TypeName = *typeNamePb
+	}
+	pb.TypePrecision = st.TypePrecision
+	pb.TypeScale = st.TypeScale
+	pb.TypeText = st.TypeText
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func FunctionParameterInfoFromPb(pb *catalogpb.FunctionParameterInfoPb) (*FunctionParameterInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &FunctionParameterInfo{}
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.ParameterDefault = pb.ParameterDefault
+	parameterModeField, err := FunctionParameterModeFromPb(&pb.ParameterMode)
+	if err != nil {
+		return nil, err
+	}
+	if parameterModeField != nil {
+		st.ParameterMode = *parameterModeField
+	}
+	parameterTypeField, err := FunctionParameterTypeFromPb(&pb.ParameterType)
+	if err != nil {
+		return nil, err
+	}
+	if parameterTypeField != nil {
+		st.ParameterType = *parameterTypeField
+	}
+	st.Position = pb.Position
+	st.TypeIntervalType = pb.TypeIntervalType
+	st.TypeJson = pb.TypeJson
+	typeNameField, err := ColumnTypeNameFromPb(&pb.TypeName)
+	if err != nil {
+		return nil, err
+	}
+	if typeNameField != nil {
+		st.TypeName = *typeNameField
+	}
+	st.TypePrecision = pb.TypePrecision
+	st.TypeScale = pb.TypeScale
+	st.TypeText = pb.TypeText
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type FunctionParameterInfos struct {
 	// The array of __FunctionParameterInfo__ definitions of the function's
 	// parameters.
+	// Wire name: 'parameters'
 	Parameters []FunctionParameterInfo `json:"parameters,omitempty"`
+}
+
+func (st FunctionParameterInfos) MarshalJSON() ([]byte, error) {
+	pb, err := FunctionParameterInfosToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *FunctionParameterInfos) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.FunctionParameterInfosPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := FunctionParameterInfosFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func FunctionParameterInfosToPb(st *FunctionParameterInfos) (*catalogpb.FunctionParameterInfosPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.FunctionParameterInfosPb{}
+
+	var parametersPb []catalogpb.FunctionParameterInfoPb
+	for _, item := range st.Parameters {
+		itemPb, err := FunctionParameterInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			parametersPb = append(parametersPb, *itemPb)
+		}
+	}
+	pb.Parameters = parametersPb
+
+	return pb, nil
+}
+
+func FunctionParameterInfosFromPb(pb *catalogpb.FunctionParameterInfosPb) (*FunctionParameterInfos, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &FunctionParameterInfos{}
+
+	var parametersField []FunctionParameterInfo
+	for _, itemPb := range pb.Parameters {
+		item, err := FunctionParameterInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			parametersField = append(parametersField, *item)
+		}
+	}
+	st.Parameters = parametersField
+
+	return st, nil
 }
 
 // The mode of the function parameter.
@@ -3078,6 +10886,22 @@ func (f *FunctionParameterMode) Values() []FunctionParameterMode {
 // Type always returns FunctionParameterMode to satisfy [pflag.Value] interface
 func (f *FunctionParameterMode) Type() string {
 	return "FunctionParameterMode"
+}
+
+func FunctionParameterModeToPb(st *FunctionParameterMode) (*catalogpb.FunctionParameterModePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.FunctionParameterModePb(*st)
+	return &pb, nil
+}
+
+func FunctionParameterModeFromPb(pb *catalogpb.FunctionParameterModePb) (*FunctionParameterMode, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FunctionParameterMode(*pb)
+	return &st, nil
 }
 
 // The type of function parameter.
@@ -3118,40 +10942,146 @@ func (f *FunctionParameterType) Type() string {
 	return "FunctionParameterType"
 }
 
+func FunctionParameterTypeToPb(st *FunctionParameterType) (*catalogpb.FunctionParameterTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.FunctionParameterTypePb(*st)
+	return &pb, nil
+}
+
+func FunctionParameterTypeFromPb(pb *catalogpb.FunctionParameterTypePb) (*FunctionParameterType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FunctionParameterType(*pb)
+	return &st, nil
+}
+
 // GCP temporary credentials for API authentication. Read more at
 // https://developers.google.com/identity/protocols/oauth2/service-account
 type GcpOauthToken struct {
-	OauthToken string `json:"oauth_token,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'oauth_token'
+	OauthToken      string   `json:"oauth_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GcpOauthToken) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GcpOauthToken) MarshalJSON() ([]byte, error) {
+	pb, err := GcpOauthTokenToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GcpOauthToken) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GcpOauthToken) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GcpOauthTokenPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GcpOauthTokenFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GcpOauthTokenToPb(st *GcpOauthToken) (*catalogpb.GcpOauthTokenPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GcpOauthTokenPb{}
+	pb.OauthToken = st.OauthToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GcpOauthTokenFromPb(pb *catalogpb.GcpOauthTokenPb) (*GcpOauthToken, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GcpOauthToken{}
+	st.OauthToken = pb.OauthToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GcpPubsub struct {
 	// Unique identifier included in the name of file events managed cloud
 	// resources.
+	// Wire name: 'managed_resource_id'
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
 	// The Pub/Sub subscription name in the format
 	// projects/{project}/subscriptions/{subscription name} Required for
 	// provided_pubsub.
-	SubscriptionName string `json:"subscription_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'subscription_name'
+	SubscriptionName string   `json:"subscription_name,omitempty"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
-func (s *GcpPubsub) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GcpPubsub) MarshalJSON() ([]byte, error) {
+	pb, err := GcpPubsubToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GcpPubsub) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GcpPubsub) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GcpPubsubPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GcpPubsubFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GcpPubsubToPb(st *GcpPubsub) (*catalogpb.GcpPubsubPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GcpPubsubPb{}
+	pb.ManagedResourceId = st.ManagedResourceId
+	pb.SubscriptionName = st.SubscriptionName
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GcpPubsubFromPb(pb *catalogpb.GcpPubsubPb) (*GcpPubsub, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GcpPubsub{}
+	st.ManagedResourceId = pb.ManagedResourceId
+	st.SubscriptionName = pb.SubscriptionName
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // The Azure cloud options to customize the requested temporary credential
@@ -3159,7 +11089,53 @@ type GenerateTemporaryServiceCredentialAzureOptions struct {
 	// The resources to which the temporary Azure credential should apply. These
 	// resources are the scopes that are passed to the token provider (see
 	// https://learn.microsoft.com/python/api/azure-core/azure.core.credentials.tokencredential?view=azure-python)
+	// Wire name: 'resources'
 	Resources []string `json:"resources,omitempty"`
+}
+
+func (st GenerateTemporaryServiceCredentialAzureOptions) MarshalJSON() ([]byte, error) {
+	pb, err := GenerateTemporaryServiceCredentialAzureOptionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenerateTemporaryServiceCredentialAzureOptions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GenerateTemporaryServiceCredentialAzureOptionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenerateTemporaryServiceCredentialAzureOptionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GenerateTemporaryServiceCredentialAzureOptionsToPb(st *GenerateTemporaryServiceCredentialAzureOptions) (*catalogpb.GenerateTemporaryServiceCredentialAzureOptionsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GenerateTemporaryServiceCredentialAzureOptionsPb{}
+	pb.Resources = st.Resources
+
+	return pb, nil
+}
+
+func GenerateTemporaryServiceCredentialAzureOptionsFromPb(pb *catalogpb.GenerateTemporaryServiceCredentialAzureOptionsPb) (*GenerateTemporaryServiceCredentialAzureOptions, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GenerateTemporaryServiceCredentialAzureOptions{}
+	st.Resources = pb.Resources
+
+	return st, nil
 }
 
 // The GCP cloud options to customize the requested temporary credential
@@ -3167,84 +11143,581 @@ type GenerateTemporaryServiceCredentialGcpOptions struct {
 	// The scopes to which the temporary GCP credential should apply. These
 	// resources are the scopes that are passed to the token provider (see
 	// https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.credentials.Credentials)
+	// Wire name: 'scopes'
 	Scopes []string `json:"scopes,omitempty"`
 }
 
+func (st GenerateTemporaryServiceCredentialGcpOptions) MarshalJSON() ([]byte, error) {
+	pb, err := GenerateTemporaryServiceCredentialGcpOptionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenerateTemporaryServiceCredentialGcpOptions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GenerateTemporaryServiceCredentialGcpOptionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenerateTemporaryServiceCredentialGcpOptionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GenerateTemporaryServiceCredentialGcpOptionsToPb(st *GenerateTemporaryServiceCredentialGcpOptions) (*catalogpb.GenerateTemporaryServiceCredentialGcpOptionsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GenerateTemporaryServiceCredentialGcpOptionsPb{}
+	pb.Scopes = st.Scopes
+
+	return pb, nil
+}
+
+func GenerateTemporaryServiceCredentialGcpOptionsFromPb(pb *catalogpb.GenerateTemporaryServiceCredentialGcpOptionsPb) (*GenerateTemporaryServiceCredentialGcpOptions, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GenerateTemporaryServiceCredentialGcpOptions{}
+	st.Scopes = pb.Scopes
+
+	return st, nil
+}
+
 type GenerateTemporaryServiceCredentialRequest struct {
+
+	// Wire name: 'azure_options'
 	AzureOptions *GenerateTemporaryServiceCredentialAzureOptions `json:"azure_options,omitempty"`
 	// The name of the service credential used to generate a temporary
 	// credential
+	// Wire name: 'credential_name'
 	CredentialName string `json:"credential_name"`
 
+	// Wire name: 'gcp_options'
 	GcpOptions *GenerateTemporaryServiceCredentialGcpOptions `json:"gcp_options,omitempty"`
+}
+
+func (st GenerateTemporaryServiceCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenerateTemporaryServiceCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GenerateTemporaryServiceCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GenerateTemporaryServiceCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenerateTemporaryServiceCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GenerateTemporaryServiceCredentialRequestToPb(st *GenerateTemporaryServiceCredentialRequest) (*catalogpb.GenerateTemporaryServiceCredentialRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GenerateTemporaryServiceCredentialRequestPb{}
+	azureOptionsPb, err := GenerateTemporaryServiceCredentialAzureOptionsToPb(st.AzureOptions)
+	if err != nil {
+		return nil, err
+	}
+	if azureOptionsPb != nil {
+		pb.AzureOptions = azureOptionsPb
+	}
+	pb.CredentialName = st.CredentialName
+	gcpOptionsPb, err := GenerateTemporaryServiceCredentialGcpOptionsToPb(st.GcpOptions)
+	if err != nil {
+		return nil, err
+	}
+	if gcpOptionsPb != nil {
+		pb.GcpOptions = gcpOptionsPb
+	}
+
+	return pb, nil
+}
+
+func GenerateTemporaryServiceCredentialRequestFromPb(pb *catalogpb.GenerateTemporaryServiceCredentialRequestPb) (*GenerateTemporaryServiceCredentialRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GenerateTemporaryServiceCredentialRequest{}
+	azureOptionsField, err := GenerateTemporaryServiceCredentialAzureOptionsFromPb(pb.AzureOptions)
+	if err != nil {
+		return nil, err
+	}
+	if azureOptionsField != nil {
+		st.AzureOptions = azureOptionsField
+	}
+	st.CredentialName = pb.CredentialName
+	gcpOptionsField, err := GenerateTemporaryServiceCredentialGcpOptionsFromPb(pb.GcpOptions)
+	if err != nil {
+		return nil, err
+	}
+	if gcpOptionsField != nil {
+		st.GcpOptions = gcpOptionsField
+	}
+
+	return st, nil
 }
 
 type GenerateTemporaryTableCredentialRequest struct {
 	// The operation performed against the table data, either READ or
 	// READ_WRITE. If READ_WRITE is specified, the credentials returned will
 	// have write permissions, otherwise, it will be read only.
+	// Wire name: 'operation'
 	Operation TableOperation `json:"operation,omitempty"`
 	// UUID of the table to read or write.
-	TableId string `json:"table_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'table_id'
+	TableId         string   `json:"table_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GenerateTemporaryTableCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenerateTemporaryTableCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GenerateTemporaryTableCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenerateTemporaryTableCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenerateTemporaryTableCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GenerateTemporaryTableCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenerateTemporaryTableCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GenerateTemporaryTableCredentialRequestToPb(st *GenerateTemporaryTableCredentialRequest) (*catalogpb.GenerateTemporaryTableCredentialRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GenerateTemporaryTableCredentialRequestPb{}
+	operationPb, err := TableOperationToPb(&st.Operation)
+	if err != nil {
+		return nil, err
+	}
+	if operationPb != nil {
+		pb.Operation = *operationPb
+	}
+	pb.TableId = st.TableId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GenerateTemporaryTableCredentialRequestFromPb(pb *catalogpb.GenerateTemporaryTableCredentialRequestPb) (*GenerateTemporaryTableCredentialRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GenerateTemporaryTableCredentialRequest{}
+	operationField, err := TableOperationFromPb(&pb.Operation)
+	if err != nil {
+		return nil, err
+	}
+	if operationField != nil {
+		st.Operation = *operationField
+	}
+	st.TableId = pb.TableId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GenerateTemporaryTableCredentialResponse struct {
+
+	// Wire name: 'aws_temp_credentials'
 	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
 
+	// Wire name: 'azure_aad'
 	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
 
+	// Wire name: 'azure_user_delegation_sas'
 	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
+	// Wire name: 'expiration_time'
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
 
+	// Wire name: 'gcp_oauth_token'
 	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
 
+	// Wire name: 'r2_temp_credentials'
 	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
 	// The URL of the storage path accessible by the temporary credential.
-	Url string `json:"url,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'url'
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GenerateTemporaryTableCredentialResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GenerateTemporaryTableCredentialResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GenerateTemporaryTableCredentialResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GenerateTemporaryTableCredentialResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GenerateTemporaryTableCredentialResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GenerateTemporaryTableCredentialResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GenerateTemporaryTableCredentialResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GenerateTemporaryTableCredentialResponseToPb(st *GenerateTemporaryTableCredentialResponse) (*catalogpb.GenerateTemporaryTableCredentialResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GenerateTemporaryTableCredentialResponsePb{}
+	awsTempCredentialsPb, err := AwsCredentialsToPb(st.AwsTempCredentials)
+	if err != nil {
+		return nil, err
+	}
+	if awsTempCredentialsPb != nil {
+		pb.AwsTempCredentials = awsTempCredentialsPb
+	}
+	azureAadPb, err := AzureActiveDirectoryTokenToPb(st.AzureAad)
+	if err != nil {
+		return nil, err
+	}
+	if azureAadPb != nil {
+		pb.AzureAad = azureAadPb
+	}
+	azureUserDelegationSasPb, err := AzureUserDelegationSasToPb(st.AzureUserDelegationSas)
+	if err != nil {
+		return nil, err
+	}
+	if azureUserDelegationSasPb != nil {
+		pb.AzureUserDelegationSas = azureUserDelegationSasPb
+	}
+	pb.ExpirationTime = st.ExpirationTime
+	gcpOauthTokenPb, err := GcpOauthTokenToPb(st.GcpOauthToken)
+	if err != nil {
+		return nil, err
+	}
+	if gcpOauthTokenPb != nil {
+		pb.GcpOauthToken = gcpOauthTokenPb
+	}
+	r2TempCredentialsPb, err := R2CredentialsToPb(st.R2TempCredentials)
+	if err != nil {
+		return nil, err
+	}
+	if r2TempCredentialsPb != nil {
+		pb.R2TempCredentials = r2TempCredentialsPb
+	}
+	pb.Url = st.Url
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GenerateTemporaryTableCredentialResponseFromPb(pb *catalogpb.GenerateTemporaryTableCredentialResponsePb) (*GenerateTemporaryTableCredentialResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GenerateTemporaryTableCredentialResponse{}
+	awsTempCredentialsField, err := AwsCredentialsFromPb(pb.AwsTempCredentials)
+	if err != nil {
+		return nil, err
+	}
+	if awsTempCredentialsField != nil {
+		st.AwsTempCredentials = awsTempCredentialsField
+	}
+	azureAadField, err := AzureActiveDirectoryTokenFromPb(pb.AzureAad)
+	if err != nil {
+		return nil, err
+	}
+	if azureAadField != nil {
+		st.AzureAad = azureAadField
+	}
+	azureUserDelegationSasField, err := AzureUserDelegationSasFromPb(pb.AzureUserDelegationSas)
+	if err != nil {
+		return nil, err
+	}
+	if azureUserDelegationSasField != nil {
+		st.AzureUserDelegationSas = azureUserDelegationSasField
+	}
+	st.ExpirationTime = pb.ExpirationTime
+	gcpOauthTokenField, err := GcpOauthTokenFromPb(pb.GcpOauthToken)
+	if err != nil {
+		return nil, err
+	}
+	if gcpOauthTokenField != nil {
+		st.GcpOauthToken = gcpOauthTokenField
+	}
+	r2TempCredentialsField, err := R2CredentialsFromPb(pb.R2TempCredentials)
+	if err != nil {
+		return nil, err
+	}
+	if r2TempCredentialsField != nil {
+		st.R2TempCredentials = r2TempCredentialsField
+	}
+	st.Url = pb.Url
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetAccountMetastoreAssignmentRequest struct {
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
+}
+
+func (st GetAccountMetastoreAssignmentRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAccountMetastoreAssignmentRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAccountMetastoreAssignmentRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetAccountMetastoreAssignmentRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAccountMetastoreAssignmentRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetAccountMetastoreAssignmentRequestToPb(st *GetAccountMetastoreAssignmentRequest) (*catalogpb.GetAccountMetastoreAssignmentRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetAccountMetastoreAssignmentRequestPb{}
+	pb.WorkspaceId = st.WorkspaceId
+
+	return pb, nil
+}
+
+func GetAccountMetastoreAssignmentRequestFromPb(pb *catalogpb.GetAccountMetastoreAssignmentRequestPb) (*GetAccountMetastoreAssignmentRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetAccountMetastoreAssignmentRequest{}
+	st.WorkspaceId = pb.WorkspaceId
+
+	return st, nil
 }
 
 type GetAccountMetastoreRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
+}
+
+func (st GetAccountMetastoreRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAccountMetastoreRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAccountMetastoreRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetAccountMetastoreRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAccountMetastoreRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetAccountMetastoreRequestToPb(st *GetAccountMetastoreRequest) (*catalogpb.GetAccountMetastoreRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetAccountMetastoreRequestPb{}
+	pb.MetastoreId = st.MetastoreId
+
+	return pb, nil
+}
+
+func GetAccountMetastoreRequestFromPb(pb *catalogpb.GetAccountMetastoreRequestPb) (*GetAccountMetastoreRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetAccountMetastoreRequest{}
+	st.MetastoreId = pb.MetastoreId
+
+	return st, nil
 }
 
 type GetAccountStorageCredentialRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Name of the storage credential.
-	StorageCredentialName string `json:"-" url:"-"`
+	StorageCredentialName string `json:"-" tf:"-"`
+}
+
+func (st GetAccountStorageCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetAccountStorageCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetAccountStorageCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetAccountStorageCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetAccountStorageCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetAccountStorageCredentialRequestToPb(st *GetAccountStorageCredentialRequest) (*catalogpb.GetAccountStorageCredentialRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetAccountStorageCredentialRequestPb{}
+	pb.MetastoreId = st.MetastoreId
+	pb.StorageCredentialName = st.StorageCredentialName
+
+	return pb, nil
+}
+
+func GetAccountStorageCredentialRequestFromPb(pb *catalogpb.GetAccountStorageCredentialRequestPb) (*GetAccountStorageCredentialRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetAccountStorageCredentialRequest{}
+	st.MetastoreId = pb.MetastoreId
+	st.StorageCredentialName = pb.StorageCredentialName
+
+	return st, nil
 }
 
 type GetArtifactAllowlistRequest struct {
 	// The artifact type of the allowlist.
-	ArtifactType ArtifactType `json:"-" url:"-"`
+	ArtifactType ArtifactType `json:"-" tf:"-"`
+}
+
+func (st GetArtifactAllowlistRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetArtifactAllowlistRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetArtifactAllowlistRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetArtifactAllowlistRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetArtifactAllowlistRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetArtifactAllowlistRequestToPb(st *GetArtifactAllowlistRequest) (*catalogpb.GetArtifactAllowlistRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetArtifactAllowlistRequestPb{}
+	artifactTypePb, err := ArtifactTypeToPb(&st.ArtifactType)
+	if err != nil {
+		return nil, err
+	}
+	if artifactTypePb != nil {
+		pb.ArtifactType = *artifactTypePb
+	}
+
+	return pb, nil
+}
+
+func GetArtifactAllowlistRequestFromPb(pb *catalogpb.GetArtifactAllowlistRequestPb) (*GetArtifactAllowlistRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetArtifactAllowlistRequest{}
+	artifactTypeField, err := ArtifactTypeFromPb(&pb.ArtifactType)
+	if err != nil {
+		return nil, err
+	}
+	if artifactTypeField != nil {
+		st.ArtifactType = *artifactTypeField
+	}
+
+	return st, nil
 }
 
 type GetBindingsRequest struct {
@@ -3254,82 +11727,356 @@ type GetBindingsRequest struct {
 	// server configured value; - When set to a value less than 0, an invalid
 	// parameter error is returned; - If not set, all the workspace bindings are
 	// returned (not recommended).
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken string `json:"-" tf:"-"`
 	// The name of the securable.
-	SecurableName string `json:"-" url:"-"`
+	SecurableName string `json:"-" tf:"-"`
 	// The type of the securable to bind to a workspace (catalog,
 	// storage_credential, credential, or external_location).
-	SecurableType string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	SecurableType   string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetBindingsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetBindingsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetBindingsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetBindingsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetBindingsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetBindingsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetBindingsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetBindingsRequestToPb(st *GetBindingsRequest) (*catalogpb.GetBindingsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetBindingsRequestPb{}
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+	pb.SecurableName = st.SecurableName
+	pb.SecurableType = st.SecurableType
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetBindingsRequestFromPb(pb *catalogpb.GetBindingsRequestPb) (*GetBindingsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetBindingsRequest{}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.SecurableName = pb.SecurableName
+	st.SecurableType = pb.SecurableType
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetByAliasRequest struct {
 	// The name of the alias
-	Alias string `json:"-" url:"-"`
+	Alias string `json:"-" tf:"-"`
 	// The three-level (fully qualified) name of the registered model
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Whether to include aliases associated with the model version in the
 	// response
-	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	IncludeAliases  bool     `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetByAliasRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetByAliasRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetByAliasRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetByAliasRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetByAliasRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetByAliasRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetByAliasRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetByAliasRequestToPb(st *GetByAliasRequest) (*catalogpb.GetByAliasRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetByAliasRequestPb{}
+	pb.Alias = st.Alias
+	pb.FullName = st.FullName
+	pb.IncludeAliases = st.IncludeAliases
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetByAliasRequestFromPb(pb *catalogpb.GetByAliasRequestPb) (*GetByAliasRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetByAliasRequest{}
+	st.Alias = pb.Alias
+	st.FullName = pb.FullName
+	st.IncludeAliases = pb.IncludeAliases
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetCatalogRequest struct {
 	// Whether to include catalogs in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// The name of the catalog.
-	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetCatalogRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetCatalogRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetCatalogRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetCatalogRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetCatalogRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetCatalogRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetCatalogRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetCatalogRequestToPb(st *GetCatalogRequest) (*catalogpb.GetCatalogRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetCatalogRequestPb{}
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.Name = st.Name
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetCatalogRequestFromPb(pb *catalogpb.GetCatalogRequestPb) (*GetCatalogRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetCatalogRequest{}
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.Name = pb.Name
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetCatalogWorkspaceBindingsResponse struct {
 	// A list of workspace IDs
+	// Wire name: 'workspaces'
 	Workspaces []int64 `json:"workspaces,omitempty"`
+}
+
+func (st GetCatalogWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetCatalogWorkspaceBindingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetCatalogWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetCatalogWorkspaceBindingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetCatalogWorkspaceBindingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetCatalogWorkspaceBindingsResponseToPb(st *GetCatalogWorkspaceBindingsResponse) (*catalogpb.GetCatalogWorkspaceBindingsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetCatalogWorkspaceBindingsResponsePb{}
+	pb.Workspaces = st.Workspaces
+
+	return pb, nil
+}
+
+func GetCatalogWorkspaceBindingsResponseFromPb(pb *catalogpb.GetCatalogWorkspaceBindingsResponsePb) (*GetCatalogWorkspaceBindingsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetCatalogWorkspaceBindingsResponse{}
+	st.Workspaces = pb.Workspaces
+
+	return st, nil
 }
 
 type GetConnectionRequest struct {
 	// Name of the connection.
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
+}
+
+func (st GetConnectionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetConnectionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetConnectionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetConnectionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetConnectionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetConnectionRequestToPb(st *GetConnectionRequest) (*catalogpb.GetConnectionRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetConnectionRequestPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func GetConnectionRequestFromPb(pb *catalogpb.GetConnectionRequestPb) (*GetConnectionRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetConnectionRequest{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 type GetCredentialRequest struct {
 	// Name of the credential.
-	NameArg string `json:"-" url:"-"`
+	NameArg string `json:"-" tf:"-"`
+}
+
+func (st GetCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetCredentialRequestToPb(st *GetCredentialRequest) (*catalogpb.GetCredentialRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetCredentialRequestPb{}
+	pb.NameArg = st.NameArg
+
+	return pb, nil
+}
+
+func GetCredentialRequestFromPb(pb *catalogpb.GetCredentialRequestPb) (*GetCredentialRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetCredentialRequest{}
+	st.NameArg = pb.NameArg
+
+	return st, nil
 }
 
 type GetEffectiveRequest struct {
 	// Full name of securable.
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Specifies the maximum number of privileges to return (page length). Every
 	// EffectivePrivilegeAssignment present in a single page response is
 	// guaranteed to contain all the effective privileges granted on (or
@@ -3342,70 +12089,253 @@ type GetEffectiveRequest struct {
 	// one complete EffectivePrivilegeAssignment in a single page response) -
 	// greater than (or equal to) 150: page length is the minimum of this value
 	// and a server configured value
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque token for the next page of results (pagination).
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken string `json:"-" tf:"-"`
 	// If provided, only the effective permissions for the specified principal
 	// (user or group) are returned.
-	Principal string `json:"-" url:"principal,omitempty"`
+	Principal string `json:"-" tf:"-"`
 	// Type of securable.
-	SecurableType string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	SecurableType   string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetEffectiveRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetEffectiveRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetEffectiveRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetEffectiveRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetEffectiveRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetEffectiveRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetEffectiveRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetEffectiveRequestToPb(st *GetEffectiveRequest) (*catalogpb.GetEffectiveRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetEffectiveRequestPb{}
+	pb.FullName = st.FullName
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+	pb.Principal = st.Principal
+	pb.SecurableType = st.SecurableType
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetEffectiveRequestFromPb(pb *catalogpb.GetEffectiveRequestPb) (*GetEffectiveRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetEffectiveRequest{}
+	st.FullName = pb.FullName
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.Principal = pb.Principal
+	st.SecurableType = pb.SecurableType
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetExternalLocationRequest struct {
 	// Whether to include external locations in the response for which the
 	// principal can only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Name of the external location.
-	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetExternalLocationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetExternalLocationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetExternalLocationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetExternalLocationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetExternalLocationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetExternalLocationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetExternalLocationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetExternalLocationRequestToPb(st *GetExternalLocationRequest) (*catalogpb.GetExternalLocationRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetExternalLocationRequestPb{}
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.Name = st.Name
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetExternalLocationRequestFromPb(pb *catalogpb.GetExternalLocationRequestPb) (*GetExternalLocationRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetExternalLocationRequest{}
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.Name = pb.Name
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetExternalMetadataRequest struct {
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
+}
+
+func (st GetExternalMetadataRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetExternalMetadataRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetExternalMetadataRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetExternalMetadataRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetExternalMetadataRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetExternalMetadataRequestToPb(st *GetExternalMetadataRequest) (*catalogpb.GetExternalMetadataRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetExternalMetadataRequestPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func GetExternalMetadataRequestFromPb(pb *catalogpb.GetExternalMetadataRequestPb) (*GetExternalMetadataRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetExternalMetadataRequest{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 type GetFunctionRequest struct {
 	// Whether to include functions in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
-	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetFunctionRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetFunctionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetFunctionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetFunctionRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetFunctionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetFunctionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetFunctionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetFunctionRequestToPb(st *GetFunctionRequest) (*catalogpb.GetFunctionRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetFunctionRequestPb{}
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.Name = st.Name
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetFunctionRequestFromPb(pb *catalogpb.GetFunctionRequestPb) (*GetFunctionRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetFunctionRequest{}
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.Name = pb.Name
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetGrantRequest struct {
 	// Full name of securable.
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Specifies the maximum number of privileges to return (page length). Every
 	// PrivilegeAssignment present in a single page response is guaranteed to
 	// contain all the privileges granted on the requested Securable for the
@@ -3418,250 +12348,1110 @@ type GetGrantRequest struct {
 	// PrivilegeAssignment in a single page response) - greater than (or equal
 	// to) 150: page length is the minimum of this value and a server configured
 	// value
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken string `json:"-" tf:"-"`
 	// If provided, only the permissions for the specified principal (user or
 	// group) are returned.
-	Principal string `json:"-" url:"principal,omitempty"`
+	Principal string `json:"-" tf:"-"`
 	// Type of securable.
-	SecurableType string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	SecurableType   string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetGrantRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetGrantRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetGrantRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetGrantRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetGrantRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetGrantRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetGrantRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetGrantRequestToPb(st *GetGrantRequest) (*catalogpb.GetGrantRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetGrantRequestPb{}
+	pb.FullName = st.FullName
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+	pb.Principal = st.Principal
+	pb.SecurableType = st.SecurableType
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetGrantRequestFromPb(pb *catalogpb.GetGrantRequestPb) (*GetGrantRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetGrantRequest{}
+	st.FullName = pb.FullName
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.Principal = pb.Principal
+	st.SecurableType = pb.SecurableType
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetMetastoreRequest struct {
 	// Unique ID of the metastore.
-	Id string `json:"-" url:"-"`
+	Id string `json:"-" tf:"-"`
+}
+
+func (st GetMetastoreRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetMetastoreRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetMetastoreRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetMetastoreRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetMetastoreRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetMetastoreRequestToPb(st *GetMetastoreRequest) (*catalogpb.GetMetastoreRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetMetastoreRequestPb{}
+	pb.Id = st.Id
+
+	return pb, nil
+}
+
+func GetMetastoreRequestFromPb(pb *catalogpb.GetMetastoreRequestPb) (*GetMetastoreRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetMetastoreRequest{}
+	st.Id = pb.Id
+
+	return st, nil
 }
 
 type GetMetastoreSummaryResponse struct {
 	// Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`).
+	// Wire name: 'cloud'
 	Cloud string `json:"cloud,omitempty"`
 	// Time at which this metastore was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of metastore creator.
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 	// Unique identifier of the metastore's (Default) Data Access Configuration.
+	// Wire name: 'default_data_access_config_id'
 	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
 	// The organization name of a Delta Sharing entity, to be used in
 	// Databricks-to-Databricks Delta Sharing as the official name.
+	// Wire name: 'delta_sharing_organization_name'
 	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
 	// The lifetime of delta sharing recipient token in seconds.
+	// Wire name: 'delta_sharing_recipient_token_lifetime_in_seconds'
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
+	// Wire name: 'delta_sharing_scope'
 	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
 	// Whether to allow non-DBR clients to directly access entities under the
 	// metastore.
+	// Wire name: 'external_access_enabled'
 	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// Globally unique metastore ID across clouds and regions, of the form
 	// `cloud:region:metastore_id`.
+	// Wire name: 'global_metastore_id'
 	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
 	// Unique identifier of metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// The user-specified name of the metastore.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// The owner of the metastore.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// Privilege model version of the metastore, of the form `major.minor`
 	// (e.g., `1.0`).
+	// Wire name: 'privilege_model_version'
 	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+	// Wire name: 'region'
 	Region string `json:"region,omitempty"`
 	// The storage root URL for metastore
+	// Wire name: 'storage_root'
 	StorageRoot string `json:"storage_root,omitempty"`
 	// UUID of storage credential to access the metastore storage_root.
+	// Wire name: 'storage_root_credential_id'
 	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
 	// Name of the storage credential to access the metastore storage_root.
+	// Wire name: 'storage_root_credential_name'
 	StorageRootCredentialName string `json:"storage_root_credential_name,omitempty"`
 	// Time at which the metastore was last modified, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the metastore.
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'updated_by'
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetMetastoreSummaryResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetMetastoreSummaryResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetMetastoreSummaryResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetMetastoreSummaryResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetMetastoreSummaryResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetMetastoreSummaryResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetMetastoreSummaryResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetMetastoreSummaryResponseToPb(st *GetMetastoreSummaryResponse) (*catalogpb.GetMetastoreSummaryResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetMetastoreSummaryResponsePb{}
+	pb.Cloud = st.Cloud
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	pb.DefaultDataAccessConfigId = st.DefaultDataAccessConfigId
+	pb.DeltaSharingOrganizationName = st.DeltaSharingOrganizationName
+	pb.DeltaSharingRecipientTokenLifetimeInSeconds = st.DeltaSharingRecipientTokenLifetimeInSeconds
+	deltaSharingScopePb, err := DeltaSharingScopeEnumToPb(&st.DeltaSharingScope)
+	if err != nil {
+		return nil, err
+	}
+	if deltaSharingScopePb != nil {
+		pb.DeltaSharingScope = *deltaSharingScopePb
+	}
+	pb.ExternalAccessEnabled = st.ExternalAccessEnabled
+	pb.GlobalMetastoreId = st.GlobalMetastoreId
+	pb.MetastoreId = st.MetastoreId
+	pb.Name = st.Name
+	pb.Owner = st.Owner
+	pb.PrivilegeModelVersion = st.PrivilegeModelVersion
+	pb.Region = st.Region
+	pb.StorageRoot = st.StorageRoot
+	pb.StorageRootCredentialId = st.StorageRootCredentialId
+	pb.StorageRootCredentialName = st.StorageRootCredentialName
+	pb.UpdatedAt = st.UpdatedAt
+	pb.UpdatedBy = st.UpdatedBy
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetMetastoreSummaryResponseFromPb(pb *catalogpb.GetMetastoreSummaryResponsePb) (*GetMetastoreSummaryResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetMetastoreSummaryResponse{}
+	st.Cloud = pb.Cloud
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.DefaultDataAccessConfigId = pb.DefaultDataAccessConfigId
+	st.DeltaSharingOrganizationName = pb.DeltaSharingOrganizationName
+	st.DeltaSharingRecipientTokenLifetimeInSeconds = pb.DeltaSharingRecipientTokenLifetimeInSeconds
+	deltaSharingScopeField, err := DeltaSharingScopeEnumFromPb(&pb.DeltaSharingScope)
+	if err != nil {
+		return nil, err
+	}
+	if deltaSharingScopeField != nil {
+		st.DeltaSharingScope = *deltaSharingScopeField
+	}
+	st.ExternalAccessEnabled = pb.ExternalAccessEnabled
+	st.GlobalMetastoreId = pb.GlobalMetastoreId
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.PrivilegeModelVersion = pb.PrivilegeModelVersion
+	st.Region = pb.Region
+	st.StorageRoot = pb.StorageRoot
+	st.StorageRootCredentialId = pb.StorageRootCredentialId
+	st.StorageRootCredentialName = pb.StorageRootCredentialName
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Whether to include aliases associated with the model version in the
 	// response
-	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
+	IncludeAliases bool `json:"-" tf:"-"`
 	// Whether to include model versions in the response for which the principal
 	// can only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// The integer version number of the model version
-	Version int `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	Version         int      `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetModelVersionRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetModelVersionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetModelVersionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetModelVersionRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetModelVersionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetModelVersionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetModelVersionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetModelVersionRequestToPb(st *GetModelVersionRequest) (*catalogpb.GetModelVersionRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetModelVersionRequestPb{}
+	pb.FullName = st.FullName
+	pb.IncludeAliases = st.IncludeAliases
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.Version = st.Version
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetModelVersionRequestFromPb(pb *catalogpb.GetModelVersionRequestPb) (*GetModelVersionRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetModelVersionRequest{}
+	st.FullName = pb.FullName
+	st.IncludeAliases = pb.IncludeAliases
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.Version = pb.Version
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
+}
+
+func (st GetOnlineTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetOnlineTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetOnlineTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetOnlineTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetOnlineTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetOnlineTableRequestToPb(st *GetOnlineTableRequest) (*catalogpb.GetOnlineTableRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetOnlineTableRequestPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func GetOnlineTableRequestFromPb(pb *catalogpb.GetOnlineTableRequestPb) (*GetOnlineTableRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetOnlineTableRequest{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 type GetPermissionsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// The privileges assigned to each principal
+	// Wire name: 'privilege_assignments'
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields      []string              `json:"-" tf:"-"`
 }
 
-func (s *GetPermissionsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetPermissionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetPermissionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetPermissionsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetPermissionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetPermissionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetPermissionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetPermissionsResponseToPb(st *GetPermissionsResponse) (*catalogpb.GetPermissionsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetPermissionsResponsePb{}
+	pb.NextPageToken = st.NextPageToken
+
+	var privilegeAssignmentsPb []catalogpb.PrivilegeAssignmentPb
+	for _, item := range st.PrivilegeAssignments {
+		itemPb, err := PrivilegeAssignmentToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			privilegeAssignmentsPb = append(privilegeAssignmentsPb, *itemPb)
+		}
+	}
+	pb.PrivilegeAssignments = privilegeAssignmentsPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetPermissionsResponseFromPb(pb *catalogpb.GetPermissionsResponsePb) (*GetPermissionsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetPermissionsResponse{}
+	st.NextPageToken = pb.NextPageToken
+
+	var privilegeAssignmentsField []PrivilegeAssignment
+	for _, itemPb := range pb.PrivilegeAssignments {
+		item, err := PrivilegeAssignmentFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			privilegeAssignmentsField = append(privilegeAssignmentsField, *item)
+		}
+	}
+	st.PrivilegeAssignments = privilegeAssignmentsField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetQualityMonitorRequest struct {
 	// UC table name in format `catalog.schema.table_name`. This field
 	// corresponds to the {full_table_name_arg} arg in the endpoint path.
-	TableName string `json:"-" url:"-"`
+	TableName string `json:"-" tf:"-"`
+}
+
+func (st GetQualityMonitorRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetQualityMonitorRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetQualityMonitorRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetQualityMonitorRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetQualityMonitorRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetQualityMonitorRequestToPb(st *GetQualityMonitorRequest) (*catalogpb.GetQualityMonitorRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetQualityMonitorRequestPb{}
+	pb.TableName = st.TableName
+
+	return pb, nil
+}
+
+func GetQualityMonitorRequestFromPb(pb *catalogpb.GetQualityMonitorRequestPb) (*GetQualityMonitorRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetQualityMonitorRequest{}
+	st.TableName = pb.TableName
+
+	return st, nil
 }
 
 type GetQuotaRequest struct {
 	// Full name of the parent resource. Provide the metastore ID if the parent
 	// is a metastore.
-	ParentFullName string `json:"-" url:"-"`
+	ParentFullName string `json:"-" tf:"-"`
 	// Securable type of the quota parent.
-	ParentSecurableType string `json:"-" url:"-"`
+	ParentSecurableType string `json:"-" tf:"-"`
 	// Name of the quota. Follows the pattern of the quota type, with "-quota"
 	// added as a suffix.
-	QuotaName string `json:"-" url:"-"`
+	QuotaName string `json:"-" tf:"-"`
+}
+
+func (st GetQuotaRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetQuotaRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetQuotaRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetQuotaRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetQuotaRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetQuotaRequestToPb(st *GetQuotaRequest) (*catalogpb.GetQuotaRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetQuotaRequestPb{}
+	pb.ParentFullName = st.ParentFullName
+	pb.ParentSecurableType = st.ParentSecurableType
+	pb.QuotaName = st.QuotaName
+
+	return pb, nil
+}
+
+func GetQuotaRequestFromPb(pb *catalogpb.GetQuotaRequestPb) (*GetQuotaRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetQuotaRequest{}
+	st.ParentFullName = pb.ParentFullName
+	st.ParentSecurableType = pb.ParentSecurableType
+	st.QuotaName = pb.QuotaName
+
+	return st, nil
 }
 
 type GetQuotaResponse struct {
 	// The returned QuotaInfo.
+	// Wire name: 'quota_info'
 	QuotaInfo *QuotaInfo `json:"quota_info,omitempty"`
+}
+
+func (st GetQuotaResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetQuotaResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetQuotaResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetQuotaResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetQuotaResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetQuotaResponseToPb(st *GetQuotaResponse) (*catalogpb.GetQuotaResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetQuotaResponsePb{}
+	quotaInfoPb, err := QuotaInfoToPb(st.QuotaInfo)
+	if err != nil {
+		return nil, err
+	}
+	if quotaInfoPb != nil {
+		pb.QuotaInfo = quotaInfoPb
+	}
+
+	return pb, nil
+}
+
+func GetQuotaResponseFromPb(pb *catalogpb.GetQuotaResponsePb) (*GetQuotaResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetQuotaResponse{}
+	quotaInfoField, err := QuotaInfoFromPb(pb.QuotaInfo)
+	if err != nil {
+		return nil, err
+	}
+	if quotaInfoField != nil {
+		st.QuotaInfo = quotaInfoField
+	}
+
+	return st, nil
 }
 
 type GetRefreshRequest struct {
 	// ID of the refresh.
-	RefreshId int64 `json:"-" url:"-"`
+	RefreshId int64 `json:"-" tf:"-"`
 	// Full name of the table.
-	TableName string `json:"-" url:"-"`
+	TableName string `json:"-" tf:"-"`
+}
+
+func (st GetRefreshRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetRefreshRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetRefreshRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetRefreshRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetRefreshRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetRefreshRequestToPb(st *GetRefreshRequest) (*catalogpb.GetRefreshRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetRefreshRequestPb{}
+	pb.RefreshId = st.RefreshId
+	pb.TableName = st.TableName
+
+	return pb, nil
+}
+
+func GetRefreshRequestFromPb(pb *catalogpb.GetRefreshRequestPb) (*GetRefreshRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetRefreshRequest{}
+	st.RefreshId = pb.RefreshId
+	st.TableName = pb.TableName
+
+	return st, nil
 }
 
 type GetRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Whether to include registered model aliases in the response
-	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
+	IncludeAliases bool `json:"-" tf:"-"`
 	// Whether to include registered models in the response for which the
 	// principal can only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	IncludeBrowse   bool     `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetRegisteredModelRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetRegisteredModelRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetRegisteredModelRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetRegisteredModelRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetRegisteredModelRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetRegisteredModelRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetRegisteredModelRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetRegisteredModelRequestToPb(st *GetRegisteredModelRequest) (*catalogpb.GetRegisteredModelRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetRegisteredModelRequestPb{}
+	pb.FullName = st.FullName
+	pb.IncludeAliases = st.IncludeAliases
+	pb.IncludeBrowse = st.IncludeBrowse
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetRegisteredModelRequestFromPb(pb *catalogpb.GetRegisteredModelRequestPb) (*GetRegisteredModelRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetRegisteredModelRequest{}
+	st.FullName = pb.FullName
+	st.IncludeAliases = pb.IncludeAliases
+	st.IncludeBrowse = pb.IncludeBrowse
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetSchemaRequest struct {
 	// Full name of the schema.
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Whether to include schemas in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	IncludeBrowse   bool     `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetSchemaRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetSchemaRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetSchemaRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetSchemaRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetSchemaRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetSchemaRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetSchemaRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetSchemaRequestToPb(st *GetSchemaRequest) (*catalogpb.GetSchemaRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetSchemaRequestPb{}
+	pb.FullName = st.FullName
+	pb.IncludeBrowse = st.IncludeBrowse
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetSchemaRequestFromPb(pb *catalogpb.GetSchemaRequestPb) (*GetSchemaRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetSchemaRequest{}
+	st.FullName = pb.FullName
+	st.IncludeBrowse = pb.IncludeBrowse
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetStorageCredentialRequest struct {
 	// Name of the storage credential.
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
+}
+
+func (st GetStorageCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetStorageCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetStorageCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetStorageCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetStorageCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetStorageCredentialRequestToPb(st *GetStorageCredentialRequest) (*catalogpb.GetStorageCredentialRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetStorageCredentialRequestPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func GetStorageCredentialRequestFromPb(pb *catalogpb.GetStorageCredentialRequestPb) (*GetStorageCredentialRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetStorageCredentialRequest{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 type GetTableRequest struct {
 	// Full name of the table.
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Whether to include tables in the response for which the principal can
 	// only access selective metadata for.
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Whether delta metadata should be included in the response.
-	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
+	IncludeDeltaMetadata bool `json:"-" tf:"-"`
 	// Whether to include a manifest containing table capabilities in the
 	// response.
-	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	IncludeManifestCapabilities bool     `json:"-" tf:"-"`
+	ForceSendFields             []string `json:"-" tf:"-"`
 }
 
-func (s *GetTableRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetTableRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetTableRequestToPb(st *GetTableRequest) (*catalogpb.GetTableRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetTableRequestPb{}
+	pb.FullName = st.FullName
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.IncludeDeltaMetadata = st.IncludeDeltaMetadata
+	pb.IncludeManifestCapabilities = st.IncludeManifestCapabilities
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetTableRequestFromPb(pb *catalogpb.GetTableRequestPb) (*GetTableRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetTableRequest{}
+	st.FullName = pb.FullName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.IncludeDeltaMetadata = pb.IncludeDeltaMetadata
+	st.IncludeManifestCapabilities = pb.IncludeManifestCapabilities
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type GetWorkspaceBindingRequest struct {
 	// The name of the catalog.
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
+}
+
+func (st GetWorkspaceBindingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := GetWorkspaceBindingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *GetWorkspaceBindingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetWorkspaceBindingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetWorkspaceBindingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetWorkspaceBindingRequestToPb(st *GetWorkspaceBindingRequest) (*catalogpb.GetWorkspaceBindingRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetWorkspaceBindingRequestPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func GetWorkspaceBindingRequestFromPb(pb *catalogpb.GetWorkspaceBindingRequestPb) (*GetWorkspaceBindingRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetWorkspaceBindingRequest{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 type GetWorkspaceBindingsResponse struct {
 	// List of workspace bindings
+	// Wire name: 'bindings'
 	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st GetWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := GetWorkspaceBindingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s GetWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *GetWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.GetWorkspaceBindingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := GetWorkspaceBindingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func GetWorkspaceBindingsResponseToPb(st *GetWorkspaceBindingsResponse) (*catalogpb.GetWorkspaceBindingsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.GetWorkspaceBindingsResponsePb{}
+
+	var bindingsPb []catalogpb.WorkspaceBindingPb
+	for _, item := range st.Bindings {
+		itemPb, err := WorkspaceBindingToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			bindingsPb = append(bindingsPb, *itemPb)
+		}
+	}
+	pb.Bindings = bindingsPb
+	pb.NextPageToken = st.NextPageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func GetWorkspaceBindingsResponseFromPb(pb *catalogpb.GetWorkspaceBindingsResponsePb) (*GetWorkspaceBindingsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetWorkspaceBindingsResponse{}
+
+	var bindingsField []WorkspaceBinding
+	for _, itemPb := range pb.Bindings {
+		item, err := WorkspaceBindingFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			bindingsField = append(bindingsField, *item)
+		}
+	}
+	st.Bindings = bindingsField
+	st.NextPageToken = pb.NextPageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type IsolationMode string
@@ -3701,6 +13491,22 @@ func (f *IsolationMode) Type() string {
 	return "IsolationMode"
 }
 
+func IsolationModeToPb(st *IsolationMode) (*catalogpb.IsolationModePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.IsolationModePb(*st)
+	return &pb, nil
+}
+
+func IsolationModeFromPb(pb *catalogpb.IsolationModePb) (*IsolationMode, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := IsolationMode(*pb)
+	return &st, nil
+}
+
 type LineageDirection string
 
 const LineageDirectionDownstream LineageDirection = `DOWNSTREAM`
@@ -3738,30 +13544,251 @@ func (f *LineageDirection) Type() string {
 	return "LineageDirection"
 }
 
+func LineageDirectionToPb(st *LineageDirection) (*catalogpb.LineageDirectionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.LineageDirectionPb(*st)
+	return &pb, nil
+}
+
+func LineageDirectionFromPb(pb *catalogpb.LineageDirectionPb) (*LineageDirection, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := LineageDirection(*pb)
+	return &st, nil
+}
+
 type ListAccountMetastoreAssignmentsRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
+}
+
+func (st ListAccountMetastoreAssignmentsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListAccountMetastoreAssignmentsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListAccountMetastoreAssignmentsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListAccountMetastoreAssignmentsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAccountMetastoreAssignmentsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListAccountMetastoreAssignmentsRequestToPb(st *ListAccountMetastoreAssignmentsRequest) (*catalogpb.ListAccountMetastoreAssignmentsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListAccountMetastoreAssignmentsRequestPb{}
+	pb.MetastoreId = st.MetastoreId
+
+	return pb, nil
+}
+
+func ListAccountMetastoreAssignmentsRequestFromPb(pb *catalogpb.ListAccountMetastoreAssignmentsRequestPb) (*ListAccountMetastoreAssignmentsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListAccountMetastoreAssignmentsRequest{}
+	st.MetastoreId = pb.MetastoreId
+
+	return st, nil
 }
 
 // The list of workspaces to which the given metastore is assigned.
 type ListAccountMetastoreAssignmentsResponse struct {
+
+	// Wire name: 'workspace_ids'
 	WorkspaceIds []int64 `json:"workspace_ids,omitempty"`
+}
+
+func (st ListAccountMetastoreAssignmentsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListAccountMetastoreAssignmentsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListAccountMetastoreAssignmentsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListAccountMetastoreAssignmentsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAccountMetastoreAssignmentsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListAccountMetastoreAssignmentsResponseToPb(st *ListAccountMetastoreAssignmentsResponse) (*catalogpb.ListAccountMetastoreAssignmentsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListAccountMetastoreAssignmentsResponsePb{}
+	pb.WorkspaceIds = st.WorkspaceIds
+
+	return pb, nil
+}
+
+func ListAccountMetastoreAssignmentsResponseFromPb(pb *catalogpb.ListAccountMetastoreAssignmentsResponsePb) (*ListAccountMetastoreAssignmentsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListAccountMetastoreAssignmentsResponse{}
+	st.WorkspaceIds = pb.WorkspaceIds
+
+	return st, nil
 }
 
 type ListAccountStorageCredentialsRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
+}
+
+func (st ListAccountStorageCredentialsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListAccountStorageCredentialsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListAccountStorageCredentialsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListAccountStorageCredentialsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAccountStorageCredentialsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListAccountStorageCredentialsRequestToPb(st *ListAccountStorageCredentialsRequest) (*catalogpb.ListAccountStorageCredentialsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListAccountStorageCredentialsRequestPb{}
+	pb.MetastoreId = st.MetastoreId
+
+	return pb, nil
+}
+
+func ListAccountStorageCredentialsRequestFromPb(pb *catalogpb.ListAccountStorageCredentialsRequestPb) (*ListAccountStorageCredentialsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListAccountStorageCredentialsRequest{}
+	st.MetastoreId = pb.MetastoreId
+
+	return st, nil
 }
 
 type ListAccountStorageCredentialsResponse struct {
 	// An array of metastore storage credentials.
+	// Wire name: 'storage_credentials'
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
+}
+
+func (st ListAccountStorageCredentialsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListAccountStorageCredentialsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListAccountStorageCredentialsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListAccountStorageCredentialsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListAccountStorageCredentialsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListAccountStorageCredentialsResponseToPb(st *ListAccountStorageCredentialsResponse) (*catalogpb.ListAccountStorageCredentialsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListAccountStorageCredentialsResponsePb{}
+
+	var storageCredentialsPb []catalogpb.StorageCredentialInfoPb
+	for _, item := range st.StorageCredentials {
+		itemPb, err := StorageCredentialInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			storageCredentialsPb = append(storageCredentialsPb, *itemPb)
+		}
+	}
+	pb.StorageCredentials = storageCredentialsPb
+
+	return pb, nil
+}
+
+func ListAccountStorageCredentialsResponseFromPb(pb *catalogpb.ListAccountStorageCredentialsResponsePb) (*ListAccountStorageCredentialsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListAccountStorageCredentialsResponse{}
+
+	var storageCredentialsField []StorageCredentialInfo
+	for _, itemPb := range pb.StorageCredentials {
+		item, err := StorageCredentialInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			storageCredentialsField = append(storageCredentialsField, *item)
+		}
+	}
+	st.StorageCredentials = storageCredentialsField
+
+	return st, nil
 }
 
 type ListCatalogsRequest struct {
 	// Whether to include catalogs in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Maximum number of catalogs to return. - when set to 0, the page length is
 	// set to a server configured value (recommended); - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
@@ -3771,38 +13798,152 @@ type ListCatalogsRequest struct {
 	// the specified max_results size, even zero. The only definitive indication
 	// that no further catalogs can be fetched is when the next_page_token is
 	// unset from the response.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListCatalogsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCatalogsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListCatalogsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCatalogsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCatalogsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListCatalogsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCatalogsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListCatalogsRequestToPb(st *ListCatalogsRequest) (*catalogpb.ListCatalogsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListCatalogsRequestPb{}
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListCatalogsRequestFromPb(pb *catalogpb.ListCatalogsRequestPb) (*ListCatalogsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListCatalogsRequest{}
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListCatalogsResponse struct {
 	// An array of catalog information objects.
+	// Wire name: 'catalogs'
 	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListCatalogsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCatalogsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListCatalogsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCatalogsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCatalogsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListCatalogsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCatalogsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListCatalogsResponseToPb(st *ListCatalogsResponse) (*catalogpb.ListCatalogsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListCatalogsResponsePb{}
+
+	var catalogsPb []catalogpb.CatalogInfoPb
+	for _, item := range st.Catalogs {
+		itemPb, err := CatalogInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			catalogsPb = append(catalogsPb, *itemPb)
+		}
+	}
+	pb.Catalogs = catalogsPb
+	pb.NextPageToken = st.NextPageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListCatalogsResponseFromPb(pb *catalogpb.ListCatalogsResponsePb) (*ListCatalogsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListCatalogsResponse{}
+
+	var catalogsField []CatalogInfo
+	for _, itemPb := range pb.Catalogs {
+		item, err := CatalogInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			catalogsField = append(catalogsField, *item)
+		}
+	}
+	st.Catalogs = catalogsField
+	st.NextPageToken = pb.NextPageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListConnectionsRequest struct {
@@ -3812,38 +13953,150 @@ type ListConnectionsRequest struct {
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListConnectionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListConnectionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListConnectionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListConnectionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListConnectionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListConnectionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListConnectionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListConnectionsRequestToPb(st *ListConnectionsRequest) (*catalogpb.ListConnectionsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListConnectionsRequestPb{}
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListConnectionsRequestFromPb(pb *catalogpb.ListConnectionsRequestPb) (*ListConnectionsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListConnectionsRequest{}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListConnectionsResponse struct {
 	// An array of connection information objects.
+	// Wire name: 'connections'
 	Connections []ConnectionInfo `json:"connections,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListConnectionsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListConnectionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListConnectionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListConnectionsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListConnectionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListConnectionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListConnectionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListConnectionsResponseToPb(st *ListConnectionsResponse) (*catalogpb.ListConnectionsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListConnectionsResponsePb{}
+
+	var connectionsPb []catalogpb.ConnectionInfoPb
+	for _, item := range st.Connections {
+		itemPb, err := ConnectionInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			connectionsPb = append(connectionsPb, *itemPb)
+		}
+	}
+	pb.Connections = connectionsPb
+	pb.NextPageToken = st.NextPageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListConnectionsResponseFromPb(pb *catalogpb.ListConnectionsResponsePb) (*ListConnectionsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListConnectionsResponse{}
+
+	var connectionsField []ConnectionInfo
+	for _, itemPb := range pb.Connections {
+		item, err := ConnectionInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			connectionsField = append(connectionsField, *item)
+		}
+	}
+	st.Connections = connectionsField
+	st.NextPageToken = pb.NextPageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListCredentialsRequest struct {
@@ -3852,206 +14105,819 @@ type ListCredentialsRequest struct {
 	// is the minimum of this value and a server-configured value. - When set to
 	// 0, the page length is set to a server-configured value (recommended). -
 	// When set to a value less than 0, an invalid parameter error is returned.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque token to retrieve the next page of results.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken string `json:"-" tf:"-"`
 	// Return only credentials for the specified purpose.
-	Purpose CredentialPurpose `json:"-" url:"purpose,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	Purpose         CredentialPurpose `json:"-" tf:"-"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
-func (s *ListCredentialsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCredentialsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListCredentialsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCredentialsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCredentialsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListCredentialsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCredentialsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListCredentialsRequestToPb(st *ListCredentialsRequest) (*catalogpb.ListCredentialsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListCredentialsRequestPb{}
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+	purposePb, err := CredentialPurposeToPb(&st.Purpose)
+	if err != nil {
+		return nil, err
+	}
+	if purposePb != nil {
+		pb.Purpose = *purposePb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListCredentialsRequestFromPb(pb *catalogpb.ListCredentialsRequestPb) (*ListCredentialsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListCredentialsRequest{}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	purposeField, err := CredentialPurposeFromPb(&pb.Purpose)
+	if err != nil {
+		return nil, err
+	}
+	if purposeField != nil {
+		st.Purpose = *purposeField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListCredentialsResponse struct {
+
+	// Wire name: 'credentials'
 	Credentials []CredentialInfo `json:"credentials,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListCredentialsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListCredentialsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListCredentialsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListCredentialsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListCredentialsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListCredentialsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListCredentialsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListCredentialsResponseToPb(st *ListCredentialsResponse) (*catalogpb.ListCredentialsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListCredentialsResponsePb{}
+
+	var credentialsPb []catalogpb.CredentialInfoPb
+	for _, item := range st.Credentials {
+		itemPb, err := CredentialInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			credentialsPb = append(credentialsPb, *itemPb)
+		}
+	}
+	pb.Credentials = credentialsPb
+	pb.NextPageToken = st.NextPageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListCredentialsResponseFromPb(pb *catalogpb.ListCredentialsResponsePb) (*ListCredentialsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListCredentialsResponse{}
+
+	var credentialsField []CredentialInfo
+	for _, itemPb := range pb.Credentials {
+		item, err := CredentialInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			credentialsField = append(credentialsField, *item)
+		}
+	}
+	st.Credentials = credentialsField
+	st.NextPageToken = pb.NextPageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListExternalLineageRelationshipsRequest struct {
 	// The lineage direction to filter on.
-	LineageDirection LineageDirection `json:"-" url:"lineage_direction"`
+	LineageDirection LineageDirection `json:"-" tf:"-"`
 	// The object to query external lineage relationships for. Since this field
 	// is a query parameter, please flatten the nested fields. For example, if
 	// the object is a table, the query parameter should look like:
 	// `object_info.table.name=main.sales.customers`
-	ObjectInfo ExternalLineageObject `json:"-" url:"object_info"`
+	ObjectInfo ExternalLineageObject `json:"-" tf:"-"`
 	// Specifies the maximum number of external lineage relationships to return
 	// in a single response. The value must be less than or equal to 1000.
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	PageSize int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListExternalLineageRelationshipsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListExternalLineageRelationshipsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListExternalLineageRelationshipsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListExternalLineageRelationshipsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListExternalLineageRelationshipsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListExternalLineageRelationshipsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListExternalLineageRelationshipsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListExternalLineageRelationshipsRequestToPb(st *ListExternalLineageRelationshipsRequest) (*catalogpb.ListExternalLineageRelationshipsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListExternalLineageRelationshipsRequestPb{}
+	lineageDirectionPb, err := LineageDirectionToPb(&st.LineageDirection)
+	if err != nil {
+		return nil, err
+	}
+	if lineageDirectionPb != nil {
+		pb.LineageDirection = *lineageDirectionPb
+	}
+	objectInfoPb, err := ExternalLineageObjectToPb(&st.ObjectInfo)
+	if err != nil {
+		return nil, err
+	}
+	if objectInfoPb != nil {
+		pb.ObjectInfo = *objectInfoPb
+	}
+	pb.PageSize = st.PageSize
+	pb.PageToken = st.PageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListExternalLineageRelationshipsRequestFromPb(pb *catalogpb.ListExternalLineageRelationshipsRequestPb) (*ListExternalLineageRelationshipsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListExternalLineageRelationshipsRequest{}
+	lineageDirectionField, err := LineageDirectionFromPb(&pb.LineageDirection)
+	if err != nil {
+		return nil, err
+	}
+	if lineageDirectionField != nil {
+		st.LineageDirection = *lineageDirectionField
+	}
+	objectInfoField, err := ExternalLineageObjectFromPb(&pb.ObjectInfo)
+	if err != nil {
+		return nil, err
+	}
+	if objectInfoField != nil {
+		st.ObjectInfo = *objectInfoField
+	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListExternalLineageRelationshipsResponse struct {
+
+	// Wire name: 'external_lineage_relationships'
 	ExternalLineageRelationships []ExternalLineageInfo `json:"external_lineage_relationships,omitempty"`
 
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListExternalLineageRelationshipsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListExternalLineageRelationshipsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListExternalLineageRelationshipsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListExternalLineageRelationshipsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListExternalLineageRelationshipsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListExternalLineageRelationshipsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListExternalLineageRelationshipsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListExternalLineageRelationshipsResponseToPb(st *ListExternalLineageRelationshipsResponse) (*catalogpb.ListExternalLineageRelationshipsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListExternalLineageRelationshipsResponsePb{}
+
+	var externalLineageRelationshipsPb []catalogpb.ExternalLineageInfoPb
+	for _, item := range st.ExternalLineageRelationships {
+		itemPb, err := ExternalLineageInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			externalLineageRelationshipsPb = append(externalLineageRelationshipsPb, *itemPb)
+		}
+	}
+	pb.ExternalLineageRelationships = externalLineageRelationshipsPb
+	pb.NextPageToken = st.NextPageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListExternalLineageRelationshipsResponseFromPb(pb *catalogpb.ListExternalLineageRelationshipsResponsePb) (*ListExternalLineageRelationshipsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListExternalLineageRelationshipsResponse{}
+
+	var externalLineageRelationshipsField []ExternalLineageInfo
+	for _, itemPb := range pb.ExternalLineageRelationships {
+		item, err := ExternalLineageInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			externalLineageRelationshipsField = append(externalLineageRelationshipsField, *item)
+		}
+	}
+	st.ExternalLineageRelationships = externalLineageRelationshipsField
+	st.NextPageToken = pb.NextPageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListExternalLocationsRequest struct {
 	// Whether to include external locations in the response for which the
 	// principal can only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Maximum number of external locations to return. If not set, all the
 	// external locations are returned (not recommended). - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
 	// configured value; - when set to 0, the page length is set to a server
 	// configured value (recommended); - when set to a value less than 0, an
 	// invalid parameter error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListExternalLocationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListExternalLocationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListExternalLocationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListExternalLocationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListExternalLocationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListExternalLocationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListExternalLocationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListExternalLocationsRequestToPb(st *ListExternalLocationsRequest) (*catalogpb.ListExternalLocationsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListExternalLocationsRequestPb{}
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListExternalLocationsRequestFromPb(pb *catalogpb.ListExternalLocationsRequestPb) (*ListExternalLocationsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListExternalLocationsRequest{}
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListExternalLocationsResponse struct {
 	// An array of external locations.
+	// Wire name: 'external_locations'
 	ExternalLocations []ExternalLocationInfo `json:"external_locations,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListExternalLocationsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListExternalLocationsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListExternalLocationsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListExternalLocationsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListExternalLocationsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListExternalLocationsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListExternalLocationsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListExternalLocationsResponseToPb(st *ListExternalLocationsResponse) (*catalogpb.ListExternalLocationsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListExternalLocationsResponsePb{}
+
+	var externalLocationsPb []catalogpb.ExternalLocationInfoPb
+	for _, item := range st.ExternalLocations {
+		itemPb, err := ExternalLocationInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			externalLocationsPb = append(externalLocationsPb, *itemPb)
+		}
+	}
+	pb.ExternalLocations = externalLocationsPb
+	pb.NextPageToken = st.NextPageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListExternalLocationsResponseFromPb(pb *catalogpb.ListExternalLocationsResponsePb) (*ListExternalLocationsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListExternalLocationsResponse{}
+
+	var externalLocationsField []ExternalLocationInfo
+	for _, itemPb := range pb.ExternalLocations {
+		item, err := ExternalLocationInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			externalLocationsField = append(externalLocationsField, *item)
+		}
+	}
+	st.ExternalLocations = externalLocationsField
+	st.NextPageToken = pb.NextPageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListExternalMetadataRequest struct {
 	// Specifies the maximum number of external metadata objects to return in a
 	// single response. The value must be less than or equal to 1000.
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	PageSize int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListExternalMetadataRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListExternalMetadataRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListExternalMetadataRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListExternalMetadataRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListExternalMetadataRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListExternalMetadataRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListExternalMetadataRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListExternalMetadataRequestToPb(st *ListExternalMetadataRequest) (*catalogpb.ListExternalMetadataRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListExternalMetadataRequestPb{}
+	pb.PageSize = st.PageSize
+	pb.PageToken = st.PageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListExternalMetadataRequestFromPb(pb *catalogpb.ListExternalMetadataRequestPb) (*ListExternalMetadataRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListExternalMetadataRequest{}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListExternalMetadataResponse struct {
+
+	// Wire name: 'external_metadata'
 	ExternalMetadata []ExternalMetadata `json:"external_metadata,omitempty"`
 
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListExternalMetadataResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListExternalMetadataResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListExternalMetadataResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListExternalMetadataResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListExternalMetadataResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListExternalMetadataResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListExternalMetadataResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListExternalMetadataResponseToPb(st *ListExternalMetadataResponse) (*catalogpb.ListExternalMetadataResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListExternalMetadataResponsePb{}
+
+	var externalMetadataPb []catalogpb.ExternalMetadataPb
+	for _, item := range st.ExternalMetadata {
+		itemPb, err := ExternalMetadataToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			externalMetadataPb = append(externalMetadataPb, *itemPb)
+		}
+	}
+	pb.ExternalMetadata = externalMetadataPb
+	pb.NextPageToken = st.NextPageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListExternalMetadataResponseFromPb(pb *catalogpb.ListExternalMetadataResponsePb) (*ListExternalMetadataResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListExternalMetadataResponse{}
+
+	var externalMetadataField []ExternalMetadata
+	for _, itemPb := range pb.ExternalMetadata {
+		item, err := ExternalMetadataFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			externalMetadataField = append(externalMetadataField, *item)
+		}
+	}
+	st.ExternalMetadata = externalMetadataField
+	st.NextPageToken = pb.NextPageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListFunctionsRequest struct {
 	// Name of parent catalog for functions of interest.
-	CatalogName string `json:"-" url:"catalog_name"`
+	CatalogName string `json:"-" tf:"-"`
 	// Whether to include functions in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Maximum number of functions to return. If not set, all the functions are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken string `json:"-" tf:"-"`
 	// Parent schema of functions.
-	SchemaName string `json:"-" url:"schema_name"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	SchemaName      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListFunctionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListFunctionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListFunctionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListFunctionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListFunctionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListFunctionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListFunctionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListFunctionsRequestToPb(st *ListFunctionsRequest) (*catalogpb.ListFunctionsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListFunctionsRequestPb{}
+	pb.CatalogName = st.CatalogName
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+	pb.SchemaName = st.SchemaName
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListFunctionsRequestFromPb(pb *catalogpb.ListFunctionsRequestPb) (*ListFunctionsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListFunctionsRequest{}
+	st.CatalogName = pb.CatalogName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.SchemaName = pb.SchemaName
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListFunctionsResponse struct {
 	// An array of function information objects.
+	// Wire name: 'functions'
 	Functions []FunctionInfo `json:"functions,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListFunctionsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListFunctionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListFunctionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListFunctionsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListFunctionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListFunctionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListFunctionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListFunctionsResponseToPb(st *ListFunctionsResponse) (*catalogpb.ListFunctionsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListFunctionsResponsePb{}
+
+	var functionsPb []catalogpb.FunctionInfoPb
+	for _, item := range st.Functions {
+		itemPb, err := FunctionInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			functionsPb = append(functionsPb, *itemPb)
+		}
+	}
+	pb.Functions = functionsPb
+	pb.NextPageToken = st.NextPageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListFunctionsResponseFromPb(pb *catalogpb.ListFunctionsResponsePb) (*ListFunctionsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListFunctionsResponse{}
+
+	var functionsField []FunctionInfo
+	for _, itemPb := range pb.Functions {
+		item, err := FunctionInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			functionsField = append(functionsField, *item)
+		}
+	}
+	st.Functions = functionsField
+	st.NextPageToken = pb.NextPageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListMetastoresRequest struct {
@@ -4064,47 +14930,159 @@ type ListMetastoresRequest struct {
 	// might be less than the specified max_results size, even zero. The only
 	// definitive indication that no further metastores can be fetched is when
 	// the next_page_token is unset from the response.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListMetastoresRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListMetastoresRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListMetastoresRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListMetastoresRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListMetastoresRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListMetastoresRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListMetastoresRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListMetastoresRequestToPb(st *ListMetastoresRequest) (*catalogpb.ListMetastoresRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListMetastoresRequestPb{}
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListMetastoresRequestFromPb(pb *catalogpb.ListMetastoresRequestPb) (*ListMetastoresRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListMetastoresRequest{}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListMetastoresResponse struct {
 	// An array of metastore information objects.
+	// Wire name: 'metastores'
 	Metastores []MetastoreInfo `json:"metastores,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListMetastoresResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListMetastoresResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListMetastoresResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListMetastoresResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListMetastoresResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListMetastoresResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListMetastoresResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListMetastoresResponseToPb(st *ListMetastoresResponse) (*catalogpb.ListMetastoresResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListMetastoresResponsePb{}
+
+	var metastoresPb []catalogpb.MetastoreInfoPb
+	for _, item := range st.Metastores {
+		itemPb, err := MetastoreInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			metastoresPb = append(metastoresPb, *itemPb)
+		}
+	}
+	pb.Metastores = metastoresPb
+	pb.NextPageToken = st.NextPageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListMetastoresResponseFromPb(pb *catalogpb.ListMetastoresResponsePb) (*ListMetastoresResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListMetastoresResponse{}
+
+	var metastoresField []MetastoreInfo
+	for _, itemPb := range pb.Metastores {
+		item, err := MetastoreInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			metastoresField = append(metastoresField, *item)
+		}
+	}
+	st.Metastores = metastoresField
+	st.NextPageToken = pb.NextPageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListModelVersionsRequest struct {
 	// The full three-level name of the registered model under which to list
 	// model versions
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Whether to include model versions in the response for which the principal
 	// can only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Maximum number of model versions to return. If not set, the page length
 	// is set to a server configured value (100, as of 1/3/2024). - when set to
 	// a value greater than 0, the page length is the minimum of this value and
@@ -4112,88 +15090,362 @@ type ListModelVersionsRequest struct {
 	// page length is set to a server configured value (100, as of 1/3/2024)
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListModelVersionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListModelVersionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListModelVersionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListModelVersionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListModelVersionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListModelVersionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListModelVersionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListModelVersionsRequestToPb(st *ListModelVersionsRequest) (*catalogpb.ListModelVersionsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListModelVersionsRequestPb{}
+	pb.FullName = st.FullName
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListModelVersionsRequestFromPb(pb *catalogpb.ListModelVersionsRequestPb) (*ListModelVersionsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListModelVersionsRequest{}
+	st.FullName = pb.FullName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListModelVersionsResponse struct {
+
+	// Wire name: 'model_versions'
 	ModelVersions []ModelVersionInfo `json:"model_versions,omitempty"`
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken   string   `json:"next_page_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListModelVersionsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListModelVersionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListModelVersionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListModelVersionsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListModelVersionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListModelVersionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListModelVersionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListModelVersionsResponseToPb(st *ListModelVersionsResponse) (*catalogpb.ListModelVersionsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListModelVersionsResponsePb{}
+
+	var modelVersionsPb []catalogpb.ModelVersionInfoPb
+	for _, item := range st.ModelVersions {
+		itemPb, err := ModelVersionInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			modelVersionsPb = append(modelVersionsPb, *itemPb)
+		}
+	}
+	pb.ModelVersions = modelVersionsPb
+	pb.NextPageToken = st.NextPageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListModelVersionsResponseFromPb(pb *catalogpb.ListModelVersionsResponsePb) (*ListModelVersionsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListModelVersionsResponse{}
+
+	var modelVersionsField []ModelVersionInfo
+	for _, itemPb := range pb.ModelVersions {
+		item, err := ModelVersionInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			modelVersionsField = append(modelVersionsField, *item)
+		}
+	}
+	st.ModelVersions = modelVersionsField
+	st.NextPageToken = pb.NextPageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListQuotasRequest struct {
 	// The number of quotas to return.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque token for the next page of results.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListQuotasRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListQuotasRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListQuotasRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListQuotasRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListQuotasRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListQuotasRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListQuotasRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListQuotasRequestToPb(st *ListQuotasRequest) (*catalogpb.ListQuotasRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListQuotasRequestPb{}
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListQuotasRequestFromPb(pb *catalogpb.ListQuotasRequestPb) (*ListQuotasRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListQuotasRequest{}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListQuotasResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request.
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of returned QuotaInfos.
-	Quotas []QuotaInfo `json:"quotas,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'quotas'
+	Quotas          []QuotaInfo `json:"quotas,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
-func (s *ListQuotasResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListQuotasResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListQuotasResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListQuotasResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListQuotasResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListQuotasResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListQuotasResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListQuotasResponseToPb(st *ListQuotasResponse) (*catalogpb.ListQuotasResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListQuotasResponsePb{}
+	pb.NextPageToken = st.NextPageToken
+
+	var quotasPb []catalogpb.QuotaInfoPb
+	for _, item := range st.Quotas {
+		itemPb, err := QuotaInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			quotasPb = append(quotasPb, *itemPb)
+		}
+	}
+	pb.Quotas = quotasPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListQuotasResponseFromPb(pb *catalogpb.ListQuotasResponsePb) (*ListQuotasResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListQuotasResponse{}
+	st.NextPageToken = pb.NextPageToken
+
+	var quotasField []QuotaInfo
+	for _, itemPb := range pb.Quotas {
+		item, err := QuotaInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			quotasField = append(quotasField, *item)
+		}
+	}
+	st.Quotas = quotasField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListRefreshesRequest struct {
 	// UC table name in format `catalog.schema.table_name`. table_name is case
 	// insensitive and spaces are disallowed.
-	TableName string `json:"-" url:"-"`
+	TableName string `json:"-" tf:"-"`
+}
+
+func (st ListRefreshesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListRefreshesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ListRefreshesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListRefreshesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListRefreshesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListRefreshesRequestToPb(st *ListRefreshesRequest) (*catalogpb.ListRefreshesRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListRefreshesRequestPb{}
+	pb.TableName = st.TableName
+
+	return pb, nil
+}
+
+func ListRefreshesRequestFromPb(pb *catalogpb.ListRefreshesRequestPb) (*ListRefreshesRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListRefreshesRequest{}
+	st.TableName = pb.TableName
+
+	return st, nil
 }
 
 type ListRegisteredModelsRequest struct {
 	// The identifier of the catalog under which to list registered models. If
 	// specified, schema_name must be specified.
-	CatalogName string `json:"-" url:"catalog_name,omitempty"`
+	CatalogName string `json:"-" tf:"-"`
 	// Whether to include registered models in the response for which the
 	// principal can only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Max number of registered models to return.
 	//
 	// If both catalog and schema are specified: - when max_results is not
@@ -4211,86 +15463,320 @@ type ListRegisteredModelsRequest struct {
 	// 4/2/2024); - when set to 0, the page length is set to a server configured
 	// value (100, as of 4/2/2024); - when set to a value less than 0, an
 	// invalid parameter error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque token to send for the next page of results (pagination).
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken string `json:"-" tf:"-"`
 	// The identifier of the schema under which to list registered models. If
 	// specified, catalog_name must be specified.
-	SchemaName string `json:"-" url:"schema_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	SchemaName      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListRegisteredModelsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListRegisteredModelsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListRegisteredModelsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListRegisteredModelsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListRegisteredModelsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListRegisteredModelsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListRegisteredModelsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListRegisteredModelsRequestToPb(st *ListRegisteredModelsRequest) (*catalogpb.ListRegisteredModelsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListRegisteredModelsRequestPb{}
+	pb.CatalogName = st.CatalogName
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+	pb.SchemaName = st.SchemaName
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListRegisteredModelsRequestFromPb(pb *catalogpb.ListRegisteredModelsRequestPb) (*ListRegisteredModelsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListRegisteredModelsRequest{}
+	st.CatalogName = pb.CatalogName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.SchemaName = pb.SchemaName
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListRegisteredModelsResponse struct {
 	// Opaque token for pagination. Omitted if there are no more results.
 	// page_token should be set to this value for fetching the next page.
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 
+	// Wire name: 'registered_models'
 	RegisteredModels []RegisteredModelInfo `json:"registered_models,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields  []string              `json:"-" tf:"-"`
 }
 
-func (s *ListRegisteredModelsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListRegisteredModelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListRegisteredModelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListRegisteredModelsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListRegisteredModelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListRegisteredModelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListRegisteredModelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListRegisteredModelsResponseToPb(st *ListRegisteredModelsResponse) (*catalogpb.ListRegisteredModelsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListRegisteredModelsResponsePb{}
+	pb.NextPageToken = st.NextPageToken
+
+	var registeredModelsPb []catalogpb.RegisteredModelInfoPb
+	for _, item := range st.RegisteredModels {
+		itemPb, err := RegisteredModelInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			registeredModelsPb = append(registeredModelsPb, *itemPb)
+		}
+	}
+	pb.RegisteredModels = registeredModelsPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListRegisteredModelsResponseFromPb(pb *catalogpb.ListRegisteredModelsResponsePb) (*ListRegisteredModelsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListRegisteredModelsResponse{}
+	st.NextPageToken = pb.NextPageToken
+
+	var registeredModelsField []RegisteredModelInfo
+	for _, itemPb := range pb.RegisteredModels {
+		item, err := RegisteredModelInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			registeredModelsField = append(registeredModelsField, *item)
+		}
+	}
+	st.RegisteredModels = registeredModelsField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListSchemasRequest struct {
 	// Parent catalog for schemas of interest.
-	CatalogName string `json:"-" url:"catalog_name"`
+	CatalogName string `json:"-" tf:"-"`
 	// Whether to include schemas in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Maximum number of schemas to return. If not set, all the schemas are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListSchemasRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListSchemasRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListSchemasRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListSchemasRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListSchemasRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListSchemasRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListSchemasRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListSchemasRequestToPb(st *ListSchemasRequest) (*catalogpb.ListSchemasRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListSchemasRequestPb{}
+	pb.CatalogName = st.CatalogName
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListSchemasRequestFromPb(pb *catalogpb.ListSchemasRequestPb) (*ListSchemasRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListSchemasRequest{}
+	st.CatalogName = pb.CatalogName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListSchemasResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of schema information objects.
-	Schemas []SchemaInfo `json:"schemas,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'schemas'
+	Schemas         []SchemaInfo `json:"schemas,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
-func (s *ListSchemasResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListSchemasResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListSchemasResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListSchemasResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListSchemasResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListSchemasResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListSchemasResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListSchemasResponseToPb(st *ListSchemasResponse) (*catalogpb.ListSchemasResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListSchemasResponsePb{}
+	pb.NextPageToken = st.NextPageToken
+
+	var schemasPb []catalogpb.SchemaInfoPb
+	for _, item := range st.Schemas {
+		itemPb, err := SchemaInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			schemasPb = append(schemasPb, *itemPb)
+		}
+	}
+	pb.Schemas = schemasPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListSchemasResponseFromPb(pb *catalogpb.ListSchemasResponsePb) (*ListSchemasResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListSchemasResponse{}
+	st.NextPageToken = pb.NextPageToken
+
+	var schemasField []SchemaInfo
+	for _, itemPb := range pb.Schemas {
+		item, err := SchemaInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			schemasField = append(schemasField, *item)
+		}
+	}
+	st.Schemas = schemasField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListStorageCredentialsRequest struct {
@@ -4300,46 +15786,158 @@ type ListStorageCredentialsRequest struct {
 	// configured value; - when set to 0, the page length is set to a server
 	// configured value (recommended); - when set to a value less than 0, an
 	// invalid parameter error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListStorageCredentialsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListStorageCredentialsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListStorageCredentialsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListStorageCredentialsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListStorageCredentialsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListStorageCredentialsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListStorageCredentialsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListStorageCredentialsRequestToPb(st *ListStorageCredentialsRequest) (*catalogpb.ListStorageCredentialsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListStorageCredentialsRequestPb{}
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListStorageCredentialsRequestFromPb(pb *catalogpb.ListStorageCredentialsRequestPb) (*ListStorageCredentialsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListStorageCredentialsRequest{}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListStorageCredentialsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 
+	// Wire name: 'storage_credentials'
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields    []string                `json:"-" tf:"-"`
 }
 
-func (s *ListStorageCredentialsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListStorageCredentialsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListStorageCredentialsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListStorageCredentialsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListStorageCredentialsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListStorageCredentialsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListStorageCredentialsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListStorageCredentialsResponseToPb(st *ListStorageCredentialsResponse) (*catalogpb.ListStorageCredentialsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListStorageCredentialsResponsePb{}
+	pb.NextPageToken = st.NextPageToken
+
+	var storageCredentialsPb []catalogpb.StorageCredentialInfoPb
+	for _, item := range st.StorageCredentials {
+		itemPb, err := StorageCredentialInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			storageCredentialsPb = append(storageCredentialsPb, *itemPb)
+		}
+	}
+	pb.StorageCredentials = storageCredentialsPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListStorageCredentialsResponseFromPb(pb *catalogpb.ListStorageCredentialsResponsePb) (*ListStorageCredentialsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListStorageCredentialsResponse{}
+	st.NextPageToken = pb.NextPageToken
+
+	var storageCredentialsField []StorageCredentialInfo
+	for _, itemPb := range pb.StorageCredentials {
+		item, err := StorageCredentialInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			storageCredentialsField = append(storageCredentialsField, *item)
+		}
+	}
+	st.StorageCredentials = storageCredentialsField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListSummariesRequest struct {
 	// Name of parent catalog for tables of interest.
-	CatalogName string `json:"-" url:"catalog_name"`
+	CatalogName string `json:"-" tf:"-"`
 	// Whether to include a manifest containing table capabilities in the
 	// response.
-	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
+	IncludeManifestCapabilities bool `json:"-" tf:"-"`
 	// Maximum number of summaries for tables to return. If not set, the page
 	// length is set to a server configured value (10000, as of 1/5/2024). -
 	// when set to a value greater than 0, the page length is the minimum of
@@ -4347,25 +15945,77 @@ type ListSummariesRequest struct {
 	// set to 0, the page length is set to a server configured value (10000, as
 	// of 1/5/2024) (recommended); - when set to a value less than 0, an invalid
 	// parameter error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken string `json:"-" tf:"-"`
 	// A sql LIKE pattern (% and _) for schema names. All schemas will be
 	// returned if not set or empty.
-	SchemaNamePattern string `json:"-" url:"schema_name_pattern,omitempty"`
+	SchemaNamePattern string `json:"-" tf:"-"`
 	// A sql LIKE pattern (% and _) for table names. All tables will be returned
 	// if not set or empty.
-	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	TableNamePattern string   `json:"-" tf:"-"`
+	ForceSendFields  []string `json:"-" tf:"-"`
 }
 
-func (s *ListSummariesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListSummariesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListSummariesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListSummariesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListSummariesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListSummariesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListSummariesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListSummariesRequestToPb(st *ListSummariesRequest) (*catalogpb.ListSummariesRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListSummariesRequestPb{}
+	pb.CatalogName = st.CatalogName
+	pb.IncludeManifestCapabilities = st.IncludeManifestCapabilities
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+	pb.SchemaNamePattern = st.SchemaNamePattern
+	pb.TableNamePattern = st.TableNamePattern
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListSummariesRequestFromPb(pb *catalogpb.ListSummariesRequestPb) (*ListSummariesRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListSummariesRequest{}
+	st.CatalogName = pb.CatalogName
+	st.IncludeManifestCapabilities = pb.IncludeManifestCapabilities
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.SchemaNamePattern = pb.SchemaNamePattern
+	st.TableNamePattern = pb.TableNamePattern
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListSystemSchemasRequest struct {
@@ -4375,125 +16025,433 @@ type ListSystemSchemasRequest struct {
 	// configured value; - When set to a value less than 0, an invalid parameter
 	// error is returned; - If not set, all the schemas are returned (not
 	// recommended).
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// The ID for the metastore in which the system schema resides.
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId string `json:"-" tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	PageToken       string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListSystemSchemasRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListSystemSchemasRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListSystemSchemasRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListSystemSchemasRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListSystemSchemasRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListSystemSchemasRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListSystemSchemasRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListSystemSchemasRequestToPb(st *ListSystemSchemasRequest) (*catalogpb.ListSystemSchemasRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListSystemSchemasRequestPb{}
+	pb.MaxResults = st.MaxResults
+	pb.MetastoreId = st.MetastoreId
+	pb.PageToken = st.PageToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListSystemSchemasRequestFromPb(pb *catalogpb.ListSystemSchemasRequestPb) (*ListSystemSchemasRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListSystemSchemasRequest{}
+	st.MaxResults = pb.MaxResults
+	st.MetastoreId = pb.MetastoreId
+	st.PageToken = pb.PageToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListSystemSchemasResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of system schema information objects.
-	Schemas []SystemSchemaInfo `json:"schemas,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'schemas'
+	Schemas         []SystemSchemaInfo `json:"schemas,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
-func (s *ListSystemSchemasResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListSystemSchemasResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListSystemSchemasResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListSystemSchemasResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListSystemSchemasResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListSystemSchemasResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListSystemSchemasResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListSystemSchemasResponseToPb(st *ListSystemSchemasResponse) (*catalogpb.ListSystemSchemasResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListSystemSchemasResponsePb{}
+	pb.NextPageToken = st.NextPageToken
+
+	var schemasPb []catalogpb.SystemSchemaInfoPb
+	for _, item := range st.Schemas {
+		itemPb, err := SystemSchemaInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			schemasPb = append(schemasPb, *itemPb)
+		}
+	}
+	pb.Schemas = schemasPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListSystemSchemasResponseFromPb(pb *catalogpb.ListSystemSchemasResponsePb) (*ListSystemSchemasResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListSystemSchemasResponse{}
+	st.NextPageToken = pb.NextPageToken
+
+	var schemasField []SystemSchemaInfo
+	for _, itemPb := range pb.Schemas {
+		item, err := SystemSchemaInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			schemasField = append(schemasField, *item)
+		}
+	}
+	st.Schemas = schemasField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListTableSummariesResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// List of table summaries.
-	Tables []TableSummary `json:"tables,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'tables'
+	Tables          []TableSummary `json:"tables,omitempty"`
+	ForceSendFields []string       `json:"-" tf:"-"`
 }
 
-func (s *ListTableSummariesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListTableSummariesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListTableSummariesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListTableSummariesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListTableSummariesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListTableSummariesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListTableSummariesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListTableSummariesResponseToPb(st *ListTableSummariesResponse) (*catalogpb.ListTableSummariesResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListTableSummariesResponsePb{}
+	pb.NextPageToken = st.NextPageToken
+
+	var tablesPb []catalogpb.TableSummaryPb
+	for _, item := range st.Tables {
+		itemPb, err := TableSummaryToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			tablesPb = append(tablesPb, *itemPb)
+		}
+	}
+	pb.Tables = tablesPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListTableSummariesResponseFromPb(pb *catalogpb.ListTableSummariesResponsePb) (*ListTableSummariesResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListTableSummariesResponse{}
+	st.NextPageToken = pb.NextPageToken
+
+	var tablesField []TableSummary
+	for _, itemPb := range pb.Tables {
+		item, err := TableSummaryFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			tablesField = append(tablesField, *item)
+		}
+	}
+	st.Tables = tablesField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListTablesRequest struct {
 	// Name of parent catalog for tables of interest.
-	CatalogName string `json:"-" url:"catalog_name"`
+	CatalogName string `json:"-" tf:"-"`
 	// Whether to include tables in the response for which the principal can
 	// only access selective metadata for.
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Whether to include a manifest containing table capabilities in the
 	// response.
-	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
+	IncludeManifestCapabilities bool `json:"-" tf:"-"`
 	// Maximum number of tables to return. If not set, all the tables are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Whether to omit the columns of the table from the response or not.
-	OmitColumns bool `json:"-" url:"omit_columns,omitempty"`
+	OmitColumns bool `json:"-" tf:"-"`
 	// Whether to omit the properties of the table from the response or not.
-	OmitProperties bool `json:"-" url:"omit_properties,omitempty"`
+	OmitProperties bool `json:"-" tf:"-"`
 	// Whether to omit the username of the table (e.g. owner, updated_by,
 	// created_by) from the response or not.
-	OmitUsername bool `json:"-" url:"omit_username,omitempty"`
+	OmitUsername bool `json:"-" tf:"-"`
 	// Opaque token to send for the next page of results (pagination).
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken string `json:"-" tf:"-"`
 	// Parent schema of tables.
-	SchemaName string `json:"-" url:"schema_name"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	SchemaName      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListTablesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListTablesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListTablesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListTablesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListTablesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListTablesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListTablesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListTablesRequestToPb(st *ListTablesRequest) (*catalogpb.ListTablesRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListTablesRequestPb{}
+	pb.CatalogName = st.CatalogName
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.IncludeManifestCapabilities = st.IncludeManifestCapabilities
+	pb.MaxResults = st.MaxResults
+	pb.OmitColumns = st.OmitColumns
+	pb.OmitProperties = st.OmitProperties
+	pb.OmitUsername = st.OmitUsername
+	pb.PageToken = st.PageToken
+	pb.SchemaName = st.SchemaName
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListTablesRequestFromPb(pb *catalogpb.ListTablesRequestPb) (*ListTablesRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListTablesRequest{}
+	st.CatalogName = pb.CatalogName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.IncludeManifestCapabilities = pb.IncludeManifestCapabilities
+	st.MaxResults = pb.MaxResults
+	st.OmitColumns = pb.OmitColumns
+	st.OmitProperties = pb.OmitProperties
+	st.OmitUsername = pb.OmitUsername
+	st.PageToken = pb.PageToken
+	st.SchemaName = pb.SchemaName
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListTablesResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// An array of table information objects.
-	Tables []TableInfo `json:"tables,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'tables'
+	Tables          []TableInfo `json:"tables,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
-func (s *ListTablesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListTablesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ListTablesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListTablesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListTablesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListTablesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListTablesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListTablesResponseToPb(st *ListTablesResponse) (*catalogpb.ListTablesResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListTablesResponsePb{}
+	pb.NextPageToken = st.NextPageToken
+
+	var tablesPb []catalogpb.TableInfoPb
+	for _, item := range st.Tables {
+		itemPb, err := TableInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			tablesPb = append(tablesPb, *itemPb)
+		}
+	}
+	pb.Tables = tablesPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListTablesResponseFromPb(pb *catalogpb.ListTablesResponsePb) (*ListTablesResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListTablesResponse{}
+	st.NextPageToken = pb.NextPageToken
+
+	var tablesField []TableInfo
+	for _, itemPb := range pb.Tables {
+		item, err := TableInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			tablesField = append(tablesField, *item)
+		}
+	}
+	st.Tables = tablesField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListVolumesRequest struct {
 	// The identifier of the catalog
-	CatalogName string `json:"-" url:"catalog_name"`
+	CatalogName string `json:"-" tf:"-"`
 	// Whether to include volumes in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// Maximum number of volumes to return (page length).
 	//
 	// If not set, the page length is set to a server configured value (10000,
@@ -4506,41 +16464,159 @@ type ListVolumesRequest struct {
 	// Note: this parameter controls only the maximum number of volumes to
 	// return. The actual number of volumes returned in a page may be smaller
 	// than this value, including 0, even if there are more pages.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	MaxResults int `json:"-" tf:"-"`
 	// Opaque token returned by a previous request. It must be included in the
 	// request to retrieve the next page of results (pagination).
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken string `json:"-" tf:"-"`
 	// The identifier of the schema
-	SchemaName string `json:"-" url:"schema_name"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	SchemaName      string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListVolumesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListVolumesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ListVolumesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListVolumesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListVolumesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListVolumesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListVolumesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListVolumesRequestToPb(st *ListVolumesRequest) (*catalogpb.ListVolumesRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListVolumesRequestPb{}
+	pb.CatalogName = st.CatalogName
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.MaxResults = st.MaxResults
+	pb.PageToken = st.PageToken
+	pb.SchemaName = st.SchemaName
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListVolumesRequestFromPb(pb *catalogpb.ListVolumesRequestPb) (*ListVolumesRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListVolumesRequest{}
+	st.CatalogName = pb.CatalogName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.SchemaName = pb.SchemaName
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ListVolumesResponseContent struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request to retrieve the next page of results.
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	Volumes []VolumeInfo `json:"volumes,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'volumes'
+	Volumes         []VolumeInfo `json:"volumes,omitempty"`
+	ForceSendFields []string     `json:"-" tf:"-"`
 }
 
-func (s *ListVolumesResponseContent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ListVolumesResponseContent) MarshalJSON() ([]byte, error) {
+	pb, err := ListVolumesResponseContentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ListVolumesResponseContent) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ListVolumesResponseContent) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ListVolumesResponseContentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ListVolumesResponseContentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ListVolumesResponseContentToPb(st *ListVolumesResponseContent) (*catalogpb.ListVolumesResponseContentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ListVolumesResponseContentPb{}
+	pb.NextPageToken = st.NextPageToken
+
+	var volumesPb []catalogpb.VolumeInfoPb
+	for _, item := range st.Volumes {
+		itemPb, err := VolumeInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			volumesPb = append(volumesPb, *itemPb)
+		}
+	}
+	pb.Volumes = volumesPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ListVolumesResponseContentFromPb(pb *catalogpb.ListVolumesResponseContentPb) (*ListVolumesResponseContent, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListVolumesResponseContent{}
+	st.NextPageToken = pb.NextPageToken
+
+	var volumesField []VolumeInfo
+	for _, itemPb := range pb.Volumes {
+		item, err := VolumeInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			volumesField = append(volumesField, *item)
+		}
+	}
+	st.Volumes = volumesField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // The artifact pattern matching type
@@ -4578,141 +16654,458 @@ func (f *MatchType) Type() string {
 	return "MatchType"
 }
 
+func MatchTypeToPb(st *MatchType) (*catalogpb.MatchTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.MatchTypePb(*st)
+	return &pb, nil
+}
+
+func MatchTypeFromPb(pb *catalogpb.MatchTypePb) (*MatchType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MatchType(*pb)
+	return &st, nil
+}
+
 type MetastoreAssignment struct {
 	// The name of the default catalog in the metastore.
+	// Wire name: 'default_catalog_name'
 	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
 	// The unique ID of the metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id"`
 	// The unique ID of the Databricks workspace.
-	WorkspaceId int64 `json:"workspace_id"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'workspace_id'
+	WorkspaceId     int64    `json:"workspace_id"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *MetastoreAssignment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MetastoreAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := MetastoreAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MetastoreAssignment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MetastoreAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.MetastoreAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MetastoreAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func MetastoreAssignmentToPb(st *MetastoreAssignment) (*catalogpb.MetastoreAssignmentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.MetastoreAssignmentPb{}
+	pb.DefaultCatalogName = st.DefaultCatalogName
+	pb.MetastoreId = st.MetastoreId
+	pb.WorkspaceId = st.WorkspaceId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func MetastoreAssignmentFromPb(pb *catalogpb.MetastoreAssignmentPb) (*MetastoreAssignment, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &MetastoreAssignment{}
+	st.DefaultCatalogName = pb.DefaultCatalogName
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type MetastoreInfo struct {
 	// Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`).
+	// Wire name: 'cloud'
 	Cloud string `json:"cloud,omitempty"`
 	// Time at which this metastore was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of metastore creator.
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 	// Unique identifier of the metastore's (Default) Data Access Configuration.
+	// Wire name: 'default_data_access_config_id'
 	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
 	// The organization name of a Delta Sharing entity, to be used in
 	// Databricks-to-Databricks Delta Sharing as the official name.
+	// Wire name: 'delta_sharing_organization_name'
 	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
 	// The lifetime of delta sharing recipient token in seconds.
+	// Wire name: 'delta_sharing_recipient_token_lifetime_in_seconds'
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
+	// Wire name: 'delta_sharing_scope'
 	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
 	// Whether to allow non-DBR clients to directly access entities under the
 	// metastore.
+	// Wire name: 'external_access_enabled'
 	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// Globally unique metastore ID across clouds and regions, of the form
 	// `cloud:region:metastore_id`.
+	// Wire name: 'global_metastore_id'
 	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
 	// Unique identifier of metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// The user-specified name of the metastore.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// The owner of the metastore.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// Privilege model version of the metastore, of the form `major.minor`
 	// (e.g., `1.0`).
+	// Wire name: 'privilege_model_version'
 	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+	// Wire name: 'region'
 	Region string `json:"region,omitempty"`
 	// The storage root URL for metastore
+	// Wire name: 'storage_root'
 	StorageRoot string `json:"storage_root,omitempty"`
 	// UUID of storage credential to access the metastore storage_root.
+	// Wire name: 'storage_root_credential_id'
 	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
 	// Name of the storage credential to access the metastore storage_root.
+	// Wire name: 'storage_root_credential_name'
 	StorageRootCredentialName string `json:"storage_root_credential_name,omitempty"`
 	// Time at which the metastore was last modified, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the metastore.
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'updated_by'
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *MetastoreInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MetastoreInfo) MarshalJSON() ([]byte, error) {
+	pb, err := MetastoreInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MetastoreInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MetastoreInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.MetastoreInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MetastoreInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func MetastoreInfoToPb(st *MetastoreInfo) (*catalogpb.MetastoreInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.MetastoreInfoPb{}
+	pb.Cloud = st.Cloud
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	pb.DefaultDataAccessConfigId = st.DefaultDataAccessConfigId
+	pb.DeltaSharingOrganizationName = st.DeltaSharingOrganizationName
+	pb.DeltaSharingRecipientTokenLifetimeInSeconds = st.DeltaSharingRecipientTokenLifetimeInSeconds
+	deltaSharingScopePb, err := DeltaSharingScopeEnumToPb(&st.DeltaSharingScope)
+	if err != nil {
+		return nil, err
+	}
+	if deltaSharingScopePb != nil {
+		pb.DeltaSharingScope = *deltaSharingScopePb
+	}
+	pb.ExternalAccessEnabled = st.ExternalAccessEnabled
+	pb.GlobalMetastoreId = st.GlobalMetastoreId
+	pb.MetastoreId = st.MetastoreId
+	pb.Name = st.Name
+	pb.Owner = st.Owner
+	pb.PrivilegeModelVersion = st.PrivilegeModelVersion
+	pb.Region = st.Region
+	pb.StorageRoot = st.StorageRoot
+	pb.StorageRootCredentialId = st.StorageRootCredentialId
+	pb.StorageRootCredentialName = st.StorageRootCredentialName
+	pb.UpdatedAt = st.UpdatedAt
+	pb.UpdatedBy = st.UpdatedBy
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func MetastoreInfoFromPb(pb *catalogpb.MetastoreInfoPb) (*MetastoreInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &MetastoreInfo{}
+	st.Cloud = pb.Cloud
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.DefaultDataAccessConfigId = pb.DefaultDataAccessConfigId
+	st.DeltaSharingOrganizationName = pb.DeltaSharingOrganizationName
+	st.DeltaSharingRecipientTokenLifetimeInSeconds = pb.DeltaSharingRecipientTokenLifetimeInSeconds
+	deltaSharingScopeField, err := DeltaSharingScopeEnumFromPb(&pb.DeltaSharingScope)
+	if err != nil {
+		return nil, err
+	}
+	if deltaSharingScopeField != nil {
+		st.DeltaSharingScope = *deltaSharingScopeField
+	}
+	st.ExternalAccessEnabled = pb.ExternalAccessEnabled
+	st.GlobalMetastoreId = pb.GlobalMetastoreId
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.PrivilegeModelVersion = pb.PrivilegeModelVersion
+	st.Region = pb.Region
+	st.StorageRoot = pb.StorageRoot
+	st.StorageRootCredentialId = pb.StorageRootCredentialId
+	st.StorageRootCredentialName = pb.StorageRootCredentialName
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ModelVersionInfo struct {
 	// List of aliases associated with the model version
+	// Wire name: 'aliases'
 	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The name of the catalog containing the model version
+	// Wire name: 'catalog_name'
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the model version
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The identifier of the user who created the model version
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 	// The unique identifier of the model version
+	// Wire name: 'id'
 	Id string `json:"id,omitempty"`
 	// The unique identifier of the metastore containing the model version
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// The name of the parent registered model of the model version, relative to
 	// parent schema
+	// Wire name: 'model_name'
 	ModelName string `json:"model_name,omitempty"`
 	// Model version dependencies, for feature-store packaged models
+	// Wire name: 'model_version_dependencies'
 	ModelVersionDependencies *DependencyList `json:"model_version_dependencies,omitempty"`
 	// MLflow run ID used when creating the model version, if ``source`` was
 	// generated by an experiment run stored in an MLflow tracking server
+	// Wire name: 'run_id'
 	RunId string `json:"run_id,omitempty"`
 	// ID of the Databricks workspace containing the MLflow run that generated
 	// this model version, if applicable
+	// Wire name: 'run_workspace_id'
 	RunWorkspaceId int `json:"run_workspace_id,omitempty"`
 	// The name of the schema containing the model version, relative to parent
 	// catalog
+	// Wire name: 'schema_name'
 	SchemaName string `json:"schema_name,omitempty"`
 	// URI indicating the location of the source artifacts (files) for the model
 	// version
+	// Wire name: 'source'
 	Source string `json:"source,omitempty"`
 	// Current status of the model version. Newly created model versions start
 	// in PENDING_REGISTRATION status, then move to READY status once the model
 	// version files are uploaded and the model version is finalized. Only model
 	// versions in READY status can be loaded for inference or served.
+	// Wire name: 'status'
 	Status ModelVersionInfoStatus `json:"status,omitempty"`
 	// The storage location on the cloud under which model version data files
 	// are stored
+	// Wire name: 'storage_location'
 	StorageLocation string `json:"storage_location,omitempty"`
 
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// The identifier of the user who updated the model version last time
+	// Wire name: 'updated_by'
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// Integer model version number, used to reference the model version in API
 	// requests.
-	Version int `json:"version,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'version'
+	Version         int      `json:"version,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ModelVersionInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ModelVersionInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ModelVersionInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ModelVersionInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ModelVersionInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ModelVersionInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ModelVersionInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ModelVersionInfoToPb(st *ModelVersionInfo) (*catalogpb.ModelVersionInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ModelVersionInfoPb{}
+
+	var aliasesPb []catalogpb.RegisteredModelAliasPb
+	for _, item := range st.Aliases {
+		itemPb, err := RegisteredModelAliasToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			aliasesPb = append(aliasesPb, *itemPb)
+		}
+	}
+	pb.Aliases = aliasesPb
+	pb.BrowseOnly = st.BrowseOnly
+	pb.CatalogName = st.CatalogName
+	pb.Comment = st.Comment
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	pb.Id = st.Id
+	pb.MetastoreId = st.MetastoreId
+	pb.ModelName = st.ModelName
+	modelVersionDependenciesPb, err := DependencyListToPb(st.ModelVersionDependencies)
+	if err != nil {
+		return nil, err
+	}
+	if modelVersionDependenciesPb != nil {
+		pb.ModelVersionDependencies = modelVersionDependenciesPb
+	}
+	pb.RunId = st.RunId
+	pb.RunWorkspaceId = st.RunWorkspaceId
+	pb.SchemaName = st.SchemaName
+	pb.Source = st.Source
+	statusPb, err := ModelVersionInfoStatusToPb(&st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+	pb.StorageLocation = st.StorageLocation
+	pb.UpdatedAt = st.UpdatedAt
+	pb.UpdatedBy = st.UpdatedBy
+	pb.Version = st.Version
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ModelVersionInfoFromPb(pb *catalogpb.ModelVersionInfoPb) (*ModelVersionInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ModelVersionInfo{}
+
+	var aliasesField []RegisteredModelAlias
+	for _, itemPb := range pb.Aliases {
+		item, err := RegisteredModelAliasFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			aliasesField = append(aliasesField, *item)
+		}
+	}
+	st.Aliases = aliasesField
+	st.BrowseOnly = pb.BrowseOnly
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.Id = pb.Id
+	st.MetastoreId = pb.MetastoreId
+	st.ModelName = pb.ModelName
+	modelVersionDependenciesField, err := DependencyListFromPb(pb.ModelVersionDependencies)
+	if err != nil {
+		return nil, err
+	}
+	if modelVersionDependenciesField != nil {
+		st.ModelVersionDependencies = modelVersionDependenciesField
+	}
+	st.RunId = pb.RunId
+	st.RunWorkspaceId = pb.RunWorkspaceId
+	st.SchemaName = pb.SchemaName
+	st.Source = pb.Source
+	statusField, err := ModelVersionInfoStatusFromPb(&pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = *statusField
+	}
+	st.StorageLocation = pb.StorageLocation
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.Version = pb.Version
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Current status of the model version. Newly created model versions start in
@@ -4759,16 +17152,96 @@ func (f *ModelVersionInfoStatus) Type() string {
 	return "ModelVersionInfoStatus"
 }
 
+func ModelVersionInfoStatusToPb(st *ModelVersionInfoStatus) (*catalogpb.ModelVersionInfoStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.ModelVersionInfoStatusPb(*st)
+	return &pb, nil
+}
+
+func ModelVersionInfoStatusFromPb(pb *catalogpb.ModelVersionInfoStatusPb) (*ModelVersionInfoStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ModelVersionInfoStatus(*pb)
+	return &st, nil
+}
+
 type MonitorCronSchedule struct {
 	// Read only field that indicates whether a schedule is paused or not.
+	// Wire name: 'pause_status'
 	PauseStatus MonitorCronSchedulePauseStatus `json:"pause_status,omitempty"`
 	// The expression that determines when to run the monitor. See [examples].
 	//
 	// [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
+	// Wire name: 'quartz_cron_expression'
 	QuartzCronExpression string `json:"quartz_cron_expression"`
 	// The timezone id (e.g., ``PST``) in which to evaluate the quartz
 	// expression.
+	// Wire name: 'timezone_id'
 	TimezoneId string `json:"timezone_id"`
+}
+
+func (st MonitorCronSchedule) MarshalJSON() ([]byte, error) {
+	pb, err := MonitorCronScheduleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *MonitorCronSchedule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.MonitorCronSchedulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MonitorCronScheduleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func MonitorCronScheduleToPb(st *MonitorCronSchedule) (*catalogpb.MonitorCronSchedulePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.MonitorCronSchedulePb{}
+	pauseStatusPb, err := MonitorCronSchedulePauseStatusToPb(&st.PauseStatus)
+	if err != nil {
+		return nil, err
+	}
+	if pauseStatusPb != nil {
+		pb.PauseStatus = *pauseStatusPb
+	}
+	pb.QuartzCronExpression = st.QuartzCronExpression
+	pb.TimezoneId = st.TimezoneId
+
+	return pb, nil
+}
+
+func MonitorCronScheduleFromPb(pb *catalogpb.MonitorCronSchedulePb) (*MonitorCronSchedule, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &MonitorCronSchedule{}
+	pauseStatusField, err := MonitorCronSchedulePauseStatusFromPb(&pb.PauseStatus)
+	if err != nil {
+		return nil, err
+	}
+	if pauseStatusField != nil {
+		st.PauseStatus = *pauseStatusField
+	}
+	st.QuartzCronExpression = pb.QuartzCronExpression
+	st.TimezoneId = pb.TimezoneId
+
+	return st, nil
 }
 
 // Source link:
@@ -4814,54 +17287,232 @@ func (f *MonitorCronSchedulePauseStatus) Type() string {
 	return "MonitorCronSchedulePauseStatus"
 }
 
+func MonitorCronSchedulePauseStatusToPb(st *MonitorCronSchedulePauseStatus) (*catalogpb.MonitorCronSchedulePauseStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.MonitorCronSchedulePauseStatusPb(*st)
+	return &pb, nil
+}
+
+func MonitorCronSchedulePauseStatusFromPb(pb *catalogpb.MonitorCronSchedulePauseStatusPb) (*MonitorCronSchedulePauseStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MonitorCronSchedulePauseStatus(*pb)
+	return &st, nil
+}
+
 // Data classification related configuration.
 type MonitorDataClassificationConfig struct {
 	// Whether to enable data classification.
-	Enabled bool `json:"enabled,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'enabled'
+	Enabled         bool     `json:"enabled,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *MonitorDataClassificationConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MonitorDataClassificationConfig) MarshalJSON() ([]byte, error) {
+	pb, err := MonitorDataClassificationConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MonitorDataClassificationConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MonitorDataClassificationConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.MonitorDataClassificationConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MonitorDataClassificationConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func MonitorDataClassificationConfigToPb(st *MonitorDataClassificationConfig) (*catalogpb.MonitorDataClassificationConfigPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.MonitorDataClassificationConfigPb{}
+	pb.Enabled = st.Enabled
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func MonitorDataClassificationConfigFromPb(pb *catalogpb.MonitorDataClassificationConfigPb) (*MonitorDataClassificationConfig, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &MonitorDataClassificationConfig{}
+	st.Enabled = pb.Enabled
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type MonitorDestination struct {
 	// The list of email addresses to send the notification to. A maximum of 5
 	// email addresses is supported.
+	// Wire name: 'email_addresses'
 	EmailAddresses []string `json:"email_addresses,omitempty"`
+}
+
+func (st MonitorDestination) MarshalJSON() ([]byte, error) {
+	pb, err := MonitorDestinationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *MonitorDestination) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.MonitorDestinationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MonitorDestinationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func MonitorDestinationToPb(st *MonitorDestination) (*catalogpb.MonitorDestinationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.MonitorDestinationPb{}
+	pb.EmailAddresses = st.EmailAddresses
+
+	return pb, nil
+}
+
+func MonitorDestinationFromPb(pb *catalogpb.MonitorDestinationPb) (*MonitorDestination, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &MonitorDestination{}
+	st.EmailAddresses = pb.EmailAddresses
+
+	return st, nil
 }
 
 type MonitorInferenceLog struct {
 	// List of granularities to use when aggregating data into time windows
 	// based on their timestamp.
+	// Wire name: 'granularities'
 	Granularities []string `json:"granularities"`
 	// Column for the label.
+	// Wire name: 'label_col'
 	LabelCol string `json:"label_col,omitempty"`
 	// Column for the model identifier.
+	// Wire name: 'model_id_col'
 	ModelIdCol string `json:"model_id_col"`
 	// Column for the prediction.
+	// Wire name: 'prediction_col'
 	PredictionCol string `json:"prediction_col"`
 	// Column for prediction probabilities
+	// Wire name: 'prediction_proba_col'
 	PredictionProbaCol string `json:"prediction_proba_col,omitempty"`
 	// Problem type the model aims to solve.
+	// Wire name: 'problem_type'
 	ProblemType MonitorInferenceLogProblemType `json:"problem_type"`
 	// Column for the timestamp.
-	TimestampCol string `json:"timestamp_col"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'timestamp_col'
+	TimestampCol    string   `json:"timestamp_col"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *MonitorInferenceLog) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MonitorInferenceLog) MarshalJSON() ([]byte, error) {
+	pb, err := MonitorInferenceLogToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MonitorInferenceLog) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MonitorInferenceLog) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.MonitorInferenceLogPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MonitorInferenceLogFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func MonitorInferenceLogToPb(st *MonitorInferenceLog) (*catalogpb.MonitorInferenceLogPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.MonitorInferenceLogPb{}
+	pb.Granularities = st.Granularities
+	pb.LabelCol = st.LabelCol
+	pb.ModelIdCol = st.ModelIdCol
+	pb.PredictionCol = st.PredictionCol
+	pb.PredictionProbaCol = st.PredictionProbaCol
+	problemTypePb, err := MonitorInferenceLogProblemTypeToPb(&st.ProblemType)
+	if err != nil {
+		return nil, err
+	}
+	if problemTypePb != nil {
+		pb.ProblemType = *problemTypePb
+	}
+	pb.TimestampCol = st.TimestampCol
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func MonitorInferenceLogFromPb(pb *catalogpb.MonitorInferenceLogPb) (*MonitorInferenceLog, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &MonitorInferenceLog{}
+	st.Granularities = pb.Granularities
+	st.LabelCol = pb.LabelCol
+	st.ModelIdCol = pb.ModelIdCol
+	st.PredictionCol = pb.PredictionCol
+	st.PredictionProbaCol = pb.PredictionProbaCol
+	problemTypeField, err := MonitorInferenceLogProblemTypeFromPb(&pb.ProblemType)
+	if err != nil {
+		return nil, err
+	}
+	if problemTypeField != nil {
+		st.ProblemType = *problemTypeField
+	}
+	st.TimestampCol = pb.TimestampCol
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type MonitorInferenceLogProblemType string
@@ -4901,43 +17552,72 @@ func (f *MonitorInferenceLogProblemType) Type() string {
 	return "MonitorInferenceLogProblemType"
 }
 
+func MonitorInferenceLogProblemTypeToPb(st *MonitorInferenceLogProblemType) (*catalogpb.MonitorInferenceLogProblemTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.MonitorInferenceLogProblemTypePb(*st)
+	return &pb, nil
+}
+
+func MonitorInferenceLogProblemTypeFromPb(pb *catalogpb.MonitorInferenceLogProblemTypePb) (*MonitorInferenceLogProblemType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MonitorInferenceLogProblemType(*pb)
+	return &st, nil
+}
+
 type MonitorInfo struct {
 	// [Create:REQ Update:IGN] Field for specifying the absolute path to a
 	// custom directory to store data-monitoring assets. Normally prepopulated
 	// to a default user location via UI and Python APIs.
+	// Wire name: 'assets_dir'
 	AssetsDir string `json:"assets_dir,omitempty"`
 	// [Create:OPT Update:OPT] Baseline table name. Baseline data is used to
 	// compute drift from the data in the monitored `table_name`. The baseline
 	// table and the monitored table shall have the same schema.
+	// Wire name: 'baseline_table_name'
 	BaselineTableName string `json:"baseline_table_name,omitempty"`
 	// [Create:OPT Update:OPT] Custom metrics.
+	// Wire name: 'custom_metrics'
 	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
 	// [Create:ERR Update:OPT] Id of dashboard that visualizes the computed
 	// metrics. This can be empty if the monitor is in PENDING state.
+	// Wire name: 'dashboard_id'
 	DashboardId string `json:"dashboard_id,omitempty"`
 	// [Create:OPT Update:OPT] Data classification related config.
+	// Wire name: 'data_classification_config'
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
 	// [Create:ERR Update:IGN] Table that stores drift metrics data. Format:
 	// `catalog.schema.table_name`.
+	// Wire name: 'drift_metrics_table_name'
 	DriftMetricsTableName string `json:"drift_metrics_table_name"`
 
+	// Wire name: 'inference_log'
 	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
 	// [Create:ERR Update:IGN] The latest error message for a monitor failure.
+	// Wire name: 'latest_monitor_failure_msg'
 	LatestMonitorFailureMsg string `json:"latest_monitor_failure_msg,omitempty"`
 	// [Create:ERR Update:IGN] Represents the current monitor configuration
 	// version in use. The version will be represented in a numeric fashion
 	// (1,2,3...). The field has flexibility to take on negative values, which
 	// can indicate corrupted monitor_version numbers.
+	// Wire name: 'monitor_version'
 	MonitorVersion int64 `json:"monitor_version"`
 	// [Create:OPT Update:OPT] Field for specifying notification settings.
+	// Wire name: 'notifications'
 	Notifications *MonitorNotifications `json:"notifications,omitempty"`
 	// [Create:REQ Update:REQ] Schema where output tables are created. Needs to
 	// be in 2-level format {catalog}.{schema}
+	// Wire name: 'output_schema_name'
 	OutputSchemaName string `json:"output_schema_name"`
 	// [Create:ERR Update:IGN] Table that stores profile metrics data. Format:
 	// `catalog.schema.table_name`.
+	// Wire name: 'profile_metrics_table_name'
 	ProfileMetricsTableName string `json:"profile_metrics_table_name"`
 	// [Create:OPT Update:OPT] The monitor schedule.
+	// Wire name: 'schedule'
 	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
 	// [Create:OPT Update:OPT] List of column expressions to slice data with for
 	// targeted analysis. The data is grouped by each expression independently,
@@ -4946,26 +17626,213 @@ type MonitorInfo struct {
 	// following slices: two slices for `col_2 > 10` (True and False), and one
 	// slice per unique value in `col1`. For high-cardinality columns, only the
 	// top 100 unique values by frequency will generate slices.
+	// Wire name: 'slicing_exprs'
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
+	// Wire name: 'snapshot'
 	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
 	// [Create:ERR Update:IGN] The monitor status.
+	// Wire name: 'status'
 	Status MonitorInfoStatus `json:"status"`
 	// [Create:ERR Update:IGN] UC table to monitor. Format:
 	// `catalog.schema.table_name`
+	// Wire name: 'table_name'
 	TableName string `json:"table_name"`
 	// Configuration for monitoring time series tables.
-	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'time_series'
+	TimeSeries      *MonitorTimeSeries `json:"time_series,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
-func (s *MonitorInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MonitorInfo) MarshalJSON() ([]byte, error) {
+	pb, err := MonitorInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MonitorInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MonitorInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.MonitorInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MonitorInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func MonitorInfoToPb(st *MonitorInfo) (*catalogpb.MonitorInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.MonitorInfoPb{}
+	pb.AssetsDir = st.AssetsDir
+	pb.BaselineTableName = st.BaselineTableName
+
+	var customMetricsPb []catalogpb.MonitorMetricPb
+	for _, item := range st.CustomMetrics {
+		itemPb, err := MonitorMetricToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			customMetricsPb = append(customMetricsPb, *itemPb)
+		}
+	}
+	pb.CustomMetrics = customMetricsPb
+	pb.DashboardId = st.DashboardId
+	dataClassificationConfigPb, err := MonitorDataClassificationConfigToPb(st.DataClassificationConfig)
+	if err != nil {
+		return nil, err
+	}
+	if dataClassificationConfigPb != nil {
+		pb.DataClassificationConfig = dataClassificationConfigPb
+	}
+	pb.DriftMetricsTableName = st.DriftMetricsTableName
+	inferenceLogPb, err := MonitorInferenceLogToPb(st.InferenceLog)
+	if err != nil {
+		return nil, err
+	}
+	if inferenceLogPb != nil {
+		pb.InferenceLog = inferenceLogPb
+	}
+	pb.LatestMonitorFailureMsg = st.LatestMonitorFailureMsg
+	pb.MonitorVersion = st.MonitorVersion
+	notificationsPb, err := MonitorNotificationsToPb(st.Notifications)
+	if err != nil {
+		return nil, err
+	}
+	if notificationsPb != nil {
+		pb.Notifications = notificationsPb
+	}
+	pb.OutputSchemaName = st.OutputSchemaName
+	pb.ProfileMetricsTableName = st.ProfileMetricsTableName
+	schedulePb, err := MonitorCronScheduleToPb(st.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if schedulePb != nil {
+		pb.Schedule = schedulePb
+	}
+	pb.SlicingExprs = st.SlicingExprs
+	snapshotPb, err := MonitorSnapshotToPb(st.Snapshot)
+	if err != nil {
+		return nil, err
+	}
+	if snapshotPb != nil {
+		pb.Snapshot = snapshotPb
+	}
+	statusPb, err := MonitorInfoStatusToPb(&st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+	pb.TableName = st.TableName
+	timeSeriesPb, err := MonitorTimeSeriesToPb(st.TimeSeries)
+	if err != nil {
+		return nil, err
+	}
+	if timeSeriesPb != nil {
+		pb.TimeSeries = timeSeriesPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func MonitorInfoFromPb(pb *catalogpb.MonitorInfoPb) (*MonitorInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &MonitorInfo{}
+	st.AssetsDir = pb.AssetsDir
+	st.BaselineTableName = pb.BaselineTableName
+
+	var customMetricsField []MonitorMetric
+	for _, itemPb := range pb.CustomMetrics {
+		item, err := MonitorMetricFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			customMetricsField = append(customMetricsField, *item)
+		}
+	}
+	st.CustomMetrics = customMetricsField
+	st.DashboardId = pb.DashboardId
+	dataClassificationConfigField, err := MonitorDataClassificationConfigFromPb(pb.DataClassificationConfig)
+	if err != nil {
+		return nil, err
+	}
+	if dataClassificationConfigField != nil {
+		st.DataClassificationConfig = dataClassificationConfigField
+	}
+	st.DriftMetricsTableName = pb.DriftMetricsTableName
+	inferenceLogField, err := MonitorInferenceLogFromPb(pb.InferenceLog)
+	if err != nil {
+		return nil, err
+	}
+	if inferenceLogField != nil {
+		st.InferenceLog = inferenceLogField
+	}
+	st.LatestMonitorFailureMsg = pb.LatestMonitorFailureMsg
+	st.MonitorVersion = pb.MonitorVersion
+	notificationsField, err := MonitorNotificationsFromPb(pb.Notifications)
+	if err != nil {
+		return nil, err
+	}
+	if notificationsField != nil {
+		st.Notifications = notificationsField
+	}
+	st.OutputSchemaName = pb.OutputSchemaName
+	st.ProfileMetricsTableName = pb.ProfileMetricsTableName
+	scheduleField, err := MonitorCronScheduleFromPb(pb.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if scheduleField != nil {
+		st.Schedule = scheduleField
+	}
+	st.SlicingExprs = pb.SlicingExprs
+	snapshotField, err := MonitorSnapshotFromPb(pb.Snapshot)
+	if err != nil {
+		return nil, err
+	}
+	if snapshotField != nil {
+		st.Snapshot = snapshotField
+	}
+	statusField, err := MonitorInfoStatusFromPb(&pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = *statusField
+	}
+	st.TableName = pb.TableName
+	timeSeriesField, err := MonitorTimeSeriesFromPb(pb.TimeSeries)
+	if err != nil {
+		return nil, err
+	}
+	if timeSeriesField != nil {
+		st.TimeSeries = timeSeriesField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type MonitorInfoStatus string
@@ -5014,20 +17881,40 @@ func (f *MonitorInfoStatus) Type() string {
 	return "MonitorInfoStatus"
 }
 
+func MonitorInfoStatusToPb(st *MonitorInfoStatus) (*catalogpb.MonitorInfoStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.MonitorInfoStatusPb(*st)
+	return &pb, nil
+}
+
+func MonitorInfoStatusFromPb(pb *catalogpb.MonitorInfoStatusPb) (*MonitorInfoStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MonitorInfoStatus(*pb)
+	return &st, nil
+}
+
 // Custom metric definition.
 type MonitorMetric struct {
 	// Jinja template for a SQL expression that specifies how to compute the
 	// metric. See [create metric definition].
 	//
 	// [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition
+	// Wire name: 'definition'
 	Definition string `json:"definition"`
 	// A list of column names in the input table the metric should be computed
 	// for. Can use ``":table"`` to indicate that the metric needs information
 	// from multiple columns.
+	// Wire name: 'input_columns'
 	InputColumns []string `json:"input_columns"`
 	// Name of the metric in the output tables.
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// The output type of the custom metric.
+	// Wire name: 'output_data_type'
 	OutputDataType string `json:"output_data_type"`
 	// Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``,
 	// ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The
@@ -5039,7 +17926,73 @@ type MonitorMetric struct {
 	// table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed
 	// aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously
 	// computed aggregate or derived metrics
+	// Wire name: 'type'
 	Type MonitorMetricType `json:"type"`
+}
+
+func (st MonitorMetric) MarshalJSON() ([]byte, error) {
+	pb, err := MonitorMetricToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *MonitorMetric) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.MonitorMetricPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MonitorMetricFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func MonitorMetricToPb(st *MonitorMetric) (*catalogpb.MonitorMetricPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.MonitorMetricPb{}
+	pb.Definition = st.Definition
+	pb.InputColumns = st.InputColumns
+	pb.Name = st.Name
+	pb.OutputDataType = st.OutputDataType
+	typePb, err := MonitorMetricTypeToPb(&st.Type)
+	if err != nil {
+		return nil, err
+	}
+	if typePb != nil {
+		pb.Type = *typePb
+	}
+
+	return pb, nil
+}
+
+func MonitorMetricFromPb(pb *catalogpb.MonitorMetricPb) (*MonitorMetric, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &MonitorMetric{}
+	st.Definition = pb.Definition
+	st.InputColumns = pb.InputColumns
+	st.Name = pb.Name
+	st.OutputDataType = pb.OutputDataType
+	typeField, err := MonitorMetricTypeFromPb(&pb.Type)
+	if err != nil {
+		return nil, err
+	}
+	if typeField != nil {
+		st.Type = *typeField
+	}
+
+	return st, nil
 }
 
 // Can only be one of “\"CUSTOM_METRIC_TYPE_AGGREGATE\"“,
@@ -5092,39 +18045,210 @@ func (f *MonitorMetricType) Type() string {
 	return "MonitorMetricType"
 }
 
+func MonitorMetricTypeToPb(st *MonitorMetricType) (*catalogpb.MonitorMetricTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.MonitorMetricTypePb(*st)
+	return &pb, nil
+}
+
+func MonitorMetricTypeFromPb(pb *catalogpb.MonitorMetricTypePb) (*MonitorMetricType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MonitorMetricType(*pb)
+	return &st, nil
+}
+
 type MonitorNotifications struct {
 	// Destinations to send notifications on failure/timeout.
+	// Wire name: 'on_failure'
 	OnFailure *MonitorDestination `json:"on_failure,omitempty"`
 	// Destinations to send notifications on new classification tag detected.
+	// Wire name: 'on_new_classification_tag_detected'
 	OnNewClassificationTagDetected *MonitorDestination `json:"on_new_classification_tag_detected,omitempty"`
+}
+
+func (st MonitorNotifications) MarshalJSON() ([]byte, error) {
+	pb, err := MonitorNotificationsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *MonitorNotifications) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.MonitorNotificationsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MonitorNotificationsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func MonitorNotificationsToPb(st *MonitorNotifications) (*catalogpb.MonitorNotificationsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.MonitorNotificationsPb{}
+	onFailurePb, err := MonitorDestinationToPb(st.OnFailure)
+	if err != nil {
+		return nil, err
+	}
+	if onFailurePb != nil {
+		pb.OnFailure = onFailurePb
+	}
+	onNewClassificationTagDetectedPb, err := MonitorDestinationToPb(st.OnNewClassificationTagDetected)
+	if err != nil {
+		return nil, err
+	}
+	if onNewClassificationTagDetectedPb != nil {
+		pb.OnNewClassificationTagDetected = onNewClassificationTagDetectedPb
+	}
+
+	return pb, nil
+}
+
+func MonitorNotificationsFromPb(pb *catalogpb.MonitorNotificationsPb) (*MonitorNotifications, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &MonitorNotifications{}
+	onFailureField, err := MonitorDestinationFromPb(pb.OnFailure)
+	if err != nil {
+		return nil, err
+	}
+	if onFailureField != nil {
+		st.OnFailure = onFailureField
+	}
+	onNewClassificationTagDetectedField, err := MonitorDestinationFromPb(pb.OnNewClassificationTagDetected)
+	if err != nil {
+		return nil, err
+	}
+	if onNewClassificationTagDetectedField != nil {
+		st.OnNewClassificationTagDetected = onNewClassificationTagDetectedField
+	}
+
+	return st, nil
 }
 
 type MonitorRefreshInfo struct {
 	// Time at which refresh operation completed (milliseconds since 1/1/1970
 	// UTC).
+	// Wire name: 'end_time_ms'
 	EndTimeMs int64 `json:"end_time_ms,omitempty"`
 	// An optional message to give insight into the current state of the job
 	// (e.g. FAILURE messages).
+	// Wire name: 'message'
 	Message string `json:"message,omitempty"`
 	// Unique id of the refresh operation.
+	// Wire name: 'refresh_id'
 	RefreshId int64 `json:"refresh_id"`
 	// Time at which refresh operation was initiated (milliseconds since
 	// 1/1/1970 UTC).
+	// Wire name: 'start_time_ms'
 	StartTimeMs int64 `json:"start_time_ms"`
 	// The current state of the refresh.
+	// Wire name: 'state'
 	State MonitorRefreshInfoState `json:"state"`
 	// The method by which the refresh was triggered.
-	Trigger MonitorRefreshInfoTrigger `json:"trigger,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'trigger'
+	Trigger         MonitorRefreshInfoTrigger `json:"trigger,omitempty"`
+	ForceSendFields []string                  `json:"-" tf:"-"`
 }
 
-func (s *MonitorRefreshInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st MonitorRefreshInfo) MarshalJSON() ([]byte, error) {
+	pb, err := MonitorRefreshInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s MonitorRefreshInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *MonitorRefreshInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.MonitorRefreshInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MonitorRefreshInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func MonitorRefreshInfoToPb(st *MonitorRefreshInfo) (*catalogpb.MonitorRefreshInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.MonitorRefreshInfoPb{}
+	pb.EndTimeMs = st.EndTimeMs
+	pb.Message = st.Message
+	pb.RefreshId = st.RefreshId
+	pb.StartTimeMs = st.StartTimeMs
+	statePb, err := MonitorRefreshInfoStateToPb(&st.State)
+	if err != nil {
+		return nil, err
+	}
+	if statePb != nil {
+		pb.State = *statePb
+	}
+	triggerPb, err := MonitorRefreshInfoTriggerToPb(&st.Trigger)
+	if err != nil {
+		return nil, err
+	}
+	if triggerPb != nil {
+		pb.Trigger = *triggerPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func MonitorRefreshInfoFromPb(pb *catalogpb.MonitorRefreshInfoPb) (*MonitorRefreshInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &MonitorRefreshInfo{}
+	st.EndTimeMs = pb.EndTimeMs
+	st.Message = pb.Message
+	st.RefreshId = pb.RefreshId
+	st.StartTimeMs = pb.StartTimeMs
+	stateField, err := MonitorRefreshInfoStateFromPb(&pb.State)
+	if err != nil {
+		return nil, err
+	}
+	if stateField != nil {
+		st.State = *stateField
+	}
+	triggerField, err := MonitorRefreshInfoTriggerFromPb(&pb.Trigger)
+	if err != nil {
+		return nil, err
+	}
+	if triggerField != nil {
+		st.Trigger = *triggerField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // The current state of the refresh.
@@ -5177,6 +18301,22 @@ func (f *MonitorRefreshInfoState) Type() string {
 	return "MonitorRefreshInfoState"
 }
 
+func MonitorRefreshInfoStateToPb(st *MonitorRefreshInfoState) (*catalogpb.MonitorRefreshInfoStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.MonitorRefreshInfoStatePb(*st)
+	return &pb, nil
+}
+
+func MonitorRefreshInfoStateFromPb(pb *catalogpb.MonitorRefreshInfoStatePb) (*MonitorRefreshInfoState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MonitorRefreshInfoState(*pb)
+	return &st, nil
+}
+
 type MonitorRefreshInfoTrigger string
 
 const MonitorRefreshInfoTriggerManual MonitorRefreshInfoTrigger = `MANUAL`
@@ -5217,13 +18357,140 @@ func (f *MonitorRefreshInfoTrigger) Type() string {
 	return "MonitorRefreshInfoTrigger"
 }
 
+func MonitorRefreshInfoTriggerToPb(st *MonitorRefreshInfoTrigger) (*catalogpb.MonitorRefreshInfoTriggerPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.MonitorRefreshInfoTriggerPb(*st)
+	return &pb, nil
+}
+
+func MonitorRefreshInfoTriggerFromPb(pb *catalogpb.MonitorRefreshInfoTriggerPb) (*MonitorRefreshInfoTrigger, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MonitorRefreshInfoTrigger(*pb)
+	return &st, nil
+}
+
 type MonitorRefreshListResponse struct {
 	// List of refreshes.
+	// Wire name: 'refreshes'
 	Refreshes []MonitorRefreshInfo `json:"refreshes,omitempty"`
+}
+
+func (st MonitorRefreshListResponse) MarshalJSON() ([]byte, error) {
+	pb, err := MonitorRefreshListResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *MonitorRefreshListResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.MonitorRefreshListResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MonitorRefreshListResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func MonitorRefreshListResponseToPb(st *MonitorRefreshListResponse) (*catalogpb.MonitorRefreshListResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.MonitorRefreshListResponsePb{}
+
+	var refreshesPb []catalogpb.MonitorRefreshInfoPb
+	for _, item := range st.Refreshes {
+		itemPb, err := MonitorRefreshInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			refreshesPb = append(refreshesPb, *itemPb)
+		}
+	}
+	pb.Refreshes = refreshesPb
+
+	return pb, nil
+}
+
+func MonitorRefreshListResponseFromPb(pb *catalogpb.MonitorRefreshListResponsePb) (*MonitorRefreshListResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &MonitorRefreshListResponse{}
+
+	var refreshesField []MonitorRefreshInfo
+	for _, itemPb := range pb.Refreshes {
+		item, err := MonitorRefreshInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			refreshesField = append(refreshesField, *item)
+		}
+	}
+	st.Refreshes = refreshesField
+
+	return st, nil
 }
 
 // Snapshot analysis configuration
 type MonitorSnapshot struct {
+}
+
+func (st MonitorSnapshot) MarshalJSON() ([]byte, error) {
+	pb, err := MonitorSnapshotToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *MonitorSnapshot) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.MonitorSnapshotPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MonitorSnapshotFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func MonitorSnapshotToPb(st *MonitorSnapshot) (*catalogpb.MonitorSnapshotPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.MonitorSnapshotPb{}
+
+	return pb, nil
+}
+
+func MonitorSnapshotFromPb(pb *catalogpb.MonitorSnapshotPb) (*MonitorSnapshot, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &MonitorSnapshot{}
+
+	return st, nil
 }
 
 // Time series analysis configuration.
@@ -5232,41 +18499,227 @@ type MonitorTimeSeries struct {
 	// timestamp. Currently the following static granularities are supported:
 	// {``\"5 minutes\"``, ``\"30 minutes\"``, ``\"1 hour\"``, ``\"1 day\"``,
 	// ``\"\u003cn\u003e week(s)\"``, ``\"1 month\"``, ``\"1 year\"``}.
+	// Wire name: 'granularities'
 	Granularities []string `json:"granularities"`
 	// Column for the timestamp.
+	// Wire name: 'timestamp_col'
 	TimestampCol string `json:"timestamp_col"`
+}
+
+func (st MonitorTimeSeries) MarshalJSON() ([]byte, error) {
+	pb, err := MonitorTimeSeriesToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *MonitorTimeSeries) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.MonitorTimeSeriesPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := MonitorTimeSeriesFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func MonitorTimeSeriesToPb(st *MonitorTimeSeries) (*catalogpb.MonitorTimeSeriesPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.MonitorTimeSeriesPb{}
+	pb.Granularities = st.Granularities
+	pb.TimestampCol = st.TimestampCol
+
+	return pb, nil
+}
+
+func MonitorTimeSeriesFromPb(pb *catalogpb.MonitorTimeSeriesPb) (*MonitorTimeSeries, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &MonitorTimeSeries{}
+	st.Granularities = pb.Granularities
+	st.TimestampCol = pb.TimestampCol
+
+	return st, nil
 }
 
 type NamedTableConstraint struct {
 	// The name of the constraint.
+	// Wire name: 'name'
 	Name string `json:"name"`
+}
+
+func (st NamedTableConstraint) MarshalJSON() ([]byte, error) {
+	pb, err := NamedTableConstraintToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *NamedTableConstraint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.NamedTableConstraintPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := NamedTableConstraintFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func NamedTableConstraintToPb(st *NamedTableConstraint) (*catalogpb.NamedTableConstraintPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.NamedTableConstraintPb{}
+	pb.Name = st.Name
+
+	return pb, nil
+}
+
+func NamedTableConstraintFromPb(pb *catalogpb.NamedTableConstraintPb) (*NamedTableConstraint, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &NamedTableConstraint{}
+	st.Name = pb.Name
+
+	return st, nil
 }
 
 // Online Table information.
 type OnlineTable struct {
 	// Full three-part (catalog, schema, table) name of the table.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// Specification of the online table.
+	// Wire name: 'spec'
 	Spec *OnlineTableSpec `json:"spec,omitempty"`
 	// Online Table data synchronization status
+	// Wire name: 'status'
 	Status *OnlineTableStatus `json:"status,omitempty"`
 	// Data serving REST API URL for this table
+	// Wire name: 'table_serving_url'
 	TableServingUrl string `json:"table_serving_url,omitempty"`
 	// The provisioning state of the online table entity in Unity Catalog. This
 	// is distinct from the state of the data synchronization pipeline (i.e. the
 	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
 	// runs asynchronously).
+	// Wire name: 'unity_catalog_provisioning_state'
 	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields               []string              `json:"-" tf:"-"`
 }
 
-func (s *OnlineTable) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st OnlineTable) MarshalJSON() ([]byte, error) {
+	pb, err := OnlineTableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s OnlineTable) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *OnlineTable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.OnlineTablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := OnlineTableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func OnlineTableToPb(st *OnlineTable) (*catalogpb.OnlineTablePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.OnlineTablePb{}
+	pb.Name = st.Name
+	specPb, err := OnlineTableSpecToPb(st.Spec)
+	if err != nil {
+		return nil, err
+	}
+	if specPb != nil {
+		pb.Spec = specPb
+	}
+	statusPb, err := OnlineTableStatusToPb(st.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusPb != nil {
+		pb.Status = statusPb
+	}
+	pb.TableServingUrl = st.TableServingUrl
+	unityCatalogProvisioningStatePb, err := ProvisioningInfoStateToPb(&st.UnityCatalogProvisioningState)
+	if err != nil {
+		return nil, err
+	}
+	if unityCatalogProvisioningStatePb != nil {
+		pb.UnityCatalogProvisioningState = *unityCatalogProvisioningStatePb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func OnlineTableFromPb(pb *catalogpb.OnlineTablePb) (*OnlineTable, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &OnlineTable{}
+	st.Name = pb.Name
+	specField, err := OnlineTableSpecFromPb(pb.Spec)
+	if err != nil {
+		return nil, err
+	}
+	if specField != nil {
+		st.Spec = specField
+	}
+	statusField, err := OnlineTableStatusFromPb(pb.Status)
+	if err != nil {
+		return nil, err
+	}
+	if statusField != nil {
+		st.Status = statusField
+	}
+	st.TableServingUrl = pb.TableServingUrl
+	unityCatalogProvisioningStateField, err := ProvisioningInfoStateFromPb(&pb.UnityCatalogProvisioningState)
+	if err != nil {
+		return nil, err
+	}
+	if unityCatalogProvisioningStateField != nil {
+		st.UnityCatalogProvisioningState = *unityCatalogProvisioningStateField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Specification of an online table.
@@ -5278,38 +18731,209 @@ type OnlineTableSpec struct {
 	// the source table and there are no incremental updates. This mode is
 	// useful for syncing views or tables without CDFs to online tables. Note
 	// that the full-copy pipeline only supports "triggered" scheduling policy.
+	// Wire name: 'perform_full_copy'
 	PerformFullCopy bool `json:"perform_full_copy,omitempty"`
 	// ID of the associated pipeline. Generated by the server - cannot be set by
 	// the caller.
+	// Wire name: 'pipeline_id'
 	PipelineId string `json:"pipeline_id,omitempty"`
 	// Primary Key columns to be used for data insert/update in the destination.
+	// Wire name: 'primary_key_columns'
 	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
 	// Pipeline runs continuously after generating the initial data.
+	// Wire name: 'run_continuously'
 	RunContinuously *OnlineTableSpecContinuousSchedulingPolicy `json:"run_continuously,omitempty"`
 	// Pipeline stops after generating the initial data and can be triggered
 	// later (manually, through a cron job or through data triggers)
+	// Wire name: 'run_triggered'
 	RunTriggered *OnlineTableSpecTriggeredSchedulingPolicy `json:"run_triggered,omitempty"`
 	// Three-part (catalog, schema, table) name of the source Delta table.
+	// Wire name: 'source_table_full_name'
 	SourceTableFullName string `json:"source_table_full_name,omitempty"`
 	// Time series key to deduplicate (tie-break) rows with the same primary
 	// key.
-	TimeseriesKey string `json:"timeseries_key,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'timeseries_key'
+	TimeseriesKey   string   `json:"timeseries_key,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *OnlineTableSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st OnlineTableSpec) MarshalJSON() ([]byte, error) {
+	pb, err := OnlineTableSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s OnlineTableSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *OnlineTableSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.OnlineTableSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := OnlineTableSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func OnlineTableSpecToPb(st *OnlineTableSpec) (*catalogpb.OnlineTableSpecPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.OnlineTableSpecPb{}
+	pb.PerformFullCopy = st.PerformFullCopy
+	pb.PipelineId = st.PipelineId
+	pb.PrimaryKeyColumns = st.PrimaryKeyColumns
+	runContinuouslyPb, err := OnlineTableSpecContinuousSchedulingPolicyToPb(st.RunContinuously)
+	if err != nil {
+		return nil, err
+	}
+	if runContinuouslyPb != nil {
+		pb.RunContinuously = runContinuouslyPb
+	}
+	runTriggeredPb, err := OnlineTableSpecTriggeredSchedulingPolicyToPb(st.RunTriggered)
+	if err != nil {
+		return nil, err
+	}
+	if runTriggeredPb != nil {
+		pb.RunTriggered = runTriggeredPb
+	}
+	pb.SourceTableFullName = st.SourceTableFullName
+	pb.TimeseriesKey = st.TimeseriesKey
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func OnlineTableSpecFromPb(pb *catalogpb.OnlineTableSpecPb) (*OnlineTableSpec, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &OnlineTableSpec{}
+	st.PerformFullCopy = pb.PerformFullCopy
+	st.PipelineId = pb.PipelineId
+	st.PrimaryKeyColumns = pb.PrimaryKeyColumns
+	runContinuouslyField, err := OnlineTableSpecContinuousSchedulingPolicyFromPb(pb.RunContinuously)
+	if err != nil {
+		return nil, err
+	}
+	if runContinuouslyField != nil {
+		st.RunContinuously = runContinuouslyField
+	}
+	runTriggeredField, err := OnlineTableSpecTriggeredSchedulingPolicyFromPb(pb.RunTriggered)
+	if err != nil {
+		return nil, err
+	}
+	if runTriggeredField != nil {
+		st.RunTriggered = runTriggeredField
+	}
+	st.SourceTableFullName = pb.SourceTableFullName
+	st.TimeseriesKey = pb.TimeseriesKey
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type OnlineTableSpecContinuousSchedulingPolicy struct {
 }
 
+func (st OnlineTableSpecContinuousSchedulingPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := OnlineTableSpecContinuousSchedulingPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *OnlineTableSpecContinuousSchedulingPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.OnlineTableSpecContinuousSchedulingPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := OnlineTableSpecContinuousSchedulingPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func OnlineTableSpecContinuousSchedulingPolicyToPb(st *OnlineTableSpecContinuousSchedulingPolicy) (*catalogpb.OnlineTableSpecContinuousSchedulingPolicyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.OnlineTableSpecContinuousSchedulingPolicyPb{}
+
+	return pb, nil
+}
+
+func OnlineTableSpecContinuousSchedulingPolicyFromPb(pb *catalogpb.OnlineTableSpecContinuousSchedulingPolicyPb) (*OnlineTableSpecContinuousSchedulingPolicy, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &OnlineTableSpecContinuousSchedulingPolicy{}
+
+	return st, nil
+}
+
 type OnlineTableSpecTriggeredSchedulingPolicy struct {
+}
+
+func (st OnlineTableSpecTriggeredSchedulingPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := OnlineTableSpecTriggeredSchedulingPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *OnlineTableSpecTriggeredSchedulingPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.OnlineTableSpecTriggeredSchedulingPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := OnlineTableSpecTriggeredSchedulingPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func OnlineTableSpecTriggeredSchedulingPolicyToPb(st *OnlineTableSpecTriggeredSchedulingPolicy) (*catalogpb.OnlineTableSpecTriggeredSchedulingPolicyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.OnlineTableSpecTriggeredSchedulingPolicyPb{}
+
+	return pb, nil
+}
+
+func OnlineTableSpecTriggeredSchedulingPolicyFromPb(pb *catalogpb.OnlineTableSpecTriggeredSchedulingPolicyPb) (*OnlineTableSpecTriggeredSchedulingPolicy, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &OnlineTableSpecTriggeredSchedulingPolicy{}
+
+	return st, nil
 }
 
 // The state of an online table.
@@ -5377,29 +19001,164 @@ func (f *OnlineTableState) Type() string {
 	return "OnlineTableState"
 }
 
+func OnlineTableStateToPb(st *OnlineTableState) (*catalogpb.OnlineTableStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.OnlineTableStatePb(*st)
+	return &pb, nil
+}
+
+func OnlineTableStateFromPb(pb *catalogpb.OnlineTableStatePb) (*OnlineTableState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := OnlineTableState(*pb)
+	return &st, nil
+}
+
 // Status of an online table.
 type OnlineTableStatus struct {
+
+	// Wire name: 'continuous_update_status'
 	ContinuousUpdateStatus *ContinuousUpdateStatus `json:"continuous_update_status,omitempty"`
 	// The state of the online table.
+	// Wire name: 'detailed_state'
 	DetailedState OnlineTableState `json:"detailed_state,omitempty"`
 
+	// Wire name: 'failed_status'
 	FailedStatus *FailedStatus `json:"failed_status,omitempty"`
 	// A text description of the current state of the online table.
+	// Wire name: 'message'
 	Message string `json:"message,omitempty"`
 
+	// Wire name: 'provisioning_status'
 	ProvisioningStatus *ProvisioningStatus `json:"provisioning_status,omitempty"`
 
+	// Wire name: 'triggered_update_status'
 	TriggeredUpdateStatus *TriggeredUpdateStatus `json:"triggered_update_status,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields       []string               `json:"-" tf:"-"`
 }
 
-func (s *OnlineTableStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st OnlineTableStatus) MarshalJSON() ([]byte, error) {
+	pb, err := OnlineTableStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s OnlineTableStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *OnlineTableStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.OnlineTableStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := OnlineTableStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func OnlineTableStatusToPb(st *OnlineTableStatus) (*catalogpb.OnlineTableStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.OnlineTableStatusPb{}
+	continuousUpdateStatusPb, err := ContinuousUpdateStatusToPb(st.ContinuousUpdateStatus)
+	if err != nil {
+		return nil, err
+	}
+	if continuousUpdateStatusPb != nil {
+		pb.ContinuousUpdateStatus = continuousUpdateStatusPb
+	}
+	detailedStatePb, err := OnlineTableStateToPb(&st.DetailedState)
+	if err != nil {
+		return nil, err
+	}
+	if detailedStatePb != nil {
+		pb.DetailedState = *detailedStatePb
+	}
+	failedStatusPb, err := FailedStatusToPb(st.FailedStatus)
+	if err != nil {
+		return nil, err
+	}
+	if failedStatusPb != nil {
+		pb.FailedStatus = failedStatusPb
+	}
+	pb.Message = st.Message
+	provisioningStatusPb, err := ProvisioningStatusToPb(st.ProvisioningStatus)
+	if err != nil {
+		return nil, err
+	}
+	if provisioningStatusPb != nil {
+		pb.ProvisioningStatus = provisioningStatusPb
+	}
+	triggeredUpdateStatusPb, err := TriggeredUpdateStatusToPb(st.TriggeredUpdateStatus)
+	if err != nil {
+		return nil, err
+	}
+	if triggeredUpdateStatusPb != nil {
+		pb.TriggeredUpdateStatus = triggeredUpdateStatusPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func OnlineTableStatusFromPb(pb *catalogpb.OnlineTableStatusPb) (*OnlineTableStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &OnlineTableStatus{}
+	continuousUpdateStatusField, err := ContinuousUpdateStatusFromPb(pb.ContinuousUpdateStatus)
+	if err != nil {
+		return nil, err
+	}
+	if continuousUpdateStatusField != nil {
+		st.ContinuousUpdateStatus = continuousUpdateStatusField
+	}
+	detailedStateField, err := OnlineTableStateFromPb(&pb.DetailedState)
+	if err != nil {
+		return nil, err
+	}
+	if detailedStateField != nil {
+		st.DetailedState = *detailedStateField
+	}
+	failedStatusField, err := FailedStatusFromPb(pb.FailedStatus)
+	if err != nil {
+		return nil, err
+	}
+	if failedStatusField != nil {
+		st.FailedStatus = failedStatusField
+	}
+	st.Message = pb.Message
+	provisioningStatusField, err := ProvisioningStatusFromPb(pb.ProvisioningStatus)
+	if err != nil {
+		return nil, err
+	}
+	if provisioningStatusField != nil {
+		st.ProvisioningStatus = provisioningStatusField
+	}
+	triggeredUpdateStatusField, err := TriggeredUpdateStatusFromPb(pb.TriggeredUpdateStatus)
+	if err != nil {
+		return nil, err
+	}
+	if triggeredUpdateStatusField != nil {
+		st.TriggeredUpdateStatus = triggeredUpdateStatusField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Spec of an allowed option on a securable kind and its attributes. This is
@@ -5409,51 +19168,157 @@ type OptionSpec struct {
 	// For drop down / radio button selections, UI will want to know the
 	// possible input values, it can also be used by other option types to limit
 	// input selections.
+	// Wire name: 'allowed_values'
 	AllowedValues []string `json:"allowed_values,omitempty"`
 	// The default value of the option, for example, value '443' for 'port'
 	// option.
+	// Wire name: 'default_value'
 	DefaultValue string `json:"default_value,omitempty"`
 	// A concise user facing description of what the input value of this option
 	// should look like.
+	// Wire name: 'description'
 	Description string `json:"description,omitempty"`
 	// The hint is used on the UI to suggest what the input value can possibly
 	// be like, for example: example.com for 'host' option. Unlike default
 	// value, it will not be applied automatically without user input.
+	// Wire name: 'hint'
 	Hint string `json:"hint,omitempty"`
 	// Indicates whether an option should be displayed with copy button on the
 	// UI.
+	// Wire name: 'is_copiable'
 	IsCopiable bool `json:"is_copiable,omitempty"`
 	// Indicates whether an option can be provided by users in the create/update
 	// path of an entity.
+	// Wire name: 'is_creatable'
 	IsCreatable bool `json:"is_creatable,omitempty"`
 	// Is the option value not user settable and is thus not shown on the UI.
+	// Wire name: 'is_hidden'
 	IsHidden bool `json:"is_hidden,omitempty"`
 	// Specifies whether this option is safe to log, i.e. no sensitive
 	// information.
+	// Wire name: 'is_loggable'
 	IsLoggable bool `json:"is_loggable,omitempty"`
 	// Is the option required.
+	// Wire name: 'is_required'
 	IsRequired bool `json:"is_required,omitempty"`
 	// Is the option value considered secret and thus redacted on the UI.
+	// Wire name: 'is_secret'
 	IsSecret bool `json:"is_secret,omitempty"`
 	// Is the option updatable by users.
+	// Wire name: 'is_updatable'
 	IsUpdatable bool `json:"is_updatable,omitempty"`
 	// The unique name of the option.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// Specifies when the option value is displayed on the UI within the OAuth
 	// flow.
+	// Wire name: 'oauth_stage'
 	OauthStage OptionSpecOauthStage `json:"oauth_stage,omitempty"`
 	// The type of the option.
-	Type OptionSpecOptionType `json:"type,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'type'
+	Type            OptionSpecOptionType `json:"type,omitempty"`
+	ForceSendFields []string             `json:"-" tf:"-"`
 }
 
-func (s *OptionSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st OptionSpec) MarshalJSON() ([]byte, error) {
+	pb, err := OptionSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s OptionSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *OptionSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.OptionSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := OptionSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func OptionSpecToPb(st *OptionSpec) (*catalogpb.OptionSpecPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.OptionSpecPb{}
+	pb.AllowedValues = st.AllowedValues
+	pb.DefaultValue = st.DefaultValue
+	pb.Description = st.Description
+	pb.Hint = st.Hint
+	pb.IsCopiable = st.IsCopiable
+	pb.IsCreatable = st.IsCreatable
+	pb.IsHidden = st.IsHidden
+	pb.IsLoggable = st.IsLoggable
+	pb.IsRequired = st.IsRequired
+	pb.IsSecret = st.IsSecret
+	pb.IsUpdatable = st.IsUpdatable
+	pb.Name = st.Name
+	oauthStagePb, err := OptionSpecOauthStageToPb(&st.OauthStage)
+	if err != nil {
+		return nil, err
+	}
+	if oauthStagePb != nil {
+		pb.OauthStage = *oauthStagePb
+	}
+	typePb, err := OptionSpecOptionTypeToPb(&st.Type)
+	if err != nil {
+		return nil, err
+	}
+	if typePb != nil {
+		pb.Type = *typePb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func OptionSpecFromPb(pb *catalogpb.OptionSpecPb) (*OptionSpec, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &OptionSpec{}
+	st.AllowedValues = pb.AllowedValues
+	st.DefaultValue = pb.DefaultValue
+	st.Description = pb.Description
+	st.Hint = pb.Hint
+	st.IsCopiable = pb.IsCopiable
+	st.IsCreatable = pb.IsCreatable
+	st.IsHidden = pb.IsHidden
+	st.IsLoggable = pb.IsLoggable
+	st.IsRequired = pb.IsRequired
+	st.IsSecret = pb.IsSecret
+	st.IsUpdatable = pb.IsUpdatable
+	st.Name = pb.Name
+	oauthStageField, err := OptionSpecOauthStageFromPb(&pb.OauthStage)
+	if err != nil {
+		return nil, err
+	}
+	if oauthStageField != nil {
+		st.OauthStage = *oauthStageField
+	}
+	typeField, err := OptionSpecOptionTypeFromPb(&pb.Type)
+	if err != nil {
+		return nil, err
+	}
+	if typeField != nil {
+		st.Type = *typeField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // During the OAuth flow, specifies which stage the option should be displayed
@@ -5497,6 +19362,22 @@ func (f *OptionSpecOauthStage) Values() []OptionSpecOauthStage {
 // Type always returns OptionSpecOauthStage to satisfy [pflag.Value] interface
 func (f *OptionSpecOauthStage) Type() string {
 	return "OptionSpecOauthStage"
+}
+
+func OptionSpecOauthStageToPb(st *OptionSpecOauthStage) (*catalogpb.OptionSpecOauthStagePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.OptionSpecOauthStagePb(*st)
+	return &pb, nil
+}
+
+func OptionSpecOauthStageFromPb(pb *catalogpb.OptionSpecOauthStagePb) (*OptionSpecOauthStage, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := OptionSpecOauthStage(*pb)
+	return &st, nil
 }
 
 // Type of the option, we purposely follow JavaScript types so that the UI can
@@ -5554,71 +19435,287 @@ func (f *OptionSpecOptionType) Type() string {
 	return "OptionSpecOptionType"
 }
 
+func OptionSpecOptionTypeToPb(st *OptionSpecOptionType) (*catalogpb.OptionSpecOptionTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.OptionSpecOptionTypePb(*st)
+	return &pb, nil
+}
+
+func OptionSpecOptionTypeFromPb(pb *catalogpb.OptionSpecOptionTypePb) (*OptionSpecOptionType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := OptionSpecOptionType(*pb)
+	return &st, nil
+}
+
 type PermissionsChange struct {
 	// The set of privileges to add.
+	// Wire name: 'add'
 	Add []Privilege `json:"add,omitempty"`
 	// The principal whose privileges we are changing. Only one of principal or
 	// principal_id should be specified, never both at the same time.
+	// Wire name: 'principal'
 	Principal string `json:"principal,omitempty"`
 	// The set of privileges to remove.
-	Remove []Privilege `json:"remove,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'remove'
+	Remove          []Privilege `json:"remove,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
-func (s *PermissionsChange) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PermissionsChange) MarshalJSON() ([]byte, error) {
+	pb, err := PermissionsChangeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PermissionsChange) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PermissionsChange) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.PermissionsChangePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PermissionsChangeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func PermissionsChangeToPb(st *PermissionsChange) (*catalogpb.PermissionsChangePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.PermissionsChangePb{}
+
+	var addPb []catalogpb.PrivilegePb
+	for _, item := range st.Add {
+		itemPb, err := PrivilegeToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			addPb = append(addPb, *itemPb)
+		}
+	}
+	pb.Add = addPb
+	pb.Principal = st.Principal
+
+	var removePb []catalogpb.PrivilegePb
+	for _, item := range st.Remove {
+		itemPb, err := PrivilegeToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			removePb = append(removePb, *itemPb)
+		}
+	}
+	pb.Remove = removePb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func PermissionsChangeFromPb(pb *catalogpb.PermissionsChangePb) (*PermissionsChange, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &PermissionsChange{}
+
+	var addField []Privilege
+	for _, itemPb := range pb.Add {
+		item, err := PrivilegeFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			addField = append(addField, *item)
+		}
+	}
+	st.Add = addField
+	st.Principal = pb.Principal
+
+	var removeField []Privilege
+	for _, itemPb := range pb.Remove {
+		item, err := PrivilegeFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			removeField = append(removeField, *item)
+		}
+	}
+	st.Remove = removeField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Progress information of the Online Table data synchronization pipeline.
 type PipelineProgress struct {
 	// The estimated time remaining to complete this update in seconds.
+	// Wire name: 'estimated_completion_time_seconds'
 	EstimatedCompletionTimeSeconds float64 `json:"estimated_completion_time_seconds,omitempty"`
 	// The source table Delta version that was last processed by the pipeline.
 	// The pipeline may not have completely processed this version yet.
+	// Wire name: 'latest_version_currently_processing'
 	LatestVersionCurrentlyProcessing int64 `json:"latest_version_currently_processing,omitempty"`
 	// The completion ratio of this update. This is a number between 0 and 1.
+	// Wire name: 'sync_progress_completion'
 	SyncProgressCompletion float64 `json:"sync_progress_completion,omitempty"`
 	// The number of rows that have been synced in this update.
+	// Wire name: 'synced_row_count'
 	SyncedRowCount int64 `json:"synced_row_count,omitempty"`
 	// The total number of rows that need to be synced in this update. This
 	// number may be an estimate.
-	TotalRowCount int64 `json:"total_row_count,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'total_row_count'
+	TotalRowCount   int64    `json:"total_row_count,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *PipelineProgress) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PipelineProgress) MarshalJSON() ([]byte, error) {
+	pb, err := PipelineProgressToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PipelineProgress) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PipelineProgress) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.PipelineProgressPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PipelineProgressFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func PipelineProgressToPb(st *PipelineProgress) (*catalogpb.PipelineProgressPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.PipelineProgressPb{}
+	pb.EstimatedCompletionTimeSeconds = st.EstimatedCompletionTimeSeconds
+	pb.LatestVersionCurrentlyProcessing = st.LatestVersionCurrentlyProcessing
+	pb.SyncProgressCompletion = st.SyncProgressCompletion
+	pb.SyncedRowCount = st.SyncedRowCount
+	pb.TotalRowCount = st.TotalRowCount
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func PipelineProgressFromPb(pb *catalogpb.PipelineProgressPb) (*PipelineProgress, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &PipelineProgress{}
+	st.EstimatedCompletionTimeSeconds = pb.EstimatedCompletionTimeSeconds
+	st.LatestVersionCurrentlyProcessing = pb.LatestVersionCurrentlyProcessing
+	st.SyncProgressCompletion = pb.SyncProgressCompletion
+	st.SyncedRowCount = pb.SyncedRowCount
+	st.TotalRowCount = pb.TotalRowCount
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type PrimaryKeyConstraint struct {
 	// Column names for this constraint.
+	// Wire name: 'child_columns'
 	ChildColumns []string `json:"child_columns"`
 	// The name of the constraint.
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// True if the constraint is RELY, false or unset if NORELY.
+	// Wire name: 'rely'
 	Rely bool `json:"rely,omitempty"`
 	// Column names that represent a timeseries.
+	// Wire name: 'timeseries_columns'
 	TimeseriesColumns []string `json:"timeseries_columns,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields   []string `json:"-" tf:"-"`
 }
 
-func (s *PrimaryKeyConstraint) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PrimaryKeyConstraint) MarshalJSON() ([]byte, error) {
+	pb, err := PrimaryKeyConstraintToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PrimaryKeyConstraint) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PrimaryKeyConstraint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.PrimaryKeyConstraintPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PrimaryKeyConstraintFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func PrimaryKeyConstraintToPb(st *PrimaryKeyConstraint) (*catalogpb.PrimaryKeyConstraintPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.PrimaryKeyConstraintPb{}
+	pb.ChildColumns = st.ChildColumns
+	pb.Name = st.Name
+	pb.Rely = st.Rely
+	pb.TimeseriesColumns = st.TimeseriesColumns
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func PrimaryKeyConstraintFromPb(pb *catalogpb.PrimaryKeyConstraintPb) (*PrimaryKeyConstraint, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &PrimaryKeyConstraint{}
+	st.ChildColumns = pb.ChildColumns
+	st.Name = pb.Name
+	st.Rely = pb.Rely
+	st.TimeseriesColumns = pb.TimeseriesColumns
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type Privilege string
@@ -5799,28 +19896,170 @@ func (f *Privilege) Type() string {
 	return "Privilege"
 }
 
+func PrivilegeToPb(st *Privilege) (*catalogpb.PrivilegePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.PrivilegePb(*st)
+	return &pb, nil
+}
+
+func PrivilegeFromPb(pb *catalogpb.PrivilegePb) (*Privilege, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := Privilege(*pb)
+	return &st, nil
+}
+
 type PrivilegeAssignment struct {
 	// The principal (user email address or group name). For deleted principals,
 	// `principal` is empty while `principal_id` is populated.
+	// Wire name: 'principal'
 	Principal string `json:"principal,omitempty"`
 	// The privileges assigned to the principal.
-	Privileges []Privilege `json:"privileges,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'privileges'
+	Privileges      []Privilege `json:"privileges,omitempty"`
+	ForceSendFields []string    `json:"-" tf:"-"`
 }
 
-func (s *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st PrivilegeAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := PrivilegeAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s PrivilegeAssignment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.PrivilegeAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := PrivilegeAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func PrivilegeAssignmentToPb(st *PrivilegeAssignment) (*catalogpb.PrivilegeAssignmentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.PrivilegeAssignmentPb{}
+	pb.Principal = st.Principal
+
+	var privilegesPb []catalogpb.PrivilegePb
+	for _, item := range st.Privileges {
+		itemPb, err := PrivilegeToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			privilegesPb = append(privilegesPb, *itemPb)
+		}
+	}
+	pb.Privileges = privilegesPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func PrivilegeAssignmentFromPb(pb *catalogpb.PrivilegeAssignmentPb) (*PrivilegeAssignment, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &PrivilegeAssignment{}
+	st.Principal = pb.Principal
+
+	var privilegesField []Privilege
+	for _, itemPb := range pb.Privileges {
+		item, err := PrivilegeFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			privilegesField = append(privilegesField, *item)
+		}
+	}
+	st.Privileges = privilegesField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Status of an asynchronously provisioned resource.
 type ProvisioningInfo struct {
 	// The provisioning state of the resource.
+	// Wire name: 'state'
 	State ProvisioningInfoState `json:"state,omitempty"`
+}
+
+func (st ProvisioningInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ProvisioningInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ProvisioningInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ProvisioningInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ProvisioningInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ProvisioningInfoToPb(st *ProvisioningInfo) (*catalogpb.ProvisioningInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ProvisioningInfoPb{}
+	statePb, err := ProvisioningInfoStateToPb(&st.State)
+	if err != nil {
+		return nil, err
+	}
+	if statePb != nil {
+		pb.State = *statePb
+	}
+
+	return pb, nil
+}
+
+func ProvisioningInfoFromPb(pb *catalogpb.ProvisioningInfoPb) (*ProvisioningInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ProvisioningInfo{}
+	stateField, err := ProvisioningInfoStateFromPb(&pb.State)
+	if err != nil {
+		return nil, err
+	}
+	if stateField != nil {
+		st.State = *stateField
+	}
+
+	return st, nil
 }
 
 type ProvisioningInfoState string
@@ -5872,182 +20111,706 @@ func (f *ProvisioningInfoState) Type() string {
 	return "ProvisioningInfoState"
 }
 
+func ProvisioningInfoStateToPb(st *ProvisioningInfoState) (*catalogpb.ProvisioningInfoStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.ProvisioningInfoStatePb(*st)
+	return &pb, nil
+}
+
+func ProvisioningInfoStateFromPb(pb *catalogpb.ProvisioningInfoStatePb) (*ProvisioningInfoState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ProvisioningInfoState(*pb)
+	return &st, nil
+}
+
 // Detailed status of an online table. Shown if the online table is in the
 // PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state.
 type ProvisioningStatus struct {
 	// Details about initial data synchronization. Only populated when in the
 	// PROVISIONING_INITIAL_SNAPSHOT state.
+	// Wire name: 'initial_pipeline_sync_progress'
 	InitialPipelineSyncProgress *PipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
+}
+
+func (st ProvisioningStatus) MarshalJSON() ([]byte, error) {
+	pb, err := ProvisioningStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *ProvisioningStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ProvisioningStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ProvisioningStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ProvisioningStatusToPb(st *ProvisioningStatus) (*catalogpb.ProvisioningStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ProvisioningStatusPb{}
+	initialPipelineSyncProgressPb, err := PipelineProgressToPb(st.InitialPipelineSyncProgress)
+	if err != nil {
+		return nil, err
+	}
+	if initialPipelineSyncProgressPb != nil {
+		pb.InitialPipelineSyncProgress = initialPipelineSyncProgressPb
+	}
+
+	return pb, nil
+}
+
+func ProvisioningStatusFromPb(pb *catalogpb.ProvisioningStatusPb) (*ProvisioningStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ProvisioningStatus{}
+	initialPipelineSyncProgressField, err := PipelineProgressFromPb(pb.InitialPipelineSyncProgress)
+	if err != nil {
+		return nil, err
+	}
+	if initialPipelineSyncProgressField != nil {
+		st.InitialPipelineSyncProgress = initialPipelineSyncProgressField
+	}
+
+	return st, nil
 }
 
 type QuotaInfo struct {
 	// The timestamp that indicates when the quota count was last updated.
+	// Wire name: 'last_refreshed_at'
 	LastRefreshedAt int64 `json:"last_refreshed_at,omitempty"`
 	// Name of the parent resource. Returns metastore ID if the parent is a
 	// metastore.
+	// Wire name: 'parent_full_name'
 	ParentFullName string `json:"parent_full_name,omitempty"`
 	// The quota parent securable type.
+	// Wire name: 'parent_securable_type'
 	ParentSecurableType SecurableType `json:"parent_securable_type,omitempty"`
 	// The current usage of the resource quota.
+	// Wire name: 'quota_count'
 	QuotaCount int `json:"quota_count,omitempty"`
 	// The current limit of the resource quota.
+	// Wire name: 'quota_limit'
 	QuotaLimit int `json:"quota_limit,omitempty"`
 	// The name of the quota.
-	QuotaName string `json:"quota_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'quota_name'
+	QuotaName       string   `json:"quota_name,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *QuotaInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st QuotaInfo) MarshalJSON() ([]byte, error) {
+	pb, err := QuotaInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s QuotaInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *QuotaInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.QuotaInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := QuotaInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func QuotaInfoToPb(st *QuotaInfo) (*catalogpb.QuotaInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.QuotaInfoPb{}
+	pb.LastRefreshedAt = st.LastRefreshedAt
+	pb.ParentFullName = st.ParentFullName
+	parentSecurableTypePb, err := SecurableTypeToPb(&st.ParentSecurableType)
+	if err != nil {
+		return nil, err
+	}
+	if parentSecurableTypePb != nil {
+		pb.ParentSecurableType = *parentSecurableTypePb
+	}
+	pb.QuotaCount = st.QuotaCount
+	pb.QuotaLimit = st.QuotaLimit
+	pb.QuotaName = st.QuotaName
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func QuotaInfoFromPb(pb *catalogpb.QuotaInfoPb) (*QuotaInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &QuotaInfo{}
+	st.LastRefreshedAt = pb.LastRefreshedAt
+	st.ParentFullName = pb.ParentFullName
+	parentSecurableTypeField, err := SecurableTypeFromPb(&pb.ParentSecurableType)
+	if err != nil {
+		return nil, err
+	}
+	if parentSecurableTypeField != nil {
+		st.ParentSecurableType = *parentSecurableTypeField
+	}
+	st.QuotaCount = pb.QuotaCount
+	st.QuotaLimit = pb.QuotaLimit
+	st.QuotaName = pb.QuotaName
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // R2 temporary credentials for API authentication. Read more at
 // https://developers.cloudflare.com/r2/api/s3/tokens/.
 type R2Credentials struct {
 	// The access key ID that identifies the temporary credentials.
+	// Wire name: 'access_key_id'
 	AccessKeyId string `json:"access_key_id,omitempty"`
 	// The secret access key associated with the access key.
+	// Wire name: 'secret_access_key'
 	SecretAccessKey string `json:"secret_access_key,omitempty"`
 	// The generated JWT that users must pass to use the temporary credentials.
-	SessionToken string `json:"session_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'session_token'
+	SessionToken    string   `json:"session_token,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *R2Credentials) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st R2Credentials) MarshalJSON() ([]byte, error) {
+	pb, err := R2CredentialsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s R2Credentials) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *R2Credentials) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.R2CredentialsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := R2CredentialsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func R2CredentialsToPb(st *R2Credentials) (*catalogpb.R2CredentialsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.R2CredentialsPb{}
+	pb.AccessKeyId = st.AccessKeyId
+	pb.SecretAccessKey = st.SecretAccessKey
+	pb.SessionToken = st.SessionToken
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func R2CredentialsFromPb(pb *catalogpb.R2CredentialsPb) (*R2Credentials, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &R2Credentials{}
+	st.AccessKeyId = pb.AccessKeyId
+	st.SecretAccessKey = pb.SecretAccessKey
+	st.SessionToken = pb.SessionToken
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ReadVolumeRequest struct {
 	// Whether to include volumes in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	IncludeBrowse bool `json:"-" tf:"-"`
 	// The three-level (fully qualified) name of the volume
-	Name string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	Name            string   `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ReadVolumeRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ReadVolumeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ReadVolumeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ReadVolumeRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ReadVolumeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ReadVolumeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ReadVolumeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ReadVolumeRequestToPb(st *ReadVolumeRequest) (*catalogpb.ReadVolumeRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ReadVolumeRequestPb{}
+	pb.IncludeBrowse = st.IncludeBrowse
+	pb.Name = st.Name
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ReadVolumeRequestFromPb(pb *catalogpb.ReadVolumeRequestPb) (*ReadVolumeRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ReadVolumeRequest{}
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.Name = pb.Name
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type RegenerateDashboardRequest struct {
 	// UC table name in format `catalog.schema.table_name`. This field
 	// corresponds to the {full_table_name_arg} arg in the endpoint path.
-	TableName string `json:"-" url:"-"`
+	TableName string `json:"-" tf:"-"`
 	// Optional argument to specify the warehouse for dashboard regeneration. If
 	// not specified, the first running warehouse will be used.
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'warehouse_id'
+	WarehouseId     string   `json:"warehouse_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *RegenerateDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RegenerateDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := RegenerateDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RegenerateDashboardRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RegenerateDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.RegenerateDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RegenerateDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func RegenerateDashboardRequestToPb(st *RegenerateDashboardRequest) (*catalogpb.RegenerateDashboardRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.RegenerateDashboardRequestPb{}
+	pb.TableName = st.TableName
+	pb.WarehouseId = st.WarehouseId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func RegenerateDashboardRequestFromPb(pb *catalogpb.RegenerateDashboardRequestPb) (*RegenerateDashboardRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RegenerateDashboardRequest{}
+	st.TableName = pb.TableName
+	st.WarehouseId = pb.WarehouseId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type RegenerateDashboardResponse struct {
+
+	// Wire name: 'dashboard_id'
 	DashboardId string `json:"dashboard_id,omitempty"`
 	// Parent folder is equivalent to {assets_dir}/{tableName}
-	ParentFolder string `json:"parent_folder,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'parent_folder'
+	ParentFolder    string   `json:"parent_folder,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *RegenerateDashboardResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RegenerateDashboardResponse) MarshalJSON() ([]byte, error) {
+	pb, err := RegenerateDashboardResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RegenerateDashboardResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RegenerateDashboardResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.RegenerateDashboardResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RegenerateDashboardResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func RegenerateDashboardResponseToPb(st *RegenerateDashboardResponse) (*catalogpb.RegenerateDashboardResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.RegenerateDashboardResponsePb{}
+	pb.DashboardId = st.DashboardId
+	pb.ParentFolder = st.ParentFolder
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func RegenerateDashboardResponseFromPb(pb *catalogpb.RegenerateDashboardResponsePb) (*RegenerateDashboardResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RegenerateDashboardResponse{}
+	st.DashboardId = pb.DashboardId
+	st.ParentFolder = pb.ParentFolder
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Registered model alias.
 type RegisteredModelAlias struct {
 	// Name of the alias, e.g. 'champion' or 'latest_stable'
+	// Wire name: 'alias_name'
 	AliasName string `json:"alias_name,omitempty"`
 	// Integer version number of the model version to which this alias points.
-	VersionNum int `json:"version_num,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'version_num'
+	VersionNum      int      `json:"version_num,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *RegisteredModelAlias) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RegisteredModelAlias) MarshalJSON() ([]byte, error) {
+	pb, err := RegisteredModelAliasToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RegisteredModelAlias) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RegisteredModelAlias) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.RegisteredModelAliasPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RegisteredModelAliasFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func RegisteredModelAliasToPb(st *RegisteredModelAlias) (*catalogpb.RegisteredModelAliasPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.RegisteredModelAliasPb{}
+	pb.AliasName = st.AliasName
+	pb.VersionNum = st.VersionNum
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func RegisteredModelAliasFromPb(pb *catalogpb.RegisteredModelAliasPb) (*RegisteredModelAlias, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RegisteredModelAlias{}
+	st.AliasName = pb.AliasName
+	st.VersionNum = pb.VersionNum
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type RegisteredModelInfo struct {
 	// List of aliases associated with the registered model
+	// Wire name: 'aliases'
 	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The name of the catalog where the schema and the registered model reside
+	// Wire name: 'catalog_name'
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the registered model
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Creation timestamp of the registered model in milliseconds since the Unix
 	// epoch
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The identifier of the user who created the registered model
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 	// The three-level (fully qualified) name of the registered model
+	// Wire name: 'full_name'
 	FullName string `json:"full_name,omitempty"`
 	// The unique identifier of the metastore
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// The name of the registered model
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// The identifier of the user who owns the registered model
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// The name of the schema where the registered model resides
+	// Wire name: 'schema_name'
 	SchemaName string `json:"schema_name,omitempty"`
 	// The storage location on the cloud under which model version data files
 	// are stored
+	// Wire name: 'storage_location'
 	StorageLocation string `json:"storage_location,omitempty"`
 	// Last-update timestamp of the registered model in milliseconds since the
 	// Unix epoch
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// The identifier of the user who updated the registered model last time
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'updated_by'
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *RegisteredModelInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st RegisteredModelInfo) MarshalJSON() ([]byte, error) {
+	pb, err := RegisteredModelInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s RegisteredModelInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *RegisteredModelInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.RegisteredModelInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RegisteredModelInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func RegisteredModelInfoToPb(st *RegisteredModelInfo) (*catalogpb.RegisteredModelInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.RegisteredModelInfoPb{}
+
+	var aliasesPb []catalogpb.RegisteredModelAliasPb
+	for _, item := range st.Aliases {
+		itemPb, err := RegisteredModelAliasToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			aliasesPb = append(aliasesPb, *itemPb)
+		}
+	}
+	pb.Aliases = aliasesPb
+	pb.BrowseOnly = st.BrowseOnly
+	pb.CatalogName = st.CatalogName
+	pb.Comment = st.Comment
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	pb.FullName = st.FullName
+	pb.MetastoreId = st.MetastoreId
+	pb.Name = st.Name
+	pb.Owner = st.Owner
+	pb.SchemaName = st.SchemaName
+	pb.StorageLocation = st.StorageLocation
+	pb.UpdatedAt = st.UpdatedAt
+	pb.UpdatedBy = st.UpdatedBy
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func RegisteredModelInfoFromPb(pb *catalogpb.RegisteredModelInfoPb) (*RegisteredModelInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RegisteredModelInfo{}
+
+	var aliasesField []RegisteredModelAlias
+	for _, itemPb := range pb.Aliases {
+		item, err := RegisteredModelAliasFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			aliasesField = append(aliasesField, *item)
+		}
+	}
+	st.Aliases = aliasesField
+	st.BrowseOnly = pb.BrowseOnly
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.FullName = pb.FullName
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.SchemaName = pb.SchemaName
+	st.StorageLocation = pb.StorageLocation
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type RunRefreshRequest struct {
 	// UC table name in format `catalog.schema.table_name`. table_name is case
 	// insensitive and spaces are disallowed.
-	TableName string `json:"-" url:"-"`
+	TableName string `json:"-" tf:"-"`
+}
+
+func (st RunRefreshRequest) MarshalJSON() ([]byte, error) {
+	pb, err := RunRefreshRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *RunRefreshRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.RunRefreshRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := RunRefreshRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func RunRefreshRequestToPb(st *RunRefreshRequest) (*catalogpb.RunRefreshRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.RunRefreshRequestPb{}
+	pb.TableName = st.TableName
+
+	return pb, nil
+}
+
+func RunRefreshRequestFromPb(pb *catalogpb.RunRefreshRequestPb) (*RunRefreshRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &RunRefreshRequest{}
+	st.TableName = pb.TableName
+
+	return st, nil
 }
 
 // Next ID: 40
@@ -6055,54 +20818,185 @@ type SchemaInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool `json:"browse_only,omitempty"`
 	// Name of parent catalog.
+	// Wire name: 'catalog_name'
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The type of the parent catalog.
+	// Wire name: 'catalog_type'
 	CatalogType CatalogType `json:"catalog_type,omitempty"`
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Time at which this schema was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of schema creator.
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 
+	// Wire name: 'effective_predictive_optimization_flag'
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
+	// Wire name: 'enable_predictive_optimization'
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Full name of schema, in form of __catalog_name__.__schema_name__.
+	// Wire name: 'full_name'
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of schema, relative to parent catalog.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// Username of current owner of schema.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string `json:"properties,omitempty"`
 	// The unique identifier of the schema.
+	// Wire name: 'schema_id'
 	SchemaId string `json:"schema_id,omitempty"`
 	// Storage location for managed tables within schema.
+	// Wire name: 'storage_location'
 	StorageLocation string `json:"storage_location,omitempty"`
 	// Storage root URL for managed tables within schema.
+	// Wire name: 'storage_root'
 	StorageRoot string `json:"storage_root,omitempty"`
 	// Time at which this schema was created, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified schema.
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'updated_by'
+	UpdatedBy       string   `json:"updated_by,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *SchemaInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SchemaInfo) MarshalJSON() ([]byte, error) {
+	pb, err := SchemaInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SchemaInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SchemaInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.SchemaInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SchemaInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
+func SchemaInfoToPb(st *SchemaInfo) (*catalogpb.SchemaInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.SchemaInfoPb{}
+	pb.BrowseOnly = st.BrowseOnly
+	pb.CatalogName = st.CatalogName
+	catalogTypePb, err := CatalogTypeToPb(&st.CatalogType)
+	if err != nil {
+		return nil, err
+	}
+	if catalogTypePb != nil {
+		pb.CatalogType = *catalogTypePb
+	}
+	pb.Comment = st.Comment
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	effectivePredictiveOptimizationFlagPb, err := EffectivePredictiveOptimizationFlagToPb(st.EffectivePredictiveOptimizationFlag)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePredictiveOptimizationFlagPb != nil {
+		pb.EffectivePredictiveOptimizationFlag = effectivePredictiveOptimizationFlagPb
+	}
+	enablePredictiveOptimizationPb, err := EnablePredictiveOptimizationToPb(&st.EnablePredictiveOptimization)
+	if err != nil {
+		return nil, err
+	}
+	if enablePredictiveOptimizationPb != nil {
+		pb.EnablePredictiveOptimization = *enablePredictiveOptimizationPb
+	}
+	pb.FullName = st.FullName
+	pb.MetastoreId = st.MetastoreId
+	pb.Name = st.Name
+	pb.Owner = st.Owner
+	pb.Properties = st.Properties
+	pb.SchemaId = st.SchemaId
+	pb.StorageLocation = st.StorageLocation
+	pb.StorageRoot = st.StorageRoot
+	pb.UpdatedAt = st.UpdatedAt
+	pb.UpdatedBy = st.UpdatedBy
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func SchemaInfoFromPb(pb *catalogpb.SchemaInfoPb) (*SchemaInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SchemaInfo{}
+	st.BrowseOnly = pb.BrowseOnly
+	st.CatalogName = pb.CatalogName
+	catalogTypeField, err := CatalogTypeFromPb(&pb.CatalogType)
+	if err != nil {
+		return nil, err
+	}
+	if catalogTypeField != nil {
+		st.CatalogType = *catalogTypeField
+	}
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	effectivePredictiveOptimizationFlagField, err := EffectivePredictiveOptimizationFlagFromPb(pb.EffectivePredictiveOptimizationFlag)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePredictiveOptimizationFlagField != nil {
+		st.EffectivePredictiveOptimizationFlag = effectivePredictiveOptimizationFlagField
+	}
+	enablePredictiveOptimizationField, err := EnablePredictiveOptimizationFromPb(&pb.EnablePredictiveOptimization)
+	if err != nil {
+		return nil, err
+	}
+	if enablePredictiveOptimizationField != nil {
+		st.EnablePredictiveOptimization = *enablePredictiveOptimizationField
+	}
+	st.FullName = pb.FullName
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.Properties = pb.Properties
+	st.SchemaId = pb.SchemaId
+	st.StorageLocation = pb.StorageLocation
+	st.StorageRoot = pb.StorageRoot
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
+}
+
+// Latest kind: CONNECTION_SQLSERVER_OAUTH_M2M = 254; Next id:255
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -6314,18 +21208,138 @@ func (f *SecurableKind) Type() string {
 	return "SecurableKind"
 }
 
+func SecurableKindToPb(st *SecurableKind) (*catalogpb.SecurableKindPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.SecurableKindPb(*st)
+	return &pb, nil
+}
+
+func SecurableKindFromPb(pb *catalogpb.SecurableKindPb) (*SecurableKind, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := SecurableKind(*pb)
+	return &st, nil
+}
+
 // Manifest of a specific securable kind.
 type SecurableKindManifest struct {
 	// Privileges that can be assigned to the securable.
+	// Wire name: 'assignable_privileges'
 	AssignablePrivileges []string `json:"assignable_privileges,omitempty"`
 	// A list of capabilities in the securable kind.
+	// Wire name: 'capabilities'
 	Capabilities []string `json:"capabilities,omitempty"`
 	// Detailed specs of allowed options.
+	// Wire name: 'options'
 	Options []OptionSpec `json:"options,omitempty"`
 	// Securable kind to get manifest of.
+	// Wire name: 'securable_kind'
 	SecurableKind SecurableKind `json:"securable_kind,omitempty"`
 	// Securable Type of the kind.
+	// Wire name: 'securable_type'
 	SecurableType SecurableType `json:"securable_type,omitempty"`
+}
+
+func (st SecurableKindManifest) MarshalJSON() ([]byte, error) {
+	pb, err := SecurableKindManifestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *SecurableKindManifest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.SecurableKindManifestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SecurableKindManifestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func SecurableKindManifestToPb(st *SecurableKindManifest) (*catalogpb.SecurableKindManifestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.SecurableKindManifestPb{}
+	pb.AssignablePrivileges = st.AssignablePrivileges
+	pb.Capabilities = st.Capabilities
+
+	var optionsPb []catalogpb.OptionSpecPb
+	for _, item := range st.Options {
+		itemPb, err := OptionSpecToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			optionsPb = append(optionsPb, *itemPb)
+		}
+	}
+	pb.Options = optionsPb
+	securableKindPb, err := SecurableKindToPb(&st.SecurableKind)
+	if err != nil {
+		return nil, err
+	}
+	if securableKindPb != nil {
+		pb.SecurableKind = *securableKindPb
+	}
+	securableTypePb, err := SecurableTypeToPb(&st.SecurableType)
+	if err != nil {
+		return nil, err
+	}
+	if securableTypePb != nil {
+		pb.SecurableType = *securableTypePb
+	}
+
+	return pb, nil
+}
+
+func SecurableKindManifestFromPb(pb *catalogpb.SecurableKindManifestPb) (*SecurableKindManifest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SecurableKindManifest{}
+	st.AssignablePrivileges = pb.AssignablePrivileges
+	st.Capabilities = pb.Capabilities
+
+	var optionsField []OptionSpec
+	for _, itemPb := range pb.Options {
+		item, err := OptionSpecFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			optionsField = append(optionsField, *item)
+		}
+	}
+	st.Options = optionsField
+	securableKindField, err := SecurableKindFromPb(&pb.SecurableKind)
+	if err != nil {
+		return nil, err
+	}
+	if securableKindField != nil {
+		st.SecurableKind = *securableKindField
+	}
+	securableTypeField, err := SecurableTypeFromPb(&pb.SecurableType)
+	if err != nil {
+		return nil, err
+	}
+	if securableTypeField != nil {
+		st.SecurableType = *securableTypeField
+	}
+
+	return st, nil
 }
 
 // The type of Unity Catalog securable.
@@ -6411,57 +21425,271 @@ func (f *SecurableType) Type() string {
 	return "SecurableType"
 }
 
+func SecurableTypeToPb(st *SecurableType) (*catalogpb.SecurableTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.SecurableTypePb(*st)
+	return &pb, nil
+}
+
+func SecurableTypeFromPb(pb *catalogpb.SecurableTypePb) (*SecurableType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := SecurableType(*pb)
+	return &st, nil
+}
+
 type SetArtifactAllowlist struct {
 	// A list of allowed artifact match patterns.
+	// Wire name: 'artifact_matchers'
 	ArtifactMatchers []ArtifactMatcher `json:"artifact_matchers"`
 	// The artifact type of the allowlist.
-	ArtifactType ArtifactType `json:"-" url:"-"`
+	ArtifactType ArtifactType `json:"-" tf:"-"`
 	// Time at which this artifact allowlist was set, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of the user who set the artifact allowlist.
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 	// Unique identifier of parent metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId     string   `json:"metastore_id,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *SetArtifactAllowlist) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SetArtifactAllowlist) MarshalJSON() ([]byte, error) {
+	pb, err := SetArtifactAllowlistToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SetArtifactAllowlist) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SetArtifactAllowlist) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.SetArtifactAllowlistPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SetArtifactAllowlistFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func SetArtifactAllowlistToPb(st *SetArtifactAllowlist) (*catalogpb.SetArtifactAllowlistPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.SetArtifactAllowlistPb{}
+
+	var artifactMatchersPb []catalogpb.ArtifactMatcherPb
+	for _, item := range st.ArtifactMatchers {
+		itemPb, err := ArtifactMatcherToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			artifactMatchersPb = append(artifactMatchersPb, *itemPb)
+		}
+	}
+	pb.ArtifactMatchers = artifactMatchersPb
+	artifactTypePb, err := ArtifactTypeToPb(&st.ArtifactType)
+	if err != nil {
+		return nil, err
+	}
+	if artifactTypePb != nil {
+		pb.ArtifactType = *artifactTypePb
+	}
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	pb.MetastoreId = st.MetastoreId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func SetArtifactAllowlistFromPb(pb *catalogpb.SetArtifactAllowlistPb) (*SetArtifactAllowlist, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SetArtifactAllowlist{}
+
+	var artifactMatchersField []ArtifactMatcher
+	for _, itemPb := range pb.ArtifactMatchers {
+		item, err := ArtifactMatcherFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			artifactMatchersField = append(artifactMatchersField, *item)
+		}
+	}
+	st.ArtifactMatchers = artifactMatchersField
+	artifactTypeField, err := ArtifactTypeFromPb(&pb.ArtifactType)
+	if err != nil {
+		return nil, err
+	}
+	if artifactTypeField != nil {
+		st.ArtifactType = *artifactTypeField
+	}
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.MetastoreId = pb.MetastoreId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type SetRegisteredModelAliasRequest struct {
 	// The name of the alias
+	// Wire name: 'alias'
 	Alias string `json:"alias"`
 	// Full name of the registered model
+	// Wire name: 'full_name'
 	FullName string `json:"full_name"`
 	// The version number of the model version to which the alias points
+	// Wire name: 'version_num'
 	VersionNum int `json:"version_num"`
+}
+
+func (st SetRegisteredModelAliasRequest) MarshalJSON() ([]byte, error) {
+	pb, err := SetRegisteredModelAliasRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *SetRegisteredModelAliasRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.SetRegisteredModelAliasRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SetRegisteredModelAliasRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func SetRegisteredModelAliasRequestToPb(st *SetRegisteredModelAliasRequest) (*catalogpb.SetRegisteredModelAliasRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.SetRegisteredModelAliasRequestPb{}
+	pb.Alias = st.Alias
+	pb.FullName = st.FullName
+	pb.VersionNum = st.VersionNum
+
+	return pb, nil
+}
+
+func SetRegisteredModelAliasRequestFromPb(pb *catalogpb.SetRegisteredModelAliasRequestPb) (*SetRegisteredModelAliasRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SetRegisteredModelAliasRequest{}
+	st.Alias = pb.Alias
+	st.FullName = pb.FullName
+	st.VersionNum = pb.VersionNum
+
+	return st, nil
 }
 
 // Server-Side Encryption properties for clients communicating with AWS s3.
 type SseEncryptionDetails struct {
 	// Sets the value of the 'x-amz-server-side-encryption' header in S3
 	// request.
+	// Wire name: 'algorithm'
 	Algorithm SseEncryptionDetailsAlgorithm `json:"algorithm,omitempty"`
 	// Optional. The ARN of the SSE-KMS key used with the S3 location, when
 	// algorithm = "SSE-KMS". Sets the value of the
 	// 'x-amz-server-side-encryption-aws-kms-key-id' header.
-	AwsKmsKeyArn string `json:"aws_kms_key_arn,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'aws_kms_key_arn'
+	AwsKmsKeyArn    string   `json:"aws_kms_key_arn,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *SseEncryptionDetails) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st SseEncryptionDetails) MarshalJSON() ([]byte, error) {
+	pb, err := SseEncryptionDetailsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s SseEncryptionDetails) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *SseEncryptionDetails) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.SseEncryptionDetailsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SseEncryptionDetailsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func SseEncryptionDetailsToPb(st *SseEncryptionDetails) (*catalogpb.SseEncryptionDetailsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.SseEncryptionDetailsPb{}
+	algorithmPb, err := SseEncryptionDetailsAlgorithmToPb(&st.Algorithm)
+	if err != nil {
+		return nil, err
+	}
+	if algorithmPb != nil {
+		pb.Algorithm = *algorithmPb
+	}
+	pb.AwsKmsKeyArn = st.AwsKmsKeyArn
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func SseEncryptionDetailsFromPb(pb *catalogpb.SseEncryptionDetailsPb) (*SseEncryptionDetails, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SseEncryptionDetails{}
+	algorithmField, err := SseEncryptionDetailsAlgorithmFromPb(&pb.Algorithm)
+	if err != nil {
+		return nil, err
+	}
+	if algorithmField != nil {
+		st.Algorithm = *algorithmField
+	}
+	st.AwsKmsKeyArn = pb.AwsKmsKeyArn
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type SseEncryptionDetailsAlgorithm string
@@ -6501,67 +21729,298 @@ func (f *SseEncryptionDetailsAlgorithm) Type() string {
 	return "SseEncryptionDetailsAlgorithm"
 }
 
+func SseEncryptionDetailsAlgorithmToPb(st *SseEncryptionDetailsAlgorithm) (*catalogpb.SseEncryptionDetailsAlgorithmPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.SseEncryptionDetailsAlgorithmPb(*st)
+	return &pb, nil
+}
+
+func SseEncryptionDetailsAlgorithmFromPb(pb *catalogpb.SseEncryptionDetailsAlgorithmPb) (*SseEncryptionDetailsAlgorithm, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := SseEncryptionDetailsAlgorithm(*pb)
+	return &st, nil
+}
+
 type StorageCredentialInfo struct {
 	// The AWS IAM role configuration.
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRoleResponse `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentityResponse `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// The Cloudflare API token configuration.
+	// Wire name: 'cloudflare_api_token'
 	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Time at which this credential was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of credential creator.
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 	// The Databricks managed GCP service account configuration.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountResponse `json:"databricks_gcp_service_account,omitempty"`
 	// The full name of the credential.
+	// Wire name: 'full_name'
 	FullName string `json:"full_name,omitempty"`
 	// The unique identifier of the credential.
+	// Wire name: 'id'
 	Id string `json:"id,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
+	// Wire name: 'isolation_mode'
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of the parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// Username of current owner of credential.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
+	// Wire name: 'read_only'
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Time at which this credential was last modified, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the credential.
+	// Wire name: 'updated_by'
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// Whether this credential is the current metastore's root storage
 	// credential. Only applicable when purpose is **STORAGE**.
-	UsedForManagedStorage bool `json:"used_for_managed_storage,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'used_for_managed_storage'
+	UsedForManagedStorage bool     `json:"used_for_managed_storage,omitempty"`
+	ForceSendFields       []string `json:"-" tf:"-"`
 }
 
-func (s *StorageCredentialInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st StorageCredentialInfo) MarshalJSON() ([]byte, error) {
+	pb, err := StorageCredentialInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s StorageCredentialInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *StorageCredentialInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.StorageCredentialInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := StorageCredentialInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func StorageCredentialInfoToPb(st *StorageCredentialInfo) (*catalogpb.StorageCredentialInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.StorageCredentialInfoPb{}
+	awsIamRolePb, err := AwsIamRoleResponseToPb(st.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRolePb != nil {
+		pb.AwsIamRole = awsIamRolePb
+	}
+	azureManagedIdentityPb, err := AzureManagedIdentityResponseToPb(st.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityPb != nil {
+		pb.AzureManagedIdentity = azureManagedIdentityPb
+	}
+	azureServicePrincipalPb, err := AzureServicePrincipalToPb(st.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalPb != nil {
+		pb.AzureServicePrincipal = azureServicePrincipalPb
+	}
+	cloudflareApiTokenPb, err := CloudflareApiTokenToPb(st.CloudflareApiToken)
+	if err != nil {
+		return nil, err
+	}
+	if cloudflareApiTokenPb != nil {
+		pb.CloudflareApiToken = cloudflareApiTokenPb
+	}
+	pb.Comment = st.Comment
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	databricksGcpServiceAccountPb, err := DatabricksGcpServiceAccountResponseToPb(st.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountPb != nil {
+		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
+	}
+	pb.FullName = st.FullName
+	pb.Id = st.Id
+	isolationModePb, err := IsolationModeToPb(&st.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModePb != nil {
+		pb.IsolationMode = *isolationModePb
+	}
+	pb.MetastoreId = st.MetastoreId
+	pb.Name = st.Name
+	pb.Owner = st.Owner
+	pb.ReadOnly = st.ReadOnly
+	pb.UpdatedAt = st.UpdatedAt
+	pb.UpdatedBy = st.UpdatedBy
+	pb.UsedForManagedStorage = st.UsedForManagedStorage
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func StorageCredentialInfoFromPb(pb *catalogpb.StorageCredentialInfoPb) (*StorageCredentialInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &StorageCredentialInfo{}
+	awsIamRoleField, err := AwsIamRoleResponseFromPb(pb.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRoleField != nil {
+		st.AwsIamRole = awsIamRoleField
+	}
+	azureManagedIdentityField, err := AzureManagedIdentityResponseFromPb(pb.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityField != nil {
+		st.AzureManagedIdentity = azureManagedIdentityField
+	}
+	azureServicePrincipalField, err := AzureServicePrincipalFromPb(pb.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalField != nil {
+		st.AzureServicePrincipal = azureServicePrincipalField
+	}
+	cloudflareApiTokenField, err := CloudflareApiTokenFromPb(pb.CloudflareApiToken)
+	if err != nil {
+		return nil, err
+	}
+	if cloudflareApiTokenField != nil {
+		st.CloudflareApiToken = cloudflareApiTokenField
+	}
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	databricksGcpServiceAccountField, err := DatabricksGcpServiceAccountResponseFromPb(pb.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountField != nil {
+		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
+	}
+	st.FullName = pb.FullName
+	st.Id = pb.Id
+	isolationModeField, err := IsolationModeFromPb(&pb.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModeField != nil {
+		st.IsolationMode = *isolationModeField
+	}
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.ReadOnly = pb.ReadOnly
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.UsedForManagedStorage = pb.UsedForManagedStorage
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type SystemSchemaInfo struct {
 	// Name of the system schema.
+	// Wire name: 'schema'
 	Schema string `json:"schema"`
 	// The current state of enablement for the system schema. An empty string
 	// means the system schema is available and ready for opt-in. Possible
 	// values: AVAILABLE | ENABLE_INITIALIZED | ENABLE_COMPLETED |
 	// DISABLE_INITIALIZED | UNAVAILABLE
+	// Wire name: 'state'
 	State string `json:"state"`
+}
+
+func (st SystemSchemaInfo) MarshalJSON() ([]byte, error) {
+	pb, err := SystemSchemaInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *SystemSchemaInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.SystemSchemaInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := SystemSchemaInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func SystemSchemaInfoToPb(st *SystemSchemaInfo) (*catalogpb.SystemSchemaInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.SystemSchemaInfoPb{}
+	pb.Schema = st.Schema
+	pb.State = st.State
+
+	return pb, nil
+}
+
+func SystemSchemaInfoFromPb(pb *catalogpb.SystemSchemaInfoPb) (*SystemSchemaInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SystemSchemaInfo{}
+	st.Schema = pb.Schema
+	st.State = pb.State
+
+	return st, nil
 }
 
 type SystemType string
@@ -6661,128 +22120,613 @@ func (f *SystemType) Type() string {
 	return "SystemType"
 }
 
+func SystemTypeToPb(st *SystemType) (*catalogpb.SystemTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.SystemTypePb(*st)
+	return &pb, nil
+}
+
+func SystemTypeFromPb(pb *catalogpb.SystemTypePb) (*SystemType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := SystemType(*pb)
+	return &st, nil
+}
+
 // A table constraint, as defined by *one* of the following fields being set:
 // __primary_key_constraint__, __foreign_key_constraint__,
 // __named_table_constraint__.
 type TableConstraint struct {
+
+	// Wire name: 'foreign_key_constraint'
 	ForeignKeyConstraint *ForeignKeyConstraint `json:"foreign_key_constraint,omitempty"`
 
+	// Wire name: 'named_table_constraint'
 	NamedTableConstraint *NamedTableConstraint `json:"named_table_constraint,omitempty"`
 
+	// Wire name: 'primary_key_constraint'
 	PrimaryKeyConstraint *PrimaryKeyConstraint `json:"primary_key_constraint,omitempty"`
+}
+
+func (st TableConstraint) MarshalJSON() ([]byte, error) {
+	pb, err := TableConstraintToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *TableConstraint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.TableConstraintPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TableConstraintFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func TableConstraintToPb(st *TableConstraint) (*catalogpb.TableConstraintPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.TableConstraintPb{}
+	foreignKeyConstraintPb, err := ForeignKeyConstraintToPb(st.ForeignKeyConstraint)
+	if err != nil {
+		return nil, err
+	}
+	if foreignKeyConstraintPb != nil {
+		pb.ForeignKeyConstraint = foreignKeyConstraintPb
+	}
+	namedTableConstraintPb, err := NamedTableConstraintToPb(st.NamedTableConstraint)
+	if err != nil {
+		return nil, err
+	}
+	if namedTableConstraintPb != nil {
+		pb.NamedTableConstraint = namedTableConstraintPb
+	}
+	primaryKeyConstraintPb, err := PrimaryKeyConstraintToPb(st.PrimaryKeyConstraint)
+	if err != nil {
+		return nil, err
+	}
+	if primaryKeyConstraintPb != nil {
+		pb.PrimaryKeyConstraint = primaryKeyConstraintPb
+	}
+
+	return pb, nil
+}
+
+func TableConstraintFromPb(pb *catalogpb.TableConstraintPb) (*TableConstraint, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TableConstraint{}
+	foreignKeyConstraintField, err := ForeignKeyConstraintFromPb(pb.ForeignKeyConstraint)
+	if err != nil {
+		return nil, err
+	}
+	if foreignKeyConstraintField != nil {
+		st.ForeignKeyConstraint = foreignKeyConstraintField
+	}
+	namedTableConstraintField, err := NamedTableConstraintFromPb(pb.NamedTableConstraint)
+	if err != nil {
+		return nil, err
+	}
+	if namedTableConstraintField != nil {
+		st.NamedTableConstraint = namedTableConstraintField
+	}
+	primaryKeyConstraintField, err := PrimaryKeyConstraintFromPb(pb.PrimaryKeyConstraint)
+	if err != nil {
+		return nil, err
+	}
+	if primaryKeyConstraintField != nil {
+		st.PrimaryKeyConstraint = primaryKeyConstraintField
+	}
+
+	return st, nil
 }
 
 // A table that is dependent on a SQL object.
 type TableDependency struct {
 	// Full name of the dependent table, in the form of
 	// __catalog_name__.__schema_name__.__table_name__.
+	// Wire name: 'table_full_name'
 	TableFullName string `json:"table_full_name"`
+}
+
+func (st TableDependency) MarshalJSON() ([]byte, error) {
+	pb, err := TableDependencyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *TableDependency) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.TableDependencyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TableDependencyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func TableDependencyToPb(st *TableDependency) (*catalogpb.TableDependencyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.TableDependencyPb{}
+	pb.TableFullName = st.TableFullName
+
+	return pb, nil
+}
+
+func TableDependencyFromPb(pb *catalogpb.TableDependencyPb) (*TableDependency, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TableDependency{}
+	st.TableFullName = pb.TableFullName
+
+	return st, nil
 }
 
 type TableExistsResponse struct {
 	// Whether the table exists or not.
-	TableExists bool `json:"table_exists,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'table_exists'
+	TableExists     bool     `json:"table_exists,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *TableExistsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TableExistsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := TableExistsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TableExistsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TableExistsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.TableExistsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TableExistsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func TableExistsResponseToPb(st *TableExistsResponse) (*catalogpb.TableExistsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.TableExistsResponsePb{}
+	pb.TableExists = st.TableExists
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func TableExistsResponseFromPb(pb *catalogpb.TableExistsResponsePb) (*TableExistsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TableExistsResponse{}
+	st.TableExists = pb.TableExists
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type TableInfo struct {
 	// The AWS access point to use when accesing s3 for this external location.
+	// Wire name: 'access_point'
 	AccessPoint string `json:"access_point,omitempty"`
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool `json:"browse_only,omitempty"`
 	// Name of parent catalog.
+	// Wire name: 'catalog_name'
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The array of __ColumnInfo__ definitions of the table's columns.
+	// Wire name: 'columns'
 	Columns []ColumnInfo `json:"columns,omitempty"`
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Time at which this table was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of table creator.
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 	// Unique ID of the Data Access Configuration to use with the table data.
+	// Wire name: 'data_access_configuration_id'
 	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
 
+	// Wire name: 'data_source_format'
 	DataSourceFormat DataSourceFormat `json:"data_source_format,omitempty"`
 	// Time at which this table was deleted, in epoch milliseconds. Field is
 	// omitted if table is not deleted.
+	// Wire name: 'deleted_at'
 	DeletedAt int64 `json:"deleted_at,omitempty"`
 	// Information pertaining to current state of the delta table.
+	// Wire name: 'delta_runtime_properties_kvpairs'
 	DeltaRuntimePropertiesKvpairs *DeltaRuntimePropertiesKvPairs `json:"delta_runtime_properties_kvpairs,omitempty"`
 
+	// Wire name: 'effective_predictive_optimization_flag'
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
 
+	// Wire name: 'enable_predictive_optimization'
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 
+	// Wire name: 'encryption_details'
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Full name of table, in form of
 	// __catalog_name__.__schema_name__.__table_name__
+	// Wire name: 'full_name'
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of table, relative to parent schema.
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// Username of current owner of table.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// The pipeline ID of the table. Applicable for tables created by pipelines
 	// (Materialized View, Streaming Table, etc.).
+	// Wire name: 'pipeline_id'
 	PipelineId string `json:"pipeline_id,omitempty"`
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string `json:"properties,omitempty"`
 
+	// Wire name: 'row_filter'
 	RowFilter *TableRowFilter `json:"row_filter,omitempty"`
 	// Name of parent schema relative to its parent catalog.
+	// Wire name: 'schema_name'
 	SchemaName string `json:"schema_name,omitempty"`
 	// SecurableKindManifest of table, including capabilities the table has.
+	// Wire name: 'securable_kind_manifest'
 	SecurableKindManifest *SecurableKindManifest `json:"securable_kind_manifest,omitempty"`
 	// List of schemes whose objects can be referenced without qualification.
+	// Wire name: 'sql_path'
 	SqlPath string `json:"sql_path,omitempty"`
 	// Name of the storage credential, when a storage credential is configured
 	// for use with this table.
+	// Wire name: 'storage_credential_name'
 	StorageCredentialName string `json:"storage_credential_name,omitempty"`
 	// Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
+	// Wire name: 'storage_location'
 	StorageLocation string `json:"storage_location,omitempty"`
 	// List of table constraints. Note: this field is not set in the output of
 	// the __listTables__ API.
+	// Wire name: 'table_constraints'
 	TableConstraints []TableConstraint `json:"table_constraints,omitempty"`
 	// The unique identifier of the table.
+	// Wire name: 'table_id'
 	TableId string `json:"table_id,omitempty"`
 
+	// Wire name: 'table_type'
 	TableType TableType `json:"table_type,omitempty"`
 	// Time at which this table was last modified, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified the table.
+	// Wire name: 'updated_by'
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// View definition SQL (when __table_type__ is **VIEW**,
 	// **MATERIALIZED_VIEW**, or **STREAMING_TABLE**)
+	// Wire name: 'view_definition'
 	ViewDefinition string `json:"view_definition,omitempty"`
 	// View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**,
 	// **STREAMING_TABLE**) - when DependencyList is None, the dependency is not
 	// provided; - when DependencyList is an empty list, the dependency is
 	// provided but is empty; - when DependencyList is not an empty list,
 	// dependencies are provided and recorded.
+	// Wire name: 'view_dependencies'
 	ViewDependencies *DependencyList `json:"view_dependencies,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields  []string        `json:"-" tf:"-"`
 }
 
-func (s *TableInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TableInfo) MarshalJSON() ([]byte, error) {
+	pb, err := TableInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TableInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TableInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.TableInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TableInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func TableInfoToPb(st *TableInfo) (*catalogpb.TableInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.TableInfoPb{}
+	pb.AccessPoint = st.AccessPoint
+	pb.BrowseOnly = st.BrowseOnly
+	pb.CatalogName = st.CatalogName
+
+	var columnsPb []catalogpb.ColumnInfoPb
+	for _, item := range st.Columns {
+		itemPb, err := ColumnInfoToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			columnsPb = append(columnsPb, *itemPb)
+		}
+	}
+	pb.Columns = columnsPb
+	pb.Comment = st.Comment
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	pb.DataAccessConfigurationId = st.DataAccessConfigurationId
+	dataSourceFormatPb, err := DataSourceFormatToPb(&st.DataSourceFormat)
+	if err != nil {
+		return nil, err
+	}
+	if dataSourceFormatPb != nil {
+		pb.DataSourceFormat = *dataSourceFormatPb
+	}
+	pb.DeletedAt = st.DeletedAt
+	deltaRuntimePropertiesKvpairsPb, err := DeltaRuntimePropertiesKvPairsToPb(st.DeltaRuntimePropertiesKvpairs)
+	if err != nil {
+		return nil, err
+	}
+	if deltaRuntimePropertiesKvpairsPb != nil {
+		pb.DeltaRuntimePropertiesKvpairs = deltaRuntimePropertiesKvpairsPb
+	}
+	effectivePredictiveOptimizationFlagPb, err := EffectivePredictiveOptimizationFlagToPb(st.EffectivePredictiveOptimizationFlag)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePredictiveOptimizationFlagPb != nil {
+		pb.EffectivePredictiveOptimizationFlag = effectivePredictiveOptimizationFlagPb
+	}
+	enablePredictiveOptimizationPb, err := EnablePredictiveOptimizationToPb(&st.EnablePredictiveOptimization)
+	if err != nil {
+		return nil, err
+	}
+	if enablePredictiveOptimizationPb != nil {
+		pb.EnablePredictiveOptimization = *enablePredictiveOptimizationPb
+	}
+	encryptionDetailsPb, err := EncryptionDetailsToPb(st.EncryptionDetails)
+	if err != nil {
+		return nil, err
+	}
+	if encryptionDetailsPb != nil {
+		pb.EncryptionDetails = encryptionDetailsPb
+	}
+	pb.FullName = st.FullName
+	pb.MetastoreId = st.MetastoreId
+	pb.Name = st.Name
+	pb.Owner = st.Owner
+	pb.PipelineId = st.PipelineId
+	pb.Properties = st.Properties
+	rowFilterPb, err := TableRowFilterToPb(st.RowFilter)
+	if err != nil {
+		return nil, err
+	}
+	if rowFilterPb != nil {
+		pb.RowFilter = rowFilterPb
+	}
+	pb.SchemaName = st.SchemaName
+	securableKindManifestPb, err := SecurableKindManifestToPb(st.SecurableKindManifest)
+	if err != nil {
+		return nil, err
+	}
+	if securableKindManifestPb != nil {
+		pb.SecurableKindManifest = securableKindManifestPb
+	}
+	pb.SqlPath = st.SqlPath
+	pb.StorageCredentialName = st.StorageCredentialName
+	pb.StorageLocation = st.StorageLocation
+
+	var tableConstraintsPb []catalogpb.TableConstraintPb
+	for _, item := range st.TableConstraints {
+		itemPb, err := TableConstraintToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			tableConstraintsPb = append(tableConstraintsPb, *itemPb)
+		}
+	}
+	pb.TableConstraints = tableConstraintsPb
+	pb.TableId = st.TableId
+	tableTypePb, err := TableTypeToPb(&st.TableType)
+	if err != nil {
+		return nil, err
+	}
+	if tableTypePb != nil {
+		pb.TableType = *tableTypePb
+	}
+	pb.UpdatedAt = st.UpdatedAt
+	pb.UpdatedBy = st.UpdatedBy
+	pb.ViewDefinition = st.ViewDefinition
+	viewDependenciesPb, err := DependencyListToPb(st.ViewDependencies)
+	if err != nil {
+		return nil, err
+	}
+	if viewDependenciesPb != nil {
+		pb.ViewDependencies = viewDependenciesPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func TableInfoFromPb(pb *catalogpb.TableInfoPb) (*TableInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TableInfo{}
+	st.AccessPoint = pb.AccessPoint
+	st.BrowseOnly = pb.BrowseOnly
+	st.CatalogName = pb.CatalogName
+
+	var columnsField []ColumnInfo
+	for _, itemPb := range pb.Columns {
+		item, err := ColumnInfoFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			columnsField = append(columnsField, *item)
+		}
+	}
+	st.Columns = columnsField
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.DataAccessConfigurationId = pb.DataAccessConfigurationId
+	dataSourceFormatField, err := DataSourceFormatFromPb(&pb.DataSourceFormat)
+	if err != nil {
+		return nil, err
+	}
+	if dataSourceFormatField != nil {
+		st.DataSourceFormat = *dataSourceFormatField
+	}
+	st.DeletedAt = pb.DeletedAt
+	deltaRuntimePropertiesKvpairsField, err := DeltaRuntimePropertiesKvPairsFromPb(pb.DeltaRuntimePropertiesKvpairs)
+	if err != nil {
+		return nil, err
+	}
+	if deltaRuntimePropertiesKvpairsField != nil {
+		st.DeltaRuntimePropertiesKvpairs = deltaRuntimePropertiesKvpairsField
+	}
+	effectivePredictiveOptimizationFlagField, err := EffectivePredictiveOptimizationFlagFromPb(pb.EffectivePredictiveOptimizationFlag)
+	if err != nil {
+		return nil, err
+	}
+	if effectivePredictiveOptimizationFlagField != nil {
+		st.EffectivePredictiveOptimizationFlag = effectivePredictiveOptimizationFlagField
+	}
+	enablePredictiveOptimizationField, err := EnablePredictiveOptimizationFromPb(&pb.EnablePredictiveOptimization)
+	if err != nil {
+		return nil, err
+	}
+	if enablePredictiveOptimizationField != nil {
+		st.EnablePredictiveOptimization = *enablePredictiveOptimizationField
+	}
+	encryptionDetailsField, err := EncryptionDetailsFromPb(pb.EncryptionDetails)
+	if err != nil {
+		return nil, err
+	}
+	if encryptionDetailsField != nil {
+		st.EncryptionDetails = encryptionDetailsField
+	}
+	st.FullName = pb.FullName
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.PipelineId = pb.PipelineId
+	st.Properties = pb.Properties
+	rowFilterField, err := TableRowFilterFromPb(pb.RowFilter)
+	if err != nil {
+		return nil, err
+	}
+	if rowFilterField != nil {
+		st.RowFilter = rowFilterField
+	}
+	st.SchemaName = pb.SchemaName
+	securableKindManifestField, err := SecurableKindManifestFromPb(pb.SecurableKindManifest)
+	if err != nil {
+		return nil, err
+	}
+	if securableKindManifestField != nil {
+		st.SecurableKindManifest = securableKindManifestField
+	}
+	st.SqlPath = pb.SqlPath
+	st.StorageCredentialName = pb.StorageCredentialName
+	st.StorageLocation = pb.StorageLocation
+
+	var tableConstraintsField []TableConstraint
+	for _, itemPb := range pb.TableConstraints {
+		item, err := TableConstraintFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			tableConstraintsField = append(tableConstraintsField, *item)
+		}
+	}
+	st.TableConstraints = tableConstraintsField
+	st.TableId = pb.TableId
+	tableTypeField, err := TableTypeFromPb(&pb.TableType)
+	if err != nil {
+		return nil, err
+	}
+	if tableTypeField != nil {
+		st.TableType = *tableTypeField
+	}
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.ViewDefinition = pb.ViewDefinition
+	viewDependenciesField, err := DependencyListFromPb(pb.ViewDependencies)
+	if err != nil {
+		return nil, err
+	}
+	if viewDependenciesField != nil {
+		st.ViewDependencies = viewDependenciesField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type TableOperation string
@@ -6822,32 +22766,170 @@ func (f *TableOperation) Type() string {
 	return "TableOperation"
 }
 
+func TableOperationToPb(st *TableOperation) (*catalogpb.TableOperationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.TableOperationPb(*st)
+	return &pb, nil
+}
+
+func TableOperationFromPb(pb *catalogpb.TableOperationPb) (*TableOperation, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := TableOperation(*pb)
+	return &st, nil
+}
+
 type TableRowFilter struct {
 	// The full name of the row filter SQL UDF.
+	// Wire name: 'function_name'
 	FunctionName string `json:"function_name"`
 	// The list of table columns to be passed as input to the row filter
 	// function. The column types should match the types of the filter function
 	// arguments.
+	// Wire name: 'input_column_names'
 	InputColumnNames []string `json:"input_column_names"`
+}
+
+func (st TableRowFilter) MarshalJSON() ([]byte, error) {
+	pb, err := TableRowFilterToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *TableRowFilter) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.TableRowFilterPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TableRowFilterFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func TableRowFilterToPb(st *TableRowFilter) (*catalogpb.TableRowFilterPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.TableRowFilterPb{}
+	pb.FunctionName = st.FunctionName
+	pb.InputColumnNames = st.InputColumnNames
+
+	return pb, nil
+}
+
+func TableRowFilterFromPb(pb *catalogpb.TableRowFilterPb) (*TableRowFilter, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TableRowFilter{}
+	st.FunctionName = pb.FunctionName
+	st.InputColumnNames = pb.InputColumnNames
+
+	return st, nil
 }
 
 type TableSummary struct {
 	// The full name of the table.
+	// Wire name: 'full_name'
 	FullName string `json:"full_name,omitempty"`
 	// SecurableKindManifest of table, including capabilities the table has.
+	// Wire name: 'securable_kind_manifest'
 	SecurableKindManifest *SecurableKindManifest `json:"securable_kind_manifest,omitempty"`
 
-	TableType TableType `json:"table_type,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'table_type'
+	TableType       TableType `json:"table_type,omitempty"`
+	ForceSendFields []string  `json:"-" tf:"-"`
 }
 
-func (s *TableSummary) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TableSummary) MarshalJSON() ([]byte, error) {
+	pb, err := TableSummaryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TableSummary) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TableSummary) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.TableSummaryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TableSummaryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func TableSummaryToPb(st *TableSummary) (*catalogpb.TableSummaryPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.TableSummaryPb{}
+	pb.FullName = st.FullName
+	securableKindManifestPb, err := SecurableKindManifestToPb(st.SecurableKindManifest)
+	if err != nil {
+		return nil, err
+	}
+	if securableKindManifestPb != nil {
+		pb.SecurableKindManifest = securableKindManifestPb
+	}
+	tableTypePb, err := TableTypeToPb(&st.TableType)
+	if err != nil {
+		return nil, err
+	}
+	if tableTypePb != nil {
+		pb.TableType = *tableTypePb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func TableSummaryFromPb(pb *catalogpb.TableSummaryPb) (*TableSummary, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TableSummary{}
+	st.FullName = pb.FullName
+	securableKindManifestField, err := SecurableKindManifestFromPb(pb.SecurableKindManifest)
+	if err != nil {
+		return nil, err
+	}
+	if securableKindManifestField != nil {
+		st.SecurableKindManifest = securableKindManifestField
+	}
+	tableTypeField, err := TableTypeFromPb(&pb.TableType)
+	if err != nil {
+		return nil, err
+	}
+	if tableTypeField != nil {
+		st.TableType = *tableTypeField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type TableType string
@@ -6908,42 +22990,193 @@ func (f *TableType) Type() string {
 	return "TableType"
 }
 
+func TableTypeToPb(st *TableType) (*catalogpb.TableTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.TableTypePb(*st)
+	return &pb, nil
+}
+
+func TableTypeFromPb(pb *catalogpb.TableTypePb) (*TableType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := TableType(*pb)
+	return &st, nil
+}
+
 type TagKeyValue struct {
 	// name of the tag
+	// Wire name: 'key'
 	Key string `json:"key,omitempty"`
 	// value of the tag associated with the key, could be optional
-	Value string `json:"value,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'value'
+	Value           string   `json:"value,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *TagKeyValue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TagKeyValue) MarshalJSON() ([]byte, error) {
+	pb, err := TagKeyValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TagKeyValue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TagKeyValue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.TagKeyValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TagKeyValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func TagKeyValueToPb(st *TagKeyValue) (*catalogpb.TagKeyValuePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.TagKeyValuePb{}
+	pb.Key = st.Key
+	pb.Value = st.Value
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func TagKeyValueFromPb(pb *catalogpb.TagKeyValuePb) (*TagKeyValue, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TagKeyValue{}
+	st.Key = pb.Key
+	st.Value = pb.Value
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type TemporaryCredentials struct {
+
+	// Wire name: 'aws_temp_credentials'
 	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
 
+	// Wire name: 'azure_aad'
 	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
+	// Wire name: 'expiration_time'
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
 
-	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'gcp_oauth_token'
+	GcpOauthToken   *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
+	ForceSendFields []string       `json:"-" tf:"-"`
 }
 
-func (s *TemporaryCredentials) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TemporaryCredentials) MarshalJSON() ([]byte, error) {
+	pb, err := TemporaryCredentialsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TemporaryCredentials) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TemporaryCredentials) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.TemporaryCredentialsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TemporaryCredentialsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func TemporaryCredentialsToPb(st *TemporaryCredentials) (*catalogpb.TemporaryCredentialsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.TemporaryCredentialsPb{}
+	awsTempCredentialsPb, err := AwsCredentialsToPb(st.AwsTempCredentials)
+	if err != nil {
+		return nil, err
+	}
+	if awsTempCredentialsPb != nil {
+		pb.AwsTempCredentials = awsTempCredentialsPb
+	}
+	azureAadPb, err := AzureActiveDirectoryTokenToPb(st.AzureAad)
+	if err != nil {
+		return nil, err
+	}
+	if azureAadPb != nil {
+		pb.AzureAad = azureAadPb
+	}
+	pb.ExpirationTime = st.ExpirationTime
+	gcpOauthTokenPb, err := GcpOauthTokenToPb(st.GcpOauthToken)
+	if err != nil {
+		return nil, err
+	}
+	if gcpOauthTokenPb != nil {
+		pb.GcpOauthToken = gcpOauthTokenPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func TemporaryCredentialsFromPb(pb *catalogpb.TemporaryCredentialsPb) (*TemporaryCredentials, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TemporaryCredentials{}
+	awsTempCredentialsField, err := AwsCredentialsFromPb(pb.AwsTempCredentials)
+	if err != nil {
+		return nil, err
+	}
+	if awsTempCredentialsField != nil {
+		st.AwsTempCredentials = awsTempCredentialsField
+	}
+	azureAadField, err := AzureActiveDirectoryTokenFromPb(pb.AzureAad)
+	if err != nil {
+		return nil, err
+	}
+	if azureAadField != nil {
+		st.AzureAad = azureAadField
+	}
+	st.ExpirationTime = pb.ExpirationTime
+	gcpOauthTokenField, err := GcpOauthTokenFromPb(pb.GcpOauthToken)
+	if err != nil {
+		return nil, err
+	}
+	if gcpOauthTokenField != nil {
+		st.GcpOauthToken = gcpOauthTokenField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // Detailed status of an online table. Shown if the online table is in the
@@ -6952,134 +23185,578 @@ type TriggeredUpdateStatus struct {
 	// The last source table Delta version that was synced to the online table.
 	// Note that this Delta version may not be completely synced to the online
 	// table yet.
+	// Wire name: 'last_processed_commit_version'
 	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
 	// The timestamp of the last time any data was synchronized from the source
 	// table to the online table.
-	Timestamp string `json:"timestamp,omitempty"`
+	// Wire name: 'timestamp'
+	Timestamp string `json:"timestamp,omitempty"` //legacy
 	// Progress of the active data synchronization pipeline.
+	// Wire name: 'triggered_update_progress'
 	TriggeredUpdateProgress *PipelineProgress `json:"triggered_update_progress,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields         []string          `json:"-" tf:"-"`
 }
 
-func (s *TriggeredUpdateStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st TriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
+	pb, err := TriggeredUpdateStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s TriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *TriggeredUpdateStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.TriggeredUpdateStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := TriggeredUpdateStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func TriggeredUpdateStatusToPb(st *TriggeredUpdateStatus) (*catalogpb.TriggeredUpdateStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.TriggeredUpdateStatusPb{}
+	pb.LastProcessedCommitVersion = st.LastProcessedCommitVersion
+	pb.Timestamp = st.Timestamp
+	triggeredUpdateProgressPb, err := PipelineProgressToPb(st.TriggeredUpdateProgress)
+	if err != nil {
+		return nil, err
+	}
+	if triggeredUpdateProgressPb != nil {
+		pb.TriggeredUpdateProgress = triggeredUpdateProgressPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func TriggeredUpdateStatusFromPb(pb *catalogpb.TriggeredUpdateStatusPb) (*TriggeredUpdateStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &TriggeredUpdateStatus{}
+	st.LastProcessedCommitVersion = pb.LastProcessedCommitVersion
+	st.Timestamp = pb.Timestamp
+	triggeredUpdateProgressField, err := PipelineProgressFromPb(pb.TriggeredUpdateProgress)
+	if err != nil {
+		return nil, err
+	}
+	if triggeredUpdateProgressField != nil {
+		st.TriggeredUpdateProgress = triggeredUpdateProgressField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UnassignRequest struct {
 	// Query for the ID of the metastore to delete.
-	MetastoreId string `json:"-" url:"metastore_id"`
+	MetastoreId string `json:"-" tf:"-"`
 	// A workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
+}
+
+func (st UnassignRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UnassignRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UnassignRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UnassignRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UnassignRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UnassignRequestToPb(st *UnassignRequest) (*catalogpb.UnassignRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UnassignRequestPb{}
+	pb.MetastoreId = st.MetastoreId
+	pb.WorkspaceId = st.WorkspaceId
+
+	return pb, nil
+}
+
+func UnassignRequestFromPb(pb *catalogpb.UnassignRequestPb) (*UnassignRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UnassignRequest{}
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
+
+	return st, nil
 }
 
 type UpdateCatalog struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
+	// Wire name: 'enable_predictive_optimization'
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
+	// Wire name: 'isolation_mode'
 	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
 	// The name of the catalog.
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
 	// New name for the catalog.
+	// Wire name: 'new_name'
 	NewName string `json:"new_name,omitempty"`
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'options'
 	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of catalog.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
-	Properties map[string]string `json:"properties,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'properties'
+	Properties      map[string]string `json:"properties,omitempty"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
-func (s *UpdateCatalog) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateCatalog) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateCatalogToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateCatalog) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateCatalog) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateCatalogPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateCatalogFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateCatalogToPb(st *UpdateCatalog) (*catalogpb.UpdateCatalogPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateCatalogPb{}
+	pb.Comment = st.Comment
+	enablePredictiveOptimizationPb, err := EnablePredictiveOptimizationToPb(&st.EnablePredictiveOptimization)
+	if err != nil {
+		return nil, err
+	}
+	if enablePredictiveOptimizationPb != nil {
+		pb.EnablePredictiveOptimization = *enablePredictiveOptimizationPb
+	}
+	isolationModePb, err := CatalogIsolationModeToPb(&st.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModePb != nil {
+		pb.IsolationMode = *isolationModePb
+	}
+	pb.Name = st.Name
+	pb.NewName = st.NewName
+	pb.Options = st.Options
+	pb.Owner = st.Owner
+	pb.Properties = st.Properties
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateCatalogFromPb(pb *catalogpb.UpdateCatalogPb) (*UpdateCatalog, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateCatalog{}
+	st.Comment = pb.Comment
+	enablePredictiveOptimizationField, err := EnablePredictiveOptimizationFromPb(&pb.EnablePredictiveOptimization)
+	if err != nil {
+		return nil, err
+	}
+	if enablePredictiveOptimizationField != nil {
+		st.EnablePredictiveOptimization = *enablePredictiveOptimizationField
+	}
+	isolationModeField, err := CatalogIsolationModeFromPb(&pb.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModeField != nil {
+		st.IsolationMode = *isolationModeField
+	}
+	st.Name = pb.Name
+	st.NewName = pb.NewName
+	st.Options = pb.Options
+	st.Owner = pb.Owner
+	st.Properties = pb.Properties
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateCatalogWorkspaceBindingsResponse struct {
 	// A list of workspace IDs
+	// Wire name: 'workspaces'
 	Workspaces []int64 `json:"workspaces,omitempty"`
+}
+
+func (st UpdateCatalogWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateCatalogWorkspaceBindingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateCatalogWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateCatalogWorkspaceBindingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateCatalogWorkspaceBindingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateCatalogWorkspaceBindingsResponseToPb(st *UpdateCatalogWorkspaceBindingsResponse) (*catalogpb.UpdateCatalogWorkspaceBindingsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateCatalogWorkspaceBindingsResponsePb{}
+	pb.Workspaces = st.Workspaces
+
+	return pb, nil
+}
+
+func UpdateCatalogWorkspaceBindingsResponseFromPb(pb *catalogpb.UpdateCatalogWorkspaceBindingsResponsePb) (*UpdateCatalogWorkspaceBindingsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateCatalogWorkspaceBindingsResponse{}
+	st.Workspaces = pb.Workspaces
+
+	return st, nil
 }
 
 type UpdateConnection struct {
 	// [Create,Update:OPT] Connection environment settings as
 	// EnvironmentSettings object.
+	// Wire name: 'environment_settings'
 	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
 	// New name for the connection.
+	// Wire name: 'new_name'
 	NewName string `json:"new_name,omitempty"`
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'options'
 	Options map[string]string `json:"options"`
 	// Username of current owner of the connection.
-	Owner string `json:"owner,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'owner'
+	Owner           string   `json:"owner,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *UpdateConnection) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateConnection) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateConnectionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateConnection) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateConnection) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateConnectionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateConnectionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateConnectionToPb(st *UpdateConnection) (*catalogpb.UpdateConnectionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateConnectionPb{}
+	environmentSettingsPb, err := EnvironmentSettingsToPb(st.EnvironmentSettings)
+	if err != nil {
+		return nil, err
+	}
+	if environmentSettingsPb != nil {
+		pb.EnvironmentSettings = environmentSettingsPb
+	}
+	pb.Name = st.Name
+	pb.NewName = st.NewName
+	pb.Options = st.Options
+	pb.Owner = st.Owner
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateConnectionFromPb(pb *catalogpb.UpdateConnectionPb) (*UpdateConnection, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateConnection{}
+	environmentSettingsField, err := EnvironmentSettingsFromPb(pb.EnvironmentSettings)
+	if err != nil {
+		return nil, err
+	}
+	if environmentSettingsField != nil {
+		st.EnvironmentSettings = environmentSettingsField
+	}
+	st.Name = pb.Name
+	st.NewName = pb.NewName
+	st.Options = pb.Options
+	st.Owner = pb.Owner
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateCredentialRequest struct {
 	// The AWS IAM role configuration.
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// Comment associated with the credential.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The Databricks managed GCP service account configuration.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
 	// Force an update even if there are dependent services (when purpose is
 	// **SERVICE**) or dependent external locations and external tables (when
 	// purpose is **STORAGE**).
+	// Wire name: 'force'
 	Force bool `json:"force,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
+	// Wire name: 'isolation_mode'
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of the credential.
-	NameArg string `json:"-" url:"-"`
+	NameArg string `json:"-" tf:"-"`
 	// New name of credential.
+	// Wire name: 'new_name'
 	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of credential.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
+	// Wire name: 'read_only'
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Supply true to this argument to skip validation of the updated
 	// credential.
-	SkipValidation bool `json:"skip_validation,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'skip_validation'
+	SkipValidation  bool     `json:"skip_validation,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *UpdateCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateCredentialRequestToPb(st *UpdateCredentialRequest) (*catalogpb.UpdateCredentialRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateCredentialRequestPb{}
+	awsIamRolePb, err := AwsIamRoleToPb(st.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRolePb != nil {
+		pb.AwsIamRole = awsIamRolePb
+	}
+	azureManagedIdentityPb, err := AzureManagedIdentityToPb(st.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityPb != nil {
+		pb.AzureManagedIdentity = azureManagedIdentityPb
+	}
+	azureServicePrincipalPb, err := AzureServicePrincipalToPb(st.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalPb != nil {
+		pb.AzureServicePrincipal = azureServicePrincipalPb
+	}
+	pb.Comment = st.Comment
+	databricksGcpServiceAccountPb, err := DatabricksGcpServiceAccountToPb(st.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountPb != nil {
+		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
+	}
+	pb.Force = st.Force
+	isolationModePb, err := IsolationModeToPb(&st.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModePb != nil {
+		pb.IsolationMode = *isolationModePb
+	}
+	pb.NameArg = st.NameArg
+	pb.NewName = st.NewName
+	pb.Owner = st.Owner
+	pb.ReadOnly = st.ReadOnly
+	pb.SkipValidation = st.SkipValidation
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateCredentialRequestFromPb(pb *catalogpb.UpdateCredentialRequestPb) (*UpdateCredentialRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateCredentialRequest{}
+	awsIamRoleField, err := AwsIamRoleFromPb(pb.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRoleField != nil {
+		st.AwsIamRole = awsIamRoleField
+	}
+	azureManagedIdentityField, err := AzureManagedIdentityFromPb(pb.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityField != nil {
+		st.AzureManagedIdentity = azureManagedIdentityField
+	}
+	azureServicePrincipalField, err := AzureServicePrincipalFromPb(pb.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalField != nil {
+		st.AzureServicePrincipal = azureServicePrincipalField
+	}
+	st.Comment = pb.Comment
+	databricksGcpServiceAccountField, err := DatabricksGcpServiceAccountFromPb(pb.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountField != nil {
+		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
+	}
+	st.Force = pb.Force
+	isolationModeField, err := IsolationModeFromPb(&pb.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModeField != nil {
+		st.IsolationMode = *isolationModeField
+	}
+	st.NameArg = pb.NameArg
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+	st.ReadOnly = pb.ReadOnly
+	st.SkipValidation = pb.SkipValidation
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateExternalLineageRelationshipRequest struct {
+
+	// Wire name: 'external_lineage_relationship'
 	ExternalLineageRelationship UpdateRequestExternalLineage `json:"external_lineage_relationship"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -7092,58 +23769,237 @@ type UpdateExternalLineageRelationshipRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
-	UpdateMask string `json:"-" url:"update_mask"`
+	UpdateMask string `json:"-" tf:"-"` //legacy
+
+}
+
+func (st UpdateExternalLineageRelationshipRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateExternalLineageRelationshipRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateExternalLineageRelationshipRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateExternalLineageRelationshipRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateExternalLineageRelationshipRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateExternalLineageRelationshipRequestToPb(st *UpdateExternalLineageRelationshipRequest) (*catalogpb.UpdateExternalLineageRelationshipRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateExternalLineageRelationshipRequestPb{}
+	externalLineageRelationshipPb, err := UpdateRequestExternalLineageToPb(&st.ExternalLineageRelationship)
+	if err != nil {
+		return nil, err
+	}
+	if externalLineageRelationshipPb != nil {
+		pb.ExternalLineageRelationship = *externalLineageRelationshipPb
+	}
+	pb.UpdateMask = st.UpdateMask
+
+	return pb, nil
+}
+
+func UpdateExternalLineageRelationshipRequestFromPb(pb *catalogpb.UpdateExternalLineageRelationshipRequestPb) (*UpdateExternalLineageRelationshipRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateExternalLineageRelationshipRequest{}
+	externalLineageRelationshipField, err := UpdateRequestExternalLineageFromPb(&pb.ExternalLineageRelationship)
+	if err != nil {
+		return nil, err
+	}
+	if externalLineageRelationshipField != nil {
+		st.ExternalLineageRelationship = *externalLineageRelationshipField
+	}
+	st.UpdateMask = pb.UpdateMask
+
+	return st, nil
 }
 
 type UpdateExternalLocation struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
+	// Wire name: 'credential_name'
 	CredentialName string `json:"credential_name,omitempty"`
 	// Whether to enable file events on this external location.
+	// Wire name: 'enable_file_events'
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
+	// Wire name: 'encryption_details'
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
+	// Wire name: 'fallback'
 	Fallback bool `json:"fallback,omitempty"`
 	// File event queue settings.
+	// Wire name: 'file_event_queue'
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
+	// Wire name: 'force'
 	Force bool `json:"force,omitempty"`
 
+	// Wire name: 'isolation_mode'
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of the external location.
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
 	// New name for the external location.
+	// Wire name: 'new_name'
 	NewName string `json:"new_name,omitempty"`
 	// The owner of the external location.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// Indicates whether the external location is read-only.
+	// Wire name: 'read_only'
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Skips validation of the storage credential associated with the external
 	// location.
+	// Wire name: 'skip_validation'
 	SkipValidation bool `json:"skip_validation,omitempty"`
 	// Path URL of the external location.
-	Url string `json:"url,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'url'
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *UpdateExternalLocation) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateExternalLocation) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateExternalLocationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateExternalLocation) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateExternalLocation) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateExternalLocationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateExternalLocationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateExternalLocationToPb(st *UpdateExternalLocation) (*catalogpb.UpdateExternalLocationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateExternalLocationPb{}
+	pb.Comment = st.Comment
+	pb.CredentialName = st.CredentialName
+	pb.EnableFileEvents = st.EnableFileEvents
+	encryptionDetailsPb, err := EncryptionDetailsToPb(st.EncryptionDetails)
+	if err != nil {
+		return nil, err
+	}
+	if encryptionDetailsPb != nil {
+		pb.EncryptionDetails = encryptionDetailsPb
+	}
+	pb.Fallback = st.Fallback
+	fileEventQueuePb, err := FileEventQueueToPb(st.FileEventQueue)
+	if err != nil {
+		return nil, err
+	}
+	if fileEventQueuePb != nil {
+		pb.FileEventQueue = fileEventQueuePb
+	}
+	pb.Force = st.Force
+	isolationModePb, err := IsolationModeToPb(&st.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModePb != nil {
+		pb.IsolationMode = *isolationModePb
+	}
+	pb.Name = st.Name
+	pb.NewName = st.NewName
+	pb.Owner = st.Owner
+	pb.ReadOnly = st.ReadOnly
+	pb.SkipValidation = st.SkipValidation
+	pb.Url = st.Url
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateExternalLocationFromPb(pb *catalogpb.UpdateExternalLocationPb) (*UpdateExternalLocation, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateExternalLocation{}
+	st.Comment = pb.Comment
+	st.CredentialName = pb.CredentialName
+	st.EnableFileEvents = pb.EnableFileEvents
+	encryptionDetailsField, err := EncryptionDetailsFromPb(pb.EncryptionDetails)
+	if err != nil {
+		return nil, err
+	}
+	if encryptionDetailsField != nil {
+		st.EncryptionDetails = encryptionDetailsField
+	}
+	st.Fallback = pb.Fallback
+	fileEventQueueField, err := FileEventQueueFromPb(pb.FileEventQueue)
+	if err != nil {
+		return nil, err
+	}
+	if fileEventQueueField != nil {
+		st.FileEventQueue = fileEventQueueField
+	}
+	st.Force = pb.Force
+	isolationModeField, err := IsolationModeFromPb(&pb.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModeField != nil {
+		st.IsolationMode = *isolationModeField
+	}
+	st.Name = pb.Name
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+	st.ReadOnly = pb.ReadOnly
+	st.SkipValidation = pb.SkipValidation
+	st.Url = pb.Url
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateExternalMetadataRequest struct {
+
+	// Wire name: 'external_metadata'
 	ExternalMetadata ExternalMetadata `json:"external_metadata"`
 	// Name of the external metadata object.
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -7155,120 +24011,406 @@ type UpdateExternalMetadataRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
-	UpdateMask string `json:"-" url:"update_mask"`
+	UpdateMask string `json:"-" tf:"-"` //legacy
+
+}
+
+func (st UpdateExternalMetadataRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateExternalMetadataRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateExternalMetadataRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateExternalMetadataRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateExternalMetadataRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateExternalMetadataRequestToPb(st *UpdateExternalMetadataRequest) (*catalogpb.UpdateExternalMetadataRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateExternalMetadataRequestPb{}
+	externalMetadataPb, err := ExternalMetadataToPb(&st.ExternalMetadata)
+	if err != nil {
+		return nil, err
+	}
+	if externalMetadataPb != nil {
+		pb.ExternalMetadata = *externalMetadataPb
+	}
+	pb.Name = st.Name
+	pb.UpdateMask = st.UpdateMask
+
+	return pb, nil
+}
+
+func UpdateExternalMetadataRequestFromPb(pb *catalogpb.UpdateExternalMetadataRequestPb) (*UpdateExternalMetadataRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateExternalMetadataRequest{}
+	externalMetadataField, err := ExternalMetadataFromPb(&pb.ExternalMetadata)
+	if err != nil {
+		return nil, err
+	}
+	if externalMetadataField != nil {
+		st.ExternalMetadata = *externalMetadataField
+	}
+	st.Name = pb.Name
+	st.UpdateMask = pb.UpdateMask
+
+	return st, nil
 }
 
 type UpdateFunction struct {
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
 	// Username of current owner of function.
-	Owner string `json:"owner,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'owner'
+	Owner           string   `json:"owner,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *UpdateFunction) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateFunction) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateFunctionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateFunction) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateFunction) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateFunctionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateFunctionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateFunctionToPb(st *UpdateFunction) (*catalogpb.UpdateFunctionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateFunctionPb{}
+	pb.Name = st.Name
+	pb.Owner = st.Owner
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateFunctionFromPb(pb *catalogpb.UpdateFunctionPb) (*UpdateFunction, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateFunction{}
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateMetastore struct {
 	// The organization name of a Delta Sharing entity, to be used in
 	// Databricks-to-Databricks Delta Sharing as the official name.
+	// Wire name: 'delta_sharing_organization_name'
 	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
 	// The lifetime of delta sharing recipient token in seconds.
+	// Wire name: 'delta_sharing_recipient_token_lifetime_in_seconds'
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
+	// Wire name: 'delta_sharing_scope'
 	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
 	// Unique ID of the metastore.
-	Id string `json:"-" url:"-"`
+	Id string `json:"-" tf:"-"`
 	// New name for the metastore.
+	// Wire name: 'new_name'
 	NewName string `json:"new_name,omitempty"`
 	// The owner of the metastore.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// Privilege model version of the metastore, of the form `major.minor`
 	// (e.g., `1.0`).
+	// Wire name: 'privilege_model_version'
 	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
 	// UUID of storage credential to access the metastore storage_root.
-	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'storage_root_credential_id'
+	StorageRootCredentialId string   `json:"storage_root_credential_id,omitempty"`
+	ForceSendFields         []string `json:"-" tf:"-"`
 }
 
-func (s *UpdateMetastore) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateMetastore) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateMetastoreToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateMetastore) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateMetastore) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateMetastorePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateMetastoreFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateMetastoreToPb(st *UpdateMetastore) (*catalogpb.UpdateMetastorePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateMetastorePb{}
+	pb.DeltaSharingOrganizationName = st.DeltaSharingOrganizationName
+	pb.DeltaSharingRecipientTokenLifetimeInSeconds = st.DeltaSharingRecipientTokenLifetimeInSeconds
+	deltaSharingScopePb, err := DeltaSharingScopeEnumToPb(&st.DeltaSharingScope)
+	if err != nil {
+		return nil, err
+	}
+	if deltaSharingScopePb != nil {
+		pb.DeltaSharingScope = *deltaSharingScopePb
+	}
+	pb.Id = st.Id
+	pb.NewName = st.NewName
+	pb.Owner = st.Owner
+	pb.PrivilegeModelVersion = st.PrivilegeModelVersion
+	pb.StorageRootCredentialId = st.StorageRootCredentialId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateMetastoreFromPb(pb *catalogpb.UpdateMetastorePb) (*UpdateMetastore, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateMetastore{}
+	st.DeltaSharingOrganizationName = pb.DeltaSharingOrganizationName
+	st.DeltaSharingRecipientTokenLifetimeInSeconds = pb.DeltaSharingRecipientTokenLifetimeInSeconds
+	deltaSharingScopeField, err := DeltaSharingScopeEnumFromPb(&pb.DeltaSharingScope)
+	if err != nil {
+		return nil, err
+	}
+	if deltaSharingScopeField != nil {
+		st.DeltaSharingScope = *deltaSharingScopeField
+	}
+	st.Id = pb.Id
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+	st.PrivilegeModelVersion = pb.PrivilegeModelVersion
+	st.StorageRootCredentialId = pb.StorageRootCredentialId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateMetastoreAssignment struct {
 	// The name of the default catalog in the metastore. This field is
 	// deprecated. Please use "Default Namespace API" to configure the default
 	// catalog for a Databricks workspace.
+	// Wire name: 'default_catalog_name'
 	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
 	// The unique ID of the metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// A workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	WorkspaceId     int64    `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *UpdateMetastoreAssignment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateMetastoreAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateMetastoreAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateMetastoreAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateMetastoreAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateMetastoreAssignmentToPb(st *UpdateMetastoreAssignment) (*catalogpb.UpdateMetastoreAssignmentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateMetastoreAssignmentPb{}
+	pb.DefaultCatalogName = st.DefaultCatalogName
+	pb.MetastoreId = st.MetastoreId
+	pb.WorkspaceId = st.WorkspaceId
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateMetastoreAssignmentFromPb(pb *catalogpb.UpdateMetastoreAssignmentPb) (*UpdateMetastoreAssignment, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateMetastoreAssignment{}
+	st.DefaultCatalogName = pb.DefaultCatalogName
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateModelVersionRequest struct {
 	// The comment attached to the model version
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The three-level (fully qualified) name of the model version
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// The integer version number of the model version
-	Version int `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	Version         int      `json:"-" tf:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *UpdateModelVersionRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateModelVersionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateModelVersionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateModelVersionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateModelVersionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateModelVersionRequestToPb(st *UpdateModelVersionRequest) (*catalogpb.UpdateModelVersionRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateModelVersionRequestPb{}
+	pb.Comment = st.Comment
+	pb.FullName = st.FullName
+	pb.Version = st.Version
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateModelVersionRequestFromPb(pb *catalogpb.UpdateModelVersionRequestPb) (*UpdateModelVersionRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateModelVersionRequest{}
+	st.Comment = pb.Comment
+	st.FullName = pb.FullName
+	st.Version = pb.Version
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateMonitor struct {
 	// [Create:OPT Update:OPT] Baseline table name. Baseline data is used to
 	// compute drift from the data in the monitored `table_name`. The baseline
 	// table and the monitored table shall have the same schema.
+	// Wire name: 'baseline_table_name'
 	BaselineTableName string `json:"baseline_table_name,omitempty"`
 	// [Create:OPT Update:OPT] Custom metrics.
+	// Wire name: 'custom_metrics'
 	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
 	// [Create:ERR Update:OPT] Id of dashboard that visualizes the computed
 	// metrics. This can be empty if the monitor is in PENDING state.
+	// Wire name: 'dashboard_id'
 	DashboardId string `json:"dashboard_id,omitempty"`
 	// [Create:OPT Update:OPT] Data classification related config.
+	// Wire name: 'data_classification_config'
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
 
+	// Wire name: 'inference_log'
 	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
 	// [Create:ERR Update:IGN] The latest error message for a monitor failure.
+	// Wire name: 'latest_monitor_failure_msg'
 	LatestMonitorFailureMsg string `json:"latest_monitor_failure_msg,omitempty"`
 	// [Create:OPT Update:OPT] Field for specifying notification settings.
+	// Wire name: 'notifications'
 	Notifications *MonitorNotifications `json:"notifications,omitempty"`
 	// [Create:REQ Update:REQ] Schema where output tables are created. Needs to
 	// be in 2-level format {catalog}.{schema}
+	// Wire name: 'output_schema_name'
 	OutputSchemaName string `json:"output_schema_name"`
 	// [Create:OPT Update:OPT] The monitor schedule.
+	// Wire name: 'schedule'
 	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
 	// [Create:OPT Update:OPT] List of column expressions to slice data with for
 	// targeted analysis. The data is grouped by each expression independently,
@@ -7277,268 +24419,1435 @@ type UpdateMonitor struct {
 	// following slices: two slices for `col_2 > 10` (True and False), and one
 	// slice per unique value in `col1`. For high-cardinality columns, only the
 	// top 100 unique values by frequency will generate slices.
+	// Wire name: 'slicing_exprs'
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
 	// Configuration for monitoring snapshot tables.
+	// Wire name: 'snapshot'
 	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
 	// UC table name in format `catalog.schema.table_name`. This field
 	// corresponds to the {full_table_name_arg} arg in the endpoint path.
-	TableName string `json:"-" url:"-"`
+	TableName string `json:"-" tf:"-"`
 	// Configuration for monitoring time series tables.
-	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'time_series'
+	TimeSeries      *MonitorTimeSeries `json:"time_series,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
-func (s *UpdateMonitor) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateMonitor) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateMonitorToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateMonitor) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateMonitor) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateMonitorPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateMonitorFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateMonitorToPb(st *UpdateMonitor) (*catalogpb.UpdateMonitorPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateMonitorPb{}
+	pb.BaselineTableName = st.BaselineTableName
+
+	var customMetricsPb []catalogpb.MonitorMetricPb
+	for _, item := range st.CustomMetrics {
+		itemPb, err := MonitorMetricToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			customMetricsPb = append(customMetricsPb, *itemPb)
+		}
+	}
+	pb.CustomMetrics = customMetricsPb
+	pb.DashboardId = st.DashboardId
+	dataClassificationConfigPb, err := MonitorDataClassificationConfigToPb(st.DataClassificationConfig)
+	if err != nil {
+		return nil, err
+	}
+	if dataClassificationConfigPb != nil {
+		pb.DataClassificationConfig = dataClassificationConfigPb
+	}
+	inferenceLogPb, err := MonitorInferenceLogToPb(st.InferenceLog)
+	if err != nil {
+		return nil, err
+	}
+	if inferenceLogPb != nil {
+		pb.InferenceLog = inferenceLogPb
+	}
+	pb.LatestMonitorFailureMsg = st.LatestMonitorFailureMsg
+	notificationsPb, err := MonitorNotificationsToPb(st.Notifications)
+	if err != nil {
+		return nil, err
+	}
+	if notificationsPb != nil {
+		pb.Notifications = notificationsPb
+	}
+	pb.OutputSchemaName = st.OutputSchemaName
+	schedulePb, err := MonitorCronScheduleToPb(st.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if schedulePb != nil {
+		pb.Schedule = schedulePb
+	}
+	pb.SlicingExprs = st.SlicingExprs
+	snapshotPb, err := MonitorSnapshotToPb(st.Snapshot)
+	if err != nil {
+		return nil, err
+	}
+	if snapshotPb != nil {
+		pb.Snapshot = snapshotPb
+	}
+	pb.TableName = st.TableName
+	timeSeriesPb, err := MonitorTimeSeriesToPb(st.TimeSeries)
+	if err != nil {
+		return nil, err
+	}
+	if timeSeriesPb != nil {
+		pb.TimeSeries = timeSeriesPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateMonitorFromPb(pb *catalogpb.UpdateMonitorPb) (*UpdateMonitor, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateMonitor{}
+	st.BaselineTableName = pb.BaselineTableName
+
+	var customMetricsField []MonitorMetric
+	for _, itemPb := range pb.CustomMetrics {
+		item, err := MonitorMetricFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			customMetricsField = append(customMetricsField, *item)
+		}
+	}
+	st.CustomMetrics = customMetricsField
+	st.DashboardId = pb.DashboardId
+	dataClassificationConfigField, err := MonitorDataClassificationConfigFromPb(pb.DataClassificationConfig)
+	if err != nil {
+		return nil, err
+	}
+	if dataClassificationConfigField != nil {
+		st.DataClassificationConfig = dataClassificationConfigField
+	}
+	inferenceLogField, err := MonitorInferenceLogFromPb(pb.InferenceLog)
+	if err != nil {
+		return nil, err
+	}
+	if inferenceLogField != nil {
+		st.InferenceLog = inferenceLogField
+	}
+	st.LatestMonitorFailureMsg = pb.LatestMonitorFailureMsg
+	notificationsField, err := MonitorNotificationsFromPb(pb.Notifications)
+	if err != nil {
+		return nil, err
+	}
+	if notificationsField != nil {
+		st.Notifications = notificationsField
+	}
+	st.OutputSchemaName = pb.OutputSchemaName
+	scheduleField, err := MonitorCronScheduleFromPb(pb.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if scheduleField != nil {
+		st.Schedule = scheduleField
+	}
+	st.SlicingExprs = pb.SlicingExprs
+	snapshotField, err := MonitorSnapshotFromPb(pb.Snapshot)
+	if err != nil {
+		return nil, err
+	}
+	if snapshotField != nil {
+		st.Snapshot = snapshotField
+	}
+	st.TableName = pb.TableName
+	timeSeriesField, err := MonitorTimeSeriesFromPb(pb.TimeSeries)
+	if err != nil {
+		return nil, err
+	}
+	if timeSeriesField != nil {
+		st.TimeSeries = timeSeriesField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdatePermissions struct {
 	// Array of permissions change objects.
+	// Wire name: 'changes'
 	Changes []PermissionsChange `json:"changes,omitempty"`
 	// Full name of securable.
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Type of securable.
-	SecurableType string `json:"-" url:"-"`
+	SecurableType string `json:"-" tf:"-"`
+}
+
+func (st UpdatePermissions) MarshalJSON() ([]byte, error) {
+	pb, err := UpdatePermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdatePermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdatePermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdatePermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdatePermissionsToPb(st *UpdatePermissions) (*catalogpb.UpdatePermissionsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdatePermissionsPb{}
+
+	var changesPb []catalogpb.PermissionsChangePb
+	for _, item := range st.Changes {
+		itemPb, err := PermissionsChangeToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			changesPb = append(changesPb, *itemPb)
+		}
+	}
+	pb.Changes = changesPb
+	pb.FullName = st.FullName
+	pb.SecurableType = st.SecurableType
+
+	return pb, nil
+}
+
+func UpdatePermissionsFromPb(pb *catalogpb.UpdatePermissionsPb) (*UpdatePermissions, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdatePermissions{}
+
+	var changesField []PermissionsChange
+	for _, itemPb := range pb.Changes {
+		item, err := PermissionsChangeFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			changesField = append(changesField, *item)
+		}
+	}
+	st.Changes = changesField
+	st.FullName = pb.FullName
+	st.SecurableType = pb.SecurableType
+
+	return st, nil
 }
 
 type UpdatePermissionsResponse struct {
 	// The privileges assigned to each principal
+	// Wire name: 'privilege_assignments'
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
+}
+
+func (st UpdatePermissionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpdatePermissionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdatePermissionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdatePermissionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdatePermissionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdatePermissionsResponseToPb(st *UpdatePermissionsResponse) (*catalogpb.UpdatePermissionsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdatePermissionsResponsePb{}
+
+	var privilegeAssignmentsPb []catalogpb.PrivilegeAssignmentPb
+	for _, item := range st.PrivilegeAssignments {
+		itemPb, err := PrivilegeAssignmentToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			privilegeAssignmentsPb = append(privilegeAssignmentsPb, *itemPb)
+		}
+	}
+	pb.PrivilegeAssignments = privilegeAssignmentsPb
+
+	return pb, nil
+}
+
+func UpdatePermissionsResponseFromPb(pb *catalogpb.UpdatePermissionsResponsePb) (*UpdatePermissionsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdatePermissionsResponse{}
+
+	var privilegeAssignmentsField []PrivilegeAssignment
+	for _, itemPb := range pb.PrivilegeAssignments {
+		item, err := PrivilegeAssignmentFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			privilegeAssignmentsField = append(privilegeAssignmentsField, *item)
+		}
+	}
+	st.PrivilegeAssignments = privilegeAssignmentsField
+
+	return st, nil
 }
 
 type UpdateRegisteredModelRequest struct {
 	// The comment attached to the registered model
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The three-level (fully qualified) name of the registered model
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// New name for the registered model.
+	// Wire name: 'new_name'
 	NewName string `json:"new_name,omitempty"`
 	// The identifier of the user who owns the registered model
-	Owner string `json:"owner,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'owner'
+	Owner           string   `json:"owner,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *UpdateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateRegisteredModelRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateRegisteredModelRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateRegisteredModelRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateRegisteredModelRequestToPb(st *UpdateRegisteredModelRequest) (*catalogpb.UpdateRegisteredModelRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateRegisteredModelRequestPb{}
+	pb.Comment = st.Comment
+	pb.FullName = st.FullName
+	pb.NewName = st.NewName
+	pb.Owner = st.Owner
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateRegisteredModelRequestFromPb(pb *catalogpb.UpdateRegisteredModelRequestPb) (*UpdateRegisteredModelRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateRegisteredModelRequest{}
+	st.Comment = pb.Comment
+	st.FullName = pb.FullName
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateRequestExternalLineage struct {
 	// List of column relationships between source and target objects.
+	// Wire name: 'columns'
 	Columns []ColumnRelationship `json:"columns,omitempty"`
 	// Unique identifier of the external lineage relationship.
+	// Wire name: 'id'
 	Id string `json:"id,omitempty"`
 	// Key-value properties associated with the external lineage relationship.
+	// Wire name: 'properties'
 	Properties map[string]string `json:"properties,omitempty"`
 	// Source object of the external lineage relationship.
+	// Wire name: 'source'
 	Source ExternalLineageObject `json:"source"`
 	// Target object of the external lineage relationship.
-	Target ExternalLineageObject `json:"target"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'target'
+	Target          ExternalLineageObject `json:"target"`
+	ForceSendFields []string              `json:"-" tf:"-"`
 }
 
-func (s *UpdateRequestExternalLineage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateRequestExternalLineage) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateRequestExternalLineageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateRequestExternalLineage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateRequestExternalLineage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateRequestExternalLineagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateRequestExternalLineageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateRequestExternalLineageToPb(st *UpdateRequestExternalLineage) (*catalogpb.UpdateRequestExternalLineagePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateRequestExternalLineagePb{}
+
+	var columnsPb []catalogpb.ColumnRelationshipPb
+	for _, item := range st.Columns {
+		itemPb, err := ColumnRelationshipToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			columnsPb = append(columnsPb, *itemPb)
+		}
+	}
+	pb.Columns = columnsPb
+	pb.Id = st.Id
+	pb.Properties = st.Properties
+	sourcePb, err := ExternalLineageObjectToPb(&st.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourcePb != nil {
+		pb.Source = *sourcePb
+	}
+	targetPb, err := ExternalLineageObjectToPb(&st.Target)
+	if err != nil {
+		return nil, err
+	}
+	if targetPb != nil {
+		pb.Target = *targetPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateRequestExternalLineageFromPb(pb *catalogpb.UpdateRequestExternalLineagePb) (*UpdateRequestExternalLineage, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateRequestExternalLineage{}
+
+	var columnsField []ColumnRelationship
+	for _, itemPb := range pb.Columns {
+		item, err := ColumnRelationshipFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			columnsField = append(columnsField, *item)
+		}
+	}
+	st.Columns = columnsField
+	st.Id = pb.Id
+	st.Properties = pb.Properties
+	sourceField, err := ExternalLineageObjectFromPb(&pb.Source)
+	if err != nil {
+		return nil, err
+	}
+	if sourceField != nil {
+		st.Source = *sourceField
+	}
+	targetField, err := ExternalLineageObjectFromPb(&pb.Target)
+	if err != nil {
+		return nil, err
+	}
+	if targetField != nil {
+		st.Target = *targetField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateSchema struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
+	// Wire name: 'enable_predictive_optimization'
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Full name of the schema.
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// New name for the schema.
+	// Wire name: 'new_name'
 	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of schema.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// A map of key-value properties attached to the securable.
-	Properties map[string]string `json:"properties,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'properties'
+	Properties      map[string]string `json:"properties,omitempty"`
+	ForceSendFields []string          `json:"-" tf:"-"`
 }
 
-func (s *UpdateSchema) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateSchema) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateSchemaToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateSchema) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateSchema) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateSchemaPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateSchemaFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateSchemaToPb(st *UpdateSchema) (*catalogpb.UpdateSchemaPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateSchemaPb{}
+	pb.Comment = st.Comment
+	enablePredictiveOptimizationPb, err := EnablePredictiveOptimizationToPb(&st.EnablePredictiveOptimization)
+	if err != nil {
+		return nil, err
+	}
+	if enablePredictiveOptimizationPb != nil {
+		pb.EnablePredictiveOptimization = *enablePredictiveOptimizationPb
+	}
+	pb.FullName = st.FullName
+	pb.NewName = st.NewName
+	pb.Owner = st.Owner
+	pb.Properties = st.Properties
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateSchemaFromPb(pb *catalogpb.UpdateSchemaPb) (*UpdateSchema, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateSchema{}
+	st.Comment = pb.Comment
+	enablePredictiveOptimizationField, err := EnablePredictiveOptimizationFromPb(&pb.EnablePredictiveOptimization)
+	if err != nil {
+		return nil, err
+	}
+	if enablePredictiveOptimizationField != nil {
+		st.EnablePredictiveOptimization = *enablePredictiveOptimizationField
+	}
+	st.FullName = pb.FullName
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+	st.Properties = pb.Properties
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateStorageCredential struct {
 	// The AWS IAM role configuration.
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentityResponse `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// The Cloudflare API token configuration.
+	// Wire name: 'cloudflare_api_token'
 	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// Comment associated with the credential.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The Databricks managed GCP service account configuration.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// Force update even if there are dependent external locations or external
 	// tables.
+	// Wire name: 'force'
 	Force bool `json:"force,omitempty"`
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
+	// Wire name: 'isolation_mode'
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Name of the storage credential.
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
 	// New name for the storage credential.
+	// Wire name: 'new_name'
 	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of credential.
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
+	// Wire name: 'read_only'
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Supplying true to this argument skips validation of the updated
 	// credential.
-	SkipValidation bool `json:"skip_validation,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'skip_validation'
+	SkipValidation  bool     `json:"skip_validation,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *UpdateStorageCredential) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateStorageCredential) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateStorageCredentialToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateStorageCredential) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateStorageCredential) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateStorageCredentialPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateStorageCredentialFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateStorageCredentialToPb(st *UpdateStorageCredential) (*catalogpb.UpdateStorageCredentialPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateStorageCredentialPb{}
+	awsIamRolePb, err := AwsIamRoleRequestToPb(st.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRolePb != nil {
+		pb.AwsIamRole = awsIamRolePb
+	}
+	azureManagedIdentityPb, err := AzureManagedIdentityResponseToPb(st.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityPb != nil {
+		pb.AzureManagedIdentity = azureManagedIdentityPb
+	}
+	azureServicePrincipalPb, err := AzureServicePrincipalToPb(st.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalPb != nil {
+		pb.AzureServicePrincipal = azureServicePrincipalPb
+	}
+	cloudflareApiTokenPb, err := CloudflareApiTokenToPb(st.CloudflareApiToken)
+	if err != nil {
+		return nil, err
+	}
+	if cloudflareApiTokenPb != nil {
+		pb.CloudflareApiToken = cloudflareApiTokenPb
+	}
+	pb.Comment = st.Comment
+	databricksGcpServiceAccountPb, err := DatabricksGcpServiceAccountRequestToPb(st.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountPb != nil {
+		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
+	}
+	pb.Force = st.Force
+	isolationModePb, err := IsolationModeToPb(&st.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModePb != nil {
+		pb.IsolationMode = *isolationModePb
+	}
+	pb.Name = st.Name
+	pb.NewName = st.NewName
+	pb.Owner = st.Owner
+	pb.ReadOnly = st.ReadOnly
+	pb.SkipValidation = st.SkipValidation
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateStorageCredentialFromPb(pb *catalogpb.UpdateStorageCredentialPb) (*UpdateStorageCredential, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateStorageCredential{}
+	awsIamRoleField, err := AwsIamRoleRequestFromPb(pb.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRoleField != nil {
+		st.AwsIamRole = awsIamRoleField
+	}
+	azureManagedIdentityField, err := AzureManagedIdentityResponseFromPb(pb.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityField != nil {
+		st.AzureManagedIdentity = azureManagedIdentityField
+	}
+	azureServicePrincipalField, err := AzureServicePrincipalFromPb(pb.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalField != nil {
+		st.AzureServicePrincipal = azureServicePrincipalField
+	}
+	cloudflareApiTokenField, err := CloudflareApiTokenFromPb(pb.CloudflareApiToken)
+	if err != nil {
+		return nil, err
+	}
+	if cloudflareApiTokenField != nil {
+		st.CloudflareApiToken = cloudflareApiTokenField
+	}
+	st.Comment = pb.Comment
+	databricksGcpServiceAccountField, err := DatabricksGcpServiceAccountRequestFromPb(pb.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountField != nil {
+		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
+	}
+	st.Force = pb.Force
+	isolationModeField, err := IsolationModeFromPb(&pb.IsolationMode)
+	if err != nil {
+		return nil, err
+	}
+	if isolationModeField != nil {
+		st.IsolationMode = *isolationModeField
+	}
+	st.Name = pb.Name
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+	st.ReadOnly = pb.ReadOnly
+	st.SkipValidation = pb.SkipValidation
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateTableRequest struct {
 	// Full name of the table.
-	FullName string `json:"-" url:"-"`
+	FullName string `json:"-" tf:"-"`
 	// Username of current owner of table.
-	Owner string `json:"owner,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'owner'
+	Owner           string   `json:"owner,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *UpdateTableRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateTableRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateTableRequestToPb(st *UpdateTableRequest) (*catalogpb.UpdateTableRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateTableRequestPb{}
+	pb.FullName = st.FullName
+	pb.Owner = st.Owner
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateTableRequestFromPb(pb *catalogpb.UpdateTableRequestPb) (*UpdateTableRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateTableRequest{}
+	st.FullName = pb.FullName
+	st.Owner = pb.Owner
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateVolumeRequestContent struct {
 	// The comment attached to the volume
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The three-level (fully qualified) name of the volume
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
 	// New name for the volume.
+	// Wire name: 'new_name'
 	NewName string `json:"new_name,omitempty"`
 	// The identifier of the user who owns the volume
-	Owner string `json:"owner,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'owner'
+	Owner           string   `json:"owner,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *UpdateVolumeRequestContent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st UpdateVolumeRequestContent) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateVolumeRequestContentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s UpdateVolumeRequestContent) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *UpdateVolumeRequestContent) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateVolumeRequestContentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateVolumeRequestContentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateVolumeRequestContentToPb(st *UpdateVolumeRequestContent) (*catalogpb.UpdateVolumeRequestContentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateVolumeRequestContentPb{}
+	pb.Comment = st.Comment
+	pb.Name = st.Name
+	pb.NewName = st.NewName
+	pb.Owner = st.Owner
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func UpdateVolumeRequestContentFromPb(pb *catalogpb.UpdateVolumeRequestContentPb) (*UpdateVolumeRequestContent, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateVolumeRequestContent{}
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type UpdateWorkspaceBindings struct {
 	// A list of workspace IDs.
+	// Wire name: 'assign_workspaces'
 	AssignWorkspaces []int64 `json:"assign_workspaces,omitempty"`
 	// The name of the catalog.
-	Name string `json:"-" url:"-"`
+	Name string `json:"-" tf:"-"`
 	// A list of workspace IDs.
+	// Wire name: 'unassign_workspaces'
 	UnassignWorkspaces []int64 `json:"unassign_workspaces,omitempty"`
+}
+
+func (st UpdateWorkspaceBindings) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateWorkspaceBindingsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateWorkspaceBindings) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateWorkspaceBindingsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateWorkspaceBindingsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateWorkspaceBindingsToPb(st *UpdateWorkspaceBindings) (*catalogpb.UpdateWorkspaceBindingsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateWorkspaceBindingsPb{}
+	pb.AssignWorkspaces = st.AssignWorkspaces
+	pb.Name = st.Name
+	pb.UnassignWorkspaces = st.UnassignWorkspaces
+
+	return pb, nil
+}
+
+func UpdateWorkspaceBindingsFromPb(pb *catalogpb.UpdateWorkspaceBindingsPb) (*UpdateWorkspaceBindings, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateWorkspaceBindings{}
+	st.AssignWorkspaces = pb.AssignWorkspaces
+	st.Name = pb.Name
+	st.UnassignWorkspaces = pb.UnassignWorkspaces
+
+	return st, nil
 }
 
 type UpdateWorkspaceBindingsParameters struct {
 	// List of workspace bindings.
+	// Wire name: 'add'
 	Add []WorkspaceBinding `json:"add,omitempty"`
 	// List of workspace bindings.
+	// Wire name: 'remove'
 	Remove []WorkspaceBinding `json:"remove,omitempty"`
 	// The name of the securable.
-	SecurableName string `json:"-" url:"-"`
+	SecurableName string `json:"-" tf:"-"`
 	// The type of the securable to bind to a workspace (catalog,
 	// storage_credential, credential, or external_location).
-	SecurableType string `json:"-" url:"-"`
+	SecurableType string `json:"-" tf:"-"`
+}
+
+func (st UpdateWorkspaceBindingsParameters) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateWorkspaceBindingsParametersToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateWorkspaceBindingsParameters) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateWorkspaceBindingsParametersPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateWorkspaceBindingsParametersFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateWorkspaceBindingsParametersToPb(st *UpdateWorkspaceBindingsParameters) (*catalogpb.UpdateWorkspaceBindingsParametersPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateWorkspaceBindingsParametersPb{}
+
+	var addPb []catalogpb.WorkspaceBindingPb
+	for _, item := range st.Add {
+		itemPb, err := WorkspaceBindingToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			addPb = append(addPb, *itemPb)
+		}
+	}
+	pb.Add = addPb
+
+	var removePb []catalogpb.WorkspaceBindingPb
+	for _, item := range st.Remove {
+		itemPb, err := WorkspaceBindingToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			removePb = append(removePb, *itemPb)
+		}
+	}
+	pb.Remove = removePb
+	pb.SecurableName = st.SecurableName
+	pb.SecurableType = st.SecurableType
+
+	return pb, nil
+}
+
+func UpdateWorkspaceBindingsParametersFromPb(pb *catalogpb.UpdateWorkspaceBindingsParametersPb) (*UpdateWorkspaceBindingsParameters, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateWorkspaceBindingsParameters{}
+
+	var addField []WorkspaceBinding
+	for _, itemPb := range pb.Add {
+		item, err := WorkspaceBindingFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			addField = append(addField, *item)
+		}
+	}
+	st.Add = addField
+
+	var removeField []WorkspaceBinding
+	for _, itemPb := range pb.Remove {
+		item, err := WorkspaceBindingFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			removeField = append(removeField, *item)
+		}
+	}
+	st.Remove = removeField
+	st.SecurableName = pb.SecurableName
+	st.SecurableType = pb.SecurableType
+
+	return st, nil
 }
 
 // A list of workspace IDs that are bound to the securable
 type UpdateWorkspaceBindingsResponse struct {
 	// List of workspace bindings.
+	// Wire name: 'bindings'
 	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
+}
+
+func (st UpdateWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := UpdateWorkspaceBindingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *UpdateWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.UpdateWorkspaceBindingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := UpdateWorkspaceBindingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func UpdateWorkspaceBindingsResponseToPb(st *UpdateWorkspaceBindingsResponse) (*catalogpb.UpdateWorkspaceBindingsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.UpdateWorkspaceBindingsResponsePb{}
+
+	var bindingsPb []catalogpb.WorkspaceBindingPb
+	for _, item := range st.Bindings {
+		itemPb, err := WorkspaceBindingToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			bindingsPb = append(bindingsPb, *itemPb)
+		}
+	}
+	pb.Bindings = bindingsPb
+
+	return pb, nil
+}
+
+func UpdateWorkspaceBindingsResponseFromPb(pb *catalogpb.UpdateWorkspaceBindingsResponsePb) (*UpdateWorkspaceBindingsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateWorkspaceBindingsResponse{}
+
+	var bindingsField []WorkspaceBinding
+	for _, itemPb := range pb.Bindings {
+		item, err := WorkspaceBindingFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			bindingsField = append(bindingsField, *item)
+		}
+	}
+	st.Bindings = bindingsField
+
+	return st, nil
 }
 
 // Next ID: 17
 type ValidateCredentialRequest struct {
+
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
 	// Required. The name of an existing credential or long-lived cloud
 	// credential to validate.
+	// Wire name: 'credential_name'
 	CredentialName string `json:"credential_name,omitempty"`
 
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate. Only applicable
 	// for storage credentials (purpose is **STORAGE**.)
+	// Wire name: 'external_location_name'
 	ExternalLocationName string `json:"external_location_name,omitempty"`
 	// The purpose of the credential. This should only be used when the
 	// credential is specified.
+	// Wire name: 'purpose'
 	Purpose CredentialPurpose `json:"purpose,omitempty"`
 	// Whether the credential is only usable for read operations. Only
 	// applicable for storage credentials (purpose is **STORAGE**.)
+	// Wire name: 'read_only'
 	ReadOnly bool `json:"read_only,omitempty"`
 	// The external location url to validate. Only applicable when purpose is
 	// **STORAGE**.
-	Url string `json:"url,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'url'
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ValidateCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ValidateCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := ValidateCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ValidateCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ValidateCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ValidateCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ValidateCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ValidateCredentialRequestToPb(st *ValidateCredentialRequest) (*catalogpb.ValidateCredentialRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ValidateCredentialRequestPb{}
+	awsIamRolePb, err := AwsIamRoleToPb(st.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRolePb != nil {
+		pb.AwsIamRole = awsIamRolePb
+	}
+	azureManagedIdentityPb, err := AzureManagedIdentityToPb(st.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityPb != nil {
+		pb.AzureManagedIdentity = azureManagedIdentityPb
+	}
+	pb.CredentialName = st.CredentialName
+	databricksGcpServiceAccountPb, err := DatabricksGcpServiceAccountToPb(st.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountPb != nil {
+		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
+	}
+	pb.ExternalLocationName = st.ExternalLocationName
+	purposePb, err := CredentialPurposeToPb(&st.Purpose)
+	if err != nil {
+		return nil, err
+	}
+	if purposePb != nil {
+		pb.Purpose = *purposePb
+	}
+	pb.ReadOnly = st.ReadOnly
+	pb.Url = st.Url
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ValidateCredentialRequestFromPb(pb *catalogpb.ValidateCredentialRequestPb) (*ValidateCredentialRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ValidateCredentialRequest{}
+	awsIamRoleField, err := AwsIamRoleFromPb(pb.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRoleField != nil {
+		st.AwsIamRole = awsIamRoleField
+	}
+	azureManagedIdentityField, err := AzureManagedIdentityFromPb(pb.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityField != nil {
+		st.AzureManagedIdentity = azureManagedIdentityField
+	}
+	st.CredentialName = pb.CredentialName
+	databricksGcpServiceAccountField, err := DatabricksGcpServiceAccountFromPb(pb.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountField != nil {
+		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
+	}
+	st.ExternalLocationName = pb.ExternalLocationName
+	purposeField, err := CredentialPurposeFromPb(&pb.Purpose)
+	if err != nil {
+		return nil, err
+	}
+	if purposeField != nil {
+		st.Purpose = *purposeField
+	}
+	st.ReadOnly = pb.ReadOnly
+	st.Url = pb.Url
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ValidateCredentialResponse struct {
 	// Whether the tested location is a directory in cloud storage. Only
 	// applicable for when purpose is **STORAGE**.
+	// Wire name: 'isDir'
 	IsDir bool `json:"isDir,omitempty"`
 	// The results of the validation check.
-	Results []CredentialValidationResult `json:"results,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'results'
+	Results         []CredentialValidationResult `json:"results,omitempty"`
+	ForceSendFields []string                     `json:"-" tf:"-"`
 }
 
-func (s *ValidateCredentialResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ValidateCredentialResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ValidateCredentialResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ValidateCredentialResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ValidateCredentialResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ValidateCredentialResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ValidateCredentialResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ValidateCredentialResponseToPb(st *ValidateCredentialResponse) (*catalogpb.ValidateCredentialResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ValidateCredentialResponsePb{}
+	pb.IsDir = st.IsDir
+
+	var resultsPb []catalogpb.CredentialValidationResultPb
+	for _, item := range st.Results {
+		itemPb, err := CredentialValidationResultToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			resultsPb = append(resultsPb, *itemPb)
+		}
+	}
+	pb.Results = resultsPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ValidateCredentialResponseFromPb(pb *catalogpb.ValidateCredentialResponsePb) (*ValidateCredentialResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ValidateCredentialResponse{}
+	st.IsDir = pb.IsDir
+
+	var resultsField []CredentialValidationResult
+	for _, itemPb := range pb.Results {
+		item, err := CredentialValidationResultFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			resultsField = append(resultsField, *item)
+		}
+	}
+	st.Results = resultsField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // A enum represents the result of the file operation
@@ -7582,72 +25891,356 @@ func (f *ValidateCredentialResult) Type() string {
 	return "ValidateCredentialResult"
 }
 
+func ValidateCredentialResultToPb(st *ValidateCredentialResult) (*catalogpb.ValidateCredentialResultPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.ValidateCredentialResultPb(*st)
+	return &pb, nil
+}
+
+func ValidateCredentialResultFromPb(pb *catalogpb.ValidateCredentialResultPb) (*ValidateCredentialResult, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ValidateCredentialResult(*pb)
+	return &st, nil
+}
+
 type ValidateStorageCredential struct {
 	// The AWS IAM role configuration.
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentityRequest `json:"azure_managed_identity,omitempty"`
 	// The Azure service principal configuration.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
 	// The Cloudflare API token configuration.
+	// Wire name: 'cloudflare_api_token'
 	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
 	// The Databricks created GCP service account configuration.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
 	// The name of an existing external location to validate.
+	// Wire name: 'external_location_name'
 	ExternalLocationName string `json:"external_location_name,omitempty"`
 	// Whether the storage credential is only usable for read operations.
+	// Wire name: 'read_only'
 	ReadOnly bool `json:"read_only,omitempty"`
 	// Required. The name of an existing credential or long-lived cloud
 	// credential to validate.
+	// Wire name: 'storage_credential_name'
 	StorageCredentialName string `json:"storage_credential_name,omitempty"`
 	// The external location url to validate.
-	Url string `json:"url,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'url'
+	Url             string   `json:"url,omitempty"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ValidateStorageCredential) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ValidateStorageCredential) MarshalJSON() ([]byte, error) {
+	pb, err := ValidateStorageCredentialToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ValidateStorageCredential) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ValidateStorageCredential) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ValidateStorageCredentialPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ValidateStorageCredentialFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ValidateStorageCredentialToPb(st *ValidateStorageCredential) (*catalogpb.ValidateStorageCredentialPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ValidateStorageCredentialPb{}
+	awsIamRolePb, err := AwsIamRoleRequestToPb(st.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRolePb != nil {
+		pb.AwsIamRole = awsIamRolePb
+	}
+	azureManagedIdentityPb, err := AzureManagedIdentityRequestToPb(st.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityPb != nil {
+		pb.AzureManagedIdentity = azureManagedIdentityPb
+	}
+	azureServicePrincipalPb, err := AzureServicePrincipalToPb(st.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalPb != nil {
+		pb.AzureServicePrincipal = azureServicePrincipalPb
+	}
+	cloudflareApiTokenPb, err := CloudflareApiTokenToPb(st.CloudflareApiToken)
+	if err != nil {
+		return nil, err
+	}
+	if cloudflareApiTokenPb != nil {
+		pb.CloudflareApiToken = cloudflareApiTokenPb
+	}
+	databricksGcpServiceAccountPb, err := DatabricksGcpServiceAccountRequestToPb(st.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountPb != nil {
+		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
+	}
+	pb.ExternalLocationName = st.ExternalLocationName
+	pb.ReadOnly = st.ReadOnly
+	pb.StorageCredentialName = st.StorageCredentialName
+	pb.Url = st.Url
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ValidateStorageCredentialFromPb(pb *catalogpb.ValidateStorageCredentialPb) (*ValidateStorageCredential, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ValidateStorageCredential{}
+	awsIamRoleField, err := AwsIamRoleRequestFromPb(pb.AwsIamRole)
+	if err != nil {
+		return nil, err
+	}
+	if awsIamRoleField != nil {
+		st.AwsIamRole = awsIamRoleField
+	}
+	azureManagedIdentityField, err := AzureManagedIdentityRequestFromPb(pb.AzureManagedIdentity)
+	if err != nil {
+		return nil, err
+	}
+	if azureManagedIdentityField != nil {
+		st.AzureManagedIdentity = azureManagedIdentityField
+	}
+	azureServicePrincipalField, err := AzureServicePrincipalFromPb(pb.AzureServicePrincipal)
+	if err != nil {
+		return nil, err
+	}
+	if azureServicePrincipalField != nil {
+		st.AzureServicePrincipal = azureServicePrincipalField
+	}
+	cloudflareApiTokenField, err := CloudflareApiTokenFromPb(pb.CloudflareApiToken)
+	if err != nil {
+		return nil, err
+	}
+	if cloudflareApiTokenField != nil {
+		st.CloudflareApiToken = cloudflareApiTokenField
+	}
+	databricksGcpServiceAccountField, err := DatabricksGcpServiceAccountRequestFromPb(pb.DatabricksGcpServiceAccount)
+	if err != nil {
+		return nil, err
+	}
+	if databricksGcpServiceAccountField != nil {
+		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
+	}
+	st.ExternalLocationName = pb.ExternalLocationName
+	st.ReadOnly = pb.ReadOnly
+	st.StorageCredentialName = pb.StorageCredentialName
+	st.Url = pb.Url
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ValidateStorageCredentialResponse struct {
 	// Whether the tested location is a directory in cloud storage.
+	// Wire name: 'isDir'
 	IsDir bool `json:"isDir,omitempty"`
 	// The results of the validation check.
-	Results []ValidationResult `json:"results,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'results'
+	Results         []ValidationResult `json:"results,omitempty"`
+	ForceSendFields []string           `json:"-" tf:"-"`
 }
 
-func (s *ValidateStorageCredentialResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ValidateStorageCredentialResponse) MarshalJSON() ([]byte, error) {
+	pb, err := ValidateStorageCredentialResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ValidateStorageCredentialResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ValidateStorageCredentialResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ValidateStorageCredentialResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ValidateStorageCredentialResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ValidateStorageCredentialResponseToPb(st *ValidateStorageCredentialResponse) (*catalogpb.ValidateStorageCredentialResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ValidateStorageCredentialResponsePb{}
+	pb.IsDir = st.IsDir
+
+	var resultsPb []catalogpb.ValidationResultPb
+	for _, item := range st.Results {
+		itemPb, err := ValidationResultToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			resultsPb = append(resultsPb, *itemPb)
+		}
+	}
+	pb.Results = resultsPb
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ValidateStorageCredentialResponseFromPb(pb *catalogpb.ValidateStorageCredentialResponsePb) (*ValidateStorageCredentialResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ValidateStorageCredentialResponse{}
+	st.IsDir = pb.IsDir
+
+	var resultsField []ValidationResult
+	for _, itemPb := range pb.Results {
+		item, err := ValidationResultFromPb(&itemPb)
+		if err != nil {
+			return nil, err
+		}
+		if item != nil {
+			resultsField = append(resultsField, *item)
+		}
+	}
+	st.Results = resultsField
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 type ValidationResult struct {
 	// Error message would exist when the result does not equal to **PASS**.
+	// Wire name: 'message'
 	Message string `json:"message,omitempty"`
 	// The operation tested.
+	// Wire name: 'operation'
 	Operation ValidationResultOperation `json:"operation,omitempty"`
 	// The results of the tested operation.
-	Result ValidationResultResult `json:"result,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'result'
+	Result          ValidationResultResult `json:"result,omitempty"`
+	ForceSendFields []string               `json:"-" tf:"-"`
 }
 
-func (s *ValidationResult) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st ValidationResult) MarshalJSON() ([]byte, error) {
+	pb, err := ValidationResultToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s ValidationResult) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *ValidationResult) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.ValidationResultPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ValidationResultFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func ValidationResultToPb(st *ValidationResult) (*catalogpb.ValidationResultPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.ValidationResultPb{}
+	pb.Message = st.Message
+	operationPb, err := ValidationResultOperationToPb(&st.Operation)
+	if err != nil {
+		return nil, err
+	}
+	if operationPb != nil {
+		pb.Operation = *operationPb
+	}
+	resultPb, err := ValidationResultResultToPb(&st.Result)
+	if err != nil {
+		return nil, err
+	}
+	if resultPb != nil {
+		pb.Result = *resultPb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func ValidationResultFromPb(pb *catalogpb.ValidationResultPb) (*ValidationResult, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ValidationResult{}
+	st.Message = pb.Message
+	operationField, err := ValidationResultOperationFromPb(&pb.Operation)
+	if err != nil {
+		return nil, err
+	}
+	if operationField != nil {
+		st.Operation = *operationField
+	}
+	resultField, err := ValidationResultResultFromPb(&pb.Result)
+	if err != nil {
+		return nil, err
+	}
+	if resultField != nil {
+		st.Result = *resultField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // A enum represents the file operation performed on the external location with
@@ -7698,6 +26291,22 @@ func (f *ValidationResultOperation) Type() string {
 	return "ValidationResultOperation"
 }
 
+func ValidationResultOperationToPb(st *ValidationResultOperation) (*catalogpb.ValidationResultOperationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.ValidationResultOperationPb(*st)
+	return &pb, nil
+}
+
+func ValidationResultOperationFromPb(pb *catalogpb.ValidationResultOperationPb) (*ValidationResultOperation, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ValidationResultOperation(*pb)
+	return &st, nil
+}
+
 // A enum represents the result of the file operation
 type ValidationResultResult string
 
@@ -7739,53 +26348,184 @@ func (f *ValidationResultResult) Type() string {
 	return "ValidationResultResult"
 }
 
+func ValidationResultResultToPb(st *ValidationResultResult) (*catalogpb.ValidationResultResultPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.ValidationResultResultPb(*st)
+	return &pb, nil
+}
+
+func ValidationResultResultFromPb(pb *catalogpb.ValidationResultResultPb) (*ValidationResultResult, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ValidationResultResult(*pb)
+	return &st, nil
+}
+
 type VolumeInfo struct {
 	// The AWS access point to use when accesing s3 for this external location.
+	// Wire name: 'access_point'
 	AccessPoint string `json:"access_point,omitempty"`
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The name of the catalog where the schema and the volume are
+	// Wire name: 'catalog_name'
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the volume
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// The identifier of the user who created the volume
+	// Wire name: 'created_by'
 	CreatedBy string `json:"created_by,omitempty"`
 
+	// Wire name: 'encryption_details'
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// The three-level (fully qualified) name of the volume
+	// Wire name: 'full_name'
 	FullName string `json:"full_name,omitempty"`
 	// The unique identifier of the metastore
+	// Wire name: 'metastore_id'
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// The name of the volume
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// The identifier of the user who owns the volume
+	// Wire name: 'owner'
 	Owner string `json:"owner,omitempty"`
 	// The name of the schema where the volume is
+	// Wire name: 'schema_name'
 	SchemaName string `json:"schema_name,omitempty"`
 	// The storage location on the cloud
+	// Wire name: 'storage_location'
 	StorageLocation string `json:"storage_location,omitempty"`
 
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// The identifier of the user who updated the volume last time
+	// Wire name: 'updated_by'
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// The unique identifier of the volume
+	// Wire name: 'volume_id'
 	VolumeId string `json:"volume_id,omitempty"`
 
-	VolumeType VolumeType `json:"volume_type,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'volume_type'
+	VolumeType      VolumeType `json:"volume_type,omitempty"`
+	ForceSendFields []string   `json:"-" tf:"-"`
 }
 
-func (s *VolumeInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st VolumeInfo) MarshalJSON() ([]byte, error) {
+	pb, err := VolumeInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
-func (s VolumeInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *VolumeInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.VolumeInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := VolumeInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func VolumeInfoToPb(st *VolumeInfo) (*catalogpb.VolumeInfoPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.VolumeInfoPb{}
+	pb.AccessPoint = st.AccessPoint
+	pb.BrowseOnly = st.BrowseOnly
+	pb.CatalogName = st.CatalogName
+	pb.Comment = st.Comment
+	pb.CreatedAt = st.CreatedAt
+	pb.CreatedBy = st.CreatedBy
+	encryptionDetailsPb, err := EncryptionDetailsToPb(st.EncryptionDetails)
+	if err != nil {
+		return nil, err
+	}
+	if encryptionDetailsPb != nil {
+		pb.EncryptionDetails = encryptionDetailsPb
+	}
+	pb.FullName = st.FullName
+	pb.MetastoreId = st.MetastoreId
+	pb.Name = st.Name
+	pb.Owner = st.Owner
+	pb.SchemaName = st.SchemaName
+	pb.StorageLocation = st.StorageLocation
+	pb.UpdatedAt = st.UpdatedAt
+	pb.UpdatedBy = st.UpdatedBy
+	pb.VolumeId = st.VolumeId
+	volumeTypePb, err := VolumeTypeToPb(&st.VolumeType)
+	if err != nil {
+		return nil, err
+	}
+	if volumeTypePb != nil {
+		pb.VolumeType = *volumeTypePb
+	}
+
+	if len(st.ForceSendFields) > 0 {
+		pb.ForceSendFields = st.ForceSendFields
+	}
+	return pb, nil
+}
+
+func VolumeInfoFromPb(pb *catalogpb.VolumeInfoPb) (*VolumeInfo, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &VolumeInfo{}
+	st.AccessPoint = pb.AccessPoint
+	st.BrowseOnly = pb.BrowseOnly
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	encryptionDetailsField, err := EncryptionDetailsFromPb(pb.EncryptionDetails)
+	if err != nil {
+		return nil, err
+	}
+	if encryptionDetailsField != nil {
+		st.EncryptionDetails = encryptionDetailsField
+	}
+	st.FullName = pb.FullName
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.SchemaName = pb.SchemaName
+	st.StorageLocation = pb.StorageLocation
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.VolumeId = pb.VolumeId
+	volumeTypeField, err := VolumeTypeFromPb(&pb.VolumeType)
+	if err != nil {
+		return nil, err
+	}
+	if volumeTypeField != nil {
+		st.VolumeType = *volumeTypeField
+	}
+
+	if len(pb.ForceSendFields) > 0 {
+		st.ForceSendFields = pb.ForceSendFields
+	}
+	return st, nil
 }
 
 // The type of the volume. An external volume is located in the specified
@@ -7831,11 +26571,88 @@ func (f *VolumeType) Type() string {
 	return "VolumeType"
 }
 
+func VolumeTypeToPb(st *VolumeType) (*catalogpb.VolumeTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.VolumeTypePb(*st)
+	return &pb, nil
+}
+
+func VolumeTypeFromPb(pb *catalogpb.VolumeTypePb) (*VolumeType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := VolumeType(*pb)
+	return &st, nil
+}
+
 type WorkspaceBinding struct {
 	// One of READ_WRITE/READ_ONLY. Default is READ_WRITE.
+	// Wire name: 'binding_type'
 	BindingType WorkspaceBindingBindingType `json:"binding_type,omitempty"`
 	// Required
+	// Wire name: 'workspace_id'
 	WorkspaceId int64 `json:"workspace_id"`
+}
+
+func (st WorkspaceBinding) MarshalJSON() ([]byte, error) {
+	pb, err := WorkspaceBindingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func (st *WorkspaceBinding) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogpb.WorkspaceBindingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := WorkspaceBindingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func WorkspaceBindingToPb(st *WorkspaceBinding) (*catalogpb.WorkspaceBindingPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &catalogpb.WorkspaceBindingPb{}
+	bindingTypePb, err := WorkspaceBindingBindingTypeToPb(&st.BindingType)
+	if err != nil {
+		return nil, err
+	}
+	if bindingTypePb != nil {
+		pb.BindingType = *bindingTypePb
+	}
+	pb.WorkspaceId = st.WorkspaceId
+
+	return pb, nil
+}
+
+func WorkspaceBindingFromPb(pb *catalogpb.WorkspaceBindingPb) (*WorkspaceBinding, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &WorkspaceBinding{}
+	bindingTypeField, err := WorkspaceBindingBindingTypeFromPb(&pb.BindingType)
+	if err != nil {
+		return nil, err
+	}
+	if bindingTypeField != nil {
+		st.BindingType = *bindingTypeField
+	}
+	st.WorkspaceId = pb.WorkspaceId
+
+	return st, nil
 }
 
 // Using `BINDING_TYPE_` prefix here to avoid conflict with `TableOperation`
@@ -7875,4 +26692,74 @@ func (f *WorkspaceBindingBindingType) Values() []WorkspaceBindingBindingType {
 // Type always returns WorkspaceBindingBindingType to satisfy [pflag.Value] interface
 func (f *WorkspaceBindingBindingType) Type() string {
 	return "WorkspaceBindingBindingType"
+}
+
+func WorkspaceBindingBindingTypeToPb(st *WorkspaceBindingBindingType) (*catalogpb.WorkspaceBindingBindingTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogpb.WorkspaceBindingBindingTypePb(*st)
+	return &pb, nil
+}
+
+func WorkspaceBindingBindingTypeFromPb(pb *catalogpb.WorkspaceBindingBindingTypePb) (*WorkspaceBindingBindingType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := WorkspaceBindingBindingType(*pb)
+	return &st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%.9fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

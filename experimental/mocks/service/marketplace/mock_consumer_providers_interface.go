@@ -261,7 +261,7 @@ func (_c *MockConsumerProvidersInterface_GetByName_Call) RunAndReturn(run func(c
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockConsumerProvidersInterface) List(ctx context.Context, request marketplace.ListConsumerProvidersRequest) listing.Iterator[marketplace.ProviderInfo] {
+func (_m *MockConsumerProvidersInterface) List(ctx context.Context, request marketplace.ListProvidersRequest) listing.Iterator[marketplace.ProviderInfo] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -269,7 +269,7 @@ func (_m *MockConsumerProvidersInterface) List(ctx context.Context, request mark
 	}
 
 	var r0 listing.Iterator[marketplace.ProviderInfo]
-	if rf, ok := ret.Get(0).(func(context.Context, marketplace.ListConsumerProvidersRequest) listing.Iterator[marketplace.ProviderInfo]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, marketplace.ListProvidersRequest) listing.Iterator[marketplace.ProviderInfo]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -287,14 +287,14 @@ type MockConsumerProvidersInterface_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request marketplace.ListConsumerProvidersRequest
+//   - request marketplace.ListProvidersRequest
 func (_e *MockConsumerProvidersInterface_Expecter) List(ctx interface{}, request interface{}) *MockConsumerProvidersInterface_List_Call {
 	return &MockConsumerProvidersInterface_List_Call{Call: _e.mock.On("List", ctx, request)}
 }
 
-func (_c *MockConsumerProvidersInterface_List_Call) Run(run func(ctx context.Context, request marketplace.ListConsumerProvidersRequest)) *MockConsumerProvidersInterface_List_Call {
+func (_c *MockConsumerProvidersInterface_List_Call) Run(run func(ctx context.Context, request marketplace.ListProvidersRequest)) *MockConsumerProvidersInterface_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(marketplace.ListConsumerProvidersRequest))
+		run(args[0].(context.Context), args[1].(marketplace.ListProvidersRequest))
 	})
 	return _c
 }
@@ -304,13 +304,13 @@ func (_c *MockConsumerProvidersInterface_List_Call) Return(_a0 listing.Iterator[
 	return _c
 }
 
-func (_c *MockConsumerProvidersInterface_List_Call) RunAndReturn(run func(context.Context, marketplace.ListConsumerProvidersRequest) listing.Iterator[marketplace.ProviderInfo]) *MockConsumerProvidersInterface_List_Call {
+func (_c *MockConsumerProvidersInterface_List_Call) RunAndReturn(run func(context.Context, marketplace.ListProvidersRequest) listing.Iterator[marketplace.ProviderInfo]) *MockConsumerProvidersInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListAll provides a mock function with given fields: ctx, request
-func (_m *MockConsumerProvidersInterface) ListAll(ctx context.Context, request marketplace.ListConsumerProvidersRequest) ([]marketplace.ProviderInfo, error) {
+func (_m *MockConsumerProvidersInterface) ListAll(ctx context.Context, request marketplace.ListProvidersRequest) ([]marketplace.ProviderInfo, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -319,10 +319,10 @@ func (_m *MockConsumerProvidersInterface) ListAll(ctx context.Context, request m
 
 	var r0 []marketplace.ProviderInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, marketplace.ListConsumerProvidersRequest) ([]marketplace.ProviderInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, marketplace.ListProvidersRequest) ([]marketplace.ProviderInfo, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, marketplace.ListConsumerProvidersRequest) []marketplace.ProviderInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, marketplace.ListProvidersRequest) []marketplace.ProviderInfo); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -330,7 +330,7 @@ func (_m *MockConsumerProvidersInterface) ListAll(ctx context.Context, request m
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, marketplace.ListConsumerProvidersRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, marketplace.ListProvidersRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -346,14 +346,14 @@ type MockConsumerProvidersInterface_ListAll_Call struct {
 
 // ListAll is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request marketplace.ListConsumerProvidersRequest
+//   - request marketplace.ListProvidersRequest
 func (_e *MockConsumerProvidersInterface_Expecter) ListAll(ctx interface{}, request interface{}) *MockConsumerProvidersInterface_ListAll_Call {
 	return &MockConsumerProvidersInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx, request)}
 }
 
-func (_c *MockConsumerProvidersInterface_ListAll_Call) Run(run func(ctx context.Context, request marketplace.ListConsumerProvidersRequest)) *MockConsumerProvidersInterface_ListAll_Call {
+func (_c *MockConsumerProvidersInterface_ListAll_Call) Run(run func(ctx context.Context, request marketplace.ListProvidersRequest)) *MockConsumerProvidersInterface_ListAll_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(marketplace.ListConsumerProvidersRequest))
+		run(args[0].(context.Context), args[1].(marketplace.ListProvidersRequest))
 	})
 	return _c
 }
@@ -363,13 +363,13 @@ func (_c *MockConsumerProvidersInterface_ListAll_Call) Return(_a0 []marketplace.
 	return _c
 }
 
-func (_c *MockConsumerProvidersInterface_ListAll_Call) RunAndReturn(run func(context.Context, marketplace.ListConsumerProvidersRequest) ([]marketplace.ProviderInfo, error)) *MockConsumerProvidersInterface_ListAll_Call {
+func (_c *MockConsumerProvidersInterface_ListAll_Call) RunAndReturn(run func(context.Context, marketplace.ListProvidersRequest) ([]marketplace.ProviderInfo, error)) *MockConsumerProvidersInterface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ProviderInfoNameToIdMap provides a mock function with given fields: ctx, request
-func (_m *MockConsumerProvidersInterface) ProviderInfoNameToIdMap(ctx context.Context, request marketplace.ListConsumerProvidersRequest) (map[string]string, error) {
+func (_m *MockConsumerProvidersInterface) ProviderInfoNameToIdMap(ctx context.Context, request marketplace.ListProvidersRequest) (map[string]string, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -378,10 +378,10 @@ func (_m *MockConsumerProvidersInterface) ProviderInfoNameToIdMap(ctx context.Co
 
 	var r0 map[string]string
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, marketplace.ListConsumerProvidersRequest) (map[string]string, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, marketplace.ListProvidersRequest) (map[string]string, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, marketplace.ListConsumerProvidersRequest) map[string]string); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, marketplace.ListProvidersRequest) map[string]string); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -389,7 +389,7 @@ func (_m *MockConsumerProvidersInterface) ProviderInfoNameToIdMap(ctx context.Co
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, marketplace.ListConsumerProvidersRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, marketplace.ListProvidersRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -405,14 +405,14 @@ type MockConsumerProvidersInterface_ProviderInfoNameToIdMap_Call struct {
 
 // ProviderInfoNameToIdMap is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request marketplace.ListConsumerProvidersRequest
+//   - request marketplace.ListProvidersRequest
 func (_e *MockConsumerProvidersInterface_Expecter) ProviderInfoNameToIdMap(ctx interface{}, request interface{}) *MockConsumerProvidersInterface_ProviderInfoNameToIdMap_Call {
 	return &MockConsumerProvidersInterface_ProviderInfoNameToIdMap_Call{Call: _e.mock.On("ProviderInfoNameToIdMap", ctx, request)}
 }
 
-func (_c *MockConsumerProvidersInterface_ProviderInfoNameToIdMap_Call) Run(run func(ctx context.Context, request marketplace.ListConsumerProvidersRequest)) *MockConsumerProvidersInterface_ProviderInfoNameToIdMap_Call {
+func (_c *MockConsumerProvidersInterface_ProviderInfoNameToIdMap_Call) Run(run func(ctx context.Context, request marketplace.ListProvidersRequest)) *MockConsumerProvidersInterface_ProviderInfoNameToIdMap_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(marketplace.ListConsumerProvidersRequest))
+		run(args[0].(context.Context), args[1].(marketplace.ListProvidersRequest))
 	})
 	return _c
 }
@@ -422,7 +422,7 @@ func (_c *MockConsumerProvidersInterface_ProviderInfoNameToIdMap_Call) Return(_a
 	return _c
 }
 
-func (_c *MockConsumerProvidersInterface_ProviderInfoNameToIdMap_Call) RunAndReturn(run func(context.Context, marketplace.ListConsumerProvidersRequest) (map[string]string, error)) *MockConsumerProvidersInterface_ProviderInfoNameToIdMap_Call {
+func (_c *MockConsumerProvidersInterface_ProviderInfoNameToIdMap_Call) RunAndReturn(run func(context.Context, marketplace.ListProvidersRequest) (map[string]string, error)) *MockConsumerProvidersInterface_ProviderInfoNameToIdMap_Call {
 	_c.Call.Return(run)
 	return _c
 }
