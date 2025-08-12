@@ -1514,6 +1514,9 @@ type PutResponse struct {
 }
 
 type QueryEndpointInput struct {
+	// Optional user-provided request identifier that will be recorded in the
+	// inference table and the usage tracking table.
+	ClientRequestId string `json:"client_request_id,omitempty"`
 	// Pandas Dataframe input in the records orientation.
 	DataframeRecords []any `json:"dataframe_records,omitempty"`
 	// Pandas Dataframe input in the split orientation.
@@ -1564,6 +1567,9 @@ type QueryEndpointInput struct {
 	// with a default of 1.0 and should only be used with other chat/completions
 	// query fields.
 	Temperature float64 `json:"temperature,omitempty"`
+	// Optional user-provided context that will be recorded in the usage
+	// tracking table.
+	UsageContext map[string]string `json:"usage_context,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

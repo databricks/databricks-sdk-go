@@ -53,7 +53,7 @@ type CleanRoomAssetsInterface interface {
 	// access the asset. Typically, you should use a group as the clean room owner.
 	Create(ctx context.Context, request CreateCleanRoomAssetRequest) (*CleanRoomAsset, error)
 
-	// submit an asset review
+	// Submit an asset review
 	CreateCleanRoomAssetReview(ctx context.Context, request CreateCleanRoomAssetReviewRequest) (*CreateCleanRoomAssetReviewResponse, error)
 
 	// Delete a clean room asset - unshare/remove the asset from the clean room

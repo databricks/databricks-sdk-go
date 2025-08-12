@@ -600,6 +600,37 @@ type OnlineTablesService interface {
 	Get(ctx context.Context, request GetOnlineTableRequest) (*OnlineTable, error)
 }
 
+// Attribute-Based Access Control (ABAC) provides high leverage governance for
+// enforcing compliance policies in Unity Catalog. With ABAC policies, access is
+// controlled in a hierarchical and scalable manner, based on data attributes
+// rather than specific resources, enabling more flexible and comprehensive
+// access control. ABAC policies in Unity Catalog support conditions on
+// securable properties, governance tags, and environment contexts. Callers must
+// have the `MANAGE` privilege on a securable to view, create, update, or delete
+// ABAC policies.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type PoliciesService interface {
+
+	// Creates a new policy on a securable. The new policy applies to the
+	// securable and all its descendants.
+	CreatePolicy(ctx context.Context, request CreatePolicyRequest) (*PolicyInfo, error)
+
+	// Delete an ABAC policy defined on a securable.
+	DeletePolicy(ctx context.Context, request DeletePolicyRequest) (*DeletePolicyResponse, error)
+
+	// Get the policy definition on a securable
+	GetPolicy(ctx context.Context, request GetPolicyRequest) (*PolicyInfo, error)
+
+	// List all policies defined on a securable. Optionally, the list can
+	// include inherited policies defined on the securable's parent schema or
+	// catalog.
+	ListPolicies(ctx context.Context, request ListPoliciesRequest) (*ListPoliciesResponse, error)
+
+	// Update an ABAC policy on a securable.
+	UpdatePolicy(ctx context.Context, request UpdatePolicyRequest) (*PolicyInfo, error)
+}
+
 // A monitor computes and monitors data or model quality metrics for a table
 // over time. It generates metrics tables and a dashboard that you can use to
 // monitor table health and set alerts. Most write operations require the user
@@ -864,7 +895,7 @@ type ResourceQuotasService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type SchemasService interface {
 
-	// Creates a new schema for catalog in the Metatastore. The caller must be a
+	// Creates a new schema for catalog in the Metastore. The caller must be a
 	// metastore admin, or have the **CREATE_SCHEMA** privilege in the parent
 	// catalog.
 	Create(ctx context.Context, request CreateSchema) (*SchemaInfo, error)
@@ -1032,6 +1063,33 @@ type TableConstraintsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type TablesService interface {
 
+	// Creates a new table in the specified catalog and schema.
+	//
+	// To create an external delta table, the caller must have the
+	// **EXTERNAL_USE_SCHEMA** privilege on the parent schema and the
+	// **EXTERNAL_USE_LOCATION** privilege on the external location. These
+	// privileges must always be granted explicitly, and cannot be inherited
+	// through ownership or **ALL_PRIVILEGES**.
+	//
+	// Standard UC permissions needed to create tables still apply:
+	// **USE_CATALOG** on the parent catalog (or ownership of the parent
+	// catalog), **CREATE_TABLE** and **USE_SCHEMA** on the parent schema (or
+	// ownership of the parent schema), and **CREATE_EXTERNAL_TABLE** on
+	// external location.
+	//
+	// The **columns** field needs to be in a Spark compatible format, so we
+	// recommend you use Spark to create these tables. The API itself does not
+	// validate the correctness of the column spec. If the spec is not Spark
+	// compatible, the tables may not be readable by Databricks Runtime.
+	//
+	// NOTE: The Create Table API for external clients only supports creating
+	// **external delta tables**. The values shown in the respective enums are
+	// all values supported by Databricks, however for this specific Create
+	// Table API, only **table_type** **EXTERNAL** and **data_source_format**
+	// **DELTA** are supported. Additionally, column masks are not supported
+	// when creating tables through this API.
+	Create(ctx context.Context, request CreateTableRequest) (*TableInfo, error)
+
 	// Deletes a table from the specified parent catalog and schema. The caller
 	// must be the owner of the parent catalog, have the **USE_CATALOG**
 	// privilege on the parent catalog and be the owner of the parent schema, or
@@ -1042,21 +1100,21 @@ type TablesService interface {
 	// Gets if a table exists in the metastore for a specific catalog and
 	// schema. The caller must satisfy one of the following requirements: * Be a
 	// metastore admin * Be the owner of the parent catalog * Be the owner of
-	// the parent schema and have the USE_CATALOG privilege on the parent
+	// the parent schema and have the **USE_CATALOG** privilege on the parent
 	// catalog * Have the **USE_CATALOG** privilege on the parent catalog and
 	// the **USE_SCHEMA** privilege on the parent schema, and either be the
-	// table owner or have the SELECT privilege on the table. * Have BROWSE
-	// privilege on the parent catalog * Have BROWSE privilege on the parent
-	// schema.
+	// table owner or have the **SELECT** privilege on the table. * Have
+	// **BROWSE** privilege on the parent catalog * Have **BROWSE** privilege on
+	// the parent schema
 	Exists(ctx context.Context, request ExistsRequest) (*TableExistsResponse, error)
 
 	// Gets a table from the metastore for a specific catalog and schema. The
 	// caller must satisfy one of the following requirements: * Be a metastore
 	// admin * Be the owner of the parent catalog * Be the owner of the parent
-	// schema and have the USE_CATALOG privilege on the parent catalog * Have
-	// the **USE_CATALOG** privilege on the parent catalog and the
+	// schema and have the **USE_CATALOG** privilege on the parent catalog *
+	// Have the **USE_CATALOG** privilege on the parent catalog and the
 	// **USE_SCHEMA** privilege on the parent schema, and either be the table
-	// owner or have the SELECT privilege on the table.
+	// owner or have the **SELECT** privilege on the table.
 	Get(ctx context.Context, request GetTableRequest) (*TableInfo, error)
 
 	// Gets an array of all tables for the current metastore under the parent
@@ -1091,31 +1149,78 @@ type TablesService interface {
 	Update(ctx context.Context, request UpdateTableRequest) error
 }
 
+// Temporary Path Credentials refer to short-lived, downscoped credentials used
+// to access external cloud storage locations registered in Databricks. These
+// credentials are employed to provide secure and time-limited access to data in
+// cloud environments such as AWS, Azure, and Google Cloud. Each cloud provider
+// has its own type of credentials: AWS uses temporary session tokens via AWS
+// Security Token Service (STS), Azure utilizes Shared Access Signatures (SAS)
+// for its data storage services, and Google Cloud supports temporary
+// credentials through OAuth 2.0.
+//
+// Temporary path credentials ensure that data access is limited in scope and
+// duration, reducing the risk of unauthorized access or misuse. To use the
+// temporary path credentials API, a metastore admin needs to enable the
+// external_access_enabled flag (off by default) at the metastore level. A user
+// needs to be granted the EXTERNAL USE LOCATION permission by external location
+// owner. For requests on existing external tables, user also needs to be
+// granted the EXTERNAL USE SCHEMA permission at the schema level by catalog
+// admin.
+//
+// Note that EXTERNAL USE SCHEMA is a schema level permission that can only be
+// granted by catalog admin explicitly and is not included in schema ownership
+// or ALL PRIVILEGES on the schema for security reasons. Similarly, EXTERNAL USE
+// LOCATION is an external location level permission that can only be granted by
+// external location owner explicitly and is not included in external location
+// ownership or ALL PRIVILEGES on the external location for security reasons.
+//
+// This API only supports temporary path credentials for external locations and
+// external tables, and volumes will be supported in the future.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type TemporaryPathCredentialsService interface {
+
+	// Get a short-lived credential for directly accessing cloud storage
+	// locations registered in Databricks. The Generate Temporary Path
+	// Credentials API is only supported for external storage paths,
+	// specifically external locations and external tables. Managed tables are
+	// not supported by this API. The metastore must have
+	// **external_access_enabled** flag set to true (default false). The caller
+	// must have the **EXTERNAL_USE_LOCATION** privilege on the external
+	// location; this privilege can only be granted by external location owners.
+	// For requests on existing external tables, the caller must also have the
+	// **EXTERNAL_USE_SCHEMA** privilege on the parent schema; this privilege
+	// can only be granted by catalog owners.
+	GenerateTemporaryPathCredentials(ctx context.Context, request GenerateTemporaryPathCredentialRequest) (*GenerateTemporaryPathCredentialResponse, error)
+}
+
 // Temporary Table Credentials refer to short-lived, downscoped credentials used
-// to access cloud storage locationswhere table data is stored in Databricks.
-// These credentials are employed to provide secure and time-limitedaccess to
+// to access cloud storage locations where table data is stored in Databricks.
+// These credentials are employed to provide secure and time-limited access to
 // data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud
-// provider has its own typeof credentials: AWS uses temporary session tokens
-// via AWS Security Token Service (STS), Azure utilizesShared Access Signatures
+// provider has its own type of credentials: AWS uses temporary session tokens
+// via AWS Security Token Service (STS), Azure utilizes Shared Access Signatures
 // (SAS) for its data storage services, and Google Cloud supports temporary
-// credentialsthrough OAuth 2.0.Temporary table credentials ensure that data
-// access is limited in scope and duration, reducing the risk ofunauthorized
-// access or misuse. To use the temporary table credentials API, a metastore
-// admin needs to enable the external_access_enabled flag (off by default) at
-// the metastore level, and user needs to be granted the EXTERNAL USE SCHEMA
-// permission at the schema level by catalog admin. Note that EXTERNAL USE
-// SCHEMA is a schema level permission that can only be granted by catalog admin
-// explicitly and is not included in schema ownership or ALL PRIVILEGES on the
-// schema for security reason.
+// credentials through OAuth 2.0.
+//
+// Temporary table credentials ensure that data access is limited in scope and
+// duration, reducing the risk of unauthorized access or misuse. To use the
+// temporary table credentials API, a metastore admin needs to enable the
+// external_access_enabled flag (off by default) at the metastore level, and
+// user needs to be granted the EXTERNAL USE SCHEMA permission at the schema
+// level by catalog admin. Note that EXTERNAL USE SCHEMA is a schema level
+// permission that can only be granted by catalog admin explicitly and is not
+// included in schema ownership or ALL PRIVILEGES on the schema for security
+// reasons.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type TemporaryTableCredentialsService interface {
 
 	// Get a short-lived credential for directly accessing the table data on
-	// cloud storage. The metastore must have external_access_enabled flag set
-	// to true (default false). The caller must have EXTERNAL_USE_SCHEMA
-	// privilege on the parent schema and this privilege can only be granted by
-	// catalog owners.
+	// cloud storage. The metastore must have **external_access_enabled** flag
+	// set to true (default false). The caller must have the
+	// **EXTERNAL_USE_SCHEMA** privilege on the parent schema and this privilege
+	// can only be granted by catalog owners.
 	GenerateTemporaryTableCredentials(ctx context.Context, request GenerateTemporaryTableCredentialRequest) (*GenerateTemporaryTableCredentialResponse, error)
 }
 

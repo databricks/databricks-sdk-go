@@ -113,7 +113,8 @@ type CleanRoomAsset struct {
 	// For UC securable assets (tables, volumes, etc.), the format is
 	// *shared_catalog*.*shared_schema*.*asset_name*
 	//
-	// For notebooks, the name is the notebook file name.
+	// For notebooks, the name is the notebook file name. For jar analyses, the
+	// name is the jar analysis name.
 	Name string `json:"name"`
 	// Notebook details available to all collaborators of the clean room.
 	// Present if and only if **asset_type** is **NOTEBOOK_FILE**
@@ -212,7 +213,7 @@ type CleanRoomAssetNotebook struct {
 	// Base 64 representation of the notebook contents. This is the same format
 	// as returned by :method:workspace/export with the format of **HTML**.
 	NotebookContent string `json:"notebook_content"`
-	// top-level status derived from all reviews
+	// Top-level status derived from all reviews
 	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
 	// All existing approvals or rejections
 	Reviews []CleanRoomNotebookReview `json:"reviews,omitempty"`
@@ -301,8 +302,11 @@ type CleanRoomAssetVolumeLocalDetails struct {
 }
 
 type CleanRoomAutoApprovalRule struct {
+	// Collaborator alias of the author covered by the rule. Only one of
+	// `author_collaborator_alias` and `author_scope` can be set.
 	AuthorCollaboratorAlias string `json:"author_collaborator_alias,omitempty"`
-
+	// Scope of authors covered by the rule. Only one of
+	// `author_collaborator_alias` and `author_scope` can be set.
 	AuthorScope CleanRoomAutoApprovalRuleAuthorScope `json:"author_scope,omitempty"`
 	// The name of the clean room this auto-approval rule belongs to.
 	CleanRoomName string `json:"clean_room_name,omitempty"`
@@ -312,7 +316,7 @@ type CleanRoomAutoApprovalRule struct {
 	RuleId string `json:"rule_id,omitempty"`
 	// The owner of the rule to whom the rule applies.
 	RuleOwnerCollaboratorAlias string `json:"rule_owner_collaborator_alias,omitempty"`
-
+	// Collaborator alias of the runner covered by the rule.
 	RunnerCollaboratorAlias string `json:"runner_collaborator_alias,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -404,15 +408,15 @@ func (s CleanRoomCollaborator) MarshalJSON() ([]byte, error) {
 }
 
 type CleanRoomNotebookReview struct {
-	// review comment
+	// Review comment
 	Comment string `json:"comment,omitempty"`
-	// timestamp of when the review was submitted
+	// When the review was submitted, in epoch milliseconds
 	CreatedAtMillis int64 `json:"created_at_millis,omitempty"`
-	// review outcome
+	// Review outcome
 	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
-	// specified when the review was not explicitly made by a user
+	// Specified when the review was not explicitly made by a user
 	ReviewSubReason CleanRoomNotebookReviewNotebookReviewSubReason `json:"review_sub_reason,omitempty"`
-	// collaborator alias of the reviewer
+	// Collaborator alias of the reviewer
 	ReviewerCollaboratorAlias string `json:"reviewer_collaborator_alias,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -729,7 +733,7 @@ type CreateCleanRoomAssetRequest struct {
 }
 
 type CreateCleanRoomAssetReviewRequest struct {
-	// can only be NOTEBOOK_FILE for now
+	// Asset type. Can only be NOTEBOOK_FILE.
 	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
 	// Name of the clean room
 	CleanRoomName string `json:"-" url:"-"`
@@ -740,7 +744,7 @@ type CreateCleanRoomAssetReviewRequest struct {
 }
 
 type CreateCleanRoomAssetReviewResponse struct {
-	// top-level status derived from all reviews
+	// Top-level status derived from all reviews
 	NotebookReviewState CleanRoomNotebookReviewNotebookReviewState `json:"notebook_review_state,omitempty"`
 	// All existing notebook approvals or rejections
 	NotebookReviews []CleanRoomNotebookReview `json:"notebook_reviews,omitempty"`
@@ -1010,11 +1014,11 @@ func (s ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type NotebookVersionReview struct {
-	// review comment
+	// Review comment
 	Comment string `json:"comment,omitempty"`
-	// etag that identifies the notebook version
+	// Etag identifying the notebook version
 	Etag string `json:"etag"`
-	// review outcome
+	// Review outcome
 	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1042,7 +1046,8 @@ type UpdateCleanRoomAssetRequest struct {
 	// For UC securable assets (tables, volumes, etc.), the format is
 	// *shared_catalog*.*shared_schema*.*asset_name*
 	//
-	// For notebooks, the name is the notebook file name.
+	// For notebooks, the name is the notebook file name. For jar analyses, the
+	// name is the jar analysis name.
 	Name string `json:"-" url:"-"`
 }
 

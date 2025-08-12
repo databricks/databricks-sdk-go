@@ -188,7 +188,52 @@ func (a *databaseImpl) GetSyncedDatabaseTable(ctx context.Context, request GetSy
 	return &syncedDatabaseTable, err
 }
 
-// START OF PG ROLE APIs Section
+// This API is currently unimplemented, but exposed for Terraform support.
+func (a *databaseImpl) ListDatabaseCatalogs(ctx context.Context, request ListDatabaseCatalogsRequest) listing.Iterator[DatabaseCatalog] {
+
+	getNextPage := func(ctx context.Context, req ListDatabaseCatalogsRequest) (*ListDatabaseCatalogsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListDatabaseCatalogs(ctx, req)
+	}
+	getItems := func(resp *ListDatabaseCatalogsResponse) []DatabaseCatalog {
+		return resp.DatabaseCatalogs
+	}
+	getNextReq := func(resp *ListDatabaseCatalogsResponse) *ListDatabaseCatalogsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// This API is currently unimplemented, but exposed for Terraform support.
+func (a *databaseImpl) ListDatabaseCatalogsAll(ctx context.Context, request ListDatabaseCatalogsRequest) ([]DatabaseCatalog, error) {
+	iterator := a.ListDatabaseCatalogs(ctx, request)
+	return listing.ToSlice[DatabaseCatalog](ctx, iterator)
+}
+
+func (a *databaseImpl) internalListDatabaseCatalogs(ctx context.Context, request ListDatabaseCatalogsRequest) (*ListDatabaseCatalogsResponse, error) {
+	var listDatabaseCatalogsResponse ListDatabaseCatalogsResponse
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/catalogs", request.InstanceName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDatabaseCatalogsResponse)
+	return &listDatabaseCatalogsResponse, err
+}
+
+// START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage <
+// PUBLIC_PREVIEW. With more recent Lakebase V2 plans, we don't plan to ever
+// advance these to PUBLIC_PREVIEW. These APIs will remain effectively
+// undocumented/UI-only and we'll aim for a new public roles API as part of V2
+// PuPr.
 func (a *databaseImpl) ListDatabaseInstanceRoles(ctx context.Context, request ListDatabaseInstanceRolesRequest) listing.Iterator[DatabaseInstanceRole] {
 
 	getNextPage := func(ctx context.Context, req ListDatabaseInstanceRolesRequest) (*ListDatabaseInstanceRolesResponse, error) {
@@ -213,7 +258,11 @@ func (a *databaseImpl) ListDatabaseInstanceRoles(ctx context.Context, request Li
 	return iterator
 }
 
-// START OF PG ROLE APIs Section
+// START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage <
+// PUBLIC_PREVIEW. With more recent Lakebase V2 plans, we don't plan to ever
+// advance these to PUBLIC_PREVIEW. These APIs will remain effectively
+// undocumented/UI-only and we'll aim for a new public roles API as part of V2
+// PuPr.
 func (a *databaseImpl) ListDatabaseInstanceRolesAll(ctx context.Context, request ListDatabaseInstanceRolesRequest) ([]DatabaseInstanceRole, error) {
 	iterator := a.ListDatabaseInstanceRoles(ctx, request)
 	return listing.ToSlice[DatabaseInstanceRole](ctx, iterator)
@@ -270,6 +319,61 @@ func (a *databaseImpl) internalListDatabaseInstances(ctx context.Context, reques
 	return &listDatabaseInstancesResponse, err
 }
 
+// This API is currently unimplemented, but exposed for Terraform support.
+func (a *databaseImpl) ListSyncedDatabaseTables(ctx context.Context, request ListSyncedDatabaseTablesRequest) listing.Iterator[SyncedDatabaseTable] {
+
+	getNextPage := func(ctx context.Context, req ListSyncedDatabaseTablesRequest) (*ListSyncedDatabaseTablesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListSyncedDatabaseTables(ctx, req)
+	}
+	getItems := func(resp *ListSyncedDatabaseTablesResponse) []SyncedDatabaseTable {
+		return resp.SyncedTables
+	}
+	getNextReq := func(resp *ListSyncedDatabaseTablesResponse) *ListSyncedDatabaseTablesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// This API is currently unimplemented, but exposed for Terraform support.
+func (a *databaseImpl) ListSyncedDatabaseTablesAll(ctx context.Context, request ListSyncedDatabaseTablesRequest) ([]SyncedDatabaseTable, error) {
+	iterator := a.ListSyncedDatabaseTables(ctx, request)
+	return listing.ToSlice[SyncedDatabaseTable](ctx, iterator)
+}
+
+func (a *databaseImpl) internalListSyncedDatabaseTables(ctx context.Context, request ListSyncedDatabaseTablesRequest) (*ListSyncedDatabaseTablesResponse, error) {
+	var listSyncedDatabaseTablesResponse ListSyncedDatabaseTablesResponse
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/synced_tables", request.InstanceName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSyncedDatabaseTablesResponse)
+	return &listSyncedDatabaseTablesResponse, err
+}
+
+func (a *databaseImpl) UpdateDatabaseCatalog(ctx context.Context, request UpdateDatabaseCatalogRequest) (*DatabaseCatalog, error) {
+	var databaseCatalog DatabaseCatalog
+	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", request.Name)
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DatabaseCatalog, &databaseCatalog)
+	return &databaseCatalog, err
+}
+
 func (a *databaseImpl) UpdateDatabaseInstance(ctx context.Context, request UpdateDatabaseInstanceRequest) (*DatabaseInstance, error) {
 	var databaseInstance DatabaseInstance
 	path := fmt.Sprintf("/api/2.0/database/instances/%v", request.Name)
@@ -282,4 +386,18 @@ func (a *databaseImpl) UpdateDatabaseInstance(ctx context.Context, request Updat
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DatabaseInstance, &databaseInstance)
 	return &databaseInstance, err
+}
+
+func (a *databaseImpl) UpdateSyncedDatabaseTable(ctx context.Context, request UpdateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error) {
+	var syncedDatabaseTable SyncedDatabaseTable
+	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", request.Name)
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.SyncedTable, &syncedDatabaseTable)
+	return &syncedDatabaseTable, err
 }

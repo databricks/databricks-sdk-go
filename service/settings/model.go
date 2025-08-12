@@ -3800,6 +3800,14 @@ type RevokeTokenRequest struct {
 }
 
 type SlackConfig struct {
+	// [Input-Only] Slack channel ID for notifications.
+	ChannelId string `json:"channel_id,omitempty"`
+	// [Output-Only] Whether channel ID is set.
+	ChannelIdSet bool `json:"channel_id_set,omitempty"`
+	// [Input-Only] OAuth token for Slack authentication.
+	OauthToken string `json:"oauth_token,omitempty"`
+	// [Output-Only] Whether OAuth token is set.
+	OauthTokenSet bool `json:"oauth_token_set,omitempty"`
 	// [Input-Only] URL for Slack destination.
 	Url string `json:"url,omitempty"`
 	// [Output-Only] Whether URL is set.

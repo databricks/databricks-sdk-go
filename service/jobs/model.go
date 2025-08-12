@@ -742,6 +742,11 @@ type CreateJob struct {
 	// default behavior is that the job runs only when triggered by clicking
 	// “Run Now” in the Jobs UI or sending an API request to `runNow`.
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
+	// The id of the user specified usage policy to use for this job. If not
+	// specified, a default usage policy may be applied when creating or
+	// modifying the job. See `effective_budget_policy_id` for the budget policy
+	// used by this workload.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 	// A collection of system notification IDs to notify when runs of this job
 	// begin or complete.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
@@ -2143,6 +2148,11 @@ type JobSettings struct {
 	// default behavior is that the job runs only when triggered by clicking
 	// “Run Now” in the Jobs UI or sending an API request to `runNow`.
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
+	// The id of the user specified usage policy to use for this job. If not
+	// specified, a default usage policy may be applied when creating or
+	// modifying the job. See `effective_budget_policy_id` for the budget policy
+	// used by this workload.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 	// A collection of system notification IDs to notify when runs of this job
 	// begin or complete.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
@@ -4945,6 +4955,10 @@ type SubmitRun struct {
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
 	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
+	// The user specified id of the usage policy to use for this one-time run.
+	// If not specified, a default usage policy may be applied when creating or
+	// modifying the job.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 	// A collection of system notification IDs to notify when the run begins or
 	// completes.
 	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
@@ -5484,7 +5498,9 @@ func (s TaskNotificationSettings) MarshalJSON() ([]byte, error) {
 // Refer to the state message for further details. *
 // `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job
 // level queue size limit. * `DISABLED`: The run was never executed because it
-// was disabled explicitly by the user.
+// was disabled explicitly by the user. * `BREAKING_CHANGE`: Run failed because
+// of an intentional breaking change in Spark, but it will be retried with a
+// mitigation config.
 //
 // [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
 type TerminationCodeCode string

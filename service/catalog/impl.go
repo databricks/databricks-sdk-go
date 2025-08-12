@@ -10,6 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just AccountMetastoreAssignments API methods
@@ -1279,6 +1280,99 @@ func (a *onlineTablesImpl) Get(ctx context.Context, request GetOnlineTableReques
 	return &onlineTable, err
 }
 
+// unexported type that holds implementations of just Policies API methods
+type policiesImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *policiesImpl) CreatePolicy(ctx context.Context, request CreatePolicyRequest) (*PolicyInfo, error) {
+	var policyInfo PolicyInfo
+	path := "/api/2.1/unity-catalog/policies"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.PolicyInfo, &policyInfo)
+	return &policyInfo, err
+}
+
+func (a *policiesImpl) DeletePolicy(ctx context.Context, request DeletePolicyRequest) (*DeletePolicyResponse, error) {
+	var deletePolicyResponse DeletePolicyResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v/%v", request.OnSecurableType, request.OnSecurableFullname, request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deletePolicyResponse)
+	return &deletePolicyResponse, err
+}
+
+func (a *policiesImpl) GetPolicy(ctx context.Context, request GetPolicyRequest) (*PolicyInfo, error) {
+	var policyInfo PolicyInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v/%v", request.OnSecurableType, request.OnSecurableFullname, request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &policyInfo)
+	return &policyInfo, err
+}
+
+// List all policies defined on a securable. Optionally, the list can include
+// inherited policies defined on the securable's parent schema or catalog.
+func (a *policiesImpl) ListPolicies(ctx context.Context, request ListPoliciesRequest) listing.Iterator[PolicyInfo] {
+
+	getNextPage := func(ctx context.Context, req ListPoliciesRequest) (*ListPoliciesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListPolicies(ctx, req)
+	}
+	getItems := func(resp *ListPoliciesResponse) []PolicyInfo {
+		return resp.Policies
+	}
+	getNextReq := func(resp *ListPoliciesResponse) *ListPoliciesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List all policies defined on a securable. Optionally, the list can include
+// inherited policies defined on the securable's parent schema or catalog.
+func (a *policiesImpl) ListPoliciesAll(ctx context.Context, request ListPoliciesRequest) ([]PolicyInfo, error) {
+	iterator := a.ListPolicies(ctx, request)
+	return listing.ToSlice[PolicyInfo](ctx, iterator)
+}
+
+func (a *policiesImpl) internalListPolicies(ctx context.Context, request ListPoliciesRequest) (*ListPoliciesResponse, error) {
+	var listPoliciesResponse ListPoliciesResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v", request.OnSecurableType, request.OnSecurableFullname)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listPoliciesResponse)
+	return &listPoliciesResponse, err
+}
+
+func (a *policiesImpl) UpdatePolicy(ctx context.Context, request UpdatePolicyRequest) (*PolicyInfo, error) {
+	var policyInfo PolicyInfo
+	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v/%v", request.OnSecurableType, request.OnSecurableFullname, request.Name)
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.PolicyInfo, &policyInfo)
+	return &policyInfo, err
+}
+
 // unexported type that holds implementations of just QualityMonitors API methods
 type qualityMonitorsImpl struct {
 	client *client.DatabricksClient
@@ -1861,6 +1955,17 @@ type tablesImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *tablesImpl) Create(ctx context.Context, request CreateTableRequest) (*TableInfo, error) {
+	var tableInfo TableInfo
+	path := "/api/2.1/unity-catalog/tables"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &tableInfo)
+	return &tableInfo, err
+}
+
 func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) error {
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
 	queryParams := make(map[string]any)
@@ -2010,6 +2115,22 @@ func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) err
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
+}
+
+// unexported type that holds implementations of just TemporaryPathCredentials API methods
+type temporaryPathCredentialsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *temporaryPathCredentialsImpl) GenerateTemporaryPathCredentials(ctx context.Context, request GenerateTemporaryPathCredentialRequest) (*GenerateTemporaryPathCredentialResponse, error) {
+	var generateTemporaryPathCredentialResponse GenerateTemporaryPathCredentialResponse
+	path := "/api/2.0/unity-catalog/temporary-path-credentials"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &generateTemporaryPathCredentialResponse)
+	return &generateTemporaryPathCredentialResponse, err
 }
 
 // unexported type that holds implementations of just TemporaryTableCredentials API methods

@@ -25,6 +25,65 @@ func (_m *MockTablesInterface) EXPECT() *MockTablesInterface_Expecter {
 	return &MockTablesInterface_Expecter{mock: &_m.Mock}
 }
 
+// Create provides a mock function with given fields: ctx, request
+func (_m *MockTablesInterface) Create(ctx context.Context, request catalog.CreateTableRequest) (*catalog.TableInfo, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Create")
+	}
+
+	var r0 *catalog.TableInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.CreateTableRequest) (*catalog.TableInfo, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.CreateTableRequest) *catalog.TableInfo); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.TableInfo)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.CreateTableRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockTablesInterface_Create_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Create'
+type MockTablesInterface_Create_Call struct {
+	*mock.Call
+}
+
+// Create is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.CreateTableRequest
+func (_e *MockTablesInterface_Expecter) Create(ctx interface{}, request interface{}) *MockTablesInterface_Create_Call {
+	return &MockTablesInterface_Create_Call{Call: _e.mock.On("Create", ctx, request)}
+}
+
+func (_c *MockTablesInterface_Create_Call) Run(run func(ctx context.Context, request catalog.CreateTableRequest)) *MockTablesInterface_Create_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.CreateTableRequest))
+	})
+	return _c
+}
+
+func (_c *MockTablesInterface_Create_Call) Return(_a0 *catalog.TableInfo, _a1 error) *MockTablesInterface_Create_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockTablesInterface_Create_Call) RunAndReturn(run func(context.Context, catalog.CreateTableRequest) (*catalog.TableInfo, error)) *MockTablesInterface_Create_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Delete provides a mock function with given fields: ctx, request
 func (_m *MockTablesInterface) Delete(ctx context.Context, request catalog.DeleteTableRequest) error {
 	ret := _m.Called(ctx, request)
