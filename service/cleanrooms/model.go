@@ -32,7 +32,7 @@ type CleanRoom struct {
 	// catalog is manipulated using the separate CreateCleanRoomOutputCatalog
 	// API.
 	OutputCatalog *CleanRoomOutputCatalog `json:"output_catalog,omitempty"`
-	// This is Databricks username of the owner of the local clean room
+	// This is the Databricks username of the owner of the local clean room
 	// securable for permission management.
 	Owner string `json:"owner,omitempty"`
 	// Central clean room details. During creation, users need to specify
@@ -217,7 +217,7 @@ type CleanRoomAssetNotebook struct {
 	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
 	// All existing approvals or rejections
 	Reviews []CleanRoomNotebookReview `json:"reviews,omitempty"`
-	// collaborators that can run the notebook
+	// Aliases of collaborators that can run the notebook.
 	RunnerCollaboratorAliases []string `json:"runner_collaborator_aliases,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -379,7 +379,7 @@ type CleanRoomCollaborator struct {
 	// rooms, it is the organization name of the metastore. It is not restricted
 	// to these values and could change in the future
 	DisplayName string `json:"display_name,omitempty"`
-	// The global Unity Catalog metastore id of the collaborator. The identifier
+	// The global Unity Catalog metastore ID of the collaborator. The identifier
 	// is of format cloud:region:metastore-uuid.
 	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
 	// Email of the user who is receiving the clean room "invitation". It should

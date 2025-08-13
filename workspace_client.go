@@ -880,6 +880,15 @@ type WorkspaceClient struct {
 	// [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
 	ResourceQuotas catalog.ResourceQuotasInterface
 
+	// Request for Access enables customers to request access to and manage
+	// access request destinations for Unity Catalog securables.
+	//
+	// These APIs provide a standardized way to update, get, and request to
+	// access request destinations. Fine-grained authorization ensures that only
+	// users with appropriate permissions can manage access request
+	// destinations.
+	Rfa catalog.RfaInterface
+
 	// A schema (also called a database) is the second layer of Unity
 	// Catalog’s three-level namespace. A schema organizes tables, views and
 	// functions. To access (or list) a table or view in a schema, users must
@@ -1380,6 +1389,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		RegisteredModels:                    catalog.NewRegisteredModels(databricksClient),
 		Repos:                               workspace.NewRepos(databricksClient),
 		ResourceQuotas:                      catalog.NewResourceQuotas(databricksClient),
+		Rfa:                                 catalog.NewRfa(databricksClient),
 		Schemas:                             catalog.NewSchemas(databricksClient),
 		Secrets:                             workspace.NewSecrets(databricksClient),
 		ServicePrincipalSecretsProxy:        oauth2.NewServicePrincipalSecretsProxy(databricksClient),

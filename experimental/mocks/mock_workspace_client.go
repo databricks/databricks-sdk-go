@@ -132,6 +132,7 @@ func NewMockWorkspaceClient(t interface {
 			RegisteredModels:                    catalog.NewMockRegisteredModelsInterface(t),
 			Repos:                               workspace.NewMockReposInterface(t),
 			ResourceQuotas:                      catalog.NewMockResourceQuotasInterface(t),
+			Rfa:                                 catalog.NewMockRfaInterface(t),
 			Schemas:                             catalog.NewMockSchemasInterface(t),
 			Secrets:                             workspace.NewMockSecretsInterface(t),
 			ServicePrincipalSecretsProxy:        oauth2.NewMockServicePrincipalSecretsProxyInterface(t),
@@ -1033,6 +1034,14 @@ func (m *MockWorkspaceClient) GetMockResourceQuotasAPI() *catalog.MockResourceQu
 	api, ok := m.WorkspaceClient.ResourceQuotas.(*catalog.MockResourceQuotasInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ResourceQuotas to be *catalog.MockResourceQuotasInterface, actual was %T", m.WorkspaceClient.ResourceQuotas))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockRfaAPI() *catalog.MockRfaInterface {
+	api, ok := m.WorkspaceClient.Rfa.(*catalog.MockRfaInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Rfa to be *catalog.MockRfaInterface, actual was %T", m.WorkspaceClient.Rfa))
 	}
 	return api
 }
