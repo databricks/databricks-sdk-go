@@ -611,6 +611,22 @@ func (s ColumnMask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ColumnMaskOptions struct {
+	// The fully qualified name of the column mask function. The function is
+	// called on each row of the target table. The function's first argument and
+	// its return type should match the type of the masked column. Required on
+	// create and update.
+	FunctionName string `json:"function_name"`
+	// The alias of the column to be masked. The alias must refer to one of
+	// matched columns. The values of the column is passed to the column mask
+	// function as the first argument. Required on create and update.
+	OnColumn string `json:"on_column"`
+	// Optional list of column aliases or constant literals to be passed as
+	// additional arguments to the column mask function. The type of each column
+	// should match the positional argument of the column mask function.
+	Using []FunctionArgument `json:"using,omitempty"`
+}
+
 type ColumnRelationship struct {
 	Source string `json:"source,omitempty"`
 
@@ -1362,6 +1378,11 @@ type CreateOnlineTableRequest struct {
 	Table OnlineTable `json:"table"`
 }
 
+type CreatePolicyRequest struct {
+	// Required. The policy to create.
+	PolicyInfo PolicyInfo `json:"policy_info"`
+}
+
 type CreateRegisteredModelRequest struct {
 	// The name of the catalog where the schema and the registered model reside
 	CatalogName string `json:"catalog_name"`
@@ -1470,6 +1491,25 @@ type CreateTableConstraint struct {
 	Constraint TableConstraint `json:"constraint"`
 	// The full name of the table referenced by the constraint.
 	FullNameArg string `json:"full_name_arg"`
+}
+
+type CreateTableRequest struct {
+	// Name of parent catalog.
+	CatalogName string `json:"catalog_name"`
+	// The array of __ColumnInfo__ definitions of the table's columns.
+	Columns []ColumnInfo `json:"columns,omitempty"`
+
+	DataSourceFormat DataSourceFormat `json:"data_source_format"`
+	// Name of table, relative to parent schema.
+	Name string `json:"name"`
+	// A map of key-value properties attached to the securable.
+	Properties map[string]string `json:"properties,omitempty"`
+	// Name of parent schema relative to its parent catalog.
+	SchemaName string `json:"schema_name"`
+	// Storage root URL for table (for **MANAGED**, **EXTERNAL** tables).
+	StorageLocation string `json:"storage_location"`
+
+	TableType TableType `json:"table_type"`
 }
 
 type CreateVolumeRequestContent struct {
@@ -2024,6 +2064,19 @@ type DeleteMonitorResponse struct {
 type DeleteOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"-" url:"-"`
+}
+
+type DeletePolicyRequest struct {
+	// Required. The name of the policy to delete
+	Name string `json:"-" url:"-"`
+	// Required. The fully qualified name of the securable to delete the policy
+	// from.
+	OnSecurableFullname string `json:"-" url:"-"`
+	// Required. The type of the securable to delete the policy from.
+	OnSecurableType string `json:"-" url:"-"`
+}
+
+type DeletePolicyResponse struct {
 }
 
 type DeleteQualityMonitorRequest struct {
@@ -2763,6 +2816,23 @@ func (s ForeignKeyConstraint) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type FunctionArgument struct {
+	// The alias of a matched column.
+	Alias string `json:"alias,omitempty"`
+	// A constant literal.
+	Constant string `json:"constant,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FunctionArgument) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FunctionArgument) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // A function that is dependent on a SQL object.
 type FunctionDependency struct {
 	// Full name of the dependent function, in the form of
@@ -3151,6 +3221,55 @@ func (s *GcpPubsub) UnmarshalJSON(b []byte) error {
 }
 
 func (s GcpPubsub) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenerateTemporaryPathCredentialRequest struct {
+	// Optional. When set to true, the service will not validate that the
+	// generated credentials can perform write operations, therefore no new
+	// paths will be created and the response will not contain valid
+	// credentials. Defaults to false.
+	DryRun bool `json:"dry_run,omitempty"`
+	// The operation being performed on the path.
+	Operation PathOperation `json:"operation"`
+	// URL for path-based access.
+	Url string `json:"url"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenerateTemporaryPathCredentialRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenerateTemporaryPathCredentialRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenerateTemporaryPathCredentialResponse struct {
+	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
+
+	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
+
+	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
+	// Server time when the credential will expire, in epoch milliseconds. The
+	// API client is advised to cache the credential given this expiration time.
+	ExpirationTime int64 `json:"expiration_time,omitempty"`
+
+	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
+
+	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
+	// The URL of the storage path accessible by the temporary credential.
+	Url string `json:"url,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenerateTemporaryPathCredentialResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenerateTemporaryPathCredentialResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -3543,6 +3662,15 @@ func (s *GetPermissionsResponse) UnmarshalJSON(b []byte) error {
 
 func (s GetPermissionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type GetPolicyRequest struct {
+	// Required. The name of the policy to retrieve.
+	Name string `json:"-" url:"-"`
+	// Required. The fully qualified name of securable to retrieve policy for.
+	OnSecurableFullname string `json:"-" url:"-"`
+	// Required. The type of the securable to retrieve the policy for.
+	OnSecurableType string `json:"-" url:"-"`
 }
 
 type GetQualityMonitorRequest struct {
@@ -4145,6 +4273,53 @@ func (s ListModelVersionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListPoliciesRequest struct {
+	// Optional. Whether to include policies defined on parent securables. By
+	// default, the inherited policies are not included.
+	IncludeInherited bool `json:"-" url:"include_inherited,omitempty"`
+	// Optional. Maximum number of policies to return on a single page (page
+	// length). - When not set or set to 0, the page length is set to a server
+	// configured value (recommended); - When set to a value greater than 0, the
+	// page length is the minimum of this value and a server configured value;
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Required. The fully qualified name of securable to list policies for.
+	OnSecurableFullname string `json:"-" url:"-"`
+	// Required. The type of the securable to list policies for.
+	OnSecurableType string `json:"-" url:"-"`
+	// Optional. Opaque pagination token to go to next page based on previous
+	// query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListPoliciesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListPoliciesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListPoliciesResponse struct {
+	// Optional opaque token for continuing pagination. `page_token` should be
+	// set to this value for the next request to retrieve the next page of
+	// results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// The list of retrieved policies.
+	Policies []PolicyInfo `json:"policies,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListPoliciesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListPoliciesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListQuotasRequest struct {
 	// The number of quotas to return.
 	MaxResults int `json:"-" url:"max_results,omitempty"`
@@ -4540,6 +4715,23 @@ func (s *ListVolumesResponseContent) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListVolumesResponseContent) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type MatchColumn struct {
+	// Optional alias of the matched column.
+	Alias string `json:"alias,omitempty"`
+	// The condition expression used to match a table column.
+	Condition string `json:"condition,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MatchColumn) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MatchColumn) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -5554,6 +5746,46 @@ func (f *OptionSpecOptionType) Type() string {
 	return "OptionSpecOptionType"
 }
 
+type PathOperation string
+
+const PathOperationPathCreateTable PathOperation = `PATH_CREATE_TABLE`
+
+const PathOperationPathRead PathOperation = `PATH_READ`
+
+const PathOperationPathReadWrite PathOperation = `PATH_READ_WRITE`
+
+// String representation for [fmt.Print]
+func (f *PathOperation) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PathOperation) Set(v string) error {
+	switch v {
+	case `PATH_CREATE_TABLE`, `PATH_READ`, `PATH_READ_WRITE`:
+		*f = PathOperation(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PATH_CREATE_TABLE", "PATH_READ", "PATH_READ_WRITE"`, v)
+	}
+}
+
+// Values returns all possible values for PathOperation.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PathOperation) Values() []PathOperation {
+	return []PathOperation{
+		PathOperationPathCreateTable,
+		PathOperationPathRead,
+		PathOperationPathReadWrite,
+	}
+}
+
+// Type always returns PathOperation to satisfy [pflag.Value] interface
+func (f *PathOperation) Type() string {
+	return "PathOperation"
+}
+
 type PermissionsChange struct {
 	// The set of privileges to add.
 	Add []Privilege `json:"add,omitempty"`
@@ -5598,6 +5830,107 @@ func (s *PipelineProgress) UnmarshalJSON(b []byte) error {
 
 func (s PipelineProgress) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type PolicyInfo struct {
+	// Options for column mask policies. Valid only if `policy_type` is
+	// `POLICY_TYPE_COLUMN_MASK`. Required on create and optional on update.
+	// When specified on update, the new options will replace the existing
+	// options as a whole.
+	ColumnMask *ColumnMaskOptions `json:"column_mask,omitempty"`
+	// Optional description of the policy.
+	Comment string `json:"comment,omitempty"`
+	// Time at which the policy was created, in epoch milliseconds. Output only.
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// Username of the user who created the policy. Output only.
+	CreatedBy string `json:"created_by,omitempty"`
+	// Optional list of user or group names that should be excluded from the
+	// policy.
+	ExceptPrincipals []string `json:"except_principals,omitempty"`
+	// Type of securables that the policy should take effect on. Only `table` is
+	// supported at this moment. Required on create and optional on update.
+	ForSecurableType SecurableType `json:"for_securable_type"`
+	// Unique identifier of the policy. This field is output only and is
+	// generated by the system.
+	Id string `json:"id,omitempty"`
+	// Optional list of condition expressions used to match table columns. Only
+	// valid when `for_securable_type` is `table`. When specified, the policy
+	// only applies to tables whose columns satisfy all match conditions.
+	MatchColumns []MatchColumn `json:"match_columns,omitempty"`
+	// Name of the policy. Required on create and ignored on update. To update
+	// the name, use the `new_name` field.
+	Name string `json:"name,omitempty"`
+	// Full name of the securable on which the policy is defined. Required on
+	// create and ignored on update.
+	OnSecurableFullname string `json:"on_securable_fullname,omitempty"`
+	// Type of the securable on which the policy is defined. Only `catalog`,
+	// `schema` and `table` are supported at this moment. Required on create and
+	// ignored on update.
+	OnSecurableType SecurableType `json:"on_securable_type,omitempty"`
+	// Type of the policy. Required on create and ignored on update.
+	PolicyType PolicyType `json:"policy_type"`
+	// Options for row filter policies. Valid only if `policy_type` is
+	// `POLICY_TYPE_ROW_FILTER`. Required on create and optional on update. When
+	// specified on update, the new options will replace the existing options as
+	// a whole.
+	RowFilter *RowFilterOptions `json:"row_filter,omitempty"`
+	// List of user or group names that the policy applies to. Required on
+	// create and optional on update.
+	ToPrincipals []string `json:"to_principals"`
+	// Time at which the policy was last modified, in epoch milliseconds. Output
+	// only.
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Username of the user who last modified the policy. Output only.
+	UpdatedBy string `json:"updated_by,omitempty"`
+	// Optional condition when the policy should take effect.
+	WhenCondition string `json:"when_condition,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PolicyInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PolicyInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type PolicyType string
+
+const PolicyTypePolicyTypeColumnMask PolicyType = `POLICY_TYPE_COLUMN_MASK`
+
+const PolicyTypePolicyTypeRowFilter PolicyType = `POLICY_TYPE_ROW_FILTER`
+
+// String representation for [fmt.Print]
+func (f *PolicyType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *PolicyType) Set(v string) error {
+	switch v {
+	case `POLICY_TYPE_COLUMN_MASK`, `POLICY_TYPE_ROW_FILTER`:
+		*f = PolicyType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "POLICY_TYPE_COLUMN_MASK", "POLICY_TYPE_ROW_FILTER"`, v)
+	}
+}
+
+// Values returns all possible values for PolicyType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PolicyType) Values() []PolicyType {
+	return []PolicyType{
+		PolicyTypePolicyTypeColumnMask,
+		PolicyTypePolicyTypeRowFilter,
+	}
+}
+
+// Type always returns PolicyType to satisfy [pflag.Value] interface
+func (f *PolicyType) Type() string {
+	return "PolicyType"
 }
 
 type PrimaryKeyConstraint struct {
@@ -6042,6 +6375,18 @@ func (s *RegisteredModelInfo) UnmarshalJSON(b []byte) error {
 
 func (s RegisteredModelInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type RowFilterOptions struct {
+	// The fully qualified name of the row filter function. The function is
+	// called on each row of the target table. It should return a boolean value
+	// indicating whether the row should be visible to the user. Required on
+	// create and update.
+	FunctionName string `json:"function_name"`
+	// Optional list of column aliases or constant literals to be passed as
+	// arguments to the row filter function. The type of each column should
+	// match the positional argument of the row filter function.
+	Using []FunctionArgument `json:"using,omitempty"`
 }
 
 type RunRefreshRequest struct {
@@ -6560,7 +6905,7 @@ type SystemSchemaInfo struct {
 	// The current state of enablement for the system schema. An empty string
 	// means the system schema is available and ready for opt-in. Possible
 	// values: AVAILABLE | ENABLE_INITIALIZED | ENABLE_COMPLETED |
-	// DISABLE_INITIALIZED | UNAVAILABLE
+	// DISABLE_INITIALIZED | UNAVAILABLE | MANAGED
 	State string `json:"state"`
 }
 
@@ -7309,6 +7654,38 @@ type UpdatePermissions struct {
 type UpdatePermissionsResponse struct {
 	// The privileges assigned to each principal
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
+}
+
+type UpdatePolicyRequest struct {
+	// Required. The name of the policy to update.
+	Name string `json:"-" url:"-"`
+	// Required. The fully qualified name of the securable to update the policy
+	// for.
+	OnSecurableFullname string `json:"-" url:"-"`
+	// Required. The type of the securable to update the policy for.
+	OnSecurableType string `json:"-" url:"-"`
+	// Optional fields to update. This is the request body for updating a
+	// policy. Use `update_mask` field to specify which fields in the request is
+	// to be updated. - If `update_mask` is empty or "*", all specified fields
+	// will be updated. - If `update_mask` is specified, only the fields
+	// specified in the `update_mask` will be updated. If a field is specified
+	// in `update_mask` and not set in the request, the field will be cleared.
+	// Users can use the update mask to explicitly unset optional fields such as
+	// `exception_principals` and `when_condition`.
+	PolicyInfo PolicyInfo `json:"policy_info"`
+	// Optional. The update mask field for specifying user intentions on which
+	// fields to update in the request.
+	UpdateMask string `json:"-" url:"update_mask,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdatePolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdatePolicyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateRegisteredModelRequest struct {

@@ -106,6 +106,7 @@ func NewMockWorkspaceClient(t interface {
 			PermissionMigration:                 iam.NewMockPermissionMigrationInterface(t),
 			Permissions:                         iam.NewMockPermissionsInterface(t),
 			Pipelines:                           pipelines.NewMockPipelinesInterface(t),
+			Policies:                            catalog.NewMockPoliciesInterface(t),
 			PolicyComplianceForClusters:         compute.NewMockPolicyComplianceForClustersInterface(t),
 			PolicyComplianceForJobs:             jobs.NewMockPolicyComplianceForJobsInterface(t),
 			PolicyFamilies:                      compute.NewMockPolicyFamiliesInterface(t),
@@ -144,6 +145,7 @@ func NewMockWorkspaceClient(t interface {
 			SystemSchemas:                       catalog.NewMockSystemSchemasInterface(t),
 			TableConstraints:                    catalog.NewMockTableConstraintsInterface(t),
 			Tables:                              catalog.NewMockTablesInterface(t),
+			TemporaryPathCredentials:            catalog.NewMockTemporaryPathCredentialsInterface(t),
 			TemporaryTableCredentials:           catalog.NewMockTemporaryTableCredentialsInterface(t),
 			TokenManagement:                     settings.NewMockTokenManagementInterface(t),
 			Tokens:                              settings.NewMockTokensInterface(t),
@@ -827,6 +829,14 @@ func (m *MockWorkspaceClient) GetMockPipelinesAPI() *pipelines.MockPipelinesInte
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockPoliciesAPI() *catalog.MockPoliciesInterface {
+	api, ok := m.WorkspaceClient.Policies.(*catalog.MockPoliciesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Policies to be *catalog.MockPoliciesInterface, actual was %T", m.WorkspaceClient.Policies))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockPolicyComplianceForClustersAPI() *compute.MockPolicyComplianceForClustersInterface {
 	api, ok := m.WorkspaceClient.PolicyComplianceForClusters.(*compute.MockPolicyComplianceForClustersInterface)
 	if !ok {
@@ -1127,6 +1137,14 @@ func (m *MockWorkspaceClient) GetMockTablesAPI() *catalog.MockTablesInterface {
 	api, ok := m.WorkspaceClient.Tables.(*catalog.MockTablesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Tables to be *catalog.MockTablesInterface, actual was %T", m.WorkspaceClient.Tables))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockTemporaryPathCredentialsAPI() *catalog.MockTemporaryPathCredentialsInterface {
+	api, ok := m.WorkspaceClient.TemporaryPathCredentials.(*catalog.MockTemporaryPathCredentialsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected TemporaryPathCredentials to be *catalog.MockTemporaryPathCredentialsInterface, actual was %T", m.WorkspaceClient.TemporaryPathCredentials))
 	}
 	return api
 }

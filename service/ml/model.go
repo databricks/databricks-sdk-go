@@ -2599,14 +2599,15 @@ type PublishSpec struct {
 	// The full three-part (catalog, schema, table) name of the online table.
 	OnlineTableName string `json:"online_table_name"`
 	// The publish mode of the pipeline that syncs the online table with the
-	// source table. Defaults to TRIGGERED if not specified. All publish modes
-	// require the source table to have Change Data Feed (CDF) enabled.
-	PublishMode PublishSpecPublishMode `json:"publish_mode,omitempty"`
+	// source table.
+	PublishMode PublishSpecPublishMode `json:"publish_mode"`
 }
 
 type PublishSpecPublishMode string
 
 const PublishSpecPublishModeContinuous PublishSpecPublishMode = `CONTINUOUS`
+
+const PublishSpecPublishModeSnapshot PublishSpecPublishMode = `SNAPSHOT`
 
 const PublishSpecPublishModeTriggered PublishSpecPublishMode = `TRIGGERED`
 
@@ -2618,11 +2619,11 @@ func (f *PublishSpecPublishMode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PublishSpecPublishMode) Set(v string) error {
 	switch v {
-	case `CONTINUOUS`, `TRIGGERED`:
+	case `CONTINUOUS`, `SNAPSHOT`, `TRIGGERED`:
 		*f = PublishSpecPublishMode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CONTINUOUS", "TRIGGERED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CONTINUOUS", "SNAPSHOT", "TRIGGERED"`, v)
 	}
 }
 
@@ -2632,6 +2633,7 @@ func (f *PublishSpecPublishMode) Set(v string) error {
 func (f *PublishSpecPublishMode) Values() []PublishSpecPublishMode {
 	return []PublishSpecPublishMode{
 		PublishSpecPublishModeContinuous,
+		PublishSpecPublishModeSnapshot,
 		PublishSpecPublishModeTriggered,
 	}
 }

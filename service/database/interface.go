@@ -64,12 +64,28 @@ type DatabaseService interface {
 	// Get a Synced Database Table.
 	GetSyncedDatabaseTable(ctx context.Context, request GetSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
 
-	// START OF PG ROLE APIs Section
+	// This API is currently unimplemented, but exposed for Terraform support.
+	ListDatabaseCatalogs(ctx context.Context, request ListDatabaseCatalogsRequest) (*ListDatabaseCatalogsResponse, error)
+
+	// START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage <
+	// PUBLIC_PREVIEW. With more recent Lakebase V2 plans, we don't plan to ever
+	// advance these to PUBLIC_PREVIEW. These APIs will remain effectively
+	// undocumented/UI-only and we'll aim for a new public roles API as part of
+	// V2 PuPr.
 	ListDatabaseInstanceRoles(ctx context.Context, request ListDatabaseInstanceRolesRequest) (*ListDatabaseInstanceRolesResponse, error)
 
 	// List Database Instances.
 	ListDatabaseInstances(ctx context.Context, request ListDatabaseInstancesRequest) (*ListDatabaseInstancesResponse, error)
 
+	// This API is currently unimplemented, but exposed for Terraform support.
+	ListSyncedDatabaseTables(ctx context.Context, request ListSyncedDatabaseTablesRequest) (*ListSyncedDatabaseTablesResponse, error)
+
+	// This API is currently unimplemented, but exposed for Terraform support.
+	UpdateDatabaseCatalog(ctx context.Context, request UpdateDatabaseCatalogRequest) (*DatabaseCatalog, error)
+
 	// Update a Database Instance.
 	UpdateDatabaseInstance(ctx context.Context, request UpdateDatabaseInstanceRequest) (*DatabaseInstance, error)
+
+	// This API is currently unimplemented, but exposed for Terraform support.
+	UpdateSyncedDatabaseTable(ctx context.Context, request UpdateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
 }

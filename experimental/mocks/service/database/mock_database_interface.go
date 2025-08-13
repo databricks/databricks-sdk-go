@@ -1577,6 +1577,173 @@ func (_c *MockDatabaseInterface_GetSyncedDatabaseTableByName_Call) RunAndReturn(
 	return _c
 }
 
+// ListDatabaseCatalogs provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) ListDatabaseCatalogs(ctx context.Context, request database.ListDatabaseCatalogsRequest) listing.Iterator[database.DatabaseCatalog] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDatabaseCatalogs")
+	}
+
+	var r0 listing.Iterator[database.DatabaseCatalog]
+	if rf, ok := ret.Get(0).(func(context.Context, database.ListDatabaseCatalogsRequest) listing.Iterator[database.DatabaseCatalog]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[database.DatabaseCatalog])
+		}
+	}
+
+	return r0
+}
+
+// MockDatabaseInterface_ListDatabaseCatalogs_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDatabaseCatalogs'
+type MockDatabaseInterface_ListDatabaseCatalogs_Call struct {
+	*mock.Call
+}
+
+// ListDatabaseCatalogs is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.ListDatabaseCatalogsRequest
+func (_e *MockDatabaseInterface_Expecter) ListDatabaseCatalogs(ctx interface{}, request interface{}) *MockDatabaseInterface_ListDatabaseCatalogs_Call {
+	return &MockDatabaseInterface_ListDatabaseCatalogs_Call{Call: _e.mock.On("ListDatabaseCatalogs", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseCatalogs_Call) Run(run func(ctx context.Context, request database.ListDatabaseCatalogsRequest)) *MockDatabaseInterface_ListDatabaseCatalogs_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.ListDatabaseCatalogsRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseCatalogs_Call) Return(_a0 listing.Iterator[database.DatabaseCatalog]) *MockDatabaseInterface_ListDatabaseCatalogs_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseCatalogs_Call) RunAndReturn(run func(context.Context, database.ListDatabaseCatalogsRequest) listing.Iterator[database.DatabaseCatalog]) *MockDatabaseInterface_ListDatabaseCatalogs_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListDatabaseCatalogsAll provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) ListDatabaseCatalogsAll(ctx context.Context, request database.ListDatabaseCatalogsRequest) ([]database.DatabaseCatalog, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDatabaseCatalogsAll")
+	}
+
+	var r0 []database.DatabaseCatalog
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, database.ListDatabaseCatalogsRequest) ([]database.DatabaseCatalog, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, database.ListDatabaseCatalogsRequest) []database.DatabaseCatalog); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]database.DatabaseCatalog)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, database.ListDatabaseCatalogsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_ListDatabaseCatalogsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDatabaseCatalogsAll'
+type MockDatabaseInterface_ListDatabaseCatalogsAll_Call struct {
+	*mock.Call
+}
+
+// ListDatabaseCatalogsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.ListDatabaseCatalogsRequest
+func (_e *MockDatabaseInterface_Expecter) ListDatabaseCatalogsAll(ctx interface{}, request interface{}) *MockDatabaseInterface_ListDatabaseCatalogsAll_Call {
+	return &MockDatabaseInterface_ListDatabaseCatalogsAll_Call{Call: _e.mock.On("ListDatabaseCatalogsAll", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseCatalogsAll_Call) Run(run func(ctx context.Context, request database.ListDatabaseCatalogsRequest)) *MockDatabaseInterface_ListDatabaseCatalogsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.ListDatabaseCatalogsRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseCatalogsAll_Call) Return(_a0 []database.DatabaseCatalog, _a1 error) *MockDatabaseInterface_ListDatabaseCatalogsAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseCatalogsAll_Call) RunAndReturn(run func(context.Context, database.ListDatabaseCatalogsRequest) ([]database.DatabaseCatalog, error)) *MockDatabaseInterface_ListDatabaseCatalogsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListDatabaseCatalogsByInstanceName provides a mock function with given fields: ctx, instanceName
+func (_m *MockDatabaseInterface) ListDatabaseCatalogsByInstanceName(ctx context.Context, instanceName string) (*database.ListDatabaseCatalogsResponse, error) {
+	ret := _m.Called(ctx, instanceName)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDatabaseCatalogsByInstanceName")
+	}
+
+	var r0 *database.ListDatabaseCatalogsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*database.ListDatabaseCatalogsResponse, error)); ok {
+		return rf(ctx, instanceName)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *database.ListDatabaseCatalogsResponse); ok {
+		r0 = rf(ctx, instanceName)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*database.ListDatabaseCatalogsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, instanceName)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_ListDatabaseCatalogsByInstanceName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDatabaseCatalogsByInstanceName'
+type MockDatabaseInterface_ListDatabaseCatalogsByInstanceName_Call struct {
+	*mock.Call
+}
+
+// ListDatabaseCatalogsByInstanceName is a helper method to define mock.On call
+//   - ctx context.Context
+//   - instanceName string
+func (_e *MockDatabaseInterface_Expecter) ListDatabaseCatalogsByInstanceName(ctx interface{}, instanceName interface{}) *MockDatabaseInterface_ListDatabaseCatalogsByInstanceName_Call {
+	return &MockDatabaseInterface_ListDatabaseCatalogsByInstanceName_Call{Call: _e.mock.On("ListDatabaseCatalogsByInstanceName", ctx, instanceName)}
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseCatalogsByInstanceName_Call) Run(run func(ctx context.Context, instanceName string)) *MockDatabaseInterface_ListDatabaseCatalogsByInstanceName_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseCatalogsByInstanceName_Call) Return(_a0 *database.ListDatabaseCatalogsResponse, _a1 error) *MockDatabaseInterface_ListDatabaseCatalogsByInstanceName_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseCatalogsByInstanceName_Call) RunAndReturn(run func(context.Context, string) (*database.ListDatabaseCatalogsResponse, error)) *MockDatabaseInterface_ListDatabaseCatalogsByInstanceName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListDatabaseInstanceRoles provides a mock function with given fields: ctx, request
 func (_m *MockDatabaseInterface) ListDatabaseInstanceRoles(ctx context.Context, request database.ListDatabaseInstanceRolesRequest) listing.Iterator[database.DatabaseInstanceRole] {
 	ret := _m.Called(ctx, request)
@@ -1852,6 +2019,232 @@ func (_c *MockDatabaseInterface_ListDatabaseInstancesAll_Call) RunAndReturn(run 
 	return _c
 }
 
+// ListSyncedDatabaseTables provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) ListSyncedDatabaseTables(ctx context.Context, request database.ListSyncedDatabaseTablesRequest) listing.Iterator[database.SyncedDatabaseTable] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSyncedDatabaseTables")
+	}
+
+	var r0 listing.Iterator[database.SyncedDatabaseTable]
+	if rf, ok := ret.Get(0).(func(context.Context, database.ListSyncedDatabaseTablesRequest) listing.Iterator[database.SyncedDatabaseTable]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[database.SyncedDatabaseTable])
+		}
+	}
+
+	return r0
+}
+
+// MockDatabaseInterface_ListSyncedDatabaseTables_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSyncedDatabaseTables'
+type MockDatabaseInterface_ListSyncedDatabaseTables_Call struct {
+	*mock.Call
+}
+
+// ListSyncedDatabaseTables is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.ListSyncedDatabaseTablesRequest
+func (_e *MockDatabaseInterface_Expecter) ListSyncedDatabaseTables(ctx interface{}, request interface{}) *MockDatabaseInterface_ListSyncedDatabaseTables_Call {
+	return &MockDatabaseInterface_ListSyncedDatabaseTables_Call{Call: _e.mock.On("ListSyncedDatabaseTables", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_ListSyncedDatabaseTables_Call) Run(run func(ctx context.Context, request database.ListSyncedDatabaseTablesRequest)) *MockDatabaseInterface_ListSyncedDatabaseTables_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.ListSyncedDatabaseTablesRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListSyncedDatabaseTables_Call) Return(_a0 listing.Iterator[database.SyncedDatabaseTable]) *MockDatabaseInterface_ListSyncedDatabaseTables_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListSyncedDatabaseTables_Call) RunAndReturn(run func(context.Context, database.ListSyncedDatabaseTablesRequest) listing.Iterator[database.SyncedDatabaseTable]) *MockDatabaseInterface_ListSyncedDatabaseTables_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSyncedDatabaseTablesAll provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) ListSyncedDatabaseTablesAll(ctx context.Context, request database.ListSyncedDatabaseTablesRequest) ([]database.SyncedDatabaseTable, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSyncedDatabaseTablesAll")
+	}
+
+	var r0 []database.SyncedDatabaseTable
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, database.ListSyncedDatabaseTablesRequest) ([]database.SyncedDatabaseTable, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, database.ListSyncedDatabaseTablesRequest) []database.SyncedDatabaseTable); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]database.SyncedDatabaseTable)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, database.ListSyncedDatabaseTablesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_ListSyncedDatabaseTablesAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSyncedDatabaseTablesAll'
+type MockDatabaseInterface_ListSyncedDatabaseTablesAll_Call struct {
+	*mock.Call
+}
+
+// ListSyncedDatabaseTablesAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.ListSyncedDatabaseTablesRequest
+func (_e *MockDatabaseInterface_Expecter) ListSyncedDatabaseTablesAll(ctx interface{}, request interface{}) *MockDatabaseInterface_ListSyncedDatabaseTablesAll_Call {
+	return &MockDatabaseInterface_ListSyncedDatabaseTablesAll_Call{Call: _e.mock.On("ListSyncedDatabaseTablesAll", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_ListSyncedDatabaseTablesAll_Call) Run(run func(ctx context.Context, request database.ListSyncedDatabaseTablesRequest)) *MockDatabaseInterface_ListSyncedDatabaseTablesAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.ListSyncedDatabaseTablesRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListSyncedDatabaseTablesAll_Call) Return(_a0 []database.SyncedDatabaseTable, _a1 error) *MockDatabaseInterface_ListSyncedDatabaseTablesAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListSyncedDatabaseTablesAll_Call) RunAndReturn(run func(context.Context, database.ListSyncedDatabaseTablesRequest) ([]database.SyncedDatabaseTable, error)) *MockDatabaseInterface_ListSyncedDatabaseTablesAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSyncedDatabaseTablesByInstanceName provides a mock function with given fields: ctx, instanceName
+func (_m *MockDatabaseInterface) ListSyncedDatabaseTablesByInstanceName(ctx context.Context, instanceName string) (*database.ListSyncedDatabaseTablesResponse, error) {
+	ret := _m.Called(ctx, instanceName)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSyncedDatabaseTablesByInstanceName")
+	}
+
+	var r0 *database.ListSyncedDatabaseTablesResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*database.ListSyncedDatabaseTablesResponse, error)); ok {
+		return rf(ctx, instanceName)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *database.ListSyncedDatabaseTablesResponse); ok {
+		r0 = rf(ctx, instanceName)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*database.ListSyncedDatabaseTablesResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, instanceName)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_ListSyncedDatabaseTablesByInstanceName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSyncedDatabaseTablesByInstanceName'
+type MockDatabaseInterface_ListSyncedDatabaseTablesByInstanceName_Call struct {
+	*mock.Call
+}
+
+// ListSyncedDatabaseTablesByInstanceName is a helper method to define mock.On call
+//   - ctx context.Context
+//   - instanceName string
+func (_e *MockDatabaseInterface_Expecter) ListSyncedDatabaseTablesByInstanceName(ctx interface{}, instanceName interface{}) *MockDatabaseInterface_ListSyncedDatabaseTablesByInstanceName_Call {
+	return &MockDatabaseInterface_ListSyncedDatabaseTablesByInstanceName_Call{Call: _e.mock.On("ListSyncedDatabaseTablesByInstanceName", ctx, instanceName)}
+}
+
+func (_c *MockDatabaseInterface_ListSyncedDatabaseTablesByInstanceName_Call) Run(run func(ctx context.Context, instanceName string)) *MockDatabaseInterface_ListSyncedDatabaseTablesByInstanceName_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListSyncedDatabaseTablesByInstanceName_Call) Return(_a0 *database.ListSyncedDatabaseTablesResponse, _a1 error) *MockDatabaseInterface_ListSyncedDatabaseTablesByInstanceName_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListSyncedDatabaseTablesByInstanceName_Call) RunAndReturn(run func(context.Context, string) (*database.ListSyncedDatabaseTablesResponse, error)) *MockDatabaseInterface_ListSyncedDatabaseTablesByInstanceName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateDatabaseCatalog provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) UpdateDatabaseCatalog(ctx context.Context, request database.UpdateDatabaseCatalogRequest) (*database.DatabaseCatalog, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateDatabaseCatalog")
+	}
+
+	var r0 *database.DatabaseCatalog
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, database.UpdateDatabaseCatalogRequest) (*database.DatabaseCatalog, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, database.UpdateDatabaseCatalogRequest) *database.DatabaseCatalog); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*database.DatabaseCatalog)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, database.UpdateDatabaseCatalogRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_UpdateDatabaseCatalog_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateDatabaseCatalog'
+type MockDatabaseInterface_UpdateDatabaseCatalog_Call struct {
+	*mock.Call
+}
+
+// UpdateDatabaseCatalog is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.UpdateDatabaseCatalogRequest
+func (_e *MockDatabaseInterface_Expecter) UpdateDatabaseCatalog(ctx interface{}, request interface{}) *MockDatabaseInterface_UpdateDatabaseCatalog_Call {
+	return &MockDatabaseInterface_UpdateDatabaseCatalog_Call{Call: _e.mock.On("UpdateDatabaseCatalog", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_UpdateDatabaseCatalog_Call) Run(run func(ctx context.Context, request database.UpdateDatabaseCatalogRequest)) *MockDatabaseInterface_UpdateDatabaseCatalog_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.UpdateDatabaseCatalogRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_UpdateDatabaseCatalog_Call) Return(_a0 *database.DatabaseCatalog, _a1 error) *MockDatabaseInterface_UpdateDatabaseCatalog_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_UpdateDatabaseCatalog_Call) RunAndReturn(run func(context.Context, database.UpdateDatabaseCatalogRequest) (*database.DatabaseCatalog, error)) *MockDatabaseInterface_UpdateDatabaseCatalog_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateDatabaseInstance provides a mock function with given fields: ctx, request
 func (_m *MockDatabaseInterface) UpdateDatabaseInstance(ctx context.Context, request database.UpdateDatabaseInstanceRequest) (*database.DatabaseInstance, error) {
 	ret := _m.Called(ctx, request)
@@ -1907,6 +2300,65 @@ func (_c *MockDatabaseInterface_UpdateDatabaseInstance_Call) Return(_a0 *databas
 }
 
 func (_c *MockDatabaseInterface_UpdateDatabaseInstance_Call) RunAndReturn(run func(context.Context, database.UpdateDatabaseInstanceRequest) (*database.DatabaseInstance, error)) *MockDatabaseInterface_UpdateDatabaseInstance_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateSyncedDatabaseTable provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) UpdateSyncedDatabaseTable(ctx context.Context, request database.UpdateSyncedDatabaseTableRequest) (*database.SyncedDatabaseTable, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateSyncedDatabaseTable")
+	}
+
+	var r0 *database.SyncedDatabaseTable
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, database.UpdateSyncedDatabaseTableRequest) (*database.SyncedDatabaseTable, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, database.UpdateSyncedDatabaseTableRequest) *database.SyncedDatabaseTable); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*database.SyncedDatabaseTable)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, database.UpdateSyncedDatabaseTableRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_UpdateSyncedDatabaseTable_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateSyncedDatabaseTable'
+type MockDatabaseInterface_UpdateSyncedDatabaseTable_Call struct {
+	*mock.Call
+}
+
+// UpdateSyncedDatabaseTable is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.UpdateSyncedDatabaseTableRequest
+func (_e *MockDatabaseInterface_Expecter) UpdateSyncedDatabaseTable(ctx interface{}, request interface{}) *MockDatabaseInterface_UpdateSyncedDatabaseTable_Call {
+	return &MockDatabaseInterface_UpdateSyncedDatabaseTable_Call{Call: _e.mock.On("UpdateSyncedDatabaseTable", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_UpdateSyncedDatabaseTable_Call) Run(run func(ctx context.Context, request database.UpdateSyncedDatabaseTableRequest)) *MockDatabaseInterface_UpdateSyncedDatabaseTable_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.UpdateSyncedDatabaseTableRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_UpdateSyncedDatabaseTable_Call) Return(_a0 *database.SyncedDatabaseTable, _a1 error) *MockDatabaseInterface_UpdateSyncedDatabaseTable_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_UpdateSyncedDatabaseTable_Call) RunAndReturn(run func(context.Context, database.UpdateSyncedDatabaseTableRequest) (*database.SyncedDatabaseTable, error)) *MockDatabaseInterface_UpdateSyncedDatabaseTable_Call {
 	_c.Call.Return(run)
 	return _c
 }

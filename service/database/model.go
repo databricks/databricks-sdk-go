@@ -545,6 +545,42 @@ type GetSyncedDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type ListDatabaseCatalogsRequest struct {
+	// Name of the instance to get database catalogs for.
+	InstanceName string `json:"-" url:"-"`
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of synced database tables.
+	// Requests first page if absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseCatalogsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseCatalogsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDatabaseCatalogsResponse struct {
+	DatabaseCatalogs []DatabaseCatalog `json:"database_catalogs,omitempty"`
+	// Pagination token to request the next page of database catalogs.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseCatalogsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseCatalogsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListDatabaseInstanceRolesRequest struct {
 	InstanceName string `json:"-" url:"-"`
 	// Upper bound for items returned.
@@ -613,6 +649,43 @@ func (s *ListDatabaseInstancesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListDatabaseInstancesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListSyncedDatabaseTablesRequest struct {
+	// Name of the instance to get synced tables for.
+	InstanceName string `json:"-" url:"-"`
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of synced database tables.
+	// Requests first page if absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSyncedDatabaseTablesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSyncedDatabaseTablesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListSyncedDatabaseTablesResponse struct {
+	// Pagination token to request the next page of synced tables.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	SyncedTables []SyncedDatabaseTable `json:"synced_tables,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListSyncedDatabaseTablesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListSyncedDatabaseTablesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1166,11 +1239,30 @@ func (s SyncedTableTriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdateDatabaseCatalogRequest struct {
+	// Note that updating a database catalog is not yet supported.
+	DatabaseCatalog DatabaseCatalog `json:"database_catalog"`
+	// The name of the catalog in UC.
+	Name string `json:"-" url:"-"`
+	// The list of fields to update. Setting this field is not yet supported.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
 type UpdateDatabaseInstanceRequest struct {
 	DatabaseInstance DatabaseInstance `json:"database_instance"`
 	// The name of the instance. This is the unique identifier for the instance.
 	Name string `json:"-" url:"-"`
-	// The list of fields to update. This field is not yet supported, and is
-	// ignored by the server.
+	// The list of fields to update. If unspecified, all fields will be updated
+	// when possible. To wipe out custom_tags, specify custom_tags in the
+	// update_mask with an empty custom_tags map.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+type UpdateSyncedDatabaseTableRequest struct {
+	// Full three-part (catalog, schema, table) name of the table.
+	Name string `json:"-" url:"-"`
+	// Note that updating a synced database table is not yet supported.
+	SyncedTable SyncedDatabaseTable `json:"synced_table"`
+	// The list of fields to update. Setting this field is not yet supported.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
