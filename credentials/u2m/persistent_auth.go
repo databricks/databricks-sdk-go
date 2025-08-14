@@ -24,11 +24,12 @@ const (
 	// appClientId is the default client ID used by the SDK for U2M OAuth.
 	appClientID = "databricks-cli"
 
-	// defaultPort is the default port for the OAuth2 callback server.
+	// defaultPort is the default port for the OAuth2 callback server. If the
+	// port is already in use, the next port is tried (8021, 8022, etc.).
 	defaultPort = 8020
 
-	// listenerTimeout is the maximum amount of time to acquire listener on
-	// appRedirectAddr.
+	// listenerTimeout is the maximum duration spent trying to acquire a
+	// listener (including port selection).
 	listenerTimeout = 45 * time.Second
 )
 
