@@ -30,6 +30,7 @@ experimental/mocks/service/catalog/mock_policies_interface.go linguist-generated
 experimental/mocks/service/catalog/mock_quality_monitors_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_registered_models_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_resource_quotas_interface.go linguist-generated=true
+experimental/mocks/service/catalog/mock_rfa_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_schemas_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_storage_credentials_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_system_schemas_interface.go linguist-generated=true
