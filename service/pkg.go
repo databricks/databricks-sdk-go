@@ -62,9 +62,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
-//
 // - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
+//
+// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -138,9 +138,9 @@
 //
 // - [catalog.GrantsAPI]: In Unity Catalog, data is secure by default.
 //
-// - [iam.GroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks workspace, data, and other securable objects.
+// - [iam.GroupsV2API]: Groups simplify identity management, making it easier to assign access to Databricks workspace, data, and other securable objects.
 //
-// - [iam.AccountGroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks account, data, and other securable objects.
+// - [iam.AccountGroupsV2API]: Groups simplify identity management, making it easier to assign access to Databricks account, data, and other securable objects.
 //
 // - [compute.InstancePoolsAPI]: Instance Pools API are used to create, edit, delete and list instance pools by using ready-to-use cloud instances which reduces a cluster start and auto-scaling times.
 //
@@ -256,6 +256,8 @@
 //
 // - [settings.RestrictWorkspaceAdminsAPI]: The Restrict Workspace Admins setting lets you control the capabilities of workspace admins.
 //
+// - [catalog.RfaAPI]: Request for Access enables customers to request access to and manage access request destinations for Unity Catalog securables.
+//
 // - [catalog.SchemasAPI]: A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace.
 //
 // - [workspace.SecretsAPI]: The Secrets API allows you to manage secrets, secret scopes, and access permissions.
@@ -266,9 +268,9 @@
 //
 // - [oauth2.ServicePrincipalSecretsProxyAPI]: These APIs enable administrators to manage service principal secrets at the workspace level.
 //
-// - [iam.ServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
+// - [iam.ServicePrincipalsV2API]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
 //
-// - [iam.AccountServicePrincipalsAPI]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
+// - [iam.AccountServicePrincipalsV2API]: Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD platforms.
 //
 // - [serving.ServingEndpointsAPI]: The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
 //
@@ -306,9 +308,9 @@
 //
 // - [billing.UsageDashboardsAPI]: These APIs manage usage dashboards for this account.
 //
-// - [iam.UsersAPI]: User identities recognized by Databricks and represented by email addresses.
+// - [iam.UsersV2API]: User identities recognized by Databricks and represented by email addresses.
 //
-// - [iam.AccountUsersAPI]: User identities recognized by Databricks and represented by email addresses.
+// - [iam.AccountUsersV2API]: User identities recognized by Databricks and represented by email addresses.
 //
 // - [vectorsearch.VectorSearchEndpointsAPI]: **Endpoint**: Represents the compute resources to host vector search indexes.
 //
@@ -395,8 +397,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *provisioning.CredentialsAPI                        = nil
 	_ *catalog.CredentialsAPI                             = nil
+	_ *provisioning.CredentialsAPI                        = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
@@ -433,8 +435,8 @@ var (
 	_ *workspace.GitCredentialsAPI                        = nil
 	_ *compute.GlobalInitScriptsAPI                       = nil
 	_ *catalog.GrantsAPI                                  = nil
-	_ *iam.GroupsAPI                                      = nil
-	_ *iam.AccountGroupsAPI                               = nil
+	_ *iam.GroupsV2API                                    = nil
+	_ *iam.AccountGroupsV2API                             = nil
 	_ *compute.InstancePoolsAPI                           = nil
 	_ *compute.InstanceProfilesAPI                        = nil
 	_ *settings.IpAccessListsAPI                          = nil
@@ -492,13 +494,14 @@ var (
 	_ *workspace.ReposAPI                                 = nil
 	_ *catalog.ResourceQuotasAPI                          = nil
 	_ *settings.RestrictWorkspaceAdminsAPI                = nil
+	_ *catalog.RfaAPI                                     = nil
 	_ *catalog.SchemasAPI                                 = nil
 	_ *workspace.SecretsAPI                               = nil
 	_ *oauth2.ServicePrincipalFederationPolicyAPI         = nil
 	_ *oauth2.ServicePrincipalSecretsAPI                  = nil
 	_ *oauth2.ServicePrincipalSecretsProxyAPI             = nil
-	_ *iam.ServicePrincipalsAPI                           = nil
-	_ *iam.AccountServicePrincipalsAPI                    = nil
+	_ *iam.ServicePrincipalsV2API                         = nil
+	_ *iam.AccountServicePrincipalsV2API                  = nil
 	_ *serving.ServingEndpointsAPI                        = nil
 	_ *serving.ServingEndpointsDataPlaneAPI               = nil
 	_ *settings.SettingsAPI                               = nil
@@ -517,8 +520,8 @@ var (
 	_ *settings.TokenManagementAPI                        = nil
 	_ *settings.TokensAPI                                 = nil
 	_ *billing.UsageDashboardsAPI                         = nil
-	_ *iam.UsersAPI                                       = nil
-	_ *iam.AccountUsersAPI                                = nil
+	_ *iam.UsersV2API                                     = nil
+	_ *iam.AccountUsersV2API                              = nil
 	_ *vectorsearch.VectorSearchEndpointsAPI              = nil
 	_ *vectorsearch.VectorSearchIndexesAPI                = nil
 	_ *catalog.VolumesAPI                                 = nil

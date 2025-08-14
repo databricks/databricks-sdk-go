@@ -52,6 +52,92 @@ func (s AccessControlResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type AccountGroup struct {
+	// Databricks account ID
+	AccountId string `json:"account_id,omitempty"`
+	// String that represents a human-readable group name
+	DisplayName string `json:"displayName,omitempty"`
+
+	ExternalId string `json:"externalId,omitempty"`
+	// Databricks group ID
+	Id string `json:"id,omitempty"`
+
+	Members []ComplexValue `json:"members,omitempty"`
+	// Container for the group identifier. Workspace local versus account.
+	Meta *ResourceMeta `json:"meta,omitempty"`
+	// Indicates if the group has the admin role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AccountGroup) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AccountGroup) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AccountServicePrincipal struct {
+	// Databricks account ID
+	AccountId string `json:"account_id,omitempty"`
+	// If this user is active
+	Active bool `json:"active,omitempty"`
+	// UUID relating to the service principal
+	ApplicationId string `json:"applicationId,omitempty"`
+	// String that represents a concatenation of given and family names.
+	DisplayName string `json:"displayName,omitempty"`
+
+	ExternalId string `json:"externalId,omitempty"`
+	// Databricks service principal ID.
+	Id string `json:"id,omitempty"`
+	// Indicates if the group has the admin role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AccountServicePrincipal) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AccountServicePrincipal) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AccountUser struct {
+	// Databricks account ID
+	AccountId string `json:"account_id,omitempty"`
+	// If this user is active
+	Active bool `json:"active,omitempty"`
+	// String that represents a concatenation of given and family names. For
+	// example `John Smith`.
+	DisplayName string `json:"displayName,omitempty"`
+	// All the emails associated with the Databricks user.
+	Emails []ComplexValue `json:"emails,omitempty"`
+	// External ID is not currently supported. It is reserved for future use.
+	ExternalId string `json:"externalId,omitempty"`
+	// Databricks user ID.
+	Id string `json:"id,omitempty"`
+
+	Name *Name `json:"name,omitempty"`
+	// Indicates if the group has the admin role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+	// Email address of the Databricks user.
+	UserName string `json:"userName,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AccountUser) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AccountUser) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // represents an identity trying to access a resource - user or a service
 // principal group can be a principal of a permission set assignment but an
 // actor is always a user or a service principal
@@ -126,6 +212,197 @@ func (s ComplexValue) MarshalJSON() ([]byte, error) {
 
 type ConsistencyToken struct {
 	Value string `json:"value" url:"value"`
+}
+
+type CreateAccountGroupRequest struct {
+	// String that represents a human-readable group name
+	DisplayName string `json:"displayName,omitempty"`
+
+	ExternalId string `json:"externalId,omitempty"`
+	// Databricks group ID
+	Id string `json:"id,omitempty"`
+
+	Members []ComplexValue `json:"members,omitempty"`
+	// Container for the group identifier. Workspace local versus account.
+	Meta *ResourceMeta `json:"meta,omitempty"`
+	// Indicates if the group has the admin role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateAccountGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAccountGroupRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateAccountServicePrincipalRequest struct {
+	// If this user is active
+	Active bool `json:"active,omitempty"`
+	// UUID relating to the service principal
+	ApplicationId string `json:"applicationId,omitempty"`
+	// String that represents a concatenation of given and family names.
+	DisplayName string `json:"displayName,omitempty"`
+
+	ExternalId string `json:"externalId,omitempty"`
+	// Databricks service principal ID.
+	Id string `json:"id,omitempty"`
+	// Indicates if the group has the admin role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateAccountServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAccountServicePrincipalRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateAccountUserRequest struct {
+	// If this user is active
+	Active bool `json:"active,omitempty"`
+	// String that represents a concatenation of given and family names. For
+	// example `John Smith`.
+	DisplayName string `json:"displayName,omitempty"`
+	// All the emails associated with the Databricks user.
+	Emails []ComplexValue `json:"emails,omitempty"`
+	// External ID is not currently supported. It is reserved for future use.
+	ExternalId string `json:"externalId,omitempty"`
+	// Databricks user ID.
+	Id string `json:"id,omitempty"`
+
+	Name *Name `json:"name,omitempty"`
+	// Indicates if the group has the admin role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+	// Email address of the Databricks user.
+	UserName string `json:"userName,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateAccountUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAccountUserRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateGroupRequest struct {
+	// String that represents a human-readable group name
+	DisplayName string `json:"displayName,omitempty"`
+	// Entitlements assigned to the group. See [assigning entitlements] for a
+	// full list of supported values.
+	//
+	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+	Entitlements []ComplexValue `json:"entitlements,omitempty"`
+
+	ExternalId string `json:"externalId,omitempty"`
+
+	Groups []ComplexValue `json:"groups,omitempty"`
+	// Databricks group ID
+	Id string `json:"id,omitempty"`
+
+	Members []ComplexValue `json:"members,omitempty"`
+	// Container for the group identifier. Workspace local versus account.
+	Meta *ResourceMeta `json:"meta,omitempty"`
+	// Corresponds to AWS instance profile/arn role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+	// The schema of the group.
+	Schemas []GroupSchema `json:"schemas,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateGroupRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateServicePrincipalRequest struct {
+	// If this user is active
+	Active bool `json:"active,omitempty"`
+	// UUID relating to the service principal
+	ApplicationId string `json:"applicationId,omitempty"`
+	// String that represents a concatenation of given and family names.
+	DisplayName string `json:"displayName,omitempty"`
+	// Entitlements assigned to the service principal. See [assigning
+	// entitlements] for a full list of supported values.
+	//
+	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+	Entitlements []ComplexValue `json:"entitlements,omitempty"`
+
+	ExternalId string `json:"externalId,omitempty"`
+
+	Groups []ComplexValue `json:"groups,omitempty"`
+	// Databricks service principal ID.
+	Id string `json:"id,omitempty"`
+	// Corresponds to AWS instance profile/arn role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+	// The schema of the List response.
+	Schemas []ServicePrincipalSchema `json:"schemas,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateServicePrincipalRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateUserRequest struct {
+	// If this user is active
+	Active bool `json:"active,omitempty"`
+	// String that represents a concatenation of given and family names. For
+	// example `John Smith`. This field cannot be updated through the Workspace
+	// SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to
+	// update `displayName`.
+	//
+	// [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
+	DisplayName string `json:"displayName,omitempty"`
+	// All the emails associated with the Databricks user.
+	Emails []ComplexValue `json:"emails,omitempty"`
+	// Entitlements assigned to the user. See [assigning entitlements] for a
+	// full list of supported values.
+	//
+	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+	Entitlements []ComplexValue `json:"entitlements,omitempty"`
+	// External ID is not currently supported. It is reserved for future use.
+	ExternalId string `json:"externalId,omitempty"`
+
+	Groups []ComplexValue `json:"groups,omitempty"`
+	// Databricks user ID.
+	Id string `json:"id,omitempty"`
+
+	Name *Name `json:"name,omitempty"`
+	// Corresponds to AWS instance profile/arn role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+	// The schema of the user.
+	Schemas []UserSchema `json:"schemas,omitempty"`
+	// Email address of the Databricks user.
+	UserName string `json:"userName,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateUserRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DeleteAccountGroupRequest struct {
@@ -231,9 +508,15 @@ type GetGroupRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+type GetPasswordPermissionLevelsRequest struct {
+}
+
 type GetPasswordPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []PasswordPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type GetPasswordPermissionsRequest struct {
 }
 
 type GetPermissionLevelsRequest struct {
@@ -484,6 +767,28 @@ func (s ListAccountGroupsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListAccountGroupsResponse struct {
+	// Total results returned in the response.
+	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
+	// User objects returned in the response.
+	Resources []AccountGroup `json:"Resources,omitempty"`
+	// Starting index of all the results that matched the request filters. First
+	// item is number 1.
+	StartIndex int64 `json:"startIndex,omitempty"`
+	// Total results that match the request filters.
+	TotalResults int64 `json:"totalResults,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListAccountGroupsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAccountGroupsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListAccountServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -514,6 +819,28 @@ func (s *ListAccountServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListAccountServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListAccountServicePrincipalsResponse struct {
+	// Total results returned in the response.
+	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
+	// User objects returned in the response.
+	Resources []AccountServicePrincipal `json:"Resources,omitempty"`
+	// Starting index of all the results that matched the request filters. First
+	// item is number 1.
+	StartIndex int64 `json:"startIndex,omitempty"`
+	// Total results that match the request filters.
+	TotalResults int64 `json:"totalResults,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListAccountServicePrincipalsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAccountServicePrincipalsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -871,16 +1198,6 @@ func (s ObjectPermissions) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type PartialUpdate struct {
-	// Unique ID in the Databricks workspace.
-	Id string `json:"-" url:"-"`
-
-	Operations []Patch `json:"Operations,omitempty"`
-	// The schema of the patch request. Must be
-	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
-	Schemas []PatchSchema `json:"schemas,omitempty"`
-}
-
 type PasswordAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
@@ -1035,6 +1352,46 @@ func (s Patch) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type PatchAccountGroupRequest struct {
+	// Unique ID in the Databricks workspace.
+	Id string `json:"-" url:"-"`
+
+	Operations []Patch `json:"Operations,omitempty"`
+	// The schema of the patch request. Must be
+	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+	Schemas []PatchSchema `json:"schemas,omitempty"`
+}
+
+type PatchAccountServicePrincipalRequest struct {
+	// Unique ID in the Databricks workspace.
+	Id string `json:"-" url:"-"`
+
+	Operations []Patch `json:"Operations,omitempty"`
+	// The schema of the patch request. Must be
+	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+	Schemas []PatchSchema `json:"schemas,omitempty"`
+}
+
+type PatchAccountUserRequest struct {
+	// Unique ID in the Databricks workspace.
+	Id string `json:"-" url:"-"`
+
+	Operations []Patch `json:"Operations,omitempty"`
+	// The schema of the patch request. Must be
+	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+	Schemas []PatchSchema `json:"schemas,omitempty"`
+}
+
+type PatchGroupRequest struct {
+	// Unique ID in the Databricks workspace.
+	Id string `json:"-" url:"-"`
+
+	Operations []Patch `json:"Operations,omitempty"`
+	// The schema of the patch request. Must be
+	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+	Schemas []PatchSchema `json:"schemas,omitempty"`
+}
+
 // Type of patch operation.
 type PatchOp string
 
@@ -1108,6 +1465,26 @@ func (f *PatchSchema) Values() []PatchSchema {
 // Type always returns PatchSchema to satisfy [pflag.Value] interface
 func (f *PatchSchema) Type() string {
 	return "PatchSchema"
+}
+
+type PatchServicePrincipalRequest struct {
+	// Unique ID in the Databricks workspace.
+	Id string `json:"-" url:"-"`
+
+	Operations []Patch `json:"Operations,omitempty"`
+	// The schema of the patch request. Must be
+	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+	Schemas []PatchSchema `json:"schemas,omitempty"`
+}
+
+type PatchUserRequest struct {
+	// Unique ID in the Databricks workspace.
+	Id string `json:"-" url:"-"`
+
+	Operations []Patch `json:"Operations,omitempty"`
+	// The schema of the patch request. Must be
+	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+	Schemas []PatchSchema `json:"schemas,omitempty"`
 }
 
 type Permission struct {
@@ -1495,6 +1872,120 @@ type SetObjectPermissions struct {
 	RequestObjectType string `json:"-" url:"-"`
 }
 
+type UpdateAccountGroupRequest struct {
+	// String that represents a human-readable group name
+	DisplayName string `json:"displayName,omitempty"`
+
+	ExternalId string `json:"externalId,omitempty"`
+	// Databricks group ID
+	Id string `json:"-" url:"-"`
+
+	Members []ComplexValue `json:"members,omitempty"`
+	// Container for the group identifier. Workspace local versus account.
+	Meta *ResourceMeta `json:"meta,omitempty"`
+	// Indicates if the group has the admin role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateAccountGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateAccountGroupRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type UpdateAccountServicePrincipalRequest struct {
+	// If this user is active
+	Active bool `json:"active,omitempty"`
+	// UUID relating to the service principal
+	ApplicationId string `json:"applicationId,omitempty"`
+	// String that represents a concatenation of given and family names.
+	DisplayName string `json:"displayName,omitempty"`
+
+	ExternalId string `json:"externalId,omitempty"`
+	// Databricks service principal ID.
+	Id string `json:"-" url:"-"`
+	// Indicates if the group has the admin role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateAccountServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateAccountServicePrincipalRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type UpdateAccountUserRequest struct {
+	// If this user is active
+	Active bool `json:"active,omitempty"`
+	// String that represents a concatenation of given and family names. For
+	// example `John Smith`.
+	DisplayName string `json:"displayName,omitempty"`
+	// All the emails associated with the Databricks user.
+	Emails []ComplexValue `json:"emails,omitempty"`
+	// External ID is not currently supported. It is reserved for future use.
+	ExternalId string `json:"externalId,omitempty"`
+	// Databricks user ID.
+	Id string `json:"-" url:"-"`
+
+	Name *Name `json:"name,omitempty"`
+	// Indicates if the group has the admin role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+	// Email address of the Databricks user.
+	UserName string `json:"userName,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateAccountUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateAccountUserRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type UpdateGroupRequest struct {
+	// String that represents a human-readable group name
+	DisplayName string `json:"displayName,omitempty"`
+	// Entitlements assigned to the group. See [assigning entitlements] for a
+	// full list of supported values.
+	//
+	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+	Entitlements []ComplexValue `json:"entitlements,omitempty"`
+
+	ExternalId string `json:"externalId,omitempty"`
+
+	Groups []ComplexValue `json:"groups,omitempty"`
+	// Databricks group ID
+	Id string `json:"-" url:"-"`
+
+	Members []ComplexValue `json:"members,omitempty"`
+	// Container for the group identifier. Workspace local versus account.
+	Meta *ResourceMeta `json:"meta,omitempty"`
+	// Corresponds to AWS instance profile/arn role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+	// The schema of the group.
+	Schemas []GroupSchema `json:"schemas,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateGroupRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateGroupRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type UpdateObjectPermissions struct {
 	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
 	// The id of the request object.
@@ -1512,6 +2003,83 @@ type UpdateRuleSetRequest struct {
 	Name string `json:"name"`
 
 	RuleSet RuleSetUpdateRequest `json:"rule_set"`
+}
+
+type UpdateServicePrincipalRequest struct {
+	// If this user is active
+	Active bool `json:"active,omitempty"`
+	// UUID relating to the service principal
+	ApplicationId string `json:"applicationId,omitempty"`
+	// String that represents a concatenation of given and family names.
+	DisplayName string `json:"displayName,omitempty"`
+	// Entitlements assigned to the service principal. See [assigning
+	// entitlements] for a full list of supported values.
+	//
+	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+	Entitlements []ComplexValue `json:"entitlements,omitempty"`
+
+	ExternalId string `json:"externalId,omitempty"`
+
+	Groups []ComplexValue `json:"groups,omitempty"`
+	// Databricks service principal ID.
+	Id string `json:"-" url:"-"`
+	// Corresponds to AWS instance profile/arn role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+	// The schema of the List response.
+	Schemas []ServicePrincipalSchema `json:"schemas,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateServicePrincipalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateServicePrincipalRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type UpdateUserRequest struct {
+	// If this user is active
+	Active bool `json:"active,omitempty"`
+	// String that represents a concatenation of given and family names. For
+	// example `John Smith`. This field cannot be updated through the Workspace
+	// SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to
+	// update `displayName`.
+	//
+	// [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
+	DisplayName string `json:"displayName,omitempty"`
+	// All the emails associated with the Databricks user.
+	Emails []ComplexValue `json:"emails,omitempty"`
+	// Entitlements assigned to the user. See [assigning entitlements] for a
+	// full list of supported values.
+	//
+	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+	Entitlements []ComplexValue `json:"entitlements,omitempty"`
+	// External ID is not currently supported. It is reserved for future use.
+	ExternalId string `json:"externalId,omitempty"`
+
+	Groups []ComplexValue `json:"groups,omitempty"`
+	// Databricks user ID.
+	Id string `json:"-" url:"-"`
+
+	Name *Name `json:"name,omitempty"`
+	// Corresponds to AWS instance profile/arn role.
+	Roles []ComplexValue `json:"roles,omitempty"`
+	// The schema of the user.
+	Schemas []UserSchema `json:"schemas,omitempty"`
+	// Email address of the Databricks user.
+	UserName string `json:"userName,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateUserRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateUserRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateWorkspaceAssignments struct {
