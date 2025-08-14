@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -298,9 +297,6 @@ func TestChallenge(t *testing.T) {
 	}
 	defer p.Close()
 
-	// Set a fixed redirect URL for the test.
-	p.redirectAddr = "localhost:1337"
-
 	errc := make(chan error)
 	go func() {
 		err := p.Challenge()
@@ -309,7 +305,7 @@ func TestChallenge(t *testing.T) {
 	}()
 
 	state := <-browserOpened
-	resp, err := http.Get(fmt.Sprintf("http://localhost:1337?code=__THIS__&state=%s", state))
+	resp, err := http.Get(fmt.Sprintf("http://localhost:8020?code=__THIS__&state=%s", state))
 	if err != nil {
 		t.Fatalf("http.Get(): want no error, got %v", err)
 	}
@@ -351,8 +347,6 @@ func TestChallenge_ReturnsErrorOnFailure(t *testing.T) {
 	}
 	defer p.Close()
 
-	p.redirectAddr = "localhost:1337" // set a fixed redirect URL for the test
-
 	errc := make(chan error)
 	go func() {
 		err := p.Challenge()
@@ -361,7 +355,7 @@ func TestChallenge_ReturnsErrorOnFailure(t *testing.T) {
 	}()
 
 	<-browserOpened
-	resp, err := http.Get("http://localhost:1337?error=access_denied&error_description=Policy%20evaluation%20failed%20for%20this%20request")
+	resp, err := http.Get("http://localhost:8020?error=access_denied&error_description=Policy%20evaluation%20failed%20for%20this%20request")
 	if err != nil {
 		t.Fatalf("http.Get(): want no error, got %v", err)
 	}
@@ -377,39 +371,5 @@ func TestChallenge_ReturnsErrorOnFailure(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "authorize: access_denied: Policy evaluation failed for this request") {
 		t.Fatalf("p.Challenge(): want error containing 'authorize: access_denied: Policy evaluation failed for this request', got %v", err)
-	}
-}
-
-// Verifies that startListener assigns a random port to the redirectAddr.
-func TestPersistentAuth_startListener_useDifferentPorts(t *testing.T) {
-	ctx := context.Background()
-	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
-	if err != nil {
-		t.Fatalf("NewBasicAccountOAuthArgument(): want no error, got %v", err)
-	}
-
-	p1, err := NewPersistentAuth(ctx, WithOAuthArgument(arg))
-	if err != nil {
-		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
-	}
-	defer p1.Close()
-
-	p2, err := NewPersistentAuth(ctx, WithOAuthArgument(arg))
-	if err != nil {
-		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
-	}
-	defer p2.Close()
-
-	p1.startListener(ctx)
-	p2.startListener(ctx)
-
-	if !regexp.MustCompile(`^127\.0\.0\.1:\d+$`).MatchString(p1.redirectAddr) {
-		t.Errorf("p1.redirectAddr should be random localhost port, got %s", p1.redirectAddr)
-	}
-	if !regexp.MustCompile(`^127\.0\.0\.1:\d+$`).MatchString(p2.redirectAddr) {
-		t.Errorf("p2.redirectAddr should be random localhost port, got %s", p2.redirectAddr)
-	}
-	if p1.redirectAddr == p2.redirectAddr {
-		t.Errorf("p1.redirectURL and p2.redirectURL should be different, got %s", p1.redirectAddr)
 	}
 }
