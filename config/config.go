@@ -70,6 +70,11 @@ type Config struct {
 	// in ~/.databrickscfg.
 	ConfigFile string `name:"config_file" env:"DATABRICKS_CONFIG_FILE"`
 
+	// OAuthPort is the port to use for the OAuth2 callback server. If not set,
+	// the default port with fallback is used. This means that setting a port
+	// will disable the fallback mechanism.
+	OAuthCallbackPort int `name:"oauth_callback_port" env:"DATABRICKS_OAUTH_CALLBACK_PORT" auth:"-"`
+
 	GoogleServiceAccount string `name:"google_service_account" env:"DATABRICKS_GOOGLE_SERVICE_ACCOUNT" auth:"google" auth_types:"google-id"`
 	GoogleCredentials    string `name:"google_credentials" env:"GOOGLE_CREDENTIALS" auth:"google,sensitive" auth_types:"google-credentials"`
 

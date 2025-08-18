@@ -28,9 +28,19 @@ const (
 	// port is already in use, the next port is tried (8021, 8022, etc.).
 	defaultPort = 8020
 
+	// maxPortFallback is the maximum port to try when using the fallback
+	// mechanism.
+	maxPortFallback = 8040
+
 	// listenerTimeout is the maximum duration spent trying to acquire a
 	// listener (including port selection).
 	listenerTimeout = 45 * time.Second
+)
+
+var (
+	// Internal errors used for testing.
+	errListenerTimeout = errors.New("failed to listen on any port: timeout")
+	errNoPortAvailable = errors.New("no port available to listen on")
 )
 
 // PersistentAuth is an OAuth manager that handles the U2M OAuth flow. Tokens
@@ -69,6 +79,11 @@ type PersistentAuth struct {
 	// random port. If a value is already provided, it will be used instead
 	// (e.g. for testing).
 	redirectAddr string
+
+	// Optional port to use for the OAuth2 callback server. If set to 0, the
+	// default port with fallback is used. This means that setting a port will
+	// disable the fallback mechanism.
+	port int
 
 	// netListen is an optional function to listen on a TCP address. If not set,
 	// it will use net.Listen by default. This is useful for testing.
@@ -110,6 +125,13 @@ func WithOAuthArgument(arg OAuthArgument) PersistentAuthOption {
 func WithBrowser(b func(url string) error) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.browser = b
+	}
+}
+
+// WithPort sets the port for the PersistentAuth.
+func WithPort(port int) PersistentAuthOption {
+	return func(a *PersistentAuth) {
+		a.port = port
 	}
 }
 
@@ -284,24 +306,40 @@ func (a *PersistentAuth) Challenge() error {
 // startListener starts a listener on appRedirectAddr, retrying if the address
 // is already in use.
 func (pa *PersistentAuth) startListener(ctx context.Context) error {
+	if pa.port != 0 { // if port is set, use it
+		return pa.startListenerWithPort(pa.port)
+	}
+	return pa.startListenerWithFallback(ctx)
+}
+
+// startListenerWithFallback starts a listener that will try to find a free
+// port to listen on starting from the default port and incrementing by 1 until
+// a free port is found.
+func (pa *PersistentAuth) startListenerWithFallback(ctx context.Context) error {
 	startTime := time.Now()
-	for port := defaultPort; port < 65535; port++ {
+	for port := defaultPort; port <= maxPortFallback; port++ {
 		if time.Since(startTime) > listenerTimeout {
-			return fmt.Errorf("failed to listen on any port, timeout after %s", listenerTimeout)
+			return errListenerTimeout
 		}
-		addr := fmt.Sprintf("localhost:%d", port)
-		logger.Debugf(ctx, "attempting to listen on %s", addr)
-		listener, err := pa.listen("tcp", addr)
-		if err != nil {
-			logger.Debugf(ctx, "failed to listen on %s: %v, retrying", addr, err)
+		if err := pa.startListenerWithPort(port); err != nil {
+			logger.Debugf(ctx, "failed to listen on %d: %v, retrying", port, err)
 			continue
 		}
-		pa.ln = listener
-		pa.redirectAddr = addr
-		logger.Debugf(ctx, "OAuth callback server listening on %s", addr)
+		logger.Debugf(ctx, "OAuth callback server listening on %s", pa.redirectAddr)
 		return nil
 	}
-	return fmt.Errorf("failed to listen on any port")
+	return errNoPortAvailable
+}
+
+func (pa *PersistentAuth) startListenerWithPort(port int) error {
+	addr := fmt.Sprintf("localhost:%d", port)
+	listener, err := pa.listen("tcp", addr)
+	if err != nil {
+		return fmt.Errorf("failed to listen on %s: %w", addr, err)
+	}
+	pa.ln = listener
+	pa.redirectAddr = addr
+	return nil
 }
 
 func (pa *PersistentAuth) listen(network, addr string) (net.Listener, error) {
