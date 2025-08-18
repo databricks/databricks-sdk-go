@@ -1657,6 +1657,46 @@ func (a *resourceQuotasImpl) internalListQuotas(ctx context.Context, request Lis
 	return &listQuotasResponse, err
 }
 
+// unexported type that holds implementations of just Rfa API methods
+type rfaImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *rfaImpl) BatchCreateAccessRequests(ctx context.Context, request BatchCreateAccessRequestsRequest) (*BatchCreateAccessRequestsResponse, error) {
+	var batchCreateAccessRequestsResponse BatchCreateAccessRequestsResponse
+	path := "/api/3.0/rfa/requests"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &batchCreateAccessRequestsResponse)
+	return &batchCreateAccessRequestsResponse, err
+}
+
+func (a *rfaImpl) GetAccessRequestDestinations(ctx context.Context, request GetAccessRequestDestinationsRequest) (*AccessRequestDestinations, error) {
+	var accessRequestDestinations AccessRequestDestinations
+	path := fmt.Sprintf("/api/3.0/rfa/destinations/%v/%v", request.SecurableType, request.FullName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accessRequestDestinations)
+	return &accessRequestDestinations, err
+}
+
+func (a *rfaImpl) UpdateAccessRequestDestinations(ctx context.Context, request UpdateAccessRequestDestinationsRequest) (*AccessRequestDestinations, error) {
+	var accessRequestDestinations AccessRequestDestinations
+	path := "/api/3.0/rfa/destinations"
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.AccessRequestDestinations, &accessRequestDestinations)
+	return &accessRequestDestinations, err
+}
+
 // unexported type that holds implementations of just Schemas API methods
 type schemasImpl struct {
 	client *client.DatabricksClient

@@ -71,26 +71,26 @@ type AccountAccessControlProxyService interface {
 // members inherit permissions that are assigned to their group.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
-type AccountGroupsService interface {
+type AccountGroupsV2Service interface {
 
 	// Creates a group in the Databricks account with a unique name, using the
 	// supplied group details.
-	Create(ctx context.Context, request Group) (*Group, error)
+	Create(ctx context.Context, request CreateAccountGroupRequest) (*AccountGroup, error)
 
 	// Deletes a group from the Databricks account.
 	Delete(ctx context.Context, request DeleteAccountGroupRequest) error
 
 	// Gets the information for a specific group in the Databricks account.
-	Get(ctx context.Context, request GetAccountGroupRequest) (*Group, error)
+	Get(ctx context.Context, request GetAccountGroupRequest) (*AccountGroup, error)
 
 	// Gets all details of the groups associated with the Databricks account.
-	List(ctx context.Context, request ListAccountGroupsRequest) (*ListGroupsResponse, error)
+	List(ctx context.Context, request ListAccountGroupsRequest) (*ListAccountGroupsResponse, error)
 
 	// Partially updates the details of a group.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PatchAccountGroupRequest) error
 
 	// Updates the details of a group by replacing the entire group entity.
-	Update(ctx context.Context, request Group) error
+	Update(ctx context.Context, request UpdateAccountGroupRequest) error
 }
 
 // Identities for use with jobs, automated tools, and systems such as scripts,
@@ -101,29 +101,29 @@ type AccountGroupsService interface {
 // risk of a user overwriting production data by accident.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
-type AccountServicePrincipalsService interface {
+type AccountServicePrincipalsV2Service interface {
 
 	// Creates a new service principal in the Databricks account.
-	Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error)
+	Create(ctx context.Context, request CreateAccountServicePrincipalRequest) (*AccountServicePrincipal, error)
 
 	// Delete a single service principal in the Databricks account.
 	Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) error
 
 	// Gets the details for a single service principal define in the Databricks
 	// account.
-	Get(ctx context.Context, request GetAccountServicePrincipalRequest) (*ServicePrincipal, error)
+	Get(ctx context.Context, request GetAccountServicePrincipalRequest) (*AccountServicePrincipal, error)
 
 	// Gets the set of service principals associated with a Databricks account.
-	List(ctx context.Context, request ListAccountServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
+	List(ctx context.Context, request ListAccountServicePrincipalsRequest) (*ListAccountServicePrincipalsResponse, error)
 
 	// Partially updates the details of a single service principal in the
 	// Databricks account.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PatchAccountServicePrincipalRequest) error
 
 	// Updates the details of a single service principal.
 	//
 	// This action replaces the existing service principal with the same name.
-	Update(ctx context.Context, request ServicePrincipal) error
+	Update(ctx context.Context, request UpdateAccountServicePrincipalRequest) error
 }
 
 // User identities recognized by Databricks and represented by email addresses.
@@ -139,28 +139,28 @@ type AccountServicePrincipalsService interface {
 // unauthorized users from accessing sensitive data.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
-type AccountUsersService interface {
+type AccountUsersV2Service interface {
 
 	// Creates a new user in the Databricks account. This new user will also be
 	// added to the Databricks account.
-	Create(ctx context.Context, request User) (*User, error)
+	Create(ctx context.Context, request CreateAccountUserRequest) (*AccountUser, error)
 
 	// Deletes a user. Deleting a user from a Databricks account also removes
 	// objects associated with the user.
 	Delete(ctx context.Context, request DeleteAccountUserRequest) error
 
 	// Gets information for a specific user in Databricks account.
-	Get(ctx context.Context, request GetAccountUserRequest) (*User, error)
+	Get(ctx context.Context, request GetAccountUserRequest) (*AccountUser, error)
 
 	// Gets details for all the users associated with a Databricks account.
-	List(ctx context.Context, request ListAccountUsersRequest) (*ListUsersResponse, error)
+	List(ctx context.Context, request ListAccountUsersRequest) (*ListAccountGroupsResponse, error)
 
 	// Partially updates a user resource by applying the supplied operations on
 	// specific user attributes.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PatchAccountUserRequest) error
 
 	// Replaces a user's information with the data supplied in request.
-	Update(ctx context.Context, request User) error
+	Update(ctx context.Context, request UpdateAccountUserRequest) error
 }
 
 // This API allows retrieving information about currently authenticated user or
@@ -182,11 +182,11 @@ type CurrentUserService interface {
 // members inherit permissions that are assigned to their group.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
-type GroupsService interface {
+type GroupsV2Service interface {
 
 	// Creates a group in the Databricks workspace with a unique name, using the
 	// supplied group details.
-	Create(ctx context.Context, request Group) (*Group, error)
+	Create(ctx context.Context, request CreateGroupRequest) (*Group, error)
 
 	// Deletes a group from the Databricks workspace.
 	Delete(ctx context.Context, request DeleteGroupRequest) error
@@ -198,10 +198,10 @@ type GroupsService interface {
 	List(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error)
 
 	// Partially updates the details of a group.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PatchGroupRequest) error
 
 	// Updates the details of a group by replacing the entire group entity.
-	Update(ctx context.Context, request Group) error
+	Update(ctx context.Context, request UpdateGroupRequest) error
 }
 
 // APIs for migrating acl permissions, used only by the ucx tool:
@@ -274,10 +274,10 @@ type PermissionsService interface {
 // risk of a user overwriting production data by accident.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
-type ServicePrincipalsService interface {
+type ServicePrincipalsV2Service interface {
 
 	// Creates a new service principal in the Databricks workspace.
-	Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error)
+	Create(ctx context.Context, request CreateServicePrincipalRequest) (*ServicePrincipal, error)
 
 	// Delete a single service principal in the Databricks workspace.
 	Delete(ctx context.Context, request DeleteServicePrincipalRequest) error
@@ -292,12 +292,12 @@ type ServicePrincipalsService interface {
 
 	// Partially updates the details of a single service principal in the
 	// Databricks workspace.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PatchServicePrincipalRequest) error
 
 	// Updates the details of a single service principal.
 	//
 	// This action replaces the existing service principal with the same name.
-	Update(ctx context.Context, request ServicePrincipal) error
+	Update(ctx context.Context, request UpdateServicePrincipalRequest) error
 }
 
 // User identities recognized by Databricks and represented by email addresses.
@@ -313,11 +313,11 @@ type ServicePrincipalsService interface {
 // prevents unauthorized users from accessing sensitive data.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
-type UsersService interface {
+type UsersV2Service interface {
 
 	// Creates a new user in the Databricks workspace. This new user will also
 	// be added to the Databricks account.
-	Create(ctx context.Context, request User) (*User, error)
+	Create(ctx context.Context, request CreateUserRequest) (*User, error)
 
 	// Deletes a user. Deleting a user from a Databricks workspace also removes
 	// objects associated with the user.
@@ -327,18 +327,18 @@ type UsersService interface {
 	Get(ctx context.Context, request GetUserRequest) (*User, error)
 
 	// Gets the permission levels that a user can have on an object.
-	GetPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error)
+	GetPermissionLevels(ctx context.Context, request GetPasswordPermissionLevelsRequest) (*GetPasswordPermissionLevelsResponse, error)
 
 	// Gets the permissions of all passwords. Passwords can inherit permissions
 	// from their root object.
-	GetPermissions(ctx context.Context) (*PasswordPermissions, error)
+	GetPermissions(ctx context.Context, request GetPasswordPermissionsRequest) (*PasswordPermissions, error)
 
 	// Gets details for all the users associated with a Databricks workspace.
 	List(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error)
 
 	// Partially updates a user resource by applying the supplied operations on
 	// specific user attributes.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PatchUserRequest) error
 
 	// Sets permissions on an object, replacing existing permissions if they
 	// exist. Deletes all direct permissions if none are specified. Objects can
@@ -346,7 +346,7 @@ type UsersService interface {
 	SetPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error)
 
 	// Replaces a user's information with the data supplied in request.
-	Update(ctx context.Context, request User) error
+	Update(ctx context.Context, request UpdateUserRequest) error
 
 	// Updates the permissions on all passwords. Passwords can inherit
 	// permissions from their root object.
