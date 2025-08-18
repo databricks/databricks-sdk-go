@@ -44,7 +44,7 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	}
 
 	if u.ts == nil {
-		auth, err := u2m.NewPersistentAuth(ctx, u2m.WithOAuthArgument(arg))
+		auth, err := u2m.NewPersistentAuth(ctx, u2m.WithOAuthArgument(arg), u2m.WithPort(cfg.OAuthCallbackPort))
 		if err != nil {
 			logger.Debugf(ctx, "failed to create persistent auth: %v, continuing", err)
 			return nil, nil

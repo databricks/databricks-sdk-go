@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
-	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -298,9 +298,6 @@ func TestChallenge(t *testing.T) {
 	}
 	defer p.Close()
 
-	// Set a fixed redirect URL for the test.
-	p.redirectAddr = "localhost:1337"
-
 	errc := make(chan error)
 	go func() {
 		err := p.Challenge()
@@ -309,7 +306,7 @@ func TestChallenge(t *testing.T) {
 	}()
 
 	state := <-browserOpened
-	resp, err := http.Get(fmt.Sprintf("http://localhost:1337?code=__THIS__&state=%s", state))
+	resp, err := http.Get(fmt.Sprintf("http://localhost:8020?code=__THIS__&state=%s", state))
 	if err != nil {
 		t.Fatalf("http.Get(): want no error, got %v", err)
 	}
@@ -351,8 +348,6 @@ func TestChallenge_ReturnsErrorOnFailure(t *testing.T) {
 	}
 	defer p.Close()
 
-	p.redirectAddr = "localhost:1337" // set a fixed redirect URL for the test
-
 	errc := make(chan error)
 	go func() {
 		err := p.Challenge()
@@ -361,7 +356,7 @@ func TestChallenge_ReturnsErrorOnFailure(t *testing.T) {
 	}()
 
 	<-browserOpened
-	resp, err := http.Get("http://localhost:1337?error=access_denied&error_description=Policy%20evaluation%20failed%20for%20this%20request")
+	resp, err := http.Get("http://localhost:8020?error=access_denied&error_description=Policy%20evaluation%20failed%20for%20this%20request")
 	if err != nil {
 		t.Fatalf("http.Get(): want no error, got %v", err)
 	}
@@ -380,36 +375,108 @@ func TestChallenge_ReturnsErrorOnFailure(t *testing.T) {
 	}
 }
 
-// Verifies that startListener assigns a random port to the redirectAddr.
-func TestPersistentAuth_startListener_useDifferentPorts(t *testing.T) {
-	ctx := context.Background()
-	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
-	if err != nil {
-		t.Fatalf("NewBasicAccountOAuthArgument(): want no error, got %v", err)
+func TestPersistentAuth_startListener_startFrom8020(t *testing.T) {
+	pa := &PersistentAuth{}
+	pa.netListen = func(_, address string) (net.Listener, error) {
+		return nil, nil
 	}
 
-	p1, err := NewPersistentAuth(ctx, WithOAuthArgument(arg))
-	if err != nil {
-		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
-	}
-	defer p1.Close()
+	gotErr := pa.startListener(context.Background())
 
-	p2, err := NewPersistentAuth(ctx, WithOAuthArgument(arg))
-	if err != nil {
-		t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
+	if gotErr != nil {
+		t.Fatalf("pa.startListener(): want no error, got %v", gotErr)
 	}
-	defer p2.Close()
+	if pa.redirectAddr != "localhost:8020" {
+		t.Errorf("pa.redirectAddr should be localhost:8020, got %s", pa.redirectAddr)
+	}
+}
 
-	p1.startListener(ctx)
-	p2.startListener(ctx)
+func TestPersistentAuth_startListener_incrementalFallBack(t *testing.T) {
+	pa := &PersistentAuth{}
+	pa.netListen = func(_, address string) (net.Listener, error) {
+		if address == "localhost:8020" {
+			return nil, fmt.Errorf("address already in use")
+		}
+		if address == "localhost:8021" {
+			return nil, fmt.Errorf("address already in use")
+		}
+		return nil, nil
+	}
 
-	if !regexp.MustCompile(`^127\.0\.0\.1:\d+$`).MatchString(p1.redirectAddr) {
-		t.Errorf("p1.redirectAddr should be random localhost port, got %s", p1.redirectAddr)
+	gotErr := pa.startListener(context.Background())
+
+	if gotErr != nil {
+		t.Fatalf("pa.startListener(): want no error, got %v", gotErr)
 	}
-	if !regexp.MustCompile(`^127\.0\.0\.1:\d+$`).MatchString(p2.redirectAddr) {
-		t.Errorf("p2.redirectAddr should be random localhost port, got %s", p2.redirectAddr)
+	if pa.redirectAddr != "localhost:8022" {
+		t.Errorf("pa.redirectAddr should be localhost:8022, got %s", pa.redirectAddr)
 	}
-	if p1.redirectAddr == p2.redirectAddr {
-		t.Errorf("p1.redirectURL and p2.redirectURL should be different, got %s", p1.redirectAddr)
+}
+
+func TestPersistentAuth_startListener_noAvailablePort(t *testing.T) {
+	pa := &PersistentAuth{}
+	pa.netListen = func(_, address string) (net.Listener, error) {
+		return nil, fmt.Errorf("address already in use")
+	}
+
+	gotErr := pa.startListener(context.Background())
+
+	if !errors.Is(gotErr, errNoPortAvailable) {
+		t.Fatalf("pa.startListener(): want error %v, got %v", errNoPortAvailable, gotErr)
+	}
+}
+
+func TestPersistentAuth_startListener_maxPortFallbackIncluded(t *testing.T) {
+	maxAddress := fmt.Sprintf("localhost:%d", maxPortFallback)
+	pa := &PersistentAuth{}
+	pa.netListen = func(_, address string) (net.Listener, error) {
+		if address == maxAddress {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("address already in use")
+	}
+
+	gotErr := pa.startListener(context.Background())
+
+	if gotErr != nil {
+		t.Fatalf("pa.startListener(): want no error, got %v", gotErr)
+	}
+	if pa.redirectAddr != maxAddress {
+		t.Errorf("pa.redirectAddr should be %s, got %s", maxAddress, pa.redirectAddr)
+	}
+}
+
+func TestPersistentAuth_startListener_explicitPort(t *testing.T) {
+	explicitPort := 1337
+	pa := &PersistentAuth{port: explicitPort}
+	pa.netListen = func(_, address string) (net.Listener, error) {
+		return nil, nil
+	}
+
+	gotErr := pa.startListener(context.Background())
+
+	if gotErr != nil {
+		t.Fatalf("pa.startListener(): want no error, got %v", gotErr)
+	}
+	if pa.redirectAddr != "localhost:1337" {
+		t.Errorf("pa.redirectAddr should be localhost:1337, got %s", pa.redirectAddr)
+	}
+}
+
+func TestPersistentAuth_startListener_explicitPortNoFallBack(t *testing.T) {
+	testError := errors.New("test error")
+	explicitPort := 1337
+	pa := &PersistentAuth{port: explicitPort}
+	pa.netListen = func(_, address string) (net.Listener, error) {
+		if address == "localhost:1337" {
+			return nil, testError
+		}
+		return nil, nil
+	}
+
+	gotErr := pa.startListener(context.Background())
+
+	if !errors.Is(gotErr, testError) {
+		t.Fatalf("pa.startListener(): want error %v, got %v", testError, gotErr)
 	}
 }
