@@ -254,6 +254,53 @@ func (_c *MockGenieInterface_DeleteConversationBySpaceIdAndConversationId_Call) 
 	return _c
 }
 
+// DeleteConversationMessage provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) DeleteConversationMessage(ctx context.Context, request dashboards.GenieDeleteConversationMessageRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteConversationMessage")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieDeleteConversationMessageRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockGenieInterface_DeleteConversationMessage_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteConversationMessage'
+type MockGenieInterface_DeleteConversationMessage_Call struct {
+	*mock.Call
+}
+
+// DeleteConversationMessage is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieDeleteConversationMessageRequest
+func (_e *MockGenieInterface_Expecter) DeleteConversationMessage(ctx interface{}, request interface{}) *MockGenieInterface_DeleteConversationMessage_Call {
+	return &MockGenieInterface_DeleteConversationMessage_Call{Call: _e.mock.On("DeleteConversationMessage", ctx, request)}
+}
+
+func (_c *MockGenieInterface_DeleteConversationMessage_Call) Run(run func(ctx context.Context, request dashboards.GenieDeleteConversationMessageRequest)) *MockGenieInterface_DeleteConversationMessage_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieDeleteConversationMessageRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_DeleteConversationMessage_Call) Return(_a0 error) *MockGenieInterface_DeleteConversationMessage_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockGenieInterface_DeleteConversationMessage_Call) RunAndReturn(run func(context.Context, dashboards.GenieDeleteConversationMessageRequest) error) *MockGenieInterface_DeleteConversationMessage_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ExecuteMessageAttachmentQuery provides a mock function with given fields: ctx, request
 func (_m *MockGenieInterface) ExecuteMessageAttachmentQuery(ctx context.Context, request dashboards.GenieExecuteMessageAttachmentQueryRequest) (*dashboards.GenieGetMessageQueryResultResponse, error) {
 	ret := _m.Called(ctx, request)
@@ -972,6 +1019,65 @@ func (_c *MockGenieInterface_GetSpaceBySpaceId_Call) RunAndReturn(run func(conte
 	return _c
 }
 
+// ListConversationMessages provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) ListConversationMessages(ctx context.Context, request dashboards.GenieListConversationMessagesRequest) (*dashboards.GenieListConversationMessagesResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListConversationMessages")
+	}
+
+	var r0 *dashboards.GenieListConversationMessagesResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieListConversationMessagesRequest) (*dashboards.GenieListConversationMessagesResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieListConversationMessagesRequest) *dashboards.GenieListConversationMessagesResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieListConversationMessagesResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GenieListConversationMessagesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_ListConversationMessages_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListConversationMessages'
+type MockGenieInterface_ListConversationMessages_Call struct {
+	*mock.Call
+}
+
+// ListConversationMessages is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieListConversationMessagesRequest
+func (_e *MockGenieInterface_Expecter) ListConversationMessages(ctx interface{}, request interface{}) *MockGenieInterface_ListConversationMessages_Call {
+	return &MockGenieInterface_ListConversationMessages_Call{Call: _e.mock.On("ListConversationMessages", ctx, request)}
+}
+
+func (_c *MockGenieInterface_ListConversationMessages_Call) Run(run func(ctx context.Context, request dashboards.GenieListConversationMessagesRequest)) *MockGenieInterface_ListConversationMessages_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieListConversationMessagesRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_ListConversationMessages_Call) Return(_a0 *dashboards.GenieListConversationMessagesResponse, _a1 error) *MockGenieInterface_ListConversationMessages_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_ListConversationMessages_Call) RunAndReturn(run func(context.Context, dashboards.GenieListConversationMessagesRequest) (*dashboards.GenieListConversationMessagesResponse, error)) *MockGenieInterface_ListConversationMessages_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListConversations provides a mock function with given fields: ctx, request
 func (_m *MockGenieInterface) ListConversations(ctx context.Context, request dashboards.GenieListConversationsRequest) (*dashboards.GenieListConversationsResponse, error) {
 	ret := _m.Called(ctx, request)
@@ -1145,6 +1251,53 @@ func (_c *MockGenieInterface_ListSpaces_Call) Return(_a0 *dashboards.GenieListSp
 }
 
 func (_c *MockGenieInterface_ListSpaces_Call) RunAndReturn(run func(context.Context, dashboards.GenieListSpacesRequest) (*dashboards.GenieListSpacesResponse, error)) *MockGenieInterface_ListSpaces_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SendMessageFeedback provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) SendMessageFeedback(ctx context.Context, request dashboards.GenieSendMessageFeedbackRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SendMessageFeedback")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieSendMessageFeedbackRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockGenieInterface_SendMessageFeedback_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SendMessageFeedback'
+type MockGenieInterface_SendMessageFeedback_Call struct {
+	*mock.Call
+}
+
+// SendMessageFeedback is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieSendMessageFeedbackRequest
+func (_e *MockGenieInterface_Expecter) SendMessageFeedback(ctx interface{}, request interface{}) *MockGenieInterface_SendMessageFeedback_Call {
+	return &MockGenieInterface_SendMessageFeedback_Call{Call: _e.mock.On("SendMessageFeedback", ctx, request)}
+}
+
+func (_c *MockGenieInterface_SendMessageFeedback_Call) Run(run func(ctx context.Context, request dashboards.GenieSendMessageFeedbackRequest)) *MockGenieInterface_SendMessageFeedback_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieSendMessageFeedbackRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_SendMessageFeedback_Call) Return(_a0 error) *MockGenieInterface_SendMessageFeedback_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockGenieInterface_SendMessageFeedback_Call) RunAndReturn(run func(context.Context, dashboards.GenieSendMessageFeedbackRequest) error) *MockGenieInterface_SendMessageFeedback_Call {
 	_c.Call.Return(run)
 	return _c
 }

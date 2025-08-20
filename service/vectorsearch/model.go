@@ -249,8 +249,12 @@ func (s DirectAccessVectorIndexSpec) MarshalJSON() ([]byte, error) {
 }
 
 type EmbeddingSourceColumn struct {
-	// Name of the embedding model endpoint
+	// Name of the embedding model endpoint, used by default for both ingestion
+	// and querying.
 	EmbeddingModelEndpointName string `json:"embedding_model_endpoint_name,omitempty"`
+	// Name of the embedding model endpoint which, if specified, is used for
+	// querying (not ingestion).
+	ModelEndpointNameForQuery string `json:"model_endpoint_name_for_query,omitempty"`
 	// Name of the column
 	Name string `json:"name,omitempty"`
 

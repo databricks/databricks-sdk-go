@@ -25,8 +25,10 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/serving"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settingsv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sharing"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sql"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/tags"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/workspace"
 )
@@ -52,6 +54,7 @@ func NewMockWorkspaceClient(t interface {
 			AlertsLegacy:                        sql.NewMockAlertsLegacyInterface(t),
 			AlertsV2:                            sql.NewMockAlertsV2Interface(t),
 			Apps:                                apps.NewMockAppsInterface(t),
+			AppsSettings:                        apps.NewMockAppsSettingsInterface(t),
 			ArtifactAllowlists:                  catalog.NewMockArtifactAllowlistsInterface(t),
 			Catalogs:                            catalog.NewMockCatalogsInterface(t),
 			CleanRoomAssetRevisions:             cleanrooms.NewMockCleanRoomAssetRevisionsInterface(t),
@@ -77,6 +80,7 @@ func NewMockWorkspaceClient(t interface {
 			Database:                            database.NewMockDatabaseInterface(t),
 			Dbfs:                                files.NewMockDbfsInterface(t),
 			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
+			EntityTagAssignments:                catalog.NewMockEntityTagAssignmentsInterface(t),
 			Experiments:                         ml.NewMockExperimentsInterface(t),
 			ExternalLineage:                     catalog.NewMockExternalLineageInterface(t),
 			ExternalLocations:                   catalog.NewMockExternalLocationsInterface(t),
@@ -132,6 +136,7 @@ func NewMockWorkspaceClient(t interface {
 			RegisteredModels:                    catalog.NewMockRegisteredModelsInterface(t),
 			Repos:                               workspace.NewMockReposInterface(t),
 			ResourceQuotas:                      catalog.NewMockResourceQuotasInterface(t),
+			Rfa:                                 catalog.NewMockRfaInterface(t),
 			Schemas:                             catalog.NewMockSchemasInterface(t),
 			Secrets:                             workspace.NewMockSecretsInterface(t),
 			ServicePrincipalSecretsProxy:        oauth2.NewMockServicePrincipalSecretsProxyInterface(t),
@@ -145,6 +150,7 @@ func NewMockWorkspaceClient(t interface {
 			SystemSchemas:                       catalog.NewMockSystemSchemasInterface(t),
 			TableConstraints:                    catalog.NewMockTableConstraintsInterface(t),
 			Tables:                              catalog.NewMockTablesInterface(t),
+			TagPolicies:                         tags.NewMockTagPoliciesInterface(t),
 			TemporaryPathCredentials:            catalog.NewMockTemporaryPathCredentialsInterface(t),
 			TemporaryTableCredentials:           catalog.NewMockTemporaryTableCredentialsInterface(t),
 			TokenManagement:                     settings.NewMockTokenManagementInterface(t),
@@ -157,6 +163,7 @@ func NewMockWorkspaceClient(t interface {
 			Workspace:                           workspace.NewMockWorkspaceInterface(t),
 			WorkspaceBindings:                   catalog.NewMockWorkspaceBindingsInterface(t),
 			WorkspaceConf:                       settings.NewMockWorkspaceConfInterface(t),
+			WorkspaceSettingsV2:                 settingsv2.NewMockWorkspaceSettingsV2Interface(t),
 		},
 	}
 
@@ -397,6 +404,14 @@ func (m *MockWorkspaceClient) GetMockAppsAPI() *apps.MockAppsInterface {
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockAppsSettingsAPI() *apps.MockAppsSettingsInterface {
+	api, ok := m.WorkspaceClient.AppsSettings.(*apps.MockAppsSettingsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AppsSettings to be *apps.MockAppsSettingsInterface, actual was %T", m.WorkspaceClient.AppsSettings))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockArtifactAllowlistsAPI() *catalog.MockArtifactAllowlistsInterface {
 	api, ok := m.WorkspaceClient.ArtifactAllowlists.(*catalog.MockArtifactAllowlistsInterface)
 	if !ok {
@@ -593,6 +608,14 @@ func (m *MockWorkspaceClient) GetMockDbsqlPermissionsAPI() *sql.MockDbsqlPermiss
 	api, ok := m.WorkspaceClient.DbsqlPermissions.(*sql.MockDbsqlPermissionsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected DbsqlPermissions to be *sql.MockDbsqlPermissionsInterface, actual was %T", m.WorkspaceClient.DbsqlPermissions))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockEntityTagAssignmentsAPI() *catalog.MockEntityTagAssignmentsInterface {
+	api, ok := m.WorkspaceClient.EntityTagAssignments.(*catalog.MockEntityTagAssignmentsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected EntityTagAssignments to be *catalog.MockEntityTagAssignmentsInterface, actual was %T", m.WorkspaceClient.EntityTagAssignments))
 	}
 	return api
 }
@@ -1037,6 +1060,14 @@ func (m *MockWorkspaceClient) GetMockResourceQuotasAPI() *catalog.MockResourceQu
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockRfaAPI() *catalog.MockRfaInterface {
+	api, ok := m.WorkspaceClient.Rfa.(*catalog.MockRfaInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Rfa to be *catalog.MockRfaInterface, actual was %T", m.WorkspaceClient.Rfa))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockSchemasAPI() *catalog.MockSchemasInterface {
 	api, ok := m.WorkspaceClient.Schemas.(*catalog.MockSchemasInterface)
 	if !ok {
@@ -1141,6 +1172,14 @@ func (m *MockWorkspaceClient) GetMockTablesAPI() *catalog.MockTablesInterface {
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockTagPoliciesAPI() *tags.MockTagPoliciesInterface {
+	api, ok := m.WorkspaceClient.TagPolicies.(*tags.MockTagPoliciesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected TagPolicies to be *tags.MockTagPoliciesInterface, actual was %T", m.WorkspaceClient.TagPolicies))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockTemporaryPathCredentialsAPI() *catalog.MockTemporaryPathCredentialsInterface {
 	api, ok := m.WorkspaceClient.TemporaryPathCredentials.(*catalog.MockTemporaryPathCredentialsInterface)
 	if !ok {
@@ -1233,6 +1272,14 @@ func (m *MockWorkspaceClient) GetMockWorkspaceConfAPI() *settings.MockWorkspaceC
 	api, ok := m.WorkspaceClient.WorkspaceConf.(*settings.MockWorkspaceConfInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected WorkspaceConf to be *settings.MockWorkspaceConfInterface, actual was %T", m.WorkspaceClient.WorkspaceConf))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockWorkspaceSettingsV2API() *settingsv2.MockWorkspaceSettingsV2Interface {
+	api, ok := m.WorkspaceClient.WorkspaceSettingsV2.(*settingsv2.MockWorkspaceSettingsV2Interface)
+	if !ok {
+		panic(fmt.Sprintf("expected WorkspaceSettingsV2 to be *settingsv2.MockWorkspaceSettingsV2Interface, actual was %T", m.WorkspaceClient.WorkspaceSettingsV2))
 	}
 	return api
 }

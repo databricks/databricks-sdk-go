@@ -251,6 +251,64 @@ type CredentialsService interface {
 	ValidateCredential(ctx context.Context, request ValidateCredentialRequest) (*ValidateCredentialResponse, error)
 }
 
+// Tags are attributes that include keys and optional values that you can use to
+// organize and categorize entities in Unity Catalog. Entity tagging is
+// currently supported on catalogs, schemas, tables (including views), columns,
+// volumes. With these APIs, users can create, update, delete, and list tag
+// assignments across Unity Catalog entities
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type EntityTagAssignmentsService interface {
+
+	// Creates a tag assignment for an Unity Catalog entity.
+	//
+	// To add tags to Unity Catalog entities, you must own the entity or have
+	// the following privileges: - **APPLY TAG** on the entity - **USE SCHEMA**
+	// on the entity's parent schema - **USE CATALOG** on the entity's parent
+	// catalog
+	//
+	// To add a governed tag to Unity Catalog entities, you must also have the
+	// **ASSIGN** or **MANAGE** permission on the tag policy. See [Manage tag
+	// policy permissions].
+	//
+	// [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+	Create(ctx context.Context, request CreateEntityTagAssignmentRequest) (*EntityTagAssignment, error)
+
+	// Deletes a tag assignment for an Unity Catalog entity by its key.
+	//
+	// To delete tags from Unity Catalog entities, you must own the entity or
+	// have the following privileges: - **APPLY TAG** on the entity -
+	// **USE_SCHEMA** on the entity's parent schema - **USE_CATALOG** on the
+	// entity's parent catalog
+	//
+	// To delete a governed tag from Unity Catalog entities, you must also have
+	// the **ASSIGN** or **MANAGE** permission on the tag policy. See [Manage
+	// tag policy permissions].
+	//
+	// [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+	Delete(ctx context.Context, request DeleteEntityTagAssignmentRequest) error
+
+	// Gets a tag assignment for an Unity Catalog entity by tag key.
+	Get(ctx context.Context, request GetEntityTagAssignmentRequest) (*EntityTagAssignment, error)
+
+	// List tag assignments for an Unity Catalog entity
+	List(ctx context.Context, request ListEntityTagAssignmentsRequest) (*ListEntityTagAssignmentsResponse, error)
+
+	// Updates an existing tag assignment for an Unity Catalog entity.
+	//
+	// To update tags to Unity Catalog entities, you must own the entity or have
+	// the following privileges: - **APPLY TAG** on the entity - **USE SCHEMA**
+	// on the entity's parent schema - **USE CATALOG** on the entity's parent
+	// catalog
+	//
+	// To update a governed tag to Unity Catalog entities, you must also have
+	// the **ASSIGN** or **MANAGE** permission on the tag policy. See [Manage
+	// tag policy permissions].
+	//
+	// [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+	Update(ctx context.Context, request UpdateEntityTagAssignmentRequest) (*EntityTagAssignment, error)
+}
+
 // External Lineage APIs enable defining and managing lineage relationships
 // between Databricks objects and external systems. These APIs allow users to
 // capture data flows connecting Databricks tables, models, and file paths with
@@ -884,6 +942,53 @@ type ResourceQuotasService interface {
 	// SLAs on the freshness of the counts returned. This API does not trigger a
 	// refresh of quota counts.
 	ListQuotas(ctx context.Context, request ListQuotasRequest) (*ListQuotasResponse, error)
+}
+
+// Request for Access enables customers to request access to and manage access
+// request destinations for Unity Catalog securables.
+//
+// These APIs provide a standardized way to update, get, and request to access
+// request destinations. Fine-grained authorization ensures that only users with
+// appropriate permissions can manage access request destinations.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type RfaService interface {
+
+	// Creates access requests for Unity Catalog permissions for a specified
+	// principal on a securable object. This Batch API can take in multiple
+	// principals, securable objects, and permissions as the input and returns
+	// the access request destinations for each. Principals must be unique
+	// across the API call.
+	//
+	// The supported securable types are: "metastore", "catalog", "schema",
+	// "table", "external_location", "connection", "credential", "function",
+	// "registered_model", and "volume".
+	BatchCreateAccessRequests(ctx context.Context, request BatchCreateAccessRequestsRequest) (*BatchCreateAccessRequestsResponse, error)
+
+	// Gets an array of access request destinations for the specified securable.
+	// Any caller can see URL destinations or the destinations on the metastore.
+	// Otherwise, only those with **BROWSE** permissions on the securable can
+	// see destinations.
+	//
+	// The supported securable types are: "metastore", "catalog", "schema",
+	// "table", "external_location", "connection", "credential", "function",
+	// "registered_model", and "volume".
+	GetAccessRequestDestinations(ctx context.Context, request GetAccessRequestDestinationsRequest) (*AccessRequestDestinations, error)
+
+	// Updates the access request destinations for the given securable. The
+	// caller must be a metastore admin, the owner of the securable, or a user
+	// that has the **MANAGE** privilege on the securable in order to assign
+	// destinations. Destinations cannot be updated for securables underneath
+	// schemas (tables, volumes, functions, and models). For these securable
+	// types, destinations are inherited from the parent securable. A maximum of
+	// 5 emails and 5 external notification destinations (Slack, Microsoft
+	// Teams, and Generic Webhook destinations) can be assigned to a securable.
+	// If a URL destination is assigned, no other destinations can be set.
+	//
+	// The supported securable types are: "metastore", "catalog", "schema",
+	// "table", "external_location", "connection", "credential", "function",
+	// "registered_model", and "volume".
+	UpdateAccessRequestDestinations(ctx context.Context, request UpdateAccessRequestDestinationsRequest) (*AccessRequestDestinations, error)
 }
 
 // A schema (also called a database) is the second layer of Unity Catalog’s

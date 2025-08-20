@@ -39,11 +39,15 @@ type GenieInterface interface {
 	// Delete a conversation.
 	DeleteConversationBySpaceIdAndConversationId(ctx context.Context, spaceId string, conversationId string) error
 
+	// Delete a conversation message.
+	DeleteConversationMessage(ctx context.Context, request GenieDeleteConversationMessageRequest) error
+
 	// Execute the SQL for a message query attachment. Use this API when the query
 	// attachment has expired and needs to be re-executed.
 	ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Execute the SQL query in the message.
+	// DEPRECATED: Use [Execute Message Attachment
+	// Query](:method:genie/executemessageattachmentquery) instead.
 	ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
 	// Get message from conversation.
@@ -62,24 +66,20 @@ type GenieInterface interface {
 	// `EXECUTING_QUERY` OR `COMPLETED`.
 	GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY`.
+	// DEPRECATED: Use [Get Message Attachment Query
+	// Result](:method:genie/getmessageattachmentqueryresult) instead.
 	GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY`.
+	// DEPRECATED: Use [Get Message Attachment Query
+	// Result](:method:genie/getmessageattachmentqueryresult) instead.
 	GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY` OR `COMPLETED`.
+	// DEPRECATED: Use [Get Message Attachment Query
+	// Result](:method:genie/getmessageattachmentqueryresult) instead.
 	GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY` OR `COMPLETED`.
+	// DEPRECATED: Use [Get Message Attachment Query
+	// Result](:method:genie/getmessageattachmentqueryresult) instead.
 	GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error)
 
 	// Get details of a Genie Space.
@@ -87,6 +87,9 @@ type GenieInterface interface {
 
 	// Get details of a Genie Space.
 	GetSpaceBySpaceId(ctx context.Context, spaceId string) (*GenieSpace, error)
+
+	// List messages in a conversation
+	ListConversationMessages(ctx context.Context, request GenieListConversationMessagesRequest) (*GenieListConversationMessagesResponse, error)
 
 	// Get a list of conversations in a Genie Space.
 	ListConversations(ctx context.Context, request GenieListConversationsRequest) (*GenieListConversationsResponse, error)
@@ -96,6 +99,9 @@ type GenieInterface interface {
 
 	// Get list of Genie Spaces.
 	ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error)
+
+	// Send feedback for a message.
+	SendMessageFeedback(ctx context.Context, request GenieSendMessageFeedbackRequest) error
 
 	// Start a new conversation.
 	StartConversation(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieStartConversationResponse], error)
@@ -267,9 +273,8 @@ func (a *GenieAPI) GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndM
 	})
 }
 
-// Get the result of SQL query if the message has a query attachment. This is
-// only available if a message has a query attachment and the message status is
-// `EXECUTING_QUERY`.
+// DEPRECATED: Use [Get Message Attachment Query
+// Result](:method:genie/getmessageattachmentqueryresult) instead.
 func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error) {
 	return a.genieImpl.GetMessageQueryResult(ctx, GenieGetMessageQueryResultRequest{
 		SpaceId:        spaceId,
@@ -278,9 +283,8 @@ func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(c
 	})
 }
 
-// Get the result of SQL query if the message has a query attachment. This is
-// only available if a message has a query attachment and the message status is
-// `EXECUTING_QUERY` OR `COMPLETED`.
+// DEPRECATED: Use [Get Message Attachment Query
+// Result](:method:genie/getmessageattachmentqueryresult) instead.
 func (a *GenieAPI) GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error) {
 	return a.genieImpl.GetMessageQueryResultByAttachment(ctx, GenieGetQueryResultByAttachmentRequest{
 		SpaceId:        spaceId,

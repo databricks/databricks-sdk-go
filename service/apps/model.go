@@ -264,6 +264,326 @@ func (s AppDeploymentStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// App manifest definition
+type AppManifest struct {
+	// Description of the app defined by manifest author / publisher
+	Description string `json:"description,omitempty"`
+	// Name of the app defined by manifest author / publisher
+	Name string `json:"name"`
+
+	ResourceSpecs []AppManifestAppResourceSpec `json:"resource_specs,omitempty"`
+	// The manifest schema version, for now only 1 is allowed
+	Version int `json:"version"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AppManifest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppManifest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AppManifestAppResourceJobSpec struct {
+	// Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE",
+	// "IS_OWNER", "CAN_MANAGE_RUN", "CAN_VIEW".
+	Permission AppManifestAppResourceJobSpecJobPermission `json:"permission"`
+}
+
+type AppManifestAppResourceJobSpecJobPermission string
+
+const AppManifestAppResourceJobSpecJobPermissionCanManage AppManifestAppResourceJobSpecJobPermission = `CAN_MANAGE`
+
+const AppManifestAppResourceJobSpecJobPermissionCanManageRun AppManifestAppResourceJobSpecJobPermission = `CAN_MANAGE_RUN`
+
+const AppManifestAppResourceJobSpecJobPermissionCanView AppManifestAppResourceJobSpecJobPermission = `CAN_VIEW`
+
+const AppManifestAppResourceJobSpecJobPermissionIsOwner AppManifestAppResourceJobSpecJobPermission = `IS_OWNER`
+
+// String representation for [fmt.Print]
+func (f *AppManifestAppResourceJobSpecJobPermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppManifestAppResourceJobSpecJobPermission) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_MANAGE_RUN`, `CAN_VIEW`, `IS_OWNER`:
+		*f = AppManifestAppResourceJobSpecJobPermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_MANAGE_RUN", "CAN_VIEW", "IS_OWNER"`, v)
+	}
+}
+
+// Values returns all possible values for AppManifestAppResourceJobSpecJobPermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppManifestAppResourceJobSpecJobPermission) Values() []AppManifestAppResourceJobSpecJobPermission {
+	return []AppManifestAppResourceJobSpecJobPermission{
+		AppManifestAppResourceJobSpecJobPermissionCanManage,
+		AppManifestAppResourceJobSpecJobPermissionCanManageRun,
+		AppManifestAppResourceJobSpecJobPermissionCanView,
+		AppManifestAppResourceJobSpecJobPermissionIsOwner,
+	}
+}
+
+// Type always returns AppManifestAppResourceJobSpecJobPermission to satisfy [pflag.Value] interface
+func (f *AppManifestAppResourceJobSpecJobPermission) Type() string {
+	return "AppManifestAppResourceJobSpecJobPermission"
+}
+
+type AppManifestAppResourceSecretSpec struct {
+	// Permission to grant on the secret scope. For secrets, only one permission
+	// is allowed. Permission must be one of: "READ", "WRITE", "MANAGE".
+	Permission AppManifestAppResourceSecretSpecSecretPermission `json:"permission"`
+}
+
+// Permission to grant on the secret scope. Supported permissions are: "READ",
+// "WRITE", "MANAGE".
+type AppManifestAppResourceSecretSpecSecretPermission string
+
+const AppManifestAppResourceSecretSpecSecretPermissionManage AppManifestAppResourceSecretSpecSecretPermission = `MANAGE`
+
+const AppManifestAppResourceSecretSpecSecretPermissionRead AppManifestAppResourceSecretSpecSecretPermission = `READ`
+
+const AppManifestAppResourceSecretSpecSecretPermissionWrite AppManifestAppResourceSecretSpecSecretPermission = `WRITE`
+
+// String representation for [fmt.Print]
+func (f *AppManifestAppResourceSecretSpecSecretPermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppManifestAppResourceSecretSpecSecretPermission) Set(v string) error {
+	switch v {
+	case `MANAGE`, `READ`, `WRITE`:
+		*f = AppManifestAppResourceSecretSpecSecretPermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MANAGE", "READ", "WRITE"`, v)
+	}
+}
+
+// Values returns all possible values for AppManifestAppResourceSecretSpecSecretPermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppManifestAppResourceSecretSpecSecretPermission) Values() []AppManifestAppResourceSecretSpecSecretPermission {
+	return []AppManifestAppResourceSecretSpecSecretPermission{
+		AppManifestAppResourceSecretSpecSecretPermissionManage,
+		AppManifestAppResourceSecretSpecSecretPermissionRead,
+		AppManifestAppResourceSecretSpecSecretPermissionWrite,
+	}
+}
+
+// Type always returns AppManifestAppResourceSecretSpecSecretPermission to satisfy [pflag.Value] interface
+func (f *AppManifestAppResourceSecretSpecSecretPermission) Type() string {
+	return "AppManifestAppResourceSecretSpecSecretPermission"
+}
+
+type AppManifestAppResourceServingEndpointSpec struct {
+	// Permission to grant on the serving endpoint. Supported permissions are:
+	// "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW".
+	Permission AppManifestAppResourceServingEndpointSpecServingEndpointPermission `json:"permission"`
+}
+
+type AppManifestAppResourceServingEndpointSpecServingEndpointPermission string
+
+const AppManifestAppResourceServingEndpointSpecServingEndpointPermissionCanManage AppManifestAppResourceServingEndpointSpecServingEndpointPermission = `CAN_MANAGE`
+
+const AppManifestAppResourceServingEndpointSpecServingEndpointPermissionCanQuery AppManifestAppResourceServingEndpointSpecServingEndpointPermission = `CAN_QUERY`
+
+const AppManifestAppResourceServingEndpointSpecServingEndpointPermissionCanView AppManifestAppResourceServingEndpointSpecServingEndpointPermission = `CAN_VIEW`
+
+// String representation for [fmt.Print]
+func (f *AppManifestAppResourceServingEndpointSpecServingEndpointPermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppManifestAppResourceServingEndpointSpecServingEndpointPermission) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_QUERY`, `CAN_VIEW`:
+		*f = AppManifestAppResourceServingEndpointSpecServingEndpointPermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW"`, v)
+	}
+}
+
+// Values returns all possible values for AppManifestAppResourceServingEndpointSpecServingEndpointPermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppManifestAppResourceServingEndpointSpecServingEndpointPermission) Values() []AppManifestAppResourceServingEndpointSpecServingEndpointPermission {
+	return []AppManifestAppResourceServingEndpointSpecServingEndpointPermission{
+		AppManifestAppResourceServingEndpointSpecServingEndpointPermissionCanManage,
+		AppManifestAppResourceServingEndpointSpecServingEndpointPermissionCanQuery,
+		AppManifestAppResourceServingEndpointSpecServingEndpointPermissionCanView,
+	}
+}
+
+// Type always returns AppManifestAppResourceServingEndpointSpecServingEndpointPermission to satisfy [pflag.Value] interface
+func (f *AppManifestAppResourceServingEndpointSpecServingEndpointPermission) Type() string {
+	return "AppManifestAppResourceServingEndpointSpecServingEndpointPermission"
+}
+
+// AppResource related fields are copied from app.proto but excludes resource
+// identifiers (e.g. name, id, key, scope, etc.)
+type AppManifestAppResourceSpec struct {
+	// Description of the App Resource.
+	Description string `json:"description,omitempty"`
+
+	JobSpec *AppManifestAppResourceJobSpec `json:"job_spec,omitempty"`
+	// Name of the App Resource.
+	Name string `json:"name"`
+
+	SecretSpec *AppManifestAppResourceSecretSpec `json:"secret_spec,omitempty"`
+
+	ServingEndpointSpec *AppManifestAppResourceServingEndpointSpec `json:"serving_endpoint_spec,omitempty"`
+
+	SqlWarehouseSpec *AppManifestAppResourceSqlWarehouseSpec `json:"sql_warehouse_spec,omitempty"`
+
+	UcSecurableSpec *AppManifestAppResourceUcSecurableSpec `json:"uc_securable_spec,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AppManifestAppResourceSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppManifestAppResourceSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AppManifestAppResourceSqlWarehouseSpec struct {
+	// Permission to grant on the SQL warehouse. Supported permissions are:
+	// "CAN_MANAGE", "CAN_USE", "IS_OWNER".
+	Permission AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission `json:"permission"`
+}
+
+type AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission string
+
+const AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermissionCanManage AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission = `CAN_MANAGE`
+
+const AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermissionCanUse AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission = `CAN_USE`
+
+const AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermissionIsOwner AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission = `IS_OWNER`
+
+// String representation for [fmt.Print]
+func (f *AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission) Set(v string) error {
+	switch v {
+	case `CAN_MANAGE`, `CAN_USE`, `IS_OWNER`:
+		*f = AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_USE", "IS_OWNER"`, v)
+	}
+}
+
+// Values returns all possible values for AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission) Values() []AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission {
+	return []AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission{
+		AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermissionCanManage,
+		AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermissionCanUse,
+		AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermissionIsOwner,
+	}
+}
+
+// Type always returns AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission to satisfy [pflag.Value] interface
+func (f *AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission) Type() string {
+	return "AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission"
+}
+
+type AppManifestAppResourceUcSecurableSpec struct {
+	Permission AppManifestAppResourceUcSecurableSpecUcSecurablePermission `json:"permission"`
+
+	SecurableType AppManifestAppResourceUcSecurableSpecUcSecurableType `json:"securable_type"`
+}
+
+type AppManifestAppResourceUcSecurableSpecUcSecurablePermission string
+
+const AppManifestAppResourceUcSecurableSpecUcSecurablePermissionManage AppManifestAppResourceUcSecurableSpecUcSecurablePermission = `MANAGE`
+
+const AppManifestAppResourceUcSecurableSpecUcSecurablePermissionReadVolume AppManifestAppResourceUcSecurableSpecUcSecurablePermission = `READ_VOLUME`
+
+const AppManifestAppResourceUcSecurableSpecUcSecurablePermissionWriteVolume AppManifestAppResourceUcSecurableSpecUcSecurablePermission = `WRITE_VOLUME`
+
+// String representation for [fmt.Print]
+func (f *AppManifestAppResourceUcSecurableSpecUcSecurablePermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppManifestAppResourceUcSecurableSpecUcSecurablePermission) Set(v string) error {
+	switch v {
+	case `MANAGE`, `READ_VOLUME`, `WRITE_VOLUME`:
+		*f = AppManifestAppResourceUcSecurableSpecUcSecurablePermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MANAGE", "READ_VOLUME", "WRITE_VOLUME"`, v)
+	}
+}
+
+// Values returns all possible values for AppManifestAppResourceUcSecurableSpecUcSecurablePermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppManifestAppResourceUcSecurableSpecUcSecurablePermission) Values() []AppManifestAppResourceUcSecurableSpecUcSecurablePermission {
+	return []AppManifestAppResourceUcSecurableSpecUcSecurablePermission{
+		AppManifestAppResourceUcSecurableSpecUcSecurablePermissionManage,
+		AppManifestAppResourceUcSecurableSpecUcSecurablePermissionReadVolume,
+		AppManifestAppResourceUcSecurableSpecUcSecurablePermissionWriteVolume,
+	}
+}
+
+// Type always returns AppManifestAppResourceUcSecurableSpecUcSecurablePermission to satisfy [pflag.Value] interface
+func (f *AppManifestAppResourceUcSecurableSpecUcSecurablePermission) Type() string {
+	return "AppManifestAppResourceUcSecurableSpecUcSecurablePermission"
+}
+
+type AppManifestAppResourceUcSecurableSpecUcSecurableType string
+
+const AppManifestAppResourceUcSecurableSpecUcSecurableTypeVolume AppManifestAppResourceUcSecurableSpecUcSecurableType = `VOLUME`
+
+// String representation for [fmt.Print]
+func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) Set(v string) error {
+	switch v {
+	case `VOLUME`:
+		*f = AppManifestAppResourceUcSecurableSpecUcSecurableType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "VOLUME"`, v)
+	}
+}
+
+// Values returns all possible values for AppManifestAppResourceUcSecurableSpecUcSecurableType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) Values() []AppManifestAppResourceUcSecurableSpecUcSecurableType {
+	return []AppManifestAppResourceUcSecurableSpecUcSecurableType{
+		AppManifestAppResourceUcSecurableSpecUcSecurableTypeVolume,
+	}
+}
+
+// Type always returns AppManifestAppResourceUcSecurableSpecUcSecurableType to satisfy [pflag.Value] interface
+func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) Type() string {
+	return "AppManifestAppResourceUcSecurableSpecUcSecurableType"
+}
+
 type AppPermission struct {
 	Inherited bool `json:"inherited,omitempty"`
 
@@ -860,8 +1180,46 @@ func (s CreateAppRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateCustomTemplateRequest struct {
+	Template CustomTemplate `json:"template"`
+}
+
+type CustomTemplate struct {
+	Creator string `json:"creator,omitempty"`
+	// The description of the template.
+	Description string `json:"description,omitempty"`
+	// The Git provider of the template.
+	GitProvider string `json:"git_provider"`
+	// The Git repository URL that the template resides in.
+	GitRepo string `json:"git_repo"`
+	// The manifest of the template. It defines fields and default values when
+	// installing the template.
+	Manifest AppManifest `json:"manifest"`
+	// The name of the template. It must contain only alphanumeric characters,
+	// hyphens, underscores, and whitespaces. It must be unique within the
+	// workspace.
+	Name string `json:"name"`
+	// The path to the template within the Git repository.
+	Path string `json:"path"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomTemplate) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomTemplate) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DeleteAppRequest struct {
 	// The name of the app.
+	Name string `json:"-" url:"-"`
+}
+
+type DeleteCustomTemplateRequest struct {
+	// The name of the custom template.
 	Name string `json:"-" url:"-"`
 }
 
@@ -889,6 +1247,11 @@ type GetAppPermissionsRequest struct {
 
 type GetAppRequest struct {
 	// The name of the app.
+	Name string `json:"-" url:"-"`
+}
+
+type GetCustomTemplateRequest struct {
+	// The name of the custom template.
 	Name string `json:"-" url:"-"`
 }
 
@@ -963,6 +1326,41 @@ func (s ListAppsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListCustomTemplatesRequest struct {
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of custom templates. Requests
+	// first page if absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCustomTemplatesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCustomTemplatesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListCustomTemplatesResponse struct {
+	// Pagination token to request the next page of custom templates.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Templates []CustomTemplate `json:"templates,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCustomTemplatesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCustomTemplatesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type StartAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
@@ -978,4 +1376,13 @@ type UpdateAppRequest struct {
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"-" url:"-"`
+}
+
+type UpdateCustomTemplateRequest struct {
+	// The name of the template. It must contain only alphanumeric characters,
+	// hyphens, underscores, and whitespaces. It must be unique within the
+	// workspace.
+	Name string `json:"-" url:"-"`
+
+	Template CustomTemplate `json:"template"`
 }
