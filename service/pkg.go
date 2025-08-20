@@ -20,6 +20,8 @@
 //
 // - [apps.AppsAPI]: Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
 //
+// - [apps.AppsSettingsAPI]: Apps Settings manage the settings for the Apps service on a customer's Databricks instance.
+//
 // - [catalog.ArtifactAllowlistsAPI]: In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode.
 //
 // - [settings.AutomaticClusterUpdateAPI]: Controls whether automatic cluster update is enabled for the current workspace.
@@ -62,9 +64,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
-//
 // - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
+//
+// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -109,6 +111,8 @@
 // - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
 // - [settings.EnhancedSecurityMonitoringAPI]: Controls whether enhanced security monitoring is enabled for the current workspace.
+//
+// - [catalog.EntityTagAssignmentsAPI]: Tags are attributes that include keys and optional values that you can use to organize and categorize entities in Unity Catalog.
 //
 // - [settings.EsmEnablementAccountAPI]: The enhanced security monitoring setting at the account level controls whether to enable the feature on new workspaces.
 //
@@ -256,6 +260,8 @@
 //
 // - [settings.RestrictWorkspaceAdminsAPI]: The Restrict Workspace Admins setting lets you control the capabilities of workspace admins.
 //
+// - [catalog.RfaAPI]: Request for Access enables customers to request access to and manage access request destinations for Unity Catalog securables.
+//
 // - [catalog.SchemasAPI]: A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace.
 //
 // - [workspace.SecretsAPI]: The Secrets API allows you to manage secrets, secret scopes, and access permissions.
@@ -278,6 +284,8 @@
 //
 // - [settings.AccountSettingsAPI]: Accounts Settings API allows users to manage settings at the account level.
 //
+// - [settingsv2.AccountSettingsV2API]: APIs to manage account level settings.
+//
 // - [sharing.SharesAPI]: A share is a container instantiated with :method:shares/create.
 //
 // - [settings.SqlResultsDownloadAPI]: Controls whether users within the workspace are allowed to download results from the SQL Editor and AI/BI Dashboards UIs.
@@ -295,6 +303,8 @@
 // - [catalog.TableConstraintsAPI]: Primary key and foreign key constraints encode relationships between fields in tables.
 //
 // - [catalog.TablesAPI]: A table resides in the third layer of Unity Catalog’s three-level namespace.
+//
+// - [tags.TagPoliciesAPI]: The Tag Policy API allows you to manage tag policies in Databricks.
 //
 // - [catalog.TemporaryPathCredentialsAPI]: Temporary Path Credentials refer to short-lived, downscoped credentials used to access external cloud storage locations registered in Databricks.
 //
@@ -330,6 +340,8 @@
 //
 // - [settings.WorkspaceNetworkConfigurationAPI]: These APIs allow configuration of network settings for Databricks workspaces by selecting which network policy to associate with the workspace.
 //
+// - [settingsv2.WorkspaceSettingsV2API]: APIs to manage workspace level settings.
+//
 // - [provisioning.WorkspacesAPI]: These APIs manage workspaces for this account.
 package service
 
@@ -353,8 +365,10 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/databricks/databricks-sdk-go/service/settingsv2"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
+	"github.com/databricks/databricks-sdk-go/service/tags"
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
@@ -374,6 +388,7 @@ var (
 	_ *sql.AlertsLegacyAPI                                = nil
 	_ *sql.AlertsV2API                                    = nil
 	_ *apps.AppsAPI                                       = nil
+	_ *apps.AppsSettingsAPI                               = nil
 	_ *catalog.ArtifactAllowlistsAPI                      = nil
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
 	_ *billing.BillableUsageAPI                           = nil
@@ -419,6 +434,7 @@ var (
 	_ *settings.EnableResultsDownloadingAPI               = nil
 	_ *provisioning.EncryptionKeysAPI                     = nil
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil
+	_ *catalog.EntityTagAssignmentsAPI                    = nil
 	_ *settings.EsmEnablementAccountAPI                   = nil
 	_ *ml.ExperimentsAPI                                  = nil
 	_ *catalog.ExternalLineageAPI                         = nil
@@ -492,6 +508,7 @@ var (
 	_ *workspace.ReposAPI                                 = nil
 	_ *catalog.ResourceQuotasAPI                          = nil
 	_ *settings.RestrictWorkspaceAdminsAPI                = nil
+	_ *catalog.RfaAPI                                     = nil
 	_ *catalog.SchemasAPI                                 = nil
 	_ *workspace.SecretsAPI                               = nil
 	_ *oauth2.ServicePrincipalFederationPolicyAPI         = nil
@@ -503,6 +520,7 @@ var (
 	_ *serving.ServingEndpointsDataPlaneAPI               = nil
 	_ *settings.SettingsAPI                               = nil
 	_ *settings.AccountSettingsAPI                        = nil
+	_ *settingsv2.AccountSettingsV2API                    = nil
 	_ *sharing.SharesAPI                                  = nil
 	_ *settings.SqlResultsDownloadAPI                     = nil
 	_ *sql.StatementExecutionAPI                          = nil
@@ -512,6 +530,7 @@ var (
 	_ *catalog.SystemSchemasAPI                           = nil
 	_ *catalog.TableConstraintsAPI                        = nil
 	_ *catalog.TablesAPI                                  = nil
+	_ *tags.TagPoliciesAPI                                = nil
 	_ *catalog.TemporaryPathCredentialsAPI                = nil
 	_ *catalog.TemporaryTableCredentialsAPI               = nil
 	_ *settings.TokenManagementAPI                        = nil
@@ -529,5 +548,6 @@ var (
 	_ *catalog.WorkspaceBindingsAPI                       = nil
 	_ *settings.WorkspaceConfAPI                          = nil
 	_ *settings.WorkspaceNetworkConfigurationAPI          = nil
+	_ *settingsv2.WorkspaceSettingsV2API                  = nil
 	_ *provisioning.WorkspacesAPI                         = nil
 )

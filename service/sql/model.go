@@ -468,6 +468,10 @@ type AlertV2 struct {
 	CustomSummary string `json:"custom_summary,omitempty"`
 	// The display name of the alert.
 	DisplayName string `json:"display_name,omitempty"`
+	// The actual identity that will be used to execute the alert. This is an
+	// output-only field that shows the resolved run-as identity after applying
+	// permissions and defaults.
+	EffectiveRunAs *AlertV2RunAs `json:"effective_run_as,omitempty"`
 
 	Evaluation *AlertV2Evaluation `json:"evaluation,omitempty"`
 	// UUID identifying the alert.
@@ -482,9 +486,19 @@ type AlertV2 struct {
 	ParentPath string `json:"parent_path,omitempty"`
 	// Text of the query to be run.
 	QueryText string `json:"query_text,omitempty"`
+	// Specifies the identity that will be used to run the alert. This field
+	// allows you to configure alerts to run as a specific user or service
+	// principal. - For user identity: Set `user_name` to the email of an active
+	// workspace user. Users can only set this to their own email. - For service
+	// principal: Set `service_principal_name` to the application ID. Requires
+	// the `servicePrincipal/user` role. If not specified, the alert will run as
+	// the request user.
+	RunAs *AlertV2RunAs `json:"run_as,omitempty"`
 	// The run as username or application ID of service principal. On Create and
 	// Update, this field can be set to application ID of an active service
 	// principal. Setting this field requires the servicePrincipal/user role.
+	// Deprecated: Use `run_as` field instead. This field will be removed in a
+	// future release.
 	RunAsUserName string `json:"run_as_user_name,omitempty"`
 
 	Schedule *CronSchedule `json:"schedule,omitempty"`
@@ -591,6 +605,25 @@ func (s *AlertV2OperandValue) UnmarshalJSON(b []byte) error {
 }
 
 func (s AlertV2OperandValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AlertV2RunAs struct {
+	// Application ID of an active service principal. Setting this field
+	// requires the `servicePrincipal/user` role.
+	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// The email of an active workspace user. Can only set this field to their
+	// own email.
+	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AlertV2RunAs) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertV2RunAs) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -3796,6 +3829,8 @@ type QueryFilter struct {
 }
 
 type QueryInfo struct {
+	// The ID of the cached query if this result retrieved from cache
+	CacheQueryId string `json:"cache_query_id,omitempty"`
 	// SQL Warehouse channel information at the time of query execution
 	ChannelUsed *ChannelInfo `json:"channel_used,omitempty"`
 	// Client application that ran the statement. For example: Databricks SQL

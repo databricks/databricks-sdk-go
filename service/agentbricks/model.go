@@ -13,9 +13,10 @@ type CancelCustomLlmOptimizationRunRequest struct {
 }
 
 type CreateCustomLlmRequest struct {
-	// Optional: UC path for agent artifacts. If you are using a dataset that
-	// you only have read permissions, please provide a destination path where
-	// you have write permissions. Please provide this in catalog.schema format.
+	// This will soon be deprecated!! Optional: UC path for agent artifacts. If
+	// you are using a dataset that you only have read permissions, please
+	// provide a destination path where you have write permissions. Please
+	// provide this in catalog.schema format.
 	AgentArtifactPath string `json:"agent_artifact_path,omitempty"`
 	// Datasets used for training and evaluating the model, not for inference.
 	// Currently, only 1 dataset is accepted.

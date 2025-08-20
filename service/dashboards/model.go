@@ -270,6 +270,15 @@ type GenieCreateConversationMessageRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+type GenieDeleteConversationMessageRequest struct {
+	// The ID associated with the conversation.
+	ConversationId string `json:"-" url:"-"`
+	// The ID associated with the message to delete.
+	MessageId string `json:"-" url:"-"`
+	// The ID associated with the Genie space where the message is located.
+	SpaceId string `json:"-" url:"-"`
+}
+
 type GenieDeleteConversationRequest struct {
 	// The ID of the conversation to delete.
 	ConversationId string `json:"-" url:"-"`
@@ -295,6 +304,47 @@ type GenieExecuteMessageQueryRequest struct {
 	MessageId string `json:"-" url:"-"`
 	// Genie space ID
 	SpaceId string `json:"-" url:"-"`
+}
+
+// Feedback rating for Genie messages
+type GenieFeedbackRating string
+
+const GenieFeedbackRatingNegative GenieFeedbackRating = `NEGATIVE`
+
+const GenieFeedbackRatingNone GenieFeedbackRating = `NONE`
+
+const GenieFeedbackRatingPositive GenieFeedbackRating = `POSITIVE`
+
+// String representation for [fmt.Print]
+func (f *GenieFeedbackRating) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *GenieFeedbackRating) Set(v string) error {
+	switch v {
+	case `NEGATIVE`, `NONE`, `POSITIVE`:
+		*f = GenieFeedbackRating(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "NEGATIVE", "NONE", "POSITIVE"`, v)
+	}
+}
+
+// Values returns all possible values for GenieFeedbackRating.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GenieFeedbackRating) Values() []GenieFeedbackRating {
+	return []GenieFeedbackRating{
+		GenieFeedbackRatingNegative,
+		GenieFeedbackRatingNone,
+		GenieFeedbackRatingPositive,
+	}
+}
+
+// Type always returns GenieFeedbackRating to satisfy [pflag.Value] interface
+func (f *GenieFeedbackRating) Type() string {
+	return "GenieFeedbackRating"
 }
 
 type GenieGetConversationMessageRequest struct {
@@ -350,7 +400,48 @@ type GenieGetSpaceRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+type GenieListConversationMessagesRequest struct {
+	// The ID of the conversation to list messages from
+	ConversationId string `json:"-" url:"-"`
+	// Maximum number of messages to return per page
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Token to get the next page of results
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The ID associated with the Genie space where the conversation is located
+	SpaceId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieListConversationMessagesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieListConversationMessagesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieListConversationMessagesResponse struct {
+	// List of messages in the conversation.
+	Messages []GenieMessage `json:"messages,omitempty"`
+	// The token to use for retrieving the next page of results.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieListConversationMessagesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieListConversationMessagesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GenieListConversationsRequest struct {
+	// Include all conversations in the space across all users. Requires "Can
+	// Manage" permission on the space.
+	IncludeAll bool `json:"-" url:"include_all,omitempty"`
 	// Maximum number of conversations to return per page
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Token to get the next page of results
@@ -502,6 +593,29 @@ func (s *GenieResultMetadata) UnmarshalJSON(b []byte) error {
 }
 
 func (s GenieResultMetadata) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieSendMessageFeedbackRequest struct {
+	// The ID associated with the conversation.
+	ConversationId string `json:"-" url:"-"`
+	// The rating (POSITIVE, NEGATIVE, or NONE).
+	FeedbackRating GenieFeedbackRating `json:"feedback_rating"`
+	// Optional text feedback that will be stored as a comment.
+	FeedbackText string `json:"feedback_text,omitempty"`
+	// The ID associated with the message to provide feedback for.
+	MessageId string `json:"-" url:"-"`
+	// The ID associated with the Genie space where the message is located.
+	SpaceId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieSendMessageFeedbackRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieSendMessageFeedbackRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

@@ -1381,16 +1381,9 @@ type SecurablePropertiesKvPairs struct {
 }
 
 type Share struct {
-	// The comment of the share.
-	Comment string `json:"comment,omitempty"`
-	// The display name of the share. If defined, it will be shown in the UI.
-	DisplayName string `json:"display_name,omitempty"`
-
 	Id string `json:"id,omitempty"`
 
 	Name string `json:"name,omitempty"`
-	// The tags of the share.
-	Tags []catalog.TagKeyValue `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

@@ -14,6 +14,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/databricks/databricks-sdk-go/service/settingsv2"
 )
 
 type AccountClient struct {
@@ -358,6 +359,9 @@ type AccountClient struct {
 	// level.
 	Settings settings.AccountSettingsInterface
 
+	// APIs to manage account level settings
+	SettingsV2 settingsv2.AccountSettingsV2Interface
+
 	// These APIs manage storage configurations for this workspace. A root
 	// storage S3 bucket in your account is required to store objects like
 	// cluster logs, notebook revisions, and job results. You can also use the
@@ -469,6 +473,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		ServicePrincipalSecrets:          oauth2.NewServicePrincipalSecrets(apiClient),
 		ServicePrincipals:                iam.NewAccountServicePrincipals(apiClient),
 		Settings:                         settings.NewAccountSettings(apiClient),
+		SettingsV2:                       settingsv2.NewAccountSettingsV2(apiClient),
 		Storage:                          provisioning.NewStorage(apiClient),
 		StorageCredentials:               catalog.NewAccountStorageCredentials(apiClient),
 		UsageDashboards:                  billing.NewUsageDashboards(apiClient),

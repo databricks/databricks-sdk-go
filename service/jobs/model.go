@@ -60,6 +60,9 @@ type BaseJob struct {
 	// based on accessible budget policies of the run_as identity on job
 	// creation or modification.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// The id of the usage policy used by this job for cost attribution
+	// purposes.
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// Indicates if the job has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/get endpoint.
 	// It is only relevant for API 2.2 :method:jobs/list requests with
@@ -120,6 +123,9 @@ type BaseRun struct {
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
+	// The id of the usage policy used by this run for cost attribution
+	// purposes.
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
 	EndTime int64 `json:"end_time,omitempty"`
@@ -744,7 +750,7 @@ type CreateJob struct {
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
 	// The id of the user specified usage policy to use for this job. If not
 	// specified, a default usage policy may be applied when creating or
-	// modifying the job. See `effective_budget_policy_id` for the budget policy
+	// modifying the job. See `effective_usage_policy_id` for the usage policy
 	// used by this workload.
 	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 	// A collection of system notification IDs to notify when runs of this job
@@ -1605,6 +1611,9 @@ type Job struct {
 	// based on accessible budget policies of the run_as identity on job
 	// creation or modification.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// The id of the usage policy used by this job for cost attribution
+	// purposes.
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// Indicates if the job has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/get endpoint.
 	// It is only relevant for API 2.2 :method:jobs/list requests with
@@ -2150,7 +2159,7 @@ type JobSettings struct {
 	Trigger *TriggerSettings `json:"trigger,omitempty"`
 	// The id of the user specified usage policy to use for this job. If not
 	// specified, a default usage policy may be applied when creating or
-	// modifying the job. See `effective_budget_policy_id` for the budget policy
+	// modifying the job. See `effective_usage_policy_id` for the usage policy
 	// used by this workload.
 	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 	// A collection of system notification IDs to notify when runs of this job
@@ -3266,6 +3275,9 @@ type Run struct {
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
 	// through rapid scaling and optimized cluster performance.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
+	// The id of the usage policy used by this run for cost attribution
+	// purposes.
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
 	EndTime int64 `json:"end_time,omitempty"`

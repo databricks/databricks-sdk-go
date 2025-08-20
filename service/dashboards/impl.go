@@ -37,6 +37,15 @@ func (a *genieImpl) DeleteConversation(ctx context.Context, request GenieDeleteC
 	return err
 }
 
+func (a *genieImpl) DeleteConversationMessage(ctx context.Context, request GenieDeleteConversationMessageRequest) error {
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v", request.SpaceId, request.ConversationId, request.MessageId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
 func (a *genieImpl) ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
 	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/execute-query", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
@@ -107,6 +116,16 @@ func (a *genieImpl) GetSpace(ctx context.Context, request GenieGetSpaceRequest) 
 	return &genieSpace, err
 }
 
+func (a *genieImpl) ListConversationMessages(ctx context.Context, request GenieListConversationMessagesRequest) (*GenieListConversationMessagesResponse, error) {
+	var genieListConversationMessagesResponse GenieListConversationMessagesResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages", request.SpaceId, request.ConversationId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListConversationMessagesResponse)
+	return &genieListConversationMessagesResponse, err
+}
+
 func (a *genieImpl) ListConversations(ctx context.Context, request GenieListConversationsRequest) (*GenieListConversationsResponse, error) {
 	var genieListConversationsResponse GenieListConversationsResponse
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations", request.SpaceId)
@@ -125,6 +144,16 @@ func (a *genieImpl) ListSpaces(ctx context.Context, request GenieListSpacesReque
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieListSpacesResponse)
 	return &genieListSpacesResponse, err
+}
+
+func (a *genieImpl) SendMessageFeedback(ctx context.Context, request GenieSendMessageFeedbackRequest) error {
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/feedback", request.SpaceId, request.ConversationId, request.MessageId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
+	return err
 }
 
 func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error) {
