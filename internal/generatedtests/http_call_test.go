@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/common/types"
 	"github.com/databricks/databricks-sdk-go/internal/testspecs/service/httpcallv2"
 	"github.com/databricks/databricks-sdk-go/qa"
 )
@@ -120,7 +121,7 @@ func TestHttpCall_UpdateResourceWithSimpleQueryParams(t *testing.T) {
 		QueryParamString:      "query_string_val",
 		QueryParamInt:         999,
 		QueryParamBool:        true,
-		FieldMask:             "field.mask.value",
+		FieldMask:             &types.FieldMask{Paths: []string{"field.mask.value"}},
 	}
 	qa.HTTPFixtures{
 		{
@@ -178,7 +179,11 @@ func TestHttpCall_UpdateResourceWithRepeatedQueryParam(t *testing.T) {
 		NestedPathParamString: "update_string",
 		NestedPathParamInt:    789,
 		NestedPathParamBool:   true,
-		RepeatedQueryParam:    []string{"item1", "item2", "item3"},
+		RepeatedQueryParam: []string{
+			"item1",
+			"item2",
+			"item3",
+		},
 	}
 	qa.HTTPFixtures{
 		{
@@ -207,7 +212,11 @@ func TestHttpCall_UpdateResourceWithRepeatedNestedQueryParam(t *testing.T) {
 		NestedPathParamInt:    789,
 		NestedPathParamBool:   true,
 		OptionalComplexQueryParam: &httpcallv2.ComplexQueryParam{
-			NestedRepeatedQueryParam: []string{"item1", "item2", "item3"},
+			NestedRepeatedQueryParam: []string{
+				"item1",
+				"item2",
+				"item3",
+			},
 		},
 	}
 	qa.HTTPFixtures{
@@ -236,11 +245,22 @@ func TestHttpCall_UpdateResourceWithDoubleRepeatedNestedQueryParam(t *testing.T)
 		NestedPathParamString: "update_string",
 		NestedPathParamInt:    789,
 		NestedPathParamBool:   true,
-		RepeatedComplexQueryParam: []httpcallv2.ComplexQueryParam{httpcallv2.ComplexQueryParam{
-			NestedRepeatedQueryParam: []string{"item1", "item2", "item3"},
-		}, httpcallv2.ComplexQueryParam{
-			NestedRepeatedQueryParam: []string{"item4", "item5", "item6"},
-		}},
+		RepeatedComplexQueryParam: []httpcallv2.ComplexQueryParam{
+			httpcallv2.ComplexQueryParam{
+				NestedRepeatedQueryParam: []string{
+					"item1",
+					"item2",
+					"item3",
+				},
+			},
+			httpcallv2.ComplexQueryParam{
+				NestedRepeatedQueryParam: []string{
+					"item4",
+					"item5",
+					"item6",
+				},
+			},
+		},
 	}
 	qa.HTTPFixtures{
 		{
@@ -283,7 +303,7 @@ func TestHttpCall_GetResourceWithSimpleQueryParams(t *testing.T) {
 		QueryParamString: "query_string_val",
 		QueryParamInt:    999,
 		QueryParamBool:   true,
-		FieldMask:        "field.mask.value",
+		FieldMask:        &types.FieldMask{Paths: []string{"field.mask.value"}},
 	}
 	qa.HTTPFixtures{
 		{
@@ -318,10 +338,14 @@ func TestHttpCall_GetResourceWithOneNestedQueryParam(t *testing.T) {
 
 func TestHttpCall_GetResourceWithRepeatedQueryParam(t *testing.T) {
 	input := httpcallv2.GetResourceRequest{
-		PathParamString:    "get_string",
-		PathParamInt:       101,
-		PathParamBool:      false,
-		RepeatedQueryParam: []string{"item1", "item2", "item3"},
+		PathParamString: "get_string",
+		PathParamInt:    101,
+		PathParamBool:   false,
+		RepeatedQueryParam: []string{
+			"item1",
+			"item2",
+			"item3",
+		},
 	}
 	qa.HTTPFixtures{
 		{
@@ -340,7 +364,11 @@ func TestHttpCall_GetResourceWithRepeatedNestedQueryParam(t *testing.T) {
 		PathParamInt:    202,
 		PathParamBool:   true,
 		OptionalComplexQueryParam: &httpcallv2.ComplexQueryParam{
-			NestedRepeatedQueryParam: []string{"item1", "item2", "item3"},
+			NestedRepeatedQueryParam: []string{
+				"item1",
+				"item2",
+				"item3",
+			},
 		},
 	}
 	qa.HTTPFixtures{
@@ -359,11 +387,22 @@ func TestHttpCall_GetResourceWithDoubleRepeatedNestedQueryParam(t *testing.T) {
 		PathParamString: "get_string",
 		PathParamInt:    303,
 		PathParamBool:   false,
-		RepeatedComplexQueryParam: []httpcallv2.ComplexQueryParam{httpcallv2.ComplexQueryParam{
-			NestedRepeatedQueryParam: []string{"item1", "item2", "item3"},
-		}, httpcallv2.ComplexQueryParam{
-			NestedRepeatedQueryParam: []string{"item4", "item5", "item6"},
-		}},
+		RepeatedComplexQueryParam: []httpcallv2.ComplexQueryParam{
+			httpcallv2.ComplexQueryParam{
+				NestedRepeatedQueryParam: []string{
+					"item1",
+					"item2",
+					"item3",
+				},
+			},
+			httpcallv2.ComplexQueryParam{
+				NestedRepeatedQueryParam: []string{
+					"item4",
+					"item5",
+					"item6",
+				},
+			},
+		},
 	}
 	qa.HTTPFixtures{
 		{
