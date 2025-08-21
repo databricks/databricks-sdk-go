@@ -16,7 +16,7 @@ type FieldMask struct {
 
 // MarshalJSON implements the json.Marshaler interface by formatting the
 // field mask as a string according to Google Well Known Type
-func (f *FieldMask) MarshalJSON() ([]byte, error) {
+func (f FieldMask) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf(`"%s"`, f.ToWireFormat())), nil
 }
 
