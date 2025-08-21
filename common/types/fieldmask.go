@@ -11,7 +11,7 @@ import (
 // It is used to specify which fields of a resource should be included or excluded
 // in a request or response.
 type FieldMask struct {
-	Fields []string
+	Paths []string
 }
 
 // MarshalJSON implements the json.Marshaler interface by formatting the
@@ -23,7 +23,7 @@ func (f *FieldMask) MarshalJSON() ([]byte, error) {
 // ToWireFormat returns the field mask as a string according to Google Well Known Type
 // which is a comma-separated list of field names.
 func (f FieldMask) ToWireFormat() string {
-	return strings.Join(f.Fields, ",")
+	return strings.Join(f.Paths, ",")
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface by parsing the
@@ -39,9 +39,9 @@ func (f *FieldMask) UnmarshalJSON(data []byte) error {
 	}
 
 	if s != "" {
-		f.Fields = strings.Split(s, ",")
+		f.Paths = strings.Split(s, ",")
 	} else {
-		f.Fields = []string{}
+		f.Paths = []string{}
 	}
 
 	return nil
@@ -51,7 +51,7 @@ func (f *FieldMask) UnmarshalJSON(data []byte) error {
 // If the FieldMask is nil or empty, it returns nil.
 // If the url.Values is nil, it returns an error.
 func (f *FieldMask) EncodeValues(key string, v *url.Values) error {
-	if f == nil || len(f.Fields) == 0 {
+	if f == nil || len(f.Paths) == 0 {
 		return nil
 	}
 	if v == nil {
