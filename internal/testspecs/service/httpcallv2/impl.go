@@ -41,8 +41,8 @@ func (a *httpCallV2Impl) UpdateResource(ctx context.Context, request UpdateResou
 	var resource Resource
 	path := fmt.Sprintf("/api/2.0/http-call/%v/%v/%v", request.NestedPathParamString, request.NestedPathParamInt, request.NestedPathParamBool)
 	queryParams := make(map[string]any)
-	if request.FieldMask != "" || slices.Contains(request.ForceSendFields, "FieldMask") {
-		queryParams["field_mask"] = request.FieldMask
+	if request.FieldMask != nil || slices.Contains(request.ForceSendFields, "FieldMask") {
+		queryParams["field_mask"] = request.FieldMask.ToWireFormat()
 	}
 	if request.OptionalComplexQueryParam != nil || slices.Contains(request.ForceSendFields, "OptionalComplexQueryParam") {
 		queryParams["optional_complex_query_param"] = request.OptionalComplexQueryParam
