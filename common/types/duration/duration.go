@@ -1,4 +1,4 @@
-package types
+package duration
 
 import (
 	"encoding/json"
@@ -16,13 +16,27 @@ import (
 //
 // Example:
 //
-//	customDur := types.NewDuration(30 * time.Second)
-//	goDur := customDur.Duration // Access the underlying time.Duration
+//	customDur := durationpb.New(30 * time.Second)
+//	goDur := customDur.AsDuration() // Access the underlying time.Duration
 type Duration struct {
 	time.Duration
 }
 
+// New creates a custom Duration from a standard time.Duration.
+func New(d time.Duration) *Duration {
+	return &Duration{Duration: d}
+}
+
+// AsDuration returns the underlying time.Duration value.
+func (x *Duration) AsDuration() time.Duration {
+	if x == nil {
+		return 0
+	}
+	return x.Duration
+}
+
 // NewDuration creates a custom Duration from a standard time.Duration.
+// Deprecated: Use New instead.
 func NewDuration(d time.Duration) Duration {
 	return Duration{Duration: d}
 }
@@ -83,6 +97,6 @@ func (d *Duration) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
-	*d = NewDuration(dur)
+	*d = *New(dur)
 	return nil
 }

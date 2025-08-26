@@ -1,4 +1,4 @@
-package types
+package fieldmask
 
 import (
 	"encoding/json"
@@ -12,6 +12,11 @@ import (
 // in a request or response.
 type FieldMask struct {
 	Paths []string
+}
+
+// New creates a FieldMask from a slice of field paths.
+func New(paths []string) *FieldMask {
+	return &FieldMask{Paths: paths}
 }
 
 // MarshalJSON implements the json.Marshaler interface by formatting the

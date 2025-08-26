@@ -1,30 +1,38 @@
-package types
+package time
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"time"
+	stdtime "time"
 )
 
-// Time is a wrapper for time.Time to provide custom marshaling
+// Time is a wrapper for stdtime.Time to provide custom marshaling
 // for JSON and URL query strings.
 //
-// It embeds time.Time, so all standard methods (Format, Parse, etc.)
-// are directly accessible. The underlying time.Time value can be
+// It embeds stdtime.Time, so all standard methods (Format, Parse, etc.)
+// are directly accessible. The underlying stdtime.Time value can be
 // accessed via the .Time field.
 //
 // Example:
 //
-//	customTime := types.NewTime(time.Now())
-//	goTime := customTime.Time // Access the underlying time.Time
+//	customTime := time.New(stdtime.Now())
+//	goTime := customTime.AsTime() // Access the underlying stdtime.Time
 type Time struct {
-	time.Time
+	stdtime.Time
 }
 
-// NewTime creates a custom Time from a standard time.Time.
-func NewTime(t time.Time) Time {
-	return Time{Time: t}
+// New creates a custom Time from a standard stdtime.Time.
+func New(t stdtime.Time) *Time {
+	return &Time{Time: t}
+}
+
+// AsTime returns the underlying stdtime.Time value.
+func (x *Time) AsTime() stdtime.Time {
+	if x == nil {
+		return stdtime.Time{}
+	}
+	return x.Time
 }
 
 // MarshalJSON implements the json.Marshaler interface by formatting the
@@ -35,7 +43,7 @@ func (t Time) MarshalJSON() ([]byte, error) {
 
 // ToWireFormat returns the time as a string according to RFC3339Nano
 func (t Time) ToWireFormat() string {
-	return t.Time.Format(time.RFC3339Nano)
+	return t.Time.Format(stdtime.RFC3339Nano)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface by parsing the
@@ -51,11 +59,11 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 	}
 
 	if s == "" {
-		*t = Time{Time: time.Time{}}
+		*t = Time{Time: stdtime.Time{}}
 		return nil
 	}
 
-	timeValue, err := time.Parse(time.RFC3339Nano, s)
+	timeValue, err := stdtime.Parse(stdtime.RFC3339Nano, s)
 	if err != nil {
 		return err
 	}

@@ -1,4 +1,4 @@
-package types
+package fieldmask
 
 import (
 	"net/url"
@@ -6,6 +6,15 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 )
+
+func TestNew(t *testing.T) {
+	paths := []string{"name", "age", "email"}
+	fieldMask := New(paths)
+
+	if diff := cmp.Diff(fieldMask.Paths, paths); diff != "" {
+		t.Errorf("New() paths mismatch (-want +got):\n%s", diff)
+	}
+}
 
 func TestFieldMask_MarshalJSON(t *testing.T) {
 	tests := []struct {
