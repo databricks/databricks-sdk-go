@@ -1,4 +1,4 @@
-package types
+package duration
 
 import (
 	"encoding/json"
@@ -6,6 +6,23 @@ import (
 	"testing"
 	"time"
 )
+
+func TestNew(t *testing.T) {
+	d := time.Second * 5
+	dur := New(d)
+	if dur.Duration != d {
+		t.Errorf("New() = %v, want %v", dur.Duration, d)
+	}
+}
+
+func TestAsDuration(t *testing.T) {
+	d := time.Second * 5
+	dur := New(d)
+	result := dur.AsDuration()
+	if result != d {
+		t.Errorf("AsDuration() = %v, want %v", result, d)
+	}
+}
 
 func TestDuration_MarshalJSON(t *testing.T) {
 	tests := []struct {
@@ -16,32 +33,32 @@ func TestDuration_MarshalJSON(t *testing.T) {
 	}{
 		{
 			name:     "zero duration",
-			duration: NewDuration(0),
+			duration: *New(0),
 			expected: "0.000000000s",
 		},
 		{
 			name:     "positive duration",
-			duration: NewDuration(5 * time.Second),
+			duration: *New(5 * time.Second),
 			expected: "5.000000000s",
 		},
 		{
 			name:     "negative duration",
-			duration: NewDuration(-2 * time.Minute),
+			duration: *New(-2 * time.Minute),
 			expected: "-120.000000000s",
 		},
 		{
 			name:     "negative duration with fractional seconds",
-			duration: NewDuration(-2*time.Minute + 100*time.Millisecond),
+			duration: *New(-2*time.Minute + 100*time.Millisecond),
 			expected: "-119.900000000s",
 		},
 		{
 			name:     "fractional seconds",
-			duration: NewDuration(1500 * time.Millisecond),
+			duration: *New(1500 * time.Millisecond),
 			expected: "1.500000000s",
 		},
 		{
 			name:     "large duration",
-			duration: NewDuration(9223372036*time.Second + 854775000*time.Nanosecond),
+			duration: *New(9223372036*time.Second + 854775000*time.Nanosecond),
 			expected: "9223372036.854775000s",
 		},
 	}
@@ -70,49 +87,49 @@ func TestDuration_UnmarshalJSON(t *testing.T) {
 		{
 			name:    "zero duration",
 			input:   `"0s"`,
-			want:    NewDuration(0),
+			want:    *New(0),
 			wantErr: false,
 		},
 		{
 			name:    "positive duration",
 			input:   `"5s"`,
-			want:    NewDuration(5 * time.Second),
+			want:    *New(5 * time.Second),
 			wantErr: false,
 		},
 		{
 			name:    "negative duration",
 			input:   `"-2s"`,
-			want:    NewDuration(-2 * time.Second),
+			want:    *New(-2 * time.Second),
 			wantErr: false,
 		},
 		{
 			name:    "negative duration with fractional seconds",
 			input:   `"-2.1s"`,
-			want:    NewDuration(-2*time.Second - 100*time.Millisecond),
+			want:    *New(-2*time.Second - 100*time.Millisecond),
 			wantErr: false,
 		},
 		{
 			name:    "fractional seconds",
 			input:   `"1.5s"`,
-			want:    NewDuration(1500 * time.Millisecond),
+			want:    *New(1500 * time.Millisecond),
 			wantErr: false,
 		},
 		{
 			name:    "large duration",
 			input:   `"9223372036.854775000s"`,
-			want:    NewDuration(9223372036*time.Second + 854775000*time.Nanosecond),
+			want:    *New(9223372036*time.Second + 854775000*time.Nanosecond),
 			wantErr: false,
 		},
 		{
 			name:    "invalid duration format",
 			input:   `"invalid"`,
-			want:    NewDuration(0),
+			want:    *New(0),
 			wantErr: true,
 		},
 		{
 			name:    "empty string",
 			input:   `""`,
-			want:    NewDuration(0),
+			want:    *New(0),
 			wantErr: true,
 		},
 	}
@@ -153,31 +170,31 @@ func TestDuration_EncodeValues(t *testing.T) {
 	}{
 		{
 			name:     "zero duration",
-			duration: NewDuration(0),
+			duration: *New(0),
 			key:      "duration",
 			expected: "0.000000000s",
 		},
 		{
 			name:     "positive duration",
-			duration: NewDuration(5 * time.Second),
+			duration: *New(5 * time.Second),
 			key:      "timeout",
 			expected: "5.000000000s",
 		},
 		{
 			name:     "negative duration",
-			duration: NewDuration(-2 * time.Minute),
+			duration: *New(-2 * time.Minute),
 			key:      "delay",
 			expected: "-120.000000000s",
 		},
 		{
 			name:     "fractional seconds",
-			duration: NewDuration(1500 * time.Millisecond),
+			duration: *New(1500 * time.Millisecond),
 			key:      "interval",
 			expected: "1.500000000s",
 		},
 		{
 			name:     "large duration",
-			duration: NewDuration(24 * time.Hour),
+			duration: *New(24 * time.Hour),
 			key:      "period",
 			expected: "86400.000000000s",
 		},
@@ -206,23 +223,23 @@ func TestDuration_JSONRoundTrip(t *testing.T) {
 	}{
 		{
 			name:     "zero duration",
-			duration: NewDuration(0),
+			duration: *New(0),
 		},
 		{
 			name:     "positive duration",
-			duration: NewDuration(5 * time.Second),
+			duration: *New(5 * time.Second),
 		},
 		{
 			name:     "negative duration",
-			duration: NewDuration(-2 * time.Minute),
+			duration: *New(-2 * time.Minute),
 		},
 		{
 			name:     "fractional seconds",
-			duration: NewDuration(1500 * time.Millisecond),
+			duration: *New(1500 * time.Millisecond),
 		},
 		{
 			name:     "complex duration",
-			duration: NewDuration(1*time.Hour + 2*time.Minute + 3*time.Second),
+			duration: *New(1*time.Hour + 2*time.Minute + 3*time.Second),
 		},
 	}
 
