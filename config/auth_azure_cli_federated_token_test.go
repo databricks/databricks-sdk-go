@@ -17,7 +17,7 @@ func TestAzureCliCredentials_FederatedTokenServicePrincipal(t *testing.T) {
 	t.Setenv("PATH", testdataPath())
 
 	// Simulate a service principal with a client ID (not systemAssignedIdentity/userAssignedIdentity)
-	// This represents the federated token scenario from the JIRA issue
+	// This represents the federated token scenario that occurs in AKS workload identity
 	t.Setenv("AZ_USER_NAME", "5817e630-86b3-4f67-a38e-a63e6a1a401c")
 	t.Setenv("AZ_USER_TYPE", "servicePrincipal")
 

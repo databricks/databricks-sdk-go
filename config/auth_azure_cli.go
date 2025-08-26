@@ -162,7 +162,7 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 func (ts *azureCliTokenSource) getTokenBytes() ([]byte, error) {
 	// When fetching an access token from the CLI with a managed identity, the tenant ID should not be specified.
 	// https://github.com/hashicorp/go-azure-sdk/pull/910/files demonstrates how to detect whether the CLI is authenticated
-	// using a managed identity.
+	// using a managed identity or federated token.
 	accountRaw, err := runCommand(ts.ctx, "az", []string{"account", "show", "--output", "json"})
 	if err != nil {
 		return nil, fmt.Errorf("cannot get account info: %w", err)
@@ -176,8 +176,17 @@ func (ts *azureCliTokenSource) getTokenBytes() ([]byte, error) {
 	if err := json.Unmarshal(accountRaw, &account); err != nil {
 		return nil, fmt.Errorf("cannot unmarshal account info: %w", err)
 	}
+
+	// Check for authentication types that should not use tenant ID:
+	// 1. Traditional MSI (system/user assigned identities)
 	isMsi := account.User.Type == "servicePrincipal" && (account.User.Name == "systemAssignedIdentity" || account.User.Name == "userAssignedIdentity")
-	if !isMsi {
+
+	// 2. Service principal with client ID as name (likely federated token)
+	// When user.name is a GUID and user.type is servicePrincipal, it's often federated token auth
+	// where specifying tenant ID can cause failures
+	isFederatedToken := account.User.Type == "servicePrincipal" && ts.isGuidLike(account.User.Name)
+
+	if !isMsi && !isFederatedToken {
 		return ts.getTokenBytesWithTenantId(ts.azureTenantId)
 	}
 	return ts.getTokenBytesWithTenantId("")
@@ -209,4 +218,12 @@ func (ts *azureCliTokenSource) getTokenBytesWithTenantId(tenantId string) ([]byt
 		return nil, fmt.Errorf("cannot get access token: %w", err)
 	}
 	return result, nil
+}
+
+// isGuidLike checks if the string looks like a GUID (client ID)
+func (ts *azureCliTokenSource) isGuidLike(s string) bool {
+	// Simple check for GUID format: 8-4-4-4-12 characters separated by hyphens
+	parts := strings.Split(s, "-")
+	return len(parts) == 5 && len(parts[0]) == 8 && len(parts[1]) == 4 &&
+		len(parts[2]) == 4 && len(parts[3]) == 4 && len(parts[4]) == 12
 }
