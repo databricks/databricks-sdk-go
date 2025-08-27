@@ -34,32 +34,32 @@ func TestDuration_MarshalJSON(t *testing.T) {
 		{
 			name:     "zero duration",
 			duration: *New(0),
-			expected: "0.000000000s",
+			expected: "0s",
 		},
 		{
 			name:     "positive duration",
 			duration: *New(5 * time.Second),
-			expected: "5.000000000s",
+			expected: "5s",
 		},
 		{
 			name:     "negative duration",
 			duration: *New(-2 * time.Minute),
-			expected: "-120.000000000s",
+			expected: "-120s",
 		},
 		{
 			name:     "negative duration with fractional seconds",
 			duration: *New(-2*time.Minute + 100*time.Millisecond),
-			expected: "-119.900000000s",
+			expected: "-119.9s",
 		},
 		{
 			name:     "fractional seconds",
 			duration: *New(1500 * time.Millisecond),
-			expected: "1.500000000s",
+			expected: "1.5s",
 		},
 		{
 			name:     "large duration",
 			duration: *New(9223372036*time.Second + 854775000*time.Nanosecond),
-			expected: "9223372036.854775000s",
+			expected: "9223372036.854775s",
 		},
 	}
 
@@ -172,31 +172,31 @@ func TestDuration_EncodeValues(t *testing.T) {
 			name:     "zero duration",
 			duration: *New(0),
 			key:      "duration",
-			expected: "0.000000000s",
+			expected: "0s",
 		},
 		{
 			name:     "positive duration",
 			duration: *New(5 * time.Second),
 			key:      "timeout",
-			expected: "5.000000000s",
+			expected: "5s",
 		},
 		{
 			name:     "negative duration",
 			duration: *New(-2 * time.Minute),
 			key:      "delay",
-			expected: "-120.000000000s",
+			expected: "-120s",
 		},
 		{
 			name:     "fractional seconds",
 			duration: *New(1500 * time.Millisecond),
 			key:      "interval",
-			expected: "1.500000000s",
+			expected: "1.5s",
 		},
 		{
 			name:     "large duration",
 			duration: *New(24 * time.Hour),
 			key:      "period",
-			expected: "86400.000000000s",
+			expected: "86400s",
 		},
 	}
 
