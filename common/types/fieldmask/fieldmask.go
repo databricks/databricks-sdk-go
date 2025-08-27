@@ -19,19 +19,13 @@ func New(paths []string) *FieldMask {
 	return &FieldMask{Paths: paths}
 }
 
-// MarshalJSON implements the json.Marshaler interface by formatting the
+// MarshalJSON implements the [json.Marshaler] interface by formatting the
 // field mask as a string according to Google Well Known Type
 func (f FieldMask) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf(`"%s"`, f.ToWireFormat())), nil
+	return json.Marshal(strings.Join(f.Paths, ","))
 }
 
-// ToWireFormat returns the field mask as a string according to Google Well Known Type
-// which is a comma-separated list of field names.
-func (f FieldMask) ToWireFormat() string {
-	return strings.Join(f.Paths, ",")
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface by parsing the
+// UnmarshalJSON implements the [json.Unmarshaler] interface by parsing the
 // field mask from a string according to Google Well Known Type
 func (f *FieldMask) UnmarshalJSON(data []byte) error {
 	if f == nil {
@@ -52,7 +46,8 @@ func (f *FieldMask) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// EncodeValues encodes the FieldMask into a url.Values object.
+// EncodeValues implements the [query.Encoder] interface by encoding the
+// field mask as a string, like "a,b,c".
 // If the FieldMask is nil or empty, it returns nil.
 // If the url.Values is nil, it returns an error.
 func (f *FieldMask) EncodeValues(key string, v *url.Values) error {
@@ -63,6 +58,6 @@ func (f *FieldMask) EncodeValues(key string, v *url.Values) error {
 		return fmt.Errorf("url.Values is nil")
 	}
 
-	v.Set(key, f.ToWireFormat())
+	v.Set(key, strings.Join(f.Paths, ","))
 	return nil
 }

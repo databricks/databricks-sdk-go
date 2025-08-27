@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"net/url"
 	"testing"
-	stdtime "time"
+	"time"
 )
 
 func TestNew(t *testing.T) {
-	now := stdtime.Now()
+	now := time.Now()
 	timeVal := New(now)
 	if !timeVal.Time.Equal(now) {
 		t.Errorf("New() = %v, want %v", timeVal.Time, now)
@@ -16,7 +16,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestAsTime(t *testing.T) {
-	now := stdtime.Now()
+	now := time.Now()
 	timeVal := New(now)
 	result := timeVal.AsTime()
 	if !result.Equal(now) {
@@ -27,7 +27,7 @@ func TestAsTime(t *testing.T) {
 func TestAsTime_NilPointer(t *testing.T) {
 	var timeVal *Time
 	result := timeVal.AsTime()
-	expected := stdtime.Time{}
+	expected := time.Time{}
 	if !result.Equal(expected) {
 		t.Errorf("AsTime() on nil = %v, want %v", result, expected)
 	}
@@ -42,22 +42,22 @@ func TestTime_MarshalJSON(t *testing.T) {
 	}{
 		{
 			name:     "zero time",
-			time:     *New(stdtime.Time{}),
+			time:     *New(time.Time{}),
 			expected: `"0001-01-01T00:00:00Z"`,
 		},
 		{
 			name:     "specific time",
-			time:     *New(stdtime.Date(2023, 12, 25, 10, 30, 0, 0, stdtime.UTC)),
+			time:     *New(time.Date(2023, 12, 25, 10, 30, 0, 0, time.UTC)),
 			expected: `"2023-12-25T10:30:00Z"`,
 		},
 		{
 			name:     "time with nanoseconds",
-			time:     *New(stdtime.Date(2023, 12, 25, 10, 30, 0, 123456789, stdtime.UTC)),
+			time:     *New(time.Date(2023, 12, 25, 10, 30, 0, 123456789, time.UTC)),
 			expected: `"2023-12-25T10:30:00.123456789Z"`,
 		},
 		{
 			name:     "time with timezone",
-			time:     *New(stdtime.Date(2023, 12, 25, 10, 30, 0, 0, stdtime.FixedZone("EST", -5*3600))),
+			time:     *New(time.Date(2023, 12, 25, 10, 30, 0, 0, time.FixedZone("EST", -5*3600))),
 			expected: `"2023-12-25T10:30:00-05:00"`,
 		},
 	}
@@ -86,43 +86,42 @@ func TestTime_UnmarshalJSON(t *testing.T) {
 		{
 			name:    "zero time",
 			input:   `"0001-01-01T00:00:00Z"`,
-			want:    *New(stdtime.Date(1, 1, 1, 0, 0, 0, 0, stdtime.UTC)),
+			want:    *New(time.Date(1, 1, 1, 0, 0, 0, 0, time.UTC)),
 			wantErr: false,
 		},
 		{
 			name:    "specific time",
 			input:   `"2023-12-25T10:30:00Z"`,
-			want:    *New(stdtime.Date(2023, 12, 25, 10, 30, 0, 0, stdtime.UTC)),
+			want:    *New(time.Date(2023, 12, 25, 10, 30, 0, 0, time.UTC)),
 			wantErr: false,
 		},
 		{
 			name:    "time with nanoseconds",
 			input:   `"2023-12-25T10:30:00.123456789Z"`,
-			want:    *New(stdtime.Date(2023, 12, 25, 10, 30, 0, 123456789, stdtime.UTC)),
+			want:    *New(time.Date(2023, 12, 25, 10, 30, 0, 123456789, time.UTC)),
 			wantErr: false,
 		},
 		{
 			name:    "time with timezone",
 			input:   `"2023-12-25T10:30:00-05:00"`,
-			want:    *New(stdtime.Date(2023, 12, 25, 10, 30, 0, 0, stdtime.FixedZone("", -5*3600))),
+			want:    *New(time.Date(2023, 12, 25, 10, 30, 0, 0, time.FixedZone("", -5*3600))),
 			wantErr: false,
 		},
 		{
 			name:    "empty string",
 			input:   `""`,
-			want:    *New(stdtime.Time{}),
-			wantErr: false,
+			wantErr: true,
 		},
 		{
 			name:    "invalid time format",
 			input:   `"invalid-time"`,
-			want:    *New(stdtime.Time{}),
+			want:    *New(time.Time{}),
 			wantErr: true,
 		},
 		{
 			name:    "invalid JSON",
 			input:   `"invalid-json"`,
-			want:    *New(stdtime.Time{}),
+			want:    *New(time.Time{}),
 			wantErr: true,
 		},
 	}
@@ -163,25 +162,25 @@ func TestTime_EncodeValues(t *testing.T) {
 	}{
 		{
 			name:     "zero time",
-			time:     *New(stdtime.Time{}),
+			time:     *New(time.Time{}),
 			key:      "created_at",
 			expected: "0001-01-01T00:00:00Z",
 		},
 		{
 			name:     "specific time",
-			time:     *New(stdtime.Date(2023, 12, 25, 10, 30, 0, 0, stdtime.UTC)),
+			time:     *New(time.Date(2023, 12, 25, 10, 30, 0, 0, time.UTC)),
 			key:      "updated_at",
 			expected: "2023-12-25T10:30:00Z",
 		},
 		{
 			name:     "time with nanoseconds",
-			time:     *New(stdtime.Date(2023, 12, 25, 10, 30, 0, 123456789, stdtime.UTC)),
+			time:     *New(time.Date(2023, 12, 25, 10, 30, 0, 123456789, time.UTC)),
 			key:      "timestamp",
 			expected: "2023-12-25T10:30:00.123456789Z",
 		},
 		{
 			name:     "time with timezone",
-			time:     *New(stdtime.Date(2023, 12, 25, 10, 30, 0, 0, stdtime.FixedZone("EST", -5*3600))),
+			time:     *New(time.Date(2023, 12, 25, 10, 30, 0, 0, time.FixedZone("EST", -5*3600))),
 			key:      "local_time",
 			expected: "2023-12-25T10:30:00-05:00",
 		},
@@ -210,23 +209,23 @@ func TestTime_JSONRoundTrip(t *testing.T) {
 	}{
 		{
 			name: "zero time",
-			time: *New(stdtime.Time{}),
+			time: *New(time.Time{}),
 		},
 		{
 			name: "specific time",
-			time: *New(stdtime.Date(2023, 12, 25, 10, 30, 0, 0, stdtime.UTC)),
+			time: *New(time.Date(2023, 12, 25, 10, 30, 0, 0, time.UTC)),
 		},
 		{
 			name: "time with nanoseconds",
-			time: *New(stdtime.Date(2023, 12, 25, 10, 30, 0, 123456789, stdtime.UTC)),
+			time: *New(time.Date(2023, 12, 25, 10, 30, 0, 123456789, time.UTC)),
 		},
 		{
 			name: "time with timezone",
-			time: *New(stdtime.Date(2023, 12, 25, 10, 30, 0, 0, stdtime.FixedZone("EST", -5*3600))),
+			time: *New(time.Date(2023, 12, 25, 10, 30, 0, 0, time.FixedZone("EST", -5*3600))),
 		},
 		{
 			name: "current time",
-			time: *New(stdtime.Now()),
+			time: *New(time.Now()),
 		},
 	}
 
@@ -258,19 +257,19 @@ func TestTime_JSONRoundTrip(t *testing.T) {
 func TestTime_EdgeCases(t *testing.T) {
 	tests := []struct {
 		name string
-		time stdtime.Time
+		time time.Time
 	}{
 		{
 			name: "very old time",
-			time: stdtime.Date(1000, 1, 1, 0, 0, 0, 0, stdtime.UTC),
+			time: time.Date(1000, 1, 1, 0, 0, 0, 0, time.UTC),
 		},
 		{
 			name: "very future time",
-			time: stdtime.Date(9999, 12, 31, 23, 59, 59, 999999999, stdtime.UTC),
+			time: time.Date(9999, 12, 31, 23, 59, 59, 999999999, time.UTC),
 		},
 		{
 			name: "leap year time",
-			time: stdtime.Date(2024, 2, 29, 12, 0, 0, 0, stdtime.UTC),
+			time: time.Date(2024, 2, 29, 12, 0, 0, 0, time.UTC),
 		},
 	}
 
