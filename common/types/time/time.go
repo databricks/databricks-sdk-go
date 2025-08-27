@@ -7,12 +7,12 @@ import (
 	stdtime "time"
 )
 
-// Time is a wrapper for stdtime.Time to provide custom marshaling
+// Time is a wrapper for time.Time to provide custom marshaling
 // for JSON and URL query strings.
 //
-// It embeds stdtime.Time, so all standard methods (Format, Parse, etc.)
-// are directly accessible. The underlying stdtime.Time value can be
-// accessed via the .Time field.
+// It embeds time.Time, so all standard methods (Format, Parse, etc.)
+// are directly accessible. The underlying time.Time value can be
+// accessed via the .AsTime() method.
 //
 // Example:
 //

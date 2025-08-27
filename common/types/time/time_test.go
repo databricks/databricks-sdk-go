@@ -256,69 +256,44 @@ func TestTime_JSONRoundTrip(t *testing.T) {
 }
 
 func TestTime_EdgeCases(t *testing.T) {
-	t.Run("very old time", func(t *testing.T) {
-		oldTime := stdtime.Date(1000, 1, 1, 0, 0, 0, 0, stdtime.UTC)
-		timeVal := *New(oldTime)
+	tests := []struct {
+		name string
+		time stdtime.Time
+	}{
+		{
+			name: "very old time",
+			time: stdtime.Date(1000, 1, 1, 0, 0, 0, 0, stdtime.UTC),
+		},
+		{
+			name: "very future time",
+			time: stdtime.Date(9999, 12, 31, 23, 59, 59, 999999999, stdtime.UTC),
+		},
+		{
+			name: "leap year time",
+			time: stdtime.Date(2024, 2, 29, 12, 0, 0, 0, stdtime.UTC),
+		},
+	}
 
-		jsonData, err := json.Marshal(timeVal)
-		if err != nil {
-			t.Errorf("json.Marshal() error = %v", err)
-			return
-		}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			timeVal := *New(tt.time)
 
-		var result Time
-		err = json.Unmarshal(jsonData, &result)
-		if err != nil {
-			t.Errorf("json.Unmarshal() error = %v", err)
-			return
-		}
+			jsonData, err := json.Marshal(timeVal)
+			if err != nil {
+				t.Errorf("json.Marshal() error = %v", err)
+				return
+			}
 
-		if !result.Time.Equal(oldTime) {
-			t.Errorf("Time round trip failed: original = %v, result = %v", oldTime, result)
-		}
-	})
+			var result Time
+			err = json.Unmarshal(jsonData, &result)
+			if err != nil {
+				t.Errorf("json.Unmarshal() error = %v", err)
+				return
+			}
 
-	t.Run("very future time", func(t *testing.T) {
-		futureTime := stdtime.Date(9999, 12, 31, 23, 59, 59, 999999999, stdtime.UTC)
-		timeVal := *New(futureTime)
-
-		jsonData, err := json.Marshal(timeVal)
-		if err != nil {
-			t.Errorf("json.Marshal() error = %v", err)
-			return
-		}
-
-		var result Time
-		err = json.Unmarshal(jsonData, &result)
-		if err != nil {
-			t.Errorf("json.Unmarshal() error = %v", err)
-			return
-		}
-
-		if !result.Time.Equal(futureTime) {
-			t.Errorf("Time round trip failed: original = %v, result = %v", futureTime, result)
-		}
-	})
-
-	t.Run("leap year time", func(t *testing.T) {
-		leapTime := stdtime.Date(2024, 2, 29, 12, 0, 0, 0, stdtime.UTC)
-		timeVal := *New(leapTime)
-
-		jsonData, err := json.Marshal(timeVal)
-		if err != nil {
-			t.Errorf("json.Marshal() error = %v", err)
-			return
-		}
-
-		var result Time
-		err = json.Unmarshal(jsonData, &result)
-		if err != nil {
-			t.Errorf("json.Unmarshal() error = %v", err)
-			return
-		}
-
-		if !result.Time.Equal(leapTime) {
-			t.Errorf("Time round trip failed: original = %v, result = %v", leapTime, result)
-		}
-	})
+			if !result.Time.Equal(tt.time) {
+				t.Errorf("Time round trip failed: original = %v, result = %v", tt.time, result)
+			}
+		})
+	}
 }

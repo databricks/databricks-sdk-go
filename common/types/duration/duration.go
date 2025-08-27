@@ -12,7 +12,7 @@ import (
 //
 // It embeds time.Duration, so all standard methods (Seconds, String, etc.)
 // are directly accessible. The underlying time.Duration value can be
-// accessed via the .Duration field.
+// accessed via the .AsDuration() method.
 //
 // Example:
 //
@@ -35,12 +35,6 @@ func (x *Duration) AsDuration() time.Duration {
 	return x.Duration
 }
 
-// NewDuration creates a custom Duration from a standard time.Duration.
-// Deprecated: Use New instead.
-func NewDuration(d time.Duration) Duration {
-	return Duration{Duration: d}
-}
-
 // MarshalJSON implements the json.Marshaler interface by formatting the
 // duration as a string according to Google Well Known Type
 func (d Duration) MarshalJSON() ([]byte, error) {
@@ -53,8 +47,8 @@ func (d Duration) MarshalJSON() ([]byte, error) {
 // the number of seconds, with nanoseconds expressed as fractional seconds.
 // https://protobuf.dev/reference/protobuf/google.protobuf/#duration
 func (d Duration) ToWireFormat() string {
-	// We do not use the standard time.Duration.String() method because it
-	// loses precision when converting to a string.
+	// We do not use the standard time.Duration.String() and d.Duration.Seconds()
+	// method because they use float64 which loses precision.
 
 	// Get the total nanoseconds as a precise integer.
 	nanos := d.Duration.Nanoseconds()
