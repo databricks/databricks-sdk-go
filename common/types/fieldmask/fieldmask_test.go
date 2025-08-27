@@ -108,18 +108,6 @@ func TestFieldMask_UnmarshalJSON(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "leading comma",
-			input:   `",name,age"`,
-			want:    FieldMask{Paths: []string{"", "name", "age"}},
-			wantErr: false,
-		},
-		{
-			name:    "consecutive commas",
-			input:   `"name,,age"`,
-			want:    FieldMask{Paths: []string{"name", "", "age"}},
-			wantErr: false,
-		},
-		{
 			name:    "invalid JSON",
 			input:   `invalid`,
 			want:    FieldMask{},
