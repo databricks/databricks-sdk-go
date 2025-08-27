@@ -177,17 +177,17 @@ func (ts *azureCliTokenSource) getTokenBytes() ([]byte, error) {
 		return nil, fmt.Errorf("cannot unmarshal account info: %w", err)
 	}
 
-	// Check for authentication types that should not use tenant ID:
-	// 1. Traditional MSI (system/user assigned identities)
 	isMsi := account.User.Type == "servicePrincipal" && (account.User.Name == "systemAssignedIdentity" || account.User.Name == "userAssignedIdentity")
-
-	// 2. Service principal with client ID as name (likely federated token)
-	// When user.name is a GUID and user.type is servicePrincipal, it's often federated token auth
-	// where specifying tenant ID can cause failures
-	isFederatedToken := account.User.Type == "servicePrincipal" && ts.isGuidLike(account.User.Name)
-
-	if !isMsi && !isFederatedToken {
-		return ts.getTokenBytesWithTenantId(ts.azureTenantId)
+	if !isMsi {
+		// For regular service principals, try with tenant ID first
+		result, err := ts.getTokenBytesWithTenantId(ts.azureTenantId)
+		if err != nil && account.User.Type == "servicePrincipal" {
+			// If it fails for service principals, it might be a federated token scenario
+			// where tenant ID should not be specified. Fall back to no tenant ID.
+			logger.Infof(ts.ctx, "Failed to get token with tenant ID for service principal, trying without tenant ID: %v", err)
+			return ts.getTokenBytesWithTenantId("")
+		}
+		return result, err
 	}
 	return ts.getTokenBytesWithTenantId("")
 }
@@ -218,12 +218,4 @@ func (ts *azureCliTokenSource) getTokenBytesWithTenantId(tenantId string) ([]byt
 		return nil, fmt.Errorf("cannot get access token: %w", err)
 	}
 	return result, nil
-}
-
-// isGuidLike checks if the string looks like a GUID (client ID)
-func (ts *azureCliTokenSource) isGuidLike(s string) bool {
-	// Simple check for GUID format: 8-4-4-4-12 characters separated by hyphens
-	parts := strings.Split(s, "-")
-	return len(parts) == 5 && len(parts[0]) == 8 && len(parts[1]) == 4 &&
-		len(parts[2]) == 4 && len(parts[3]) == 4 && len(parts[4]) == 12
 }
