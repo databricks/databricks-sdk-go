@@ -733,14 +733,14 @@ type CreateCleanRoomAssetRequest struct {
 }
 
 type CreateCleanRoomAssetReviewRequest struct {
-	// Asset type. Can only be NOTEBOOK_FILE.
+	// Asset type. Can either be NOTEBOOK_FILE or JAR_ANALYSIS.
 	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
 	// Name of the clean room
 	CleanRoomName string `json:"-" url:"-"`
 	// Name of the asset
 	Name string `json:"-" url:"-"`
 
-	NotebookReview NotebookVersionReview `json:"notebook_review"`
+	NotebookReview *NotebookVersionReview `json:"notebook_review,omitempty"`
 }
 
 type CreateCleanRoomAssetReviewResponse struct {

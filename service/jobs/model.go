@@ -634,6 +634,9 @@ type Continuous struct {
 	// Indicate whether the continuous execution of the job is paused or not.
 	// Defaults to UNPAUSED.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
+	// Indicate whether the continuous job is applying task level retries or
+	// not. Defaults to NEVER.
+	TaskRetryMode TaskRetryMode `json:"task_retry_mode,omitempty"`
 }
 
 type CreateJob struct {
@@ -5465,6 +5468,48 @@ func (s *TaskNotificationSettings) UnmarshalJSON(b []byte) error {
 
 func (s TaskNotificationSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// task retry mode of the continuous job * NEVER: The failed task will not be
+// retried. * ON_FAILURE: Retry a failed task if at least one other task in the
+// job is still running its first attempt. When this condition is no longer met
+// or the retry limit is reached, the job run is cancelled and a new run is
+// started.
+type TaskRetryMode string
+
+const TaskRetryModeNever TaskRetryMode = `NEVER`
+
+const TaskRetryModeOnFailure TaskRetryMode = `ON_FAILURE`
+
+// String representation for [fmt.Print]
+func (f *TaskRetryMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TaskRetryMode) Set(v string) error {
+	switch v {
+	case `NEVER`, `ON_FAILURE`:
+		*f = TaskRetryMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "NEVER", "ON_FAILURE"`, v)
+	}
+}
+
+// Values returns all possible values for TaskRetryMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TaskRetryMode) Values() []TaskRetryMode {
+	return []TaskRetryMode{
+		TaskRetryModeNever,
+		TaskRetryModeOnFailure,
+	}
+}
+
+// Type always returns TaskRetryMode to satisfy [pflag.Value] interface
+func (f *TaskRetryMode) Type() string {
+	return "TaskRetryMode"
 }
 
 // The code indicates why the run was terminated. Additional codes might be

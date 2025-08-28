@@ -421,8 +421,24 @@ type GetEndpointRequest struct {
 }
 
 type GetIndexRequest struct {
+	// If true, the URL returned for the index is guaranteed to be compatible
+	// with the reranker. Currently this means we return the CP URL regardless
+	// of how the index is being accessed. If not set or set to false, the URL
+	// may still be compatible with the reranker depending on what URL we
+	// return.
+	EnsureRerankerCompatible bool `json:"-" url:"ensure_reranker_compatible,omitempty"`
 	// Name of the index
 	IndexName string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetIndexRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetIndexRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListEndpointResponse struct {
@@ -540,7 +556,8 @@ func (s MiniVectorIndex) MarshalJSON() ([]byte, error) {
 }
 
 type PatchEndpointBudgetPolicyRequest struct {
-	// The budget policy id to be applied
+	// The budget policy id to be applied (hima-sheth) TODO: remove this once
+	// we've migrated to usage policies
 	BudgetPolicyId string `json:"budget_policy_id"`
 	// Name of the vector search endpoint
 	EndpointName string `json:"-" url:"-"`
@@ -656,6 +673,8 @@ type QueryVectorIndexRequest struct {
 	// Query vector. Required for Direct Vector Access Index and Delta Sync
 	// Index using self-managed vectors.
 	QueryVector []float64 `json:"query_vector,omitempty"`
+
+	Reranker *RerankerConfig `json:"reranker,omitempty"`
 	// Threshold for the approximate nearest neighbor search. Defaults to 0.0.
 	ScoreThreshold float64 `json:"score_threshold,omitempty"`
 
@@ -690,6 +709,26 @@ func (s *QueryVectorIndexResponse) UnmarshalJSON(b []byte) error {
 
 func (s QueryVectorIndexResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type RerankerConfig struct {
+	Model string `json:"model,omitempty"`
+
+	Parameters *RerankerConfigRerankerParameters `json:"parameters,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RerankerConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RerankerConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type RerankerConfigRerankerParameters struct {
+	ColumnsToRerank []string `json:"columns_to_rerank,omitempty"`
 }
 
 // Data returned in the query result.

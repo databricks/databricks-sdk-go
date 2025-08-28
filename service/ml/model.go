@@ -1099,26 +1099,6 @@ func (s ExperimentTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Feature for model version.
-type Feature struct {
-	// Feature name
-	FeatureName string `json:"feature_name,omitempty"`
-	// Feature table id
-	FeatureTableId string `json:"feature_table_id,omitempty"`
-	// Feature table name
-	FeatureTableName string `json:"feature_table_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *Feature) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s Feature) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type FeatureLineage struct {
 	// List of feature specs that contain this feature.
 	FeatureSpecs []FeatureLineageFeatureSpec `json:"feature_specs,omitempty"`
@@ -1179,7 +1159,7 @@ func (s FeatureLineageOnlineFeature) MarshalJSON() ([]byte, error) {
 
 // Feature list wrap all the features for a model version
 type FeatureList struct {
-	Features []Feature `json:"features,omitempty"`
+	Features []LinkedFeature `json:"features,omitempty"`
 }
 
 // Represents a tag on a feature in a feature table.
@@ -1613,6 +1593,26 @@ func (s *JobSpecWithoutSecret) UnmarshalJSON(b []byte) error {
 }
 
 func (s JobSpecWithoutSecret) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Feature for model version. ([ML-57150] Renamed from Feature to LinkedFeature)
+type LinkedFeature struct {
+	// Feature name
+	FeatureName string `json:"feature_name,omitempty"`
+	// Feature table id
+	FeatureTableId string `json:"feature_table_id,omitempty"`
+	// Feature table name
+	FeatureTableName string `json:"feature_table_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LinkedFeature) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LinkedFeature) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

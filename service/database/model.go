@@ -81,6 +81,13 @@ type DatabaseInstance struct {
 	CreationTime string `json:"creation_time,omitempty"`
 	// The email of the creator of the instance.
 	Creator string `json:"creator,omitempty"`
+	// xref AIP-129. `enable_pg_native_login` is owned by the client, while
+	// `effective_enable_pg_native_login` is owned by the server.
+	// `enable_pg_native_login` will only be set in Create/Update response
+	// messages if and only if the user provides the field via the request.
+	// `effective_enable_pg_native_login` on the other hand will always bet set
+	// in all response messages (Create/Update/Get/List).
+	EffectiveEnablePgNativeLogin bool `json:"effective_enable_pg_native_login,omitempty"`
 	// xref AIP-129. `enable_readable_secondaries` is owned by the client, while
 	// `effective_enable_readable_secondaries` is owned by the server.
 	// `enable_readable_secondaries` will only be set in Create/Update response
@@ -107,6 +114,9 @@ type DatabaseInstance struct {
 	// request. `effective_stopped` on the other hand will always bet set in all
 	// response messages (Create/Update/Get/List).
 	EffectiveStopped bool `json:"effective_stopped,omitempty"`
+	// Whether the instance has PG native password login enabled. Defaults to
+	// true.
+	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// Whether to enable secondaries to serve read-only traffic. Defaults to
 	// false.
 	EnableReadableSecondaries bool `json:"enable_readable_secondaries,omitempty"`
