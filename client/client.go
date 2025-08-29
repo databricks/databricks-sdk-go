@@ -1,13 +1,20 @@
 package client
 
 import (
+	"bytes"
 	"context"
+	"fmt"
+	"io"
 	"net/http"
+	"net/url"
 	"strings"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"golang.org/x/oauth2"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
 
 func New(cfg *config.Config) (*DatabricksClient, error) {
@@ -79,4 +86,110 @@ func (c *DatabricksClient) Do(ctx context.Context, method, path string,
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 	return c.client.Do(ctx, method, path, opts...)
+}
+
+// DoProto sends an HTTP request with proto message marshalling/unmarshalling.
+// This is a completely independent implementation that doesn't use the Do function.
+func (c *DatabricksClient) DoProto(ctx context.Context, method, path string,
+	headers map[string]string, queryParams map[string]any,
+	request proto.Message, response proto.Message) error {
+
+	// Build the full URL
+	baseURL := strings.TrimRight(c.Config.Host, "/")
+	fullURL := baseURL + path
+
+	// Add query parameters
+	if len(queryParams) > 0 {
+		parsedURL, err := url.Parse(fullURL)
+		if err != nil {
+			return fmt.Errorf("invalid URL: %w", err)
+		}
+
+		values := parsedURL.Query()
+		for key, value := range queryParams {
+			values.Set(key, fmt.Sprintf("%v", value))
+		}
+		parsedURL.RawQuery = values.Encode()
+		fullURL = parsedURL.String()
+	}
+
+	// Prepare request body
+	var body io.Reader
+	if request != nil {
+		jsonData, err := protojson.Marshal(request)
+		if err != nil {
+			return fmt.Errorf("failed to marshal proto request: %w", err)
+		}
+		body = bytes.NewReader(jsonData)
+	}
+
+	// Create HTTP request
+	httpReq, err := http.NewRequestWithContext(ctx, method, fullURL, body)
+	if err != nil {
+		return fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set default headers
+	if httpReq.Body != nil {
+		httpReq.Header.Set("Content-Type", "application/json")
+	}
+	httpReq.Header.Set("Accept", "application/json")
+	httpReq.Header.Set("User-Agent", "databricks-sdk-go-proto/1.0.0")
+
+	// Add custom headers
+	for key, value := range headers {
+		httpReq.Header.Set(key, value)
+	}
+
+	// Apply authentication
+	if c.client != nil {
+		// Get the client configuration to access auth visitor
+		clientCfg, err := config.HTTPClientConfigFromConfig(c.Config)
+		if err != nil {
+			return fmt.Errorf("failed to get client config: %w", err)
+		}
+
+		if clientCfg.AuthVisitor != nil {
+			if err := clientCfg.AuthVisitor(httpReq); err != nil {
+				return fmt.Errorf("authentication failed: %w", err)
+			}
+		}
+	}
+
+	// Create HTTP client with proper transport and timeout
+	httpClient := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+
+	// Use the configured transport if available
+	if c.Config.HTTPTransport != nil {
+		httpClient.Transport = c.Config.HTTPTransport
+	}
+
+	// Make the request
+	httpResp, err := httpClient.Do(httpReq)
+	if err != nil {
+		return fmt.Errorf("HTTP request failed: %w", err)
+	}
+	defer httpResp.Body.Close()
+
+	// Check status code
+	if httpResp.StatusCode < 200 || httpResp.StatusCode >= 300 {
+		bodyBytes, _ := io.ReadAll(httpResp.Body)
+		return fmt.Errorf("HTTP %d: %s", httpResp.StatusCode, string(bodyBytes))
+	}
+
+	// Handle response
+	if response != nil {
+		bodyBytes, err := io.ReadAll(httpResp.Body)
+		if err != nil {
+			return fmt.Errorf("failed to read response body: %w", err)
+		}
+
+		if err := protojson.Unmarshal(bodyBytes, response); err != nil {
+			return fmt.Errorf("failed to unmarshal proto response: %w", err)
+		}
+	}
+
+	return nil
 }

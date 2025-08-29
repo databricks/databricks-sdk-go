@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	jobsv2 "github.com/databricks/databricks-sdk-go/protos/jobs/v2"
 )
 
 // unexported type that holds implementations of just JobsService API methods
@@ -14,37 +15,60 @@ type jobsServiceImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *Impl) CreateJob(ctx context.Context, request CreateJobRequest) (*Job, error) {
-	var job Job
-	path := ""
+func (a *jobsServiceImpl) CreateJob(ctx context.Context, request *jobsv2.CreateJobRequest) (*jobsv2.Job, error) {
+	path := "/jobs/v2/jobs"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.Method, path, headers, queryParams, nil, &job)
-	return &job, err
+
+	var job jobsv2.Job
+	err := a.client.DoProto(ctx, http.MethodPost, path, headers, queryParams, request, &job)
+	if err != nil {
+		return nil, err
+	}
+
+	return &job, nil
 }
 
-func (a *Impl) DeleteJob(ctx context.Context, request DeleteJobRequest) error {
-	path := ""
+func (a *jobsServiceImpl) DeleteJob(ctx context.Context, request *jobsv2.DeleteJobRequest) error {
+	path := "/jobs/v2/jobs/" + *request.Name
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.Method, path, headers, queryParams, nil, nil)
-	return err
+
+	return a.client.DoProto(ctx, http.MethodDelete, path, headers, queryParams, nil, nil)
 }
 
-func (a *Impl) GetJob(ctx context.Context, request GetJobRequest) (*Job, error) {
-	var job Job
-	path := ""
+func (a *jobsServiceImpl) GetJob(ctx context.Context, request *jobsv2.GetJobRequest) (*jobsv2.Job, error) {
+	path := "/jobs/v2/js/" + *request.Name
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.Method, path, headers, queryParams, nil, &job)
-	return &job, err
+
+	var job jobsv2.Job
+	err := a.client.DoProto(ctx, http.MethodGet, path, headers, queryParams, nil, &job)
+	if err != nil {
+		return nil, err
+	}
+
+	return &job, nil
 }
 
-func (a *Impl) ListJobs(ctx context.Context, request ListJobsRequest) (*ListJobsResponse, error) {
-	var listJobsResponse ListJobsResponse
-	path := ""
+func (a *jobsServiceImpl) ListJobs(ctx context.Context, request *jobsv2.ListJobsRequest) (*jobsv2.ListJobsResponse, error) {
+	path := "/jobs/v2/jobs"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.Method, path, headers, queryParams, nil, &listJobsResponse)
-	return &listJobsResponse, err
+
+	// Add query parameters from request
+	if request.PageSize != nil {
+		queryParams["page_size"] = *request.PageSize
+	}
+	if request.PageToken != nil {
+		queryParams["page_token"] = *request.PageToken
+	}
+
+	var listJobsResponse jobsv2.ListJobsResponse
+	err := a.client.DoProto(ctx, http.MethodGet, path, headers, queryParams, nil, &listJobsResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	return &listJobsResponse, nil
 }

@@ -36,4 +36,16 @@ doc:
 	@echo "Open http://localhost:6060"
 	@go run golang.org/x/tools/cmd/godoc@v0.34.0 -http=localhost:6060
 
-.PHONY: fmt vendor fmt coverage test lint doc download
+proto-verify:
+	@echo "✓ Verifying protos with protoc ..."
+	@protoc -I=protos -I=third_party/googleapis --include_imports --descriptor_set_out=/dev/null $(shell find protos -type f -name '*.proto')
+
+proto-tools:
+	@echo "✓ Installing protoc plugins ..."
+	@go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+
+proto-gen:
+	@echo "✓ Generating Go code from protos ..."
+	@PATH="$(shell go env GOPATH)/bin:$$PATH" protoc -I=protos -I=third_party/googleapis --go_out=paths=source_relative:. $(shell find protos -type f -name '*.proto')
+
+.PHONY: fmt vendor fmt coverage test lint doc download proto-verify proto-gen proto-tools

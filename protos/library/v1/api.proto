@@ -1,0 +1,118 @@
+syntax = "proto2";
+
+package databricks.publicapi.library.v1;
+
+
+import "google/api/field_behavior.proto"; // NOLINT
+import "google/api/annotations.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/databricks/databricks-sdk-go/protos/library/v1;libraryv1";
+
+service LibraryService {
+  rpc CreateLibrary(CreateLibraryRequest) returns (Library)  {
+    option (google.api.http) = {
+      post: "/library/v1/library",
+      body: "library",
+    };
+  }
+
+  rpc GetLibrary(GetLibraryRequest) returns (Library) {
+    option (google.api.http) = {
+      get: "/library/v1/library/{name}",
+    };
+  }
+
+  rpc ListLibraries(ListLibrariesRequest) returns (ListLibrariesResponse) {
+    option (google.api.http) = {
+      get: "/library/v1/libraries",
+    };
+  }
+
+  rpc DeleteLibrary(DeleteLibraryRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/library/v1/library/{name}",
+    };
+  }
+
+  rpc UpdateLibrary(UpdateLibraryRequest) returns (Library) {
+    option (google.api.http) = {
+      patch: "/library/v1/library/{library.name}",
+      body: "library",
+    };
+  }
+}
+
+message Library {
+  // Name of the Resource. Must contain only:
+  // - alphanumeric characters
+  // - underscores
+  // - hyphens
+  //
+  // Note: The name must be unique within the scope of the resource.
+  optional string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.field_behavior) = IMMUTABLE
+  ];
+  // The time at which the resource was created.
+  optional int64 created_at = 2 [
+    (google.api.field_behavior) = OUTPUT_ONLY
+  ];
+  // Other metadata about the resource.
+  optional string description = 3 [
+    (google.api.field_behavior) = OPTIONAL
+  ];
+}
+
+message CreateLibraryRequest {
+  // Library information about the resource
+  optional Library library = 1 [
+    (google.api.field_behavior) = REQUIRED
+  ];
+}
+
+message GetLibraryRequest {
+  // The name of the resource
+  optional string name = 1 [
+    (google.api.field_behavior) = REQUIRED
+  ];
+}
+
+message ListLibrariesRequest {
+  // Page size for pagination
+  optional int32 page_size = 1 [
+    (google.api.field_behavior) = OPTIONAL
+  ];
+
+  // Page token for pagination
+  optional string page_token = 2 [
+    (google.api.field_behavior) = OPTIONAL
+  ];
+}
+
+message ListLibrariesResponse {
+  // List of resources
+  repeated Library libraries = 1;
+
+  // The next page token for pagination
+  optional string next_page_token = 2;
+}
+
+message DeleteLibraryRequest {
+  // The name of the resource
+  optional string name = 1 [
+    (google.api.field_behavior) = REQUIRED
+  ];
+}
+
+message UpdateLibraryRequest {
+  // Library information about the resource
+  optional Library library = 2 [
+    (google.api.field_behavior) = REQUIRED
+  ];
+
+  optional google.protobuf.FieldMask update_mask = 3 [
+    (google.api.field_behavior) = REQUIRED
+  ];
+}
