@@ -162,7 +162,7 @@ func (ts *azureCliTokenSource) Token() (*oauth2.Token, error) {
 func (ts *azureCliTokenSource) getTokenBytes() ([]byte, error) {
 	// When fetching an access token from the CLI with a managed identity, the tenant ID should not be specified.
 	// https://github.com/hashicorp/go-azure-sdk/pull/910/files demonstrates how to detect whether the CLI is authenticated
-	// using a managed identity.
+	// using a managed identity or federated token.
 	accountRaw, err := runCommand(ts.ctx, "az", []string{"account", "show", "--output", "json"})
 	if err != nil {
 		return nil, fmt.Errorf("cannot get account info: %w", err)
@@ -176,9 +176,18 @@ func (ts *azureCliTokenSource) getTokenBytes() ([]byte, error) {
 	if err := json.Unmarshal(accountRaw, &account); err != nil {
 		return nil, fmt.Errorf("cannot unmarshal account info: %w", err)
 	}
+
 	isMsi := account.User.Type == "servicePrincipal" && (account.User.Name == "systemAssignedIdentity" || account.User.Name == "userAssignedIdentity")
 	if !isMsi {
-		return ts.getTokenBytesWithTenantId(ts.azureTenantId)
+		// For regular service principals, try with tenant ID first
+		result, err := ts.getTokenBytesWithTenantId(ts.azureTenantId)
+		if err != nil && account.User.Type == "servicePrincipal" {
+			// If it fails for service principals, it might be a federated token scenario
+			// where tenant ID should not be specified. Fall back to no tenant ID.
+			logger.Infof(ts.ctx, "Failed to get token with tenant ID for service principal, trying without tenant ID: %v", err)
+			return ts.getTokenBytesWithTenantId("")
+		}
+		return result, err
 	}
 	return ts.getTokenBytesWithTenantId("")
 }

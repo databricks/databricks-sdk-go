@@ -6,6 +6,11 @@
 
 ### Bug Fixes
 
+- Fixed Azure CLI authentication for federated token service principals in AKS 
+  workload identity environments. The SDK now properly detects service principals 
+  with GUID-like names as federated tokens and skips tenant ID parameters that 
+  cause authentication failures.
+
 ### Documentation
 
 ### Internal Changes
