@@ -599,6 +599,8 @@ type IngestionPipelineDefinition struct {
 	// Required. Settings specifying tables to replicate and the destination for
 	// the replicated tables.
 	Objects []IngestionConfig `json:"objects,omitempty"`
+	// Top-level source configurations
+	SourceConfigurations []SourceConfig `json:"source_configurations,omitempty"`
 	// The type of the foreign source. The source type will be inferred from the
 	// source connection or ingestion gateway. This field is output only and
 	// will be ignored if provided.
@@ -1639,6 +1641,31 @@ type PipelinesEnvironment struct {
 	Dependencies []string `json:"dependencies,omitempty"`
 }
 
+// PG-specific catalog-level configuration parameters
+type PostgresCatalogConfig struct {
+	// Optional. The Postgres slot configuration to use for logical replication
+	SlotConfig *PostgresSlotConfig `json:"slot_config,omitempty"`
+}
+
+// PostgresSlotConfig contains the configuration for a Postgres logical
+// replication slot
+type PostgresSlotConfig struct {
+	// The name of the publication to use for the Postgres source
+	PublicationName string `json:"publication_name,omitempty"`
+	// The name of the logical replication slot to use for the Postgres source
+	SlotName string `json:"slot_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PostgresSlotConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PostgresSlotConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ReportSpec struct {
 	// Required. Destination catalog to store table.
 	DestinationCatalog string `json:"destination_catalog"`
@@ -1777,6 +1804,30 @@ func (s *SerializedException) UnmarshalJSON(b []byte) error {
 
 func (s SerializedException) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// SourceCatalogConfig contains catalog-level custom configuration parameters
+// for each source
+type SourceCatalogConfig struct {
+	// Postgres-specific catalog-level configuration parameters
+	Postgres *PostgresCatalogConfig `json:"postgres,omitempty"`
+	// Source catalog name
+	SourceCatalog string `json:"source_catalog,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SourceCatalogConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SourceCatalogConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SourceConfig struct {
+	// Catalog-level source configuration parameters
+	Catalog *SourceCatalogConfig `json:"catalog,omitempty"`
 }
 
 type StackFrame struct {

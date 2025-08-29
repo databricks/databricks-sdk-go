@@ -597,14 +597,14 @@ func (s GenieResultMetadata) MarshalJSON() ([]byte, error) {
 }
 
 type GenieSendMessageFeedbackRequest struct {
+	// Optional text feedback that will be stored as a comment.
+	Comment string `json:"comment,omitempty"`
 	// The ID associated with the conversation.
 	ConversationId string `json:"-" url:"-"`
-	// The rating (POSITIVE, NEGATIVE, or NONE).
-	FeedbackRating GenieFeedbackRating `json:"feedback_rating"`
-	// Optional text feedback that will be stored as a comment.
-	FeedbackText string `json:"feedback_text,omitempty"`
 	// The ID associated with the message to provide feedback for.
 	MessageId string `json:"-" url:"-"`
+	// The rating (POSITIVE, NEGATIVE, or NONE).
+	Rating GenieFeedbackRating `json:"rating"`
 	// The ID associated with the Genie space where the message is located.
 	SpaceId string `json:"-" url:"-"`
 

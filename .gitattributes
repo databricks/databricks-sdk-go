@@ -6,6 +6,7 @@ experimental/mocks/mock_account_client.go linguist-generated=true
 experimental/mocks/mock_workspace_client.go linguist-generated=true
 experimental/mocks/service/agentbricks/mock_agent_bricks_interface.go linguist-generated=true
 experimental/mocks/service/apps/mock_apps_interface.go linguist-generated=true
+experimental/mocks/service/apps/mock_apps_settings_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_billable_usage_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_budget_policy_interface.go linguist-generated=true
 experimental/mocks/service/billing/mock_budgets_interface.go linguist-generated=true
@@ -18,6 +19,7 @@ experimental/mocks/service/catalog/mock_artifact_allowlists_interface.go linguis
 experimental/mocks/service/catalog/mock_catalogs_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_connections_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_credentials_interface.go linguist-generated=true
+experimental/mocks/service/catalog/mock_entity_tag_assignments_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_external_lineage_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_external_locations_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_external_metadata_interface.go linguist-generated=true
@@ -30,6 +32,7 @@ experimental/mocks/service/catalog/mock_policies_interface.go linguist-generated
 experimental/mocks/service/catalog/mock_quality_monitors_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_registered_models_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_resource_quotas_interface.go linguist-generated=true
+experimental/mocks/service/catalog/mock_rfa_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_schemas_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_storage_credentials_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_system_schemas_interface.go linguist-generated=true
@@ -144,6 +147,8 @@ experimental/mocks/service/settings/mock_token_management_interface.go linguist-
 experimental/mocks/service/settings/mock_tokens_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_workspace_conf_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_workspace_network_configuration_interface.go linguist-generated=true
+experimental/mocks/service/settingsv2/mock_account_settings_v2_interface.go linguist-generated=true
+experimental/mocks/service/settingsv2/mock_workspace_settings_v2_interface.go linguist-generated=true
 experimental/mocks/service/sharing/mock_providers_interface.go linguist-generated=true
 experimental/mocks/service/sharing/mock_recipient_activation_interface.go linguist-generated=true
 experimental/mocks/service/sharing/mock_recipient_federation_policies_interface.go linguist-generated=true
@@ -164,6 +169,7 @@ experimental/mocks/service/sql/mock_query_visualizations_legacy_interface.go lin
 experimental/mocks/service/sql/mock_redash_config_interface.go linguist-generated=true
 experimental/mocks/service/sql/mock_statement_execution_interface.go linguist-generated=true
 experimental/mocks/service/sql/mock_warehouses_interface.go linguist-generated=true
+experimental/mocks/service/tags/mock_tag_policies_interface.go linguist-generated=true
 experimental/mocks/service/vectorsearch/mock_vector_search_endpoints_interface.go linguist-generated=true
 experimental/mocks/service/vectorsearch/mock_vector_search_indexes_interface.go linguist-generated=true
 experimental/mocks/service/workspace/mock_git_credentials_interface.go linguist-generated=true
