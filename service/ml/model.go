@@ -1385,6 +1385,16 @@ type GetLoggedModelResponse struct {
 	Model *LoggedModel `json:"model,omitempty"`
 }
 
+type GetLoggedModelsRequest struct {
+	// The IDs of the logged models to retrieve. Max threshold is 100.
+	ModelIds []string `json:"-" url:"model_ids,omitempty"`
+}
+
+type GetLoggedModelsRequestResponse struct {
+	// The retrieved logged models.
+	Models []LoggedModel `json:"models,omitempty"`
+}
+
 type GetMetricHistoryResponse struct {
 	// All logged values for this metric if `max_results` is not specified in
 	// the request or if the total count of metrics returned is less than the

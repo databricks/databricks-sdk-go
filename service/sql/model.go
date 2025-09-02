@@ -3037,6 +3037,8 @@ func (s ListAlertsV2Request) MarshalJSON() ([]byte, error) {
 }
 
 type ListAlertsV2Response struct {
+	Alerts []AlertV2 `json:"alerts,omitempty"`
+
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	Results []AlertV2 `json:"results,omitempty"`

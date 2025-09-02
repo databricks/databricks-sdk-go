@@ -438,6 +438,8 @@ type CatalogInfo struct {
 	Comment string `json:"comment,omitempty"`
 	// The name of the connection to an external data source.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Status of conversion of FOREIGN catalog to UC Native catalog.
+	ConversionInfo *ConversionInfo `json:"conversion_info,omitempty"`
 	// Time at which this catalog was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of catalog creator.
@@ -814,6 +816,9 @@ type ConnectionInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// The type of credential.
 	CredentialType CredentialType `json:"credential_type,omitempty"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Full name of connection.
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
@@ -966,6 +971,49 @@ func (s ContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Status of conversion of FOREIGN entity into UC Native entity.
+type ConversionInfo struct {
+	// The conversion state of the resource.
+	State ConversionInfoState `json:"state,omitempty"`
+}
+
+type ConversionInfoState string
+
+const ConversionInfoStateCompleted ConversionInfoState = `COMPLETED`
+
+const ConversionInfoStateInProgress ConversionInfoState = `IN_PROGRESS`
+
+// String representation for [fmt.Print]
+func (f *ConversionInfoState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ConversionInfoState) Set(v string) error {
+	switch v {
+	case `COMPLETED`, `IN_PROGRESS`:
+		*f = ConversionInfoState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COMPLETED", "IN_PROGRESS"`, v)
+	}
+}
+
+// Values returns all possible values for ConversionInfoState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ConversionInfoState) Values() []ConversionInfoState {
+	return []ConversionInfoState{
+		ConversionInfoStateCompleted,
+		ConversionInfoStateInProgress,
+	}
+}
+
+// Type always returns ConversionInfoState to satisfy [pflag.Value] interface
+func (f *ConversionInfoState) Type() string {
+	return "ConversionInfoState"
+}
+
 type CreateAccessRequest struct {
 	// Optional. The principal this request is for. Empty `behalf_of` defaults
 	// to the requester's identity.
@@ -1007,6 +1055,8 @@ type CreateCatalog struct {
 	Comment string `json:"comment,omitempty"`
 	// The name of the connection to an external data source.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Status of conversion of FOREIGN catalog to UC Native catalog.
+	ConversionInfo *ConversionInfo `json:"conversion_info,omitempty"`
 	// Name of catalog.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -1039,6 +1089,9 @@ type CreateConnection struct {
 	Comment string `json:"comment,omitempty"`
 	// The type of connection.
 	ConnectionType ConnectionType `json:"connection_type"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -1114,7 +1167,8 @@ type CreateExternalLocation struct {
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings.
+	// File event queue settings. If `enable_file_events` is `true`, must be
+	// defined and have exactly one of the documented properties.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Name of the external location.
 	Name string `json:"name"`
@@ -2573,6 +2627,22 @@ func (s EntityTagAssignment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type EnvironmentSettings struct {
+	EnvironmentVersion string `json:"environment_version,omitempty"`
+
+	JavaDependencies []string `json:"java_dependencies,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnvironmentSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnvironmentSettings) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ExistsRequest struct {
 	// Full name of the table.
 	FullName string `json:"-" url:"-"`
@@ -2817,7 +2887,8 @@ type ExternalLocationInfo struct {
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings.
+	// File event queue settings. If `enable_file_events` is `true`, must be
+	// defined and have exactly one of the documented properties.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
@@ -3676,6 +3747,9 @@ func (s GetFunctionRequest) MarshalJSON() ([]byte, error) {
 type GetGrantRequest struct {
 	// Full name of securable.
 	FullName string `json:"-" url:"-"`
+	// Optional. If true, also return privilege assignments whose principals
+	// have been deleted.
+	IncludeDeletedPrincipals bool `json:"-" url:"include_deleted_principals,omitempty"`
 	// Specifies the maximum number of privileges to return (page length). Every
 	// PrivilegeAssignment present in a single page response is guaranteed to
 	// contain all the privileges granted on the requested Securable for the
@@ -6009,6 +6083,16 @@ type PermissionsChange struct {
 	// The principal whose privileges we are changing. Only one of principal or
 	// principal_id should be specified, never both at the same time.
 	Principal string `json:"principal,omitempty"`
+	// An opaque internal ID that identifies the principal whose privileges
+	// should be removed.
+	//
+	// This field is intended for removing privileges associated with a deleted
+	// user. When set, only the entries specified in the remove field are
+	// processed; any entries in the add field will be rejected.
+	//
+	// Only one of principal or principal_id should be specified, never both at
+	// the same time.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The set of privileges to remove.
 	Remove []Privilege `json:"remove,omitempty"`
 
@@ -6410,6 +6494,9 @@ type PrivilegeAssignment struct {
 	// The principal (user email address or group name). For deleted principals,
 	// `principal` is empty while `principal_id` is populated.
 	Principal string `json:"principal,omitempty"`
+	// Unique identifier of the principal. For active principals, both
+	// `principal` and `principal_id` are present.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
 
@@ -7696,6 +7783,8 @@ type UpdateAccessRequestDestinationsRequest struct {
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// Status of conversion of FOREIGN catalog to UC Native catalog.
+	ConversionInfo *ConversionInfo `json:"conversion_info,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
@@ -7730,6 +7819,9 @@ type UpdateCatalogWorkspaceBindingsResponse struct {
 }
 
 type UpdateConnection struct {
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"-" url:"-"`
 	// New name for the connection.
@@ -7845,7 +7937,8 @@ type UpdateExternalLocation struct {
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings.
+	// File event queue settings. If `enable_file_events` is `true`, must be
+	// defined and have exactly one of the documented properties.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.

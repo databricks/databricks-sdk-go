@@ -214,10 +214,10 @@ type FederationPolicy struct {
 	Name string `json:"name,omitempty"`
 
 	OidcPolicy *OidcFederationPolicy `json:"oidc_policy,omitempty"`
-	// The ID of the federation policy.
+	// The ID of the federation policy. Output only.
 	PolicyId string `json:"policy_id,omitempty"`
-	// The service principal ID that this federation policy applies to. Only set
-	// for service principal federation policies.
+	// The service principal ID that this federation policy applies to. Output
+	// only. Only set for service principal federation policies.
 	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
 	// Unique, immutable id of the federation policy.
 	Uid string `json:"uid,omitempty"`
@@ -617,8 +617,13 @@ func (s SecretInfo) MarshalJSON() ([]byte, error) {
 }
 
 type TokenAccessPolicy struct {
+	// absolute OAuth session TTL in minutes when single-use refresh tokens are
+	// enabled
+	AbsoluteSessionLifetimeInMinutes int `json:"absolute_session_lifetime_in_minutes,omitempty"`
 	// access token time to live in minutes
 	AccessTokenTtlInMinutes int `json:"access_token_ttl_in_minutes,omitempty"`
+	// whether to enable single-use refresh tokens
+	EnableSingleUseRefreshTokens bool `json:"enable_single_use_refresh_tokens,omitempty"`
 	// refresh token time to live in minutes
 	RefreshTokenTtlInMinutes int `json:"refresh_token_ttl_in_minutes,omitempty"`
 

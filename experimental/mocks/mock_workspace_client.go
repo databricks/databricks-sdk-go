@@ -17,6 +17,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/database"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/files"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/jobs"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/ml"
@@ -126,6 +127,7 @@ func NewMockWorkspaceClient(t interface {
 			QualityMonitors:                     catalog.NewMockQualityMonitorsInterface(t),
 			Queries:                             sql.NewMockQueriesInterface(t),
 			QueriesLegacy:                       sql.NewMockQueriesLegacyInterface(t),
+			QueryExecution:                      dashboards.NewMockQueryExecutionInterface(t),
 			QueryHistory:                        sql.NewMockQueryHistoryInterface(t),
 			QueryVisualizations:                 sql.NewMockQueryVisualizationsInterface(t),
 			QueryVisualizationsLegacy:           sql.NewMockQueryVisualizationsLegacyInterface(t),
@@ -150,6 +152,7 @@ func NewMockWorkspaceClient(t interface {
 			SystemSchemas:                       catalog.NewMockSystemSchemasInterface(t),
 			TableConstraints:                    catalog.NewMockTableConstraintsInterface(t),
 			Tables:                              catalog.NewMockTablesInterface(t),
+			TagAssignments:                      tags.NewMockTagAssignmentsInterface(t),
 			TagPolicies:                         tags.NewMockTagPoliciesInterface(t),
 			TemporaryPathCredentials:            catalog.NewMockTemporaryPathCredentialsInterface(t),
 			TemporaryTableCredentials:           catalog.NewMockTemporaryTableCredentialsInterface(t),
@@ -163,6 +166,7 @@ func NewMockWorkspaceClient(t interface {
 			Workspace:                           workspace.NewMockWorkspaceInterface(t),
 			WorkspaceBindings:                   catalog.NewMockWorkspaceBindingsInterface(t),
 			WorkspaceConf:                       settings.NewMockWorkspaceConfInterface(t),
+			WorkspaceIamV2:                      iamv2.NewMockWorkspaceIamV2Interface(t),
 			WorkspaceSettingsV2:                 settingsv2.NewMockWorkspaceSettingsV2Interface(t),
 		},
 	}
@@ -980,6 +984,14 @@ func (m *MockWorkspaceClient) GetMockQueriesLegacyAPI() *sql.MockQueriesLegacyIn
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockQueryExecutionAPI() *dashboards.MockQueryExecutionInterface {
+	api, ok := m.WorkspaceClient.QueryExecution.(*dashboards.MockQueryExecutionInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected QueryExecution to be *dashboards.MockQueryExecutionInterface, actual was %T", m.WorkspaceClient.QueryExecution))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockQueryHistoryAPI() *sql.MockQueryHistoryInterface {
 	api, ok := m.WorkspaceClient.QueryHistory.(*sql.MockQueryHistoryInterface)
 	if !ok {
@@ -1172,6 +1184,14 @@ func (m *MockWorkspaceClient) GetMockTablesAPI() *catalog.MockTablesInterface {
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockTagAssignmentsAPI() *tags.MockTagAssignmentsInterface {
+	api, ok := m.WorkspaceClient.TagAssignments.(*tags.MockTagAssignmentsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected TagAssignments to be *tags.MockTagAssignmentsInterface, actual was %T", m.WorkspaceClient.TagAssignments))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockTagPoliciesAPI() *tags.MockTagPoliciesInterface {
 	api, ok := m.WorkspaceClient.TagPolicies.(*tags.MockTagPoliciesInterface)
 	if !ok {
@@ -1272,6 +1292,14 @@ func (m *MockWorkspaceClient) GetMockWorkspaceConfAPI() *settings.MockWorkspaceC
 	api, ok := m.WorkspaceClient.WorkspaceConf.(*settings.MockWorkspaceConfInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected WorkspaceConf to be *settings.MockWorkspaceConfInterface, actual was %T", m.WorkspaceClient.WorkspaceConf))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockWorkspaceIamV2API() *iamv2.MockWorkspaceIamV2Interface {
+	api, ok := m.WorkspaceClient.WorkspaceIamV2.(*iamv2.MockWorkspaceIamV2Interface)
+	if !ok {
+		panic(fmt.Sprintf("expected WorkspaceIamV2 to be *iamv2.MockWorkspaceIamV2Interface, actual was %T", m.WorkspaceClient.WorkspaceIamV2))
 	}
 	return api
 }

@@ -117,6 +117,17 @@ func (a *databaseImpl) DeleteSyncedDatabaseTable(ctx context.Context, request De
 	return err
 }
 
+func (a *databaseImpl) FailoverDatabaseInstance(ctx context.Context, request FailoverDatabaseInstanceRequest) (*DatabaseInstance, error) {
+	var databaseInstance DatabaseInstance
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/failover", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &databaseInstance)
+	return &databaseInstance, err
+}
+
 func (a *databaseImpl) FindDatabaseInstanceByUid(ctx context.Context, request FindDatabaseInstanceByUidRequest) (*DatabaseInstance, error) {
 	var databaseInstance DatabaseInstance
 	path := "/api/2.0/database/instances:findByUid"
@@ -386,6 +397,17 @@ func (a *databaseImpl) UpdateDatabaseInstance(ctx context.Context, request Updat
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DatabaseInstance, &databaseInstance)
 	return &databaseInstance, err
+}
+
+func (a *databaseImpl) UpdateDatabaseInstanceRole(ctx context.Context, request UpdateDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error) {
+	var databaseInstanceRole DatabaseInstanceRole
+	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles/%v", request.InstanceName, request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DatabaseInstanceRole, &databaseInstanceRole)
+	return &databaseInstanceRole, err
 }
 
 func (a *databaseImpl) UpdateSyncedDatabaseTable(ctx context.Context, request UpdateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error) {

@@ -31,6 +31,23 @@ type CreateSyncedDatabaseTableRequest struct {
 	SyncedTable SyncedDatabaseTable `json:"synced_table"`
 }
 
+type CustomTag struct {
+	// The key of the custom tag.
+	Key string `json:"key,omitempty"`
+	// The value of the custom tag.
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DatabaseCatalog struct {
 	CreateDatabaseIfNotExists bool `json:"create_database_if_not_exists,omitempty"`
 	// The name of the DatabaseInstance housing the database.
@@ -81,6 +98,11 @@ type DatabaseInstance struct {
 	CreationTime string `json:"creation_time,omitempty"`
 	// The email of the creator of the instance.
 	Creator string `json:"creator,omitempty"`
+	// Custom tags associated with the instance. This field is only included on
+	// create and update responses.
+	CustomTags []CustomTag `json:"custom_tags,omitempty"`
+	// The recorded custom tags associated with the instance.
+	EffectiveCustomTags []CustomTag `json:"effective_custom_tags,omitempty"`
 	// xref AIP-129. `enable_pg_native_login` is owned by the client, while
 	// `effective_enable_pg_native_login` is owned by the server.
 	// `enable_pg_native_login` will only be set in Create/Update response
@@ -114,6 +136,8 @@ type DatabaseInstance struct {
 	// request. `effective_stopped` on the other hand will always bet set in all
 	// response messages (Create/Update/Get/List).
 	EffectiveStopped bool `json:"effective_stopped,omitempty"`
+	// The policy that is applied to the instance.
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// Whether the instance has PG native password login enabled. Defaults to
 	// true.
 	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
@@ -147,6 +171,8 @@ type DatabaseInstance struct {
 	Stopped bool `json:"stopped,omitempty"`
 	// An immutable UUID identifier for the instance.
 	Uid string `json:"uid,omitempty"`
+	// The desired usage policy to associate with the instance.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -402,6 +428,8 @@ type DatabaseTable struct {
 	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"name"`
+	// Data serving REST API URL for this table
+	TableServingUrl string `json:"table_serving_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -492,6 +520,22 @@ func (s *DeltaTableSyncInfo) UnmarshalJSON(b []byte) error {
 }
 
 func (s DeltaTableSyncInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type FailoverDatabaseInstanceRequest struct {
+	FailoverTargetDatabaseInstanceName string `json:"failover_target_database_instance_name,omitempty"`
+	// Name of the instance to failover.
+	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FailoverDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FailoverDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -703,6 +747,8 @@ func (s ListSyncedDatabaseTablesResponse) MarshalJSON() ([]byte, error) {
 // SyncedDatabaseTable. Note that other fields of pipeline are still inferred by
 // table def internally
 type NewPipelineSpec struct {
+	// Budget policy of this pipeline.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// This field needs to be specified if the destination catalog is a managed
 	// postgres catalog.
 	//
@@ -909,6 +955,8 @@ type SyncedDatabaseTable struct {
 	Name string `json:"name"`
 
 	Spec *SyncedTableSpec `json:"spec,omitempty"`
+	// Data serving REST API URL for this table
+	TableServingUrl string `json:"table_serving_url,omitempty"`
 	// The provisioning state of the synced table entity in Unity Catalog. This
 	// is distinct from the state of the data synchronization pipeline (i.e. the
 	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
@@ -1266,6 +1314,15 @@ type UpdateDatabaseInstanceRequest struct {
 	// when possible. To wipe out custom_tags, specify custom_tags in the
 	// update_mask with an empty custom_tags map.
 	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+type UpdateDatabaseInstanceRoleRequest struct {
+	DatabaseInstanceRole DatabaseInstanceRole `json:"database_instance_role"`
+
+	InstanceName string `json:"-" url:"-"`
+	// The name of the role. This is the unique identifier for the role in an
+	// instance.
+	Name string `json:"-" url:"-"`
 }
 
 type UpdateSyncedDatabaseTableRequest struct {
