@@ -1,31 +1,31 @@
 package duration
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/url"
 	"strings"
 	"time"
+
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/types/known/durationpb"
 )
 
-// Duration is a wrapper for time.Duration to provide custom marshaling
+// Duration is a wrapper for durationpb.Duration to provide custom marshaling
 // for JSON and URL query strings.
 //
-// It embeds time.Duration, so all standard methods (Seconds, String, etc.)
-// are directly accessible. The underlying time.Duration value can be
-// accessed via the .AsDuration() method.
+// It embeds durationpb.Duration and exposes the .AsDuration() method to
+// easily convert to time.Duration.
 //
 // Example:
 //
 //	customDur := durationpb.New(30 * time.Second)
-//	goDur := customDur.AsDuration() // Access the underlying time.Duration
+//	goDur := customDur.AsDuration()
 type Duration struct {
-	time.Duration
+	internal *durationpb.Duration
 }
 
 // New creates a custom Duration from a standard time.Duration.
 func New(d time.Duration) *Duration {
-	return &Duration{Duration: d}
+	return &Duration{internal: durationpb.New(d)}
 }
 
 // AsDuration returns the underlying time.Duration value.
@@ -33,65 +33,35 @@ func (x *Duration) AsDuration() time.Duration {
 	if x == nil {
 		return 0
 	}
-	return x.Duration
+	return x.internal.AsDuration()
 }
 
-// MarshalJSON implements the [json.Marshaler] interface by formatting the
-// duration as a string according to Google Well Known Type.
+// MarshalJSON implements the [json.Marshaler] interface
+// by marshalling the duration as a protobuf Duration.
 func (d Duration) MarshalJSON() ([]byte, error) {
-	return json.Marshal(d.toWireFormat())
-}
-
-// toWireFormat returns a string representation of Duration
-// which follows the wire format from Google Well Known Type.
-// a String that ends in s to indicate seconds and is preceded by
-// the number of seconds, with nanoseconds expressed as fractional seconds.
-//
-// https://protobuf.dev/reference/protobuf/google.protobuf/#duration
-func (d Duration) toWireFormat() string {
-	// We do not use the standard time.Duration.String() and d.Duration.Seconds()
-	// method because they use float64 which loses precision.
-
-	// Get the total nanoseconds as a precise integer.
-	sign := ""
-	if d.Duration < 0 {
-		sign = "-"
-		d.Duration = -d.Duration
-	}
-
-	sec := d.Duration / time.Second
-	nsec := d.Duration % time.Second
-
-	if nsec == 0 {
-		return fmt.Sprintf("%s%ds", sign, sec)
-	}
-
-	frac := strings.TrimRight(fmt.Sprintf("%09d", nsec), "0")
-	return fmt.Sprintf("%s%d.%ss", sign, sec, frac)
+	return protojson.Marshal(d.internal)
 }
 
 // EncodeValues implements the [query.Encoder] interface by encoding the
 // duration as a string, like "3.3s".
 func (d Duration) EncodeValues(key string, v *url.Values) error {
-	v.Set(key, d.toWireFormat())
+	res, err := protojson.Marshal(d.internal)
+	if err != nil {
+		return err
+	}
+	// remove the quotes from the string
+	queryValue := strings.Trim(string(res), "\"")
+	v.Set(key, queryValue)
 	return nil
 }
 
 // UnmarshalJSON implements the [json.Unmarshaler] interface. It can parse a
-// duration from the Google well-known type format (e.g., "3.123s").
+// duration from the protobuf Duration.
 func (d *Duration) UnmarshalJSON(b []byte) error {
-	if d == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-	// Remove the quotes from the string.
-	var s string
-	if err := json.Unmarshal(b, &s); err != nil {
+	var pb durationpb.Duration
+	if err := protojson.Unmarshal(b, &pb); err != nil {
 		return err
 	}
-	dur, err := time.ParseDuration(s)
-	if err != nil {
-		return err
-	}
-	*d = *New(dur)
+	*d = *New(pb.AsDuration())
 	return nil
 }

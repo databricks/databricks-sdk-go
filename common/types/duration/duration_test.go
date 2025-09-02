@@ -7,14 +7,6 @@ import (
 	"time"
 )
 
-func TestNew(t *testing.T) {
-	d := time.Second * 5
-	dur := New(d)
-	if dur.Duration != d {
-		t.Errorf("New() = %v, want %v", dur.Duration, d)
-	}
-}
-
 func TestAsDuration(t *testing.T) {
 	d := time.Second * 5
 	dur := New(d)
@@ -49,12 +41,12 @@ func TestDuration_MarshalJSON(t *testing.T) {
 		{
 			name:     "negative duration with fractional seconds",
 			duration: *New(-2*time.Minute + 100*time.Millisecond),
-			expected: "-119.9s",
+			expected: "-119.900s",
 		},
 		{
 			name:     "fractional seconds",
 			duration: *New(1500 * time.Millisecond),
-			expected: "1.5s",
+			expected: "1.500s",
 		},
 		{
 			name:     "large duration",
@@ -142,22 +134,14 @@ func TestDuration_UnmarshalJSON(t *testing.T) {
 				t.Errorf("Duration.UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !tt.wantErr && d != tt.want {
-				t.Errorf("Duration.UnmarshalJSON() = %v, want %v", d, tt.want)
+			if !tt.wantErr {
+				// We cannot compare Proto messages directly, so we compare the underlying time.Duration
+				if d.AsDuration() != tt.want.AsDuration() {
+					t.Errorf("Duration.UnmarshalJSON() = %v, want %v", d.AsDuration(), tt.want.AsDuration())
+				}
 			}
-		})
-	}
-}
 
-func TestDuration_UnmarshalJSON_NilPointer(t *testing.T) {
-	var d *Duration
-	err := d.UnmarshalJSON([]byte(`"5s"`))
-	if err == nil {
-		t.Error("Duration.UnmarshalJSON() on nil pointer should return error")
-	}
-	expectedErr := "json.Unmarshal on nil pointer"
-	if err.Error() != expectedErr {
-		t.Errorf("Duration.UnmarshalJSON() error = %v, want %v", err.Error(), expectedErr)
+		})
 	}
 }
 
@@ -190,7 +174,7 @@ func TestDuration_EncodeValues(t *testing.T) {
 			name:     "fractional seconds",
 			duration: *New(1500 * time.Millisecond),
 			key:      "interval",
-			expected: "1.5s",
+			expected: "1.500s",
 		},
 		{
 			name:     "large duration",
@@ -261,9 +245,10 @@ func TestDuration_JSONRoundTrip(t *testing.T) {
 			}
 
 			// Check that the round trip preserved the value
-			if result != tt.duration {
-				t.Errorf("JSON round trip failed: original = %v, result = %v", tt.duration, result)
+			if result.AsDuration() != tt.duration.AsDuration() {
+				t.Errorf("Duration.UnmarshalJSON() = %v, want %v", result.AsDuration(), tt.duration.AsDuration())
 			}
+
 		})
 	}
 }

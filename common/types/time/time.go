@@ -1,75 +1,67 @@
 package time
 
 import (
-	"encoding/json"
-	"errors"
-	"fmt"
 	"net/url"
+	"strings"
 	"time"
+
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// Time is a wrapper for time.Time to provide custom marshaling
+// Time is a wrapper for timestamppb.Timestamp to provide custom marshaling
 // for JSON and URL query strings.
 //
-// It embeds time.Time, so all standard methods (Format, Parse, etc.)
-// are directly accessible. The underlying time.Time value can be
-// accessed via the .AsTime() method.
+// It embeds timestamppb.Timestamp and exposes the .AsTime() method to
+// easily convert to time.Time.
 //
 // Example:
 //
 //	customTime := time.New(stdtime.Now())
-//	goTime := customTime.AsTime() // Access the underlying stdtime.Time
+//	goTime := customTime.AsTime()
 type Time struct {
-	time.Time
+	internal *timestamppb.Timestamp
 }
 
-// New creates a custom Time from a standard stdtime.Time.
+// New creates a custom Time from a standard time.Time.
 func New(t time.Time) *Time {
-	return &Time{Time: t}
+	return &Time{internal: timestamppb.New(t)}
 }
 
-// AsTime returns the underlying stdtime.Time value.
+// AsTime returns the underlying time.Time value.
 func (x *Time) AsTime() time.Time {
 	if x == nil {
 		return time.Time{}
 	}
-	return x.Time
+	return x.internal.AsTime()
 }
 
-// MarshalJSON implements the [json.Marshaler] interface by formatting the
-// time as a string according to RFC3339Nano
+// MarshalJSON implements the [json.Marshaler] interface
+// by marshalling the time as a protobuf Timestamp.
 func (t Time) MarshalJSON() ([]byte, error) {
-	return json.Marshal(t.Time.Format(time.RFC3339Nano))
+	return protojson.Marshal(t.internal)
 }
 
-// UnmarshalJSON implements the [json.Unmarshaler] interface by parsing the
-// time from a string according to RFC3339Nano
+// UnmarshalJSON implements the [json.Unmarshaler] interface
+// by unmarshalling the time from a protobuf Timestamp.
 func (t *Time) UnmarshalJSON(b []byte) error {
-	if t == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
-	}
-
-	var s string
-	if err := json.Unmarshal(b, &s); err != nil {
+	var pb timestamppb.Timestamp
+	if err := protojson.Unmarshal(b, &pb); err != nil {
 		return err
 	}
-
-	if s == "" {
-		return errors.New("time is empty. It should be in RFC3339Nano format")
-	}
-
-	timeValue, err := time.Parse(time.RFC3339Nano, s)
-	if err != nil {
-		return err
-	}
-
-	*t = Time{Time: timeValue}
+	*t = *New(pb.AsTime())
 	return nil
 }
 
 // EncodeValues implements the [query.Encoder] interface by encoding the
-// time as a string according to RFC3339Nano.
+// time as a protobuf Timestamp.
 func (t Time) EncodeValues(key string, v *url.Values) error {
-	v.Set(key, t.Time.Format(time.RFC3339Nano))
+	res, err := protojson.Marshal(t.internal)
+	if err != nil {
+		return err
+	}
+	// remove the quotes from the string.
+	queryValue := strings.Trim(string(res), "\"")
+	v.Set(key, queryValue)
 	return nil
 }

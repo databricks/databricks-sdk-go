@@ -7,14 +7,6 @@ import (
 	"time"
 )
 
-func TestNew(t *testing.T) {
-	now := time.Now()
-	timeVal := New(now)
-	if !timeVal.Time.Equal(now) {
-		t.Errorf("New() = %v, want %v", timeVal.Time, now)
-	}
-}
-
 func TestAsTime(t *testing.T) {
 	now := time.Now()
 	timeVal := New(now)
@@ -58,7 +50,7 @@ func TestTime_MarshalJSON(t *testing.T) {
 		{
 			name:     "time with timezone",
 			time:     *New(time.Date(2023, 12, 25, 10, 30, 0, 0, time.FixedZone("EST", -5*3600))),
-			expected: `"2023-12-25T10:30:00-05:00"`,
+			expected: `"2023-12-25T15:30:00Z"`,
 		},
 	}
 
@@ -134,22 +126,10 @@ func TestTime_UnmarshalJSON(t *testing.T) {
 				t.Errorf("Time.UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !tt.wantErr && !timeVal.Time.Equal(tt.want.Time) {
+			if !tt.wantErr && !timeVal.AsTime().Equal(tt.want.AsTime()) {
 				t.Errorf("Time.UnmarshalJSON() = %v, want %v", timeVal, tt.want)
 			}
 		})
-	}
-}
-
-func TestTime_UnmarshalJSON_NilPointer(t *testing.T) {
-	var timeVal *Time
-	err := timeVal.UnmarshalJSON([]byte(`"2023-12-25T10:30:00Z"`))
-	if err == nil {
-		t.Error("Time.UnmarshalJSON() on nil pointer should return error")
-	}
-	expectedErr := "json.Unmarshal on nil pointer"
-	if err.Error() != expectedErr {
-		t.Errorf("Time.UnmarshalJSON() error = %v, want %v", err.Error(), expectedErr)
 	}
 }
 
@@ -182,7 +162,7 @@ func TestTime_EncodeValues(t *testing.T) {
 			name:     "time with timezone",
 			time:     *New(time.Date(2023, 12, 25, 10, 30, 0, 0, time.FixedZone("EST", -5*3600))),
 			key:      "local_time",
-			expected: "2023-12-25T10:30:00-05:00",
+			expected: "2023-12-25T15:30:00Z",
 		},
 	}
 
@@ -247,7 +227,7 @@ func TestTime_JSONRoundTrip(t *testing.T) {
 			}
 
 			// Check that the round trip preserved the value
-			if !result.Time.Equal(tt.time.Time) {
+			if !result.AsTime().Equal(tt.time.AsTime()) {
 				t.Errorf("JSON round trip failed: original = %v, result = %v", tt.time, result)
 			}
 		})
@@ -290,7 +270,7 @@ func TestTime_EdgeCases(t *testing.T) {
 				return
 			}
 
-			if !result.Time.Equal(tt.time) {
+			if !result.AsTime().Equal(tt.time) {
 				t.Errorf("Time round trip failed: original = %v, result = %v", tt.time, result)
 			}
 		})
