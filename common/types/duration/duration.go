@@ -17,7 +17,7 @@ import (
 //
 // Example:
 //
-//	customDur := durationpb.New(30 * time.Second)
+//	customDur := duration.New(30 * time.Second)
 //	goDur := customDur.AsDuration()
 type Duration struct {
 	internal *durationpb.Duration

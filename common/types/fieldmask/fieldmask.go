@@ -29,7 +29,7 @@ func (f FieldMask) MarshalJSON() ([]byte, error) {
 // field mask from a string according to Google Well Known Type
 func (f *FieldMask) UnmarshalJSON(data []byte) error {
 	if f == nil {
-		return fmt.Errorf("json.Unmarshal on nil pointer")
+		return fmt.Errorf("FieldMask.UnmarshalJSON on nil pointer")
 	}
 
 	var s string
