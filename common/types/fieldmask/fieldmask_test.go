@@ -140,7 +140,7 @@ func TestFieldMask_UnmarshalJSON_NilPointer(t *testing.T) {
 		t.Error("FieldMask.UnmarshalJSON() on nil pointer should return error")
 	}
 
-	expectedErr := "json.Unmarshal on nil pointer"
+	expectedErr := "FieldMask.UnmarshalJSON on nil pointer"
 	if err.Error() != expectedErr {
 		t.Errorf("FieldMask.UnmarshalJSON() error = %v, want %v", err.Error(), expectedErr)
 	}
