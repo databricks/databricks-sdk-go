@@ -71,13 +71,13 @@ func TestLRO_CreateTestResource_Wait(t *testing.T) {
 				Response: common.Operation{
 					Done: true,
 					Error: &common.DatabricksServiceExceptionWithDetailsProto{
-						ErrorCode: lrotesting.ErrorCodeInternalError,
+						ErrorCode: common.ErrorCodeInternalError,
 						Message:   "Test error message",
 					},
 					Name: "operations/test-resource-create-12345",
 				},
 			}},
-			wantResult: &lrotesting.TestResource{},
+			wantResult: nil,
 			wantErr:    true,
 		},
 	}

@@ -10,7 +10,9 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/internal/testspecs/service/common"
 	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/service/common/lro"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
@@ -38,6 +40,17 @@ type LroTestingAPI struct {
 	lroTestingImpl
 }
 
+func (a *LroTestingAPI) CreateTestResource(ctx context.Context, request CreateTestResourceRequest) (*CreateTestResourceOperation, error) {
+	operation, err := a.lroTestingImpl.CreateTestResource(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return &CreateTestResourceOperation{
+		impl:      &a.lroTestingImpl,
+		operation: operation,
+	}, nil
+}
+
 type CreateTestResourceOperation struct {
 	impl      *lroTestingImpl
 	operation *common.Operation
@@ -47,7 +60,7 @@ type CreateTestResourceOperation struct {
 // timeout, the timeout can be overridden in the opts. If the operation didn't
 // finished within the timeout, this function will through an error of type
 // ErrTimedOut, otherwise successful response and any errors encountered.
-func (a *CreateTestResourceOperation) Wait(ctx context.Context, opts *common.LroOptions) (*TestResource, error) {
+func (a *CreateTestResourceOperation) Wait(ctx context.Context, opts *lro.LroOptions) (*TestResource, error) {
 	timeout := 20 * time.Minute // default timeout per LRO spec
 	if opts != nil && opts.Timeout > 0 {
 		timeout = opts.Timeout
@@ -90,7 +103,7 @@ func (a *CreateTestResourceOperation) Wait(ctx context.Context, opts *common.Lro
 		}
 
 		var testResource TestResource
-		err = json.Unmarshal([]byte(operation.Response.Value), &testResource)
+		err = json.Unmarshal(operation.Response, &testResource)
 		if err != nil {
 			return nil, retries.Halt(fmt.Errorf("failed to unmarshal testResource response: %w", err))
 		}
@@ -121,7 +134,7 @@ func (a *CreateTestResourceOperation) Metadata() (*TestResourceOperationMetadata
 	}
 
 	var metadata TestResourceOperationMetadata
-	err := json.Unmarshal([]byte(a.operation.Metadata.Value), &metadata)
+	err := json.Unmarshal(a.operation.Metadata, &metadata)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshal operation metadata: %w", err)
 	}
