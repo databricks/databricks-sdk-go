@@ -1,0 +1,57 @@
+// Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+package lrotesting
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+
+	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/internal/testspecs/service/common"
+)
+
+// unexported type that holds implementations of just LroTesting API methods
+type lroTestingImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *lroTestingImpl) CancelOperation(ctx context.Context, request CancelOperationRequest) error {
+	path := fmt.Sprintf("/api/2.0/lro-testing/operations/%v:cancel", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
+	return err
+}
+
+func (a *lroTestingImpl) CreateTestResource(ctx context.Context, request CreateTestResourceRequest) (*common.Operation, error) {
+	var operation common.Operation
+	path := "/api/2.0/lro-testing/resources"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Resource, &operation)
+	return &operation, err
+}
+
+func (a *lroTestingImpl) GetOperation(ctx context.Context, request GetOperationRequest) (*common.Operation, error) {
+	var operation common.Operation
+	path := fmt.Sprintf("/api/2.0/lro-testing/operations/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
+func (a *lroTestingImpl) GetTestResource(ctx context.Context, request GetTestResourceRequest) (*TestResource, error) {
+	var testResource TestResource
+	path := fmt.Sprintf("/api/2.0/lro-testing/resources/%v", request.ResourceId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &testResource)
+	return &testResource, err
+}
