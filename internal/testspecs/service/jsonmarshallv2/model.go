@@ -3,6 +3,7 @@
 package jsonmarshallv2
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/common/types/duration"
@@ -44,6 +45,19 @@ type OptionalFields struct {
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
 	FieldMask *fieldmask.FieldMask `json:"field_mask,omitempty" url:"field_mask,omitempty"`
+	// Legacy Well Known types
+	LegacyDuration string `json:"legacy_duration,omitempty" url:"legacy_duration,omitempty"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	LegacyFieldMask string `json:"legacy_field_mask,omitempty" url:"legacy_field_mask,omitempty"`
+
+	LegacyTimestamp string `json:"legacy_timestamp,omitempty" url:"legacy_timestamp,omitempty"`
+
+	ListValue []json.RawMessage `json:"list_value,omitempty" url:"list_value,omitempty"`
 	// Lint disable reason: This is a dummy field used to test SDK Generation
 	// logic.
 	Map map[string]string `json:"map,omitempty" url:"map,omitempty"`
@@ -58,9 +72,13 @@ type OptionalFields struct {
 
 	OptionalString string `json:"optional_string,omitempty" url:"optional_string,omitempty"`
 
+	Struct map[string]json.RawMessage `json:"struct,omitempty" url:"struct,omitempty"`
+
 	TestEnum TestEnum `json:"test_enum,omitempty" url:"test_enum,omitempty"`
 
 	Timestamp *time.Time `json:"timestamp,omitempty" url:"timestamp,omitempty"`
+
+	Value *json.RawMessage `json:"value,omitempty" url:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -84,11 +102,17 @@ type RepeatedFields struct {
 
 	RepeatedInt64 []int64 `json:"repeated_int64,omitempty" url:"repeated_int64,omitempty"`
 
+	RepeatedListValue [][]json.RawMessage `json:"repeated_list_value,omitempty" url:"repeated_list_value,omitempty"`
+
 	RepeatedMessage []NestedMessage `json:"repeated_message,omitempty" url:"repeated_message,omitempty"`
 
 	RepeatedString []string `json:"repeated_string,omitempty" url:"repeated_string,omitempty"`
 
+	RepeatedStruct []map[string]json.RawMessage `json:"repeated_struct,omitempty" url:"repeated_struct,omitempty"`
+
 	RepeatedTimestamp []time.Time `json:"repeated_timestamp,omitempty" url:"repeated_timestamp,omitempty"`
+
+	RepeatedValue []json.RawMessage `json:"repeated_value,omitempty" url:"repeated_value,omitempty"`
 
 	TestRepeatedEnum []TestEnum `json:"test_repeated_enum,omitempty" url:"test_repeated_enum,omitempty"`
 }
@@ -109,11 +133,17 @@ type RequiredFields struct {
 
 	RequiredInt64 int64 `json:"required_int64" url:"required_int64"`
 
+	RequiredListValue []json.RawMessage `json:"required_list_value" url:"required_list_value"`
+
 	RequiredMessage NestedMessage `json:"required_message" url:"required_message"`
 
 	RequiredString string `json:"required_string" url:"required_string"`
 
+	RequiredStruct map[string]json.RawMessage `json:"required_struct" url:"required_struct"`
+
 	RequiredTimestamp time.Time `json:"required_timestamp" url:"required_timestamp"`
+
+	RequiredValue json.RawMessage `json:"required_value" url:"required_value"`
 
 	TestRequiredEnum TestEnum `json:"test_required_enum" url:"test_required_enum"`
 }
