@@ -391,7 +391,7 @@ type Group struct {
 	//
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
-
+	// external_id should be unique for identifying groups
 	ExternalId string `json:"externalId,omitempty"`
 
 	Groups []ComplexValue `json:"groups,omitempty"`

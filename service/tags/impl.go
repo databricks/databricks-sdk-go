@@ -47,7 +47,7 @@ func (a *tagPoliciesImpl) GetTagPolicy(ctx context.Context, request GetTagPolicy
 	return &tagPolicy, err
 }
 
-// Lists all tag policies in the account.
+// Lists the tag policies for all governed tags in the account.
 func (a *tagPoliciesImpl) ListTagPolicies(ctx context.Context, request ListTagPoliciesRequest) listing.Iterator[TagPolicy] {
 
 	getNextPage := func(ctx context.Context, req ListTagPoliciesRequest) (*ListTagPoliciesResponse, error) {
@@ -72,7 +72,7 @@ func (a *tagPoliciesImpl) ListTagPolicies(ctx context.Context, request ListTagPo
 	return iterator
 }
 
-// Lists all tag policies in the account.
+// Lists the tag policies for all governed tags in the account.
 func (a *tagPoliciesImpl) ListTagPoliciesAll(ctx context.Context, request ListTagPoliciesRequest) ([]TagPolicy, error) {
 	iterator := a.ListTagPolicies(ctx, request)
 	return listing.ToSlice[TagPolicy](ctx, iterator)
