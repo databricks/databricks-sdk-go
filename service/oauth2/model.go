@@ -214,10 +214,10 @@ type FederationPolicy struct {
 	Name string `json:"name,omitempty"`
 
 	OidcPolicy *OidcFederationPolicy `json:"oidc_policy,omitempty"`
-	// The ID of the federation policy.
+	// The ID of the federation policy. Output only.
 	PolicyId string `json:"policy_id,omitempty"`
-	// The service principal ID that this federation policy applies to. Only set
-	// for service principal federation policies.
+	// The service principal ID that this federation policy applies to. Output
+	// only. Only set for service principal federation policies.
 	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
 	// Unique, immutable id of the federation policy.
 	Uid string `json:"uid,omitempty"`

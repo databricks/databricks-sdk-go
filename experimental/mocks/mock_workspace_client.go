@@ -17,6 +17,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/database"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/files"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/jobs"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/ml"
@@ -163,6 +164,7 @@ func NewMockWorkspaceClient(t interface {
 			Workspace:                           workspace.NewMockWorkspaceInterface(t),
 			WorkspaceBindings:                   catalog.NewMockWorkspaceBindingsInterface(t),
 			WorkspaceConf:                       settings.NewMockWorkspaceConfInterface(t),
+			WorkspaceIamV2:                      iamv2.NewMockWorkspaceIamV2Interface(t),
 			WorkspaceSettingsV2:                 settingsv2.NewMockWorkspaceSettingsV2Interface(t),
 		},
 	}
@@ -1272,6 +1274,14 @@ func (m *MockWorkspaceClient) GetMockWorkspaceConfAPI() *settings.MockWorkspaceC
 	api, ok := m.WorkspaceClient.WorkspaceConf.(*settings.MockWorkspaceConfInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected WorkspaceConf to be *settings.MockWorkspaceConfInterface, actual was %T", m.WorkspaceClient.WorkspaceConf))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockWorkspaceIamV2API() *iamv2.MockWorkspaceIamV2Interface {
+	api, ok := m.WorkspaceClient.WorkspaceIamV2.(*iamv2.MockWorkspaceIamV2Interface)
+	if !ok {
+		panic(fmt.Sprintf("expected WorkspaceIamV2 to be *iamv2.MockWorkspaceIamV2Interface, actual was %T", m.WorkspaceClient.WorkspaceIamV2))
 	}
 	return api
 }

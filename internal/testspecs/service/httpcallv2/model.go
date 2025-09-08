@@ -3,7 +3,8 @@
 package httpcallv2
 
 import (
-	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
+	"encoding/json"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -52,7 +53,7 @@ type GetResourceRequest struct {
 	// Specification of elements in sequence or map fields is not allowed, as
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
-	FieldMask *fieldmask.FieldMask `json:"-" url:"field_mask,omitempty"`
+	FieldMask string `json:"-" url:"field_mask,omitempty"`
 
 	OptionalComplexQueryParam *ComplexQueryParam `json:"-" url:"optional_complex_query_param,omitempty"`
 
@@ -84,6 +85,8 @@ func (s GetResourceRequest) MarshalJSON() ([]byte, error) {
 }
 
 type Resource struct {
+	AnyField json.RawMessage `json:"any_field,omitempty"`
+
 	BodyField string `json:"body_field,omitempty"`
 
 	NestedPathParamBool bool `json:"nested_path_param_bool,omitempty"`
@@ -110,7 +113,7 @@ type UpdateResourceRequest struct {
 	// Specification of elements in sequence or map fields is not allowed, as
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
-	FieldMask *fieldmask.FieldMask `json:"-" url:"field_mask,omitempty"`
+	FieldMask string `json:"-" url:"field_mask,omitempty"`
 
 	NestedPathParamBool bool `json:"-" url:"-"`
 

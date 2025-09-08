@@ -11,6 +11,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/iam"
+	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/service/settings"
@@ -133,6 +134,10 @@ type AccountClient struct {
 	// All Databricks account identities can be assigned as members of groups,
 	// and members inherit permissions that are assigned to their group.
 	Groups iam.AccountGroupsInterface
+
+	// These APIs are used to manage identities and the workspace access of
+	// these identities in <Databricks>.
+	IamV2 iamv2.AccountIamV2Interface
 
 	// The Accounts IP Access List API enables account admins to configure IP
 	// access lists for access to the account console.
@@ -459,6 +464,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		EncryptionKeys:                   provisioning.NewEncryptionKeys(apiClient),
 		FederationPolicy:                 oauth2.NewAccountFederationPolicy(apiClient),
 		Groups:                           iam.NewAccountGroups(apiClient),
+		IamV2:                            iamv2.NewAccountIamV2(apiClient),
 		IpAccessLists:                    settings.NewAccountIpAccessLists(apiClient),
 		LogDelivery:                      billing.NewLogDelivery(apiClient),
 		MetastoreAssignments:             catalog.NewAccountMetastoreAssignments(apiClient),

@@ -64,9 +64,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
-//
 // - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
+//
+// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -145,6 +145,8 @@
 // - [iam.GroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks workspace, data, and other securable objects.
 //
 // - [iam.AccountGroupsAPI]: Groups simplify identity management, making it easier to assign access to Databricks account, data, and other securable objects.
+//
+// - [iamv2.AccountIamV2API]: These APIs are used to manage identities and the workspace access of these identities in <Databricks>.
 //
 // - [compute.InstancePoolsAPI]: Instance Pools API are used to create, edit, delete and list instance pools by using ready-to-use cloud instances which reduces a cluster start and auto-scaling times.
 //
@@ -304,7 +306,7 @@
 //
 // - [catalog.TablesAPI]: A table resides in the third layer of Unity Catalog’s three-level namespace.
 //
-// - [tags.TagPoliciesAPI]: The Tag Policy API allows you to manage tag policies in Databricks.
+// - [tags.TagPoliciesAPI]: The Tag Policy API allows you to manage policies for governed tags in Databricks.
 //
 // - [catalog.TemporaryPathCredentialsAPI]: Temporary Path Credentials refer to short-lived, downscoped credentials used to access external cloud storage locations registered in Databricks.
 //
@@ -338,6 +340,8 @@
 //
 // - [settings.WorkspaceConfAPI]: This API allows updating known workspace settings for advanced users.
 //
+// - [iamv2.WorkspaceIamV2API]: These APIs are used to manage identities and the workspace access of these identities in <Databricks>.
+//
 // - [settings.WorkspaceNetworkConfigurationAPI]: These APIs allow configuration of network settings for Databricks workspaces by selecting which network policy to associate with the workspace.
 //
 // - [settingsv2.WorkspaceSettingsV2API]: APIs to manage workspace level settings.
@@ -356,6 +360,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/database"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
+	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
@@ -451,6 +456,7 @@ var (
 	_ *catalog.GrantsAPI                                  = nil
 	_ *iam.GroupsAPI                                      = nil
 	_ *iam.AccountGroupsAPI                               = nil
+	_ *iamv2.AccountIamV2API                              = nil
 	_ *compute.InstancePoolsAPI                           = nil
 	_ *compute.InstanceProfilesAPI                        = nil
 	_ *settings.IpAccessListsAPI                          = nil
@@ -547,6 +553,7 @@ var (
 	_ *iam.WorkspaceAssignmentAPI                         = nil
 	_ *catalog.WorkspaceBindingsAPI                       = nil
 	_ *settings.WorkspaceConfAPI                          = nil
+	_ *iamv2.WorkspaceIamV2API                            = nil
 	_ *settings.WorkspaceNetworkConfigurationAPI          = nil
 	_ *settingsv2.WorkspaceSettingsV2API                  = nil
 	_ *provisioning.WorkspacesAPI                         = nil

@@ -306,6 +306,24 @@ type GenieExecuteMessageQueryRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+// Feedback containing rating and optional comment
+type GenieFeedback struct {
+	// Optional feedback comment text
+	Comment string `json:"comment,omitempty"`
+	// The feedback rating
+	Rating GenieFeedbackRating `json:"rating,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieFeedback) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieFeedback) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Feedback rating for Genie messages
 type GenieFeedbackRating string
 
@@ -439,8 +457,8 @@ func (s GenieListConversationMessagesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type GenieListConversationsRequest struct {
-	// Include all conversations in the space across all users. Requires "Can
-	// Manage" permission on the space.
+	// Include all conversations in the space across all users. Requires at
+	// least CAN MANAGE permission on the space.
 	IncludeAll bool `json:"-" url:"include_all,omitempty"`
 	// Maximum number of conversations to return per page
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -522,6 +540,8 @@ type GenieMessage struct {
 	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
 	// Error message if Genie failed to respond to the message
 	Error *MessageError `json:"error,omitempty"`
+	// User feedback for the message if provided
+	Feedback *GenieFeedback `json:"feedback,omitempty"`
 	// Message ID. Legacy identifier, use message_id instead
 	Id string `json:"id"`
 	// Timestamp when the message was last updated

@@ -11,6 +11,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/billing"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
@@ -40,6 +41,7 @@ func NewMockAccountClient(t interface {
 			EncryptionKeys:                   provisioning.NewMockEncryptionKeysInterface(t),
 			FederationPolicy:                 oauth2.NewMockAccountFederationPolicyInterface(t),
 			Groups:                           iam.NewMockAccountGroupsInterface(t),
+			IamV2:                            iamv2.NewMockAccountIamV2Interface(t),
 			IpAccessLists:                    settings.NewMockAccountIpAccessListsInterface(t),
 			LogDelivery:                      billing.NewMockLogDeliveryInterface(t),
 			MetastoreAssignments:             catalog.NewMockAccountMetastoreAssignmentsInterface(t),
@@ -216,6 +218,14 @@ func (m *MockAccountClient) GetMockAccountGroupsAPI() *iam.MockAccountGroupsInte
 	api, ok := m.AccountClient.Groups.(*iam.MockAccountGroupsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Groups to be *iam.MockAccountGroupsInterface, actual was %T", m.AccountClient.Groups))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockAccountIamV2API() *iamv2.MockAccountIamV2Interface {
+	api, ok := m.AccountClient.IamV2.(*iamv2.MockAccountIamV2Interface)
+	if !ok {
+		panic(fmt.Sprintf("expected IamV2 to be *iamv2.MockAccountIamV2Interface, actual was %T", m.AccountClient.IamV2))
 	}
 	return api
 }
