@@ -17,7 +17,7 @@ type lroTestingImpl struct {
 }
 
 func (a *lroTestingImpl) CancelOperation(ctx context.Context, request CancelOperationRequest) error {
-	path := fmt.Sprintf("/api/2.0/lro-testing/operations/%v:cancel", request.Name)
+	path := fmt.Sprintf("/api/2.0/lro-testing/operations/%v/cancel", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

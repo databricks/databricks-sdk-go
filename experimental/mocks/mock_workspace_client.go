@@ -79,6 +79,7 @@ func NewMockWorkspaceClient(t interface {
 			Dashboards:                          sql.NewMockDashboardsInterface(t),
 			DataSources:                         sql.NewMockDataSourcesInterface(t),
 			Database:                            database.NewMockDatabaseInterface(t),
+			DatabaseProject:                     database.NewMockDatabaseProjectInterface(t),
 			Dbfs:                                files.NewMockDbfsInterface(t),
 			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
 			EntityTagAssignments:                catalog.NewMockEntityTagAssignmentsInterface(t),
@@ -596,6 +597,14 @@ func (m *MockWorkspaceClient) GetMockDatabaseAPI() *database.MockDatabaseInterfa
 	api, ok := m.WorkspaceClient.Database.(*database.MockDatabaseInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Database to be *database.MockDatabaseInterface, actual was %T", m.WorkspaceClient.Database))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockDatabaseProjectAPI() *database.MockDatabaseProjectInterface {
+	api, ok := m.WorkspaceClient.DatabaseProject.(*database.MockDatabaseProjectInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DatabaseProject to be *database.MockDatabaseProjectInterface, actual was %T", m.WorkspaceClient.DatabaseProject))
 	}
 	return api
 }

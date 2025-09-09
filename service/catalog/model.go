@@ -444,6 +444,8 @@ type CatalogInfo struct {
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of catalog creator.
 	CreatedBy string `json:"created_by,omitempty"`
+	// Disaster Recovery replication state snapshot.
+	DrReplicationInfo *DrReplicationInfo `json:"dr_replication_info,omitempty"`
 
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
@@ -1057,6 +1059,8 @@ type CreateCatalog struct {
 	ConnectionName string `json:"connection_name,omitempty"`
 	// Status of conversion of FOREIGN catalog to UC Native catalog.
 	ConversionInfo *ConversionInfo `json:"conversion_info,omitempty"`
+	// Disaster Recovery replication state snapshot.
+	DrReplicationInfo *DrReplicationInfo `json:"dr_replication_info,omitempty"`
 	// Name of catalog.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -2415,6 +2419,48 @@ type DisableRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 	// Full name of the system schema.
 	SchemaName string `json:"-" url:"-"`
+}
+
+// Metadata related to Disaster Recovery.
+type DrReplicationInfo struct {
+	Status DrReplicationStatus `json:"status,omitempty"`
+}
+
+type DrReplicationStatus string
+
+const DrReplicationStatusDrReplicationStatusPrimary DrReplicationStatus = `DR_REPLICATION_STATUS_PRIMARY`
+
+const DrReplicationStatusDrReplicationStatusSecondary DrReplicationStatus = `DR_REPLICATION_STATUS_SECONDARY`
+
+// String representation for [fmt.Print]
+func (f *DrReplicationStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DrReplicationStatus) Set(v string) error {
+	switch v {
+	case `DR_REPLICATION_STATUS_PRIMARY`, `DR_REPLICATION_STATUS_SECONDARY`:
+		*f = DrReplicationStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DR_REPLICATION_STATUS_PRIMARY", "DR_REPLICATION_STATUS_SECONDARY"`, v)
+	}
+}
+
+// Values returns all possible values for DrReplicationStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DrReplicationStatus) Values() []DrReplicationStatus {
+	return []DrReplicationStatus{
+		DrReplicationStatusDrReplicationStatusPrimary,
+		DrReplicationStatusDrReplicationStatusSecondary,
+	}
+}
+
+// Type always returns DrReplicationStatus to satisfy [pflag.Value] interface
+func (f *DrReplicationStatus) Type() string {
+	return "DrReplicationStatus"
 }
 
 type EffectivePermissionsList struct {
@@ -7785,6 +7831,8 @@ type UpdateCatalog struct {
 	Comment string `json:"comment,omitempty"`
 	// Status of conversion of FOREIGN catalog to UC Native catalog.
 	ConversionInfo *ConversionInfo `json:"conversion_info,omitempty"`
+	// Disaster Recovery replication state snapshot.
+	DrReplicationInfo *DrReplicationInfo `json:"dr_replication_info,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`

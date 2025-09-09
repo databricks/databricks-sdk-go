@@ -15,10 +15,11 @@ type CreateTagPolicyRequest struct {
 }
 
 type DeleteTagAssignmentRequest struct {
+	// The identifier of the entity to which the tag is assigned
 	EntityId string `json:"-" url:"-"`
-
+	// The type of entity to which the tag is assigned
 	EntityType string `json:"-" url:"-"`
-
+	// The key of the tag
 	TagKey string `json:"-" url:"-"`
 }
 
@@ -27,10 +28,11 @@ type DeleteTagPolicyRequest struct {
 }
 
 type GetTagAssignmentRequest struct {
+	// The identifier of the entity to which the tag is assigned
 	EntityId string `json:"-" url:"-"`
-
+	// The type of entity to which the tag is assigned
 	EntityType string `json:"-" url:"-"`
-
+	// The key of the tag
 	TagKey string `json:"-" url:"-"`
 }
 
@@ -39,12 +41,14 @@ type GetTagPolicyRequest struct {
 }
 
 type ListTagAssignmentsRequest struct {
+	// The identifier of the entity to which the tag is assigned
 	EntityId string `json:"-" url:"-"`
-
+	// The type of entity to which the tag is assigned
 	EntityType string `json:"-" url:"-"`
-
+	// Optional. Maximum number of tag assignments to return in a single page
 	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	// Pagination token to go to the next page of tag assignments. Requests
+	// first page if absent.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -59,6 +63,7 @@ func (s ListTagAssignmentsRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListTagAssignmentsResponse struct {
+	// Pagination token to request the next page of tag assignments
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	TagAssignments []TagAssignment `json:"tag_assignments,omitempty"`
@@ -111,12 +116,13 @@ func (s ListTagPoliciesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type TagAssignment struct {
+	// The identifier of the entity to which the tag is assigned
 	EntityId string `json:"entity_id"`
-
+	// The type of entity to which the tag is assigned
 	EntityType string `json:"entity_type"`
-
+	// The key of the tag
 	TagKey string `json:"tag_key"`
-
+	// The value of the tag
 	TagValue string `json:"tag_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -151,12 +157,13 @@ func (s TagPolicy) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateTagAssignmentRequest struct {
+	// The identifier of the entity to which the tag is assigned
 	EntityId string `json:"-" url:"-"`
-
+	// The type of entity to which the tag is assigned
 	EntityType string `json:"-" url:"-"`
 
 	TagAssignment TagAssignment `json:"tag_assignment"`
-
+	// The key of the tag
 	TagKey string `json:"-" url:"-"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,

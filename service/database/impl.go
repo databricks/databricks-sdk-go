@@ -423,3 +423,274 @@ func (a *databaseImpl) UpdateSyncedDatabaseTable(ctx context.Context, request Up
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.SyncedTable, &syncedDatabaseTable)
 	return &syncedDatabaseTable, err
 }
+
+// unexported type that holds implementations of just DatabaseProject API methods
+type databaseProjectImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *databaseProjectImpl) CreateDatabaseBranch(ctx context.Context, request CreateDatabaseBranchRequest) (*DatabaseBranch, error) {
+	var databaseBranch DatabaseBranch
+	path := fmt.Sprintf("/api/2.0/database/projects/%v/branches", request.ProjectId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.DatabaseBranch, &databaseBranch)
+	return &databaseBranch, err
+}
+
+func (a *databaseProjectImpl) CreateDatabaseEndpoint(ctx context.Context, request CreateDatabaseEndpointRequest) (*DatabaseEndpoint, error) {
+	var databaseEndpoint DatabaseEndpoint
+	path := fmt.Sprintf("/api/2.0/database/projects/%v/branches/%v/endpoints", request.ProjectId, request.BranchId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.DatabaseEndpoint, &databaseEndpoint)
+	return &databaseEndpoint, err
+}
+
+func (a *databaseProjectImpl) CreateDatabaseProject(ctx context.Context, request CreateDatabaseProjectRequest) (*DatabaseProject, error) {
+	var databaseProject DatabaseProject
+	path := "/api/2.0/database/projects"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.DatabaseProject, &databaseProject)
+	return &databaseProject, err
+}
+
+func (a *databaseProjectImpl) DeleteDatabaseBranch(ctx context.Context, request DeleteDatabaseBranchRequest) error {
+	path := fmt.Sprintf("/api/2.0/database/projects/%v/branches/%v", request.ProjectId, request.BranchId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *databaseProjectImpl) DeleteDatabaseEndpoint(ctx context.Context, request DeleteDatabaseEndpointRequest) error {
+	path := fmt.Sprintf("/api/2.0/database/projects/%v/branches/%v/endpoints/%v", request.ProjectId, request.BranchId, request.EndpointId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *databaseProjectImpl) DeleteDatabaseProject(ctx context.Context, request DeleteDatabaseProjectRequest) error {
+	path := fmt.Sprintf("/api/2.0/database/projects/%v", request.ProjectId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *databaseProjectImpl) GetDatabaseBranch(ctx context.Context, request GetDatabaseBranchRequest) (*DatabaseBranch, error) {
+	var databaseBranch DatabaseBranch
+	path := fmt.Sprintf("/api/2.0/database/projects/%v/branches/%v", request.ProjectId, request.BranchId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseBranch)
+	return &databaseBranch, err
+}
+
+func (a *databaseProjectImpl) GetDatabaseEndpoint(ctx context.Context, request GetDatabaseEndpointRequest) (*DatabaseEndpoint, error) {
+	var databaseEndpoint DatabaseEndpoint
+	path := fmt.Sprintf("/api/2.0/database/projects/%v/branches/%v/endpoints/%v", request.ProjectId, request.BranchId, request.EndpointId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseEndpoint)
+	return &databaseEndpoint, err
+}
+
+func (a *databaseProjectImpl) GetDatabaseProject(ctx context.Context, request GetDatabaseProjectRequest) (*DatabaseProject, error) {
+	var databaseProject DatabaseProject
+	path := fmt.Sprintf("/api/2.0/database/projects/%v", request.ProjectId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseProject)
+	return &databaseProject, err
+}
+
+// List Database Branches.
+func (a *databaseProjectImpl) ListDatabaseBranches(ctx context.Context, request ListDatabaseBranchesRequest) listing.Iterator[DatabaseBranch] {
+
+	getNextPage := func(ctx context.Context, req ListDatabaseBranchesRequest) (*ListDatabaseBranchesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListDatabaseBranches(ctx, req)
+	}
+	getItems := func(resp *ListDatabaseBranchesResponse) []DatabaseBranch {
+		return resp.DatabaseBranches
+	}
+	getNextReq := func(resp *ListDatabaseBranchesResponse) *ListDatabaseBranchesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List Database Branches.
+func (a *databaseProjectImpl) ListDatabaseBranchesAll(ctx context.Context, request ListDatabaseBranchesRequest) ([]DatabaseBranch, error) {
+	iterator := a.ListDatabaseBranches(ctx, request)
+	return listing.ToSlice[DatabaseBranch](ctx, iterator)
+}
+
+func (a *databaseProjectImpl) internalListDatabaseBranches(ctx context.Context, request ListDatabaseBranchesRequest) (*ListDatabaseBranchesResponse, error) {
+	var listDatabaseBranchesResponse ListDatabaseBranchesResponse
+	path := fmt.Sprintf("/api/2.0/database/projects/%v/branches", request.ProjectId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDatabaseBranchesResponse)
+	return &listDatabaseBranchesResponse, err
+}
+
+// List Database Endpoints.
+func (a *databaseProjectImpl) ListDatabaseEndpoints(ctx context.Context, request ListDatabaseEndpointsRequest) listing.Iterator[DatabaseEndpoint] {
+
+	getNextPage := func(ctx context.Context, req ListDatabaseEndpointsRequest) (*ListDatabaseEndpointsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListDatabaseEndpoints(ctx, req)
+	}
+	getItems := func(resp *ListDatabaseEndpointsResponse) []DatabaseEndpoint {
+		return resp.DatabaseEndpoints
+	}
+	getNextReq := func(resp *ListDatabaseEndpointsResponse) *ListDatabaseEndpointsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List Database Endpoints.
+func (a *databaseProjectImpl) ListDatabaseEndpointsAll(ctx context.Context, request ListDatabaseEndpointsRequest) ([]DatabaseEndpoint, error) {
+	iterator := a.ListDatabaseEndpoints(ctx, request)
+	return listing.ToSlice[DatabaseEndpoint](ctx, iterator)
+}
+
+func (a *databaseProjectImpl) internalListDatabaseEndpoints(ctx context.Context, request ListDatabaseEndpointsRequest) (*ListDatabaseEndpointsResponse, error) {
+	var listDatabaseEndpointsResponse ListDatabaseEndpointsResponse
+	path := fmt.Sprintf("/api/2.0/database/projects/%v/branches/%v/endpoints", request.ProjectId, request.BranchId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDatabaseEndpointsResponse)
+	return &listDatabaseEndpointsResponse, err
+}
+
+// List Database Instances.
+func (a *databaseProjectImpl) ListDatabaseProjects(ctx context.Context, request ListDatabaseProjectsRequest) listing.Iterator[DatabaseProject] {
+
+	getNextPage := func(ctx context.Context, req ListDatabaseProjectsRequest) (*ListDatabaseProjectsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListDatabaseProjects(ctx, req)
+	}
+	getItems := func(resp *ListDatabaseProjectsResponse) []DatabaseProject {
+		return resp.DatabaseProjects
+	}
+	getNextReq := func(resp *ListDatabaseProjectsResponse) *ListDatabaseProjectsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List Database Instances.
+func (a *databaseProjectImpl) ListDatabaseProjectsAll(ctx context.Context, request ListDatabaseProjectsRequest) ([]DatabaseProject, error) {
+	iterator := a.ListDatabaseProjects(ctx, request)
+	return listing.ToSlice[DatabaseProject](ctx, iterator)
+}
+
+func (a *databaseProjectImpl) internalListDatabaseProjects(ctx context.Context, request ListDatabaseProjectsRequest) (*ListDatabaseProjectsResponse, error) {
+	var listDatabaseProjectsResponse ListDatabaseProjectsResponse
+	path := "/api/2.0/database/projects"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDatabaseProjectsResponse)
+	return &listDatabaseProjectsResponse, err
+}
+
+func (a *databaseProjectImpl) RestartDatabaseEndpoint(ctx context.Context, request RestartDatabaseEndpointRequest) (*DatabaseEndpoint, error) {
+	var databaseEndpoint DatabaseEndpoint
+	path := fmt.Sprintf("/api/2.0/database/projects/%v/branches/%v/endpoints/%v/restart", request.ProjectId, request.BranchId, request.EndpointId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &databaseEndpoint)
+	return &databaseEndpoint, err
+}
+
+func (a *databaseProjectImpl) UpdateDatabaseBranch(ctx context.Context, request UpdateDatabaseBranchRequest) (*DatabaseBranch, error) {
+	var databaseBranch DatabaseBranch
+	path := fmt.Sprintf("/api/2.0/database/projects/%v/branches/%v", request.ProjectId, request.BranchId)
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DatabaseBranch, &databaseBranch)
+	return &databaseBranch, err
+}
+
+func (a *databaseProjectImpl) UpdateDatabaseEndpoint(ctx context.Context, request UpdateDatabaseEndpointRequest) (*DatabaseEndpoint, error) {
+	var databaseEndpoint DatabaseEndpoint
+	path := fmt.Sprintf("/api/2.0/database/projects/%v/branches/%v/endpoints/%v", request.ProjectId, request.BranchId, request.EndpointId)
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DatabaseEndpoint, &databaseEndpoint)
+	return &databaseEndpoint, err
+}
+
+func (a *databaseProjectImpl) UpdateDatabaseProject(ctx context.Context, request UpdateDatabaseProjectRequest) (*DatabaseProject, error) {
+	var databaseProject DatabaseProject
+	path := fmt.Sprintf("/api/2.0/database/projects/%v", request.ProjectId)
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DatabaseProject, &databaseProject)
+	return &databaseProject, err
+}

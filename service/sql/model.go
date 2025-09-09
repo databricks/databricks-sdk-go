@@ -521,7 +521,8 @@ func (s AlertV2) MarshalJSON() ([]byte, error) {
 type AlertV2Evaluation struct {
 	// Operator used for comparison in alert evaluation.
 	ComparisonOperator ComparisonOperator `json:"comparison_operator,omitempty"`
-	// Alert state if result is empty.
+	// Alert state if result is empty. Please avoid setting this field to be
+	// `UNKNOWN` because `UNKNOWN` state is planned to be deprecated.
 	EmptyResultState AlertEvaluationState `json:"empty_result_state,omitempty"`
 	// Timestamp of the last evaluation.
 	LastEvaluatedAt string `json:"last_evaluated_at,omitempty"`
@@ -3040,7 +3041,7 @@ type ListAlertsV2Response struct {
 	Alerts []AlertV2 `json:"alerts,omitempty"`
 
 	NextPageToken string `json:"next_page_token,omitempty"`
-
+	// Deprecated. Use `alerts` instead.
 	Results []AlertV2 `json:"results,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

@@ -266,6 +266,10 @@ type WorkspaceClient struct {
 	// SQL.
 	Database database.DatabaseInterface
 
+	// Database Projects provide access to a database via REST API or direct
+	// SQL.
+	DatabaseProject database.DatabaseProjectInterface
+
 	// DBFS API makes it simple to interact with various data sources without
 	// having to include a users credentials every time to read a file.
 	Dbfs files.DbfsInterface
@@ -1364,6 +1368,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Dashboards:                          sql.NewDashboards(databricksClient),
 		DataSources:                         sql.NewDataSources(databricksClient),
 		Database:                            database.NewDatabase(databricksClient),
+		DatabaseProject:                     database.NewDatabaseProject(databricksClient),
 		Dbfs:                                files.NewDbfs(databricksClient),
 		DbsqlPermissions:                    sql.NewDbsqlPermissions(databricksClient),
 		EntityTagAssignments:                catalog.NewEntityTagAssignments(databricksClient),

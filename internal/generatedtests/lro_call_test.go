@@ -124,7 +124,7 @@ func TestLRO_CancelTestResource_Cancel(t *testing.T) {
 				},
 			}, {
 				Method:   "POST",
-				Resource: "/api/2.0/lro-testing/operations/operations/test-resource-create-12345:cancel",
+				Resource: "/api/2.0/lro-testing/operations/operations/test-resource-create-12345/cancel",
 				Response: common.Operation{
 					Done: true,
 					Name: "operations/test-resource-create-12345",

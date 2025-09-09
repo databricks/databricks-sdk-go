@@ -1808,6 +1808,8 @@ func (s Table) MarshalJSON() ([]byte, error) {
 // Internal information for D2D sharing that should not be disclosed to external
 // users.
 type TableInternalAttributes struct {
+	// Managed Delta Metadata location for foreign iceberg tables.
+	AuxiliaryManagedLocation string `json:"auxiliary_managed_location,omitempty"`
 	// Will be populated in the reconciliation response for VIEW and
 	// FOREIGN_TABLE, with the value of the parent UC entity's storage_location,
 	// following the same logic as getManagedEntityPath in
@@ -1844,6 +1846,8 @@ const TableInternalAttributesSharedTableTypeDirectoryBasedTable TableInternalAtt
 
 const TableInternalAttributesSharedTableTypeFileBasedTable TableInternalAttributesSharedTableType = `FILE_BASED_TABLE`
 
+const TableInternalAttributesSharedTableTypeForeignIcebergTable TableInternalAttributesSharedTableType = `FOREIGN_ICEBERG_TABLE`
+
 const TableInternalAttributesSharedTableTypeForeignTable TableInternalAttributesSharedTableType = `FOREIGN_TABLE`
 
 const TableInternalAttributesSharedTableTypeMaterializedView TableInternalAttributesSharedTableType = `MATERIALIZED_VIEW`
@@ -1860,11 +1864,11 @@ func (f *TableInternalAttributesSharedTableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TableInternalAttributesSharedTableType) Set(v string) error {
 	switch v {
-	case `DELTA_ICEBERG_TABLE`, `DIRECTORY_BASED_TABLE`, `FILE_BASED_TABLE`, `FOREIGN_TABLE`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
+	case `DELTA_ICEBERG_TABLE`, `DIRECTORY_BASED_TABLE`, `FILE_BASED_TABLE`, `FOREIGN_ICEBERG_TABLE`, `FOREIGN_TABLE`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
 		*f = TableInternalAttributesSharedTableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DELTA_ICEBERG_TABLE", "DIRECTORY_BASED_TABLE", "FILE_BASED_TABLE", "FOREIGN_TABLE", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DELTA_ICEBERG_TABLE", "DIRECTORY_BASED_TABLE", "FILE_BASED_TABLE", "FOREIGN_ICEBERG_TABLE", "FOREIGN_TABLE", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
 	}
 }
 
@@ -1876,6 +1880,7 @@ func (f *TableInternalAttributesSharedTableType) Values() []TableInternalAttribu
 		TableInternalAttributesSharedTableTypeDeltaIcebergTable,
 		TableInternalAttributesSharedTableTypeDirectoryBasedTable,
 		TableInternalAttributesSharedTableTypeFileBasedTable,
+		TableInternalAttributesSharedTableTypeForeignIcebergTable,
 		TableInternalAttributesSharedTableTypeForeignTable,
 		TableInternalAttributesSharedTableTypeMaterializedView,
 		TableInternalAttributesSharedTableTypeStreamingTable,

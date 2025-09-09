@@ -86,6 +86,8 @@
 //
 // - [database.DatabaseAPI]: Database Instances provide access to a database via REST API or direct SQL.
 //
+// - [database.DatabaseProjectAPI]: Database Projects provide access to a database via REST API or direct SQL.
+//
 // - [files.DbfsAPI]: DBFS API makes it simple to interact with various data sources without having to include a users credentials every time to read a file.
 //
 // - [sql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/set.
@@ -419,8 +421,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *provisioning.CredentialsAPI                        = nil
 	_ *catalog.CredentialsAPI                             = nil
+	_ *provisioning.CredentialsAPI                        = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
@@ -430,6 +432,7 @@ var (
 	_ *sql.DashboardsAPI                                  = nil
 	_ *sql.DataSourcesAPI                                 = nil
 	_ *database.DatabaseAPI                               = nil
+	_ *database.DatabaseProjectAPI                        = nil
 	_ *files.DbfsAPI                                      = nil
 	_ *sql.DbsqlPermissionsAPI                            = nil
 	_ *settings.DefaultNamespaceAPI                       = nil

@@ -4298,7 +4298,8 @@ type RunTask struct {
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task.
 	Description string `json:"description,omitempty"`
-	// Deprecated, field was never used in production.
+	// An optional flag to disable the task. If set to true, the task will not
+	// run even if it is part of a job.
 	Disabled bool `json:"disabled,omitempty"`
 	// The actual performance target used by the serverless run during
 	// execution. This can differ from the client-set performance target on the
@@ -5105,6 +5106,9 @@ type SubmitTask struct {
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task.
 	Description string `json:"description,omitempty"`
+	// An optional flag to disable the task. If set to true, the task will not
+	// run even if it is part of a job.
+	Disabled bool `json:"disabled,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
