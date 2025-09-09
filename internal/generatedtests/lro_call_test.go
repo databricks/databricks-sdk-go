@@ -30,23 +30,26 @@ func TestLRO_CreateTestResource_Wait(t *testing.T) {
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/resources",
 				Response: common.Operation{
-					Done: false,
-					Name: "operations/test-resource-create-12345",
+					Done:     false,
+					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
+					Name:     "operations/test-resource-create-12345",
 				},
 			}, {
 				Method:   "GET",
 				Resource: "/api/2.0/lro-testing/operations/operations/test-resource-create-12345?",
 				Response: common.Operation{
-					Done: false,
-					Name: "operations/test-resource-create-12345",
+					Done:     false,
+					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 75\n\t\t\t\t}"),
+					Name:     "operations/test-resource-create-12345",
 				},
 			}, {
 				Method:   "GET",
 				Resource: "/api/2.0/lro-testing/operations/operations/test-resource-create-12345?",
 				Response: common.Operation{
 					Done:     true,
+					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 100\n\t\t\t\t}"),
 					Name:     "operations/test-resource-create-12345",
-					Response: json.RawMessage("{\n\t\t\t\t\t\t\t\t\t\"id\":          \"test-resource-123\",\n\t\t\t\t\t\t\t\t\t\"name\":        \"test-resource\"\n\t\t\t\t\t\t\t\t}"),
+					Response: json.RawMessage("{\n\t\t\t\t\t\"id\":          \"test-resource-123\",\n\t\t\t\t\t\"name\":        \"test-resource\"\n\t\t\t\t}"),
 				},
 			}},
 			wantResult: &lrotesting.TestResource{
@@ -62,8 +65,9 @@ func TestLRO_CreateTestResource_Wait(t *testing.T) {
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/resources",
 				Response: common.Operation{
-					Done: false,
-					Name: "operations/test-resource-create-12345",
+					Done:     false,
+					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
+					Name:     "operations/test-resource-create-12345",
 				},
 			}, {
 				Method:   "GET",
@@ -119,8 +123,9 @@ func TestLRO_CancelTestResource_Cancel(t *testing.T) {
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/resources",
 				Response: common.Operation{
-					Done: false,
-					Name: "operations/test-resource-create-12345",
+					Done:     false,
+					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
+					Name:     "operations/test-resource-create-12345",
 				},
 			}, {
 				Method:   "POST",
@@ -167,8 +172,9 @@ func TestLRO_CreateTestResource_Name(t *testing.T) {
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/resources",
 				Response: common.Operation{
-					Done: false,
-					Name: "operations/test-resource-create-12345",
+					Done:     false,
+					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
+					Name:     "operations/test-resource-create-12345",
 				},
 			}},
 			wantName: "operations/test-resource-create-12345",
@@ -207,12 +213,12 @@ func TestLRO_CreateTestResource_Metadata(t *testing.T) {
 				Resource: "/api/2.0/lro-testing/resources",
 				Response: common.Operation{
 					Done:     false,
-					Metadata: json.RawMessage("{\n\t\t\t\t\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\t\t\t\t\"progress_percent\": 75\n\t\t\t\t\t\t\t\t}"),
+					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
 					Name:     "operations/test-resource-create-12345",
 				},
 			}},
 			wantMetadata: &lrotesting.TestResourceOperationMetadata{
-				ProgressPercent: 75,
+				ProgressPercent: 5,
 				ResourceId:      "test-resource-123",
 			},
 			wantErr: false,
@@ -256,15 +262,18 @@ func TestLRO_CreateTestResource_Done(t *testing.T) {
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/resources",
 				Response: common.Operation{
-					Done: true,
-					Name: "operations/test-resource-create-12345",
+					Done:     false,
+					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
+					Name:     "operations/test-resource-create-12345",
 				},
 			}, {
 				Method:   "GET",
 				Resource: "/api/2.0/lro-testing/operations/operations/test-resource-create-12345?",
 				Response: common.Operation{
-					Done: true,
-					Name: "operations/test-resource-create-12345",
+					Done:     true,
+					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 100\n\t\t\t\t}"),
+					Name:     "operations/test-resource-create-12345",
+					Response: json.RawMessage("{\n\t\t\t\t\t\"id\":          \"test-resource-123\",\n\t\t\t\t\t\"name\":        \"test-resource\"\n\t\t\t\t}"),
 				},
 			}},
 			wantDone: true,
@@ -277,15 +286,17 @@ func TestLRO_CreateTestResource_Done(t *testing.T) {
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/resources",
 				Response: common.Operation{
-					Done: false,
-					Name: "operations/test-resource-create-12345",
+					Done:     false,
+					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
+					Name:     "operations/test-resource-create-12345",
 				},
 			}, {
 				Method:   "GET",
 				Resource: "/api/2.0/lro-testing/operations/operations/test-resource-create-12345?",
 				Response: common.Operation{
-					Done: false,
-					Name: "operations/test-resource-create-12345",
+					Done:     false,
+					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 75\n\t\t\t\t}"),
+					Name:     "operations/test-resource-create-12345",
 				},
 			}},
 			wantDone: false,
