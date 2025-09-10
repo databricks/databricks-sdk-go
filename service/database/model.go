@@ -81,6 +81,8 @@ type DatabaseInstance struct {
 	CreationTime string `json:"creation_time,omitempty"`
 	// The email of the creator of the instance.
 	Creator string `json:"creator,omitempty"`
+	// The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4", "CU_8".
+	EffectiveCapacity string `json:"effective_capacity,omitempty"`
 	// xref AIP-129. `enable_pg_native_login` is owned by the client, while
 	// `effective_enable_pg_native_login` is owned by the server.
 	// `enable_pg_native_login` will only be set in Create/Update response
@@ -95,11 +97,8 @@ type DatabaseInstance struct {
 	// `effective_enable_readable_secondaries` on the other hand will always bet
 	// set in all response messages (Create/Update/Get/List).
 	EffectiveEnableReadableSecondaries bool `json:"effective_enable_readable_secondaries,omitempty"`
-	// xref AIP-129. `node_count` is owned by the client, while
-	// `effective_node_count` is owned by the server. `node_count` will only be
-	// set in Create/Update response messages if and only if the user provides
-	// the field via the request. `effective_node_count` on the other hand will
-	// always bet set in all response messages (Create/Update/Get/List).
+	// The number of nodes in the instance, composed of 1 primary and 0 or more
+	// secondaries. Defaults to 1 primary and 0 secondaries.
 	EffectiveNodeCount int `json:"effective_node_count,omitempty"`
 	// xref AIP-129. `retention_window_in_days` is owned by the client, while
 	// `effective_retention_window_in_days` is owned by the server.
@@ -108,14 +107,10 @@ type DatabaseInstance struct {
 	// `effective_retention_window_in_days` on the other hand will always bet
 	// set in all response messages (Create/Update/Get/List).
 	EffectiveRetentionWindowInDays int `json:"effective_retention_window_in_days,omitempty"`
-	// xref AIP-129. `stopped` is owned by the client, while `effective_stopped`
-	// is owned by the server. `stopped` will only be set in Create/Update
-	// response messages if and only if the user provides the field via the
-	// request. `effective_stopped` on the other hand will always bet set in all
-	// response messages (Create/Update/Get/List).
+	// Whether the instance is stopped.
 	EffectiveStopped bool `json:"effective_stopped,omitempty"`
 	// Whether the instance has PG native password login enabled. Defaults to
-	// true.
+	// false.
 	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// Whether to enable secondaries to serve read-only traffic. Defaults to
 	// false.
@@ -123,7 +118,8 @@ type DatabaseInstance struct {
 	// The name of the instance. This is the unique identifier for the instance.
 	Name string `json:"name"`
 	// The number of nodes in the instance, composed of 1 primary and 0 or more
-	// secondaries. Defaults to 1 primary and 0 secondaries.
+	// secondaries. Defaults to 1 primary and 0 secondaries. This field is input
+	// only, see effective_node_count for the output.
 	NodeCount int `json:"node_count,omitempty"`
 	// The ref of the parent instance. This is only available if the instance is
 	// child instance. Input: For specifying the parent instance to create a
@@ -143,7 +139,8 @@ type DatabaseInstance struct {
 	RetentionWindowInDays int `json:"retention_window_in_days,omitempty"`
 	// The current state of the instance.
 	State DatabaseInstanceState `json:"state,omitempty"`
-	// Whether the instance is stopped.
+	// Whether to stop the instance. An input only param, see effective_stopped
+	// for the output.
 	Stopped bool `json:"stopped,omitempty"`
 	// An immutable UUID identifier for the instance.
 	Uid string `json:"uid,omitempty"`
@@ -425,14 +422,9 @@ type DeleteDatabaseInstanceRequest struct {
 	Force bool `json:"-" url:"force,omitempty"`
 	// Name of the instance to delete.
 	Name string `json:"-" url:"-"`
-	// Note purge=false is in development. If false, the database instance is
-	// soft deleted (implementation pending). Soft deleted instances behave as
-	// if they are deleted, and cannot be used for CRUD operations nor connected
-	// to. However they can be undeleted by calling the undelete API for a
-	// limited time (implementation pending). If true, the database instance is
-	// hard deleted and cannot be undeleted. For the time being, setting this
-	// value to true is required to delete an instance (soft delete is not yet
-	// supported).
+	// Deprecated. Omitting the field or setting it to true will result in the
+	// field being hard deleted. Setting a value of false will throw a bad
+	// request.
 	Purge bool `json:"-" url:"purge,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

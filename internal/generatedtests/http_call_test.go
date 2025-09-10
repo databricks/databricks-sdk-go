@@ -3,7 +3,6 @@ package generated_tests
 
 import (
 	"context"
-	"encoding/json"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/client"
@@ -55,7 +54,6 @@ func TestHttpCall_LegacyHttpPostWithBody(t *testing.T) {
 func TestHttpCall_UpdateResourceNoQueryParamsNoBody(t *testing.T) {
 	input := httpcallv2.UpdateResourceRequest{
 		Resource: httpcallv2.Resource{
-			AnyField:              json.RawMessage("{\"key\": \"value\"}"),
 			NestedPathParamBool:   true,
 			NestedPathParamInt:    789,
 			NestedPathParamString: "update_string",
@@ -69,7 +67,6 @@ func TestHttpCall_UpdateResourceNoQueryParamsNoBody(t *testing.T) {
 			Method:   "PATCH",
 			Resource: "/api/2.0/http-call/update_string/789/true",
 			ExpectedRequest: httpcallv2.Resource{
-				AnyField:              json.RawMessage("{\"key\": \"value\"}"),
 				NestedPathParamBool:   true,
 				NestedPathParamInt:    789,
 				NestedPathParamString: "update_string",
