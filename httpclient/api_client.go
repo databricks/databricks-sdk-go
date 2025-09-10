@@ -22,8 +22,6 @@ import (
 	"golang.org/x/time/rate"
 )
 
-const maxAllowedBurst = 5
-
 type RequestVisitor func(*http.Request) error
 
 type ClientConfig struct {
@@ -133,9 +131,6 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 	}
 
 	burst := int(rateLimit)
-	if burst > maxAllowedBurst {
-		burst = maxAllowedBurst
-	}
 	if burst < 1 {
 		burst = 1
 	}
