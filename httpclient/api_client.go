@@ -22,7 +22,7 @@ import (
 	"golang.org/x/time/rate"
 )
 
-const maxAllowedBurst = 10
+const maxAllowedBurst = 5
 
 type RequestVisitor func(*http.Request) error
 
