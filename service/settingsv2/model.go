@@ -250,57 +250,6 @@ func (s ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) MarshalJSON()
 	return marshal.Marshal(s)
 }
 
-// Changes the behaviour of Jobs service when creating job clusters.
-//
-// Before this setting is introduced, all workspaces with metastore attached had
-// behaviour matching SINGLE_USER setting.
-//
-// See: - go/defaultdatasecuritymode - go/defaultdatasecuritymode/setting -
-// go/datasecuritymode
-type DefaultDataSecurityModeMessage struct {
-	Status DefaultDataSecurityModeMessageStatus `json:"status"`
-}
-
-type DefaultDataSecurityModeMessageStatus string
-
-const DefaultDataSecurityModeMessageStatusNotSet DefaultDataSecurityModeMessageStatus = `NOT_SET`
-
-const DefaultDataSecurityModeMessageStatusSingleUser DefaultDataSecurityModeMessageStatus = `SINGLE_USER`
-
-const DefaultDataSecurityModeMessageStatusUserIsolation DefaultDataSecurityModeMessageStatus = `USER_ISOLATION`
-
-// String representation for [fmt.Print]
-func (f *DefaultDataSecurityModeMessageStatus) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *DefaultDataSecurityModeMessageStatus) Set(v string) error {
-	switch v {
-	case `NOT_SET`, `SINGLE_USER`, `USER_ISOLATION`:
-		*f = DefaultDataSecurityModeMessageStatus(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "NOT_SET", "SINGLE_USER", "USER_ISOLATION"`, v)
-	}
-}
-
-// Values returns all possible values for DefaultDataSecurityModeMessageStatus.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *DefaultDataSecurityModeMessageStatus) Values() []DefaultDataSecurityModeMessageStatus {
-	return []DefaultDataSecurityModeMessageStatus{
-		DefaultDataSecurityModeMessageStatusNotSet,
-		DefaultDataSecurityModeMessageStatusSingleUser,
-		DefaultDataSecurityModeMessageStatusUserIsolation,
-	}
-}
-
-// Type always returns DefaultDataSecurityModeMessageStatus to satisfy [pflag.Value] interface
-func (f *DefaultDataSecurityModeMessageStatus) Type() string {
-	return "DefaultDataSecurityModeMessageStatus"
-}
-
 type GetPublicAccountSettingRequest struct {
 	Name string `json:"-" url:"-"`
 }
@@ -513,12 +462,10 @@ type Setting struct {
 	AibiDashboardEmbeddingAccessPolicy *AibiDashboardEmbeddingAccessPolicy `json:"aibi_dashboard_embedding_access_policy,omitempty"`
 
 	AibiDashboardEmbeddingApprovedDomains *AibiDashboardEmbeddingApprovedDomains `json:"aibi_dashboard_embedding_approved_domains,omitempty"`
-	// todo: Mark these Public after onboarded to DSL
+
 	AutomaticClusterUpdateWorkspace *ClusterAutoRestartMessage `json:"automatic_cluster_update_workspace,omitempty"`
 
 	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
-
-	DefaultDataSecurityMode *DefaultDataSecurityModeMessage `json:"default_data_security_mode,omitempty"`
 
 	EffectiveAibiDashboardEmbeddingAccessPolicy *AibiDashboardEmbeddingAccessPolicy `json:"effective_aibi_dashboard_embedding_access_policy,omitempty"`
 
@@ -527,8 +474,6 @@ type Setting struct {
 	EffectiveAutomaticClusterUpdateWorkspace *ClusterAutoRestartMessage `json:"effective_automatic_cluster_update_workspace,omitempty"`
 
 	EffectiveBooleanVal *BooleanMessage `json:"effective_boolean_val,omitempty"`
-
-	EffectiveDefaultDataSecurityMode *DefaultDataSecurityModeMessage `json:"effective_default_data_security_mode,omitempty"`
 
 	EffectiveIntegerVal *IntegerMessage `json:"effective_integer_val,omitempty"`
 
