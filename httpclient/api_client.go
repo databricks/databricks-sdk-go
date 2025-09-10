@@ -22,6 +22,8 @@ import (
 	"golang.org/x/time/rate"
 )
 
+const maxAllowedBurst = 10
+
 type RequestVisitor func(*http.Request) error
 
 type ClientConfig struct {
@@ -129,9 +131,18 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 		rateLimit = rate.Inf
 		cfg.RetryTimeout = 0
 	}
+
+	burst := int(rateLimit)
+	if burst > maxAllowedBurst {
+		burst = maxAllowedBurst
+	}
+	if burst < 1 {
+		burst = 1
+	}
+
 	return &ApiClient{
 		config:      cfg,
-		rateLimiter: rate.NewLimiter(rateLimit, 1),
+		rateLimiter: rate.NewLimiter(rateLimit, burst),
 		httpClient: &http.Client{
 			// We deal with request timeouts ourselves such that we do not
 			// time out during request or response body reads that make
