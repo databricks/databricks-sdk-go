@@ -900,7 +900,7 @@ func (a *warehousesImpl) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetW
 	return &getWorkspaceWarehouseConfigResponse, err
 }
 
-// Lists all SQL warehouses that a user has manager permissions on.
+// Lists all SQL warehouses that a user has access to.
 func (a *warehousesImpl) List(ctx context.Context, request ListWarehousesRequest) listing.Iterator[EndpointInfo] {
 
 	getNextPage := func(ctx context.Context, req ListWarehousesRequest) (*ListWarehousesResponse, error) {
@@ -919,7 +919,7 @@ func (a *warehousesImpl) List(ctx context.Context, request ListWarehousesRequest
 	return iterator
 }
 
-// Lists all SQL warehouses that a user has manager permissions on.
+// Lists all SQL warehouses that a user has access to.
 func (a *warehousesImpl) ListAll(ctx context.Context, request ListWarehousesRequest) ([]EndpointInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[EndpointInfo](ctx, iterator)

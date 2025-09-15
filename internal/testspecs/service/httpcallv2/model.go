@@ -3,8 +3,6 @@
 package httpcallv2
 
 import (
-	"encoding/json"
-
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -85,8 +83,6 @@ func (s GetResourceRequest) MarshalJSON() ([]byte, error) {
 }
 
 type Resource struct {
-	AnyField json.RawMessage `json:"any_field,omitempty"`
-
 	BodyField string `json:"body_field,omitempty"`
 
 	NestedPathParamBool bool `json:"nested_path_param_bool,omitempty"`

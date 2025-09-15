@@ -86,6 +86,7 @@ func NewMockWorkspaceClient(t interface {
 			ExternalLineage:                     catalog.NewMockExternalLineageInterface(t),
 			ExternalLocations:                   catalog.NewMockExternalLocationsInterface(t),
 			ExternalMetadata:                    catalog.NewMockExternalMetadataInterface(t),
+			FeatureEngineering:                  ml.NewMockFeatureEngineeringInterface(t),
 			FeatureStore:                        ml.NewMockFeatureStoreInterface(t),
 			Files:                               files.NewMockFilesInterface(t),
 			Forecasting:                         ml.NewMockForecastingInterface(t),
@@ -650,6 +651,14 @@ func (m *MockWorkspaceClient) GetMockExternalMetadataAPI() *catalog.MockExternal
 	api, ok := m.WorkspaceClient.ExternalMetadata.(*catalog.MockExternalMetadataInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ExternalMetadata to be *catalog.MockExternalMetadataInterface, actual was %T", m.WorkspaceClient.ExternalMetadata))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockFeatureEngineeringAPI() *ml.MockFeatureEngineeringInterface {
+	api, ok := m.WorkspaceClient.FeatureEngineering.(*ml.MockFeatureEngineeringInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected FeatureEngineering to be *ml.MockFeatureEngineeringInterface, actual was %T", m.WorkspaceClient.FeatureEngineering))
 	}
 	return api
 }

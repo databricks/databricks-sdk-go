@@ -7,9 +7,12 @@ import (
 )
 
 // The Tag Policy API allows you to manage policies for governed tags in
-// Databricks.
+// Databricks. Permissions for tag policies can be managed using the [Account
+// Access Control Proxy API].
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+//
+// [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
 type TagPoliciesService interface {
 
 	// Creates a new tag policy, making the associated tag key governed.

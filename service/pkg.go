@@ -64,9 +64,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
-//
 // - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
+//
+// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -123,6 +123,8 @@
 // - [catalog.ExternalLocationsAPI]: An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path.
 //
 // - [catalog.ExternalMetadataAPI]: External Metadata objects enable customers to register and manage metadata about external systems within Unity Catalog.
+//
+// - [ml.FeatureEngineeringAPI]: [description].
 //
 // - [ml.FeatureStoreAPI]: A feature store is a centralized repository that enables data scientists to find and share features.
 //
@@ -415,8 +417,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *catalog.CredentialsAPI                             = nil
 	_ *provisioning.CredentialsAPI                        = nil
+	_ *catalog.CredentialsAPI                             = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
@@ -445,6 +447,7 @@ var (
 	_ *catalog.ExternalLineageAPI                         = nil
 	_ *catalog.ExternalLocationsAPI                       = nil
 	_ *catalog.ExternalMetadataAPI                        = nil
+	_ *ml.FeatureEngineeringAPI                           = nil
 	_ *ml.FeatureStoreAPI                                 = nil
 	_ *oauth2.AccountFederationPolicyAPI                  = nil
 	_ *files.FilesAPI                                     = nil

@@ -1,7 +1,10 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 // The Tag Policy API allows you to manage policies for governed tags in
-// Databricks.
+// Databricks. Permissions for tag policies can be managed using the [Account
+// Access Control Proxy API].
+//
+// [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
 package tags
 
 import (
@@ -46,7 +49,10 @@ func NewTagPolicies(client *client.DatabricksClient) *TagPoliciesAPI {
 }
 
 // The Tag Policy API allows you to manage policies for governed tags in
-// Databricks.
+// Databricks. Permissions for tag policies can be managed using the [Account
+// Access Control Proxy API].
+//
+// [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
 type TagPoliciesAPI struct {
 	tagPoliciesImpl
 }

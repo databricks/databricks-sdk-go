@@ -219,6 +219,8 @@ type GetAssignableRolesForResourceRequest struct {
 	// `resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>` | A resource name for
 	// the group. `resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>` | A
 	// resource name for the service principal.
+	// `resource=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>` | A resource
+	// name for the tag policy.
 	Resource string `json:"-" url:"resource"`
 }
 
@@ -286,6 +288,8 @@ type GetRuleSetRequest struct {
 	// for a rule set on the group.
 	// `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default`
 	// | A name for a rule set on the service principal.
+	// `name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default`
+	// | A name for a rule set on the tag policy.
 	Name string `json:"-" url:"name"`
 }
 

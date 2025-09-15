@@ -27,12 +27,9 @@ func (a *accountSettingsV2Impl) GetPublicAccountSetting(ctx context.Context, req
 	return &setting, err
 }
 
-// List valid setting keys and metadata. These settings are available to
-// referenced via [GET
-// /api/2.1/settings/{name}](#~1api~1account~1settingsv2~1getpublicaccountsetting)
-// and [PATCH
-// /api/2.1/settings/{name}](#~1api~1account~1settingsv2~patchpublicaccountsetting)
-// APIs
+// List valid setting keys and metadata. These settings are available to be
+// referenced via GET :method:settingsv2/getpublicaccountsetting and PATCH
+// :method:settingsv2/patchpublicaccountsetting APIs
 func (a *accountSettingsV2Impl) ListAccountSettingsMetadata(ctx context.Context, request ListAccountSettingsMetadataRequest) listing.Iterator[SettingsMetadata] {
 
 	getNextPage := func(ctx context.Context, req ListAccountSettingsMetadataRequest) (*ListAccountSettingsMetadataResponse, error) {
@@ -57,12 +54,9 @@ func (a *accountSettingsV2Impl) ListAccountSettingsMetadata(ctx context.Context,
 	return iterator
 }
 
-// List valid setting keys and metadata. These settings are available to
-// referenced via [GET
-// /api/2.1/settings/{name}](#~1api~1account~1settingsv2~1getpublicaccountsetting)
-// and [PATCH
-// /api/2.1/settings/{name}](#~1api~1account~1settingsv2~patchpublicaccountsetting)
-// APIs
+// List valid setting keys and metadata. These settings are available to be
+// referenced via GET :method:settingsv2/getpublicaccountsetting and PATCH
+// :method:settingsv2/patchpublicaccountsetting APIs
 func (a *accountSettingsV2Impl) ListAccountSettingsMetadataAll(ctx context.Context, request ListAccountSettingsMetadataRequest) ([]SettingsMetadata, error) {
 	iterator := a.ListAccountSettingsMetadata(ctx, request)
 	return listing.ToSlice[SettingsMetadata](ctx, iterator)
@@ -104,12 +98,9 @@ func (a *workspaceSettingsV2Impl) GetPublicWorkspaceSetting(ctx context.Context,
 	return &setting, err
 }
 
-// List valid setting keys and metadata. These settings are available to
-// referenced via [GET
-// /api/2.1/settings/{name}](#~1api~1workspace~1settingsv2~1getpublicworkspacesetting)
-// and [PATCH
-// /api/2.1/settings/{name}](#~1api~1workspace~1settingsv2~patchpublicworkspacesetting)
-// APIs
+// List valid setting keys and metadata. These settings are available to be
+// referenced via GET :method:settingsv2/getpublicworkspacesetting and PATCH
+// :method:settingsv2/patchpublicworkspacesetting APIs
 func (a *workspaceSettingsV2Impl) ListWorkspaceSettingsMetadata(ctx context.Context, request ListWorkspaceSettingsMetadataRequest) listing.Iterator[SettingsMetadata] {
 
 	getNextPage := func(ctx context.Context, req ListWorkspaceSettingsMetadataRequest) (*ListWorkspaceSettingsMetadataResponse, error) {
@@ -134,12 +125,9 @@ func (a *workspaceSettingsV2Impl) ListWorkspaceSettingsMetadata(ctx context.Cont
 	return iterator
 }
 
-// List valid setting keys and metadata. These settings are available to
-// referenced via [GET
-// /api/2.1/settings/{name}](#~1api~1workspace~1settingsv2~1getpublicworkspacesetting)
-// and [PATCH
-// /api/2.1/settings/{name}](#~1api~1workspace~1settingsv2~patchpublicworkspacesetting)
-// APIs
+// List valid setting keys and metadata. These settings are available to be
+// referenced via GET :method:settingsv2/getpublicworkspacesetting and PATCH
+// :method:settingsv2/patchpublicworkspacesetting APIs
 func (a *workspaceSettingsV2Impl) ListWorkspaceSettingsMetadataAll(ctx context.Context, request ListWorkspaceSettingsMetadataRequest) ([]SettingsMetadata, error) {
 	iterator := a.ListWorkspaceSettingsMetadata(ctx, request)
 	return listing.ToSlice[SettingsMetadata](ctx, iterator)

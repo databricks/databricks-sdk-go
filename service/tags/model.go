@@ -55,11 +55,16 @@ func (s ListTagPoliciesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type TagPolicy struct {
+	// Timestamp when the tag policy was created
+	CreateTime string `json:"create_time,omitempty"`
+
 	Description string `json:"description,omitempty"`
 
 	Id string `json:"id,omitempty"`
 
 	TagKey string `json:"tag_key"`
+	// Timestamp when the tag policy was last updated
+	UpdateTime string `json:"update_time,omitempty"`
 
 	Values []Value `json:"values,omitempty"`
 
