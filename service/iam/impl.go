@@ -99,23 +99,23 @@ func (a *accountAccessControlProxyImpl) UpdateRuleSet(ctx context.Context, reque
 	return &ruleSetResponse, err
 }
 
-// unexported type that holds implementations of just AccountGroups API methods
-type accountGroupsImpl struct {
+// unexported type that holds implementations of just AccountGroupsV2 API methods
+type accountGroupsV2Impl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountGroupsImpl) Create(ctx context.Context, request Group) (*Group, error) {
-	var group Group
+func (a *accountGroupsV2Impl) Create(ctx context.Context, request CreateAccountGroupRequest) (*AccountGroup, error) {
+	var accountGroup AccountGroup
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &group)
-	return &group, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountGroup)
+	return &accountGroup, err
 }
 
-func (a *accountGroupsImpl) Delete(ctx context.Context, request DeleteAccountGroupRequest) error {
+func (a *accountGroupsV2Impl) Delete(ctx context.Context, request DeleteAccountGroupRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
@@ -123,33 +123,33 @@ func (a *accountGroupsImpl) Delete(ctx context.Context, request DeleteAccountGro
 	return err
 }
 
-func (a *accountGroupsImpl) Get(ctx context.Context, request GetAccountGroupRequest) (*Group, error) {
-	var group Group
+func (a *accountGroupsV2Impl) Get(ctx context.Context, request GetAccountGroupRequest) (*AccountGroup, error) {
+	var accountGroup AccountGroup
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &group)
-	return &group, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountGroup)
+	return &accountGroup, err
 }
 
 // Gets all details of the groups associated with the Databricks account. As of
 // 08/22/2025, this endpoint will not return members. Instead, members should be
 // retrieved by iterating through `Get group details`.
-func (a *accountGroupsImpl) List(ctx context.Context, request ListAccountGroupsRequest) listing.Iterator[Group] {
+func (a *accountGroupsV2Impl) List(ctx context.Context, request ListAccountGroupsRequest) listing.Iterator[AccountGroup] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
 		request.Count = 10000
 	}
-	getNextPage := func(ctx context.Context, req ListAccountGroupsRequest) (*ListGroupsResponse, error) {
+	getNextPage := func(ctx context.Context, req ListAccountGroupsRequest) (*ListAccountGroupsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
 	}
-	getItems := func(resp *ListGroupsResponse) []Group {
+	getItems := func(resp *ListAccountGroupsResponse) []AccountGroup {
 		return resp.Resources
 	}
-	getNextReq := func(resp *ListGroupsResponse) *ListAccountGroupsRequest {
+	getNextReq := func(resp *ListAccountGroupsResponse) *ListAccountGroupsRequest {
 		if len(getItems(resp)) == 0 {
 			return nil
 		}
@@ -161,34 +161,29 @@ func (a *accountGroupsImpl) List(ctx context.Context, request ListAccountGroupsR
 		getNextPage,
 		getItems,
 		getNextReq)
-	dedupedIterator := listing.NewDedupeIterator[Group, string](
-		iterator,
-		func(item Group) string {
-			return item.Id
-		})
-	return dedupedIterator
+	return iterator
 }
 
 // Gets all details of the groups associated with the Databricks account. As of
 // 08/22/2025, this endpoint will not return members. Instead, members should be
 // retrieved by iterating through `Get group details`.
-func (a *accountGroupsImpl) ListAll(ctx context.Context, request ListAccountGroupsRequest) ([]Group, error) {
+func (a *accountGroupsV2Impl) ListAll(ctx context.Context, request ListAccountGroupsRequest) ([]AccountGroup, error) {
 	iterator := a.List(ctx, request)
-	return listing.ToSliceN[Group, int64](ctx, iterator, request.Count)
+	return listing.ToSliceN[AccountGroup, int64](ctx, iterator, request.Count)
 
 }
 
-func (a *accountGroupsImpl) internalList(ctx context.Context, request ListAccountGroupsRequest) (*ListGroupsResponse, error) {
-	var listGroupsResponse ListGroupsResponse
+func (a *accountGroupsV2Impl) internalList(ctx context.Context, request ListAccountGroupsRequest) (*ListAccountGroupsResponse, error) {
+	var listAccountGroupsResponse ListAccountGroupsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listGroupsResponse)
-	return &listGroupsResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAccountGroupsResponse)
+	return &listAccountGroupsResponse, err
 }
 
-func (a *accountGroupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
+func (a *accountGroupsV2Impl) Patch(ctx context.Context, request PatchAccountGroupRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
@@ -197,32 +192,33 @@ func (a *accountGroupsImpl) Patch(ctx context.Context, request PartialUpdate) er
 	return err
 }
 
-func (a *accountGroupsImpl) Update(ctx context.Context, request Group) error {
+func (a *accountGroupsV2Impl) Update(ctx context.Context, request UpdateAccountGroupRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
 
-// unexported type that holds implementations of just AccountServicePrincipals API methods
-type accountServicePrincipalsImpl struct {
+// unexported type that holds implementations of just AccountServicePrincipalsV2 API methods
+type accountServicePrincipalsV2Impl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountServicePrincipalsImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
-	var servicePrincipal ServicePrincipal
+func (a *accountServicePrincipalsV2Impl) Create(ctx context.Context, request CreateAccountServicePrincipalRequest) (*AccountServicePrincipal, error) {
+	var accountServicePrincipal AccountServicePrincipal
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &servicePrincipal)
-	return &servicePrincipal, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountServicePrincipal)
+	return &accountServicePrincipal, err
 }
 
-func (a *accountServicePrincipalsImpl) Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) error {
+func (a *accountServicePrincipalsV2Impl) Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
@@ -230,31 +226,31 @@ func (a *accountServicePrincipalsImpl) Delete(ctx context.Context, request Delet
 	return err
 }
 
-func (a *accountServicePrincipalsImpl) Get(ctx context.Context, request GetAccountServicePrincipalRequest) (*ServicePrincipal, error) {
-	var servicePrincipal ServicePrincipal
+func (a *accountServicePrincipalsV2Impl) Get(ctx context.Context, request GetAccountServicePrincipalRequest) (*AccountServicePrincipal, error) {
+	var accountServicePrincipal AccountServicePrincipal
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &servicePrincipal)
-	return &servicePrincipal, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountServicePrincipal)
+	return &accountServicePrincipal, err
 }
 
 // Gets the set of service principals associated with a Databricks account.
-func (a *accountServicePrincipalsImpl) List(ctx context.Context, request ListAccountServicePrincipalsRequest) listing.Iterator[ServicePrincipal] {
+func (a *accountServicePrincipalsV2Impl) List(ctx context.Context, request ListAccountServicePrincipalsRequest) listing.Iterator[AccountServicePrincipal] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
 		request.Count = 10000
 	}
-	getNextPage := func(ctx context.Context, req ListAccountServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
+	getNextPage := func(ctx context.Context, req ListAccountServicePrincipalsRequest) (*ListAccountServicePrincipalsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
 	}
-	getItems := func(resp *ListServicePrincipalResponse) []ServicePrincipal {
+	getItems := func(resp *ListAccountServicePrincipalsResponse) []AccountServicePrincipal {
 		return resp.Resources
 	}
-	getNextReq := func(resp *ListServicePrincipalResponse) *ListAccountServicePrincipalsRequest {
+	getNextReq := func(resp *ListAccountServicePrincipalsResponse) *ListAccountServicePrincipalsRequest {
 		if len(getItems(resp)) == 0 {
 			return nil
 		}
@@ -266,66 +262,63 @@ func (a *accountServicePrincipalsImpl) List(ctx context.Context, request ListAcc
 		getNextPage,
 		getItems,
 		getNextReq)
-	dedupedIterator := listing.NewDedupeIterator[ServicePrincipal, string](
-		iterator,
-		func(item ServicePrincipal) string {
-			return item.Id
-		})
-	return dedupedIterator
+	return iterator
 }
 
 // Gets the set of service principals associated with a Databricks account.
-func (a *accountServicePrincipalsImpl) ListAll(ctx context.Context, request ListAccountServicePrincipalsRequest) ([]ServicePrincipal, error) {
+func (a *accountServicePrincipalsV2Impl) ListAll(ctx context.Context, request ListAccountServicePrincipalsRequest) ([]AccountServicePrincipal, error) {
 	iterator := a.List(ctx, request)
-	return listing.ToSliceN[ServicePrincipal, int64](ctx, iterator, request.Count)
+	return listing.ToSliceN[AccountServicePrincipal, int64](ctx, iterator, request.Count)
 
 }
 
-func (a *accountServicePrincipalsImpl) internalList(ctx context.Context, request ListAccountServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
-	var listServicePrincipalResponse ListServicePrincipalResponse
+func (a *accountServicePrincipalsV2Impl) internalList(ctx context.Context, request ListAccountServicePrincipalsRequest) (*ListAccountServicePrincipalsResponse, error) {
+	var listAccountServicePrincipalsResponse ListAccountServicePrincipalsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listServicePrincipalResponse)
-	return &listServicePrincipalResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAccountServicePrincipalsResponse)
+	return &listAccountServicePrincipalsResponse, err
 }
 
-func (a *accountServicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) error {
+func (a *accountServicePrincipalsV2Impl) Patch(ctx context.Context, request PatchAccountServicePrincipalRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
 
-func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) error {
+func (a *accountServicePrincipalsV2Impl) Update(ctx context.Context, request UpdateAccountServicePrincipalRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
 
-// unexported type that holds implementations of just AccountUsers API methods
-type accountUsersImpl struct {
+// unexported type that holds implementations of just AccountUsersV2 API methods
+type accountUsersV2Impl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountUsersImpl) Create(ctx context.Context, request User) (*User, error) {
-	var user User
+func (a *accountUsersV2Impl) Create(ctx context.Context, request CreateAccountUserRequest) (*AccountUser, error) {
+	var accountUser AccountUser
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &user)
-	return &user, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountUser)
+	return &accountUser, err
 }
 
-func (a *accountUsersImpl) Delete(ctx context.Context, request DeleteAccountUserRequest) error {
+func (a *accountUsersV2Impl) Delete(ctx context.Context, request DeleteAccountUserRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
@@ -333,31 +326,31 @@ func (a *accountUsersImpl) Delete(ctx context.Context, request DeleteAccountUser
 	return err
 }
 
-func (a *accountUsersImpl) Get(ctx context.Context, request GetAccountUserRequest) (*User, error) {
-	var user User
+func (a *accountUsersV2Impl) Get(ctx context.Context, request GetAccountUserRequest) (*AccountUser, error) {
+	var accountUser AccountUser
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &user)
-	return &user, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountUser)
+	return &accountUser, err
 }
 
 // Gets details for all the users associated with a Databricks account.
-func (a *accountUsersImpl) List(ctx context.Context, request ListAccountUsersRequest) listing.Iterator[User] {
+func (a *accountUsersV2Impl) List(ctx context.Context, request ListAccountUsersRequest) listing.Iterator[AccountGroup] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
 		request.Count = 10000
 	}
-	getNextPage := func(ctx context.Context, req ListAccountUsersRequest) (*ListUsersResponse, error) {
+	getNextPage := func(ctx context.Context, req ListAccountUsersRequest) (*ListAccountGroupsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
 	}
-	getItems := func(resp *ListUsersResponse) []User {
+	getItems := func(resp *ListAccountGroupsResponse) []AccountGroup {
 		return resp.Resources
 	}
-	getNextReq := func(resp *ListUsersResponse) *ListAccountUsersRequest {
+	getNextReq := func(resp *ListAccountGroupsResponse) *ListAccountUsersRequest {
 		if len(getItems(resp)) == 0 {
 			return nil
 		}
@@ -369,44 +362,41 @@ func (a *accountUsersImpl) List(ctx context.Context, request ListAccountUsersReq
 		getNextPage,
 		getItems,
 		getNextReq)
-	dedupedIterator := listing.NewDedupeIterator[User, string](
-		iterator,
-		func(item User) string {
-			return item.Id
-		})
-	return dedupedIterator
+	return iterator
 }
 
 // Gets details for all the users associated with a Databricks account.
-func (a *accountUsersImpl) ListAll(ctx context.Context, request ListAccountUsersRequest) ([]User, error) {
+func (a *accountUsersV2Impl) ListAll(ctx context.Context, request ListAccountUsersRequest) ([]AccountGroup, error) {
 	iterator := a.List(ctx, request)
-	return listing.ToSliceN[User, int64](ctx, iterator, request.Count)
+	return listing.ToSliceN[AccountGroup, int64](ctx, iterator, request.Count)
 
 }
 
-func (a *accountUsersImpl) internalList(ctx context.Context, request ListAccountUsersRequest) (*ListUsersResponse, error) {
-	var listUsersResponse ListUsersResponse
+func (a *accountUsersV2Impl) internalList(ctx context.Context, request ListAccountUsersRequest) (*ListAccountGroupsResponse, error) {
+	var listAccountGroupsResponse ListAccountGroupsResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listUsersResponse)
-	return &listUsersResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAccountGroupsResponse)
+	return &listAccountGroupsResponse, err
 }
 
-func (a *accountUsersImpl) Patch(ctx context.Context, request PartialUpdate) error {
+func (a *accountUsersV2Impl) Patch(ctx context.Context, request PatchAccountUserRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
 
-func (a *accountUsersImpl) Update(ctx context.Context, request User) error {
+func (a *accountUsersV2Impl) Update(ctx context.Context, request UpdateAccountUserRequest) error {
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
@@ -427,12 +417,12 @@ func (a *currentUserImpl) Me(ctx context.Context) (*User, error) {
 	return &user, err
 }
 
-// unexported type that holds implementations of just Groups API methods
-type groupsImpl struct {
+// unexported type that holds implementations of just GroupsV2 API methods
+type groupsV2Impl struct {
 	client *client.DatabricksClient
 }
 
-func (a *groupsImpl) Create(ctx context.Context, request Group) (*Group, error) {
+func (a *groupsV2Impl) Create(ctx context.Context, request CreateGroupRequest) (*Group, error) {
 	var group Group
 	path := "/api/2.0/preview/scim/v2/Groups"
 	queryParams := make(map[string]any)
@@ -443,7 +433,7 @@ func (a *groupsImpl) Create(ctx context.Context, request Group) (*Group, error) 
 	return &group, err
 }
 
-func (a *groupsImpl) Delete(ctx context.Context, request DeleteGroupRequest) error {
+func (a *groupsV2Impl) Delete(ctx context.Context, request DeleteGroupRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
@@ -451,7 +441,7 @@ func (a *groupsImpl) Delete(ctx context.Context, request DeleteGroupRequest) err
 	return err
 }
 
-func (a *groupsImpl) Get(ctx context.Context, request GetGroupRequest) (*Group, error) {
+func (a *groupsV2Impl) Get(ctx context.Context, request GetGroupRequest) (*Group, error) {
 	var group Group
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -462,7 +452,7 @@ func (a *groupsImpl) Get(ctx context.Context, request GetGroupRequest) (*Group, 
 }
 
 // Gets all details of the groups associated with the Databricks workspace.
-func (a *groupsImpl) List(ctx context.Context, request ListGroupsRequest) listing.Iterator[Group] {
+func (a *groupsV2Impl) List(ctx context.Context, request ListGroupsRequest) listing.Iterator[Group] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
@@ -487,22 +477,17 @@ func (a *groupsImpl) List(ctx context.Context, request ListGroupsRequest) listin
 		getNextPage,
 		getItems,
 		getNextReq)
-	dedupedIterator := listing.NewDedupeIterator[Group, string](
-		iterator,
-		func(item Group) string {
-			return item.Id
-		})
-	return dedupedIterator
+	return iterator
 }
 
 // Gets all details of the groups associated with the Databricks workspace.
-func (a *groupsImpl) ListAll(ctx context.Context, request ListGroupsRequest) ([]Group, error) {
+func (a *groupsV2Impl) ListAll(ctx context.Context, request ListGroupsRequest) ([]Group, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSliceN[Group, int64](ctx, iterator, request.Count)
 
 }
 
-func (a *groupsImpl) internalList(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
+func (a *groupsV2Impl) internalList(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error) {
 	var listGroupsResponse ListGroupsResponse
 	path := "/api/2.0/preview/scim/v2/Groups"
 	queryParams := make(map[string]any)
@@ -512,19 +497,21 @@ func (a *groupsImpl) internalList(ctx context.Context, request ListGroupsRequest
 	return &listGroupsResponse, err
 }
 
-func (a *groupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
+func (a *groupsV2Impl) Patch(ctx context.Context, request PatchGroupRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
 
-func (a *groupsImpl) Update(ctx context.Context, request Group) error {
+func (a *groupsV2Impl) Update(ctx context.Context, request UpdateGroupRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
@@ -593,12 +580,12 @@ func (a *permissionsImpl) Update(ctx context.Context, request UpdateObjectPermis
 	return &objectPermissions, err
 }
 
-// unexported type that holds implementations of just ServicePrincipals API methods
-type servicePrincipalsImpl struct {
+// unexported type that holds implementations of just ServicePrincipalsV2 API methods
+type servicePrincipalsV2Impl struct {
 	client *client.DatabricksClient
 }
 
-func (a *servicePrincipalsImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
+func (a *servicePrincipalsV2Impl) Create(ctx context.Context, request CreateServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
 	queryParams := make(map[string]any)
@@ -609,7 +596,7 @@ func (a *servicePrincipalsImpl) Create(ctx context.Context, request ServicePrinc
 	return &servicePrincipal, err
 }
 
-func (a *servicePrincipalsImpl) Delete(ctx context.Context, request DeleteServicePrincipalRequest) error {
+func (a *servicePrincipalsV2Impl) Delete(ctx context.Context, request DeleteServicePrincipalRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
@@ -617,7 +604,7 @@ func (a *servicePrincipalsImpl) Delete(ctx context.Context, request DeleteServic
 	return err
 }
 
-func (a *servicePrincipalsImpl) Get(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
+func (a *servicePrincipalsV2Impl) Get(ctx context.Context, request GetServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -628,7 +615,7 @@ func (a *servicePrincipalsImpl) Get(ctx context.Context, request GetServicePrinc
 }
 
 // Gets the set of service principals associated with a Databricks workspace.
-func (a *servicePrincipalsImpl) List(ctx context.Context, request ListServicePrincipalsRequest) listing.Iterator[ServicePrincipal] {
+func (a *servicePrincipalsV2Impl) List(ctx context.Context, request ListServicePrincipalsRequest) listing.Iterator[ServicePrincipal] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
@@ -653,22 +640,17 @@ func (a *servicePrincipalsImpl) List(ctx context.Context, request ListServicePri
 		getNextPage,
 		getItems,
 		getNextReq)
-	dedupedIterator := listing.NewDedupeIterator[ServicePrincipal, string](
-		iterator,
-		func(item ServicePrincipal) string {
-			return item.Id
-		})
-	return dedupedIterator
+	return iterator
 }
 
 // Gets the set of service principals associated with a Databricks workspace.
-func (a *servicePrincipalsImpl) ListAll(ctx context.Context, request ListServicePrincipalsRequest) ([]ServicePrincipal, error) {
+func (a *servicePrincipalsV2Impl) ListAll(ctx context.Context, request ListServicePrincipalsRequest) ([]ServicePrincipal, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSliceN[ServicePrincipal, int64](ctx, iterator, request.Count)
 
 }
 
-func (a *servicePrincipalsImpl) internalList(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
+func (a *servicePrincipalsV2Impl) internalList(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 	var listServicePrincipalResponse ListServicePrincipalResponse
 	path := "/api/2.0/preview/scim/v2/ServicePrincipals"
 	queryParams := make(map[string]any)
@@ -678,30 +660,32 @@ func (a *servicePrincipalsImpl) internalList(ctx context.Context, request ListSe
 	return &listServicePrincipalResponse, err
 }
 
-func (a *servicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) error {
+func (a *servicePrincipalsV2Impl) Patch(ctx context.Context, request PatchServicePrincipalRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
 
-func (a *servicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) error {
+func (a *servicePrincipalsV2Impl) Update(ctx context.Context, request UpdateServicePrincipalRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
 
-// unexported type that holds implementations of just Users API methods
-type usersImpl struct {
+// unexported type that holds implementations of just UsersV2 API methods
+type usersV2Impl struct {
 	client *client.DatabricksClient
 }
 
-func (a *usersImpl) Create(ctx context.Context, request User) (*User, error) {
+func (a *usersV2Impl) Create(ctx context.Context, request CreateUserRequest) (*User, error) {
 	var user User
 	path := "/api/2.0/preview/scim/v2/Users"
 	queryParams := make(map[string]any)
@@ -712,7 +696,7 @@ func (a *usersImpl) Create(ctx context.Context, request User) (*User, error) {
 	return &user, err
 }
 
-func (a *usersImpl) Delete(ctx context.Context, request DeleteUserRequest) error {
+func (a *usersV2Impl) Delete(ctx context.Context, request DeleteUserRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
@@ -720,7 +704,7 @@ func (a *usersImpl) Delete(ctx context.Context, request DeleteUserRequest) error
 	return err
 }
 
-func (a *usersImpl) Get(ctx context.Context, request GetUserRequest) (*User, error) {
+func (a *usersV2Impl) Get(ctx context.Context, request GetUserRequest) (*User, error) {
 	var user User
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
@@ -730,28 +714,28 @@ func (a *usersImpl) Get(ctx context.Context, request GetUserRequest) (*User, err
 	return &user, err
 }
 
-func (a *usersImpl) GetPermissionLevels(ctx context.Context) (*GetPasswordPermissionLevelsResponse, error) {
+func (a *usersV2Impl) GetPermissionLevels(ctx context.Context, request GetPasswordPermissionLevelsRequest) (*GetPasswordPermissionLevelsResponse, error) {
 	var getPasswordPermissionLevelsResponse GetPasswordPermissionLevelsResponse
 	path := "/api/2.0/permissions/authorization/passwords/permissionLevels"
-
+	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getPasswordPermissionLevelsResponse)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPasswordPermissionLevelsResponse)
 	return &getPasswordPermissionLevelsResponse, err
 }
 
-func (a *usersImpl) GetPermissions(ctx context.Context) (*PasswordPermissions, error) {
+func (a *usersV2Impl) GetPermissions(ctx context.Context, request GetPasswordPermissionsRequest) (*PasswordPermissions, error) {
 	var passwordPermissions PasswordPermissions
 	path := "/api/2.0/permissions/authorization/passwords"
-
+	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &passwordPermissions)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &passwordPermissions)
 	return &passwordPermissions, err
 }
 
 // Gets details for all the users associated with a Databricks workspace.
-func (a *usersImpl) List(ctx context.Context, request ListUsersRequest) listing.Iterator[User] {
+func (a *usersV2Impl) List(ctx context.Context, request ListUsersRequest) listing.Iterator[User] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
@@ -776,22 +760,17 @@ func (a *usersImpl) List(ctx context.Context, request ListUsersRequest) listing.
 		getNextPage,
 		getItems,
 		getNextReq)
-	dedupedIterator := listing.NewDedupeIterator[User, string](
-		iterator,
-		func(item User) string {
-			return item.Id
-		})
-	return dedupedIterator
+	return iterator
 }
 
 // Gets details for all the users associated with a Databricks workspace.
-func (a *usersImpl) ListAll(ctx context.Context, request ListUsersRequest) ([]User, error) {
+func (a *usersV2Impl) ListAll(ctx context.Context, request ListUsersRequest) ([]User, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSliceN[User, int64](ctx, iterator, request.Count)
 
 }
 
-func (a *usersImpl) internalList(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
+func (a *usersV2Impl) internalList(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
 	path := "/api/2.0/preview/scim/v2/Users"
 	queryParams := make(map[string]any)
@@ -801,16 +780,17 @@ func (a *usersImpl) internalList(ctx context.Context, request ListUsersRequest) 
 	return &listUsersResponse, err
 }
 
-func (a *usersImpl) Patch(ctx context.Context, request PartialUpdate) error {
+func (a *usersV2Impl) Patch(ctx context.Context, request PatchUserRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
 
-func (a *usersImpl) SetPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
+func (a *usersV2Impl) SetPermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
 	var passwordPermissions PasswordPermissions
 	path := "/api/2.0/permissions/authorization/passwords"
 	queryParams := make(map[string]any)
@@ -821,16 +801,17 @@ func (a *usersImpl) SetPermissions(ctx context.Context, request PasswordPermissi
 	return &passwordPermissions, err
 }
 
-func (a *usersImpl) Update(ctx context.Context, request User) error {
+func (a *usersV2Impl) Update(ctx context.Context, request UpdateUserRequest) error {
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
 
-func (a *usersImpl) UpdatePermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
+func (a *usersV2Impl) UpdatePermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error) {
 	var passwordPermissions PasswordPermissions
 	path := "/api/2.0/permissions/authorization/passwords"
 	queryParams := make(map[string]any)

@@ -84,33 +84,20 @@ type DatabaseInstance struct {
 	// Deprecated. The sku of the instance; this field will always match the
 	// value of capacity.
 	EffectiveCapacity string `json:"effective_capacity,omitempty"`
-	// xref AIP-129. `enable_pg_native_login` is owned by the client, while
-	// `effective_enable_pg_native_login` is owned by the server.
-	// `enable_pg_native_login` will only be set in Create/Update response
-	// messages if and only if the user provides the field via the request.
-	// `effective_enable_pg_native_login` on the other hand will always bet set
-	// in all response messages (Create/Update/Get/List).
+	// Whether the instance has PG native password login enabled.
 	EffectiveEnablePgNativeLogin bool `json:"effective_enable_pg_native_login,omitempty"`
-	// xref AIP-129. `enable_readable_secondaries` is owned by the client, while
-	// `effective_enable_readable_secondaries` is owned by the server.
-	// `enable_readable_secondaries` will only be set in Create/Update response
-	// messages if and only if the user provides the field via the request.
-	// `effective_enable_readable_secondaries` on the other hand will always bet
-	// set in all response messages (Create/Update/Get/List).
+	// Whether secondaries serving read-only traffic are enabled. Defaults to
+	// false.
 	EffectiveEnableReadableSecondaries bool `json:"effective_enable_readable_secondaries,omitempty"`
 	// The number of nodes in the instance, composed of 1 primary and 0 or more
 	// secondaries. Defaults to 1 primary and 0 secondaries.
 	EffectiveNodeCount int `json:"effective_node_count,omitempty"`
-	// xref AIP-129. `retention_window_in_days` is owned by the client, while
-	// `effective_retention_window_in_days` is owned by the server.
-	// `retention_window_in_days` will only be set in Create/Update response
-	// messages if and only if the user provides the field via the request.
-	// `effective_retention_window_in_days` on the other hand will always bet
-	// set in all response messages (Create/Update/Get/List).
+	// The retention window for the instance. This is the time window in days
+	// for which the historical data is retained.
 	EffectiveRetentionWindowInDays int `json:"effective_retention_window_in_days,omitempty"`
 	// Whether the instance is stopped.
 	EffectiveStopped bool `json:"effective_stopped,omitempty"`
-	// Whether the instance has PG native password login enabled. Defaults to
+	// Whether to enable PG native password login on the instance. Defaults to
 	// false.
 	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// Whether to enable secondaries to serve read-only traffic. Defaults to
@@ -172,14 +159,9 @@ type DatabaseInstanceRef struct {
 	// the point in time to create a child instance. Optional. Output: Only
 	// populated if provided as input to create a child instance.
 	BranchTime string `json:"branch_time,omitempty"`
-	// xref AIP-129. `lsn` is owned by the client, while `effective_lsn` is
-	// owned by the server. `lsn` will only be set in Create/Update response
-	// messages if and only if the user provides the field via the request.
-	// `effective_lsn` on the other hand will always bet set in all response
-	// messages (Create/Update/Get/List). For a parent ref instance, this is the
-	// LSN on the parent instance from which the instance was created. For a
-	// child ref instance, this is the LSN on the instance from which the child
-	// instance was created.
+	// For a parent ref instance, this is the LSN on the parent instance from
+	// which the instance was created. For a child ref instance, this is the LSN
+	// on the instance from which the child instance was created.
 	EffectiveLsn string `json:"effective_lsn,omitempty"`
 	// User-specified WAL LSN of the ref database instance.
 	//

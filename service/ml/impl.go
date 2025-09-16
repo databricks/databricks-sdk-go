@@ -667,6 +667,7 @@ func (a *featureEngineeringImpl) UpdateFeature(ctx context.Context, request Upda
 	var feature Feature
 	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", request.FullName)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}
@@ -768,6 +769,7 @@ func (a *featureStoreImpl) UpdateOnlineStore(ctx context.Context, request Update
 	var onlineStore OnlineStore
 	path := fmt.Sprintf("/api/2.0/feature-store/online-stores/%v", request.Name)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}
@@ -894,6 +896,7 @@ func (a *materializedFeaturesImpl) UpdateFeatureTag(ctx context.Context, request
 	var featureTag FeatureTag
 	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", request.TableName, request.FeatureName, request.Key)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
 		queryParams["update_mask"] = request.UpdateMask
 	}

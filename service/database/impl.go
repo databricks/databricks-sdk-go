@@ -364,6 +364,7 @@ func (a *databaseImpl) UpdateDatabaseCatalog(ctx context.Context, request Update
 	var databaseCatalog DatabaseCatalog
 	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", request.Name)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}
@@ -378,6 +379,7 @@ func (a *databaseImpl) UpdateDatabaseInstance(ctx context.Context, request Updat
 	var databaseInstance DatabaseInstance
 	path := fmt.Sprintf("/api/2.0/database/instances/%v", request.Name)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}
@@ -392,6 +394,7 @@ func (a *databaseImpl) UpdateSyncedDatabaseTable(ctx context.Context, request Up
 	var syncedDatabaseTable SyncedDatabaseTable
 	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", request.Name)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}
