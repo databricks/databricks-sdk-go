@@ -1,6 +1,7 @@
 package u2m
 
 import (
+	"slices"
 	"sort"
 	"strings"
 )
@@ -44,15 +45,7 @@ func (s oauthScopes) GetScopes() []string {
 func (s oauthScopes) isDefault() bool {
 	left := normalizeScopes(s.values)
 	right := normalizeScopes(defaultScopeValues)
-	if len(left) != len(right) {
-		return false
-	}
-	for i := range left {
-		if left[i] != right[i] {
-			return false
-		}
-	}
-	return true
+	return slices.Equal(left, right)
 }
 
 // ComputeScopedCacheKey produces a backward-compatible cache key:
