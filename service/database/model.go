@@ -8,8 +8,22 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+type CreateDatabaseBranchRequest struct {
+	DatabaseBranch DatabaseBranch `json:"database_branch"`
+
+	ProjectId string `json:"-" url:"-"`
+}
+
 type CreateDatabaseCatalogRequest struct {
 	Catalog DatabaseCatalog `json:"catalog"`
+}
+
+type CreateDatabaseEndpointRequest struct {
+	BranchId string `json:"-" url:"-"`
+
+	DatabaseEndpoint DatabaseEndpoint `json:"database_endpoint"`
+
+	ProjectId string `json:"-" url:"-"`
 }
 
 type CreateDatabaseInstanceRequest struct {
@@ -23,12 +37,124 @@ type CreateDatabaseInstanceRoleRequest struct {
 	InstanceName string `json:"-" url:"-"`
 }
 
+type CreateDatabaseProjectRequest struct {
+	DatabaseProject DatabaseProject `json:"database_project"`
+}
+
 type CreateDatabaseTableRequest struct {
 	Table DatabaseTable `json:"table"`
 }
 
 type CreateSyncedDatabaseTableRequest struct {
 	SyncedTable SyncedDatabaseTable `json:"synced_table"`
+}
+
+type CustomTag struct {
+	// The key of the custom tag.
+	Key string `json:"key,omitempty"`
+	// The value of the custom tag.
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DatabaseBranch struct {
+	BranchId string `json:"branch_id"`
+	// A timestamp indicating when the branch was created.
+	CreateTime string `json:"create_time,omitempty"`
+
+	CurrentState DatabaseBranchState `json:"current_state,omitempty"`
+	// Whether the branch is the project's default branch. This field is only
+	// returned on create/update responses. See effective_default for the value
+	// that is actually applied to the database branch.
+	Default bool `json:"default,omitempty"`
+	// Whether the branch is the project's default branch.
+	EffectiveDefault bool `json:"effective_default,omitempty"`
+	// The logical size of the branch.
+	LogicalSizeBytes int64 `json:"logical_size_bytes,omitempty"`
+	// The id of the parent branch
+	ParentId string `json:"parent_id,omitempty"`
+	// The Log Sequence Number (LSN) on the parent branch from which this branch
+	// was created. When restoring a branch using the Restore Database Branch
+	// endpoint, this value isn’t finalized until all operations related to
+	// the restore have completed successfully.
+	ParentLsn string `json:"parent_lsn,omitempty"`
+	// The point in time on the parent branch from which this branch was
+	// created.
+	ParentTime string `json:"parent_time,omitempty"`
+
+	PendingState DatabaseBranchState `json:"pending_state,omitempty"`
+
+	ProjectId string `json:"project_id,omitempty"`
+	// Whether the branch is protected.
+	Protected bool `json:"protected,omitempty"`
+	// A timestamp indicating when the `current_state` began.
+	StateChangeTime string `json:"state_change_time,omitempty"`
+	// A timestamp indicating when the branch was last updated.
+	UpdateTime string `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseBranch) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseBranch) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The branch’s state, indicating if it is initializing, ready for use, or
+// archived.
+type DatabaseBranchState string
+
+const DatabaseBranchStateArchived DatabaseBranchState = `ARCHIVED`
+
+const DatabaseBranchStateInit DatabaseBranchState = `INIT`
+
+const DatabaseBranchStateReady DatabaseBranchState = `READY`
+
+const DatabaseBranchStateResetting DatabaseBranchState = `RESETTING`
+
+// String representation for [fmt.Print]
+func (f *DatabaseBranchState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DatabaseBranchState) Set(v string) error {
+	switch v {
+	case `ARCHIVED`, `INIT`, `READY`, `RESETTING`:
+		*f = DatabaseBranchState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ARCHIVED", "INIT", "READY", "RESETTING"`, v)
+	}
+}
+
+// Values returns all possible values for DatabaseBranchState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DatabaseBranchState) Values() []DatabaseBranchState {
+	return []DatabaseBranchState{
+		DatabaseBranchStateArchived,
+		DatabaseBranchStateInit,
+		DatabaseBranchStateReady,
+		DatabaseBranchStateResetting,
+	}
+}
+
+// Type always returns DatabaseBranchState to satisfy [pflag.Value] interface
+func (f *DatabaseBranchState) Type() string {
+	return "DatabaseBranchState"
 }
 
 type DatabaseCatalog struct {
@@ -69,6 +195,183 @@ func (s DatabaseCredential) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DatabaseEndpoint struct {
+	// The maximum number of Compute Units.
+	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
+	// The minimum number of Compute Units.
+	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
+
+	BranchId string `json:"branch_id,omitempty"`
+	// A timestamp indicating when the compute endpoint was created.
+	CreateTime string `json:"create_time,omitempty"`
+
+	CurrentState DatabaseEndpointState `json:"current_state,omitempty"`
+	// Whether to restrict connections to the compute endpoint. Enabling this
+	// option schedules a suspend compute operation. A disabled compute endpoint
+	// cannot be enabled by a connection or console action.
+	Disabled bool `json:"disabled,omitempty"`
+
+	EndpointId string `json:"endpoint_id"`
+	// The hostname of the compute endpoint. This is the hostname specified when
+	// connecting to a database.
+	Host string `json:"host,omitempty"`
+	// A timestamp indicating when the compute endpoint was last active.
+	LastActiveTime string `json:"last_active_time,omitempty"`
+
+	PendingState DatabaseEndpointState `json:"pending_state,omitempty"`
+
+	PoolerMode DatabaseEndpointPoolerMode `json:"pooler_mode,omitempty"`
+
+	ProjectId string `json:"project_id,omitempty"`
+
+	Settings *DatabaseEndpointSettings `json:"settings,omitempty"`
+	// A timestamp indicating when the compute endpoint was last started.
+	StartTime string `json:"start_time,omitempty"`
+	// A timestamp indicating when the compute endpoint was last suspended.
+	SuspendTime string `json:"suspend_time,omitempty"`
+	// Duration of inactivity after which the compute endpoint is automatically
+	// suspended.
+	SuspendTimeoutDuration string `json:"suspend_timeout_duration,omitempty"`
+	// NOTE: if want type to default to some value set the server then an
+	// effective_type field OR make this field REQUIRED
+	Type DatabaseEndpointType `json:"type,omitempty"`
+	// A timestamp indicating when the compute endpoint was last updated.
+	UpdateTime string `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseEndpoint) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseEndpoint) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The connection pooler mode. Lakebase supports PgBouncer in `transaction` mode
+// only.
+type DatabaseEndpointPoolerMode string
+
+const DatabaseEndpointPoolerModeTransaction DatabaseEndpointPoolerMode = `TRANSACTION`
+
+// String representation for [fmt.Print]
+func (f *DatabaseEndpointPoolerMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DatabaseEndpointPoolerMode) Set(v string) error {
+	switch v {
+	case `TRANSACTION`:
+		*f = DatabaseEndpointPoolerMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "TRANSACTION"`, v)
+	}
+}
+
+// Values returns all possible values for DatabaseEndpointPoolerMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DatabaseEndpointPoolerMode) Values() []DatabaseEndpointPoolerMode {
+	return []DatabaseEndpointPoolerMode{
+		DatabaseEndpointPoolerModeTransaction,
+	}
+}
+
+// Type always returns DatabaseEndpointPoolerMode to satisfy [pflag.Value] interface
+func (f *DatabaseEndpointPoolerMode) Type() string {
+	return "DatabaseEndpointPoolerMode"
+}
+
+// A collection of settings for a compute endpoint
+type DatabaseEndpointSettings struct {
+	// A raw representation of Postgres settings.
+	PgSettings map[string]string `json:"pg_settings,omitempty"`
+	// A raw representation of PgBouncer settings.
+	PgbouncerSettings map[string]string `json:"pgbouncer_settings,omitempty"`
+}
+
+// The state of the compute endpoint
+type DatabaseEndpointState string
+
+const DatabaseEndpointStateActive DatabaseEndpointState = `ACTIVE`
+
+const DatabaseEndpointStateIdle DatabaseEndpointState = `IDLE`
+
+const DatabaseEndpointStateInit DatabaseEndpointState = `INIT`
+
+// String representation for [fmt.Print]
+func (f *DatabaseEndpointState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DatabaseEndpointState) Set(v string) error {
+	switch v {
+	case `ACTIVE`, `IDLE`, `INIT`:
+		*f = DatabaseEndpointState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "IDLE", "INIT"`, v)
+	}
+}
+
+// Values returns all possible values for DatabaseEndpointState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DatabaseEndpointState) Values() []DatabaseEndpointState {
+	return []DatabaseEndpointState{
+		DatabaseEndpointStateActive,
+		DatabaseEndpointStateIdle,
+		DatabaseEndpointStateInit,
+	}
+}
+
+// Type always returns DatabaseEndpointState to satisfy [pflag.Value] interface
+func (f *DatabaseEndpointState) Type() string {
+	return "DatabaseEndpointState"
+}
+
+// The compute endpoint type. Either `read_write` or `read_only`.
+type DatabaseEndpointType string
+
+const DatabaseEndpointTypeReadOnly DatabaseEndpointType = `READ_ONLY`
+
+const DatabaseEndpointTypeReadWrite DatabaseEndpointType = `READ_WRITE`
+
+// String representation for [fmt.Print]
+func (f *DatabaseEndpointType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DatabaseEndpointType) Set(v string) error {
+	switch v {
+	case `READ_ONLY`, `READ_WRITE`:
+		*f = DatabaseEndpointType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "READ_ONLY", "READ_WRITE"`, v)
+	}
+}
+
+// Values returns all possible values for DatabaseEndpointType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DatabaseEndpointType) Values() []DatabaseEndpointType {
+	return []DatabaseEndpointType{
+		DatabaseEndpointTypeReadOnly,
+		DatabaseEndpointTypeReadWrite,
+	}
+}
+
+// Type always returns DatabaseEndpointType to satisfy [pflag.Value] interface
+func (f *DatabaseEndpointType) Type() string {
+	return "DatabaseEndpointType"
+}
+
 // A DatabaseInstance represents a logical Postgres instance, comprised of both
 // compute and storage.
 type DatabaseInstance struct {
@@ -81,39 +384,40 @@ type DatabaseInstance struct {
 	CreationTime string `json:"creation_time,omitempty"`
 	// The email of the creator of the instance.
 	Creator string `json:"creator,omitempty"`
-	// xref AIP-129. `enable_readable_secondaries` is owned by the client, while
-	// `effective_enable_readable_secondaries` is owned by the server.
-	// `enable_readable_secondaries` will only be set in Create/Update response
-	// messages if and only if the user provides the field via the request.
-	// `effective_enable_readable_secondaries` on the other hand will always bet
-	// set in all response messages (Create/Update/Get/List).
+	// Custom tags associated with the instance. This field is only included on
+	// create and update responses.
+	CustomTags []CustomTag `json:"custom_tags,omitempty"`
+	// Deprecated. The sku of the instance; this field will always match the
+	// value of capacity.
+	EffectiveCapacity string `json:"effective_capacity,omitempty"`
+	// The recorded custom tags associated with the instance.
+	EffectiveCustomTags []CustomTag `json:"effective_custom_tags,omitempty"`
+	// Whether the instance has PG native password login enabled.
+	EffectiveEnablePgNativeLogin bool `json:"effective_enable_pg_native_login,omitempty"`
+	// Whether secondaries serving read-only traffic are enabled. Defaults to
+	// false.
 	EffectiveEnableReadableSecondaries bool `json:"effective_enable_readable_secondaries,omitempty"`
-	// xref AIP-129. `node_count` is owned by the client, while
-	// `effective_node_count` is owned by the server. `node_count` will only be
-	// set in Create/Update response messages if and only if the user provides
-	// the field via the request. `effective_node_count` on the other hand will
-	// always bet set in all response messages (Create/Update/Get/List).
+	// The number of nodes in the instance, composed of 1 primary and 0 or more
+	// secondaries. Defaults to 1 primary and 0 secondaries.
 	EffectiveNodeCount int `json:"effective_node_count,omitempty"`
-	// xref AIP-129. `retention_window_in_days` is owned by the client, while
-	// `effective_retention_window_in_days` is owned by the server.
-	// `retention_window_in_days` will only be set in Create/Update response
-	// messages if and only if the user provides the field via the request.
-	// `effective_retention_window_in_days` on the other hand will always bet
-	// set in all response messages (Create/Update/Get/List).
+	// The retention window for the instance. This is the time window in days
+	// for which the historical data is retained.
 	EffectiveRetentionWindowInDays int `json:"effective_retention_window_in_days,omitempty"`
-	// xref AIP-129. `stopped` is owned by the client, while `effective_stopped`
-	// is owned by the server. `stopped` will only be set in Create/Update
-	// response messages if and only if the user provides the field via the
-	// request. `effective_stopped` on the other hand will always bet set in all
-	// response messages (Create/Update/Get/List).
+	// Whether the instance is stopped.
 	EffectiveStopped bool `json:"effective_stopped,omitempty"`
+	// The policy that is applied to the instance.
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
+	// Whether to enable PG native password login on the instance. Defaults to
+	// false.
+	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
 	// Whether to enable secondaries to serve read-only traffic. Defaults to
 	// false.
 	EnableReadableSecondaries bool `json:"enable_readable_secondaries,omitempty"`
 	// The name of the instance. This is the unique identifier for the instance.
 	Name string `json:"name"`
 	// The number of nodes in the instance, composed of 1 primary and 0 or more
-	// secondaries. Defaults to 1 primary and 0 secondaries.
+	// secondaries. Defaults to 1 primary and 0 secondaries. This field is input
+	// only, see effective_node_count for the output.
 	NodeCount int `json:"node_count,omitempty"`
 	// The ref of the parent instance. This is only available if the instance is
 	// child instance. Input: For specifying the parent instance to create a
@@ -133,10 +437,13 @@ type DatabaseInstance struct {
 	RetentionWindowInDays int `json:"retention_window_in_days,omitempty"`
 	// The current state of the instance.
 	State DatabaseInstanceState `json:"state,omitempty"`
-	// Whether the instance is stopped.
+	// Whether to stop the instance. An input only param, see effective_stopped
+	// for the output.
 	Stopped bool `json:"stopped,omitempty"`
 	// An immutable UUID identifier for the instance.
 	Uid string `json:"uid,omitempty"`
+	// The desired usage policy to associate with the instance.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -164,14 +471,9 @@ type DatabaseInstanceRef struct {
 	// the point in time to create a child instance. Optional. Output: Only
 	// populated if provided as input to create a child instance.
 	BranchTime string `json:"branch_time,omitempty"`
-	// xref AIP-129. `lsn` is owned by the client, while `effective_lsn` is
-	// owned by the server. `lsn` will only be set in Create/Update response
-	// messages if and only if the user provides the field via the request.
-	// `effective_lsn` on the other hand will always bet set in all response
-	// messages (Create/Update/Get/List). For a parent ref instance, this is the
-	// LSN on the parent instance from which the instance was created. For a
-	// child ref instance, this is the LSN on the instance from which the child
-	// instance was created.
+	// For a parent ref instance, this is the LSN on the parent instance from
+	// which the instance was created. For a child ref instance, this is the LSN
+	// on the instance from which the child instance was created.
 	EffectiveLsn string `json:"effective_lsn,omitempty"`
 	// User-specified WAL LSN of the ref database instance.
 	//
@@ -369,6 +671,115 @@ func (f *DatabaseInstanceState) Type() string {
 	return "DatabaseInstanceState"
 }
 
+type DatabaseProject struct {
+	// The logical size limit for a branch.
+	BranchLogicalSizeLimitBytes int64 `json:"branch_logical_size_limit_bytes,omitempty"`
+	// The desired budget policy to associate with the instance. This field is
+	// only returned on create/update responses, and represents the customer
+	// provided budget policy. See effective_budget_policy_id for the policy
+	// that is actually applied to the instance.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// The most recent time when any endpoint of this project was active.
+	ComputeLastActiveTime string `json:"compute_last_active_time,omitempty"`
+	// A timestamp indicating when the project was created.
+	CreateTime string `json:"create_time,omitempty"`
+	// Custom tags associated with the instance.
+	CustomTags []DatabaseProjectCustomTag `json:"custom_tags,omitempty"`
+
+	DefaultEndpointSettings *DatabaseProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
+	// Human-readable project name.
+	DisplayName string `json:"display_name,omitempty"`
+	// The policy that is applied to the instance.
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// The number of seconds to retain the shared history for point in time
+	// recovery for all branches in this project.
+	HistoryRetentionDuration string `json:"history_retention_duration,omitempty"`
+	// The major Postgres version number. NOTE: fields could be either user-set
+	// or server-set. we can't have fields that are optionally user-provided and
+	// server-set to default value. TODO: this needs an effective variant or
+	// make REQUIRED
+	PgVersion int `json:"pg_version,omitempty"`
+
+	ProjectId string `json:"project_id,omitempty"`
+
+	Settings *DatabaseProjectSettings `json:"settings,omitempty"`
+	// The current space occupied by the project in storage. Synthetic storage
+	// size combines the logical data size and Write-Ahead Log (WAL) size for
+	// all branches in a project.
+	SyntheticStorageSizeBytes int64 `json:"synthetic_storage_size_bytes,omitempty"`
+	// A timestamp indicating when the project was last updated.
+	UpdateTime string `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseProject) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseProject) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DatabaseProjectCustomTag struct {
+	// The key of the custom tag.
+	Key string `json:"key,omitempty"`
+	// The value of the custom tag.
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseProjectCustomTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseProjectCustomTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A collection of settings for a database endpoint.
+type DatabaseProjectDefaultEndpointSettings struct {
+	// The maximum number of Compute Units.
+	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
+	// The minimum number of Compute Units.
+	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
+	// A raw representation of Postgres settings.
+	PgSettings map[string]string `json:"pg_settings,omitempty"`
+	// A raw representation of PgBouncer settings.
+	PgbouncerSettings map[string]string `json:"pgbouncer_settings,omitempty"`
+	// Duration of inactivity after which the compute endpoint is automatically
+	// suspended.
+	SuspendTimeoutDuration string `json:"suspend_timeout_duration,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseProjectDefaultEndpointSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseProjectDefaultEndpointSettings) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DatabaseProjectSettings struct {
+	// Sets wal_level=logical for all compute endpoints in this project. All
+	// active endpoints will be suspended. Once enabled, logical replication
+	// cannot be disabled.
+	EnableLogicalReplication bool `json:"enable_logical_replication,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseProjectSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseProjectSettings) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Next field marker: 13
 type DatabaseTable struct {
 	// Name of the target database instance. This is required when creating
@@ -392,6 +803,8 @@ type DatabaseTable struct {
 	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"name"`
+	// Data serving REST API URL for this table
+	TableServingUrl string `json:"table_serving_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -404,8 +817,22 @@ func (s DatabaseTable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DeleteDatabaseBranchRequest struct {
+	BranchId string `json:"-" url:"-"`
+
+	ProjectId string `json:"-" url:"-"`
+}
+
 type DeleteDatabaseCatalogRequest struct {
 	Name string `json:"-" url:"-"`
+}
+
+type DeleteDatabaseEndpointRequest struct {
+	BranchId string `json:"-" url:"-"`
+
+	EndpointId string `json:"-" url:"-"`
+
+	ProjectId string `json:"-" url:"-"`
 }
 
 type DeleteDatabaseInstanceRequest struct {
@@ -415,14 +842,9 @@ type DeleteDatabaseInstanceRequest struct {
 	Force bool `json:"-" url:"force,omitempty"`
 	// Name of the instance to delete.
 	Name string `json:"-" url:"-"`
-	// Note purge=false is in development. If false, the database instance is
-	// soft deleted (implementation pending). Soft deleted instances behave as
-	// if they are deleted, and cannot be used for CRUD operations nor connected
-	// to. However they can be undeleted by calling the undelete API for a
-	// limited time (implementation pending). If true, the database instance is
-	// hard deleted and cannot be undeleted. For the time being, setting this
-	// value to true is required to delete an instance (soft delete is not yet
-	// supported).
+	// Deprecated. Omitting the field or setting it to true will result in the
+	// field being hard deleted. Setting a value of false will throw a bad
+	// request.
 	Purge bool `json:"-" url:"purge,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -458,6 +880,10 @@ func (s DeleteDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DeleteDatabaseProjectRequest struct {
+	ProjectId string `json:"-" url:"-"`
+}
+
 type DeleteDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
 }
@@ -482,6 +908,22 @@ func (s *DeltaTableSyncInfo) UnmarshalJSON(b []byte) error {
 }
 
 func (s DeltaTableSyncInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type FailoverDatabaseInstanceRequest struct {
+	FailoverTargetDatabaseInstanceName string `json:"failover_target_database_instance_name,omitempty"`
+	// Name of the instance to failover.
+	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FailoverDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FailoverDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -522,8 +964,22 @@ func (s GenerateDatabaseCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GetDatabaseBranchRequest struct {
+	BranchId string `json:"-" url:"-"`
+
+	ProjectId string `json:"-" url:"-"`
+}
+
 type GetDatabaseCatalogRequest struct {
 	Name string `json:"-" url:"-"`
+}
+
+type GetDatabaseEndpointRequest struct {
+	BranchId string `json:"-" url:"-"`
+
+	EndpointId string `json:"-" url:"-"`
+
+	ProjectId string `json:"-" url:"-"`
 }
 
 type GetDatabaseInstanceRequest struct {
@@ -537,12 +993,53 @@ type GetDatabaseInstanceRoleRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type GetDatabaseProjectRequest struct {
+	ProjectId string `json:"-" url:"-"`
+}
+
 type GetDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
 type GetSyncedDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
+}
+
+type ListDatabaseBranchesRequest struct {
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of Database Branches. Requests
+	// first page if absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ProjectId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseBranchesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseBranchesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDatabaseBranchesResponse struct {
+	// List of branches.
+	DatabaseBranches []DatabaseBranch `json:"database_branches,omitempty"`
+	// Pagination token to request the next page of instances.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseBranchesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseBranchesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListDatabaseCatalogsRequest struct {
@@ -578,6 +1075,44 @@ func (s *ListDatabaseCatalogsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListDatabaseCatalogsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDatabaseEndpointsRequest struct {
+	BranchId string `json:"-" url:"-"`
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of Database Endpoints. Requests
+	// first page if absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ProjectId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseEndpointsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseEndpointsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDatabaseEndpointsResponse struct {
+	// List of endpoints.
+	DatabaseEndpoints []DatabaseEndpoint `json:"database_endpoints,omitempty"`
+	// Pagination token to request the next page of instances.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseEndpointsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseEndpointsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -652,6 +1187,41 @@ func (s ListDatabaseInstancesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListDatabaseProjectsRequest struct {
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of Database Projects. Requests
+	// first page if absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseProjectsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseProjectsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDatabaseProjectsResponse struct {
+	// List of projects.
+	DatabaseProjects []DatabaseProject `json:"database_projects,omitempty"`
+	// Pagination token to request the next page of instances.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseProjectsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseProjectsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListSyncedDatabaseTablesRequest struct {
 	// Name of the instance to get synced tables for.
 	InstanceName string `json:"-" url:"-"`
@@ -693,6 +1263,8 @@ func (s ListSyncedDatabaseTablesResponse) MarshalJSON() ([]byte, error) {
 // SyncedDatabaseTable. Note that other fields of pipeline are still inferred by
 // table def internally
 type NewPipelineSpec struct {
+	// Budget policy of this pipeline.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// This field needs to be specified if the destination catalog is a managed
 	// postgres catalog.
 	//
@@ -865,6 +1437,14 @@ func (s RequestedResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type RestartDatabaseEndpointRequest struct {
+	BranchId string `json:"-" url:"-"`
+
+	EndpointId string `json:"-" url:"-"`
+
+	ProjectId string `json:"-" url:"-"`
+}
+
 // Next field marker: 14
 type SyncedDatabaseTable struct {
 	// Synced Table data synchronization status
@@ -899,6 +1479,8 @@ type SyncedDatabaseTable struct {
 	Name string `json:"name"`
 
 	Spec *SyncedTableSpec `json:"spec,omitempty"`
+	// Data serving REST API URL for this table
+	TableServingUrl string `json:"table_serving_url,omitempty"`
 	// The provisioning state of the synced table entity in Unity Catalog. This
 	// is distinct from the state of the data synchronization pipeline (i.e. the
 	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
@@ -1239,12 +1821,36 @@ func (s SyncedTableTriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdateDatabaseBranchRequest struct {
+	BranchId string `json:"-" url:"-"`
+
+	DatabaseBranch DatabaseBranch `json:"database_branch"`
+
+	ProjectId string `json:"-" url:"-"`
+	// The list of fields to update. If unspecified, all fields will be updated
+	// when possible.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
 type UpdateDatabaseCatalogRequest struct {
 	// Note that updating a database catalog is not yet supported.
 	DatabaseCatalog DatabaseCatalog `json:"database_catalog"`
 	// The name of the catalog in UC.
 	Name string `json:"-" url:"-"`
 	// The list of fields to update. Setting this field is not yet supported.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+type UpdateDatabaseEndpointRequest struct {
+	BranchId string `json:"-" url:"-"`
+
+	DatabaseEndpoint DatabaseEndpoint `json:"database_endpoint"`
+
+	EndpointId string `json:"-" url:"-"`
+
+	ProjectId string `json:"-" url:"-"`
+	// The list of fields to update. If unspecified, all fields will be updated
+	// when possible.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
@@ -1255,6 +1861,24 @@ type UpdateDatabaseInstanceRequest struct {
 	// The list of fields to update. If unspecified, all fields will be updated
 	// when possible. To wipe out custom_tags, specify custom_tags in the
 	// update_mask with an empty custom_tags map.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+type UpdateDatabaseInstanceRoleRequest struct {
+	DatabaseInstanceRole DatabaseInstanceRole `json:"database_instance_role"`
+
+	InstanceName string `json:"-" url:"-"`
+	// The name of the role. This is the unique identifier for the role in an
+	// instance.
+	Name string `json:"-" url:"-"`
+}
+
+type UpdateDatabaseProjectRequest struct {
+	DatabaseProject DatabaseProject `json:"database_project"`
+
+	ProjectId string `json:"-" url:"-"`
+	// The list of fields to update. If unspecified, all fields will be updated
+	// when possible.
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 

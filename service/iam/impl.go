@@ -133,7 +133,9 @@ func (a *accountGroupsV2Impl) Get(ctx context.Context, request GetAccountGroupRe
 	return &accountGroup, err
 }
 
-// Gets all details of the groups associated with the Databricks account.
+// Gets all details of the groups associated with the Databricks account. As of
+// 08/22/2025, this endpoint will not return members. Instead, members should be
+// retrieved by iterating through `Get group details`.
 func (a *accountGroupsV2Impl) List(ctx context.Context, request ListAccountGroupsRequest) listing.Iterator[AccountGroup] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
@@ -162,7 +164,9 @@ func (a *accountGroupsV2Impl) List(ctx context.Context, request ListAccountGroup
 	return iterator
 }
 
-// Gets all details of the groups associated with the Databricks account.
+// Gets all details of the groups associated with the Databricks account. As of
+// 08/22/2025, this endpoint will not return members. Instead, members should be
+// retrieved by iterating through `Get group details`.
 func (a *accountGroupsV2Impl) ListAll(ctx context.Context, request ListAccountGroupsRequest) ([]AccountGroup, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSliceN[AccountGroup, int64](ctx, iterator, request.Count)
@@ -192,6 +196,7 @@ func (a *accountGroupsV2Impl) Update(ctx context.Context, request UpdateAccountG
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
@@ -281,6 +286,7 @@ func (a *accountServicePrincipalsV2Impl) Patch(ctx context.Context, request Patc
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
@@ -290,6 +296,7 @@ func (a *accountServicePrincipalsV2Impl) Update(ctx context.Context, request Upd
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
@@ -379,6 +386,7 @@ func (a *accountUsersV2Impl) Patch(ctx context.Context, request PatchAccountUser
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
@@ -388,6 +396,7 @@ func (a *accountUsersV2Impl) Update(ctx context.Context, request UpdateAccountUs
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
@@ -492,6 +501,7 @@ func (a *groupsV2Impl) Patch(ctx context.Context, request PatchGroupRequest) err
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
@@ -501,6 +511,7 @@ func (a *groupsV2Impl) Update(ctx context.Context, request UpdateGroupRequest) e
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
@@ -653,6 +664,7 @@ func (a *servicePrincipalsV2Impl) Patch(ctx context.Context, request PatchServic
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
@@ -662,6 +674,7 @@ func (a *servicePrincipalsV2Impl) Update(ctx context.Context, request UpdateServ
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
@@ -771,6 +784,7 @@ func (a *usersV2Impl) Patch(ctx context.Context, request PatchUserRequest) error
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
@@ -791,6 +805,7 @@ func (a *usersV2Impl) Update(ctx context.Context, request UpdateUserRequest) err
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err

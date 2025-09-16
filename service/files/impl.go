@@ -267,6 +267,7 @@ func (a *filesImpl) internalListDirectoryContents(ctx context.Context, request L
 func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) error {
 	path := fmt.Sprintf("/api/2.0/fs/files%v", httpclient.EncodeMultiSegmentPathParameter(request.FilePath))
 	queryParams := make(map[string]any)
+
 	if request.Overwrite != false || slices.Contains(request.ForceSendFields, "Overwrite") {
 		queryParams["overwrite"] = request.Overwrite
 	}

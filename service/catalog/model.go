@@ -438,10 +438,14 @@ type CatalogInfo struct {
 	Comment string `json:"comment,omitempty"`
 	// The name of the connection to an external data source.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Status of conversion of FOREIGN catalog to UC Native catalog.
+	ConversionInfo *ConversionInfo `json:"conversion_info,omitempty"`
 	// Time at which this catalog was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of catalog creator.
 	CreatedBy string `json:"created_by,omitempty"`
+	// Disaster Recovery replication state snapshot.
+	DrReplicationInfo *DrReplicationInfo `json:"dr_replication_info,omitempty"`
 
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
@@ -814,6 +818,9 @@ type ConnectionInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// The type of credential.
 	CredentialType CredentialType `json:"credential_type,omitempty"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Full name of connection.
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
@@ -966,6 +973,49 @@ func (s ContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Status of conversion of FOREIGN entity into UC Native entity.
+type ConversionInfo struct {
+	// The conversion state of the resource.
+	State ConversionInfoState `json:"state,omitempty"`
+}
+
+type ConversionInfoState string
+
+const ConversionInfoStateCompleted ConversionInfoState = `COMPLETED`
+
+const ConversionInfoStateInProgress ConversionInfoState = `IN_PROGRESS`
+
+// String representation for [fmt.Print]
+func (f *ConversionInfoState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ConversionInfoState) Set(v string) error {
+	switch v {
+	case `COMPLETED`, `IN_PROGRESS`:
+		*f = ConversionInfoState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COMPLETED", "IN_PROGRESS"`, v)
+	}
+}
+
+// Values returns all possible values for ConversionInfoState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ConversionInfoState) Values() []ConversionInfoState {
+	return []ConversionInfoState{
+		ConversionInfoStateCompleted,
+		ConversionInfoStateInProgress,
+	}
+}
+
+// Type always returns ConversionInfoState to satisfy [pflag.Value] interface
+func (f *ConversionInfoState) Type() string {
+	return "ConversionInfoState"
+}
+
 type CreateAccessRequest struct {
 	// Optional. The principal this request is for. Empty `behalf_of` defaults
 	// to the requester's identity.
@@ -1007,6 +1057,10 @@ type CreateCatalog struct {
 	Comment string `json:"comment,omitempty"`
 	// The name of the connection to an external data source.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Status of conversion of FOREIGN catalog to UC Native catalog.
+	ConversionInfo *ConversionInfo `json:"conversion_info,omitempty"`
+	// Disaster Recovery replication state snapshot.
+	DrReplicationInfo *DrReplicationInfo `json:"dr_replication_info,omitempty"`
 	// Name of catalog.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -1039,6 +1093,9 @@ type CreateConnection struct {
 	Comment string `json:"comment,omitempty"`
 	// The type of connection.
 	ConnectionType ConnectionType `json:"connection_type"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -1093,6 +1150,10 @@ func (s CreateCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateEntityTagAssignmentRequest struct {
+	TagAssignment EntityTagAssignment `json:"tag_assignment"`
+}
+
 type CreateExternalLineageRelationshipRequest struct {
 	ExternalLineageRelationship CreateRequestExternalLineage `json:"external_lineage_relationship"`
 }
@@ -1110,7 +1171,8 @@ type CreateExternalLocation struct {
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings.
+	// File event queue settings. If `enable_file_events` is `true`, must be
+	// defined and have exactly one of the documented properties.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Name of the external location.
 	Name string `json:"name"`
@@ -2058,6 +2120,16 @@ func (s DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type DeleteEntityTagAssignmentRequest struct {
+	// The fully qualified name of the entity to which the tag is assigned
+	EntityName string `json:"-" url:"-"`
+	// The type of the entity to which the tag is assigned. Allowed values are:
+	// catalogs, schemas, tables, columns, volumes.
+	EntityType string `json:"-" url:"-"`
+	// Required. The key of the tag to delete
+	TagKey string `json:"-" url:"-"`
+}
+
 type DeleteExternalLineageRelationshipRequest struct {
 	ExternalLineageRelationship DeleteRequestExternalLineage `json:"-" url:"external_lineage_relationship"`
 }
@@ -2349,6 +2421,48 @@ type DisableRequest struct {
 	SchemaName string `json:"-" url:"-"`
 }
 
+// Metadata related to Disaster Recovery.
+type DrReplicationInfo struct {
+	Status DrReplicationStatus `json:"status,omitempty"`
+}
+
+type DrReplicationStatus string
+
+const DrReplicationStatusDrReplicationStatusPrimary DrReplicationStatus = `DR_REPLICATION_STATUS_PRIMARY`
+
+const DrReplicationStatusDrReplicationStatusSecondary DrReplicationStatus = `DR_REPLICATION_STATUS_SECONDARY`
+
+// String representation for [fmt.Print]
+func (f *DrReplicationStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DrReplicationStatus) Set(v string) error {
+	switch v {
+	case `DR_REPLICATION_STATUS_PRIMARY`, `DR_REPLICATION_STATUS_SECONDARY`:
+		*f = DrReplicationStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DR_REPLICATION_STATUS_PRIMARY", "DR_REPLICATION_STATUS_SECONDARY"`, v)
+	}
+}
+
+// Values returns all possible values for DrReplicationStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DrReplicationStatus) Values() []DrReplicationStatus {
+	return []DrReplicationStatus{
+		DrReplicationStatusDrReplicationStatusPrimary,
+		DrReplicationStatusDrReplicationStatusSecondary,
+	}
+}
+
+// Type always returns DrReplicationStatus to satisfy [pflag.Value] interface
+func (f *DrReplicationStatus) Type() string {
+	return "DrReplicationStatus"
+}
+
 type EffectivePermissionsList struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
@@ -2534,6 +2648,45 @@ func (s EnableRequest) MarshalJSON() ([]byte, error) {
 type EncryptionDetails struct {
 	// Server-Side Encryption properties for clients communicating with AWS s3.
 	SseEncryptionDetails *SseEncryptionDetails `json:"sse_encryption_details,omitempty"`
+}
+
+// Represents a tag assignment to an entity
+type EntityTagAssignment struct {
+	// The fully qualified name of the entity to which the tag is assigned
+	EntityName string `json:"entity_name"`
+	// The type of the entity to which the tag is assigned. Allowed values are:
+	// catalogs, schemas, tables, columns, volumes.
+	EntityType string `json:"entity_type"`
+	// The key of the tag
+	TagKey string `json:"tag_key"`
+	// The value of the tag
+	TagValue string `json:"tag_value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EntityTagAssignment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EntityTagAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EnvironmentSettings struct {
+	EnvironmentVersion string `json:"environment_version,omitempty"`
+
+	JavaDependencies []string `json:"java_dependencies,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnvironmentSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnvironmentSettings) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ExistsRequest struct {
@@ -2780,7 +2933,8 @@ type ExternalLocationInfo struct {
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings.
+	// File event queue settings. If `enable_file_events` is `true`, must be
+	// defined and have exactly one of the documented properties.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
@@ -3585,6 +3739,16 @@ func (s GetEffectiveRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GetEntityTagAssignmentRequest struct {
+	// The fully qualified name of the entity to which the tag is assigned
+	EntityName string `json:"-" url:"-"`
+	// The type of the entity to which the tag is assigned. Allowed values are:
+	// catalogs, schemas, tables, columns, volumes.
+	EntityType string `json:"-" url:"-"`
+	// Required. The key of the tag
+	TagKey string `json:"-" url:"-"`
+}
+
 type GetExternalLocationRequest struct {
 	// Whether to include external locations in the response for which the
 	// principal can only access selective metadata for
@@ -3629,6 +3793,9 @@ func (s GetFunctionRequest) MarshalJSON() ([]byte, error) {
 type GetGrantRequest struct {
 	// Full name of securable.
 	FullName string `json:"-" url:"-"`
+	// Optional. If true, also return privilege assignments whose principals
+	// have been deleted.
+	IncludeDeletedPrincipals bool `json:"-" url:"include_deleted_principals,omitempty"`
 	// Specifies the maximum number of privileges to return (page length). Every
 	// PrivilegeAssignment present in a single page response is guaranteed to
 	// contain all the privileges granted on the requested Securable for the
@@ -4116,6 +4283,45 @@ func (s *ListCredentialsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListCredentialsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListEntityTagAssignmentsRequest struct {
+	// The fully qualified name of the entity to which the tag is assigned
+	EntityName string `json:"-" url:"-"`
+	// The type of the entity to which the tag is assigned. Allowed values are:
+	// catalogs, schemas, tables, columns, volumes.
+	EntityType string `json:"-" url:"-"`
+	// Optional. Maximum number of tag assignments to return in a single page
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Optional. Pagination token to retrieve the next page of results
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListEntityTagAssignmentsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListEntityTagAssignmentsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListEntityTagAssignmentsResponse struct {
+	// Optional. Pagination token for retrieving the next page of results
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// The list of tag assignments
+	TagAssignments []EntityTagAssignment `json:"tag_assignments,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListEntityTagAssignmentsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListEntityTagAssignmentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -5923,6 +6129,16 @@ type PermissionsChange struct {
 	// The principal whose privileges we are changing. Only one of principal or
 	// principal_id should be specified, never both at the same time.
 	Principal string `json:"principal,omitempty"`
+	// An opaque internal ID that identifies the principal whose privileges
+	// should be removed.
+	//
+	// This field is intended for removing privileges associated with a deleted
+	// user. When set, only the entries specified in the remove field are
+	// processed; any entries in the add field will be rejected.
+	//
+	// Only one of principal or principal_id should be specified, never both at
+	// the same time.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The set of privileges to remove.
 	Remove []Privilege `json:"remove,omitempty"`
 
@@ -5978,24 +6194,24 @@ type PolicyInfo struct {
 	// Optional list of user or group names that should be excluded from the
 	// policy.
 	ExceptPrincipals []string `json:"except_principals,omitempty"`
-	// Type of securables that the policy should take effect on. Only `table` is
+	// Type of securables that the policy should take effect on. Only `TABLE` is
 	// supported at this moment. Required on create and optional on update.
 	ForSecurableType SecurableType `json:"for_securable_type"`
 	// Unique identifier of the policy. This field is output only and is
 	// generated by the system.
 	Id string `json:"id,omitempty"`
 	// Optional list of condition expressions used to match table columns. Only
-	// valid when `for_securable_type` is `table`. When specified, the policy
+	// valid when `for_securable_type` is `TABLE`. When specified, the policy
 	// only applies to tables whose columns satisfy all match conditions.
 	MatchColumns []MatchColumn `json:"match_columns,omitempty"`
-	// Name of the policy. Required on create and ignored on update. To update
-	// the name, use the `new_name` field.
+	// Name of the policy. Required on create and optional on update. To rename
+	// the policy, set `name` to a different value on update.
 	Name string `json:"name,omitempty"`
 	// Full name of the securable on which the policy is defined. Required on
 	// create and ignored on update.
 	OnSecurableFullname string `json:"on_securable_fullname,omitempty"`
-	// Type of the securable on which the policy is defined. Only `catalog`,
-	// `schema` and `table` are supported at this moment. Required on create and
+	// Type of the securable on which the policy is defined. Only `CATALOG`,
+	// `SCHEMA` and `TABLE` are supported at this moment. Required on create and
 	// ignored on update.
 	OnSecurableType SecurableType `json:"on_securable_type,omitempty"`
 	// Type of the policy. Required on create and ignored on update.
@@ -6324,6 +6540,9 @@ type PrivilegeAssignment struct {
 	// The principal (user email address or group name). For deleted principals,
 	// `principal` is empty while `principal_id` is populated.
 	Principal string `json:"principal,omitempty"`
+	// Unique identifier of the principal. For active principals, both
+	// `principal` and `principal_id` are present.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
 
@@ -6680,6 +6899,8 @@ const SecurableKindTableDeltaUniformHudiExternal SecurableKind = `TABLE_DELTA_UN
 
 const SecurableKindTableDeltaUniformIcebergExternal SecurableKind = `TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL`
 
+const SecurableKindTableDeltaUniformIcebergForeignDeltasharing SecurableKind = `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING`
+
 const SecurableKindTableDeltaUniformIcebergForeignHiveMetastoreExternal SecurableKind = `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL`
 
 const SecurableKindTableDeltaUniformIcebergForeignHiveMetastoreManaged SecurableKind = `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED`
@@ -6790,11 +7011,11 @@ func (f *SecurableKind) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableKind) Set(v string) error {
 	switch v {
-	case `TABLE_DB_STORAGE`, `TABLE_DELTA`, `TABLE_DELTASHARING`, `TABLE_DELTASHARING_MUTABLE`, `TABLE_DELTA_EXTERNAL`, `TABLE_DELTA_ICEBERG_DELTASHARING`, `TABLE_DELTA_ICEBERG_MANAGED`, `TABLE_DELTA_UNIFORM_HUDI_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE`, `TABLE_EXTERNAL`, `TABLE_FEATURE_STORE`, `TABLE_FEATURE_STORE_EXTERNAL`, `TABLE_FOREIGN_BIGQUERY`, `TABLE_FOREIGN_DATABRICKS`, `TABLE_FOREIGN_DELTASHARING`, `TABLE_FOREIGN_HIVE_METASTORE`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW`, `TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_VIEW`, `TABLE_FOREIGN_MONGODB`, `TABLE_FOREIGN_MYSQL`, `TABLE_FOREIGN_NETSUITE`, `TABLE_FOREIGN_ORACLE`, `TABLE_FOREIGN_POSTGRESQL`, `TABLE_FOREIGN_REDSHIFT`, `TABLE_FOREIGN_SALESFORCE`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW`, `TABLE_FOREIGN_SNOWFLAKE`, `TABLE_FOREIGN_SQLDW`, `TABLE_FOREIGN_SQLSERVER`, `TABLE_FOREIGN_TERADATA`, `TABLE_FOREIGN_WORKDAY_RAAS`, `TABLE_ICEBERG_UNIFORM_MANAGED`, `TABLE_INTERNAL`, `TABLE_MANAGED_POSTGRESQL`, `TABLE_MATERIALIZED_VIEW`, `TABLE_MATERIALIZED_VIEW_DELTASHARING`, `TABLE_METRIC_VIEW`, `TABLE_ONLINE_VECTOR_INDEX_DIRECT`, `TABLE_ONLINE_VECTOR_INDEX_REPLICA`, `TABLE_ONLINE_VIEW`, `TABLE_STANDARD`, `TABLE_STREAMING_LIVE_TABLE`, `TABLE_STREAMING_LIVE_TABLE_DELTASHARING`, `TABLE_SYSTEM`, `TABLE_SYSTEM_DELTASHARING`, `TABLE_VIEW`, `TABLE_VIEW_DELTASHARING`:
+	case `TABLE_DB_STORAGE`, `TABLE_DELTA`, `TABLE_DELTASHARING`, `TABLE_DELTASHARING_MUTABLE`, `TABLE_DELTA_EXTERNAL`, `TABLE_DELTA_ICEBERG_DELTASHARING`, `TABLE_DELTA_ICEBERG_MANAGED`, `TABLE_DELTA_UNIFORM_HUDI_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE`, `TABLE_EXTERNAL`, `TABLE_FEATURE_STORE`, `TABLE_FEATURE_STORE_EXTERNAL`, `TABLE_FOREIGN_BIGQUERY`, `TABLE_FOREIGN_DATABRICKS`, `TABLE_FOREIGN_DELTASHARING`, `TABLE_FOREIGN_HIVE_METASTORE`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW`, `TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL`, `TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED`, `TABLE_FOREIGN_HIVE_METASTORE_VIEW`, `TABLE_FOREIGN_MONGODB`, `TABLE_FOREIGN_MYSQL`, `TABLE_FOREIGN_NETSUITE`, `TABLE_FOREIGN_ORACLE`, `TABLE_FOREIGN_POSTGRESQL`, `TABLE_FOREIGN_REDSHIFT`, `TABLE_FOREIGN_SALESFORCE`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING`, `TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW`, `TABLE_FOREIGN_SNOWFLAKE`, `TABLE_FOREIGN_SQLDW`, `TABLE_FOREIGN_SQLSERVER`, `TABLE_FOREIGN_TERADATA`, `TABLE_FOREIGN_WORKDAY_RAAS`, `TABLE_ICEBERG_UNIFORM_MANAGED`, `TABLE_INTERNAL`, `TABLE_MANAGED_POSTGRESQL`, `TABLE_MATERIALIZED_VIEW`, `TABLE_MATERIALIZED_VIEW_DELTASHARING`, `TABLE_METRIC_VIEW`, `TABLE_ONLINE_VECTOR_INDEX_DIRECT`, `TABLE_ONLINE_VECTOR_INDEX_REPLICA`, `TABLE_ONLINE_VIEW`, `TABLE_STANDARD`, `TABLE_STREAMING_LIVE_TABLE`, `TABLE_STREAMING_LIVE_TABLE_DELTASHARING`, `TABLE_SYSTEM`, `TABLE_SYSTEM_DELTASHARING`, `TABLE_VIEW`, `TABLE_VIEW_DELTASHARING`:
 		*f = SecurableKind(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "TABLE_DB_STORAGE", "TABLE_DELTA", "TABLE_DELTASHARING", "TABLE_DELTASHARING_MUTABLE", "TABLE_DELTA_EXTERNAL", "TABLE_DELTA_ICEBERG_DELTASHARING", "TABLE_DELTA_ICEBERG_MANAGED", "TABLE_DELTA_UNIFORM_HUDI_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE", "TABLE_EXTERNAL", "TABLE_FEATURE_STORE", "TABLE_FEATURE_STORE_EXTERNAL", "TABLE_FOREIGN_BIGQUERY", "TABLE_FOREIGN_DATABRICKS", "TABLE_FOREIGN_DELTASHARING", "TABLE_FOREIGN_HIVE_METASTORE", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW", "TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_VIEW", "TABLE_FOREIGN_MONGODB", "TABLE_FOREIGN_MYSQL", "TABLE_FOREIGN_NETSUITE", "TABLE_FOREIGN_ORACLE", "TABLE_FOREIGN_POSTGRESQL", "TABLE_FOREIGN_REDSHIFT", "TABLE_FOREIGN_SALESFORCE", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW", "TABLE_FOREIGN_SNOWFLAKE", "TABLE_FOREIGN_SQLDW", "TABLE_FOREIGN_SQLSERVER", "TABLE_FOREIGN_TERADATA", "TABLE_FOREIGN_WORKDAY_RAAS", "TABLE_ICEBERG_UNIFORM_MANAGED", "TABLE_INTERNAL", "TABLE_MANAGED_POSTGRESQL", "TABLE_MATERIALIZED_VIEW", "TABLE_MATERIALIZED_VIEW_DELTASHARING", "TABLE_METRIC_VIEW", "TABLE_ONLINE_VECTOR_INDEX_DIRECT", "TABLE_ONLINE_VECTOR_INDEX_REPLICA", "TABLE_ONLINE_VIEW", "TABLE_STANDARD", "TABLE_STREAMING_LIVE_TABLE", "TABLE_STREAMING_LIVE_TABLE_DELTASHARING", "TABLE_SYSTEM", "TABLE_SYSTEM_DELTASHARING", "TABLE_VIEW", "TABLE_VIEW_DELTASHARING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "TABLE_DB_STORAGE", "TABLE_DELTA", "TABLE_DELTASHARING", "TABLE_DELTASHARING_MUTABLE", "TABLE_DELTA_EXTERNAL", "TABLE_DELTA_ICEBERG_DELTASHARING", "TABLE_DELTA_ICEBERG_MANAGED", "TABLE_DELTA_UNIFORM_HUDI_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE", "TABLE_EXTERNAL", "TABLE_FEATURE_STORE", "TABLE_FEATURE_STORE_EXTERNAL", "TABLE_FOREIGN_BIGQUERY", "TABLE_FOREIGN_DATABRICKS", "TABLE_FOREIGN_DELTASHARING", "TABLE_FOREIGN_HIVE_METASTORE", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW", "TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL", "TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED", "TABLE_FOREIGN_HIVE_METASTORE_VIEW", "TABLE_FOREIGN_MONGODB", "TABLE_FOREIGN_MYSQL", "TABLE_FOREIGN_NETSUITE", "TABLE_FOREIGN_ORACLE", "TABLE_FOREIGN_POSTGRESQL", "TABLE_FOREIGN_REDSHIFT", "TABLE_FOREIGN_SALESFORCE", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING", "TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW", "TABLE_FOREIGN_SNOWFLAKE", "TABLE_FOREIGN_SQLDW", "TABLE_FOREIGN_SQLSERVER", "TABLE_FOREIGN_TERADATA", "TABLE_FOREIGN_WORKDAY_RAAS", "TABLE_ICEBERG_UNIFORM_MANAGED", "TABLE_INTERNAL", "TABLE_MANAGED_POSTGRESQL", "TABLE_MATERIALIZED_VIEW", "TABLE_MATERIALIZED_VIEW_DELTASHARING", "TABLE_METRIC_VIEW", "TABLE_ONLINE_VECTOR_INDEX_DIRECT", "TABLE_ONLINE_VECTOR_INDEX_REPLICA", "TABLE_ONLINE_VIEW", "TABLE_STANDARD", "TABLE_STREAMING_LIVE_TABLE", "TABLE_STREAMING_LIVE_TABLE_DELTASHARING", "TABLE_SYSTEM", "TABLE_SYSTEM_DELTASHARING", "TABLE_VIEW", "TABLE_VIEW_DELTASHARING"`, v)
 	}
 }
 
@@ -6812,6 +7033,7 @@ func (f *SecurableKind) Values() []SecurableKind {
 		SecurableKindTableDeltaIcebergManaged,
 		SecurableKindTableDeltaUniformHudiExternal,
 		SecurableKindTableDeltaUniformIcebergExternal,
+		SecurableKindTableDeltaUniformIcebergForeignDeltasharing,
 		SecurableKindTableDeltaUniformIcebergForeignHiveMetastoreExternal,
 		SecurableKindTableDeltaUniformIcebergForeignHiveMetastoreManaged,
 		SecurableKindTableDeltaUniformIcebergForeignSnowflake,
@@ -7610,6 +7832,10 @@ type UpdateAccessRequestDestinationsRequest struct {
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// Status of conversion of FOREIGN catalog to UC Native catalog.
+	ConversionInfo *ConversionInfo `json:"conversion_info,omitempty"`
+	// Disaster Recovery replication state snapshot.
+	DrReplicationInfo *DrReplicationInfo `json:"dr_replication_info,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
@@ -7644,6 +7870,9 @@ type UpdateCatalogWorkspaceBindingsResponse struct {
 }
 
 type UpdateConnection struct {
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"-" url:"-"`
 	// New name for the connection.
@@ -7706,6 +7935,30 @@ func (s UpdateCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type UpdateEntityTagAssignmentRequest struct {
+	// The fully qualified name of the entity to which the tag is assigned
+	EntityName string `json:"-" url:"-"`
+	// The type of the entity to which the tag is assigned. Allowed values are:
+	// catalogs, schemas, tables, columns, volumes.
+	EntityType string `json:"-" url:"-"`
+
+	TagAssignment EntityTagAssignment `json:"tag_assignment"`
+	// The key of the tag
+	TagKey string `json:"-" url:"-"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
 type UpdateExternalLineageRelationshipRequest struct {
 	ExternalLineageRelationship UpdateRequestExternalLineage `json:"external_lineage_relationship"`
 	// The field mask must be a single string, with multiple fields separated by
@@ -7735,7 +7988,8 @@ type UpdateExternalLocation struct {
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings.
+	// File event queue settings. If `enable_file_events` is `true`, must be
+	// defined and have exactly one of the documented properties.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.

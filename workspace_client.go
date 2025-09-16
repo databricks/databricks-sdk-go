@@ -18,6 +18,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/database"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
+	"github.com/databricks/databricks-sdk-go/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
@@ -26,8 +27,10 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
+	"github.com/databricks/databricks-sdk-go/service/settingsv2"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
+	"github.com/databricks/databricks-sdk-go/service/tags"
 	"github.com/databricks/databricks-sdk-go/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 )
@@ -77,6 +80,10 @@ type WorkspaceClient struct {
 	// their data, use and extend Databricks services, and enable users to
 	// interact through single sign-on.
 	Apps apps.AppsInterface
+
+	// Apps Settings manage the settings for the Apps service on a customer's
+	// Databricks instance.
+	AppsSettings apps.AppsSettingsInterface
 
 	// In Databricks Runtime 13.3 and above, you can add libraries and init
 	// scripts to the `allowlist` in UC so that users can leverage these
@@ -259,6 +266,10 @@ type WorkspaceClient struct {
 	// SQL.
 	Database database.DatabaseInterface
 
+	// Database Projects provide access to a database via REST API or direct
+	// SQL.
+	DatabaseProject database.DatabaseProjectInterface
+
 	// DBFS API makes it simple to interact with various data sources without
 	// having to include a users credentials every time to read a file.
 	Dbfs files.DbfsInterface
@@ -282,6 +293,13 @@ type WorkspaceClient struct {
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	DbsqlPermissions sql.DbsqlPermissionsInterface
+
+	// Tags are attributes that include keys and optional values that you can
+	// use to organize and categorize entities in Unity Catalog. Entity tagging
+	// is currently supported on catalogs, schemas, tables (including views),
+	// columns, volumes. With these APIs, users can create, update, delete, and
+	// list tag assignments across Unity Catalog entities
+	EntityTagAssignments catalog.EntityTagAssignmentsInterface
 
 	// Experiments are the primary unit of organization in MLflow; all MLflow
 	// runs belong to an experiment. Each experiment lets you visualize, search,
@@ -327,6 +345,9 @@ type WorkspaceClient struct {
 	// that only users with appropriate permissions can view and manage external
 	// metadata objects.
 	ExternalMetadata catalog.ExternalMetadataInterface
+
+	// [description]
+	FeatureEngineering ml.FeatureEngineeringInterface
 
 	// A feature store is a centralized repository that enables data scientists
 	// to find and share features. Using a feature store also ensures that the
@@ -742,6 +763,9 @@ type WorkspaceClient struct {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueriesLegacy sql.QueriesLegacyInterface
 
+	// Query execution APIs for AI / BI Dashboards
+	QueryExecution dashboards.QueryExecutionInterface
+
 	// A service responsible for storing and retrieving the list of queries run
 	// against SQL endpoints and serverless compute.
 	QueryHistory sql.QueryHistoryInterface
@@ -1128,6 +1152,16 @@ type WorkspaceClient struct {
 	// is a particular kind of table (rather than a managed or external table).
 	Tables catalog.TablesInterface
 
+	// Manage tag assignments on workspace-scoped objects.
+	TagAssignments tags.TagAssignmentsInterface
+
+	// The Tag Policy API allows you to manage policies for governed tags in
+	// Databricks. Permissions for tag policies can be managed using the
+	// [Account Access Control Proxy API].
+	//
+	// [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
+	TagPolicies tags.TagPoliciesInterface
+
 	// Temporary Path Credentials refer to short-lived, downscoped credentials
 	// used to access external cloud storage locations registered in Databricks.
 	// These credentials are employed to provide secure and time-limited access
@@ -1267,6 +1301,13 @@ type WorkspaceClient struct {
 	// This API allows updating known workspace settings for advanced users.
 	WorkspaceConf settings.WorkspaceConfInterface
 
+	// These APIs are used to manage identities and the workspace access of
+	// these identities in <Databricks>.
+	WorkspaceIamV2 iamv2.WorkspaceIamV2Interface
+
+	// APIs to manage workspace level settings
+	WorkspaceSettingsV2 settingsv2.WorkspaceSettingsV2Interface
+
 	// Groups simplify identity management, making it easier to assign access to
 	// Databricks workspace, data, and other securable objects.
 	//
@@ -1347,6 +1388,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		AlertsLegacy:                        sql.NewAlertsLegacy(databricksClient),
 		AlertsV2:                            sql.NewAlertsV2(databricksClient),
 		Apps:                                apps.NewApps(databricksClient),
+		AppsSettings:                        apps.NewAppsSettings(databricksClient),
 		ArtifactAllowlists:                  catalog.NewArtifactAllowlists(databricksClient),
 		Catalogs:                            catalog.NewCatalogs(databricksClient),
 		CleanRoomAssetRevisions:             cleanrooms.NewCleanRoomAssetRevisions(databricksClient),
@@ -1370,12 +1412,15 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Dashboards:                          sql.NewDashboards(databricksClient),
 		DataSources:                         sql.NewDataSources(databricksClient),
 		Database:                            database.NewDatabase(databricksClient),
+		DatabaseProject:                     database.NewDatabaseProject(databricksClient),
 		Dbfs:                                files.NewDbfs(databricksClient),
 		DbsqlPermissions:                    sql.NewDbsqlPermissions(databricksClient),
+		EntityTagAssignments:                catalog.NewEntityTagAssignments(databricksClient),
 		Experiments:                         ml.NewExperiments(databricksClient),
 		ExternalLineage:                     catalog.NewExternalLineage(databricksClient),
 		ExternalLocations:                   catalog.NewExternalLocations(databricksClient),
 		ExternalMetadata:                    catalog.NewExternalMetadata(databricksClient),
+		FeatureEngineering:                  ml.NewFeatureEngineering(databricksClient),
 		FeatureStore:                        ml.NewFeatureStore(databricksClient),
 		Files:                               files.NewFiles(databricksClient),
 		Forecasting:                         ml.NewForecasting(databricksClient),
@@ -1417,6 +1462,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		QualityMonitors:                     catalog.NewQualityMonitors(databricksClient),
 		Queries:                             sql.NewQueries(databricksClient),
 		QueriesLegacy:                       sql.NewQueriesLegacy(databricksClient),
+		QueryExecution:                      dashboards.NewQueryExecution(databricksClient),
 		QueryHistory:                        sql.NewQueryHistory(databricksClient),
 		QueryVisualizations:                 sql.NewQueryVisualizations(databricksClient),
 		QueryVisualizationsLegacy:           sql.NewQueryVisualizationsLegacy(databricksClient),
@@ -1441,6 +1487,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		SystemSchemas:                       catalog.NewSystemSchemas(databricksClient),
 		TableConstraints:                    catalog.NewTableConstraints(databricksClient),
 		Tables:                              catalog.NewTables(databricksClient),
+		TagAssignments:                      tags.NewTagAssignments(databricksClient),
+		TagPolicies:                         tags.NewTagPolicies(databricksClient),
 		TemporaryPathCredentials:            catalog.NewTemporaryPathCredentials(databricksClient),
 		TemporaryTableCredentials:           catalog.NewTemporaryTableCredentials(databricksClient),
 		TokenManagement:                     settings.NewTokenManagement(databricksClient),
@@ -1453,6 +1501,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Workspace:                           workspace.NewWorkspace(databricksClient),
 		WorkspaceBindings:                   catalog.NewWorkspaceBindings(databricksClient),
 		WorkspaceConf:                       settings.NewWorkspaceConf(databricksClient),
+		WorkspaceIamV2:                      iamv2.NewWorkspaceIamV2(databricksClient),
+		WorkspaceSettingsV2:                 settingsv2.NewWorkspaceSettingsV2(databricksClient),
 		Groups:                              iam.NewGroups(databricksClient),
 		ServicePrincipals:                   iam.NewServicePrincipals(databricksClient),
 		Users:                               iam.NewUsers(databricksClient),

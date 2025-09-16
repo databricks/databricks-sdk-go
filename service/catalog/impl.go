@@ -586,6 +586,97 @@ func (a *credentialsImpl) ValidateCredential(ctx context.Context, request Valida
 	return &validateCredentialResponse, err
 }
 
+// unexported type that holds implementations of just EntityTagAssignments API methods
+type entityTagAssignmentsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *entityTagAssignmentsImpl) Create(ctx context.Context, request CreateEntityTagAssignmentRequest) (*EntityTagAssignment, error) {
+	var entityTagAssignment EntityTagAssignment
+	path := "/api/2.1/unity-catalog/entity-tag-assignments"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.TagAssignment, &entityTagAssignment)
+	return &entityTagAssignment, err
+}
+
+func (a *entityTagAssignmentsImpl) Delete(ctx context.Context, request DeleteEntityTagAssignmentRequest) error {
+	path := fmt.Sprintf("/api/2.1/unity-catalog/entity-tag-assignments/%v/%v/tags/%v", request.EntityType, request.EntityName, request.TagKey)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *entityTagAssignmentsImpl) Get(ctx context.Context, request GetEntityTagAssignmentRequest) (*EntityTagAssignment, error) {
+	var entityTagAssignment EntityTagAssignment
+	path := fmt.Sprintf("/api/2.1/unity-catalog/entity-tag-assignments/%v/%v/tags/%v", request.EntityType, request.EntityName, request.TagKey)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &entityTagAssignment)
+	return &entityTagAssignment, err
+}
+
+// List tag assignments for an Unity Catalog entity
+func (a *entityTagAssignmentsImpl) List(ctx context.Context, request ListEntityTagAssignmentsRequest) listing.Iterator[EntityTagAssignment] {
+
+	getNextPage := func(ctx context.Context, req ListEntityTagAssignmentsRequest) (*ListEntityTagAssignmentsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListEntityTagAssignmentsResponse) []EntityTagAssignment {
+		return resp.TagAssignments
+	}
+	getNextReq := func(resp *ListEntityTagAssignmentsResponse) *ListEntityTagAssignmentsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List tag assignments for an Unity Catalog entity
+func (a *entityTagAssignmentsImpl) ListAll(ctx context.Context, request ListEntityTagAssignmentsRequest) ([]EntityTagAssignment, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[EntityTagAssignment](ctx, iterator)
+}
+
+func (a *entityTagAssignmentsImpl) internalList(ctx context.Context, request ListEntityTagAssignmentsRequest) (*ListEntityTagAssignmentsResponse, error) {
+	var listEntityTagAssignmentsResponse ListEntityTagAssignmentsResponse
+	path := fmt.Sprintf("/api/2.1/unity-catalog/entity-tag-assignments/%v/%v/tags", request.EntityType, request.EntityName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listEntityTagAssignmentsResponse)
+	return &listEntityTagAssignmentsResponse, err
+}
+
+func (a *entityTagAssignmentsImpl) Update(ctx context.Context, request UpdateEntityTagAssignmentRequest) (*EntityTagAssignment, error) {
+	var entityTagAssignment EntityTagAssignment
+	path := fmt.Sprintf("/api/2.1/unity-catalog/entity-tag-assignments/%v/%v/tags/%v", request.EntityType, request.EntityName, request.TagKey)
+	queryParams := make(map[string]any)
+
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.TagAssignment, &entityTagAssignment)
+	return &entityTagAssignment, err
+}
+
 // unexported type that holds implementations of just ExternalLineage API methods
 type externalLineageImpl struct {
 	client *client.DatabricksClient
@@ -658,6 +749,7 @@ func (a *externalLineageImpl) UpdateExternalLineageRelationship(ctx context.Cont
 	var externalLineageRelationship ExternalLineageRelationship
 	path := "/api/2.0/lineage-tracking/external-lineage"
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}
@@ -851,6 +943,7 @@ func (a *externalMetadataImpl) UpdateExternalMetadata(ctx context.Context, reque
 	var externalMetadata ExternalMetadata
 	path := fmt.Sprintf("/api/2.0/lineage-tracking/external-metadata/%v", request.Name)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}
@@ -1363,6 +1456,7 @@ func (a *policiesImpl) UpdatePolicy(ctx context.Context, request UpdatePolicyReq
 	var policyInfo PolicyInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v/%v", request.OnSecurableType, request.OnSecurableFullname, request.Name)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
 		queryParams["update_mask"] = request.UpdateMask
 	}
@@ -1687,6 +1781,7 @@ func (a *rfaImpl) UpdateAccessRequestDestinations(ctx context.Context, request U
 	var accessRequestDestinations AccessRequestDestinations
 	path := "/api/3.0/rfa/destinations"
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}

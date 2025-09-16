@@ -3,8 +3,12 @@
 package jsonmarshallv2
 
 import (
+	"encoding/json"
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/duration"
+	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
+	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -15,11 +19,11 @@ type GetResourceRequest struct {
 }
 
 type NestedMessage struct {
-	OptionalDuration string `json:"optional_duration,omitempty" url:"optional_duration,omitempty"`
+	OptionalDuration *duration.Duration `json:"optional_duration,omitempty" url:"optional_duration,omitempty"`
 
 	OptionalString string `json:"optional_string,omitempty" url:"optional_string,omitempty"`
 
-	OptionalTimestamp string `json:"optional_timestamp,omitempty" url:"optional_timestamp,omitempty"`
+	OptionalTimestamp *time.Time `json:"optional_timestamp,omitempty" url:"optional_timestamp,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -33,14 +37,27 @@ func (s NestedMessage) MarshalJSON() ([]byte, error) {
 }
 
 type OptionalFields struct {
-	Duration string `json:"duration,omitempty" url:"duration,omitempty"`
+	Duration *duration.Duration `json:"duration,omitempty" url:"duration,omitempty"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
 	// Specification of elements in sequence or map fields is not allowed, as
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
-	FieldMask string `json:"field_mask,omitempty" url:"field_mask,omitempty"`
+	FieldMask *fieldmask.FieldMask `json:"field_mask,omitempty" url:"field_mask,omitempty"`
+	// Legacy Well Known types
+	LegacyDuration string `json:"legacy_duration,omitempty" url:"legacy_duration,omitempty"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	LegacyFieldMask string `json:"legacy_field_mask,omitempty" url:"legacy_field_mask,omitempty"`
+
+	LegacyTimestamp string `json:"legacy_timestamp,omitempty" url:"legacy_timestamp,omitempty"`
+
+	ListValue []json.RawMessage `json:"list_value,omitempty" url:"list_value,omitempty"`
 	// Lint disable reason: This is a dummy field used to test SDK Generation
 	// logic.
 	Map map[string]string `json:"map,omitempty" url:"map,omitempty"`
@@ -55,9 +72,13 @@ type OptionalFields struct {
 
 	OptionalString string `json:"optional_string,omitempty" url:"optional_string,omitempty"`
 
+	Struct map[string]json.RawMessage `json:"struct,omitempty" url:"struct,omitempty"`
+
 	TestEnum TestEnum `json:"test_enum,omitempty" url:"test_enum,omitempty"`
 
-	Timestamp string `json:"timestamp,omitempty" url:"timestamp,omitempty"`
+	Timestamp *time.Time `json:"timestamp,omitempty" url:"timestamp,omitempty"`
+
+	Value *json.RawMessage `json:"value,omitempty" url:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -73,19 +94,25 @@ func (s OptionalFields) MarshalJSON() ([]byte, error) {
 type RepeatedFields struct {
 	RepeatedBool []bool `json:"repeated_bool,omitempty" url:"repeated_bool,omitempty"`
 
-	RepeatedDuration []string `json:"repeated_duration,omitempty" url:"repeated_duration,omitempty"`
+	RepeatedDuration []duration.Duration `json:"repeated_duration,omitempty" url:"repeated_duration,omitempty"`
 
-	RepeatedFieldMask []string `json:"repeated_field_mask,omitempty" url:"repeated_field_mask,omitempty"`
+	RepeatedFieldMask []fieldmask.FieldMask `json:"repeated_field_mask,omitempty" url:"repeated_field_mask,omitempty"`
 
 	RepeatedInt32 []int `json:"repeated_int32,omitempty" url:"repeated_int32,omitempty"`
 
 	RepeatedInt64 []int64 `json:"repeated_int64,omitempty" url:"repeated_int64,omitempty"`
 
+	RepeatedListValue [][]json.RawMessage `json:"repeated_list_value,omitempty" url:"repeated_list_value,omitempty"`
+
 	RepeatedMessage []NestedMessage `json:"repeated_message,omitempty" url:"repeated_message,omitempty"`
 
 	RepeatedString []string `json:"repeated_string,omitempty" url:"repeated_string,omitempty"`
 
-	RepeatedTimestamp []string `json:"repeated_timestamp,omitempty" url:"repeated_timestamp,omitempty"`
+	RepeatedStruct []map[string]json.RawMessage `json:"repeated_struct,omitempty" url:"repeated_struct,omitempty"`
+
+	RepeatedTimestamp []time.Time `json:"repeated_timestamp,omitempty" url:"repeated_timestamp,omitempty"`
+
+	RepeatedValue []json.RawMessage `json:"repeated_value,omitempty" url:"repeated_value,omitempty"`
 
 	TestRepeatedEnum []TestEnum `json:"test_repeated_enum,omitempty" url:"test_repeated_enum,omitempty"`
 }
@@ -93,24 +120,30 @@ type RepeatedFields struct {
 type RequiredFields struct {
 	RequiredBool bool `json:"required_bool" url:"required_bool"`
 
-	RequiredDuration string `json:"required_duration" url:"required_duration"`
+	RequiredDuration duration.Duration `json:"required_duration" url:"required_duration"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
 	// Specification of elements in sequence or map fields is not allowed, as
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
-	RequiredFieldMask string `json:"required_field_mask" url:"required_field_mask"`
+	RequiredFieldMask fieldmask.FieldMask `json:"required_field_mask" url:"required_field_mask"`
 
 	RequiredInt32 int `json:"required_int32" url:"required_int32"`
 
 	RequiredInt64 int64 `json:"required_int64" url:"required_int64"`
 
+	RequiredListValue []json.RawMessage `json:"required_list_value" url:"required_list_value"`
+
 	RequiredMessage NestedMessage `json:"required_message" url:"required_message"`
 
 	RequiredString string `json:"required_string" url:"required_string"`
 
-	RequiredTimestamp string `json:"required_timestamp" url:"required_timestamp"`
+	RequiredStruct map[string]json.RawMessage `json:"required_struct" url:"required_struct"`
+
+	RequiredTimestamp time.Time `json:"required_timestamp" url:"required_timestamp"`
+
+	RequiredValue json.RawMessage `json:"required_value" url:"required_value"`
 
 	TestRequiredEnum TestEnum `json:"test_required_enum" url:"test_required_enum"`
 }

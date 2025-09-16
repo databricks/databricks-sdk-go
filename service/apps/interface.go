@@ -60,3 +60,26 @@ type AppsService interface {
 	// their root object.
 	UpdatePermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error)
 }
+
+// Apps Settings manage the settings for the Apps service on a customer's
+// Databricks instance.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type AppsSettingsService interface {
+
+	// Creates a custom template.
+	CreateCustomTemplate(ctx context.Context, request CreateCustomTemplateRequest) (*CustomTemplate, error)
+
+	// Deletes the custom template with the specified name.
+	DeleteCustomTemplate(ctx context.Context, request DeleteCustomTemplateRequest) (*CustomTemplate, error)
+
+	// Gets the custom template with the specified name.
+	GetCustomTemplate(ctx context.Context, request GetCustomTemplateRequest) (*CustomTemplate, error)
+
+	// Lists all custom templates in the workspace.
+	ListCustomTemplates(ctx context.Context, request ListCustomTemplatesRequest) (*ListCustomTemplatesResponse, error)
+
+	// Updates the custom template with the specified name. Note that the
+	// template name cannot be updated.
+	UpdateCustomTemplate(ctx context.Context, request UpdateCustomTemplateRequest) (*CustomTemplate, error)
+}

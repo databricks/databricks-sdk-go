@@ -3206,7 +3206,23 @@ func (s LlmProxyPartnerPoweredWorkspace) MarshalJSON() ([]byte, error) {
 }
 
 type MicrosoftTeamsConfig struct {
-	// [Input-Only] URL for Microsoft Teams.
+	// [Input-Only] App ID for Microsoft Teams App.
+	AppId string `json:"app_id,omitempty"`
+	// [Output-Only] Whether App ID is set.
+	AppIdSet bool `json:"app_id_set,omitempty"`
+	// [Input-Only] Secret for Microsoft Teams App authentication.
+	AuthSecret string `json:"auth_secret,omitempty"`
+	// [Output-Only] Whether secret is set.
+	AuthSecretSet bool `json:"auth_secret_set,omitempty"`
+	// [Input-Only] Channel URL for Microsoft Teams App.
+	ChannelUrl string `json:"channel_url,omitempty"`
+	// [Output-Only] Whether Channel URL is set.
+	ChannelUrlSet bool `json:"channel_url_set,omitempty"`
+	// [Input-Only] Tenant ID for Microsoft Teams App.
+	TenantId string `json:"tenant_id,omitempty"`
+	// [Output-Only] Whether Tenant ID is set.
+	TenantIdSet bool `json:"tenant_id_set,omitempty"`
+	// [Input-Only] URL for Microsoft Teams webhook.
 	Url string `json:"url,omitempty"`
 	// [Output-Only] Whether URL is set.
 	UrlSet bool `json:"url_set,omitempty"`

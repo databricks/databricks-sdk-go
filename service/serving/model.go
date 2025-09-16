@@ -168,6 +168,9 @@ type AiGatewayRateLimit struct {
 	// Renewal period field for a rate limit. Currently, only 'minute' is
 	// supported.
 	RenewalPeriod AiGatewayRateLimitRenewalPeriod `json:"renewal_period"`
+	// Used to specify how many tokens are allowed for a key within the
+	// renewal_period.
+	Tokens int64 `json:"tokens,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2255,6 +2258,8 @@ type ServingEndpoint struct {
 	Tags []EndpointTag `json:"tags,omitempty"`
 	// The task type of the serving endpoint.
 	Task string `json:"task,omitempty"`
+	// The usage policy associated with serving endpoint.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

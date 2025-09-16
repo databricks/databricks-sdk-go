@@ -83,7 +83,9 @@ type AccountGroupsV2Service interface {
 	// Gets the information for a specific group in the Databricks account.
 	Get(ctx context.Context, request GetAccountGroupRequest) (*AccountGroup, error)
 
-	// Gets all details of the groups associated with the Databricks account.
+	// Gets all details of the groups associated with the Databricks account. As
+	// of 08/22/2025, this endpoint will not return members. Instead, members
+	// should be retrieved by iterating through `Get group details`.
 	List(ctx context.Context, request ListAccountGroupsRequest) (*ListAccountGroupsResponse, error)
 
 	// Partially updates the details of a group.

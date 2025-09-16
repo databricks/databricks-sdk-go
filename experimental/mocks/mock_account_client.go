@@ -11,9 +11,11 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/billing"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iamv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settingsv2"
 )
 
 type MockAccountClient struct {
@@ -39,6 +41,7 @@ func NewMockAccountClient(t interface {
 			EncryptionKeys:                   provisioning.NewMockEncryptionKeysInterface(t),
 			FederationPolicy:                 oauth2.NewMockAccountFederationPolicyInterface(t),
 			GroupsV2:                         iam.NewMockAccountGroupsV2Interface(t),
+			IamV2:                            iamv2.NewMockAccountIamV2Interface(t),
 			IpAccessLists:                    settings.NewMockAccountIpAccessListsInterface(t),
 			LogDelivery:                      billing.NewMockLogDeliveryInterface(t),
 			MetastoreAssignments:             catalog.NewMockAccountMetastoreAssignmentsInterface(t),
@@ -53,6 +56,7 @@ func NewMockAccountClient(t interface {
 			ServicePrincipalSecrets:          oauth2.NewMockServicePrincipalSecretsInterface(t),
 			ServicePrincipalsV2:              iam.NewMockAccountServicePrincipalsV2Interface(t),
 			Settings:                         settings.NewMockAccountSettingsInterface(t),
+			SettingsV2:                       settingsv2.NewMockAccountSettingsV2Interface(t),
 			Storage:                          provisioning.NewMockStorageInterface(t),
 			StorageCredentials:               catalog.NewMockAccountStorageCredentialsInterface(t),
 			UsageDashboards:                  billing.NewMockUsageDashboardsInterface(t),
@@ -218,6 +222,14 @@ func (m *MockAccountClient) GetMockAccountGroupsV2API() *iam.MockAccountGroupsV2
 	return api
 }
 
+func (m *MockAccountClient) GetMockAccountIamV2API() *iamv2.MockAccountIamV2Interface {
+	api, ok := m.AccountClient.IamV2.(*iamv2.MockAccountIamV2Interface)
+	if !ok {
+		panic(fmt.Sprintf("expected IamV2 to be *iamv2.MockAccountIamV2Interface, actual was %T", m.AccountClient.IamV2))
+	}
+	return api
+}
+
 func (m *MockAccountClient) GetMockAccountIpAccessListsAPI() *settings.MockAccountIpAccessListsInterface {
 	api, ok := m.AccountClient.IpAccessLists.(*settings.MockAccountIpAccessListsInterface)
 	if !ok {
@@ -326,6 +338,14 @@ func (m *MockAccountClient) GetMockAccountSettingsAPI() *settings.MockAccountSet
 	api, ok := m.AccountClient.Settings.(*settings.MockAccountSettingsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Settings to be *settings.MockAccountSettingsInterface, actual was %T", m.AccountClient.Settings))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockAccountSettingsV2API() *settingsv2.MockAccountSettingsV2Interface {
+	api, ok := m.AccountClient.SettingsV2.(*settingsv2.MockAccountSettingsV2Interface)
+	if !ok {
+		panic(fmt.Sprintf("expected SettingsV2 to be *settingsv2.MockAccountSettingsV2Interface, actual was %T", m.AccountClient.SettingsV2))
 	}
 	return api
 }

@@ -251,6 +251,64 @@ type CredentialsService interface {
 	ValidateCredential(ctx context.Context, request ValidateCredentialRequest) (*ValidateCredentialResponse, error)
 }
 
+// Tags are attributes that include keys and optional values that you can use to
+// organize and categorize entities in Unity Catalog. Entity tagging is
+// currently supported on catalogs, schemas, tables (including views), columns,
+// volumes. With these APIs, users can create, update, delete, and list tag
+// assignments across Unity Catalog entities
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type EntityTagAssignmentsService interface {
+
+	// Creates a tag assignment for an Unity Catalog entity.
+	//
+	// To add tags to Unity Catalog entities, you must own the entity or have
+	// the following privileges: - **APPLY TAG** on the entity - **USE SCHEMA**
+	// on the entity's parent schema - **USE CATALOG** on the entity's parent
+	// catalog
+	//
+	// To add a governed tag to Unity Catalog entities, you must also have the
+	// **ASSIGN** or **MANAGE** permission on the tag policy. See [Manage tag
+	// policy permissions].
+	//
+	// [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+	Create(ctx context.Context, request CreateEntityTagAssignmentRequest) (*EntityTagAssignment, error)
+
+	// Deletes a tag assignment for an Unity Catalog entity by its key.
+	//
+	// To delete tags from Unity Catalog entities, you must own the entity or
+	// have the following privileges: - **APPLY TAG** on the entity -
+	// **USE_SCHEMA** on the entity's parent schema - **USE_CATALOG** on the
+	// entity's parent catalog
+	//
+	// To delete a governed tag from Unity Catalog entities, you must also have
+	// the **ASSIGN** or **MANAGE** permission on the tag policy. See [Manage
+	// tag policy permissions].
+	//
+	// [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+	Delete(ctx context.Context, request DeleteEntityTagAssignmentRequest) error
+
+	// Gets a tag assignment for an Unity Catalog entity by tag key.
+	Get(ctx context.Context, request GetEntityTagAssignmentRequest) (*EntityTagAssignment, error)
+
+	// List tag assignments for an Unity Catalog entity
+	List(ctx context.Context, request ListEntityTagAssignmentsRequest) (*ListEntityTagAssignmentsResponse, error)
+
+	// Updates an existing tag assignment for an Unity Catalog entity.
+	//
+	// To update tags to Unity Catalog entities, you must own the entity or have
+	// the following privileges: - **APPLY TAG** on the entity - **USE SCHEMA**
+	// on the entity's parent schema - **USE CATALOG** on the entity's parent
+	// catalog
+	//
+	// To update a governed tag to Unity Catalog entities, you must also have
+	// the **ASSIGN** or **MANAGE** permission on the tag policy. See [Manage
+	// tag policy permissions].
+	//
+	// [Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions
+	Update(ctx context.Context, request UpdateEntityTagAssignmentRequest) (*EntityTagAssignment, error)
+}
+
 // External Lineage APIs enable defining and managing lineage relationships
 // between Databricks objects and external systems. These APIs allow users to
 // capture data flows connecting Databricks tables, models, and file paths with

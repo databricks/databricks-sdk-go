@@ -22,6 +22,7 @@ func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, 
 	var app App
 	path := "/api/2.0/apps"
 	queryParams := make(map[string]any)
+
 	if request.NoCompute != false || slices.Contains(request.ForceSendFields, "NoCompute") {
 		queryParams["no_compute"] = request.NoCompute
 	}
@@ -228,4 +229,92 @@ func (a *appsImpl) UpdatePermissions(ctx context.Context, request AppPermissions
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &appPermissions)
 	return &appPermissions, err
+}
+
+// unexported type that holds implementations of just AppsSettings API methods
+type appsSettingsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *appsSettingsImpl) CreateCustomTemplate(ctx context.Context, request CreateCustomTemplateRequest) (*CustomTemplate, error) {
+	var customTemplate CustomTemplate
+	path := "/api/2.0/apps-settings/templates"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Template, &customTemplate)
+	return &customTemplate, err
+}
+
+func (a *appsSettingsImpl) DeleteCustomTemplate(ctx context.Context, request DeleteCustomTemplateRequest) (*CustomTemplate, error) {
+	var customTemplate CustomTemplate
+	path := fmt.Sprintf("/api/2.0/apps-settings/templates/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &customTemplate)
+	return &customTemplate, err
+}
+
+func (a *appsSettingsImpl) GetCustomTemplate(ctx context.Context, request GetCustomTemplateRequest) (*CustomTemplate, error) {
+	var customTemplate CustomTemplate
+	path := fmt.Sprintf("/api/2.0/apps-settings/templates/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &customTemplate)
+	return &customTemplate, err
+}
+
+// Lists all custom templates in the workspace.
+func (a *appsSettingsImpl) ListCustomTemplates(ctx context.Context, request ListCustomTemplatesRequest) listing.Iterator[CustomTemplate] {
+
+	getNextPage := func(ctx context.Context, req ListCustomTemplatesRequest) (*ListCustomTemplatesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListCustomTemplates(ctx, req)
+	}
+	getItems := func(resp *ListCustomTemplatesResponse) []CustomTemplate {
+		return resp.Templates
+	}
+	getNextReq := func(resp *ListCustomTemplatesResponse) *ListCustomTemplatesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists all custom templates in the workspace.
+func (a *appsSettingsImpl) ListCustomTemplatesAll(ctx context.Context, request ListCustomTemplatesRequest) ([]CustomTemplate, error) {
+	iterator := a.ListCustomTemplates(ctx, request)
+	return listing.ToSlice[CustomTemplate](ctx, iterator)
+}
+
+func (a *appsSettingsImpl) internalListCustomTemplates(ctx context.Context, request ListCustomTemplatesRequest) (*ListCustomTemplatesResponse, error) {
+	var listCustomTemplatesResponse ListCustomTemplatesResponse
+	path := "/api/2.0/apps-settings/templates"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCustomTemplatesResponse)
+	return &listCustomTemplatesResponse, err
+}
+
+func (a *appsSettingsImpl) UpdateCustomTemplate(ctx context.Context, request UpdateCustomTemplateRequest) (*CustomTemplate, error) {
+	var customTemplate CustomTemplate
+	path := fmt.Sprintf("/api/2.0/apps-settings/templates/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.Template, &customTemplate)
+	return &customTemplate, err
 }

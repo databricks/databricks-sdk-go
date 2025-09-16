@@ -85,6 +85,9 @@ type ExperimentsService interface {
 	// Get a logged model.
 	GetLoggedModel(ctx context.Context, request GetLoggedModelRequest) (*GetLoggedModelResponse, error)
 
+	// Batch endpoint for getting logged models from a list of model IDs
+	GetLoggedModels(ctx context.Context, request GetLoggedModelsRequest) (*GetLoggedModelsRequestResponse, error)
+
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error)
 
@@ -250,6 +253,27 @@ type ExperimentsService interface {
 
 	// Updates run metadata.
 	UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error)
+}
+
+// [description]
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type FeatureEngineeringService interface {
+
+	// Create a Feature.
+	CreateFeature(ctx context.Context, request CreateFeatureRequest) (*Feature, error)
+
+	// Delete a Feature.
+	DeleteFeature(ctx context.Context, request DeleteFeatureRequest) error
+
+	// Get a Feature.
+	GetFeature(ctx context.Context, request GetFeatureRequest) (*Feature, error)
+
+	// List Features.
+	ListFeatures(ctx context.Context, request ListFeaturesRequest) (*ListFeaturesResponse, error)
+
+	// Update a Feature.
+	UpdateFeature(ctx context.Context, request UpdateFeatureRequest) (*Feature, error)
 }
 
 // A feature store is a centralized repository that enables data scientists to

@@ -385,6 +385,11 @@ func (s CreateExperimentResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateFeatureRequest struct {
+	// Feature to create.
+	Feature Feature `json:"feature"`
+}
+
 type CreateFeatureTagRequest struct {
 	FeatureName string `json:"-" url:"-"`
 
@@ -707,6 +712,10 @@ type CreateWebhookResponse struct {
 	Webhook *RegistryWebhook `json:"webhook,omitempty"`
 }
 
+type DataSource struct {
+	DeltaTableSource *DeltaTableSource `json:"delta_table_source,omitempty"`
+}
+
 // Dataset. Represents a reference to data used for training, testing, or
 // evaluation during the model development process.
 type Dataset struct {
@@ -759,6 +768,11 @@ type DeleteCommentRequest struct {
 type DeleteExperiment struct {
 	// ID of the associated experiment.
 	ExperimentId string `json:"experiment_id"`
+}
+
+type DeleteFeatureRequest struct {
+	// Name of the feature to delete.
+	FullName string `json:"-" url:"-"`
 }
 
 type DeleteFeatureTagRequest struct {
@@ -907,6 +921,15 @@ type DeleteTransitionRequestResponse struct {
 type DeleteWebhookRequest struct {
 	// Webhook ID required to delete a registry webhook.
 	Id string `json:"-" url:"id"`
+}
+
+type DeltaTableSource struct {
+	// The entity columns of the Delta table.
+	EntityColumns []string `json:"entity_columns"`
+	// The full three-part (catalog, schema, table) name of the Delta table.
+	FullName string `json:"full_name"`
+	// The timeseries column of the Delta table.
+	TimeseriesColumn string `json:"timeseries_column"`
 }
 
 // An experiment and its metadata.
@@ -1099,14 +1122,19 @@ func (s ExperimentTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Feature for model version.
 type Feature struct {
-	// Feature name
-	FeatureName string `json:"feature_name,omitempty"`
-	// Feature table id
-	FeatureTableId string `json:"feature_table_id,omitempty"`
-	// Feature table name
-	FeatureTableName string `json:"feature_table_name,omitempty"`
+	// The description of the feature.
+	Description string `json:"description,omitempty"`
+	// The full three-part name (catalog, schema, name) of the feature.
+	FullName string `json:"full_name"`
+	// The function by which the feature is computed.
+	Function Function `json:"function"`
+	// The input columns from which the feature is computed.
+	Inputs []string `json:"inputs"`
+	// The data source of the feature.
+	Source DataSource `json:"source"`
+	// The time window in which the feature is computed.
+	TimeWindow TimeWindow `json:"time_window"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1179,7 +1207,7 @@ func (s FeatureLineageOnlineFeature) MarshalJSON() ([]byte, error) {
 
 // Feature list wrap all the features for a model version
 type FeatureList struct {
-	Features []Feature `json:"features,omitempty"`
+	Features []LinkedFeature `json:"features,omitempty"`
 }
 
 // Represents a tag on a feature in a feature table.
@@ -1300,6 +1328,90 @@ func (f *ForecastingExperimentState) Type() string {
 	return "ForecastingExperimentState"
 }
 
+type Function struct {
+	// Extra parameters for parameterized functions.
+	ExtraParameters []FunctionExtraParameter `json:"extra_parameters,omitempty"`
+	// The type of the function.
+	FunctionType FunctionFunctionType `json:"function_type"`
+}
+
+type FunctionExtraParameter struct {
+	// The name of the parameter.
+	Key string `json:"key"`
+	// The value of the parameter.
+	Value string `json:"value"`
+}
+
+type FunctionFunctionType string
+
+const FunctionFunctionTypeApproxCountDistinct FunctionFunctionType = `APPROX_COUNT_DISTINCT`
+
+const FunctionFunctionTypeApproxPercentile FunctionFunctionType = `APPROX_PERCENTILE`
+
+const FunctionFunctionTypeAvg FunctionFunctionType = `AVG`
+
+const FunctionFunctionTypeCount FunctionFunctionType = `COUNT`
+
+const FunctionFunctionTypeFirst FunctionFunctionType = `FIRST`
+
+const FunctionFunctionTypeLast FunctionFunctionType = `LAST`
+
+const FunctionFunctionTypeMax FunctionFunctionType = `MAX`
+
+const FunctionFunctionTypeMin FunctionFunctionType = `MIN`
+
+const FunctionFunctionTypeStddevPop FunctionFunctionType = `STDDEV_POP`
+
+const FunctionFunctionTypeStddevSamp FunctionFunctionType = `STDDEV_SAMP`
+
+const FunctionFunctionTypeSum FunctionFunctionType = `SUM`
+
+const FunctionFunctionTypeVarPop FunctionFunctionType = `VAR_POP`
+
+const FunctionFunctionTypeVarSamp FunctionFunctionType = `VAR_SAMP`
+
+// String representation for [fmt.Print]
+func (f *FunctionFunctionType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *FunctionFunctionType) Set(v string) error {
+	switch v {
+	case `APPROX_COUNT_DISTINCT`, `APPROX_PERCENTILE`, `AVG`, `COUNT`, `FIRST`, `LAST`, `MAX`, `MIN`, `STDDEV_POP`, `STDDEV_SAMP`, `SUM`, `VAR_POP`, `VAR_SAMP`:
+		*f = FunctionFunctionType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "APPROX_COUNT_DISTINCT", "APPROX_PERCENTILE", "AVG", "COUNT", "FIRST", "LAST", "MAX", "MIN", "STDDEV_POP", "STDDEV_SAMP", "SUM", "VAR_POP", "VAR_SAMP"`, v)
+	}
+}
+
+// Values returns all possible values for FunctionFunctionType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FunctionFunctionType) Values() []FunctionFunctionType {
+	return []FunctionFunctionType{
+		FunctionFunctionTypeApproxCountDistinct,
+		FunctionFunctionTypeApproxPercentile,
+		FunctionFunctionTypeAvg,
+		FunctionFunctionTypeCount,
+		FunctionFunctionTypeFirst,
+		FunctionFunctionTypeLast,
+		FunctionFunctionTypeMax,
+		FunctionFunctionTypeMin,
+		FunctionFunctionTypeStddevPop,
+		FunctionFunctionTypeStddevSamp,
+		FunctionFunctionTypeSum,
+		FunctionFunctionTypeVarPop,
+		FunctionFunctionTypeVarSamp,
+	}
+}
+
+// Type always returns FunctionFunctionType to satisfy [pflag.Value] interface
+func (f *FunctionFunctionType) Type() string {
+	return "FunctionFunctionType"
+}
+
 type GetByNameRequest struct {
 	// Name of the associated experiment.
 	ExperimentName string `json:"-" url:"experiment_name"`
@@ -1340,6 +1452,11 @@ type GetFeatureLineageRequest struct {
 	FeatureName string `json:"-" url:"-"`
 	// The full name of the feature table in Unity Catalog.
 	TableName string `json:"-" url:"-"`
+}
+
+type GetFeatureRequest struct {
+	// Name of the feature to get.
+	FullName string `json:"-" url:"-"`
 }
 
 type GetFeatureTagRequest struct {
@@ -1403,6 +1520,16 @@ type GetLoggedModelRequest struct {
 type GetLoggedModelResponse struct {
 	// The retrieved logged model.
 	Model *LoggedModel `json:"model,omitempty"`
+}
+
+type GetLoggedModelsRequest struct {
+	// The IDs of the logged models to retrieve. Max threshold is 100.
+	ModelIds []string `json:"-" url:"model_ids,omitempty"`
+}
+
+type GetLoggedModelsRequestResponse struct {
+	// The retrieved logged models.
+	Models []LoggedModel `json:"models,omitempty"`
 }
 
 type GetMetricHistoryResponse struct {
@@ -1616,6 +1743,26 @@ func (s JobSpecWithoutSecret) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Feature for model version. ([ML-57150] Renamed from Feature to LinkedFeature)
+type LinkedFeature struct {
+	// Feature name
+	FeatureName string `json:"feature_name,omitempty"`
+	// Feature table id
+	FeatureTableId string `json:"feature_table_id,omitempty"`
+	// Feature table name
+	FeatureTableName string `json:"feature_table_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LinkedFeature) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LinkedFeature) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListArtifactsRequest struct {
 	// The token indicating the page of artifact results to fetch. `page_token`
 	// is not supported when listing artifacts in UC Volumes. A maximum of 1000
@@ -1740,6 +1887,40 @@ func (s *ListFeatureTagsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListFeatureTagsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListFeaturesRequest struct {
+	// The maximum number of results to return.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page based on a previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListFeaturesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListFeaturesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListFeaturesResponse struct {
+	// List of features.
+	Features []Feature `json:"features,omitempty"`
+	// Pagination token to request the next page of results for this query.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListFeaturesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListFeaturesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -3721,6 +3902,23 @@ func (s TestRegistryWebhookResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type TimeWindow struct {
+	// The duration of the time window.
+	Duration string `json:"duration"`
+	// The offset of the time window.
+	Offset string `json:"offset,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TimeWindow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TimeWindow) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Details required to transition a model version's stage.
 type TransitionModelVersionStageDatabricks struct {
 	// Specifies whether to archive all current model versions in the target
@@ -3824,6 +4022,15 @@ func (s *UpdateExperiment) UnmarshalJSON(b []byte) error {
 
 func (s UpdateExperiment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateFeatureRequest struct {
+	// Feature to update.
+	Feature Feature `json:"feature"`
+	// The full three-part name (catalog, schema, name) of the feature.
+	FullName string `json:"-" url:"-"`
+	// The list of fields to update.
+	UpdateMask string `json:"-" url:"update_mask"`
 }
 
 type UpdateFeatureTagRequest struct {

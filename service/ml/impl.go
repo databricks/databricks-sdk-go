@@ -192,6 +192,16 @@ func (a *experimentsImpl) GetLoggedModel(ctx context.Context, request GetLoggedM
 	return &getLoggedModelResponse, err
 }
 
+func (a *experimentsImpl) GetLoggedModels(ctx context.Context, request GetLoggedModelsRequest) (*GetLoggedModelsRequestResponse, error) {
+	var getLoggedModelsRequestResponse GetLoggedModelsRequestResponse
+	path := "/api/2.0/mlflow/logged-models:batchGet"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getLoggedModelsRequestResponse)
+	return &getLoggedModelsRequestResponse, err
+}
+
 func (a *experimentsImpl) GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
 	var getExperimentPermissionLevelsResponse GetExperimentPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v/permissionLevels", request.ExperimentId)
@@ -587,6 +597,97 @@ func (a *experimentsImpl) UpdateRun(ctx context.Context, request UpdateRun) (*Up
 	return &updateRunResponse, err
 }
 
+// unexported type that holds implementations of just FeatureEngineering API methods
+type featureEngineeringImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *featureEngineeringImpl) CreateFeature(ctx context.Context, request CreateFeatureRequest) (*Feature, error) {
+	var feature Feature
+	path := "/api/2.0/feature-engineering/features"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Feature, &feature)
+	return &feature, err
+}
+
+func (a *featureEngineeringImpl) DeleteFeature(ctx context.Context, request DeleteFeatureRequest) error {
+	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", request.FullName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *featureEngineeringImpl) GetFeature(ctx context.Context, request GetFeatureRequest) (*Feature, error) {
+	var feature Feature
+	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", request.FullName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &feature)
+	return &feature, err
+}
+
+// List Features.
+func (a *featureEngineeringImpl) ListFeatures(ctx context.Context, request ListFeaturesRequest) listing.Iterator[Feature] {
+
+	getNextPage := func(ctx context.Context, req ListFeaturesRequest) (*ListFeaturesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListFeatures(ctx, req)
+	}
+	getItems := func(resp *ListFeaturesResponse) []Feature {
+		return resp.Features
+	}
+	getNextReq := func(resp *ListFeaturesResponse) *ListFeaturesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List Features.
+func (a *featureEngineeringImpl) ListFeaturesAll(ctx context.Context, request ListFeaturesRequest) ([]Feature, error) {
+	iterator := a.ListFeatures(ctx, request)
+	return listing.ToSlice[Feature](ctx, iterator)
+}
+
+func (a *featureEngineeringImpl) internalListFeatures(ctx context.Context, request ListFeaturesRequest) (*ListFeaturesResponse, error) {
+	var listFeaturesResponse ListFeaturesResponse
+	path := "/api/2.0/feature-engineering/features"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFeaturesResponse)
+	return &listFeaturesResponse, err
+}
+
+func (a *featureEngineeringImpl) UpdateFeature(ctx context.Context, request UpdateFeatureRequest) (*Feature, error) {
+	var feature Feature
+	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", request.FullName)
+	queryParams := make(map[string]any)
+
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Feature, &feature)
+	return &feature, err
+}
+
 // unexported type that holds implementations of just FeatureStore API methods
 type featureStoreImpl struct {
 	client *client.DatabricksClient
@@ -678,6 +779,7 @@ func (a *featureStoreImpl) UpdateOnlineStore(ctx context.Context, request Update
 	var onlineStore OnlineStore
 	path := fmt.Sprintf("/api/2.0/feature-store/online-stores/%v", request.Name)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}
@@ -804,6 +906,7 @@ func (a *materializedFeaturesImpl) UpdateFeatureTag(ctx context.Context, request
 	var featureTag FeatureTag
 	path := fmt.Sprintf("/api/2.0/feature-store/feature-tables/%v/features/%v/tags/%v", request.TableName, request.FeatureName, request.Key)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
 		queryParams["update_mask"] = request.UpdateMask
 	}

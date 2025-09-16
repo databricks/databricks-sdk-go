@@ -57,7 +57,7 @@ type AccountGroup struct {
 	AccountId string `json:"account_id,omitempty"`
 	// String that represents a human-readable group name
 	DisplayName string `json:"displayName,omitempty"`
-
+	// external_id should be unique for identifying groups
 	ExternalId string `json:"externalId,omitempty"`
 	// Databricks group ID
 	Id string `json:"id,omitempty"`
@@ -496,6 +496,8 @@ type GetAssignableRolesForResourceRequest struct {
 	// `resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>` | A resource name for
 	// the group. `resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>` | A
 	// resource name for the service principal.
+	// `resource=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>` | A resource
+	// name for the tag policy.
 	Resource string `json:"-" url:"resource"`
 }
 
@@ -569,6 +571,8 @@ type GetRuleSetRequest struct {
 	// for a rule set on the group.
 	// `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default`
 	// | A name for a rule set on the service principal.
+	// `name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default`
+	// | A name for a rule set on the tag policy.
 	Name string `json:"-" url:"name"`
 }
 
@@ -674,7 +678,7 @@ type Group struct {
 	//
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
-
+	// external_id should be unique for identifying groups
 	ExternalId string `json:"externalId,omitempty"`
 
 	Groups []ComplexValue `json:"groups,omitempty"`

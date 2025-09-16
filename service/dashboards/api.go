@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Genie, Lakeview, Lakeview Embedded, etc.
+// These APIs allow you to manage Genie, Lakeview, Lakeview Embedded, Query Execution, etc.
 package dashboards
 
 import (
@@ -33,18 +33,58 @@ type GenieInterface interface {
 	// Deprecated: use [GenieAPIInterface.CreateMessage].Get() or [GenieAPIInterface.WaitGetMessageGenieCompleted]
 	CreateMessageAndWait(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest, options ...retries.Option[GenieMessage]) (*GenieMessage, error)
 
+	// Creates a Genie space from a serialized payload.
+	CreateSpace(ctx context.Context, request GenieCreateSpaceRequest) (*GenieSpace, error)
+
 	// Delete a conversation.
 	DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error
 
 	// Delete a conversation.
 	DeleteConversationBySpaceIdAndConversationId(ctx context.Context, spaceId string, conversationId string) error
 
+	// Delete a conversation message.
+	DeleteConversationMessage(ctx context.Context, request GenieDeleteConversationMessageRequest) error
+
 	// Execute the SQL for a message query attachment. Use this API when the query
 	// attachment has expired and needs to be re-executed.
 	ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Execute the SQL query in the message.
+	// DEPRECATED: Use [Execute Message Attachment
+	// Query](:method:genie/executemessageattachmentquery) instead.
 	ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
+
+	// Initiates a new SQL execution and returns a `download_id` that you can use to
+	// track the progress of the download. The query result is stored in an external
+	// link and can be retrieved using the [Get Download Full Query
+	// Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks
+	// strongly recommends that you protect the URLs that are returned by the
+	// `EXTERNAL_LINKS` disposition. See [Execute
+	// Statement](:method:statementexecution/executestatement) for more details.
+	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
+
+	// After [Generating a Full Query Result
+	// Download](:method:genie/getdownloadfullqueryresult) and successfully
+	// receiving a `download_id`, use this API to poll the download progress. When
+	// the download is complete, the API returns one or more external links to the
+	// query result files. Warning: Databricks strongly recommends that you protect
+	// the URLs that are returned by the `EXTERNAL_LINKS` disposition. You must not
+	// set an Authorization header in download requests. When using the
+	// `EXTERNAL_LINKS` disposition, Databricks returns presigned URLs that grant
+	// temporary access to data. See [Execute
+	// Statement](:method:statementexecution/executestatement) for more details.
+	GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error)
+
+	// After [Generating a Full Query Result
+	// Download](:method:genie/getdownloadfullqueryresult) and successfully
+	// receiving a `download_id`, use this API to poll the download progress. When
+	// the download is complete, the API returns one or more external links to the
+	// query result files. Warning: Databricks strongly recommends that you protect
+	// the URLs that are returned by the `EXTERNAL_LINKS` disposition. You must not
+	// set an Authorization header in download requests. When using the
+	// `EXTERNAL_LINKS` disposition, Databricks returns presigned URLs that grant
+	// temporary access to data. See [Execute
+	// Statement](:method:statementexecution/executestatement) for more details.
+	GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string) (*GenieGetDownloadFullQueryResultResponse, error)
 
 	// Get message from conversation.
 	GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error)
@@ -62,24 +102,20 @@ type GenieInterface interface {
 	// `EXECUTING_QUERY` OR `COMPLETED`.
 	GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY`.
+	// DEPRECATED: Use [Get Message Attachment Query
+	// Result](:method:genie/getmessageattachmentqueryresult) instead.
 	GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY`.
+	// DEPRECATED: Use [Get Message Attachment Query
+	// Result](:method:genie/getmessageattachmentqueryresult) instead.
 	GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY` OR `COMPLETED`.
+	// DEPRECATED: Use [Get Message Attachment Query
+	// Result](:method:genie/getmessageattachmentqueryresult) instead.
 	GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY` OR `COMPLETED`.
+	// DEPRECATED: Use [Get Message Attachment Query
+	// Result](:method:genie/getmessageattachmentqueryresult) instead.
 	GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error)
 
 	// Get details of a Genie Space.
@@ -87,6 +123,9 @@ type GenieInterface interface {
 
 	// Get details of a Genie Space.
 	GetSpaceBySpaceId(ctx context.Context, spaceId string) (*GenieSpace, error)
+
+	// List messages in a conversation
+	ListConversationMessages(ctx context.Context, request GenieListConversationMessagesRequest) (*GenieListConversationMessagesResponse, error)
 
 	// Get a list of conversations in a Genie Space.
 	ListConversations(ctx context.Context, request GenieListConversationsRequest) (*GenieListConversationsResponse, error)
@@ -96,6 +135,9 @@ type GenieInterface interface {
 
 	// Get list of Genie Spaces.
 	ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error)
+
+	// Send feedback for a message.
+	SendMessageFeedback(ctx context.Context, request GenieSendMessageFeedbackRequest) error
 
 	// Start a new conversation.
 	StartConversation(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieStartConversationResponse], error)
@@ -113,6 +155,9 @@ type GenieInterface interface {
 
 	// Move a Genie Space to the trash.
 	TrashSpaceBySpaceId(ctx context.Context, spaceId string) error
+
+	// Updates a Genie space with a serialized payload.
+	UpdateSpace(ctx context.Context, request GenieUpdateSpaceRequest) (*GenieSpace, error)
 }
 
 func NewGenie(client *client.DatabricksClient) *GenieAPI {
@@ -246,6 +291,26 @@ func (a *GenieAPI) DeleteConversationBySpaceIdAndConversationId(ctx context.Cont
 	})
 }
 
+// After [Generating a Full Query Result
+// Download](:method:genie/getdownloadfullqueryresult) and successfully
+// receiving a `download_id`, use this API to poll the download progress. When
+// the download is complete, the API returns one or more external links to the
+// query result files. Warning: Databricks strongly recommends that you protect
+// the URLs that are returned by the `EXTERNAL_LINKS` disposition. You must not
+// set an Authorization header in download requests. When using the
+// `EXTERNAL_LINKS` disposition, Databricks returns presigned URLs that grant
+// temporary access to data. See [Execute
+// Statement](:method:statementexecution/executestatement) for more details.
+func (a *GenieAPI) GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string) (*GenieGetDownloadFullQueryResultResponse, error) {
+	return a.genieImpl.GetDownloadFullQueryResult(ctx, GenieGetDownloadFullQueryResultRequest{
+		SpaceId:        spaceId,
+		ConversationId: conversationId,
+		MessageId:      messageId,
+		AttachmentId:   attachmentId,
+		DownloadId:     downloadId,
+	})
+}
+
 // Get message from conversation.
 func (a *GenieAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error) {
 	return a.genieImpl.GetMessage(ctx, GenieGetConversationMessageRequest{
@@ -267,9 +332,8 @@ func (a *GenieAPI) GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndM
 	})
 }
 
-// Get the result of SQL query if the message has a query attachment. This is
-// only available if a message has a query attachment and the message status is
-// `EXECUTING_QUERY`.
+// DEPRECATED: Use [Get Message Attachment Query
+// Result](:method:genie/getmessageattachmentqueryresult) instead.
 func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error) {
 	return a.genieImpl.GetMessageQueryResult(ctx, GenieGetMessageQueryResultRequest{
 		SpaceId:        spaceId,
@@ -278,9 +342,8 @@ func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(c
 	})
 }
 
-// Get the result of SQL query if the message has a query attachment. This is
-// only available if a message has a query attachment and the message status is
-// `EXECUTING_QUERY` OR `COMPLETED`.
+// DEPRECATED: Use [Get Message Attachment Query
+// Result](:method:genie/getmessageattachmentqueryresult) instead.
 func (a *GenieAPI) GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error) {
 	return a.genieImpl.GetMessageQueryResultByAttachment(ctx, GenieGetQueryResultByAttachmentRequest{
 		SpaceId:        spaceId,
@@ -559,6 +622,12 @@ func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId st
 
 type LakeviewEmbeddedInterface interface {
 
+	// Get the current published dashboard within an embedded context.
+	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error
+
+	// Get the current published dashboard within an embedded context.
+	GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error
+
 	// Get a required authorization details and scopes of a published dashboard to
 	// mint an OAuth token.
 	GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error)
@@ -581,10 +650,42 @@ type LakeviewEmbeddedAPI struct {
 	lakeviewEmbeddedImpl
 }
 
+// Get the current published dashboard within an embedded context.
+func (a *LakeviewEmbeddedAPI) GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error {
+	return a.lakeviewEmbeddedImpl.GetPublishedDashboardEmbedded(ctx, GetPublishedDashboardEmbeddedRequest{
+		DashboardId: dashboardId,
+	})
+}
+
 // Get a required authorization details and scopes of a published dashboard to
 // mint an OAuth token.
 func (a *LakeviewEmbeddedAPI) GetPublishedDashboardTokenInfoByDashboardId(ctx context.Context, dashboardId string) (*GetPublishedDashboardTokenInfoResponse, error) {
 	return a.lakeviewEmbeddedImpl.GetPublishedDashboardTokenInfo(ctx, GetPublishedDashboardTokenInfoRequest{
 		DashboardId: dashboardId,
 	})
+}
+
+type QueryExecutionInterface interface {
+
+	// Cancel the results for the a query for a published, embedded dashboard.
+	CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error)
+
+	// Execute a query for a published dashboard.
+	ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error
+
+	// Poll the results for the a query for a published, embedded dashboard.
+	PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error)
+}
+
+func NewQueryExecution(client *client.DatabricksClient) *QueryExecutionAPI {
+	return &QueryExecutionAPI{
+		queryExecutionImpl: queryExecutionImpl{
+			client: client,
+		},
+	}
+}
+
+// Query execution APIs for AI / BI Dashboards
+type QueryExecutionAPI struct {
+	queryExecutionImpl
 }

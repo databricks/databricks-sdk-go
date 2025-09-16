@@ -24,6 +24,10 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PipelinesService interface {
 
+	// * Applies the current pipeline environment onto the pipeline compute. The
+	// environment applied can be used by subsequent dev-mode updates.
+	ApplyEnvironment(ctx context.Context, request ApplyEnvironmentRequest) (*ApplyEnvironmentRequestResponse, error)
+
 	// Creates a new data processing pipeline based on the requested
 	// configuration. If successful, this method returns the ID of the new
 	// pipeline.
@@ -54,6 +58,11 @@ type PipelinesService interface {
 
 	// List updates for an active pipeline.
 	ListUpdates(ctx context.Context, request ListUpdatesRequest) (*ListUpdatesResponse, error)
+
+	// * Restores a pipeline that was previously deleted, if within the
+	// restoration window. All tables deleted at pipeline deletion will be
+	// undropped as well.
+	RestorePipeline(ctx context.Context, request RestorePipelineRequest) (*RestorePipelineRequestResponse, error)
 
 	// Sets permissions on an object, replacing existing permissions if they
 	// exist. Deletes all direct permissions if none are specified. Objects can
