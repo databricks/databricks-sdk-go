@@ -373,10 +373,7 @@ func (a *PersistentAuth) validateArg() error {
 
 // oauth2Config returns the OAuth2 configuration for the given OAuthArgument.
 func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
-	scopes := []string{
-		"offline_access", // ensures OAuth token includes refresh token
-		"all-apis",       // ensures OAuth token has access to all control-plane APIs
-	}
+	scopes := a.oAuthArgument.GetScopes()
 	var endpoints *OAuthAuthorizationServer
 	var err error
 	switch argg := a.oAuthArgument.(type) {

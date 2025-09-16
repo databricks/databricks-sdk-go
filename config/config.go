@@ -147,6 +147,10 @@ type Config struct {
 	// When using Workload Identity Federation, the audience to specify when fetching an ID token from the ID token supplier.
 	TokenAudience string `name:"audience" env:"DATABRICKS_TOKEN_AUDIENCE" auth:"-"`
 
+	// When using Databricks OAuth, the scopes to request for the token.
+	// If not set, the default scopes will be used ("offline_access" + "all-apis").
+	OAuthScopes []string `name:"scopes" env:"DATABRICKS_OAUTH_SCOPES" auth:"-"`
+
 	Loaders []Loader
 
 	// marker for configuration resolving
@@ -481,7 +485,7 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
 	host := c.CanonicalHostName()
 	if c.IsAccountClient() {
-		return u2m.NewBasicAccountOAuthArgument(host, c.AccountID)
+		return u2m.NewBasicAccountOAuthArgument(host, c.AccountID, c.OAuthScopes...)
 	}
-	return u2m.NewBasicWorkspaceOAuthArgument(host)
+	return u2m.NewBasicWorkspaceOAuthArgument(host, c.OAuthScopes...)
 }
