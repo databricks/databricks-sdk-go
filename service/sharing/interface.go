@@ -231,7 +231,7 @@ type SharesService interface {
 	// Gets an array of data object shares from the metastore. The caller must
 	// be a metastore admin or the owner of the share. There is no guarantee of
 	// a specific ordering of the elements in the array.
-	List(ctx context.Context, request ListSharesRequest) (*ListSharesResponse, error)
+	ListShares(ctx context.Context, request SharesListRequest) (*ListSharesResponse, error)
 
 	// Gets the permissions for a data share from the metastore. The caller must
 	// be a metastore admin or the owner of the share.

@@ -435,18 +435,18 @@ func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*ShareIn
 // Gets an array of data object shares from the metastore. The caller must be a
 // metastore admin or the owner of the share. There is no guarantee of a
 // specific ordering of the elements in the array.
-func (a *sharesImpl) List(ctx context.Context, request ListSharesRequest) listing.Iterator[ShareInfo] {
+func (a *sharesImpl) ListShares(ctx context.Context, request SharesListRequest) listing.Iterator[ShareInfo] {
 
 	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
 
-	getNextPage := func(ctx context.Context, req ListSharesRequest) (*ListSharesResponse, error) {
+	getNextPage := func(ctx context.Context, req SharesListRequest) (*ListSharesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.internalList(ctx, req)
+		return a.internalListShares(ctx, req)
 	}
 	getItems := func(resp *ListSharesResponse) []ShareInfo {
 		return resp.Shares
 	}
-	getNextReq := func(resp *ListSharesResponse) *ListSharesRequest {
+	getNextReq := func(resp *ListSharesResponse) *SharesListRequest {
 		if resp.NextPageToken == "" {
 			return nil
 		}
@@ -464,12 +464,12 @@ func (a *sharesImpl) List(ctx context.Context, request ListSharesRequest) listin
 // Gets an array of data object shares from the metastore. The caller must be a
 // metastore admin or the owner of the share. There is no guarantee of a
 // specific ordering of the elements in the array.
-func (a *sharesImpl) ListAll(ctx context.Context, request ListSharesRequest) ([]ShareInfo, error) {
-	iterator := a.List(ctx, request)
+func (a *sharesImpl) ListSharesAll(ctx context.Context, request SharesListRequest) ([]ShareInfo, error) {
+	iterator := a.ListShares(ctx, request)
 	return listing.ToSlice[ShareInfo](ctx, iterator)
 }
 
-func (a *sharesImpl) internalList(ctx context.Context, request ListSharesRequest) (*ListSharesResponse, error) {
+func (a *sharesImpl) internalListShares(ctx context.Context, request SharesListRequest) (*ListSharesResponse, error) {
 	var listSharesResponse ListSharesResponse
 	path := "/api/2.1/unity-catalog/shares"
 	queryParams := make(map[string]any)
