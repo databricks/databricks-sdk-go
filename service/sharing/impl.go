@@ -272,6 +272,7 @@ func (a *recipientFederationPoliciesImpl) Update(ctx context.Context, request Up
 	var federationPolicy FederationPolicy
 	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies/%v", request.RecipientName, request.Name)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
 		queryParams["update_mask"] = request.UpdateMask
 	}

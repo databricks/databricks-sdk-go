@@ -233,9 +233,15 @@ type GetGroupRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+type GetPasswordPermissionLevelsRequest struct {
+}
+
 type GetPasswordPermissionLevelsResponse struct {
 	// Specific permission levels
 	PermissionLevels []PasswordPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+type GetPasswordPermissionsRequest struct {
 }
 
 type GetPermissionLevelsRequest struct {

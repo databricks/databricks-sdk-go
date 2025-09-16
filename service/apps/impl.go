@@ -22,6 +22,7 @@ func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, 
 	var app App
 	path := "/api/2.0/apps"
 	queryParams := make(map[string]any)
+
 	if request.NoCompute != false || slices.Contains(request.ForceSendFields, "NoCompute") {
 		queryParams["no_compute"] = request.NoCompute
 	}

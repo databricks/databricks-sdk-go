@@ -92,6 +92,7 @@ func (a *tagPoliciesImpl) UpdateTagPolicy(ctx context.Context, request UpdateTag
 	var tagPolicy TagPolicy
 	path := fmt.Sprintf("/api/2.1/tag-policies/%v", request.TagKey)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}

@@ -425,6 +425,44 @@ type AccountClient struct {
 	// platform or on a select custom plan that allows multiple workspaces per
 	// account.
 	Workspaces provisioning.WorkspacesInterface
+
+	// Groups simplify identity management, making it easier to assign access to
+	// Databricks account, data, and other securable objects.
+	//
+	// It is best practice to assign access to workspaces and access-control
+	// policies in Unity Catalog to groups, instead of to users individually.
+	// All Databricks account identities can be assigned as members of groups,
+	// and members inherit permissions that are assigned to their group.
+	//
+	// Deprecated: Use the GroupsV2 API instead.
+	Groups iam.AccountGroupsInterface
+
+	// Identities for use with jobs, automated tools, and systems such as
+	// scripts, apps, and CI/CD platforms. Databricks recommends creating
+	// service principals to run production jobs or modify production data. If
+	// all processes that act on production data run with service principals,
+	// interactive users do not need any write, delete, or modify privileges in
+	// production. This eliminates the risk of a user overwriting production
+	// data by accident.
+	//
+	// Deprecated: Use the ServicePrincipalsV2 API instead.
+	ServicePrincipals iam.AccountServicePrincipalsInterface
+
+	// User identities recognized by Databricks and represented by email
+	// addresses.
+	//
+	// Databricks recommends using SCIM provisioning to sync users and groups
+	// automatically from your identity provider to your Databricks account.
+	// SCIM streamlines onboarding a new employee or team by using your identity
+	// provider to create users and groups in Databricks account and give them
+	// the proper level of access. When a user leaves your organization or no
+	// longer needs access to Databricks account, admins can terminate the user
+	// in your identity provider and that user’s account will also be removed
+	// from Databricks account. This ensures a consistent offboarding process
+	// and prevents unauthorized users from accessing sensitive data.
+	//
+	// Deprecated: Use the UsersV2 API instead.
+	Users iam.AccountUsersInterface
 }
 
 var ErrNotAccountClient = errors.New("invalid Databricks Account configuration")
@@ -488,5 +526,8 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		WorkspaceAssignment:              iam.NewWorkspaceAssignment(apiClient),
 		WorkspaceNetworkConfiguration:    settings.NewWorkspaceNetworkConfiguration(apiClient),
 		Workspaces:                       provisioning.NewWorkspaces(apiClient),
+		Groups:                           iam.NewAccountGroups(apiClient),
+		ServicePrincipals:                iam.NewAccountServicePrincipals(apiClient),
+		Users:                            iam.NewAccountUsers(apiClient),
 	}, nil
 }

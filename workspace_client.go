@@ -1297,6 +1297,44 @@ type WorkspaceClient struct {
 
 	// APIs to manage workspace level settings
 	WorkspaceSettingsV2 settingsv2.WorkspaceSettingsV2Interface
+
+	// Groups simplify identity management, making it easier to assign access to
+	// Databricks workspace, data, and other securable objects.
+	//
+	// It is best practice to assign access to workspaces and access-control
+	// policies in Unity Catalog to groups, instead of to users individually.
+	// All Databricks workspace identities can be assigned as members of groups,
+	// and members inherit permissions that are assigned to their group.
+	//
+	// Deprecated: Use the GroupsV2 API instead.
+	Groups iam.GroupsInterface
+
+	// Identities for use with jobs, automated tools, and systems such as
+	// scripts, apps, and CI/CD platforms. Databricks recommends creating
+	// service principals to run production jobs or modify production data. If
+	// all processes that act on production data run with service principals,
+	// interactive users do not need any write, delete, or modify privileges in
+	// production. This eliminates the risk of a user overwriting production
+	// data by accident.
+	//
+	// Deprecated: Use the ServicePrincipalsV2 API instead.
+	ServicePrincipals iam.ServicePrincipalsInterface
+
+	// User identities recognized by Databricks and represented by email
+	// addresses.
+	//
+	// Databricks recommends using SCIM provisioning to sync users and groups
+	// automatically from your identity provider to your Databricks workspace.
+	// SCIM streamlines onboarding a new employee or team by using your identity
+	// provider to create users and groups in Databricks workspace and give them
+	// the proper level of access. When a user leaves your organization or no
+	// longer needs access to Databricks workspace, admins can terminate the
+	// user in your identity provider and that user’s account will also be
+	// removed from Databricks workspace. This ensures a consistent offboarding
+	// process and prevents unauthorized users from accessing sensitive data.
+	//
+	// Deprecated: Use the UsersV2 API instead.
+	Users iam.UsersInterface
 }
 
 var ErrNotWorkspaceClient = errors.New("invalid Databricks Workspace configuration")
@@ -1452,5 +1490,8 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		WorkspaceConf:                       settings.NewWorkspaceConf(databricksClient),
 		WorkspaceIamV2:                      iamv2.NewWorkspaceIamV2(databricksClient),
 		WorkspaceSettingsV2:                 settingsv2.NewWorkspaceSettingsV2(databricksClient),
+		Groups:                              iam.NewGroups(databricksClient),
+		ServicePrincipals:                   iam.NewServicePrincipals(databricksClient),
+		Users:                               iam.NewUsers(databricksClient),
 	}, nil
 }
