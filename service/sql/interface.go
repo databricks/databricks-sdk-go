@@ -614,7 +614,7 @@ type WarehousesService interface {
 	// warehouses in a workspace.
 	GetWorkspaceWarehouseConfig(ctx context.Context) (*GetWorkspaceWarehouseConfigResponse, error)
 
-	// Lists all SQL warehouses that a user has manager permissions on.
+	// Lists all SQL warehouses that a user has access to.
 	List(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error)
 
 	// Sets permissions on an object, replacing existing permissions if they

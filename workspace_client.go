@@ -342,6 +342,9 @@ type WorkspaceClient struct {
 	// metadata objects.
 	ExternalMetadata catalog.ExternalMetadataInterface
 
+	// [description]
+	FeatureEngineering ml.FeatureEngineeringInterface
+
 	// A feature store is a centralized repository that enables data scientists
 	// to find and share features. Using a feature store also ensures that the
 	// code used to compute feature values is the same during model training and
@@ -1143,7 +1146,10 @@ type WorkspaceClient struct {
 	Tables catalog.TablesInterface
 
 	// The Tag Policy API allows you to manage policies for governed tags in
-	// Databricks.
+	// Databricks. Permissions for tag policies can be managed using the
+	// [Account Access Control Proxy API].
+	//
+	// [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
 	TagPolicies tags.TagPoliciesInterface
 
 	// Temporary Path Credentials refer to short-lived, downscoped credentials
@@ -1365,6 +1371,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ExternalLineage:                     catalog.NewExternalLineage(databricksClient),
 		ExternalLocations:                   catalog.NewExternalLocations(databricksClient),
 		ExternalMetadata:                    catalog.NewExternalMetadata(databricksClient),
+		FeatureEngineering:                  ml.NewFeatureEngineering(databricksClient),
 		FeatureStore:                        ml.NewFeatureStore(databricksClient),
 		Files:                               files.NewFiles(databricksClient),
 		Forecasting:                         ml.NewForecasting(databricksClient),
