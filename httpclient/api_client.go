@@ -121,7 +121,7 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 		cfg.ErrorRetriable = DefaultErrorRetriable
 	}
 	transport := cfg.httpTransport()
-	rateLimit := rate.Limit(orDefault(cfg.RateLimitPerSecond, 15))
+	rateLimit := rate.Limit(cfg.RateLimitPerSecond)
 	// depend on the HTTP fixture interface to prevent any coupling
 	if skippable, ok := transport.(interface {
 		SkipRetryOnIO() bool
@@ -129,9 +129,10 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 		rateLimit = rate.Inf
 		cfg.RetryTimeout = 0
 	}
+
 	return &ApiClient{
 		config:      cfg,
-		rateLimiter: rate.NewLimiter(rateLimit, 1),
+		rateLimiter: rate.NewLimiter(rateLimit, cfg.RateLimitPerSecond),
 		httpClient: &http.Client{
 			// We deal with request timeouts ourselves such that we do not
 			// time out during request or response body reads that make
