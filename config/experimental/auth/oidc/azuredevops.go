@@ -63,7 +63,6 @@ func (a *azureDevOpsIDTokenSource) IDToken(ctx context.Context, audience string)
 		return nil, errors.New("missing SYSTEM_HOSTTYPE")
 	}
 
-	resp := &IDToken{}
 	// Azure DevOps OIDC endpoint format
 	// Reference: https://learn.microsoft.com/en-us/rest/api/azure/devops/distributedtask/oidctoken/create?view=azure-devops-rest-7.1
 	// Use systemHostType to determine the hub name dynamically (e.g., "build", "release", etc.)
@@ -74,21 +73,30 @@ func (a *azureDevOpsIDTokenSource) IDToken(ctx context.Context, audience string)
 		a.systemPlanId,
 		a.systemJobId)
 
-	// Create a struct for the request body
+	// Create request body with audience - Azure DevOps expects {"audience":"value"} format
 	requestBody := struct {
-		Audience string `json:"audience,omitempty"`
+		Audience string `json:"audience"`
 	}{
 		Audience: audience,
+	}
+
+	// Azure DevOps returns {"oidcToken":"***"} format, not {"value":"***"}
+	var azureResp struct {
+		OidcToken string `json:"oidcToken"`
 	}
 
 	err := a.refreshClient.Do(ctx, "POST", requestUrl,
 		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", a.systemAccessToken)),
 		httpclient.WithRequestData(requestBody),
-		httpclient.WithResponseUnmarshal(resp),
+		httpclient.WithResponseUnmarshal(&azureResp),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to request ID token from Azure DevOps: %w", err)
 	}
 
-	return resp, nil
+	if azureResp.OidcToken == "" {
+		return nil, fmt.Errorf("empty OIDC token received from Azure DevOps")
+	}
+
+	return &IDToken{Value: azureResp.OidcToken}, nil
 }
