@@ -12,14 +12,15 @@ import (
 // NewAzureDevOpsIDTokenSource returns a new IDTokenSource that retrieves an IDToken
 // from the Azure DevOps environment. This IDTokenSource is only valid when
 // running in Azure DevOps Pipelines with OIDC enabled.
-func NewAzureDevOpsIDTokenSource(client *httpclient.ApiClient, systemAccessToken, systemTeamFoundationCollectionUri, systemPlanId, systemJobId, systemProject string) IDTokenSource {
+func NewAzureDevOpsIDTokenSource(client *httpclient.ApiClient, systemAccessToken, systemTeamFoundationCollectionUri, systemPlanId, systemJobId, systemTeamProjectId, systemHostType string) IDTokenSource {
 	return &azureDevOpsIDTokenSource{
 		systemAccessToken:                 systemAccessToken,
 		systemTeamFoundationCollectionUri: systemTeamFoundationCollectionUri,
 		refreshClient:                     client,
 		systemPlanId:                      systemPlanId,
 		systemJobId:                       systemJobId,
-		systemProject:                     systemProject,
+		systemTeamProjectId:               systemTeamProjectId,
+		systemHostType:                    systemHostType,
 	}
 }
 
@@ -30,7 +31,8 @@ type azureDevOpsIDTokenSource struct {
 	refreshClient                     *httpclient.ApiClient
 	systemPlanId                      string
 	systemJobId                       string
-	systemProject                     string
+	systemTeamProjectId               string
+	systemHostType                    string
 }
 
 // IDToken returns a JWT Token for the specified audience. It will return
@@ -52,17 +54,23 @@ func (a *azureDevOpsIDTokenSource) IDToken(ctx context.Context, audience string)
 		logger.Debugf(ctx, "Missing SYSTEM_JOBID, likely not calling from Azure DevOps Pipeline")
 		return nil, errors.New("missing SYSTEM_JOBID")
 	}
-	if a.systemProject == "" {
-		logger.Debugf(ctx, "Missing SYSTEM_TEAMPROJECT, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing SYSTEM_TEAMPROJECT")
+	if a.systemTeamProjectId == "" {
+		logger.Debugf(ctx, "Missing SYSTEM_TEAMPROJECTID, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing SYSTEM_TEAMPROJECTID")
+	}
+	if a.systemHostType == "" {
+		logger.Debugf(ctx, "Missing SYSTEM_HOSTTYPE, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing SYSTEM_HOSTTYPE")
 	}
 
 	resp := &IDToken{}
 	// Azure DevOps OIDC endpoint format
 	// Reference: https://learn.microsoft.com/en-us/rest/api/azure/devops/distributedtask/oidctoken/create?view=azure-devops-rest-7.1
-	requestUrl := fmt.Sprintf("%s/%s/_apis/distributedtask/hubs/build/plans/%s/jobs/%s/oidctoken?api-version=7.1-preview.1",
+	// Use systemHostType to determine the hub name dynamically (e.g., "build", "release", etc.)
+	requestUrl := fmt.Sprintf("%s/%s/_apis/distributedtask/hubs/%s/plans/%s/jobs/%s/oidctoken?api-version=7.2-preview.1",
 		a.systemTeamFoundationCollectionUri,
-		a.systemProject,
+		a.systemTeamProjectId,
+		a.systemHostType,
 		a.systemPlanId,
 		a.systemJobId)
 

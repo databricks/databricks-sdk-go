@@ -97,7 +97,8 @@ type Config struct {
 	SystemTeamFoundationCollectionUri string `name:"system_team_foundation_collection_uri" env:"SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"`
 	SystemPlanId                      string `name:"system_plan_id" env:"SYSTEM_PLANID"`
 	SystemJobId                       string `name:"system_job_id" env:"SYSTEM_JOBID"`
-	SystemProject                     string `name:"system_project" env:"SYSTEM_TEAMPROJECT"`
+	SystemTeamProjectId               string `name:"system_team_project_id" env:"SYSTEM_TEAMPROJECTID"`
+	SystemHostType                    string `name:"system_host_type" env:"SYSTEM_HOSTTYPE"`
 
 	// AzureEnvironment (PUBLIC, USGOVERNMENT, CHINA) has specific set of API endpoints. Starting from v0.26.0,
 	// the environment is determined based on the workspace hostname, if it's specified.

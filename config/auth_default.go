@@ -106,7 +106,8 @@ func azureDevOpsOIDC(cfg *Config) CredentialsStrategy {
 		cfg.SystemTeamFoundationCollectionUri,
 		cfg.SystemPlanId,
 		cfg.SystemJobId,
-		cfg.SystemProject,
+		cfg.SystemTeamProjectId,
+		cfg.SystemHostType,
 	))
 }
 
