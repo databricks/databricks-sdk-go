@@ -3,6 +3,7 @@
 ## Release v0.84.0
 
 ### New Features and Improvements
+* Increased rate limiter burst setting from 1 to rate\_limit value.
 
 ### Bug Fixes
 
