@@ -131,6 +131,7 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 	}
 
 	burst := int(rateLimit)
+	// Ensure that burst is never 0
 	if burst < 1 {
 		burst = 1
 	}
