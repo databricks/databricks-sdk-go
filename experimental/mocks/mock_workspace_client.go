@@ -95,7 +95,7 @@ func NewMockWorkspaceClient(t interface {
 			GitCredentials:                      workspace.NewMockGitCredentialsInterface(t),
 			GlobalInitScripts:                   compute.NewMockGlobalInitScriptsInterface(t),
 			Grants:                              catalog.NewMockGrantsInterface(t),
-			Groups:                              iam.NewMockGroupsInterface(t),
+			GroupsV2:                            iam.NewMockGroupsV2Interface(t),
 			InstancePools:                       compute.NewMockInstancePoolsInterface(t),
 			InstanceProfiles:                    compute.NewMockInstanceProfilesInterface(t),
 			IpAccessLists:                       settings.NewMockIpAccessListsInterface(t),
@@ -142,7 +142,7 @@ func NewMockWorkspaceClient(t interface {
 			Schemas:                             catalog.NewMockSchemasInterface(t),
 			Secrets:                             workspace.NewMockSecretsInterface(t),
 			ServicePrincipalSecretsProxy:        oauth2.NewMockServicePrincipalSecretsProxyInterface(t),
-			ServicePrincipals:                   iam.NewMockServicePrincipalsInterface(t),
+			ServicePrincipalsV2:                 iam.NewMockServicePrincipalsV2Interface(t),
 			ServingEndpoints:                    serving.NewMockServingEndpointsInterface(t),
 			ServingEndpointsDataPlane:           serving.NewMockServingEndpointsDataPlaneInterface(t),
 			Settings:                            settings.NewMockSettingsInterface(t),
@@ -157,7 +157,7 @@ func NewMockWorkspaceClient(t interface {
 			TemporaryTableCredentials:           catalog.NewMockTemporaryTableCredentialsInterface(t),
 			TokenManagement:                     settings.NewMockTokenManagementInterface(t),
 			Tokens:                              settings.NewMockTokensInterface(t),
-			Users:                               iam.NewMockUsersInterface(t),
+			UsersV2:                             iam.NewMockUsersV2Interface(t),
 			VectorSearchEndpoints:               vectorsearch.NewMockVectorSearchEndpointsInterface(t),
 			VectorSearchIndexes:                 vectorsearch.NewMockVectorSearchIndexesInterface(t),
 			Volumes:                             catalog.NewMockVolumesInterface(t),
@@ -727,10 +727,10 @@ func (m *MockWorkspaceClient) GetMockGrantsAPI() *catalog.MockGrantsInterface {
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockGroupsAPI() *iam.MockGroupsInterface {
-	api, ok := m.WorkspaceClient.Groups.(*iam.MockGroupsInterface)
+func (m *MockWorkspaceClient) GetMockGroupsV2API() *iam.MockGroupsV2Interface {
+	api, ok := m.WorkspaceClient.GroupsV2.(*iam.MockGroupsV2Interface)
 	if !ok {
-		panic(fmt.Sprintf("expected Groups to be *iam.MockGroupsInterface, actual was %T", m.WorkspaceClient.Groups))
+		panic(fmt.Sprintf("expected GroupsV2 to be *iam.MockGroupsV2Interface, actual was %T", m.WorkspaceClient.GroupsV2))
 	}
 	return api
 }
@@ -1103,10 +1103,10 @@ func (m *MockWorkspaceClient) GetMockServicePrincipalSecretsProxyAPI() *oauth2.M
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockServicePrincipalsAPI() *iam.MockServicePrincipalsInterface {
-	api, ok := m.WorkspaceClient.ServicePrincipals.(*iam.MockServicePrincipalsInterface)
+func (m *MockWorkspaceClient) GetMockServicePrincipalsV2API() *iam.MockServicePrincipalsV2Interface {
+	api, ok := m.WorkspaceClient.ServicePrincipalsV2.(*iam.MockServicePrincipalsV2Interface)
 	if !ok {
-		panic(fmt.Sprintf("expected ServicePrincipals to be *iam.MockServicePrincipalsInterface, actual was %T", m.WorkspaceClient.ServicePrincipals))
+		panic(fmt.Sprintf("expected ServicePrincipalsV2 to be *iam.MockServicePrincipalsV2Interface, actual was %T", m.WorkspaceClient.ServicePrincipalsV2))
 	}
 	return api
 }
@@ -1223,10 +1223,10 @@ func (m *MockWorkspaceClient) GetMockTokensAPI() *settings.MockTokensInterface {
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockUsersAPI() *iam.MockUsersInterface {
-	api, ok := m.WorkspaceClient.Users.(*iam.MockUsersInterface)
+func (m *MockWorkspaceClient) GetMockUsersV2API() *iam.MockUsersV2Interface {
+	api, ok := m.WorkspaceClient.UsersV2.(*iam.MockUsersV2Interface)
 	if !ok {
-		panic(fmt.Sprintf("expected Users to be *iam.MockUsersInterface, actual was %T", m.WorkspaceClient.Users))
+		panic(fmt.Sprintf("expected UsersV2 to be *iam.MockUsersV2Interface, actual was %T", m.WorkspaceClient.UsersV2))
 	}
 	return api
 }

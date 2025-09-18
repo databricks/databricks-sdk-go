@@ -238,6 +238,7 @@ func (a *alertsV2Impl) UpdateAlert(ctx context.Context, request UpdateAlertV2Req
 	var alertV2 AlertV2
 	path := fmt.Sprintf("/api/2.0/alerts/%v", request.Id)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}

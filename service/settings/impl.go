@@ -981,6 +981,7 @@ func (a *networkConnectivityImpl) UpdatePrivateEndpointRule(ctx context.Context,
 	var nccPrivateEndpointRule NccPrivateEndpointRule
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}

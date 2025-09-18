@@ -40,7 +40,7 @@ func NewMockAccountClient(t interface {
 			CustomAppIntegration:             oauth2.NewMockCustomAppIntegrationInterface(t),
 			EncryptionKeys:                   provisioning.NewMockEncryptionKeysInterface(t),
 			FederationPolicy:                 oauth2.NewMockAccountFederationPolicyInterface(t),
-			Groups:                           iam.NewMockAccountGroupsInterface(t),
+			GroupsV2:                         iam.NewMockAccountGroupsV2Interface(t),
 			IamV2:                            iamv2.NewMockAccountIamV2Interface(t),
 			IpAccessLists:                    settings.NewMockAccountIpAccessListsInterface(t),
 			LogDelivery:                      billing.NewMockLogDeliveryInterface(t),
@@ -54,13 +54,13 @@ func NewMockAccountClient(t interface {
 			PublishedAppIntegration:          oauth2.NewMockPublishedAppIntegrationInterface(t),
 			ServicePrincipalFederationPolicy: oauth2.NewMockServicePrincipalFederationPolicyInterface(t),
 			ServicePrincipalSecrets:          oauth2.NewMockServicePrincipalSecretsInterface(t),
-			ServicePrincipals:                iam.NewMockAccountServicePrincipalsInterface(t),
+			ServicePrincipalsV2:              iam.NewMockAccountServicePrincipalsV2Interface(t),
 			Settings:                         settings.NewMockAccountSettingsInterface(t),
 			SettingsV2:                       settingsv2.NewMockAccountSettingsV2Interface(t),
 			Storage:                          provisioning.NewMockStorageInterface(t),
 			StorageCredentials:               catalog.NewMockAccountStorageCredentialsInterface(t),
 			UsageDashboards:                  billing.NewMockUsageDashboardsInterface(t),
-			Users:                            iam.NewMockAccountUsersInterface(t),
+			UsersV2:                          iam.NewMockAccountUsersV2Interface(t),
 			VpcEndpoints:                     provisioning.NewMockVpcEndpointsInterface(t),
 			WorkspaceAssignment:              iam.NewMockWorkspaceAssignmentInterface(t),
 			WorkspaceNetworkConfiguration:    settings.NewMockWorkspaceNetworkConfigurationInterface(t),
@@ -214,10 +214,10 @@ func (m *MockAccountClient) GetMockAccountFederationPolicyAPI() *oauth2.MockAcco
 	return api
 }
 
-func (m *MockAccountClient) GetMockAccountGroupsAPI() *iam.MockAccountGroupsInterface {
-	api, ok := m.AccountClient.Groups.(*iam.MockAccountGroupsInterface)
+func (m *MockAccountClient) GetMockAccountGroupsV2API() *iam.MockAccountGroupsV2Interface {
+	api, ok := m.AccountClient.GroupsV2.(*iam.MockAccountGroupsV2Interface)
 	if !ok {
-		panic(fmt.Sprintf("expected Groups to be *iam.MockAccountGroupsInterface, actual was %T", m.AccountClient.Groups))
+		panic(fmt.Sprintf("expected GroupsV2 to be *iam.MockAccountGroupsV2Interface, actual was %T", m.AccountClient.GroupsV2))
 	}
 	return api
 }
@@ -326,10 +326,10 @@ func (m *MockAccountClient) GetMockServicePrincipalSecretsAPI() *oauth2.MockServ
 	return api
 }
 
-func (m *MockAccountClient) GetMockAccountServicePrincipalsAPI() *iam.MockAccountServicePrincipalsInterface {
-	api, ok := m.AccountClient.ServicePrincipals.(*iam.MockAccountServicePrincipalsInterface)
+func (m *MockAccountClient) GetMockAccountServicePrincipalsV2API() *iam.MockAccountServicePrincipalsV2Interface {
+	api, ok := m.AccountClient.ServicePrincipalsV2.(*iam.MockAccountServicePrincipalsV2Interface)
 	if !ok {
-		panic(fmt.Sprintf("expected ServicePrincipals to be *iam.MockAccountServicePrincipalsInterface, actual was %T", m.AccountClient.ServicePrincipals))
+		panic(fmt.Sprintf("expected ServicePrincipalsV2 to be *iam.MockAccountServicePrincipalsV2Interface, actual was %T", m.AccountClient.ServicePrincipalsV2))
 	}
 	return api
 }
@@ -374,10 +374,10 @@ func (m *MockAccountClient) GetMockUsageDashboardsAPI() *billing.MockUsageDashbo
 	return api
 }
 
-func (m *MockAccountClient) GetMockAccountUsersAPI() *iam.MockAccountUsersInterface {
-	api, ok := m.AccountClient.Users.(*iam.MockAccountUsersInterface)
+func (m *MockAccountClient) GetMockAccountUsersV2API() *iam.MockAccountUsersV2Interface {
+	api, ok := m.AccountClient.UsersV2.(*iam.MockAccountUsersV2Interface)
 	if !ok {
-		panic(fmt.Sprintf("expected Users to be *iam.MockAccountUsersInterface, actual was %T", m.AccountClient.Users))
+		panic(fmt.Sprintf("expected UsersV2 to be *iam.MockAccountUsersV2Interface, actual was %T", m.AccountClient.UsersV2))
 	}
 	return api
 }

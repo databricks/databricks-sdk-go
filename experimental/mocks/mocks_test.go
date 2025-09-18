@@ -35,12 +35,12 @@ func TestMockWorkspaceClient(t *testing.T) {
 func TestAccountWorkspaceClient(t *testing.T) {
 	ctx := context.Background()
 	w := NewMockAccountClient(t)
-	mockUsers := w.GetMockAccountUsersAPI()
+	mockUsers := w.GetMockAccountUsersV2API()
 	mockUsers.EXPECT().ListAll(
 		ctx,
 		mock.AnythingOfType("iam.ListAccountUsersRequest"),
 	).Return(
-		[]iam.User{
+		[]iam.AccountUser{
 			{DisplayName: "test-user-1"},
 			{DisplayName: "test-user-2"},
 		}, nil)
@@ -57,6 +57,6 @@ func listClusters(ctx context.Context, w *databricks.WorkspaceClient) ([]compute
 	return w.Clusters.ListAll(ctx, compute.ListClustersRequest{})
 }
 
-func listAccountUsers(ctx context.Context, a *databricks.AccountClient) ([]iam.User, error) {
-	return a.Users.ListAll(ctx, iam.ListAccountUsersRequest{})
+func listAccountUsers(ctx context.Context, a *databricks.AccountClient) ([]iam.AccountUser, error) {
+	return a.UsersV2.ListAll(ctx, iam.ListAccountUsersRequest{})
 }

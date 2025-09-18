@@ -4,8 +4,10 @@ package httpcallv2
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"golang.org/x/exp/slices"
@@ -41,24 +43,36 @@ func (a *httpCallV2Impl) UpdateResource(ctx context.Context, request UpdateResou
 	var resource Resource
 	path := fmt.Sprintf("/api/2.0/http-call/%v/%v/%v", request.NestedPathParamString, request.NestedPathParamInt, request.NestedPathParamBool)
 	queryParams := make(map[string]any)
-	if request.FieldMask != "" || slices.Contains(request.ForceSendFields, "FieldMask") {
-		queryParams["field_mask"] = request.FieldMask
+
+	if request.FieldMask != nil || slices.Contains(request.ForceSendFields, "FieldMask") {
+		fieldMaskJson, fieldMaskMarshallError := json.Marshal(request.FieldMask)
+		if fieldMaskMarshallError != nil {
+			return nil, fieldMaskMarshallError
+		}
+
+		queryParams["field_mask"] = strings.Trim(string(fieldMaskJson), `"`)
 	}
+
 	if request.OptionalComplexQueryParam != nil || slices.Contains(request.ForceSendFields, "OptionalComplexQueryParam") {
 		queryParams["optional_complex_query_param"] = request.OptionalComplexQueryParam
 	}
+
 	if request.QueryParamBool != false || slices.Contains(request.ForceSendFields, "QueryParamBool") {
 		queryParams["query_param_bool"] = request.QueryParamBool
 	}
+
 	if request.QueryParamInt != 0 || slices.Contains(request.ForceSendFields, "QueryParamInt") {
 		queryParams["query_param_int"] = request.QueryParamInt
 	}
+
 	if request.QueryParamString != "" || slices.Contains(request.ForceSendFields, "QueryParamString") {
 		queryParams["query_param_string"] = request.QueryParamString
 	}
+
 	if request.RepeatedComplexQueryParam != nil || slices.Contains(request.ForceSendFields, "RepeatedComplexQueryParam") {
 		queryParams["repeated_complex_query_param"] = request.RepeatedComplexQueryParam
 	}
+
 	if request.RepeatedQueryParam != nil || slices.Contains(request.ForceSendFields, "RepeatedQueryParam") {
 		queryParams["repeated_query_param"] = request.RepeatedQueryParam
 	}

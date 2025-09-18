@@ -109,6 +109,7 @@ func (a *budgetPolicyImpl) Update(ctx context.Context, request UpdateBudgetPolic
 	var budgetPolicy BudgetPolicy
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
+
 	if request.LimitConfig != nil {
 		queryParams["limit_config"] = request.LimitConfig
 	}

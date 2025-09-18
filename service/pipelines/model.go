@@ -596,6 +596,10 @@ type IngestionPipelineDefinition struct {
 	// pipeline to communicate with the source database. This is used with
 	// connectors to databases like SQL Server.
 	IngestionGatewayId string `json:"ingestion_gateway_id,omitempty"`
+	// Netsuite only configuration. When the field is set for a netsuite
+	// connector, the jar stored in the field will be validated and added to the
+	// classpath of pipeline's cluster.
+	NetsuiteJarPath string `json:"netsuite_jar_path,omitempty"`
 	// Required. Settings specifying tables to replicate and the destination for
 	// the replicated tables.
 	Objects []IngestionConfig `json:"objects,omitempty"`
@@ -656,6 +660,54 @@ func (s *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig
 }
 
 func (s IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type IngestionPipelineDefinitionWorkdayReportParameters struct {
+	// (Optional) Marks the report as incremental. This field is deprecated and
+	// should not be used. Use `parameters` instead. The incremental behavior is
+	// now controlled by the `parameters` field.
+	Incremental bool `json:"incremental,omitempty"`
+	// Parameters for the Workday report. Each key represents the parameter name
+	// (e.g., "start_date", "end_date"), and the corresponding value is a
+	// SQL-like expression used to compute the parameter value at runtime.
+	// Example: { "start_date": "{ coalesce(current_offset(),
+	// date(\"2025-02-01\")) }", "end_date": "{ current_date() - INTERVAL 1 DAY
+	// }" }
+	Parameters map[string]string `json:"parameters,omitempty"`
+	// (Optional) Additional custom parameters for Workday Report This field is
+	// deprecated and should not be used. Use `parameters` instead.
+	ReportParameters []IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue `json:"report_parameters,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *IngestionPipelineDefinitionWorkdayReportParameters) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IngestionPipelineDefinitionWorkdayReportParameters) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue struct {
+	// Key for the report parameter, can be a column name or other metadata
+	Key string `json:"key,omitempty"`
+	// Value for the report parameter. Possible values it can take are these sql
+	// functions: 1. coalesce(current_offset(), date("YYYY-MM-DD")) -> if
+	// current_offset() is null, then the passed date, else current_offset() 2.
+	// current_date() 3. date_sub(current_date(), x) -> subtract x (some
+	// non-negative integer) days from current date
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2013,6 +2065,8 @@ type TableSpecificConfig struct {
 	// data. Delta Live Tables uses this sequencing to handle change events that
 	// arrive out of order.
 	SequenceBy []string `json:"sequence_by,omitempty"`
+	// (Optional) Additional custom parameters for Workday Report
+	WorkdayReportParameters *IngestionPipelineDefinitionWorkdayReportParameters `json:"workday_report_parameters,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

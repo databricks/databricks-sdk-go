@@ -403,6 +403,114 @@ func (_c *MockSharesInterface_ListAll_Call) RunAndReturn(run func(context.Contex
 	return _c
 }
 
+// ListShares provides a mock function with given fields: ctx, request
+func (_m *MockSharesInterface) ListShares(ctx context.Context, request sharing.SharesListRequest) listing.Iterator[sharing.ShareInfo] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListShares")
+	}
+
+	var r0 listing.Iterator[sharing.ShareInfo]
+	if rf, ok := ret.Get(0).(func(context.Context, sharing.SharesListRequest) listing.Iterator[sharing.ShareInfo]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[sharing.ShareInfo])
+		}
+	}
+
+	return r0
+}
+
+// MockSharesInterface_ListShares_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListShares'
+type MockSharesInterface_ListShares_Call struct {
+	*mock.Call
+}
+
+// ListShares is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sharing.SharesListRequest
+func (_e *MockSharesInterface_Expecter) ListShares(ctx interface{}, request interface{}) *MockSharesInterface_ListShares_Call {
+	return &MockSharesInterface_ListShares_Call{Call: _e.mock.On("ListShares", ctx, request)}
+}
+
+func (_c *MockSharesInterface_ListShares_Call) Run(run func(ctx context.Context, request sharing.SharesListRequest)) *MockSharesInterface_ListShares_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(sharing.SharesListRequest))
+	})
+	return _c
+}
+
+func (_c *MockSharesInterface_ListShares_Call) Return(_a0 listing.Iterator[sharing.ShareInfo]) *MockSharesInterface_ListShares_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSharesInterface_ListShares_Call) RunAndReturn(run func(context.Context, sharing.SharesListRequest) listing.Iterator[sharing.ShareInfo]) *MockSharesInterface_ListShares_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListSharesAll provides a mock function with given fields: ctx, request
+func (_m *MockSharesInterface) ListSharesAll(ctx context.Context, request sharing.SharesListRequest) ([]sharing.ShareInfo, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSharesAll")
+	}
+
+	var r0 []sharing.ShareInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, sharing.SharesListRequest) ([]sharing.ShareInfo, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, sharing.SharesListRequest) []sharing.ShareInfo); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]sharing.ShareInfo)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, sharing.SharesListRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockSharesInterface_ListSharesAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSharesAll'
+type MockSharesInterface_ListSharesAll_Call struct {
+	*mock.Call
+}
+
+// ListSharesAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sharing.SharesListRequest
+func (_e *MockSharesInterface_Expecter) ListSharesAll(ctx interface{}, request interface{}) *MockSharesInterface_ListSharesAll_Call {
+	return &MockSharesInterface_ListSharesAll_Call{Call: _e.mock.On("ListSharesAll", ctx, request)}
+}
+
+func (_c *MockSharesInterface_ListSharesAll_Call) Run(run func(ctx context.Context, request sharing.SharesListRequest)) *MockSharesInterface_ListSharesAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(sharing.SharesListRequest))
+	})
+	return _c
+}
+
+func (_c *MockSharesInterface_ListSharesAll_Call) Return(_a0 []sharing.ShareInfo, _a1 error) *MockSharesInterface_ListSharesAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockSharesInterface_ListSharesAll_Call) RunAndReturn(run func(context.Context, sharing.SharesListRequest) ([]sharing.ShareInfo, error)) *MockSharesInterface_ListSharesAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SharePermissions provides a mock function with given fields: ctx, request
 func (_m *MockSharesInterface) SharePermissions(ctx context.Context, request sharing.SharePermissionsRequest) (*sharing.GetSharePermissionsResponse, error) {
 	ret := _m.Called(ctx, request)

@@ -666,6 +666,7 @@ func (a *entityTagAssignmentsImpl) Update(ctx context.Context, request UpdateEnt
 	var entityTagAssignment EntityTagAssignment
 	path := fmt.Sprintf("/api/2.1/unity-catalog/entity-tag-assignments/%v/%v/tags/%v", request.EntityType, request.EntityName, request.TagKey)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}
@@ -748,6 +749,7 @@ func (a *externalLineageImpl) UpdateExternalLineageRelationship(ctx context.Cont
 	var externalLineageRelationship ExternalLineageRelationship
 	path := "/api/2.0/lineage-tracking/external-lineage"
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}
@@ -941,6 +943,7 @@ func (a *externalMetadataImpl) UpdateExternalMetadata(ctx context.Context, reque
 	var externalMetadata ExternalMetadata
 	path := fmt.Sprintf("/api/2.0/lineage-tracking/external-metadata/%v", request.Name)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}
@@ -1453,6 +1456,7 @@ func (a *policiesImpl) UpdatePolicy(ctx context.Context, request UpdatePolicyReq
 	var policyInfo PolicyInfo
 	path := fmt.Sprintf("/api/2.1/unity-catalog/policies/%v/%v/%v", request.OnSecurableType, request.OnSecurableFullname, request.Name)
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
 		queryParams["update_mask"] = request.UpdateMask
 	}
@@ -1777,6 +1781,7 @@ func (a *rfaImpl) UpdateAccessRequestDestinations(ctx context.Context, request U
 	var accessRequestDestinations AccessRequestDestinations
 	path := "/api/3.0/rfa/destinations"
 	queryParams := make(map[string]any)
+
 	if request.UpdateMask != "" {
 		queryParams["update_mask"] = request.UpdateMask
 	}
