@@ -35,8 +35,9 @@ type azureDevOpsIDTokenSource struct {
 	systemHostType                    string
 }
 
-// IDToken returns a JWT Token for the specified audience. It will return
-// an error if not running in Azure DevOps Pipelines.
+// IDToken returns a JWT Token for the specified audience. For Azure DevOps OIDC,
+// the audience parameter is ignored as Azure DevOps tokens always use "api://AzureADTokenExchange".
+// It will return an error if not running in Azure DevOps Pipelines.
 func (a *azureDevOpsIDTokenSource) IDToken(ctx context.Context, audience string) (*IDToken, error) {
 	if a.systemAccessToken == "" {
 		logger.Debugf(ctx, "Missing SYSTEM_ACCESSTOKEN, likely not calling from Azure DevOps Pipeline")
@@ -73,13 +74,6 @@ func (a *azureDevOpsIDTokenSource) IDToken(ctx context.Context, audience string)
 		a.systemPlanId,
 		a.systemJobId)
 
-	// Create request body with audience - Azure DevOps expects {"audience":"value"} format
-	requestBody := struct {
-		Audience string `json:"audience"`
-	}{
-		Audience: audience,
-	}
-
 	// Azure DevOps returns {"oidcToken":"***"} format, not {"value":"***"}
 	var azureResp struct {
 		OidcToken string `json:"oidcToken"`
@@ -87,7 +81,6 @@ func (a *azureDevOpsIDTokenSource) IDToken(ctx context.Context, audience string)
 
 	err := a.refreshClient.Do(ctx, "POST", requestUrl,
 		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", a.systemAccessToken)),
-		httpclient.WithRequestData(requestBody),
 		httpclient.WithResponseUnmarshal(&azureResp),
 	)
 	if err != nil {

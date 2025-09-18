@@ -5,6 +5,8 @@
 ### New Features and Improvements
 * Increased rate limiter burst setting from 1 to rate\_limit value.
 
+* Added native support for authentication through Azure DevOps OIDC
+
 ### Bug Fixes
 
 ### Documentation

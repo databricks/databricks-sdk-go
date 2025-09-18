@@ -174,10 +174,11 @@ Depending on the Databricks authentication method, the SDK uses the following in
 
 ### Databricks native authentication
 
-By default, the Databricks SDK for Go initially tries Databricks token authentication (`AuthType: "pat"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries Workload Identity Federation (WIF) based authentication(`AuthType: "github-oidc"` in `*databricks.Config`). Currently, only GitHub provided JWT Tokens is supported.
+By default, the Databricks SDK for Go initially tries Databricks token authentication (`AuthType: "pat"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries Workload Identity Federation (WIF) based authentication with support for GitHub Actions (`AuthType: "github-oidc"`) and Azure DevOps Pipelines (`AuthType: "azure-devops-oidc"`).
 
 - For Databricks token authentication, you must provide `Host` and `Token`; or their environment variable or `.databrickscfg` file field equivalents.
 - For Databricks OIDC authentication, you must provide the `Host`, `ClientId` and `TokenAudience` _(optional)_ either directly, through the corresponding environment variables, or in your `.databrickscfg` configuration file. More information can be found in [Databricks Documentation](https://docs.databricks.com/aws/en/dev-tools/auth/oauth-federation#workload-identity-federation)
+- For Azure DevOps OIDC authentication, the `TokenAudience` is irrelevant as the audience is always set to `api://AzureADTokenExchange`. Also, the `System.AccessToken` pipeline variable required for OIDC request must be exposed as the `SYSTEM_ACCESSTOKEN` environment variable, following [Pipeline variables](https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemaccesstoken)
 
 | `*databricks.Config` argument | Description                                                                                                                                                                                                                                                              | Environment variable / `.databrickscfg` file field |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------- |
