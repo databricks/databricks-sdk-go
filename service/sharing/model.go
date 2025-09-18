@@ -1858,6 +1858,8 @@ const TableInternalAttributesSharedTableTypeForeignTable TableInternalAttributes
 
 const TableInternalAttributesSharedTableTypeMaterializedView TableInternalAttributesSharedTableType = `MATERIALIZED_VIEW`
 
+const TableInternalAttributesSharedTableTypeMetricView TableInternalAttributesSharedTableType = `METRIC_VIEW`
+
 const TableInternalAttributesSharedTableTypeStreamingTable TableInternalAttributesSharedTableType = `STREAMING_TABLE`
 
 const TableInternalAttributesSharedTableTypeView TableInternalAttributesSharedTableType = `VIEW`
@@ -1870,11 +1872,11 @@ func (f *TableInternalAttributesSharedTableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TableInternalAttributesSharedTableType) Set(v string) error {
 	switch v {
-	case `DELTA_ICEBERG_TABLE`, `DIRECTORY_BASED_TABLE`, `FILE_BASED_TABLE`, `FOREIGN_ICEBERG_TABLE`, `FOREIGN_TABLE`, `MATERIALIZED_VIEW`, `STREAMING_TABLE`, `VIEW`:
+	case `DELTA_ICEBERG_TABLE`, `DIRECTORY_BASED_TABLE`, `FILE_BASED_TABLE`, `FOREIGN_ICEBERG_TABLE`, `FOREIGN_TABLE`, `MATERIALIZED_VIEW`, `METRIC_VIEW`, `STREAMING_TABLE`, `VIEW`:
 		*f = TableInternalAttributesSharedTableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DELTA_ICEBERG_TABLE", "DIRECTORY_BASED_TABLE", "FILE_BASED_TABLE", "FOREIGN_ICEBERG_TABLE", "FOREIGN_TABLE", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DELTA_ICEBERG_TABLE", "DIRECTORY_BASED_TABLE", "FILE_BASED_TABLE", "FOREIGN_ICEBERG_TABLE", "FOREIGN_TABLE", "MATERIALIZED_VIEW", "METRIC_VIEW", "STREAMING_TABLE", "VIEW"`, v)
 	}
 }
 
@@ -1889,6 +1891,7 @@ func (f *TableInternalAttributesSharedTableType) Values() []TableInternalAttribu
 		TableInternalAttributesSharedTableTypeForeignIcebergTable,
 		TableInternalAttributesSharedTableTypeForeignTable,
 		TableInternalAttributesSharedTableTypeMaterializedView,
+		TableInternalAttributesSharedTableTypeMetricView,
 		TableInternalAttributesSharedTableTypeStreamingTable,
 		TableInternalAttributesSharedTableTypeView,
 	}

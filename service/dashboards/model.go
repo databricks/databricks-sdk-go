@@ -210,10 +210,10 @@ func (s DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
 type GenieAttachment struct {
 	// Attachment ID
 	AttachmentId string `json:"attachment_id,omitempty"`
-	// Follow-up questions suggested by Genie
-	FollowupQuestions *GenieFollowupQuestionsAttachment `json:"followup_questions,omitempty"`
 	// Query Attachment if Genie responds with a SQL query
 	Query *GenieQueryAttachment `json:"query,omitempty"`
+	// Follow-up questions suggested by Genie
+	SuggestedQuestions *GenieSuggestedQuestionsAttachment `json:"suggested_questions,omitempty"`
 	// Text Attachment if Genie responds with text
 	Text *TextAttachment `json:"text,omitempty"`
 
@@ -310,20 +310,8 @@ type GenieExecuteMessageQueryRequest struct {
 
 // Feedback containing rating and optional comment
 type GenieFeedback struct {
-	// Optional feedback comment text
-	Comment string `json:"comment,omitempty"`
 	// The feedback rating
 	Rating GenieFeedbackRating `json:"rating,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *GenieFeedback) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GenieFeedback) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Feedback rating for Genie messages
@@ -365,12 +353,6 @@ func (f *GenieFeedbackRating) Values() []GenieFeedbackRating {
 // Type always returns GenieFeedbackRating to satisfy [pflag.Value] interface
 func (f *GenieFeedbackRating) Type() string {
 	return "GenieFeedbackRating"
-}
-
-// Follow-up questions suggested by Genie
-type GenieFollowupQuestionsAttachment struct {
-	// The suggested follow-up questions
-	Questions []string `json:"questions,omitempty"`
 }
 
 type GenieGetConversationMessageRequest struct {
@@ -625,8 +607,6 @@ func (s GenieResultMetadata) MarshalJSON() ([]byte, error) {
 }
 
 type GenieSendMessageFeedbackRequest struct {
-	// Optional text feedback that will be stored as a comment.
-	Comment string `json:"comment,omitempty"`
 	// The ID associated with the conversation.
 	ConversationId string `json:"-" url:"-"`
 	// The ID associated with the message to provide feedback for.
@@ -635,16 +615,6 @@ type GenieSendMessageFeedbackRequest struct {
 	Rating GenieFeedbackRating `json:"rating"`
 	// The ID associated with the Genie space where the message is located.
 	SpaceId string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *GenieSendMessageFeedbackRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GenieSendMessageFeedbackRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type GenieSpace struct {
@@ -654,6 +624,8 @@ type GenieSpace struct {
 	SpaceId string `json:"space_id"`
 	// Title of the Genie Space
 	Title string `json:"title"`
+	// Warehouse associated with the Genie Space
+	WarehouseId string `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -682,6 +654,12 @@ type GenieStartConversationResponse struct {
 	Message *GenieMessage `json:"message,omitempty"`
 	// Message ID
 	MessageId string `json:"message_id"`
+}
+
+// Follow-up questions suggested by Genie
+type GenieSuggestedQuestionsAttachment struct {
+	// The suggested follow-up questions
+	Questions []string `json:"questions,omitempty"`
 }
 
 type GenieTrashSpaceRequest struct {

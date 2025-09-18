@@ -155,7 +155,7 @@ type AccountUsersV2Service interface {
 	Get(ctx context.Context, request GetAccountUserRequest) (*AccountUser, error)
 
 	// Gets details for all the users associated with a Databricks account.
-	List(ctx context.Context, request ListAccountUsersRequest) (*ListAccountGroupsResponse, error)
+	List(ctx context.Context, request ListAccountUsersRequest) (*ListAccountUsersResponse, error)
 
 	// Partially updates a user resource by applying the supplied operations on
 	// specific user attributes.

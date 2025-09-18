@@ -882,6 +882,28 @@ func (s ListAccountUsersRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListAccountUsersResponse struct {
+	// Total results returned in the response.
+	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
+	// User objects returned in the response.
+	Resources []AccountUser `json:"Resources,omitempty"`
+	// Starting index of all the results that matched the request filters. First
+	// item is number 1.
+	StartIndex int64 `json:"startIndex,omitempty"`
+	// Total results that match the request filters.
+	TotalResults int64 `json:"totalResults,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListAccountUsersResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAccountUsersResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`

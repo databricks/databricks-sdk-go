@@ -337,20 +337,20 @@ func (a *accountUsersV2Impl) Get(ctx context.Context, request GetAccountUserRequ
 }
 
 // Gets details for all the users associated with a Databricks account.
-func (a *accountUsersV2Impl) List(ctx context.Context, request ListAccountUsersRequest) listing.Iterator[AccountGroup] {
+func (a *accountUsersV2Impl) List(ctx context.Context, request ListAccountUsersRequest) listing.Iterator[AccountUser] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
 		request.Count = 10000
 	}
-	getNextPage := func(ctx context.Context, req ListAccountUsersRequest) (*ListAccountGroupsResponse, error) {
+	getNextPage := func(ctx context.Context, req ListAccountUsersRequest) (*ListAccountUsersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
 	}
-	getItems := func(resp *ListAccountGroupsResponse) []AccountGroup {
+	getItems := func(resp *ListAccountUsersResponse) []AccountUser {
 		return resp.Resources
 	}
-	getNextReq := func(resp *ListAccountGroupsResponse) *ListAccountUsersRequest {
+	getNextReq := func(resp *ListAccountUsersResponse) *ListAccountUsersRequest {
 		if len(getItems(resp)) == 0 {
 			return nil
 		}
@@ -366,20 +366,20 @@ func (a *accountUsersV2Impl) List(ctx context.Context, request ListAccountUsersR
 }
 
 // Gets details for all the users associated with a Databricks account.
-func (a *accountUsersV2Impl) ListAll(ctx context.Context, request ListAccountUsersRequest) ([]AccountGroup, error) {
+func (a *accountUsersV2Impl) ListAll(ctx context.Context, request ListAccountUsersRequest) ([]AccountUser, error) {
 	iterator := a.List(ctx, request)
-	return listing.ToSliceN[AccountGroup, int64](ctx, iterator, request.Count)
+	return listing.ToSliceN[AccountUser, int64](ctx, iterator, request.Count)
 
 }
 
-func (a *accountUsersV2Impl) internalList(ctx context.Context, request ListAccountUsersRequest) (*ListAccountGroupsResponse, error) {
-	var listAccountGroupsResponse ListAccountGroupsResponse
+func (a *accountUsersV2Impl) internalList(ctx context.Context, request ListAccountUsersRequest) (*ListAccountUsersResponse, error) {
+	var listAccountUsersResponse ListAccountUsersResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAccountGroupsResponse)
-	return &listAccountGroupsResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAccountUsersResponse)
+	return &listAccountUsersResponse, err
 }
 
 func (a *accountUsersV2Impl) Patch(ctx context.Context, request PatchAccountUserRequest) error {

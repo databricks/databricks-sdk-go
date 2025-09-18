@@ -190,19 +190,19 @@ func (_c *MockAccountUsersV2Interface_Get_Call) RunAndReturn(run func(context.Co
 }
 
 // List provides a mock function with given fields: ctx, request
-func (_m *MockAccountUsersV2Interface) List(ctx context.Context, request iam.ListAccountUsersRequest) listing.Iterator[iam.AccountGroup] {
+func (_m *MockAccountUsersV2Interface) List(ctx context.Context, request iam.ListAccountUsersRequest) listing.Iterator[iam.AccountUser] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 listing.Iterator[iam.AccountGroup]
-	if rf, ok := ret.Get(0).(func(context.Context, iam.ListAccountUsersRequest) listing.Iterator[iam.AccountGroup]); ok {
+	var r0 listing.Iterator[iam.AccountUser]
+	if rf, ok := ret.Get(0).(func(context.Context, iam.ListAccountUsersRequest) listing.Iterator[iam.AccountUser]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(listing.Iterator[iam.AccountGroup])
+			r0 = ret.Get(0).(listing.Iterator[iam.AccountUser])
 		}
 	}
 
@@ -228,34 +228,34 @@ func (_c *MockAccountUsersV2Interface_List_Call) Run(run func(ctx context.Contex
 	return _c
 }
 
-func (_c *MockAccountUsersV2Interface_List_Call) Return(_a0 listing.Iterator[iam.AccountGroup]) *MockAccountUsersV2Interface_List_Call {
+func (_c *MockAccountUsersV2Interface_List_Call) Return(_a0 listing.Iterator[iam.AccountUser]) *MockAccountUsersV2Interface_List_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockAccountUsersV2Interface_List_Call) RunAndReturn(run func(context.Context, iam.ListAccountUsersRequest) listing.Iterator[iam.AccountGroup]) *MockAccountUsersV2Interface_List_Call {
+func (_c *MockAccountUsersV2Interface_List_Call) RunAndReturn(run func(context.Context, iam.ListAccountUsersRequest) listing.Iterator[iam.AccountUser]) *MockAccountUsersV2Interface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListAll provides a mock function with given fields: ctx, request
-func (_m *MockAccountUsersV2Interface) ListAll(ctx context.Context, request iam.ListAccountUsersRequest) ([]iam.AccountGroup, error) {
+func (_m *MockAccountUsersV2Interface) ListAll(ctx context.Context, request iam.ListAccountUsersRequest) ([]iam.AccountUser, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAll")
 	}
 
-	var r0 []iam.AccountGroup
+	var r0 []iam.AccountUser
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, iam.ListAccountUsersRequest) ([]iam.AccountGroup, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.ListAccountUsersRequest) ([]iam.AccountUser, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, iam.ListAccountUsersRequest) []iam.AccountGroup); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.ListAccountUsersRequest) []iam.AccountUser); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]iam.AccountGroup)
+			r0 = ret.Get(0).([]iam.AccountUser)
 		}
 	}
 
@@ -287,12 +287,12 @@ func (_c *MockAccountUsersV2Interface_ListAll_Call) Run(run func(ctx context.Con
 	return _c
 }
 
-func (_c *MockAccountUsersV2Interface_ListAll_Call) Return(_a0 []iam.AccountGroup, _a1 error) *MockAccountUsersV2Interface_ListAll_Call {
+func (_c *MockAccountUsersV2Interface_ListAll_Call) Return(_a0 []iam.AccountUser, _a1 error) *MockAccountUsersV2Interface_ListAll_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAccountUsersV2Interface_ListAll_Call) RunAndReturn(run func(context.Context, iam.ListAccountUsersRequest) ([]iam.AccountGroup, error)) *MockAccountUsersV2Interface_ListAll_Call {
+func (_c *MockAccountUsersV2Interface_ListAll_Call) RunAndReturn(run func(context.Context, iam.ListAccountUsersRequest) ([]iam.AccountUser, error)) *MockAccountUsersV2Interface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

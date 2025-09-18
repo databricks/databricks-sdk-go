@@ -25,3 +25,12 @@
 * Added `InternalCatalogMissingUcPathException` enum value for [dashboards.MessageErrorType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#MessageErrorType).
 * Added `ListShares` method for [w.Shares](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#SharesAPI) workspace-level service.
 * [Breaking] Removed `List` method for [w.Shares](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#SharesAPI) workspace-level service.
+* Added `SuggestedQuestions` field for [dashboards.GenieAttachment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAttachment).
+* Added `WarehouseId` field for [dashboards.GenieSpace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieSpace).
+* Added `Palantir` enum value for [catalog.ConnectionType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ConnectionType).
+* Added `TableMetricViewDeltasharing` and `TableForeignPalantir` enum values for [catalog.SecurableKind](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SecurableKind).
+* Added `NoActivatedK8sTestingTag` enum value for [compute.TerminationReasonCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#TerminationReasonCode).
+* Added `MetricView` enum value for [sharing.TableInternalAttributesSharedTableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#TableInternalAttributesSharedTableType).
+* [Breaking] Removed `FollowupQuestions` field for [dashboards.GenieAttachment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAttachment).
+* [Breaking] Removed `Comment` field for [dashboards.GenieFeedback](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieFeedback).
+* [Breaking] Removed `Comment` field for [dashboards.GenieSendMessageFeedbackRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieSendMessageFeedbackRequest).

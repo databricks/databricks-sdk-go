@@ -1182,9 +1182,7 @@ func (s EnforcePolicyComplianceResponse) MarshalJSON() ([]byte, error) {
 type ExportRunOutput struct {
 	// The exported content in HTML format (one for every view item). To extract
 	// the HTML notebook from the JSON response, download and run this [Python
-	// script].
-	//
-	// [Python script]: https://docs.databricks.com/en/_static/examples/extract.py
+	// script](/_static/examples/extract.py).
 	Views []ViewItem `json:"views,omitempty"`
 }
 
@@ -4192,7 +4190,7 @@ type RunTask struct {
 	// The task runs a [clean rooms] notebook when the
 	// `clean_rooms_notebook_task` field is present.
 	//
-	// [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html
+	// [clean rooms]: https://docs.databricks.com/clean-rooms/index.html
 	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
 	// The time in milliseconds it took to terminate the cluster and clean up
 	// any associated artifacts. The duration of a task run is the sum of the
@@ -4330,9 +4328,7 @@ type RunTask struct {
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
 	// (Legacy) The task runs the spark-submit script when the spark_submit_task
 	// field is present. Databricks recommends using the spark_jar_task instead;
-	// see [Spark Submit task for jobs].
-	//
-	// [Spark Submit task for jobs]: https://docs.databricks.com/jobs/spark-submit.html
+	// see [Spark Submit task for jobs](/jobs/spark-submit).
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// The task runs a SQL query or file, or it refreshes a SQL alert or a
 	// legacy SQL dashboard when the `sql_task` field is present.
@@ -4384,9 +4380,8 @@ const RunTypeJobRun RunType = `JOB_RUN`
 // Submit run. A run created with :method:jobs/submit.
 const RunTypeSubmitRun RunType = `SUBMIT_RUN`
 
-// Workflow run. A run created with [dbutils.notebook.run].
-//
-// [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
+// Workflow run. A run created with
+// [dbutils.notebook.run](/dev-tools/databricks-utils.html#dbutils-workflow).
 const RunTypeWorkflowRun RunType = `WORKFLOW_RUN`
 
 // String representation for [fmt.Print]
@@ -4994,7 +4989,7 @@ type SubmitTask struct {
 	// The task runs a [clean rooms] notebook when the
 	// `clean_rooms_notebook_task` field is present.
 	//
-	// [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html
+	// [clean rooms]: https://docs.databricks.com/clean-rooms/index.html
 	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
 	// The task evaluates a condition that can be used to control the execution
 	// of other tasks when the `condition_task` field is present. The condition
@@ -5073,9 +5068,7 @@ type SubmitTask struct {
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
 	// (Legacy) The task runs the spark-submit script when the spark_submit_task
 	// field is present. Databricks recommends using the spark_jar_task instead;
-	// see [Spark Submit task for jobs].
-	//
-	// [Spark Submit task for jobs]: https://docs.databricks.com/jobs/spark-submit.html
+	// see [Spark Submit task for jobs](/jobs/spark-submit).
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// The task runs a SQL query or file, or it refreshes a SQL alert or a
 	// legacy SQL dashboard when the `sql_task` field is present.
@@ -5209,7 +5202,7 @@ type Task struct {
 	// The task runs a [clean rooms] notebook when the
 	// `clean_rooms_notebook_task` field is present.
 	//
-	// [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html
+	// [clean rooms]: https://docs.databricks.com/clean-rooms/index.html
 	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
 	// The task evaluates a condition that can be used to control the execution
 	// of other tasks when the `condition_task` field is present. The condition
@@ -5314,9 +5307,7 @@ type Task struct {
 	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
 	// (Legacy) The task runs the spark-submit script when the spark_submit_task
 	// field is present. Databricks recommends using the spark_jar_task instead;
-	// see [Spark Submit task for jobs].
-	//
-	// [Spark Submit task for jobs]: https://docs.databricks.com/jobs/spark-submit.html
+	// see [Spark Submit task for jobs](/jobs/spark-submit).
 	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
 	// The task runs a SQL query or file, or it refreshes a SQL alert or a
 	// legacy SQL dashboard when the `sql_task` field is present.
