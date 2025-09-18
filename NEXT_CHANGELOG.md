@@ -34,3 +34,4 @@
 * [Breaking] Removed `FollowupQuestions` field for [dashboards.GenieAttachment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAttachment).
 * [Breaking] Removed `Comment` field for [dashboards.GenieFeedback](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieFeedback).
 * [Breaking] Removed `Comment` field for [dashboards.GenieSendMessageFeedbackRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieSendMessageFeedbackRequest).
+* Added `ExternalUseSchema` enum value for [catalog.Privilege](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#Privilege).

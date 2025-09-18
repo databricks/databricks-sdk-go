@@ -57,6 +57,6 @@ func listClusters(ctx context.Context, w *databricks.WorkspaceClient) ([]compute
 	return w.Clusters.ListAll(ctx, compute.ListClustersRequest{})
 }
 
-func listAccountUsers(ctx context.Context, a *databricks.AccountClient) ([]iam.User, error) {
-	return a.Users.ListAll(ctx, iam.ListAccountUsersRequest{})
+func listAccountUsers(ctx context.Context, a *databricks.AccountClient) ([]iam.AccountUser, error) {
+	return a.UsersV2.ListAll(ctx, iam.ListAccountUsersRequest{})
 }

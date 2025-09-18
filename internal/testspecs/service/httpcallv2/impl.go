@@ -69,11 +69,11 @@ func (a *httpCallV2Impl) UpdateResource(ctx context.Context, request UpdateResou
 		queryParams["query_param_string"] = request.QueryParamString
 	}
 
-	if slices.Contains(request.ForceSendFields, "RepeatedComplexQueryParam") {
+	if request.RepeatedComplexQueryParam != nil || slices.Contains(request.ForceSendFields, "RepeatedComplexQueryParam") {
 		queryParams["repeated_complex_query_param"] = request.RepeatedComplexQueryParam
 	}
 
-	if slices.Contains(request.ForceSendFields, "RepeatedQueryParam") {
+	if request.RepeatedQueryParam != nil || slices.Contains(request.ForceSendFields, "RepeatedQueryParam") {
 		queryParams["repeated_query_param"] = request.RepeatedQueryParam
 	}
 	headers := make(map[string]string)
