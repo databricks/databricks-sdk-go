@@ -174,7 +174,7 @@ Depending on the Databricks authentication method, the SDK uses the following in
 
 ### Databricks native authentication
 
-By default, the Databricks SDK for Go initially tries Databricks token authentication (`AuthType: "pat"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries Workload Identity Federation (WIF) based authentication with support for GitHub Actions (`AuthType: "github-oidc"`) and Azure DevOps Pipelines (`AuthType: "azure-devops-oidc"`).
+By default, the Databricks SDK for Go initially tries Databricks token authentication (`AuthType: "pat"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries Workload Identity Federation (WIF). See [Supported WIF](https://docs.databricks.com/aws/en/dev-tools/auth/oauth-federation-provider) for the supported JWT token providers.
 
 - For Databricks token authentication, you must provide `Host` and `Token`; or their environment variable or `.databrickscfg` file field equivalents.
 - For Databricks OIDC authentication, you must provide the `Host`, `ClientId` and `TokenAudience` _(optional)_ either directly, through the corresponding environment variables, or in your `.databrickscfg` configuration file. More information can be found in [Databricks Documentation](https://docs.databricks.com/aws/en/dev-tools/auth/oauth-federation#workload-identity-federation)

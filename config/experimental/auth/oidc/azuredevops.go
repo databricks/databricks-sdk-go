@@ -12,67 +12,67 @@ import (
 // NewAzureDevOpsIDTokenSource returns a new IDTokenSource that retrieves an IDToken
 // from the Azure DevOps environment. This IDTokenSource is only valid when
 // running in Azure DevOps Pipelines with OIDC enabled.
-func NewAzureDevOpsIDTokenSource(client *httpclient.ApiClient, systemAccessToken, systemTeamFoundationCollectionUri, systemPlanId, systemJobId, systemTeamProjectId, systemHostType string) IDTokenSource {
+func NewAzureDevOpsIDTokenSource(client *httpclient.ApiClient, azureDevOpsAccessToken, azureDevOpsTeamFoundationCollectionUri, azureDevOpsPlanId, azureDevOpsJobId, azureDevOpsTeamProjectId, azureDevOpsHostType string) IDTokenSource {
 	return &azureDevOpsIDTokenSource{
-		systemAccessToken:                 systemAccessToken,
-		systemTeamFoundationCollectionUri: systemTeamFoundationCollectionUri,
-		refreshClient:                     client,
-		systemPlanId:                      systemPlanId,
-		systemJobId:                       systemJobId,
-		systemTeamProjectId:               systemTeamProjectId,
-		systemHostType:                    systemHostType,
+		azureDevOpsAccessToken:                 azureDevOpsAccessToken,
+		azureDevOpsTeamFoundationCollectionUri: azureDevOpsTeamFoundationCollectionUri,
+		refreshClient:                          client,
+		azureDevOpsPlanId:                      azureDevOpsPlanId,
+		azureDevOpsJobId:                       azureDevOpsJobId,
+		azureDevOpsTeamProjectId:               azureDevOpsTeamProjectId,
+		azureDevOpsHostType:                    azureDevOpsHostType,
 	}
 }
 
 // azureDevOpsIDTokenSource retrieves JWT Tokens from Azure DevOps Pipelines.
 type azureDevOpsIDTokenSource struct {
-	systemAccessToken                 string
-	systemTeamFoundationCollectionUri string
-	refreshClient                     *httpclient.ApiClient
-	systemPlanId                      string
-	systemJobId                       string
-	systemTeamProjectId               string
-	systemHostType                    string
+	azureDevOpsAccessToken                 string
+	azureDevOpsTeamFoundationCollectionUri string
+	refreshClient                          *httpclient.ApiClient
+	azureDevOpsPlanId                      string
+	azureDevOpsJobId                       string
+	azureDevOpsTeamProjectId               string
+	azureDevOpsHostType                    string
 }
 
 // IDToken returns a JWT Token for the specified audience. For Azure DevOps OIDC,
 // the audience parameter is ignored as Azure DevOps tokens always use "api://AzureADTokenExchange".
 // It will return an error if not running in Azure DevOps Pipelines.
 func (a *azureDevOpsIDTokenSource) IDToken(ctx context.Context, audience string) (*IDToken, error) {
-	if a.systemAccessToken == "" {
-		logger.Debugf(ctx, "Missing SYSTEM_ACCESSTOKEN, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing SYSTEM_ACCESSTOKEN")
+	if a.azureDevOpsAccessToken == "" {
+		logger.Debugf(ctx, "Missing AZUREDEVOPS_ACCESSTOKEN, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing AZUREDEVOPS_ACCESSTOKEN")
 	}
-	if a.systemTeamFoundationCollectionUri == "" {
-		logger.Debugf(ctx, "Missing SYSTEM_TEAMFOUNDATIONCOLLECTIONURI, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing SYSTEM_TEAMFOUNDATIONCOLLECTIONURI")
+	if a.azureDevOpsTeamFoundationCollectionUri == "" {
+		logger.Debugf(ctx, "Missing AZUREDEVOPS_TEAMFOUNDATIONCOLLECTIONURI, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing AZUREDEVOPS_TEAMFOUNDATIONCOLLECTIONURI")
 	}
-	if a.systemPlanId == "" {
-		logger.Debugf(ctx, "Missing SYSTEM_PLANID, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing SYSTEM_PLANID")
+	if a.azureDevOpsPlanId == "" {
+		logger.Debugf(ctx, "Missing AZUREDEVOPS_PLANID, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing AZUREDEVOPS_PLANID")
 	}
-	if a.systemJobId == "" {
-		logger.Debugf(ctx, "Missing SYSTEM_JOBID, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing SYSTEM_JOBID")
+	if a.azureDevOpsJobId == "" {
+		logger.Debugf(ctx, "Missing AZUREDEVOPS_JOBID, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing AZUREDEVOPS_JOBID")
 	}
-	if a.systemTeamProjectId == "" {
-		logger.Debugf(ctx, "Missing SYSTEM_TEAMPROJECTID, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing SYSTEM_TEAMPROJECTID")
+	if a.azureDevOpsTeamProjectId == "" {
+		logger.Debugf(ctx, "Missing AZUREDEVOPS_TEAMPROJECTID, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing AZUREDEVOPS_TEAMPROJECTID")
 	}
-	if a.systemHostType == "" {
-		logger.Debugf(ctx, "Missing SYSTEM_HOSTTYPE, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing SYSTEM_HOSTTYPE")
+	if a.azureDevOpsHostType == "" {
+		logger.Debugf(ctx, "Missing AZUREDEVOPS_HOSTTYPE, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing AZUREDEVOPS_HOSTTYPE")
 	}
 
 	// Azure DevOps OIDC endpoint format
 	// Reference: https://learn.microsoft.com/en-us/rest/api/azure/devops/distributedtask/oidctoken/create?view=azure-devops-rest-7.1
-	// Use systemHostType to determine the hub name dynamically (e.g., "build", "release", etc.)
+	// Use azureDevOpsHostType to determine the hub name dynamically (e.g., "build", "release", etc.)
 	requestUrl := fmt.Sprintf("%s/%s/_apis/distributedtask/hubs/%s/plans/%s/jobs/%s/oidctoken?api-version=7.2-preview.1",
-		a.systemTeamFoundationCollectionUri,
-		a.systemTeamProjectId,
-		a.systemHostType,
-		a.systemPlanId,
-		a.systemJobId)
+		a.azureDevOpsTeamFoundationCollectionUri,
+		a.azureDevOpsTeamProjectId,
+		a.azureDevOpsHostType,
+		a.azureDevOpsPlanId,
+		a.azureDevOpsJobId)
 
 	// Azure DevOps returns {"oidcToken":"***"} format, not {"value":"***"}
 	var azureResp struct {
@@ -80,7 +80,7 @@ func (a *azureDevOpsIDTokenSource) IDToken(ctx context.Context, audience string)
 	}
 
 	err := a.refreshClient.Do(ctx, "POST", requestUrl,
-		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", a.systemAccessToken)),
+		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", a.azureDevOpsAccessToken)),
 		httpclient.WithResponseUnmarshal(&azureResp),
 	)
 	if err != nil {

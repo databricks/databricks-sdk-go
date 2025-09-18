@@ -93,12 +93,12 @@ type Config struct {
 
 	// Parameters to request Azure DevOps OIDC token on behalf of Azure DevOps Pipelines.
 	// Ref: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables
-	SystemAccessToken                 string `name:"system_access_token" env:"SYSTEM_ACCESSTOKEN"`
-	SystemTeamFoundationCollectionUri string `name:"system_team_foundation_collection_uri" env:"SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"`
-	SystemPlanId                      string `name:"system_plan_id" env:"SYSTEM_PLANID"`
-	SystemJobId                       string `name:"system_job_id" env:"SYSTEM_JOBID"`
-	SystemTeamProjectId               string `name:"system_team_project_id" env:"SYSTEM_TEAMPROJECTID"`
-	SystemHostType                    string `name:"system_host_type" env:"SYSTEM_HOSTTYPE"`
+	AzureDevOpsAccessToken                 string `name:"azure_devops_access_token" env:"SYSTEM_ACCESSTOKEN"`
+	AzureDevOpsTeamFoundationCollectionUri string `name:"azure_devops_team_foundation_collection_uri" env:"SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"`
+	AzureDevOpsPlanId                      string `name:"azure_devops_plan_id" env:"SYSTEM_PLANID"`
+	AzureDevOpsJobId                       string `name:"azure_devops_job_id" env:"SYSTEM_JOBID"`
+	AzureDevOpsTeamProjectId               string `name:"azure_devops_team_project_id" env:"SYSTEM_TEAMPROJECTID"`
+	AzureDevOpsHostType                    string `name:"azure_devops_host_type" env:"SYSTEM_HOSTTYPE"`
 
 	// AzureEnvironment (PUBLIC, USGOVERNMENT, CHINA) has specific set of API endpoints. Starting from v0.26.0,
 	// the environment is determined based on the workspace hostname, if it's specified.

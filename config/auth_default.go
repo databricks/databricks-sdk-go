@@ -102,12 +102,12 @@ func githubOIDC(cfg *Config) CredentialsStrategy {
 func azureDevOpsOIDC(cfg *Config) CredentialsStrategy {
 	return oidcStrategy(cfg, "azure-devops-oidc", oidc.NewAzureDevOpsIDTokenSource(
 		cfg.refreshClient,
-		cfg.SystemAccessToken,
-		cfg.SystemTeamFoundationCollectionUri,
-		cfg.SystemPlanId,
-		cfg.SystemJobId,
-		cfg.SystemTeamProjectId,
-		cfg.SystemHostType,
+		cfg.AzureDevOpsAccessToken,
+		cfg.AzureDevOpsTeamFoundationCollectionUri,
+		cfg.AzureDevOpsPlanId,
+		cfg.AzureDevOpsJobId,
+		cfg.AzureDevOpsTeamProjectId,
+		cfg.AzureDevOpsHostType,
 	))
 }
 
