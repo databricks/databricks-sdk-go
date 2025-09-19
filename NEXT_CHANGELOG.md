@@ -4,6 +4,8 @@
 
 ### New Features and Improvements
 
+* Added native support for authentication through Azure DevOps OIDC
+
 ### Bug Fixes
 
 ### Documentation

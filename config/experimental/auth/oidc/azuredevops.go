@@ -1,0 +1,95 @@
+package oidc
+
+import (
+	"context"
+	"errors"
+	"fmt"
+
+	"github.com/databricks/databricks-sdk-go/httpclient"
+	"github.com/databricks/databricks-sdk-go/logger"
+)
+
+// NewAzureDevOpsIDTokenSource returns a new IDTokenSource that retrieves an IDToken
+// from the Azure DevOps environment. This IDTokenSource is only valid when
+// running in Azure DevOps Pipelines with OIDC enabled.
+func NewAzureDevOpsIDTokenSource(client *httpclient.ApiClient, azureDevOpsAccessToken, azureDevOpsTeamFoundationCollectionUri, azureDevOpsPlanId, azureDevOpsJobId, azureDevOpsTeamProjectId, azureDevOpsHostType string) IDTokenSource {
+	return &azureDevOpsIDTokenSource{
+		azureDevOpsAccessToken:                 azureDevOpsAccessToken,
+		azureDevOpsTeamFoundationCollectionUri: azureDevOpsTeamFoundationCollectionUri,
+		refreshClient:                          client,
+		azureDevOpsPlanId:                      azureDevOpsPlanId,
+		azureDevOpsJobId:                       azureDevOpsJobId,
+		azureDevOpsTeamProjectId:               azureDevOpsTeamProjectId,
+		azureDevOpsHostType:                    azureDevOpsHostType,
+	}
+}
+
+// azureDevOpsIDTokenSource retrieves JWT Tokens from Azure DevOps Pipelines.
+type azureDevOpsIDTokenSource struct {
+	azureDevOpsAccessToken                 string
+	azureDevOpsTeamFoundationCollectionUri string
+	refreshClient                          *httpclient.ApiClient
+	azureDevOpsPlanId                      string
+	azureDevOpsJobId                       string
+	azureDevOpsTeamProjectId               string
+	azureDevOpsHostType                    string
+}
+
+// IDToken returns a JWT Token for the specified audience. For Azure DevOps OIDC,
+// the audience parameter is ignored as Azure DevOps tokens always use "api://AzureADTokenExchange".
+// It will return an error if not running in Azure DevOps Pipelines.
+func (a *azureDevOpsIDTokenSource) IDToken(ctx context.Context, audience string) (*IDToken, error) {
+	if a.azureDevOpsAccessToken == "" {
+		logger.Debugf(ctx, "Missing AZUREDEVOPS_ACCESSTOKEN, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing AZUREDEVOPS_ACCESSTOKEN")
+	}
+	if a.azureDevOpsTeamFoundationCollectionUri == "" {
+		logger.Debugf(ctx, "Missing AZUREDEVOPS_TEAMFOUNDATIONCOLLECTIONURI, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing AZUREDEVOPS_TEAMFOUNDATIONCOLLECTIONURI")
+	}
+	if a.azureDevOpsPlanId == "" {
+		logger.Debugf(ctx, "Missing AZUREDEVOPS_PLANID, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing AZUREDEVOPS_PLANID")
+	}
+	if a.azureDevOpsJobId == "" {
+		logger.Debugf(ctx, "Missing AZUREDEVOPS_JOBID, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing AZUREDEVOPS_JOBID")
+	}
+	if a.azureDevOpsTeamProjectId == "" {
+		logger.Debugf(ctx, "Missing AZUREDEVOPS_TEAMPROJECTID, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing AZUREDEVOPS_TEAMPROJECTID")
+	}
+	if a.azureDevOpsHostType == "" {
+		logger.Debugf(ctx, "Missing AZUREDEVOPS_HOSTTYPE, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing AZUREDEVOPS_HOSTTYPE")
+	}
+
+	// Azure DevOps OIDC endpoint format
+	// Reference: https://learn.microsoft.com/en-us/rest/api/azure/devops/distributedtask/oidctoken/create?view=azure-devops-rest-7.1
+	// Use azureDevOpsHostType to determine the hub name dynamically (e.g., "build", "release", etc.)
+	requestUrl := fmt.Sprintf("%s/%s/_apis/distributedtask/hubs/%s/plans/%s/jobs/%s/oidctoken?api-version=7.2-preview.1",
+		a.azureDevOpsTeamFoundationCollectionUri,
+		a.azureDevOpsTeamProjectId,
+		a.azureDevOpsHostType,
+		a.azureDevOpsPlanId,
+		a.azureDevOpsJobId)
+
+	// Azure DevOps returns {"oidcToken":"***"} format, not {"value":"***"}
+	var azureResp struct {
+		OidcToken string `json:"oidcToken"`
+	}
+
+	err := a.refreshClient.Do(ctx, "POST", requestUrl,
+		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", a.azureDevOpsAccessToken)),
+		httpclient.WithResponseUnmarshal(&azureResp),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to request ID token from Azure DevOps: %w", err)
+	}
+
+	if azureResp.OidcToken == "" {
+		return nil, fmt.Errorf("empty OIDC token received from Azure DevOps")
+	}
+
+	return &IDToken{Value: azureResp.OidcToken}, nil
+}

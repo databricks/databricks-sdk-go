@@ -48,6 +48,7 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (creden
 		MetadataServiceCredentials{},
 		// OIDC Strategies.
 		githubOIDC(cfg),
+		azureDevOpsOIDC(cfg),
 		envOIDC(cfg),
 		fileOIDC(cfg),
 		// Azure strategies.
@@ -95,6 +96,18 @@ func githubOIDC(cfg *Config) CredentialsStrategy {
 		cfg.refreshClient,
 		cfg.ActionsIDTokenRequestURL,
 		cfg.ActionsIDTokenRequestToken,
+	))
+}
+
+func azureDevOpsOIDC(cfg *Config) CredentialsStrategy {
+	return oidcStrategy(cfg, "azure-devops-oidc", oidc.NewAzureDevOpsIDTokenSource(
+		cfg.refreshClient,
+		cfg.AzureDevOpsAccessToken,
+		cfg.AzureDevOpsTeamFoundationCollectionUri,
+		cfg.AzureDevOpsPlanId,
+		cfg.AzureDevOpsJobId,
+		cfg.AzureDevOpsTeamProjectId,
+		cfg.AzureDevOpsHostType,
 	))
 }
 
