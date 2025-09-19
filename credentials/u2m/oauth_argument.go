@@ -8,4 +8,7 @@ type OAuthArgument interface {
 	// GetCacheKey returns a unique key for the OAuthArgument. This key is used
 	// to store and retrieve the token from the token cache.
 	GetCacheKey() string
+
+	// GetScopes returns the OAuth scopes to request for this argument.
+	GetScopes() []string
 }

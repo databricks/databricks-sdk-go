@@ -17,6 +17,8 @@ type WorkspaceOAuthArgument interface {
 // BasicWorkspaceOAuthArgument is a basic implementation of the WorkspaceOAuthArgument
 // interface that links each host with exactly one OAuth token.
 type BasicWorkspaceOAuthArgument struct {
+	oauthScopes
+
 	// host is the host of the workspace to authenticate to. This must start
 	// with "https://" and must not have a trailing slash.
 	host string
@@ -38,11 +40,11 @@ func validateHost(host string) error {
 }
 
 // NewBasicWorkspaceOAuthArgument creates a new BasicWorkspaceOAuthArgument.
-func NewBasicWorkspaceOAuthArgument(host string) (BasicWorkspaceOAuthArgument, error) {
+func NewBasicWorkspaceOAuthArgument(host string, scopes ...string) (BasicWorkspaceOAuthArgument, error) {
 	if err := validateHost(host); err != nil {
 		return BasicWorkspaceOAuthArgument{}, err
 	}
-	return BasicWorkspaceOAuthArgument{host: host}, nil
+	return BasicWorkspaceOAuthArgument{oauthScopes: newOAuthScopes(scopes...), host: host}, nil
 }
 
 // GetWorkspaceHost returns the host of the workspace to authenticate to.
@@ -57,7 +59,8 @@ func (a BasicWorkspaceOAuthArgument) GetCacheKey() string {
 	if !strings.HasPrefix(a.host, "http") {
 		a.host = fmt.Sprintf("https://%s", a.host)
 	}
-	return a.host
+	base := a.host
+	return computeScopedCacheKey(base, a.oauthScopes)
 }
 
 var _ WorkspaceOAuthArgument = BasicWorkspaceOAuthArgument{}
