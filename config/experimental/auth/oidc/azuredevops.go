@@ -40,28 +40,28 @@ type azureDevOpsIDTokenSource struct {
 // It will return an error if not running in Azure DevOps Pipelines.
 func (a *azureDevOpsIDTokenSource) IDToken(ctx context.Context, audience string) (*IDToken, error) {
 	if a.azureDevOpsAccessToken == "" {
-		logger.Debugf(ctx, "Missing AZUREDEVOPS_ACCESSTOKEN, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing AZUREDEVOPS_ACCESSTOKEN")
+		logger.Debugf(ctx, "Missing SYSTEM_ACCESSTOKEN, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing SYSTEM_ACCESSTOKEN")
 	}
 	if a.azureDevOpsTeamFoundationCollectionUri == "" {
-		logger.Debugf(ctx, "Missing AZUREDEVOPS_TEAMFOUNDATIONCOLLECTIONURI, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing AZUREDEVOPS_TEAMFOUNDATIONCOLLECTIONURI")
+		logger.Debugf(ctx, "Missing SYSTEM_TEAMFOUNDATIONCOLLECTIONURI, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing SYSTEM_TEAMFOUNDATIONCOLLECTIONURI")
 	}
 	if a.azureDevOpsPlanId == "" {
-		logger.Debugf(ctx, "Missing AZUREDEVOPS_PLANID, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing AZUREDEVOPS_PLANID")
+		logger.Debugf(ctx, "Missing SYSTEM_PLANID, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing SYSTEM_PLANID")
 	}
 	if a.azureDevOpsJobId == "" {
-		logger.Debugf(ctx, "Missing AZUREDEVOPS_JOBID, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing AZUREDEVOPS_JOBID")
+		logger.Debugf(ctx, "Missing SYSTEM_JOBID, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing SYSTEM_JOBID")
 	}
 	if a.azureDevOpsTeamProjectId == "" {
-		logger.Debugf(ctx, "Missing AZUREDEVOPS_TEAMPROJECTID, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing AZUREDEVOPS_TEAMPROJECTID")
+		logger.Debugf(ctx, "Missing SYSTEM_TEAMPROJECTID, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing SYSTEM_TEAMPROJECTID")
 	}
 	if a.azureDevOpsHostType == "" {
-		logger.Debugf(ctx, "Missing AZUREDEVOPS_HOSTTYPE, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing AZUREDEVOPS_HOSTTYPE")
+		logger.Debugf(ctx, "Missing SYSTEM_HOSTTYPE, likely not calling from Azure DevOps Pipeline")
+		return nil, errors.New("missing SYSTEM_HOSTTYPE")
 	}
 
 	// Azure DevOps OIDC endpoint format
