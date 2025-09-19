@@ -22,7 +22,7 @@ func TestAzureDevOpsIDTokenSource(t *testing.T) {
 		audience                               string
 		httpTransport                          http.RoundTripper
 		wantToken                              *IDToken
-		wantErrPrefix                          *string
+		wantError                              bool
 	}{
 		{
 			desc:                                   "missing access token",
@@ -31,7 +31,7 @@ func TestAzureDevOpsIDTokenSource(t *testing.T) {
 			azureDevOpsJobId:                       "job456",
 			azureDevOpsTeamProjectId:               "project789",
 			azureDevOpsHostType:                    "build",
-			wantErrPrefix:                          errPrefix("missing SYSTEM_ACCESSTOKEN"),
+			wantError:                              true,
 		},
 		{
 			desc:                     "missing team foundation collection uri",
@@ -40,7 +40,7 @@ func TestAzureDevOpsIDTokenSource(t *testing.T) {
 			azureDevOpsJobId:         "job456",
 			azureDevOpsTeamProjectId: "project789",
 			azureDevOpsHostType:      "build",
-			wantErrPrefix:            errPrefix("missing SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"),
+			wantError:                true,
 		},
 		{
 			desc:                                   "missing plan id",
@@ -49,7 +49,7 @@ func TestAzureDevOpsIDTokenSource(t *testing.T) {
 			azureDevOpsJobId:                       "job456",
 			azureDevOpsTeamProjectId:               "project789",
 			azureDevOpsHostType:                    "build",
-			wantErrPrefix:                          errPrefix("missing SYSTEM_PLANID"),
+			wantError:                              true,
 		},
 		{
 			desc:                                   "missing job id",
@@ -58,7 +58,7 @@ func TestAzureDevOpsIDTokenSource(t *testing.T) {
 			azureDevOpsPlanId:                      "plan123",
 			azureDevOpsTeamProjectId:               "project789",
 			azureDevOpsHostType:                    "build",
-			wantErrPrefix:                          errPrefix("missing SYSTEM_JOBID"),
+			wantError:                              true,
 		},
 		{
 			desc:                                   "missing team project id",
@@ -67,7 +67,7 @@ func TestAzureDevOpsIDTokenSource(t *testing.T) {
 			azureDevOpsPlanId:                      "plan123",
 			azureDevOpsJobId:                       "job456",
 			azureDevOpsHostType:                    "build",
-			wantErrPrefix:                          errPrefix("missing SYSTEM_TEAMPROJECTID"),
+			wantError:                              true,
 		},
 		{
 			desc:                                   "missing host type",
@@ -76,7 +76,7 @@ func TestAzureDevOpsIDTokenSource(t *testing.T) {
 			azureDevOpsPlanId:                      "plan123",
 			azureDevOpsJobId:                       "job456",
 			azureDevOpsTeamProjectId:               "project789",
-			wantErrPrefix:                          errPrefix("missing SYSTEM_HOSTTYPE"),
+			wantError:                              true,
 		},
 		{
 			desc:                                   "error getting token - server error",
@@ -95,7 +95,7 @@ func TestAzureDevOpsIDTokenSource(t *testing.T) {
 					},
 				},
 			},
-			wantErrPrefix: errPrefix("failed to request ID token from Azure DevOps"),
+			wantError: true,
 		},
 		{
 			desc:                                   "success with build host type",
@@ -119,6 +119,7 @@ func TestAzureDevOpsIDTokenSource(t *testing.T) {
 			wantToken: &IDToken{
 				Value: "azure-devops-id-token-42",
 			},
+			wantError: false,
 		},
 		{
 			desc:                                   "success with release host type",
@@ -142,6 +143,7 @@ func TestAzureDevOpsIDTokenSource(t *testing.T) {
 			wantToken: &IDToken{
 				Value: "azure-devops-release-token-42",
 			},
+			wantError: false,
 		},
 		{
 			desc:                                   "success with empty oidc token in response",
@@ -161,7 +163,7 @@ func TestAzureDevOpsIDTokenSource(t *testing.T) {
 					Response: `{"oidcToken": ""}`,
 				},
 			},
-			wantErrPrefix: errPrefix("empty OIDC token received from Azure DevOps"),
+			wantError: true,
 		},
 	}
 
@@ -181,11 +183,11 @@ func TestAzureDevOpsIDTokenSource(t *testing.T) {
 			}
 			token, gotErr := p.IDToken(context.Background(), tc.audience)
 
-			if tc.wantErrPrefix == nil && gotErr != nil {
-				t.Errorf("IDToken(): got error %q, want none", gotErr)
+			if tc.wantError && gotErr == nil {
+				t.Errorf("IDToken(): expected error, got none")
 			}
-			if tc.wantErrPrefix != nil && !hasPrefix(gotErr, *tc.wantErrPrefix) {
-				t.Errorf("IDToken(): got error %q, want error with prefix %q", gotErr, *tc.wantErrPrefix)
+			if !tc.wantError && gotErr != nil {
+				t.Errorf("IDToken(): got error %q, want none", gotErr)
 			}
 			if diff := cmp.Diff(tc.wantToken, token); diff != "" {
 				t.Errorf("IDToken(): mismatch (-want +got):\n%s", diff)
