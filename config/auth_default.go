@@ -138,8 +138,11 @@ func oidcStrategy(cfg *Config, name string, ts oidc.IDTokenSource) CredentialsSt
 	return NewTokenSourceStrategy(name, tokenSource)
 }
 
-// failedStrategy is a CredentialsStrategy that always fails. It is a hack to
-// counter the fact that the current design does not allow
+// failedStrategy is a CredentialsStrategy that always fails.
+//
+// TODO: This type will likely be removed in the future. It is needed at moment
+// to provide a way to fail early when an OIDC credentials strategy cannot be
+// configured.
 type failedStrategy struct {
 	name string
 	err  error
