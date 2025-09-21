@@ -2,94 +2,92 @@ package oidc
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"os"
 
 	"github.com/databricks/databricks-sdk-go/httpclient"
-	"github.com/databricks/databricks-sdk-go/logger"
 )
 
-// NewAzureDevOpsIDTokenSource returns a new IDTokenSource that retrieves an IDToken
-// from the Azure DevOps environment. This IDTokenSource is only valid when
-// running in Azure DevOps Pipelines with OIDC enabled.
-func NewAzureDevOpsIDTokenSource(client *httpclient.ApiClient, azureDevOpsAccessToken, azureDevOpsTeamFoundationCollectionUri, azureDevOpsPlanId, azureDevOpsJobId, azureDevOpsTeamProjectId, azureDevOpsHostType string) IDTokenSource {
-	return &azureDevOpsIDTokenSource{
-		azureDevOpsAccessToken:                 azureDevOpsAccessToken,
-		azureDevOpsTeamFoundationCollectionUri: azureDevOpsTeamFoundationCollectionUri,
-		refreshClient:                          client,
-		azureDevOpsPlanId:                      azureDevOpsPlanId,
-		azureDevOpsJobId:                       azureDevOpsJobId,
-		azureDevOpsTeamProjectId:               azureDevOpsTeamProjectId,
-		azureDevOpsHostType:                    azureDevOpsHostType,
+// NewAzureDevOpsIDTokenSource returns a new IDTokenSource that retrieves an
+// IDToken from an Azure DevOps environment.
+//
+// This IDTokenSource is only valid when running in Azure DevOps Pipelines with
+// OIDC enabled.
+func NewAzureDevOpsIDTokenSource(client *httpclient.ApiClient) (IDTokenSource, error) {
+	ts := &azureDevOpsIDTokenSource{Client: client}
+
+	if err := setFromEnv(&ts.AccessToken, "SYSTEM_ACCESSTOKEN"); err != nil {
+		return nil, err
 	}
+	if err := setFromEnv(&ts.TeamFoundationCollectionURI, "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"); err != nil {
+		return nil, err
+	}
+	if err := setFromEnv(&ts.PlanID, "SYSTEM_PLANID"); err != nil {
+		return nil, err
+	}
+	if err := setFromEnv(&ts.JobID, "SYSTEM_JOBID"); err != nil {
+		return nil, err
+	}
+	if err := setFromEnv(&ts.TeamProjectID, "SYSTEM_TEAMPROJECTID"); err != nil {
+		return nil, err
+	}
+	if err := setFromEnv(&ts.HostType, "SYSTEM_HOSTTYPE"); err != nil {
+		return nil, err
+	}
+
+	return ts, nil
+}
+
+func setFromEnv(s *string, envVar string) error {
+	v := os.Getenv(envVar)
+	if v == "" {
+		return fmt.Errorf("not calling from Azure DevOps Pipeline: missing env var %s", envVar)
+	}
+	*s = v
+	return nil
 }
 
 // azureDevOpsIDTokenSource retrieves JWT Tokens from Azure DevOps Pipelines.
 type azureDevOpsIDTokenSource struct {
-	azureDevOpsAccessToken                 string
-	azureDevOpsTeamFoundationCollectionUri string
-	refreshClient                          *httpclient.ApiClient
-	azureDevOpsPlanId                      string
-	azureDevOpsJobId                       string
-	azureDevOpsTeamProjectId               string
-	azureDevOpsHostType                    string
+	Client                      *httpclient.ApiClient
+	AccessToken                 string
+	TeamFoundationCollectionURI string
+	PlanID                      string
+	JobID                       string
+	TeamProjectID               string
+	HostType                    string
 }
 
 // IDToken returns a JWT Token for the specified audience. For Azure DevOps OIDC,
 // the audience parameter is ignored as Azure DevOps tokens always use "api://AzureADTokenExchange".
 // It will return an error if not running in Azure DevOps Pipelines.
 func (a *azureDevOpsIDTokenSource) IDToken(ctx context.Context, audience string) (*IDToken, error) {
-	if a.azureDevOpsAccessToken == "" {
-		logger.Debugf(ctx, "Missing AZUREDEVOPS_ACCESSTOKEN, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing AZUREDEVOPS_ACCESSTOKEN")
-	}
-	if a.azureDevOpsTeamFoundationCollectionUri == "" {
-		logger.Debugf(ctx, "Missing AZUREDEVOPS_TEAMFOUNDATIONCOLLECTIONURI, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing AZUREDEVOPS_TEAMFOUNDATIONCOLLECTIONURI")
-	}
-	if a.azureDevOpsPlanId == "" {
-		logger.Debugf(ctx, "Missing AZUREDEVOPS_PLANID, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing AZUREDEVOPS_PLANID")
-	}
-	if a.azureDevOpsJobId == "" {
-		logger.Debugf(ctx, "Missing AZUREDEVOPS_JOBID, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing AZUREDEVOPS_JOBID")
-	}
-	if a.azureDevOpsTeamProjectId == "" {
-		logger.Debugf(ctx, "Missing AZUREDEVOPS_TEAMPROJECTID, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing AZUREDEVOPS_TEAMPROJECTID")
-	}
-	if a.azureDevOpsHostType == "" {
-		logger.Debugf(ctx, "Missing AZUREDEVOPS_HOSTTYPE, likely not calling from Azure DevOps Pipeline")
-		return nil, errors.New("missing AZUREDEVOPS_HOSTTYPE")
-	}
-
 	// Azure DevOps OIDC endpoint format
 	// Reference: https://learn.microsoft.com/en-us/rest/api/azure/devops/distributedtask/oidctoken/create?view=azure-devops-rest-7.1
 	// Use azureDevOpsHostType to determine the hub name dynamically (e.g., "build", "release", etc.)
 	requestUrl := fmt.Sprintf("%s/%s/_apis/distributedtask/hubs/%s/plans/%s/jobs/%s/oidctoken?api-version=7.2-preview.1",
-		a.azureDevOpsTeamFoundationCollectionUri,
-		a.azureDevOpsTeamProjectId,
-		a.azureDevOpsHostType,
-		a.azureDevOpsPlanId,
-		a.azureDevOpsJobId)
+		a.TeamFoundationCollectionURI,
+		a.TeamProjectID,
+		a.HostType,
+		a.PlanID,
+		a.JobID,
+	)
 
-	// Azure DevOps returns {"oidcToken":"***"} format, not {"value":"***"}
+	// Azure DevOps returns {"oidcToken":"***"}, not {"value":"***"}.
 	var azureResp struct {
-		OidcToken string `json:"oidcToken"`
+		OIDCToken string `json:"oidcToken"`
 	}
 
-	err := a.refreshClient.Do(ctx, "POST", requestUrl,
-		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", a.azureDevOpsAccessToken)),
+	err := a.Client.Do(ctx, "POST", requestUrl,
+		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", a.AccessToken)),
 		httpclient.WithResponseUnmarshal(&azureResp),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to request ID token from Azure DevOps: %w", err)
 	}
-
-	if azureResp.OidcToken == "" {
+	if azureResp.OIDCToken == "" {
 		return nil, fmt.Errorf("empty OIDC token received from Azure DevOps")
 	}
 
-	return &IDToken{Value: azureResp.OidcToken}, nil
+	return &IDToken{Value: azureResp.OIDCToken}, nil
 }

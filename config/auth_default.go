@@ -100,15 +100,13 @@ func githubOIDC(cfg *Config) CredentialsStrategy {
 }
 
 func azureDevOpsOIDC(cfg *Config) CredentialsStrategy {
-	return oidcStrategy(cfg, "azure-devops-oidc", oidc.NewAzureDevOpsIDTokenSource(
-		cfg.refreshClient,
-		cfg.AzureDevOpsAccessToken,
-		cfg.AzureDevOpsTeamFoundationCollectionUri,
-		cfg.AzureDevOpsPlanId,
-		cfg.AzureDevOpsJobId,
-		cfg.AzureDevOpsTeamProjectId,
-		cfg.AzureDevOpsHostType,
-	))
+	// Return a systemically failed strategy if the Azure DevOps ID token source
+	// cannot be created.
+	idts, err := oidc.NewAzureDevOpsIDTokenSource(cfg.refreshClient)
+	if err != nil {
+		return &failedStrategy{name: "azure-devops-oidc", err: err}
+	}
+	return oidcStrategy(cfg, "azure-devops-oidc", idts)
 }
 
 func envOIDC(cfg *Config) CredentialsStrategy {
@@ -138,4 +136,19 @@ func oidcStrategy(cfg *Config, name string, ts oidc.IDTokenSource) CredentialsSt
 	}
 	tokenSource := oidc.NewDatabricksOIDCTokenSource(oidcConfig)
 	return NewTokenSourceStrategy(name, tokenSource)
+}
+
+// failedStrategy is a CredentialsStrategy that always fails. It is a hack to
+// counter the fact that the current design does not allow
+type failedStrategy struct {
+	name string
+	err  error
+}
+
+func (s *failedStrategy) Name() string {
+	return s.name
+}
+
+func (s *failedStrategy) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+	return nil, s.err
 }
