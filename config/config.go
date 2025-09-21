@@ -88,6 +88,9 @@ type Config struct {
 
 	// Parameters to request Azure OIDC token on behalf of Github Actions.
 	// Ref: https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers
+	//
+	// TODO: Users are not expected to set these environment variables. They
+	// should be removed from the config in the future.
 	ActionsIDTokenRequestURL   string `name:"actions_id_token_request_url" env:"ACTIONS_ID_TOKEN_REQUEST_URL"`
 	ActionsIDTokenRequestToken string `name:"actions_id_token_request_token" env:"ACTIONS_ID_TOKEN_REQUEST_TOKEN"`
 
