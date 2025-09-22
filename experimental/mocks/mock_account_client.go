@@ -65,6 +65,9 @@ func NewMockAccountClient(t interface {
 			WorkspaceAssignment:              iam.NewMockWorkspaceAssignmentInterface(t),
 			WorkspaceNetworkConfiguration:    settings.NewMockWorkspaceNetworkConfigurationInterface(t),
 			Workspaces:                       provisioning.NewMockWorkspacesInterface(t),
+			Groups:                           iam.NewMockAccountGroupsInterface(t),
+			ServicePrincipals:                iam.NewMockAccountServicePrincipalsInterface(t),
+			Users:                            iam.NewMockAccountUsersInterface(t),
 		},
 	}
 
@@ -410,6 +413,30 @@ func (m *MockAccountClient) GetMockWorkspacesAPI() *provisioning.MockWorkspacesI
 	api, ok := m.AccountClient.Workspaces.(*provisioning.MockWorkspacesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Workspaces to be *provisioning.MockWorkspacesInterface, actual was %T", m.AccountClient.Workspaces))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockAccountGroupsAPI() *iam.MockAccountGroupsInterface {
+	api, ok := m.AccountClient.Groups.(*iam.MockAccountGroupsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Groups to be *iam.MockAccountGroupsInterface, actual was %T", m.AccountClient.Groups))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockAccountServicePrincipalsAPI() *iam.MockAccountServicePrincipalsInterface {
+	api, ok := m.AccountClient.ServicePrincipals.(*iam.MockAccountServicePrincipalsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ServicePrincipals to be *iam.MockAccountServicePrincipalsInterface, actual was %T", m.AccountClient.ServicePrincipals))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockAccountUsersAPI() *iam.MockAccountUsersInterface {
+	api, ok := m.AccountClient.Users.(*iam.MockAccountUsersInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Users to be *iam.MockAccountUsersInterface, actual was %T", m.AccountClient.Users))
 	}
 	return api
 }
