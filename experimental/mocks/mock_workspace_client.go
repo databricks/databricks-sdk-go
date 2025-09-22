@@ -167,6 +167,9 @@ func NewMockWorkspaceClient(t interface {
 			WorkspaceConf:                       settings.NewMockWorkspaceConfInterface(t),
 			WorkspaceIamV2:                      iamv2.NewMockWorkspaceIamV2Interface(t),
 			WorkspaceSettingsV2:                 settingsv2.NewMockWorkspaceSettingsV2Interface(t),
+			Groups:                              iam.NewMockGroupsInterface(t),
+			ServicePrincipals:                   iam.NewMockServicePrincipalsInterface(t),
+			Users:                               iam.NewMockUsersInterface(t),
 		},
 	}
 
@@ -1299,6 +1302,30 @@ func (m *MockWorkspaceClient) GetMockWorkspaceSettingsV2API() *settingsv2.MockWo
 	api, ok := m.WorkspaceClient.WorkspaceSettingsV2.(*settingsv2.MockWorkspaceSettingsV2Interface)
 	if !ok {
 		panic(fmt.Sprintf("expected WorkspaceSettingsV2 to be *settingsv2.MockWorkspaceSettingsV2Interface, actual was %T", m.WorkspaceClient.WorkspaceSettingsV2))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockGroupsAPI() *iam.MockGroupsInterface {
+	api, ok := m.WorkspaceClient.Groups.(*iam.MockGroupsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Groups to be *iam.MockGroupsInterface, actual was %T", m.WorkspaceClient.Groups))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockServicePrincipalsAPI() *iam.MockServicePrincipalsInterface {
+	api, ok := m.WorkspaceClient.ServicePrincipals.(*iam.MockServicePrincipalsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected ServicePrincipals to be *iam.MockServicePrincipalsInterface, actual was %T", m.WorkspaceClient.ServicePrincipals))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockUsersAPI() *iam.MockUsersInterface {
+	api, ok := m.WorkspaceClient.Users.(*iam.MockUsersInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Users to be *iam.MockUsersInterface, actual was %T", m.WorkspaceClient.Users))
 	}
 	return api
 }
