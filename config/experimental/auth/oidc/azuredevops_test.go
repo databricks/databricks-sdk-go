@@ -3,8 +3,7 @@ package oidc
 import (
 	"context"
 	"fmt"
-	"maps"
-	"slices"
+	"sort"
 	"strings"
 	"testing"
 
@@ -46,7 +45,14 @@ func TestNewAzureDevOpsIDTokenSource_success(t *testing.T) {
 }
 
 func TestNewAzureDevOpsIDTokenSource_missingEnv(t *testing.T) {
-	for _, env := range slices.Sorted(maps.Keys(defaultEnv)) {
+	// Guarantee that the tests are run in a deterministic order.
+	sortedKeys := make([]string, 0, len(defaultEnv))
+	for k := range defaultEnv {
+		sortedKeys = append(sortedKeys, k)
+	}
+	sort.Strings(sortedKeys)
+
+	for _, env := range sortedKeys {
 		t.Run(fmt.Sprintf("missing %s", env), func(t *testing.T) {
 			// Set all env vars except the missing one.
 			for k, v := range defaultEnv {
