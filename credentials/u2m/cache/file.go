@@ -103,7 +103,7 @@ func (c *fileTokenCache) Store(key string, t *oauth2.Token) error {
 	if err != nil {
 		return fmt.Errorf("marshal: %w", err)
 	}
-	return os.WriteFile(c.fileLocation, raw, ownerReadWrite)
+	return writeFileAtomic(c.fileLocation, raw, ownerReadWrite)
 }
 
 // Lookup implements the TokenCache interface.
@@ -151,7 +151,7 @@ func (c *fileTokenCache) init() error {
 		if err != nil {
 			return fmt.Errorf("marshal: %w", err)
 		}
-		if err := os.WriteFile(c.fileLocation, raw, ownerReadWrite); err != nil {
+		if err := writeFileAtomic(c.fileLocation, raw, ownerReadWrite); err != nil {
 			return fmt.Errorf("write: %w", err)
 		}
 	}
