@@ -7317,6 +7317,8 @@ const SystemTypeServicenow SystemType = `SERVICENOW`
 
 const SystemTypeSnowflake SystemType = `SNOWFLAKE`
 
+const SystemTypeStreamNative SystemType = `STREAM_NATIVE`
+
 const SystemTypeTableau SystemType = `TABLEAU`
 
 const SystemTypeTeradata SystemType = `TERADATA`
@@ -7331,11 +7333,11 @@ func (f *SystemType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SystemType) Set(v string) error {
 	switch v {
-	case `AMAZON_REDSHIFT`, `AZURE_SYNAPSE`, `CONFLUENT`, `DATABRICKS`, `GOOGLE_BIGQUERY`, `KAFKA`, `LOOKER`, `MICROSOFT_FABRIC`, `MICROSOFT_SQL_SERVER`, `MONGODB`, `MYSQL`, `ORACLE`, `OTHER`, `POSTGRESQL`, `POWER_BI`, `SALESFORCE`, `SAP`, `SERVICENOW`, `SNOWFLAKE`, `TABLEAU`, `TERADATA`, `WORKDAY`:
+	case `AMAZON_REDSHIFT`, `AZURE_SYNAPSE`, `CONFLUENT`, `DATABRICKS`, `GOOGLE_BIGQUERY`, `KAFKA`, `LOOKER`, `MICROSOFT_FABRIC`, `MICROSOFT_SQL_SERVER`, `MONGODB`, `MYSQL`, `ORACLE`, `OTHER`, `POSTGRESQL`, `POWER_BI`, `SALESFORCE`, `SAP`, `SERVICENOW`, `SNOWFLAKE`, `STREAM_NATIVE`, `TABLEAU`, `TERADATA`, `WORKDAY`:
 		*f = SystemType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AMAZON_REDSHIFT", "AZURE_SYNAPSE", "CONFLUENT", "DATABRICKS", "GOOGLE_BIGQUERY", "KAFKA", "LOOKER", "MICROSOFT_FABRIC", "MICROSOFT_SQL_SERVER", "MONGODB", "MYSQL", "ORACLE", "OTHER", "POSTGRESQL", "POWER_BI", "SALESFORCE", "SAP", "SERVICENOW", "SNOWFLAKE", "TABLEAU", "TERADATA", "WORKDAY"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AMAZON_REDSHIFT", "AZURE_SYNAPSE", "CONFLUENT", "DATABRICKS", "GOOGLE_BIGQUERY", "KAFKA", "LOOKER", "MICROSOFT_FABRIC", "MICROSOFT_SQL_SERVER", "MONGODB", "MYSQL", "ORACLE", "OTHER", "POSTGRESQL", "POWER_BI", "SALESFORCE", "SAP", "SERVICENOW", "SNOWFLAKE", "STREAM_NATIVE", "TABLEAU", "TERADATA", "WORKDAY"`, v)
 	}
 }
 
@@ -7363,6 +7365,7 @@ func (f *SystemType) Values() []SystemType {
 		SystemTypeSap,
 		SystemTypeServicenow,
 		SystemTypeSnowflake,
+		SystemTypeStreamNative,
 		SystemTypeTableau,
 		SystemTypeTeradata,
 		SystemTypeWorkday,
