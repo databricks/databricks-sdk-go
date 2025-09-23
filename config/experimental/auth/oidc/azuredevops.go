@@ -11,36 +11,38 @@ import (
 // NewAzureDevOpsIDTokenSource returns a new IDTokenSource that retrieves an
 // IDToken from an Azure DevOps environment.
 //
-// This IDTokenSource is only valid when running in Azure DevOps Pipelines with
-// OIDC enabled.
+// This IDTokenSource is only valid when running in Azure DevOps Pipelines.
 func NewAzureDevOpsIDTokenSource(client *httpclient.ApiClient) (IDTokenSource, error) {
 	ts := &azureDevOpsIDTokenSource{Client: client}
 
-	if err := setFromEnv(&ts.AccessToken, "SYSTEM_ACCESSTOKEN"); err != nil {
+	if err := setFromAzureDevOpsEnv(&ts.AccessToken, "SYSTEM_ACCESSTOKEN"); err != nil {
 		return nil, err
 	}
-	if err := setFromEnv(&ts.TeamFoundationCollectionURI, "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"); err != nil {
+	if err := setFromAzureDevOpsEnv(&ts.TeamFoundationCollectionURI, "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"); err != nil {
 		return nil, err
 	}
-	if err := setFromEnv(&ts.PlanID, "SYSTEM_PLANID"); err != nil {
+	if err := setFromAzureDevOpsEnv(&ts.PlanID, "SYSTEM_PLANID"); err != nil {
 		return nil, err
 	}
-	if err := setFromEnv(&ts.JobID, "SYSTEM_JOBID"); err != nil {
+	if err := setFromAzureDevOpsEnv(&ts.JobID, "SYSTEM_JOBID"); err != nil {
 		return nil, err
 	}
-	if err := setFromEnv(&ts.TeamProjectID, "SYSTEM_TEAMPROJECTID"); err != nil {
+	if err := setFromAzureDevOpsEnv(&ts.TeamProjectID, "SYSTEM_TEAMPROJECTID"); err != nil {
 		return nil, err
 	}
-	if err := setFromEnv(&ts.HostType, "SYSTEM_HOSTTYPE"); err != nil {
+	if err := setFromAzureDevOpsEnv(&ts.HostType, "SYSTEM_HOSTTYPE"); err != nil {
 		return nil, err
 	}
 
 	return ts, nil
 }
 
-func setFromEnv(s *string, envVar string) error {
+func setFromAzureDevOpsEnv(s *string, envVar string) error {
 	v := os.Getenv(envVar)
 	if v == "" {
+		if envVar == "SYSTEM_ACCESSTOKEN" {
+			return fmt.Errorf("SYSTEM_ACCESSTOKEN env var not found, if calling from Azure DevOps Pipeline, please set this env var following https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemaccesstoken")
+		}
 		return fmt.Errorf("not calling from Azure DevOps Pipeline: missing env var %s", envVar)
 	}
 	*s = v

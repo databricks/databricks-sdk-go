@@ -3,10 +3,13 @@ package oidc
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"sort"
 	"strings"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/httpclient"
+	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -66,8 +69,16 @@ func TestNewAzureDevOpsIDTokenSource_missingEnv(t *testing.T) {
 			if gotErr == nil {
 				t.Fatalf("NewAzureDevOpsIDTokenSource() want error, got none")
 			}
-			if !strings.Contains(gotErr.Error(), fmt.Sprintf("not calling from Azure DevOps Pipeline: missing env var %s", env)) {
-				t.Errorf("NewAzureDevOpsIDTokenSource() want error containing %q, got error: %v", env, gotErr)
+			// SYSTEM_ACCESSTOKEN has a special error message format
+			var expectedErrorSubstring string
+			if env == "SYSTEM_ACCESSTOKEN" {
+				expectedErrorSubstring = "SYSTEM_ACCESSTOKEN env var not found"
+			} else {
+				expectedErrorSubstring = fmt.Sprintf("not calling from Azure DevOps Pipeline: missing env var %s", env)
+			}
+
+			if !strings.Contains(gotErr.Error(), expectedErrorSubstring) {
+				t.Errorf("NewAzureDevOpsIDTokenSource() want error containing %q, got error: %v", expectedErrorSubstring, gotErr)
 			}
 			if got != nil {
 				t.Errorf("NewAzureDevOpsIDTokenSource() want nil, got %v", got)
@@ -76,33 +87,127 @@ func TestNewAzureDevOpsIDTokenSource_missingEnv(t *testing.T) {
 	}
 }
 
-func message(err error) string {
-	if err == nil {
-		return ""
-	}
-	return err.Error()
-}
-
 func TestNewAzureDevOpsIDTokenSource_IDToken(t *testing.T) {
 	testCases := []struct {
-		desc       string
-		ts         azureDevOpsIDTokenSource
-		want       *IDToken
-		wantErrMsg string
+		desc          string
+		ts            azureDevOpsIDTokenSource
+		httpTransport http.RoundTripper
+		want          *IDToken
+		wantErr       bool
 	}{
-		// TODO: add test cases
+		{
+			desc: "server error response",
+			ts: azureDevOpsIDTokenSource{
+				AccessToken:                 "token-1337",
+				TeamFoundationCollectionURI: "https://dev.azure.com/myorg",
+				PlanID:                      "plan123",
+				JobID:                       "job456",
+				TeamProjectID:               "project789",
+				HostType:                    "build",
+			},
+			httpTransport: fixtures.MappingTransport{
+				"POST /myorg/project789/_apis/distributedtask/hubs/build/plans/plan123/jobs/job456/oidctoken?api-version=7.2-preview.1": {
+					Status: http.StatusInternalServerError,
+					ExpectedHeaders: map[string]string{
+						"Authorization": "Bearer token-1337",
+						"Accept":        "application/json",
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "success with build host type",
+			ts: azureDevOpsIDTokenSource{
+				AccessToken:                 "token-1337",
+				TeamFoundationCollectionURI: "https://dev.azure.com/myorg",
+				PlanID:                      "plan123",
+				JobID:                       "job456",
+				TeamProjectID:               "project789",
+				HostType:                    "build",
+			},
+			httpTransport: fixtures.MappingTransport{
+				"POST /myorg/project789/_apis/distributedtask/hubs/build/plans/plan123/jobs/job456/oidctoken?api-version=7.2-preview.1": {
+					Status: http.StatusOK,
+					ExpectedHeaders: map[string]string{
+						"Authorization": "Bearer token-1337",
+						"Accept":        "application/json",
+					},
+					Response: `{"oidcToken": "azure-devops-id-token-42"}`,
+				},
+			},
+			want: &IDToken{
+				Value: "azure-devops-id-token-42",
+			},
+			wantErr: false,
+		},
+		{
+			desc: "success with release host type",
+			ts: azureDevOpsIDTokenSource{
+				AccessToken:                 "token-1337",
+				TeamFoundationCollectionURI: "https://dev.azure.com/myorg",
+				PlanID:                      "plan123",
+				JobID:                       "job456",
+				TeamProjectID:               "project789",
+				HostType:                    "release",
+			},
+			httpTransport: fixtures.MappingTransport{
+				"POST /myorg/project789/_apis/distributedtask/hubs/release/plans/plan123/jobs/job456/oidctoken?api-version=7.2-preview.1": {
+					Status: http.StatusOK,
+					ExpectedHeaders: map[string]string{
+						"Authorization": "Bearer token-1337",
+						"Accept":        "application/json",
+					},
+					Response: `{"oidcToken": "azure-devops-release-token-42"}`,
+				},
+			},
+			want: &IDToken{
+				Value: "azure-devops-release-token-42",
+			},
+			wantErr: false,
+		},
+		{
+			desc: "empty oidc token in response",
+			ts: azureDevOpsIDTokenSource{
+				AccessToken:                 "token-1337",
+				TeamFoundationCollectionURI: "https://dev.azure.com/myorg",
+				PlanID:                      "plan123",
+				JobID:                       "job456",
+				TeamProjectID:               "project789",
+				HostType:                    "build",
+			},
+			httpTransport: fixtures.MappingTransport{
+				"POST /myorg/project789/_apis/distributedtask/hubs/build/plans/plan123/jobs/job456/oidctoken?api-version=7.2-preview.1": {
+					Status: http.StatusOK,
+					ExpectedHeaders: map[string]string{
+						"Authorization": "Bearer token-1337",
+						"Accept":        "application/json",
+					},
+					Response: `{"oidcToken": ""}`,
+				},
+			},
+			wantErr: true,
+		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			got, gotErr := tc.ts.IDToken(context.Background(), "")
-			gotErrMsg := message(gotErr)
 
-			if tc.wantErrMsg != gotErrMsg {
-				t.Errorf("IDToken(): want error message %q, got %q", tc.wantErrMsg, gotErrMsg)
+			cli := httpclient.NewApiClient(httpclient.ClientConfig{
+				Transport: tc.httpTransport,
+			})
+			tc.ts.Client = cli
+
+			got, gotErr := tc.ts.IDToken(context.Background(), "test-audience")
+
+			if tc.wantErr && gotErr == nil {
+				t.Errorf("IDToken(): expected error, got none")
 			}
-			if !cmp.Equal(got, tc.want) {
-				t.Errorf("IDToken(): want %v, got %v", tc.want, got)
+			if !tc.wantErr && gotErr != nil {
+				t.Errorf("IDToken(): got error %q, want none", gotErr)
+			}
+			if diff := cmp.Diff(tc.want, got); diff != "" {
+				t.Errorf("IDToken(): mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}
