@@ -2,10 +2,10 @@ package oidc
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"sort"
-	"strings"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/httpclient"
@@ -64,21 +64,15 @@ func TestNewAzureDevOpsIDTokenSource_missingEnv(t *testing.T) {
 				}
 			}
 
+			wantErr := errNotCallingFromAzureDevOps
+			if env == "SYSTEM_ACCESSTOKEN" {
+				wantErr = errMissingAccessToken
+			}
+
 			got, gotErr := NewAzureDevOpsIDTokenSource(nil)
 
-			if gotErr == nil {
-				t.Fatalf("NewAzureDevOpsIDTokenSource() want error, got none")
-			}
-			// SYSTEM_ACCESSTOKEN has a special error message format
-			var expectedErrorSubstring string
-			if env == "SYSTEM_ACCESSTOKEN" {
-				expectedErrorSubstring = "SYSTEM_ACCESSTOKEN env var not found"
-			} else {
-				expectedErrorSubstring = fmt.Sprintf("not calling from Azure DevOps Pipeline: missing env var %s", env)
-			}
-
-			if !strings.Contains(gotErr.Error(), expectedErrorSubstring) {
-				t.Errorf("NewAzureDevOpsIDTokenSource() want error containing %q, got error: %v", expectedErrorSubstring, gotErr)
+			if !errors.Is(gotErr, wantErr) {
+				t.Fatalf("NewAzureDevOpsIDTokenSource() want error %v, got %v", wantErr, gotErr)
 			}
 			if got != nil {
 				t.Errorf("NewAzureDevOpsIDTokenSource() want nil, got %v", got)

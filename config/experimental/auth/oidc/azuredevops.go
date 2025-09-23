@@ -8,6 +8,14 @@ import (
 	"github.com/databricks/databricks-sdk-go/httpclient"
 )
 
+var (
+	errMissingAccessToken = fmt.Errorf("SYSTEM_ACCESSTOKEN env var not found, " +
+		"if calling from Azure DevOps Pipeline, please set this env var following " +
+		"https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemaccesstoken")
+
+	errNotCallingFromAzureDevOps = fmt.Errorf("not calling from Azure DevOps Pipeline")
+)
+
 // NewAzureDevOpsIDTokenSource returns a new IDTokenSource that retrieves an
 // IDToken from an Azure DevOps environment.
 //
@@ -15,9 +23,17 @@ import (
 func NewAzureDevOpsIDTokenSource(client *httpclient.ApiClient) (IDTokenSource, error) {
 	ts := &azureDevOpsIDTokenSource{Client: client}
 
-	if err := setFromAzureDevOpsEnv(&ts.AccessToken, "SYSTEM_ACCESSTOKEN"); err != nil {
-		return nil, err
+	// Environment variable SYSTEM_ACCESSTOKEN is treated differently from
+	// other environment variables because it is controlled by users within
+	// their Azure DevOps Pipelines.
+	if v := os.Getenv("SYSTEM_ACCESSTOKEN"); v != "" {
+		ts.AccessToken = v
+	} else {
+		return nil, errMissingAccessToken
 	}
+
+	// Environment variables that should always be set when calling from an
+	// Azure DevOps Pipeline.
 	if err := setFromAzureDevOpsEnv(&ts.TeamFoundationCollectionURI, "SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"); err != nil {
 		return nil, err
 	}
@@ -40,10 +56,7 @@ func NewAzureDevOpsIDTokenSource(client *httpclient.ApiClient) (IDTokenSource, e
 func setFromAzureDevOpsEnv(s *string, envVar string) error {
 	v := os.Getenv(envVar)
 	if v == "" {
-		if envVar == "SYSTEM_ACCESSTOKEN" {
-			return fmt.Errorf("SYSTEM_ACCESSTOKEN env var not found, if calling from Azure DevOps Pipeline, please set this env var following https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemaccesstoken")
-		}
-		return fmt.Errorf("not calling from Azure DevOps Pipeline: missing env var %s", envVar)
+		return fmt.Errorf("%w: missing env var %s", errNotCallingFromAzureDevOps, envVar)
 	}
 	*s = v
 	return nil
