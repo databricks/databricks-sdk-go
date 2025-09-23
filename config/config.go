@@ -88,17 +88,11 @@ type Config struct {
 
 	// Parameters to request Azure OIDC token on behalf of Github Actions.
 	// Ref: https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers
+	//
+	// TODO: Users are not expected to set these environment variables. They
+	// should be removed from the config in the future.
 	ActionsIDTokenRequestURL   string `name:"actions_id_token_request_url" env:"ACTIONS_ID_TOKEN_REQUEST_URL"`
 	ActionsIDTokenRequestToken string `name:"actions_id_token_request_token" env:"ACTIONS_ID_TOKEN_REQUEST_TOKEN"`
-
-	// Parameters to request Azure DevOps OIDC token on behalf of Azure DevOps Pipelines.
-	// Ref: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables
-	AzureDevOpsAccessToken                 string `name:"azure_devops_access_token" env:"SYSTEM_ACCESSTOKEN"`
-	AzureDevOpsTeamFoundationCollectionUri string `name:"azure_devops_team_foundation_collection_uri" env:"SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"`
-	AzureDevOpsPlanId                      string `name:"azure_devops_plan_id" env:"SYSTEM_PLANID"`
-	AzureDevOpsJobId                       string `name:"azure_devops_job_id" env:"SYSTEM_JOBID"`
-	AzureDevOpsTeamProjectId               string `name:"azure_devops_team_project_id" env:"SYSTEM_TEAMPROJECTID"`
-	AzureDevOpsHostType                    string `name:"azure_devops_host_type" env:"SYSTEM_HOSTTYPE"`
 
 	// AzureEnvironment (PUBLIC, USGOVERNMENT, CHINA) has specific set of API endpoints. Starting from v0.26.0,
 	// the environment is determined based on the workspace hostname, if it's specified.

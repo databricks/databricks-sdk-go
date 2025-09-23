@@ -1,7 +1,3 @@
-// Package auth is an internal package that provides authentication utilities.
-//
-// IMPORTANT: This package is not meant to be used directly by consumers of the
-// SDK and is subject to change without notice.
 package auth
 
 import (
