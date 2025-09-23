@@ -21,7 +21,7 @@ var defaultEnv = map[string]string{
 	"SYSTEM_PLANID":                      "test-plan-id",
 	"SYSTEM_JOBID":                       "test-job-id",
 	"SYSTEM_TEAMPROJECTID":               "test-team-project-id",
-	"SYSTEM_HOSTTYPE":                    "build",
+	"SYSTEM_HOSTTYPE":                    "test-host-type",
 }
 
 func TestNewAzureDevOpsIDTokenSource_success(t *testing.T) {
@@ -35,7 +35,7 @@ func TestNewAzureDevOpsIDTokenSource_success(t *testing.T) {
 		PlanID:                      "test-plan-id",
 		JobID:                       "test-job-id",
 		TeamProjectID:               "test-team-project-id",
-		HostType:                    "build",
+		HostType:                    "test-host-type",
 	}
 
 	got, gotErr := NewAzureDevOpsIDTokenSource(nil)
@@ -102,7 +102,7 @@ func TestNewAzureDevOpsIDTokenSource_IDToken(t *testing.T) {
 		{
 			desc: "server error response",
 			httpTransport: fixtures.MappingTransport{
-				"POST /myorg/test-team-project-id/_apis/distributedtask/hubs/build/plans/test-plan-id/jobs/test-job-id/oidctoken?api-version=7.2-preview.1": {
+				"POST /myorg/test-team-project-id/_apis/distributedtask/hubs/test-host-type/plans/test-plan-id/jobs/test-job-id/oidctoken?api-version=7.2-preview.1": {
 					Status: http.StatusInternalServerError,
 					ExpectedHeaders: map[string]string{
 						"Authorization": "Bearer test-access-token",
@@ -115,7 +115,7 @@ func TestNewAzureDevOpsIDTokenSource_IDToken(t *testing.T) {
 		{
 			desc: "success",
 			httpTransport: fixtures.MappingTransport{
-				"POST /myorg/test-team-project-id/_apis/distributedtask/hubs/build/plans/test-plan-id/jobs/test-job-id/oidctoken?api-version=7.2-preview.1": {
+				"POST /myorg/test-team-project-id/_apis/distributedtask/hubs/test-host-type/plans/test-plan-id/jobs/test-job-id/oidctoken?api-version=7.2-preview.1": {
 					Status: http.StatusOK,
 					ExpectedHeaders: map[string]string{
 						"Authorization": "Bearer test-access-token",
@@ -132,7 +132,7 @@ func TestNewAzureDevOpsIDTokenSource_IDToken(t *testing.T) {
 		{
 			desc: "empty oidc token in response",
 			httpTransport: fixtures.MappingTransport{
-				"POST /myorg/test-team-project-id/_apis/distributedtask/hubs/build/plans/test-plan-id/jobs/test-job-id/oidctoken?api-version=7.2-preview.1": {
+				"POST /myorg/test-team-project-id/_apis/distributedtask/hubs/test-host-type/plans/test-plan-id/jobs/test-job-id/oidctoken?api-version=7.2-preview.1": {
 					Status: http.StatusOK,
 					ExpectedHeaders: map[string]string{
 						"Authorization": "Bearer test-access-token",
