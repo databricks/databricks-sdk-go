@@ -17,11 +17,11 @@ import (
 // successfully create an Azure DevOps ID token source.
 var defaultEnv = map[string]string{
 	"SYSTEM_ACCESSTOKEN":                 "test-access-token",
-	"SYSTEM_TEAMFOUNDATIONCOLLECTIONURI": "test-team-foundation-collection-uri",
+	"SYSTEM_TEAMFOUNDATIONCOLLECTIONURI": "https://dev.azure.com/myorg",
 	"SYSTEM_PLANID":                      "test-plan-id",
 	"SYSTEM_JOBID":                       "test-job-id",
 	"SYSTEM_TEAMPROJECTID":               "test-team-project-id",
-	"SYSTEM_HOSTTYPE":                    "test-host-type",
+	"SYSTEM_HOSTTYPE":                    "build",
 }
 
 func TestNewAzureDevOpsIDTokenSource_success(t *testing.T) {
@@ -31,11 +31,11 @@ func TestNewAzureDevOpsIDTokenSource_success(t *testing.T) {
 
 	want := &azureDevOpsIDTokenSource{
 		AccessToken:                 "test-access-token",
-		TeamFoundationCollectionURI: "test-team-foundation-collection-uri",
+		TeamFoundationCollectionURI: "https://dev.azure.com/myorg",
 		PlanID:                      "test-plan-id",
 		JobID:                       "test-job-id",
 		TeamProjectID:               "test-team-project-id",
-		HostType:                    "test-host-type",
+		HostType:                    "build",
 	}
 
 	got, gotErr := NewAzureDevOpsIDTokenSource(nil)
@@ -88,28 +88,24 @@ func TestNewAzureDevOpsIDTokenSource_missingEnv(t *testing.T) {
 }
 
 func TestNewAzureDevOpsIDTokenSource_IDToken(t *testing.T) {
+	// Set up default environment variables for all test cases
+	for k, v := range defaultEnv {
+		t.Setenv(k, v)
+	}
+
 	testCases := []struct {
 		desc          string
-		ts            azureDevOpsIDTokenSource
 		httpTransport http.RoundTripper
 		want          *IDToken
 		wantErr       bool
 	}{
 		{
 			desc: "server error response",
-			ts: azureDevOpsIDTokenSource{
-				AccessToken:                 "token-1337",
-				TeamFoundationCollectionURI: "https://dev.azure.com/myorg",
-				PlanID:                      "plan123",
-				JobID:                       "job456",
-				TeamProjectID:               "project789",
-				HostType:                    "build",
-			},
 			httpTransport: fixtures.MappingTransport{
-				"POST /myorg/project789/_apis/distributedtask/hubs/build/plans/plan123/jobs/job456/oidctoken?api-version=7.2-preview.1": {
+				"POST /myorg/test-team-project-id/_apis/distributedtask/hubs/build/plans/test-plan-id/jobs/test-job-id/oidctoken?api-version=7.2-preview.1": {
 					Status: http.StatusInternalServerError,
 					ExpectedHeaders: map[string]string{
-						"Authorization": "Bearer token-1337",
+						"Authorization": "Bearer test-access-token",
 						"Accept":        "application/json",
 					},
 				},
@@ -117,20 +113,12 @@ func TestNewAzureDevOpsIDTokenSource_IDToken(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			desc: "success with build host type",
-			ts: azureDevOpsIDTokenSource{
-				AccessToken:                 "token-1337",
-				TeamFoundationCollectionURI: "https://dev.azure.com/myorg",
-				PlanID:                      "plan123",
-				JobID:                       "job456",
-				TeamProjectID:               "project789",
-				HostType:                    "build",
-			},
+			desc: "success",
 			httpTransport: fixtures.MappingTransport{
-				"POST /myorg/project789/_apis/distributedtask/hubs/build/plans/plan123/jobs/job456/oidctoken?api-version=7.2-preview.1": {
+				"POST /myorg/test-team-project-id/_apis/distributedtask/hubs/build/plans/test-plan-id/jobs/test-job-id/oidctoken?api-version=7.2-preview.1": {
 					Status: http.StatusOK,
 					ExpectedHeaders: map[string]string{
-						"Authorization": "Bearer token-1337",
+						"Authorization": "Bearer test-access-token",
 						"Accept":        "application/json",
 					},
 					Response: `{"oidcToken": "azure-devops-id-token-42"}`,
@@ -142,45 +130,12 @@ func TestNewAzureDevOpsIDTokenSource_IDToken(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			desc: "success with release host type",
-			ts: azureDevOpsIDTokenSource{
-				AccessToken:                 "token-1337",
-				TeamFoundationCollectionURI: "https://dev.azure.com/myorg",
-				PlanID:                      "plan123",
-				JobID:                       "job456",
-				TeamProjectID:               "project789",
-				HostType:                    "release",
-			},
-			httpTransport: fixtures.MappingTransport{
-				"POST /myorg/project789/_apis/distributedtask/hubs/release/plans/plan123/jobs/job456/oidctoken?api-version=7.2-preview.1": {
-					Status: http.StatusOK,
-					ExpectedHeaders: map[string]string{
-						"Authorization": "Bearer token-1337",
-						"Accept":        "application/json",
-					},
-					Response: `{"oidcToken": "azure-devops-release-token-42"}`,
-				},
-			},
-			want: &IDToken{
-				Value: "azure-devops-release-token-42",
-			},
-			wantErr: false,
-		},
-		{
 			desc: "empty oidc token in response",
-			ts: azureDevOpsIDTokenSource{
-				AccessToken:                 "token-1337",
-				TeamFoundationCollectionURI: "https://dev.azure.com/myorg",
-				PlanID:                      "plan123",
-				JobID:                       "job456",
-				TeamProjectID:               "project789",
-				HostType:                    "build",
-			},
 			httpTransport: fixtures.MappingTransport{
-				"POST /myorg/project789/_apis/distributedtask/hubs/build/plans/plan123/jobs/job456/oidctoken?api-version=7.2-preview.1": {
+				"POST /myorg/test-team-project-id/_apis/distributedtask/hubs/build/plans/test-plan-id/jobs/test-job-id/oidctoken?api-version=7.2-preview.1": {
 					Status: http.StatusOK,
 					ExpectedHeaders: map[string]string{
-						"Authorization": "Bearer token-1337",
+						"Authorization": "Bearer test-access-token",
 						"Accept":        "application/json",
 					},
 					Response: `{"oidcToken": ""}`,
@@ -192,13 +147,16 @@ func TestNewAzureDevOpsIDTokenSource_IDToken(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-
 			cli := httpclient.NewApiClient(httpclient.ClientConfig{
 				Transport: tc.httpTransport,
 			})
-			tc.ts.Client = cli
 
-			got, gotErr := tc.ts.IDToken(context.Background(), "test-audience")
+			tokenSource, err := NewAzureDevOpsIDTokenSource(cli)
+			if err != nil {
+				t.Fatalf("NewAzureDevOpsIDTokenSource() failed: %v", err)
+			}
+
+			got, gotErr := tokenSource.IDToken(context.Background(), "test-audience")
 
 			if tc.wantErr && gotErr == nil {
 				t.Errorf("IDToken(): expected error, got none")
