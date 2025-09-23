@@ -82,7 +82,7 @@ func TestNewAzureDevOpsIDTokenSource_missingEnv(t *testing.T) {
 }
 
 func TestNewAzureDevOpsIDTokenSource_IDToken(t *testing.T) {
-	// Set up default environment variables for all test cases
+	// Set up default environment variables for all test cases.
 	for k, v := range defaultEnv {
 		t.Setenv(k, v)
 	}
@@ -141,11 +141,11 @@ func TestNewAzureDevOpsIDTokenSource_IDToken(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			cli := httpclient.NewApiClient(httpclient.ClientConfig{
+			client := httpclient.NewApiClient(httpclient.ClientConfig{
 				Transport: tc.httpTransport,
 			})
 
-			tokenSource, err := NewAzureDevOpsIDTokenSource(cli)
+			tokenSource, err := NewAzureDevOpsIDTokenSource(client)
 			if err != nil {
 				t.Fatalf("NewAzureDevOpsIDTokenSource() failed: %v", err)
 			}
