@@ -19,23 +19,19 @@ func TestMwsAccStorage(t *testing.T) {
 
 	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: RandomName("sdk-"),
-		RootBucketInfo: provisioning.RootBucketInfo{
+		RootBucketInfo: &provisioning.RootBucketInfo{
 			BucketName: RandomName("sdk-bucket-"),
 		},
 	})
 	require.NoError(t, err)
 
 	defer func() {
-		err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+		_, err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 		require.NoError(t, err)
 	}()
 
-	byId, err := a.Storage.GetByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+	_, err = a.Storage.GetByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 	require.NoError(t, err)
-
-	byName, err := a.Storage.GetByStorageConfigurationName(ctx, byId.StorageConfigurationName)
-	require.NoError(t, err)
-	assert.Equal(t, byId.StorageConfigurationId, byName.StorageConfigurationId)
 
 	configs, err := a.Storage.List(ctx)
 	require.NoError(t, err)
@@ -55,16 +51,12 @@ func TestMwsAccNetworks(t *testing.T) {
 	})
 	require.NoError(t, err)
 	defer func() {
-		err = a.Networks.DeleteByNetworkId(ctx, netw.NetworkId)
+		_, err = a.Networks.DeleteByNetworkId(ctx, netw.NetworkId)
 		require.NoError(t, err)
 	}()
 
-	byId, err := a.Networks.GetByNetworkId(ctx, netw.NetworkId)
+	_, err = a.Networks.GetByNetworkId(ctx, netw.NetworkId)
 	require.NoError(t, err)
-
-	byName, err := a.Networks.GetByNetworkName(ctx, byId.NetworkName)
-	require.NoError(t, err)
-	assert.Equal(t, byId.NetworkId, byName.NetworkId)
 
 	configs, err := a.Networks.List(ctx)
 	require.NoError(t, err)
@@ -78,7 +70,7 @@ func TestMwsAccCredentials(t *testing.T) {
 	}
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: RandomName("sdk-"),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
 			},
@@ -87,16 +79,12 @@ func TestMwsAccCredentials(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+		_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 		require.NoError(t, err)
 	})
 
-	byId, err := a.Credentials.GetByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.Credentials.GetByCredentialsId(ctx, role.CredentialsId)
 	require.NoError(t, err)
-
-	byName, err := a.Credentials.GetByCredentialsName(ctx, byId.CredentialsName)
-	require.NoError(t, err)
-	assert.Equal(t, byId.CredentialsId, byName.CredentialsId)
 
 	configs, err := a.Credentials.List(ctx)
 	require.NoError(t, err)
@@ -119,7 +107,7 @@ func TestMwsAccEncryptionKeys(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := a.EncryptionKeys.DeleteByCustomerManagedKeyId(ctx, created.CustomerManagedKeyId)
+		_, err := a.EncryptionKeys.DeleteByCustomerManagedKeyId(ctx, created.CustomerManagedKeyId)
 		require.NoError(t, err)
 	})
 
@@ -145,30 +133,23 @@ func TestMwsAccPrivateAccess(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := a.PrivateAccess.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
+		_, err := a.PrivateAccess.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
 		require.NoError(t, err)
 	})
-	err = a.PrivateAccess.Replace(ctx, provisioning.ReplacePrivateAccessSettingsRequest{
-		PrivateAccessSettingsId:   created.PrivateAccessSettingsId,
-		PrivateAccessSettingsName: RandomName("go-sdk-"),
-		Region:                    GetEnvOrSkipTest(t, "AWS_REGION"),
+	_, err = a.PrivateAccess.Replace(ctx, provisioning.ReplacePrivateAccessSettingsRequest{
+		PrivateAccessSettingsId: created.PrivateAccessSettingsId,
+		CustomerFacingPrivateAccessSettings: provisioning.PrivateAccessSettings{
+			PrivateAccessSettingsName: RandomName("go-sdk-"),
+			Region:                    GetEnvOrSkipTest(t, "AWS_REGION"),
+		},
 	})
 	require.NoError(t, err)
 
-	byId, err := a.PrivateAccess.GetByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
+	_, err = a.PrivateAccess.GetByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
 	require.NoError(t, err)
 
-	byName, err := a.PrivateAccess.GetByPrivateAccessSettingsName(ctx, byId.PrivateAccessSettingsName)
+	_, err = a.PrivateAccess.List(ctx)
 	require.NoError(t, err)
-	assert.Equal(t, byId.PrivateAccessSettingsId, byName.PrivateAccessSettingsId)
-
-	all, err := a.PrivateAccess.List(ctx)
-	require.NoError(t, err)
-
-	names, err := a.PrivateAccess.PrivateAccessSettingsPrivateAccessSettingsNameToPrivateAccessSettingsIdMap(ctx)
-	require.NoError(t, err)
-	assert.Equal(t, len(names), len(all))
-	assert.Equal(t, byId.PrivateAccessSettingsId, names[byId.PrivateAccessSettingsName])
 }
 
 func TestMwsAccVpcEndpoints(t *testing.T) {
@@ -185,7 +166,7 @@ func TestMwsAccVpcEndpoints(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := a.VpcEndpoints.DeleteByVpcEndpointId(ctx, created.VpcEndpointId)
+		_, err := a.VpcEndpoints.DeleteByVpcEndpointId(ctx, created.VpcEndpointId)
 		require.NoError(t, err)
 	})
 
@@ -206,13 +187,13 @@ func TestMwsAccWorkspaces(t *testing.T) {
 
 	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: RandomName("go-sdk-"),
-		RootBucketInfo: provisioning.RootBucketInfo{
+		RootBucketInfo: &provisioning.RootBucketInfo{
 			BucketName: GetEnvOrSkipTest(t, "TEST_ROOT_BUCKET"),
 		},
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+		_, err := a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 		require.NoError(t, err)
 	})
 
@@ -220,7 +201,7 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	// See https://github.com/databricks/terraform-provider-databricks/issues/1424
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: RandomName("go-sdk-"),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
 			},
@@ -229,14 +210,15 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		err := retries.New[struct{}](retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
-			return a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+			_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+			return err
 		})
 		require.NoError(t, err)
 	})
 
 	updateRole, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: RandomName("go-sdk-"),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
 			},
@@ -245,7 +227,8 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		err := retries.New[struct{}](retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
-			return a.Credentials.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
+			_, err := a.Credentials.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
+			return err
 		})
 		require.NoError(t, err)
 	})
@@ -261,7 +244,7 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := a.Workspaces.DeleteByWorkspaceId(ctx, waiter.WorkspaceId)
+		_, err := a.Workspaces.DeleteByWorkspaceId(ctx, waiter.WorkspaceId)
 		require.NoError(t, err)
 	})
 	created, err := waiter.Get()
@@ -269,23 +252,16 @@ func TestMwsAccWorkspaces(t *testing.T) {
 
 	// this also takes a while
 	_, err = a.Workspaces.UpdateAndWait(ctx, provisioning.UpdateWorkspaceRequest{
-		WorkspaceId:   created.WorkspaceId,
-		CredentialsId: updateRole.CredentialsId,
+		WorkspaceId: created.WorkspaceId,
+		CustomerFacingWorkspace: provisioning.Workspace{
+			CredentialsId: updateRole.CredentialsId,
+		},
 	})
 	require.NoError(t, err)
 
-	byId, err := a.Workspaces.GetByWorkspaceId(ctx, created.WorkspaceId)
+	_, err = a.Workspaces.GetByWorkspaceId(ctx, created.WorkspaceId)
 	require.NoError(t, err)
 
-	byName, err := a.Workspaces.GetByWorkspaceName(ctx, byId.WorkspaceName)
+	_, err = a.Workspaces.List(ctx)
 	require.NoError(t, err)
-	assert.Equal(t, byId.WorkspaceId, byName.WorkspaceId)
-
-	all, err := a.Workspaces.List(ctx)
-	require.NoError(t, err)
-
-	names, err := a.Workspaces.WorkspaceWorkspaceNameToWorkspaceIdMap(ctx)
-	require.NoError(t, err)
-	assert.Equal(t, len(names), len(all))
-	assert.Equal(t, byId.WorkspaceId, names[byId.WorkspaceName])
 }

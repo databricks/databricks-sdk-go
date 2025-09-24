@@ -23,7 +23,7 @@ func ExampleCredentialsAPI_Create_logDelivery() {
 
 	creds, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: os.Getenv("TEST_LOGDELIVERY_ARN"),
 			},
@@ -36,7 +36,7 @@ func ExampleCredentialsAPI_Create_logDelivery() {
 
 	// cleanup
 
-	err = a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
@@ -52,7 +52,7 @@ func ExampleCredentialsAPI_Create_credentials() {
 
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: os.Getenv("TEST_CROSSACCOUNT_ARN"),
 			},
@@ -65,7 +65,7 @@ func ExampleCredentialsAPI_Create_credentials() {
 
 	// cleanup
 
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
@@ -81,7 +81,7 @@ func ExampleCredentialsAPI_Create_workspaces() {
 
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: os.Getenv("TEST_CROSSACCOUNT_ARN"),
 			},
@@ -94,7 +94,7 @@ func ExampleCredentialsAPI_Create_workspaces() {
 
 	// cleanup
 
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
@@ -110,7 +110,7 @@ func ExampleCredentialsAPI_Get_credentials() {
 
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: os.Getenv("TEST_CROSSACCOUNT_ARN"),
 			},
@@ -129,7 +129,7 @@ func ExampleCredentialsAPI_Get_credentials() {
 
 	// cleanup
 
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
