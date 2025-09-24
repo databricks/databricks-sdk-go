@@ -23,7 +23,7 @@ func ExampleStorageAPI_Create_logDelivery() {
 
 	bucket, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		RootBucketInfo: provisioning.RootBucketInfo{
+		RootBucketInfo: &provisioning.RootBucketInfo{
 			BucketName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		},
 	})
@@ -34,7 +34,7 @@ func ExampleStorageAPI_Create_logDelivery() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
@@ -50,7 +50,7 @@ func ExampleStorageAPI_Create_storage() {
 
 	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		RootBucketInfo: provisioning.RootBucketInfo{
+		RootBucketInfo: &provisioning.RootBucketInfo{
 			BucketName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		},
 	})
@@ -70,7 +70,7 @@ func ExampleStorageAPI_Create_workspaces() {
 
 	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		RootBucketInfo: provisioning.RootBucketInfo{
+		RootBucketInfo: &provisioning.RootBucketInfo{
 			BucketName: os.Getenv("TEST_ROOT_BUCKET"),
 		},
 	})
@@ -81,7 +81,7 @@ func ExampleStorageAPI_Create_workspaces() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
@@ -97,7 +97,7 @@ func ExampleStorageAPI_Get_storage() {
 
 	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		RootBucketInfo: provisioning.RootBucketInfo{
+		RootBucketInfo: &provisioning.RootBucketInfo{
 			BucketName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		},
 	})

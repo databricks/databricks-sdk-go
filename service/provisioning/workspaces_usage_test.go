@@ -23,7 +23,7 @@ func ExampleWorkspacesAPI_Create_workspaces() {
 
 	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		RootBucketInfo: provisioning.RootBucketInfo{
+		RootBucketInfo: &provisioning.RootBucketInfo{
 			BucketName: os.Getenv("TEST_ROOT_BUCKET"),
 		},
 	})
@@ -34,7 +34,7 @@ func ExampleWorkspacesAPI_Create_workspaces() {
 
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: os.Getenv("TEST_CROSSACCOUNT_ARN"),
 			},
@@ -58,15 +58,15 @@ func ExampleWorkspacesAPI_Create_workspaces() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
+	_, err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
 	if err != nil {
 		panic(err)
 	}
@@ -82,7 +82,7 @@ func ExampleWorkspacesAPI_Get_workspaces() {
 
 	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		RootBucketInfo: provisioning.RootBucketInfo{
+		RootBucketInfo: &provisioning.RootBucketInfo{
 			BucketName: os.Getenv("TEST_ROOT_BUCKET"),
 		},
 	})
@@ -93,7 +93,7 @@ func ExampleWorkspacesAPI_Get_workspaces() {
 
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: os.Getenv("TEST_CROSSACCOUNT_ARN"),
 			},
@@ -123,15 +123,15 @@ func ExampleWorkspacesAPI_Get_workspaces() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
+	_, err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
 	if err != nil {
 		panic(err)
 	}
@@ -162,7 +162,7 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 
 	storage, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		RootBucketInfo: provisioning.RootBucketInfo{
+		RootBucketInfo: &provisioning.RootBucketInfo{
 			BucketName: os.Getenv("TEST_ROOT_BUCKET"),
 		},
 	})
@@ -173,7 +173,7 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: os.Getenv("TEST_CROSSACCOUNT_ARN"),
 			},
@@ -186,7 +186,7 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 
 	updateRole, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: os.Getenv("TEST_CROSSACCOUNT_ARN"),
 			},
@@ -209,8 +209,10 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 	logger.Infof(ctx, "found %v", created)
 
 	_, err = a.Workspaces.UpdateAndWait(ctx, provisioning.UpdateWorkspaceRequest{
-		WorkspaceId:   created.WorkspaceId,
-		CredentialsId: updateRole.CredentialsId,
+		WorkspaceId: created.WorkspaceId,
+		CustomerFacingWorkspace: provisioning.Workspace{
+			CredentialsId: updateRole.CredentialsId,
+		},
 	})
 	if err != nil {
 		panic(err)
@@ -218,19 +220,19 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
+	_, err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
 	if err != nil {
 		panic(err)
 	}

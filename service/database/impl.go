@@ -10,6 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just Database API methods
@@ -43,6 +44,10 @@ func (a *databaseImpl) CreateDatabaseInstanceRole(ctx context.Context, request C
 	var databaseInstanceRole DatabaseInstanceRole
 	path := fmt.Sprintf("/api/2.0/database/instances/%v/roles", request.InstanceName)
 	queryParams := make(map[string]any)
+
+	if request.DatabaseInstanceName != "" || slices.Contains(request.ForceSendFields, "DatabaseInstanceName") {
+		queryParams["database_instance_name"] = request.DatabaseInstanceName
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

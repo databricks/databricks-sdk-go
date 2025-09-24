@@ -24,7 +24,7 @@ func ExampleLogDeliveryAPI_Create_logDelivery() {
 
 	bucket, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		RootBucketInfo: provisioning.RootBucketInfo{
+		RootBucketInfo: &provisioning.RootBucketInfo{
 			BucketName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		},
 	})
@@ -35,7 +35,7 @@ func ExampleLogDeliveryAPI_Create_logDelivery() {
 
 	creds, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: os.Getenv("TEST_LOGDELIVERY_ARN"),
 			},
@@ -62,11 +62,11 @@ func ExampleLogDeliveryAPI_Create_logDelivery() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
@@ -89,7 +89,7 @@ func ExampleLogDeliveryAPI_Get_logDelivery() {
 
 	bucket, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		RootBucketInfo: provisioning.RootBucketInfo{
+		RootBucketInfo: &provisioning.RootBucketInfo{
 			BucketName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 		},
 	})
@@ -100,7 +100,7 @@ func ExampleLogDeliveryAPI_Get_logDelivery() {
 
 	creds, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: os.Getenv("TEST_LOGDELIVERY_ARN"),
 			},
@@ -133,11 +133,11 @@ func ExampleLogDeliveryAPI_Get_logDelivery() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
 	if err != nil {
 		panic(err)
 	}

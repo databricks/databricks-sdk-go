@@ -32,7 +32,7 @@ func ExamplePrivateAccessAPI_Create_privateAccess() {
 
 	// cleanup
 
-	err = a.PrivateAccess.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
+	_, err = a.PrivateAccess.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
 	if err != nil {
 		panic(err)
 	}
@@ -63,7 +63,7 @@ func ExamplePrivateAccessAPI_Get_privateAccess() {
 
 	// cleanup
 
-	err = a.PrivateAccess.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
+	_, err = a.PrivateAccess.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
 	if err != nil {
 		panic(err)
 	}
@@ -101,10 +101,12 @@ func ExamplePrivateAccessAPI_Replace_privateAccess() {
 	}
 	logger.Infof(ctx, "found %v", created)
 
-	err = a.PrivateAccess.Replace(ctx, provisioning.ReplacePrivateAccessSettingsRequest{
-		PrivateAccessSettingsId:   created.PrivateAccessSettingsId,
-		PrivateAccessSettingsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
-		Region:                    os.Getenv("AWS_REGION"),
+	_, err = a.PrivateAccess.Replace(ctx, provisioning.ReplacePrivateAccessSettingsRequest{
+		PrivateAccessSettingsId: created.PrivateAccessSettingsId,
+		CustomerFacingPrivateAccessSettings: provisioning.PrivateAccessSettings{
+			PrivateAccessSettingsName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
+			Region:                    os.Getenv("AWS_REGION"),
+		},
 	})
 	if err != nil {
 		panic(err)
@@ -112,7 +114,7 @@ func ExamplePrivateAccessAPI_Replace_privateAccess() {
 
 	// cleanup
 
-	err = a.PrivateAccess.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
+	_, err = a.PrivateAccess.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
 	if err != nil {
 		panic(err)
 	}

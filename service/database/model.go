@@ -18,9 +18,21 @@ type CreateDatabaseInstanceRequest struct {
 }
 
 type CreateDatabaseInstanceRoleRequest struct {
+	DatabaseInstanceName string `json:"-" url:"database_instance_name,omitempty"`
+
 	DatabaseInstanceRole DatabaseInstanceRole `json:"database_instance_role"`
 
 	InstanceName string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateDatabaseInstanceRoleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateDatabaseTableRequest struct {
@@ -186,15 +198,20 @@ func (s DatabaseInstanceRef) MarshalJSON() ([]byte, error) {
 
 // A DatabaseInstanceRole represents a Postgres role in a database instance.
 type DatabaseInstanceRole struct {
-	// API-exposed Postgres role attributes
+	// The desired API-exposed Postgres role attribute to associate with the
+	// role. Optional.
 	Attributes *DatabaseInstanceRoleAttributes `json:"attributes,omitempty"`
+	// The attributes that are applied to the role.
+	EffectiveAttributes *DatabaseInstanceRoleAttributes `json:"effective_attributes,omitempty"`
 	// The type of the role.
 	IdentityType DatabaseInstanceRoleIdentityType `json:"identity_type,omitempty"`
+
+	InstanceName string `json:"instance_name,omitempty"`
 	// An enum value for a standard role that this role is a member of.
 	MembershipRole DatabaseInstanceRoleMembershipRole `json:"membership_role,omitempty"`
 	// The name of the role. This is the unique identifier for the role in an
 	// instance.
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

@@ -32,7 +32,7 @@ func TestMwsAccLogDelivery(t *testing.T) {
 	}
 	creds, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
 		CredentialsName: RandomName("sdk-"),
-		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+		AwsCredentials: &provisioning.CreateCredentialAwsCredentials{
 			StsRole: &provisioning.CreateCredentialStsRole{
 				RoleArn: GetEnvOrSkipTest(t, "TEST_LOGDELIVERY_ARN"),
 			},
@@ -43,7 +43,7 @@ func TestMwsAccLogDelivery(t *testing.T) {
 
 	bucket, err := a.Storage.Create(ctx, provisioning.CreateStorageConfigurationRequest{
 		StorageConfigurationName: RandomName("sdk-"),
-		RootBucketInfo: provisioning.RootBucketInfo{
+		RootBucketInfo: &provisioning.RootBucketInfo{
 			BucketName: RandomName("sdk-bucket-"),
 		},
 	})

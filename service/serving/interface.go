@@ -90,6 +90,9 @@ type ServingEndpointsService interface {
 	// not be updated until the current update completes or fails.
 	UpdateConfig(ctx context.Context, request EndpointCoreConfigInput) (*ServingEndpointDetailed, error)
 
+	// Updates the email and webhook notification settings for an endpoint.
+	UpdateNotifications(ctx context.Context, request UpdateInferenceEndpointNotifications) (*UpdateInferenceEndpointNotificationsResponse, error)
+
 	// Updates the permissions on a serving endpoint. Serving endpoints can
 	// inherit permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)

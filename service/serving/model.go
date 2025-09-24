@@ -2561,6 +2561,31 @@ type TrafficConfig struct {
 	Routes []Route `json:"routes,omitempty"`
 }
 
+type UpdateInferenceEndpointNotifications struct {
+	// The email notification settings to update. Specify email addresses to
+	// notify when endpoint state changes occur.
+	EmailNotifications *EmailNotifications `json:"email_notifications,omitempty"`
+	// The name of the serving endpoint whose notifications are being updated.
+	// This field is required.
+	Name string `json:"-" url:"-"`
+}
+
+type UpdateInferenceEndpointNotificationsResponse struct {
+	EmailNotifications *EmailNotifications `json:"email_notifications,omitempty"`
+
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateInferenceEndpointNotificationsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateInferenceEndpointNotificationsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type UpdateProvisionedThroughputEndpointConfigRequest struct {
 	Config PtEndpointCoreConfig `json:"config"`
 	// The name of the pt endpoint to update. This field is required.
