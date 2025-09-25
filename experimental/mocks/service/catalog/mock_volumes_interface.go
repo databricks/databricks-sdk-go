@@ -178,65 +178,6 @@ func (_c *MockVolumesInterface_DeleteByName_Call) RunAndReturn(run func(context.
 	return _c
 }
 
-// GetByName provides a mock function with given fields: ctx, name
-func (_m *MockVolumesInterface) GetByName(ctx context.Context, name string) (*catalog.VolumeInfo, error) {
-	ret := _m.Called(ctx, name)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetByName")
-	}
-
-	var r0 *catalog.VolumeInfo
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.VolumeInfo, error)); ok {
-		return rf(ctx, name)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.VolumeInfo); ok {
-		r0 = rf(ctx, name)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.VolumeInfo)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, name)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockVolumesInterface_GetByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByName'
-type MockVolumesInterface_GetByName_Call struct {
-	*mock.Call
-}
-
-// GetByName is a helper method to define mock.On call
-//   - ctx context.Context
-//   - name string
-func (_e *MockVolumesInterface_Expecter) GetByName(ctx interface{}, name interface{}) *MockVolumesInterface_GetByName_Call {
-	return &MockVolumesInterface_GetByName_Call{Call: _e.mock.On("GetByName", ctx, name)}
-}
-
-func (_c *MockVolumesInterface_GetByName_Call) Run(run func(ctx context.Context, name string)) *MockVolumesInterface_GetByName_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockVolumesInterface_GetByName_Call) Return(_a0 *catalog.VolumeInfo, _a1 error) *MockVolumesInterface_GetByName_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockVolumesInterface_GetByName_Call) RunAndReturn(run func(context.Context, string) (*catalog.VolumeInfo, error)) *MockVolumesInterface_GetByName_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockVolumesInterface) List(ctx context.Context, request catalog.ListVolumesRequest) listing.Iterator[catalog.VolumeInfo] {
 	ret := _m.Called(ctx, request)
@@ -518,65 +459,6 @@ func (_c *MockVolumesInterface_Update_Call) Return(_a0 *catalog.VolumeInfo, _a1 
 }
 
 func (_c *MockVolumesInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.UpdateVolumeRequestContent) (*catalog.VolumeInfo, error)) *MockVolumesInterface_Update_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// VolumeInfoNameToVolumeIdMap provides a mock function with given fields: ctx, request
-func (_m *MockVolumesInterface) VolumeInfoNameToVolumeIdMap(ctx context.Context, request catalog.ListVolumesRequest) (map[string]string, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for VolumeInfoNameToVolumeIdMap")
-	}
-
-	var r0 map[string]string
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListVolumesRequest) (map[string]string, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListVolumesRequest) map[string]string); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(map[string]string)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListVolumesRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockVolumesInterface_VolumeInfoNameToVolumeIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'VolumeInfoNameToVolumeIdMap'
-type MockVolumesInterface_VolumeInfoNameToVolumeIdMap_Call struct {
-	*mock.Call
-}
-
-// VolumeInfoNameToVolumeIdMap is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request catalog.ListVolumesRequest
-func (_e *MockVolumesInterface_Expecter) VolumeInfoNameToVolumeIdMap(ctx interface{}, request interface{}) *MockVolumesInterface_VolumeInfoNameToVolumeIdMap_Call {
-	return &MockVolumesInterface_VolumeInfoNameToVolumeIdMap_Call{Call: _e.mock.On("VolumeInfoNameToVolumeIdMap", ctx, request)}
-}
-
-func (_c *MockVolumesInterface_VolumeInfoNameToVolumeIdMap_Call) Run(run func(ctx context.Context, request catalog.ListVolumesRequest)) *MockVolumesInterface_VolumeInfoNameToVolumeIdMap_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(catalog.ListVolumesRequest))
-	})
-	return _c
-}
-
-func (_c *MockVolumesInterface_VolumeInfoNameToVolumeIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockVolumesInterface_VolumeInfoNameToVolumeIdMap_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockVolumesInterface_VolumeInfoNameToVolumeIdMap_Call) RunAndReturn(run func(context.Context, catalog.ListVolumesRequest) (map[string]string, error)) *MockVolumesInterface_VolumeInfoNameToVolumeIdMap_Call {
 	_c.Call.Return(run)
 	return _c
 }

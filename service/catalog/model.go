@@ -1598,7 +1598,12 @@ type CreateVolumeRequestContent struct {
 	SchemaName string `json:"schema_name"`
 	// The storage location on the cloud
 	StorageLocation string `json:"storage_location,omitempty"`
-
+	// The type of the volume. An external volume is located in the specified
+	// external location. A managed volume is located in the default location
+	// which is specified by the parent schema, or the parent catalog, or the
+	// Metastore. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 	VolumeType VolumeType `json:"volume_type"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6752,7 +6757,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_PALANTIR_OAUTH_M2M = 263; Next id:264
+// Latest kind: CONNECTION_SHAREPOINT_OAUTH_M2M = 264; Next id:265
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -7317,6 +7322,8 @@ const SystemTypeServicenow SystemType = `SERVICENOW`
 
 const SystemTypeSnowflake SystemType = `SNOWFLAKE`
 
+const SystemTypeStreamNative SystemType = `STREAM_NATIVE`
+
 const SystemTypeTableau SystemType = `TABLEAU`
 
 const SystemTypeTeradata SystemType = `TERADATA`
@@ -7331,11 +7338,11 @@ func (f *SystemType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SystemType) Set(v string) error {
 	switch v {
-	case `AMAZON_REDSHIFT`, `AZURE_SYNAPSE`, `CONFLUENT`, `DATABRICKS`, `GOOGLE_BIGQUERY`, `KAFKA`, `LOOKER`, `MICROSOFT_FABRIC`, `MICROSOFT_SQL_SERVER`, `MONGODB`, `MYSQL`, `ORACLE`, `OTHER`, `POSTGRESQL`, `POWER_BI`, `SALESFORCE`, `SAP`, `SERVICENOW`, `SNOWFLAKE`, `TABLEAU`, `TERADATA`, `WORKDAY`:
+	case `AMAZON_REDSHIFT`, `AZURE_SYNAPSE`, `CONFLUENT`, `DATABRICKS`, `GOOGLE_BIGQUERY`, `KAFKA`, `LOOKER`, `MICROSOFT_FABRIC`, `MICROSOFT_SQL_SERVER`, `MONGODB`, `MYSQL`, `ORACLE`, `OTHER`, `POSTGRESQL`, `POWER_BI`, `SALESFORCE`, `SAP`, `SERVICENOW`, `SNOWFLAKE`, `STREAM_NATIVE`, `TABLEAU`, `TERADATA`, `WORKDAY`:
 		*f = SystemType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AMAZON_REDSHIFT", "AZURE_SYNAPSE", "CONFLUENT", "DATABRICKS", "GOOGLE_BIGQUERY", "KAFKA", "LOOKER", "MICROSOFT_FABRIC", "MICROSOFT_SQL_SERVER", "MONGODB", "MYSQL", "ORACLE", "OTHER", "POSTGRESQL", "POWER_BI", "SALESFORCE", "SAP", "SERVICENOW", "SNOWFLAKE", "TABLEAU", "TERADATA", "WORKDAY"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AMAZON_REDSHIFT", "AZURE_SYNAPSE", "CONFLUENT", "DATABRICKS", "GOOGLE_BIGQUERY", "KAFKA", "LOOKER", "MICROSOFT_FABRIC", "MICROSOFT_SQL_SERVER", "MONGODB", "MYSQL", "ORACLE", "OTHER", "POSTGRESQL", "POWER_BI", "SALESFORCE", "SAP", "SERVICENOW", "SNOWFLAKE", "STREAM_NATIVE", "TABLEAU", "TERADATA", "WORKDAY"`, v)
 	}
 }
 
@@ -7363,6 +7370,7 @@ func (f *SystemType) Values() []SystemType {
 		SystemTypeSap,
 		SystemTypeServicenow,
 		SystemTypeSnowflake,
+		SystemTypeStreamNative,
 		SystemTypeTableau,
 		SystemTypeTeradata,
 		SystemTypeWorkday,
@@ -8560,7 +8568,12 @@ type VolumeInfo struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// The unique identifier of the volume
 	VolumeId string `json:"volume_id,omitempty"`
-
+	// The type of the volume. An external volume is located in the specified
+	// external location. A managed volume is located in the default location
+	// which is specified by the parent schema, or the parent catalog, or the
+	// Metastore. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 	VolumeType VolumeType `json:"volume_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -8574,12 +8587,6 @@ func (s VolumeInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The type of the volume. An external volume is located in the specified
-// external location. A managed volume is located in the default location which
-// is specified by the parent schema, or the parent catalog, or the Metastore.
-// [Learn more]
-//
-// [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 type VolumeType string
 
 const VolumeTypeExternal VolumeType = `EXTERNAL`

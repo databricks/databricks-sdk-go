@@ -234,6 +234,17 @@ func (a *servingEndpointsImpl) UpdateConfig(ctx context.Context, request Endpoin
 	return &servingEndpointDetailed, err
 }
 
+func (a *servingEndpointsImpl) UpdateNotifications(ctx context.Context, request UpdateInferenceEndpointNotifications) (*UpdateInferenceEndpointNotificationsResponse, error) {
+	var updateInferenceEndpointNotificationsResponse UpdateInferenceEndpointNotificationsResponse
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v/notifications", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateInferenceEndpointNotificationsResponse)
+	return &updateInferenceEndpointNotificationsResponse, err
+}
+
 func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error) {
 	var servingEndpointPermissions ServingEndpointPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/serving-endpoints/%v", request.ServingEndpointId)
