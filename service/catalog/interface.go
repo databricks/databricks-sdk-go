@@ -1375,7 +1375,7 @@ type VolumesService interface {
 	// The returned volumes are filtered based on the privileges of the calling
 	// user. For example, the metastore admin is able to list all the volumes. A
 	// regular user needs to be the owner or have the **READ VOLUME** privilege
-	// on the volume to recieve the volumes in the response. For the latter
+	// on the volume to receive the volumes in the response. For the latter
 	// case, the caller must also be the owner or have the **USE_CATALOG**
 	// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 	// parent schema.

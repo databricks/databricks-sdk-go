@@ -1809,6 +1809,65 @@ func (_c *MockServingEndpointsInterface_UpdateConfigAndWait_Call) RunAndReturn(r
 	return _c
 }
 
+// UpdateNotifications provides a mock function with given fields: ctx, request
+func (_m *MockServingEndpointsInterface) UpdateNotifications(ctx context.Context, request serving.UpdateInferenceEndpointNotifications) (*serving.UpdateInferenceEndpointNotificationsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateNotifications")
+	}
+
+	var r0 *serving.UpdateInferenceEndpointNotificationsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.UpdateInferenceEndpointNotifications) (*serving.UpdateInferenceEndpointNotificationsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.UpdateInferenceEndpointNotifications) *serving.UpdateInferenceEndpointNotificationsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.UpdateInferenceEndpointNotificationsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, serving.UpdateInferenceEndpointNotifications) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockServingEndpointsInterface_UpdateNotifications_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateNotifications'
+type MockServingEndpointsInterface_UpdateNotifications_Call struct {
+	*mock.Call
+}
+
+// UpdateNotifications is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request serving.UpdateInferenceEndpointNotifications
+func (_e *MockServingEndpointsInterface_Expecter) UpdateNotifications(ctx interface{}, request interface{}) *MockServingEndpointsInterface_UpdateNotifications_Call {
+	return &MockServingEndpointsInterface_UpdateNotifications_Call{Call: _e.mock.On("UpdateNotifications", ctx, request)}
+}
+
+func (_c *MockServingEndpointsInterface_UpdateNotifications_Call) Run(run func(ctx context.Context, request serving.UpdateInferenceEndpointNotifications)) *MockServingEndpointsInterface_UpdateNotifications_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(serving.UpdateInferenceEndpointNotifications))
+	})
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_UpdateNotifications_Call) Return(_a0 *serving.UpdateInferenceEndpointNotificationsResponse, _a1 error) *MockServingEndpointsInterface_UpdateNotifications_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_UpdateNotifications_Call) RunAndReturn(run func(context.Context, serving.UpdateInferenceEndpointNotifications) (*serving.UpdateInferenceEndpointNotificationsResponse, error)) *MockServingEndpointsInterface_UpdateNotifications_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdatePermissions provides a mock function with given fields: ctx, request
 func (_m *MockServingEndpointsInterface) UpdatePermissions(ctx context.Context, request serving.ServingEndpointPermissionsRequest) (*serving.ServingEndpointPermissions, error) {
 	ret := _m.Called(ctx, request)
