@@ -5,6 +5,7 @@
 ### New Features and Improvements
 
 ### Bug Fixes
+- Set default HTTPTimeout to 60s to match documented one.
 
 ### Documentation
 
