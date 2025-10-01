@@ -82,6 +82,8 @@
 //
 // - [sql.DashboardsAPI]: In general, there is little need to modify dashboards using the API.
 //
+// - [dataquality.DataQualityAPI]: Manage the data quality of Unity Catalog objects (currently support `schema` and `table`).
+//
 // - [sql.DataSourcesAPI]: This API is provided to assist you in making new query objects.
 //
 // - [database.DatabaseAPI]: Database Instances provide access to a database via REST API or direct SQL.
@@ -360,6 +362,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/service/database"
+	"github.com/databricks/databricks-sdk-go/service/dataquality"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
@@ -426,6 +429,7 @@ var (
 	_ *settings.DashboardEmailSubscriptionsAPI            = nil
 	_ *sql.DashboardWidgetsAPI                            = nil
 	_ *sql.DashboardsAPI                                  = nil
+	_ *dataquality.DataQualityAPI                         = nil
 	_ *sql.DataSourcesAPI                                 = nil
 	_ *database.DatabaseAPI                               = nil
 	_ *files.DbfsAPI                                      = nil

@@ -26,21 +26,33 @@ func (_m *MockAccountMetastoreAssignmentsInterface) EXPECT() *MockAccountMetasto
 }
 
 // Create provides a mock function with given fields: ctx, request
-func (_m *MockAccountMetastoreAssignmentsInterface) Create(ctx context.Context, request catalog.AccountsCreateMetastoreAssignment) error {
+func (_m *MockAccountMetastoreAssignmentsInterface) Create(ctx context.Context, request catalog.AccountsCreateMetastoreAssignment) (*catalog.AccountsCreateMetastoreAssignmentResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsCreateMetastoreAssignment) error); ok {
+	var r0 *catalog.AccountsCreateMetastoreAssignmentResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsCreateMetastoreAssignment) (*catalog.AccountsCreateMetastoreAssignmentResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsCreateMetastoreAssignment) *catalog.AccountsCreateMetastoreAssignmentResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.AccountsCreateMetastoreAssignmentResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.AccountsCreateMetastoreAssignment) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockAccountMetastoreAssignmentsInterface_Create_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Create'
@@ -62,32 +74,44 @@ func (_c *MockAccountMetastoreAssignmentsInterface_Create_Call) Run(run func(ctx
 	return _c
 }
 
-func (_c *MockAccountMetastoreAssignmentsInterface_Create_Call) Return(_a0 error) *MockAccountMetastoreAssignmentsInterface_Create_Call {
-	_c.Call.Return(_a0)
+func (_c *MockAccountMetastoreAssignmentsInterface_Create_Call) Return(_a0 *catalog.AccountsCreateMetastoreAssignmentResponse, _a1 error) *MockAccountMetastoreAssignmentsInterface_Create_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAccountMetastoreAssignmentsInterface_Create_Call) RunAndReturn(run func(context.Context, catalog.AccountsCreateMetastoreAssignment) error) *MockAccountMetastoreAssignmentsInterface_Create_Call {
+func (_c *MockAccountMetastoreAssignmentsInterface_Create_Call) RunAndReturn(run func(context.Context, catalog.AccountsCreateMetastoreAssignment) (*catalog.AccountsCreateMetastoreAssignmentResponse, error)) *MockAccountMetastoreAssignmentsInterface_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockAccountMetastoreAssignmentsInterface) Delete(ctx context.Context, request catalog.DeleteAccountMetastoreAssignmentRequest) error {
+func (_m *MockAccountMetastoreAssignmentsInterface) Delete(ctx context.Context, request catalog.DeleteAccountMetastoreAssignmentRequest) (*catalog.AccountsDeleteMetastoreAssignmentResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.DeleteAccountMetastoreAssignmentRequest) error); ok {
+	var r0 *catalog.AccountsDeleteMetastoreAssignmentResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.DeleteAccountMetastoreAssignmentRequest) (*catalog.AccountsDeleteMetastoreAssignmentResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.DeleteAccountMetastoreAssignmentRequest) *catalog.AccountsDeleteMetastoreAssignmentResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.AccountsDeleteMetastoreAssignmentResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.DeleteAccountMetastoreAssignmentRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockAccountMetastoreAssignmentsInterface_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
@@ -109,60 +133,12 @@ func (_c *MockAccountMetastoreAssignmentsInterface_Delete_Call) Run(run func(ctx
 	return _c
 }
 
-func (_c *MockAccountMetastoreAssignmentsInterface_Delete_Call) Return(_a0 error) *MockAccountMetastoreAssignmentsInterface_Delete_Call {
-	_c.Call.Return(_a0)
+func (_c *MockAccountMetastoreAssignmentsInterface_Delete_Call) Return(_a0 *catalog.AccountsDeleteMetastoreAssignmentResponse, _a1 error) *MockAccountMetastoreAssignmentsInterface_Delete_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAccountMetastoreAssignmentsInterface_Delete_Call) RunAndReturn(run func(context.Context, catalog.DeleteAccountMetastoreAssignmentRequest) error) *MockAccountMetastoreAssignmentsInterface_Delete_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// DeleteByWorkspaceIdAndMetastoreId provides a mock function with given fields: ctx, workspaceId, metastoreId
-func (_m *MockAccountMetastoreAssignmentsInterface) DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) error {
-	ret := _m.Called(ctx, workspaceId, metastoreId)
-
-	if len(ret) == 0 {
-		panic("no return value specified for DeleteByWorkspaceIdAndMetastoreId")
-	}
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64, string) error); ok {
-		r0 = rf(ctx, workspaceId, metastoreId)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// MockAccountMetastoreAssignmentsInterface_DeleteByWorkspaceIdAndMetastoreId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByWorkspaceIdAndMetastoreId'
-type MockAccountMetastoreAssignmentsInterface_DeleteByWorkspaceIdAndMetastoreId_Call struct {
-	*mock.Call
-}
-
-// DeleteByWorkspaceIdAndMetastoreId is a helper method to define mock.On call
-//   - ctx context.Context
-//   - workspaceId int64
-//   - metastoreId string
-func (_e *MockAccountMetastoreAssignmentsInterface_Expecter) DeleteByWorkspaceIdAndMetastoreId(ctx interface{}, workspaceId interface{}, metastoreId interface{}) *MockAccountMetastoreAssignmentsInterface_DeleteByWorkspaceIdAndMetastoreId_Call {
-	return &MockAccountMetastoreAssignmentsInterface_DeleteByWorkspaceIdAndMetastoreId_Call{Call: _e.mock.On("DeleteByWorkspaceIdAndMetastoreId", ctx, workspaceId, metastoreId)}
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_DeleteByWorkspaceIdAndMetastoreId_Call) Run(run func(ctx context.Context, workspaceId int64, metastoreId string)) *MockAccountMetastoreAssignmentsInterface_DeleteByWorkspaceIdAndMetastoreId_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(int64), args[2].(string))
-	})
-	return _c
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_DeleteByWorkspaceIdAndMetastoreId_Call) Return(_a0 error) *MockAccountMetastoreAssignmentsInterface_DeleteByWorkspaceIdAndMetastoreId_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_DeleteByWorkspaceIdAndMetastoreId_Call) RunAndReturn(run func(context.Context, int64, string) error) *MockAccountMetastoreAssignmentsInterface_DeleteByWorkspaceIdAndMetastoreId_Call {
+func (_c *MockAccountMetastoreAssignmentsInterface_Delete_Call) RunAndReturn(run func(context.Context, catalog.DeleteAccountMetastoreAssignmentRequest) (*catalog.AccountsDeleteMetastoreAssignmentResponse, error)) *MockAccountMetastoreAssignmentsInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -222,65 +198,6 @@ func (_c *MockAccountMetastoreAssignmentsInterface_Get_Call) Return(_a0 *catalog
 }
 
 func (_c *MockAccountMetastoreAssignmentsInterface_Get_Call) RunAndReturn(run func(context.Context, catalog.GetAccountMetastoreAssignmentRequest) (*catalog.AccountsMetastoreAssignment, error)) *MockAccountMetastoreAssignmentsInterface_Get_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetByWorkspaceId provides a mock function with given fields: ctx, workspaceId
-func (_m *MockAccountMetastoreAssignmentsInterface) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*catalog.AccountsMetastoreAssignment, error) {
-	ret := _m.Called(ctx, workspaceId)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetByWorkspaceId")
-	}
-
-	var r0 *catalog.AccountsMetastoreAssignment
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) (*catalog.AccountsMetastoreAssignment, error)); ok {
-		return rf(ctx, workspaceId)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, int64) *catalog.AccountsMetastoreAssignment); ok {
-		r0 = rf(ctx, workspaceId)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.AccountsMetastoreAssignment)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
-		r1 = rf(ctx, workspaceId)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockAccountMetastoreAssignmentsInterface_GetByWorkspaceId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByWorkspaceId'
-type MockAccountMetastoreAssignmentsInterface_GetByWorkspaceId_Call struct {
-	*mock.Call
-}
-
-// GetByWorkspaceId is a helper method to define mock.On call
-//   - ctx context.Context
-//   - workspaceId int64
-func (_e *MockAccountMetastoreAssignmentsInterface_Expecter) GetByWorkspaceId(ctx interface{}, workspaceId interface{}) *MockAccountMetastoreAssignmentsInterface_GetByWorkspaceId_Call {
-	return &MockAccountMetastoreAssignmentsInterface_GetByWorkspaceId_Call{Call: _e.mock.On("GetByWorkspaceId", ctx, workspaceId)}
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_GetByWorkspaceId_Call) Run(run func(ctx context.Context, workspaceId int64)) *MockAccountMetastoreAssignmentsInterface_GetByWorkspaceId_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(int64))
-	})
-	return _c
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_GetByWorkspaceId_Call) Return(_a0 *catalog.AccountsMetastoreAssignment, _a1 error) *MockAccountMetastoreAssignmentsInterface_GetByWorkspaceId_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_GetByWorkspaceId_Call) RunAndReturn(run func(context.Context, int64) (*catalog.AccountsMetastoreAssignment, error)) *MockAccountMetastoreAssignmentsInterface_GetByWorkspaceId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -393,81 +310,34 @@ func (_c *MockAccountMetastoreAssignmentsInterface_ListAll_Call) RunAndReturn(ru
 	return _c
 }
 
-// ListByMetastoreId provides a mock function with given fields: ctx, metastoreId
-func (_m *MockAccountMetastoreAssignmentsInterface) ListByMetastoreId(ctx context.Context, metastoreId string) (*catalog.ListAccountMetastoreAssignmentsResponse, error) {
-	ret := _m.Called(ctx, metastoreId)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ListByMetastoreId")
-	}
-
-	var r0 *catalog.ListAccountMetastoreAssignmentsResponse
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.ListAccountMetastoreAssignmentsResponse, error)); ok {
-		return rf(ctx, metastoreId)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.ListAccountMetastoreAssignmentsResponse); ok {
-		r0 = rf(ctx, metastoreId)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.ListAccountMetastoreAssignmentsResponse)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, metastoreId)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockAccountMetastoreAssignmentsInterface_ListByMetastoreId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListByMetastoreId'
-type MockAccountMetastoreAssignmentsInterface_ListByMetastoreId_Call struct {
-	*mock.Call
-}
-
-// ListByMetastoreId is a helper method to define mock.On call
-//   - ctx context.Context
-//   - metastoreId string
-func (_e *MockAccountMetastoreAssignmentsInterface_Expecter) ListByMetastoreId(ctx interface{}, metastoreId interface{}) *MockAccountMetastoreAssignmentsInterface_ListByMetastoreId_Call {
-	return &MockAccountMetastoreAssignmentsInterface_ListByMetastoreId_Call{Call: _e.mock.On("ListByMetastoreId", ctx, metastoreId)}
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_ListByMetastoreId_Call) Run(run func(ctx context.Context, metastoreId string)) *MockAccountMetastoreAssignmentsInterface_ListByMetastoreId_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_ListByMetastoreId_Call) Return(_a0 *catalog.ListAccountMetastoreAssignmentsResponse, _a1 error) *MockAccountMetastoreAssignmentsInterface_ListByMetastoreId_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockAccountMetastoreAssignmentsInterface_ListByMetastoreId_Call) RunAndReturn(run func(context.Context, string) (*catalog.ListAccountMetastoreAssignmentsResponse, error)) *MockAccountMetastoreAssignmentsInterface_ListByMetastoreId_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockAccountMetastoreAssignmentsInterface) Update(ctx context.Context, request catalog.AccountsUpdateMetastoreAssignment) error {
+func (_m *MockAccountMetastoreAssignmentsInterface) Update(ctx context.Context, request catalog.AccountsUpdateMetastoreAssignment) (*catalog.AccountsUpdateMetastoreAssignmentResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsUpdateMetastoreAssignment) error); ok {
+	var r0 *catalog.AccountsUpdateMetastoreAssignmentResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsUpdateMetastoreAssignment) (*catalog.AccountsUpdateMetastoreAssignmentResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsUpdateMetastoreAssignment) *catalog.AccountsUpdateMetastoreAssignmentResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.AccountsUpdateMetastoreAssignmentResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.AccountsUpdateMetastoreAssignment) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockAccountMetastoreAssignmentsInterface_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
@@ -489,12 +359,12 @@ func (_c *MockAccountMetastoreAssignmentsInterface_Update_Call) Run(run func(ctx
 	return _c
 }
 
-func (_c *MockAccountMetastoreAssignmentsInterface_Update_Call) Return(_a0 error) *MockAccountMetastoreAssignmentsInterface_Update_Call {
-	_c.Call.Return(_a0)
+func (_c *MockAccountMetastoreAssignmentsInterface_Update_Call) Return(_a0 *catalog.AccountsUpdateMetastoreAssignmentResponse, _a1 error) *MockAccountMetastoreAssignmentsInterface_Update_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAccountMetastoreAssignmentsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.AccountsUpdateMetastoreAssignment) error) *MockAccountMetastoreAssignmentsInterface_Update_Call {
+func (_c *MockAccountMetastoreAssignmentsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.AccountsUpdateMetastoreAssignment) (*catalog.AccountsUpdateMetastoreAssignmentResponse, error)) *MockAccountMetastoreAssignmentsInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

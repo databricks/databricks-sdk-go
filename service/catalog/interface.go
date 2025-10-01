@@ -12,15 +12,15 @@ import (
 type AccountMetastoreAssignmentsService interface {
 
 	// Creates an assignment to a metastore for a workspace
-	Create(ctx context.Context, request AccountsCreateMetastoreAssignment) error
+	Create(ctx context.Context, request AccountsCreateMetastoreAssignment) (*AccountsCreateMetastoreAssignmentResponse, error)
 
 	// Deletes a metastore assignment to a workspace, leaving the workspace with
 	// no metastore.
-	Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error
+	Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) (*AccountsDeleteMetastoreAssignmentResponse, error)
 
 	// Gets the metastore assignment, if any, for the workspace specified by ID.
-	// If the workspace is assigned a metastore, the mappig will be returned. If
-	// no metastore is assigned to the workspace, the assignment will not be
+	// If the workspace is assigned a metastore, the mapping will be returned.
+	// If no metastore is assigned to the workspace, the assignment will not be
 	// found and a 404 returned.
 	Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*AccountsMetastoreAssignment, error)
 
@@ -30,7 +30,7 @@ type AccountMetastoreAssignmentsService interface {
 
 	// Updates an assignment to a metastore for a workspace. Currently, only the
 	// default catalog may be updated.
-	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error
+	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) (*AccountsUpdateMetastoreAssignmentResponse, error)
 }
 
 // These APIs manage Unity Catalog metastores for an account. A metastore
@@ -40,20 +40,20 @@ type AccountMetastoreAssignmentsService interface {
 type AccountMetastoresService interface {
 
 	// Creates a Unity Catalog metastore.
-	Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsMetastoreInfo, error)
+	Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsCreateMetastoreResponse, error)
 
 	// Deletes a Unity Catalog metastore for an account, both specified by ID.
-	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error
+	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) (*AccountsDeleteMetastoreResponse, error)
 
 	// Gets a Unity Catalog metastore from an account, both specified by ID.
-	Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsMetastoreInfo, error)
+	Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsGetMetastoreResponse, error)
 
 	// Gets all Unity Catalog metastores associated with an account specified by
 	// ID.
-	List(ctx context.Context) (*ListMetastoresResponse, error)
+	List(ctx context.Context) (*AccountsListMetastoresResponse, error)
 
 	// Updates an existing Unity Catalog metastore.
-	Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsMetastoreInfo, error)
+	Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsUpdateMetastoreResponse, error)
 }
 
 // These APIs manage storage credentials for a particular metastore.
@@ -62,18 +62,16 @@ type AccountMetastoresService interface {
 type AccountStorageCredentialsService interface {
 
 	// Creates a new storage credential. The request object is specific to the
-	// cloud:
-	//
-	// * **AwsIamRole** for AWS credentials * **AzureServicePrincipal** for
-	// Azure credentials * **GcpServiceAcountKey** for GCP credentials.
+	// cloud: - **AwsIamRole** for AWS credentials - **AzureServicePrincipal**
+	// for Azure credentials - **GcpServiceAccountKey** for GCP credentials
 	//
 	// The caller must be a metastore admin and have the
-	// **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
-	Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsStorageCredentialInfo, error)
+	// `CREATE_STORAGE_CREDENTIAL` privilege on the metastore.
+	Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsCreateStorageCredentialInfo, error)
 
 	// Deletes a storage credential from the metastore. The caller must be an
 	// owner of the storage credential.
-	Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error
+	Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) (*AccountsDeleteStorageCredentialResponse, error)
 
 	// Gets a storage credential from the metastore. The caller must be a
 	// metastore admin, the owner of the storage credential, or have a level of
@@ -86,8 +84,8 @@ type AccountStorageCredentialsService interface {
 
 	// Updates a storage credential on the metastore. The caller must be the
 	// owner of the storage credential. If the caller is a metastore admin, only
-	// the __owner__ credential can be changed.
-	Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error)
+	// the **owner** credential can be changed.
+	Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsUpdateStorageCredentialResponse, error)
 }
 
 // In Databricks Runtime 13.3 and above, you can add libraries and init scripts
@@ -839,9 +837,9 @@ type QualityMonitorsService interface {
 // update permissions on the registered model, users must be owners of the
 // registered model.
 //
-// Note: The securable type for models is "FUNCTION". When using REST APIs (e.g.
-// tagging, grants) that specify a securable type, use "FUNCTION" as the
-// securable type.
+// Note: The securable type for models is FUNCTION. When using REST APIs (e.g.
+// tagging, grants) that specify a securable type, use FUNCTION as the securable
+// type.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type RegisteredModelsService interface {
@@ -1375,7 +1373,7 @@ type VolumesService interface {
 	// The returned volumes are filtered based on the privileges of the calling
 	// user. For example, the metastore admin is able to list all the volumes. A
 	// regular user needs to be the owner or have the **READ VOLUME** privilege
-	// on the volume to recieve the volumes in the response. For the latter
+	// on the volume to receive the volumes in the response. For the latter
 	// case, the caller must also be the owner or have the **USE_CATALOG**
 	// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 	// parent schema.

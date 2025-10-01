@@ -466,65 +466,6 @@ func (_c *MockModelVersionsInterface_ListAll_Call) RunAndReturn(run func(context
 	return _c
 }
 
-// ListByFullName provides a mock function with given fields: ctx, fullName
-func (_m *MockModelVersionsInterface) ListByFullName(ctx context.Context, fullName string) (*catalog.ListModelVersionsResponse, error) {
-	ret := _m.Called(ctx, fullName)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ListByFullName")
-	}
-
-	var r0 *catalog.ListModelVersionsResponse
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.ListModelVersionsResponse, error)); ok {
-		return rf(ctx, fullName)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.ListModelVersionsResponse); ok {
-		r0 = rf(ctx, fullName)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.ListModelVersionsResponse)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, fullName)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockModelVersionsInterface_ListByFullName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListByFullName'
-type MockModelVersionsInterface_ListByFullName_Call struct {
-	*mock.Call
-}
-
-// ListByFullName is a helper method to define mock.On call
-//   - ctx context.Context
-//   - fullName string
-func (_e *MockModelVersionsInterface_Expecter) ListByFullName(ctx interface{}, fullName interface{}) *MockModelVersionsInterface_ListByFullName_Call {
-	return &MockModelVersionsInterface_ListByFullName_Call{Call: _e.mock.On("ListByFullName", ctx, fullName)}
-}
-
-func (_c *MockModelVersionsInterface_ListByFullName_Call) Run(run func(ctx context.Context, fullName string)) *MockModelVersionsInterface_ListByFullName_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockModelVersionsInterface_ListByFullName_Call) Return(_a0 *catalog.ListModelVersionsResponse, _a1 error) *MockModelVersionsInterface_ListByFullName_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockModelVersionsInterface_ListByFullName_Call) RunAndReturn(run func(context.Context, string) (*catalog.ListModelVersionsResponse, error)) *MockModelVersionsInterface_ListByFullName_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
 func (_m *MockModelVersionsInterface) Update(ctx context.Context, request catalog.UpdateModelVersionRequest) (*catalog.ModelVersionInfo, error) {
 	ret := _m.Called(ctx, request)

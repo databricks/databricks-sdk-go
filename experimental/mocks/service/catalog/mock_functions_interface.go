@@ -178,65 +178,6 @@ func (_c *MockFunctionsInterface_DeleteByName_Call) RunAndReturn(run func(contex
 	return _c
 }
 
-// FunctionInfoNameToFullNameMap provides a mock function with given fields: ctx, request
-func (_m *MockFunctionsInterface) FunctionInfoNameToFullNameMap(ctx context.Context, request catalog.ListFunctionsRequest) (map[string]string, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for FunctionInfoNameToFullNameMap")
-	}
-
-	var r0 map[string]string
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListFunctionsRequest) (map[string]string, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListFunctionsRequest) map[string]string); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(map[string]string)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListFunctionsRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockFunctionsInterface_FunctionInfoNameToFullNameMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FunctionInfoNameToFullNameMap'
-type MockFunctionsInterface_FunctionInfoNameToFullNameMap_Call struct {
-	*mock.Call
-}
-
-// FunctionInfoNameToFullNameMap is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request catalog.ListFunctionsRequest
-func (_e *MockFunctionsInterface_Expecter) FunctionInfoNameToFullNameMap(ctx interface{}, request interface{}) *MockFunctionsInterface_FunctionInfoNameToFullNameMap_Call {
-	return &MockFunctionsInterface_FunctionInfoNameToFullNameMap_Call{Call: _e.mock.On("FunctionInfoNameToFullNameMap", ctx, request)}
-}
-
-func (_c *MockFunctionsInterface_FunctionInfoNameToFullNameMap_Call) Run(run func(ctx context.Context, request catalog.ListFunctionsRequest)) *MockFunctionsInterface_FunctionInfoNameToFullNameMap_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(catalog.ListFunctionsRequest))
-	})
-	return _c
-}
-
-func (_c *MockFunctionsInterface_FunctionInfoNameToFullNameMap_Call) Return(_a0 map[string]string, _a1 error) *MockFunctionsInterface_FunctionInfoNameToFullNameMap_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockFunctionsInterface_FunctionInfoNameToFullNameMap_Call) RunAndReturn(run func(context.Context, catalog.ListFunctionsRequest) (map[string]string, error)) *MockFunctionsInterface_FunctionInfoNameToFullNameMap_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Get provides a mock function with given fields: ctx, request
 func (_m *MockFunctionsInterface) Get(ctx context.Context, request catalog.GetFunctionRequest) (*catalog.FunctionInfo, error) {
 	ret := _m.Called(ctx, request)

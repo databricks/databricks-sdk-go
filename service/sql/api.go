@@ -1113,29 +1113,85 @@ type StatementExecutionInterface interface {
 	statementExecutionAPIUtilities
 
 	// Requests that an executing statement be canceled. Callers must poll for
-	// status to see the terminal state.
+	// status to see the terminal state. Cancel response is empty; receiving
+	// response indicates successful receipt.
 	CancelExecution(ctx context.Context, request CancelExecutionRequest) error
 
-	// Execute a SQL statement
+	// Execute a SQL statement and optionally await its results for a specified
+	// time.
+	//
+	// **Use case: small result sets with INLINE + JSON_ARRAY**
+	//
+	// For flows that generate small and predictable result sets (<= 25 MiB),
+	// `INLINE` responses of `JSON_ARRAY` result data are typically the simplest way
+	// to execute and fetch result data.
+	//
+	// **Use case: large result sets with EXTERNAL_LINKS**
+	//
+	// Using `EXTERNAL_LINKS` to fetch result data allows you to fetch large result
+	// sets efficiently. The main differences from using `INLINE` disposition are
+	// that the result data is accessed with URLs, and that there are 3 supported
+	// formats: `JSON_ARRAY`, `ARROW_STREAM` and `CSV` compared to only `JSON_ARRAY`
+	// with `INLINE`.
+	//
+	// ** URLs**
+	//
+	// External links point to data stored within your workspace's internal storage,
+	// in the form of a URL. The URLs are valid for only a short period, <= 15
+	// minutes. Alongside each `external_link` is an expiration field indicating the
+	// time at which the URL is no longer valid. In `EXTERNAL_LINKS` mode, chunks
+	// can be resolved and fetched multiple times and in parallel.
+	//
+	// ----
+	//
+	// ### **Warning: Databricks strongly recommends that you protect the URLs that
+	// are returned by the `EXTERNAL_LINKS` disposition.**
+	//
+	// When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is
+	// generated, which can be used to download the results directly from . As a
+	// short-lived is embedded in this URL, you should protect the URL.
+	//
+	// Because URLs are already generated with embedded temporary s, you must not
+	// set an `Authorization` header in the download requests.
+	//
+	// The `EXTERNAL_LINKS` disposition can be disabled upon request by creating a
+	// support case.
+	//
+	// See also [Security best practices].
+	//
+	// ----
+	//
+	// StatementResponse contains `statement_id` and `status`; other fields might be
+	// absent or present depending on context. If the SQL warehouse fails to execute
+	// the provided statement, a 200 response is returned with `status.state` set to
+	// `FAILED` (in contrast to a failure when accepting the request, which results
+	// in a non-200 response). Details of the error can be found at `status.error`
+	// in case of execution failures.
+	//
+	// [Security best practices]: https://docs.databricks.com/sql/admin/sql-execution-tutorial.html#security-best-practices
 	ExecuteStatement(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error)
 
-	// This request can be used to poll for the statement's status. When the
-	// `status.state` field is `SUCCEEDED` it will also return the result manifest
-	// and the first chunk of the result data. When the statement is in the terminal
-	// states `CANCELED`, `CLOSED` or `FAILED`, it returns HTTP 200 with the state
-	// set. After at least 12 hours in terminal state, the statement is removed from
-	// the warehouse and further calls will receive an HTTP 404 response.
+	// This request can be used to poll for the statement's status.
+	// StatementResponse contains `statement_id` and `status`; other fields might be
+	// absent or present depending on context. When the `status.state` field is
+	// `SUCCEEDED` it will also return the result manifest and the first chunk of
+	// the result data. When the statement is in the terminal states `CANCELED`,
+	// `CLOSED` or `FAILED`, it returns HTTP 200 with the state set. After at least
+	// 12 hours in terminal state, the statement is removed from the warehouse and
+	// further calls will receive an HTTP 404 response.
 	//
 	// **NOTE** This call currently might take up to 5 seconds to get the latest
 	// status and result.
 	GetStatement(ctx context.Context, request GetStatementRequest) (*StatementResponse, error)
 
-	// This request can be used to poll for the statement's status. When the
-	// `status.state` field is `SUCCEEDED` it will also return the result manifest
-	// and the first chunk of the result data. When the statement is in the terminal
-	// states `CANCELED`, `CLOSED` or `FAILED`, it returns HTTP 200 with the state
-	// set. After at least 12 hours in terminal state, the statement is removed from
-	// the warehouse and further calls will receive an HTTP 404 response.
+	// This request can be used to poll for the statement's status.
+	// StatementResponse contains `statement_id` and `status`; other fields might be
+	// absent or present depending on context. When the `status.state` field is
+	// `SUCCEEDED` it will also return the result manifest and the first chunk of
+	// the result data. When the statement is in the terminal states `CANCELED`,
+	// `CLOSED` or `FAILED`, it returns HTTP 200 with the state set. After at least
+	// 12 hours in terminal state, the statement is removed from the warehouse and
+	// further calls will receive an HTTP 404 response.
 	//
 	// **NOTE** This call currently might take up to 5 seconds to get the latest
 	// status and result.
@@ -1148,7 +1204,9 @@ type StatementExecutionInterface interface {
 	// subsequent chunks. The response structure is identical to the nested `result`
 	// element described in the :method:statementexecution/getStatement request, and
 	// similarly includes the `next_chunk_index` and `next_chunk_internal_link`
-	// fields for simple iteration through the result set.
+	// fields for simple iteration through the result set. Depending on
+	// `disposition`, the response returns chunks of data either inline, or as
+	// links.
 	GetStatementResultChunkN(ctx context.Context, request GetStatementResultChunkNRequest) (*ResultData, error)
 
 	// After the statement execution has `SUCCEEDED`, this request can be used to
@@ -1158,7 +1216,9 @@ type StatementExecutionInterface interface {
 	// subsequent chunks. The response structure is identical to the nested `result`
 	// element described in the :method:statementexecution/getStatement request, and
 	// similarly includes the `next_chunk_index` and `next_chunk_internal_link`
-	// fields for simple iteration through the result set.
+	// fields for simple iteration through the result set. Depending on
+	// `disposition`, the response returns chunks of data either inline, or as
+	// links.
 	GetStatementResultChunkNByStatementIdAndChunkIndex(ctx context.Context, statementId string, chunkIndex int) (*ResultData, error)
 }
 
@@ -1202,18 +1262,18 @@ func NewStatementExecution(client *client.DatabricksClient) *StatementExecutionA
 // to either `CONTINUE`, to fallback to asynchronous mode, or it can be set to
 // `CANCEL`, which cancels the statement.
 //
-// In summary: - Synchronous mode - `wait_timeout=30s` and
-// `on_wait_timeout=CANCEL` - The call waits up to 30 seconds; if the statement
+// In summary: - **Synchronous mode** (`wait_timeout=30s` and
+// `on_wait_timeout=CANCEL`): The call waits up to 30 seconds; if the statement
 // execution finishes within this time, the result data is returned directly in
 // the response. If the execution takes longer than 30 seconds, the execution is
-// canceled and the call returns with a `CANCELED` state. - Asynchronous mode -
-// `wait_timeout=0s` (`on_wait_timeout` is ignored) - The call doesn't wait for
-// the statement to finish but returns directly with a statement ID. The status
-// of the statement execution can be polled by issuing
+// canceled and the call returns with a `CANCELED` state. - **Asynchronous
+// mode** (`wait_timeout=0s` and `on_wait_timeout` is ignored): The call doesn't
+// wait for the statement to finish but returns directly with a statement ID.
+// The status of the statement execution can be polled by issuing
 // :method:statementexecution/getStatement with the statement ID. Once the
 // execution has succeeded, this call also returns the result and metadata in
-// the response. - Hybrid mode (default) - `wait_timeout=10s` and
-// `on_wait_timeout=CONTINUE` - The call waits for up to 10 seconds; if the
+// the response. - **[Default] Hybrid mode** (`wait_timeout=10s` and
+// `on_wait_timeout=CONTINUE`): The call waits for up to 10 seconds; if the
 // statement execution finishes within this time, the result data is returned
 // directly in the response. If the execution takes longer than 10 seconds, a
 // statement ID is returned. The statement ID can be used to fetch status and
@@ -1279,12 +1339,14 @@ type StatementExecutionAPI struct {
 	statementExecutionImpl
 }
 
-// This request can be used to poll for the statement's status. When the
-// `status.state` field is `SUCCEEDED` it will also return the result manifest
-// and the first chunk of the result data. When the statement is in the terminal
-// states `CANCELED`, `CLOSED` or `FAILED`, it returns HTTP 200 with the state
-// set. After at least 12 hours in terminal state, the statement is removed from
-// the warehouse and further calls will receive an HTTP 404 response.
+// This request can be used to poll for the statement's status.
+// StatementResponse contains `statement_id` and `status`; other fields might be
+// absent or present depending on context. When the `status.state` field is
+// `SUCCEEDED` it will also return the result manifest and the first chunk of
+// the result data. When the statement is in the terminal states `CANCELED`,
+// `CLOSED` or `FAILED`, it returns HTTP 200 with the state set. After at least
+// 12 hours in terminal state, the statement is removed from the warehouse and
+// further calls will receive an HTTP 404 response.
 //
 // **NOTE** This call currently might take up to 5 seconds to get the latest
 // status and result.
@@ -1301,7 +1363,9 @@ func (a *StatementExecutionAPI) GetStatementByStatementId(ctx context.Context, s
 // subsequent chunks. The response structure is identical to the nested `result`
 // element described in the :method:statementexecution/getStatement request, and
 // similarly includes the `next_chunk_index` and `next_chunk_internal_link`
-// fields for simple iteration through the result set.
+// fields for simple iteration through the result set. Depending on
+// `disposition`, the response returns chunks of data either inline, or as
+// links.
 func (a *StatementExecutionAPI) GetStatementResultChunkNByStatementIdAndChunkIndex(ctx context.Context, statementId string, chunkIndex int) (*ResultData, error) {
 	return a.statementExecutionImpl.GetStatementResultChunkN(ctx, GetStatementResultChunkNRequest{
 		StatementId: statementId,
@@ -1333,9 +1397,6 @@ type WarehousesInterface interface {
 	// Deletes a SQL warehouse.
 	Delete(ctx context.Context, request DeleteWarehouseRequest) error
 
-	// Deletes a SQL warehouse.
-	DeleteById(ctx context.Context, id string) error
-
 	// Updates the configuration for a SQL warehouse.
 	Edit(ctx context.Context, editWarehouseRequest EditWarehouseRequest) (*WaitGetWarehouseRunning[struct{}], error)
 
@@ -1349,9 +1410,6 @@ type WarehousesInterface interface {
 
 	// Gets the information for a single SQL warehouse.
 	Get(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error)
-
-	// Gets the information for a single SQL warehouse.
-	GetById(ctx context.Context, id string) (*GetWarehouseResponse, error)
 
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error)
@@ -1380,24 +1438,6 @@ type WarehousesInterface interface {
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListWarehousesRequest) ([]EndpointInfo, error)
-
-	// EndpointInfoNameToIdMap calls [WarehousesAPI.ListAll] and creates a map of results with [EndpointInfo].Name as key and [EndpointInfo].Id as value.
-	//
-	// Returns an error if there's more than one [EndpointInfo] with the same .Name.
-	//
-	// Note: All [EndpointInfo] instances are loaded into memory before creating a map.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	EndpointInfoNameToIdMap(ctx context.Context, request ListWarehousesRequest) (map[string]string, error)
-
-	// GetByName calls [WarehousesAPI.EndpointInfoNameToIdMap] and returns a single [EndpointInfo].
-	//
-	// Returns an error if there's more than one [EndpointInfo] with the same .Name.
-	//
-	// Note: All [EndpointInfo] instances are loaded into memory before returning matching by name.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	GetByName(ctx context.Context, name string) (*EndpointInfo, error)
 
 	// Sets permissions on an object, replacing existing permissions if they exist.
 	// Deletes all direct permissions if none are specified. Objects can inherit
@@ -1604,13 +1644,6 @@ func (a *WarehousesAPI) CreateAndWait(ctx context.Context, createWarehouseReques
 	return wait.Get()
 }
 
-// Deletes a SQL warehouse.
-func (a *WarehousesAPI) DeleteById(ctx context.Context, id string) error {
-	return a.warehousesImpl.Delete(ctx, DeleteWarehouseRequest{
-		Id: id,
-	})
-}
-
 // Updates the configuration for a SQL warehouse.
 func (a *WarehousesAPI) Edit(ctx context.Context, editWarehouseRequest EditWarehouseRequest) (*WaitGetWarehouseRunning[struct{}], error) {
 	err := a.warehousesImpl.Edit(ctx, editWarehouseRequest)
@@ -1655,13 +1688,6 @@ func (a *WarehousesAPI) EditAndWait(ctx context.Context, editWarehouseRequest Ed
 	return wait.Get()
 }
 
-// Gets the information for a single SQL warehouse.
-func (a *WarehousesAPI) GetById(ctx context.Context, id string) (*GetWarehouseResponse, error) {
-	return a.warehousesImpl.Get(ctx, GetWarehouseRequest{
-		Id: id,
-	})
-}
-
 // Gets the permission levels that a user can have on an object.
 func (a *WarehousesAPI) GetPermissionLevelsByWarehouseId(ctx context.Context, warehouseId string) (*GetWarehousePermissionLevelsResponse, error) {
 	return a.warehousesImpl.GetPermissionLevels(ctx, GetWarehousePermissionLevelsRequest{
@@ -1675,59 +1701,6 @@ func (a *WarehousesAPI) GetPermissionsByWarehouseId(ctx context.Context, warehou
 	return a.warehousesImpl.GetPermissions(ctx, GetWarehousePermissionsRequest{
 		WarehouseId: warehouseId,
 	})
-}
-
-// EndpointInfoNameToIdMap calls [WarehousesAPI.ListAll] and creates a map of results with [EndpointInfo].Name as key and [EndpointInfo].Id as value.
-//
-// Returns an error if there's more than one [EndpointInfo] with the same .Name.
-//
-// Note: All [EndpointInfo] instances are loaded into memory before creating a map.
-//
-// This method is generated by Databricks SDK Code Generator.
-func (a *WarehousesAPI) EndpointInfoNameToIdMap(ctx context.Context, request ListWarehousesRequest) (map[string]string, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
-	mapping := map[string]string{}
-	result, err := a.ListAll(ctx, request)
-	if err != nil {
-		return nil, err
-	}
-	for _, v := range result {
-		key := v.Name
-		_, duplicate := mapping[key]
-		if duplicate {
-			return nil, fmt.Errorf("duplicate .Name: %s", key)
-		}
-		mapping[key] = v.Id
-	}
-	return mapping, nil
-}
-
-// GetByName calls [WarehousesAPI.EndpointInfoNameToIdMap] and returns a single [EndpointInfo].
-//
-// Returns an error if there's more than one [EndpointInfo] with the same .Name.
-//
-// Note: All [EndpointInfo] instances are loaded into memory before returning matching by name.
-//
-// This method is generated by Databricks SDK Code Generator.
-func (a *WarehousesAPI) GetByName(ctx context.Context, name string) (*EndpointInfo, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
-	result, err := a.ListAll(ctx, ListWarehousesRequest{})
-	if err != nil {
-		return nil, err
-	}
-	tmp := map[string][]EndpointInfo{}
-	for _, v := range result {
-		key := v.Name
-		tmp[key] = append(tmp[key], v)
-	}
-	alternatives, ok := tmp[name]
-	if !ok || len(alternatives) == 0 {
-		return nil, fmt.Errorf("EndpointInfo named '%s' does not exist", name)
-	}
-	if len(alternatives) > 1 {
-		return nil, fmt.Errorf("there are %d instances of EndpointInfo named '%s'", len(alternatives), name)
-	}
-	return &alternatives[0], nil
 }
 
 // Starts a SQL warehouse.

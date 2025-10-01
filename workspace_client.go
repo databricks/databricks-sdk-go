@@ -16,6 +16,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/service/database"
+	"github.com/databricks/databricks-sdk-go/service/dataquality"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
@@ -244,6 +245,10 @@ type WorkspaceClient struct {
 	// scheduled using the `sql_task` type of the Jobs API, e.g.
 	// :method:jobs/create.
 	Dashboards sql.DashboardsInterface
+
+	// Manage the data quality of Unity Catalog objects (currently support
+	// `schema` and `table`)
+	DataQuality dataquality.DataQualityInterface
 
 	// This API is provided to assist you in making new query objects. When
 	// creating a query object, you may optionally specify a `data_source_id`
@@ -869,9 +874,9 @@ type WorkspaceClient struct {
 	// (comments, aliases) create a new model version, or update permissions on
 	// the registered model, users must be owners of the registered model.
 	//
-	// Note: The securable type for models is "FUNCTION". When using REST APIs
-	// (e.g. tagging, grants) that specify a securable type, use "FUNCTION" as
-	// the securable type.
+	// Note: The securable type for models is FUNCTION. When using REST APIs
+	// (e.g. tagging, grants) that specify a securable type, use FUNCTION as the
+	// securable type.
 	RegisteredModels catalog.RegisteredModelsInterface
 
 	// The Repos API allows users to manage their git repos. Users can use the
@@ -1017,23 +1022,23 @@ type WorkspaceClient struct {
 	// asynchronous mode, or it can be set to `CANCEL`, which cancels the
 	// statement.
 	//
-	// In summary: - Synchronous mode - `wait_timeout=30s` and
-	// `on_wait_timeout=CANCEL` - The call waits up to 30 seconds; if the
+	// In summary: - **Synchronous mode** (`wait_timeout=30s` and
+	// `on_wait_timeout=CANCEL`): The call waits up to 30 seconds; if the
 	// statement execution finishes within this time, the result data is
 	// returned directly in the response. If the execution takes longer than 30
 	// seconds, the execution is canceled and the call returns with a `CANCELED`
-	// state. - Asynchronous mode - `wait_timeout=0s` (`on_wait_timeout` is
-	// ignored) - The call doesn't wait for the statement to finish but returns
-	// directly with a statement ID. The status of the statement execution can
-	// be polled by issuing :method:statementexecution/getStatement with the
-	// statement ID. Once the execution has succeeded, this call also returns
-	// the result and metadata in the response. - Hybrid mode (default) -
-	// `wait_timeout=10s` and `on_wait_timeout=CONTINUE` - The call waits for up
-	// to 10 seconds; if the statement execution finishes within this time, the
-	// result data is returned directly in the response. If the execution takes
-	// longer than 10 seconds, a statement ID is returned. The statement ID can
-	// be used to fetch status and results in the same way as in the
-	// asynchronous mode.
+	// state. - **Asynchronous mode** (`wait_timeout=0s` and `on_wait_timeout`
+	// is ignored): The call doesn't wait for the statement to finish but
+	// returns directly with a statement ID. The status of the statement
+	// execution can be polled by issuing
+	// :method:statementexecution/getStatement with the statement ID. Once the
+	// execution has succeeded, this call also returns the result and metadata
+	// in the response. - **[Default] Hybrid mode** (`wait_timeout=10s` and
+	// `on_wait_timeout=CONTINUE`): The call waits for up to 10 seconds; if the
+	// statement execution finishes within this time, the result data is
+	// returned directly in the response. If the execution takes longer than 10
+	// seconds, a statement ID is returned. The statement ID can be used to
+	// fetch status and results in the same way as in the asynchronous mode.
 	//
 	// Depending on the size, the result can be split into multiple chunks. If
 	// the statement execution is successful, the statement response contains a
@@ -1400,6 +1405,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		CurrentUser:                         iam.NewCurrentUser(databricksClient),
 		DashboardWidgets:                    sql.NewDashboardWidgets(databricksClient),
 		Dashboards:                          sql.NewDashboards(databricksClient),
+		DataQuality:                         dataquality.NewDataQuality(databricksClient),
 		DataSources:                         sql.NewDataSources(databricksClient),
 		Database:                            database.NewDatabase(databricksClient),
 		Dbfs:                                files.NewDbfs(databricksClient),

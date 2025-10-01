@@ -18,23 +18,25 @@ type accountMetastoreAssignmentsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) error {
+func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) (*AccountsCreateMetastoreAssignmentResponse, error) {
+	var accountsCreateMetastoreAssignmentResponse AccountsCreateMetastoreAssignmentResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountsCreateMetastoreAssignmentResponse)
+	return &accountsCreateMetastoreAssignmentResponse, err
 }
 
-func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error {
+func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) (*AccountsDeleteMetastoreAssignmentResponse, error) {
+	var accountsDeleteMetastoreAssignmentResponse AccountsDeleteMetastoreAssignmentResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &accountsDeleteMetastoreAssignmentResponse)
+	return &accountsDeleteMetastoreAssignmentResponse, err
 }
 
 func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*AccountsMetastoreAssignment, error) {
@@ -84,14 +86,15 @@ func (a *accountMetastoreAssignmentsImpl) internalList(ctx context.Context, requ
 	return &listAccountMetastoreAssignmentsResponse, err
 }
 
-func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error {
+func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) (*AccountsUpdateMetastoreAssignmentResponse, error) {
+	var accountsUpdateMetastoreAssignmentResponse AccountsUpdateMetastoreAssignmentResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &accountsUpdateMetastoreAssignmentResponse)
+	return &accountsUpdateMetastoreAssignmentResponse, err
 }
 
 // unexported type that holds implementations of just AccountMetastores API methods
@@ -99,45 +102,46 @@ type accountMetastoresImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsMetastoreInfo, error) {
-	var accountsMetastoreInfo AccountsMetastoreInfo
+func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsCreateMetastoreResponse, error) {
+	var accountsCreateMetastoreResponse AccountsCreateMetastoreResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountsMetastoreInfo)
-	return &accountsMetastoreInfo, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountsCreateMetastoreResponse)
+	return &accountsCreateMetastoreResponse, err
 }
 
-func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error {
+func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccountMetastoreRequest) (*AccountsDeleteMetastoreResponse, error) {
+	var accountsDeleteMetastoreResponse AccountsDeleteMetastoreResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &accountsDeleteMetastoreResponse)
+	return &accountsDeleteMetastoreResponse, err
 }
 
-func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsMetastoreInfo, error) {
-	var accountsMetastoreInfo AccountsMetastoreInfo
+func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsGetMetastoreResponse, error) {
+	var accountsGetMetastoreResponse AccountsGetMetastoreResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountsMetastoreInfo)
-	return &accountsMetastoreInfo, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountsGetMetastoreResponse)
+	return &accountsGetMetastoreResponse, err
 }
 
 // Gets all Unity Catalog metastores associated with an account specified by ID.
 func (a *accountMetastoresImpl) List(ctx context.Context) listing.Iterator[MetastoreInfo] {
 	request := struct{}{}
 
-	getNextPage := func(ctx context.Context, req struct{}) (*ListMetastoresResponse, error) {
+	getNextPage := func(ctx context.Context, req struct{}) (*AccountsListMetastoresResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx)
 	}
-	getItems := func(resp *ListMetastoresResponse) []MetastoreInfo {
+	getItems := func(resp *AccountsListMetastoresResponse) []MetastoreInfo {
 		return resp.Metastores
 	}
 
@@ -155,25 +159,25 @@ func (a *accountMetastoresImpl) ListAll(ctx context.Context) ([]MetastoreInfo, e
 	return listing.ToSlice[MetastoreInfo](ctx, iterator)
 }
 
-func (a *accountMetastoresImpl) internalList(ctx context.Context) (*ListMetastoresResponse, error) {
-	var listMetastoresResponse ListMetastoresResponse
+func (a *accountMetastoresImpl) internalList(ctx context.Context) (*AccountsListMetastoresResponse, error) {
+	var accountsListMetastoresResponse AccountsListMetastoresResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listMetastoresResponse)
-	return &listMetastoresResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &accountsListMetastoresResponse)
+	return &accountsListMetastoresResponse, err
 }
 
-func (a *accountMetastoresImpl) Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsMetastoreInfo, error) {
-	var accountsMetastoreInfo AccountsMetastoreInfo
+func (a *accountMetastoresImpl) Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsUpdateMetastoreResponse, error) {
+	var accountsUpdateMetastoreResponse AccountsUpdateMetastoreResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &accountsMetastoreInfo)
-	return &accountsMetastoreInfo, err
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &accountsUpdateMetastoreResponse)
+	return &accountsUpdateMetastoreResponse, err
 }
 
 // unexported type that holds implementations of just AccountStorageCredentials API methods
@@ -181,24 +185,25 @@ type accountStorageCredentialsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsStorageCredentialInfo, error) {
-	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
+func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsCreateStorageCredentialInfo, error) {
+	var accountsCreateStorageCredentialInfo AccountsCreateStorageCredentialInfo
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountsStorageCredentialInfo)
-	return &accountsStorageCredentialInfo, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountsCreateStorageCredentialInfo)
+	return &accountsCreateStorageCredentialInfo, err
 }
 
-func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error {
+func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) (*AccountsDeleteStorageCredentialResponse, error) {
+	var accountsDeleteStorageCredentialResponse AccountsDeleteStorageCredentialResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &accountsDeleteStorageCredentialResponse)
+	return &accountsDeleteStorageCredentialResponse, err
 }
 
 func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*AccountsStorageCredentialInfo, error) {
@@ -248,15 +253,15 @@ func (a *accountStorageCredentialsImpl) internalList(ctx context.Context, reques
 	return &listAccountStorageCredentialsResponse, err
 }
 
-func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error) {
-	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
+func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsUpdateStorageCredentialResponse, error) {
+	var accountsUpdateStorageCredentialResponse AccountsUpdateStorageCredentialResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &accountsStorageCredentialInfo)
-	return &accountsStorageCredentialInfo, err
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &accountsUpdateStorageCredentialResponse)
+	return &accountsUpdateStorageCredentialResponse, err
 }
 
 // unexported type that holds implementations of just ArtifactAllowlists API methods
@@ -974,7 +979,6 @@ func (a *functionsImpl) Delete(ctx context.Context, request DeleteFunctionReques
 	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -2314,7 +2318,7 @@ func (a *volumesImpl) Delete(ctx context.Context, request DeleteVolumeRequest) e
 // The returned volumes are filtered based on the privileges of the calling
 // user. For example, the metastore admin is able to list all the volumes. A
 // regular user needs to be the owner or have the **READ VOLUME** privilege on
-// the volume to recieve the volumes in the response. For the latter case, the
+// the volume to receive the volumes in the response. For the latter case, the
 // caller must also be the owner or have the **USE_CATALOG** privilege on the
 // parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 //
@@ -2349,7 +2353,7 @@ func (a *volumesImpl) List(ctx context.Context, request ListVolumesRequest) list
 // The returned volumes are filtered based on the privileges of the calling
 // user. For example, the metastore admin is able to list all the volumes. A
 // regular user needs to be the owner or have the **READ VOLUME** privilege on
-// the volume to recieve the volumes in the response. For the latter case, the
+// the volume to receive the volumes in the response. For the latter case, the
 // caller must also be the owner or have the **USE_CATALOG** privilege on the
 // parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 //

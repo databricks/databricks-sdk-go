@@ -17,6 +17,8 @@ type App struct {
 
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 
+	ComputeSize ComputeSize `json:"compute_size,omitempty"`
+
 	ComputeStatus *ComputeStatus `json:"compute_status,omitempty"`
 	// The creation time of the app. Formatted timestamp in ISO 6801.
 	CreateTime string `json:"create_time,omitempty"`
@@ -685,6 +687,8 @@ type AppResource struct {
 	// Description of the App Resource.
 	Description string `json:"description,omitempty"`
 
+	GenieSpace *AppResourceGenieSpace `json:"genie_space,omitempty"`
+
 	Job *AppResourceJob `json:"job,omitempty"`
 	// Name of the App Resource.
 	Name string `json:"name"`
@@ -748,6 +752,57 @@ func (f *AppResourceDatabaseDatabasePermission) Values() []AppResourceDatabaseDa
 // Type always returns AppResourceDatabaseDatabasePermission to satisfy [pflag.Value] interface
 func (f *AppResourceDatabaseDatabasePermission) Type() string {
 	return "AppResourceDatabaseDatabasePermission"
+}
+
+type AppResourceGenieSpace struct {
+	Name string `json:"name"`
+
+	Permission AppResourceGenieSpaceGenieSpacePermission `json:"permission"`
+
+	SpaceId string `json:"space_id"`
+}
+
+type AppResourceGenieSpaceGenieSpacePermission string
+
+const AppResourceGenieSpaceGenieSpacePermissionCanEdit AppResourceGenieSpaceGenieSpacePermission = `CAN_EDIT`
+
+const AppResourceGenieSpaceGenieSpacePermissionCanManage AppResourceGenieSpaceGenieSpacePermission = `CAN_MANAGE`
+
+const AppResourceGenieSpaceGenieSpacePermissionCanRun AppResourceGenieSpaceGenieSpacePermission = `CAN_RUN`
+
+const AppResourceGenieSpaceGenieSpacePermissionCanView AppResourceGenieSpaceGenieSpacePermission = `CAN_VIEW`
+
+// String representation for [fmt.Print]
+func (f *AppResourceGenieSpaceGenieSpacePermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceGenieSpaceGenieSpacePermission) Set(v string) error {
+	switch v {
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_RUN`, `CAN_VIEW`:
+		*f = AppResourceGenieSpaceGenieSpacePermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_RUN", "CAN_VIEW"`, v)
+	}
+}
+
+// Values returns all possible values for AppResourceGenieSpaceGenieSpacePermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppResourceGenieSpaceGenieSpacePermission) Values() []AppResourceGenieSpaceGenieSpacePermission {
+	return []AppResourceGenieSpaceGenieSpacePermission{
+		AppResourceGenieSpaceGenieSpacePermissionCanEdit,
+		AppResourceGenieSpaceGenieSpacePermissionCanManage,
+		AppResourceGenieSpaceGenieSpacePermissionCanRun,
+		AppResourceGenieSpaceGenieSpacePermissionCanView,
+	}
+}
+
+// Type always returns AppResourceGenieSpaceGenieSpacePermission to satisfy [pflag.Value] interface
+func (f *AppResourceGenieSpaceGenieSpacePermission) Type() string {
+	return "AppResourceGenieSpaceGenieSpacePermission"
 }
 
 type AppResourceJob struct {
@@ -1028,6 +1083,91 @@ func (f *AppResourceUcSecurableUcSecurableType) Type() string {
 	return "AppResourceUcSecurableUcSecurableType"
 }
 
+type AppUpdate struct {
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+
+	ComputeSize ComputeSize `json:"compute_size,omitempty"`
+
+	Description string `json:"description,omitempty"`
+
+	Resources []AppResource `json:"resources,omitempty"`
+
+	Status *AppUpdateUpdateStatus `json:"status,omitempty"`
+
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
+
+	UserApiScopes []string `json:"user_api_scopes,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AppUpdate) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppUpdate) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AppUpdateUpdateStatus struct {
+	Message string `json:"message,omitempty"`
+
+	State AppUpdateUpdateStatusUpdateState `json:"state,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AppUpdateUpdateStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AppUpdateUpdateStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AppUpdateUpdateStatusUpdateState string
+
+const AppUpdateUpdateStatusUpdateStateFailed AppUpdateUpdateStatusUpdateState = `FAILED`
+
+const AppUpdateUpdateStatusUpdateStateInProgress AppUpdateUpdateStatusUpdateState = `IN_PROGRESS`
+
+const AppUpdateUpdateStatusUpdateStateNotUpdated AppUpdateUpdateStatusUpdateState = `NOT_UPDATED`
+
+const AppUpdateUpdateStatusUpdateStateSucceeded AppUpdateUpdateStatusUpdateState = `SUCCEEDED`
+
+// String representation for [fmt.Print]
+func (f *AppUpdateUpdateStatusUpdateState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppUpdateUpdateStatusUpdateState) Set(v string) error {
+	switch v {
+	case `FAILED`, `IN_PROGRESS`, `NOT_UPDATED`, `SUCCEEDED`:
+		*f = AppUpdateUpdateStatusUpdateState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FAILED", "IN_PROGRESS", "NOT_UPDATED", "SUCCEEDED"`, v)
+	}
+}
+
+// Values returns all possible values for AppUpdateUpdateStatusUpdateState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppUpdateUpdateStatusUpdateState) Values() []AppUpdateUpdateStatusUpdateState {
+	return []AppUpdateUpdateStatusUpdateState{
+		AppUpdateUpdateStatusUpdateStateFailed,
+		AppUpdateUpdateStatusUpdateStateInProgress,
+		AppUpdateUpdateStatusUpdateStateNotUpdated,
+		AppUpdateUpdateStatusUpdateStateSucceeded,
+	}
+}
+
+// Type always returns AppUpdateUpdateStatusUpdateState to satisfy [pflag.Value] interface
+func (f *AppUpdateUpdateStatusUpdateState) Type() string {
+	return "AppUpdateUpdateStatusUpdateState"
+}
+
 type ApplicationState string
 
 const ApplicationStateCrashed ApplicationState = `CRASHED`
@@ -1086,6 +1226,61 @@ func (s *ApplicationStatus) UnmarshalJSON(b []byte) error {
 
 func (s ApplicationStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type AsyncUpdateAppRequest struct {
+	App *App `json:"app,omitempty"`
+
+	AppName string `json:"-" url:"-"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	UpdateMask string `json:"update_mask"`
+}
+
+type ComputeSize string
+
+const ComputeSizeLarge ComputeSize = `LARGE`
+
+const ComputeSizeMedium ComputeSize = `MEDIUM`
+
+// String representation for [fmt.Print]
+func (f *ComputeSize) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ComputeSize) Set(v string) error {
+	switch v {
+	case `LARGE`, `MEDIUM`:
+		*f = ComputeSize(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "LARGE", "MEDIUM"`, v)
+	}
+}
+
+// Values returns all possible values for ComputeSize.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ComputeSize) Values() []ComputeSize {
+	return []ComputeSize{
+		ComputeSizeLarge,
+		ComputeSizeMedium,
+	}
+}
+
+// Type always returns ComputeSize to satisfy [pflag.Value] interface
+func (f *ComputeSize) Type() string {
+	return "ComputeSize"
 }
 
 type ComputeState string
@@ -1248,6 +1443,11 @@ type GetAppPermissionsRequest struct {
 type GetAppRequest struct {
 	// The name of the app.
 	Name string `json:"-" url:"-"`
+}
+
+type GetAppUpdateRequest struct {
+	// The name of the app.
+	AppName string `json:"-" url:"-"`
 }
 
 type GetCustomTemplateRequest struct {

@@ -2687,10 +2687,8 @@ type Environment struct {
 	// with a specific Python version and a set of Python packages. The version
 	// is a string, consisting of an integer.
 	EnvironmentVersion string `json:"environment_version,omitempty"`
-	// Use `java_dependencies` instead.
-	JarDependencies []string `json:"jar_dependencies,omitempty"`
-	// List of jar dependencies, should be string representing volume paths. For
-	// example: `/Volumes/path/to/test.jar`.
+	// List of java dependencies. Each dependency is a string representing a
+	// java library path. For example: `/Volumes/path/to/test.jar`.
 	JavaDependencies []string `json:"java_dependencies,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
