@@ -30,10 +30,12 @@ func (s AccessRequestDestinations) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Properties of the new metastore.
 type AccountsCreateMetastore struct {
-	MetastoreInfo *CreateMetastore `json:"metastore_info,omitempty"`
+	MetastoreInfo *CreateAccountsMetastore `json:"metastore_info,omitempty"`
 }
 
+// The mapping from workspace to metastore.
 type AccountsCreateMetastoreAssignment struct {
 	MetastoreAssignment *CreateMetastoreAssignment `json:"metastore_assignment,omitempty"`
 	// Unity Catalog metastore ID
@@ -42,31 +44,79 @@ type AccountsCreateMetastoreAssignment struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
-type AccountsCreateStorageCredential struct {
-	CredentialInfo *CreateStorageCredential `json:"credential_info,omitempty"`
-	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+// The metastore assignment was successfully created.
+type AccountsCreateMetastoreAssignmentResponse struct {
 }
 
+type AccountsCreateMetastoreResponse struct {
+	MetastoreInfo *MetastoreInfo `json:"metastore_info,omitempty"`
+}
+
+type AccountsCreateStorageCredential struct {
+	CredentialInfo *CreateAccountsStorageCredential `json:"credential_info,omitempty"`
+	// Unity Catalog metastore ID
+	MetastoreId string `json:"-" url:"-"`
+	// Optional, default false. Supplying true to this argument skips validation
+	// of the created set of credentials.
+	SkipValidation bool `json:"skip_validation,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AccountsCreateStorageCredential) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AccountsCreateStorageCredential) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AccountsCreateStorageCredentialInfo struct {
+	CredentialInfo *StorageCredentialInfo `json:"credential_info,omitempty"`
+}
+
+// The metastore assignment was successfully deleted.
+type AccountsDeleteMetastoreAssignmentResponse struct {
+}
+
+// The metastore was successfully deleted.
+type AccountsDeleteMetastoreResponse struct {
+}
+
+// The storage credential was successfully deleted.
+type AccountsDeleteStorageCredentialResponse struct {
+}
+
+// The metastore was successfully returned.
+type AccountsGetMetastoreResponse struct {
+	MetastoreInfo *MetastoreInfo `json:"metastore_info,omitempty"`
+}
+
+// Metastores were returned successfully.
+type AccountsListMetastoresResponse struct {
+	// An array of metastore information objects.
+	Metastores []MetastoreInfo `json:"metastores,omitempty"`
+}
+
+// The workspace metastore assignment was successfully returned.
 type AccountsMetastoreAssignment struct {
 	MetastoreAssignment *MetastoreAssignment `json:"metastore_assignment,omitempty"`
 }
 
-type AccountsMetastoreInfo struct {
-	MetastoreInfo *MetastoreInfo `json:"metastore_info,omitempty"`
-}
-
+// The storage credential was successfully retrieved.
 type AccountsStorageCredentialInfo struct {
 	CredentialInfo *StorageCredentialInfo `json:"credential_info,omitempty"`
 }
 
+// Properties of the metastore to change.
 type AccountsUpdateMetastore struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
-
-	MetastoreInfo *UpdateMetastore `json:"metastore_info,omitempty"`
+	// Properties of the metastore to change.
+	MetastoreInfo *UpdateAccountsMetastore `json:"metastore_info,omitempty"`
 }
 
+// The metastore assignment to update.
 type AccountsUpdateMetastoreAssignment struct {
 	MetastoreAssignment *UpdateMetastoreAssignment `json:"metastore_assignment,omitempty"`
 	// Unity Catalog metastore ID
@@ -75,12 +125,40 @@ type AccountsUpdateMetastoreAssignment struct {
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
+// The metastore assignment was successfully updated.
+type AccountsUpdateMetastoreAssignmentResponse struct {
+}
+
+// The metastore update request succeeded.
+type AccountsUpdateMetastoreResponse struct {
+	MetastoreInfo *MetastoreInfo `json:"metastore_info,omitempty"`
+}
+
+// The storage credential to update.
 type AccountsUpdateStorageCredential struct {
-	CredentialInfo *UpdateStorageCredential `json:"credential_info,omitempty"`
+	CredentialInfo *UpdateAccountsStorageCredential `json:"credential_info,omitempty"`
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
+	// Optional. Supplying true to this argument skips validation of the updated
+	// set of credentials.
+	SkipValidation bool `json:"skip_validation,omitempty"`
 	// Name of the storage credential.
 	StorageCredentialName string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AccountsUpdateStorageCredential) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AccountsUpdateStorageCredential) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The storage credential was successfully updated.
+type AccountsUpdateStorageCredentialResponse struct {
+	CredentialInfo *StorageCredentialInfo `json:"credential_info,omitempty"`
 }
 
 type ArtifactAllowlistInfo struct {
@@ -1005,6 +1083,56 @@ type CreateAccessRequestResponse struct {
 	RequestDestinations []AccessRequestDestinations `json:"request_destinations,omitempty"`
 }
 
+type CreateAccountsMetastore struct {
+	// The user-specified name of the metastore.
+	Name string `json:"name"`
+	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+	Region string `json:"region,omitempty"`
+	// The storage root URL for metastore
+	StorageRoot string `json:"storage_root,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateAccountsMetastore) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAccountsMetastore) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateAccountsStorageCredential struct {
+	// The AWS IAM role configuration.
+	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
+	// The Azure managed identity configuration.
+	AzureManagedIdentity *AzureManagedIdentityRequest `json:"azure_managed_identity,omitempty"`
+	// The Azure service principal configuration.
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// The Cloudflare API token configuration.
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
+	// Comment associated with the credential.
+	Comment string `json:"comment,omitempty"`
+	// The Databricks managed GCP service account configuration.
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
+	// The credential name. The name must be unique among storage and service
+	// credentials within the metastore.
+	Name string `json:"name"`
+	// Whether the credential is usable only for read operations. Only
+	// applicable when purpose is **STORAGE**.
+	ReadOnly bool `json:"read_only,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateAccountsStorageCredential) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAccountsStorageCredential) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -1146,7 +1274,7 @@ type CreateExternalMetadataRequest struct {
 }
 
 type CreateFunction struct {
-	// Name of parent catalog.
+	// Name of parent Catalog.
 	CatalogName string `json:"catalog_name"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -1158,7 +1286,7 @@ type CreateFunction struct {
 	ExternalName string `json:"external_name,omitempty"`
 	// Pretty printed function data type.
 	FullDataType string `json:"full_data_type"`
-
+	// Function input parameters.
 	InputParams FunctionParameterInfos `json:"input_params"`
 	// Whether the function is deterministic.
 	IsDeterministic bool `json:"is_deterministic"`
@@ -1173,16 +1301,16 @@ type CreateFunction struct {
 	// Table function return parameters.
 	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
 	// Function language. When **EXTERNAL** is used, the language of the routine
-	// function should be specified in the __external_language__ field, and the
-	// __return_params__ of the function cannot be used (as **TABLE** return
-	// type is not supported), and the __sql_data_access__ field must be
+	// function should be specified in the **external_language** field, and the
+	// **return_params** of the function cannot be used (as **TABLE** return
+	// type is not supported), and the **sql_data_access** field must be
 	// **NO_SQL**.
 	RoutineBody CreateFunctionRoutineBody `json:"routine_body"`
 	// Function body.
 	RoutineDefinition string `json:"routine_definition"`
-	// Function dependencies.
+	// function dependencies.
 	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
-	// Name of parent schema relative to its parent catalog.
+	// Name of parent Schema relative to its parent Catalog.
 	SchemaName string `json:"schema_name"`
 	// Function security type.
 	SecurityType CreateFunctionSecurityType `json:"security_type"`
@@ -1204,7 +1332,6 @@ func (s CreateFunction) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Function parameter style. **S** is the value for SQL.
 type CreateFunctionParameterStyle string
 
 const CreateFunctionParameterStyleS CreateFunctionParameterStyle = `S`
@@ -1244,10 +1371,6 @@ type CreateFunctionRequest struct {
 	FunctionInfo CreateFunction `json:"function_info"`
 }
 
-// Function language. When **EXTERNAL** is used, the language of the routine
-// function should be specified in the __external_language__ field, and the
-// __return_params__ of the function cannot be used (as **TABLE** return type is
-// not supported), and the __sql_data_access__ field must be **NO_SQL**.
 type CreateFunctionRoutineBody string
 
 const CreateFunctionRoutineBodyExternal CreateFunctionRoutineBody = `EXTERNAL`
@@ -1285,7 +1408,6 @@ func (f *CreateFunctionRoutineBody) Type() string {
 	return "CreateFunctionRoutineBody"
 }
 
-// The security type of the function.
 type CreateFunctionSecurityType string
 
 const CreateFunctionSecurityTypeDefiner CreateFunctionSecurityType = `DEFINER`
@@ -1320,7 +1442,6 @@ func (f *CreateFunctionSecurityType) Type() string {
 	return "CreateFunctionSecurityType"
 }
 
-// Function SQL data access.
 type CreateFunctionSqlDataAccess string
 
 const CreateFunctionSqlDataAccessContainsSql CreateFunctionSqlDataAccess = `CONTAINS_SQL`
@@ -1459,17 +1580,39 @@ type CreatePolicyRequest struct {
 }
 
 type CreateRegisteredModelRequest struct {
+	// List of aliases associated with the registered model
+	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
+	// Indicates whether the principal is limited to retrieving metadata for the
+	// associated object through the BROWSE privilege when include_browse is
+	// enabled in the request.
+	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The name of the catalog where the schema and the registered model reside
-	CatalogName string `json:"catalog_name"`
+	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the registered model
 	Comment string `json:"comment,omitempty"`
+	// Creation timestamp of the registered model in milliseconds since the Unix
+	// epoch
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// The identifier of the user who created the registered model
+	CreatedBy string `json:"created_by,omitempty"`
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"full_name,omitempty"`
+	// The unique identifier of the metastore
+	MetastoreId string `json:"metastore_id,omitempty"`
 	// The name of the registered model
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
+	// The identifier of the user who owns the registered model
+	Owner string `json:"owner,omitempty"`
 	// The name of the schema where the registered model resides
-	SchemaName string `json:"schema_name"`
+	SchemaName string `json:"schema_name,omitempty"`
 	// The storage location on the cloud under which model version data files
 	// are stored
 	StorageLocation string `json:"storage_location,omitempty"`
+	// Last-update timestamp of the registered model in milliseconds since the
+	// Unix epoch
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// The identifier of the user who updated the registered model last time
+	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1598,7 +1741,12 @@ type CreateVolumeRequestContent struct {
 	SchemaName string `json:"schema_name"`
 	// The storage location on the cloud
 	StorageLocation string `json:"storage_location,omitempty"`
-
+	// The type of the volume. An external volume is located in the specified
+	// external location. A managed volume is located in the default location
+	// which is specified by the parent schema, or the parent catalog, or the
+	// Metastore. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 	VolumeType VolumeType `json:"volume_type"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2105,7 +2253,7 @@ type DeleteFunctionRequest struct {
 	// Force deletion even if the function is notempty.
 	Force bool `json:"-" url:"force,omitempty"`
 	// The fully-qualified name of the function (of the form
-	// __catalog_name__.__schema_name__.__function__name__).
+	// __catalog_name__.__schema_name__.__function__name__) .
 	Name string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2982,7 +3130,7 @@ type FunctionInfo struct {
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
 	BrowseOnly bool `json:"browse_only,omitempty"`
-	// Name of parent catalog.
+	// Name of parent Catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -2998,12 +3146,12 @@ type FunctionInfo struct {
 	ExternalName string `json:"external_name,omitempty"`
 	// Pretty printed function data type.
 	FullDataType string `json:"full_data_type,omitempty"`
-	// Full name of function, in form of
-	// __catalog_name__.__schema_name__.__function__name__
+	// Full name of Function, in form of
+	// **catalog_name**.**schema_name**.**function_name**
 	FullName string `json:"full_name,omitempty"`
 	// Id of Function, relative to parent schema.
 	FunctionId string `json:"function_id,omitempty"`
-
+	// Function input parameters.
 	InputParams *FunctionParameterInfos `json:"input_params,omitempty"`
 	// Whether the function is deterministic.
 	IsDeterministic bool `json:"is_deterministic,omitempty"`
@@ -3013,7 +3161,7 @@ type FunctionInfo struct {
 	MetastoreId string `json:"metastore_id,omitempty"`
 	// Name of function, relative to parent schema.
 	Name string `json:"name,omitempty"`
-	// Username of current owner of function.
+	// Username of current owner of the function.
 	Owner string `json:"owner,omitempty"`
 	// Function parameter style. **S** is the value for SQL.
 	ParameterStyle FunctionInfoParameterStyle `json:"parameter_style,omitempty"`
@@ -3022,16 +3170,16 @@ type FunctionInfo struct {
 	// Table function return parameters.
 	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
 	// Function language. When **EXTERNAL** is used, the language of the routine
-	// function should be specified in the __external_language__ field, and the
-	// __return_params__ of the function cannot be used (as **TABLE** return
-	// type is not supported), and the __sql_data_access__ field must be
+	// function should be specified in the **external_language** field, and the
+	// **return_params** of the function cannot be used (as **TABLE** return
+	// type is not supported), and the **sql_data_access** field must be
 	// **NO_SQL**.
 	RoutineBody FunctionInfoRoutineBody `json:"routine_body,omitempty"`
 	// Function body.
 	RoutineDefinition string `json:"routine_definition,omitempty"`
-	// Function dependencies.
+	// function dependencies.
 	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
-	// Name of parent schema relative to its parent catalog.
+	// Name of parent Schema relative to its parent Catalog.
 	SchemaName string `json:"schema_name,omitempty"`
 	// Function security type.
 	SecurityType FunctionInfoSecurityType `json:"security_type,omitempty"`
@@ -3041,9 +3189,9 @@ type FunctionInfo struct {
 	SqlDataAccess FunctionInfoSqlDataAccess `json:"sql_data_access,omitempty"`
 	// List of schemes whose objects can be referenced without qualification.
 	SqlPath string `json:"sql_path,omitempty"`
-	// Time at which this function was created, in epoch milliseconds.
+	// Time at which this function was last modified, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
-	// Username of user who last modified function.
+	// Username of user who last modified the function.
 	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3057,7 +3205,6 @@ func (s FunctionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Function parameter style. **S** is the value for SQL.
 type FunctionInfoParameterStyle string
 
 const FunctionInfoParameterStyleS FunctionInfoParameterStyle = `S`
@@ -3092,10 +3239,6 @@ func (f *FunctionInfoParameterStyle) Type() string {
 	return "FunctionInfoParameterStyle"
 }
 
-// Function language. When **EXTERNAL** is used, the language of the routine
-// function should be specified in the __external_language__ field, and the
-// __return_params__ of the function cannot be used (as **TABLE** return type is
-// not supported), and the __sql_data_access__ field must be **NO_SQL**.
 type FunctionInfoRoutineBody string
 
 const FunctionInfoRoutineBodyExternal FunctionInfoRoutineBody = `EXTERNAL`
@@ -3133,7 +3276,6 @@ func (f *FunctionInfoRoutineBody) Type() string {
 	return "FunctionInfoRoutineBody"
 }
 
-// The security type of the function.
 type FunctionInfoSecurityType string
 
 const FunctionInfoSecurityTypeDefiner FunctionInfoSecurityType = `DEFINER`
@@ -3168,7 +3310,6 @@ func (f *FunctionInfoSecurityType) Type() string {
 	return "FunctionInfoSecurityType"
 }
 
-// Function SQL data access.
 type FunctionInfoSqlDataAccess string
 
 const FunctionInfoSqlDataAccessContainsSql FunctionInfoSqlDataAccess = `CONTAINS_SQL`
@@ -3212,13 +3353,13 @@ func (f *FunctionInfoSqlDataAccess) Type() string {
 type FunctionParameterInfo struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Name of parameter.
+	// Name of Parameter.
 	Name string `json:"name"`
 	// Default value of the parameter.
 	ParameterDefault string `json:"parameter_default,omitempty"`
-
+	// Function parameter mode.
 	ParameterMode FunctionParameterMode `json:"parameter_mode,omitempty"`
-
+	// Function parameter type.
 	ParameterType FunctionParameterType `json:"parameter_type,omitempty"`
 	// Ordinal position of column (starting at position 0).
 	Position int `json:"position"`
@@ -3226,7 +3367,7 @@ type FunctionParameterInfo struct {
 	TypeIntervalType string `json:"type_interval_type,omitempty"`
 	// Full data type spec, JSON-serialized.
 	TypeJson string `json:"type_json,omitempty"`
-
+	// Name of type (INT, STRUCT, MAP, etc.)
 	TypeName ColumnTypeName `json:"type_name"`
 	// Digits of precision; required on Create for DecimalTypes.
 	TypePrecision int `json:"type_precision,omitempty"`
@@ -3247,12 +3388,9 @@ func (s FunctionParameterInfo) MarshalJSON() ([]byte, error) {
 }
 
 type FunctionParameterInfos struct {
-	// The array of __FunctionParameterInfo__ definitions of the function's
-	// parameters.
 	Parameters []FunctionParameterInfo `json:"parameters,omitempty"`
 }
 
-// The mode of the function parameter.
 type FunctionParameterMode string
 
 const FunctionParameterModeIn FunctionParameterMode = `IN`
@@ -3287,7 +3425,6 @@ func (f *FunctionParameterMode) Type() string {
 	return "FunctionParameterMode"
 }
 
-// The type of function parameter.
 type FunctionParameterType string
 
 const FunctionParameterTypeColumn FunctionParameterType = `COLUMN`
@@ -3501,7 +3638,7 @@ type GetAccountMetastoreRequest struct {
 type GetAccountStorageCredentialRequest struct {
 	// Unity Catalog metastore ID
 	MetastoreId string `json:"-" url:"-"`
-	// Name of the storage credential.
+	// Required. Name of the storage credential.
 	StorageCredentialName string `json:"-" url:"-"`
 }
 
@@ -4025,7 +4162,7 @@ type ListAccountMetastoreAssignmentsRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 }
 
-// The list of workspaces to which the given metastore is assigned.
+// The metastore assignments were successfully returned.
 type ListAccountMetastoreAssignmentsResponse struct {
 	WorkspaceIds []int64 `json:"workspace_ids,omitempty"`
 }
@@ -4035,6 +4172,7 @@ type ListAccountStorageCredentialsRequest struct {
 	MetastoreId string `json:"-" url:"-"`
 }
 
+// The metastore storage credentials were successfully returned.
 type ListAccountStorageCredentialsResponse struct {
 	// An array of metastore storage credentials.
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
@@ -4964,7 +5102,9 @@ func (f *MatchType) Type() string {
 }
 
 type MetastoreAssignment struct {
-	// The name of the default catalog in the metastore.
+	// The name of the default catalog in the metastore. This field is
+	// deprecated. Please use "Default Namespace API" to configure the default
+	// catalog for a Databricks workspace.
 	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
 	// The unique ID of the metastore.
 	MetastoreId string `json:"metastore_id"`
@@ -5040,10 +5180,6 @@ func (s MetastoreInfo) MarshalJSON() ([]byte, error) {
 type ModelVersionInfo struct {
 	// List of aliases associated with the model version
 	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
-	// Indicates whether the principal is limited to retrieving metadata for the
-	// associated object through the BROWSE privilege when include_browse is
-	// enabled in the request.
-	BrowseOnly bool `json:"browse_only,omitempty"`
 	// The name of the catalog containing the model version
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the model version
@@ -5100,13 +5236,11 @@ func (s ModelVersionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Current status of the model version. Newly created model versions start in
-// PENDING_REGISTRATION status, then move to READY status once the model version
-// files are uploaded and the model version is finalized. Only model versions in
-// READY status can be loaded for inference or served.
 type ModelVersionInfoStatus string
 
 const ModelVersionInfoStatusFailedRegistration ModelVersionInfoStatus = `FAILED_REGISTRATION`
+
+const ModelVersionInfoStatusModelVersionStatusUnknown ModelVersionInfoStatus = `MODEL_VERSION_STATUS_UNKNOWN`
 
 const ModelVersionInfoStatusPendingRegistration ModelVersionInfoStatus = `PENDING_REGISTRATION`
 
@@ -5120,11 +5254,11 @@ func (f *ModelVersionInfoStatus) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ModelVersionInfoStatus) Set(v string) error {
 	switch v {
-	case `FAILED_REGISTRATION`, `PENDING_REGISTRATION`, `READY`:
+	case `FAILED_REGISTRATION`, `MODEL_VERSION_STATUS_UNKNOWN`, `PENDING_REGISTRATION`, `READY`:
 		*f = ModelVersionInfoStatus(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FAILED_REGISTRATION", "PENDING_REGISTRATION", "READY"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FAILED_REGISTRATION", "MODEL_VERSION_STATUS_UNKNOWN", "PENDING_REGISTRATION", "READY"`, v)
 	}
 }
 
@@ -5134,6 +5268,7 @@ func (f *ModelVersionInfoStatus) Set(v string) error {
 func (f *ModelVersionInfoStatus) Values() []ModelVersionInfoStatus {
 	return []ModelVersionInfoStatus{
 		ModelVersionInfoStatusFailedRegistration,
+		ModelVersionInfoStatusModelVersionStatusUnknown,
 		ModelVersionInfoStatusPendingRegistration,
 		ModelVersionInfoStatusReady,
 	}
@@ -6593,10 +6728,19 @@ func (s RegenerateDashboardResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Registered model alias.
 type RegisteredModelAlias struct {
 	// Name of the alias, e.g. 'champion' or 'latest_stable'
 	AliasName string `json:"alias_name,omitempty"`
+	// The name of the catalog containing the model version
+	CatalogName string `json:"catalog_name,omitempty"`
+	// The unique identifier of the alias
+	Id string `json:"id,omitempty"`
+	// The name of the parent registered model of the model version, relative to
+	// parent schema
+	ModelName string `json:"model_name,omitempty"`
+	// The name of the schema containing the model version, relative to parent
+	// catalog
+	SchemaName string `json:"schema_name,omitempty"`
 	// Integer version number of the model version to which this alias points.
 	VersionNum int `json:"version_num,omitempty"`
 
@@ -6752,7 +6896,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_PALANTIR_OAUTH_M2M = 263; Next id:264
+// Latest kind: CONNECTION_REDSHIFT_IAM = 265; Next id:266
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -7103,9 +7247,9 @@ func (s SetArtifactAllowlist) MarshalJSON() ([]byte, error) {
 
 type SetRegisteredModelAliasRequest struct {
 	// The name of the alias
-	Alias string `json:"alias"`
-	// Full name of the registered model
-	FullName string `json:"full_name"`
+	Alias string `json:"-" url:"-"`
+	// The three-level (fully qualified) name of the registered model
+	FullName string `json:"-" url:"-"`
 	// The version number of the model version to which the alias points
 	VersionNum int `json:"version_num"`
 }
@@ -7317,6 +7461,8 @@ const SystemTypeServicenow SystemType = `SERVICENOW`
 
 const SystemTypeSnowflake SystemType = `SNOWFLAKE`
 
+const SystemTypeStreamNative SystemType = `STREAM_NATIVE`
+
 const SystemTypeTableau SystemType = `TABLEAU`
 
 const SystemTypeTeradata SystemType = `TERADATA`
@@ -7331,11 +7477,11 @@ func (f *SystemType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SystemType) Set(v string) error {
 	switch v {
-	case `AMAZON_REDSHIFT`, `AZURE_SYNAPSE`, `CONFLUENT`, `DATABRICKS`, `GOOGLE_BIGQUERY`, `KAFKA`, `LOOKER`, `MICROSOFT_FABRIC`, `MICROSOFT_SQL_SERVER`, `MONGODB`, `MYSQL`, `ORACLE`, `OTHER`, `POSTGRESQL`, `POWER_BI`, `SALESFORCE`, `SAP`, `SERVICENOW`, `SNOWFLAKE`, `TABLEAU`, `TERADATA`, `WORKDAY`:
+	case `AMAZON_REDSHIFT`, `AZURE_SYNAPSE`, `CONFLUENT`, `DATABRICKS`, `GOOGLE_BIGQUERY`, `KAFKA`, `LOOKER`, `MICROSOFT_FABRIC`, `MICROSOFT_SQL_SERVER`, `MONGODB`, `MYSQL`, `ORACLE`, `OTHER`, `POSTGRESQL`, `POWER_BI`, `SALESFORCE`, `SAP`, `SERVICENOW`, `SNOWFLAKE`, `STREAM_NATIVE`, `TABLEAU`, `TERADATA`, `WORKDAY`:
 		*f = SystemType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AMAZON_REDSHIFT", "AZURE_SYNAPSE", "CONFLUENT", "DATABRICKS", "GOOGLE_BIGQUERY", "KAFKA", "LOOKER", "MICROSOFT_FABRIC", "MICROSOFT_SQL_SERVER", "MONGODB", "MYSQL", "ORACLE", "OTHER", "POSTGRESQL", "POWER_BI", "SALESFORCE", "SAP", "SERVICENOW", "SNOWFLAKE", "TABLEAU", "TERADATA", "WORKDAY"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AMAZON_REDSHIFT", "AZURE_SYNAPSE", "CONFLUENT", "DATABRICKS", "GOOGLE_BIGQUERY", "KAFKA", "LOOKER", "MICROSOFT_FABRIC", "MICROSOFT_SQL_SERVER", "MONGODB", "MYSQL", "ORACLE", "OTHER", "POSTGRESQL", "POWER_BI", "SALESFORCE", "SAP", "SERVICENOW", "SNOWFLAKE", "STREAM_NATIVE", "TABLEAU", "TERADATA", "WORKDAY"`, v)
 	}
 }
 
@@ -7363,6 +7509,7 @@ func (f *SystemType) Values() []SystemType {
 		SystemTypeSap,
 		SystemTypeServicenow,
 		SystemTypeSnowflake,
+		SystemTypeStreamNative,
 		SystemTypeTableau,
 		SystemTypeTeradata,
 		SystemTypeWorkday,
@@ -7709,6 +7856,66 @@ type UpdateAccessRequestDestinationsRequest struct {
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
+type UpdateAccountsMetastore struct {
+	// The organization name of a Delta Sharing entity, to be used in
+	// Databricks-to-Databricks Delta Sharing as the official name.
+	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
+	// The lifetime of delta sharing recipient token in seconds.
+	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
+	// The scope of Delta Sharing enabled for the metastore.
+	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
+	// The owner of the metastore.
+	Owner string `json:"owner,omitempty"`
+	// Privilege model version of the metastore, of the form `major.minor`
+	// (e.g., `1.0`).
+	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
+	// UUID of storage credential to access the metastore storage_root.
+	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateAccountsMetastore) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateAccountsMetastore) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type UpdateAccountsStorageCredential struct {
+	// The AWS IAM role configuration.
+	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
+	// The Azure managed identity configuration.
+	AzureManagedIdentity *AzureManagedIdentityResponse `json:"azure_managed_identity,omitempty"`
+	// The Azure service principal configuration.
+	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// The Cloudflare API token configuration.
+	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
+	// Comment associated with the credential.
+	Comment string `json:"comment,omitempty"`
+	// The Databricks managed GCP service account configuration.
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
+	// Whether the current securable is accessible from all workspaces or a
+	// specific set of workspaces.
+	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
+	// Username of current owner of credential.
+	Owner string `json:"owner,omitempty"`
+	// Whether the credential is usable only for read operations. Only
+	// applicable when purpose is **STORAGE**.
+	ReadOnly bool `json:"read_only,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateAccountsStorageCredential) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateAccountsStorageCredential) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -7916,7 +8123,7 @@ type UpdateFunction struct {
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
 	Name string `json:"-" url:"-"`
-	// Username of current owner of function.
+	// Username of current owner of the function.
 	Owner string `json:"owner,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7983,10 +8190,51 @@ func (s UpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateModelVersionRequest struct {
+	// List of aliases associated with the model version
+	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
+	// The name of the catalog containing the model version
+	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the model version
 	Comment string `json:"comment,omitempty"`
+
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// The identifier of the user who created the model version
+	CreatedBy string `json:"created_by,omitempty"`
 	// The three-level (fully qualified) name of the model version
 	FullName string `json:"-" url:"-"`
+	// The unique identifier of the model version
+	Id string `json:"id,omitempty"`
+	// The unique identifier of the metastore containing the model version
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// The name of the parent registered model of the model version, relative to
+	// parent schema
+	ModelName string `json:"model_name,omitempty"`
+	// Model version dependencies, for feature-store packaged models
+	ModelVersionDependencies *DependencyList `json:"model_version_dependencies,omitempty"`
+	// MLflow run ID used when creating the model version, if ``source`` was
+	// generated by an experiment run stored in an MLflow tracking server
+	RunId string `json:"run_id,omitempty"`
+	// ID of the Databricks workspace containing the MLflow run that generated
+	// this model version, if applicable
+	RunWorkspaceId int `json:"run_workspace_id,omitempty"`
+	// The name of the schema containing the model version, relative to parent
+	// catalog
+	SchemaName string `json:"schema_name,omitempty"`
+	// URI indicating the location of the source artifacts (files) for the model
+	// version
+	Source string `json:"source,omitempty"`
+	// Current status of the model version. Newly created model versions start
+	// in PENDING_REGISTRATION status, then move to READY status once the model
+	// version files are uploaded and the model version is finalized. Only model
+	// versions in READY status can be loaded for inference or served.
+	Status ModelVersionInfoStatus `json:"status,omitempty"`
+	// The storage location on the cloud under which model version data files
+	// are stored
+	StorageLocation string `json:"storage_location,omitempty"`
+
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// The identifier of the user who updated the model version last time
+	UpdatedBy string `json:"updated_by,omitempty"`
 	// The integer version number of the model version
 	Version int `json:"-" url:"-"`
 
@@ -8098,14 +8346,41 @@ func (s UpdatePolicyRequest) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateRegisteredModelRequest struct {
+	// List of aliases associated with the registered model
+	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
+	// Indicates whether the principal is limited to retrieving metadata for the
+	// associated object through the BROWSE privilege when include_browse is
+	// enabled in the request.
+	BrowseOnly bool `json:"browse_only,omitempty"`
+	// The name of the catalog where the schema and the registered model reside
+	CatalogName string `json:"catalog_name,omitempty"`
 	// The comment attached to the registered model
 	Comment string `json:"comment,omitempty"`
+	// Creation timestamp of the registered model in milliseconds since the Unix
+	// epoch
+	CreatedAt int64 `json:"created_at,omitempty"`
+	// The identifier of the user who created the registered model
+	CreatedBy string `json:"created_by,omitempty"`
 	// The three-level (fully qualified) name of the registered model
 	FullName string `json:"-" url:"-"`
+	// The unique identifier of the metastore
+	MetastoreId string `json:"metastore_id,omitempty"`
+	// The name of the registered model
+	Name string `json:"name,omitempty"`
 	// New name for the registered model.
 	NewName string `json:"new_name,omitempty"`
 	// The identifier of the user who owns the registered model
 	Owner string `json:"owner,omitempty"`
+	// The name of the schema where the registered model resides
+	SchemaName string `json:"schema_name,omitempty"`
+	// The storage location on the cloud under which model version data files
+	// are stored
+	StorageLocation string `json:"storage_location,omitempty"`
+	// Last-update timestamp of the registered model in milliseconds since the
+	// Unix epoch
+	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// The identifier of the user who updated the registered model last time
+	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -8560,7 +8835,12 @@ type VolumeInfo struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// The unique identifier of the volume
 	VolumeId string `json:"volume_id,omitempty"`
-
+	// The type of the volume. An external volume is located in the specified
+	// external location. A managed volume is located in the default location
+	// which is specified by the parent schema, or the parent catalog, or the
+	// Metastore. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 	VolumeType VolumeType `json:"volume_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -8574,12 +8854,6 @@ func (s VolumeInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The type of the volume. An external volume is located in the specified
-// external location. A managed volume is located in the default location which
-// is specified by the parent schema, or the parent catalog, or the Metastore.
-// [Learn more]
-//
-// [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 type VolumeType string
 
 const VolumeTypeExternal VolumeType = `EXTERNAL`

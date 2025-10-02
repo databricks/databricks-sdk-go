@@ -162,6 +162,139 @@ func (_c *MockAppsInterface_CreateAndWait_Call) RunAndReturn(run func(context.Co
 	return _c
 }
 
+// CreateUpdate provides a mock function with given fields: ctx, asyncUpdateAppRequest
+func (_m *MockAppsInterface) CreateUpdate(ctx context.Context, asyncUpdateAppRequest apps.AsyncUpdateAppRequest) (*apps.WaitGetUpdateAppSucceeded[apps.AppUpdate], error) {
+	ret := _m.Called(ctx, asyncUpdateAppRequest)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateUpdate")
+	}
+
+	var r0 *apps.WaitGetUpdateAppSucceeded[apps.AppUpdate]
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.AsyncUpdateAppRequest) (*apps.WaitGetUpdateAppSucceeded[apps.AppUpdate], error)); ok {
+		return rf(ctx, asyncUpdateAppRequest)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, apps.AsyncUpdateAppRequest) *apps.WaitGetUpdateAppSucceeded[apps.AppUpdate]); ok {
+		r0 = rf(ctx, asyncUpdateAppRequest)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.WaitGetUpdateAppSucceeded[apps.AppUpdate])
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, apps.AsyncUpdateAppRequest) error); ok {
+		r1 = rf(ctx, asyncUpdateAppRequest)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_CreateUpdate_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateUpdate'
+type MockAppsInterface_CreateUpdate_Call struct {
+	*mock.Call
+}
+
+// CreateUpdate is a helper method to define mock.On call
+//   - ctx context.Context
+//   - asyncUpdateAppRequest apps.AsyncUpdateAppRequest
+func (_e *MockAppsInterface_Expecter) CreateUpdate(ctx interface{}, asyncUpdateAppRequest interface{}) *MockAppsInterface_CreateUpdate_Call {
+	return &MockAppsInterface_CreateUpdate_Call{Call: _e.mock.On("CreateUpdate", ctx, asyncUpdateAppRequest)}
+}
+
+func (_c *MockAppsInterface_CreateUpdate_Call) Run(run func(ctx context.Context, asyncUpdateAppRequest apps.AsyncUpdateAppRequest)) *MockAppsInterface_CreateUpdate_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(apps.AsyncUpdateAppRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_CreateUpdate_Call) Return(_a0 *apps.WaitGetUpdateAppSucceeded[apps.AppUpdate], _a1 error) *MockAppsInterface_CreateUpdate_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_CreateUpdate_Call) RunAndReturn(run func(context.Context, apps.AsyncUpdateAppRequest) (*apps.WaitGetUpdateAppSucceeded[apps.AppUpdate], error)) *MockAppsInterface_CreateUpdate_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateUpdateAndWait provides a mock function with given fields: ctx, asyncUpdateAppRequest, options
+func (_m *MockAppsInterface) CreateUpdateAndWait(ctx context.Context, asyncUpdateAppRequest apps.AsyncUpdateAppRequest, options ...retries.Option[apps.AppUpdate]) (*apps.AppUpdate, error) {
+	_va := make([]interface{}, len(options))
+	for _i := range options {
+		_va[_i] = options[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, asyncUpdateAppRequest)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateUpdateAndWait")
+	}
+
+	var r0 *apps.AppUpdate
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.AsyncUpdateAppRequest, ...retries.Option[apps.AppUpdate]) (*apps.AppUpdate, error)); ok {
+		return rf(ctx, asyncUpdateAppRequest, options...)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, apps.AsyncUpdateAppRequest, ...retries.Option[apps.AppUpdate]) *apps.AppUpdate); ok {
+		r0 = rf(ctx, asyncUpdateAppRequest, options...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.AppUpdate)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, apps.AsyncUpdateAppRequest, ...retries.Option[apps.AppUpdate]) error); ok {
+		r1 = rf(ctx, asyncUpdateAppRequest, options...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_CreateUpdateAndWait_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateUpdateAndWait'
+type MockAppsInterface_CreateUpdateAndWait_Call struct {
+	*mock.Call
+}
+
+// CreateUpdateAndWait is a helper method to define mock.On call
+//   - ctx context.Context
+//   - asyncUpdateAppRequest apps.AsyncUpdateAppRequest
+//   - options ...retries.Option[apps.AppUpdate]
+func (_e *MockAppsInterface_Expecter) CreateUpdateAndWait(ctx interface{}, asyncUpdateAppRequest interface{}, options ...interface{}) *MockAppsInterface_CreateUpdateAndWait_Call {
+	return &MockAppsInterface_CreateUpdateAndWait_Call{Call: _e.mock.On("CreateUpdateAndWait",
+		append([]interface{}{ctx, asyncUpdateAppRequest}, options...)...)}
+}
+
+func (_c *MockAppsInterface_CreateUpdateAndWait_Call) Run(run func(ctx context.Context, asyncUpdateAppRequest apps.AsyncUpdateAppRequest, options ...retries.Option[apps.AppUpdate])) *MockAppsInterface_CreateUpdateAndWait_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		variadicArgs := make([]retries.Option[apps.AppUpdate], len(args)-2)
+		for i, a := range args[2:] {
+			if a != nil {
+				variadicArgs[i] = a.(retries.Option[apps.AppUpdate])
+			}
+		}
+		run(args[0].(context.Context), args[1].(apps.AsyncUpdateAppRequest), variadicArgs...)
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_CreateUpdateAndWait_Call) Return(_a0 *apps.AppUpdate, _a1 error) *MockAppsInterface_CreateUpdateAndWait_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_CreateUpdateAndWait_Call) RunAndReturn(run func(context.Context, apps.AsyncUpdateAppRequest, ...retries.Option[apps.AppUpdate]) (*apps.AppUpdate, error)) *MockAppsInterface_CreateUpdateAndWait_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Delete provides a mock function with given fields: ctx, request
 func (_m *MockAppsInterface) Delete(ctx context.Context, request apps.DeleteAppRequest) (*apps.App, error) {
 	ret := _m.Called(ctx, request)
@@ -882,6 +1015,65 @@ func (_c *MockAppsInterface_GetPermissionsByAppName_Call) Return(_a0 *apps.AppPe
 }
 
 func (_c *MockAppsInterface_GetPermissionsByAppName_Call) RunAndReturn(run func(context.Context, string) (*apps.AppPermissions, error)) *MockAppsInterface_GetPermissionsByAppName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetUpdate provides a mock function with given fields: ctx, request
+func (_m *MockAppsInterface) GetUpdate(ctx context.Context, request apps.GetAppUpdateRequest) (*apps.AppUpdate, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetUpdate")
+	}
+
+	var r0 *apps.AppUpdate
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, apps.GetAppUpdateRequest) (*apps.AppUpdate, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, apps.GetAppUpdateRequest) *apps.AppUpdate); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.AppUpdate)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, apps.GetAppUpdateRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_GetUpdate_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetUpdate'
+type MockAppsInterface_GetUpdate_Call struct {
+	*mock.Call
+}
+
+// GetUpdate is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request apps.GetAppUpdateRequest
+func (_e *MockAppsInterface_Expecter) GetUpdate(ctx interface{}, request interface{}) *MockAppsInterface_GetUpdate_Call {
+	return &MockAppsInterface_GetUpdate_Call{Call: _e.mock.On("GetUpdate", ctx, request)}
+}
+
+func (_c *MockAppsInterface_GetUpdate_Call) Run(run func(ctx context.Context, request apps.GetAppUpdateRequest)) *MockAppsInterface_GetUpdate_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(apps.GetAppUpdateRequest))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_GetUpdate_Call) Return(_a0 *apps.AppUpdate, _a1 error) *MockAppsInterface_GetUpdate_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_GetUpdate_Call) RunAndReturn(run func(context.Context, apps.GetAppUpdateRequest) (*apps.AppUpdate, error)) *MockAppsInterface_GetUpdate_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1784,6 +1976,67 @@ func (_c *MockAppsInterface_WaitGetDeploymentAppSucceeded_Call) Return(_a0 *apps
 }
 
 func (_c *MockAppsInterface_WaitGetDeploymentAppSucceeded_Call) RunAndReturn(run func(context.Context, string, string, time.Duration, func(*apps.AppDeployment)) (*apps.AppDeployment, error)) *MockAppsInterface_WaitGetDeploymentAppSucceeded_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// WaitGetUpdateAppSucceeded provides a mock function with given fields: ctx, appName, timeout, callback
+func (_m *MockAppsInterface) WaitGetUpdateAppSucceeded(ctx context.Context, appName string, timeout time.Duration, callback func(*apps.AppUpdate)) (*apps.AppUpdate, error) {
+	ret := _m.Called(ctx, appName, timeout, callback)
+
+	if len(ret) == 0 {
+		panic("no return value specified for WaitGetUpdateAppSucceeded")
+	}
+
+	var r0 *apps.AppUpdate
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, time.Duration, func(*apps.AppUpdate)) (*apps.AppUpdate, error)); ok {
+		return rf(ctx, appName, timeout, callback)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, time.Duration, func(*apps.AppUpdate)) *apps.AppUpdate); ok {
+		r0 = rf(ctx, appName, timeout, callback)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*apps.AppUpdate)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, time.Duration, func(*apps.AppUpdate)) error); ok {
+		r1 = rf(ctx, appName, timeout, callback)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAppsInterface_WaitGetUpdateAppSucceeded_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WaitGetUpdateAppSucceeded'
+type MockAppsInterface_WaitGetUpdateAppSucceeded_Call struct {
+	*mock.Call
+}
+
+// WaitGetUpdateAppSucceeded is a helper method to define mock.On call
+//   - ctx context.Context
+//   - appName string
+//   - timeout time.Duration
+//   - callback func(*apps.AppUpdate)
+func (_e *MockAppsInterface_Expecter) WaitGetUpdateAppSucceeded(ctx interface{}, appName interface{}, timeout interface{}, callback interface{}) *MockAppsInterface_WaitGetUpdateAppSucceeded_Call {
+	return &MockAppsInterface_WaitGetUpdateAppSucceeded_Call{Call: _e.mock.On("WaitGetUpdateAppSucceeded", ctx, appName, timeout, callback)}
+}
+
+func (_c *MockAppsInterface_WaitGetUpdateAppSucceeded_Call) Run(run func(ctx context.Context, appName string, timeout time.Duration, callback func(*apps.AppUpdate))) *MockAppsInterface_WaitGetUpdateAppSucceeded_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(time.Duration), args[3].(func(*apps.AppUpdate)))
+	})
+	return _c
+}
+
+func (_c *MockAppsInterface_WaitGetUpdateAppSucceeded_Call) Return(_a0 *apps.AppUpdate, _a1 error) *MockAppsInterface_WaitGetUpdateAppSucceeded_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAppsInterface_WaitGetUpdateAppSucceeded_Call) RunAndReturn(run func(context.Context, string, time.Duration, func(*apps.AppUpdate)) (*apps.AppUpdate, error)) *MockAppsInterface_WaitGetUpdateAppSucceeded_Call {
 	_c.Call.Return(run)
 	return _c
 }

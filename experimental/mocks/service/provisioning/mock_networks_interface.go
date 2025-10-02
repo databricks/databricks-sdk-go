@@ -82,21 +82,33 @@ func (_c *MockNetworksInterface_Create_Call) RunAndReturn(run func(context.Conte
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockNetworksInterface) Delete(ctx context.Context, request provisioning.DeleteNetworkRequest) error {
+func (_m *MockNetworksInterface) Delete(ctx context.Context, request provisioning.DeleteNetworkRequest) (*provisioning.Network, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteNetworkRequest) error); ok {
+	var r0 *provisioning.Network
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteNetworkRequest) (*provisioning.Network, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteNetworkRequest) *provisioning.Network); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.Network)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, provisioning.DeleteNetworkRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockNetworksInterface_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
@@ -118,32 +130,44 @@ func (_c *MockNetworksInterface_Delete_Call) Run(run func(ctx context.Context, r
 	return _c
 }
 
-func (_c *MockNetworksInterface_Delete_Call) Return(_a0 error) *MockNetworksInterface_Delete_Call {
-	_c.Call.Return(_a0)
+func (_c *MockNetworksInterface_Delete_Call) Return(_a0 *provisioning.Network, _a1 error) *MockNetworksInterface_Delete_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockNetworksInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeleteNetworkRequest) error) *MockNetworksInterface_Delete_Call {
+func (_c *MockNetworksInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeleteNetworkRequest) (*provisioning.Network, error)) *MockNetworksInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeleteByNetworkId provides a mock function with given fields: ctx, networkId
-func (_m *MockNetworksInterface) DeleteByNetworkId(ctx context.Context, networkId string) error {
+func (_m *MockNetworksInterface) DeleteByNetworkId(ctx context.Context, networkId string) (*provisioning.Network, error) {
 	ret := _m.Called(ctx, networkId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteByNetworkId")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+	var r0 *provisioning.Network
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*provisioning.Network, error)); ok {
+		return rf(ctx, networkId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *provisioning.Network); ok {
 		r0 = rf(ctx, networkId)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.Network)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, networkId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockNetworksInterface_DeleteByNetworkId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByNetworkId'
@@ -165,12 +189,12 @@ func (_c *MockNetworksInterface_DeleteByNetworkId_Call) Run(run func(ctx context
 	return _c
 }
 
-func (_c *MockNetworksInterface_DeleteByNetworkId_Call) Return(_a0 error) *MockNetworksInterface_DeleteByNetworkId_Call {
-	_c.Call.Return(_a0)
+func (_c *MockNetworksInterface_DeleteByNetworkId_Call) Return(_a0 *provisioning.Network, _a1 error) *MockNetworksInterface_DeleteByNetworkId_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockNetworksInterface_DeleteByNetworkId_Call) RunAndReturn(run func(context.Context, string) error) *MockNetworksInterface_DeleteByNetworkId_Call {
+func (_c *MockNetworksInterface_DeleteByNetworkId_Call) RunAndReturn(run func(context.Context, string) (*provisioning.Network, error)) *MockNetworksInterface_DeleteByNetworkId_Call {
 	_c.Call.Return(run)
 	return _c
 }

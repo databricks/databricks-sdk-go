@@ -146,6 +146,9 @@ type ServingEndpointsInterface interface {
 	// Deprecated: use [ServingEndpointsAPIInterface.UpdateConfig].Get() or [ServingEndpointsAPIInterface.WaitGetServingEndpointNotUpdating]
 	UpdateConfigAndWait(ctx context.Context, endpointCoreConfigInput EndpointCoreConfigInput, options ...retries.Option[ServingEndpointDetailed]) (*ServingEndpointDetailed, error)
 
+	// Updates the email and webhook notification settings for an endpoint.
+	UpdateNotifications(ctx context.Context, request UpdateInferenceEndpointNotifications) (*UpdateInferenceEndpointNotificationsResponse, error)
+
 	// Updates the permissions on a serving endpoint. Serving endpoints can inherit
 	// permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)

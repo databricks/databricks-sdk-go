@@ -17,24 +17,24 @@ import (
 type AccountMetastoreAssignmentsInterface interface {
 
 	// Creates an assignment to a metastore for a workspace
-	Create(ctx context.Context, request AccountsCreateMetastoreAssignment) error
+	Create(ctx context.Context, request AccountsCreateMetastoreAssignment) (*AccountsCreateMetastoreAssignmentResponse, error)
 
 	// Deletes a metastore assignment to a workspace, leaving the workspace with no
 	// metastore.
-	Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error
+	Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) (*AccountsDeleteMetastoreAssignmentResponse, error)
 
 	// Deletes a metastore assignment to a workspace, leaving the workspace with no
 	// metastore.
-	DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) error
+	DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) (*AccountsDeleteMetastoreAssignmentResponse, error)
 
 	// Gets the metastore assignment, if any, for the workspace specified by ID. If
-	// the workspace is assigned a metastore, the mappig will be returned. If no
+	// the workspace is assigned a metastore, the mapping will be returned. If no
 	// metastore is assigned to the workspace, the assignment will not be found and
 	// a 404 returned.
 	Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*AccountsMetastoreAssignment, error)
 
 	// Gets the metastore assignment, if any, for the workspace specified by ID. If
-	// the workspace is assigned a metastore, the mappig will be returned. If no
+	// the workspace is assigned a metastore, the mapping will be returned. If no
 	// metastore is assigned to the workspace, the assignment will not be found and
 	// a 404 returned.
 	GetByWorkspaceId(ctx context.Context, workspaceId int64) (*AccountsMetastoreAssignment, error)
@@ -57,7 +57,7 @@ type AccountMetastoreAssignmentsInterface interface {
 
 	// Updates an assignment to a metastore for a workspace. Currently, only the
 	// default catalog may be updated.
-	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error
+	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) (*AccountsUpdateMetastoreAssignmentResponse, error)
 }
 
 func NewAccountMetastoreAssignments(client *client.DatabricksClient) *AccountMetastoreAssignmentsAPI {
@@ -75,7 +75,7 @@ type AccountMetastoreAssignmentsAPI struct {
 
 // Deletes a metastore assignment to a workspace, leaving the workspace with no
 // metastore.
-func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) error {
+func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) (*AccountsDeleteMetastoreAssignmentResponse, error) {
 	return a.accountMetastoreAssignmentsImpl.Delete(ctx, DeleteAccountMetastoreAssignmentRequest{
 		WorkspaceId: workspaceId,
 		MetastoreId: metastoreId,
@@ -83,7 +83,7 @@ func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx c
 }
 
 // Gets the metastore assignment, if any, for the workspace specified by ID. If
-// the workspace is assigned a metastore, the mappig will be returned. If no
+// the workspace is assigned a metastore, the mapping will be returned. If no
 // metastore is assigned to the workspace, the assignment will not be found and
 // a 404 returned.
 func (a *AccountMetastoreAssignmentsAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*AccountsMetastoreAssignment, error) {
@@ -103,19 +103,19 @@ func (a *AccountMetastoreAssignmentsAPI) ListByMetastoreId(ctx context.Context, 
 type AccountMetastoresInterface interface {
 
 	// Creates a Unity Catalog metastore.
-	Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsMetastoreInfo, error)
+	Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsCreateMetastoreResponse, error)
 
 	// Deletes a Unity Catalog metastore for an account, both specified by ID.
-	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error
+	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) (*AccountsDeleteMetastoreResponse, error)
 
 	// Deletes a Unity Catalog metastore for an account, both specified by ID.
-	DeleteByMetastoreId(ctx context.Context, metastoreId string) error
+	DeleteByMetastoreId(ctx context.Context, metastoreId string) (*AccountsDeleteMetastoreResponse, error)
 
 	// Gets a Unity Catalog metastore from an account, both specified by ID.
-	Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsMetastoreInfo, error)
+	Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsGetMetastoreResponse, error)
 
 	// Gets a Unity Catalog metastore from an account, both specified by ID.
-	GetByMetastoreId(ctx context.Context, metastoreId string) (*AccountsMetastoreInfo, error)
+	GetByMetastoreId(ctx context.Context, metastoreId string) (*AccountsGetMetastoreResponse, error)
 
 	// Gets all Unity Catalog metastores associated with an account specified by ID.
 	//
@@ -128,7 +128,7 @@ type AccountMetastoresInterface interface {
 	ListAll(ctx context.Context) ([]MetastoreInfo, error)
 
 	// Updates an existing Unity Catalog metastore.
-	Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsMetastoreInfo, error)
+	Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsUpdateMetastoreResponse, error)
 }
 
 func NewAccountMetastores(client *client.DatabricksClient) *AccountMetastoresAPI {
@@ -146,14 +146,14 @@ type AccountMetastoresAPI struct {
 }
 
 // Deletes a Unity Catalog metastore for an account, both specified by ID.
-func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastoreId string) error {
+func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastoreId string) (*AccountsDeleteMetastoreResponse, error) {
 	return a.accountMetastoresImpl.Delete(ctx, DeleteAccountMetastoreRequest{
 		MetastoreId: metastoreId,
 	})
 }
 
 // Gets a Unity Catalog metastore from an account, both specified by ID.
-func (a *AccountMetastoresAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*AccountsMetastoreInfo, error) {
+func (a *AccountMetastoresAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*AccountsGetMetastoreResponse, error) {
 	return a.accountMetastoresImpl.Get(ctx, GetAccountMetastoreRequest{
 		MetastoreId: metastoreId,
 	})
@@ -162,32 +162,25 @@ func (a *AccountMetastoresAPI) GetByMetastoreId(ctx context.Context, metastoreId
 type AccountStorageCredentialsInterface interface {
 
 	// Creates a new storage credential. The request object is specific to the
-	// cloud:
+	// cloud: - **AwsIamRole** for AWS credentials - **AzureServicePrincipal** for
+	// Azure credentials - **GcpServiceAccountKey** for GCP credentials
 	//
-	// * **AwsIamRole** for AWS credentials * **AzureServicePrincipal** for Azure
-	// credentials * **GcpServiceAcountKey** for GCP credentials.
-	//
-	// The caller must be a metastore admin and have the
-	// **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
-	Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsStorageCredentialInfo, error)
+	// The caller must be a metastore admin and have the `CREATE_STORAGE_CREDENTIAL`
+	// privilege on the metastore.
+	Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsCreateStorageCredentialInfo, error)
 
 	// Deletes a storage credential from the metastore. The caller must be an owner
 	// of the storage credential.
-	Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error
+	Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) (*AccountsDeleteStorageCredentialResponse, error)
 
 	// Deletes a storage credential from the metastore. The caller must be an owner
 	// of the storage credential.
-	DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) error
+	DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*AccountsDeleteStorageCredentialResponse, error)
 
 	// Gets a storage credential from the metastore. The caller must be a metastore
 	// admin, the owner of the storage credential, or have a level of privilege on
 	// the storage credential.
 	Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*AccountsStorageCredentialInfo, error)
-
-	// Gets a storage credential from the metastore. The caller must be a metastore
-	// admin, the owner of the storage credential, or have a level of privilege on
-	// the storage credential.
-	GetByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*AccountsStorageCredentialInfo, error)
 
 	// Gets a list of all storage credentials that have been assigned to given
 	// metastore.
@@ -201,14 +194,10 @@ type AccountStorageCredentialsInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListAll(ctx context.Context, request ListAccountStorageCredentialsRequest) ([]StorageCredentialInfo, error)
 
-	// Gets a list of all storage credentials that have been assigned to given
-	// metastore.
-	ListByMetastoreId(ctx context.Context, metastoreId string) (*ListAccountStorageCredentialsResponse, error)
-
 	// Updates a storage credential on the metastore. The caller must be the owner
 	// of the storage credential. If the caller is a metastore admin, only the
-	// __owner__ credential can be changed.
-	Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error)
+	// **owner** credential can be changed.
+	Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsUpdateStorageCredentialResponse, error)
 }
 
 func NewAccountStorageCredentials(client *client.DatabricksClient) *AccountStorageCredentialsAPI {
@@ -226,28 +215,10 @@ type AccountStorageCredentialsAPI struct {
 
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
-func (a *AccountStorageCredentialsAPI) DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) error {
+func (a *AccountStorageCredentialsAPI) DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*AccountsDeleteStorageCredentialResponse, error) {
 	return a.accountStorageCredentialsImpl.Delete(ctx, DeleteAccountStorageCredentialRequest{
 		MetastoreId:           metastoreId,
 		StorageCredentialName: storageCredentialName,
-	})
-}
-
-// Gets a storage credential from the metastore. The caller must be a metastore
-// admin, the owner of the storage credential, or have a level of privilege on
-// the storage credential.
-func (a *AccountStorageCredentialsAPI) GetByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*AccountsStorageCredentialInfo, error) {
-	return a.accountStorageCredentialsImpl.Get(ctx, GetAccountStorageCredentialRequest{
-		MetastoreId:           metastoreId,
-		StorageCredentialName: storageCredentialName,
-	})
-}
-
-// Gets a list of all storage credentials that have been assigned to given
-// metastore.
-func (a *AccountStorageCredentialsAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListAccountStorageCredentialsResponse, error) {
-	return a.accountStorageCredentialsImpl.internalList(ctx, ListAccountStorageCredentialsRequest{
-		MetastoreId: metastoreId,
 	})
 }
 
@@ -1933,9 +1904,9 @@ func NewRegisteredModels(client *client.DatabricksClient) *RegisteredModelsAPI {
 // update permissions on the registered model, users must be owners of the
 // registered model.
 //
-// Note: The securable type for models is "FUNCTION". When using REST APIs (e.g.
-// tagging, grants) that specify a securable type, use "FUNCTION" as the
-// securable type.
+// Note: The securable type for models is FUNCTION. When using REST APIs (e.g.
+// tagging, grants) that specify a securable type, use FUNCTION as the securable
+// type.
 type RegisteredModelsAPI struct {
 	registeredModelsImpl
 }
@@ -2799,7 +2770,7 @@ type VolumesInterface interface {
 	// The returned volumes are filtered based on the privileges of the calling
 	// user. For example, the metastore admin is able to list all the volumes. A
 	// regular user needs to be the owner or have the **READ VOLUME** privilege on
-	// the volume to recieve the volumes in the response. For the latter case, the
+	// the volume to receive the volumes in the response. For the latter case, the
 	// caller must also be the owner or have the **USE_CATALOG** privilege on the
 	// parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 	//
@@ -2814,7 +2785,7 @@ type VolumesInterface interface {
 	// The returned volumes are filtered based on the privileges of the calling
 	// user. For example, the metastore admin is able to list all the volumes. A
 	// regular user needs to be the owner or have the **READ VOLUME** privilege on
-	// the volume to recieve the volumes in the response. For the latter case, the
+	// the volume to receive the volumes in the response. For the latter case, the
 	// caller must also be the owner or have the **USE_CATALOG** privilege on the
 	// parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 	//
