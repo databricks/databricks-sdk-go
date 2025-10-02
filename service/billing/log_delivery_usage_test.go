@@ -62,11 +62,11 @@ func ExampleLogDeliveryAPI_Create_logDelivery() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
@@ -133,11 +133,11 @@ func ExampleLogDeliveryAPI_Get_logDelivery() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
 	if err != nil {
 		panic(err)
 	}

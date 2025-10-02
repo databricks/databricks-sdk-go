@@ -26,7 +26,7 @@ func TestMwsAccStorage(t *testing.T) {
 	require.NoError(t, err)
 
 	defer func() {
-		err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+		_, err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 		require.NoError(t, err)
 	}()
 
@@ -55,7 +55,7 @@ func TestMwsAccNetworks(t *testing.T) {
 	})
 	require.NoError(t, err)
 	defer func() {
-		err = a.Networks.DeleteByNetworkId(ctx, netw.NetworkId)
+		_, err = a.Networks.DeleteByNetworkId(ctx, netw.NetworkId)
 		require.NoError(t, err)
 	}()
 
@@ -87,7 +87,7 @@ func TestMwsAccCredentials(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+		_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 		require.NoError(t, err)
 	})
 
@@ -119,7 +119,7 @@ func TestMwsAccEncryptionKeys(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := a.EncryptionKeys.DeleteByCustomerManagedKeyId(ctx, created.CustomerManagedKeyId)
+		_, err := a.EncryptionKeys.DeleteByCustomerManagedKeyId(ctx, created.CustomerManagedKeyId)
 		require.NoError(t, err)
 	})
 
@@ -145,13 +145,15 @@ func TestMwsAccPrivateAccess(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := a.PrivateAccess.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
+		_, err := a.PrivateAccess.DeleteByPrivateAccessSettingsId(ctx, created.PrivateAccessSettingsId)
 		require.NoError(t, err)
 	})
-	err = a.PrivateAccess.Replace(ctx, provisioning.ReplacePrivateAccessSettingsRequest{
-		PrivateAccessSettingsId:   created.PrivateAccessSettingsId,
-		PrivateAccessSettingsName: RandomName("go-sdk-"),
-		Region:                    GetEnvOrSkipTest(t, "AWS_REGION"),
+	_, err = a.PrivateAccess.Replace(ctx, provisioning.ReplacePrivateAccessSettingsRequest{
+		PrivateAccessSettingsId: created.PrivateAccessSettingsId,
+		CustomerFacingPrivateAccessSettings: provisioning.PrivateAccessSettings{
+			PrivateAccessSettingsName: RandomName("go-sdk-"),
+			Region:                    GetEnvOrSkipTest(t, "AWS_REGION"),
+		},
 	})
 	require.NoError(t, err)
 
@@ -185,7 +187,7 @@ func TestMwsAccVpcEndpoints(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := a.VpcEndpoints.DeleteByVpcEndpointId(ctx, created.VpcEndpointId)
+		_, err := a.VpcEndpoints.DeleteByVpcEndpointId(ctx, created.VpcEndpointId)
 		require.NoError(t, err)
 	})
 
@@ -212,7 +214,7 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+		_, err := a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 		require.NoError(t, err)
 	})
 
@@ -228,7 +230,7 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := retries.New[struct{}](retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
+		_, err := retries.New[provisioning.Credential](retries.OnErrors(apierr.ErrResourceConflict)).Run(ctx, func(ctx context.Context) (*provisioning.Credential, error) {
 			return a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 		})
 		require.NoError(t, err)
@@ -244,7 +246,7 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := retries.New[struct{}](retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
+		_, err := retries.New[provisioning.Credential](retries.OnErrors(apierr.ErrResourceConflict)).Run(ctx, func(ctx context.Context) (*provisioning.Credential, error) {
 			return a.Credentials.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
 		})
 		require.NoError(t, err)
@@ -261,7 +263,7 @@ func TestMwsAccWorkspaces(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := a.Workspaces.DeleteByWorkspaceId(ctx, waiter.WorkspaceId)
+		_, err := a.Workspaces.DeleteByWorkspaceId(ctx, waiter.WorkspaceId)
 		require.NoError(t, err)
 	})
 	created, err := waiter.Get()
@@ -269,8 +271,10 @@ func TestMwsAccWorkspaces(t *testing.T) {
 
 	// this also takes a while
 	_, err = a.Workspaces.UpdateAndWait(ctx, provisioning.UpdateWorkspaceRequest{
-		WorkspaceId:   created.WorkspaceId,
-		CredentialsId: updateRole.CredentialsId,
+		WorkspaceId: created.WorkspaceId,
+		CustomerFacingWorkspace: provisioning.Workspace{
+			CredentialsId: updateRole.CredentialsId,
+		},
 	})
 	require.NoError(t, err)
 

@@ -58,15 +58,15 @@ func ExampleWorkspacesAPI_Create_workspaces() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
+	_, err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
 	if err != nil {
 		panic(err)
 	}
@@ -123,15 +123,15 @@ func ExampleWorkspacesAPI_Get_workspaces() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
+	_, err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
 	if err != nil {
 		panic(err)
 	}
@@ -209,8 +209,10 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 	logger.Infof(ctx, "found %v", created)
 
 	_, err = a.Workspaces.UpdateAndWait(ctx, provisioning.UpdateWorkspaceRequest{
-		WorkspaceId:   created.WorkspaceId,
-		CredentialsId: updateRole.CredentialsId,
+		WorkspaceId: created.WorkspaceId,
+		CustomerFacingWorkspace: provisioning.Workspace{
+			CredentialsId: updateRole.CredentialsId,
+		},
 	})
 	if err != nil {
 		panic(err)
@@ -218,19 +220,19 @@ func ExampleWorkspacesAPI_Update_workspaces() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Credentials.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
-	err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
+	_, err = a.Workspaces.DeleteByWorkspaceId(ctx, created.WorkspaceId)
 	if err != nil {
 		panic(err)
 	}

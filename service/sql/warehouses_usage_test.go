@@ -114,7 +114,9 @@ func ExampleWarehousesAPI_Get_sqlWarehouses() {
 	}
 	logger.Infof(ctx, "found %v", created)
 
-	wh, err := w.Warehouses.GetById(ctx, created.Id)
+	wh, err := w.Warehouses.Get(ctx, sql.GetWarehouseRequest{
+		Id: created.Id,
+	})
 	if err != nil {
 		panic(err)
 	}
