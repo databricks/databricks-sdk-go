@@ -60,6 +60,7 @@ experimental/mocks/service/dashboards/mock_genie_interface.go linguist-generated
 experimental/mocks/service/dashboards/mock_lakeview_embedded_interface.go linguist-generated=true
 experimental/mocks/service/dashboards/mock_lakeview_interface.go linguist-generated=true
 experimental/mocks/service/database/mock_database_interface.go linguist-generated=true
+experimental/mocks/service/dataquality/mock_data_quality_interface.go linguist-generated=true
 experimental/mocks/service/files/mock_dbfs_interface.go linguist-generated=true
 experimental/mocks/service/files/mock_files_interface.go linguist-generated=true
 experimental/mocks/service/iam/mock_access_control_interface.go linguist-generated=true

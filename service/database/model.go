@@ -893,7 +893,7 @@ func (s RequestedResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next field marker: 14
+// Next field marker: 18
 type SyncedDatabaseTable struct {
 	// Synced Table data synchronization status
 	DataSynchronizationStatus *SyncedTableStatus `json:"data_synchronization_status,omitempty"`

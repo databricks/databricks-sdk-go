@@ -1414,6 +1414,9 @@ type WarehousesInterface interface {
 	// Gets the information for a single SQL warehouse.
 	Get(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error)
 
+	// Gets the information for a single SQL warehouse.
+	GetById(ctx context.Context, id string) (*GetWarehouseResponse, error)
+
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error)
 
@@ -1714,6 +1717,13 @@ func (a *WarehousesAPI) EditAndWait(ctx context.Context, editWarehouseRequest Ed
 		}
 	}
 	return wait.Get()
+}
+
+// Gets the information for a single SQL warehouse.
+func (a *WarehousesAPI) GetById(ctx context.Context, id string) (*GetWarehouseResponse, error) {
+	return a.warehousesImpl.Get(ctx, GetWarehouseRequest{
+		Id: id,
+	})
 }
 
 // Gets the permission levels that a user can have on an object.

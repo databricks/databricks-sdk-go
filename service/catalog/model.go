@@ -4182,6 +4182,9 @@ type ListCatalogsRequest struct {
 	// Whether to include catalogs in the response for which the principal can
 	// only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Whether to include catalogs not bound to the workspace. Effective only if
+	// the user has permission to update the catalog–workspace binding.
+	IncludeUnbound bool `json:"-" url:"include_unbound,omitempty"`
 	// Maximum number of catalogs to return. - when set to 0, the page length is
 	// set to a server configured value (recommended); - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
@@ -4267,6 +4270,9 @@ func (s ListConnectionsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListCredentialsRequest struct {
+	// Whether to include credentials not bound to the workspace. Effective only
+	// if the user has permission to update the credential–workspace binding.
+	IncludeUnbound bool `json:"-" url:"include_unbound,omitempty"`
 	// Maximum number of credentials to return. - If not set, the default max
 	// page size is used. - When set to a value greater than 0, the page length
 	// is the minimum of this value and a server-configured value. - When set to
@@ -4391,6 +4397,10 @@ type ListExternalLocationsRequest struct {
 	// Whether to include external locations in the response for which the
 	// principal can only access selective metadata for
 	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Whether to include external locations not bound to the workspace.
+	// Effective only if the user has permission to update the
+	// location–workspace binding.
+	IncludeUnbound bool `json:"-" url:"include_unbound,omitempty"`
 	// Maximum number of external locations to return. If not set, all the
 	// external locations are returned (not recommended). - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
@@ -4800,6 +4810,9 @@ func (s ListSchemasResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListStorageCredentialsRequest struct {
+	// Whether to include credentials not bound to the workspace. Effective only
+	// if the user has permission to update the credential–workspace binding.
+	IncludeUnbound bool `json:"-" url:"include_unbound,omitempty"`
 	// Maximum number of storage credentials to return. If not set, all the
 	// storage credentials are returned (not recommended). - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server

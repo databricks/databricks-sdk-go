@@ -506,6 +506,65 @@ func (_c *MockWarehousesInterface_Get_Call) RunAndReturn(run func(context.Contex
 	return _c
 }
 
+// GetById provides a mock function with given fields: ctx, id
+func (_m *MockWarehousesInterface) GetById(ctx context.Context, id string) (*sql.GetWarehouseResponse, error) {
+	ret := _m.Called(ctx, id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetById")
+	}
+
+	var r0 *sql.GetWarehouseResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*sql.GetWarehouseResponse, error)); ok {
+		return rf(ctx, id)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *sql.GetWarehouseResponse); ok {
+		r0 = rf(ctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*sql.GetWarehouseResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWarehousesInterface_GetById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetById'
+type MockWarehousesInterface_GetById_Call struct {
+	*mock.Call
+}
+
+// GetById is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id string
+func (_e *MockWarehousesInterface_Expecter) GetById(ctx interface{}, id interface{}) *MockWarehousesInterface_GetById_Call {
+	return &MockWarehousesInterface_GetById_Call{Call: _e.mock.On("GetById", ctx, id)}
+}
+
+func (_c *MockWarehousesInterface_GetById_Call) Run(run func(ctx context.Context, id string)) *MockWarehousesInterface_GetById_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockWarehousesInterface_GetById_Call) Return(_a0 *sql.GetWarehouseResponse, _a1 error) *MockWarehousesInterface_GetById_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWarehousesInterface_GetById_Call) RunAndReturn(run func(context.Context, string) (*sql.GetWarehouseResponse, error)) *MockWarehousesInterface_GetById_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetByName provides a mock function with given fields: ctx, name
 func (_m *MockWarehousesInterface) GetByName(ctx context.Context, name string) (*sql.EndpointInfo, error) {
 	ret := _m.Called(ctx, name)

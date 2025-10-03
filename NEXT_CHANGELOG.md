@@ -90,3 +90,8 @@
 * [Breaking] Remove `AwsRegion`, `CredentialsId`, `CustomTags`, `ManagedServicesCustomerManagedKeyId`, `NetworkConnectivityConfigId`, `NetworkId`, `PrivateAccessSettingsId`, `StorageConfigurationId` and `StorageCustomerManagedKeyId` fields for [provisioning.UpdateWorkspaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#UpdateWorkspaceRequest).
 * [Breaking] Remove `ExternalCustomerInfo` and `IsNoPublicIpEnabled` fields for [provisioning.Workspace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#Workspace).
 * [Breaking] Remove `StatusUnspecified` enum value for [sql.Status](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#Status).
+* Add `IncludeUnbound` field for [catalog.ListCatalogsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListCatalogsRequest).
+* Add `IncludeUnbound` field for [catalog.ListCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListCredentialsRequest).
+* Add `IncludeUnbound` field for [catalog.ListExternalLocationsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListExternalLocationsRequest).
+* Add `IncludeUnbound` field for [catalog.ListStorageCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListStorageCredentialsRequest).
+* Add `AssetTypeMcp` enum value for [marketplace.AssetType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#AssetType).
