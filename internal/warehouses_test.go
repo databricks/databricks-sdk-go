@@ -41,9 +41,7 @@ func TestAccSqlWarehouses(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	wh, err := w.Warehouses.Get(ctx, sql.GetWarehouseRequest{
-		Id: created.Id,
-	})
+	wh, err := w.Warehouses.GetById(ctx, created.Id)
 	require.NoError(t, err)
 
 	all, err := w.Warehouses.ListAll(ctx, sql.ListWarehousesRequest{})
