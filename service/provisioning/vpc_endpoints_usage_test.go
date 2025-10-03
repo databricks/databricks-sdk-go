@@ -33,7 +33,7 @@ func ExampleVpcEndpointsAPI_Create_vpcEndpoints() {
 
 	// cleanup
 
-	err = a.VpcEndpoints.DeleteByVpcEndpointId(ctx, created.VpcEndpointId)
+	_, err = a.VpcEndpoints.DeleteByVpcEndpointId(ctx, created.VpcEndpointId)
 	if err != nil {
 		panic(err)
 	}
@@ -65,7 +65,7 @@ func ExampleVpcEndpointsAPI_Get_vpcEndpoints() {
 
 	// cleanup
 
-	err = a.VpcEndpoints.DeleteByVpcEndpointId(ctx, created.VpcEndpointId)
+	_, err = a.VpcEndpoints.DeleteByVpcEndpointId(ctx, created.VpcEndpointId)
 	if err != nil {
 		panic(err)
 	}

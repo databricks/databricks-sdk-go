@@ -160,21 +160,33 @@ func (_c *MockWorkspacesInterface_CreateAndWait_Call) RunAndReturn(run func(cont
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockWorkspacesInterface) Delete(ctx context.Context, request provisioning.DeleteWorkspaceRequest) error {
+func (_m *MockWorkspacesInterface) Delete(ctx context.Context, request provisioning.DeleteWorkspaceRequest) (*provisioning.Workspace, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteWorkspaceRequest) error); ok {
+	var r0 *provisioning.Workspace
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteWorkspaceRequest) (*provisioning.Workspace, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteWorkspaceRequest) *provisioning.Workspace); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.Workspace)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, provisioning.DeleteWorkspaceRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockWorkspacesInterface_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
@@ -196,32 +208,44 @@ func (_c *MockWorkspacesInterface_Delete_Call) Run(run func(ctx context.Context,
 	return _c
 }
 
-func (_c *MockWorkspacesInterface_Delete_Call) Return(_a0 error) *MockWorkspacesInterface_Delete_Call {
-	_c.Call.Return(_a0)
+func (_c *MockWorkspacesInterface_Delete_Call) Return(_a0 *provisioning.Workspace, _a1 error) *MockWorkspacesInterface_Delete_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspacesInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeleteWorkspaceRequest) error) *MockWorkspacesInterface_Delete_Call {
+func (_c *MockWorkspacesInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeleteWorkspaceRequest) (*provisioning.Workspace, error)) *MockWorkspacesInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeleteByWorkspaceId provides a mock function with given fields: ctx, workspaceId
-func (_m *MockWorkspacesInterface) DeleteByWorkspaceId(ctx context.Context, workspaceId int64) error {
+func (_m *MockWorkspacesInterface) DeleteByWorkspaceId(ctx context.Context, workspaceId int64) (*provisioning.Workspace, error) {
 	ret := _m.Called(ctx, workspaceId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteByWorkspaceId")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) error); ok {
+	var r0 *provisioning.Workspace
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (*provisioning.Workspace, error)); ok {
+		return rf(ctx, workspaceId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, int64) *provisioning.Workspace); ok {
 		r0 = rf(ctx, workspaceId)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.Workspace)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(ctx, workspaceId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockWorkspacesInterface_DeleteByWorkspaceId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByWorkspaceId'
@@ -243,12 +267,12 @@ func (_c *MockWorkspacesInterface_DeleteByWorkspaceId_Call) Run(run func(ctx con
 	return _c
 }
 
-func (_c *MockWorkspacesInterface_DeleteByWorkspaceId_Call) Return(_a0 error) *MockWorkspacesInterface_DeleteByWorkspaceId_Call {
-	_c.Call.Return(_a0)
+func (_c *MockWorkspacesInterface_DeleteByWorkspaceId_Call) Return(_a0 *provisioning.Workspace, _a1 error) *MockWorkspacesInterface_DeleteByWorkspaceId_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspacesInterface_DeleteByWorkspaceId_Call) RunAndReturn(run func(context.Context, int64) error) *MockWorkspacesInterface_DeleteByWorkspaceId_Call {
+func (_c *MockWorkspacesInterface_DeleteByWorkspaceId_Call) RunAndReturn(run func(context.Context, int64) (*provisioning.Workspace, error)) *MockWorkspacesInterface_DeleteByWorkspaceId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -489,23 +513,23 @@ func (_c *MockWorkspacesInterface_List_Call) RunAndReturn(run func(context.Conte
 }
 
 // Update provides a mock function with given fields: ctx, updateWorkspaceRequest
-func (_m *MockWorkspacesInterface) Update(ctx context.Context, updateWorkspaceRequest provisioning.UpdateWorkspaceRequest) (*provisioning.WaitGetWorkspaceRunning[struct{}], error) {
+func (_m *MockWorkspacesInterface) Update(ctx context.Context, updateWorkspaceRequest provisioning.UpdateWorkspaceRequest) (*provisioning.WaitGetWorkspaceRunning[provisioning.Workspace], error) {
 	ret := _m.Called(ctx, updateWorkspaceRequest)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
 	}
 
-	var r0 *provisioning.WaitGetWorkspaceRunning[struct{}]
+	var r0 *provisioning.WaitGetWorkspaceRunning[provisioning.Workspace]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.UpdateWorkspaceRequest) (*provisioning.WaitGetWorkspaceRunning[struct{}], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.UpdateWorkspaceRequest) (*provisioning.WaitGetWorkspaceRunning[provisioning.Workspace], error)); ok {
 		return rf(ctx, updateWorkspaceRequest)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.UpdateWorkspaceRequest) *provisioning.WaitGetWorkspaceRunning[struct{}]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.UpdateWorkspaceRequest) *provisioning.WaitGetWorkspaceRunning[provisioning.Workspace]); ok {
 		r0 = rf(ctx, updateWorkspaceRequest)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*provisioning.WaitGetWorkspaceRunning[struct{}])
+			r0 = ret.Get(0).(*provisioning.WaitGetWorkspaceRunning[provisioning.Workspace])
 		}
 	}
 
@@ -537,12 +561,12 @@ func (_c *MockWorkspacesInterface_Update_Call) Run(run func(ctx context.Context,
 	return _c
 }
 
-func (_c *MockWorkspacesInterface_Update_Call) Return(_a0 *provisioning.WaitGetWorkspaceRunning[struct{}], _a1 error) *MockWorkspacesInterface_Update_Call {
+func (_c *MockWorkspacesInterface_Update_Call) Return(_a0 *provisioning.WaitGetWorkspaceRunning[provisioning.Workspace], _a1 error) *MockWorkspacesInterface_Update_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspacesInterface_Update_Call) RunAndReturn(run func(context.Context, provisioning.UpdateWorkspaceRequest) (*provisioning.WaitGetWorkspaceRunning[struct{}], error)) *MockWorkspacesInterface_Update_Call {
+func (_c *MockWorkspacesInterface_Update_Call) RunAndReturn(run func(context.Context, provisioning.UpdateWorkspaceRequest) (*provisioning.WaitGetWorkspaceRunning[provisioning.Workspace], error)) *MockWorkspacesInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

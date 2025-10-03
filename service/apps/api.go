@@ -20,6 +20,10 @@ type AppsInterface interface {
 	WaitGetAppActive(ctx context.Context, name string,
 		timeout time.Duration, callback func(*App)) (*App, error)
 
+	// WaitGetUpdateAppSucceeded repeatedly calls [AppsAPI.GetUpdate] and waits to reach SUCCEEDED state
+	WaitGetUpdateAppSucceeded(ctx context.Context, appName string,
+		timeout time.Duration, callback func(*AppUpdate)) (*AppUpdate, error)
+
 	// WaitGetDeploymentAppSucceeded repeatedly calls [AppsAPI.GetDeployment] and waits to reach SUCCEEDED state
 	WaitGetDeploymentAppSucceeded(ctx context.Context, appName string, deploymentId string,
 		timeout time.Duration, callback func(*AppDeployment)) (*AppDeployment, error)
@@ -38,6 +42,19 @@ type AppsInterface interface {
 	//
 	// Deprecated: use [AppsAPIInterface.Create].Get() or [AppsAPIInterface.WaitGetAppActive]
 	CreateAndWait(ctx context.Context, createAppRequest CreateAppRequest, options ...retries.Option[App]) (*App, error)
+
+	// Creates an app update and starts the update process. The update process is
+	// asynchronous and the status of the update can be checked with the
+	// GetAppUpdate method.
+	CreateUpdate(ctx context.Context, asyncUpdateAppRequest AsyncUpdateAppRequest) (*WaitGetUpdateAppSucceeded[AppUpdate], error)
+
+	// Calls [AppsAPIInterface.CreateUpdate] and waits to reach SUCCEEDED state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[AppUpdate](60*time.Minute) functional option.
+	//
+	// Deprecated: use [AppsAPIInterface.CreateUpdate].Get() or [AppsAPIInterface.WaitGetUpdateAppSucceeded]
+	CreateUpdateAndWait(ctx context.Context, asyncUpdateAppRequest AsyncUpdateAppRequest, options ...retries.Option[AppUpdate]) (*AppUpdate, error)
 
 	// Deletes an app.
 	Delete(ctx context.Context, request DeleteAppRequest) (*App, error)
@@ -83,6 +100,9 @@ type AppsInterface interface {
 	// Gets the permissions of an app. Apps can inherit permissions from their root
 	// object.
 	GetPermissionsByAppName(ctx context.Context, appName string) (*AppPermissions, error)
+
+	// Gets the status of an app update.
+	GetUpdate(ctx context.Context, request GetAppUpdateRequest) (*AppUpdate, error)
 
 	// Lists all apps in the workspace.
 	//
@@ -211,6 +231,63 @@ func (w *WaitGetAppActive[R]) Get() (*App, error) {
 
 // Get the App with custom timeout.
 func (w *WaitGetAppActive[R]) GetWithTimeout(timeout time.Duration) (*App, error) {
+	return w.Poll(timeout, w.callback)
+}
+
+// WaitGetUpdateAppSucceeded repeatedly calls [AppsAPI.GetUpdate] and waits to reach SUCCEEDED state
+func (a *AppsAPI) WaitGetUpdateAppSucceeded(ctx context.Context, appName string,
+	timeout time.Duration, callback func(*AppUpdate)) (*AppUpdate, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	return retries.Poll[AppUpdate](ctx, timeout, func() (*AppUpdate, *retries.Err) {
+		appUpdate, err := a.GetUpdate(ctx, GetAppUpdateRequest{
+			AppName: appName,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		if callback != nil {
+			callback(appUpdate)
+		}
+		status := appUpdate.Status.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if appUpdate.Status != nil {
+			statusMessage = appUpdate.Status.Message
+		}
+		switch status {
+		case AppUpdateUpdateStatusUpdateStateSucceeded: // target state
+			return appUpdate, nil
+		case AppUpdateUpdateStatusUpdateStateFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				AppUpdateUpdateStatusUpdateStateSucceeded, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+}
+
+// WaitGetUpdateAppSucceeded is a wrapper that calls [AppsAPI.WaitGetUpdateAppSucceeded] and waits to reach SUCCEEDED state.
+type WaitGetUpdateAppSucceeded[R any] struct {
+	Response *R
+	AppName  string `json:"app_name"`
+	Poll     func(time.Duration, func(*AppUpdate)) (*AppUpdate, error)
+	callback func(*AppUpdate)
+	timeout  time.Duration
+}
+
+// OnProgress invokes a callback every time it polls for the status update.
+func (w *WaitGetUpdateAppSucceeded[R]) OnProgress(callback func(*AppUpdate)) *WaitGetUpdateAppSucceeded[R] {
+	w.callback = callback
+	return w
+}
+
+// Get the AppUpdate with the default timeout of 20 minutes.
+func (w *WaitGetUpdateAppSucceeded[R]) Get() (*AppUpdate, error) {
+	return w.Poll(w.timeout, w.callback)
+}
+
+// Get the AppUpdate with custom timeout.
+func (w *WaitGetUpdateAppSucceeded[R]) GetWithTimeout(timeout time.Duration) (*AppUpdate, error) {
 	return w.Poll(timeout, w.callback)
 }
 
@@ -366,6 +443,52 @@ func (a *AppsAPI) CreateAndWait(ctx context.Context, createAppRequest CreateAppR
 	wait.callback = func(info *App) {
 		for _, o := range options {
 			o(&retries.Info[App]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
+}
+
+// Creates an app update and starts the update process. The update process is
+// asynchronous and the status of the update can be checked with the
+// GetAppUpdate method.
+func (a *AppsAPI) CreateUpdate(ctx context.Context, asyncUpdateAppRequest AsyncUpdateAppRequest) (*WaitGetUpdateAppSucceeded[AppUpdate], error) {
+	appUpdate, err := a.appsImpl.CreateUpdate(ctx, asyncUpdateAppRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetUpdateAppSucceeded[AppUpdate]{
+		Response: appUpdate,
+		AppName:  asyncUpdateAppRequest.AppName,
+		Poll: func(timeout time.Duration, callback func(*AppUpdate)) (*AppUpdate, error) {
+			return a.WaitGetUpdateAppSucceeded(ctx, asyncUpdateAppRequest.AppName, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [AppsAPI.CreateUpdate] and waits to reach SUCCEEDED state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[AppUpdate](60*time.Minute) functional option.
+//
+// Deprecated: use [AppsAPI.CreateUpdate].Get() or [AppsAPI.WaitGetUpdateAppSucceeded]
+func (a *AppsAPI) CreateUpdateAndWait(ctx context.Context, asyncUpdateAppRequest AsyncUpdateAppRequest, options ...retries.Option[AppUpdate]) (*AppUpdate, error) {
+	wait, err := a.CreateUpdate(ctx, asyncUpdateAppRequest)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[AppUpdate]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *AppUpdate) {
+		for _, o := range options {
+			o(&retries.Info[AppUpdate]{
 				Info:    info,
 				Timeout: wait.timeout,
 			})

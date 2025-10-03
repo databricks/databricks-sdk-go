@@ -82,21 +82,33 @@ func (_c *MockVpcEndpointsInterface_Create_Call) RunAndReturn(run func(context.C
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockVpcEndpointsInterface) Delete(ctx context.Context, request provisioning.DeleteVpcEndpointRequest) error {
+func (_m *MockVpcEndpointsInterface) Delete(ctx context.Context, request provisioning.DeleteVpcEndpointRequest) (*provisioning.VpcEndpoint, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteVpcEndpointRequest) error); ok {
+	var r0 *provisioning.VpcEndpoint
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteVpcEndpointRequest) (*provisioning.VpcEndpoint, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteVpcEndpointRequest) *provisioning.VpcEndpoint); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.VpcEndpoint)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, provisioning.DeleteVpcEndpointRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockVpcEndpointsInterface_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
@@ -118,32 +130,44 @@ func (_c *MockVpcEndpointsInterface_Delete_Call) Run(run func(ctx context.Contex
 	return _c
 }
 
-func (_c *MockVpcEndpointsInterface_Delete_Call) Return(_a0 error) *MockVpcEndpointsInterface_Delete_Call {
-	_c.Call.Return(_a0)
+func (_c *MockVpcEndpointsInterface_Delete_Call) Return(_a0 *provisioning.VpcEndpoint, _a1 error) *MockVpcEndpointsInterface_Delete_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockVpcEndpointsInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeleteVpcEndpointRequest) error) *MockVpcEndpointsInterface_Delete_Call {
+func (_c *MockVpcEndpointsInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeleteVpcEndpointRequest) (*provisioning.VpcEndpoint, error)) *MockVpcEndpointsInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeleteByVpcEndpointId provides a mock function with given fields: ctx, vpcEndpointId
-func (_m *MockVpcEndpointsInterface) DeleteByVpcEndpointId(ctx context.Context, vpcEndpointId string) error {
+func (_m *MockVpcEndpointsInterface) DeleteByVpcEndpointId(ctx context.Context, vpcEndpointId string) (*provisioning.VpcEndpoint, error) {
 	ret := _m.Called(ctx, vpcEndpointId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteByVpcEndpointId")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+	var r0 *provisioning.VpcEndpoint
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*provisioning.VpcEndpoint, error)); ok {
+		return rf(ctx, vpcEndpointId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *provisioning.VpcEndpoint); ok {
 		r0 = rf(ctx, vpcEndpointId)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.VpcEndpoint)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, vpcEndpointId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockVpcEndpointsInterface_DeleteByVpcEndpointId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByVpcEndpointId'
@@ -165,12 +189,12 @@ func (_c *MockVpcEndpointsInterface_DeleteByVpcEndpointId_Call) Run(run func(ctx
 	return _c
 }
 
-func (_c *MockVpcEndpointsInterface_DeleteByVpcEndpointId_Call) Return(_a0 error) *MockVpcEndpointsInterface_DeleteByVpcEndpointId_Call {
-	_c.Call.Return(_a0)
+func (_c *MockVpcEndpointsInterface_DeleteByVpcEndpointId_Call) Return(_a0 *provisioning.VpcEndpoint, _a1 error) *MockVpcEndpointsInterface_DeleteByVpcEndpointId_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockVpcEndpointsInterface_DeleteByVpcEndpointId_Call) RunAndReturn(run func(context.Context, string) error) *MockVpcEndpointsInterface_DeleteByVpcEndpointId_Call {
+func (_c *MockVpcEndpointsInterface_DeleteByVpcEndpointId_Call) RunAndReturn(run func(context.Context, string) (*provisioning.VpcEndpoint, error)) *MockVpcEndpointsInterface_DeleteByVpcEndpointId_Call {
 	_c.Call.Return(run)
 	return _c
 }

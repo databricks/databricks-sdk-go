@@ -33,7 +33,7 @@ func ExampleEncryptionKeysAPI_Create_encryptionKeys() {
 
 	// cleanup
 
-	err = a.EncryptionKeys.DeleteByCustomerManagedKeyId(ctx, created.CustomerManagedKeyId)
+	_, err = a.EncryptionKeys.DeleteByCustomerManagedKeyId(ctx, created.CustomerManagedKeyId)
 	if err != nil {
 		panic(err)
 	}
@@ -67,7 +67,7 @@ func ExampleEncryptionKeysAPI_Get_encryptionKeys() {
 
 	// cleanup
 
-	err = a.EncryptionKeys.DeleteByCustomerManagedKeyId(ctx, created.CustomerManagedKeyId)
+	_, err = a.EncryptionKeys.DeleteByCustomerManagedKeyId(ctx, created.CustomerManagedKeyId)
 	if err != nil {
 		panic(err)
 	}

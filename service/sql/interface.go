@@ -476,18 +476,18 @@ type RedashConfigService interface {
 // to either `CONTINUE`, to fallback to asynchronous mode, or it can be set to
 // `CANCEL`, which cancels the statement.
 //
-// In summary: - Synchronous mode - `wait_timeout=30s` and
-// `on_wait_timeout=CANCEL` - The call waits up to 30 seconds; if the statement
+// In summary: - **Synchronous mode** (`wait_timeout=30s` and
+// `on_wait_timeout=CANCEL`): The call waits up to 30 seconds; if the statement
 // execution finishes within this time, the result data is returned directly in
 // the response. If the execution takes longer than 30 seconds, the execution is
-// canceled and the call returns with a `CANCELED` state. - Asynchronous mode -
-// `wait_timeout=0s` (`on_wait_timeout` is ignored) - The call doesn't wait for
-// the statement to finish but returns directly with a statement ID. The status
-// of the statement execution can be polled by issuing
+// canceled and the call returns with a `CANCELED` state. - **Asynchronous
+// mode** (`wait_timeout=0s` and `on_wait_timeout` is ignored): The call doesn't
+// wait for the statement to finish but returns directly with a statement ID.
+// The status of the statement execution can be polled by issuing
 // :method:statementexecution/getStatement with the statement ID. Once the
 // execution has succeeded, this call also returns the result and metadata in
-// the response. - Hybrid mode (default) - `wait_timeout=10s` and
-// `on_wait_timeout=CONTINUE` - The call waits for up to 10 seconds; if the
+// the response. - **[Default] Hybrid mode** (`wait_timeout=10s` and
+// `on_wait_timeout=CONTINUE`): The call waits for up to 10 seconds; if the
 // statement execution finishes within this time, the result data is returned
 // directly in the response. If the execution takes longer than 10 seconds, a
 // statement ID is returned. The statement ID can be used to fetch status and
@@ -554,19 +554,74 @@ type RedashConfigService interface {
 type StatementExecutionService interface {
 
 	// Requests that an executing statement be canceled. Callers must poll for
-	// status to see the terminal state.
+	// status to see the terminal state. Cancel response is empty; receiving
+	// response indicates successful receipt.
 	CancelExecution(ctx context.Context, request CancelExecutionRequest) error
 
-	// Execute a SQL statement
+	// Execute a SQL statement and optionally await its results for a specified
+	// time.
+	//
+	// **Use case: small result sets with INLINE + JSON_ARRAY**
+	//
+	// For flows that generate small and predictable result sets (<= 25 MiB),
+	// `INLINE` responses of `JSON_ARRAY` result data are typically the simplest
+	// way to execute and fetch result data.
+	//
+	// **Use case: large result sets with EXTERNAL_LINKS**
+	//
+	// Using `EXTERNAL_LINKS` to fetch result data allows you to fetch large
+	// result sets efficiently. The main differences from using `INLINE`
+	// disposition are that the result data is accessed with URLs, and that
+	// there are 3 supported formats: `JSON_ARRAY`, `ARROW_STREAM` and `CSV`
+	// compared to only `JSON_ARRAY` with `INLINE`.
+	//
+	// ** URLs**
+	//
+	// External links point to data stored within your workspace's internal
+	// storage, in the form of a URL. The URLs are valid for only a short
+	// period, <= 15 minutes. Alongside each `external_link` is an expiration
+	// field indicating the time at which the URL is no longer valid. In
+	// `EXTERNAL_LINKS` mode, chunks can be resolved and fetched multiple times
+	// and in parallel.
+	//
+	// ----
+	//
+	// ### **Warning: Databricks strongly recommends that you protect the URLs
+	// that are returned by the `EXTERNAL_LINKS` disposition.**
+	//
+	// When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is
+	// generated, which can be used to download the results directly from . As a
+	// short-lived is embedded in this URL, you should protect the URL.
+	//
+	// Because URLs are already generated with embedded temporary s, you must
+	// not set an `Authorization` header in the download requests.
+	//
+	// The `EXTERNAL_LINKS` disposition can be disabled upon request by creating
+	// a support case.
+	//
+	// See also [Security best practices].
+	//
+	// ----
+	//
+	// StatementResponse contains `statement_id` and `status`; other fields
+	// might be absent or present depending on context. If the SQL warehouse
+	// fails to execute the provided statement, a 200 response is returned with
+	// `status.state` set to `FAILED` (in contrast to a failure when accepting
+	// the request, which results in a non-200 response). Details of the error
+	// can be found at `status.error` in case of execution failures.
+	//
+	// [Security best practices]: https://docs.databricks.com/sql/admin/sql-execution-tutorial.html#security-best-practices
 	ExecuteStatement(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error)
 
-	// This request can be used to poll for the statement's status. When the
-	// `status.state` field is `SUCCEEDED` it will also return the result
-	// manifest and the first chunk of the result data. When the statement is in
-	// the terminal states `CANCELED`, `CLOSED` or `FAILED`, it returns HTTP 200
-	// with the state set. After at least 12 hours in terminal state, the
-	// statement is removed from the warehouse and further calls will receive an
-	// HTTP 404 response.
+	// This request can be used to poll for the statement's status.
+	// StatementResponse contains `statement_id` and `status`; other fields
+	// might be absent or present depending on context. When the `status.state`
+	// field is `SUCCEEDED` it will also return the result manifest and the
+	// first chunk of the result data. When the statement is in the terminal
+	// states `CANCELED`, `CLOSED` or `FAILED`, it returns HTTP 200 with the
+	// state set. After at least 12 hours in terminal state, the statement is
+	// removed from the warehouse and further calls will receive an HTTP 404
+	// response.
 	//
 	// **NOTE** This call currently might take up to 5 seconds to get the latest
 	// status and result.
@@ -580,7 +635,8 @@ type StatementExecutionService interface {
 	// nested `result` element described in the
 	// :method:statementexecution/getStatement request, and similarly includes
 	// the `next_chunk_index` and `next_chunk_internal_link` fields for simple
-	// iteration through the result set.
+	// iteration through the result set. Depending on `disposition`, the
+	// response returns chunks of data either inline, or as links.
 	GetStatementResultChunkN(ctx context.Context, request GetStatementResultChunkNRequest) (*ResultData, error)
 }
 

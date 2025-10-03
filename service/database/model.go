@@ -18,9 +18,21 @@ type CreateDatabaseInstanceRequest struct {
 }
 
 type CreateDatabaseInstanceRoleRequest struct {
+	DatabaseInstanceName string `json:"-" url:"database_instance_name,omitempty"`
+
 	DatabaseInstanceRole DatabaseInstanceRole `json:"database_instance_role"`
 
 	InstanceName string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateDatabaseInstanceRoleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateDatabaseTableRequest struct {
@@ -29,6 +41,23 @@ type CreateDatabaseTableRequest struct {
 
 type CreateSyncedDatabaseTableRequest struct {
 	SyncedTable SyncedDatabaseTable `json:"synced_table"`
+}
+
+type CustomTag struct {
+	// The key of the custom tag.
+	Key string `json:"key,omitempty"`
+	// The value of the custom tag.
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DatabaseCatalog struct {
@@ -81,9 +110,14 @@ type DatabaseInstance struct {
 	CreationTime string `json:"creation_time,omitempty"`
 	// The email of the creator of the instance.
 	Creator string `json:"creator,omitempty"`
+	// Custom tags associated with the instance. This field is only included on
+	// create and update responses.
+	CustomTags []CustomTag `json:"custom_tags,omitempty"`
 	// Deprecated. The sku of the instance; this field will always match the
 	// value of capacity.
 	EffectiveCapacity string `json:"effective_capacity,omitempty"`
+	// The recorded custom tags associated with the instance.
+	EffectiveCustomTags []CustomTag `json:"effective_custom_tags,omitempty"`
 	// Whether the instance has PG native password login enabled.
 	EffectiveEnablePgNativeLogin bool `json:"effective_enable_pg_native_login,omitempty"`
 	// Whether secondaries serving read-only traffic are enabled. Defaults to
@@ -97,6 +131,8 @@ type DatabaseInstance struct {
 	EffectiveRetentionWindowInDays int `json:"effective_retention_window_in_days,omitempty"`
 	// Whether the instance is stopped.
 	EffectiveStopped bool `json:"effective_stopped,omitempty"`
+	// The policy that is applied to the instance.
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// Whether to enable PG native password login on the instance. Defaults to
 	// false.
 	EnablePgNativeLogin bool `json:"enable_pg_native_login,omitempty"`
@@ -132,6 +168,8 @@ type DatabaseInstance struct {
 	Stopped bool `json:"stopped,omitempty"`
 	// An immutable UUID identifier for the instance.
 	Uid string `json:"uid,omitempty"`
+	// The desired usage policy to associate with the instance.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -186,15 +224,20 @@ func (s DatabaseInstanceRef) MarshalJSON() ([]byte, error) {
 
 // A DatabaseInstanceRole represents a Postgres role in a database instance.
 type DatabaseInstanceRole struct {
-	// API-exposed Postgres role attributes
+	// The desired API-exposed Postgres role attribute to associate with the
+	// role. Optional.
 	Attributes *DatabaseInstanceRoleAttributes `json:"attributes,omitempty"`
+	// The attributes that are applied to the role.
+	EffectiveAttributes *DatabaseInstanceRoleAttributes `json:"effective_attributes,omitempty"`
 	// The type of the role.
 	IdentityType DatabaseInstanceRoleIdentityType `json:"identity_type,omitempty"`
+
+	InstanceName string `json:"instance_name,omitempty"`
 	// An enum value for a standard role that this role is a member of.
 	MembershipRole DatabaseInstanceRoleMembershipRole `json:"membership_role,omitempty"`
 	// The name of the role. This is the unique identifier for the role in an
 	// instance.
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -850,7 +893,7 @@ func (s RequestedResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next field marker: 14
+// Next field marker: 18
 type SyncedDatabaseTable struct {
 	// Synced Table data synchronization status
 	DataSynchronizationStatus *SyncedTableStatus `json:"data_synchronization_status,omitempty"`

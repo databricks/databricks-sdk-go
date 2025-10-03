@@ -797,7 +797,7 @@ func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request Ca
 
 func (a *statementExecutionImpl) ExecuteStatement(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error) {
 	var statementResponse StatementResponse
-	path := "/api/2.0/sql/statements/"
+	path := "/api/2.0/sql/statements"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -911,12 +911,18 @@ func (a *warehousesImpl) List(ctx context.Context, request ListWarehousesRequest
 	getItems := func(resp *ListWarehousesResponse) []EndpointInfo {
 		return resp.Warehouses
 	}
-
+	getNextReq := func(resp *ListWarehousesResponse) *ListWarehousesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
 	iterator := listing.NewIterator(
 		&request,
 		getNextPage,
 		getItems,
-		nil)
+		getNextReq)
 	return iterator
 }
 

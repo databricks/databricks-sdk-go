@@ -82,21 +82,33 @@ func (_c *MockStorageInterface_Create_Call) RunAndReturn(run func(context.Contex
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockStorageInterface) Delete(ctx context.Context, request provisioning.DeleteStorageRequest) error {
+func (_m *MockStorageInterface) Delete(ctx context.Context, request provisioning.DeleteStorageRequest) (*provisioning.StorageConfiguration, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteStorageRequest) error); ok {
+	var r0 *provisioning.StorageConfiguration
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteStorageRequest) (*provisioning.StorageConfiguration, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteStorageRequest) *provisioning.StorageConfiguration); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.StorageConfiguration)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, provisioning.DeleteStorageRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockStorageInterface_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
@@ -118,32 +130,44 @@ func (_c *MockStorageInterface_Delete_Call) Run(run func(ctx context.Context, re
 	return _c
 }
 
-func (_c *MockStorageInterface_Delete_Call) Return(_a0 error) *MockStorageInterface_Delete_Call {
-	_c.Call.Return(_a0)
+func (_c *MockStorageInterface_Delete_Call) Return(_a0 *provisioning.StorageConfiguration, _a1 error) *MockStorageInterface_Delete_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockStorageInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeleteStorageRequest) error) *MockStorageInterface_Delete_Call {
+func (_c *MockStorageInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeleteStorageRequest) (*provisioning.StorageConfiguration, error)) *MockStorageInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeleteByStorageConfigurationId provides a mock function with given fields: ctx, storageConfigurationId
-func (_m *MockStorageInterface) DeleteByStorageConfigurationId(ctx context.Context, storageConfigurationId string) error {
+func (_m *MockStorageInterface) DeleteByStorageConfigurationId(ctx context.Context, storageConfigurationId string) (*provisioning.StorageConfiguration, error) {
 	ret := _m.Called(ctx, storageConfigurationId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteByStorageConfigurationId")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+	var r0 *provisioning.StorageConfiguration
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*provisioning.StorageConfiguration, error)); ok {
+		return rf(ctx, storageConfigurationId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *provisioning.StorageConfiguration); ok {
 		r0 = rf(ctx, storageConfigurationId)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.StorageConfiguration)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, storageConfigurationId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockStorageInterface_DeleteByStorageConfigurationId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByStorageConfigurationId'
@@ -165,12 +189,12 @@ func (_c *MockStorageInterface_DeleteByStorageConfigurationId_Call) Run(run func
 	return _c
 }
 
-func (_c *MockStorageInterface_DeleteByStorageConfigurationId_Call) Return(_a0 error) *MockStorageInterface_DeleteByStorageConfigurationId_Call {
-	_c.Call.Return(_a0)
+func (_c *MockStorageInterface_DeleteByStorageConfigurationId_Call) Return(_a0 *provisioning.StorageConfiguration, _a1 error) *MockStorageInterface_DeleteByStorageConfigurationId_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockStorageInterface_DeleteByStorageConfigurationId_Call) RunAndReturn(run func(context.Context, string) error) *MockStorageInterface_DeleteByStorageConfigurationId_Call {
+func (_c *MockStorageInterface_DeleteByStorageConfigurationId_Call) RunAndReturn(run func(context.Context, string) (*provisioning.StorageConfiguration, error)) *MockStorageInterface_DeleteByStorageConfigurationId_Call {
 	_c.Call.Return(run)
 	return _c
 }
