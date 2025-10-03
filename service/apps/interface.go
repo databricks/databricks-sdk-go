@@ -16,6 +16,11 @@ type AppsService interface {
 	// Creates a new app.
 	Create(ctx context.Context, request CreateAppRequest) (*App, error)
 
+	// Creates an app update and starts the update process. The update process
+	// is asynchronous and the status of the update can be checked with the
+	// GetAppUpdate method.
+	CreateUpdate(ctx context.Context, request AsyncUpdateAppRequest) (*AppUpdate, error)
+
 	// Deletes an app.
 	Delete(ctx context.Context, request DeleteAppRequest) (*App, error)
 
@@ -35,6 +40,9 @@ type AppsService interface {
 	// Gets the permissions of an app. Apps can inherit permissions from their
 	// root object.
 	GetPermissions(ctx context.Context, request GetAppPermissionsRequest) (*AppPermissions, error)
+
+	// Gets the status of an app update.
+	GetUpdate(ctx context.Context, request GetAppUpdateRequest) (*AppUpdate, error)
 
 	// Lists all apps in the workspace.
 	List(ctx context.Context, request ListAppsRequest) (*ListAppsResponse, error)

@@ -82,21 +82,33 @@ func (_c *MockPrivateAccessInterface_Create_Call) RunAndReturn(run func(context.
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockPrivateAccessInterface) Delete(ctx context.Context, request provisioning.DeletePrivateAccesRequest) error {
+func (_m *MockPrivateAccessInterface) Delete(ctx context.Context, request provisioning.DeletePrivateAccesRequest) (*provisioning.PrivateAccessSettings, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeletePrivateAccesRequest) error); ok {
+	var r0 *provisioning.PrivateAccessSettings
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeletePrivateAccesRequest) (*provisioning.PrivateAccessSettings, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeletePrivateAccesRequest) *provisioning.PrivateAccessSettings); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.PrivateAccessSettings)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, provisioning.DeletePrivateAccesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockPrivateAccessInterface_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
@@ -118,32 +130,44 @@ func (_c *MockPrivateAccessInterface_Delete_Call) Run(run func(ctx context.Conte
 	return _c
 }
 
-func (_c *MockPrivateAccessInterface_Delete_Call) Return(_a0 error) *MockPrivateAccessInterface_Delete_Call {
-	_c.Call.Return(_a0)
+func (_c *MockPrivateAccessInterface_Delete_Call) Return(_a0 *provisioning.PrivateAccessSettings, _a1 error) *MockPrivateAccessInterface_Delete_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockPrivateAccessInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeletePrivateAccesRequest) error) *MockPrivateAccessInterface_Delete_Call {
+func (_c *MockPrivateAccessInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeletePrivateAccesRequest) (*provisioning.PrivateAccessSettings, error)) *MockPrivateAccessInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeleteByPrivateAccessSettingsId provides a mock function with given fields: ctx, privateAccessSettingsId
-func (_m *MockPrivateAccessInterface) DeleteByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) error {
+func (_m *MockPrivateAccessInterface) DeleteByPrivateAccessSettingsId(ctx context.Context, privateAccessSettingsId string) (*provisioning.PrivateAccessSettings, error) {
 	ret := _m.Called(ctx, privateAccessSettingsId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteByPrivateAccessSettingsId")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+	var r0 *provisioning.PrivateAccessSettings
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*provisioning.PrivateAccessSettings, error)); ok {
+		return rf(ctx, privateAccessSettingsId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *provisioning.PrivateAccessSettings); ok {
 		r0 = rf(ctx, privateAccessSettingsId)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.PrivateAccessSettings)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, privateAccessSettingsId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockPrivateAccessInterface_DeleteByPrivateAccessSettingsId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByPrivateAccessSettingsId'
@@ -165,12 +189,12 @@ func (_c *MockPrivateAccessInterface_DeleteByPrivateAccessSettingsId_Call) Run(r
 	return _c
 }
 
-func (_c *MockPrivateAccessInterface_DeleteByPrivateAccessSettingsId_Call) Return(_a0 error) *MockPrivateAccessInterface_DeleteByPrivateAccessSettingsId_Call {
-	_c.Call.Return(_a0)
+func (_c *MockPrivateAccessInterface_DeleteByPrivateAccessSettingsId_Call) Return(_a0 *provisioning.PrivateAccessSettings, _a1 error) *MockPrivateAccessInterface_DeleteByPrivateAccessSettingsId_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockPrivateAccessInterface_DeleteByPrivateAccessSettingsId_Call) RunAndReturn(run func(context.Context, string) error) *MockPrivateAccessInterface_DeleteByPrivateAccessSettingsId_Call {
+func (_c *MockPrivateAccessInterface_DeleteByPrivateAccessSettingsId_Call) RunAndReturn(run func(context.Context, string) (*provisioning.PrivateAccessSettings, error)) *MockPrivateAccessInterface_DeleteByPrivateAccessSettingsId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -469,21 +493,33 @@ func (_c *MockPrivateAccessInterface_PrivateAccessSettingsPrivateAccessSettingsN
 }
 
 // Replace provides a mock function with given fields: ctx, request
-func (_m *MockPrivateAccessInterface) Replace(ctx context.Context, request provisioning.ReplacePrivateAccessSettingsRequest) error {
+func (_m *MockPrivateAccessInterface) Replace(ctx context.Context, request provisioning.ReplacePrivateAccessSettingsRequest) (*provisioning.PrivateAccessSettings, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Replace")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.ReplacePrivateAccessSettingsRequest) error); ok {
+	var r0 *provisioning.PrivateAccessSettings
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.ReplacePrivateAccessSettingsRequest) (*provisioning.PrivateAccessSettings, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.ReplacePrivateAccessSettingsRequest) *provisioning.PrivateAccessSettings); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.PrivateAccessSettings)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, provisioning.ReplacePrivateAccessSettingsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockPrivateAccessInterface_Replace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Replace'
@@ -505,12 +541,12 @@ func (_c *MockPrivateAccessInterface_Replace_Call) Run(run func(ctx context.Cont
 	return _c
 }
 
-func (_c *MockPrivateAccessInterface_Replace_Call) Return(_a0 error) *MockPrivateAccessInterface_Replace_Call {
-	_c.Call.Return(_a0)
+func (_c *MockPrivateAccessInterface_Replace_Call) Return(_a0 *provisioning.PrivateAccessSettings, _a1 error) *MockPrivateAccessInterface_Replace_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockPrivateAccessInterface_Replace_Call) RunAndReturn(run func(context.Context, provisioning.ReplacePrivateAccessSettingsRequest) error) *MockPrivateAccessInterface_Replace_Call {
+func (_c *MockPrivateAccessInterface_Replace_Call) RunAndReturn(run func(context.Context, provisioning.ReplacePrivateAccessSettingsRequest) (*provisioning.PrivateAccessSettings, error)) *MockPrivateAccessInterface_Replace_Call {
 	_c.Call.Return(run)
 	return _c
 }

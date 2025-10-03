@@ -33,6 +33,17 @@ func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, 
 	return &app, err
 }
 
+func (a *appsImpl) CreateUpdate(ctx context.Context, request AsyncUpdateAppRequest) (*AppUpdate, error) {
+	var appUpdate AppUpdate
+	path := fmt.Sprintf("/api/2.0/apps/%v/update", request.AppName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &appUpdate)
+	return &appUpdate, err
+}
+
 func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) (*App, error) {
 	var app App
 	path := fmt.Sprintf("/api/2.0/apps/%v", request.Name)
@@ -92,6 +103,16 @@ func (a *appsImpl) GetPermissions(ctx context.Context, request GetAppPermissions
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &appPermissions)
 	return &appPermissions, err
+}
+
+func (a *appsImpl) GetUpdate(ctx context.Context, request GetAppUpdateRequest) (*AppUpdate, error) {
+	var appUpdate AppUpdate
+	path := fmt.Sprintf("/api/2.0/apps/%v/update", request.AppName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &appUpdate)
+	return &appUpdate, err
 }
 
 // Lists all apps in the workspace.

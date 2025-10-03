@@ -36,7 +36,7 @@ func ExampleCredentialsAPI_Create_logDelivery() {
 
 	// cleanup
 
-	err = a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, creds.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
@@ -65,7 +65,7 @@ func ExampleCredentialsAPI_Create_credentials() {
 
 	// cleanup
 
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
@@ -94,7 +94,7 @@ func ExampleCredentialsAPI_Create_workspaces() {
 
 	// cleanup
 
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 	if err != nil {
 		panic(err)
 	}
@@ -129,7 +129,7 @@ func ExampleCredentialsAPI_Get_credentials() {
 
 	// cleanup
 
-	err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
+	_, err = a.Credentials.DeleteByCredentialsId(ctx, role.CredentialsId)
 	if err != nil {
 		panic(err)
 	}

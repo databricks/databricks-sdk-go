@@ -34,7 +34,7 @@ func ExampleStorageAPI_Create_logDelivery() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, bucket.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}
@@ -81,7 +81,7 @@ func ExampleStorageAPI_Create_workspaces() {
 
 	// cleanup
 
-	err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+	_, err = a.Storage.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
 	if err != nil {
 		panic(err)
 	}

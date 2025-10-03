@@ -82,21 +82,33 @@ func (_c *MockEncryptionKeysInterface_Create_Call) RunAndReturn(run func(context
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockEncryptionKeysInterface) Delete(ctx context.Context, request provisioning.DeleteEncryptionKeyRequest) error {
+func (_m *MockEncryptionKeysInterface) Delete(ctx context.Context, request provisioning.DeleteEncryptionKeyRequest) (*provisioning.CustomerManagedKey, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteEncryptionKeyRequest) error); ok {
+	var r0 *provisioning.CustomerManagedKey
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteEncryptionKeyRequest) (*provisioning.CustomerManagedKey, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteEncryptionKeyRequest) *provisioning.CustomerManagedKey); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.CustomerManagedKey)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, provisioning.DeleteEncryptionKeyRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockEncryptionKeysInterface_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
@@ -118,32 +130,44 @@ func (_c *MockEncryptionKeysInterface_Delete_Call) Run(run func(ctx context.Cont
 	return _c
 }
 
-func (_c *MockEncryptionKeysInterface_Delete_Call) Return(_a0 error) *MockEncryptionKeysInterface_Delete_Call {
-	_c.Call.Return(_a0)
+func (_c *MockEncryptionKeysInterface_Delete_Call) Return(_a0 *provisioning.CustomerManagedKey, _a1 error) *MockEncryptionKeysInterface_Delete_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockEncryptionKeysInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeleteEncryptionKeyRequest) error) *MockEncryptionKeysInterface_Delete_Call {
+func (_c *MockEncryptionKeysInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeleteEncryptionKeyRequest) (*provisioning.CustomerManagedKey, error)) *MockEncryptionKeysInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeleteByCustomerManagedKeyId provides a mock function with given fields: ctx, customerManagedKeyId
-func (_m *MockEncryptionKeysInterface) DeleteByCustomerManagedKeyId(ctx context.Context, customerManagedKeyId string) error {
+func (_m *MockEncryptionKeysInterface) DeleteByCustomerManagedKeyId(ctx context.Context, customerManagedKeyId string) (*provisioning.CustomerManagedKey, error) {
 	ret := _m.Called(ctx, customerManagedKeyId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteByCustomerManagedKeyId")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+	var r0 *provisioning.CustomerManagedKey
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*provisioning.CustomerManagedKey, error)); ok {
+		return rf(ctx, customerManagedKeyId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *provisioning.CustomerManagedKey); ok {
 		r0 = rf(ctx, customerManagedKeyId)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.CustomerManagedKey)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, customerManagedKeyId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockEncryptionKeysInterface_DeleteByCustomerManagedKeyId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByCustomerManagedKeyId'
@@ -165,12 +189,12 @@ func (_c *MockEncryptionKeysInterface_DeleteByCustomerManagedKeyId_Call) Run(run
 	return _c
 }
 
-func (_c *MockEncryptionKeysInterface_DeleteByCustomerManagedKeyId_Call) Return(_a0 error) *MockEncryptionKeysInterface_DeleteByCustomerManagedKeyId_Call {
-	_c.Call.Return(_a0)
+func (_c *MockEncryptionKeysInterface_DeleteByCustomerManagedKeyId_Call) Return(_a0 *provisioning.CustomerManagedKey, _a1 error) *MockEncryptionKeysInterface_DeleteByCustomerManagedKeyId_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockEncryptionKeysInterface_DeleteByCustomerManagedKeyId_Call) RunAndReturn(run func(context.Context, string) error) *MockEncryptionKeysInterface_DeleteByCustomerManagedKeyId_Call {
+func (_c *MockEncryptionKeysInterface_DeleteByCustomerManagedKeyId_Call) RunAndReturn(run func(context.Context, string) (*provisioning.CustomerManagedKey, error)) *MockEncryptionKeysInterface_DeleteByCustomerManagedKeyId_Call {
 	_c.Call.Return(run)
 	return _c
 }

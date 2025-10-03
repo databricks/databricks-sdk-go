@@ -644,9 +644,6 @@ func (s AlertV2Subscription) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Describes metadata for a particular chunk, within a result set; this
-// structure is used both within a manifest, and when fetching individual chunk
-// data or links.
 type BaseChunkInfo struct {
 	// The number of bytes in the result chunk. This field is not available when
 	// using `INLINE` disposition.
@@ -1161,13 +1158,12 @@ func (s CreateVisualizationRequestVisualization) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Creates a new SQL warehouse.
 type CreateWarehouseRequest struct {
 	// The amount of time in minutes that a SQL warehouse must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped.
 	//
-	// Supported values: - Must be >= 0 mins for serverless warehouses - Must be
-	// == 0 or >= 10 mins for non-serverless warehouses - 0 indicates no
-	// autostop.
+	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
 	//
 	// Defaults to 120 mins
 	AutoStopMins int `json:"auto_stop_mins,omitempty"`
@@ -1193,7 +1189,7 @@ type CreateWarehouseRequest struct {
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
-	// Supported values: - Must be >= min_num_clusters - Must be <= 30.
+	// Supported values: - Must be >= min_num_clusters - Must be <= 40.
 	//
 	// Defaults to min_clusters if unset.
 	MaxNumClusters int `json:"max_num_clusters,omitempty"`
@@ -1212,14 +1208,16 @@ type CreateWarehouseRequest struct {
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	Name string `json:"name,omitempty"`
-
+	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-
+	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
+	// compute, you must set to `PRO` and also set the field
+	// `enable_serverless_compute` to `true`.
 	WarehouseType CreateWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1233,9 +1231,6 @@ func (s CreateWarehouseRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
-// you must set to `PRO` and also set the field `enable_serverless_compute` to
-// `true`.
 type CreateWarehouseRequestWarehouseType string
 
 const CreateWarehouseRequestWarehouseTypeClassic CreateWarehouseRequestWarehouseType = `CLASSIC`
@@ -1777,6 +1772,10 @@ func (s EditAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// This is an incremental edit functionality, so all fields except id are
+// optional. If a field is set, the corresponding configuration in the SQL
+// warehouse is modified. If a field is unset, the existing configuration value
+// in the SQL warehouse is retained. Thus, this API is not idempotent.
 type EditWarehouseRequest struct {
 	// The amount of time in minutes that a SQL warehouse must be idle (i.e., no
 	// RUNNING queries) before it is automatically stopped.
@@ -1800,7 +1799,7 @@ type EditWarehouseRequest struct {
 	//
 	// Defaults to false.
 	EnablePhoton bool `json:"enable_photon,omitempty"`
-	// Configures whether the warehouse should use serverless compute.
+	// Configures whether the warehouse should use serverless compute
 	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// Required. Id of the warehouse to configure.
 	Id string `json:"-" url:"-"`
@@ -1809,7 +1808,7 @@ type EditWarehouseRequest struct {
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
-	// Supported values: - Must be >= min_num_clusters - Must be <= 30.
+	// Supported values: - Must be >= min_num_clusters - Must be <= 40.
 	//
 	// Defaults to min_clusters if unset.
 	MaxNumClusters int `json:"max_num_clusters,omitempty"`
@@ -1828,14 +1827,16 @@ type EditWarehouseRequest struct {
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	Name string `json:"name,omitempty"`
-
+	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-
+	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
+	// compute, you must set to `PRO` and also set the field
+	// `enable_serverless_compute` to `true`.
 	WarehouseType EditWarehouseRequestWarehouseType `json:"warehouse_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1849,9 +1850,6 @@ func (s EditWarehouseRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
-// you must set to `PRO` and also set the field `enable_serverless_compute` to
-// `true`.
 type EditWarehouseRequestWarehouseType string
 
 const EditWarehouseRequestWarehouseTypeClassic EditWarehouseRequestWarehouseType = `CLASSIC`
@@ -1916,7 +1914,7 @@ type EndpointHealth struct {
 	FailureReason *TerminationReason `json:"failure_reason,omitempty"`
 	// Deprecated. split into summary and details for security
 	Message string `json:"message,omitempty"`
-
+	// Health status of the endpoint.
 	Status Status `json:"status,omitempty"`
 	// A short summary of the health status in case of degraded/failed
 	// warehouses.
@@ -1970,7 +1968,7 @@ type EndpointInfo struct {
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
-	// Supported values: - Must be >= min_num_clusters - Must be <= 30.
+	// Supported values: - Must be >= min_num_clusters - Must be <= 40.
 	//
 	// Defaults to min_clusters if unset.
 	MaxNumClusters int `json:"max_num_clusters,omitempty"`
@@ -1995,9 +1993,9 @@ type EndpointInfo struct {
 	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the SQL warehouse
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
-
+	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
-
+	// state of the endpoint
 	State State `json:"state,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
@@ -2020,9 +2018,6 @@ func (s EndpointInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
-// you must set to `PRO` and also set the field `enable_serverless_compute` to
-// `true`.
 type EndpointInfoWarehouseType string
 
 const EndpointInfoWarehouseTypeClassic EndpointInfoWarehouseType = `CLASSIC`
@@ -2108,14 +2103,38 @@ type ExecuteStatementRequest struct {
 	// size in the requested `format`. If the result was truncated due to the
 	// byte limit, then `truncated` in the response is set to `true`. When using
 	// `EXTERNAL_LINKS` disposition, a default `byte_limit` of 100 GiB is
-	// applied if `byte_limit` is not explcitly set.
+	// applied if `byte_limit` is not explicitly set.
 	ByteLimit int64 `json:"byte_limit,omitempty"`
 	// Sets default catalog for statement execution, similar to [`USE CATALOG`]
 	// in SQL.
 	//
 	// [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
 	Catalog string `json:"catalog,omitempty"`
-
+	// The fetch disposition provides two modes of fetching results: `INLINE`
+	// and `EXTERNAL_LINKS`.
+	//
+	// Statements executed with `INLINE` disposition will return result data
+	// inline, in `JSON_ARRAY` format, in a series of chunks. If a given
+	// statement produces a result set with a size larger than 25 MiB, that
+	// statement execution is aborted, and no result set will be available.
+	//
+	// **NOTE** Byte limits are computed based upon internal representations of
+	// the result set data, and might not match the sizes visible in JSON
+	// responses.
+	//
+	// Statements executed with `EXTERNAL_LINKS` disposition will return result
+	// data as external links: URLs that point to cloud storage internal to the
+	// workspace. Using `EXTERNAL_LINKS` disposition allows statements to
+	// generate arbitrarily sized result sets for fetching up to 100 GiB. The
+	// resulting links have two important properties:
+	//
+	// 1. They point to resources _external_ to the Databricks compute;
+	// therefore any associated authentication information (typically a personal
+	// access token, OAuth token, or similar) _must be removed_ when fetching
+	// from these links.
+	//
+	// 2. These are URLs with a specific expiration, indicated in the response.
+	// The behavior when attempting to use an expired link is cloud specific.
 	Disposition Disposition `json:"disposition,omitempty"`
 	// Statement execution supports three result formats: `JSON_ARRAY`
 	// (default), `ARROW_STREAM`, and `CSV`.
@@ -2178,13 +2197,14 @@ type ExecuteStatementRequest struct {
 	// For example, the following statement contains two parameters, `my_name`
 	// and `my_date`:
 	//
-	// SELECT * FROM my_table WHERE name = :my_name AND date = :my_date
+	// ``` SELECT * FROM my_table WHERE name = :my_name AND date = :my_date ```
 	//
 	// The parameters can be passed in the request body as follows:
 	//
-	// { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND
+	// ` { ..., "statement": "SELECT * FROM my_table WHERE name = :my_name AND
 	// date = :my_date", "parameters": [ { "name": "my_name", "value": "the
 	// name" }, { "name": "my_date", "value": "2020-01-01", "type": "DATE" } ] }
+	// `
 	//
 	// Currently, positional parameters denoted by a `?` marker are not
 	// supported by the Databricks SQL Statement Execution API.
@@ -2292,7 +2312,10 @@ type ExternalLink struct {
 	// becomes invalid, after which point a new `external_link` must be
 	// requested.
 	Expiration string `json:"expiration,omitempty"`
-
+	// A URL pointing to a chunk of result data, hosted by an external service,
+	// with a short expiration time (<= 15 minutes). As this URL contains a
+	// temporary credential, it should be considered sensitive and the client
+	// should not expose this URL in a log.
 	ExternalLink string `json:"external_link,omitempty"`
 	// HTTP headers that must be included with a GET request to the
 	// `external_link`. Each header is provided as a key-value pair. Headers are
@@ -2302,7 +2325,7 @@ type ExternalLink struct {
 	HttpHeaders map[string]string `json:"http_headers,omitempty"`
 	// When fetching, provides the `chunk_index` for the _next_ chunk. If
 	// absent, indicates there are no more chunks. The next chunk can be fetched
-	// with a :method:statementexecution/getStatementResultChunkN request.
+	// with a :method:statementexecution/getstatementresultchunkn request.
 	NextChunkIndex int `json:"next_chunk_index,omitempty"`
 	// When fetching, provides a link to fetch the _next_ chunk. If absent,
 	// indicates there are no more chunks. This link is an absolute `path` to be
@@ -2531,7 +2554,7 @@ type GetWarehouseResponse struct {
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
 	//
-	// Supported values: - Must be >= min_num_clusters - Must be <= 30.
+	// Supported values: - Must be >= min_num_clusters - Must be <= 40.
 	//
 	// Defaults to min_clusters if unset.
 	MaxNumClusters int `json:"max_num_clusters,omitempty"`
@@ -2556,16 +2579,18 @@ type GetWarehouseResponse struct {
 	NumClusters int `json:"num_clusters,omitempty"`
 	// ODBC parameters for the SQL warehouse
 	OdbcParams *OdbcParams `json:"odbc_params,omitempty"`
-
+	// Configurations whether the endpoint should use spot instances.
 	SpotInstancePolicy SpotInstancePolicy `json:"spot_instance_policy,omitempty"`
-
+	// state of the endpoint
 	State State `json:"state,omitempty"`
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
 	Tags *EndpointTags `json:"tags,omitempty"`
-
+	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
+	// compute, you must set to `PRO` and also set the field
+	// `enable_serverless_compute` to `true`.
 	WarehouseType GetWarehouseResponseWarehouseType `json:"warehouse_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2579,9 +2604,6 @@ func (s GetWarehouseResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute,
-// you must set to `PRO` and also set the field `enable_serverless_compute` to
-// `true`.
 type GetWarehouseResponseWarehouseType string
 
 const GetWarehouseResponseWarehouseTypeClassic GetWarehouseResponseWarehouseType = `CLASSIC`
@@ -2630,6 +2652,8 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	// Spark confs for external hive metastore configuration JSON serialized
 	// size must be less than <= 512K
 	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
+	// Enable Serverless compute for SQL warehouses
+	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// List of Warehouse Types allowed in this workspace (limits allowed value
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types
 	// cannot be disabled, they don't need to be specified in
@@ -2642,7 +2666,9 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	// GCP only: Google Service Account used to pass to cluster to access Google
 	// Cloud Storage
 	GoogleServiceAccount string `json:"google_service_account,omitempty"`
-	// AWS Only: Instance profile used to pass IAM role to the cluster
+	// AWS Only: The instance profile used to pass an IAM role to the SQL
+	// warehouses. This configuration is also applied to the workspace's
+	// serverless compute for notebooks and jobs.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Security policy for warehouses
 	SecurityPolicy GetWorkspaceWarehouseConfigResponseSecurityPolicy `json:"security_policy,omitempty"`
@@ -2660,7 +2686,7 @@ func (s GetWorkspaceWarehouseConfigResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Security policy for warehouses
+// Security policy to be used for warehouses
 type GetWorkspaceWarehouseConfigResponseSecurityPolicy string
 
 const GetWorkspaceWarehouseConfigResponseSecurityPolicyDataAccessControl GetWorkspaceWarehouseConfigResponseSecurityPolicy = `DATA_ACCESS_CONTROL`
@@ -3330,8 +3356,17 @@ func (s ListVisualizationsForQueryResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListWarehousesRequest struct {
-	// Service Principal which will be used to fetch the list of warehouses. If
-	// not specified, the user from the session header is used.
+	// The max number of warehouses to return.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous `ListWarehouses` call. Provide
+	// this to retrieve the subsequent page; otherwise the first will be
+	// retrieved.
+	//
+	// When paginating, all other parameters provided to `ListWarehouses` must
+	// match the call that provided the page token.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Service Principal which will be used to fetch the list of endpoints. If
+	// not specified, SQL Gateway will use the user from the session header.
 	RunAsUserId int `json:"-" url:"run_as_user_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3346,8 +3381,21 @@ func (s ListWarehousesRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListWarehousesResponse struct {
+	// A token, which can be sent as `page_token` to retrieve the next page. If
+	// this field is omitted, there are no subsequent pages.
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// A list of warehouses and their configurations.
 	Warehouses []EndpointInfo `json:"warehouses,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListWarehousesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListWarehousesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type MultiValuesOptions struct {
@@ -4279,6 +4327,12 @@ type RestoreQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
 
+// Contains the result data of a single chunk when using `INLINE` disposition.
+// When using `EXTERNAL_LINKS` disposition, the array `external_links` is used
+// instead to provide URLs to the result data in cloud storage. Exactly one of
+// these alternatives is used. (While the `external_links` array prepares the
+// API to return multiple links in a single response. Currently only a single
+// link is returned.)
 type ResultData struct {
 	// The number of bytes in the result chunk. This field is not available when
 	// using `INLINE` disposition.
@@ -4293,7 +4347,7 @@ type ResultData struct {
 	ExternalLinks []ExternalLink `json:"external_links,omitempty"`
 	// When fetching, provides the `chunk_index` for the _next_ chunk. If
 	// absent, indicates there are no more chunks. The next chunk can be fetched
-	// with a :method:statementexecution/getStatementResultChunkN request.
+	// with a :method:statementexecution/getstatementresultchunkn request.
 	NextChunkIndex int `json:"next_chunk_index,omitempty"`
 	// When fetching, provides a link to fetch the _next_ chunk. If absent,
 	// indicates there are no more chunks. This link is an absolute `path` to be
@@ -4591,6 +4645,10 @@ func (s SetResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Sets the workspace level warehouse configuration that is shared by all SQL
+// warehouses in this workspace.
+//
+// This is idempotent.
 type SetWorkspaceWarehouseConfigRequest struct {
 	// Optional: Channel selection details
 	Channel *Channel `json:"channel,omitempty"`
@@ -4599,6 +4657,8 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	// Spark confs for external hive metastore configuration JSON serialized
 	// size must be less than <= 512K
 	DataAccessConfig []EndpointConfPair `json:"data_access_config,omitempty"`
+	// Enable Serverless compute for SQL warehouses
+	EnableServerlessCompute bool `json:"enable_serverless_compute,omitempty"`
 	// List of Warehouse Types allowed in this workspace (limits allowed value
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types
 	// cannot be disabled, they don't need to be specified in
@@ -4611,7 +4671,9 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	// GCP only: Google Service Account used to pass to cluster to access Google
 	// Cloud Storage
 	GoogleServiceAccount string `json:"google_service_account,omitempty"`
-	// AWS Only: Instance profile used to pass IAM role to the cluster
+	// AWS Only: The instance profile used to pass an IAM role to the SQL
+	// warehouses. This configuration is also applied to the workspace's
+	// serverless compute for notebooks and jobs.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// Security policy for warehouses
 	SecurityPolicy SetWorkspaceWarehouseConfigRequestSecurityPolicy `json:"security_policy,omitempty"`
@@ -4629,7 +4691,7 @@ func (s SetWorkspaceWarehouseConfigRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Security policy for warehouses
+// Security policy to be used for warehouses
 type SetWorkspaceWarehouseConfigRequestSecurityPolicy string
 
 const SetWorkspaceWarehouseConfigRequestSecurityPolicyDataAccessControl SetWorkspaceWarehouseConfigRequestSecurityPolicy = `DATA_ACCESS_CONTROL`
@@ -4670,7 +4732,23 @@ func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
 	return "SetWorkspaceWarehouseConfigRequestSecurityPolicy"
 }
 
-// Configurations whether the warehouse should use spot instances.
+// EndpointSpotInstancePolicy configures whether the endpoint should use spot
+// instances.
+//
+// The breakdown of how the EndpointSpotInstancePolicy converts to per cloud
+// configurations is:
+//
+// +-------+--------------------------------------+--------------------------------+
+// | Cloud | COST_OPTIMIZED | RELIABILITY_OPTIMIZED |
+// +-------+--------------------------------------+--------------------------------+
+// | AWS | On Demand Driver with Spot Executors | On Demand Driver and Executors
+// | | AZURE | On Demand Driver and Executors | On Demand Driver and Executors |
+// +-------+--------------------------------------+--------------------------------+
+//
+// While including "spot" in the enum name may limit the the future
+// extensibility of this field because it limits this enum to denoting "spot or
+// not", this is the field that PM recommends after discussion with customers
+// per SC-48783.
 type SpotInstancePolicy string
 
 const SpotInstancePolicyCostOptimized SpotInstancePolicy = `COST_OPTIMIZED`
@@ -4716,7 +4794,7 @@ type StartRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
-// State of the warehouse
+// * State of a warehouse.
 type State string
 
 const StateDeleted State = `DELETED`
@@ -4813,32 +4891,18 @@ func (s StatementResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`:
-// running - `SUCCEEDED`: execution was successful, result data available for
-// fetch - `FAILED`: execution failed; reason for failure described in
-// accomanying error message - `CANCELED`: user canceled; can come from explicit
-// cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`: execution
-// successful, and statement closed; result no longer available for fetch
 type StatementState string
 
-// user canceled; can come from explicit cancel call, or timeout with
-// `on_wait_timeout=CANCEL`
 const StatementStateCanceled StatementState = `CANCELED`
 
-// execution successful, and statement closed; result no longer available for
-// fetch
 const StatementStateClosed StatementState = `CLOSED`
 
-// execution failed; reason for failure described in accomanying error message
 const StatementStateFailed StatementState = `FAILED`
 
-// waiting for warehouse
 const StatementStatePending StatementState = `PENDING`
 
-// running
 const StatementStateRunning StatementState = `RUNNING`
 
-// execution was successful, result data available for fetch
 const StatementStateSucceeded StatementState = `SUCCEEDED`
 
 // String representation for [fmt.Print]
@@ -4880,11 +4944,16 @@ func (f *StatementState) Type() string {
 // information.
 type StatementStatus struct {
 	Error *ServiceError `json:"error,omitempty"`
-
+	// Statement execution state: - `PENDING`: waiting for warehouse -
+	// `RUNNING`: running - `SUCCEEDED`: execution was successful, result data
+	// available for fetch - `FAILED`: execution failed; reason for failure
+	// described in accompanying error message - `CANCELED`: user canceled; can
+	// come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL`
+	// - `CLOSED`: execution successful, and statement closed; result no longer
+	// available for fetch
 	State StatementState `json:"state,omitempty"`
 }
 
-// Health status of the warehouse.
 type Status string
 
 const StatusDegraded Status = `DEGRADED`
@@ -4892,8 +4961,6 @@ const StatusDegraded Status = `DEGRADED`
 const StatusFailed Status = `FAILED`
 
 const StatusHealthy Status = `HEALTHY`
-
-const StatusStatusUnspecified Status = `STATUS_UNSPECIFIED`
 
 // String representation for [fmt.Print]
 func (f *Status) String() string {
@@ -4903,11 +4970,11 @@ func (f *Status) String() string {
 // Set raw string value and validate it against allowed values
 func (f *Status) Set(v string) error {
 	switch v {
-	case `DEGRADED`, `FAILED`, `HEALTHY`, `STATUS_UNSPECIFIED`:
+	case `DEGRADED`, `FAILED`, `HEALTHY`:
 		*f = Status(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DEGRADED", "FAILED", "HEALTHY", "STATUS_UNSPECIFIED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DEGRADED", "FAILED", "HEALTHY"`, v)
 	}
 }
 
@@ -4919,7 +4986,6 @@ func (f *Status) Values() []Status {
 		StatusDegraded,
 		StatusFailed,
 		StatusHealthy,
-		StatusStatusUnspecified,
 	}
 }
 
@@ -5015,22 +5081,50 @@ type TerminationReason struct {
 	Type TerminationReasonType `json:"type,omitempty"`
 }
 
-// status code indicating why the cluster was terminated
+// The status code indicating why the cluster was terminated
 type TerminationReasonCode string
 
 const TerminationReasonCodeAbuseDetected TerminationReasonCode = `ABUSE_DETECTED`
+
+const TerminationReasonCodeAccessTokenFailure TerminationReasonCode = `ACCESS_TOKEN_FAILURE`
+
+const TerminationReasonCodeAllocationTimeout TerminationReasonCode = `ALLOCATION_TIMEOUT`
+
+const TerminationReasonCodeAllocationTimeoutNodeDaemonNotReady TerminationReasonCode = `ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY`
+
+const TerminationReasonCodeAllocationTimeoutNoHealthyAndWarmedUpClusters TerminationReasonCode = `ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS`
+
+const TerminationReasonCodeAllocationTimeoutNoHealthyClusters TerminationReasonCode = `ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS`
+
+const TerminationReasonCodeAllocationTimeoutNoMatchedClusters TerminationReasonCode = `ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS`
+
+const TerminationReasonCodeAllocationTimeoutNoReadyClusters TerminationReasonCode = `ALLOCATION_TIMEOUT_NO_READY_CLUSTERS`
+
+const TerminationReasonCodeAllocationTimeoutNoUnallocatedClusters TerminationReasonCode = `ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS`
+
+const TerminationReasonCodeAllocationTimeoutNoWarmedUpClusters TerminationReasonCode = `ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS`
 
 const TerminationReasonCodeAttachProjectFailure TerminationReasonCode = `ATTACH_PROJECT_FAILURE`
 
 const TerminationReasonCodeAwsAuthorizationFailure TerminationReasonCode = `AWS_AUTHORIZATION_FAILURE`
 
+const TerminationReasonCodeAwsInaccessibleKmsKeyFailure TerminationReasonCode = `AWS_INACCESSIBLE_KMS_KEY_FAILURE`
+
+const TerminationReasonCodeAwsInstanceProfileUpdateFailure TerminationReasonCode = `AWS_INSTANCE_PROFILE_UPDATE_FAILURE`
+
 const TerminationReasonCodeAwsInsufficientFreeAddressesInSubnetFailure TerminationReasonCode = `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`
 
 const TerminationReasonCodeAwsInsufficientInstanceCapacityFailure TerminationReasonCode = `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`
 
+const TerminationReasonCodeAwsInvalidKeyPair TerminationReasonCode = `AWS_INVALID_KEY_PAIR`
+
+const TerminationReasonCodeAwsInvalidKmsKeyState TerminationReasonCode = `AWS_INVALID_KMS_KEY_STATE`
+
 const TerminationReasonCodeAwsMaxSpotInstanceCountExceededFailure TerminationReasonCode = `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`
 
 const TerminationReasonCodeAwsRequestLimitExceeded TerminationReasonCode = `AWS_REQUEST_LIMIT_EXCEEDED`
+
+const TerminationReasonCodeAwsResourceQuotaExceeded TerminationReasonCode = `AWS_RESOURCE_QUOTA_EXCEEDED`
 
 const TerminationReasonCodeAwsUnsupportedFailure TerminationReasonCode = `AWS_UNSUPPORTED_FAILURE`
 
@@ -5041,6 +5135,8 @@ const TerminationReasonCodeAzureEphemeralDiskFailure TerminationReasonCode = `AZ
 const TerminationReasonCodeAzureInvalidDeploymentTemplate TerminationReasonCode = `AZURE_INVALID_DEPLOYMENT_TEMPLATE`
 
 const TerminationReasonCodeAzureOperationNotAllowedException TerminationReasonCode = `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`
+
+const TerminationReasonCodeAzurePackedDeploymentPartialFailure TerminationReasonCode = `AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE`
 
 const TerminationReasonCodeAzureQuotaExceededException TerminationReasonCode = `AZURE_QUOTA_EXCEEDED_EXCEPTION`
 
@@ -5058,13 +5154,35 @@ const TerminationReasonCodeBootstrapTimeout TerminationReasonCode = `BOOTSTRAP_T
 
 const TerminationReasonCodeBootstrapTimeoutCloudProviderException TerminationReasonCode = `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`
 
+const TerminationReasonCodeBootstrapTimeoutDueToMisconfig TerminationReasonCode = `BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG`
+
+const TerminationReasonCodeBudgetPolicyLimitEnforcementActivated TerminationReasonCode = `BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED`
+
+const TerminationReasonCodeBudgetPolicyResolutionFailure TerminationReasonCode = `BUDGET_POLICY_RESOLUTION_FAILURE`
+
+const TerminationReasonCodeCloudAccountPodQuotaExceeded TerminationReasonCode = `CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED`
+
+const TerminationReasonCodeCloudAccountSetupFailure TerminationReasonCode = `CLOUD_ACCOUNT_SETUP_FAILURE`
+
+const TerminationReasonCodeCloudOperationCancelled TerminationReasonCode = `CLOUD_OPERATION_CANCELLED`
+
 const TerminationReasonCodeCloudProviderDiskSetupFailure TerminationReasonCode = `CLOUD_PROVIDER_DISK_SETUP_FAILURE`
+
+const TerminationReasonCodeCloudProviderInstanceNotLaunched TerminationReasonCode = `CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED`
 
 const TerminationReasonCodeCloudProviderLaunchFailure TerminationReasonCode = `CLOUD_PROVIDER_LAUNCH_FAILURE`
 
+const TerminationReasonCodeCloudProviderLaunchFailureDueToMisconfig TerminationReasonCode = `CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG`
+
 const TerminationReasonCodeCloudProviderResourceStockout TerminationReasonCode = `CLOUD_PROVIDER_RESOURCE_STOCKOUT`
 
+const TerminationReasonCodeCloudProviderResourceStockoutDueToMisconfig TerminationReasonCode = `CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG`
+
 const TerminationReasonCodeCloudProviderShutdown TerminationReasonCode = `CLOUD_PROVIDER_SHUTDOWN`
+
+const TerminationReasonCodeClusterOperationThrottled TerminationReasonCode = `CLUSTER_OPERATION_THROTTLED`
+
+const TerminationReasonCodeClusterOperationTimeout TerminationReasonCode = `CLUSTER_OPERATION_TIMEOUT`
 
 const TerminationReasonCodeCommunicationLost TerminationReasonCode = `COMMUNICATION_LOST`
 
@@ -5072,21 +5190,89 @@ const TerminationReasonCodeContainerLaunchFailure TerminationReasonCode = `CONTA
 
 const TerminationReasonCodeControlPlaneRequestFailure TerminationReasonCode = `CONTROL_PLANE_REQUEST_FAILURE`
 
+const TerminationReasonCodeControlPlaneRequestFailureDueToMisconfig TerminationReasonCode = `CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG`
+
 const TerminationReasonCodeDatabaseConnectionFailure TerminationReasonCode = `DATABASE_CONNECTION_FAILURE`
+
+const TerminationReasonCodeDataAccessConfigChanged TerminationReasonCode = `DATA_ACCESS_CONFIG_CHANGED`
 
 const TerminationReasonCodeDbfsComponentUnhealthy TerminationReasonCode = `DBFS_COMPONENT_UNHEALTHY`
 
+const TerminationReasonCodeDisasterRecoveryReplication TerminationReasonCode = `DISASTER_RECOVERY_REPLICATION`
+
+const TerminationReasonCodeDnsResolutionError TerminationReasonCode = `DNS_RESOLUTION_ERROR`
+
+const TerminationReasonCodeDockerContainerCreationException TerminationReasonCode = `DOCKER_CONTAINER_CREATION_EXCEPTION`
+
 const TerminationReasonCodeDockerImagePullFailure TerminationReasonCode = `DOCKER_IMAGE_PULL_FAILURE`
+
+const TerminationReasonCodeDockerImageTooLargeForInstanceException TerminationReasonCode = `DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION`
+
+const TerminationReasonCodeDockerInvalidOsException TerminationReasonCode = `DOCKER_INVALID_OS_EXCEPTION`
+
+const TerminationReasonCodeDriverDnsResolutionFailure TerminationReasonCode = `DRIVER_DNS_RESOLUTION_FAILURE`
+
+const TerminationReasonCodeDriverEviction TerminationReasonCode = `DRIVER_EVICTION`
+
+const TerminationReasonCodeDriverLaunchTimeout TerminationReasonCode = `DRIVER_LAUNCH_TIMEOUT`
+
+const TerminationReasonCodeDriverNodeUnreachable TerminationReasonCode = `DRIVER_NODE_UNREACHABLE`
+
+const TerminationReasonCodeDriverOutOfDisk TerminationReasonCode = `DRIVER_OUT_OF_DISK`
+
+const TerminationReasonCodeDriverOutOfMemory TerminationReasonCode = `DRIVER_OUT_OF_MEMORY`
+
+const TerminationReasonCodeDriverPodCreationFailure TerminationReasonCode = `DRIVER_POD_CREATION_FAILURE`
+
+const TerminationReasonCodeDriverUnexpectedFailure TerminationReasonCode = `DRIVER_UNEXPECTED_FAILURE`
+
+const TerminationReasonCodeDriverUnhealthy TerminationReasonCode = `DRIVER_UNHEALTHY`
 
 const TerminationReasonCodeDriverUnreachable TerminationReasonCode = `DRIVER_UNREACHABLE`
 
 const TerminationReasonCodeDriverUnresponsive TerminationReasonCode = `DRIVER_UNRESPONSIVE`
 
+const TerminationReasonCodeDynamicSparkConfSizeExceeded TerminationReasonCode = `DYNAMIC_SPARK_CONF_SIZE_EXCEEDED`
+
+const TerminationReasonCodeEosSparkImage TerminationReasonCode = `EOS_SPARK_IMAGE`
+
 const TerminationReasonCodeExecutionComponentUnhealthy TerminationReasonCode = `EXECUTION_COMPONENT_UNHEALTHY`
+
+const TerminationReasonCodeExecutorPodUnscheduled TerminationReasonCode = `EXECUTOR_POD_UNSCHEDULED`
+
+const TerminationReasonCodeGcpApiRateQuotaExceeded TerminationReasonCode = `GCP_API_RATE_QUOTA_EXCEEDED`
+
+const TerminationReasonCodeGcpDeniedByOrgPolicy TerminationReasonCode = `GCP_DENIED_BY_ORG_POLICY`
+
+const TerminationReasonCodeGcpForbidden TerminationReasonCode = `GCP_FORBIDDEN`
+
+const TerminationReasonCodeGcpIamTimeout TerminationReasonCode = `GCP_IAM_TIMEOUT`
+
+const TerminationReasonCodeGcpInaccessibleKmsKeyFailure TerminationReasonCode = `GCP_INACCESSIBLE_KMS_KEY_FAILURE`
+
+const TerminationReasonCodeGcpInsufficientCapacity TerminationReasonCode = `GCP_INSUFFICIENT_CAPACITY`
+
+const TerminationReasonCodeGcpIpSpaceExhausted TerminationReasonCode = `GCP_IP_SPACE_EXHAUSTED`
+
+const TerminationReasonCodeGcpKmsKeyPermissionDenied TerminationReasonCode = `GCP_KMS_KEY_PERMISSION_DENIED`
+
+const TerminationReasonCodeGcpNotFound TerminationReasonCode = `GCP_NOT_FOUND`
 
 const TerminationReasonCodeGcpQuotaExceeded TerminationReasonCode = `GCP_QUOTA_EXCEEDED`
 
+const TerminationReasonCodeGcpResourceQuotaExceeded TerminationReasonCode = `GCP_RESOURCE_QUOTA_EXCEEDED`
+
+const TerminationReasonCodeGcpServiceAccountAccessDenied TerminationReasonCode = `GCP_SERVICE_ACCOUNT_ACCESS_DENIED`
+
 const TerminationReasonCodeGcpServiceAccountDeleted TerminationReasonCode = `GCP_SERVICE_ACCOUNT_DELETED`
+
+const TerminationReasonCodeGcpServiceAccountNotFound TerminationReasonCode = `GCP_SERVICE_ACCOUNT_NOT_FOUND`
+
+const TerminationReasonCodeGcpSubnetNotReady TerminationReasonCode = `GCP_SUBNET_NOT_READY`
+
+const TerminationReasonCodeGcpTrustedImageProjectsViolated TerminationReasonCode = `GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED`
+
+const TerminationReasonCodeGkeBasedClusterTermination TerminationReasonCode = `GKE_BASED_CLUSTER_TERMINATION`
 
 const TerminationReasonCodeGlobalInitScriptFailure TerminationReasonCode = `GLOBAL_INIT_SCRIPT_FAILURE`
 
@@ -5096,47 +5282,107 @@ const TerminationReasonCodeImagePullPermissionDenied TerminationReasonCode = `IM
 
 const TerminationReasonCodeInactivity TerminationReasonCode = `INACTIVITY`
 
+const TerminationReasonCodeInitContainerNotFinished TerminationReasonCode = `INIT_CONTAINER_NOT_FINISHED`
+
 const TerminationReasonCodeInitScriptFailure TerminationReasonCode = `INIT_SCRIPT_FAILURE`
 
 const TerminationReasonCodeInstancePoolClusterFailure TerminationReasonCode = `INSTANCE_POOL_CLUSTER_FAILURE`
 
+const TerminationReasonCodeInstancePoolMaxCapacityReached TerminationReasonCode = `INSTANCE_POOL_MAX_CAPACITY_REACHED`
+
+const TerminationReasonCodeInstancePoolNotFound TerminationReasonCode = `INSTANCE_POOL_NOT_FOUND`
+
 const TerminationReasonCodeInstanceUnreachable TerminationReasonCode = `INSTANCE_UNREACHABLE`
+
+const TerminationReasonCodeInstanceUnreachableDueToMisconfig TerminationReasonCode = `INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG`
+
+const TerminationReasonCodeInternalCapacityFailure TerminationReasonCode = `INTERNAL_CAPACITY_FAILURE`
 
 const TerminationReasonCodeInternalError TerminationReasonCode = `INTERNAL_ERROR`
 
 const TerminationReasonCodeInvalidArgument TerminationReasonCode = `INVALID_ARGUMENT`
 
+const TerminationReasonCodeInvalidAwsParameter TerminationReasonCode = `INVALID_AWS_PARAMETER`
+
+const TerminationReasonCodeInvalidInstancePlacementProtocol TerminationReasonCode = `INVALID_INSTANCE_PLACEMENT_PROTOCOL`
+
 const TerminationReasonCodeInvalidSparkImage TerminationReasonCode = `INVALID_SPARK_IMAGE`
+
+const TerminationReasonCodeInvalidWorkerImageFailure TerminationReasonCode = `INVALID_WORKER_IMAGE_FAILURE`
+
+const TerminationReasonCodeInPenaltyBox TerminationReasonCode = `IN_PENALTY_BOX`
 
 const TerminationReasonCodeIpExhaustionFailure TerminationReasonCode = `IP_EXHAUSTION_FAILURE`
 
 const TerminationReasonCodeJobFinished TerminationReasonCode = `JOB_FINISHED`
 
+const TerminationReasonCodeK8sActivePodQuotaExceeded TerminationReasonCode = `K8S_ACTIVE_POD_QUOTA_EXCEEDED`
+
 const TerminationReasonCodeK8sAutoscalingFailure TerminationReasonCode = `K8S_AUTOSCALING_FAILURE`
 
 const TerminationReasonCodeK8sDbrClusterLaunchTimeout TerminationReasonCode = `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`
+
+const TerminationReasonCodeLazyAllocationTimeout TerminationReasonCode = `LAZY_ALLOCATION_TIMEOUT`
+
+const TerminationReasonCodeMaintenanceMode TerminationReasonCode = `MAINTENANCE_MODE`
 
 const TerminationReasonCodeMetastoreComponentUnhealthy TerminationReasonCode = `METASTORE_COMPONENT_UNHEALTHY`
 
 const TerminationReasonCodeNephosResourceManagement TerminationReasonCode = `NEPHOS_RESOURCE_MANAGEMENT`
 
+const TerminationReasonCodeNetvisorSetupTimeout TerminationReasonCode = `NETVISOR_SETUP_TIMEOUT`
+
+const TerminationReasonCodeNetworkCheckControlPlaneFailure TerminationReasonCode = `NETWORK_CHECK_CONTROL_PLANE_FAILURE`
+
+const TerminationReasonCodeNetworkCheckDnsServerFailure TerminationReasonCode = `NETWORK_CHECK_DNS_SERVER_FAILURE`
+
+const TerminationReasonCodeNetworkCheckMetadataEndpointFailure TerminationReasonCode = `NETWORK_CHECK_METADATA_ENDPOINT_FAILURE`
+
+const TerminationReasonCodeNetworkCheckMultipleComponentsFailure TerminationReasonCode = `NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE`
+
+const TerminationReasonCodeNetworkCheckNicFailure TerminationReasonCode = `NETWORK_CHECK_NIC_FAILURE`
+
+const TerminationReasonCodeNetworkCheckStorageFailure TerminationReasonCode = `NETWORK_CHECK_STORAGE_FAILURE`
+
 const TerminationReasonCodeNetworkConfigurationFailure TerminationReasonCode = `NETWORK_CONFIGURATION_FAILURE`
 
 const TerminationReasonCodeNfsMountFailure TerminationReasonCode = `NFS_MOUNT_FAILURE`
+
+const TerminationReasonCodeNoActivatedK8s TerminationReasonCode = `NO_ACTIVATED_K8S`
+
+const TerminationReasonCodeNoActivatedK8sTestingTag TerminationReasonCode = `NO_ACTIVATED_K8S_TESTING_TAG`
+
+const TerminationReasonCodeNoMatchedK8s TerminationReasonCode = `NO_MATCHED_K8S`
+
+const TerminationReasonCodeNoMatchedK8sTestingTag TerminationReasonCode = `NO_MATCHED_K8S_TESTING_TAG`
 
 const TerminationReasonCodeNpipTunnelSetupFailure TerminationReasonCode = `NPIP_TUNNEL_SETUP_FAILURE`
 
 const TerminationReasonCodeNpipTunnelTokenFailure TerminationReasonCode = `NPIP_TUNNEL_TOKEN_FAILURE`
 
+const TerminationReasonCodePodAssignmentFailure TerminationReasonCode = `POD_ASSIGNMENT_FAILURE`
+
+const TerminationReasonCodePodSchedulingFailure TerminationReasonCode = `POD_SCHEDULING_FAILURE`
+
 const TerminationReasonCodeRequestRejected TerminationReasonCode = `REQUEST_REJECTED`
 
 const TerminationReasonCodeRequestThrottled TerminationReasonCode = `REQUEST_THROTTLED`
 
+const TerminationReasonCodeResourceUsageBlocked TerminationReasonCode = `RESOURCE_USAGE_BLOCKED`
+
+const TerminationReasonCodeSecretCreationFailure TerminationReasonCode = `SECRET_CREATION_FAILURE`
+
+const TerminationReasonCodeSecretPermissionDenied TerminationReasonCode = `SECRET_PERMISSION_DENIED`
+
 const TerminationReasonCodeSecretResolutionError TerminationReasonCode = `SECRET_RESOLUTION_ERROR`
+
+const TerminationReasonCodeSecurityAgentsFailedInitialVerification TerminationReasonCode = `SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION`
 
 const TerminationReasonCodeSecurityDaemonRegistrationException TerminationReasonCode = `SECURITY_DAEMON_REGISTRATION_EXCEPTION`
 
 const TerminationReasonCodeSelfBootstrapFailure TerminationReasonCode = `SELF_BOOTSTRAP_FAILURE`
+
+const TerminationReasonCodeServerlessLongRunningTerminated TerminationReasonCode = `SERVERLESS_LONG_RUNNING_TERMINATED`
 
 const TerminationReasonCodeSkippedSlowNodes TerminationReasonCode = `SKIPPED_SLOW_NODES`
 
@@ -5146,11 +5392,23 @@ const TerminationReasonCodeSparkError TerminationReasonCode = `SPARK_ERROR`
 
 const TerminationReasonCodeSparkImageDownloadFailure TerminationReasonCode = `SPARK_IMAGE_DOWNLOAD_FAILURE`
 
+const TerminationReasonCodeSparkImageDownloadThrottled TerminationReasonCode = `SPARK_IMAGE_DOWNLOAD_THROTTLED`
+
+const TerminationReasonCodeSparkImageNotFound TerminationReasonCode = `SPARK_IMAGE_NOT_FOUND`
+
 const TerminationReasonCodeSparkStartupFailure TerminationReasonCode = `SPARK_STARTUP_FAILURE`
 
 const TerminationReasonCodeSpotInstanceTermination TerminationReasonCode = `SPOT_INSTANCE_TERMINATION`
 
+const TerminationReasonCodeSshBootstrapFailure TerminationReasonCode = `SSH_BOOTSTRAP_FAILURE`
+
 const TerminationReasonCodeStorageDownloadFailure TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE`
+
+const TerminationReasonCodeStorageDownloadFailureDueToMisconfig TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG`
+
+const TerminationReasonCodeStorageDownloadFailureSlow TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE_SLOW`
+
+const TerminationReasonCodeStorageDownloadFailureThrottled TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE_THROTTLED`
 
 const TerminationReasonCodeStsClientSetupFailure TerminationReasonCode = `STS_CLIENT_SETUP_FAILURE`
 
@@ -5162,11 +5420,17 @@ const TerminationReasonCodeTrialExpired TerminationReasonCode = `TRIAL_EXPIRED`
 
 const TerminationReasonCodeUnexpectedLaunchFailure TerminationReasonCode = `UNEXPECTED_LAUNCH_FAILURE`
 
+const TerminationReasonCodeUnexpectedPodRecreation TerminationReasonCode = `UNEXPECTED_POD_RECREATION`
+
 const TerminationReasonCodeUnknown TerminationReasonCode = `UNKNOWN`
 
 const TerminationReasonCodeUnsupportedInstanceType TerminationReasonCode = `UNSUPPORTED_INSTANCE_TYPE`
 
 const TerminationReasonCodeUpdateInstanceProfileFailure TerminationReasonCode = `UPDATE_INSTANCE_PROFILE_FAILURE`
+
+const TerminationReasonCodeUsagePolicyEntitlementDenied TerminationReasonCode = `USAGE_POLICY_ENTITLEMENT_DENIED`
+
+const TerminationReasonCodeUserInitiatedVmTermination TerminationReasonCode = `USER_INITIATED_VM_TERMINATION`
 
 const TerminationReasonCodeUserRequest TerminationReasonCode = `USER_REQUEST`
 
@@ -5176,6 +5440,8 @@ const TerminationReasonCodeWorkspaceCancelledError TerminationReasonCode = `WORK
 
 const TerminationReasonCodeWorkspaceConfigurationError TerminationReasonCode = `WORKSPACE_CONFIGURATION_ERROR`
 
+const TerminationReasonCodeWorkspaceUpdate TerminationReasonCode = `WORKSPACE_UPDATE`
+
 // String representation for [fmt.Print]
 func (f *TerminationReasonCode) String() string {
 	return string(*f)
@@ -5184,11 +5450,11 @@ func (f *TerminationReasonCode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TerminationReasonCode) Set(v string) error {
 	switch v {
-	case `ABUSE_DETECTED`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_SHUTDOWN`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `DATABASE_CONNECTION_FAILURE`, `DBFS_COMPONENT_UNHEALTHY`, `DOCKER_IMAGE_PULL_FAILURE`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `EXECUTION_COMPONENT_UNHEALTHY`, `GCP_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_UNREACHABLE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_SPARK_IMAGE`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `STORAGE_DOWNLOAD_FAILURE`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`:
+	case `ABUSE_DETECTED`, `ACCESS_TOKEN_FAILURE`, `ALLOCATION_TIMEOUT`, `ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY`, `ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_READY_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INACCESSIBLE_KMS_KEY_FAILURE`, `AWS_INSTANCE_PROFILE_UPDATE_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_INVALID_KEY_PAIR`, `AWS_INVALID_KMS_KEY_STATE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_RESOURCE_QUOTA_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG`, `BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED`, `BUDGET_POLICY_RESOLUTION_FAILURE`, `CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED`, `CLOUD_ACCOUNT_SETUP_FAILURE`, `CLOUD_OPERATION_CANCELLED`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG`, `CLOUD_PROVIDER_SHUTDOWN`, `CLUSTER_OPERATION_THROTTLED`, `CLUSTER_OPERATION_TIMEOUT`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG`, `DATABASE_CONNECTION_FAILURE`, `DATA_ACCESS_CONFIG_CHANGED`, `DBFS_COMPONENT_UNHEALTHY`, `DISASTER_RECOVERY_REPLICATION`, `DNS_RESOLUTION_ERROR`, `DOCKER_CONTAINER_CREATION_EXCEPTION`, `DOCKER_IMAGE_PULL_FAILURE`, `DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION`, `DOCKER_INVALID_OS_EXCEPTION`, `DRIVER_DNS_RESOLUTION_FAILURE`, `DRIVER_EVICTION`, `DRIVER_LAUNCH_TIMEOUT`, `DRIVER_NODE_UNREACHABLE`, `DRIVER_OUT_OF_DISK`, `DRIVER_OUT_OF_MEMORY`, `DRIVER_POD_CREATION_FAILURE`, `DRIVER_UNEXPECTED_FAILURE`, `DRIVER_UNHEALTHY`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `DYNAMIC_SPARK_CONF_SIZE_EXCEEDED`, `EOS_SPARK_IMAGE`, `EXECUTION_COMPONENT_UNHEALTHY`, `EXECUTOR_POD_UNSCHEDULED`, `GCP_API_RATE_QUOTA_EXCEEDED`, `GCP_DENIED_BY_ORG_POLICY`, `GCP_FORBIDDEN`, `GCP_IAM_TIMEOUT`, `GCP_INACCESSIBLE_KMS_KEY_FAILURE`, `GCP_INSUFFICIENT_CAPACITY`, `GCP_IP_SPACE_EXHAUSTED`, `GCP_KMS_KEY_PERMISSION_DENIED`, `GCP_NOT_FOUND`, `GCP_QUOTA_EXCEEDED`, `GCP_RESOURCE_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_ACCESS_DENIED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GCP_SERVICE_ACCOUNT_NOT_FOUND`, `GCP_SUBNET_NOT_READY`, `GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED`, `GKE_BASED_CLUSTER_TERMINATION`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_CONTAINER_NOT_FINISHED`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_POOL_MAX_CAPACITY_REACHED`, `INSTANCE_POOL_NOT_FOUND`, `INSTANCE_UNREACHABLE`, `INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG`, `INTERNAL_CAPACITY_FAILURE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_AWS_PARAMETER`, `INVALID_INSTANCE_PLACEMENT_PROTOCOL`, `INVALID_SPARK_IMAGE`, `INVALID_WORKER_IMAGE_FAILURE`, `IN_PENALTY_BOX`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_ACTIVE_POD_QUOTA_EXCEEDED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `LAZY_ALLOCATION_TIMEOUT`, `MAINTENANCE_MODE`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETVISOR_SETUP_TIMEOUT`, `NETWORK_CHECK_CONTROL_PLANE_FAILURE`, `NETWORK_CHECK_DNS_SERVER_FAILURE`, `NETWORK_CHECK_METADATA_ENDPOINT_FAILURE`, `NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE`, `NETWORK_CHECK_NIC_FAILURE`, `NETWORK_CHECK_STORAGE_FAILURE`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NO_ACTIVATED_K8S`, `NO_ACTIVATED_K8S_TESTING_TAG`, `NO_MATCHED_K8S`, `NO_MATCHED_K8S_TESTING_TAG`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `POD_ASSIGNMENT_FAILURE`, `POD_SCHEDULING_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `RESOURCE_USAGE_BLOCKED`, `SECRET_CREATION_FAILURE`, `SECRET_PERMISSION_DENIED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SERVERLESS_LONG_RUNNING_TERMINATED`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_IMAGE_DOWNLOAD_THROTTLED`, `SPARK_IMAGE_NOT_FOUND`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `SSH_BOOTSTRAP_FAILURE`, `STORAGE_DOWNLOAD_FAILURE`, `STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG`, `STORAGE_DOWNLOAD_FAILURE_SLOW`, `STORAGE_DOWNLOAD_FAILURE_THROTTLED`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNEXPECTED_POD_RECREATION`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USAGE_POLICY_ENTITLEMENT_DENIED`, `USER_INITIATED_VM_TERMINATION`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`, `WORKSPACE_UPDATE`:
 		*f = TerminationReasonCode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ABUSE_DETECTED", "ATTACH_PROJECT_FAILURE", "AWS_AUTHORIZATION_FAILURE", "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE", "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE", "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE", "AWS_REQUEST_LIMIT_EXCEEDED", "AWS_UNSUPPORTED_FAILURE", "AZURE_BYOK_KEY_PERMISSION_FAILURE", "AZURE_EPHEMERAL_DISK_FAILURE", "AZURE_INVALID_DEPLOYMENT_TEMPLATE", "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION", "AZURE_QUOTA_EXCEEDED_EXCEPTION", "AZURE_RESOURCE_MANAGER_THROTTLING", "AZURE_RESOURCE_PROVIDER_THROTTLING", "AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE", "AZURE_VM_EXTENSION_FAILURE", "AZURE_VNET_CONFIGURATION_FAILURE", "BOOTSTRAP_TIMEOUT", "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION", "CLOUD_PROVIDER_DISK_SETUP_FAILURE", "CLOUD_PROVIDER_LAUNCH_FAILURE", "CLOUD_PROVIDER_RESOURCE_STOCKOUT", "CLOUD_PROVIDER_SHUTDOWN", "COMMUNICATION_LOST", "CONTAINER_LAUNCH_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE", "DATABASE_CONNECTION_FAILURE", "DBFS_COMPONENT_UNHEALTHY", "DOCKER_IMAGE_PULL_FAILURE", "DRIVER_UNREACHABLE", "DRIVER_UNRESPONSIVE", "EXECUTION_COMPONENT_UNHEALTHY", "GCP_QUOTA_EXCEEDED", "GCP_SERVICE_ACCOUNT_DELETED", "GLOBAL_INIT_SCRIPT_FAILURE", "HIVE_METASTORE_PROVISIONING_FAILURE", "IMAGE_PULL_PERMISSION_DENIED", "INACTIVITY", "INIT_SCRIPT_FAILURE", "INSTANCE_POOL_CLUSTER_FAILURE", "INSTANCE_UNREACHABLE", "INTERNAL_ERROR", "INVALID_ARGUMENT", "INVALID_SPARK_IMAGE", "IP_EXHAUSTION_FAILURE", "JOB_FINISHED", "K8S_AUTOSCALING_FAILURE", "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT", "METASTORE_COMPONENT_UNHEALTHY", "NEPHOS_RESOURCE_MANAGEMENT", "NETWORK_CONFIGURATION_FAILURE", "NFS_MOUNT_FAILURE", "NPIP_TUNNEL_SETUP_FAILURE", "NPIP_TUNNEL_TOKEN_FAILURE", "REQUEST_REJECTED", "REQUEST_THROTTLED", "SECRET_RESOLUTION_ERROR", "SECURITY_DAEMON_REGISTRATION_EXCEPTION", "SELF_BOOTSTRAP_FAILURE", "SKIPPED_SLOW_NODES", "SLOW_IMAGE_DOWNLOAD", "SPARK_ERROR", "SPARK_IMAGE_DOWNLOAD_FAILURE", "SPARK_STARTUP_FAILURE", "SPOT_INSTANCE_TERMINATION", "STORAGE_DOWNLOAD_FAILURE", "STS_CLIENT_SETUP_FAILURE", "SUBNET_EXHAUSTED_FAILURE", "TEMPORARILY_UNAVAILABLE", "TRIAL_EXPIRED", "UNEXPECTED_LAUNCH_FAILURE", "UNKNOWN", "UNSUPPORTED_INSTANCE_TYPE", "UPDATE_INSTANCE_PROFILE_FAILURE", "USER_REQUEST", "WORKER_SETUP_FAILURE", "WORKSPACE_CANCELLED_ERROR", "WORKSPACE_CONFIGURATION_ERROR"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ABUSE_DETECTED", "ACCESS_TOKEN_FAILURE", "ALLOCATION_TIMEOUT", "ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY", "ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS", "ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS", "ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS", "ALLOCATION_TIMEOUT_NO_READY_CLUSTERS", "ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS", "ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS", "ATTACH_PROJECT_FAILURE", "AWS_AUTHORIZATION_FAILURE", "AWS_INACCESSIBLE_KMS_KEY_FAILURE", "AWS_INSTANCE_PROFILE_UPDATE_FAILURE", "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE", "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE", "AWS_INVALID_KEY_PAIR", "AWS_INVALID_KMS_KEY_STATE", "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE", "AWS_REQUEST_LIMIT_EXCEEDED", "AWS_RESOURCE_QUOTA_EXCEEDED", "AWS_UNSUPPORTED_FAILURE", "AZURE_BYOK_KEY_PERMISSION_FAILURE", "AZURE_EPHEMERAL_DISK_FAILURE", "AZURE_INVALID_DEPLOYMENT_TEMPLATE", "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION", "AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE", "AZURE_QUOTA_EXCEEDED_EXCEPTION", "AZURE_RESOURCE_MANAGER_THROTTLING", "AZURE_RESOURCE_PROVIDER_THROTTLING", "AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE", "AZURE_VM_EXTENSION_FAILURE", "AZURE_VNET_CONFIGURATION_FAILURE", "BOOTSTRAP_TIMEOUT", "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION", "BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG", "BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED", "BUDGET_POLICY_RESOLUTION_FAILURE", "CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED", "CLOUD_ACCOUNT_SETUP_FAILURE", "CLOUD_OPERATION_CANCELLED", "CLOUD_PROVIDER_DISK_SETUP_FAILURE", "CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED", "CLOUD_PROVIDER_LAUNCH_FAILURE", "CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG", "CLOUD_PROVIDER_RESOURCE_STOCKOUT", "CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG", "CLOUD_PROVIDER_SHUTDOWN", "CLUSTER_OPERATION_THROTTLED", "CLUSTER_OPERATION_TIMEOUT", "COMMUNICATION_LOST", "CONTAINER_LAUNCH_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG", "DATABASE_CONNECTION_FAILURE", "DATA_ACCESS_CONFIG_CHANGED", "DBFS_COMPONENT_UNHEALTHY", "DISASTER_RECOVERY_REPLICATION", "DNS_RESOLUTION_ERROR", "DOCKER_CONTAINER_CREATION_EXCEPTION", "DOCKER_IMAGE_PULL_FAILURE", "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION", "DOCKER_INVALID_OS_EXCEPTION", "DRIVER_DNS_RESOLUTION_FAILURE", "DRIVER_EVICTION", "DRIVER_LAUNCH_TIMEOUT", "DRIVER_NODE_UNREACHABLE", "DRIVER_OUT_OF_DISK", "DRIVER_OUT_OF_MEMORY", "DRIVER_POD_CREATION_FAILURE", "DRIVER_UNEXPECTED_FAILURE", "DRIVER_UNHEALTHY", "DRIVER_UNREACHABLE", "DRIVER_UNRESPONSIVE", "DYNAMIC_SPARK_CONF_SIZE_EXCEEDED", "EOS_SPARK_IMAGE", "EXECUTION_COMPONENT_UNHEALTHY", "EXECUTOR_POD_UNSCHEDULED", "GCP_API_RATE_QUOTA_EXCEEDED", "GCP_DENIED_BY_ORG_POLICY", "GCP_FORBIDDEN", "GCP_IAM_TIMEOUT", "GCP_INACCESSIBLE_KMS_KEY_FAILURE", "GCP_INSUFFICIENT_CAPACITY", "GCP_IP_SPACE_EXHAUSTED", "GCP_KMS_KEY_PERMISSION_DENIED", "GCP_NOT_FOUND", "GCP_QUOTA_EXCEEDED", "GCP_RESOURCE_QUOTA_EXCEEDED", "GCP_SERVICE_ACCOUNT_ACCESS_DENIED", "GCP_SERVICE_ACCOUNT_DELETED", "GCP_SERVICE_ACCOUNT_NOT_FOUND", "GCP_SUBNET_NOT_READY", "GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED", "GKE_BASED_CLUSTER_TERMINATION", "GLOBAL_INIT_SCRIPT_FAILURE", "HIVE_METASTORE_PROVISIONING_FAILURE", "IMAGE_PULL_PERMISSION_DENIED", "INACTIVITY", "INIT_CONTAINER_NOT_FINISHED", "INIT_SCRIPT_FAILURE", "INSTANCE_POOL_CLUSTER_FAILURE", "INSTANCE_POOL_MAX_CAPACITY_REACHED", "INSTANCE_POOL_NOT_FOUND", "INSTANCE_UNREACHABLE", "INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG", "INTERNAL_CAPACITY_FAILURE", "INTERNAL_ERROR", "INVALID_ARGUMENT", "INVALID_AWS_PARAMETER", "INVALID_INSTANCE_PLACEMENT_PROTOCOL", "INVALID_SPARK_IMAGE", "INVALID_WORKER_IMAGE_FAILURE", "IN_PENALTY_BOX", "IP_EXHAUSTION_FAILURE", "JOB_FINISHED", "K8S_ACTIVE_POD_QUOTA_EXCEEDED", "K8S_AUTOSCALING_FAILURE", "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT", "LAZY_ALLOCATION_TIMEOUT", "MAINTENANCE_MODE", "METASTORE_COMPONENT_UNHEALTHY", "NEPHOS_RESOURCE_MANAGEMENT", "NETVISOR_SETUP_TIMEOUT", "NETWORK_CHECK_CONTROL_PLANE_FAILURE", "NETWORK_CHECK_DNS_SERVER_FAILURE", "NETWORK_CHECK_METADATA_ENDPOINT_FAILURE", "NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE", "NETWORK_CHECK_NIC_FAILURE", "NETWORK_CHECK_STORAGE_FAILURE", "NETWORK_CONFIGURATION_FAILURE", "NFS_MOUNT_FAILURE", "NO_ACTIVATED_K8S", "NO_ACTIVATED_K8S_TESTING_TAG", "NO_MATCHED_K8S", "NO_MATCHED_K8S_TESTING_TAG", "NPIP_TUNNEL_SETUP_FAILURE", "NPIP_TUNNEL_TOKEN_FAILURE", "POD_ASSIGNMENT_FAILURE", "POD_SCHEDULING_FAILURE", "REQUEST_REJECTED", "REQUEST_THROTTLED", "RESOURCE_USAGE_BLOCKED", "SECRET_CREATION_FAILURE", "SECRET_PERMISSION_DENIED", "SECRET_RESOLUTION_ERROR", "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION", "SECURITY_DAEMON_REGISTRATION_EXCEPTION", "SELF_BOOTSTRAP_FAILURE", "SERVERLESS_LONG_RUNNING_TERMINATED", "SKIPPED_SLOW_NODES", "SLOW_IMAGE_DOWNLOAD", "SPARK_ERROR", "SPARK_IMAGE_DOWNLOAD_FAILURE", "SPARK_IMAGE_DOWNLOAD_THROTTLED", "SPARK_IMAGE_NOT_FOUND", "SPARK_STARTUP_FAILURE", "SPOT_INSTANCE_TERMINATION", "SSH_BOOTSTRAP_FAILURE", "STORAGE_DOWNLOAD_FAILURE", "STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG", "STORAGE_DOWNLOAD_FAILURE_SLOW", "STORAGE_DOWNLOAD_FAILURE_THROTTLED", "STS_CLIENT_SETUP_FAILURE", "SUBNET_EXHAUSTED_FAILURE", "TEMPORARILY_UNAVAILABLE", "TRIAL_EXPIRED", "UNEXPECTED_LAUNCH_FAILURE", "UNEXPECTED_POD_RECREATION", "UNKNOWN", "UNSUPPORTED_INSTANCE_TYPE", "UPDATE_INSTANCE_PROFILE_FAILURE", "USAGE_POLICY_ENTITLEMENT_DENIED", "USER_INITIATED_VM_TERMINATION", "USER_REQUEST", "WORKER_SETUP_FAILURE", "WORKSPACE_CANCELLED_ERROR", "WORKSPACE_CONFIGURATION_ERROR", "WORKSPACE_UPDATE"`, v)
 	}
 }
 
@@ -5198,17 +5464,32 @@ func (f *TerminationReasonCode) Set(v string) error {
 func (f *TerminationReasonCode) Values() []TerminationReasonCode {
 	return []TerminationReasonCode{
 		TerminationReasonCodeAbuseDetected,
+		TerminationReasonCodeAccessTokenFailure,
+		TerminationReasonCodeAllocationTimeout,
+		TerminationReasonCodeAllocationTimeoutNodeDaemonNotReady,
+		TerminationReasonCodeAllocationTimeoutNoHealthyAndWarmedUpClusters,
+		TerminationReasonCodeAllocationTimeoutNoHealthyClusters,
+		TerminationReasonCodeAllocationTimeoutNoMatchedClusters,
+		TerminationReasonCodeAllocationTimeoutNoReadyClusters,
+		TerminationReasonCodeAllocationTimeoutNoUnallocatedClusters,
+		TerminationReasonCodeAllocationTimeoutNoWarmedUpClusters,
 		TerminationReasonCodeAttachProjectFailure,
 		TerminationReasonCodeAwsAuthorizationFailure,
+		TerminationReasonCodeAwsInaccessibleKmsKeyFailure,
+		TerminationReasonCodeAwsInstanceProfileUpdateFailure,
 		TerminationReasonCodeAwsInsufficientFreeAddressesInSubnetFailure,
 		TerminationReasonCodeAwsInsufficientInstanceCapacityFailure,
+		TerminationReasonCodeAwsInvalidKeyPair,
+		TerminationReasonCodeAwsInvalidKmsKeyState,
 		TerminationReasonCodeAwsMaxSpotInstanceCountExceededFailure,
 		TerminationReasonCodeAwsRequestLimitExceeded,
+		TerminationReasonCodeAwsResourceQuotaExceeded,
 		TerminationReasonCodeAwsUnsupportedFailure,
 		TerminationReasonCodeAzureByokKeyPermissionFailure,
 		TerminationReasonCodeAzureEphemeralDiskFailure,
 		TerminationReasonCodeAzureInvalidDeploymentTemplate,
 		TerminationReasonCodeAzureOperationNotAllowedException,
+		TerminationReasonCodeAzurePackedDeploymentPartialFailure,
 		TerminationReasonCodeAzureQuotaExceededException,
 		TerminationReasonCodeAzureResourceManagerThrottling,
 		TerminationReasonCodeAzureResourceProviderThrottling,
@@ -5217,65 +5498,150 @@ func (f *TerminationReasonCode) Values() []TerminationReasonCode {
 		TerminationReasonCodeAzureVnetConfigurationFailure,
 		TerminationReasonCodeBootstrapTimeout,
 		TerminationReasonCodeBootstrapTimeoutCloudProviderException,
+		TerminationReasonCodeBootstrapTimeoutDueToMisconfig,
+		TerminationReasonCodeBudgetPolicyLimitEnforcementActivated,
+		TerminationReasonCodeBudgetPolicyResolutionFailure,
+		TerminationReasonCodeCloudAccountPodQuotaExceeded,
+		TerminationReasonCodeCloudAccountSetupFailure,
+		TerminationReasonCodeCloudOperationCancelled,
 		TerminationReasonCodeCloudProviderDiskSetupFailure,
+		TerminationReasonCodeCloudProviderInstanceNotLaunched,
 		TerminationReasonCodeCloudProviderLaunchFailure,
+		TerminationReasonCodeCloudProviderLaunchFailureDueToMisconfig,
 		TerminationReasonCodeCloudProviderResourceStockout,
+		TerminationReasonCodeCloudProviderResourceStockoutDueToMisconfig,
 		TerminationReasonCodeCloudProviderShutdown,
+		TerminationReasonCodeClusterOperationThrottled,
+		TerminationReasonCodeClusterOperationTimeout,
 		TerminationReasonCodeCommunicationLost,
 		TerminationReasonCodeContainerLaunchFailure,
 		TerminationReasonCodeControlPlaneRequestFailure,
+		TerminationReasonCodeControlPlaneRequestFailureDueToMisconfig,
 		TerminationReasonCodeDatabaseConnectionFailure,
+		TerminationReasonCodeDataAccessConfigChanged,
 		TerminationReasonCodeDbfsComponentUnhealthy,
+		TerminationReasonCodeDisasterRecoveryReplication,
+		TerminationReasonCodeDnsResolutionError,
+		TerminationReasonCodeDockerContainerCreationException,
 		TerminationReasonCodeDockerImagePullFailure,
+		TerminationReasonCodeDockerImageTooLargeForInstanceException,
+		TerminationReasonCodeDockerInvalidOsException,
+		TerminationReasonCodeDriverDnsResolutionFailure,
+		TerminationReasonCodeDriverEviction,
+		TerminationReasonCodeDriverLaunchTimeout,
+		TerminationReasonCodeDriverNodeUnreachable,
+		TerminationReasonCodeDriverOutOfDisk,
+		TerminationReasonCodeDriverOutOfMemory,
+		TerminationReasonCodeDriverPodCreationFailure,
+		TerminationReasonCodeDriverUnexpectedFailure,
+		TerminationReasonCodeDriverUnhealthy,
 		TerminationReasonCodeDriverUnreachable,
 		TerminationReasonCodeDriverUnresponsive,
+		TerminationReasonCodeDynamicSparkConfSizeExceeded,
+		TerminationReasonCodeEosSparkImage,
 		TerminationReasonCodeExecutionComponentUnhealthy,
+		TerminationReasonCodeExecutorPodUnscheduled,
+		TerminationReasonCodeGcpApiRateQuotaExceeded,
+		TerminationReasonCodeGcpDeniedByOrgPolicy,
+		TerminationReasonCodeGcpForbidden,
+		TerminationReasonCodeGcpIamTimeout,
+		TerminationReasonCodeGcpInaccessibleKmsKeyFailure,
+		TerminationReasonCodeGcpInsufficientCapacity,
+		TerminationReasonCodeGcpIpSpaceExhausted,
+		TerminationReasonCodeGcpKmsKeyPermissionDenied,
+		TerminationReasonCodeGcpNotFound,
 		TerminationReasonCodeGcpQuotaExceeded,
+		TerminationReasonCodeGcpResourceQuotaExceeded,
+		TerminationReasonCodeGcpServiceAccountAccessDenied,
 		TerminationReasonCodeGcpServiceAccountDeleted,
+		TerminationReasonCodeGcpServiceAccountNotFound,
+		TerminationReasonCodeGcpSubnetNotReady,
+		TerminationReasonCodeGcpTrustedImageProjectsViolated,
+		TerminationReasonCodeGkeBasedClusterTermination,
 		TerminationReasonCodeGlobalInitScriptFailure,
 		TerminationReasonCodeHiveMetastoreProvisioningFailure,
 		TerminationReasonCodeImagePullPermissionDenied,
 		TerminationReasonCodeInactivity,
+		TerminationReasonCodeInitContainerNotFinished,
 		TerminationReasonCodeInitScriptFailure,
 		TerminationReasonCodeInstancePoolClusterFailure,
+		TerminationReasonCodeInstancePoolMaxCapacityReached,
+		TerminationReasonCodeInstancePoolNotFound,
 		TerminationReasonCodeInstanceUnreachable,
+		TerminationReasonCodeInstanceUnreachableDueToMisconfig,
+		TerminationReasonCodeInternalCapacityFailure,
 		TerminationReasonCodeInternalError,
 		TerminationReasonCodeInvalidArgument,
+		TerminationReasonCodeInvalidAwsParameter,
+		TerminationReasonCodeInvalidInstancePlacementProtocol,
 		TerminationReasonCodeInvalidSparkImage,
+		TerminationReasonCodeInvalidWorkerImageFailure,
+		TerminationReasonCodeInPenaltyBox,
 		TerminationReasonCodeIpExhaustionFailure,
 		TerminationReasonCodeJobFinished,
+		TerminationReasonCodeK8sActivePodQuotaExceeded,
 		TerminationReasonCodeK8sAutoscalingFailure,
 		TerminationReasonCodeK8sDbrClusterLaunchTimeout,
+		TerminationReasonCodeLazyAllocationTimeout,
+		TerminationReasonCodeMaintenanceMode,
 		TerminationReasonCodeMetastoreComponentUnhealthy,
 		TerminationReasonCodeNephosResourceManagement,
+		TerminationReasonCodeNetvisorSetupTimeout,
+		TerminationReasonCodeNetworkCheckControlPlaneFailure,
+		TerminationReasonCodeNetworkCheckDnsServerFailure,
+		TerminationReasonCodeNetworkCheckMetadataEndpointFailure,
+		TerminationReasonCodeNetworkCheckMultipleComponentsFailure,
+		TerminationReasonCodeNetworkCheckNicFailure,
+		TerminationReasonCodeNetworkCheckStorageFailure,
 		TerminationReasonCodeNetworkConfigurationFailure,
 		TerminationReasonCodeNfsMountFailure,
+		TerminationReasonCodeNoActivatedK8s,
+		TerminationReasonCodeNoActivatedK8sTestingTag,
+		TerminationReasonCodeNoMatchedK8s,
+		TerminationReasonCodeNoMatchedK8sTestingTag,
 		TerminationReasonCodeNpipTunnelSetupFailure,
 		TerminationReasonCodeNpipTunnelTokenFailure,
+		TerminationReasonCodePodAssignmentFailure,
+		TerminationReasonCodePodSchedulingFailure,
 		TerminationReasonCodeRequestRejected,
 		TerminationReasonCodeRequestThrottled,
+		TerminationReasonCodeResourceUsageBlocked,
+		TerminationReasonCodeSecretCreationFailure,
+		TerminationReasonCodeSecretPermissionDenied,
 		TerminationReasonCodeSecretResolutionError,
+		TerminationReasonCodeSecurityAgentsFailedInitialVerification,
 		TerminationReasonCodeSecurityDaemonRegistrationException,
 		TerminationReasonCodeSelfBootstrapFailure,
+		TerminationReasonCodeServerlessLongRunningTerminated,
 		TerminationReasonCodeSkippedSlowNodes,
 		TerminationReasonCodeSlowImageDownload,
 		TerminationReasonCodeSparkError,
 		TerminationReasonCodeSparkImageDownloadFailure,
+		TerminationReasonCodeSparkImageDownloadThrottled,
+		TerminationReasonCodeSparkImageNotFound,
 		TerminationReasonCodeSparkStartupFailure,
 		TerminationReasonCodeSpotInstanceTermination,
+		TerminationReasonCodeSshBootstrapFailure,
 		TerminationReasonCodeStorageDownloadFailure,
+		TerminationReasonCodeStorageDownloadFailureDueToMisconfig,
+		TerminationReasonCodeStorageDownloadFailureSlow,
+		TerminationReasonCodeStorageDownloadFailureThrottled,
 		TerminationReasonCodeStsClientSetupFailure,
 		TerminationReasonCodeSubnetExhaustedFailure,
 		TerminationReasonCodeTemporarilyUnavailable,
 		TerminationReasonCodeTrialExpired,
 		TerminationReasonCodeUnexpectedLaunchFailure,
+		TerminationReasonCodeUnexpectedPodRecreation,
 		TerminationReasonCodeUnknown,
 		TerminationReasonCodeUnsupportedInstanceType,
 		TerminationReasonCodeUpdateInstanceProfileFailure,
+		TerminationReasonCodeUsagePolicyEntitlementDenied,
+		TerminationReasonCodeUserInitiatedVmTermination,
 		TerminationReasonCodeUserRequest,
 		TerminationReasonCodeWorkerSetupFailure,
 		TerminationReasonCodeWorkspaceCancelledError,
 		TerminationReasonCodeWorkspaceConfigurationError,
+		TerminationReasonCodeWorkspaceUpdate,
 	}
 }
 
@@ -5834,11 +6200,13 @@ type WarehousePermissionsRequest struct {
 	WarehouseId string `json:"-" url:"-"`
 }
 
+// * Configuration values to enable or disable the access to specific warehouse
+// types in the workspace.
 type WarehouseTypePair struct {
 	// If set to false the specific warehouse type will not be be allowed as a
 	// value for warehouse_type in CreateWarehouse and EditWarehouse
 	Enabled bool `json:"enabled,omitempty"`
-	// Warehouse type: `PRO` or `CLASSIC`.
+
 	WarehouseType WarehouseTypePairWarehouseType `json:"warehouse_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5852,7 +6220,6 @@ func (s WarehouseTypePair) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Warehouse type: `PRO` or `CLASSIC`.
 type WarehouseTypePairWarehouseType string
 
 const WarehouseTypePairWarehouseTypeClassic WarehouseTypePairWarehouseType = `CLASSIC`

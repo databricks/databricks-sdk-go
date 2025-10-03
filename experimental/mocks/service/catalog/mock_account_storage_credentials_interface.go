@@ -26,23 +26,23 @@ func (_m *MockAccountStorageCredentialsInterface) EXPECT() *MockAccountStorageCr
 }
 
 // Create provides a mock function with given fields: ctx, request
-func (_m *MockAccountStorageCredentialsInterface) Create(ctx context.Context, request catalog.AccountsCreateStorageCredential) (*catalog.AccountsStorageCredentialInfo, error) {
+func (_m *MockAccountStorageCredentialsInterface) Create(ctx context.Context, request catalog.AccountsCreateStorageCredential) (*catalog.AccountsCreateStorageCredentialInfo, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
 	}
 
-	var r0 *catalog.AccountsStorageCredentialInfo
+	var r0 *catalog.AccountsCreateStorageCredentialInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsCreateStorageCredential) (*catalog.AccountsStorageCredentialInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsCreateStorageCredential) (*catalog.AccountsCreateStorageCredentialInfo, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsCreateStorageCredential) *catalog.AccountsStorageCredentialInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsCreateStorageCredential) *catalog.AccountsCreateStorageCredentialInfo); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.AccountsStorageCredentialInfo)
+			r0 = ret.Get(0).(*catalog.AccountsCreateStorageCredentialInfo)
 		}
 	}
 
@@ -74,32 +74,44 @@ func (_c *MockAccountStorageCredentialsInterface_Create_Call) Run(run func(ctx c
 	return _c
 }
 
-func (_c *MockAccountStorageCredentialsInterface_Create_Call) Return(_a0 *catalog.AccountsStorageCredentialInfo, _a1 error) *MockAccountStorageCredentialsInterface_Create_Call {
+func (_c *MockAccountStorageCredentialsInterface_Create_Call) Return(_a0 *catalog.AccountsCreateStorageCredentialInfo, _a1 error) *MockAccountStorageCredentialsInterface_Create_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAccountStorageCredentialsInterface_Create_Call) RunAndReturn(run func(context.Context, catalog.AccountsCreateStorageCredential) (*catalog.AccountsStorageCredentialInfo, error)) *MockAccountStorageCredentialsInterface_Create_Call {
+func (_c *MockAccountStorageCredentialsInterface_Create_Call) RunAndReturn(run func(context.Context, catalog.AccountsCreateStorageCredential) (*catalog.AccountsCreateStorageCredentialInfo, error)) *MockAccountStorageCredentialsInterface_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockAccountStorageCredentialsInterface) Delete(ctx context.Context, request catalog.DeleteAccountStorageCredentialRequest) error {
+func (_m *MockAccountStorageCredentialsInterface) Delete(ctx context.Context, request catalog.DeleteAccountStorageCredentialRequest) (*catalog.AccountsDeleteStorageCredentialResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.DeleteAccountStorageCredentialRequest) error); ok {
+	var r0 *catalog.AccountsDeleteStorageCredentialResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.DeleteAccountStorageCredentialRequest) (*catalog.AccountsDeleteStorageCredentialResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.DeleteAccountStorageCredentialRequest) *catalog.AccountsDeleteStorageCredentialResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.AccountsDeleteStorageCredentialResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.DeleteAccountStorageCredentialRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockAccountStorageCredentialsInterface_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
@@ -121,32 +133,44 @@ func (_c *MockAccountStorageCredentialsInterface_Delete_Call) Run(run func(ctx c
 	return _c
 }
 
-func (_c *MockAccountStorageCredentialsInterface_Delete_Call) Return(_a0 error) *MockAccountStorageCredentialsInterface_Delete_Call {
-	_c.Call.Return(_a0)
+func (_c *MockAccountStorageCredentialsInterface_Delete_Call) Return(_a0 *catalog.AccountsDeleteStorageCredentialResponse, _a1 error) *MockAccountStorageCredentialsInterface_Delete_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAccountStorageCredentialsInterface_Delete_Call) RunAndReturn(run func(context.Context, catalog.DeleteAccountStorageCredentialRequest) error) *MockAccountStorageCredentialsInterface_Delete_Call {
+func (_c *MockAccountStorageCredentialsInterface_Delete_Call) RunAndReturn(run func(context.Context, catalog.DeleteAccountStorageCredentialRequest) (*catalog.AccountsDeleteStorageCredentialResponse, error)) *MockAccountStorageCredentialsInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeleteByMetastoreIdAndStorageCredentialName provides a mock function with given fields: ctx, metastoreId, storageCredentialName
-func (_m *MockAccountStorageCredentialsInterface) DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) error {
+func (_m *MockAccountStorageCredentialsInterface) DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*catalog.AccountsDeleteStorageCredentialResponse, error) {
 	ret := _m.Called(ctx, metastoreId, storageCredentialName)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteByMetastoreIdAndStorageCredentialName")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+	var r0 *catalog.AccountsDeleteStorageCredentialResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*catalog.AccountsDeleteStorageCredentialResponse, error)); ok {
+		return rf(ctx, metastoreId, storageCredentialName)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *catalog.AccountsDeleteStorageCredentialResponse); ok {
 		r0 = rf(ctx, metastoreId, storageCredentialName)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.AccountsDeleteStorageCredentialResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, metastoreId, storageCredentialName)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockAccountStorageCredentialsInterface_DeleteByMetastoreIdAndStorageCredentialName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByMetastoreIdAndStorageCredentialName'
@@ -169,12 +193,12 @@ func (_c *MockAccountStorageCredentialsInterface_DeleteByMetastoreIdAndStorageCr
 	return _c
 }
 
-func (_c *MockAccountStorageCredentialsInterface_DeleteByMetastoreIdAndStorageCredentialName_Call) Return(_a0 error) *MockAccountStorageCredentialsInterface_DeleteByMetastoreIdAndStorageCredentialName_Call {
-	_c.Call.Return(_a0)
+func (_c *MockAccountStorageCredentialsInterface_DeleteByMetastoreIdAndStorageCredentialName_Call) Return(_a0 *catalog.AccountsDeleteStorageCredentialResponse, _a1 error) *MockAccountStorageCredentialsInterface_DeleteByMetastoreIdAndStorageCredentialName_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAccountStorageCredentialsInterface_DeleteByMetastoreIdAndStorageCredentialName_Call) RunAndReturn(run func(context.Context, string, string) error) *MockAccountStorageCredentialsInterface_DeleteByMetastoreIdAndStorageCredentialName_Call {
+func (_c *MockAccountStorageCredentialsInterface_DeleteByMetastoreIdAndStorageCredentialName_Call) RunAndReturn(run func(context.Context, string, string) (*catalog.AccountsDeleteStorageCredentialResponse, error)) *MockAccountStorageCredentialsInterface_DeleteByMetastoreIdAndStorageCredentialName_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -466,23 +490,23 @@ func (_c *MockAccountStorageCredentialsInterface_ListByMetastoreId_Call) RunAndR
 }
 
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockAccountStorageCredentialsInterface) Update(ctx context.Context, request catalog.AccountsUpdateStorageCredential) (*catalog.AccountsStorageCredentialInfo, error) {
+func (_m *MockAccountStorageCredentialsInterface) Update(ctx context.Context, request catalog.AccountsUpdateStorageCredential) (*catalog.AccountsUpdateStorageCredentialResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
 	}
 
-	var r0 *catalog.AccountsStorageCredentialInfo
+	var r0 *catalog.AccountsUpdateStorageCredentialResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsUpdateStorageCredential) (*catalog.AccountsStorageCredentialInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsUpdateStorageCredential) (*catalog.AccountsUpdateStorageCredentialResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsUpdateStorageCredential) *catalog.AccountsStorageCredentialInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.AccountsUpdateStorageCredential) *catalog.AccountsUpdateStorageCredentialResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.AccountsStorageCredentialInfo)
+			r0 = ret.Get(0).(*catalog.AccountsUpdateStorageCredentialResponse)
 		}
 	}
 
@@ -514,12 +538,12 @@ func (_c *MockAccountStorageCredentialsInterface_Update_Call) Run(run func(ctx c
 	return _c
 }
 
-func (_c *MockAccountStorageCredentialsInterface_Update_Call) Return(_a0 *catalog.AccountsStorageCredentialInfo, _a1 error) *MockAccountStorageCredentialsInterface_Update_Call {
+func (_c *MockAccountStorageCredentialsInterface_Update_Call) Return(_a0 *catalog.AccountsUpdateStorageCredentialResponse, _a1 error) *MockAccountStorageCredentialsInterface_Update_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAccountStorageCredentialsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.AccountsUpdateStorageCredential) (*catalog.AccountsStorageCredentialInfo, error)) *MockAccountStorageCredentialsInterface_Update_Call {
+func (_c *MockAccountStorageCredentialsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.AccountsUpdateStorageCredential) (*catalog.AccountsUpdateStorageCredentialResponse, error)) *MockAccountStorageCredentialsInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

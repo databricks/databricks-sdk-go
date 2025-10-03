@@ -15,6 +15,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/compute"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dashboards"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/database"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dataquality"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/files"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iamv2"
@@ -77,6 +78,7 @@ func NewMockWorkspaceClient(t interface {
 			CurrentUser:                         iam.NewMockCurrentUserInterface(t),
 			DashboardWidgets:                    sql.NewMockDashboardWidgetsInterface(t),
 			Dashboards:                          sql.NewMockDashboardsInterface(t),
+			DataQuality:                         dataquality.NewMockDataQualityInterface(t),
 			DataSources:                         sql.NewMockDataSourcesInterface(t),
 			Database:                            database.NewMockDatabaseInterface(t),
 			Dbfs:                                files.NewMockDbfsInterface(t),
@@ -582,6 +584,14 @@ func (m *MockWorkspaceClient) GetMockDashboardsAPI() *sql.MockDashboardsInterfac
 	api, ok := m.WorkspaceClient.Dashboards.(*sql.MockDashboardsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Dashboards to be *sql.MockDashboardsInterface, actual was %T", m.WorkspaceClient.Dashboards))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockDataQualityAPI() *dataquality.MockDataQualityInterface {
+	api, ok := m.WorkspaceClient.DataQuality.(*dataquality.MockDataQualityInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DataQuality to be *dataquality.MockDataQualityInterface, actual was %T", m.WorkspaceClient.DataQuality))
 	}
 	return api
 }

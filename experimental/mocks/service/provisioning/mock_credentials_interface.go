@@ -140,21 +140,33 @@ func (_c *MockCredentialsInterface_CredentialCredentialsNameToCredentialsIdMap_C
 }
 
 // Delete provides a mock function with given fields: ctx, request
-func (_m *MockCredentialsInterface) Delete(ctx context.Context, request provisioning.DeleteCredentialRequest) error {
+func (_m *MockCredentialsInterface) Delete(ctx context.Context, request provisioning.DeleteCredentialRequest) (*provisioning.Credential, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteCredentialRequest) error); ok {
+	var r0 *provisioning.Credential
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteCredentialRequest) (*provisioning.Credential, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, provisioning.DeleteCredentialRequest) *provisioning.Credential); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.Credential)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, provisioning.DeleteCredentialRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockCredentialsInterface_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
@@ -176,32 +188,44 @@ func (_c *MockCredentialsInterface_Delete_Call) Run(run func(ctx context.Context
 	return _c
 }
 
-func (_c *MockCredentialsInterface_Delete_Call) Return(_a0 error) *MockCredentialsInterface_Delete_Call {
-	_c.Call.Return(_a0)
+func (_c *MockCredentialsInterface_Delete_Call) Return(_a0 *provisioning.Credential, _a1 error) *MockCredentialsInterface_Delete_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockCredentialsInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeleteCredentialRequest) error) *MockCredentialsInterface_Delete_Call {
+func (_c *MockCredentialsInterface_Delete_Call) RunAndReturn(run func(context.Context, provisioning.DeleteCredentialRequest) (*provisioning.Credential, error)) *MockCredentialsInterface_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeleteByCredentialsId provides a mock function with given fields: ctx, credentialsId
-func (_m *MockCredentialsInterface) DeleteByCredentialsId(ctx context.Context, credentialsId string) error {
+func (_m *MockCredentialsInterface) DeleteByCredentialsId(ctx context.Context, credentialsId string) (*provisioning.Credential, error) {
 	ret := _m.Called(ctx, credentialsId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteByCredentialsId")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+	var r0 *provisioning.Credential
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*provisioning.Credential, error)); ok {
+		return rf(ctx, credentialsId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *provisioning.Credential); ok {
 		r0 = rf(ctx, credentialsId)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*provisioning.Credential)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, credentialsId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockCredentialsInterface_DeleteByCredentialsId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByCredentialsId'
@@ -223,12 +247,12 @@ func (_c *MockCredentialsInterface_DeleteByCredentialsId_Call) Run(run func(ctx 
 	return _c
 }
 
-func (_c *MockCredentialsInterface_DeleteByCredentialsId_Call) Return(_a0 error) *MockCredentialsInterface_DeleteByCredentialsId_Call {
-	_c.Call.Return(_a0)
+func (_c *MockCredentialsInterface_DeleteByCredentialsId_Call) Return(_a0 *provisioning.Credential, _a1 error) *MockCredentialsInterface_DeleteByCredentialsId_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockCredentialsInterface_DeleteByCredentialsId_Call) RunAndReturn(run func(context.Context, string) error) *MockCredentialsInterface_DeleteByCredentialsId_Call {
+func (_c *MockCredentialsInterface_DeleteByCredentialsId_Call) RunAndReturn(run func(context.Context, string) (*provisioning.Credential, error)) *MockCredentialsInterface_DeleteByCredentialsId_Call {
 	_c.Call.Return(run)
 	return _c
 }
