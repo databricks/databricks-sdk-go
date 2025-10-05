@@ -531,7 +531,7 @@ func TestLogCancelledRequest(t *testing.T) {
 	assert.Error(t, err)
 	assert.Equal(t, `[DEBUG] GET /a
 < Error: Get "/a": request timed out after 30s of inactivity
-[DEBUG] non-retriable error: Get "/a": request timed out after 30s of inactivity
+[DEBUG] non-retriable error: Get "/a": request timed out after 1m0s of inactivity
 `, bufLogger.String())
 }
 
