@@ -430,10 +430,3 @@ func (c *ApiClient) perform(
 	}
 	return resp, nil
 }
-
-func orDefault(configured, _default int) int {
-	if configured == 0 {
-		return _default
-	}
-	return configured
-}
