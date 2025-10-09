@@ -23,24 +23,14 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
+
+          # The default cache key for this action considers only the `go.sum` file.
+          # We include .goreleaser.yaml here to differentiate from the cache used by the push action
+          # that runs unit tests. This job produces and uses a different cache.
           cache-dependency-path: |
             go.sum
             .goreleaser.yml
 
-      # Validate that this is a proper Go module
-      - name: Validate Go module
-        run: |
-          go mod verify
-          go mod tidy
-          git diff --exit-code go.mod go.sum
-
-      - name: Run tests
-        run: |
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            make test
-          else
-            echo "Not a release tag, skipping tests"
-          fi
 
       - name: Write release notes to file
         run: |
@@ -61,6 +51,8 @@ jobs:
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         with:
           version: ~> v2
+          # Arguments cannot reference environment variables, so we write the release notes
+          # to a well-known location and use that in the goreleaser command.
           args: release --clean --release-notes=/tmp/release-notes/release-notes.md
         env:
           # use GITHUB_TOKEN that is already available in secrets.GITHUB_TOKEN
