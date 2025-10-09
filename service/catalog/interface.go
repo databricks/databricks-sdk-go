@@ -137,6 +137,15 @@ type CatalogsService interface {
 	// owned by the caller (or for which the caller has the **USE_CATALOG**
 	// privilege) will be retrieved. There is no guarantee of a specific
 	// ordering of the elements in the array.
+	//
+	// NOTE: we recommend using max_results=0 to use the paginated version of
+	// this API. Unpaginated calls will be deprecated soon.
+	//
+	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+	// contain zero results while still providing a next_page_token. Clients
+	// must continue reading pages until next_page_token is absent, which is the
+	// only indication that the end of results has been reached. This behavior
+	// follows Google AIP-158 guidelines.
 	List(ctx context.Context, request ListCatalogsRequest) (*ListCatalogsResponse, error)
 
 	// Updates the catalog that matches the supplied name. The caller must be
@@ -174,6 +183,15 @@ type ConnectionsService interface {
 	Get(ctx context.Context, request GetConnectionRequest) (*ConnectionInfo, error)
 
 	// List all connections.
+	//
+	// NOTE: we recommend using max_results=0 to use the paginated version of
+	// this API. Unpaginated calls will be deprecated soon.
+	//
+	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+	// contain zero results while still providing a next_page_token. Clients
+	// must continue reading pages until next_page_token is absent, which is the
+	// only indication that the end of results has been reached. This behavior
+	// follows Google AIP-158 guidelines.
 	List(ctx context.Context, request ListConnectionsRequest) (*ListConnectionsResponse, error)
 
 	// Updates the connection that matches the supplied name.
@@ -371,6 +389,15 @@ type ExternalLocationsService interface {
 	// the external location, or a user that has some privilege on the external
 	// location. There is no guarantee of a specific ordering of the elements in
 	// the array.
+	//
+	// NOTE: we recommend using max_results=0 to use the paginated version of
+	// this API. Unpaginated calls will be deprecated soon.
+	//
+	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+	// contain zero results while still providing a next_page_token. Clients
+	// must continue reading pages until next_page_token is absent, which is the
+	// only indication that the end of results has been reached. This behavior
+	// follows Google AIP-158 guidelines.
 	List(ctx context.Context, request ListExternalLocationsRequest) (*ListExternalLocationsResponse, error)
 
 	// Updates an external location in the metastore. The caller must be the
@@ -466,6 +493,15 @@ type FunctionsService interface {
 	// list contains only functions for which either the user has the
 	// **EXECUTE** privilege or the user is the owner. There is no guarantee of
 	// a specific ordering of the elements in the array.
+	//
+	// NOTE: we recommend using max_results=0 to use the paginated version of
+	// this API. Unpaginated calls will be deprecated soon.
+	//
+	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+	// contain zero results while still providing a next_page_token. Clients
+	// must continue reading pages until next_page_token is absent, which is the
+	// only indication that the end of results has been reached. This behavior
+	// follows Google AIP-158 guidelines.
 	List(ctx context.Context, request ListFunctionsRequest) (*ListFunctionsResponse, error)
 
 	// Updates the function that matches the supplied name. Only the owner of
@@ -550,6 +586,15 @@ type MetastoresService interface {
 	// Gets an array of the available metastores (as __MetastoreInfo__ objects).
 	// The caller must be an admin to retrieve this info. There is no guarantee
 	// of a specific ordering of the elements in the array.
+	//
+	// NOTE: we recommend using max_results=0 to use the paginated version of
+	// this API. Unpaginated calls will be deprecated soon.
+	//
+	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+	// contain zero results while still providing a next_page_token. Clients
+	// must continue reading pages until next_page_token is absent, which is the
+	// only indication that the end of results has been reached. This behavior
+	// follows Google AIP-158 guidelines.
 	List(ctx context.Context, request ListMetastoresRequest) (*ListMetastoresResponse, error)
 
 	// Gets information about a metastore. This summary includes the storage
@@ -1018,6 +1063,15 @@ type SchemasService interface {
 	// caller (or for which the caller has the **USE_SCHEMA** privilege) will be
 	// retrieved. There is no guarantee of a specific ordering of the elements
 	// in the array.
+	//
+	// NOTE: we recommend using max_results=0 to use the paginated version of
+	// this API. Unpaginated calls will be deprecated soon.
+	//
+	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+	// contain zero results while still providing a next_page_token. Clients
+	// must continue reading pages until next_page_token is absent, which is the
+	// only indication that the end of results has been reached. This behavior
+	// follows Google AIP-158 guidelines.
 	List(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error)
 
 	// Updates a schema for a catalog. The caller must be the owner of the
@@ -1065,6 +1119,15 @@ type StorageCredentialsService interface {
 	// caller has permission to access. If the caller is a metastore admin,
 	// retrieval of credentials is unrestricted. There is no guarantee of a
 	// specific ordering of the elements in the array.
+	//
+	// NOTE: we recommend using max_results=0 to use the paginated version of
+	// this API. Unpaginated calls will be deprecated soon.
+	//
+	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+	// contain zero results while still providing a next_page_token. Clients
+	// must continue reading pages until next_page_token is absent, which is the
+	// only indication that the end of results has been reached. This behavior
+	// follows Google AIP-158 guidelines.
 	List(ctx context.Context, request ListStorageCredentialsRequest) (*ListStorageCredentialsResponse, error)
 
 	// Updates a storage credential on the metastore.
@@ -1107,6 +1170,15 @@ type SystemSchemasService interface {
 
 	// Gets an array of system schemas for a metastore. The caller must be an
 	// account admin or a metastore admin.
+	//
+	// NOTE: we recommend using max_results=0 to use the paginated version of
+	// this API. Unpaginated calls will be deprecated soon.
+	//
+	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+	// contain zero results while still providing a next_page_token. Clients
+	// must continue reading pages until next_page_token is absent, which is the
+	// only indication that the end of results has been reached. This behavior
+	// follows Google AIP-158 guidelines.
 	List(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error)
 }
 
@@ -1227,6 +1299,15 @@ type TablesService interface {
 	// the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 	// There is no guarantee of a specific ordering of the elements in the
 	// array.
+	//
+	// NOTE: we recommend using max_results=0 to use the paginated version of
+	// this API. Unpaginated calls will be deprecated soon.
+	//
+	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+	// contain zero results while still providing a next_page_token. Clients
+	// must continue reading pages until next_page_token is absent, which is the
+	// only indication that the end of results has been reached. This behavior
+	// follows Google AIP-158 guidelines.
 	List(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error)
 
 	// Gets an array of summaries for tables for a schema and catalog within the

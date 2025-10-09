@@ -60,6 +60,7 @@ func NewMockAccountClient(t interface {
 			Storage:                          provisioning.NewMockStorageInterface(t),
 			StorageCredentials:               catalog.NewMockAccountStorageCredentialsInterface(t),
 			UsageDashboards:                  billing.NewMockUsageDashboardsInterface(t),
+			UsagePolicy:                      billing.NewMockUsagePolicyInterface(t),
 			UsersV2:                          iam.NewMockAccountUsersV2Interface(t),
 			VpcEndpoints:                     provisioning.NewMockVpcEndpointsInterface(t),
 			WorkspaceAssignment:              iam.NewMockWorkspaceAssignmentInterface(t),
@@ -373,6 +374,14 @@ func (m *MockAccountClient) GetMockUsageDashboardsAPI() *billing.MockUsageDashbo
 	api, ok := m.AccountClient.UsageDashboards.(*billing.MockUsageDashboardsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected UsageDashboards to be *billing.MockUsageDashboardsInterface, actual was %T", m.AccountClient.UsageDashboards))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockUsagePolicyAPI() *billing.MockUsagePolicyInterface {
+	api, ok := m.AccountClient.UsagePolicy.(*billing.MockUsagePolicyInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected UsagePolicy to be *billing.MockUsagePolicyInterface, actual was %T", m.AccountClient.UsagePolicy))
 	}
 	return api
 }

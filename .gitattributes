@@ -189,9 +189,6 @@ experimental/mocks/service/workspace/mock_workspace_interface.go linguist-genera
 internal/generatedtests/http_call_test.go linguist-generated=true
 internal/generatedtests/json_marshall_test.go linguist-generated=true
 internal/generatedtests/lro_call_test.go linguist-generated=true
-internal/testspecs/service/common/api.go linguist-generated=true
-internal/testspecs/service/common/impl.go linguist-generated=true
-internal/testspecs/service/common/model.go linguist-generated=true
 internal/testspecs/service/httpcallv2/api.go linguist-generated=true
 internal/testspecs/service/httpcallv2/impl.go linguist-generated=true
 internal/testspecs/service/httpcallv2/model.go linguist-generated=true
