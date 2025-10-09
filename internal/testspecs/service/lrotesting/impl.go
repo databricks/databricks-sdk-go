@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/internal/testspecs/service/common"
+	"github.com/databricks/databricks-sdk-go/service/common"
 )
 
 // unexported type that holds implementations of just LroTesting API methods

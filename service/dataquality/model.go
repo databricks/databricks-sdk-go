@@ -79,8 +79,8 @@ type AnomalyDetectionConfig struct {
 type CancelRefreshRequest struct {
 	// The UUID of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`
-	// The type of the monitored object. Can be one of the following: schema or
-	// table.
+	// The type of the monitored object. Can be one of the following: `schema`
+	// or `table`.
 	ObjectType string `json:"-" url:"-"`
 	// Unique id of the refresh operation.
 	RefreshId int64 `json:"-" url:"-"`
@@ -100,7 +100,8 @@ type CreateMonitorRequest struct {
 type CreateRefreshRequest struct {
 	// The UUID of the request object. For example, table id.
 	ObjectId string `json:"-" url:"-"`
-	// The type of the monitored object. Can be one of the following: table.
+	// The type of the monitored object. Can be one of the following: `schema`or
+	// `table`.
 	ObjectType string `json:"-" url:"-"`
 	// The refresh to create
 	Refresh Refresh `json:"refresh"`
@@ -342,16 +343,16 @@ func (f *DataProfilingStatus) Type() string {
 type DeleteMonitorRequest struct {
 	// The UUID of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`
-	// The type of the monitored object. Can be one of the following: schema or
-	// table.
+	// The type of the monitored object. Can be one of the following: `schema`
+	// or `table`.
 	ObjectType string `json:"-" url:"-"`
 }
 
 type DeleteRefreshRequest struct {
 	// The UUID of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`
-	// The type of the monitored object. Can be one of the following: schema or
-	// table.
+	// The type of the monitored object. Can be one of the following: `schema`
+	// or `table`.
 	ObjectType string `json:"-" url:"-"`
 	// Unique id of the refresh operation.
 	RefreshId int64 `json:"-" url:"-"`
@@ -360,16 +361,16 @@ type DeleteRefreshRequest struct {
 type GetMonitorRequest struct {
 	// The UUID of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`
-	// The type of the monitored object. Can be one of the following: schema or
-	// table.
+	// The type of the monitored object. Can be one of the following: `schema`
+	// or `table`.
 	ObjectType string `json:"-" url:"-"`
 }
 
 type GetRefreshRequest struct {
 	// The UUID of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`
-	// The type of the monitored object. Can be one of the following: schema or
-	// table.
+	// The type of the monitored object. Can be one of the following: `schema`
+	// or `table`.
 	ObjectType string `json:"-" url:"-"`
 	// Unique id of the refresh operation.
 	RefreshId int64 `json:"-" url:"-"`
@@ -386,8 +387,6 @@ type InferenceLogConfig struct {
 	ModelIdColumn string `json:"model_id_column"`
 	// Column for the prediction.
 	PredictionColumn string `json:"prediction_column"`
-	// Column for prediction probabilities
-	PredictionProbabilityColumn string `json:"prediction_probability_column,omitempty"`
 	// Problem type the model aims to solve.
 	ProblemType InferenceProblemType `json:"problem_type"`
 	// Column for the timestamp.
@@ -478,8 +477,8 @@ func (s ListMonitorResponse) MarshalJSON() ([]byte, error) {
 type ListRefreshRequest struct {
 	// The UUID of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`
-	// The type of the monitored object. Can be one of the following: schema or
-	// table.
+	// The type of the monitored object. Can be one of the following: `schema`
+	// or `table`.
 	ObjectType string `json:"-" url:"-"`
 
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -523,8 +522,8 @@ type Monitor struct {
 	DataProfilingConfig *DataProfilingConfig `json:"data_profiling_config,omitempty"`
 	// The UUID of the request object. For example, schema id.
 	ObjectId string `json:"object_id"`
-	// The type of the monitored object. Can be one of the following: schema or
-	// table.
+	// The type of the monitored object. Can be one of the following: `schema`
+	// or `table`.
 	ObjectType string `json:"object_type"`
 }
 
@@ -551,7 +550,8 @@ type Refresh struct {
 	Message string `json:"message,omitempty"`
 	// The UUID of the request object. For example, table id.
 	ObjectId string `json:"object_id"`
-	// The type of the monitored object. Can be one of the following: table.
+	// The type of the monitored object. Can be one of the following: `schema`or
+	// `table`.
 	ObjectType string `json:"object_type"`
 	// Unique id of the refresh operation.
 	RefreshId int64 `json:"refresh_id,omitempty"`
@@ -685,18 +685,20 @@ type UpdateMonitorRequest struct {
 	Monitor Monitor `json:"monitor"`
 	// The UUID of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`
-	// The type of the monitored object. Can be one of the following: schema or
-	// table.
+	// The type of the monitored object. Can be one of the following: `schema`
+	// or `table`.
 	ObjectType string `json:"-" url:"-"`
-	// The field mask to specify which fields to update.
+	// The field mask to specify which fields to update as a comma-separated
+	// list. Example value:
+	// `data_profiling_config.custom_metrics,data_profiling_config.schedule.quartz_cron_expression`
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
 type UpdateRefreshRequest struct {
 	// The UUID of the request object. For example, schema id.
 	ObjectId string `json:"-" url:"-"`
-	// The type of the monitored object. Can be one of the following: schema or
-	// table.
+	// The type of the monitored object. Can be one of the following: `schema`
+	// or `table`.
 	ObjectType string `json:"-" url:"-"`
 	// The refresh to update.
 	Refresh Refresh `json:"refresh"`

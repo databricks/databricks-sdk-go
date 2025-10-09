@@ -1816,6 +1816,9 @@ func (s Table) MarshalJSON() ([]byte, error) {
 type TableInternalAttributes struct {
 	// Managed Delta Metadata location for foreign iceberg tables.
 	AuxiliaryManagedLocation string `json:"auxiliary_managed_location,omitempty"`
+	// Storage locations of all table dependencies for shared views. Used on the
+	// recipient side for SEG (Secure Egress Gateway) whitelisting.
+	DependencyStorageLocations []string `json:"dependency_storage_locations,omitempty"`
 	// Will be populated in the reconciliation response for VIEW and
 	// FOREIGN_TABLE, with the value of the parent UC entity's storage_location,
 	// following the same logic as getManagedEntityPath in

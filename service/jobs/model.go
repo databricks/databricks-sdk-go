@@ -5178,8 +5178,8 @@ type TableUpdateTriggerConfiguration struct {
 	// has passed since the last time the trigger fired. The minimum allowed
 	// value is 60 seconds.
 	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
-	// A list of Delta tables to monitor for changes. The table name must be in
-	// the format `catalog_name.schema_name.table_name`.
+	// A list of tables to monitor for changes. The table name must be in the
+	// format `catalog_name.schema_name.table_name`.
 	TableNames []string `json:"table_names,omitempty"`
 	// If set, the trigger starts a run only after no table updates have
 	// occurred for the specified time and can be used to wait for a series of

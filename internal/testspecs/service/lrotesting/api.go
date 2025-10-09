@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/internal/testspecs/service/common"
 	"github.com/databricks/databricks-sdk-go/retries"
+	"github.com/databricks/databricks-sdk-go/service/common"
 	"github.com/databricks/databricks-sdk-go/service/common/lro"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )

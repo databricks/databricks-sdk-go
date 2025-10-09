@@ -95,3 +95,13 @@
 * Add `IncludeUnbound` field for [catalog.ListExternalLocationsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListExternalLocationsRequest).
 * Add `IncludeUnbound` field for [catalog.ListStorageCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ListStorageCredentialsRequest).
 * Add `AssetTypeMcp` enum value for [marketplace.AssetType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/marketplace#AssetType).
+* Add `ComputeMode` field for [provisioning.CreateWorkspaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#CreateWorkspaceRequest).
+* Add `ExpectedWorkspaceStatus` field for [provisioning.Workspace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#Workspace).
+* Add `DependencyStorageLocations` field for [sharing.TableInternalAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#TableInternalAttributes).
+* Add `GitEmail` field for [workspace.CreateCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#CreateCredentialsRequest).
+* Add `GitEmail` field for [workspace.CreateCredentialsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#CreateCredentialsResponse).
+* Add `GitEmail` field for [workspace.CredentialInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#CredentialInfo).
+* Add `GitEmail` field for [workspace.GetCredentialsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#GetCredentialsResponse).
+* Add `GitEmail` field for [workspace.UpdateCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#UpdateCredentialsRequest).
+* Add `GermanyTisax` enum value for [settings.ComplianceStandard](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#ComplianceStandard).
+* [Breaking] Remove `PredictionProbabilityColumn` field for [dataquality.InferenceLogConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dataquality#InferenceLogConfig).
