@@ -8546,9 +8546,12 @@ type UpdateWorkspaceBindings struct {
 }
 
 type UpdateWorkspaceBindingsParameters struct {
-	// List of workspace bindings.
+	// List of workspace bindings to add. If a binding for the workspace already
+	// exists with a different binding_type, adding it again with a new
+	// binding_type will update the existing binding (e.g., from READ_WRITE to
+	// READ_ONLY).
 	Add []WorkspaceBinding `json:"add,omitempty"`
-	// List of workspace bindings.
+	// List of workspace bindings to remove.
 	Remove []WorkspaceBinding `json:"remove,omitempty"`
 	// The name of the securable.
 	SecurableName string `json:"-" url:"-"`
