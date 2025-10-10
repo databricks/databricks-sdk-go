@@ -104,24 +104,43 @@ func (cfg ClientConfig) httpTransport() http.RoundTripper {
 	return defaultTransport
 }
 
-func NewApiClient(cfg ClientConfig) *ApiClient {
-	// Set defaults for config values that are not set.
-	cfg.DebugTruncateBytes = orDefault(cfg.DebugTruncateBytes, 96)
-	cfg.RetryTimeout = time.Duration(orDefault(int(cfg.RetryTimeout), int(5*time.Minute)))
-	cfg.HTTPTimeout = time.Duration(orDefault(int(cfg.HTTPTimeout), int(60*time.Second)))
-	cfg.RateLimitPerSecond = orDefault(cfg.RateLimitPerSecond, 15)
+const (
+	defaultHTTPTimeout         = 60 * time.Second
+	defaultRetryTimeout        = 5 * time.Minute
+	defaultDebugTruncateBytes  = 96
+	defaultRateLimitPerSeconds = 15
+)
 
+func setDefaults(cfg *ClientConfig) {
+	if cfg.HTTPTimeout == 0 {
+		cfg.HTTPTimeout = defaultHTTPTimeout
+	}
+	if cfg.RetryTimeout == 0 {
+		cfg.RetryTimeout = defaultRetryTimeout
+	}
+	if cfg.DebugTruncateBytes == 0 {
+		cfg.DebugTruncateBytes = defaultDebugTruncateBytes
+	}
 	if cfg.ErrorMapper == nil {
-		// default generic error mapper
 		cfg.ErrorMapper = DefaultErrorMapper
 	}
 	if cfg.ErrorRetriable == nil {
-		// by default, we just retry on HTTP 429/504
 		cfg.ErrorRetriable = DefaultErrorRetriable
 	}
+	if cfg.RateLimitPerSecond == 0 {
+		cfg.RateLimitPerSecond = defaultRateLimitPerSeconds
+	}
+}
+
+func NewApiClient(cfg ClientConfig) *ApiClient {
+	setDefaults(&cfg)
+
 	transport := cfg.httpTransport()
 	rateLimit := rate.Limit(cfg.RateLimitPerSecond)
-	// depend on the HTTP fixture interface to prevent any coupling
+
+	// Depend on the HTTP fixture interface to prevent any coupling.
+	//
+	// TODO: Evaluate whether this can be implemented in a cleaner way.
 	if skippable, ok := transport.(interface {
 		SkipRetryOnIO() bool
 	}); ok && skippable.SkipRetryOnIO() {
@@ -410,11 +429,4 @@ func (c *ApiClient) perform(
 		return nil, err
 	}
 	return resp, nil
-}
-
-func orDefault(configured, _default int) int {
-	if configured == 0 {
-		return _default
-	}
-	return configured
 }
