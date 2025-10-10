@@ -11,7 +11,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/retries"
-	"github.com/databricks/databricks-sdk-go/service/common"
 	"github.com/databricks/databricks-sdk-go/service/common/lro"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -21,7 +20,7 @@ type LroTestingInterface interface {
 
 	CreateTestResource(ctx context.Context, request CreateTestResourceRequest) (*CreateTestResourceOperation, error)
 
-	GetOperation(ctx context.Context, request GetOperationRequest) (*common.Operation, error)
+	GetOperation(ctx context.Context, request GetOperationRequest) (*Operation, error)
 
 	// Simple method to get test resource
 	GetTestResource(ctx context.Context, request GetTestResourceRequest) (*TestResource, error)
@@ -53,7 +52,7 @@ func (a *LroTestingAPI) CreateTestResource(ctx context.Context, request CreateTe
 
 type CreateTestResourceOperation struct {
 	impl      *lroTestingImpl
-	operation *common.Operation
+	operation *Operation
 }
 
 // Wait blocks until the long-running operation is completed with default 20 min
