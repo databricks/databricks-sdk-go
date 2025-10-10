@@ -427,7 +427,8 @@ func (s ComplianceSecurityProfileSetting) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Compliance stardard for SHIELD customers
+// Compliance standard for SHIELD customers. See README.md for how instructions
+// of how to add new standards.
 type ComplianceStandard string
 
 const ComplianceStandardCanadaProtectedB ComplianceStandard = `CANADA_PROTECTED_B`
