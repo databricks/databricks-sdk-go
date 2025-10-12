@@ -235,6 +235,9 @@ type VectorSearchIndexesInterface interface {
 	// Triggers a synchronization process for a specified vector index.
 	SyncIndex(ctx context.Context, request SyncIndexRequest) error
 
+	// Update the budget policy of an index
+	UpdateIndexBudgetPolicy(ctx context.Context, request UpdateVectorIndexUsagePolicyRequest) (*UpdateVectorIndexUsagePolicyResponse, error)
+
 	// Handles the upserting of data into a specified vector index.
 	UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error)
 }

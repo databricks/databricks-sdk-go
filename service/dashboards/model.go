@@ -51,6 +51,29 @@ func (s AuthorizationDetailsGrantRule) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CancelPublishedQueryExecutionRequest struct {
+	DashboardName string `json:"-" url:"dashboard_name"`
+
+	DashboardRevisionId string `json:"-" url:"dashboard_revision_id"`
+	// Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	Tokens []string `json:"-" url:"tokens,omitempty"`
+}
+
+type CancelQueryExecutionResponse struct {
+	Status []CancelQueryExecutionResponseStatus `json:"status,omitempty"`
+}
+
+type CancelQueryExecutionResponseStatus struct {
+	// The token to poll for result asynchronously Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	DataToken string `json:"data_token"`
+
+	Pending *Empty `json:"pending,omitempty"`
+
+	Success *Empty `json:"success,omitempty"`
+}
+
 type CreateDashboardRequest struct {
 	Dashboard Dashboard `json:"dashboard"`
 }
@@ -206,6 +229,37 @@ func (s DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Represents an empty message, similar to google.protobuf.Empty, which is not
+// available in the firm right now.
+type Empty struct {
+}
+
+// Execute query request for published Dashboards. Since published dashboards
+// have the option of running as the publisher, the datasets, warehouse_id are
+// excluded from the request and instead read from the source (lakeview-config)
+// via the additional parameters (dashboardName and dashboardRevisionId)
+type ExecutePublishedDashboardQueryRequest struct {
+	// Dashboard name and revision_id is required to retrieve
+	// PublishedDatasetDataModel which contains the list of datasets,
+	// warehouse_id, and embedded_credentials
+	DashboardName string `json:"dashboard_name"`
+
+	DashboardRevisionId string `json:"dashboard_revision_id"`
+	// A dashboard schedule can override the warehouse used as compute for
+	// processing the published dashboard queries
+	OverrideWarehouseId string `json:"override_warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExecutePublishedDashboardQueryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExecutePublishedDashboardQueryRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Genie AI Response
 type GenieAttachment struct {
 	// Attachment ID
@@ -272,6 +326,29 @@ type GenieCreateConversationMessageRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+type GenieCreateSpaceRequest struct {
+	// Optional description
+	Description string `json:"description,omitempty"`
+	// Parent folder path where the space will be registered
+	ParentPath string `json:"parent_path,omitempty"`
+	// Serialized export model for the space contents
+	SerializedSpace string `json:"serialized_space"`
+	// Optional title override
+	Title string `json:"title,omitempty"`
+	// Warehouse to associate with the new space
+	WarehouseId string `json:"warehouse_id"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieCreateSpaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieCreateSpaceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GenieDeleteConversationMessageRequest struct {
 	// The ID associated with the conversation.
 	ConversationId string `json:"-" url:"-"`
@@ -310,8 +387,20 @@ type GenieExecuteMessageQueryRequest struct {
 
 // Feedback containing rating and optional comment
 type GenieFeedback struct {
+	// Optional feedback comment text
+	Comment string `json:"comment,omitempty"`
 	// The feedback rating
 	Rating GenieFeedbackRating `json:"rating,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieFeedback) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieFeedback) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Feedback rating for Genie messages
@@ -355,6 +444,33 @@ func (f *GenieFeedbackRating) Type() string {
 	return "GenieFeedbackRating"
 }
 
+type GenieGenerateDownloadFullQueryResultRequest struct {
+	// Attachment ID
+	AttachmentId string `json:"-" url:"-"`
+	// Conversation ID
+	ConversationId string `json:"-" url:"-"`
+	// Message ID
+	MessageId string `json:"-" url:"-"`
+	// Genie space ID
+	SpaceId string `json:"-" url:"-"`
+}
+
+type GenieGenerateDownloadFullQueryResultResponse struct {
+	// Download ID. Use this ID to track the download request in subsequent
+	// polling calls
+	DownloadId string `json:"download_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieGenerateDownloadFullQueryResultResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieGenerateDownloadFullQueryResultResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GenieGetConversationMessageRequest struct {
 	// The ID associated with the target conversation.
 	ConversationId string `json:"-" url:"-"`
@@ -364,6 +480,26 @@ type GenieGetConversationMessageRequest struct {
 	// The ID associated with the Genie space where the target conversation is
 	// located.
 	SpaceId string `json:"-" url:"-"`
+}
+
+type GenieGetDownloadFullQueryResultRequest struct {
+	// Attachment ID
+	AttachmentId string `json:"-" url:"-"`
+	// Conversation ID
+	ConversationId string `json:"-" url:"-"`
+	// Download ID. This ID is provided by the [Generate Download
+	// endpoint](:method:genie/generateDownloadFullQueryResult)
+	DownloadId string `json:"-" url:"-"`
+	// Message ID
+	MessageId string `json:"-" url:"-"`
+	// Genie space ID
+	SpaceId string `json:"-" url:"-"`
+}
+
+type GenieGetDownloadFullQueryResultResponse struct {
+	// SQL Statement Execution response. See [Get status, manifest, and result
+	// first chunk](:method:statementexecution/getstatement) for more details.
+	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
 }
 
 type GenieGetMessageAttachmentQueryResultRequest struct {
@@ -609,6 +745,8 @@ func (s GenieResultMetadata) MarshalJSON() ([]byte, error) {
 }
 
 type GenieSendMessageFeedbackRequest struct {
+	// Optional text feedback that will be stored as a comment.
+	Comment string `json:"comment,omitempty"`
 	// The ID associated with the conversation.
 	ConversationId string `json:"-" url:"-"`
 	// The ID associated with the message to provide feedback for.
@@ -617,6 +755,16 @@ type GenieSendMessageFeedbackRequest struct {
 	Rating GenieFeedbackRating `json:"rating"`
 	// The ID associated with the Genie space where the message is located.
 	SpaceId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieSendMessageFeedbackRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieSendMessageFeedbackRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GenieSpace struct {
@@ -669,8 +817,36 @@ type GenieTrashSpaceRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+type GenieUpdateSpaceRequest struct {
+	// Optional description
+	Description string `json:"description,omitempty"`
+	// Serialized export model for the space contents (full replacement)
+	SerializedSpace string `json:"serialized_space,omitempty"`
+	// Genie space ID
+	SpaceId string `json:"-" url:"-"`
+	// Optional title override
+	Title string `json:"title,omitempty"`
+	// Optional warehouse override
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieUpdateSpaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieUpdateSpaceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GetDashboardRequest struct {
 	// UUID identifying the dashboard.
+	DashboardId string `json:"-" url:"-"`
+}
+
+type GetPublishedDashboardEmbeddedRequest struct {
+	// UUID identifying the published dashboard.
 	DashboardId string `json:"-" url:"-"`
 }
 
@@ -1240,6 +1416,29 @@ func (s MigrateDashboardRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type PendingStatus struct {
+	// The token to poll for result asynchronously Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	DataToken string `json:"data_token"`
+}
+
+type PollPublishedQueryStatusRequest struct {
+	DashboardName string `json:"-" url:"dashboard_name"`
+
+	DashboardRevisionId string `json:"-" url:"dashboard_revision_id"`
+	// Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	Tokens []string `json:"-" url:"tokens,omitempty"`
+}
+
+type PollQueryStatusResponse struct {
+	Data []PollQueryStatusResponseData `json:"data,omitempty"`
+}
+
+type PollQueryStatusResponseData struct {
+	Status QueryResponseStatus `json:"status"`
+}
+
 type PublishRequest struct {
 	// UUID identifying the dashboard to be published.
 	DashboardId string `json:"-" url:"-"`
@@ -1298,6 +1497,31 @@ func (s *QueryAttachmentParameter) UnmarshalJSON(b []byte) error {
 }
 
 func (s QueryAttachmentParameter) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type QueryResponseStatus struct {
+	Canceled *Empty `json:"canceled,omitempty"`
+
+	Closed *Empty `json:"closed,omitempty"`
+
+	Pending *PendingStatus `json:"pending,omitempty"`
+	// The statement id in format(01eef5da-c56e-1f36-bafa-21906587d6ba) The
+	// statement_id should be identical to data_token in SuccessStatus and
+	// PendingStatus. This field is created for audit logging purpose to record
+	// the statement_id of all QueryResponseStatus.
+	StatementId string `json:"statement_id,omitempty"`
+
+	Success *SuccessStatus `json:"success,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *QueryResponseStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryResponseStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1446,6 +1670,24 @@ type SubscriptionSubscriberDestination struct {
 type SubscriptionSubscriberUser struct {
 	// UserId of the subscriber.
 	UserId int64 `json:"user_id"`
+}
+
+type SuccessStatus struct {
+	// The token to poll for result asynchronously Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	DataToken string `json:"data_token"`
+	// Whether the query result is truncated (either by byte limit or row limit)
+	Truncated bool `json:"truncated,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SuccessStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SuccessStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TextAttachment struct {

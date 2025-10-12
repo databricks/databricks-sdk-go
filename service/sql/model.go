@@ -468,6 +468,9 @@ type AlertV2 struct {
 	CustomSummary string `json:"custom_summary,omitempty"`
 	// The display name of the alert.
 	DisplayName string `json:"display_name,omitempty"`
+	// The actual workspace path of the folder containing the alert. This is an
+	// output-only field.
+	EffectiveParentPath string `json:"effective_parent_path,omitempty"`
 	// The actual identity that will be used to execute the alert. This is an
 	// output-only field that shows the resolved run-as identity after applying
 	// permissions and defaults.
@@ -547,6 +550,12 @@ func (s AlertV2Evaluation) MarshalJSON() ([]byte, error) {
 }
 
 type AlertV2Notification struct {
+	// The actual behavior of whether to notify alert subscribers when alert
+	// returns back to normal. This is an output-only field.
+	EffectiveNotifyOnOk bool `json:"effective_notify_on_ok,omitempty"`
+	// The actual number of seconds an alert must wait after being triggered to
+	// rearm itself. This is an output-only field.
+	EffectiveRetriggerSeconds int `json:"effective_retrigger_seconds,omitempty"`
 	// Whether to notify alert subscribers when alert returns back to normal.
 	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
 	// Number of seconds an alert must wait after being triggered to rearm
@@ -1312,6 +1321,8 @@ func (s CreateWidget) MarshalJSON() ([]byte, error) {
 }
 
 type CronSchedule struct {
+	// The actual pause status of the schedule. This is an output-only field.
+	EffectivePauseStatus SchedulePauseStatus `json:"effective_pause_status,omitempty"`
 	// Indicate whether this schedule is paused or not.
 	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
 	// A cron expression using quartz syntax that specifies the schedule for

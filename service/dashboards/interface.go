@@ -20,6 +20,9 @@ type GenieService interface {
 	// to respond.
 	CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error)
 
+	// Creates a Genie space from a serialized payload.
+	CreateSpace(ctx context.Context, request GenieCreateSpaceRequest) (*GenieSpace, error)
+
 	// Delete a conversation.
 	DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error
 
@@ -33,6 +36,27 @@ type GenieService interface {
 	// DEPRECATED: Use [Execute Message Attachment
 	// Query](:method:genie/executemessageattachmentquery) instead.
 	ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
+
+	// Initiates a new SQL execution and returns a `download_id` that you can
+	// use to track the progress of the download. The query result is stored in
+	// an external link and can be retrieved using the [Get Download Full Query
+	// Result](:method:genie/getdownloadfullqueryresult) API. Warning:
+	// Databricks strongly recommends that you protect the URLs that are
+	// returned by the `EXTERNAL_LINKS` disposition. See [Execute
+	// Statement](:method:statementexecution/executestatement) for more details.
+	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
+
+	// After [Generating a Full Query Result
+	// Download](:method:genie/getdownloadfullqueryresult) and successfully
+	// receiving a `download_id`, use this API to poll the download progress.
+	// When the download is complete, the API returns one or more external links
+	// to the query result files. Warning: Databricks strongly recommends that
+	// you protect the URLs that are returned by the `EXTERNAL_LINKS`
+	// disposition. You must not set an Authorization header in download
+	// requests. When using the `EXTERNAL_LINKS` disposition, Databricks returns
+	// presigned URLs that grant temporary access to data. See [Execute
+	// Statement](:method:statementexecution/executestatement) for more details.
+	GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error)
 
 	// Get message from conversation.
 	GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error)
@@ -70,6 +94,9 @@ type GenieService interface {
 
 	// Move a Genie Space to the trash.
 	TrashSpace(ctx context.Context, request GenieTrashSpaceRequest) error
+
+	// Updates a Genie space with a serialized payload.
+	UpdateSpace(ctx context.Context, request GenieUpdateSpaceRequest) (*GenieSpace, error)
 }
 
 // These APIs provide specific management operations for Lakeview dashboards.
@@ -139,7 +166,25 @@ type LakeviewService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type LakeviewEmbeddedService interface {
 
+	// Get the current published dashboard within an embedded context.
+	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error
+
 	// Get a required authorization details and scopes of a published dashboard
 	// to mint an OAuth token.
 	GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error)
+}
+
+// Query execution APIs for AI / BI Dashboards
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type QueryExecutionService interface {
+
+	// Cancel the results for the a query for a published, embedded dashboard.
+	CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error)
+
+	// Execute a query for a published dashboard.
+	ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error
+
+	// Poll the results for the a query for a published, embedded dashboard.
+	PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error)
 }

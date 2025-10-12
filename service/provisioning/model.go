@@ -266,6 +266,14 @@ type CreateWorkspaceRequest struct {
 	Cloud string `json:"cloud,omitempty"`
 
 	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
+	// If the compute mode is `SERVERLESS`, a serverless workspace is created
+	// that comes pre-configured with serverless compute and default storage,
+	// providing a fully-managed, enterprise-ready SaaS experience. This means
+	// you don't need to provide any resources managed by you, such as
+	// credentials, storage, or network. If the compute mode is `HYBRID` (which
+	// is the default option), a classic workspace is created that uses
+	// customer-managed resources.
+	ComputeMode CustomerFacingComputeMode `json:"compute_mode,omitempty"`
 	// ID of the workspace's credential configuration object.
 	CredentialsId string `json:"credentials_id,omitempty"`
 	// The custom tags key-value pairing that is attached to this workspace. The
@@ -1310,6 +1318,10 @@ type Workspace struct {
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DeploymentName string `json:"deployment_name,omitempty"`
+	// A client owned field used to indicate the workspace status that the
+	// client expects to be in. For now this is only used to unblock Temporal
+	// workflow for GCP least privileged workspace.
+	ExpectedWorkspaceStatus WorkspaceStatus `json:"expected_workspace_status,omitempty"`
 
 	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
 

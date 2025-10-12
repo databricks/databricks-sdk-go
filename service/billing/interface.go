@@ -208,3 +208,25 @@ type UsageDashboardsService interface {
 	// type.
 	Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error)
 }
+
+// A service serves REST API about Usage policies
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type UsagePolicyService interface {
+
+	// Creates a new usage policy.
+	Create(ctx context.Context, request CreateUsagePolicyRequest) (*UsagePolicy, error)
+
+	// Deletes a usage policy
+	Delete(ctx context.Context, request DeleteUsagePolicyRequest) error
+
+	// Retrieves a usage policy by it's ID.
+	Get(ctx context.Context, request GetUsagePolicyRequest) (*UsagePolicy, error)
+
+	// Lists all usage policies. Policies are returned in the alphabetically
+	// ascending order of their names.
+	List(ctx context.Context, request ListUsagePoliciesRequest) (*ListUsagePoliciesResponse, error)
+
+	// Updates a usage policy
+	Update(ctx context.Context, request UpdateUsagePolicyRequest) (*UsagePolicy, error)
+}

@@ -8,6 +8,121 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+type CreateGroupProxyRequest struct {
+	// Required. Group to be created in <Databricks>
+	Group Group `json:"group"`
+}
+
+type CreateGroupRequest struct {
+	// Required. Group to be created in <Databricks>
+	Group Group `json:"group"`
+}
+
+type CreateServicePrincipalProxyRequest struct {
+	// Required. Service principal to be created in <Databricks>
+	ServicePrincipal ServicePrincipal `json:"service_principal"`
+}
+
+type CreateServicePrincipalRequest struct {
+	// Required. Service principal to be created in <Databricks>
+	ServicePrincipal ServicePrincipal `json:"service_principal"`
+}
+
+type CreateUserProxyRequest struct {
+	// Required. User to be created in <Databricks>
+	User User `json:"user"`
+}
+
+type CreateUserRequest struct {
+	// Required. User to be created in <Databricks>
+	User User `json:"user"`
+}
+
+type CreateWorkspaceAccessDetailLocalRequest struct {
+	// Required. Workspace access detail to be created in <Databricks>.
+	WorkspaceAccessDetail WorkspaceAccessDetail `json:"workspace_access_detail"`
+}
+
+type CreateWorkspaceAccessDetailRequest struct {
+	// Required. The parent path for workspace access detail.
+	Parent string `json:"-" url:"-"`
+	// Required. Workspace access detail to be created in <Databricks>.
+	WorkspaceAccessDetail WorkspaceAccessDetail `json:"workspace_access_detail"`
+}
+
+type DeleteGroupProxyRequest struct {
+	// Required. Internal ID of the group in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+}
+
+type DeleteGroupRequest struct {
+	// Required. Internal ID of the group in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+}
+
+type DeleteServicePrincipalProxyRequest struct {
+	// Required. Internal ID of the service principal in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+}
+
+type DeleteServicePrincipalRequest struct {
+	// Required. Internal ID of the service principal in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+}
+
+type DeleteUserProxyRequest struct {
+	// Required. Internal ID of the user in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+}
+
+type DeleteUserRequest struct {
+	// Required. Internal ID of the user in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+}
+
+type DeleteWorkspaceAccessDetailLocalRequest struct {
+	// Required. ID of the principal in Databricks.
+	PrincipalId int64 `json:"-" url:"-"`
+}
+
+type DeleteWorkspaceAccessDetailRequest struct {
+	// Required. ID of the principal in Databricks to delete workspace access
+	// for.
+	PrincipalId int64 `json:"-" url:"-"`
+	// The workspace ID where the principal has access.
+	WorkspaceId int64 `json:"-" url:"-"`
+}
+
+type GetGroupProxyRequest struct {
+	// Required. Internal ID of the group in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+}
+
+type GetGroupRequest struct {
+	// Required. Internal ID of the group in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+}
+
+type GetServicePrincipalProxyRequest struct {
+	// Required. Internal ID of the service principal in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+}
+
+type GetServicePrincipalRequest struct {
+	// Required. Internal ID of the service principal in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+}
+
+type GetUserProxyRequest struct {
+	// Required. Internal ID of the user in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+}
+
+type GetUserRequest struct {
+	// Required. Internal ID of the user in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+}
+
 type GetWorkspaceAccessDetailLocalRequest struct {
 	// Required. The internal ID of the principal (user/sp/group) for which the
 	// access details are being requested.
@@ -46,6 +161,236 @@ func (s *Group) UnmarshalJSON(b []byte) error {
 }
 
 func (s Group) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListGroupsProxyRequest struct {
+	// The maximum number of groups to return. The service may return fewer than
+	// this value.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous ListGroups call. Provide this to
+	// retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListGroupsProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListGroupsProxyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListGroupsRequest struct {
+	// The maximum number of groups to return. The service may return fewer than
+	// this value.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous ListGroups call. Provide this to
+	// retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListGroupsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListGroupsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// TODO: Write description later when this method is implemented
+type ListGroupsResponse struct {
+	Groups []Group `json:"groups,omitempty"`
+	// A token, which can be sent as page_token to retrieve the next page. If
+	// this field is omitted, there are no subsequent pages.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListGroupsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListGroupsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListServicePrincipalsProxyRequest struct {
+	// The maximum number of SPs to return. The service may return fewer than
+	// this value.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous ListServicePrincipals call.
+	// Provide this to retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListServicePrincipalsProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListServicePrincipalsProxyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListServicePrincipalsRequest struct {
+	// The maximum number of service principals to return. The service may
+	// return fewer than this value.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous ListServicePrincipals call.
+	// Provide this to retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListServicePrincipalsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// TODO: Write description later when this method is implemented
+type ListServicePrincipalsResponse struct {
+	// A token, which can be sent as page_token to retrieve the next page. If
+	// this field is omitted, there are no subsequent pages.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ServicePrincipals []ServicePrincipal `json:"service_principals,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListServicePrincipalsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListServicePrincipalsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListUsersProxyRequest struct {
+	// The maximum number of users to return. The service may return fewer than
+	// this value.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous ListUsers call. Provide this to
+	// retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListUsersProxyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListUsersProxyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListUsersRequest struct {
+	// The maximum number of users to return. The service may return fewer than
+	// this value.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous ListUsers call. Provide this to
+	// retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListUsersRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListUsersRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// TODO: Write description later when this method is implemented
+type ListUsersResponse struct {
+	// A token, which can be sent as page_token to retrieve the next page. If
+	// this field is omitted, there are no subsequent pages.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Users []User `json:"users,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListUsersResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListUsersResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListWorkspaceAccessDetailsLocalRequest struct {
+	// The maximum number of workspace access details to return. The service may
+	// return fewer than this value.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous ListWorkspaceAccessDetails call.
+	// Provide this to retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListWorkspaceAccessDetailsLocalRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListWorkspaceAccessDetailsLocalRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListWorkspaceAccessDetailsRequest struct {
+	// The maximum number of workspace access details to return. The service may
+	// return fewer than this value.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous ListWorkspaceAccessDetails call.
+	// Provide this to retrieve the subsequent page.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The workspace ID for which the workspace access details are being
+	// fetched.
+	WorkspaceId int64 `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListWorkspaceAccessDetailsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListWorkspaceAccessDetailsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// TODO: Write description later when this method is implemented
+type ListWorkspaceAccessDetailsResponse struct {
+	// A token, which can be sent as page_token to retrieve the next page. If
+	// this field is omitted, there are no subsequent pages.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	WorkspaceAccessDetails []WorkspaceAccessDetail `json:"workspace_access_details,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListWorkspaceAccessDetailsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListWorkspaceAccessDetailsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -216,6 +561,81 @@ func (f *State) Values() []State {
 // Type always returns State to satisfy [pflag.Value] interface
 func (f *State) Type() string {
 	return "State"
+}
+
+type UpdateGroupProxyRequest struct {
+	// Required. Group to be updated in <Databricks>
+	Group Group `json:"group"`
+	// Required. Internal ID of the group in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+	// Optional. The list of fields to update.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+type UpdateGroupRequest struct {
+	// Required. Group to be updated in <Databricks>
+	Group Group `json:"group"`
+	// Required. Internal ID of the group in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+	// Optional. The list of fields to update.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+type UpdateServicePrincipalProxyRequest struct {
+	// Required. Internal ID of the service principal in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+	// Required. Service principal to be updated in <Databricks>
+	ServicePrincipal ServicePrincipal `json:"service_principal"`
+	// Optional. The list of fields to update.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+type UpdateServicePrincipalRequest struct {
+	// Required. Internal ID of the service principal in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+	// Required. Service Principal to be updated in <Databricks>
+	ServicePrincipal ServicePrincipal `json:"service_principal"`
+	// Optional. The list of fields to update.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+type UpdateUserProxyRequest struct {
+	// Required. Internal ID of the user in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+	// Optional. The list of fields to update.
+	UpdateMask string `json:"-" url:"update_mask"`
+	// Required. User to be updated in <Databricks>
+	User User `json:"user"`
+}
+
+type UpdateUserRequest struct {
+	// Required. Internal ID of the user in Databricks.
+	InternalId int64 `json:"-" url:"-"`
+	// Optional. The list of fields to update.
+	UpdateMask string `json:"-" url:"update_mask"`
+	// Required. User to be updated in <Databricks>
+	User User `json:"user"`
+}
+
+type UpdateWorkspaceAccessDetailLocalRequest struct {
+	// Required. ID of the principal in Databricks.
+	PrincipalId int64 `json:"-" url:"-"`
+	// Optional. The list of fields to update.
+	UpdateMask string `json:"-" url:"update_mask"`
+	// Required. WorkspaceAccessDetail to be updated in <Databricks>
+	WorkspaceAccessDetail WorkspaceAccessDetail `json:"workspace_access_detail"`
+}
+
+type UpdateWorkspaceAccessDetailRequest struct {
+	// Required. ID of the principal in Databricks.
+	PrincipalId int64 `json:"-" url:"-"`
+	// Optional. The list of fields to update.
+	UpdateMask string `json:"-" url:"update_mask"`
+	// Required. Workspace access detail to be updated in <Databricks>
+	WorkspaceAccessDetail WorkspaceAccessDetail `json:"workspace_access_detail"`
+	// Required. The workspace ID for which the workspace access detail is being
+	// updated.
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 // The details of a User resource.

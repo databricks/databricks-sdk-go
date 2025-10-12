@@ -43,6 +43,9 @@ type DatabaseService interface {
 	// Delete a Synced Database Table.
 	DeleteSyncedDatabaseTable(ctx context.Context, request DeleteSyncedDatabaseTableRequest) error
 
+	// Failover the primary node of a Database Instance to a secondary.
+	FailoverDatabaseInstance(ctx context.Context, request FailoverDatabaseInstanceRequest) (*DatabaseInstance, error)
+
 	// Find a Database Instance by uid.
 	FindDatabaseInstanceByUid(ctx context.Context, request FindDatabaseInstanceByUidRequest) (*DatabaseInstance, error)
 
@@ -86,6 +89,65 @@ type DatabaseService interface {
 	// Update a Database Instance.
 	UpdateDatabaseInstance(ctx context.Context, request UpdateDatabaseInstanceRequest) (*DatabaseInstance, error)
 
+	// Update a role for a Database Instance.
+	UpdateDatabaseInstanceRole(ctx context.Context, request UpdateDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error)
+
 	// This API is currently unimplemented, but exposed for Terraform support.
 	UpdateSyncedDatabaseTable(ctx context.Context, request UpdateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
+}
+
+// Database Projects provide access to a database via REST API or direct SQL.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type DatabaseProjectService interface {
+
+	// Create a Database Branch.
+	CreateDatabaseBranch(ctx context.Context, request CreateDatabaseBranchRequest) (*DatabaseBranch, error)
+
+	// Create a Database Endpoint.
+	CreateDatabaseEndpoint(ctx context.Context, request CreateDatabaseEndpointRequest) (*DatabaseEndpoint, error)
+
+	// Create a Database Project.
+	CreateDatabaseProject(ctx context.Context, request CreateDatabaseProjectRequest) (*DatabaseProject, error)
+
+	// Delete a Database Branch.
+	DeleteDatabaseBranch(ctx context.Context, request DeleteDatabaseBranchRequest) error
+
+	// Delete a Database Endpoint.
+	DeleteDatabaseEndpoint(ctx context.Context, request DeleteDatabaseEndpointRequest) error
+
+	// Delete a Database Project.
+	DeleteDatabaseProject(ctx context.Context, request DeleteDatabaseProjectRequest) error
+
+	// Get a Database Branch.
+	GetDatabaseBranch(ctx context.Context, request GetDatabaseBranchRequest) (*DatabaseBranch, error)
+
+	// Get a Database Endpoint.
+	GetDatabaseEndpoint(ctx context.Context, request GetDatabaseEndpointRequest) (*DatabaseEndpoint, error)
+
+	// Get a Database Project.
+	GetDatabaseProject(ctx context.Context, request GetDatabaseProjectRequest) (*DatabaseProject, error)
+
+	// List Database Branches.
+	ListDatabaseBranches(ctx context.Context, request ListDatabaseBranchesRequest) (*ListDatabaseBranchesResponse, error)
+
+	// List Database Endpoints.
+	ListDatabaseEndpoints(ctx context.Context, request ListDatabaseEndpointsRequest) (*ListDatabaseEndpointsResponse, error)
+
+	// List Database Instances.
+	ListDatabaseProjects(ctx context.Context, request ListDatabaseProjectsRequest) (*ListDatabaseProjectsResponse, error)
+
+	// Restart a Database Endpoint. TODO: should return
+	// databricks.longrunning.Operation
+	RestartDatabaseEndpoint(ctx context.Context, request RestartDatabaseEndpointRequest) (*DatabaseEndpoint, error)
+
+	// Update a Database Branch.
+	UpdateDatabaseBranch(ctx context.Context, request UpdateDatabaseBranchRequest) (*DatabaseBranch, error)
+
+	// Update a Database Endpoint. TODO: should return
+	// databricks.longrunning.Operation {
+	UpdateDatabaseEndpoint(ctx context.Context, request UpdateDatabaseEndpointRequest) (*DatabaseEndpoint, error)
+
+	// Update a Database Project.
+	UpdateDatabaseProject(ctx context.Context, request UpdateDatabaseProjectRequest) (*DatabaseProject, error)
 }

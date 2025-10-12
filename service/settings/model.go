@@ -442,6 +442,8 @@ const ComplianceStandardFedrampModerate ComplianceStandard = `FEDRAMP_MODERATE`
 
 const ComplianceStandardGermanyC5 ComplianceStandard = `GERMANY_C5`
 
+const ComplianceStandardGermanyTisax ComplianceStandard = `GERMANY_TISAX`
+
 const ComplianceStandardHipaa ComplianceStandard = `HIPAA`
 
 const ComplianceStandardHitrust ComplianceStandard = `HITRUST`
@@ -466,11 +468,11 @@ func (f *ComplianceStandard) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ComplianceStandard) Set(v string) error {
 	switch v {
-	case `CANADA_PROTECTED_B`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `GERMANY_C5`, `HIPAA`, `HITRUST`, `IRAP_PROTECTED`, `ISMAP`, `ITAR_EAR`, `K_FSI`, `NONE`, `PCI_DSS`:
+	case `CANADA_PROTECTED_B`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `GERMANY_C5`, `GERMANY_TISAX`, `HIPAA`, `HITRUST`, `IRAP_PROTECTED`, `ISMAP`, `ITAR_EAR`, `K_FSI`, `NONE`, `PCI_DSS`:
 		*f = ComplianceStandard(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "GERMANY_C5", "HIPAA", "HITRUST", "IRAP_PROTECTED", "ISMAP", "ITAR_EAR", "K_FSI", "NONE", "PCI_DSS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "GERMANY_C5", "GERMANY_TISAX", "HIPAA", "HITRUST", "IRAP_PROTECTED", "ISMAP", "ITAR_EAR", "K_FSI", "NONE", "PCI_DSS"`, v)
 	}
 }
 
@@ -485,6 +487,7 @@ func (f *ComplianceStandard) Values() []ComplianceStandard {
 		ComplianceStandardFedrampIl5,
 		ComplianceStandardFedrampModerate,
 		ComplianceStandardGermanyC5,
+		ComplianceStandardGermanyTisax,
 		ComplianceStandardHipaa,
 		ComplianceStandardHitrust,
 		ComplianceStandardIrapProtected,
@@ -616,6 +619,8 @@ type CreatePrivateEndpointRule struct {
 	// The full target AWS endpoint service name that connects to the
 	// destination resources of the private endpoint.
 	EndpointService string `json:"endpoint_service,omitempty"`
+
+	GcpEndpointSpec *GcpEndpointSpec `json:"gcp_endpoint_spec,omitempty"`
 	// Not used by customer-managed private endpoint services.
 	//
 	// The sub-resource type (group ID) of the target resource. Note that to
@@ -2346,6 +2351,24 @@ type FetchIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
+type GcpEndpointSpec struct {
+	// Output only. The URI of the created PSC endpoint.
+	PscEndpointUri string `json:"psc_endpoint_uri,omitempty"`
+	// The full url of the target service attachment. Example:
+	// projects/my-gcp-project/regions/us-east4/serviceAttachments/my-service-attachment
+	ServiceAttachment string `json:"service_attachment,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GcpEndpointSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GcpEndpointSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GenericWebhookConfig struct {
 	// [Input-Only][Optional] Password for webhook.
 	Password string `json:"password,omitempty"`
@@ -3389,6 +3412,8 @@ type NccEgressDefaultRules struct {
 	AwsStableIpRule *NccAwsStableIpRule `json:"aws_stable_ip_rule,omitempty"`
 
 	AzureServiceEndpointRule *NccAzureServiceEndpointRule `json:"azure_service_endpoint_rule,omitempty"`
+
+	GcpProjectIdRule *NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule `json:"gcp_project_id_rule,omitempty"`
 }
 
 // Target rule controls the egress rules that are dedicated to specific
@@ -3441,6 +3466,8 @@ type NccPrivateEndpointRule struct {
 	// The full target AWS endpoint service name that connects to the
 	// destination resources of the private endpoint.
 	EndpointService string `json:"endpoint_service,omitempty"`
+
+	GcpEndpointSpec *GcpEndpointSpec `json:"gcp_endpoint_spec,omitempty"`
 	// Not used by customer-managed private endpoint services.
 	//
 	// The sub-resource type (group ID) of the target resource. Note that to
@@ -3522,6 +3549,13 @@ func (f *NccPrivateEndpointRulePrivateLinkConnectionState) Values() []NccPrivate
 // Type always returns NccPrivateEndpointRulePrivateLinkConnectionState to satisfy [pflag.Value] interface
 func (f *NccPrivateEndpointRulePrivateLinkConnectionState) Type() string {
 	return "NccPrivateEndpointRulePrivateLinkConnectionState"
+}
+
+type NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule struct {
+	// A list of Databricks internal project IDs from where network access
+	// originates for serverless DBSQL, This list is stable and will not change
+	// once the NCC object is created.
+	ProjectIds []string `json:"project_ids,omitempty"`
 }
 
 // Properties of the new network connectivity configuration.
@@ -4622,6 +4656,8 @@ type UpdatePrivateEndpointRule struct {
 	// Update this field to activate/deactivate this private endpoint to allow
 	// egress access from serverless compute resources.
 	Enabled bool `json:"enabled,omitempty"`
+
+	GcpEndpointSpec *GcpEndpointSpec `json:"gcp_endpoint_spec,omitempty"`
 	// Only used by private endpoints towards AWS S3 service.
 	//
 	// The globally unique S3 bucket names that will be accessed via the VPC
