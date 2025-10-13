@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"unicode"
 )
 
 type bodyLogger struct {
@@ -122,7 +123,15 @@ func (b bodyLogger) redactedDump(prefix string, body []byte) string {
 				sb.WriteString("\n")
 			}
 			line = strings.Trim(line, "\r")
-			sb.WriteString(fmt.Sprintf("%s%s", prefix, line))
+			sb.WriteString(prefix)
+			for _, c := range line {
+				// Convert non-ASCII and non-printable characters to '.'
+				// But preserve tabs and spaces for indentation
+				if c > unicode.MaxASCII || (!unicode.IsPrint(c) && c != '\t') {
+					c = '.'
+				}
+				sb.WriteRune(c)
+			}
 		}
 		return sb.String()
 	}
