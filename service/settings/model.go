@@ -427,7 +427,8 @@ func (s ComplianceSecurityProfileSetting) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Compliance stardard for SHIELD customers
+// Compliance standard for SHIELD customers. See README.md for how instructions
+// of how to add new standards.
 type ComplianceStandard string
 
 const ComplianceStandardCanadaProtectedB ComplianceStandard = `CANADA_PROTECTED_B`
@@ -441,6 +442,8 @@ const ComplianceStandardFedrampIl5 ComplianceStandard = `FEDRAMP_IL5`
 const ComplianceStandardFedrampModerate ComplianceStandard = `FEDRAMP_MODERATE`
 
 const ComplianceStandardGermanyC5 ComplianceStandard = `GERMANY_C5`
+
+const ComplianceStandardGermanyTisax ComplianceStandard = `GERMANY_TISAX`
 
 const ComplianceStandardHipaa ComplianceStandard = `HIPAA`
 
@@ -466,11 +469,11 @@ func (f *ComplianceStandard) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ComplianceStandard) Set(v string) error {
 	switch v {
-	case `CANADA_PROTECTED_B`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `GERMANY_C5`, `HIPAA`, `HITRUST`, `IRAP_PROTECTED`, `ISMAP`, `ITAR_EAR`, `K_FSI`, `NONE`, `PCI_DSS`:
+	case `CANADA_PROTECTED_B`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `GERMANY_C5`, `GERMANY_TISAX`, `HIPAA`, `HITRUST`, `IRAP_PROTECTED`, `ISMAP`, `ITAR_EAR`, `K_FSI`, `NONE`, `PCI_DSS`:
 		*f = ComplianceStandard(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "GERMANY_C5", "HIPAA", "HITRUST", "IRAP_PROTECTED", "ISMAP", "ITAR_EAR", "K_FSI", "NONE", "PCI_DSS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "GERMANY_C5", "GERMANY_TISAX", "HIPAA", "HITRUST", "IRAP_PROTECTED", "ISMAP", "ITAR_EAR", "K_FSI", "NONE", "PCI_DSS"`, v)
 	}
 }
 
@@ -485,6 +488,7 @@ func (f *ComplianceStandard) Values() []ComplianceStandard {
 		ComplianceStandardFedrampIl5,
 		ComplianceStandardFedrampModerate,
 		ComplianceStandardGermanyC5,
+		ComplianceStandardGermanyTisax,
 		ComplianceStandardHipaa,
 		ComplianceStandardHitrust,
 		ComplianceStandardIrapProtected,
