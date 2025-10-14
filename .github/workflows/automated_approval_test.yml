@@ -7,6 +7,7 @@ on:
 jobs:
   auto-approve:
     runs-on: ubuntu-latest
+    environment: "release-is"  # Required to access GitHub App secrets
     permissions:
       pull-requests: write
       contents: read
