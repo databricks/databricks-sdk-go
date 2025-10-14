@@ -38,5 +38,6 @@ jobs:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           gh pr review ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
             --approve \
             --body "Auto-approved by Databricks SDK Release Bot"
