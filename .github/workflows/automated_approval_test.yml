@@ -6,7 +6,9 @@ on:
 
 jobs:
   auto-approve:
-    runs-on: ubuntu-latest
+    runs-on:
+      group: databricks-deco-testing-runner-group
+      labels: ubuntu-latest-deco
     environment: "release-is"  # Required to access GitHub App secrets
     permissions:
       pull-requests: write
