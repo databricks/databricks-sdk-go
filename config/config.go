@@ -341,8 +341,6 @@ func (c *Config) GetHostType() HostTypeEnum {
 		}
 	}
 
-	// TODO: check for unified host
-
 	return WorkspaceHost
 }
 
