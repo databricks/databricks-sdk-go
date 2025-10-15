@@ -11,28 +11,28 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestIsAccountClient_AwsAccount(t *testing.T) {
+func TestGetHostType_AwsAccount(t *testing.T) {
 	c := &Config{
 		Host:      "https://accounts.cloud.databricks.com",
 		AccountID: "123e4567-e89b-12d3-a456-426614174000",
 	}
-	assert.True(t, c.IsAccountClient())
+	assert.Equal(t, AccountHost, c.GetHostType())
 }
 
-func TestIsAccountClient_AwsDodAccount(t *testing.T) {
+func TestGetHostType_AwsDodAccount(t *testing.T) {
 	c := &Config{
 		Host:      "https://accounts-dod.cloud.databricks.us",
 		AccountID: "123e4567-e89b-12d3-a456-426614174000",
 	}
-	assert.True(t, c.IsAccountClient())
+	assert.Equal(t, AccountHost, c.GetHostType())
 }
 
-func TestIsAccountClient_AwsWorkspace(t *testing.T) {
+func TestGetHostType_AwsWorkspace(t *testing.T) {
 	c := &Config{
 		Host:      "https://my-workspace.cloud.databricks.us",
 		AccountID: "123e4567-e89b-12d3-a456-426614174000",
 	}
-	assert.False(t, c.IsAccountClient())
+	assert.Equal(t, WorkspaceHost, c.GetHostType())
 }
 
 func TestNewWithWorkspaceHost(t *testing.T) {

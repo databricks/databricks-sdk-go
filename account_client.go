@@ -465,7 +465,7 @@ type AccountClient struct {
 	Users iam.AccountUsersInterface
 }
 
-var ErrNotAccountClient = errors.New("invalid Databricks Account configuration")
+var ErrInvalidAccountConfig = errors.New("invalid Databricks Account configuration")
 
 // NewAccountClient creates new Databricks SDK client for Accounts or returns
 // error in case configuration is wrong
@@ -482,9 +482,10 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	if cfg.AccountID == "" || !cfg.IsAccountClient() {
-		return nil, ErrNotAccountClient
+	if cfg.AccountID == "" || cfg.GetHostType() == config.WorkspaceHost {
+		return nil, ErrInvalidAccountConfig
 	}
+	cfg.SetClientType(config.AccountClient)
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err

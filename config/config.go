@@ -39,6 +39,17 @@ type Loader interface {
 	Configure(*Config) error
 }
 
+type ClientTypeEnum string
+
+const WorkspaceClient ClientTypeEnum = `WORKSPACE_CLIENT`
+const AccountClient ClientTypeEnum = `ACCOUNT_CLIENT`
+
+type HostTypeEnum string
+
+const WorkspaceHost HostTypeEnum = `WORKSPACE_HOST`
+const AccountHost HostTypeEnum = `ACCOUNT_HOST`
+const UnifiedHost HostTypeEnum = `UNIFIED_HOST`
+
 // Config represents configuration for Databricks Connectivity
 type Config struct {
 	// Credentials holds an instance of Credentials Strategy to authenticate with Databricks REST APIs.
@@ -57,6 +68,9 @@ type Config struct {
 
 	// Databricks Account ID for Accounts API. This field is used in dependencies.
 	AccountID string `name:"account_id" env:"DATABRICKS_ACCOUNT_ID"`
+
+	// Databricks Workspace ID for Workspace clients when working with unified hosts (eg. SPOG)
+	WorkspaceId string `name:"workspace_id" env:"DATABRICKS_WORKSPACE_ID"`
 
 	Token    string `name:"token" env:"DATABRICKS_TOKEN" auth:"pat,sensitive"`
 	Username string `name:"username" env:"DATABRICKS_USERNAME" auth:"basic"`
@@ -183,6 +197,12 @@ type Config struct {
 
 	// Keep track of the source of each attribute
 	attrSource map[string]Source
+
+	// Keep track of what client type was constructed
+	clientType ClientTypeEnum
+
+	// Marker for unified hosts. Will be unnecessary once we've settled on a way to determine if a host is unified.
+	isUnifiedHost bool `name:"is_unified_host" env:"DATABRICKS_IS_UNIFIED_HOST" auth:"-"`
 }
 
 // NewWithWorkspaceHost returns a new instance of the Config with the host set to
@@ -289,10 +309,26 @@ func (c *Config) IsAws() bool {
 	return c.Host != "" && !c.IsAzure() && !c.IsGcp()
 }
 
-// IsAccountClient returns true if client is configured for Accounts API
-func (c *Config) IsAccountClient() bool {
+// GetClientType returns one of WORKSPACE_CLIENT or ACCOUNT_CLIENT
+func (c *Config) GetClientType() ClientTypeEnum {
+	// TODO: Implement this so it relies on a flag in Config that we set when
+	// we create the client
+	return c.clientType
+}
+
+// SetClientType sets the client type to one of WORKSPACE_CLIENT or ACCOUNT_CLIENT
+func (c *Config) SetClientType(clientType ClientTypeEnum) {
+	c.clientType = clientType
+}
+
+// GetHostType returns one of WORKSPACE_HOST, ACCOUNT_HOST, or UNIFIED HOST
+func (c *Config) GetHostType() HostTypeEnum {
+	if c.isUnifiedHost {
+		return UnifiedHost
+	}
+
 	if c.AccountID != "" && c.isTesting {
-		return true
+		return AccountHost
 	}
 
 	accountsPrefixes := []string{
@@ -301,10 +337,13 @@ func (c *Config) IsAccountClient() bool {
 	}
 	for _, prefix := range accountsPrefixes {
 		if strings.HasPrefix(c.Host, prefix) {
-			return true
+			return AccountHost
 		}
 	}
-	return false
+
+	// TODO: check for unified host
+
+	return WorkspaceHost
 }
 
 func (c *Config) EnsureResolved() error {
@@ -475,16 +514,21 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 		Client: c.refreshClient,
 	}
 	host := c.CanonicalHostName()
-	if c.IsAccountClient() {
+	if c.GetHostType() == AccountHost {
 		return oauthClient.GetAccountOAuthEndpoints(ctx, host, c.AccountID)
+	} else if c.GetHostType() == UnifiedHost {
+		return oauthClient.GetUnifiedOAuthEndpoints(ctx, host, c.AccountID)
 	}
 	return oauthClient.GetWorkspaceOAuthEndpoints(ctx, host)
 }
 
 func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
 	host := c.CanonicalHostName()
-	if c.IsAccountClient() {
+	if c.GetHostType() == AccountHost {
 		return u2m.NewBasicAccountOAuthArgument(host, c.AccountID)
+	}
+	if c.GetHostType() == UnifiedHost {
+		return u2m.NewBasicUnifiedOAuthArgument(host, c.AccountID)
 	}
 	return u2m.NewBasicWorkspaceOAuthArgument(host)
 }

@@ -137,7 +137,7 @@ func TestAccErrNotAccountClient(t *testing.T) {
 	// Confirm that we get an error when trying to create an account client
 	// if the configuration indicates a workspace.
 	_, err := databricks.NewAccountClient()
-	assert.ErrorIs(t, err, databricks.ErrNotAccountClient)
+	assert.ErrorIs(t, err, databricks.ErrInvalidAccountConfig)
 }
 
 func TestAccErrNotWorkspaceClient(t *testing.T) {

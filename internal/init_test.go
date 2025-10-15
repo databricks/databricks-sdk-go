@@ -66,7 +66,7 @@ func accountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 	if err != nil {
 		skipf(t)("error: %s", err)
 	}
-	if !cfg.IsAccountClient() {
+	if cfg.GetHostType() == config.WorkspaceHost {
 		skipf(t)("Not in account env: %s/%s", cfg.AccountID, cfg.Host)
 	}
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
@@ -86,7 +86,7 @@ func ucacctTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 	if err != nil {
 		skipf(t)("error: %s", err)
 	}
-	if !cfg.IsAccountClient() {
+	if cfg.GetHostType() == config.WorkspaceHost {
 		skipf(t)("Not in account env: %s/%s", cfg.AccountID, cfg.Host)
 	}
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))

@@ -14,6 +14,17 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
+// workspaceOrgIdVisitor creates a visitor that adds X-Databricks-Org-Id header
+// with the workspace ID to all requests made by workspace clients
+func workspaceOrgIdVisitor(cfg *Config) func(r *http.Request) error {
+	return func(r *http.Request) error {
+		if cfg.GetClientType() == WorkspaceClient && cfg.WorkspaceId != "" {
+			r.Header.Set("X-Databricks-Org-Id", cfg.WorkspaceId)
+		}
+		return nil
+	}
+}
+
 func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 	if skippable, ok := cfg.HTTPTransport.(interface {
 		SkipRetryOnIO() bool
@@ -74,6 +85,7 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 				*r = *r.WithContext(ctx) // replace request
 				return nil
 			},
+			workspaceOrgIdVisitor(cfg),
 		},
 		TransientErrors: []string{
 			// This is temporary workaround for SCIM API returning 500.

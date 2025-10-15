@@ -32,11 +32,11 @@ func (c AzureMsiCredentials) Name() string {
 }
 
 func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	if !cfg.IsAzure() || !cfg.AzureUseMSI || (cfg.AzureResourceID == "" && !cfg.IsAccountClient()) {
+	if !cfg.IsAzure() || !cfg.AzureUseMSI || (cfg.AzureResourceID == "" && cfg.GetClientType() == WorkspaceClient) {
 		return nil, nil
 	}
 	env := cfg.Environment()
-	if !cfg.IsAccountClient() {
+	if cfg.GetClientType() == WorkspaceClient {
 		err := cfg.azureEnsureWorkspaceUrl(ctx, c)
 		if err != nil {
 			return nil, fmt.Errorf("resolve host: %w", err)
