@@ -32,7 +32,7 @@ func (c AzureMsiCredentials) Name() string {
 }
 
 func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	if !cfg.IsAzure() || !cfg.AzureUseMSI || (cfg.AzureResourceID == "" && cfg.GetClientType() == WorkspaceClient) {
+	if !cfg.IsAzure() || !cfg.AzureUseMSI {
 		return nil, nil
 	}
 	env := cfg.Environment()

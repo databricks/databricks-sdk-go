@@ -193,9 +193,6 @@ type Config struct {
 	// Keep track of the source of each attribute
 	attrSource map[string]Source
 
-	// Keep track of what client type was constructed
-	clientType ClientTypeEnum
-
 	// Marker for unified hosts. Will be unnecessary once we've settled on a way to determine if a host is unified.
 	isUnifiedHost bool `name:"is_unified_host" env:"DATABRICKS_IS_UNIFIED_HOST" auth:"-"`
 }
