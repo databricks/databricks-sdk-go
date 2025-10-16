@@ -10,12 +10,12 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func New(cfg *config.Config) (*DatabricksClient, error) {
+func New(cfg *config.Config, isWorkspaceClient bool) (*DatabricksClient, error) {
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
-	clientCfg, err := config.HTTPClientConfigFromConfig(cfg)
+	clientCfg, err := config.HTTPClientConfigFromConfig(cfg, isWorkspaceClient)
 	if err != nil {
 		return nil, err
 	}

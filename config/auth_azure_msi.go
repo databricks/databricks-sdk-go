@@ -36,11 +36,9 @@ func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (creden
 		return nil, nil
 	}
 	env := cfg.Environment()
-	if cfg.GetClientType() == WorkspaceClient {
-		err := cfg.azureEnsureWorkspaceUrl(ctx, c)
-		if err != nil {
-			return nil, fmt.Errorf("resolve host: %w", err)
-		}
+	err := cfg.azureEnsureWorkspaceUrl(ctx, c)
+	if err != nil {
+		return nil, fmt.Errorf("resolve host: %w", err)
 	}
 	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
 	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureApplicationID))

@@ -39,11 +39,6 @@ type Loader interface {
 	Configure(*Config) error
 }
 
-type ClientTypeEnum string
-
-const WorkspaceClient ClientTypeEnum = `WORKSPACE_CLIENT`
-const AccountClient ClientTypeEnum = `ACCOUNT_CLIENT`
-
 type HostTypeEnum string
 
 const WorkspaceHost HostTypeEnum = `WORKSPACE_HOST`
@@ -307,18 +302,6 @@ func (c *Config) IsGcp() bool {
 // IsAws returns if the client is configured for Databricks on AWS.
 func (c *Config) IsAws() bool {
 	return c.Host != "" && !c.IsAzure() && !c.IsGcp()
-}
-
-// GetClientType returns one of WORKSPACE_CLIENT or ACCOUNT_CLIENT
-func (c *Config) GetClientType() ClientTypeEnum {
-	// TODO: Implement this so it relies on a flag in Config that we set when
-	// we create the client
-	return c.clientType
-}
-
-// SetClientType sets the client type to one of WORKSPACE_CLIENT or ACCOUNT_CLIENT
-func (c *Config) SetClientType(clientType ClientTypeEnum) {
-	c.clientType = clientType
 }
 
 // GetHostType returns one of WORKSPACE_HOST, ACCOUNT_HOST, or UNIFIED HOST

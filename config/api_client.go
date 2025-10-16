@@ -18,14 +18,21 @@ import (
 // with the workspace ID to all requests made by workspace clients
 func workspaceOrgIdVisitor(cfg *Config) func(r *http.Request) error {
 	return func(r *http.Request) error {
-		if cfg.GetClientType() == WorkspaceClient && cfg.WorkspaceId != "" {
+		if cfg.WorkspaceId != "" {
 			r.Header.Set("X-Databricks-Org-Id", cfg.WorkspaceId)
 		}
 		return nil
 	}
 }
 
-func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
+// noopVisitor creates a visitor that does nothing
+func noopVisitor() func(r *http.Request) error {
+	return func(r *http.Request) error {
+		return nil
+	}
+}
+
+func HTTPClientConfigFromConfig(cfg *Config, isWorkspaceClient bool) (httpclient.ClientConfig, error) {
 	if skippable, ok := cfg.HTTPTransport.(interface {
 		SkipRetryOnIO() bool
 	}); ok && skippable.SkipRetryOnIO() {
@@ -85,7 +92,12 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 				*r = *r.WithContext(ctx) // replace request
 				return nil
 			},
-			workspaceOrgIdVisitor(cfg),
+			func() httpclient.RequestVisitor {
+				if isWorkspaceClient {
+					return workspaceOrgIdVisitor(cfg)
+				}
+				return noopVisitor()
+			}(),
 		},
 		TransientErrors: []string{
 			// This is temporary workaround for SCIM API returning 500.
@@ -119,8 +131,8 @@ func (noopAuth) Configure(context.Context, *Config) (credentials.CredentialsProv
 }
 
 // Deprecated: use [HTTPClientConfigFromConfig] with [httpclient.NewApiClient].
-func (c *Config) NewApiClient() (*httpclient.ApiClient, error) {
-	cfg, err := HTTPClientConfigFromConfig(c)
+func (c *Config) NewApiClient(isWorkspaceClient bool) (*httpclient.ApiClient, error) {
+	cfg, err := HTTPClientConfigFromConfig(c, isWorkspaceClient)
 	if err != nil {
 		return nil, err
 	}
