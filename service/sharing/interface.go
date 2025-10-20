@@ -142,10 +142,6 @@ type RecipientFederationPoliciesService interface {
 	// data from Databricks to non-Databricks recipients. The caller must have
 	// read access to the recipient.
 	List(ctx context.Context, request ListFederationPoliciesRequest) (*ListFederationPoliciesResponse, error)
-
-	// Updates an existing federation policy for an OIDC_RECIPIENT. The caller
-	// must be the owner of the recipient.
-	Update(ctx context.Context, request UpdateFederationPolicyRequest) (*FederationPolicy, error)
 }
 
 // A recipient is an object you create using :method:recipients/create to

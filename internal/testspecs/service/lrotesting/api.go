@@ -18,7 +18,7 @@ import (
 type LroTestingInterface interface {
 	CancelOperation(ctx context.Context, request CancelOperationRequest) error
 
-	CreateTestResource(ctx context.Context, request CreateTestResourceRequest) (*CreateTestResourceOperation, error)
+	CreateTestResource(ctx context.Context, request CreateTestResourceRequest) (CreateTestResourceOperationInterface, error)
 
 	GetOperation(ctx context.Context, request GetOperationRequest) (*Operation, error)
 
@@ -39,7 +39,7 @@ type LroTestingAPI struct {
 	lroTestingImpl
 }
 
-func (a *LroTestingAPI) CreateTestResource(ctx context.Context, request CreateTestResourceRequest) (*CreateTestResourceOperation, error) {
+func (a *LroTestingAPI) CreateTestResource(ctx context.Context, request CreateTestResourceRequest) (CreateTestResourceOperationInterface, error) {
 	operation, err := a.lroTestingImpl.CreateTestResource(ctx, request)
 	if err != nil {
 		return nil, err
@@ -48,6 +48,29 @@ func (a *LroTestingAPI) CreateTestResource(ctx context.Context, request CreateTe
 		impl:      &a.lroTestingImpl,
 		operation: operation,
 	}, nil
+}
+
+type CreateTestResourceOperationInterface interface {
+	// Wait blocks until the long-running operation is completed with default 20 min
+	// timeout, the timeout can be overridden in the opts. If the operation didn't
+	// finished within the timeout, this function will through an error of type
+	// ErrTimedOut, otherwise successful response and any errors encountered.
+	Wait(ctx context.Context, opts *lro.LroOptions) (*TestResource, error)
+
+	// Starts asynchronous cancellation on a long-running operation. The server
+	// makes a best effort to cancel the operation, but success is not guaranteed.
+	Cancel(ctx context.Context) error
+
+	// Name returns the name of the long-running operation. The name is assigned
+	// by the server and is unique within the service from which the operation is created.
+	Name() string
+
+	// Metadata returns metadata associated with the long-running operation.
+	// If the metadata is not available, the returned metadata and error are both nil.
+	Metadata() (*TestResourceOperationMetadata, error)
+
+	// Done reports whether the long-running operation has completed.
+	Done() (bool, error)
 }
 
 type CreateTestResourceOperation struct {
