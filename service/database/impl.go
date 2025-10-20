@@ -10,6 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/google/uuid"
 	"golang.org/x/exp/slices"
 )
 
@@ -134,6 +135,9 @@ func (a *databaseImpl) FindDatabaseInstanceByUid(ctx context.Context, request Fi
 
 func (a *databaseImpl) GenerateDatabaseCredential(ctx context.Context, request GenerateDatabaseCredentialRequest) (*DatabaseCredential, error) {
 	var databaseCredential DatabaseCredential
+	if request.RequestId == "" {
+		request.RequestId = uuid.New().String()
+	}
 	path := "/api/2.0/database/credentials"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)

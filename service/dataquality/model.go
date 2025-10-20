@@ -77,7 +77,20 @@ type AnomalyDetectionConfig struct {
 
 // Request to cancel a refresh.
 type CancelRefreshRequest struct {
-	// The UUID of the request object. For example, schema id.
+	// The UUID of the request object. It is `schema_id` for `schema`, and
+	// `table_id` for `table`.
+	//
+	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
+	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
+	// `Details` tab > the `Schema ID` field.
+	//
+	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
+	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
+	// `Details` tab > the `Table ID` field.
+	//
+	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+	// [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
 	ObjectId string `json:"-" url:"-"`
 	// The type of the monitored object. Can be one of the following: `schema`
 	// or `table`.
@@ -98,7 +111,20 @@ type CreateMonitorRequest struct {
 }
 
 type CreateRefreshRequest struct {
-	// The UUID of the request object. For example, table id.
+	// The UUID of the request object. It is `schema_id` for `schema`, and
+	// `table_id` for `table`.
+	//
+	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
+	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
+	// `Details` tab > the `Schema ID` field.
+	//
+	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
+	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
+	// `Details` tab > the `Table ID` field.
+	//
+	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+	// [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
 	ObjectId string `json:"-" url:"-"`
 	// The type of the monitored object. Can be one of the following: `schema`or
 	// `table`.
@@ -181,7 +207,7 @@ type DataProfilingConfig struct {
 	DriftMetricsTableName string `json:"drift_metrics_table_name,omitempty"`
 	// The warehouse for dashboard creation
 	EffectiveWarehouseId string `json:"effective_warehouse_id,omitempty"`
-	// Configuration for monitoring inference log tables.
+	// `Analysis Configuration` for monitoring inference log tables.
 	InferenceLog *InferenceLogConfig `json:"inference_log,omitempty"`
 	// The latest error message for a monitor failure.
 	LatestMonitorFailureMessage string `json:"latest_monitor_failure_message,omitempty"`
@@ -212,11 +238,11 @@ type DataProfilingConfig struct {
 	// slice per unique value in `col1`. For high-cardinality columns, only the
 	// top 100 unique values by frequency will generate slices.
 	SlicingExprs []string `json:"slicing_exprs,omitempty"`
-	// Configuration for monitoring snapshot tables.
+	// `Analysis Configuration` for monitoring snapshot tables.
 	Snapshot *SnapshotConfig `json:"snapshot,omitempty"`
 	// The data profiling monitor status.
 	Status DataProfilingStatus `json:"status,omitempty"`
-	// Configuration for monitoring time series tables.
+	// `Analysis Configuration` for monitoring time series tables.
 	TimeSeries *TimeSeriesConfig `json:"time_series,omitempty"`
 	// Optional argument to specify the warehouse for dashboard creation. If not
 	// specified, the first running warehouse will be used.
@@ -341,7 +367,20 @@ func (f *DataProfilingStatus) Type() string {
 }
 
 type DeleteMonitorRequest struct {
-	// The UUID of the request object. For example, schema id.
+	// The UUID of the request object. It is `schema_id` for `schema`, and
+	// `table_id` for `table`.
+	//
+	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
+	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
+	// `Details` tab > the `Schema ID` field.
+	//
+	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
+	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
+	// `Details` tab > the `Table ID` field.
+	//
+	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+	// [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
 	ObjectId string `json:"-" url:"-"`
 	// The type of the monitored object. Can be one of the following: `schema`
 	// or `table`.
@@ -349,7 +388,20 @@ type DeleteMonitorRequest struct {
 }
 
 type DeleteRefreshRequest struct {
-	// The UUID of the request object. For example, schema id.
+	// The UUID of the request object. It is `schema_id` for `schema`, and
+	// `table_id` for `table`.
+	//
+	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
+	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
+	// `Details` tab > the `Schema ID` field.
+	//
+	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
+	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
+	// `Details` tab > the `Table ID` field.
+	//
+	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+	// [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
 	ObjectId string `json:"-" url:"-"`
 	// The type of the monitored object. Can be one of the following: `schema`
 	// or `table`.
@@ -359,7 +411,20 @@ type DeleteRefreshRequest struct {
 }
 
 type GetMonitorRequest struct {
-	// The UUID of the request object. For example, schema id.
+	// The UUID of the request object. It is `schema_id` for `schema`, and
+	// `table_id` for `table`.
+	//
+	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
+	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
+	// `Details` tab > the `Schema ID` field.
+	//
+	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
+	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
+	// `Details` tab > the `Table ID` field.
+	//
+	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+	// [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
 	ObjectId string `json:"-" url:"-"`
 	// The type of the monitored object. Can be one of the following: `schema`
 	// or `table`.
@@ -367,7 +432,20 @@ type GetMonitorRequest struct {
 }
 
 type GetRefreshRequest struct {
-	// The UUID of the request object. For example, schema id.
+	// The UUID of the request object. It is `schema_id` for `schema`, and
+	// `table_id` for `table`.
+	//
+	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
+	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
+	// `Details` tab > the `Schema ID` field.
+	//
+	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
+	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
+	// `Details` tab > the `Table ID` field.
+	//
+	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+	// [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
 	ObjectId string `json:"-" url:"-"`
 	// The type of the monitored object. Can be one of the following: `schema`
 	// or `table`.
@@ -475,7 +553,20 @@ func (s ListMonitorResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListRefreshRequest struct {
-	// The UUID of the request object. For example, schema id.
+	// The UUID of the request object. It is `schema_id` for `schema`, and
+	// `table_id` for `table`.
+	//
+	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
+	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
+	// `Details` tab > the `Schema ID` field.
+	//
+	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
+	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
+	// `Details` tab > the `Table ID` field.
+	//
+	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+	// [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
 	ObjectId string `json:"-" url:"-"`
 	// The type of the monitored object. Can be one of the following: `schema`
 	// or `table`.
@@ -518,9 +609,23 @@ func (s ListRefreshResponse) MarshalJSON() ([]byte, error) {
 type Monitor struct {
 	// Anomaly Detection Configuration, applicable to `schema` object types.
 	AnomalyDetectionConfig *AnomalyDetectionConfig `json:"anomaly_detection_config,omitempty"`
-	// Data Profiling Configuration, applicable to `table` object types
+	// Data Profiling Configuration, applicable to `table` object types. Exactly
+	// one `Analysis Configuration` must be present.
 	DataProfilingConfig *DataProfilingConfig `json:"data_profiling_config,omitempty"`
-	// The UUID of the request object. For example, schema id.
+	// The UUID of the request object. It is `schema_id` for `schema`, and
+	// `table_id` for `table`.
+	//
+	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
+	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
+	// `Details` tab > the `Schema ID` field.
+	//
+	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
+	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
+	// `Details` tab > the `Table ID` field.
+	//
+	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+	// [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
 	ObjectId string `json:"object_id"`
 	// The type of the monitored object. Can be one of the following: `schema`
 	// or `table`.
@@ -548,7 +653,20 @@ type Refresh struct {
 	// An optional message to give insight into the current state of the refresh
 	// (e.g. FAILURE messages).
 	Message string `json:"message,omitempty"`
-	// The UUID of the request object. For example, table id.
+	// The UUID of the request object. It is `schema_id` for `schema`, and
+	// `table_id` for `table`.
+	//
+	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
+	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
+	// `Details` tab > the `Schema ID` field.
+	//
+	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
+	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
+	// `Details` tab > the `Table ID` field.
+	//
+	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+	// [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
 	ObjectId string `json:"object_id"`
 	// The type of the monitored object. Can be one of the following: `schema`or
 	// `table`.
@@ -683,7 +801,20 @@ type TimeSeriesConfig struct {
 type UpdateMonitorRequest struct {
 	// The monitor to update.
 	Monitor Monitor `json:"monitor"`
-	// The UUID of the request object. For example, schema id.
+	// The UUID of the request object. It is `schema_id` for `schema`, and
+	// `table_id` for `table`.
+	//
+	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
+	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
+	// `Details` tab > the `Schema ID` field.
+	//
+	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
+	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
+	// `Details` tab > the `Table ID` field.
+	//
+	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+	// [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
 	ObjectId string `json:"-" url:"-"`
 	// The type of the monitored object. Can be one of the following: `schema`
 	// or `table`.
@@ -695,7 +826,20 @@ type UpdateMonitorRequest struct {
 }
 
 type UpdateRefreshRequest struct {
-	// The UUID of the request object. For example, schema id.
+	// The UUID of the request object. It is `schema_id` for `schema`, and
+	// `table_id` for `table`.
+	//
+	// Find the `schema_id` from either: 1. The [schema_id] of the `Schemas`
+	// resource. 2. In [Catalog Explorer] > select the `schema` > go to the
+	// `Details` tab > the `Schema ID` field.
+	//
+	// Find the `table_id` from either: 1. The [table_id] of the `Tables`
+	// resource. 2. In [Catalog Explorer] > select the `table` > go to the
+	// `Details` tab > the `Table ID` field.
+	//
+	// [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+	// [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+	// [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
 	ObjectId string `json:"-" url:"-"`
 	// The type of the monitored object. Can be one of the following: `schema`
 	// or `table`.

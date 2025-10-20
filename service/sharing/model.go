@@ -1905,33 +1905,6 @@ func (f *TableInternalAttributesSharedTableType) Type() string {
 	return "TableInternalAttributesSharedTableType"
 }
 
-type UpdateFederationPolicyRequest struct {
-	// Name of the policy. This is the name of the current name of the policy.
-	Name string `json:"-" url:"-"`
-
-	Policy FederationPolicy `json:"policy"`
-	// Name of the recipient. This is the name of the recipient for which the
-	// policy is being updated.
-	RecipientName string `json:"-" url:"-"`
-	// The field mask specifies which fields of the policy to update. To specify
-	// multiple fields in the field mask, use comma as the separator (no space).
-	// The special value '*' indicates that all fields should be updated (full
-	// replacement). If unspecified, all fields that are set in the policy
-	// provided in the update request will overwrite the corresponding fields in
-	// the existing policy. Example value: 'comment,oidc_policy.audiences'.
-	UpdateMask string `json:"-" url:"update_mask,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *UpdateFederationPolicyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateFederationPolicyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type UpdateProvider struct {
 	// Description about the provider.
 	Comment string `json:"comment,omitempty"`
