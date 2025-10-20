@@ -5,6 +5,8 @@ package apps
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
+	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -21,7 +23,7 @@ type App struct {
 
 	ComputeStatus *ComputeStatus `json:"compute_status,omitempty"`
 	// The creation time of the app. Formatted timestamp in ISO 6801.
-	CreateTime string `json:"create_time,omitempty"`
+	CreateTime *time.Time `json:"create_time,omitempty"`
 	// The email of the user that created the app.
 	Creator string `json:"creator,omitempty"`
 	// The default workspace file system path of the source code from which app
@@ -55,7 +57,7 @@ type App struct {
 
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// The update time of the app. Formatted timestamp in ISO 6801.
-	UpdateTime string `json:"update_time,omitempty"`
+	UpdateTime *time.Time `json:"update_time,omitempty"`
 	// The email of the user that last updated the app.
 	Updater string `json:"updater,omitempty"`
 	// The URL of the app once it is deployed.
@@ -120,7 +122,7 @@ func (s AppAccessControlResponse) MarshalJSON() ([]byte, error) {
 
 type AppDeployment struct {
 	// The creation time of the deployment. Formatted timestamp in ISO 6801.
-	CreateTime string `json:"create_time,omitempty"`
+	CreateTime *time.Time `json:"create_time,omitempty"`
 	// The email of the user creates the deployment.
 	Creator string `json:"creator,omitempty"`
 	// The deployment artifacts for an app.
@@ -140,7 +142,7 @@ type AppDeployment struct {
 	// Status and status message of the deployment
 	Status *AppDeploymentStatus `json:"status,omitempty"`
 	// The update time of the deployment. Formatted timestamp in ISO 6801.
-	UpdateTime string `json:"update_time,omitempty"`
+	UpdateTime *time.Time `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1243,7 +1245,7 @@ type AsyncUpdateAppRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
-	UpdateMask string `json:"update_mask"`
+	UpdateMask fieldmask.FieldMask `json:"update_mask"`
 }
 
 type ComputeSize string
