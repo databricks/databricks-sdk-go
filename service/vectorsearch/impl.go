@@ -238,6 +238,16 @@ func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncInd
 	return err
 }
 
+func (a *vectorSearchIndexesImpl) UpdateIndexBudgetPolicy(ctx context.Context, request UpdateVectorIndexUsagePolicyRequest) (*UpdateVectorIndexUsagePolicyResponse, error) {
+	var updateVectorIndexUsagePolicyResponse UpdateVectorIndexUsagePolicyResponse
+	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/usage-policy", request.IndexName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, nil, &updateVectorIndexUsagePolicyResponse)
+	return &updateVectorIndexUsagePolicyResponse, err
+}
+
 func (a *vectorSearchIndexesImpl) UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error) {
 	var upsertDataVectorIndexResponse UpsertDataVectorIndexResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/upsert-data", request.IndexName)

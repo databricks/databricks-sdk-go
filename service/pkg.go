@@ -88,6 +88,8 @@
 //
 // - [database.DatabaseAPI]: Database Instances provide access to a database via REST API or direct SQL.
 //
+// - [database.DatabaseProjectAPI]: Database Projects provide access to a database via REST API or direct SQL.
+//
 // - [files.DbfsAPI]: DBFS API makes it simple to interact with various data sources without having to include a users credentials every time to read a file.
 //
 // - [sql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/set.
@@ -244,6 +246,8 @@
 //
 // - [sql.QueriesLegacyAPI]: These endpoints are used for CRUD operations on query definitions.
 //
+// - [dashboards.QueryExecutionAPI]: Query execution APIs for AI / BI Dashboards.
+//
 // - [sql.QueryHistoryAPI]: A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute.
 //
 // - [sql.QueryVisualizationsAPI]: This is an evolving API that facilitates the addition and removal of visualizations from existing queries in the Databricks Workspace.
@@ -310,6 +314,8 @@
 //
 // - [catalog.TablesAPI]: A table resides in the third layer of Unity Catalog’s three-level namespace.
 //
+// - [tags.TagAssignmentsAPI]: Manage tag assignments on workspace-scoped objects.
+//
 // - [tags.TagPoliciesAPI]: The Tag Policy API allows you to manage policies for governed tags in Databricks.
 //
 // - [catalog.TemporaryPathCredentialsAPI]: Temporary Path Credentials refer to short-lived, downscoped credentials used to access external cloud storage locations registered in Databricks.
@@ -321,6 +327,8 @@
 // - [settings.TokensAPI]: The Token API allows you to create, list, and revoke tokens that can be used to authenticate and access Databricks REST APIs.
 //
 // - [billing.UsageDashboardsAPI]: These APIs manage usage dashboards for this account.
+//
+// - [billing.UsagePolicyAPI]: A service serves REST API about Usage policies.
 //
 // - [iam.UsersV2API]: User identities recognized by Databricks and represented by email addresses.
 //
@@ -432,6 +440,7 @@ var (
 	_ *dataquality.DataQualityAPI                         = nil
 	_ *sql.DataSourcesAPI                                 = nil
 	_ *database.DatabaseAPI                               = nil
+	_ *database.DatabaseProjectAPI                        = nil
 	_ *files.DbfsAPI                                      = nil
 	_ *sql.DbsqlPermissionsAPI                            = nil
 	_ *settings.DefaultNamespaceAPI                       = nil
@@ -510,6 +519,7 @@ var (
 	_ *catalog.QualityMonitorsAPI                         = nil
 	_ *sql.QueriesAPI                                     = nil
 	_ *sql.QueriesLegacyAPI                               = nil
+	_ *dashboards.QueryExecutionAPI                       = nil
 	_ *sql.QueryHistoryAPI                                = nil
 	_ *sql.QueryVisualizationsAPI                         = nil
 	_ *sql.QueryVisualizationsLegacyAPI                   = nil
@@ -543,12 +553,14 @@ var (
 	_ *catalog.SystemSchemasAPI                           = nil
 	_ *catalog.TableConstraintsAPI                        = nil
 	_ *catalog.TablesAPI                                  = nil
+	_ *tags.TagAssignmentsAPI                             = nil
 	_ *tags.TagPoliciesAPI                                = nil
 	_ *catalog.TemporaryPathCredentialsAPI                = nil
 	_ *catalog.TemporaryTableCredentialsAPI               = nil
 	_ *settings.TokenManagementAPI                        = nil
 	_ *settings.TokensAPI                                 = nil
 	_ *billing.UsageDashboardsAPI                         = nil
+	_ *billing.UsagePolicyAPI                             = nil
 	_ *iam.UsersV2API                                     = nil
 	_ *iam.AccountUsersV2API                              = nil
 	_ *vectorsearch.VectorSearchEndpointsAPI              = nil

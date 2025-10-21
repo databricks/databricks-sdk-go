@@ -223,6 +223,9 @@ type CreateShare struct {
 	Comment string `json:"comment,omitempty"`
 	// Name of the share.
 	Name string `json:"name"`
+	// Serverless budget policy id (can only be created/updated when calling
+	// data-sharing service) [Create,Update:IGN]
+	ServerlessBudgetPolicyId string `json:"serverless_budget_policy_id,omitempty"`
 	// Storage root URL for the share.
 	StorageRoot string `json:"storage_root,omitempty"`
 
@@ -950,6 +953,16 @@ type PermissionsChange struct {
 	// The principal whose privileges we are changing. Only one of principal or
 	// principal_id should be specified, never both at the same time.
 	Principal string `json:"principal,omitempty"`
+	// An opaque internal ID that identifies the principal whose privileges
+	// should be removed.
+	//
+	// This field is intended for removing privileges associated with a deleted
+	// user. When set, only the entries specified in the remove field are
+	// processed; any entries in the add field will be rejected.
+	//
+	// Only one of principal or principal_id should be specified, never both at
+	// the same time.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The set of privileges to remove.
 	Remove []string `json:"remove,omitempty"`
 
@@ -1134,6 +1147,9 @@ type PrivilegeAssignment struct {
 	// The principal (user email address or group name). For deleted principals,
 	// `principal` is empty while `principal_id` is populated.
 	Principal string `json:"principal,omitempty"`
+	// Unique identifier of the principal. For active principals, both
+	// `principal` and `principal_id` are present.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
 
@@ -1409,6 +1425,9 @@ type ShareInfo struct {
 	Objects []SharedDataObject `json:"objects,omitempty"`
 	// Username of current owner of share.
 	Owner string `json:"owner,omitempty"`
+	// Serverless budget policy id (can only be created/updated when calling
+	// data-sharing service) [Create,Update:IGN]
+	ServerlessBudgetPolicyId string `json:"serverless_budget_policy_id,omitempty"`
 	// Storage Location URL (full path) for the share.
 	StorageLocation string `json:"storage_location,omitempty"`
 	// Storage root URL for the share.
@@ -1995,6 +2014,9 @@ type UpdateShare struct {
 	NewName string `json:"new_name,omitempty"`
 	// Username of current owner of share.
 	Owner string `json:"owner,omitempty"`
+	// Serverless budget policy id (can only be created/updated when calling
+	// data-sharing service) [Create,Update:IGN]
+	ServerlessBudgetPolicyId string `json:"serverless_budget_policy_id,omitempty"`
 	// Storage root URL for the share.
 	StorageRoot string `json:"storage_root,omitempty"`
 	// Array of shared data object updates.

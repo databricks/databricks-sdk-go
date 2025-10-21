@@ -70,6 +70,10 @@ type BaseJob struct {
 	HasMore bool `json:"has_more,omitempty"`
 	// The canonical identifier for this job.
 	JobId int64 `json:"job_id,omitempty"`
+	// Path of the job object in workspace file tree, including file extension.
+	// If absent, the job doesn't have a workspace object. Example:
+	// /Workspace/user@example.com/my_project/my_job.job.json
+	Path string `json:"path,omitempty"`
 	// Settings for this job and all of its runs. These settings can be updated
 	// using the `resetJob` method.
 	Settings *JobSettings `json:"settings,omitempty"`
@@ -713,6 +717,9 @@ type CreateJob struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
+	// Path of the job parent folder in workspace file tree. If absent, the job
+	// doesn't have a workspace object.
+	ParentPath string `json:"parent_path,omitempty"`
 	// The performance mode on a serverless job. This field determines the level
 	// of compute performance or cost-efficiency for the run.
 	//
@@ -1624,6 +1631,10 @@ type Job struct {
 	JobId int64 `json:"job_id,omitempty"`
 	// A token that can be used to list the next page of array properties.
 	NextPageToken string `json:"next_page_token,omitempty"`
+	// Path of the job object in workspace file tree, including file extension.
+	// If absent, the job doesn't have a workspace object. Example:
+	// /Workspace/user@example.com/my_project/my_job.job.json
+	Path string `json:"path,omitempty"`
 	// The email of an active workspace user or the application ID of a service
 	// principal that the job runs as. This value can be changed by setting the
 	// `run_as` field when creating or updating a job.
@@ -2120,6 +2131,9 @@ type JobSettings struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
+	// Path of the job parent folder in workspace file tree. If absent, the job
+	// doesn't have a workspace object.
+	ParentPath string `json:"parent_path,omitempty"`
 	// The performance mode on a serverless job. This field determines the level
 	// of compute performance or cost-efficiency for the run.
 	//
@@ -2537,6 +2551,77 @@ func (s *ListRunsResponse) UnmarshalJSON(b []byte) error {
 
 func (s ListRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ModelTriggerConfiguration struct {
+	// Aliases of the model versions to monitor. Can only be used in conjunction
+	// with condition MODEL_ALIAS_SET.
+	Aliases []string `json:"aliases,omitempty"`
+	// The condition based on which to trigger a job run.
+	Condition ModelTriggerConfigurationCondition `json:"condition"`
+	// If set, the trigger starts a run only after the specified amount of time
+	// has passed since the last time the trigger fired. The minimum allowed
+	// value is 60 seconds.
+	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
+	// Name of the securable to monitor ("mycatalog.myschema.mymodel" in the
+	// case of model-level triggers, "mycatalog.myschema" in the case of
+	// schema-level triggers) or empty in the case of metastore-level triggers.
+	SecurableName string `json:"securable_name,omitempty"`
+	// If set, the trigger starts a run only after no model updates have
+	// occurred for the specified time and can be used to wait for a series of
+	// model updates before triggering a run. The minimum allowed value is 60
+	// seconds.
+	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ModelTriggerConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ModelTriggerConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ModelTriggerConfigurationCondition string
+
+const ModelTriggerConfigurationConditionModelAliasSet ModelTriggerConfigurationCondition = `MODEL_ALIAS_SET`
+
+const ModelTriggerConfigurationConditionModelCreated ModelTriggerConfigurationCondition = `MODEL_CREATED`
+
+const ModelTriggerConfigurationConditionModelVersionReady ModelTriggerConfigurationCondition = `MODEL_VERSION_READY`
+
+// String representation for [fmt.Print]
+func (f *ModelTriggerConfigurationCondition) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ModelTriggerConfigurationCondition) Set(v string) error {
+	switch v {
+	case `MODEL_ALIAS_SET`, `MODEL_CREATED`, `MODEL_VERSION_READY`:
+		*f = ModelTriggerConfigurationCondition(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MODEL_ALIAS_SET", "MODEL_CREATED", "MODEL_VERSION_READY"`, v)
+	}
+}
+
+// Values returns all possible values for ModelTriggerConfigurationCondition.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ModelTriggerConfigurationCondition) Values() []ModelTriggerConfigurationCondition {
+	return []ModelTriggerConfigurationCondition{
+		ModelTriggerConfigurationConditionModelAliasSet,
+		ModelTriggerConfigurationConditionModelCreated,
+		ModelTriggerConfigurationConditionModelVersionReady,
+	}
+}
+
+// Type always returns ModelTriggerConfigurationCondition to satisfy [pflag.Value] interface
+func (f *ModelTriggerConfigurationCondition) Type() string {
+	return "ModelTriggerConfigurationCondition"
 }
 
 type NotebookOutput struct {
@@ -3027,6 +3112,11 @@ type RepairRun struct {
 	// An array of commands to execute for jobs with the dbt task, for example
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt deps", "dbt seed", "dbt
 	// run"]`
+	//
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
+	//
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	DbtCommands []string `json:"dbt_commands,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
@@ -3036,10 +3126,10 @@ type RepairRun struct {
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	JarParams []string `json:"jar_params,omitempty"`
 	// Job-level parameters used in the run. for example `"param":
 	// "overriding_val"`
@@ -3058,15 +3148,15 @@ type RepairRun struct {
 	//
 	// notebook_params cannot be specified in conjunction with jar_params.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
 	// The JSON representation of this field (for example
 	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
 	// 10,000 bytes.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 	// The performance mode on a serverless job. The performance target
 	// determines the level of compute performance or cost-efficiency for the
@@ -3088,8 +3178,8 @@ type RepairRun struct {
 	// representation of this field (for example `{"python_params":["john
 	// doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
 	// Important
 	//
@@ -3097,7 +3187,7 @@ type RepairRun struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	PythonParams []string `json:"python_params,omitempty"`
 	// If true, repair all failed tasks. Only one of `rerun_tasks` or
 	// `rerun_all_failed_tasks` can be used.
@@ -3118,8 +3208,8 @@ type RepairRun struct {
 	// The JSON representation of this field (for example
 	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
 	// Important
 	//
@@ -3127,11 +3217,16 @@ type RepairRun struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
+	//
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
+	//
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3535,6 +3630,11 @@ type RunJobTask struct {
 	// An array of commands to execute for jobs with the dbt task, for example
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt deps", "dbt seed", "dbt
 	// run"]`
+	//
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
+	//
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	DbtCommands []string `json:"dbt_commands,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
@@ -3544,10 +3644,10 @@ type RunJobTask struct {
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	JarParams []string `json:"jar_params,omitempty"`
 	// ID of the job to trigger.
 	JobId int64 `json:"job_id"`
@@ -3563,15 +3663,15 @@ type RunJobTask struct {
 	//
 	// notebook_params cannot be specified in conjunction with jar_params.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
 	// The JSON representation of this field (for example
 	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
 	// 10,000 bytes.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -3584,8 +3684,8 @@ type RunJobTask struct {
 	// representation of this field (for example `{"python_params":["john
 	// doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
 	// Important
 	//
@@ -3593,7 +3693,7 @@ type RunJobTask struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
 	// `"spark_submit_params": ["--class",
@@ -3603,8 +3703,8 @@ type RunJobTask struct {
 	// The JSON representation of this field (for example
 	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
 	// Important
 	//
@@ -3612,11 +3712,16 @@ type RunJobTask struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
+	//
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
+	//
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
@@ -3765,6 +3870,11 @@ type RunNow struct {
 	// An array of commands to execute for jobs with the dbt task, for example
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt deps", "dbt seed", "dbt
 	// run"]`
+	//
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
+	//
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	DbtCommands []string `json:"dbt_commands,omitempty"`
 	// An optional token to guarantee the idempotency of job run requests. If a
 	// run with the provided token already exists, the request does not create a
@@ -3789,10 +3899,10 @@ type RunNow struct {
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	JarParams []string `json:"jar_params,omitempty"`
 	// The ID of the job to be executed
 	JobId int64 `json:"job_id"`
@@ -3809,15 +3919,15 @@ type RunNow struct {
 	//
 	// notebook_params cannot be specified in conjunction with jar_params.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
 	// The JSON representation of this field (for example
 	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
 	// 10,000 bytes.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 	// A list of task keys to run inside of the job. If this field is not
 	// provided, all tasks in the job will be run.
@@ -3842,8 +3952,8 @@ type RunNow struct {
 	// representation of this field (for example `{"python_params":["john
 	// doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
 	// Important
 	//
@@ -3851,7 +3961,7 @@ type RunNow struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	PythonParams []string `json:"python_params,omitempty"`
 	// The queue settings of the run.
 	Queue *QueueSettings `json:"queue,omitempty"`
@@ -3863,8 +3973,8 @@ type RunNow struct {
 	// The JSON representation of this field (for example
 	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
 	// Important
 	//
@@ -3872,11 +3982,16 @@ type RunNow struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
+	//
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
+	//
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3971,6 +4086,11 @@ type RunParameters struct {
 	// An array of commands to execute for jobs with the dbt task, for example
 	// `"dbt_commands": ["dbt deps", "dbt seed", "dbt deps", "dbt seed", "dbt
 	// run"]`
+	//
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
+	//
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	DbtCommands []string `json:"dbt_commands,omitempty"`
 	// A list of parameters for jobs with Spark JAR tasks, for example
 	// `"jar_params": ["john doe", "35"]`. The parameters are used to invoke the
@@ -3980,10 +4100,10 @@ type RunParameters struct {
 	// of this field (for example `{"jar_params":["john doe","35"]}`) cannot
 	// exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	JarParams []string `json:"jar_params,omitempty"`
 	// A map from keys to values for jobs with notebook task, for example
 	// `"notebook_params": {"name": "john doe", "age": "35"}`. The map is passed
@@ -3995,15 +4115,15 @@ type RunParameters struct {
 	//
 	// notebook_params cannot be specified in conjunction with jar_params.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
 	// The JSON representation of this field (for example
 	// `{"notebook_params":{"name":"john doe","age":"35"}}`) cannot exceed
 	// 10,000 bytes.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -4016,8 +4136,8 @@ type RunParameters struct {
 	// representation of this field (for example `{"python_params":["john
 	// doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs.
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
 	// Important
 	//
@@ -4025,7 +4145,7 @@ type RunParameters struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	PythonParams []string `json:"python_params,omitempty"`
 	// A list of parameters for jobs with spark submit task, for example
 	// `"spark_submit_params": ["--class",
@@ -4035,8 +4155,8 @@ type RunParameters struct {
 	// The JSON representation of this field (for example
 	// `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
 	//
-	// Use [Task parameter variables] to set parameters containing information
-	// about job runs
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
 	//
 	// Important
 	//
@@ -4044,11 +4164,16 @@ type RunParameters struct {
 	// Using non-ASCII characters returns an error. Examples of invalid,
 	// non-ASCII characters are Chinese, Japanese kanjis, and emojis.
 	//
-	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
 	// A map from keys to values for jobs with SQL task, for example
 	// `"sql_params": {"name": "john doe", "age": "35"}`. The SQL alert task
 	// does not support custom parameters.
+	//
+	// ⚠ **Deprecation note** Use [job parameters] to pass information down to
+	// tasks.
+	//
+	// [job parameters]: https://docs.databricks.com/jobs/job-parameters.html#job-parameter-pushdown
 	SqlParams map[string]string `json:"sql_params,omitempty"`
 }
 
@@ -4225,6 +4350,9 @@ type RunTask struct {
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task.
 	Description string `json:"description,omitempty"`
+	// An optional flag to disable the task. If set to true, the task will not
+	// run even if it is part of a job.
+	Disabled bool `json:"disabled,omitempty"`
 	// The actual performance target used by the serverless run during
 	// execution. This can differ from the client-set performance target on the
 	// request depending on whether the performance mode is supported by the job
@@ -5014,6 +5142,9 @@ type SubmitTask struct {
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task.
 	Description string `json:"description,omitempty"`
+	// An optional flag to disable the task. If set to true, the task will not
+	// run even if it is part of a job.
+	Disabled bool `json:"disabled,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
@@ -5763,6 +5894,8 @@ func (s TriggerInfo) MarshalJSON() ([]byte, error) {
 type TriggerSettings struct {
 	// File arrival trigger settings.
 	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
+
+	Model *ModelTriggerConfiguration `json:"model,omitempty"`
 	// Whether this trigger is paused or not.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 	// Periodic trigger settings.

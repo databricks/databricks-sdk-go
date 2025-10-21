@@ -516,10 +516,14 @@ type CatalogInfo struct {
 	Comment string `json:"comment,omitempty"`
 	// The name of the connection to an external data source.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Status of conversion of FOREIGN catalog to UC Native catalog.
+	ConversionInfo *ConversionInfo `json:"conversion_info,omitempty"`
 	// Time at which this catalog was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// Username of catalog creator.
 	CreatedBy string `json:"created_by,omitempty"`
+	// Disaster Recovery replication state snapshot.
+	DrReplicationInfo *DrReplicationInfo `json:"dr_replication_info,omitempty"`
 
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
@@ -892,6 +896,9 @@ type ConnectionInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 	// The type of credential.
 	CredentialType CredentialType `json:"credential_type,omitempty"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Full name of connection.
 	FullName string `json:"full_name,omitempty"`
 	// Unique identifier of parent metastore.
@@ -928,7 +935,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 38
+// Next Id: 46
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -1047,6 +1054,49 @@ func (s ContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Status of conversion of FOREIGN entity into UC Native entity.
+type ConversionInfo struct {
+	// The conversion state of the resource.
+	State ConversionInfoState `json:"state,omitempty"`
+}
+
+type ConversionInfoState string
+
+const ConversionInfoStateCompleted ConversionInfoState = `COMPLETED`
+
+const ConversionInfoStateInProgress ConversionInfoState = `IN_PROGRESS`
+
+// String representation for [fmt.Print]
+func (f *ConversionInfoState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ConversionInfoState) Set(v string) error {
+	switch v {
+	case `COMPLETED`, `IN_PROGRESS`:
+		*f = ConversionInfoState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "COMPLETED", "IN_PROGRESS"`, v)
+	}
+}
+
+// Values returns all possible values for ConversionInfoState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ConversionInfoState) Values() []ConversionInfoState {
+	return []ConversionInfoState{
+		ConversionInfoStateCompleted,
+		ConversionInfoStateInProgress,
+	}
+}
+
+// Type always returns ConversionInfoState to satisfy [pflag.Value] interface
+func (f *ConversionInfoState) Type() string {
+	return "ConversionInfoState"
+}
+
 type CreateAccessRequest struct {
 	// Optional. The principal this request is for. Empty `behalf_of` defaults
 	// to the requester's identity.
@@ -1138,6 +1188,10 @@ type CreateCatalog struct {
 	Comment string `json:"comment,omitempty"`
 	// The name of the connection to an external data source.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Status of conversion of FOREIGN catalog to UC Native catalog.
+	ConversionInfo *ConversionInfo `json:"conversion_info,omitempty"`
+	// Disaster Recovery replication state snapshot.
+	DrReplicationInfo *DrReplicationInfo `json:"dr_replication_info,omitempty"`
 	// Name of catalog.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -1170,6 +1224,9 @@ type CreateConnection struct {
 	Comment string `json:"comment,omitempty"`
 	// The type of connection.
 	ConnectionType ConnectionType `json:"connection_type"`
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
@@ -1867,7 +1924,7 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
-// Next Id: 13
+// Next Id: 14
 type CredentialType string
 
 const CredentialTypeAnyStaticCredential CredentialType = `ANY_STATIC_CREDENTIAL`
@@ -1877,6 +1934,8 @@ const CredentialTypeBearerToken CredentialType = `BEARER_TOKEN`
 const CredentialTypeOauthAccessToken CredentialType = `OAUTH_ACCESS_TOKEN`
 
 const CredentialTypeOauthM2m CredentialType = `OAUTH_M2M`
+
+const CredentialTypeOauthMtls CredentialType = `OAUTH_MTLS`
 
 const CredentialTypeOauthRefreshToken CredentialType = `OAUTH_REFRESH_TOKEN`
 
@@ -1904,11 +1963,11 @@ func (f *CredentialType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CredentialType) Set(v string) error {
 	switch v {
-	case `ANY_STATIC_CREDENTIAL`, `BEARER_TOKEN`, `OAUTH_ACCESS_TOKEN`, `OAUTH_M2M`, `OAUTH_REFRESH_TOKEN`, `OAUTH_RESOURCE_OWNER_PASSWORD`, `OAUTH_U2M`, `OAUTH_U2M_MAPPING`, `OIDC_TOKEN`, `PEM_PRIVATE_KEY`, `SERVICE_CREDENTIAL`, `UNKNOWN_CREDENTIAL_TYPE`, `USERNAME_PASSWORD`:
+	case `ANY_STATIC_CREDENTIAL`, `BEARER_TOKEN`, `OAUTH_ACCESS_TOKEN`, `OAUTH_M2M`, `OAUTH_MTLS`, `OAUTH_REFRESH_TOKEN`, `OAUTH_RESOURCE_OWNER_PASSWORD`, `OAUTH_U2M`, `OAUTH_U2M_MAPPING`, `OIDC_TOKEN`, `PEM_PRIVATE_KEY`, `SERVICE_CREDENTIAL`, `UNKNOWN_CREDENTIAL_TYPE`, `USERNAME_PASSWORD`:
 		*f = CredentialType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ANY_STATIC_CREDENTIAL", "BEARER_TOKEN", "OAUTH_ACCESS_TOKEN", "OAUTH_M2M", "OAUTH_REFRESH_TOKEN", "OAUTH_RESOURCE_OWNER_PASSWORD", "OAUTH_U2M", "OAUTH_U2M_MAPPING", "OIDC_TOKEN", "PEM_PRIVATE_KEY", "SERVICE_CREDENTIAL", "UNKNOWN_CREDENTIAL_TYPE", "USERNAME_PASSWORD"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ANY_STATIC_CREDENTIAL", "BEARER_TOKEN", "OAUTH_ACCESS_TOKEN", "OAUTH_M2M", "OAUTH_MTLS", "OAUTH_REFRESH_TOKEN", "OAUTH_RESOURCE_OWNER_PASSWORD", "OAUTH_U2M", "OAUTH_U2M_MAPPING", "OIDC_TOKEN", "PEM_PRIVATE_KEY", "SERVICE_CREDENTIAL", "UNKNOWN_CREDENTIAL_TYPE", "USERNAME_PASSWORD"`, v)
 	}
 }
 
@@ -1921,6 +1980,7 @@ func (f *CredentialType) Values() []CredentialType {
 		CredentialTypeBearerToken,
 		CredentialTypeOauthAccessToken,
 		CredentialTypeOauthM2m,
+		CredentialTypeOauthMtls,
 		CredentialTypeOauthRefreshToken,
 		CredentialTypeOauthResourceOwnerPassword,
 		CredentialTypeOauthU2m,
@@ -2515,6 +2575,48 @@ type DisableRequest struct {
 	SchemaName string `json:"-" url:"-"`
 }
 
+// Metadata related to Disaster Recovery.
+type DrReplicationInfo struct {
+	Status DrReplicationStatus `json:"status,omitempty"`
+}
+
+type DrReplicationStatus string
+
+const DrReplicationStatusDrReplicationStatusPrimary DrReplicationStatus = `DR_REPLICATION_STATUS_PRIMARY`
+
+const DrReplicationStatusDrReplicationStatusSecondary DrReplicationStatus = `DR_REPLICATION_STATUS_SECONDARY`
+
+// String representation for [fmt.Print]
+func (f *DrReplicationStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DrReplicationStatus) Set(v string) error {
+	switch v {
+	case `DR_REPLICATION_STATUS_PRIMARY`, `DR_REPLICATION_STATUS_SECONDARY`:
+		*f = DrReplicationStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DR_REPLICATION_STATUS_PRIMARY", "DR_REPLICATION_STATUS_SECONDARY"`, v)
+	}
+}
+
+// Values returns all possible values for DrReplicationStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DrReplicationStatus) Values() []DrReplicationStatus {
+	return []DrReplicationStatus{
+		DrReplicationStatusDrReplicationStatusPrimary,
+		DrReplicationStatusDrReplicationStatusSecondary,
+	}
+}
+
+// Type always returns DrReplicationStatus to satisfy [pflag.Value] interface
+func (f *DrReplicationStatus) Type() string {
+	return "DrReplicationStatus"
+}
+
 type EffectivePermissionsList struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
@@ -2720,6 +2822,22 @@ func (s *EntityTagAssignment) UnmarshalJSON(b []byte) error {
 }
 
 func (s EntityTagAssignment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EnvironmentSettings struct {
+	EnvironmentVersion string `json:"environment_version,omitempty"`
+
+	JavaDependencies []string `json:"java_dependencies,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnvironmentSettings) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnvironmentSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -3533,6 +3651,8 @@ type GenerateTemporaryPathCredentialResponse struct {
 	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
 
 	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
+
+	UcEncryptedToken *UcEncryptedToken `json:"uc_encrypted_token,omitempty"`
 	// The URL of the storage path accessible by the temporary credential.
 	Url string `json:"url,omitempty"`
 
@@ -3604,6 +3724,8 @@ type GenerateTemporaryTableCredentialResponse struct {
 	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
 
 	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
+
+	UcEncryptedToken *UcEncryptedToken `json:"uc_encrypted_token,omitempty"`
 	// The URL of the storage path accessible by the temporary credential.
 	Url string `json:"url,omitempty"`
 
@@ -3816,6 +3938,9 @@ func (s GetFunctionRequest) MarshalJSON() ([]byte, error) {
 type GetGrantRequest struct {
 	// Full name of securable.
 	FullName string `json:"-" url:"-"`
+	// Optional. If true, also return privilege assignments whose principals
+	// have been deleted.
+	IncludeDeletedPrincipals bool `json:"-" url:"include_deleted_principals,omitempty"`
 	// Specifies the maximum number of privileges to return (page length). Every
 	// PrivilegeAssignment present in a single page response is guaranteed to
 	// contain all the privileges granted on the requested Securable for the
@@ -6160,6 +6285,16 @@ type PermissionsChange struct {
 	// The principal whose privileges we are changing. Only one of principal or
 	// principal_id should be specified, never both at the same time.
 	Principal string `json:"principal,omitempty"`
+	// An opaque internal ID that identifies the principal whose privileges
+	// should be removed.
+	//
+	// This field is intended for removing privileges associated with a deleted
+	// user. When set, only the entries specified in the remove field are
+	// processed; any entries in the add field will be rejected.
+	//
+	// Only one of principal or principal_id should be specified, never both at
+	// the same time.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The set of privileges to remove.
 	Remove []Privilege `json:"remove,omitempty"`
 
@@ -6564,6 +6699,9 @@ type PrivilegeAssignment struct {
 	// The principal (user email address or group name). For deleted principals,
 	// `principal` is empty while `principal_id` is populated.
 	Principal string `json:"principal,omitempty"`
+	// Unique identifier of the principal. For active principals, both
+	// `principal` and `principal_id` are present.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 	// The privileges assigned to the principal.
 	Privileges []Privilege `json:"privileges,omitempty"`
 
@@ -6832,7 +6970,7 @@ type RunRefreshRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
-// Next ID: 40
+// Next ID: 42
 type SchemaInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -6909,7 +7047,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_REDSHIFT_IAM = 265; Next id:266
+// Latest kind: CONNECTION_SALESFORCE_OAUTH_MTLS = 268; Next id:269
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -7843,6 +7981,24 @@ func (s TriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Encrypted token used when we cannot downscope the cloud provider token
+// appropriately See:
+// https://docs.google.com/document/d/1hEKDnSckuU5PIS798CtfqBElrMR6OJuR2wgz_BjhMSY
+type UcEncryptedToken struct {
+	// Stores encrypted ScopedCloudToken
+	EncryptedPayload string `json:"encrypted_payload,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UcEncryptedToken) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UcEncryptedToken) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type UnassignRequest struct {
 	// Query for the ID of the metastore to delete.
 	MetastoreId string `json:"-" url:"metastore_id"`
@@ -7932,6 +8088,10 @@ func (s UpdateAccountsStorageCredential) MarshalJSON() ([]byte, error) {
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
+	// Status of conversion of FOREIGN catalog to UC Native catalog.
+	ConversionInfo *ConversionInfo `json:"conversion_info,omitempty"`
+	// Disaster Recovery replication state snapshot.
+	DrReplicationInfo *DrReplicationInfo `json:"dr_replication_info,omitempty"`
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
@@ -7966,6 +8126,9 @@ type UpdateCatalogWorkspaceBindingsResponse struct {
 }
 
 type UpdateConnection struct {
+	// [Create,Update:OPT] Connection environment settings as
+	// EnvironmentSettings object.
+	EnvironmentSettings *EnvironmentSettings `json:"environment_settings,omitempty"`
 	// Name of the connection.
 	Name string `json:"-" url:"-"`
 	// New name for the connection.

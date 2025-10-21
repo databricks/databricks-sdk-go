@@ -33,6 +33,10 @@ type PipelinesInterface interface {
 	WaitGetPipelineIdle(ctx context.Context, pipelineId string,
 		timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error)
 
+	// * Applies the current pipeline environment onto the pipeline compute. The
+	// environment applied can be used by subsequent dev-mode updates.
+	ApplyEnvironment(ctx context.Context, request ApplyEnvironmentRequest) (*ApplyEnvironmentRequestResponse, error)
+
 	// Creates a new data processing pipeline based on the requested configuration.
 	// If successful, this method returns the ID of the new pipeline.
 	Create(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error)
@@ -117,6 +121,10 @@ type PipelinesInterface interface {
 
 	// List updates for an active pipeline.
 	ListUpdatesByPipelineId(ctx context.Context, pipelineId string) (*ListUpdatesResponse, error)
+
+	// * Restores a pipeline that was previously deleted, if within the restoration
+	// window. All tables deleted at pipeline deletion will be undropped as well.
+	RestorePipeline(ctx context.Context, request RestorePipelineRequest) (*RestorePipelineRequestResponse, error)
 
 	// Sets permissions on an object, replacing existing permissions if they exist.
 	// Deletes all direct permissions if none are specified. Objects can inherit

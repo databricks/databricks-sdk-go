@@ -745,6 +745,65 @@ func (_c *MockVectorSearchIndexesInterface_SyncIndex_Call) RunAndReturn(run func
 	return _c
 }
 
+// UpdateIndexBudgetPolicy provides a mock function with given fields: ctx, request
+func (_m *MockVectorSearchIndexesInterface) UpdateIndexBudgetPolicy(ctx context.Context, request vectorsearch.UpdateVectorIndexUsagePolicyRequest) (*vectorsearch.UpdateVectorIndexUsagePolicyResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateIndexBudgetPolicy")
+	}
+
+	var r0 *vectorsearch.UpdateVectorIndexUsagePolicyResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.UpdateVectorIndexUsagePolicyRequest) (*vectorsearch.UpdateVectorIndexUsagePolicyResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.UpdateVectorIndexUsagePolicyRequest) *vectorsearch.UpdateVectorIndexUsagePolicyResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.UpdateVectorIndexUsagePolicyResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, vectorsearch.UpdateVectorIndexUsagePolicyRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchIndexesInterface_UpdateIndexBudgetPolicy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateIndexBudgetPolicy'
+type MockVectorSearchIndexesInterface_UpdateIndexBudgetPolicy_Call struct {
+	*mock.Call
+}
+
+// UpdateIndexBudgetPolicy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request vectorsearch.UpdateVectorIndexUsagePolicyRequest
+func (_e *MockVectorSearchIndexesInterface_Expecter) UpdateIndexBudgetPolicy(ctx interface{}, request interface{}) *MockVectorSearchIndexesInterface_UpdateIndexBudgetPolicy_Call {
+	return &MockVectorSearchIndexesInterface_UpdateIndexBudgetPolicy_Call{Call: _e.mock.On("UpdateIndexBudgetPolicy", ctx, request)}
+}
+
+func (_c *MockVectorSearchIndexesInterface_UpdateIndexBudgetPolicy_Call) Run(run func(ctx context.Context, request vectorsearch.UpdateVectorIndexUsagePolicyRequest)) *MockVectorSearchIndexesInterface_UpdateIndexBudgetPolicy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(vectorsearch.UpdateVectorIndexUsagePolicyRequest))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchIndexesInterface_UpdateIndexBudgetPolicy_Call) Return(_a0 *vectorsearch.UpdateVectorIndexUsagePolicyResponse, _a1 error) *MockVectorSearchIndexesInterface_UpdateIndexBudgetPolicy_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchIndexesInterface_UpdateIndexBudgetPolicy_Call) RunAndReturn(run func(context.Context, vectorsearch.UpdateVectorIndexUsagePolicyRequest) (*vectorsearch.UpdateVectorIndexUsagePolicyResponse, error)) *MockVectorSearchIndexesInterface_UpdateIndexBudgetPolicy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpsertDataVectorIndex provides a mock function with given fields: ctx, request
 func (_m *MockVectorSearchIndexesInterface) UpsertDataVectorIndex(ctx context.Context, request vectorsearch.UpsertDataVectorIndexRequest) (*vectorsearch.UpsertDataVectorIndexResponse, error) {
 	ret := _m.Called(ctx, request)

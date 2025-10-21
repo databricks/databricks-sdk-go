@@ -85,6 +85,9 @@ type ExperimentsService interface {
 	// Get a logged model.
 	GetLoggedModel(ctx context.Context, request GetLoggedModelRequest) (*GetLoggedModelResponse, error)
 
+	// Batch endpoint for getting logged models from a list of model IDs
+	GetLoggedModels(ctx context.Context, request GetLoggedModelsRequest) (*GetLoggedModelsRequestResponse, error)
+
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error)
 
@@ -260,17 +263,32 @@ type FeatureEngineeringService interface {
 	// Create a Feature.
 	CreateFeature(ctx context.Context, request CreateFeatureRequest) (*Feature, error)
 
+	// Create a materialized feature.
+	CreateMaterializedFeature(ctx context.Context, request CreateMaterializedFeatureRequest) (*MaterializedFeature, error)
+
 	// Delete a Feature.
 	DeleteFeature(ctx context.Context, request DeleteFeatureRequest) error
+
+	// Delete a materialized feature.
+	DeleteMaterializedFeature(ctx context.Context, request DeleteMaterializedFeatureRequest) error
 
 	// Get a Feature.
 	GetFeature(ctx context.Context, request GetFeatureRequest) (*Feature, error)
 
+	// Get a materialized feature.
+	GetMaterializedFeature(ctx context.Context, request GetMaterializedFeatureRequest) (*MaterializedFeature, error)
+
 	// List Features.
 	ListFeatures(ctx context.Context, request ListFeaturesRequest) (*ListFeaturesResponse, error)
 
+	// List materialized features.
+	ListMaterializedFeatures(ctx context.Context, request ListMaterializedFeaturesRequest) (*ListMaterializedFeaturesResponse, error)
+
 	// Update a Feature.
 	UpdateFeature(ctx context.Context, request UpdateFeatureRequest) (*Feature, error)
+
+	// Update a materialized feature (pause/resume).
+	UpdateMaterializedFeature(ctx context.Context, request UpdateMaterializedFeatureRequest) (*MaterializedFeature, error)
 }
 
 // A feature store is a centralized repository that enables data scientists to

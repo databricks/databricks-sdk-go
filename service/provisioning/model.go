@@ -316,6 +316,10 @@ type CreateWorkspaceRequest struct {
 	// history. The provided key configuration object property use_cases must
 	// contain MANAGED_SERVICES.
 	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
+	// The object ID of network connectivity config. Once assigned, the
+	// workspace serverless compute resources use the same set of stable IP CIDR
+	// blocks and optional private link to access your resources.
+	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
 	// The ID of the workspace's network configuration object. To use AWS
 	// PrivateLink, this field is required.
 	NetworkId string `json:"network_id,omitempty"`
@@ -1301,7 +1305,7 @@ type Workspace struct {
 	AwsRegion string `json:"aws_region,omitempty"`
 
 	AzureWorkspaceInfo *AzureWorkspaceInfo `json:"azure_workspace_info,omitempty"`
-	// The cloud name. This field always has the value `gcp`.
+	// The cloud name. This field can have values like `azure`, `gcp`.
 	Cloud string `json:"cloud,omitempty"`
 
 	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`

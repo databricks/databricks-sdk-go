@@ -30,6 +30,8 @@ type CreateEndpoint struct {
 	EndpointType EndpointType `json:"endpoint_type"`
 	// Name of the vector search endpoint
 	Name string `json:"name"`
+	// The usage policy id to be applied once we've migrated to usage policies
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -164,6 +166,10 @@ type DeltaSyncVectorIndexSpecRequest struct {
 	// index. The primary key column and embedding source column or embedding
 	// vector column are always synced.
 	ColumnsToSync []string `json:"columns_to_sync,omitempty"`
+	// The budget policy id applied to the vector search index
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The columns that contain the embedding source.
 	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
 	// The columns that contain the embedding vectors.
@@ -194,6 +200,10 @@ func (s DeltaSyncVectorIndexSpecRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DeltaSyncVectorIndexSpecResponse struct {
+	// The budget policy id applied to the vector search index
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The columns that contain the embedding source.
 	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
 	// The columns that contain the embedding vectors.
@@ -836,6 +846,14 @@ func (s *UpdateEndpointCustomTagsResponse) UnmarshalJSON(b []byte) error {
 
 func (s UpdateEndpointCustomTagsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateVectorIndexUsagePolicyRequest struct {
+	// Name of the vector search index
+	IndexName string `json:"-" url:"-"`
+}
+
+type UpdateVectorIndexUsagePolicyResponse struct {
 }
 
 type UpsertDataResult struct {

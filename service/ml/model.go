@@ -516,6 +516,11 @@ type CreateLoggedModelResponse struct {
 	Model *LoggedModel `json:"model,omitempty"`
 }
 
+type CreateMaterializedFeatureRequest struct {
+	// The materialized feature to create.
+	MaterializedFeature MaterializedFeature `json:"materialized_feature"`
+}
+
 type CreateModelRequest struct {
 	// Optional description for registered model.
 	Description string `json:"description,omitempty"`
@@ -794,6 +799,11 @@ type DeleteLoggedModelTagRequest struct {
 	ModelId string `json:"-" url:"-"`
 	// The tag key.
 	TagKey string `json:"-" url:"-"`
+}
+
+type DeleteMaterializedFeatureRequest struct {
+	// The ID of the materialized feature to delete.
+	MaterializedFeatureId string `json:"-" url:"-"`
 }
 
 type DeleteModelRequest struct {
@@ -1522,6 +1532,21 @@ type GetLoggedModelResponse struct {
 	Model *LoggedModel `json:"model,omitempty"`
 }
 
+type GetLoggedModelsRequest struct {
+	// The IDs of the logged models to retrieve. Max threshold is 100.
+	ModelIds []string `json:"-" url:"model_ids,omitempty"`
+}
+
+type GetLoggedModelsRequestResponse struct {
+	// The retrieved logged models.
+	Models []LoggedModel `json:"models,omitempty"`
+}
+
+type GetMaterializedFeatureRequest struct {
+	// The ID of the materialized feature.
+	MaterializedFeatureId string `json:"-" url:"-"`
+}
+
 type GetMetricHistoryResponse struct {
 	// All logged values for this metric if `max_results` is not specified in
 	// the request or if the total count of metrics returned is less than the
@@ -1911,6 +1936,44 @@ func (s *ListFeaturesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListFeaturesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListMaterializedFeaturesRequest struct {
+	// Filter by feature name. If specified, only materialized features
+	// materialized from this feature will be returned.
+	FeatureName string `json:"-" url:"feature_name,omitempty"`
+	// The maximum number of results to return. Defaults to 100 if not
+	// specified. Cannot be greater than 1000.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page based on a previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListMaterializedFeaturesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListMaterializedFeaturesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListMaterializedFeaturesResponse struct {
+	// List of materialized features.
+	MaterializedFeatures []MaterializedFeature `json:"materialized_features,omitempty"`
+	// Pagination token to request the next page of results for this query.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListMaterializedFeaturesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListMaterializedFeaturesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2326,6 +2389,77 @@ func (s LoggedModelTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A materialized feature represents a feature that is continuously computed and
+// stored.
+type MaterializedFeature struct {
+	// The full name of the feature in Unity Catalog.
+	FeatureName string `json:"feature_name"`
+	// The timestamp when the pipeline last ran and updated the materialized
+	// feature values. If the pipeline has not run yet, this field will be null.
+	LastMaterializationTime string `json:"last_materialization_time,omitempty"`
+	// Unique identifier for the materialized feature.
+	MaterializedFeatureId string `json:"materialized_feature_id,omitempty"`
+
+	OfflineStoreConfig OfflineStoreConfig `json:"offline_store_config"`
+
+	OnlineStoreConfig OnlineStore `json:"online_store_config"`
+	// The schedule state of the materialization pipeline.
+	PipelineScheduleState MaterializedFeaturePipelineScheduleState `json:"pipeline_schedule_state,omitempty"`
+	// The fully qualified Unity Catalog path to the table containing the
+	// materialized feature (Delta table or Lakebase table). Output only.
+	TableName string `json:"table_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MaterializedFeature) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MaterializedFeature) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type MaterializedFeaturePipelineScheduleState string
+
+const MaterializedFeaturePipelineScheduleStateActive MaterializedFeaturePipelineScheduleState = `ACTIVE`
+
+const MaterializedFeaturePipelineScheduleStatePaused MaterializedFeaturePipelineScheduleState = `PAUSED`
+
+const MaterializedFeaturePipelineScheduleStateSnapshot MaterializedFeaturePipelineScheduleState = `SNAPSHOT`
+
+// String representation for [fmt.Print]
+func (f *MaterializedFeaturePipelineScheduleState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *MaterializedFeaturePipelineScheduleState) Set(v string) error {
+	switch v {
+	case `ACTIVE`, `PAUSED`, `SNAPSHOT`:
+		*f = MaterializedFeaturePipelineScheduleState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "PAUSED", "SNAPSHOT"`, v)
+	}
+}
+
+// Values returns all possible values for MaterializedFeaturePipelineScheduleState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MaterializedFeaturePipelineScheduleState) Values() []MaterializedFeaturePipelineScheduleState {
+	return []MaterializedFeaturePipelineScheduleState{
+		MaterializedFeaturePipelineScheduleStateActive,
+		MaterializedFeaturePipelineScheduleStatePaused,
+		MaterializedFeaturePipelineScheduleStateSnapshot,
+	}
+}
+
+// Type always returns MaterializedFeaturePipelineScheduleState to satisfy [pflag.Value] interface
+func (f *MaterializedFeaturePipelineScheduleState) Type() string {
+	return "MaterializedFeaturePipelineScheduleState"
+}
+
 // Metric associated with a run, represented as a key-value pair.
 type Metric struct {
 	// The dataset digest of the dataset associated with the metric, e.g. an md5
@@ -2615,6 +2749,17 @@ func (s *ModelVersionTag) UnmarshalJSON(b []byte) error {
 
 func (s ModelVersionTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Configuration for offline store destination.
+type OfflineStoreConfig struct {
+	// The Unity Catalog catalog name.
+	CatalogName string `json:"catalog_name"`
+	// The Unity Catalog schema name.
+	SchemaName string `json:"schema_name"`
+	// Prefix for Unity Catalog table name. The materialized feature will be
+	// stored in a table with this prefix and a generated postfix.
+	TableNamePrefix string `json:"table_name_prefix"`
 }
 
 // An OnlineStore is a logical database instance that stores and serves features
@@ -4043,6 +4188,16 @@ func (s *UpdateFeatureTagRequest) UnmarshalJSON(b []byte) error {
 
 func (s UpdateFeatureTagRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateMaterializedFeatureRequest struct {
+	// The materialized feature to update.
+	MaterializedFeature MaterializedFeature `json:"materialized_feature"`
+	// Unique identifier for the materialized feature.
+	MaterializedFeatureId string `json:"-" url:"-"`
+	// Provide the materialization feature fields which should be updated.
+	// Currently, only the pipeline_state field can be updated.
+	UpdateMask string `json:"-" url:"update_mask"`
 }
 
 type UpdateModelRequest struct {

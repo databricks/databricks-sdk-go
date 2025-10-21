@@ -357,6 +357,43 @@ func (f *ExportFormat) Type() string {
 	return "ExportFormat"
 }
 
+type ExportOutputs string
+
+const ExportOutputsAll ExportOutputs = `ALL`
+
+const ExportOutputsNone ExportOutputs = `NONE`
+
+// String representation for [fmt.Print]
+func (f *ExportOutputs) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ExportOutputs) Set(v string) error {
+	switch v {
+	case `ALL`, `NONE`:
+		*f = ExportOutputs(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ALL", "NONE"`, v)
+	}
+}
+
+// Values returns all possible values for ExportOutputs.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ExportOutputs) Values() []ExportOutputs {
+	return []ExportOutputs{
+		ExportOutputsAll,
+		ExportOutputsNone,
+	}
+}
+
+// Type always returns ExportOutputs to satisfy [pflag.Value] interface
+func (f *ExportOutputs) Type() string {
+	return "ExportOutputs"
+}
+
 type ExportRequest struct {
 	// This specifies the format of the exported file. By default, this is
 	// `SOURCE`.
@@ -373,6 +410,12 @@ type ExportRequest struct {
 	// on the objects type. Directory exports will include notebooks and
 	// workspace files.
 	Format ExportFormat `json:"-" url:"format,omitempty"`
+	// This specifies which cell outputs should be included in the export (if
+	// the export format allows it). If not specified, the behavior is
+	// determined by the format. For JUPYTER format, the default is to include
+	// all outputs. This is a public endpoint, but only ALL or NONE is
+	// documented publically, DATABRICKS is internal only
+	Outputs ExportOutputs `json:"-" url:"outputs,omitempty"`
 	// The absolute path of the object or directory. Exporting a directory is
 	// only supported for the `DBC`, `SOURCE`, and `AUTO` format.
 	Path string `json:"-" url:"path"`

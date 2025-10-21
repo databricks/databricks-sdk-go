@@ -81,6 +81,7 @@ func NewMockWorkspaceClient(t interface {
 			DataQuality:                         dataquality.NewMockDataQualityInterface(t),
 			DataSources:                         sql.NewMockDataSourcesInterface(t),
 			Database:                            database.NewMockDatabaseInterface(t),
+			DatabaseProject:                     database.NewMockDatabaseProjectInterface(t),
 			Dbfs:                                files.NewMockDbfsInterface(t),
 			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
 			EntityTagAssignments:                catalog.NewMockEntityTagAssignmentsInterface(t),
@@ -130,6 +131,7 @@ func NewMockWorkspaceClient(t interface {
 			QualityMonitors:                     catalog.NewMockQualityMonitorsInterface(t),
 			Queries:                             sql.NewMockQueriesInterface(t),
 			QueriesLegacy:                       sql.NewMockQueriesLegacyInterface(t),
+			QueryExecution:                      dashboards.NewMockQueryExecutionInterface(t),
 			QueryHistory:                        sql.NewMockQueryHistoryInterface(t),
 			QueryVisualizations:                 sql.NewMockQueryVisualizationsInterface(t),
 			QueryVisualizationsLegacy:           sql.NewMockQueryVisualizationsLegacyInterface(t),
@@ -154,6 +156,7 @@ func NewMockWorkspaceClient(t interface {
 			SystemSchemas:                       catalog.NewMockSystemSchemasInterface(t),
 			TableConstraints:                    catalog.NewMockTableConstraintsInterface(t),
 			Tables:                              catalog.NewMockTablesInterface(t),
+			TagAssignments:                      tags.NewMockTagAssignmentsInterface(t),
 			TagPolicies:                         tags.NewMockTagPoliciesInterface(t),
 			TemporaryPathCredentials:            catalog.NewMockTemporaryPathCredentialsInterface(t),
 			TemporaryTableCredentials:           catalog.NewMockTemporaryTableCredentialsInterface(t),
@@ -612,6 +615,14 @@ func (m *MockWorkspaceClient) GetMockDatabaseAPI() *database.MockDatabaseInterfa
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockDatabaseProjectAPI() *database.MockDatabaseProjectInterface {
+	api, ok := m.WorkspaceClient.DatabaseProject.(*database.MockDatabaseProjectInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DatabaseProject to be *database.MockDatabaseProjectInterface, actual was %T", m.WorkspaceClient.DatabaseProject))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockDbfsAPI() *files.MockDbfsInterface {
 	api, ok := m.WorkspaceClient.Dbfs.(*files.MockDbfsInterface)
 	if !ok {
@@ -1004,6 +1015,14 @@ func (m *MockWorkspaceClient) GetMockQueriesLegacyAPI() *sql.MockQueriesLegacyIn
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockQueryExecutionAPI() *dashboards.MockQueryExecutionInterface {
+	api, ok := m.WorkspaceClient.QueryExecution.(*dashboards.MockQueryExecutionInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected QueryExecution to be *dashboards.MockQueryExecutionInterface, actual was %T", m.WorkspaceClient.QueryExecution))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockQueryHistoryAPI() *sql.MockQueryHistoryInterface {
 	api, ok := m.WorkspaceClient.QueryHistory.(*sql.MockQueryHistoryInterface)
 	if !ok {
@@ -1192,6 +1211,14 @@ func (m *MockWorkspaceClient) GetMockTablesAPI() *catalog.MockTablesInterface {
 	api, ok := m.WorkspaceClient.Tables.(*catalog.MockTablesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Tables to be *catalog.MockTablesInterface, actual was %T", m.WorkspaceClient.Tables))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockTagAssignmentsAPI() *tags.MockTagAssignmentsInterface {
+	api, ok := m.WorkspaceClient.TagAssignments.(*tags.MockTagAssignmentsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected TagAssignments to be *tags.MockTagAssignmentsInterface, actual was %T", m.WorkspaceClient.TagAssignments))
 	}
 	return api
 }

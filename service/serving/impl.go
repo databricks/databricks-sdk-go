@@ -303,7 +303,6 @@ func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request Query
 	if err != nil {
 		return nil, err
 	}
-
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

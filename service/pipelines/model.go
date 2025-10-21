@@ -9,6 +9,31 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+type ApplyEnvironmentRequest struct {
+	PipelineId string `json:"-" url:"-"`
+}
+
+type ApplyEnvironmentRequestResponse struct {
+}
+
+type ConnectionParameters struct {
+	// Source catalog for initial connection. This is necessary for schema
+	// exploration in some database systems like Oracle, and optional but
+	// nice-to-have in some other database systems like Postgres. For Oracle
+	// databases, this maps to a service name.
+	SourceCatalog string `json:"source_catalog,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ConnectionParameters) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ConnectionParameters) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
@@ -83,6 +108,8 @@ type CreatePipeline struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+	// Usage policy of this pipeline.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -146,9 +173,8 @@ func (s DataPlaneId) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Days of week in which the restart is allowed to happen (within a five-hour
-// window starting at start_hour). If not specified all days of the week will be
-// used.
+// Days of week in which the window is allowed to happen. If not specified all
+// days of the week will be used.
 type DayOfWeek string
 
 const DayOfWeekFriday DayOfWeek = `FRIDAY`
@@ -319,6 +345,8 @@ type EditPipeline struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+	// Usage policy of this pipeline.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -462,6 +490,8 @@ type GetPipelineResponse struct {
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Serverless budget policy ID of this pipeline.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// Serverless usage policy ID of the pipeline.
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The health of a pipeline.
 	Health GetPipelineResponseHealth `json:"health,omitempty"`
 	// The last time the pipeline settings were modified or created.
@@ -564,6 +594,9 @@ type IngestionGatewayPipelineDefinition struct {
 	// Immutable. The Unity Catalog connection that this gateway pipeline uses
 	// to communicate with the source.
 	ConnectionName string `json:"connection_name"`
+	// Optional, Internal. Parameters required to establish an initial
+	// connection with the source.
+	ConnectionParameters *ConnectionParameters `json:"connection_parameters,omitempty"`
 	// Required, Immutable. The name of the catalog for the gateway pipeline's
 	// storage location.
 	GatewayStorageCatalog string `json:"gateway_storage_catalog"`
@@ -592,6 +625,12 @@ type IngestionPipelineDefinition struct {
 	// to communicate with the source. This is used with connectors for
 	// applications like Salesforce, Workday, and so on.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Immutable. If set to true, the pipeline will ingest tables from the UC
+	// foreign catalogs directly without the need to specify a UC connection or
+	// ingestion gateway. The `source_catalog` fields in objects of
+	// IngestionConfig are interpreted as the UC foreign catalogs to ingest
+	// from.
+	IngestFromUcForeignCatalog bool `json:"ingest_from_uc_foreign_catalog,omitempty"`
 	// Immutable. Identifier for the gateway that is used by this ingestion
 	// pipeline to communicate with the source database. This is used with
 	// connectors to databases like SQL Server.
@@ -1033,6 +1072,9 @@ type Origin struct {
 	FlowId string `json:"flow_id,omitempty"`
 	// The name of the flow. Not unique.
 	FlowName string `json:"flow_name,omitempty"`
+	// The UUID of the graph associated with this event, corresponding to a
+	// GRAPH_UPDATED event.
+	GraphId string `json:"graph_id,omitempty"`
 	// The optional host name where the event was triggered
 	Host string `json:"host,omitempty"`
 	// The id of a maintenance run. Globally unique.
@@ -1537,6 +1579,8 @@ type PipelineSpec struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+	// Usage policy of this pipeline.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1770,6 +1814,14 @@ func (s *RestartWindow) UnmarshalJSON(b []byte) error {
 
 func (s RestartWindow) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type RestorePipelineRequest struct {
+	// The ID of the pipeline to restore
+	PipelineId string `json:"-" url:"-"`
+}
+
+type RestorePipelineRequestResponse struct {
 }
 
 // Write-only setting, available only in Create/Update calls. Specifies the user
@@ -2056,6 +2108,10 @@ type TableSpecificConfig struct {
 	PrimaryKeys []string `json:"primary_keys,omitempty"`
 
 	QueryBasedConnectorConfig *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig `json:"query_based_connector_config,omitempty"`
+	// (Optional, Immutable) The row filter condition to be applied to the
+	// table. It must not contain the WHERE keyword, only the actual filter
+	// condition. It must be in DBSQL format.
+	RowFilter string `json:"row_filter,omitempty"`
 	// If true, formula fields defined in the table are included in the
 	// ingestion. This setting is only valid for the Salesforce connector
 	SalesforceIncludeFormulaFields bool `json:"salesforce_include_formula_fields,omitempty"`
@@ -2137,6 +2193,9 @@ type UpdateInfo struct {
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
+	// Indicates whether the update is either part of a continuous job run, or
+	// running in legacy continuous pipeline mode.
+	Mode UpdateMode `json:"mode,omitempty"`
 	// The ID of the pipeline.
 	PipelineId string `json:"pipeline_id,omitempty"`
 	// A list of tables to update without fullRefresh. If both refresh_selection
@@ -2279,6 +2338,43 @@ func (f *UpdateInfoState) Values() []UpdateInfoState {
 // Type always returns UpdateInfoState to satisfy [pflag.Value] interface
 func (f *UpdateInfoState) Type() string {
 	return "UpdateInfoState"
+}
+
+type UpdateMode string
+
+const UpdateModeContinuous UpdateMode = `CONTINUOUS`
+
+const UpdateModeDefault UpdateMode = `DEFAULT`
+
+// String representation for [fmt.Print]
+func (f *UpdateMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *UpdateMode) Set(v string) error {
+	switch v {
+	case `CONTINUOUS`, `DEFAULT`:
+		*f = UpdateMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CONTINUOUS", "DEFAULT"`, v)
+	}
+}
+
+// Values returns all possible values for UpdateMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *UpdateMode) Values() []UpdateMode {
+	return []UpdateMode{
+		UpdateModeContinuous,
+		UpdateModeDefault,
+	}
+}
+
+// Type always returns UpdateMode to satisfy [pflag.Value] interface
+func (f *UpdateMode) Type() string {
+	return "UpdateMode"
 }
 
 type UpdateStateInfo struct {

@@ -10,6 +10,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/google/uuid"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just BillableUsage API methods
@@ -34,6 +36,9 @@ type budgetPolicyImpl struct {
 
 func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolicyRequest) (*BudgetPolicy, error) {
 	var budgetPolicy BudgetPolicy
+	if request.RequestId == "" {
+		request.RequestId = uuid.New().String()
+	}
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
@@ -110,8 +115,12 @@ func (a *budgetPolicyImpl) Update(ctx context.Context, request UpdateBudgetPolic
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 
-	if request.LimitConfig != nil {
+	if request.LimitConfig != nil || slices.Contains(request.ForceSendFields, "LimitConfig") {
 		queryParams["limit_config"] = request.LimitConfig
+	}
+
+	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
+		queryParams["update_mask"] = request.UpdateMask
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -310,4 +319,100 @@ func (a *usageDashboardsImpl) Get(ctx context.Context, request GetBillingUsageDa
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getBillingUsageDashboardResponse)
 	return &getBillingUsageDashboardResponse, err
+}
+
+// unexported type that holds implementations of just UsagePolicy API methods
+type usagePolicyImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *usagePolicyImpl) Create(ctx context.Context, request CreateUsagePolicyRequest) (*UsagePolicy, error) {
+	var usagePolicy UsagePolicy
+	if request.RequestId == "" {
+		request.RequestId = uuid.New().String()
+	}
+	path := fmt.Sprintf("/api/2.1/accounts/%v/usage-policies", a.client.ConfiguredAccountID())
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &usagePolicy)
+	return &usagePolicy, err
+}
+
+func (a *usagePolicyImpl) Delete(ctx context.Context, request DeleteUsagePolicyRequest) error {
+	path := fmt.Sprintf("/api/2.1/accounts/%v/usage-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *usagePolicyImpl) Get(ctx context.Context, request GetUsagePolicyRequest) (*UsagePolicy, error) {
+	var usagePolicy UsagePolicy
+	path := fmt.Sprintf("/api/2.1/accounts/%v/usage-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &usagePolicy)
+	return &usagePolicy, err
+}
+
+// Lists all usage policies. Policies are returned in the alphabetically
+// ascending order of their names.
+func (a *usagePolicyImpl) List(ctx context.Context, request ListUsagePoliciesRequest) listing.Iterator[UsagePolicy] {
+
+	getNextPage := func(ctx context.Context, req ListUsagePoliciesRequest) (*ListUsagePoliciesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListUsagePoliciesResponse) []UsagePolicy {
+		return resp.Policies
+	}
+	getNextReq := func(resp *ListUsagePoliciesResponse) *ListUsagePoliciesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists all usage policies. Policies are returned in the alphabetically
+// ascending order of their names.
+func (a *usagePolicyImpl) ListAll(ctx context.Context, request ListUsagePoliciesRequest) ([]UsagePolicy, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[UsagePolicy](ctx, iterator)
+}
+
+func (a *usagePolicyImpl) internalList(ctx context.Context, request ListUsagePoliciesRequest) (*ListUsagePoliciesResponse, error) {
+	var listUsagePoliciesResponse ListUsagePoliciesResponse
+	path := fmt.Sprintf("/api/2.1/accounts/%v/usage-policies", a.client.ConfiguredAccountID())
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listUsagePoliciesResponse)
+	return &listUsagePoliciesResponse, err
+}
+
+func (a *usagePolicyImpl) Update(ctx context.Context, request UpdateUsagePolicyRequest) (*UsagePolicy, error) {
+	var usagePolicy UsagePolicy
+	path := fmt.Sprintf("/api/2.1/accounts/%v/usage-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	queryParams := make(map[string]any)
+
+	if request.LimitConfig != nil {
+		queryParams["limit_config"] = request.LimitConfig
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Policy, &usagePolicy)
+	return &usagePolicy, err
 }
