@@ -46,6 +46,11 @@ func (s DatabricksServiceExceptionWithDetailsProto) MarshalJSON() ([]byte, error
 	return marshal.Marshal(s)
 }
 
+type DeleteTestResourceRequest struct {
+	// Resource ID to delete
+	ResourceId string `json:"-" url:"-"`
+}
+
 // Legacy definition of the ErrorCode enum. Please keep in sync with
 // api-base/proto/error_code.proto (except status code mapping annotations as
 // this file doesn't have them). Will be removed eventually, pending the ScalaPB
