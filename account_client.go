@@ -482,10 +482,12 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	if cfg.AccountID == "" || cfg.GetHostType() == config.WorkspaceHost {
+	// WorkspaceId may not be present in a config for account client because
+	// unified hosts route calls based on the presence of the X-Databricks-Org-Id header.
+	if cfg.AccountID == "" || cfg.GetHostType() == config.WorkspaceHost || cfg.WorkspaceId != "" {
 		return nil, ErrInvalidAccountConfig
 	}
-	apiClient, err := client.New(cfg, false)
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}

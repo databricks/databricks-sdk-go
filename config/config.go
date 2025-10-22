@@ -41,9 +41,11 @@ type Loader interface {
 
 type HostTypeEnum string
 
-const WorkspaceHost HostTypeEnum = `WORKSPACE_HOST`
-const AccountHost HostTypeEnum = `ACCOUNT_HOST`
-const UnifiedHost HostTypeEnum = `UNIFIED_HOST`
+const (
+	WorkspaceHost HostTypeEnum = `WORKSPACE_HOST`
+	AccountHost   HostTypeEnum = `ACCOUNT_HOST`
+	UnifiedHost   HostTypeEnum = `UNIFIED_HOST`
+)
 
 // Config represents configuration for Databricks Connectivity
 type Config struct {
@@ -193,8 +195,8 @@ type Config struct {
 	// Keep track of the source of each attribute
 	attrSource map[string]Source
 
-	// Marker for unified hosts. Will be unnecessary once we've settled on a way to determine if a host is unified.
-	isUnifiedHost bool `name:"is_unified_host" env:"DATABRICKS_IS_UNIFIED_HOST" auth:"-"`
+	// Marker for unified hosts. Will be redundant once we can recognize unified hosts by their hostname.
+	Experimental_IsUnifiedHost bool `name:"experimental_is_unified_host" env:"DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST" auth:"-"`
 }
 
 // NewWithWorkspaceHost returns a new instance of the Config with the host set to
@@ -207,7 +209,7 @@ func (c *Config) NewWithWorkspaceHost(host string) (*Config, error) {
 		return nil, err
 	}
 
-	var fieldsToSkip = map[string]struct{}{
+	fieldsToSkip := map[string]struct{}{
 		"Host":            {},
 		"AzureResourceID": {},
 		"AccountID":       {},
@@ -303,7 +305,7 @@ func (c *Config) IsAws() bool {
 
 // GetHostType returns one of WORKSPACE_HOST, ACCOUNT_HOST, or UNIFIED HOST
 func (c *Config) GetHostType() HostTypeEnum {
-	if c.isUnifiedHost {
+	if c.Experimental_IsUnifiedHost {
 		return UnifiedHost
 	}
 
@@ -344,7 +346,6 @@ func (c *Config) EnsureResolved() error {
 		logger.Tracef(ctx, "Loading config via %s", loader.Name())
 		err := loader.Configure(c)
 		if err != nil {
-
 			return c.wrapDebug(fmt.Errorf("resolve: %w", err))
 		}
 	}
@@ -501,6 +502,10 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 }
 
 func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
+	err := c.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
 	host := c.CanonicalHostName()
 	if c.GetHostType() == AccountHost {
 		return u2m.NewBasicAccountOAuthArgument(host, c.AccountID)

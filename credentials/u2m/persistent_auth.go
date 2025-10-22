@@ -365,8 +365,9 @@ func (a *PersistentAuth) validateArg() error {
 	}
 	_, isWorkspaceArg := a.oAuthArgument.(WorkspaceOAuthArgument)
 	_, isAccountArg := a.oAuthArgument.(AccountOAuthArgument)
-	if !isWorkspaceArg && !isAccountArg {
-		return fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument or AccountOAuthArgument interface", a.oAuthArgument)
+	_, isUnifiedArg := a.oAuthArgument.(UnifiedOAuthArgument)
+	if !isWorkspaceArg && !isAccountArg && !isUnifiedArg {
+		return fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument, AccountOAuthArgument or UnifiedOAuthArgument interface", a.oAuthArgument)
 	}
 	return nil
 }
@@ -385,8 +386,10 @@ func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
 	case AccountOAuthArgument:
 		endpoints, err = a.endpointSupplier.GetAccountOAuthEndpoints(
 			a.ctx, argg.GetAccountHost(), argg.GetAccountId())
+	case UnifiedOAuthArgument:
+		endpoints, err = a.endpointSupplier.GetUnifiedOAuthEndpoints(a.ctx, argg.GetHost(), argg.GetAccountId())
 	default:
-		return nil, fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument or AccountOAuthArgument interface", a.oAuthArgument)
+		return nil, fmt.Errorf("unsupported OAuthArgument type: %T, must implement either WorkspaceOAuthArgument, AccountOAuthArgument or UnifiedOAuthArgument interface", a.oAuthArgument)
 	}
 	if err != nil {
 		return nil, fmt.Errorf("fetching OAuth endpoints: %w", err)
