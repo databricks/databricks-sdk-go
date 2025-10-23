@@ -303,6 +303,29 @@ func (c *Config) IsAws() bool {
 	return c.Host != "" && !c.IsAzure() && !c.IsGcp()
 }
 
+// IsAccountClient returns true if client is configured for Accounts API.
+// Panics if the config has the unified host flag set.
+func (c *Config) IsAccountClient() bool {
+	if c.Experimental_IsUnifiedHost {
+		panic("IsAccountClient cannot be used with unified hosts; use GetHostType() instead")
+	}
+
+	if c.AccountID != "" && c.isTesting {
+		return true
+	}
+
+	accountsPrefixes := []string{
+		"https://accounts.",
+		"https://accounts-dod.",
+	}
+	for _, prefix := range accountsPrefixes {
+		if strings.HasPrefix(c.Host, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
 // GetHostType returns one of WORKSPACE_HOST, ACCOUNT_HOST, or UNIFIED HOST
 func (c *Config) GetHostType() HostTypeEnum {
 	if c.Experimental_IsUnifiedHost {
