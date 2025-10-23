@@ -467,13 +467,13 @@ type AlertV2 struct {
 	// Custom summary for the alert. support mustache template.
 	CustomSummary string `json:"custom_summary,omitempty"`
 	// The display name of the alert.
-	DisplayName string `json:"display_name,omitempty"`
+	DisplayName string `json:"display_name"`
 	// The actual identity that will be used to execute the alert. This is an
 	// output-only field that shows the resolved run-as identity after applying
 	// permissions and defaults.
 	EffectiveRunAs *AlertV2RunAs `json:"effective_run_as,omitempty"`
 
-	Evaluation *AlertV2Evaluation `json:"evaluation,omitempty"`
+	Evaluation AlertV2Evaluation `json:"evaluation"`
 	// UUID identifying the alert.
 	Id string `json:"id,omitempty"`
 	// Indicates whether the query is trashed.
@@ -485,7 +485,7 @@ type AlertV2 struct {
 	// create, and cannot be updated.
 	ParentPath string `json:"parent_path,omitempty"`
 	// Text of the query to be run.
-	QueryText string `json:"query_text,omitempty"`
+	QueryText string `json:"query_text"`
 	// Specifies the identity that will be used to run the alert. This field
 	// allows you to configure alerts to run as a specific user or service
 	// principal. - For user identity: Set `user_name` to the email of an active
@@ -501,11 +501,11 @@ type AlertV2 struct {
 	// future release.
 	RunAsUserName string `json:"run_as_user_name,omitempty"`
 
-	Schedule *CronSchedule `json:"schedule,omitempty"`
+	Schedule CronSchedule `json:"schedule"`
 	// The timestamp indicating when the alert was updated.
 	UpdateTime string `json:"update_time,omitempty"`
 	// ID of the SQL warehouse attached to the alert.
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	WarehouseId string `json:"warehouse_id"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -520,7 +520,7 @@ func (s AlertV2) MarshalJSON() ([]byte, error) {
 
 type AlertV2Evaluation struct {
 	// Operator used for comparison in alert evaluation.
-	ComparisonOperator ComparisonOperator `json:"comparison_operator,omitempty"`
+	ComparisonOperator ComparisonOperator `json:"comparison_operator"`
 	// Alert state if result is empty. Please avoid setting this field to be
 	// `UNKNOWN` because `UNKNOWN` state is planned to be deprecated.
 	EmptyResultState AlertEvaluationState `json:"empty_result_state,omitempty"`
@@ -529,7 +529,7 @@ type AlertV2Evaluation struct {
 	// User or Notification Destination to notify when alert is triggered.
 	Notification *AlertV2Notification `json:"notification,omitempty"`
 	// Source column from result to use to evaluate alert
-	Source *AlertV2OperandColumn `json:"source,omitempty"`
+	Source AlertV2OperandColumn `json:"source"`
 	// Latest state of alert evaluation.
 	State AlertEvaluationState `json:"state,omitempty"`
 	// Threshold to user for alert evaluation, can be a column or a value.
@@ -578,7 +578,7 @@ type AlertV2OperandColumn struct {
 
 	Display string `json:"display,omitempty"`
 
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1317,23 +1317,13 @@ type CronSchedule struct {
 	// A cron expression using quartz syntax that specifies the schedule for
 	// this pipeline. Should use the quartz format described here:
 	// http://www.quartz-scheduler.org/documentation/quartz-2.1.7/tutorials/tutorial-lesson-06.html
-	QuartzCronSchedule string `json:"quartz_cron_schedule,omitempty"`
+	QuartzCronSchedule string `json:"quartz_cron_schedule"`
 	// A Java timezone id. The schedule will be resolved using this timezone.
 	// This will be combined with the quartz_cron_schedule to determine the
 	// schedule. See
 	// https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
 	// for details.
-	TimezoneId string `json:"timezone_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *CronSchedule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CronSchedule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	TimezoneId string `json:"timezone_id"`
 }
 
 // A JSON representing a dashboard containing widgets of visualizations and text
@@ -3067,8 +3057,6 @@ type ListAlertsV2Response struct {
 	Alerts []AlertV2 `json:"alerts,omitempty"`
 
 	NextPageToken string `json:"next_page_token,omitempty"`
-	// Deprecated. Use `alerts` instead.
-	Results []AlertV2 `json:"results,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

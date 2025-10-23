@@ -405,6 +405,8 @@ type CleanRoomTaskRunState struct {
 	ResultState CleanRoomTaskRunResultState `json:"result_state,omitempty"`
 }
 
+// Clean Rooms notebook task for V1 Clean Room service (GA). Replaces the
+// deprecated CleanRoomNotebookTask (defined above) which was for V0 service.
 type CleanRoomsNotebookTask struct {
 	// The clean room that the notebook belongs to.
 	CleanRoomName string `json:"clean_room_name"`
