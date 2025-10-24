@@ -66,7 +66,7 @@ type Config struct {
 	// Databricks Account ID for Accounts API. This field is used in dependencies.
 	AccountID string `name:"account_id" env:"DATABRICKS_ACCOUNT_ID"`
 
-	// Databricks Workspace ID for Workspace clients when working with unified hosts (eg. SPOG)
+	// Databricks Workspace ID for Workspace clients when working with unified hosts
 	WorkspaceId string `name:"workspace_id" env:"DATABRICKS_WORKSPACE_ID"`
 
 	Token    string `name:"token" env:"DATABRICKS_TOKEN" auth:"pat,sensitive"`
