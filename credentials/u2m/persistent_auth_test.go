@@ -79,6 +79,13 @@ func (m MockOAuthEndpointSupplier) GetWorkspaceOAuthEndpoints(ctx context.Contex
 	}, nil
 }
 
+func (m MockOAuthEndpointSupplier) GetUnifiedOAuthEndpoints(ctx context.Context, host string, accountId string) (*OAuthAuthorizationServer, error) {
+	return &OAuthAuthorizationServer{
+		AuthorizationEndpoint: fmt.Sprintf("%s/oidc/accounts/%s/v1/authorize", host, accountId),
+		TokenEndpoint:         fmt.Sprintf("%s/oidc/accounts/%s/v1/token", host, accountId),
+	}, nil
+}
+
 func TestToken_RefreshesExpiredAccessToken(t *testing.T) {
 	ctx := context.Background()
 	expectedKey := "https://accounts.cloud.databricks.com/oidc/accounts/xyz"

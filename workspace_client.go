@@ -1359,9 +1359,11 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	if cfg.IsAccountClient() {
+	hostType := cfg.GetHostType()
+	if hostType == config.AccountHost || hostType == config.UnifiedHost && cfg.WorkspaceId == "" {
 		return nil, ErrNotWorkspaceClient
 	}
+
 	apiClient, err := cfg.NewApiClient()
 	if err != nil {
 		return nil, err

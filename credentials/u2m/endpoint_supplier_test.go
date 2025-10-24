@@ -35,3 +35,23 @@ func TestGetWorkspaceOAuthEndpoints(t *testing.T) {
 	assert.Equal(t, "a", endpoints.AuthorizationEndpoint)
 	assert.Equal(t, "b", endpoints.TokenEndpoint)
 }
+
+func TestGetUnifiedOAuthEndpoints(t *testing.T) {
+	p := httpclient.NewApiClient(httpclient.ClientConfig{
+		Transport: fixtures.MappingTransport{
+			"GET /oidc/accounts/xyz/.well-known/oauth-authorization-server": {
+				Status: 200,
+				Response: map[string]string{
+					"authorization_endpoint": "https://abc/oidc/accounts/xyz/v1/authorize",
+					"token_endpoint":         "https://abc/oidc/accounts/xyz/v1/token",
+				},
+			},
+		},
+	})
+	c := &BasicOAuthEndpointSupplier{Client: p}
+	endpoints, err := c.GetUnifiedOAuthEndpoints(context.Background(), "https://abc", "xyz")
+
+	assert.NoError(t, err)
+	assert.Equal(t, "https://abc/oidc/accounts/xyz/v1/authorize", endpoints.AuthorizationEndpoint)
+	assert.Equal(t, "https://abc/oidc/accounts/xyz/v1/token", endpoints.TokenEndpoint)
+}

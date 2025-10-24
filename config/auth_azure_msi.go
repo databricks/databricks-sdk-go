@@ -32,15 +32,13 @@ func (c AzureMsiCredentials) Name() string {
 }
 
 func (c AzureMsiCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	if !cfg.IsAzure() || !cfg.AzureUseMSI || (cfg.AzureResourceID == "" && !cfg.IsAccountClient()) {
+	if !cfg.IsAzure() || !cfg.AzureUseMSI {
 		return nil, nil
 	}
 	env := cfg.Environment()
-	if !cfg.IsAccountClient() {
-		err := cfg.azureEnsureWorkspaceUrl(ctx, c)
-		if err != nil {
-			return nil, fmt.Errorf("resolve host: %w", err)
-		}
+	err := cfg.azureEnsureWorkspaceUrl(ctx, c)
+	if err != nil {
+		return nil, fmt.Errorf("resolve host: %w", err)
 	}
 	logger.Debugf(ctx, "Generating AAD token via Azure MSI")
 	inner := azureReuseTokenSource(nil, c.tokenSourceFor(ctx, cfg, "", env.AzureApplicationID))
