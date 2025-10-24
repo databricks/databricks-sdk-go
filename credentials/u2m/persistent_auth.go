@@ -358,7 +358,7 @@ func (a *PersistentAuth) Close() error {
 }
 
 // validateArg ensures that the OAuthArgument is either a WorkspaceOAuthArgument
-// or an AccountOAuthArgument.
+// or an AccountOAuthArgument or a UnifiedOAuthArgument.
 func (a *PersistentAuth) validateArg() error {
 	if a.oAuthArgument == nil {
 		return errors.New("missing OAuthArgument")

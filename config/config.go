@@ -39,12 +39,12 @@ type Loader interface {
 	Configure(*Config) error
 }
 
-type HostTypeEnum string
+type HostType string
 
 const (
-	WorkspaceHost HostTypeEnum = `WORKSPACE_HOST`
-	AccountHost   HostTypeEnum = `ACCOUNT_HOST`
-	UnifiedHost   HostTypeEnum = `UNIFIED_HOST`
+	WorkspaceHost HostType = `WORKSPACE_HOST`
+	AccountHost   HostType = `ACCOUNT_HOST`
+	UnifiedHost   HostType = `UNIFIED_HOST`
 )
 
 // Config represents configuration for Databricks Connectivity
@@ -305,6 +305,8 @@ func (c *Config) IsAws() bool {
 
 // IsAccountClient returns true if client is configured for Accounts API.
 // Panics if the config has the unified host flag set.
+//
+// Deprecated: Use GetHostType() instead.
 func (c *Config) IsAccountClient() bool {
 	if c.Experimental_IsUnifiedHost {
 		panic("IsAccountClient cannot be used with unified hosts; use GetHostType() instead")
@@ -327,7 +329,7 @@ func (c *Config) IsAccountClient() bool {
 }
 
 // GetHostType returns one of WORKSPACE_HOST, ACCOUNT_HOST, or UNIFIED HOST
-func (c *Config) GetHostType() HostTypeEnum {
+func (c *Config) GetHostType() HostType {
 	if c.Experimental_IsUnifiedHost {
 		return UnifiedHost
 	}

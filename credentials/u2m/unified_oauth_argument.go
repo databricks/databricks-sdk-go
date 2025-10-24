@@ -44,7 +44,7 @@ func (a BasicUnifiedOAuthArgument) GetAccountId() string {
 }
 
 // GetCacheKey returns a unique key for caching the OAuth token for the account.
-// The key is in the format "<accountHost>/oidc/accounts/<accountID>".
+// The key is in the format "<hostName>/oidc/accounts/<accountID>".
 func (a BasicUnifiedOAuthArgument) GetCacheKey() string {
 	return fmt.Sprintf("%s/oidc/accounts/%s", a.host, a.accountID)
 }
