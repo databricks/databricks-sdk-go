@@ -14,9 +14,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
-// workspaceOrgIdVisitor creates a visitor that adds X-Databricks-Org-Id header
-// with the workspace ID to all requests made by workspace clients
-// It relies on the workspace ID being set if and only if a workspace client is being used.
+// This visitor assumes that cfg.WorkspaceId is only set for workspace clients.
+// Unified hosts rely on this header to distinguish workpsace from account requests.
 func workspaceOrgIdVisitor(cfg *Config) func(r *http.Request) error {
 	return func(r *http.Request) error {
 		if cfg.WorkspaceId != "" {
