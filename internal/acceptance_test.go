@@ -156,7 +156,6 @@ func TestAccountClient_RejectsWorkspaceId(t *testing.T) {
 		Host:        "https://accounts.cloud.databricks.com",
 		AccountID:   "test-account",
 		WorkspaceId: "12345",
-		Token:       "test-token",
 	}
 	_, err := databricks.NewAccountClient(cfg)
 	assert.ErrorIs(t, err, databricks.ErrWorkspaceIdInAccountClient)
@@ -168,7 +167,6 @@ func TestAccountClient_UnifiedHostWithoutWorkspaceId(t *testing.T) {
 	cfg := &databricks.Config{
 		Host:                       "https://unified.cloud.databricks.com",
 		AccountID:                  "test-account",
-		Token:                      "test-token",
 		Experimental_IsUnifiedHost: true,
 	}
 	client, err := databricks.NewAccountClient(cfg)
@@ -182,7 +180,6 @@ func TestWorkspaceClient_RequiresWorkspaceIdOnUnifiedHost(t *testing.T) {
 	cfg := &databricks.Config{
 		Host:                       "https://unified.cloud.databricks.com",
 		AccountID:                  "test-account",
-		Token:                      "test-token",
 		Experimental_IsUnifiedHost: true,
 		// Missing WorkspaceId
 	}
@@ -197,7 +194,6 @@ func TestWorkspaceClient_AcceptsWorkspaceIdOnUnifiedHost(t *testing.T) {
 		Host:                       "https://unified.cloud.databricks.com",
 		AccountID:                  "test-account",
 		WorkspaceId:                "12345",
-		Token:                      "test-token",
 		Experimental_IsUnifiedHost: true,
 	}
 	client, err := databricks.NewWorkspaceClient(cfg)
