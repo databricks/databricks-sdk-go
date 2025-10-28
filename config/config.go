@@ -47,6 +47,14 @@ const (
 	UnifiedHost   HostType = "UNIFIED_HOST"
 )
 
+type ConfigType string
+
+const (
+	WorkspaceConfig ConfigType = "WORKSPACE_CONFIG"
+	AccountConfig   ConfigType = "ACCOUNT_CONFIG"
+	InvalidConfig   ConfigType = "INVALID_CONFIG"
+)
+
 // Config represents configuration for Databricks Connectivity
 type Config struct {
 	// Credentials holds an instance of Credentials Strategy to authenticate with Databricks REST APIs.
@@ -349,6 +357,33 @@ func (c *Config) HostType() HostType {
 	}
 
 	return WorkspaceHost
+}
+
+// ConfigType returns the type of config that the client is configured for.
+// Returns InvalidConfig if the config is invalid.
+// Use of this function should be avoided where possible, because we plan
+// to remove WorkspaceClient and AccountClient in favo of a single unified
+// client in the future.
+//
+// Deprecated: Use HostType() instead.
+func (c *Config) ConfigType() ConfigType {
+	switch c.HostType() {
+	case AccountHost:
+		return AccountConfig
+	case WorkspaceHost:
+		return WorkspaceConfig
+	case UnifiedHost:
+		if c.AccountID == "" {
+			// All unified host configs must have an account ID
+			return InvalidConfig
+		}
+		if c.WorkspaceId != "" {
+			return WorkspaceConfig
+		}
+		return AccountConfig
+	default:
+		return InvalidConfig
+	}
 }
 
 func (c *Config) EnsureResolved() error {
