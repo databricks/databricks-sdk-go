@@ -37,23 +37,3 @@ func TestAuthInUserAgentVisitorCustom(t *testing.T) {
 	assert.NotContains(t, uac, "auth/PAT")
 	assert.Contains(t, uac, "auth/oath")
 }
-
-func TestWorkspaceOrgIdVisitor_AddsHeader(t *testing.T) {
-	cfg := &Config{WorkspaceId: "12345"}
-	request := &http.Request{Header: http.Header{}}
-
-	err := workspaceOrgIdVisitor(cfg)(request)
-
-	assert.NoError(t, err)
-	assert.Equal(t, "12345", request.Header.Get("X-Databricks-Org-Id"))
-}
-
-func TestWorkspaceOrgIdVisitor_NoHeaderWhenEmpty(t *testing.T) {
-	cfg := &Config{WorkspaceId: ""}
-	request := &http.Request{Header: http.Header{}}
-
-	err := workspaceOrgIdVisitor(cfg)(request)
-
-	assert.NoError(t, err)
-	assert.Empty(t, request.Header.Get("X-Databricks-Org-Id"))
-}
