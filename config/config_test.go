@@ -11,37 +11,37 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGetHostType_AwsAccount(t *testing.T) {
+func TestHostType_AwsAccount(t *testing.T) {
 	c := &Config{
 		Host:      "https://accounts.cloud.databricks.com",
 		AccountID: "123e4567-e89b-12d3-a456-426614174000",
 	}
-	assert.Equal(t, AccountHost, c.GetHostType())
+	assert.Equal(t, AccountHost, c.HostType())
 }
 
-func TestGetHostType_AwsDodAccount(t *testing.T) {
+func TestHostType_AwsDodAccount(t *testing.T) {
 	c := &Config{
 		Host:      "https://accounts-dod.cloud.databricks.us",
 		AccountID: "123e4567-e89b-12d3-a456-426614174000",
 	}
-	assert.Equal(t, AccountHost, c.GetHostType())
+	assert.Equal(t, AccountHost, c.HostType())
 }
 
-func TestGetHostType_AwsWorkspace(t *testing.T) {
+func TestHostType_AwsWorkspace(t *testing.T) {
 	c := &Config{
 		Host:      "https://my-workspace.cloud.databricks.us",
 		AccountID: "123e4567-e89b-12d3-a456-426614174000",
 	}
-	assert.Equal(t, WorkspaceHost, c.GetHostType())
+	assert.Equal(t, WorkspaceHost, c.HostType())
 }
 
-func TestGetHostType_Unified(t *testing.T) {
+func TestHostType_Unified(t *testing.T) {
 	c := &Config{
 		Host:                       "https://unified.cloud.databricks.com",
 		AccountID:                  "123e4567-e89b-12d3-a456-426614174000",
 		Experimental_IsUnifiedHost: true,
 	}
-	assert.Equal(t, UnifiedHost, c.GetHostType())
+	assert.Equal(t, UnifiedHost, c.HostType())
 }
 
 func TestIsAccountClient_PanicsOnUnifiedHost(t *testing.T) {

@@ -30,7 +30,7 @@ type BasicOAuthEndpointSupplier struct {
 	Client *httpclient.ApiClient
 }
 
-// getOAuthEndpointsByDiscoveryUrl queries the OIDC discovery endpoint to get the OAuth endpoints
+// getOAuthEndpointsByDiscoveryUrl queries the OIDC discovery endpoint to get the OAuth endpoints.
 func (c *BasicOAuthEndpointSupplier) getOAuthEndpointsByDiscoveryUrl(ctx context.Context, discoveryUrl string) (*OAuthAuthorizationServer, error) {
 	var oauthEndpoints OAuthAuthorizationServer
 	if err := c.Client.Do(ctx, "GET", discoveryUrl, httpclient.WithResponseUnmarshal(&oauthEndpoints)); err != nil {

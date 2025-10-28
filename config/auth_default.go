@@ -131,7 +131,7 @@ func oidcStrategy(cfg *Config, name string, ts oidc.IDTokenSource) CredentialsSt
 		Audience:              cfg.TokenAudience,
 		IDTokenSource:         ts,
 	}
-	if cfg.GetHostType() != WorkspaceHost {
+	if cfg.HostType() != WorkspaceHost {
 		oidcConfig.AccountID = cfg.AccountID
 	}
 	tokenSource := oidc.NewDatabricksOIDCTokenSource(oidcConfig)

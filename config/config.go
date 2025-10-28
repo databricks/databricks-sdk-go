@@ -42,9 +42,9 @@ type Loader interface {
 type HostType string
 
 const (
-	WorkspaceHost HostType = `WORKSPACE_HOST`
-	AccountHost   HostType = `ACCOUNT_HOST`
-	UnifiedHost   HostType = `UNIFIED_HOST`
+	WorkspaceHost HostType = "WORKSPACE_HOST"
+	AccountHost   HostType = "ACCOUNT_HOST"
+	UnifiedHost   HostType = "UNIFIED_HOST"
 )
 
 // Config represents configuration for Databricks Connectivity
@@ -306,10 +306,10 @@ func (c *Config) IsAws() bool {
 // IsAccountClient returns true if client is configured for Accounts API.
 // Panics if the config has the unified host flag set.
 //
-// Deprecated: Use GetHostType() instead.
+// Deprecated: Use HostType() instead.
 func (c *Config) IsAccountClient() bool {
 	if c.Experimental_IsUnifiedHost {
-		panic("IsAccountClient cannot be used with unified hosts; use GetHostType() instead")
+		panic("IsAccountClient cannot be used with unified hosts; use HostType() instead")
 	}
 
 	if c.AccountID != "" && c.isTesting {
@@ -328,8 +328,8 @@ func (c *Config) IsAccountClient() bool {
 	return false
 }
 
-// GetHostType returns one of WORKSPACE_HOST, ACCOUNT_HOST, or UNIFIED HOST
-func (c *Config) GetHostType() HostType {
+// HostType returns the type of host that the client is configured for.
+func (c *Config) HostType() HostType {
 	if c.Experimental_IsUnifiedHost {
 		return UnifiedHost
 	}
@@ -518,12 +518,16 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 		Client: c.refreshClient,
 	}
 	host := c.CanonicalHostName()
-	if c.GetHostType() == AccountHost {
+	switch hostType := c.HostType(); hostType {
+	case AccountHost:
 		return oauthClient.GetAccountOAuthEndpoints(ctx, host, c.AccountID)
-	} else if c.GetHostType() == UnifiedHost {
+	case UnifiedHost:
 		return oauthClient.GetUnifiedOAuthEndpoints(ctx, host, c.AccountID)
+	case WorkspaceHost:
+		return oauthClient.GetWorkspaceOAuthEndpoints(ctx, host)
+	default:
+		return nil, fmt.Errorf("unknown host type: %v", hostType)
 	}
-	return oauthClient.GetWorkspaceOAuthEndpoints(ctx, host)
 }
 
 func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
@@ -532,11 +536,14 @@ func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
 		return nil, err
 	}
 	host := c.CanonicalHostName()
-	if c.GetHostType() == AccountHost {
+	switch hostType := c.HostType(); hostType {
+	case AccountHost:
 		return u2m.NewBasicAccountOAuthArgument(host, c.AccountID)
-	}
-	if c.GetHostType() == UnifiedHost {
+	case UnifiedHost:
 		return u2m.NewBasicUnifiedOAuthArgument(host, c.AccountID)
+	case WorkspaceHost:
+		return u2m.NewBasicWorkspaceOAuthArgument(host)
+	default:
+		return nil, fmt.Errorf("unknown host type: %v", hostType)
 	}
-	return u2m.NewBasicWorkspaceOAuthArgument(host)
 }
