@@ -149,58 +149,6 @@ func TestAccErrNotWorkspaceClient(t *testing.T) {
 	assert.ErrorIs(t, err, databricks.ErrNotWorkspaceClient)
 }
 
-func TestAccountClient_RejectsWorkspaceId(t *testing.T) {
-	// Confirm that we get an error when trying to create an account client
-	// with WorkspaceId set.
-	cfg := &databricks.Config{
-		Host:        "https://accounts.cloud.databricks.com",
-		AccountID:   "test-account",
-		WorkspaceId: "12345",
-	}
-	_, err := databricks.NewAccountClient(cfg)
-	assert.ErrorIs(t, err, databricks.ErrWorkspaceIdInAccountClient)
-}
-
-func TestAccountClient_UnifiedHostWithoutWorkspaceId(t *testing.T) {
-	// Confirm that we can create an account client on a unified host
-	// without WorkspaceId set.
-	cfg := &databricks.Config{
-		Host:                       "https://unified.cloud.databricks.com",
-		AccountID:                  "test-account",
-		Experimental_IsUnifiedHost: true,
-	}
-	client, err := databricks.NewAccountClient(cfg)
-	assert.NoError(t, err)
-	assert.NotNil(t, client)
-}
-
-func TestWorkspaceClient_RequiresWorkspaceIdOnUnifiedHost(t *testing.T) {
-	// Confirm that we get an error when trying to create a workspace client
-	// on a unified host without WorkspaceId set.
-	cfg := &databricks.Config{
-		Host:                       "https://unified.cloud.databricks.com",
-		AccountID:                  "test-account",
-		Experimental_IsUnifiedHost: true,
-		// Missing WorkspaceId
-	}
-	_, err := databricks.NewWorkspaceClient(cfg)
-	assert.ErrorIs(t, err, databricks.ErrNotWorkspaceClient)
-}
-
-func TestWorkspaceClient_AcceptsWorkspaceIdOnUnifiedHost(t *testing.T) {
-	// Confirm that we can create a workspace client on a unified host
-	// with WorkspaceId set.
-	cfg := &databricks.Config{
-		Host:                       "https://unified.cloud.databricks.com",
-		AccountID:                  "test-account",
-		WorkspaceId:                "12345",
-		Experimental_IsUnifiedHost: true,
-	}
-	client, err := databricks.NewWorkspaceClient(cfg)
-	assert.NoError(t, err)
-	assert.NotNil(t, client)
-}
-
 // Confirm that we can access the account IP access lists using MSI credentials.
 func TestAccAccountsMsiCredentials(t *testing.T) {
 	t.Log(GetEnvOrSkipTest(t, "ARM_USE_MSI"))
