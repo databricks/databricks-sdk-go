@@ -1161,7 +1161,7 @@ Note: This release contains breaking changes, please see the API changes below f
 
 OpenAPI SHA: 7016dcbf2e011459416cf408ce21143bcc4b3a25, Date: 2024-12-05
 
-## Release v0.52.0 (2024-11-20)
+## Release v0.52.0 (2024-11-19)
 
 ### Internal Changes
 
@@ -4729,6 +4729,6 @@ Dependency updates:
 
 * Improved usage instructions and added more documentation for services.
 
-## Release v0.1.0 (2022-12-02)
+## Release v0.1.0 (2022-11-30)
 
  * Initial release of the Databricks SDK for Go.
