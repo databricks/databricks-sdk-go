@@ -331,6 +331,23 @@ func (s CommentObject) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ContinuousWindow struct {
+	// The offset of the continuous window (must be non-positive).
+	Offset string `json:"offset,omitempty"`
+	// The duration of the continuous window (must be positive).
+	WindowDuration string `json:"window_duration"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ContinuousWindow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ContinuousWindow) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Details required to create a comment on a model version.
 type CreateComment struct {
 	// User-provided comment on the action.
@@ -2392,9 +2409,9 @@ type MaterializedFeature struct {
 	// Unique identifier for the materialized feature.
 	MaterializedFeatureId string `json:"materialized_feature_id,omitempty"`
 
-	OfflineStoreConfig OfflineStoreConfig `json:"offline_store_config"`
+	OfflineStoreConfig *OfflineStoreConfig `json:"offline_store_config,omitempty"`
 
-	OnlineStoreConfig OnlineStore `json:"online_store_config"`
+	OnlineStoreConfig *OnlineStore `json:"online_store_config,omitempty"`
 	// The schedule state of the materialization pipeline.
 	PipelineScheduleState MaterializedFeaturePipelineScheduleState `json:"pipeline_schedule_state,omitempty"`
 	// The fully qualified Unity Catalog path to the table containing the
@@ -3951,6 +3968,14 @@ func (s SetTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type SlidingWindow struct {
+	// The slide duration (interval by which windows advance, must be positive
+	// and less than duration).
+	SlideDuration string `json:"slide_duration"`
+	// The duration of the sliding window.
+	WindowDuration string `json:"window_duration"`
+}
+
 // The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
 // Request to register a new model version is pending as server performs
 // background tasks.
@@ -4030,20 +4055,11 @@ func (s TestRegistryWebhookResponse) MarshalJSON() ([]byte, error) {
 }
 
 type TimeWindow struct {
-	// The duration of the time window.
-	Duration string `json:"duration"`
-	// The offset of the time window.
-	Offset string `json:"offset,omitempty"`
+	Continuous *ContinuousWindow `json:"continuous,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
-}
+	Sliding *SlidingWindow `json:"sliding,omitempty"`
 
-func (s *TimeWindow) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s TimeWindow) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	Tumbling *TumblingWindow `json:"tumbling,omitempty"`
 }
 
 // Details required to transition a model version's stage.
@@ -4118,6 +4134,12 @@ func (s TransitionRequest) MarshalJSON() ([]byte, error) {
 type TransitionStageResponse struct {
 	// Updated model version
 	ModelVersionDatabricks *ModelVersionDatabricks `json:"model_version_databricks,omitempty"`
+}
+
+type TumblingWindow struct {
+	// The duration of each tumbling window (non-overlapping, fixed-duration
+	// windows).
+	WindowDuration string `json:"window_duration"`
 }
 
 // Details required to edit a comment on a model version.

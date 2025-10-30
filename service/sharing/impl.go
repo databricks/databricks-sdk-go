@@ -416,8 +416,9 @@ func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*ShareIn
 	return &shareInfo, err
 }
 
-// Gets an array of data object shares from the metastore. The caller must be a
-// metastore admin or the owner of the share. There is no guarantee of a
+// Gets an array of data object shares from the metastore. If the caller has the
+// USE_SHARE privilege on the metastore, all shares are returned. Otherwise,
+// only shares owned by the caller are returned. There is no guarantee of a
 // specific ordering of the elements in the array.
 func (a *sharesImpl) ListShares(ctx context.Context, request SharesListRequest) listing.Iterator[ShareInfo] {
 
@@ -445,8 +446,9 @@ func (a *sharesImpl) ListShares(ctx context.Context, request SharesListRequest) 
 	return iterator
 }
 
-// Gets an array of data object shares from the metastore. The caller must be a
-// metastore admin or the owner of the share. There is no guarantee of a
+// Gets an array of data object shares from the metastore. If the caller has the
+// USE_SHARE privilege on the metastore, all shares are returned. Otherwise,
+// only shares owned by the caller are returned. There is no guarantee of a
 // specific ordering of the elements in the array.
 func (a *sharesImpl) ListSharesAll(ctx context.Context, request SharesListRequest) ([]ShareInfo, error) {
 	iterator := a.ListShares(ctx, request)

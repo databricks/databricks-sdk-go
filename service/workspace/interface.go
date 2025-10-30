@@ -397,7 +397,8 @@ type WorkspaceService interface {
 	// is set to `false`, this call returns an error `RESOURCE_ALREADY_EXISTS`.
 	// To import a directory, you can use either the `DBC` format or the
 	// `SOURCE` format with the `language` field unset. To import a single file
-	// as `SOURCE`, you must set the `language` field.
+	// as `SOURCE`, you must set the `language` field. Zip files within
+	// directories are not supported.
 	Import(ctx context.Context, request Import) error
 
 	// Lists the contents of a directory, or the object if it is not a
