@@ -9,7 +9,7 @@ import (
 type UnifiedOAuthArgument interface {
 	OAuthArgument
 
-	// GetAccountHost returns the host of the account to authenticate to.
+	// GetHost returns the host to authenticate to.
 	GetHost() string
 
 	// GetAccountId returns the account ID of the account to authenticate to.

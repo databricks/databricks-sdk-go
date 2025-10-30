@@ -350,6 +350,7 @@ func (c *Config) HostType() HostType {
 		return UnifiedHost
 	}
 
+	// TODO: Refactor tests so that this is not needed.
 	if c.AccountID != "" && c.isTesting {
 		return AccountHost
 	}
