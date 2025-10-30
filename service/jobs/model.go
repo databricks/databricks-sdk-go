@@ -5809,8 +5809,6 @@ type TriggerSettings struct {
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 	// Periodic trigger settings.
 	Periodic *PeriodicTriggerConfiguration `json:"periodic,omitempty"`
-	// Old table trigger settings name. Deprecated in favor of `table_update`.
-	Table *TableUpdateTriggerConfiguration `json:"table,omitempty"`
 
 	TableUpdate *TableUpdateTriggerConfiguration `json:"table_update,omitempty"`
 }

@@ -928,7 +928,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 46
+// Next Id: 47
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -6835,7 +6835,7 @@ type RunRefreshRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
-// Next ID: 42
+// Next ID: 43
 type SchemaInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -6912,7 +6912,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_SALESFORCE_OAUTH_MTLS = 268; Next id:269
+// Latest kind: CONNECTION_AWS_SECRETS_MANAGER = 270; Next id:271
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`

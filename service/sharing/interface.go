@@ -192,7 +192,8 @@ type RecipientsService interface {
 	RotateToken(ctx context.Context, request RotateRecipientToken) (*RecipientInfo, error)
 
 	// Gets the share permissions for the specified Recipient. The caller must
-	// be a metastore admin or the owner of the Recipient.
+	// have the USE_RECIPIENT privilege on the metastore or be the owner of the
+	// Recipient.
 	SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error)
 
 	// Updates an existing recipient in the metastore. The caller must be a
@@ -220,17 +221,19 @@ type SharesService interface {
 	// owner of the share.
 	Delete(ctx context.Context, request DeleteShareRequest) error
 
-	// Gets a data object share from the metastore. The caller must be a
-	// metastore admin or the owner of the share.
+	// Gets a data object share from the metastore. The caller must have the
+	// USE_SHARE privilege on the metastore or be the owner of the share.
 	Get(ctx context.Context, request GetShareRequest) (*ShareInfo, error)
 
-	// Gets an array of data object shares from the metastore. The caller must
-	// be a metastore admin or the owner of the share. There is no guarantee of
-	// a specific ordering of the elements in the array.
+	// Gets an array of data object shares from the metastore. If the caller has
+	// the USE_SHARE privilege on the metastore, all shares are returned.
+	// Otherwise, only shares owned by the caller are returned. There is no
+	// guarantee of a specific ordering of the elements in the array.
 	ListShares(ctx context.Context, request SharesListRequest) (*ListSharesResponse, error)
 
 	// Gets the permissions for a data share from the metastore. The caller must
-	// be a metastore admin or the owner of the share.
+	// have the USE_SHARE privilege on the metastore or be the owner of the
+	// share.
 	SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetSharePermissionsResponse, error)
 
 	// Updates the share with the changes and data objects in the request. The
@@ -254,10 +257,10 @@ type SharesService interface {
 	Update(ctx context.Context, request UpdateShare) (*ShareInfo, error)
 
 	// Updates the permissions for a data share in the metastore. The caller
-	// must be a metastore admin or an owner of the share.
+	// must have both the USE_SHARE and SET_SHARE_PERMISSION privileges on the
+	// metastore, or be the owner of the share.
 	//
-	// For new recipient grants, the user must also be the recipient owner or
-	// metastore admin. recipient revocations do not require additional
-	// privileges.
+	// For new recipient grants, the user must also be the owner of the
+	// recipients. recipient revocations do not require additional privileges.
 	UpdatePermissions(ctx context.Context, request UpdateSharePermissions) (*UpdateSharePermissionsResponse, error)
 }

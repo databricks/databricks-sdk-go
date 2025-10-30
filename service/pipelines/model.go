@@ -83,6 +83,8 @@ type CreatePipeline struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+	// Usage policy of this pipeline.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -318,6 +320,8 @@ type EditPipeline struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+	// Usage policy of this pipeline.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1536,6 +1540,8 @@ type PipelineSpec struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+	// Usage policy of this pipeline.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
