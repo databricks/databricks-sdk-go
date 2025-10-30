@@ -192,7 +192,7 @@ func (a *alertsV2Impl) ListAlerts(ctx context.Context, request ListAlertsV2Reque
 		return a.internalListAlerts(ctx, req)
 	}
 	getItems := func(resp *ListAlertsV2Response) []AlertV2 {
-		return resp.Results
+		return resp.Alerts
 	}
 	getNextReq := func(resp *ListAlertsV2Response) *ListAlertsV2Request {
 		if resp.NextPageToken == "" {

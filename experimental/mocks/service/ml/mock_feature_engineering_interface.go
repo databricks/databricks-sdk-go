@@ -83,6 +83,65 @@ func (_c *MockFeatureEngineeringInterface_CreateFeature_Call) RunAndReturn(run f
 	return _c
 }
 
+// CreateMaterializedFeature provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) CreateMaterializedFeature(ctx context.Context, request ml.CreateMaterializedFeatureRequest) (*ml.MaterializedFeature, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateMaterializedFeature")
+	}
+
+	var r0 *ml.MaterializedFeature
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.CreateMaterializedFeatureRequest) (*ml.MaterializedFeature, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.CreateMaterializedFeatureRequest) *ml.MaterializedFeature); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.MaterializedFeature)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.CreateMaterializedFeatureRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_CreateMaterializedFeature_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateMaterializedFeature'
+type MockFeatureEngineeringInterface_CreateMaterializedFeature_Call struct {
+	*mock.Call
+}
+
+// CreateMaterializedFeature is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.CreateMaterializedFeatureRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) CreateMaterializedFeature(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_CreateMaterializedFeature_Call {
+	return &MockFeatureEngineeringInterface_CreateMaterializedFeature_Call{Call: _e.mock.On("CreateMaterializedFeature", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateMaterializedFeature_Call) Run(run func(ctx context.Context, request ml.CreateMaterializedFeatureRequest)) *MockFeatureEngineeringInterface_CreateMaterializedFeature_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.CreateMaterializedFeatureRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateMaterializedFeature_Call) Return(_a0 *ml.MaterializedFeature, _a1 error) *MockFeatureEngineeringInterface_CreateMaterializedFeature_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateMaterializedFeature_Call) RunAndReturn(run func(context.Context, ml.CreateMaterializedFeatureRequest) (*ml.MaterializedFeature, error)) *MockFeatureEngineeringInterface_CreateMaterializedFeature_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteFeature provides a mock function with given fields: ctx, request
 func (_m *MockFeatureEngineeringInterface) DeleteFeature(ctx context.Context, request ml.DeleteFeatureRequest) error {
 	ret := _m.Called(ctx, request)
@@ -126,6 +185,53 @@ func (_c *MockFeatureEngineeringInterface_DeleteFeature_Call) Return(_a0 error) 
 }
 
 func (_c *MockFeatureEngineeringInterface_DeleteFeature_Call) RunAndReturn(run func(context.Context, ml.DeleteFeatureRequest) error) *MockFeatureEngineeringInterface_DeleteFeature_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteMaterializedFeature provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) DeleteMaterializedFeature(ctx context.Context, request ml.DeleteMaterializedFeatureRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteMaterializedFeature")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.DeleteMaterializedFeatureRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockFeatureEngineeringInterface_DeleteMaterializedFeature_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteMaterializedFeature'
+type MockFeatureEngineeringInterface_DeleteMaterializedFeature_Call struct {
+	*mock.Call
+}
+
+// DeleteMaterializedFeature is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.DeleteMaterializedFeatureRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) DeleteMaterializedFeature(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_DeleteMaterializedFeature_Call {
+	return &MockFeatureEngineeringInterface_DeleteMaterializedFeature_Call{Call: _e.mock.On("DeleteMaterializedFeature", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteMaterializedFeature_Call) Run(run func(ctx context.Context, request ml.DeleteMaterializedFeatureRequest)) *MockFeatureEngineeringInterface_DeleteMaterializedFeature_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.DeleteMaterializedFeatureRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteMaterializedFeature_Call) Return(_a0 error) *MockFeatureEngineeringInterface_DeleteMaterializedFeature_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteMaterializedFeature_Call) RunAndReturn(run func(context.Context, ml.DeleteMaterializedFeatureRequest) error) *MockFeatureEngineeringInterface_DeleteMaterializedFeature_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -185,6 +291,65 @@ func (_c *MockFeatureEngineeringInterface_GetFeature_Call) Return(_a0 *ml.Featur
 }
 
 func (_c *MockFeatureEngineeringInterface_GetFeature_Call) RunAndReturn(run func(context.Context, ml.GetFeatureRequest) (*ml.Feature, error)) *MockFeatureEngineeringInterface_GetFeature_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetMaterializedFeature provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) GetMaterializedFeature(ctx context.Context, request ml.GetMaterializedFeatureRequest) (*ml.MaterializedFeature, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetMaterializedFeature")
+	}
+
+	var r0 *ml.MaterializedFeature
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetMaterializedFeatureRequest) (*ml.MaterializedFeature, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetMaterializedFeatureRequest) *ml.MaterializedFeature); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.MaterializedFeature)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.GetMaterializedFeatureRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_GetMaterializedFeature_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMaterializedFeature'
+type MockFeatureEngineeringInterface_GetMaterializedFeature_Call struct {
+	*mock.Call
+}
+
+// GetMaterializedFeature is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.GetMaterializedFeatureRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) GetMaterializedFeature(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_GetMaterializedFeature_Call {
+	return &MockFeatureEngineeringInterface_GetMaterializedFeature_Call{Call: _e.mock.On("GetMaterializedFeature", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_GetMaterializedFeature_Call) Run(run func(ctx context.Context, request ml.GetMaterializedFeatureRequest)) *MockFeatureEngineeringInterface_GetMaterializedFeature_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.GetMaterializedFeatureRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_GetMaterializedFeature_Call) Return(_a0 *ml.MaterializedFeature, _a1 error) *MockFeatureEngineeringInterface_GetMaterializedFeature_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_GetMaterializedFeature_Call) RunAndReturn(run func(context.Context, ml.GetMaterializedFeatureRequest) (*ml.MaterializedFeature, error)) *MockFeatureEngineeringInterface_GetMaterializedFeature_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -297,6 +462,114 @@ func (_c *MockFeatureEngineeringInterface_ListFeaturesAll_Call) RunAndReturn(run
 	return _c
 }
 
+// ListMaterializedFeatures provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) ListMaterializedFeatures(ctx context.Context, request ml.ListMaterializedFeaturesRequest) listing.Iterator[ml.MaterializedFeature] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListMaterializedFeatures")
+	}
+
+	var r0 listing.Iterator[ml.MaterializedFeature]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListMaterializedFeaturesRequest) listing.Iterator[ml.MaterializedFeature]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[ml.MaterializedFeature])
+		}
+	}
+
+	return r0
+}
+
+// MockFeatureEngineeringInterface_ListMaterializedFeatures_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMaterializedFeatures'
+type MockFeatureEngineeringInterface_ListMaterializedFeatures_Call struct {
+	*mock.Call
+}
+
+// ListMaterializedFeatures is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.ListMaterializedFeaturesRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) ListMaterializedFeatures(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_ListMaterializedFeatures_Call {
+	return &MockFeatureEngineeringInterface_ListMaterializedFeatures_Call{Call: _e.mock.On("ListMaterializedFeatures", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_ListMaterializedFeatures_Call) Run(run func(ctx context.Context, request ml.ListMaterializedFeaturesRequest)) *MockFeatureEngineeringInterface_ListMaterializedFeatures_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.ListMaterializedFeaturesRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_ListMaterializedFeatures_Call) Return(_a0 listing.Iterator[ml.MaterializedFeature]) *MockFeatureEngineeringInterface_ListMaterializedFeatures_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_ListMaterializedFeatures_Call) RunAndReturn(run func(context.Context, ml.ListMaterializedFeaturesRequest) listing.Iterator[ml.MaterializedFeature]) *MockFeatureEngineeringInterface_ListMaterializedFeatures_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListMaterializedFeaturesAll provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) ListMaterializedFeaturesAll(ctx context.Context, request ml.ListMaterializedFeaturesRequest) ([]ml.MaterializedFeature, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListMaterializedFeaturesAll")
+	}
+
+	var r0 []ml.MaterializedFeature
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListMaterializedFeaturesRequest) ([]ml.MaterializedFeature, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListMaterializedFeaturesRequest) []ml.MaterializedFeature); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]ml.MaterializedFeature)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.ListMaterializedFeaturesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_ListMaterializedFeaturesAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMaterializedFeaturesAll'
+type MockFeatureEngineeringInterface_ListMaterializedFeaturesAll_Call struct {
+	*mock.Call
+}
+
+// ListMaterializedFeaturesAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.ListMaterializedFeaturesRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) ListMaterializedFeaturesAll(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_ListMaterializedFeaturesAll_Call {
+	return &MockFeatureEngineeringInterface_ListMaterializedFeaturesAll_Call{Call: _e.mock.On("ListMaterializedFeaturesAll", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_ListMaterializedFeaturesAll_Call) Run(run func(ctx context.Context, request ml.ListMaterializedFeaturesRequest)) *MockFeatureEngineeringInterface_ListMaterializedFeaturesAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.ListMaterializedFeaturesRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_ListMaterializedFeaturesAll_Call) Return(_a0 []ml.MaterializedFeature, _a1 error) *MockFeatureEngineeringInterface_ListMaterializedFeaturesAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_ListMaterializedFeaturesAll_Call) RunAndReturn(run func(context.Context, ml.ListMaterializedFeaturesRequest) ([]ml.MaterializedFeature, error)) *MockFeatureEngineeringInterface_ListMaterializedFeaturesAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateFeature provides a mock function with given fields: ctx, request
 func (_m *MockFeatureEngineeringInterface) UpdateFeature(ctx context.Context, request ml.UpdateFeatureRequest) (*ml.Feature, error) {
 	ret := _m.Called(ctx, request)
@@ -352,6 +625,65 @@ func (_c *MockFeatureEngineeringInterface_UpdateFeature_Call) Return(_a0 *ml.Fea
 }
 
 func (_c *MockFeatureEngineeringInterface_UpdateFeature_Call) RunAndReturn(run func(context.Context, ml.UpdateFeatureRequest) (*ml.Feature, error)) *MockFeatureEngineeringInterface_UpdateFeature_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateMaterializedFeature provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) UpdateMaterializedFeature(ctx context.Context, request ml.UpdateMaterializedFeatureRequest) (*ml.MaterializedFeature, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateMaterializedFeature")
+	}
+
+	var r0 *ml.MaterializedFeature
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateMaterializedFeatureRequest) (*ml.MaterializedFeature, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateMaterializedFeatureRequest) *ml.MaterializedFeature); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.MaterializedFeature)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.UpdateMaterializedFeatureRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_UpdateMaterializedFeature_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateMaterializedFeature'
+type MockFeatureEngineeringInterface_UpdateMaterializedFeature_Call struct {
+	*mock.Call
+}
+
+// UpdateMaterializedFeature is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.UpdateMaterializedFeatureRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) UpdateMaterializedFeature(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_UpdateMaterializedFeature_Call {
+	return &MockFeatureEngineeringInterface_UpdateMaterializedFeature_Call{Call: _e.mock.On("UpdateMaterializedFeature", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_UpdateMaterializedFeature_Call) Run(run func(ctx context.Context, request ml.UpdateMaterializedFeatureRequest)) *MockFeatureEngineeringInterface_UpdateMaterializedFeature_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.UpdateMaterializedFeatureRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_UpdateMaterializedFeature_Call) Return(_a0 *ml.MaterializedFeature, _a1 error) *MockFeatureEngineeringInterface_UpdateMaterializedFeature_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_UpdateMaterializedFeature_Call) RunAndReturn(run func(context.Context, ml.UpdateMaterializedFeatureRequest) (*ml.MaterializedFeature, error)) *MockFeatureEngineeringInterface_UpdateMaterializedFeature_Call {
 	_c.Call.Return(run)
 	return _c
 }

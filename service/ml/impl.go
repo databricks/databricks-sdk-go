@@ -603,8 +603,28 @@ func (a *featureEngineeringImpl) CreateFeature(ctx context.Context, request Crea
 	return &feature, err
 }
 
+func (a *featureEngineeringImpl) CreateMaterializedFeature(ctx context.Context, request CreateMaterializedFeatureRequest) (*MaterializedFeature, error) {
+	var materializedFeature MaterializedFeature
+	path := "/api/2.0/feature-engineering/materialized-features"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.MaterializedFeature, &materializedFeature)
+	return &materializedFeature, err
+}
+
 func (a *featureEngineeringImpl) DeleteFeature(ctx context.Context, request DeleteFeatureRequest) error {
 	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", request.FullName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *featureEngineeringImpl) DeleteMaterializedFeature(ctx context.Context, request DeleteMaterializedFeatureRequest) error {
+	path := fmt.Sprintf("/api/2.0/feature-engineering/materialized-features/%v", request.MaterializedFeatureId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -620,6 +640,16 @@ func (a *featureEngineeringImpl) GetFeature(ctx context.Context, request GetFeat
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &feature)
 	return &feature, err
+}
+
+func (a *featureEngineeringImpl) GetMaterializedFeature(ctx context.Context, request GetMaterializedFeatureRequest) (*MaterializedFeature, error) {
+	var materializedFeature MaterializedFeature
+	path := fmt.Sprintf("/api/2.0/feature-engineering/materialized-features/%v", request.MaterializedFeatureId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &materializedFeature)
+	return &materializedFeature, err
 }
 
 // List Features.
@@ -663,6 +693,47 @@ func (a *featureEngineeringImpl) internalListFeatures(ctx context.Context, reque
 	return &listFeaturesResponse, err
 }
 
+// List materialized features.
+func (a *featureEngineeringImpl) ListMaterializedFeatures(ctx context.Context, request ListMaterializedFeaturesRequest) listing.Iterator[MaterializedFeature] {
+
+	getNextPage := func(ctx context.Context, req ListMaterializedFeaturesRequest) (*ListMaterializedFeaturesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListMaterializedFeatures(ctx, req)
+	}
+	getItems := func(resp *ListMaterializedFeaturesResponse) []MaterializedFeature {
+		return resp.MaterializedFeatures
+	}
+	getNextReq := func(resp *ListMaterializedFeaturesResponse) *ListMaterializedFeaturesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List materialized features.
+func (a *featureEngineeringImpl) ListMaterializedFeaturesAll(ctx context.Context, request ListMaterializedFeaturesRequest) ([]MaterializedFeature, error) {
+	iterator := a.ListMaterializedFeatures(ctx, request)
+	return listing.ToSlice[MaterializedFeature](ctx, iterator)
+}
+
+func (a *featureEngineeringImpl) internalListMaterializedFeatures(ctx context.Context, request ListMaterializedFeaturesRequest) (*ListMaterializedFeaturesResponse, error) {
+	var listMaterializedFeaturesResponse ListMaterializedFeaturesResponse
+	path := "/api/2.0/feature-engineering/materialized-features"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listMaterializedFeaturesResponse)
+	return &listMaterializedFeaturesResponse, err
+}
+
 func (a *featureEngineeringImpl) UpdateFeature(ctx context.Context, request UpdateFeatureRequest) (*Feature, error) {
 	var feature Feature
 	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", request.FullName)
@@ -676,6 +747,21 @@ func (a *featureEngineeringImpl) UpdateFeature(ctx context.Context, request Upda
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Feature, &feature)
 	return &feature, err
+}
+
+func (a *featureEngineeringImpl) UpdateMaterializedFeature(ctx context.Context, request UpdateMaterializedFeatureRequest) (*MaterializedFeature, error) {
+	var materializedFeature MaterializedFeature
+	path := fmt.Sprintf("/api/2.0/feature-engineering/materialized-features/%v", request.MaterializedFeatureId)
+	queryParams := make(map[string]any)
+
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.MaterializedFeature, &materializedFeature)
+	return &materializedFeature, err
 }
 
 // unexported type that holds implementations of just FeatureStore API methods

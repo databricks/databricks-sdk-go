@@ -144,8 +144,7 @@ type CatalogsService interface {
 	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
 	// contain zero results while still providing a next_page_token. Clients
 	// must continue reading pages until next_page_token is absent, which is the
-	// only indication that the end of results has been reached. This behavior
-	// follows Google AIP-158 guidelines.
+	// only indication that the end of results has been reached.
 	List(ctx context.Context, request ListCatalogsRequest) (*ListCatalogsResponse, error)
 
 	// Updates the catalog that matches the supplied name. The caller must be
@@ -190,8 +189,7 @@ type ConnectionsService interface {
 	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
 	// contain zero results while still providing a next_page_token. Clients
 	// must continue reading pages until next_page_token is absent, which is the
-	// only indication that the end of results has been reached. This behavior
-	// follows Google AIP-158 guidelines.
+	// only indication that the end of results has been reached.
 	List(ctx context.Context, request ListConnectionsRequest) (*ListConnectionsResponse, error)
 
 	// Updates the connection that matches the supplied name.
@@ -239,6 +237,11 @@ type CredentialsService interface {
 	// permission to access. If the caller is a metastore admin, retrieval of
 	// credentials is unrestricted. There is no guarantee of a specific ordering
 	// of the elements in the array.
+	//
+	// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain
+	// zero results while still providing a next_page_token. Clients must
+	// continue reading pages until next_page_token is absent, which is the only
+	// indication that the end of results has been reached.
 	ListCredentials(ctx context.Context, request ListCredentialsRequest) (*ListCredentialsResponse, error)
 
 	// Updates a service or storage credential on the metastore.
@@ -308,6 +311,11 @@ type EntityTagAssignmentsService interface {
 	Get(ctx context.Context, request GetEntityTagAssignmentRequest) (*EntityTagAssignment, error)
 
 	// List tag assignments for an Unity Catalog entity
+	//
+	// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain
+	// zero results while still providing a next_page_token. Clients must
+	// continue reading pages until next_page_token is absent, which is the only
+	// indication that the end of results has been reached.
 	List(ctx context.Context, request ListEntityTagAssignmentsRequest) (*ListEntityTagAssignmentsResponse, error)
 
 	// Updates an existing tag assignment for an Unity Catalog entity.
@@ -396,8 +404,7 @@ type ExternalLocationsService interface {
 	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
 	// contain zero results while still providing a next_page_token. Clients
 	// must continue reading pages until next_page_token is absent, which is the
-	// only indication that the end of results has been reached. This behavior
-	// follows Google AIP-158 guidelines.
+	// only indication that the end of results has been reached.
 	List(ctx context.Context, request ListExternalLocationsRequest) (*ListExternalLocationsResponse, error)
 
 	// Updates an external location in the metastore. The caller must be the
@@ -500,8 +507,7 @@ type FunctionsService interface {
 	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
 	// contain zero results while still providing a next_page_token. Clients
 	// must continue reading pages until next_page_token is absent, which is the
-	// only indication that the end of results has been reached. This behavior
-	// follows Google AIP-158 guidelines.
+	// only indication that the end of results has been reached.
 	List(ctx context.Context, request ListFunctionsRequest) (*ListFunctionsResponse, error)
 
 	// Updates the function that matches the supplied name. Only the owner of
@@ -532,10 +538,26 @@ type GrantsService interface {
 
 	// Gets the permissions for a securable. Does not include inherited
 	// permissions.
+	//
+	// NOTE: we recommend using max_results=0 to use the paginated version of
+	// this API. Unpaginated calls will be deprecated soon.
+	//
+	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+	// contain zero results while still providing a next_page_token. Clients
+	// must continue reading pages until next_page_token is absent, which is the
+	// only indication that the end of results has been reached.
 	Get(ctx context.Context, request GetGrantRequest) (*GetPermissionsResponse, error)
 
 	// Gets the effective permissions for a securable. Includes inherited
 	// permissions from any parent securables.
+	//
+	// NOTE: we recommend using max_results=0 to use the paginated version of
+	// this API. Unpaginated calls will be deprecated soon.
+	//
+	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+	// contain zero results while still providing a next_page_token. Clients
+	// must continue reading pages until next_page_token is absent, which is the
+	// only indication that the end of results has been reached.
 	GetEffective(ctx context.Context, request GetEffectiveRequest) (*EffectivePermissionsList, error)
 
 	// Updates the permissions for a securable.
@@ -593,8 +615,7 @@ type MetastoresService interface {
 	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
 	// contain zero results while still providing a next_page_token. Clients
 	// must continue reading pages until next_page_token is absent, which is the
-	// only indication that the end of results has been reached. This behavior
-	// follows Google AIP-158 guidelines.
+	// only indication that the end of results has been reached.
 	List(ctx context.Context, request ListMetastoresRequest) (*ListMetastoresResponse, error)
 
 	// Gets information about a metastore. This summary includes the storage
@@ -670,6 +691,11 @@ type ModelVersionsService interface {
 	// There is no guarantee of a specific ordering of the elements in the
 	// response. The elements in the response will not contain any aliases or
 	// tags.
+	//
+	// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain
+	// zero results while still providing a next_page_token. Clients must
+	// continue reading pages until next_page_token is absent, which is the only
+	// indication that the end of results has been reached.
 	List(ctx context.Context, request ListModelVersionsRequest) (*ListModelVersionsResponse, error)
 
 	// Updates the specified model version.
@@ -726,6 +752,11 @@ type PoliciesService interface {
 	// List all policies defined on a securable. Optionally, the list can
 	// include inherited policies defined on the securable's parent schema or
 	// catalog.
+	//
+	// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain
+	// zero results while still providing a next_page_token. Clients must
+	// continue reading pages until next_page_token is absent, which is the only
+	// indication that the end of results has been reached.
 	ListPolicies(ctx context.Context, request ListPoliciesRequest) (*ListPoliciesResponse, error)
 
 	// Update an ABAC policy on a securable.
@@ -941,6 +972,11 @@ type RegisteredModelsService interface {
 	//
 	// There is no guarantee of a specific ordering of the elements in the
 	// response.
+	//
+	// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain
+	// zero results while still providing a next_page_token. Clients must
+	// continue reading pages until next_page_token is absent, which is the only
+	// indication that the end of results has been reached.
 	List(ctx context.Context, request ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error)
 
 	// Set an alias on the specified registered model.
@@ -984,6 +1020,11 @@ type ResourceQuotasService interface {
 	// ListQuotas returns all quota values under the metastore. There are no
 	// SLAs on the freshness of the counts returned. This API does not trigger a
 	// refresh of quota counts.
+	//
+	// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain
+	// zero results while still providing a next_page_token. Clients must
+	// continue reading pages until next_page_token is absent, which is the only
+	// indication that the end of results has been reached.
 	ListQuotas(ctx context.Context, request ListQuotasRequest) (*ListQuotasResponse, error)
 }
 
@@ -1070,8 +1111,7 @@ type SchemasService interface {
 	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
 	// contain zero results while still providing a next_page_token. Clients
 	// must continue reading pages until next_page_token is absent, which is the
-	// only indication that the end of results has been reached. This behavior
-	// follows Google AIP-158 guidelines.
+	// only indication that the end of results has been reached.
 	List(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error)
 
 	// Updates a schema for a catalog. The caller must be the owner of the
@@ -1126,8 +1166,7 @@ type StorageCredentialsService interface {
 	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
 	// contain zero results while still providing a next_page_token. Clients
 	// must continue reading pages until next_page_token is absent, which is the
-	// only indication that the end of results has been reached. This behavior
-	// follows Google AIP-158 guidelines.
+	// only indication that the end of results has been reached.
 	List(ctx context.Context, request ListStorageCredentialsRequest) (*ListStorageCredentialsResponse, error)
 
 	// Updates a storage credential on the metastore.
@@ -1177,8 +1216,7 @@ type SystemSchemasService interface {
 	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
 	// contain zero results while still providing a next_page_token. Clients
 	// must continue reading pages until next_page_token is absent, which is the
-	// only indication that the end of results has been reached. This behavior
-	// follows Google AIP-158 guidelines.
+	// only indication that the end of results has been reached.
 	List(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error)
 }
 
@@ -1306,8 +1344,7 @@ type TablesService interface {
 	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
 	// contain zero results while still providing a next_page_token. Clients
 	// must continue reading pages until next_page_token is absent, which is the
-	// only indication that the end of results has been reached. This behavior
-	// follows Google AIP-158 guidelines.
+	// only indication that the end of results has been reached.
 	List(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error)
 
 	// Gets an array of summaries for tables for a schema and catalog within the
@@ -1323,6 +1360,11 @@ type TablesService interface {
 	//
 	// There is no guarantee of a specific ordering of the elements in the
 	// array.
+	//
+	// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain
+	// zero results while still providing a next_page_token. Clients must
+	// continue reading pages until next_page_token is absent, which is the only
+	// indication that the end of results has been reached.
 	ListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error)
 
 	// Change the owner of the table. The caller must be the owner of the parent
@@ -1461,6 +1503,11 @@ type VolumesService interface {
 	//
 	// There is no guarantee of a specific ordering of the elements in the
 	// array.
+	//
+	// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain
+	// zero results while still providing a next_page_token. Clients must
+	// continue reading pages until next_page_token is absent, which is the only
+	// indication that the end of results has been reached.
 	List(ctx context.Context, request ListVolumesRequest) (*ListVolumesResponseContent, error)
 
 	// Gets a volume from the metastore for a specific catalog and schema.
@@ -1513,6 +1560,14 @@ type WorkspaceBindingsService interface {
 
 	// Gets workspace bindings of the securable. The caller must be a metastore
 	// admin or an owner of the securable.
+	//
+	// NOTE: we recommend using max_results=0 to use the paginated version of
+	// this API. Unpaginated calls will be deprecated soon.
+	//
+	// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+	// contain zero results while still providing a next_page_token. Clients
+	// must continue reading pages until next_page_token is absent, which is the
+	// only indication that the end of results has been reached.
 	GetBindings(ctx context.Context, request GetBindingsRequest) (*GetWorkspaceBindingsResponse, error)
 
 	// Updates workspace bindings of the catalog. The caller must be a metastore

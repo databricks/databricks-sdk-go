@@ -928,7 +928,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 38
+// Next Id: 47
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -1867,7 +1867,7 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
-// Next Id: 13
+// Next Id: 14
 type CredentialType string
 
 const CredentialTypeAnyStaticCredential CredentialType = `ANY_STATIC_CREDENTIAL`
@@ -1877,6 +1877,8 @@ const CredentialTypeBearerToken CredentialType = `BEARER_TOKEN`
 const CredentialTypeOauthAccessToken CredentialType = `OAUTH_ACCESS_TOKEN`
 
 const CredentialTypeOauthM2m CredentialType = `OAUTH_M2M`
+
+const CredentialTypeOauthMtls CredentialType = `OAUTH_MTLS`
 
 const CredentialTypeOauthRefreshToken CredentialType = `OAUTH_REFRESH_TOKEN`
 
@@ -1904,11 +1906,11 @@ func (f *CredentialType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CredentialType) Set(v string) error {
 	switch v {
-	case `ANY_STATIC_CREDENTIAL`, `BEARER_TOKEN`, `OAUTH_ACCESS_TOKEN`, `OAUTH_M2M`, `OAUTH_REFRESH_TOKEN`, `OAUTH_RESOURCE_OWNER_PASSWORD`, `OAUTH_U2M`, `OAUTH_U2M_MAPPING`, `OIDC_TOKEN`, `PEM_PRIVATE_KEY`, `SERVICE_CREDENTIAL`, `UNKNOWN_CREDENTIAL_TYPE`, `USERNAME_PASSWORD`:
+	case `ANY_STATIC_CREDENTIAL`, `BEARER_TOKEN`, `OAUTH_ACCESS_TOKEN`, `OAUTH_M2M`, `OAUTH_MTLS`, `OAUTH_REFRESH_TOKEN`, `OAUTH_RESOURCE_OWNER_PASSWORD`, `OAUTH_U2M`, `OAUTH_U2M_MAPPING`, `OIDC_TOKEN`, `PEM_PRIVATE_KEY`, `SERVICE_CREDENTIAL`, `UNKNOWN_CREDENTIAL_TYPE`, `USERNAME_PASSWORD`:
 		*f = CredentialType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ANY_STATIC_CREDENTIAL", "BEARER_TOKEN", "OAUTH_ACCESS_TOKEN", "OAUTH_M2M", "OAUTH_REFRESH_TOKEN", "OAUTH_RESOURCE_OWNER_PASSWORD", "OAUTH_U2M", "OAUTH_U2M_MAPPING", "OIDC_TOKEN", "PEM_PRIVATE_KEY", "SERVICE_CREDENTIAL", "UNKNOWN_CREDENTIAL_TYPE", "USERNAME_PASSWORD"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ANY_STATIC_CREDENTIAL", "BEARER_TOKEN", "OAUTH_ACCESS_TOKEN", "OAUTH_M2M", "OAUTH_MTLS", "OAUTH_REFRESH_TOKEN", "OAUTH_RESOURCE_OWNER_PASSWORD", "OAUTH_U2M", "OAUTH_U2M_MAPPING", "OIDC_TOKEN", "PEM_PRIVATE_KEY", "SERVICE_CREDENTIAL", "UNKNOWN_CREDENTIAL_TYPE", "USERNAME_PASSWORD"`, v)
 	}
 }
 
@@ -1921,6 +1923,7 @@ func (f *CredentialType) Values() []CredentialType {
 		CredentialTypeBearerToken,
 		CredentialTypeOauthAccessToken,
 		CredentialTypeOauthM2m,
+		CredentialTypeOauthMtls,
 		CredentialTypeOauthRefreshToken,
 		CredentialTypeOauthResourceOwnerPassword,
 		CredentialTypeOauthU2m,
@@ -6832,7 +6835,7 @@ type RunRefreshRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
-// Next ID: 40
+// Next ID: 43
 type SchemaInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -6909,7 +6912,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_REDSHIFT_IAM = 265; Next id:266
+// Latest kind: CONNECTION_AWS_SECRETS_MANAGER = 270; Next id:271
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`

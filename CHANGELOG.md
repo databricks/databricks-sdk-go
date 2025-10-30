@@ -1,5 +1,54 @@
 # Version changelog
 
+## Release v0.89.0
+
+### API Changes
+* Add `InstanceProfileArn` field for [compute.InstancePoolAwsAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolAwsAttributes).
+* Add `Continuous`, `Sliding` and `Tumbling` fields for [ml.TimeWindow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#TimeWindow).
+* Add `UsagePolicyId` field for [pipelines.CreatePipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#CreatePipeline).
+* Add `UsagePolicyId` field for [pipelines.EditPipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#EditPipeline).
+* Add `UsagePolicyId` field for [pipelines.PipelineSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineSpec).
+* Add `ReadFilesBytes` field for [sql.QueryMetrics](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryMetrics).
+* Add `Select` enum value for [apps.AppManifestAppResourceUcSecurableSpecUcSecurablePermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppManifestAppResourceUcSecurableSpecUcSecurablePermission).
+* Add `Table` enum value for [apps.AppManifestAppResourceUcSecurableSpecUcSecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppManifestAppResourceUcSecurableSpecUcSecurableType).
+* Add `DecommissionStarted` and `DecommissionEnded` enum values for [compute.EventType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EventType).
+* Add `DbrImageResolutionFailure` enum value for [compute.TerminationReasonCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#TerminationReasonCode).
+* Add `DbrImageResolutionFailure` enum value for [sql.TerminationReasonCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#TerminationReasonCode).
+* Change `OfflineStoreConfig` and `OnlineStoreConfig` fields for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature) to no longer be required.
+* [Breaking] Change `OfflineStoreConfig` and `OnlineStoreConfig` fields for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature) to no longer be required.
+* [Breaking] Change `LifecycleState` field for [sql.AlertV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertV2) to type [sql.AlertLifecycleState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertLifecycleState).
+* [Breaking] Remove `Table` field for [jobs.TriggerSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TriggerSettings).
+* [Breaking] Remove `Duration` and `Offset` fields for [ml.TimeWindow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#TimeWindow).
+
+
+## Release v0.88.0
+
+### API Changes
+* Add `CreateMaterializedFeature`, `DeleteMaterializedFeature`, `GetMaterializedFeature`, `ListMaterializedFeatures` and `UpdateMaterializedFeature` methods for [w.FeatureEngineering](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#FeatureEngineeringAPI) workspace-level service.
+* Add `FilterCondition` field for [ml.Feature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Feature).
+* [Breaking] Change `DisplayName`, `Evaluation`, `QueryText`, `Schedule` and `WarehouseId` fields for [sql.AlertV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertV2) to be required.
+* Change `DisplayName`, `Evaluation`, `QueryText`, `Schedule` and `WarehouseId` fields for [sql.AlertV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertV2) to be required.
+* [Breaking] Change `ComparisonOperator` and `Source` fields for [sql.AlertV2Evaluation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertV2Evaluation) to be required.
+* Change `ComparisonOperator` and `Source` fields for [sql.AlertV2Evaluation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertV2Evaluation) to be required.
+* [Breaking] Change `Name` field for [sql.AlertV2OperandColumn](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertV2OperandColumn) to be required.
+* Change `Name` field for [sql.AlertV2OperandColumn](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertV2OperandColumn) to be required.
+* [Breaking] Change `QuartzCronSchedule` and `TimezoneId` fields for [sql.CronSchedule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CronSchedule) to be required.
+* Change `QuartzCronSchedule` and `TimezoneId` fields for [sql.CronSchedule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CronSchedule) to be required.
+* [Breaking] Remove `Results` field for [sql.ListAlertsV2Response](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#ListAlertsV2Response).
+
+
+## Release v0.87.0
+
+### API Changes
+* Add `AbsoluteSessionLifetimeInMinutes` and `EnableSingleUseRefreshTokens` fields for [oauth2.TokenAccessPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#TokenAccessPolicy).
+* Add `NetworkConnectivityConfigId` field for [provisioning.CreateWorkspaceRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#CreateWorkspaceRequest).
+* Add `OauthMtls` enum value for [catalog.CredentialType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CredentialType).
+* Add `NetworkCheckNicFailureDueToMisconfig`, `NetworkCheckDnsServerFailureDueToMisconfig`, `NetworkCheckStorageFailureDueToMisconfig`, `NetworkCheckMetadataEndpointFailureDueToMisconfig`, `NetworkCheckControlPlaneFailureDueToMisconfig` and `NetworkCheckMultipleComponentsFailureDueToMisconfig` enum values for [compute.TerminationReasonCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#TerminationReasonCode).
+* Add `Creating` and `CreateFailed` enum values for [settings.NccPrivateEndpointRulePrivateLinkConnectionState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccPrivateEndpointRulePrivateLinkConnectionState).
+* Add `NetworkCheckNicFailureDueToMisconfig`, `NetworkCheckDnsServerFailureDueToMisconfig`, `NetworkCheckStorageFailureDueToMisconfig`, `NetworkCheckMetadataEndpointFailureDueToMisconfig`, `NetworkCheckControlPlaneFailureDueToMisconfig` and `NetworkCheckMultipleComponentsFailureDueToMisconfig` enum values for [sql.TerminationReasonCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#TerminationReasonCode).
+* [Breaking] Remove `Update` method for [w.RecipientFederationPolicies](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#RecipientFederationPoliciesAPI) workspace-level service.
+
+
 ## Release v0.86.0
 
 ### API Changes

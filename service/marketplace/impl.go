@@ -10,6 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/google/uuid"
 )
 
 // unexported type that holds implementations of just ConsumerFulfillments API methods
@@ -952,6 +953,9 @@ func (a *providerPersonalizationRequestsImpl) internalList(ctx context.Context, 
 
 func (a *providerPersonalizationRequestsImpl) Update(ctx context.Context, request UpdatePersonalizationRequestRequest) (*UpdatePersonalizationRequestResponse, error) {
 	var updatePersonalizationRequestResponse UpdatePersonalizationRequestResponse
+	if request.RequestId == "" {
+		request.RequestId = uuid.New().String()
+	}
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v/personalization-requests/%v/request-status", request.ListingId, request.RequestId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)

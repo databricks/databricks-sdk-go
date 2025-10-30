@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.87.0
+## Release v0.90.0
 
 ### New Features and Improvements
 * Add support for unified hosts, i.e. hosts that support both workspace-level and account-level operations

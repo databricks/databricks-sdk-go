@@ -10,7 +10,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
-	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just Providers API methods
@@ -268,21 +267,6 @@ func (a *recipientFederationPoliciesImpl) internalList(ctx context.Context, requ
 	return &listFederationPoliciesResponse, err
 }
 
-func (a *recipientFederationPoliciesImpl) Update(ctx context.Context, request UpdateFederationPolicyRequest) (*FederationPolicy, error) {
-	var federationPolicy FederationPolicy
-	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies/%v", request.RecipientName, request.Name)
-	queryParams := make(map[string]any)
-
-	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
-		queryParams["update_mask"] = request.UpdateMask
-	}
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Policy, &federationPolicy)
-	return &federationPolicy, err
-}
-
 // unexported type that holds implementations of just Recipients API methods
 type recipientsImpl struct {
 	client *client.DatabricksClient
@@ -432,8 +416,9 @@ func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*ShareIn
 	return &shareInfo, err
 }
 
-// Gets an array of data object shares from the metastore. The caller must be a
-// metastore admin or the owner of the share. There is no guarantee of a
+// Gets an array of data object shares from the metastore. If the caller has the
+// USE_SHARE privilege on the metastore, all shares are returned. Otherwise,
+// only shares owned by the caller are returned. There is no guarantee of a
 // specific ordering of the elements in the array.
 func (a *sharesImpl) ListShares(ctx context.Context, request SharesListRequest) listing.Iterator[ShareInfo] {
 
@@ -461,8 +446,9 @@ func (a *sharesImpl) ListShares(ctx context.Context, request SharesListRequest) 
 	return iterator
 }
 
-// Gets an array of data object shares from the metastore. The caller must be a
-// metastore admin or the owner of the share. There is no guarantee of a
+// Gets an array of data object shares from the metastore. If the caller has the
+// USE_SHARE privilege on the metastore, all shares are returned. Otherwise,
+// only shares owned by the caller are returned. There is no guarantee of a
 // specific ordering of the elements in the array.
 func (a *sharesImpl) ListSharesAll(ctx context.Context, request SharesListRequest) ([]ShareInfo, error) {
 	iterator := a.ListShares(ctx, request)

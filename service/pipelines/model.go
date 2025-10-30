@@ -83,6 +83,8 @@ type CreatePipeline struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+	// Usage policy of this pipeline.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -146,9 +148,8 @@ func (s DataPlaneId) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Days of week in which the restart is allowed to happen (within a five-hour
-// window starting at start_hour). If not specified all days of the week will be
-// used.
+// Days of week in which the window is allowed to happen. If not specified all
+// days of the week will be used.
 type DayOfWeek string
 
 const DayOfWeekFriday DayOfWeek = `FRIDAY`
@@ -319,6 +320,8 @@ type EditPipeline struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+	// Usage policy of this pipeline.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1537,6 +1540,8 @@ type PipelineSpec struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+	// Usage policy of this pipeline.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

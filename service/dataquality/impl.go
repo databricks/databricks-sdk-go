@@ -129,13 +129,20 @@ func (a *dataQualityImpl) internalListMonitor(ctx context.Context, request ListM
 	return &listMonitorResponse, err
 }
 
-// List data quality monitor refreshes.
+// List data quality monitor refreshes. The call must be made in the same
+// workspace as where the monitor was created.
 //
-// For the `table` `object_type`, the caller must either: 1. be an owner of the
-// table's parent catalog 2. have **USE_CATALOG** on the table's parent catalog
-// and be an owner of the table's parent schema 3. have the following
-// permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA**
-// on the table's parent schema - **SELECT** privilege on the table.
+// For the `table` `object_type`, the caller must have either of the following
+// sets of permissions: 1. **MANAGE** and **USE_CATALOG** on the table's parent
+// catalog. 2. **USE_CATALOG** on the table's parent catalog, and **MANAGE** and
+// **USE_SCHEMA** on the table's parent schema. 3. **USE_CATALOG** on the
+// table's parent catalog, **USE_SCHEMA** on the table's parent schema, and
+// **SELECT** on the table.
+//
+// For the `schema` `object_type`, the caller must have either of the following
+// sets of permissions: 1. **MANAGE** and **USE_CATALOG** on the schema's parent
+// catalog. 2. **USE_CATALOG** on the schema's parent catalog, and
+// **USE_SCHEMA** on the schema.
 func (a *dataQualityImpl) ListRefresh(ctx context.Context, request ListRefreshRequest) listing.Iterator[Refresh] {
 
 	getNextPage := func(ctx context.Context, req ListRefreshRequest) (*ListRefreshResponse, error) {
@@ -160,13 +167,20 @@ func (a *dataQualityImpl) ListRefresh(ctx context.Context, request ListRefreshRe
 	return iterator
 }
 
-// List data quality monitor refreshes.
+// List data quality monitor refreshes. The call must be made in the same
+// workspace as where the monitor was created.
 //
-// For the `table` `object_type`, the caller must either: 1. be an owner of the
-// table's parent catalog 2. have **USE_CATALOG** on the table's parent catalog
-// and be an owner of the table's parent schema 3. have the following
-// permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA**
-// on the table's parent schema - **SELECT** privilege on the table.
+// For the `table` `object_type`, the caller must have either of the following
+// sets of permissions: 1. **MANAGE** and **USE_CATALOG** on the table's parent
+// catalog. 2. **USE_CATALOG** on the table's parent catalog, and **MANAGE** and
+// **USE_SCHEMA** on the table's parent schema. 3. **USE_CATALOG** on the
+// table's parent catalog, **USE_SCHEMA** on the table's parent schema, and
+// **SELECT** on the table.
+//
+// For the `schema` `object_type`, the caller must have either of the following
+// sets of permissions: 1. **MANAGE** and **USE_CATALOG** on the schema's parent
+// catalog. 2. **USE_CATALOG** on the schema's parent catalog, and
+// **USE_SCHEMA** on the schema.
 func (a *dataQualityImpl) ListRefreshAll(ctx context.Context, request ListRefreshRequest) ([]Refresh, error) {
 	iterator := a.ListRefresh(ctx, request)
 	return listing.ToSlice[Refresh](ctx, iterator)
