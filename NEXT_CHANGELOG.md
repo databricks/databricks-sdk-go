@@ -13,4 +13,4 @@
 ### Internal Changes
 
 ### API Changes
-
+* Add `GoogleAds`, `TiktokAds`, `SalesforceMarketingCloud`, `Hubspot`, `WorkdayHcm`, `Guidewire` and `Zendesk` enum values for [pipelines.IngestionSourceType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#IngestionSourceType).
