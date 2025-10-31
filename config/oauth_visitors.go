@@ -12,7 +12,7 @@ import (
 )
 
 // serviceToServiceVisitor returns a visitor that sets the Authorization header
-// to the token from the auth token sourcevand the provided secondary header to
+// to the token from the auth token source and the provided secondary header to
 // the token from the secondary token source.
 func serviceToServiceVisitor(primary, secondary oauth2.TokenSource, secondaryHeader string) func(r *http.Request) error {
 	refreshableAuth := auth.NewCachedTokenSource(authconv.AuthTokenSource(primary))

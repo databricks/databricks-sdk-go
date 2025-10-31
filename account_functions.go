@@ -1,6 +1,10 @@
 package databricks
 
-import "github.com/databricks/databricks-sdk-go/service/provisioning"
+import (
+	"fmt"
+
+	"github.com/databricks/databricks-sdk-go/service/provisioning"
+)
 
 // GetWorkspaceClient returns a WorkspaceClient for the given workspace. The
 // workspace can be fetched by calling w.Workspaces.Get() or w.Workspaces.List().
@@ -32,6 +36,7 @@ func (c *AccountClient) GetWorkspaceClient(ws provisioning.Workspace) (*Workspac
 		return nil, err
 	}
 	cfg.AzureResourceID = ws.AzureResourceId()
+	cfg.WorkspaceId = fmt.Sprintf("%d", ws.WorkspaceId)
 	w, err := NewWorkspaceClient((*Config)(cfg))
 	if err != nil {
 		return nil, err

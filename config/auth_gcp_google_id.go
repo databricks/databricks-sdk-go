@@ -28,7 +28,7 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (c
 	if err != nil {
 		return nil, err
 	}
-	if !cfg.IsAccountClient() {
+	if cfg.ConfigType() == WorkspaceConfig {
 		logger.Infof(ctx, "Using Google Default Application Credentials for Workspace")
 		visitor := refreshableVisitor(inner)
 		return credentials.CredentialsProviderFn(visitor), nil
