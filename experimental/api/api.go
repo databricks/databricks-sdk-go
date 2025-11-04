@@ -45,8 +45,8 @@ func execute(ctx context.Context, apiCall Call, opts Options, sleep sleeper) err
 	// The timeout in options is for convenience; it should only be used if the
 	// caller hasn't already set a timeout on the context.
 	if _, ok := ctx.Deadline(); !ok && opts.timeout != 0 {
-		c, cc := context.WithTimeout(ctx, opts.timeout)
-		defer cc()
+		c, f := context.WithTimeout(ctx, opts.timeout)
+		defer f()
 		ctx = c
 	}
 
