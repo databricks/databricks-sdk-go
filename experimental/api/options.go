@@ -27,11 +27,11 @@ func WithRetrier(provider func() Retrier) Option {
 	})
 }
 
-// WithTimeout is a convenience option to set the timeout duration. This
-// option is ignored if the Execute call is made with a context that already
-// contains a timeout.
+// WithTimeout is a convenience option to set the timeout duration in the Call
+// context. If the context already has a deadline, that deadline is updated to
+// the minimum of the context's deadline and the timeout.
 //
-// The timeout covers the whole Call execution; it is not a timeout on each
+// The timeout covers the whole Call execution; it is not a timeout of each
 // intermediary API call.
 func WithTimeout(t time.Duration) Option {
 	return optionFn(func(o *Options) {

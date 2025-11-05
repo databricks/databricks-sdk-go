@@ -95,15 +95,13 @@ func TestExecute_retries(t *testing.T) {
 		{
 			name:          "retriable error - retry once then succeed",
 			callErrors:    []error{retriableError, nil},
-			retrier:       &mockRetrier{fn: func(error) (time.Duration, bool) { return 0, true }},
-			wantErr:       nil,
+			retrier:       retrier,
 			wantCallCount: 2,
 		},
 		{
 			name:          "retriable error - retry multiple times then succeed",
 			callErrors:    []error{retriableError, retriableError, retriableError, nil},
-			retrier:       &mockRetrier{fn: func(error) (time.Duration, bool) { return 0, true }},
-			wantErr:       nil,
+			retrier:       retrier,
 			wantCallCount: 4,
 		},
 		{
