@@ -41,7 +41,7 @@ jobs:
           github.event.pull_request.user.login == 'deco-sdk-tagging[bot]' ||
           contains(github.event.pull_request.labels.*.name, 'zzz:automated-update')
         env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr review ${{ github.event.pull_request.number }} \
             --repo ${{ github.repository }} \
