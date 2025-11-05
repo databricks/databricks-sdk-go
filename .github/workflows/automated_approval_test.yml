@@ -4,6 +4,12 @@ on:
   pull_request:
     types: [opened, synchronize, labeled]  # ← Fixed: Added 'labeled'
 
+# add permission to read contents
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
 jobs:
   auto-approve:
     runs-on:
