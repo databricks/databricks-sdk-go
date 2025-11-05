@@ -518,6 +518,8 @@ const AppManifestAppResourceUcSecurableSpecUcSecurablePermissionManage AppManife
 
 const AppManifestAppResourceUcSecurableSpecUcSecurablePermissionReadVolume AppManifestAppResourceUcSecurableSpecUcSecurablePermission = `READ_VOLUME`
 
+const AppManifestAppResourceUcSecurableSpecUcSecurablePermissionSelect AppManifestAppResourceUcSecurableSpecUcSecurablePermission = `SELECT`
+
 const AppManifestAppResourceUcSecurableSpecUcSecurablePermissionWriteVolume AppManifestAppResourceUcSecurableSpecUcSecurablePermission = `WRITE_VOLUME`
 
 // String representation for [fmt.Print]
@@ -528,11 +530,11 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurablePermission) String() st
 // Set raw string value and validate it against allowed values
 func (f *AppManifestAppResourceUcSecurableSpecUcSecurablePermission) Set(v string) error {
 	switch v {
-	case `MANAGE`, `READ_VOLUME`, `WRITE_VOLUME`:
+	case `MANAGE`, `READ_VOLUME`, `SELECT`, `WRITE_VOLUME`:
 		*f = AppManifestAppResourceUcSecurableSpecUcSecurablePermission(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "MANAGE", "READ_VOLUME", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "MANAGE", "READ_VOLUME", "SELECT", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -543,6 +545,7 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurablePermission) Values() []
 	return []AppManifestAppResourceUcSecurableSpecUcSecurablePermission{
 		AppManifestAppResourceUcSecurableSpecUcSecurablePermissionManage,
 		AppManifestAppResourceUcSecurableSpecUcSecurablePermissionReadVolume,
+		AppManifestAppResourceUcSecurableSpecUcSecurablePermissionSelect,
 		AppManifestAppResourceUcSecurableSpecUcSecurablePermissionWriteVolume,
 	}
 }
@@ -554,6 +557,8 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurablePermission) Type() stri
 
 type AppManifestAppResourceUcSecurableSpecUcSecurableType string
 
+const AppManifestAppResourceUcSecurableSpecUcSecurableTypeTable AppManifestAppResourceUcSecurableSpecUcSecurableType = `TABLE`
+
 const AppManifestAppResourceUcSecurableSpecUcSecurableTypeVolume AppManifestAppResourceUcSecurableSpecUcSecurableType = `VOLUME`
 
 // String representation for [fmt.Print]
@@ -564,11 +569,11 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) Set(v string) error {
 	switch v {
-	case `VOLUME`:
+	case `TABLE`, `VOLUME`:
 		*f = AppManifestAppResourceUcSecurableSpecUcSecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "TABLE", "VOLUME"`, v)
 	}
 }
 
@@ -577,6 +582,7 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) Set(v string) err
 // There is no guarantee on the order of the values in the slice.
 func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) Values() []AppManifestAppResourceUcSecurableSpecUcSecurableType {
 	return []AppManifestAppResourceUcSecurableSpecUcSecurableType{
+		AppManifestAppResourceUcSecurableSpecUcSecurableTypeTable,
 		AppManifestAppResourceUcSecurableSpecUcSecurableTypeVolume,
 	}
 }

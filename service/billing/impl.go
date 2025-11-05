@@ -10,6 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"github.com/google/uuid"
 )
 
 // unexported type that holds implementations of just BillableUsage API methods
@@ -34,6 +35,9 @@ type budgetPolicyImpl struct {
 
 func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolicyRequest) (*BudgetPolicy, error) {
 	var budgetPolicy BudgetPolicy
+	if request.RequestId == "" {
+		request.RequestId = uuid.New().String()
+	}
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", a.client.ConfiguredAccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)

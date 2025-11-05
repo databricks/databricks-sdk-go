@@ -330,6 +330,14 @@ func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*Cat
 // caller (or for which the caller has the **USE_CATALOG** privilege) will be
 // retrieved. There is no guarantee of a specific ordering of the elements in
 // the array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *catalogsImpl) List(ctx context.Context, request ListCatalogsRequest) listing.Iterator[CatalogInfo] {
 
 	getNextPage := func(ctx context.Context, req ListCatalogsRequest) (*ListCatalogsResponse, error) {
@@ -359,6 +367,14 @@ func (a *catalogsImpl) List(ctx context.Context, request ListCatalogsRequest) li
 // caller (or for which the caller has the **USE_CATALOG** privilege) will be
 // retrieved. There is no guarantee of a specific ordering of the elements in
 // the array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *catalogsImpl) ListAll(ctx context.Context, request ListCatalogsRequest) ([]CatalogInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[CatalogInfo](ctx, iterator)
@@ -421,6 +437,14 @@ func (a *connectionsImpl) Get(ctx context.Context, request GetConnectionRequest)
 }
 
 // List all connections.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *connectionsImpl) List(ctx context.Context, request ListConnectionsRequest) listing.Iterator[ConnectionInfo] {
 
 	getNextPage := func(ctx context.Context, req ListConnectionsRequest) (*ListConnectionsResponse, error) {
@@ -446,6 +470,14 @@ func (a *connectionsImpl) List(ctx context.Context, request ListConnectionsReque
 }
 
 // List all connections.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *connectionsImpl) ListAll(ctx context.Context, request ListConnectionsRequest) ([]ConnectionInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ConnectionInfo](ctx, iterator)
@@ -524,6 +556,11 @@ func (a *credentialsImpl) GetCredential(ctx context.Context, request GetCredenti
 // to access. If the caller is a metastore admin, retrieval of credentials is
 // unrestricted. There is no guarantee of a specific ordering of the elements in
 // the array.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *credentialsImpl) ListCredentials(ctx context.Context, request ListCredentialsRequest) listing.Iterator[CredentialInfo] {
 
 	getNextPage := func(ctx context.Context, req ListCredentialsRequest) (*ListCredentialsResponse, error) {
@@ -554,6 +591,11 @@ func (a *credentialsImpl) ListCredentials(ctx context.Context, request ListCrede
 // to access. If the caller is a metastore admin, retrieval of credentials is
 // unrestricted. There is no guarantee of a specific ordering of the elements in
 // the array.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *credentialsImpl) ListCredentialsAll(ctx context.Context, request ListCredentialsRequest) ([]CredentialInfo, error) {
 	iterator := a.ListCredentials(ctx, request)
 	return listing.ToSlice[CredentialInfo](ctx, iterator)
@@ -627,6 +669,11 @@ func (a *entityTagAssignmentsImpl) Get(ctx context.Context, request GetEntityTag
 }
 
 // List tag assignments for an Unity Catalog entity
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *entityTagAssignmentsImpl) List(ctx context.Context, request ListEntityTagAssignmentsRequest) listing.Iterator[EntityTagAssignment] {
 
 	getNextPage := func(ctx context.Context, req ListEntityTagAssignmentsRequest) (*ListEntityTagAssignmentsResponse, error) {
@@ -652,6 +699,11 @@ func (a *entityTagAssignmentsImpl) List(ctx context.Context, request ListEntityT
 }
 
 // List tag assignments for an Unity Catalog entity
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *entityTagAssignmentsImpl) ListAll(ctx context.Context, request ListEntityTagAssignmentsRequest) ([]EntityTagAssignment, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[EntityTagAssignment](ctx, iterator)
@@ -805,6 +857,14 @@ func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLoca
 // external location, or a user that has some privilege on the external
 // location. There is no guarantee of a specific ordering of the elements in the
 // array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *externalLocationsImpl) List(ctx context.Context, request ListExternalLocationsRequest) listing.Iterator[ExternalLocationInfo] {
 
 	getNextPage := func(ctx context.Context, req ListExternalLocationsRequest) (*ListExternalLocationsResponse, error) {
@@ -834,6 +894,14 @@ func (a *externalLocationsImpl) List(ctx context.Context, request ListExternalLo
 // external location, or a user that has some privilege on the external
 // location. There is no guarantee of a specific ordering of the elements in the
 // array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *externalLocationsImpl) ListAll(ctx context.Context, request ListExternalLocationsRequest) ([]ExternalLocationInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ExternalLocationInfo](ctx, iterator)
@@ -1000,6 +1068,14 @@ func (a *functionsImpl) Get(ctx context.Context, request GetFunctionRequest) (*F
 // functions for which either the user has the **EXECUTE** privilege or the user
 // is the owner. There is no guarantee of a specific ordering of the elements in
 // the array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *functionsImpl) List(ctx context.Context, request ListFunctionsRequest) listing.Iterator[FunctionInfo] {
 
 	getNextPage := func(ctx context.Context, req ListFunctionsRequest) (*ListFunctionsResponse, error) {
@@ -1031,6 +1107,14 @@ func (a *functionsImpl) List(ctx context.Context, request ListFunctionsRequest) 
 // functions for which either the user has the **EXECUTE** privilege or the user
 // is the owner. There is no guarantee of a specific ordering of the elements in
 // the array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *functionsImpl) ListAll(ctx context.Context, request ListFunctionsRequest) ([]FunctionInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[FunctionInfo](ctx, iterator)
@@ -1151,6 +1235,14 @@ func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (
 // Gets an array of the available metastores (as __MetastoreInfo__ objects). The
 // caller must be an admin to retrieve this info. There is no guarantee of a
 // specific ordering of the elements in the array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *metastoresImpl) List(ctx context.Context, request ListMetastoresRequest) listing.Iterator[MetastoreInfo] {
 
 	getNextPage := func(ctx context.Context, req ListMetastoresRequest) (*ListMetastoresResponse, error) {
@@ -1178,6 +1270,14 @@ func (a *metastoresImpl) List(ctx context.Context, request ListMetastoresRequest
 // Gets an array of the available metastores (as __MetastoreInfo__ objects). The
 // caller must be an admin to retrieve this info. There is no guarantee of a
 // specific ordering of the elements in the array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *metastoresImpl) ListAll(ctx context.Context, request ListMetastoresRequest) ([]MetastoreInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[MetastoreInfo](ctx, iterator)
@@ -1279,6 +1379,11 @@ func (a *modelVersionsImpl) GetByAlias(ctx context.Context, request GetByAliasRe
 //
 // There is no guarantee of a specific ordering of the elements in the response.
 // The elements in the response will not contain any aliases or tags.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *modelVersionsImpl) List(ctx context.Context, request ListModelVersionsRequest) listing.Iterator[ModelVersionInfo] {
 
 	getNextPage := func(ctx context.Context, req ListModelVersionsRequest) (*ListModelVersionsResponse, error) {
@@ -1316,6 +1421,11 @@ func (a *modelVersionsImpl) List(ctx context.Context, request ListModelVersionsR
 //
 // There is no guarantee of a specific ordering of the elements in the response.
 // The elements in the response will not contain any aliases or tags.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *modelVersionsImpl) ListAll(ctx context.Context, request ListModelVersionsRequest) ([]ModelVersionInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[ModelVersionInfo](ctx, iterator)
@@ -1415,6 +1525,11 @@ func (a *policiesImpl) GetPolicy(ctx context.Context, request GetPolicyRequest) 
 
 // List all policies defined on a securable. Optionally, the list can include
 // inherited policies defined on the securable's parent schema or catalog.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *policiesImpl) ListPolicies(ctx context.Context, request ListPoliciesRequest) listing.Iterator[PolicyInfo] {
 
 	getNextPage := func(ctx context.Context, req ListPoliciesRequest) (*ListPoliciesResponse, error) {
@@ -1441,6 +1556,11 @@ func (a *policiesImpl) ListPolicies(ctx context.Context, request ListPoliciesReq
 
 // List all policies defined on a securable. Optionally, the list can include
 // inherited policies defined on the securable's parent schema or catalog.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *policiesImpl) ListPoliciesAll(ctx context.Context, request ListPoliciesRequest) ([]PolicyInfo, error) {
 	iterator := a.ListPolicies(ctx, request)
 	return listing.ToSlice[PolicyInfo](ctx, iterator)
@@ -1622,6 +1742,11 @@ func (a *registeredModelsImpl) Get(ctx context.Context, request GetRegisteredMod
 // parent schema.
 //
 // There is no guarantee of a specific ordering of the elements in the response.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *registeredModelsImpl) List(ctx context.Context, request ListRegisteredModelsRequest) listing.Iterator[RegisteredModelInfo] {
 
 	getNextPage := func(ctx context.Context, req ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error) {
@@ -1658,6 +1783,11 @@ func (a *registeredModelsImpl) List(ctx context.Context, request ListRegisteredM
 // parent schema.
 //
 // There is no guarantee of a specific ordering of the elements in the response.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *registeredModelsImpl) ListAll(ctx context.Context, request ListRegisteredModelsRequest) ([]RegisteredModelInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[RegisteredModelInfo](ctx, iterator)
@@ -1713,6 +1843,11 @@ func (a *resourceQuotasImpl) GetQuota(ctx context.Context, request GetQuotaReque
 // ListQuotas returns all quota values under the metastore. There are no SLAs on
 // the freshness of the counts returned. This API does not trigger a refresh of
 // quota counts.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *resourceQuotasImpl) ListQuotas(ctx context.Context, request ListQuotasRequest) listing.Iterator[QuotaInfo] {
 
 	getNextPage := func(ctx context.Context, req ListQuotasRequest) (*ListQuotasResponse, error) {
@@ -1740,6 +1875,11 @@ func (a *resourceQuotasImpl) ListQuotas(ctx context.Context, request ListQuotasR
 // ListQuotas returns all quota values under the metastore. There are no SLAs on
 // the freshness of the counts returned. This API does not trigger a refresh of
 // quota counts.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *resourceQuotasImpl) ListQuotasAll(ctx context.Context, request ListQuotasRequest) ([]QuotaInfo, error) {
 	iterator := a.ListQuotas(ctx, request)
 	return listing.ToSlice[QuotaInfo](ctx, iterator)
@@ -1836,6 +1976,14 @@ func (a *schemasImpl) Get(ctx context.Context, request GetSchemaRequest) (*Schem
 // catalog will be retrieved. Otherwise, only schemas owned by the caller (or
 // for which the caller has the **USE_SCHEMA** privilege) will be retrieved.
 // There is no guarantee of a specific ordering of the elements in the array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *schemasImpl) List(ctx context.Context, request ListSchemasRequest) listing.Iterator[SchemaInfo] {
 
 	getNextPage := func(ctx context.Context, req ListSchemasRequest) (*ListSchemasResponse, error) {
@@ -1865,6 +2013,14 @@ func (a *schemasImpl) List(ctx context.Context, request ListSchemasRequest) list
 // catalog will be retrieved. Otherwise, only schemas owned by the caller (or
 // for which the caller has the **USE_SCHEMA** privilege) will be retrieved.
 // There is no guarantee of a specific ordering of the elements in the array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *schemasImpl) ListAll(ctx context.Context, request ListSchemasRequest) ([]SchemaInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[SchemaInfo](ctx, iterator)
@@ -1931,6 +2087,14 @@ func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCred
 // permission to access. If the caller is a metastore admin, retrieval of
 // credentials is unrestricted. There is no guarantee of a specific ordering of
 // the elements in the array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *storageCredentialsImpl) List(ctx context.Context, request ListStorageCredentialsRequest) listing.Iterator[StorageCredentialInfo] {
 
 	getNextPage := func(ctx context.Context, req ListStorageCredentialsRequest) (*ListStorageCredentialsResponse, error) {
@@ -1960,6 +2124,14 @@ func (a *storageCredentialsImpl) List(ctx context.Context, request ListStorageCr
 // permission to access. If the caller is a metastore admin, retrieval of
 // credentials is unrestricted. There is no guarantee of a specific ordering of
 // the elements in the array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *storageCredentialsImpl) ListAll(ctx context.Context, request ListStorageCredentialsRequest) ([]StorageCredentialInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[StorageCredentialInfo](ctx, iterator)
@@ -2023,6 +2195,14 @@ func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) e
 
 // Gets an array of system schemas for a metastore. The caller must be an
 // account admin or a metastore admin.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *systemSchemasImpl) List(ctx context.Context, request ListSystemSchemasRequest) listing.Iterator[SystemSchemaInfo] {
 
 	getNextPage := func(ctx context.Context, req ListSystemSchemasRequest) (*ListSystemSchemasResponse, error) {
@@ -2049,6 +2229,14 @@ func (a *systemSchemasImpl) List(ctx context.Context, request ListSystemSchemasR
 
 // Gets an array of system schemas for a metastore. The caller must be an
 // account admin or a metastore admin.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *systemSchemasImpl) ListAll(ctx context.Context, request ListSystemSchemasRequest) ([]SystemSchemaInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[SystemSchemaInfo](ctx, iterator)
@@ -2140,6 +2328,14 @@ func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableIn
 // must also be the owner or have the **USE_CATALOG** privilege on the parent
 // catalog and the **USE_SCHEMA** privilege on the parent schema. There is no
 // guarantee of a specific ordering of the elements in the array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) listing.Iterator[TableInfo] {
 
 	getNextPage := func(ctx context.Context, req ListTablesRequest) (*ListTablesResponse, error) {
@@ -2170,6 +2366,14 @@ func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) listin
 // must also be the owner or have the **USE_CATALOG** privilege on the parent
 // catalog and the **USE_SCHEMA** privilege on the parent schema. There is no
 // guarantee of a specific ordering of the elements in the array.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *tablesImpl) ListAll(ctx context.Context, request ListTablesRequest) ([]TableInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[TableInfo](ctx, iterator)
@@ -2196,6 +2400,11 @@ func (a *tablesImpl) internalList(ctx context.Context, request ListTablesRequest
 // ownership or the **USE_CATALOG** privilege on the parent catalog.
 //
 // There is no guarantee of a specific ordering of the elements in the array.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesRequest) listing.Iterator[TableSummary] {
 
 	getNextPage := func(ctx context.Context, req ListSummariesRequest) (*ListTableSummariesResponse, error) {
@@ -2231,6 +2440,11 @@ func (a *tablesImpl) ListSummaries(ctx context.Context, request ListSummariesReq
 // ownership or the **USE_CATALOG** privilege on the parent catalog.
 //
 // There is no guarantee of a specific ordering of the elements in the array.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *tablesImpl) ListSummariesAll(ctx context.Context, request ListSummariesRequest) ([]TableSummary, error) {
 	iterator := a.ListSummaries(ctx, request)
 	return listing.ToSlice[TableSummary](ctx, iterator)
@@ -2323,6 +2537,11 @@ func (a *volumesImpl) Delete(ctx context.Context, request DeleteVolumeRequest) e
 // parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 //
 // There is no guarantee of a specific ordering of the elements in the array.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *volumesImpl) List(ctx context.Context, request ListVolumesRequest) listing.Iterator[VolumeInfo] {
 
 	getNextPage := func(ctx context.Context, req ListVolumesRequest) (*ListVolumesResponseContent, error) {
@@ -2358,6 +2577,11 @@ func (a *volumesImpl) List(ctx context.Context, request ListVolumesRequest) list
 // parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 //
 // There is no guarantee of a specific ordering of the elements in the array.
+//
+// PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero
+// results while still providing a next_page_token. Clients must continue
+// reading pages until next_page_token is absent, which is the only indication
+// that the end of results has been reached.
 func (a *volumesImpl) ListAll(ctx context.Context, request ListVolumesRequest) ([]VolumeInfo, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSlice[VolumeInfo](ctx, iterator)
@@ -2411,6 +2635,14 @@ func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBin
 
 // Gets workspace bindings of the securable. The caller must be a metastore
 // admin or an owner of the securable.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *workspaceBindingsImpl) GetBindings(ctx context.Context, request GetBindingsRequest) listing.Iterator[WorkspaceBinding] {
 
 	getNextPage := func(ctx context.Context, req GetBindingsRequest) (*GetWorkspaceBindingsResponse, error) {
@@ -2437,6 +2669,14 @@ func (a *workspaceBindingsImpl) GetBindings(ctx context.Context, request GetBind
 
 // Gets workspace bindings of the securable. The caller must be a metastore
 // admin or an owner of the securable.
+//
+// NOTE: we recommend using max_results=0 to use the paginated version of this
+// API. Unpaginated calls will be deprecated soon.
+//
+// PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may
+// contain zero results while still providing a next_page_token. Clients must
+// continue reading pages until next_page_token is absent, which is the only
+// indication that the end of results has been reached.
 func (a *workspaceBindingsImpl) GetBindingsAll(ctx context.Context, request GetBindingsRequest) ([]WorkspaceBinding, error) {
 	iterator := a.GetBindings(ctx, request)
 	return listing.ToSlice[WorkspaceBinding](ctx, iterator)

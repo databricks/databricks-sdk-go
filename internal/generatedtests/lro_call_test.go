@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/internal/testspecs/service/common"
 	"github.com/databricks/databricks-sdk-go/internal/testspecs/service/lrotesting"
 	"github.com/databricks/databricks-sdk-go/qa"
 	"github.com/databricks/databricks-sdk-go/service/common/lro"
@@ -29,7 +28,7 @@ func TestLRO_CreateTestResource_Wait(t *testing.T) {
 			fixtures: qa.HTTPFixtures{{
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/resources",
-				Response: common.Operation{
+				Response: lrotesting.Operation{
 					Done:     false,
 					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
 					Name:     "operations/test-resource-create-12345",
@@ -37,7 +36,7 @@ func TestLRO_CreateTestResource_Wait(t *testing.T) {
 			}, {
 				Method:   "GET",
 				Resource: "/api/2.0/lro-testing/operations/operations/test-resource-create-12345?",
-				Response: common.Operation{
+				Response: lrotesting.Operation{
 					Done:     false,
 					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 75\n\t\t\t\t}"),
 					Name:     "operations/test-resource-create-12345",
@@ -45,7 +44,7 @@ func TestLRO_CreateTestResource_Wait(t *testing.T) {
 			}, {
 				Method:   "GET",
 				Resource: "/api/2.0/lro-testing/operations/operations/test-resource-create-12345?",
-				Response: common.Operation{
+				Response: lrotesting.Operation{
 					Done:     true,
 					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 100\n\t\t\t\t}"),
 					Name:     "operations/test-resource-create-12345",
@@ -64,7 +63,7 @@ func TestLRO_CreateTestResource_Wait(t *testing.T) {
 			fixtures: qa.HTTPFixtures{{
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/resources",
-				Response: common.Operation{
+				Response: lrotesting.Operation{
 					Done:     false,
 					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
 					Name:     "operations/test-resource-create-12345",
@@ -72,10 +71,10 @@ func TestLRO_CreateTestResource_Wait(t *testing.T) {
 			}, {
 				Method:   "GET",
 				Resource: "/api/2.0/lro-testing/operations/operations/test-resource-create-12345?",
-				Response: common.Operation{
+				Response: lrotesting.Operation{
 					Done: true,
-					Error: &common.DatabricksServiceExceptionWithDetailsProto{
-						ErrorCode: common.ErrorCodeInternalError,
+					Error: &lrotesting.DatabricksServiceExceptionWithDetailsProto{
+						ErrorCode: lrotesting.ErrorCodeInternalError,
 						Message:   "Test error message",
 					},
 					Name: "operations/test-resource-create-12345",
@@ -122,7 +121,7 @@ func TestLRO_CancelTestResource_Cancel(t *testing.T) {
 			fixtures: qa.HTTPFixtures{{
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/resources",
-				Response: common.Operation{
+				Response: lrotesting.Operation{
 					Done:     false,
 					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
 					Name:     "operations/test-resource-create-12345",
@@ -130,7 +129,7 @@ func TestLRO_CancelTestResource_Cancel(t *testing.T) {
 			}, {
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/operations/operations/test-resource-create-12345/cancel",
-				Response: common.Operation{
+				Response: lrotesting.Operation{
 					Done: true,
 					Name: "operations/test-resource-create-12345",
 				},
@@ -171,7 +170,7 @@ func TestLRO_CreateTestResource_Name(t *testing.T) {
 			fixtures: qa.HTTPFixtures{{
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/resources",
-				Response: common.Operation{
+				Response: lrotesting.Operation{
 					Done:     false,
 					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
 					Name:     "operations/test-resource-create-12345",
@@ -211,7 +210,7 @@ func TestLRO_CreateTestResource_Metadata(t *testing.T) {
 			fixtures: qa.HTTPFixtures{{
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/resources",
-				Response: common.Operation{
+				Response: lrotesting.Operation{
 					Done:     false,
 					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
 					Name:     "operations/test-resource-create-12345",
@@ -261,7 +260,7 @@ func TestLRO_CreateTestResource_Done(t *testing.T) {
 			fixtures: qa.HTTPFixtures{{
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/resources",
-				Response: common.Operation{
+				Response: lrotesting.Operation{
 					Done:     false,
 					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
 					Name:     "operations/test-resource-create-12345",
@@ -269,7 +268,7 @@ func TestLRO_CreateTestResource_Done(t *testing.T) {
 			}, {
 				Method:   "GET",
 				Resource: "/api/2.0/lro-testing/operations/operations/test-resource-create-12345?",
-				Response: common.Operation{
+				Response: lrotesting.Operation{
 					Done:     true,
 					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 100\n\t\t\t\t}"),
 					Name:     "operations/test-resource-create-12345",
@@ -285,7 +284,7 @@ func TestLRO_CreateTestResource_Done(t *testing.T) {
 			fixtures: qa.HTTPFixtures{{
 				Method:   "POST",
 				Resource: "/api/2.0/lro-testing/resources",
-				Response: common.Operation{
+				Response: lrotesting.Operation{
 					Done:     false,
 					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 5\n\t\t\t\t}"),
 					Name:     "operations/test-resource-create-12345",
@@ -293,7 +292,7 @@ func TestLRO_CreateTestResource_Done(t *testing.T) {
 			}, {
 				Method:   "GET",
 				Resource: "/api/2.0/lro-testing/operations/operations/test-resource-create-12345?",
-				Response: common.Operation{
+				Response: lrotesting.Operation{
 					Done:     false,
 					Metadata: json.RawMessage("{\n\t\t\t\t\t\"resource_id\":      \"test-resource-123\",\n\t\t\t\t\t\"progress_percent\": 75\n\t\t\t\t}"),
 					Name:     "operations/test-resource-create-12345",

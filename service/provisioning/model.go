@@ -266,6 +266,14 @@ type CreateWorkspaceRequest struct {
 	Cloud string `json:"cloud,omitempty"`
 
 	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
+	// If the compute mode is `SERVERLESS`, a serverless workspace is created
+	// that comes pre-configured with serverless compute and default storage,
+	// providing a fully-managed, enterprise-ready SaaS experience. This means
+	// you don't need to provide any resources managed by you, such as
+	// credentials, storage, or network. If the compute mode is `HYBRID` (which
+	// is the default option), a classic workspace is created that uses
+	// customer-managed resources.
+	ComputeMode CustomerFacingComputeMode `json:"compute_mode,omitempty"`
 	// ID of the workspace's credential configuration object.
 	CredentialsId string `json:"credentials_id,omitempty"`
 	// The custom tags key-value pairing that is attached to this workspace. The
@@ -308,6 +316,10 @@ type CreateWorkspaceRequest struct {
 	// history. The provided key configuration object property use_cases must
 	// contain MANAGED_SERVICES.
 	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
+	// The object ID of network connectivity config. Once assigned, the
+	// workspace serverless compute resources use the same set of stable IP CIDR
+	// blocks and optional private link to access your resources.
+	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
 	// The ID of the workspace's network configuration object. To use AWS
 	// PrivateLink, this field is required.
 	NetworkId string `json:"network_id,omitempty"`
@@ -1293,7 +1305,7 @@ type Workspace struct {
 	AwsRegion string `json:"aws_region,omitempty"`
 
 	AzureWorkspaceInfo *AzureWorkspaceInfo `json:"azure_workspace_info,omitempty"`
-	// The cloud name. This field always has the value `gcp`.
+	// The cloud name. This field can have values like `azure`, `gcp`.
 	Cloud string `json:"cloud,omitempty"`
 
 	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
@@ -1310,6 +1322,10 @@ type Workspace struct {
 	CustomTags map[string]string `json:"custom_tags,omitempty"`
 
 	DeploymentName string `json:"deployment_name,omitempty"`
+	// A client owned field used to indicate the workspace status that the
+	// client expects to be in. For now this is only used to unblock Temporal
+	// workflow for GCP least privileged workspace.
+	ExpectedWorkspaceStatus WorkspaceStatus `json:"expected_workspace_status,omitempty"`
 
 	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
 

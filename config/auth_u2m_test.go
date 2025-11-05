@@ -10,6 +10,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m/cache"
+	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
 )
@@ -24,6 +25,7 @@ func (m mockU2mTokenSource) Token() (*oauth2.Token, error) {
 }
 
 func TestU2MCredentials(t *testing.T) {
+	env.CleanupEnvironment(t)
 	tests := []struct {
 		name       string
 		cfg        *Config

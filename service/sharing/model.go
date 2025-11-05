@@ -1816,6 +1816,9 @@ func (s Table) MarshalJSON() ([]byte, error) {
 type TableInternalAttributes struct {
 	// Managed Delta Metadata location for foreign iceberg tables.
 	AuxiliaryManagedLocation string `json:"auxiliary_managed_location,omitempty"`
+	// Storage locations of all table dependencies for shared views. Used on the
+	// recipient side for SEG (Secure Egress Gateway) whitelisting.
+	DependencyStorageLocations []string `json:"dependency_storage_locations,omitempty"`
 	// Will be populated in the reconciliation response for VIEW and
 	// FOREIGN_TABLE, with the value of the parent UC entity's storage_location,
 	// following the same logic as getManagedEntityPath in
@@ -1900,33 +1903,6 @@ func (f *TableInternalAttributesSharedTableType) Values() []TableInternalAttribu
 // Type always returns TableInternalAttributesSharedTableType to satisfy [pflag.Value] interface
 func (f *TableInternalAttributesSharedTableType) Type() string {
 	return "TableInternalAttributesSharedTableType"
-}
-
-type UpdateFederationPolicyRequest struct {
-	// Name of the policy. This is the name of the current name of the policy.
-	Name string `json:"-" url:"-"`
-
-	Policy FederationPolicy `json:"policy"`
-	// Name of the recipient. This is the name of the recipient for which the
-	// policy is being updated.
-	RecipientName string `json:"-" url:"-"`
-	// The field mask specifies which fields of the policy to update. To specify
-	// multiple fields in the field mask, use comma as the separator (no space).
-	// The special value '*' indicates that all fields should be updated (full
-	// replacement). If unspecified, all fields that are set in the policy
-	// provided in the update request will overwrite the corresponding fields in
-	// the existing policy. Example value: 'comment,oidc_policy.audiences'.
-	UpdateMask string `json:"-" url:"update_mask,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *UpdateFederationPolicyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s UpdateFederationPolicyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type UpdateProvider struct {

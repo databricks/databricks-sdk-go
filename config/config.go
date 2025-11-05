@@ -39,6 +39,30 @@ type Loader interface {
 	Configure(*Config) error
 }
 
+// HostType represents the type of API the configured host supports.
+type HostType string
+
+const (
+	// WorkspaceHost supports only workspace-level APIs.
+	WorkspaceHost HostType = "WORKSPACE_HOST"
+	// AccountHost supports only account-level APIs.
+	AccountHost HostType = "ACCOUNT_HOST"
+	// UnifiedHost supports both workspace-level and account-level APIs.
+	UnifiedHost HostType = "UNIFIED_HOST"
+)
+
+// ConfigType represents the type of API this config is valid for.
+type ConfigType string
+
+const (
+	// WorkspaceConfig is valid for workspace-level API requests.
+	WorkspaceConfig ConfigType = "WORKSPACE_CONFIG"
+	// AccountConfig is valid for account-level API requests.
+	AccountConfig ConfigType = "ACCOUNT_CONFIG"
+	// InvalidConfig is returned when the config is not valid for either workspace-level or account-level APIs.
+	InvalidConfig ConfigType = "INVALID_CONFIG"
+)
+
 // Config represents configuration for Databricks Connectivity
 type Config struct {
 	// Credentials holds an instance of Credentials Strategy to authenticate with Databricks REST APIs.
@@ -57,6 +81,9 @@ type Config struct {
 
 	// Databricks Account ID for Accounts API. This field is used in dependencies.
 	AccountID string `name:"account_id" env:"DATABRICKS_ACCOUNT_ID"`
+
+	// Databricks Workspace ID for Workspace clients when working with unified hosts
+	WorkspaceId string `name:"workspace_id" env:"DATABRICKS_WORKSPACE_ID"`
 
 	Token    string `name:"token" env:"DATABRICKS_TOKEN" auth:"pat,sensitive"`
 	Username string `name:"username" env:"DATABRICKS_USERNAME" auth:"basic"`
@@ -183,6 +210,9 @@ type Config struct {
 
 	// Keep track of the source of each attribute
 	attrSource map[string]Source
+
+	// Marker for unified hosts. Will be redundant once we can recognize unified hosts by their hostname.
+	Experimental_IsUnifiedHost bool `name:"experimental_is_unified_host" env:"DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST" auth:"-"`
 }
 
 // NewWithWorkspaceHost returns a new instance of the Config with the host set to
@@ -195,7 +225,7 @@ func (c *Config) NewWithWorkspaceHost(host string) (*Config, error) {
 		return nil, err
 	}
 
-	var fieldsToSkip = map[string]struct{}{
+	fieldsToSkip := map[string]struct{}{
 		"Host":            {},
 		"AzureResourceID": {},
 		"AccountID":       {},
@@ -289,8 +319,15 @@ func (c *Config) IsAws() bool {
 	return c.Host != "" && !c.IsAzure() && !c.IsGcp()
 }
 
-// IsAccountClient returns true if client is configured for Accounts API
+// IsAccountClient returns true if client is configured for Accounts API.
+// Panics if the config has the unified host flag set.
+//
+// Deprecated: Use HostType() if possible, or ConfigType() if necessary.
 func (c *Config) IsAccountClient() bool {
+	if c.Experimental_IsUnifiedHost {
+		panic("IsAccountClient cannot be used with unified hosts; use HostType() instead")
+	}
+
 	if c.AccountID != "" && c.isTesting {
 		return true
 	}
@@ -305,6 +342,55 @@ func (c *Config) IsAccountClient() bool {
 		}
 	}
 	return false
+}
+
+// HostType returns the type of host that the client is configured for.
+func (c *Config) HostType() HostType {
+	if c.Experimental_IsUnifiedHost {
+		return UnifiedHost
+	}
+
+	// TODO: Refactor tests so that this is not needed.
+	if c.AccountID != "" && c.isTesting {
+		return AccountHost
+	}
+
+	accountsPrefixes := []string{
+		"https://accounts.",
+		"https://accounts-dod.",
+	}
+	for _, prefix := range accountsPrefixes {
+		if strings.HasPrefix(c.Host, prefix) {
+			return AccountHost
+		}
+	}
+
+	return WorkspaceHost
+}
+
+// ConfigType returns the type of config that the client is configured for.
+// Returns InvalidConfig if the config is invalid.
+// Use of this function should be avoided where possible, because we plan
+// to remove WorkspaceClient and AccountClient in favor of a single unified
+// client in the future.
+func (c *Config) ConfigType() ConfigType {
+	switch c.HostType() {
+	case AccountHost:
+		return AccountConfig
+	case WorkspaceHost:
+		return WorkspaceConfig
+	case UnifiedHost:
+		if c.AccountID == "" {
+			// All unified host configs must have an account ID
+			return InvalidConfig
+		}
+		if c.WorkspaceId != "" {
+			return WorkspaceConfig
+		}
+		return AccountConfig
+	default:
+		return InvalidConfig
+	}
 }
 
 func (c *Config) EnsureResolved() error {
@@ -327,7 +413,6 @@ func (c *Config) EnsureResolved() error {
 		logger.Tracef(ctx, "Loading config via %s", loader.Name())
 		err := loader.Configure(c)
 		if err != nil {
-
 			return c.wrapDebug(fmt.Errorf("resolve: %w", err))
 		}
 	}
@@ -475,16 +560,32 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 		Client: c.refreshClient,
 	}
 	host := c.CanonicalHostName()
-	if c.IsAccountClient() {
+	switch c.HostType() {
+	case AccountHost:
 		return oauthClient.GetAccountOAuthEndpoints(ctx, host, c.AccountID)
+	case UnifiedHost:
+		return oauthClient.GetUnifiedOAuthEndpoints(ctx, host, c.AccountID)
+	case WorkspaceHost:
+		return oauthClient.GetWorkspaceOAuthEndpoints(ctx, host)
+	default:
+		return nil, fmt.Errorf("unknown host type: %v", c.HostType())
 	}
-	return oauthClient.GetWorkspaceOAuthEndpoints(ctx, host)
 }
 
 func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
-	host := c.CanonicalHostName()
-	if c.IsAccountClient() {
-		return u2m.NewBasicAccountOAuthArgument(host, c.AccountID)
+	err := c.EnsureResolved()
+	if err != nil {
+		return nil, err
 	}
-	return u2m.NewBasicWorkspaceOAuthArgument(host)
+	host := c.CanonicalHostName()
+	switch c.HostType() {
+	case AccountHost:
+		return u2m.NewBasicAccountOAuthArgument(host, c.AccountID)
+	case UnifiedHost:
+		return u2m.NewBasicUnifiedOAuthArgument(host, c.AccountID)
+	case WorkspaceHost:
+		return u2m.NewBasicWorkspaceOAuthArgument(host)
+	default:
+		return nil, fmt.Errorf("unknown host type: %v", c.HostType())
+	}
 }

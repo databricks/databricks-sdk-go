@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/internal/testspecs/service/common"
 )
 
 // unexported type that holds implementations of just LroTesting API methods
@@ -25,8 +24,8 @@ func (a *lroTestingImpl) CancelOperation(ctx context.Context, request CancelOper
 	return err
 }
 
-func (a *lroTestingImpl) CreateTestResource(ctx context.Context, request CreateTestResourceRequest) (*common.Operation, error) {
-	var operation common.Operation
+func (a *lroTestingImpl) CreateTestResource(ctx context.Context, request CreateTestResourceRequest) (*Operation, error) {
+	var operation Operation
 	path := "/api/2.0/lro-testing/resources"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
@@ -36,8 +35,18 @@ func (a *lroTestingImpl) CreateTestResource(ctx context.Context, request CreateT
 	return &operation, err
 }
 
-func (a *lroTestingImpl) GetOperation(ctx context.Context, request GetOperationRequest) (*common.Operation, error) {
-	var operation common.Operation
+func (a *lroTestingImpl) DeleteTestResource(ctx context.Context, request DeleteTestResourceRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/lro-testing/resources/%v", request.ResourceId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
+}
+
+func (a *lroTestingImpl) GetOperation(ctx context.Context, request GetOperationRequest) (*Operation, error) {
+	var operation Operation
 	path := fmt.Sprintf("/api/2.0/lro-testing/operations/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)

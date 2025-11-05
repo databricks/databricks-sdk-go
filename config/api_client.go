@@ -27,6 +27,54 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 		return httpclient.ClientConfig{}, err
 	}
 
+	visitors := []httpclient.RequestVisitor{
+		func(r *http.Request) error {
+			if r.URL == nil {
+				return fmt.Errorf("no URL found in request")
+			}
+			url, err := url.Parse(cfg.Host)
+			if err != nil {
+				return err
+			}
+			r.URL.Host = url.Host
+			r.URL.Scheme = url.Scheme
+			return nil
+		},
+		authInUserAgentVisitor(cfg),
+		func(r *http.Request) error {
+			// Detect if we are running in a CI/CD environment
+			provider := useragent.CiCdProvider()
+			if provider == "" {
+				return nil
+			}
+			// Add the detected CI/CD provider to the user agent
+			ctx := useragent.InContext(r.Context(), useragent.CicdKey, provider)
+			*r = *r.WithContext(ctx) // replace request
+			return nil
+		},
+		func(r *http.Request) error {
+			// Detect if the SDK is being run in a Databricks Runtime.
+			v := useragent.Runtime()
+			if v == "" {
+				return nil
+			}
+			// Add the detected Databricks Runtime version to the user agent
+			ctx := useragent.InContext(r.Context(), useragent.RuntimeKey, v)
+			*r = *r.WithContext(ctx) // replace request
+			return nil
+		},
+	}
+
+	// Unified hosts use X-Databricks-Org-Id header to determine which workspace to route the request to.
+	// The header must not be set for account-level API requests, otherwise the request will fail.
+	// This visitor relies on the assumption that cfg.WorkspaceId is only set for workspace client configs.
+	if cfg.HostType() == UnifiedHost && cfg.WorkspaceId != "" {
+		visitors = append(visitors, func(r *http.Request) error {
+			r.Header.Set("X-Databricks-Org-Id", cfg.WorkspaceId)
+			return nil
+		})
+	}
+
 	return httpclient.ClientConfig{
 		AccountID:          cfg.AccountID,
 		Host:               cfg.Host,
@@ -38,43 +86,7 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 		InsecureSkipVerify: cfg.InsecureSkipVerify,
 		Transport:          cfg.HTTPTransport,
 		AuthVisitor:        cfg.Authenticate,
-		Visitors: []httpclient.RequestVisitor{
-			func(r *http.Request) error {
-				if r.URL == nil {
-					return fmt.Errorf("no URL found in request")
-				}
-				url, err := url.Parse(cfg.Host)
-				if err != nil {
-					return err
-				}
-				r.URL.Host = url.Host
-				r.URL.Scheme = url.Scheme
-				return nil
-			},
-			authInUserAgentVisitor(cfg),
-			func(r *http.Request) error {
-				// Detect if we are running in a CI/CD environment
-				provider := useragent.CiCdProvider()
-				if provider == "" {
-					return nil
-				}
-				// Add the detected CI/CD provider to the user agent
-				ctx := useragent.InContext(r.Context(), useragent.CicdKey, provider)
-				*r = *r.WithContext(ctx) // replace request
-				return nil
-			},
-			func(r *http.Request) error {
-				// Detect if the SDK is being run in a Databricks Runtime.
-				v := useragent.Runtime()
-				if v == "" {
-					return nil
-				}
-				// Add the detected Databricks Runtime version to the user agent
-				ctx := useragent.InContext(r.Context(), useragent.RuntimeKey, v)
-				*r = *r.WithContext(ctx) // replace request
-				return nil
-			},
-		},
+		Visitors:           visitors,
 		TransientErrors: []string{
 			// This is temporary workaround for SCIM API returning 500.
 			// TODO: Remove when it's fixed.

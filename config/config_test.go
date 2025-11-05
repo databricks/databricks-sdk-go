@@ -11,28 +11,46 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestIsAccountClient_AwsAccount(t *testing.T) {
+func TestHostType_AwsAccount(t *testing.T) {
 	c := &Config{
 		Host:      "https://accounts.cloud.databricks.com",
 		AccountID: "123e4567-e89b-12d3-a456-426614174000",
 	}
-	assert.True(t, c.IsAccountClient())
+	assert.Equal(t, AccountHost, c.HostType())
 }
 
-func TestIsAccountClient_AwsDodAccount(t *testing.T) {
+func TestHostType_AwsDodAccount(t *testing.T) {
 	c := &Config{
 		Host:      "https://accounts-dod.cloud.databricks.us",
 		AccountID: "123e4567-e89b-12d3-a456-426614174000",
 	}
-	assert.True(t, c.IsAccountClient())
+	assert.Equal(t, AccountHost, c.HostType())
 }
 
-func TestIsAccountClient_AwsWorkspace(t *testing.T) {
+func TestHostType_AwsWorkspace(t *testing.T) {
 	c := &Config{
 		Host:      "https://my-workspace.cloud.databricks.us",
 		AccountID: "123e4567-e89b-12d3-a456-426614174000",
 	}
-	assert.False(t, c.IsAccountClient())
+	assert.Equal(t, WorkspaceHost, c.HostType())
+}
+
+func TestHostType_Unified(t *testing.T) {
+	c := &Config{
+		Host:                       "https://unified.cloud.databricks.com",
+		AccountID:                  "123e4567-e89b-12d3-a456-426614174000",
+		Experimental_IsUnifiedHost: true,
+	}
+	assert.Equal(t, UnifiedHost, c.HostType())
+}
+
+func TestIsAccountClient_PanicsOnUnifiedHost(t *testing.T) {
+	c := &Config{
+		Host:                       "https://unified.cloud.databricks.com",
+		AccountID:                  "test-account",
+		Experimental_IsUnifiedHost: true,
+	}
+	assert.Panics(t, func() { c.IsAccountClient() })
 }
 
 func TestNewWithWorkspaceHost(t *testing.T) {
@@ -141,6 +159,49 @@ func TestConfig_getOidcEndpoints_workspace(t *testing.T) {
 	}
 }
 
+func TestConfig_getOidcEndpoints_unified(t *testing.T) {
+	tests := []struct {
+		name      string
+		host      string
+		accountID string
+	}{
+		{
+			name:      "without trailing slash",
+			host:      "https://unified.cloud.databricks.com",
+			accountID: "abc",
+		},
+		{
+			name:      "with trailing slash",
+			host:      "https://unified.cloud.databricks.com/",
+			accountID: "abc",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Config{
+				Host:                       tt.host,
+				AccountID:                  tt.accountID,
+				Experimental_IsUnifiedHost: true,
+				HTTPTransport: fixtures.SliceTransport{
+					{
+						Method:   "GET",
+						Resource: "/oidc/accounts/abc/.well-known/oauth-authorization-server",
+						Status:   200,
+						Response: `{"authorization_endpoint": "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/authorize", "token_endpoint": "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/token"}`,
+					},
+				},
+			}
+			got, err := c.getOidcEndpoints(context.Background())
+			assert.NoError(t, err)
+			assert.Equal(t, &u2m.OAuthAuthorizationServer{
+				AuthorizationEndpoint: "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/authorize",
+				TokenEndpoint:         "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/token",
+			}, got)
+		})
+	}
+}
+
 func TestConfig_getOAuthArgument_account(t *testing.T) {
 	tests := []struct {
 		name      string
@@ -200,6 +261,41 @@ func TestConfig_getOAuthArgument_workspace(t *testing.T) {
 			got, ok := rawGot.(u2m.BasicWorkspaceOAuthArgument)
 			assert.True(t, ok)
 			assert.Equal(t, "https://myworkspace.cloud.databricks.com", got.GetWorkspaceHost())
+		})
+	}
+}
+
+func TestConfig_getOAuthArgument_Unified(t *testing.T) {
+	tests := []struct {
+		name      string
+		host      string
+		accountID string
+	}{
+		{
+			name:      "without trailing slash",
+			host:      "https://unified.cloud.databricks.com",
+			accountID: "account-123",
+		},
+		{
+			name:      "with trailing slash",
+			host:      "https://unified.cloud.databricks.com/",
+			accountID: "account-123",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Config{
+				Host:                       tt.host,
+				AccountID:                  tt.accountID,
+				Experimental_IsUnifiedHost: true,
+			}
+			rawGot, err := c.getOAuthArgument()
+			assert.NoError(t, err)
+			got, ok := rawGot.(u2m.UnifiedOAuthArgument)
+			assert.True(t, ok, "Expected UnifiedOAuthArgument")
+			assert.Equal(t, "https://unified.cloud.databricks.com", got.GetHost())
+			assert.Equal(t, "account-123", got.GetAccountId())
 		})
 	}
 }

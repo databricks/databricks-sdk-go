@@ -83,6 +83,8 @@ type CreatePipeline struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+	// Usage policy of this pipeline.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -146,9 +148,8 @@ func (s DataPlaneId) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Days of week in which the restart is allowed to happen (within a five-hour
-// window starting at start_hour). If not specified all days of the week will be
-// used.
+// Days of week in which the window is allowed to happen. If not specified all
+// days of the week will be used.
 type DayOfWeek string
 
 const DayOfWeekFriday DayOfWeek = `FRIDAY`
@@ -319,6 +320,8 @@ type EditPipeline struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+	// Usage policy of this pipeline.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -723,6 +726,12 @@ const IngestionSourceTypeForeignCatalog IngestionSourceType = `FOREIGN_CATALOG`
 
 const IngestionSourceTypeGa4RawData IngestionSourceType = `GA4_RAW_DATA`
 
+const IngestionSourceTypeGoogleAds IngestionSourceType = `GOOGLE_ADS`
+
+const IngestionSourceTypeGuidewire IngestionSourceType = `GUIDEWIRE`
+
+const IngestionSourceTypeHubspot IngestionSourceType = `HUBSPOT`
+
 const IngestionSourceTypeManagedPostgresql IngestionSourceType = `MANAGED_POSTGRESQL`
 
 const IngestionSourceTypeMetaMarketing IngestionSourceType = `META_MARKETING`
@@ -739,6 +748,8 @@ const IngestionSourceTypeRedshift IngestionSourceType = `REDSHIFT`
 
 const IngestionSourceTypeSalesforce IngestionSourceType = `SALESFORCE`
 
+const IngestionSourceTypeSalesforceMarketingCloud IngestionSourceType = `SALESFORCE_MARKETING_CLOUD`
+
 const IngestionSourceTypeServicenow IngestionSourceType = `SERVICENOW`
 
 const IngestionSourceTypeSharepoint IngestionSourceType = `SHAREPOINT`
@@ -749,7 +760,13 @@ const IngestionSourceTypeSqlserver IngestionSourceType = `SQLSERVER`
 
 const IngestionSourceTypeTeradata IngestionSourceType = `TERADATA`
 
+const IngestionSourceTypeTiktokAds IngestionSourceType = `TIKTOK_ADS`
+
+const IngestionSourceTypeWorkdayHcm IngestionSourceType = `WORKDAY_HCM`
+
 const IngestionSourceTypeWorkdayRaas IngestionSourceType = `WORKDAY_RAAS`
+
+const IngestionSourceTypeZendesk IngestionSourceType = `ZENDESK`
 
 // String representation for [fmt.Print]
 func (f *IngestionSourceType) String() string {
@@ -759,11 +776,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `REDSHIFT`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLDW`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
+	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_ADS`, `GUIDEWIRE`, `HUBSPOT`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_MARKETING_CLOUD`, `SERVICENOW`, `SHAREPOINT`, `SQLDW`, `SQLSERVER`, `TERADATA`, `TIKTOK_ADS`, `WORKDAY_HCM`, `WORKDAY_RAAS`, `ZENDESK`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "REDSHIFT", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLDW", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_ADS", "GUIDEWIRE", "HUBSPOT", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "REDSHIFT", "SALESFORCE", "SALESFORCE_MARKETING_CLOUD", "SERVICENOW", "SHAREPOINT", "SQLDW", "SQLSERVER", "TERADATA", "TIKTOK_ADS", "WORKDAY_HCM", "WORKDAY_RAAS", "ZENDESK"`, v)
 	}
 }
 
@@ -777,6 +794,9 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypeDynamics365,
 		IngestionSourceTypeForeignCatalog,
 		IngestionSourceTypeGa4RawData,
+		IngestionSourceTypeGoogleAds,
+		IngestionSourceTypeGuidewire,
+		IngestionSourceTypeHubspot,
 		IngestionSourceTypeManagedPostgresql,
 		IngestionSourceTypeMetaMarketing,
 		IngestionSourceTypeMysql,
@@ -785,12 +805,16 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypePostgresql,
 		IngestionSourceTypeRedshift,
 		IngestionSourceTypeSalesforce,
+		IngestionSourceTypeSalesforceMarketingCloud,
 		IngestionSourceTypeServicenow,
 		IngestionSourceTypeSharepoint,
 		IngestionSourceTypeSqldw,
 		IngestionSourceTypeSqlserver,
 		IngestionSourceTypeTeradata,
+		IngestionSourceTypeTiktokAds,
+		IngestionSourceTypeWorkdayHcm,
 		IngestionSourceTypeWorkdayRaas,
+		IngestionSourceTypeZendesk,
 	}
 }
 
@@ -1537,6 +1561,8 @@ type PipelineSpec struct {
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+	// Usage policy of this pipeline.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
