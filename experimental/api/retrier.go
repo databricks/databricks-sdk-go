@@ -105,11 +105,9 @@ func (bp *BackoffPolicy) setDefaults() {
 	if bp.Factor < 1 {
 		bp.Factor = 2
 	}
-	if bp.current == 0 {
-		bp.current = bp.Initial
-	}
 	if bp.int63n == nil {
 		bp.int63n = rand.Int63n
 	}
+	bp.current = bp.Initial
 	bp.initialized = true
 }

@@ -64,8 +64,12 @@ func TestExecute_success(t *testing.T) {
 }
 
 func TestExecute_retries(t *testing.T) {
-	testError := errors.New("retriable error")
-	nonRetriableTestError := errors.New("non-retriable error")
+	// Default retrier that only retries if the error is a retriableError.
+	retriableError := errors.New("retriable error")
+	nonRetriableError := errors.New("non-retriable error")
+	retrier := &mockRetrier{fn: func(err error) (time.Duration, bool) {
+		return 0, err == retriableError
+	}}
 
 	testCases := []struct {
 		name          string
@@ -76,37 +80,37 @@ func TestExecute_retries(t *testing.T) {
 	}{
 		{
 			name:          "no retrier - fail immediately",
-			callErrors:    []error{testError},
+			callErrors:    []error{retriableError},
 			retrier:       nil, // no retrier
-			wantErr:       testError,
+			wantErr:       retriableError,
 			wantCallCount: 1,
 		},
 		{
 			name:          "non-retriable error - fail immediately",
-			callErrors:    []error{testError},
-			retrier:       &mockRetrier{fn: func(error) (time.Duration, bool) { return 0, false }},
-			wantErr:       testError,
+			callErrors:    []error{nonRetriableError},
+			retrier:       retrier,
+			wantErr:       nonRetriableError,
 			wantCallCount: 1,
 		},
 		{
 			name:          "retriable error - retry once then succeed",
-			callErrors:    []error{testError, nil},
+			callErrors:    []error{retriableError, nil},
 			retrier:       &mockRetrier{fn: func(error) (time.Duration, bool) { return 0, true }},
 			wantErr:       nil,
 			wantCallCount: 2,
 		},
 		{
 			name:          "retriable error - retry multiple times then succeed",
-			callErrors:    []error{testError, testError, testError, nil},
+			callErrors:    []error{retriableError, retriableError, retriableError, nil},
 			retrier:       &mockRetrier{fn: func(error) (time.Duration, bool) { return 0, true }},
 			wantErr:       nil,
 			wantCallCount: 4,
 		},
 		{
 			name:          "retriable error - retry then fail with non-retriable",
-			callErrors:    []error{testError, nonRetriableTestError},
-			retrier:       &mockRetrier{fn: func(err error) (time.Duration, bool) { return 0, err == testError }},
-			wantErr:       nonRetriableTestError,
+			callErrors:    []error{retriableError, nonRetriableError},
+			retrier:       retrier,
+			wantErr:       nonRetriableError,
 			wantCallCount: 2,
 		},
 	}
@@ -158,18 +162,18 @@ func TestExecute_timeout(t *testing.T) {
 			wantTimeout: true,
 		},
 		{
-			name:        "context timeout takes precedence - timeout",
+			name:        "minimum timeout - context timeout",
 			ctxTimeout:  10 * time.Millisecond,
 			optTimeout:  100 * time.Millisecond, // would not timeout
 			callDelay:   50 * time.Millisecond,
 			wantTimeout: true,
 		},
 		{
-			name:        "context timeout takes precedence - no timeout",
+			name:        "minimum timeout - option timeout",
 			ctxTimeout:  100 * time.Millisecond, // would not timeout
 			optTimeout:  10 * time.Millisecond,
 			callDelay:   50 * time.Millisecond,
-			wantTimeout: false,
+			wantTimeout: true,
 		},
 	}
 

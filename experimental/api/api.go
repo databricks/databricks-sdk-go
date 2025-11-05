@@ -42,9 +42,10 @@ type sleeper func(ctx context.Context, d time.Duration) error
 // execute is the actual implementation of Execute. Its purpose is to ease
 // testing by providing a convenient way to mock the sleeping logic.
 func execute(ctx context.Context, apiCall Call, opts Options, sleep sleeper) error {
-	// The timeout in options is for convenience; it should only be used if the
-	// caller hasn't already set a timeout on the context.
-	if _, ok := ctx.Deadline(); !ok && opts.timeout != 0 {
+	// Optionally update the context with the timeout. If the context already
+	// has a deadline, that deadline is updated to the minimum of the context's
+	// deadline and the timeout.
+	if opts.timeout != 0 {
 		c, f := context.WithTimeout(ctx, opts.timeout)
 		defer f()
 		ctx = c
