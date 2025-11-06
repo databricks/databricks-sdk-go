@@ -668,10 +668,11 @@ type CreateJob struct {
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// A list of task execution environment specifications that can be
 	// referenced by serverless tasks of this job. An environment is required to
-	// be present for serverless tasks. For serverless notebook tasks, the
-	// environment is accessible in the notebook environment panel. For other
-	// serverless tasks, the task environment is required to be specified using
-	// environment_key in the task settings.
+	// be present for serverless tasks. For serverless notebook tasks, if the
+	// environment_key is not specified, the notebook environment will be used
+	// if present. If a jobs environment is specified, it will override the
+	// notebook environment. For other serverless tasks, the task environment is
+	// required to be specified using environment_key in the task settings.
 	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
@@ -2075,10 +2076,11 @@ type JobSettings struct {
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// A list of task execution environment specifications that can be
 	// referenced by serverless tasks of this job. An environment is required to
-	// be present for serverless tasks. For serverless notebook tasks, the
-	// environment is accessible in the notebook environment panel. For other
-	// serverless tasks, the task environment is required to be specified using
-	// environment_key in the task settings.
+	// be present for serverless tasks. For serverless notebook tasks, if the
+	// environment_key is not specified, the notebook environment will be used
+	// if present. If a jobs environment is specified, it will override the
+	// notebook environment. For other serverless tasks, the task environment is
+	// required to be specified using environment_key in the task settings.
 	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
@@ -5226,7 +5228,7 @@ type TableUpdateTriggerConfiguration struct {
 	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
 	// A list of tables to monitor for changes. The table name must be in the
 	// format `catalog_name.schema_name.table_name`.
-	TableNames []string `json:"table_names,omitempty"`
+	TableNames []string `json:"table_names"`
 	// If set, the trigger starts a run only after no table updates have
 	// occurred for the specified time and can be used to wait for a series of
 	// table updates before triggering a run. The minimum allowed value is 60
