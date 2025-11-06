@@ -238,6 +238,16 @@ type ApproveTransitionRequestResponse struct {
 	Activity *Activity `json:"activity,omitempty"`
 }
 
+type BatchCreateMaterializedFeaturesRequest struct {
+	// The requests to create materialized features.
+	Requests []CreateMaterializedFeatureRequest `json:"requests"`
+}
+
+type BatchCreateMaterializedFeaturesResponse struct {
+	// The created materialized features with assigned IDs.
+	MaterializedFeatures []MaterializedFeature `json:"materialized_features,omitempty"`
+}
+
 // An action that a user (with sufficient permissions) could take on an activity
 // or comment.
 //
@@ -1160,6 +1170,8 @@ type Feature struct {
 	Function Function `json:"function"`
 	// The input columns from which the feature is computed.
 	Inputs []string `json:"inputs"`
+	// Lineage context information for this feature.
+	LineageContext *LineageContext `json:"lineage_context,omitempty"`
 	// The data source of the feature.
 	Source DataSource `json:"source"`
 	// The time window in which the feature is computed.
@@ -1727,6 +1739,23 @@ type InputTag struct {
 	Value string `json:"value"`
 }
 
+type JobContext struct {
+	// The job ID where this API invoked.
+	JobId int64 `json:"job_id,omitempty"`
+	// The job run ID where this API was invoked.
+	JobRunId int64 `json:"job_run_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *JobContext) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobContext) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type JobSpec struct {
 	// The personal access token used to authorize webhook's job runs.
 	AccessToken string `json:"access_token"`
@@ -1764,6 +1793,26 @@ func (s *JobSpecWithoutSecret) UnmarshalJSON(b []byte) error {
 }
 
 func (s JobSpecWithoutSecret) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Lineage context information for tracking where an API was invoked. This will
+// allow us to track lineage, which currently uses caller entity information for
+// use across the Lineage Client and Observability in Lumberjack.
+type LineageContext struct {
+	// Job context information including job ID and run ID.
+	JobContext *JobContext `json:"job_context,omitempty"`
+	// The notebook ID where this API was invoked.
+	NotebookId int64 `json:"notebook_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LineageContext) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LineageContext) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2411,7 +2460,7 @@ type MaterializedFeature struct {
 
 	OfflineStoreConfig *OfflineStoreConfig `json:"offline_store_config,omitempty"`
 
-	OnlineStoreConfig *OnlineStore `json:"online_store_config,omitempty"`
+	OnlineStoreConfig *OnlineStoreConfig `json:"online_store_config,omitempty"`
 	// The schedule state of the materialization pipeline.
 	PipelineScheduleState MaterializedFeaturePipelineScheduleState `json:"pipeline_schedule_state,omitempty"`
 	// The fully qualified Unity Catalog path to the table containing the
@@ -2798,6 +2847,20 @@ func (s *OnlineStore) UnmarshalJSON(b []byte) error {
 
 func (s OnlineStore) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Configuration for online store destination.
+type OnlineStoreConfig struct {
+	// The Unity Catalog catalog name. This name is also used as the Lakebase
+	// logical database name.
+	CatalogName string `json:"catalog_name"`
+	// The name of the target online store.
+	OnlineStoreName string `json:"online_store_name"`
+	// The Unity Catalog schema name.
+	SchemaName string `json:"schema_name"`
+	// Prefix for Unity Catalog table name. The materialized feature will be
+	// stored in a Lakebase table with this prefix and a generated postfix.
+	TableNamePrefix string `json:"table_name_prefix"`
 }
 
 type OnlineStoreState string

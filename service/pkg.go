@@ -206,7 +206,7 @@
 //
 // - [settings.PersonalComputeAPI]: The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources.
 //
-// - [pipelines.PipelinesAPI]: The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
+// - [pipelines.PipelinesAPI]: The Lakeflow Spark Declarative Pipelines API allows you to create, edit, delete, start, and view details about pipelines.
 //
 // - [catalog.PoliciesAPI]: Attribute-Based Access Control (ABAC) provides high leverage governance for enforcing compliance policies in Unity Catalog.
 //
