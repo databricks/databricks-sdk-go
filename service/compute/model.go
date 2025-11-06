@@ -2770,6 +2770,8 @@ const EventDetailsCauseAutorecovery EventDetailsCause = `AUTORECOVERY`
 
 const EventDetailsCauseAutoscale EventDetailsCause = `AUTOSCALE`
 
+const EventDetailsCauseAutoscaleV2 EventDetailsCause = `AUTOSCALE_V2`
+
 const EventDetailsCauseReplaceBadNodes EventDetailsCause = `REPLACE_BAD_NODES`
 
 const EventDetailsCauseUserRequest EventDetailsCause = `USER_REQUEST`
@@ -2782,11 +2784,11 @@ func (f *EventDetailsCause) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EventDetailsCause) Set(v string) error {
 	switch v {
-	case `AUTORECOVERY`, `AUTOSCALE`, `REPLACE_BAD_NODES`, `USER_REQUEST`:
+	case `AUTORECOVERY`, `AUTOSCALE`, `AUTOSCALE_V2`, `REPLACE_BAD_NODES`, `USER_REQUEST`:
 		*f = EventDetailsCause(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AUTORECOVERY", "AUTOSCALE", "REPLACE_BAD_NODES", "USER_REQUEST"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AUTORECOVERY", "AUTOSCALE", "AUTOSCALE_V2", "REPLACE_BAD_NODES", "USER_REQUEST"`, v)
 	}
 }
 
@@ -2797,6 +2799,7 @@ func (f *EventDetailsCause) Values() []EventDetailsCause {
 	return []EventDetailsCause{
 		EventDetailsCauseAutorecovery,
 		EventDetailsCauseAutoscale,
+		EventDetailsCauseAutoscaleV2,
 		EventDetailsCauseReplaceBadNodes,
 		EventDetailsCauseUserRequest,
 	}

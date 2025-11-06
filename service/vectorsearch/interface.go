@@ -23,6 +23,9 @@ type VectorSearchEndpointsService interface {
 	// List all vector search endpoints in the workspace.
 	ListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointResponse, error)
 
+	// Retrieve user-visible metrics for an endpoint
+	RetrieveUserVisibleMetrics(ctx context.Context, request RetrieveUserVisibleMetricsRequest) (*RetrieveUserVisibleMetricsResponse, error)
+
 	// Update the budget policy of an endpoint
 	UpdateEndpointBudgetPolicy(ctx context.Context, request PatchEndpointBudgetPolicyRequest) (*PatchEndpointBudgetPolicyResponse, error)
 

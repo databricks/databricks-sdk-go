@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/stretchr/testify/mock"
 
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/agentbricks"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/apps"
