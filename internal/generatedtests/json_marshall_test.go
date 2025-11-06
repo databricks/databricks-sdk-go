@@ -204,7 +204,7 @@ func TestJsonMarshall(t *testing.T) {
 				RequiredString:    "non_default_string",
 				RequiredStruct:    map[string]json.RawMessage{},
 				RequiredTimestamp: *time.New(timeFromString("2023-12-31T23:59:59Z")),
-				RequiredValue:     json.RawMessage("{}"),
+				RequiredValue:     json.RawMessage("{\"key\": \"value\"}"),
 				TestRequiredEnum:  jsonmarshallv2.TestEnumTestEnumTwo,
 			},
 			want: `{
@@ -212,7 +212,7 @@ func TestJsonMarshall(t *testing.T) {
 				"required_int32": 42,
 				"required_int64": 1234567890123456789,
 				"required_bool": true,
-				"required_value": {},	
+				"required_value": {"key": "value"},
 				"required_list_value": [],
 				"required_struct": {},
 				"required_message": {},
