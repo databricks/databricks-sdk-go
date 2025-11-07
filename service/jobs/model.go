@@ -5226,7 +5226,7 @@ type TableUpdateTriggerConfiguration struct {
 	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
 	// A list of tables to monitor for changes. The table name must be in the
 	// format `catalog_name.schema_name.table_name`.
-	TableNames []string `json:"table_names,omitempty"`
+	TableNames []string `json:"table_names"`
 	// If set, the trigger starts a run only after no table updates have
 	// occurred for the specified time and can be used to wait for a series of
 	// table updates before triggering a run. The minimum allowed value is 60
