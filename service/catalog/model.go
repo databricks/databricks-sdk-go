@@ -14,7 +14,7 @@ type AccessRequestDestinations struct {
 	// permission to see all destinations.
 	AreAnyDestinationsHidden bool `json:"are_any_destinations_hidden,omitempty"`
 	// The access request destinations for the securable.
-	Destinations []NotificationDestination `json:"destinations"`
+	Destinations []NotificationDestination `json:"destinations,omitempty"`
 	// The securable for which the access request destinations are being
 	// retrieved.
 	Securable Securable `json:"securable"`
@@ -928,7 +928,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 47
+// Next Id: 48
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -6912,7 +6912,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_AWS_SECRETS_MANAGER = 270; Next id:271
+// Latest kind: CONNECTION_SLACK_OAUTH_U2M_MAPPING = 272; Next id:273
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`

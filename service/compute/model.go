@@ -143,7 +143,7 @@ type AwsAttributes struct {
 	// availability zone must be in the same region as the Databricks
 	// deployment. For example, "us-west-2a" is not a valid zone id if the
 	// Databricks deployment resides in the "us-east-1" region. This is an
-	// optional field at cluster creation, and if not specified, a default zone
+	// optional field at cluster creation, and if not specified, the zone "auto"
 	// will be used. If the zone specified is "auto", will try to place cluster
 	// in a zone with high availability, and will retry placement in a different
 	// AZ if there is not enough capacity.
@@ -2770,6 +2770,8 @@ const EventDetailsCauseAutorecovery EventDetailsCause = `AUTORECOVERY`
 
 const EventDetailsCauseAutoscale EventDetailsCause = `AUTOSCALE`
 
+const EventDetailsCauseAutoscaleV2 EventDetailsCause = `AUTOSCALE_V2`
+
 const EventDetailsCauseReplaceBadNodes EventDetailsCause = `REPLACE_BAD_NODES`
 
 const EventDetailsCauseUserRequest EventDetailsCause = `USER_REQUEST`
@@ -2782,11 +2784,11 @@ func (f *EventDetailsCause) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EventDetailsCause) Set(v string) error {
 	switch v {
-	case `AUTORECOVERY`, `AUTOSCALE`, `REPLACE_BAD_NODES`, `USER_REQUEST`:
+	case `AUTORECOVERY`, `AUTOSCALE`, `AUTOSCALE_V2`, `REPLACE_BAD_NODES`, `USER_REQUEST`:
 		*f = EventDetailsCause(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AUTORECOVERY", "AUTOSCALE", "REPLACE_BAD_NODES", "USER_REQUEST"`, v)
+		return fmt.Errorf(`value "%s" is not one of "AUTORECOVERY", "AUTOSCALE", "AUTOSCALE_V2", "REPLACE_BAD_NODES", "USER_REQUEST"`, v)
 	}
 }
 
@@ -2797,6 +2799,7 @@ func (f *EventDetailsCause) Values() []EventDetailsCause {
 	return []EventDetailsCause{
 		EventDetailsCauseAutorecovery,
 		EventDetailsCauseAutoscale,
+		EventDetailsCauseAutoscaleV2,
 		EventDetailsCauseReplaceBadNodes,
 		EventDetailsCauseUserRequest,
 	}

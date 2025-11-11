@@ -9,6 +9,24 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+type ConnectionParameters struct {
+	// Source catalog for initial connection. This is necessary for schema
+	// exploration in some database systems like Oracle, and optional but
+	// nice-to-have in some other database systems like Postgres. For Oracle
+	// databases, this maps to a service name.
+	SourceCatalog string `json:"source_catalog,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ConnectionParameters) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ConnectionParameters) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
@@ -567,13 +585,16 @@ type IngestionGatewayPipelineDefinition struct {
 	// Immutable. The Unity Catalog connection that this gateway pipeline uses
 	// to communicate with the source.
 	ConnectionName string `json:"connection_name"`
+	// Optional, Internal. Parameters required to establish an initial
+	// connection with the source.
+	ConnectionParameters *ConnectionParameters `json:"connection_parameters,omitempty"`
 	// Required, Immutable. The name of the catalog for the gateway pipeline's
 	// storage location.
 	GatewayStorageCatalog string `json:"gateway_storage_catalog"`
 	// Optional. The Unity Catalog-compatible name for the gateway storage
 	// location. This is the destination to use for the data that is extracted
-	// by the gateway. Delta Live Tables system will automatically create the
-	// storage location under the catalog and schema.
+	// by the gateway. Spark Declarative Pipelines system will automatically
+	// create the storage location under the catalog and schema.
 	GatewayStorageName string `json:"gateway_storage_name,omitempty"`
 	// Required, Immutable. The name of the schema for the gateway pipelines's
 	// storage location.
@@ -595,6 +616,12 @@ type IngestionPipelineDefinition struct {
 	// to communicate with the source. This is used with connectors for
 	// applications like Salesforce, Workday, and so on.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Immutable. If set to true, the pipeline will ingest tables from the UC
+	// foreign catalogs directly without the need to specify a UC connection or
+	// ingestion gateway. The `source_catalog` fields in objects of
+	// IngestionConfig are interpreted as the UC foreign catalogs to ingest
+	// from.
+	IngestFromUcForeignCatalog bool `json:"ingest_from_uc_foreign_catalog,omitempty"`
 	// Immutable. Identifier for the gateway that is used by this ingestion
 	// pipeline to communicate with the source database. This is used with
 	// connectors to databases like SQL Server.
@@ -2088,8 +2115,8 @@ type TableSpecificConfig struct {
 	// The SCD type to use to ingest the table.
 	ScdType TableSpecificConfigScdType `json:"scd_type,omitempty"`
 	// The column names specifying the logical order of events in the source
-	// data. Delta Live Tables uses this sequencing to handle change events that
-	// arrive out of order.
+	// data. Spark Declarative Pipelines uses this sequencing to handle change
+	// events that arrive out of order.
 	SequenceBy []string `json:"sequence_by,omitempty"`
 	// (Optional) Additional custom parameters for Workday Report
 	WorkdayReportParameters *IngestionPipelineDefinitionWorkdayReportParameters `json:"workday_report_parameters,omitempty"`

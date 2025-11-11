@@ -808,6 +808,10 @@ func (s CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) MarshalJS
 
 type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState string
 
+const CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateCreateFailed CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState = `CREATE_FAILED`
+
+const CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateCreating CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState = `CREATING`
+
 const CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateDisconnected CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState = `DISCONNECTED`
 
 const CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateEstablished CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState = `ESTABLISHED`
@@ -826,11 +830,11 @@ func (f *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLin
 // Set raw string value and validate it against allowed values
 func (f *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState) Set(v string) error {
 	switch v {
-	case `DISCONNECTED`, `ESTABLISHED`, `EXPIRED`, `PENDING`, `REJECTED`:
+	case `CREATE_FAILED`, `CREATING`, `DISCONNECTED`, `ESTABLISHED`, `EXPIRED`, `PENDING`, `REJECTED`:
 		*f = CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DISCONNECTED", "ESTABLISHED", "EXPIRED", "PENDING", "REJECTED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CREATE_FAILED", "CREATING", "DISCONNECTED", "ESTABLISHED", "EXPIRED", "PENDING", "REJECTED"`, v)
 	}
 }
 
@@ -839,6 +843,8 @@ func (f *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLin
 // There is no guarantee on the order of the values in the slice.
 func (f *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState) Values() []CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState {
 	return []CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState{
+		CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateCreateFailed,
+		CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateCreating,
 		CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateDisconnected,
 		CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateEstablished,
 		CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateExpired,
@@ -3308,6 +3314,10 @@ func (s NccAzurePrivateEndpointRule) MarshalJSON() ([]byte, error) {
 
 type NccAzurePrivateEndpointRuleConnectionState string
 
+const NccAzurePrivateEndpointRuleConnectionStateCreateFailed NccAzurePrivateEndpointRuleConnectionState = `CREATE_FAILED`
+
+const NccAzurePrivateEndpointRuleConnectionStateCreating NccAzurePrivateEndpointRuleConnectionState = `CREATING`
+
 const NccAzurePrivateEndpointRuleConnectionStateDisconnected NccAzurePrivateEndpointRuleConnectionState = `DISCONNECTED`
 
 const NccAzurePrivateEndpointRuleConnectionStateEstablished NccAzurePrivateEndpointRuleConnectionState = `ESTABLISHED`
@@ -3328,11 +3338,11 @@ func (f *NccAzurePrivateEndpointRuleConnectionState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *NccAzurePrivateEndpointRuleConnectionState) Set(v string) error {
 	switch v {
-	case `DISCONNECTED`, `ESTABLISHED`, `EXPIRED`, `INIT`, `PENDING`, `REJECTED`:
+	case `CREATE_FAILED`, `CREATING`, `DISCONNECTED`, `ESTABLISHED`, `EXPIRED`, `INIT`, `PENDING`, `REJECTED`:
 		*f = NccAzurePrivateEndpointRuleConnectionState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DISCONNECTED", "ESTABLISHED", "EXPIRED", "INIT", "PENDING", "REJECTED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CREATE_FAILED", "CREATING", "DISCONNECTED", "ESTABLISHED", "EXPIRED", "INIT", "PENDING", "REJECTED"`, v)
 	}
 }
 
@@ -3341,6 +3351,8 @@ func (f *NccAzurePrivateEndpointRuleConnectionState) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *NccAzurePrivateEndpointRuleConnectionState) Values() []NccAzurePrivateEndpointRuleConnectionState {
 	return []NccAzurePrivateEndpointRuleConnectionState{
+		NccAzurePrivateEndpointRuleConnectionStateCreateFailed,
+		NccAzurePrivateEndpointRuleConnectionStateCreating,
 		NccAzurePrivateEndpointRuleConnectionStateDisconnected,
 		NccAzurePrivateEndpointRuleConnectionStateEstablished,
 		NccAzurePrivateEndpointRuleConnectionStateExpired,

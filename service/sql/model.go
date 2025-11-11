@@ -611,6 +611,7 @@ type AlertV2Operand struct {
 }
 
 type AlertV2OperandColumn struct {
+	// If not set, the behavior is equivalent to using `First row` in the UI.
 	Aggregation Aggregation `json:"aggregation,omitempty"`
 
 	Display string `json:"display,omitempty"`
