@@ -6,20 +6,21 @@ import (
 	"context"
 )
 
-// The Delta Live Tables API allows you to create, edit, delete, start, and view
-// details about pipelines.
+// The Lakeflow Spark Declarative Pipelines API allows you to create, edit,
+// delete, start, and view details about pipelines.
 //
-// Delta Live Tables is a framework for building reliable, maintainable, and
-// testable data processing pipelines. You define the transformations to perform
-// on your data, and Delta Live Tables manages task orchestration, cluster
-// management, monitoring, data quality, and error handling.
+// Spark Declarative Pipelines is a framework for building reliable,
+// maintainable, and testable data processing pipelines. You define the
+// transformations to perform on your data, and Spark Declarative Pipelines
+// manages task orchestration, cluster management, monitoring, data quality, and
+// error handling.
 //
 // Instead of defining your data pipelines using a series of separate Apache
-// Spark tasks, Delta Live Tables manages how your data is transformed based on
-// a target schema you define for each processing step. You can also enforce
-// data quality with Delta Live Tables expectations. Expectations allow you to
-// define expected data quality and specify how to handle records that fail
-// those expectations.
+// Spark tasks, Spark Declarative Pipelines manages how your data is transformed
+// based on a target schema you define for each processing step. You can also
+// enforce data quality with Spark Declarative Pipelines expectations.
+// Expectations allow you to define expected data quality and specify how to
+// handle records that fail those expectations.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PipelinesService interface {
@@ -49,7 +50,7 @@ type PipelinesService interface {
 	// Retrieves events for a pipeline.
 	ListPipelineEvents(ctx context.Context, request ListPipelineEventsRequest) (*ListPipelineEventsResponse, error)
 
-	// Lists pipelines defined in the Delta Live Tables system.
+	// Lists pipelines defined in the Spark Declarative Pipelines system.
 	ListPipelines(ctx context.Context, request ListPipelinesRequest) (*ListPipelinesResponse, error)
 
 	// List updates for an active pipeline.
