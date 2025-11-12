@@ -356,6 +356,9 @@ func (a *ExperimentsAPI) GetPermissionsByExperimentId(ctx context.Context, exper
 
 type FeatureEngineeringInterface interface {
 
+	// Batch create materialized features.
+	BatchCreateMaterializedFeatures(ctx context.Context, request BatchCreateMaterializedFeaturesRequest) (*BatchCreateMaterializedFeaturesResponse, error)
+
 	// Create a Feature.
 	CreateFeature(ctx context.Context, request CreateFeatureRequest) (*Feature, error)
 
