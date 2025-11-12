@@ -75,6 +75,9 @@ type DatabaseInterface interface {
 	// Delete a Synced Database Table.
 	DeleteSyncedDatabaseTableByName(ctx context.Context, name string) error
 
+	// Failover the primary node of a Database Instance to a secondary.
+	FailoverDatabaseInstance(ctx context.Context, request FailoverDatabaseInstanceRequest) (*DatabaseInstance, error)
+
 	// Find a Database Instance by uid.
 	FindDatabaseInstanceByUid(ctx context.Context, request FindDatabaseInstanceByUidRequest) (*DatabaseInstance, error)
 
@@ -177,6 +180,9 @@ type DatabaseInterface interface {
 
 	// Update a Database Instance.
 	UpdateDatabaseInstance(ctx context.Context, request UpdateDatabaseInstanceRequest) (*DatabaseInstance, error)
+
+	// Update a role for a Database Instance.
+	UpdateDatabaseInstanceRole(ctx context.Context, request UpdateDatabaseInstanceRoleRequest) (*DatabaseInstanceRole, error)
 
 	// This API is currently unimplemented, but exposed for Terraform support.
 	UpdateSyncedDatabaseTable(ctx context.Context, request UpdateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)

@@ -23,6 +23,12 @@ type VectorSearchEndpointsService interface {
 	// List all vector search endpoints in the workspace.
 	ListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointResponse, error)
 
+	// Update the throughput (concurrency) of an endpoint
+	PatchEndpointThroughput(ctx context.Context, request PatchEndpointThroughputRequest) (*PatchEndpointThroughputResponse, error)
+
+	// Retrieve user-visible metrics for an endpoint
+	RetrieveUserVisibleMetrics(ctx context.Context, request RetrieveUserVisibleMetricsRequest) (*RetrieveUserVisibleMetricsResponse, error)
+
 	// Update the budget policy of an endpoint
 	UpdateEndpointBudgetPolicy(ctx context.Context, request PatchEndpointBudgetPolicyRequest) (*PatchEndpointBudgetPolicyResponse, error)
 
@@ -72,6 +78,9 @@ type VectorSearchIndexesService interface {
 
 	// Triggers a synchronization process for a specified vector index.
 	SyncIndex(ctx context.Context, request SyncIndexRequest) error
+
+	// Update the budget policy of an index
+	UpdateIndexBudgetPolicy(ctx context.Context, request UpdateVectorIndexUsagePolicyRequest) (*UpdateVectorIndexUsagePolicyResponse, error)
 
 	// Handles the upserting of data into a specified vector index.
 	UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error)

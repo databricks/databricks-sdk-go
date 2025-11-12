@@ -24,6 +24,8 @@ type App struct {
 	CreateTime string `json:"create_time,omitempty"`
 	// The email of the user that created the app.
 	Creator string `json:"creator,omitempty"`
+
+	DefaultGitSource *GitSource `json:"default_git_source,omitempty"`
 	// The default workspace file system path of the source code from which app
 	// deployment are created. This field tracks the workspace source code path
 	// of the last active deployment.
@@ -32,6 +34,8 @@ type App struct {
 	Description string `json:"description,omitempty"`
 
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The effective api scopes granted to the user access token.
 	EffectiveUserApiScopes []string `json:"effective_user_api_scopes,omitempty"`
 	// The unique identifier of the app.
@@ -60,6 +64,8 @@ type App struct {
 	Updater string `json:"updater,omitempty"`
 	// The URL of the app once it is deployed.
 	Url string `json:"url,omitempty"`
+
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	UserApiScopes []string `json:"user_api_scopes,omitempty"`
 
@@ -119,6 +125,7 @@ func (s AppAccessControlResponse) MarshalJSON() ([]byte, error) {
 }
 
 type AppDeployment struct {
+	Command []string `json:"command,omitempty"`
 	// The creation time of the deployment. Formatted timestamp in ISO 6801.
 	CreateTime string `json:"create_time,omitempty"`
 	// The email of the user creates the deployment.
@@ -127,6 +134,10 @@ type AppDeployment struct {
 	DeploymentArtifacts *AppDeploymentArtifacts `json:"deployment_artifacts,omitempty"`
 	// The unique id of the deployment.
 	DeploymentId string `json:"deployment_id,omitempty"`
+
+	EnvVars []EnvVar `json:"env_vars,omitempty"`
+	// Git repository to use as the source for the app deployment.
+	GitSource *GitSource `json:"git_source,omitempty"`
 	// The mode of which the deployment will manage the source code.
 	Mode AppDeploymentMode `json:"mode,omitempty"`
 	// The workspace file system path of the source code used to create the app
@@ -1427,6 +1438,24 @@ type DeleteCustomTemplateRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type EnvVar struct {
+	Name string `json:"name,omitempty"`
+
+	Value string `json:"value,omitempty"`
+
+	ValueFrom string `json:"value_from,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnvVar) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnvVar) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GetAppDeploymentRequest struct {
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
@@ -1462,6 +1491,40 @@ type GetAppUpdateRequest struct {
 type GetCustomTemplateRequest struct {
 	// The name of the custom template.
 	Name string `json:"-" url:"-"`
+}
+
+type GitSource struct {
+	// Git branch to checkout.
+	Branch string `json:"branch,omitempty"`
+	// Git commit SHA to checkout.
+	Commit string `json:"commit,omitempty"`
+	// Git provider. Case insensitive. Supported values: gitHub,
+	// gitHubEnterprise, bitbucketCloud, bitbucketServer, azureDevOpsServices,
+	// gitLab, gitLabEnterpriseEdition, awsCodeCommit.
+	Provider string `json:"provider"`
+	// The resolved commit SHA that was actually used for the deployment. This
+	// is populated by the system after resolving the reference (branch, tag, or
+	// commit). If commit is specified directly, this will match commit. If a
+	// branch or tag is specified, this contains the commit SHA that the branch
+	// or tag pointed to at deployment time.
+	ResolvedCommit string `json:"resolved_commit,omitempty"`
+	// Relative path to the app source code within the Git repository. If not
+	// specified, the root of the repository is used.
+	SourceCodePath string `json:"source_code_path,omitempty"`
+	// Git tag to checkout.
+	Tag string `json:"tag,omitempty"`
+	// URL of the Git repository.
+	Url string `json:"url"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GitSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GitSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListAppDeploymentsRequest struct {

@@ -9,6 +9,31 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+type ApplyEnvironmentRequest struct {
+	PipelineId string `json:"-" url:"-"`
+}
+
+type ApplyEnvironmentRequestResponse struct {
+}
+
+type ConnectionParameters struct {
+	// Source catalog for initial connection. This is necessary for schema
+	// exploration in some database systems like Oracle, and optional but
+	// nice-to-have in some other database systems like Postgres. For Oracle
+	// databases, this maps to a service name.
+	SourceCatalog string `json:"source_catalog,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ConnectionParameters) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ConnectionParameters) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
@@ -465,6 +490,8 @@ type GetPipelineResponse struct {
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Serverless budget policy ID of this pipeline.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// Serverless usage policy ID of the pipeline.
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The health of a pipeline.
 	Health GetPipelineResponseHealth `json:"health,omitempty"`
 	// The last time the pipeline settings were modified or created.
@@ -567,13 +594,16 @@ type IngestionGatewayPipelineDefinition struct {
 	// Immutable. The Unity Catalog connection that this gateway pipeline uses
 	// to communicate with the source.
 	ConnectionName string `json:"connection_name"`
+	// Optional, Internal. Parameters required to establish an initial
+	// connection with the source.
+	ConnectionParameters *ConnectionParameters `json:"connection_parameters,omitempty"`
 	// Required, Immutable. The name of the catalog for the gateway pipeline's
 	// storage location.
 	GatewayStorageCatalog string `json:"gateway_storage_catalog"`
 	// Optional. The Unity Catalog-compatible name for the gateway storage
 	// location. This is the destination to use for the data that is extracted
-	// by the gateway. Delta Live Tables system will automatically create the
-	// storage location under the catalog and schema.
+	// by the gateway. Spark Declarative Pipelines system will automatically
+	// create the storage location under the catalog and schema.
 	GatewayStorageName string `json:"gateway_storage_name,omitempty"`
 	// Required, Immutable. The name of the schema for the gateway pipelines's
 	// storage location.
@@ -595,6 +625,12 @@ type IngestionPipelineDefinition struct {
 	// to communicate with the source. This is used with connectors for
 	// applications like Salesforce, Workday, and so on.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Immutable. If set to true, the pipeline will ingest tables from the UC
+	// foreign catalogs directly without the need to specify a UC connection or
+	// ingestion gateway. The `source_catalog` fields in objects of
+	// IngestionConfig are interpreted as the UC foreign catalogs to ingest
+	// from.
+	IngestFromUcForeignCatalog bool `json:"ingest_from_uc_foreign_catalog,omitempty"`
 	// Immutable. Identifier for the gateway that is used by this ingestion
 	// pipeline to communicate with the source database. This is used with
 	// connectors to databases like SQL Server.
@@ -1057,6 +1093,9 @@ type Origin struct {
 	FlowId string `json:"flow_id,omitempty"`
 	// The name of the flow. Not unique.
 	FlowName string `json:"flow_name,omitempty"`
+	// The UUID of the graph associated with this event, corresponding to a
+	// GRAPH_UPDATED event.
+	GraphId string `json:"graph_id,omitempty"`
 	// The optional host name where the event was triggered
 	Host string `json:"host,omitempty"`
 	// The id of a maintenance run. Globally unique.
@@ -1798,6 +1837,58 @@ func (s RestartWindow) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type RestorePipelineRequest struct {
+	// The ID of the pipeline to restore
+	PipelineId string `json:"-" url:"-"`
+}
+
+type RestorePipelineRequestResponse struct {
+}
+
+// Configuration for rewinding a specific dataset.
+type RewindDatasetSpec struct {
+	// Whether to cascade the rewind to dependent datasets. Must be specified.
+	Cascade bool `json:"cascade,omitempty"`
+	// The identifier of the dataset (e.g., "main.foo.tbl1").
+	Identifier string `json:"identifier,omitempty"`
+	// Whether to reset checkpoints for this dataset.
+	ResetCheckpoints bool `json:"reset_checkpoints,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RewindDatasetSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RewindDatasetSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Information about a rewind being requested for this pipeline or some of the
+// datasets in it.
+type RewindSpec struct {
+	// List of datasets to rewind with specific configuration for each. When not
+	// specified, all datasets will be rewound with cascade = true and
+	// reset_checkpoints = true.
+	Datasets []RewindDatasetSpec `json:"datasets,omitempty"`
+	// If true, this is a dry run and we should emit the RewindSummary but not
+	// perform the rewind.
+	DryRun bool `json:"dry_run,omitempty"`
+	// The base timestamp to rewind to. Must be specified.
+	RewindTimestamp string `json:"rewind_timestamp,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RewindSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RewindSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Write-only setting, available only in Create/Update calls. Specifies the user
 // or service principal that the pipeline runs as. If not specified, the
 // pipeline runs as the user who created the pipeline.
@@ -1948,6 +2039,9 @@ type StartUpdate struct {
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	RefreshSelection []string `json:"refresh_selection,omitempty"`
+	// The information about the requested rewind operation. If specified this
+	// is a rewind mode update.
+	RewindSpec *RewindSpec `json:"rewind_spec,omitempty"`
 	// If true, this update only validates the correctness of pipeline source
 	// code but does not materialize or publish any datasets.
 	ValidateOnly bool `json:"validate_only,omitempty"`
@@ -2082,14 +2176,18 @@ type TableSpecificConfig struct {
 	PrimaryKeys []string `json:"primary_keys,omitempty"`
 
 	QueryBasedConnectorConfig *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig `json:"query_based_connector_config,omitempty"`
+	// (Optional, Immutable) The row filter condition to be applied to the
+	// table. It must not contain the WHERE keyword, only the actual filter
+	// condition. It must be in DBSQL format.
+	RowFilter string `json:"row_filter,omitempty"`
 	// If true, formula fields defined in the table are included in the
 	// ingestion. This setting is only valid for the Salesforce connector
 	SalesforceIncludeFormulaFields bool `json:"salesforce_include_formula_fields,omitempty"`
 	// The SCD type to use to ingest the table.
 	ScdType TableSpecificConfigScdType `json:"scd_type,omitempty"`
 	// The column names specifying the logical order of events in the source
-	// data. Delta Live Tables uses this sequencing to handle change events that
-	// arrive out of order.
+	// data. Spark Declarative Pipelines uses this sequencing to handle change
+	// events that arrive out of order.
 	SequenceBy []string `json:"sequence_by,omitempty"`
 	// (Optional) Additional custom parameters for Workday Report
 	WorkdayReportParameters *IngestionPipelineDefinitionWorkdayReportParameters `json:"workday_report_parameters,omitempty"`
@@ -2163,6 +2261,9 @@ type UpdateInfo struct {
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	FullRefreshSelection []string `json:"full_refresh_selection,omitempty"`
+	// Indicates whether the update is either part of a continuous job run, or
+	// running in legacy continuous pipeline mode.
+	Mode UpdateMode `json:"mode,omitempty"`
 	// The ID of the pipeline.
 	PipelineId string `json:"pipeline_id,omitempty"`
 	// A list of tables to update without fullRefresh. If both refresh_selection
@@ -2305,6 +2406,43 @@ func (f *UpdateInfoState) Values() []UpdateInfoState {
 // Type always returns UpdateInfoState to satisfy [pflag.Value] interface
 func (f *UpdateInfoState) Type() string {
 	return "UpdateInfoState"
+}
+
+type UpdateMode string
+
+const UpdateModeContinuous UpdateMode = `CONTINUOUS`
+
+const UpdateModeDefault UpdateMode = `DEFAULT`
+
+// String representation for [fmt.Print]
+func (f *UpdateMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *UpdateMode) Set(v string) error {
+	switch v {
+	case `CONTINUOUS`, `DEFAULT`:
+		*f = UpdateMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CONTINUOUS", "DEFAULT"`, v)
+	}
+}
+
+// Values returns all possible values for UpdateMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *UpdateMode) Values() []UpdateMode {
+	return []UpdateMode{
+		UpdateModeContinuous,
+		UpdateModeDefault,
+	}
+}
+
+// Type always returns UpdateMode to satisfy [pflag.Value] interface
+func (f *UpdateMode) Type() string {
+	return "UpdateMode"
 }
 
 type UpdateStateInfo struct {

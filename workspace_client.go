@@ -25,6 +25,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
+	"github.com/databricks/databricks-sdk-go/service/postgres"
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
@@ -506,7 +507,7 @@ type WorkspaceClient struct {
 	// management, monitoring, and error reporting for all of your jobs. You can
 	// run your jobs immediately or periodically through an easy-to-use
 	// scheduling system. You can implement job tasks using notebooks, JARS,
-	// Delta Live Tables pipelines, or Python, Scala, Spark submit, and Java
+	// Spark Declarative Pipelines, or Python, Scala, Spark submit, and Java
 	// applications.
 	//
 	// You should never hard code secrets or store them in plain text. Use the
@@ -638,20 +639,21 @@ type WorkspaceClient struct {
 	// [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html
 	Permissions iam.PermissionsInterface
 
-	// The Delta Live Tables API allows you to create, edit, delete, start, and
-	// view details about pipelines.
+	// The Lakeflow Spark Declarative Pipelines API allows you to create, edit,
+	// delete, start, and view details about pipelines.
 	//
-	// Delta Live Tables is a framework for building reliable, maintainable, and
-	// testable data processing pipelines. You define the transformations to
-	// perform on your data, and Delta Live Tables manages task orchestration,
-	// cluster management, monitoring, data quality, and error handling.
+	// Spark Declarative Pipelines is a framework for building reliable,
+	// maintainable, and testable data processing pipelines. You define the
+	// transformations to perform on your data, and Spark Declarative Pipelines
+	// manages task orchestration, cluster management, monitoring, data quality,
+	// and error handling.
 	//
 	// Instead of defining your data pipelines using a series of separate Apache
-	// Spark tasks, Delta Live Tables manages how your data is transformed based
-	// on a target schema you define for each processing step. You can also
-	// enforce data quality with Delta Live Tables expectations. Expectations
-	// allow you to define expected data quality and specify how to handle
-	// records that fail those expectations.
+	// Spark tasks, Spark Declarative Pipelines manages how your data is
+	// transformed based on a target schema you define for each processing step.
+	// You can also enforce data quality with Spark Declarative Pipelines
+	// expectations. Expectations allow you to define expected data quality and
+	// specify how to handle records that fail those expectations.
 	Pipelines pipelines.PipelinesInterface
 
 	// Attribute-Based Access Control (ABAC) provides high leverage governance
@@ -702,6 +704,10 @@ type WorkspaceClient struct {
 	// create cluster policies using a policy family. Cluster policies created
 	// using a policy family inherit the policy family's policy definition.
 	PolicyFamilies compute.PolicyFamiliesInterface
+
+	// The Postgres API provides access to a Postgres database via REST API or
+	// direct SQL.
+	Postgres postgres.PostgresInterface
 
 	// Marketplace exchanges filters curate which groups can access an exchange.
 	ProviderExchangeFilters marketplace.ProviderExchangeFiltersInterface
@@ -763,6 +769,9 @@ type WorkspaceClient struct {
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueriesLegacy sql.QueriesLegacyInterface
+
+	// Query execution APIs for AI / BI Dashboards
+	QueryExecution dashboards.QueryExecutionInterface
 
 	// A service responsible for storing and retrieving the list of queries run
 	// against SQL endpoints and serverless compute.
@@ -902,13 +911,11 @@ type WorkspaceClient struct {
 	// [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
 	ResourceQuotas catalog.ResourceQuotasInterface
 
-	// Request for Access enables customers to request access to and manage
-	// access request destinations for Unity Catalog securables.
+	// Request for Access enables users to request access for Unity Catalog
+	// securables.
 	//
-	// These APIs provide a standardized way to update, get, and request to
-	// access request destinations. Fine-grained authorization ensures that only
-	// users with appropriate permissions can manage access request
-	// destinations.
+	// These APIs provide a standardized way for securable owners (or users with
+	// MANAGE privileges) to manage access request destinations.
 	Rfa catalog.RfaInterface
 
 	// A schema (also called a database) is the second layer of Unity
@@ -1149,6 +1156,9 @@ type WorkspaceClient struct {
 	// A table can be managed or external. From an API perspective, a __VIEW__
 	// is a particular kind of table (rather than a managed or external table).
 	Tables catalog.TablesInterface
+
+	// Manage tag assignments on workspace-scoped objects.
+	TagAssignments tags.TagAssignmentsInterface
 
 	// The Tag Policy API allows you to manage policies for governed tags in
 	// Databricks. Permissions for tag policies can be managed using the
@@ -1451,6 +1461,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		PolicyComplianceForClusters:         compute.NewPolicyComplianceForClusters(databricksClient),
 		PolicyComplianceForJobs:             jobs.NewPolicyComplianceForJobs(databricksClient),
 		PolicyFamilies:                      compute.NewPolicyFamilies(databricksClient),
+		Postgres:                            postgres.NewPostgres(databricksClient),
 		ProviderExchangeFilters:             marketplace.NewProviderExchangeFilters(databricksClient),
 		ProviderExchanges:                   marketplace.NewProviderExchanges(databricksClient),
 		ProviderFiles:                       marketplace.NewProviderFiles(databricksClient),
@@ -1463,6 +1474,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		QualityMonitors:                     catalog.NewQualityMonitors(databricksClient),
 		Queries:                             sql.NewQueries(databricksClient),
 		QueriesLegacy:                       sql.NewQueriesLegacy(databricksClient),
+		QueryExecution:                      dashboards.NewQueryExecution(databricksClient),
 		QueryHistory:                        sql.NewQueryHistory(databricksClient),
 		QueryVisualizations:                 sql.NewQueryVisualizations(databricksClient),
 		QueryVisualizationsLegacy:           sql.NewQueryVisualizationsLegacy(databricksClient),
@@ -1487,6 +1499,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		SystemSchemas:                       catalog.NewSystemSchemas(databricksClient),
 		TableConstraints:                    catalog.NewTableConstraints(databricksClient),
 		Tables:                              catalog.NewTables(databricksClient),
+		TagAssignments:                      tags.NewTagAssignments(databricksClient),
 		TagPolicies:                         tags.NewTagPolicies(databricksClient),
 		TemporaryPathCredentials:            catalog.NewTemporaryPathCredentials(databricksClient),
 		TemporaryTableCredentials:           catalog.NewTemporaryTableCredentials(databricksClient),

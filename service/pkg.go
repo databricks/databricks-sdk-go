@@ -206,7 +206,7 @@
 //
 // - [settings.PersonalComputeAPI]: The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources.
 //
-// - [pipelines.PipelinesAPI]: The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
+// - [pipelines.PipelinesAPI]: The Lakeflow Spark Declarative Pipelines API allows you to create, edit, delete, start, and view details about pipelines.
 //
 // - [catalog.PoliciesAPI]: Attribute-Based Access Control (ABAC) provides high leverage governance for enforcing compliance policies in Unity Catalog.
 //
@@ -215,6 +215,8 @@
 // - [jobs.PolicyComplianceForJobsAPI]: The compliance APIs allow you to view and manage the policy compliance status of jobs in your workspace.
 //
 // - [compute.PolicyFamiliesAPI]: View available policy families.
+//
+// - [postgres.PostgresAPI]: The Postgres API provides access to a Postgres database via REST API or direct SQL.
 //
 // - [provisioning.PrivateAccessAPI]: These APIs manage private access settings for this account.
 //
@@ -244,6 +246,8 @@
 //
 // - [sql.QueriesLegacyAPI]: These endpoints are used for CRUD operations on query definitions.
 //
+// - [dashboards.QueryExecutionAPI]: Query execution APIs for AI / BI Dashboards.
+//
 // - [sql.QueryHistoryAPI]: A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute.
 //
 // - [sql.QueryVisualizationsAPI]: This is an evolving API that facilitates the addition and removal of visualizations from existing queries in the Databricks Workspace.
@@ -266,7 +270,7 @@
 //
 // - [settings.RestrictWorkspaceAdminsAPI]: The Restrict Workspace Admins setting lets you control the capabilities of workspace admins.
 //
-// - [catalog.RfaAPI]: Request for Access enables customers to request access to and manage access request destinations for Unity Catalog securables.
+// - [catalog.RfaAPI]: Request for Access enables users to request access for Unity Catalog securables.
 //
 // - [catalog.SchemasAPI]: A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace.
 //
@@ -310,6 +314,8 @@
 //
 // - [catalog.TablesAPI]: A table resides in the third layer of Unity Catalog’s three-level namespace.
 //
+// - [tags.TagAssignmentsAPI]: Manage tag assignments on workspace-scoped objects.
+//
 // - [tags.TagPoliciesAPI]: The Tag Policy API allows you to manage policies for governed tags in Databricks.
 //
 // - [catalog.TemporaryPathCredentialsAPI]: Temporary Path Credentials refer to short-lived, downscoped credentials used to access external cloud storage locations registered in Databricks.
@@ -321,6 +327,8 @@
 // - [settings.TokensAPI]: The Token API allows you to create, list, and revoke tokens that can be used to authenticate and access Databricks REST APIs.
 //
 // - [billing.UsageDashboardsAPI]: These APIs manage usage dashboards for this account.
+//
+// - [billing.UsagePolicyAPI]: A service serves REST API about Usage policies.
 //
 // - [iam.UsersV2API]: User identities recognized by Databricks and represented by email addresses.
 //
@@ -371,6 +379,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
+	"github.com/databricks/databricks-sdk-go/service/postgres"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
@@ -496,6 +505,7 @@ var (
 	_ *compute.PolicyComplianceForClustersAPI             = nil
 	_ *jobs.PolicyComplianceForJobsAPI                    = nil
 	_ *compute.PolicyFamiliesAPI                          = nil
+	_ *postgres.PostgresAPI                               = nil
 	_ *provisioning.PrivateAccessAPI                      = nil
 	_ *marketplace.ProviderExchangeFiltersAPI             = nil
 	_ *marketplace.ProviderExchangesAPI                   = nil
@@ -510,6 +520,7 @@ var (
 	_ *catalog.QualityMonitorsAPI                         = nil
 	_ *sql.QueriesAPI                                     = nil
 	_ *sql.QueriesLegacyAPI                               = nil
+	_ *dashboards.QueryExecutionAPI                       = nil
 	_ *sql.QueryHistoryAPI                                = nil
 	_ *sql.QueryVisualizationsAPI                         = nil
 	_ *sql.QueryVisualizationsLegacyAPI                   = nil
@@ -543,12 +554,14 @@ var (
 	_ *catalog.SystemSchemasAPI                           = nil
 	_ *catalog.TableConstraintsAPI                        = nil
 	_ *catalog.TablesAPI                                  = nil
+	_ *tags.TagAssignmentsAPI                             = nil
 	_ *tags.TagPoliciesAPI                                = nil
 	_ *catalog.TemporaryPathCredentialsAPI                = nil
 	_ *catalog.TemporaryTableCredentialsAPI               = nil
 	_ *settings.TokenManagementAPI                        = nil
 	_ *settings.TokensAPI                                 = nil
 	_ *billing.UsageDashboardsAPI                         = nil
+	_ *billing.UsagePolicyAPI                             = nil
 	_ *iam.UsersV2API                                     = nil
 	_ *iam.AccountUsersV2API                              = nil
 	_ *vectorsearch.VectorSearchEndpointsAPI              = nil

@@ -868,6 +868,65 @@ func (_c *MockDatabaseInterface_DeleteSyncedDatabaseTableByName_Call) RunAndRetu
 	return _c
 }
 
+// FailoverDatabaseInstance provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) FailoverDatabaseInstance(ctx context.Context, request database.FailoverDatabaseInstanceRequest) (*database.DatabaseInstance, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FailoverDatabaseInstance")
+	}
+
+	var r0 *database.DatabaseInstance
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, database.FailoverDatabaseInstanceRequest) (*database.DatabaseInstance, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, database.FailoverDatabaseInstanceRequest) *database.DatabaseInstance); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*database.DatabaseInstance)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, database.FailoverDatabaseInstanceRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_FailoverDatabaseInstance_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FailoverDatabaseInstance'
+type MockDatabaseInterface_FailoverDatabaseInstance_Call struct {
+	*mock.Call
+}
+
+// FailoverDatabaseInstance is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.FailoverDatabaseInstanceRequest
+func (_e *MockDatabaseInterface_Expecter) FailoverDatabaseInstance(ctx interface{}, request interface{}) *MockDatabaseInterface_FailoverDatabaseInstance_Call {
+	return &MockDatabaseInterface_FailoverDatabaseInstance_Call{Call: _e.mock.On("FailoverDatabaseInstance", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_FailoverDatabaseInstance_Call) Run(run func(ctx context.Context, request database.FailoverDatabaseInstanceRequest)) *MockDatabaseInterface_FailoverDatabaseInstance_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.FailoverDatabaseInstanceRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_FailoverDatabaseInstance_Call) Return(_a0 *database.DatabaseInstance, _a1 error) *MockDatabaseInterface_FailoverDatabaseInstance_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_FailoverDatabaseInstance_Call) RunAndReturn(run func(context.Context, database.FailoverDatabaseInstanceRequest) (*database.DatabaseInstance, error)) *MockDatabaseInterface_FailoverDatabaseInstance_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // FindDatabaseInstanceByUid provides a mock function with given fields: ctx, request
 func (_m *MockDatabaseInterface) FindDatabaseInstanceByUid(ctx context.Context, request database.FindDatabaseInstanceByUidRequest) (*database.DatabaseInstance, error) {
 	ret := _m.Called(ctx, request)
@@ -2300,6 +2359,65 @@ func (_c *MockDatabaseInterface_UpdateDatabaseInstance_Call) Return(_a0 *databas
 }
 
 func (_c *MockDatabaseInterface_UpdateDatabaseInstance_Call) RunAndReturn(run func(context.Context, database.UpdateDatabaseInstanceRequest) (*database.DatabaseInstance, error)) *MockDatabaseInterface_UpdateDatabaseInstance_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateDatabaseInstanceRole provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) UpdateDatabaseInstanceRole(ctx context.Context, request database.UpdateDatabaseInstanceRoleRequest) (*database.DatabaseInstanceRole, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateDatabaseInstanceRole")
+	}
+
+	var r0 *database.DatabaseInstanceRole
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, database.UpdateDatabaseInstanceRoleRequest) (*database.DatabaseInstanceRole, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, database.UpdateDatabaseInstanceRoleRequest) *database.DatabaseInstanceRole); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*database.DatabaseInstanceRole)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, database.UpdateDatabaseInstanceRoleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_UpdateDatabaseInstanceRole_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateDatabaseInstanceRole'
+type MockDatabaseInterface_UpdateDatabaseInstanceRole_Call struct {
+	*mock.Call
+}
+
+// UpdateDatabaseInstanceRole is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.UpdateDatabaseInstanceRoleRequest
+func (_e *MockDatabaseInterface_Expecter) UpdateDatabaseInstanceRole(ctx interface{}, request interface{}) *MockDatabaseInterface_UpdateDatabaseInstanceRole_Call {
+	return &MockDatabaseInterface_UpdateDatabaseInstanceRole_Call{Call: _e.mock.On("UpdateDatabaseInstanceRole", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_UpdateDatabaseInstanceRole_Call) Run(run func(ctx context.Context, request database.UpdateDatabaseInstanceRoleRequest)) *MockDatabaseInterface_UpdateDatabaseInstanceRole_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.UpdateDatabaseInstanceRoleRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_UpdateDatabaseInstanceRole_Call) Return(_a0 *database.DatabaseInstanceRole, _a1 error) *MockDatabaseInterface_UpdateDatabaseInstanceRole_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_UpdateDatabaseInstanceRole_Call) RunAndReturn(run func(context.Context, database.UpdateDatabaseInstanceRoleRequest) (*database.DatabaseInstanceRole, error)) *MockDatabaseInterface_UpdateDatabaseInstanceRole_Call {
 	_c.Call.Return(run)
 	return _c
 }

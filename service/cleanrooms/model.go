@@ -21,6 +21,10 @@ type CleanRoom struct {
 	Comment string `json:"comment,omitempty"`
 	// When the clean room was created, in epoch milliseconds.
 	CreatedAt int64 `json:"created_at,omitempty"`
+	// Whether allow task to write to shared output schema. When enabled, clean
+	// room task runs triggered by the current collaborator can write to the
+	// run-scoped shared output schema which is accessible by all collaborators.
+	EnableSharedOutput bool `json:"enable_shared_output,omitempty"`
 	// The alias of the collaborator tied to the local clean room.
 	LocalCollaboratorAlias string `json:"local_collaborator_alias,omitempty"`
 	// The name of the clean room. It should follow [UC securable naming
@@ -531,6 +535,13 @@ type CleanRoomNotebookTaskRun struct {
 	OutputSchemaName string `json:"output_schema_name,omitempty"`
 	// Duration of the task run, in milliseconds.
 	RunDuration int64 `json:"run_duration,omitempty"`
+	// Expiration time of the shared output schema of the task run (if any), in
+	// epoch milliseconds.
+	SharedOutputSchemaExpirationTime int64 `json:"shared_output_schema_expiration_time,omitempty"`
+	// Name of the shared output schema associated with the clean rooms notebook
+	// task run. This schema is accessible by all collaborators when
+	// enable_shared_output is true.
+	SharedOutputSchemaName string `json:"shared_output_schema_name,omitempty"`
 	// When the task run started, in epoch milliseconds.
 	StartTime int64 `json:"start_time,omitempty"`
 

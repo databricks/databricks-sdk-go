@@ -85,6 +85,9 @@ type ExperimentsService interface {
 	// Get a logged model.
 	GetLoggedModel(ctx context.Context, request GetLoggedModelRequest) (*GetLoggedModelResponse, error)
 
+	// Batch endpoint for getting logged models from a list of model IDs
+	GetLoggedModels(ctx context.Context, request GetLoggedModelsRequest) (*GetLoggedModelsRequestResponse, error)
+
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error)
 
@@ -256,6 +259,9 @@ type ExperimentsService interface {
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type FeatureEngineeringService interface {
+
+	// Batch create materialized features.
+	BatchCreateMaterializedFeatures(ctx context.Context, request BatchCreateMaterializedFeaturesRequest) (*BatchCreateMaterializedFeaturesResponse, error)
 
 	// Create a Feature.
 	CreateFeature(ctx context.Context, request CreateFeatureRequest) (*Feature, error)

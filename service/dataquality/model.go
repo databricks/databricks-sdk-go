@@ -73,6 +73,62 @@ func (f *AggregationGranularity) Type() string {
 
 // Anomaly Detection Configurations.
 type AnomalyDetectionConfig struct {
+	// The id of the workflow that detects the anomaly. This field will only be
+	// returned in the Get/Update response, if the request comes from the
+	// workspace where this anomaly detection job is created.
+	AnomalyDetectionWorkflowId int64 `json:"anomaly_detection_workflow_id,omitempty"`
+	// The type of the last run of the workflow.
+	JobType AnomalyDetectionJobType `json:"job_type,omitempty"`
+	// If the health indicator should be shown.
+	PublishHealthIndicator bool `json:"publish_health_indicator,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AnomalyDetectionConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AnomalyDetectionConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Anomaly Detection job type.
+type AnomalyDetectionJobType string
+
+const AnomalyDetectionJobTypeAnomalyDetectionJobTypeInternalHidden AnomalyDetectionJobType = `ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN`
+
+const AnomalyDetectionJobTypeAnomalyDetectionJobTypeNormal AnomalyDetectionJobType = `ANOMALY_DETECTION_JOB_TYPE_NORMAL`
+
+// String representation for [fmt.Print]
+func (f *AnomalyDetectionJobType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AnomalyDetectionJobType) Set(v string) error {
+	switch v {
+	case `ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN`, `ANOMALY_DETECTION_JOB_TYPE_NORMAL`:
+		*f = AnomalyDetectionJobType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN", "ANOMALY_DETECTION_JOB_TYPE_NORMAL"`, v)
+	}
+}
+
+// Values returns all possible values for AnomalyDetectionJobType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AnomalyDetectionJobType) Values() []AnomalyDetectionJobType {
+	return []AnomalyDetectionJobType{
+		AnomalyDetectionJobTypeAnomalyDetectionJobTypeInternalHidden,
+		AnomalyDetectionJobTypeAnomalyDetectionJobTypeNormal,
+	}
+}
+
+// Type always returns AnomalyDetectionJobType to satisfy [pflag.Value] interface
+func (f *AnomalyDetectionJobType) Type() string {
+	return "AnomalyDetectionJobType"
 }
 
 // Request to cancel a refresh.
@@ -465,6 +521,8 @@ type InferenceLogConfig struct {
 	ModelIdColumn string `json:"model_id_column"`
 	// Column for the prediction.
 	PredictionColumn string `json:"prediction_column"`
+	// Column for prediction probabilities
+	PredictionProbabilityColumn string `json:"prediction_probability_column,omitempty"`
 	// Problem type the model aims to solve.
 	ProblemType InferenceProblemType `json:"problem_type"`
 	// Column for the timestamp.

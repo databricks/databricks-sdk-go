@@ -290,6 +290,10 @@ type RecipientFederationPoliciesInterface interface {
 	// from Databricks to non-Databricks recipients. The caller must have read
 	// access to the recipient.
 	ListByRecipientName(ctx context.Context, recipientName string) (*ListFederationPoliciesResponse, error)
+
+	// Updates an existing federation policy for an OIDC_RECIPIENT. The caller must
+	// be the owner of the recipient.
+	Update(ctx context.Context, request UpdateFederationPolicyRequest) (*FederationPolicy, error)
 }
 
 func NewRecipientFederationPolicies(client *client.DatabricksClient) *RecipientFederationPoliciesAPI {

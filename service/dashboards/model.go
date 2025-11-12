@@ -51,6 +51,29 @@ func (s AuthorizationDetailsGrantRule) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CancelPublishedQueryExecutionRequest struct {
+	DashboardName string `json:"-" url:"dashboard_name"`
+
+	DashboardRevisionId string `json:"-" url:"dashboard_revision_id"`
+	// Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	Tokens []string `json:"-" url:"tokens,omitempty"`
+}
+
+type CancelQueryExecutionResponse struct {
+	Status []CancelQueryExecutionResponseStatus `json:"status,omitempty"`
+}
+
+type CancelQueryExecutionResponseStatus struct {
+	// The token to poll for result asynchronously Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	DataToken string `json:"data_token"`
+
+	Pending *Empty `json:"pending,omitempty"`
+
+	Success *Empty `json:"success,omitempty"`
+}
+
 type CreateDashboardRequest struct {
 	Dashboard Dashboard `json:"dashboard"`
 }
@@ -206,6 +229,37 @@ func (s DeleteSubscriptionRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Represents an empty message, similar to google.protobuf.Empty, which is not
+// available in the firm right now.
+type Empty struct {
+}
+
+// Execute query request for published Dashboards. Since published dashboards
+// have the option of running as the publisher, the datasets, warehouse_id are
+// excluded from the request and instead read from the source (lakeview-config)
+// via the additional parameters (dashboardName and dashboardRevisionId)
+type ExecutePublishedDashboardQueryRequest struct {
+	// Dashboard name and revision_id is required to retrieve
+	// PublishedDatasetDataModel which contains the list of datasets,
+	// warehouse_id, and embedded_credentials
+	DashboardName string `json:"dashboard_name"`
+
+	DashboardRevisionId string `json:"dashboard_revision_id"`
+	// A dashboard schedule can override the warehouse used as compute for
+	// processing the published dashboard queries
+	OverrideWarehouseId string `json:"override_warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExecutePublishedDashboardQueryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExecutePublishedDashboardQueryRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Genie AI Response
 type GenieAttachment struct {
 	// Attachment ID
@@ -272,6 +326,29 @@ type GenieCreateConversationMessageRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+type GenieCreateSpaceRequest struct {
+	// Optional description
+	Description string `json:"description,omitempty"`
+	// Parent folder path where the space will be registered
+	ParentPath string `json:"parent_path,omitempty"`
+	// Serialized export model for the space contents
+	SerializedSpace string `json:"serialized_space"`
+	// Optional title override
+	Title string `json:"title,omitempty"`
+	// Warehouse to associate with the new space
+	WarehouseId string `json:"warehouse_id"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieCreateSpaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieCreateSpaceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GenieDeleteConversationMessageRequest struct {
 	// The ID associated with the conversation.
 	ConversationId string `json:"-" url:"-"`
@@ -310,8 +387,20 @@ type GenieExecuteMessageQueryRequest struct {
 
 // Feedback containing rating and optional comment
 type GenieFeedback struct {
+	// Optional feedback comment text
+	Comment string `json:"comment,omitempty"`
 	// The feedback rating
 	Rating GenieFeedbackRating `json:"rating,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieFeedback) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieFeedback) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Feedback rating for Genie messages
@@ -355,6 +444,33 @@ func (f *GenieFeedbackRating) Type() string {
 	return "GenieFeedbackRating"
 }
 
+type GenieGenerateDownloadFullQueryResultRequest struct {
+	// Attachment ID
+	AttachmentId string `json:"-" url:"-"`
+	// Conversation ID
+	ConversationId string `json:"-" url:"-"`
+	// Message ID
+	MessageId string `json:"-" url:"-"`
+	// Genie space ID
+	SpaceId string `json:"-" url:"-"`
+}
+
+type GenieGenerateDownloadFullQueryResultResponse struct {
+	// Download ID. Use this ID to track the download request in subsequent
+	// polling calls
+	DownloadId string `json:"download_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieGenerateDownloadFullQueryResultResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieGenerateDownloadFullQueryResultResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GenieGetConversationMessageRequest struct {
 	// The ID associated with the target conversation.
 	ConversationId string `json:"-" url:"-"`
@@ -364,6 +480,26 @@ type GenieGetConversationMessageRequest struct {
 	// The ID associated with the Genie space where the target conversation is
 	// located.
 	SpaceId string `json:"-" url:"-"`
+}
+
+type GenieGetDownloadFullQueryResultRequest struct {
+	// Attachment ID
+	AttachmentId string `json:"-" url:"-"`
+	// Conversation ID
+	ConversationId string `json:"-" url:"-"`
+	// Download ID. This ID is provided by the [Generate Download
+	// endpoint](:method:genie/generateDownloadFullQueryResult)
+	DownloadId string `json:"-" url:"-"`
+	// Message ID
+	MessageId string `json:"-" url:"-"`
+	// Genie space ID
+	SpaceId string `json:"-" url:"-"`
+}
+
+type GenieGetDownloadFullQueryResultResponse struct {
+	// SQL Statement Execution response. See [Get status, manifest, and result
+	// first chunk](:method:statementexecution/getstatement) for more details.
+	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
 }
 
 type GenieGetMessageAttachmentQueryResultRequest struct {
@@ -609,6 +745,8 @@ func (s GenieResultMetadata) MarshalJSON() ([]byte, error) {
 }
 
 type GenieSendMessageFeedbackRequest struct {
+	// Optional text feedback that will be stored as a comment.
+	Comment string `json:"comment,omitempty"`
 	// The ID associated with the conversation.
 	ConversationId string `json:"-" url:"-"`
 	// The ID associated with the message to provide feedback for.
@@ -617,6 +755,16 @@ type GenieSendMessageFeedbackRequest struct {
 	Rating GenieFeedbackRating `json:"rating"`
 	// The ID associated with the Genie space where the message is located.
 	SpaceId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieSendMessageFeedbackRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieSendMessageFeedbackRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GenieSpace struct {
@@ -669,8 +817,36 @@ type GenieTrashSpaceRequest struct {
 	SpaceId string `json:"-" url:"-"`
 }
 
+type GenieUpdateSpaceRequest struct {
+	// Optional description
+	Description string `json:"description,omitempty"`
+	// Serialized export model for the space contents (full replacement)
+	SerializedSpace string `json:"serialized_space,omitempty"`
+	// Genie space ID
+	SpaceId string `json:"-" url:"-"`
+	// Optional title override
+	Title string `json:"title,omitempty"`
+	// Optional warehouse override
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieUpdateSpaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieUpdateSpaceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GetDashboardRequest struct {
 	// UUID identifying the dashboard.
+	DashboardId string `json:"-" url:"-"`
+}
+
+type GetPublishedDashboardEmbeddedRequest struct {
+	// UUID identifying the published dashboard.
 	DashboardId string `json:"-" url:"-"`
 }
 
@@ -1028,6 +1204,8 @@ const MessageErrorTypeUnexpectedReplyProcessException MessageErrorType = `UNEXPE
 
 const MessageErrorTypeUnknownAiModel MessageErrorType = `UNKNOWN_AI_MODEL`
 
+const MessageErrorTypeUnsupportedConversationTypeException MessageErrorType = `UNSUPPORTED_CONVERSATION_TYPE_EXCEPTION`
+
 const MessageErrorTypeWarehouseAccessMissingException MessageErrorType = `WAREHOUSE_ACCESS_MISSING_EXCEPTION`
 
 const MessageErrorTypeWarehouseNotFoundException MessageErrorType = `WAREHOUSE_NOT_FOUND_EXCEPTION`
@@ -1040,11 +1218,11 @@ func (f *MessageErrorType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MessageErrorType) Set(v string) error {
 	switch v {
-	case `BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION`, `CHAT_COMPLETION_CLIENT_EXCEPTION`, `CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION`, `CHAT_COMPLETION_NETWORK_EXCEPTION`, `CONTENT_FILTER_EXCEPTION`, `CONTEXT_EXCEEDED_EXCEPTION`, `COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION`, `COULD_NOT_GET_UC_SCHEMA_EXCEPTION`, `DEPLOYMENT_NOT_FOUND_EXCEPTION`, `DESCRIBE_QUERY_INVALID_SQL_ERROR`, `DESCRIBE_QUERY_TIMEOUT`, `DESCRIBE_QUERY_UNEXPECTED_FAILURE`, `EXCEEDED_MAX_TOKEN_LENGTH_EXCEPTION`, `FUNCTIONS_NOT_AVAILABLE_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION`, `FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION`, `GENERATED_SQL_QUERY_TOO_LONG_EXCEPTION`, `GENERIC_CHAT_COMPLETION_EXCEPTION`, `GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION`, `GENERIC_SQL_EXEC_API_CALL_EXCEPTION`, `ILLEGAL_PARAMETER_DEFINITION_EXCEPTION`, `INTERNAL_CATALOG_ASSET_CREATION_FAILED_EXCEPTION`, `INTERNAL_CATALOG_ASSET_CREATION_ONGOING_EXCEPTION`, `INTERNAL_CATALOG_ASSET_CREATION_UNSUPPORTED_EXCEPTION`, `INTERNAL_CATALOG_MISSING_UC_PATH_EXCEPTION`, `INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION`, `INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION`, `INVALID_CHAT_COMPLETION_JSON_EXCEPTION`, `INVALID_COMPLETION_REQUEST_EXCEPTION`, `INVALID_FUNCTION_CALL_EXCEPTION`, `INVALID_SQL_MULTIPLE_DATASET_REFERENCES_EXCEPTION`, `INVALID_SQL_MULTIPLE_STATEMENTS_EXCEPTION`, `INVALID_SQL_UNKNOWN_TABLE_EXCEPTION`, `INVALID_TABLE_IDENTIFIER_EXCEPTION`, `LOCAL_CONTEXT_EXCEEDED_EXCEPTION`, `MESSAGE_ATTACHMENT_TOO_LONG_ERROR`, `MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION`, `MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION`, `MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION`, `MISSING_SQL_QUERY_EXCEPTION`, `NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE`, `NO_QUERY_TO_VISUALIZE_EXCEPTION`, `NO_TABLES_TO_QUERY_EXCEPTION`, `RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION`, `RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION`, `REPLY_PROCESS_TIMEOUT_EXCEPTION`, `RETRYABLE_PROCESSING_EXCEPTION`, `SQL_EXECUTION_EXCEPTION`, `STOP_PROCESS_DUE_TO_AUTO_REGENERATE`, `TABLES_MISSING_EXCEPTION`, `TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION`, `TOO_MANY_TABLES_EXCEPTION`, `UNEXPECTED_REPLY_PROCESS_EXCEPTION`, `UNKNOWN_AI_MODEL`, `WAREHOUSE_ACCESS_MISSING_EXCEPTION`, `WAREHOUSE_NOT_FOUND_EXCEPTION`:
+	case `BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION`, `CHAT_COMPLETION_CLIENT_EXCEPTION`, `CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION`, `CHAT_COMPLETION_NETWORK_EXCEPTION`, `CONTENT_FILTER_EXCEPTION`, `CONTEXT_EXCEEDED_EXCEPTION`, `COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION`, `COULD_NOT_GET_UC_SCHEMA_EXCEPTION`, `DEPLOYMENT_NOT_FOUND_EXCEPTION`, `DESCRIBE_QUERY_INVALID_SQL_ERROR`, `DESCRIBE_QUERY_TIMEOUT`, `DESCRIBE_QUERY_UNEXPECTED_FAILURE`, `EXCEEDED_MAX_TOKEN_LENGTH_EXCEPTION`, `FUNCTIONS_NOT_AVAILABLE_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION`, `FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION`, `FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION`, `GENERATED_SQL_QUERY_TOO_LONG_EXCEPTION`, `GENERIC_CHAT_COMPLETION_EXCEPTION`, `GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION`, `GENERIC_SQL_EXEC_API_CALL_EXCEPTION`, `ILLEGAL_PARAMETER_DEFINITION_EXCEPTION`, `INTERNAL_CATALOG_ASSET_CREATION_FAILED_EXCEPTION`, `INTERNAL_CATALOG_ASSET_CREATION_ONGOING_EXCEPTION`, `INTERNAL_CATALOG_ASSET_CREATION_UNSUPPORTED_EXCEPTION`, `INTERNAL_CATALOG_MISSING_UC_PATH_EXCEPTION`, `INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION`, `INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION`, `INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION`, `INVALID_CHAT_COMPLETION_JSON_EXCEPTION`, `INVALID_COMPLETION_REQUEST_EXCEPTION`, `INVALID_FUNCTION_CALL_EXCEPTION`, `INVALID_SQL_MULTIPLE_DATASET_REFERENCES_EXCEPTION`, `INVALID_SQL_MULTIPLE_STATEMENTS_EXCEPTION`, `INVALID_SQL_UNKNOWN_TABLE_EXCEPTION`, `INVALID_TABLE_IDENTIFIER_EXCEPTION`, `LOCAL_CONTEXT_EXCEEDED_EXCEPTION`, `MESSAGE_ATTACHMENT_TOO_LONG_ERROR`, `MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION`, `MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION`, `MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION`, `MISSING_SQL_QUERY_EXCEPTION`, `NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE`, `NO_QUERY_TO_VISUALIZE_EXCEPTION`, `NO_TABLES_TO_QUERY_EXCEPTION`, `RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION`, `RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION`, `REPLY_PROCESS_TIMEOUT_EXCEPTION`, `RETRYABLE_PROCESSING_EXCEPTION`, `SQL_EXECUTION_EXCEPTION`, `STOP_PROCESS_DUE_TO_AUTO_REGENERATE`, `TABLES_MISSING_EXCEPTION`, `TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION`, `TOO_MANY_TABLES_EXCEPTION`, `UNEXPECTED_REPLY_PROCESS_EXCEPTION`, `UNKNOWN_AI_MODEL`, `UNSUPPORTED_CONVERSATION_TYPE_EXCEPTION`, `WAREHOUSE_ACCESS_MISSING_EXCEPTION`, `WAREHOUSE_NOT_FOUND_EXCEPTION`:
 		*f = MessageErrorType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION", "CHAT_COMPLETION_CLIENT_EXCEPTION", "CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION", "CHAT_COMPLETION_NETWORK_EXCEPTION", "CONTENT_FILTER_EXCEPTION", "CONTEXT_EXCEEDED_EXCEPTION", "COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION", "COULD_NOT_GET_UC_SCHEMA_EXCEPTION", "DEPLOYMENT_NOT_FOUND_EXCEPTION", "DESCRIBE_QUERY_INVALID_SQL_ERROR", "DESCRIBE_QUERY_TIMEOUT", "DESCRIBE_QUERY_UNEXPECTED_FAILURE", "EXCEEDED_MAX_TOKEN_LENGTH_EXCEPTION", "FUNCTIONS_NOT_AVAILABLE_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION", "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION", "GENERATED_SQL_QUERY_TOO_LONG_EXCEPTION", "GENERIC_CHAT_COMPLETION_EXCEPTION", "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION", "GENERIC_SQL_EXEC_API_CALL_EXCEPTION", "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION", "INTERNAL_CATALOG_ASSET_CREATION_FAILED_EXCEPTION", "INTERNAL_CATALOG_ASSET_CREATION_ONGOING_EXCEPTION", "INTERNAL_CATALOG_ASSET_CREATION_UNSUPPORTED_EXCEPTION", "INTERNAL_CATALOG_MISSING_UC_PATH_EXCEPTION", "INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION", "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION", "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION", "INVALID_CHAT_COMPLETION_JSON_EXCEPTION", "INVALID_COMPLETION_REQUEST_EXCEPTION", "INVALID_FUNCTION_CALL_EXCEPTION", "INVALID_SQL_MULTIPLE_DATASET_REFERENCES_EXCEPTION", "INVALID_SQL_MULTIPLE_STATEMENTS_EXCEPTION", "INVALID_SQL_UNKNOWN_TABLE_EXCEPTION", "INVALID_TABLE_IDENTIFIER_EXCEPTION", "LOCAL_CONTEXT_EXCEEDED_EXCEPTION", "MESSAGE_ATTACHMENT_TOO_LONG_ERROR", "MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION", "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION", "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION", "MISSING_SQL_QUERY_EXCEPTION", "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE", "NO_QUERY_TO_VISUALIZE_EXCEPTION", "NO_TABLES_TO_QUERY_EXCEPTION", "RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION", "RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION", "REPLY_PROCESS_TIMEOUT_EXCEPTION", "RETRYABLE_PROCESSING_EXCEPTION", "SQL_EXECUTION_EXCEPTION", "STOP_PROCESS_DUE_TO_AUTO_REGENERATE", "TABLES_MISSING_EXCEPTION", "TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION", "TOO_MANY_TABLES_EXCEPTION", "UNEXPECTED_REPLY_PROCESS_EXCEPTION", "UNKNOWN_AI_MODEL", "WAREHOUSE_ACCESS_MISSING_EXCEPTION", "WAREHOUSE_NOT_FOUND_EXCEPTION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION", "CHAT_COMPLETION_CLIENT_EXCEPTION", "CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION", "CHAT_COMPLETION_NETWORK_EXCEPTION", "CONTENT_FILTER_EXCEPTION", "CONTEXT_EXCEEDED_EXCEPTION", "COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION", "COULD_NOT_GET_UC_SCHEMA_EXCEPTION", "DEPLOYMENT_NOT_FOUND_EXCEPTION", "DESCRIBE_QUERY_INVALID_SQL_ERROR", "DESCRIBE_QUERY_TIMEOUT", "DESCRIBE_QUERY_UNEXPECTED_FAILURE", "EXCEEDED_MAX_TOKEN_LENGTH_EXCEPTION", "FUNCTIONS_NOT_AVAILABLE_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION", "FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION", "FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION", "GENERATED_SQL_QUERY_TOO_LONG_EXCEPTION", "GENERIC_CHAT_COMPLETION_EXCEPTION", "GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION", "GENERIC_SQL_EXEC_API_CALL_EXCEPTION", "ILLEGAL_PARAMETER_DEFINITION_EXCEPTION", "INTERNAL_CATALOG_ASSET_CREATION_FAILED_EXCEPTION", "INTERNAL_CATALOG_ASSET_CREATION_ONGOING_EXCEPTION", "INTERNAL_CATALOG_ASSET_CREATION_UNSUPPORTED_EXCEPTION", "INTERNAL_CATALOG_MISSING_UC_PATH_EXCEPTION", "INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION", "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION", "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION", "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION", "INVALID_CHAT_COMPLETION_JSON_EXCEPTION", "INVALID_COMPLETION_REQUEST_EXCEPTION", "INVALID_FUNCTION_CALL_EXCEPTION", "INVALID_SQL_MULTIPLE_DATASET_REFERENCES_EXCEPTION", "INVALID_SQL_MULTIPLE_STATEMENTS_EXCEPTION", "INVALID_SQL_UNKNOWN_TABLE_EXCEPTION", "INVALID_TABLE_IDENTIFIER_EXCEPTION", "LOCAL_CONTEXT_EXCEEDED_EXCEPTION", "MESSAGE_ATTACHMENT_TOO_LONG_ERROR", "MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION", "MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION", "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION", "MISSING_SQL_QUERY_EXCEPTION", "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE", "NO_QUERY_TO_VISUALIZE_EXCEPTION", "NO_TABLES_TO_QUERY_EXCEPTION", "RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION", "RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION", "REPLY_PROCESS_TIMEOUT_EXCEPTION", "RETRYABLE_PROCESSING_EXCEPTION", "SQL_EXECUTION_EXCEPTION", "STOP_PROCESS_DUE_TO_AUTO_REGENERATE", "TABLES_MISSING_EXCEPTION", "TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION", "TOO_MANY_TABLES_EXCEPTION", "UNEXPECTED_REPLY_PROCESS_EXCEPTION", "UNKNOWN_AI_MODEL", "UNSUPPORTED_CONVERSATION_TYPE_EXCEPTION", "WAREHOUSE_ACCESS_MISSING_EXCEPTION", "WAREHOUSE_NOT_FOUND_EXCEPTION"`, v)
 	}
 }
 
@@ -1111,6 +1289,7 @@ func (f *MessageErrorType) Values() []MessageErrorType {
 		MessageErrorTypeTooManyTablesException,
 		MessageErrorTypeUnexpectedReplyProcessException,
 		MessageErrorTypeUnknownAiModel,
+		MessageErrorTypeUnsupportedConversationTypeException,
 		MessageErrorTypeWarehouseAccessMissingException,
 		MessageErrorTypeWarehouseNotFoundException,
 	}
@@ -1240,6 +1419,29 @@ func (s MigrateDashboardRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type PendingStatus struct {
+	// The token to poll for result asynchronously Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	DataToken string `json:"data_token"`
+}
+
+type PollPublishedQueryStatusRequest struct {
+	DashboardName string `json:"-" url:"dashboard_name"`
+
+	DashboardRevisionId string `json:"-" url:"dashboard_revision_id"`
+	// Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	Tokens []string `json:"-" url:"tokens,omitempty"`
+}
+
+type PollQueryStatusResponse struct {
+	Data []PollQueryStatusResponseData `json:"data,omitempty"`
+}
+
+type PollQueryStatusResponseData struct {
+	Status QueryResponseStatus `json:"status"`
+}
+
 type PublishRequest struct {
 	// UUID identifying the dashboard to be published.
 	DashboardId string `json:"-" url:"-"`
@@ -1299,6 +1501,68 @@ func (s *QueryAttachmentParameter) UnmarshalJSON(b []byte) error {
 
 func (s QueryAttachmentParameter) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type QueryResponseStatus struct {
+	Canceled *Empty `json:"canceled,omitempty"`
+
+	Closed *Empty `json:"closed,omitempty"`
+
+	Pending *PendingStatus `json:"pending,omitempty"`
+	// The statement id in format(01eef5da-c56e-1f36-bafa-21906587d6ba) The
+	// statement_id should be identical to data_token in SuccessStatus and
+	// PendingStatus. This field is created for audit logging purpose to record
+	// the statement_id of all QueryResponseStatus.
+	StatementId string `json:"statement_id,omitempty"`
+
+	Success *SuccessStatus `json:"success,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *QueryResponseStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s QueryResponseStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ResponsePhase string
+
+const ResponsePhaseResponsePhaseThinking ResponsePhase = `RESPONSE_PHASE_THINKING`
+
+const ResponsePhaseResponsePhaseVerifying ResponsePhase = `RESPONSE_PHASE_VERIFYING`
+
+// String representation for [fmt.Print]
+func (f *ResponsePhase) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ResponsePhase) Set(v string) error {
+	switch v {
+	case `RESPONSE_PHASE_THINKING`, `RESPONSE_PHASE_VERIFYING`:
+		*f = ResponsePhase(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "RESPONSE_PHASE_THINKING", "RESPONSE_PHASE_VERIFYING"`, v)
+	}
+}
+
+// Values returns all possible values for ResponsePhase.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ResponsePhase) Values() []ResponsePhase {
+	return []ResponsePhase{
+		ResponsePhaseResponsePhaseThinking,
+		ResponsePhaseResponsePhaseVerifying,
+	}
+}
+
+// Type always returns ResponsePhase to satisfy [pflag.Value] interface
+func (f *ResponsePhase) Type() string {
+	return "ResponsePhase"
 }
 
 type Result struct {
@@ -1448,11 +1712,36 @@ type SubscriptionSubscriberUser struct {
 	UserId int64 `json:"user_id"`
 }
 
+type SuccessStatus struct {
+	// The token to poll for result asynchronously Example:
+	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	DataToken string `json:"data_token"`
+	// Whether the query result is truncated (either by byte limit or row limit)
+	Truncated bool `json:"truncated,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SuccessStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SuccessStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type TextAttachment struct {
 	// AI generated message
 	Content string `json:"content,omitempty"`
 
 	Id string `json:"id,omitempty"`
+
+	Phase ResponsePhase `json:"phase,omitempty"`
+	// Purpose/intent of this text attachment
+	Purpose TextAttachmentPurpose `json:"purpose,omitempty"`
+	// Metadata for verification phase attachments. Only set when phase =
+	// RESPONSE_PHASE_VERIFYING.
+	VerificationMetadata *VerificationMetadata `json:"verification_metadata,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1463,6 +1752,41 @@ func (s *TextAttachment) UnmarshalJSON(b []byte) error {
 
 func (s TextAttachment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Purpose/intent of a text attachment
+type TextAttachmentPurpose string
+
+const TextAttachmentPurposeFollowUpQuestion TextAttachmentPurpose = `FOLLOW_UP_QUESTION`
+
+// String representation for [fmt.Print]
+func (f *TextAttachmentPurpose) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TextAttachmentPurpose) Set(v string) error {
+	switch v {
+	case `FOLLOW_UP_QUESTION`:
+		*f = TextAttachmentPurpose(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FOLLOW_UP_QUESTION"`, v)
+	}
+}
+
+// Values returns all possible values for TextAttachmentPurpose.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TextAttachmentPurpose) Values() []TextAttachmentPurpose {
+	return []TextAttachmentPurpose{
+		TextAttachmentPurposeFollowUpQuestion,
+	}
+}
+
+// Type always returns TextAttachmentPurpose to satisfy [pflag.Value] interface
+func (f *TextAttachmentPurpose) Type() string {
+	return "TextAttachmentPurpose"
 }
 
 type TrashDashboardRequest struct {
@@ -1488,4 +1812,68 @@ type UpdateScheduleRequest struct {
 	Schedule Schedule `json:"schedule"`
 	// UUID identifying the schedule.
 	ScheduleId string `json:"-" url:"-"`
+}
+
+// Metadata for verification phase attachments
+type VerificationMetadata struct {
+	// Optional index to help order attachments within the same section
+	Index int `json:"index,omitempty"`
+
+	Section VerificationSection `json:"section,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *VerificationMetadata) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s VerificationMetadata) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Verification workflow section - indicates which stage of verification this
+// attachment belongs to These sections are used for grouping and ordering
+// attachments in the frontend UI
+type VerificationSection string
+
+const VerificationSectionVerificationSectionFinalDecision VerificationSection = `VERIFICATION_SECTION_FINAL_DECISION`
+
+const VerificationSectionVerificationSectionProposedImprovement VerificationSection = `VERIFICATION_SECTION_PROPOSED_IMPROVEMENT`
+
+const VerificationSectionVerificationSectionSqlExamplesValidation VerificationSection = `VERIFICATION_SECTION_SQL_EXAMPLES_VALIDATION`
+
+const VerificationSectionVerificationSectionVerificationQueries VerificationSection = `VERIFICATION_SECTION_VERIFICATION_QUERIES`
+
+// String representation for [fmt.Print]
+func (f *VerificationSection) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *VerificationSection) Set(v string) error {
+	switch v {
+	case `VERIFICATION_SECTION_FINAL_DECISION`, `VERIFICATION_SECTION_PROPOSED_IMPROVEMENT`, `VERIFICATION_SECTION_SQL_EXAMPLES_VALIDATION`, `VERIFICATION_SECTION_VERIFICATION_QUERIES`:
+		*f = VerificationSection(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "VERIFICATION_SECTION_FINAL_DECISION", "VERIFICATION_SECTION_PROPOSED_IMPROVEMENT", "VERIFICATION_SECTION_SQL_EXAMPLES_VALIDATION", "VERIFICATION_SECTION_VERIFICATION_QUERIES"`, v)
+	}
+}
+
+// Values returns all possible values for VerificationSection.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *VerificationSection) Values() []VerificationSection {
+	return []VerificationSection{
+		VerificationSectionVerificationSectionFinalDecision,
+		VerificationSectionVerificationSectionProposedImprovement,
+		VerificationSectionVerificationSectionSqlExamplesValidation,
+		VerificationSectionVerificationSectionVerificationQueries,
+	}
+}
+
+// Type always returns VerificationSection to satisfy [pflag.Value] interface
+func (f *VerificationSection) Type() string {
+	return "VerificationSection"
 }

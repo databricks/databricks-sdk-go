@@ -192,6 +192,16 @@ func (a *experimentsImpl) GetLoggedModel(ctx context.Context, request GetLoggedM
 	return &getLoggedModelResponse, err
 }
 
+func (a *experimentsImpl) GetLoggedModels(ctx context.Context, request GetLoggedModelsRequest) (*GetLoggedModelsRequestResponse, error) {
+	var getLoggedModelsRequestResponse GetLoggedModelsRequestResponse
+	path := "/api/2.0/mlflow/logged-models:batchGet"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getLoggedModelsRequestResponse)
+	return &getLoggedModelsRequestResponse, err
+}
+
 func (a *experimentsImpl) GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
 	var getExperimentPermissionLevelsResponse GetExperimentPermissionLevelsResponse
 	path := fmt.Sprintf("/api/2.0/permissions/experiments/%v/permissionLevels", request.ExperimentId)
@@ -590,6 +600,17 @@ func (a *experimentsImpl) UpdateRun(ctx context.Context, request UpdateRun) (*Up
 // unexported type that holds implementations of just FeatureEngineering API methods
 type featureEngineeringImpl struct {
 	client *client.DatabricksClient
+}
+
+func (a *featureEngineeringImpl) BatchCreateMaterializedFeatures(ctx context.Context, request BatchCreateMaterializedFeaturesRequest) (*BatchCreateMaterializedFeaturesResponse, error) {
+	var batchCreateMaterializedFeaturesResponse BatchCreateMaterializedFeaturesResponse
+	path := "/api/2.0/feature-engineering/materialized-features:batchCreate"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &batchCreateMaterializedFeaturesResponse)
+	return &batchCreateMaterializedFeaturesResponse, err
 }
 
 func (a *featureEngineeringImpl) CreateFeature(ctx context.Context, request CreateFeatureRequest) (*Feature, error) {
