@@ -24,6 +24,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/ml"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/pipelines"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/postgres"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/serving"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
@@ -118,6 +119,7 @@ func NewMockWorkspaceClient(t interface {
 			PolicyComplianceForClusters:         compute.NewMockPolicyComplianceForClustersInterface(t),
 			PolicyComplianceForJobs:             jobs.NewMockPolicyComplianceForJobsInterface(t),
 			PolicyFamilies:                      compute.NewMockPolicyFamiliesInterface(t),
+			Postgres:                            postgres.NewMockPostgresInterface(t),
 			ProviderExchangeFilters:             marketplace.NewMockProviderExchangeFiltersInterface(t),
 			ProviderExchanges:                   marketplace.NewMockProviderExchangesInterface(t),
 			ProviderFiles:                       marketplace.NewMockProviderFilesInterface(t),
@@ -130,6 +132,7 @@ func NewMockWorkspaceClient(t interface {
 			QualityMonitors:                     catalog.NewMockQualityMonitorsInterface(t),
 			Queries:                             sql.NewMockQueriesInterface(t),
 			QueriesLegacy:                       sql.NewMockQueriesLegacyInterface(t),
+			QueryExecution:                      dashboards.NewMockQueryExecutionInterface(t),
 			QueryHistory:                        sql.NewMockQueryHistoryInterface(t),
 			QueryVisualizations:                 sql.NewMockQueryVisualizationsInterface(t),
 			QueryVisualizationsLegacy:           sql.NewMockQueryVisualizationsLegacyInterface(t),
@@ -154,6 +157,7 @@ func NewMockWorkspaceClient(t interface {
 			SystemSchemas:                       catalog.NewMockSystemSchemasInterface(t),
 			TableConstraints:                    catalog.NewMockTableConstraintsInterface(t),
 			Tables:                              catalog.NewMockTablesInterface(t),
+			TagAssignments:                      tags.NewMockTagAssignmentsInterface(t),
 			TagPolicies:                         tags.NewMockTagPoliciesInterface(t),
 			TemporaryPathCredentials:            catalog.NewMockTemporaryPathCredentialsInterface(t),
 			TemporaryTableCredentials:           catalog.NewMockTemporaryTableCredentialsInterface(t),
@@ -908,6 +912,14 @@ func (m *MockWorkspaceClient) GetMockPolicyFamiliesAPI() *compute.MockPolicyFami
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockPostgresAPI() *postgres.MockPostgresInterface {
+	api, ok := m.WorkspaceClient.Postgres.(*postgres.MockPostgresInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Postgres to be *postgres.MockPostgresInterface, actual was %T", m.WorkspaceClient.Postgres))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockProviderExchangeFiltersAPI() *marketplace.MockProviderExchangeFiltersInterface {
 	api, ok := m.WorkspaceClient.ProviderExchangeFilters.(*marketplace.MockProviderExchangeFiltersInterface)
 	if !ok {
@@ -1000,6 +1012,14 @@ func (m *MockWorkspaceClient) GetMockQueriesLegacyAPI() *sql.MockQueriesLegacyIn
 	api, ok := m.WorkspaceClient.QueriesLegacy.(*sql.MockQueriesLegacyInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected QueriesLegacy to be *sql.MockQueriesLegacyInterface, actual was %T", m.WorkspaceClient.QueriesLegacy))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockQueryExecutionAPI() *dashboards.MockQueryExecutionInterface {
+	api, ok := m.WorkspaceClient.QueryExecution.(*dashboards.MockQueryExecutionInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected QueryExecution to be *dashboards.MockQueryExecutionInterface, actual was %T", m.WorkspaceClient.QueryExecution))
 	}
 	return api
 }
@@ -1192,6 +1212,14 @@ func (m *MockWorkspaceClient) GetMockTablesAPI() *catalog.MockTablesInterface {
 	api, ok := m.WorkspaceClient.Tables.(*catalog.MockTablesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected Tables to be *catalog.MockTablesInterface, actual was %T", m.WorkspaceClient.Tables))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockTagAssignmentsAPI() *tags.MockTagAssignmentsInterface {
+	api, ok := m.WorkspaceClient.TagAssignments.(*tags.MockTagAssignmentsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected TagAssignments to be *tags.MockTagAssignmentsInterface, actual was %T", m.WorkspaceClient.TagAssignments))
 	}
 	return api
 }

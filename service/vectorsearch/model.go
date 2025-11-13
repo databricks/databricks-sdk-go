@@ -8,9 +8,31 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
+// Adjusted throughput request parameters
+type AdjustedThroughputRequest struct {
+	// Adjusted concurrency (total CPU) for the endpoint
+	Concurrency float64 `json:"concurrency,omitempty"`
+	// Adjusted maximum concurrency allowed for the endpoint
+	MaximumConcurrencyAllowed float64 `json:"maximum_concurrency_allowed,omitempty"`
+	// Adjusted minimum concurrency allowed for the endpoint
+	MinimalConcurrencyAllowed float64 `json:"minimal_concurrency_allowed,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AdjustedThroughputRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AdjustedThroughputRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ColumnInfo struct {
 	// Name of the column.
 	Name string `json:"name,omitempty"`
+	// Data type of the column (e.g., "string", "int", "array<float>")
+	TypeText string `json:"type_text,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -30,6 +52,11 @@ type CreateEndpoint struct {
 	EndpointType EndpointType `json:"endpoint_type"`
 	// Name of the vector search endpoint
 	Name string `json:"name"`
+	// Initial number of replicas for the endpoint. If not specified, defaults
+	// to 1.
+	NumReplicas int `json:"num_replicas,omitempty"`
+	// The usage policy id to be applied once we've migrated to usage policies
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -164,6 +191,10 @@ type DeltaSyncVectorIndexSpecRequest struct {
 	// index. The primary key column and embedding source column or embedding
 	// vector column are always synced.
 	ColumnsToSync []string `json:"columns_to_sync,omitempty"`
+	// The budget policy id applied to the vector search index
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The columns that contain the embedding source.
 	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
 	// The columns that contain the embedding vectors.
@@ -194,6 +225,10 @@ func (s DeltaSyncVectorIndexSpecRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DeltaSyncVectorIndexSpecResponse struct {
+	// The budget policy id applied to the vector search index
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The columns that contain the embedding source.
 	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
 	// The columns that contain the embedding vectors.
@@ -309,6 +344,8 @@ type EndpointInfo struct {
 	Name string `json:"name,omitempty"`
 	// Number of indexes on the endpoint
 	NumIndexes int `json:"num_indexes,omitempty"`
+	// Throughput information for the endpoint
+	ThroughputInfo *EndpointThroughputInfo `json:"throughput_info,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -348,6 +385,10 @@ const EndpointStatusStateOnline EndpointStatusState = `ONLINE`
 
 const EndpointStatusStateProvisioning EndpointStatusState = `PROVISIONING`
 
+const EndpointStatusStateRedState EndpointStatusState = `RED_STATE`
+
+const EndpointStatusStateYellowState EndpointStatusState = `YELLOW_STATE`
+
 // String representation for [fmt.Print]
 func (f *EndpointStatusState) String() string {
 	return string(*f)
@@ -356,11 +397,11 @@ func (f *EndpointStatusState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointStatusState) Set(v string) error {
 	switch v {
-	case `OFFLINE`, `ONLINE`, `PROVISIONING`:
+	case `OFFLINE`, `ONLINE`, `PROVISIONING`, `RED_STATE`, `YELLOW_STATE`:
 		*f = EndpointStatusState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "OFFLINE", "ONLINE", "PROVISIONING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "OFFLINE", "ONLINE", "PROVISIONING", "RED_STATE", "YELLOW_STATE"`, v)
 	}
 }
 
@@ -372,12 +413,46 @@ func (f *EndpointStatusState) Values() []EndpointStatusState {
 		EndpointStatusStateOffline,
 		EndpointStatusStateOnline,
 		EndpointStatusStateProvisioning,
+		EndpointStatusStateRedState,
+		EndpointStatusStateYellowState,
 	}
 }
 
 // Type always returns EndpointStatusState to satisfy [pflag.Value] interface
 func (f *EndpointStatusState) Type() string {
 	return "EndpointStatusState"
+}
+
+// Throughput information for an endpoint
+type EndpointThroughputInfo struct {
+	// Additional information about the throughput change request
+	ChangeRequestMessage string `json:"change_request_message,omitempty"`
+	// The state of the most recent throughput change request
+	ChangeRequestState ThroughputChangeRequestState `json:"change_request_state,omitempty"`
+	// The current concurrency (total CPU) allocated to the endpoint
+	CurrentConcurrency float64 `json:"current_concurrency,omitempty"`
+	// The current utilization of concurrency as a percentage (0-100)
+	CurrentConcurrencyUtilizationPercentage float64 `json:"current_concurrency_utilization_percentage,omitempty"`
+	// The current number of replicas allocated to the endpoint
+	CurrentNumReplicas int `json:"current_num_replicas,omitempty"`
+	// The maximum concurrency allowed for this endpoint
+	MaximumConcurrencyAllowed float64 `json:"maximum_concurrency_allowed,omitempty"`
+	// The minimum concurrency allowed for this endpoint
+	MinimalConcurrencyAllowed float64 `json:"minimal_concurrency_allowed,omitempty"`
+	// The requested concurrency (total CPU) for the endpoint
+	RequestedConcurrency float64 `json:"requested_concurrency,omitempty"`
+	// The requested number of replicas for the endpoint
+	RequestedNumReplicas int `json:"requested_num_replicas,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EndpointThroughputInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EndpointThroughputInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Type of endpoint.
@@ -532,6 +607,70 @@ func (s MapStringValueEntry) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Metric specification
+type Metric struct {
+	// Metric labels
+	Labels []MetricLabel `json:"labels,omitempty"`
+	// Metric name
+	Name string `json:"name,omitempty"`
+	// Percentile for the metric
+	Percentile float64 `json:"percentile,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Metric) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Metric) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Label for a metric
+type MetricLabel struct {
+	// Label name
+	Name string `json:"name,omitempty"`
+	// Label value
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MetricLabel) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MetricLabel) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Single metric value at a specific timestamp
+type MetricValue struct {
+	// Timestamp of the metric value (milliseconds since epoch)
+	Timestamp int64 `json:"timestamp,omitempty"`
+	// Metric value
+	Value float64 `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MetricValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MetricValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Collection of metric values for a specific metric
+type MetricValues struct {
+	// Metric specification
+	Metric *Metric `json:"metric,omitempty"`
+	// Time series of metric values
+	Values []MetricValue `json:"values,omitempty"`
+}
+
 type MiniVectorIndex struct {
 	// The user who created the index.
 	Creator string `json:"creator,omitempty"`
@@ -575,6 +714,59 @@ func (s *PatchEndpointBudgetPolicyResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s PatchEndpointBudgetPolicyResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type PatchEndpointThroughputRequest struct {
+	// If true, the request will fail if the requested concurrency or limits
+	// cannot be exactly met. If false, the request will be adjusted to the
+	// closest possible value.
+	AllOrNothing bool `json:"all_or_nothing,omitempty"`
+	// Requested concurrency (total CPU) for the endpoint. If not specified, the
+	// current concurrency is maintained.
+	Concurrency float64 `json:"concurrency,omitempty"`
+	// Name of the vector search endpoint
+	EndpointName string `json:"-" url:"-"`
+	// Maximum concurrency allowed for the endpoint. If not specified, the
+	// current maximum is maintained.
+	MaximumConcurrencyAllowed float64 `json:"maximum_concurrency_allowed,omitempty"`
+	// Minimum concurrency allowed for the endpoint. If not specified, the
+	// current minimum is maintained.
+	MinimalConcurrencyAllowed float64 `json:"minimal_concurrency_allowed,omitempty"`
+	// Requested number of data copies for the endpoint (including primary). For
+	// example: num_replicas=2 means 2 total copies of the data (1 primary + 1
+	// replica). If not specified, the current replication factor is maintained.
+	// Valid range: 1-6 (where 1 = no replication, 6 = 1 primary + 5 replicas).
+	NumReplicas int `json:"num_replicas,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PatchEndpointThroughputRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PatchEndpointThroughputRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type PatchEndpointThroughputResponse struct {
+	// The adjusted request if the original request could not be fully
+	// fulfilled. This is only populated when the request was adjusted.
+	AdjustedRequest *AdjustedThroughputRequest `json:"adjusted_request,omitempty"`
+	// Message explaining the status or any adjustments made
+	Message string `json:"message,omitempty"`
+	// The status of the throughput change request
+	Status ThroughputPatchStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PatchEndpointThroughputResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PatchEndpointThroughputResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -668,7 +860,8 @@ type QueryVectorIndexRequest struct {
 	NumResults int `json:"num_results,omitempty"`
 	// Query text. Required for Delta Sync Index using model endpoint.
 	QueryText string `json:"query_text,omitempty"`
-	// The query type to use. Choices are `ANN` and `HYBRID`. Defaults to `ANN`.
+	// The query type to use. Choices are `ANN` and `HYBRID` and `FULL_TEXT`.
+	// Defaults to `ANN`.
 	QueryType string `json:"query_type,omitempty"`
 	// Query vector. Required for Direct Vector Access Index and Delta Sync
 	// Index using self-managed vectors.
@@ -767,6 +960,51 @@ func (s ResultManifest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Request to retrieve user-visible metrics
+type RetrieveUserVisibleMetricsRequest struct {
+	// End time for metrics query
+	EndTime string `json:"end_time,omitempty"`
+	// Granularity in seconds
+	GranularityInSeconds int `json:"granularity_in_seconds,omitempty"`
+	// List of metrics to retrieve
+	Metrics []Metric `json:"metrics,omitempty"`
+	// Vector search endpoint name
+	Name string `json:"-" url:"-"`
+	// Token for pagination
+	PageToken string `json:"page_token,omitempty"`
+	// Start time for metrics query
+	StartTime string `json:"start_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RetrieveUserVisibleMetricsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RetrieveUserVisibleMetricsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response containing user-visible metrics
+type RetrieveUserVisibleMetricsResponse struct {
+	// Collection of metric values
+	MetricValues []MetricValues `json:"metric_values,omitempty"`
+	// A token that can be used to get the next page of results. If not present,
+	// there are no more results to show.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RetrieveUserVisibleMetricsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RetrieveUserVisibleMetricsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ScanVectorIndexRequest struct {
 	// Name of the vector index to scan.
 	IndexName string `json:"-" url:"-"`
@@ -814,6 +1052,97 @@ type SyncIndexRequest struct {
 	IndexName string `json:"-" url:"-"`
 }
 
+// Throughput change request state
+type ThroughputChangeRequestState string
+
+const ThroughputChangeRequestStateChangeAdjusted ThroughputChangeRequestState = `CHANGE_ADJUSTED`
+
+const ThroughputChangeRequestStateChangeFailed ThroughputChangeRequestState = `CHANGE_FAILED`
+
+const ThroughputChangeRequestStateChangeInProgress ThroughputChangeRequestState = `CHANGE_IN_PROGRESS`
+
+const ThroughputChangeRequestStateChangeReachedMaximum ThroughputChangeRequestState = `CHANGE_REACHED_MAXIMUM`
+
+const ThroughputChangeRequestStateChangeReachedMinimum ThroughputChangeRequestState = `CHANGE_REACHED_MINIMUM`
+
+const ThroughputChangeRequestStateChangeSuccess ThroughputChangeRequestState = `CHANGE_SUCCESS`
+
+// String representation for [fmt.Print]
+func (f *ThroughputChangeRequestState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ThroughputChangeRequestState) Set(v string) error {
+	switch v {
+	case `CHANGE_ADJUSTED`, `CHANGE_FAILED`, `CHANGE_IN_PROGRESS`, `CHANGE_REACHED_MAXIMUM`, `CHANGE_REACHED_MINIMUM`, `CHANGE_SUCCESS`:
+		*f = ThroughputChangeRequestState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CHANGE_ADJUSTED", "CHANGE_FAILED", "CHANGE_IN_PROGRESS", "CHANGE_REACHED_MAXIMUM", "CHANGE_REACHED_MINIMUM", "CHANGE_SUCCESS"`, v)
+	}
+}
+
+// Values returns all possible values for ThroughputChangeRequestState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ThroughputChangeRequestState) Values() []ThroughputChangeRequestState {
+	return []ThroughputChangeRequestState{
+		ThroughputChangeRequestStateChangeAdjusted,
+		ThroughputChangeRequestStateChangeFailed,
+		ThroughputChangeRequestStateChangeInProgress,
+		ThroughputChangeRequestStateChangeReachedMaximum,
+		ThroughputChangeRequestStateChangeReachedMinimum,
+		ThroughputChangeRequestStateChangeSuccess,
+	}
+}
+
+// Type always returns ThroughputChangeRequestState to satisfy [pflag.Value] interface
+func (f *ThroughputChangeRequestState) Type() string {
+	return "ThroughputChangeRequestState"
+}
+
+// Response status for throughput change requests
+type ThroughputPatchStatus string
+
+const ThroughputPatchStatusPatchAccepted ThroughputPatchStatus = `PATCH_ACCEPTED`
+
+const ThroughputPatchStatusPatchFailed ThroughputPatchStatus = `PATCH_FAILED`
+
+const ThroughputPatchStatusPatchRejected ThroughputPatchStatus = `PATCH_REJECTED`
+
+// String representation for [fmt.Print]
+func (f *ThroughputPatchStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ThroughputPatchStatus) Set(v string) error {
+	switch v {
+	case `PATCH_ACCEPTED`, `PATCH_FAILED`, `PATCH_REJECTED`:
+		*f = ThroughputPatchStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PATCH_ACCEPTED", "PATCH_FAILED", "PATCH_REJECTED"`, v)
+	}
+}
+
+// Values returns all possible values for ThroughputPatchStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ThroughputPatchStatus) Values() []ThroughputPatchStatus {
+	return []ThroughputPatchStatus{
+		ThroughputPatchStatusPatchAccepted,
+		ThroughputPatchStatusPatchFailed,
+		ThroughputPatchStatusPatchRejected,
+	}
+}
+
+// Type always returns ThroughputPatchStatus to satisfy [pflag.Value] interface
+func (f *ThroughputPatchStatus) Type() string {
+	return "ThroughputPatchStatus"
+}
+
 type UpdateEndpointCustomTagsRequest struct {
 	// The new custom tags for the vector search endpoint
 	CustomTags []CustomTag `json:"custom_tags"`
@@ -836,6 +1165,14 @@ func (s *UpdateEndpointCustomTagsResponse) UnmarshalJSON(b []byte) error {
 
 func (s UpdateEndpointCustomTagsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateVectorIndexUsagePolicyRequest struct {
+	// Name of the vector search index
+	IndexName string `json:"-" url:"-"`
+}
+
+type UpdateVectorIndexUsagePolicyResponse struct {
 }
 
 type UpsertDataResult struct {

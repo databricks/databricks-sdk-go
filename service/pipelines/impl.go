@@ -17,6 +17,16 @@ type pipelinesImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *pipelinesImpl) ApplyEnvironment(ctx context.Context, request ApplyEnvironmentRequest) (*ApplyEnvironmentRequestResponse, error) {
+	var applyEnvironmentRequestResponse ApplyEnvironmentRequestResponse
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/environment/apply", request.PipelineId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &applyEnvironmentRequestResponse)
+	return &applyEnvironmentRequestResponse, err
+}
+
 func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error) {
 	var createPipelineResponse CreatePipelineResponse
 	path := "/api/2.0/pipelines"
@@ -118,7 +128,7 @@ func (a *pipelinesImpl) internalListPipelineEvents(ctx context.Context, request 
 	return &listPipelineEventsResponse, err
 }
 
-// Lists pipelines defined in the Delta Live Tables system.
+// Lists pipelines defined in the Spark Declarative Pipelines system.
 func (a *pipelinesImpl) ListPipelines(ctx context.Context, request ListPipelinesRequest) listing.Iterator[PipelineStateInfo] {
 
 	getNextPage := func(ctx context.Context, req ListPipelinesRequest) (*ListPipelinesResponse, error) {
@@ -143,7 +153,7 @@ func (a *pipelinesImpl) ListPipelines(ctx context.Context, request ListPipelines
 	return iterator
 }
 
-// Lists pipelines defined in the Delta Live Tables system.
+// Lists pipelines defined in the Spark Declarative Pipelines system.
 func (a *pipelinesImpl) ListPipelinesAll(ctx context.Context, request ListPipelinesRequest) ([]PipelineStateInfo, error) {
 	iterator := a.ListPipelines(ctx, request)
 	return listing.ToSlice[PipelineStateInfo](ctx, iterator)
@@ -167,6 +177,16 @@ func (a *pipelinesImpl) ListUpdates(ctx context.Context, request ListUpdatesRequ
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listUpdatesResponse)
 	return &listUpdatesResponse, err
+}
+
+func (a *pipelinesImpl) RestorePipeline(ctx context.Context, request RestorePipelineRequest) (*RestorePipelineRequestResponse, error) {
+	var restorePipelineRequestResponse RestorePipelineRequestResponse
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/restore", request.PipelineId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &restorePipelineRequestResponse)
+	return &restorePipelineRequestResponse, err
 }
 
 func (a *pipelinesImpl) SetPermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error) {

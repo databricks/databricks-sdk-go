@@ -88,6 +88,28 @@ func (a *vectorSearchEndpointsImpl) internalListEndpoints(ctx context.Context, r
 	return &listEndpointResponse, err
 }
 
+func (a *vectorSearchEndpointsImpl) PatchEndpointThroughput(ctx context.Context, request PatchEndpointThroughputRequest) (*PatchEndpointThroughputResponse, error) {
+	var patchEndpointThroughputResponse PatchEndpointThroughputResponse
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/throughput", request.EndpointName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &patchEndpointThroughputResponse)
+	return &patchEndpointThroughputResponse, err
+}
+
+func (a *vectorSearchEndpointsImpl) RetrieveUserVisibleMetrics(ctx context.Context, request RetrieveUserVisibleMetricsRequest) (*RetrieveUserVisibleMetricsResponse, error) {
+	var retrieveUserVisibleMetricsResponse RetrieveUserVisibleMetricsResponse
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/metrics", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &retrieveUserVisibleMetricsResponse)
+	return &retrieveUserVisibleMetricsResponse, err
+}
+
 func (a *vectorSearchEndpointsImpl) UpdateEndpointBudgetPolicy(ctx context.Context, request PatchEndpointBudgetPolicyRequest) (*PatchEndpointBudgetPolicyResponse, error) {
 	var patchEndpointBudgetPolicyResponse PatchEndpointBudgetPolicyResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/budget-policy", request.EndpointName)
@@ -236,6 +258,16 @@ func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncInd
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
 	return err
+}
+
+func (a *vectorSearchIndexesImpl) UpdateIndexBudgetPolicy(ctx context.Context, request UpdateVectorIndexUsagePolicyRequest) (*UpdateVectorIndexUsagePolicyResponse, error) {
+	var updateVectorIndexUsagePolicyResponse UpdateVectorIndexUsagePolicyResponse
+	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/usage-policy", request.IndexName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, nil, &updateVectorIndexUsagePolicyResponse)
+	return &updateVectorIndexUsagePolicyResponse, err
 }
 
 func (a *vectorSearchIndexesImpl) UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error) {

@@ -505,6 +505,9 @@ type AlertV2 struct {
 	CustomSummary string `json:"custom_summary,omitempty"`
 	// The display name of the alert.
 	DisplayName string `json:"display_name"`
+	// The actual workspace path of the folder containing the alert. This is an
+	// output-only field.
+	EffectiveParentPath string `json:"effective_parent_path,omitempty"`
 	// The actual identity that will be used to execute the alert. This is an
 	// output-only field that shows the resolved run-as identity after applying
 	// permissions and defaults.
@@ -611,6 +614,7 @@ type AlertV2Operand struct {
 }
 
 type AlertV2OperandColumn struct {
+	// If not set, the behavior is equivalent to using `First row` in the UI.
 	Aggregation Aggregation `json:"aggregation,omitempty"`
 
 	Display string `json:"display,omitempty"`
@@ -1349,6 +1353,8 @@ func (s CreateWidget) MarshalJSON() ([]byte, error) {
 }
 
 type CronSchedule struct {
+	// The actual pause status of the schedule. This is an output-only field.
+	EffectivePauseStatus SchedulePauseStatus `json:"effective_pause_status,omitempty"`
 	// Indicate whether this schedule is paused or not.
 	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
 	// A cron expression using quartz syntax that specifies the schedule for

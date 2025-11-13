@@ -384,6 +384,9 @@ type AccountClient struct {
 	// drivers.
 	UsageDashboards billing.UsageDashboardsInterface
 
+	// A service serves REST API about Usage policies
+	UsagePolicy billing.UsagePolicyInterface
+
 	// User identities recognized by Databricks and represented by email
 	// addresses.
 	//
@@ -527,6 +530,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		Storage:                          provisioning.NewStorage(apiClient),
 		StorageCredentials:               catalog.NewAccountStorageCredentials(apiClient),
 		UsageDashboards:                  billing.NewUsageDashboards(apiClient),
+		UsagePolicy:                      billing.NewUsagePolicy(apiClient),
 		UsersV2:                          iam.NewAccountUsersV2(apiClient),
 		VpcEndpoints:                     provisioning.NewVpcEndpoints(apiClient),
 		WorkspaceAssignment:              iam.NewWorkspaceAssignment(apiClient),

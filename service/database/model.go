@@ -62,10 +62,14 @@ func (s CustomTag) MarshalJSON() ([]byte, error) {
 
 type DatabaseCatalog struct {
 	CreateDatabaseIfNotExists bool `json:"create_database_if_not_exists,omitempty"`
+	// The branch_id of the database branch associated with the catalog.
+	DatabaseBranchId string `json:"database_branch_id,omitempty"`
 	// The name of the DatabaseInstance housing the database.
 	DatabaseInstanceName string `json:"database_instance_name"`
 	// The name of the database (in a instance) associated with the catalog.
 	DatabaseName string `json:"database_name"`
+	// The project_id of the database project associated with the catalog.
+	DatabaseProjectId string `json:"database_project_id,omitempty"`
 	// The name of the catalog in UC.
 	Name string `json:"name"`
 
@@ -425,6 +429,8 @@ type DatabaseTable struct {
 	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"name"`
+	// Data serving REST API URL for this table
+	TableServingUrl string `json:"table_serving_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -492,6 +498,19 @@ type DeleteDatabaseTableRequest struct {
 
 type DeleteSyncedDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
+	// Optional. When set to true, the actual PostgreSQL table will be dropped
+	// from the database.
+	PurgeData bool `json:"-" url:"purge_data,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteSyncedDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteSyncedDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DeltaTableSyncInfo struct {
@@ -510,6 +529,22 @@ func (s *DeltaTableSyncInfo) UnmarshalJSON(b []byte) error {
 }
 
 func (s DeltaTableSyncInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type FailoverDatabaseInstanceRequest struct {
+	FailoverTargetDatabaseInstanceName string `json:"failover_target_database_instance_name,omitempty"`
+	// Name of the instance to failover.
+	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FailoverDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FailoverDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -721,6 +756,8 @@ func (s ListSyncedDatabaseTablesResponse) MarshalJSON() ([]byte, error) {
 // SyncedDatabaseTable. Note that other fields of pipeline are still inferred by
 // table def internally
 type NewPipelineSpec struct {
+	// Budget policy of this pipeline.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// This field needs to be specified if the destination catalog is a managed
 	// postgres catalog.
 	//
@@ -897,6 +934,8 @@ func (s RequestedResource) MarshalJSON() ([]byte, error) {
 type SyncedDatabaseTable struct {
 	// Synced Table data synchronization status
 	DataSynchronizationStatus *SyncedTableStatus `json:"data_synchronization_status,omitempty"`
+	// The branch_id of the database branch associated with the table.
+	DatabaseBranchId string `json:"database_branch_id,omitempty"`
 	// Name of the target database instance. This is required when creating
 	// synced database tables in standard catalogs. This is optional when
 	// creating synced database tables in registered catalogs. If this field is
@@ -904,10 +943,16 @@ type SyncedDatabaseTable struct {
 	// the database instance name MUST match that of the registered catalog (or
 	// the request will be rejected).
 	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
+	// The project_id of the database project associated with the table.
+	DatabaseProjectId string `json:"database_project_id,omitempty"`
+	// The branch_id of the database branch associated with the table.
+	EffectiveDatabaseBranchId string `json:"effective_database_branch_id,omitempty"`
 	// The name of the database instance that this table is registered to. This
 	// field is always returned, and for tables inside database catalogs is
 	// inferred database instance associated with the catalog.
 	EffectiveDatabaseInstanceName string `json:"effective_database_instance_name,omitempty"`
+	// The project_id of the database project associated with the table.
+	EffectiveDatabaseProjectId string `json:"effective_database_project_id,omitempty"`
 	// The name of the logical database that this table is registered to.
 	EffectiveLogicalDatabaseName string `json:"effective_logical_database_name,omitempty"`
 	// Target Postgres database object (logical database) name for this table.
@@ -927,6 +972,8 @@ type SyncedDatabaseTable struct {
 	Name string `json:"name"`
 
 	Spec *SyncedTableSpec `json:"spec,omitempty"`
+	// Data serving REST API URL for this table
+	TableServingUrl string `json:"table_serving_url,omitempty"`
 	// The provisioning state of the synced table entity in Unity Catalog. This
 	// is distinct from the state of the data synchronization pipeline (i.e. the
 	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
@@ -1284,6 +1331,27 @@ type UpdateDatabaseInstanceRequest struct {
 	// when possible. To wipe out custom_tags, specify custom_tags in the
 	// update_mask with an empty custom_tags map.
 	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+type UpdateDatabaseInstanceRoleRequest struct {
+	DatabaseInstanceName string `json:"-" url:"database_instance_name,omitempty"`
+
+	DatabaseInstanceRole DatabaseInstanceRole `json:"database_instance_role"`
+
+	InstanceName string `json:"-" url:"-"`
+	// The name of the role. This is the unique identifier for the role in an
+	// instance.
+	Name string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateDatabaseInstanceRoleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateDatabaseInstanceRoleRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateSyncedDatabaseTableRequest struct {

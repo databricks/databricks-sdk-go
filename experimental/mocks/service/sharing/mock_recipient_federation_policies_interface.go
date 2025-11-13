@@ -464,6 +464,65 @@ func (_c *MockRecipientFederationPoliciesInterface_ListByRecipientName_Call) Run
 	return _c
 }
 
+// Update provides a mock function with given fields: ctx, request
+func (_m *MockRecipientFederationPoliciesInterface) Update(ctx context.Context, request sharing.UpdateFederationPolicyRequest) (*sharing.FederationPolicy, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Update")
+	}
+
+	var r0 *sharing.FederationPolicy
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, sharing.UpdateFederationPolicyRequest) (*sharing.FederationPolicy, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, sharing.UpdateFederationPolicyRequest) *sharing.FederationPolicy); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*sharing.FederationPolicy)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, sharing.UpdateFederationPolicyRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockRecipientFederationPoliciesInterface_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
+type MockRecipientFederationPoliciesInterface_Update_Call struct {
+	*mock.Call
+}
+
+// Update is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sharing.UpdateFederationPolicyRequest
+func (_e *MockRecipientFederationPoliciesInterface_Expecter) Update(ctx interface{}, request interface{}) *MockRecipientFederationPoliciesInterface_Update_Call {
+	return &MockRecipientFederationPoliciesInterface_Update_Call{Call: _e.mock.On("Update", ctx, request)}
+}
+
+func (_c *MockRecipientFederationPoliciesInterface_Update_Call) Run(run func(ctx context.Context, request sharing.UpdateFederationPolicyRequest)) *MockRecipientFederationPoliciesInterface_Update_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(sharing.UpdateFederationPolicyRequest))
+	})
+	return _c
+}
+
+func (_c *MockRecipientFederationPoliciesInterface_Update_Call) Return(_a0 *sharing.FederationPolicy, _a1 error) *MockRecipientFederationPoliciesInterface_Update_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockRecipientFederationPoliciesInterface_Update_Call) RunAndReturn(run func(context.Context, sharing.UpdateFederationPolicyRequest) (*sharing.FederationPolicy, error)) *MockRecipientFederationPoliciesInterface_Update_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockRecipientFederationPoliciesInterface creates a new instance of MockRecipientFederationPoliciesInterface. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockRecipientFederationPoliciesInterface(t interface {

@@ -95,6 +95,9 @@ type ExperimentsInterface interface {
 	// Get a logged model.
 	GetLoggedModelByModelId(ctx context.Context, modelId string) (*GetLoggedModelResponse, error)
 
+	// Batch endpoint for getting logged models from a list of model IDs
+	GetLoggedModels(ctx context.Context, request GetLoggedModelsRequest) (*GetLoggedModelsRequestResponse, error)
+
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error)
 
@@ -355,6 +358,9 @@ func (a *ExperimentsAPI) GetPermissionsByExperimentId(ctx context.Context, exper
 }
 
 type FeatureEngineeringInterface interface {
+
+	// Batch create materialized features.
+	BatchCreateMaterializedFeatures(ctx context.Context, request BatchCreateMaterializedFeaturesRequest) (*BatchCreateMaterializedFeaturesResponse, error)
 
 	// Create a Feature.
 	CreateFeature(ctx context.Context, request CreateFeatureRequest) (*Feature, error)
