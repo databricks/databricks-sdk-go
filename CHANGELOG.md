@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.91.0 (2025-11-13)
+
+### Internal Changes
+
+* Add experimental core framework to replace existing API call execution.
+
+
 ## Release v0.90.0 (2025-11-03)
 
 ### New Features and Improvements

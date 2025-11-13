@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.91.0
+## Release v0.92.0
 
 ### New Features and Improvements
 
@@ -9,7 +9,5 @@
 ### Documentation
 
 ### Internal Changes
-
-* Add experimental core framework to replace existing API call execution.
 
 ### API Changes
