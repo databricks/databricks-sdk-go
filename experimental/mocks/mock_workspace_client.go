@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/stretchr/testify/mock"
 
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/agentbricks"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/apps"
@@ -33,6 +32,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/tags"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/workspace"
+	"github.com/stretchr/testify/mock"
 )
 
 type MockWorkspaceClient struct {

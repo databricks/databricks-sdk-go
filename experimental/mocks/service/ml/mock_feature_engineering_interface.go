@@ -24,6 +24,65 @@ func (_m *MockFeatureEngineeringInterface) EXPECT() *MockFeatureEngineeringInter
 	return &MockFeatureEngineeringInterface_Expecter{mock: &_m.Mock}
 }
 
+// BatchCreateMaterializedFeatures provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) BatchCreateMaterializedFeatures(ctx context.Context, request ml.BatchCreateMaterializedFeaturesRequest) (*ml.BatchCreateMaterializedFeaturesResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for BatchCreateMaterializedFeatures")
+	}
+
+	var r0 *ml.BatchCreateMaterializedFeaturesResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.BatchCreateMaterializedFeaturesRequest) (*ml.BatchCreateMaterializedFeaturesResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.BatchCreateMaterializedFeaturesRequest) *ml.BatchCreateMaterializedFeaturesResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.BatchCreateMaterializedFeaturesResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.BatchCreateMaterializedFeaturesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'BatchCreateMaterializedFeatures'
+type MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call struct {
+	*mock.Call
+}
+
+// BatchCreateMaterializedFeatures is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.BatchCreateMaterializedFeaturesRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) BatchCreateMaterializedFeatures(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call {
+	return &MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call{Call: _e.mock.On("BatchCreateMaterializedFeatures", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call) Run(run func(ctx context.Context, request ml.BatchCreateMaterializedFeaturesRequest)) *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.BatchCreateMaterializedFeaturesRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call) Return(_a0 *ml.BatchCreateMaterializedFeaturesResponse, _a1 error) *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call) RunAndReturn(run func(context.Context, ml.BatchCreateMaterializedFeaturesRequest) (*ml.BatchCreateMaterializedFeaturesResponse, error)) *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateFeature provides a mock function with given fields: ctx, request
 func (_m *MockFeatureEngineeringInterface) CreateFeature(ctx context.Context, request ml.CreateFeatureRequest) (*ml.Feature, error) {
 	ret := _m.Called(ctx, request)

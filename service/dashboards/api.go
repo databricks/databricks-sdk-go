@@ -33,6 +33,9 @@ type GenieInterface interface {
 	// Deprecated: use [GenieAPIInterface.CreateMessage].Get() or [GenieAPIInterface.WaitGetMessageGenieCompleted]
 	CreateMessageAndWait(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest, options ...retries.Option[GenieMessage]) (*GenieMessage, error)
 
+	// Creates a Genie space from a serialized payload.
+	CreateSpace(ctx context.Context, request GenieCreateSpaceRequest) (*GenieSpace, error)
+
 	// Delete a conversation.
 	DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error
 
@@ -119,6 +122,9 @@ type GenieInterface interface {
 
 	// Move a Genie Space to the trash.
 	TrashSpaceBySpaceId(ctx context.Context, spaceId string) error
+
+	// Updates a Genie space with a serialized payload.
+	UpdateSpace(ctx context.Context, request GenieUpdateSpaceRequest) (*GenieSpace, error)
 }
 
 func NewGenie(client *client.DatabricksClient) *GenieAPI {

@@ -11,6 +11,8 @@ import (
 type ColumnInfo struct {
 	// Name of the column.
 	Name string `json:"name,omitempty"`
+	// Data type of the column (e.g., "string", "int", "array<float>")
+	TypeText string `json:"type_text,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -348,6 +350,10 @@ const EndpointStatusStateOnline EndpointStatusState = `ONLINE`
 
 const EndpointStatusStateProvisioning EndpointStatusState = `PROVISIONING`
 
+const EndpointStatusStateRedState EndpointStatusState = `RED_STATE`
+
+const EndpointStatusStateYellowState EndpointStatusState = `YELLOW_STATE`
+
 // String representation for [fmt.Print]
 func (f *EndpointStatusState) String() string {
 	return string(*f)
@@ -356,11 +362,11 @@ func (f *EndpointStatusState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointStatusState) Set(v string) error {
 	switch v {
-	case `OFFLINE`, `ONLINE`, `PROVISIONING`:
+	case `OFFLINE`, `ONLINE`, `PROVISIONING`, `RED_STATE`, `YELLOW_STATE`:
 		*f = EndpointStatusState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "OFFLINE", "ONLINE", "PROVISIONING"`, v)
+		return fmt.Errorf(`value "%s" is not one of "OFFLINE", "ONLINE", "PROVISIONING", "RED_STATE", "YELLOW_STATE"`, v)
 	}
 }
 
@@ -372,6 +378,8 @@ func (f *EndpointStatusState) Values() []EndpointStatusState {
 		EndpointStatusStateOffline,
 		EndpointStatusStateOnline,
 		EndpointStatusStateProvisioning,
+		EndpointStatusStateRedState,
+		EndpointStatusStateYellowState,
 	}
 }
 
@@ -532,6 +540,70 @@ func (s MapStringValueEntry) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Metric specification
+type Metric struct {
+	// Metric labels
+	Labels []MetricLabel `json:"labels,omitempty"`
+	// Metric name
+	Name string `json:"name,omitempty"`
+	// Percentile for the metric
+	Percentile float64 `json:"percentile,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Metric) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Metric) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Label for a metric
+type MetricLabel struct {
+	// Label name
+	Name string `json:"name,omitempty"`
+	// Label value
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MetricLabel) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MetricLabel) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Single metric value at a specific timestamp
+type MetricValue struct {
+	// Timestamp of the metric value (milliseconds since epoch)
+	Timestamp int64 `json:"timestamp,omitempty"`
+	// Metric value
+	Value float64 `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *MetricValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s MetricValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Collection of metric values for a specific metric
+type MetricValues struct {
+	// Metric specification
+	Metric *Metric `json:"metric,omitempty"`
+	// Time series of metric values
+	Values []MetricValue `json:"values,omitempty"`
+}
+
 type MiniVectorIndex struct {
 	// The user who created the index.
 	Creator string `json:"creator,omitempty"`
@@ -668,7 +740,8 @@ type QueryVectorIndexRequest struct {
 	NumResults int `json:"num_results,omitempty"`
 	// Query text. Required for Delta Sync Index using model endpoint.
 	QueryText string `json:"query_text,omitempty"`
-	// The query type to use. Choices are `ANN` and `HYBRID`. Defaults to `ANN`.
+	// The query type to use. Choices are `ANN` and `HYBRID` and `FULL_TEXT`.
+	// Defaults to `ANN`.
 	QueryType string `json:"query_type,omitempty"`
 	// Query vector. Required for Direct Vector Access Index and Delta Sync
 	// Index using self-managed vectors.
@@ -764,6 +837,51 @@ func (s *ResultManifest) UnmarshalJSON(b []byte) error {
 }
 
 func (s ResultManifest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Request to retrieve user-visible metrics
+type RetrieveUserVisibleMetricsRequest struct {
+	// End time for metrics query
+	EndTime string `json:"end_time,omitempty"`
+	// Granularity in seconds
+	GranularityInSeconds int `json:"granularity_in_seconds,omitempty"`
+	// List of metrics to retrieve
+	Metrics []Metric `json:"metrics,omitempty"`
+	// Vector search endpoint name
+	Name string `json:"-" url:"-"`
+	// Token for pagination
+	PageToken string `json:"page_token,omitempty"`
+	// Start time for metrics query
+	StartTime string `json:"start_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RetrieveUserVisibleMetricsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RetrieveUserVisibleMetricsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response containing user-visible metrics
+type RetrieveUserVisibleMetricsResponse struct {
+	// Collection of metric values
+	MetricValues []MetricValues `json:"metric_values,omitempty"`
+	// A token that can be used to get the next page of results. If not present,
+	// there are no more results to show.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RetrieveUserVisibleMetricsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RetrieveUserVisibleMetricsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

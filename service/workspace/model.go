@@ -523,7 +523,9 @@ type GetStatusRequest struct {
 type GetWorkspaceObjectPermissionLevelsRequest struct {
 	// The workspace object for which to get or manage permissions.
 	WorkspaceObjectId string `json:"-" url:"-"`
-	// The workspace object type for which to get or manage permissions.
+	// The workspace object type for which to get or manage permissions. Could
+	// be one of the following: alerts, alertsv2, dashboards, dbsql-dashboards,
+	// directories, experiments, files, genie, notebooks, queries
 	WorkspaceObjectType string `json:"-" url:"-"`
 }
 
@@ -535,7 +537,9 @@ type GetWorkspaceObjectPermissionLevelsResponse struct {
 type GetWorkspaceObjectPermissionsRequest struct {
 	// The workspace object for which to get or manage permissions.
 	WorkspaceObjectId string `json:"-" url:"-"`
-	// The workspace object type for which to get or manage permissions.
+	// The workspace object type for which to get or manage permissions. Could
+	// be one of the following: alerts, alertsv2, dashboards, dbsql-dashboards,
+	// directories, experiments, files, genie, notebooks, queries
 	WorkspaceObjectType string `json:"-" url:"-"`
 }
 
@@ -1378,6 +1382,8 @@ type WorkspaceObjectPermissionsRequest struct {
 	AccessControlList []WorkspaceObjectAccessControlRequest `json:"access_control_list,omitempty"`
 	// The workspace object for which to get or manage permissions.
 	WorkspaceObjectId string `json:"-" url:"-"`
-	// The workspace object type for which to get or manage permissions.
+	// The workspace object type for which to get or manage permissions. Could
+	// be one of the following: alerts, alertsv2, dashboards, dbsql-dashboards,
+	// directories, experiments, files, genie, notebooks, queries
 	WorkspaceObjectType string `json:"-" url:"-"`
 }

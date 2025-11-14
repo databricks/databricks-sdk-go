@@ -340,6 +340,8 @@ func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*Cat
 // indication that the end of results has been reached.
 func (a *catalogsImpl) List(ctx context.Context, request ListCatalogsRequest) listing.Iterator[CatalogInfo] {
 
+	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
+
 	getNextPage := func(ctx context.Context, req ListCatalogsRequest) (*ListCatalogsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
@@ -446,6 +448,8 @@ func (a *connectionsImpl) Get(ctx context.Context, request GetConnectionRequest)
 // continue reading pages until next_page_token is absent, which is the only
 // indication that the end of results has been reached.
 func (a *connectionsImpl) List(ctx context.Context, request ListConnectionsRequest) listing.Iterator[ConnectionInfo] {
+
+	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
 
 	getNextPage := func(ctx context.Context, req ListConnectionsRequest) (*ListConnectionsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -867,6 +871,8 @@ func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLoca
 // indication that the end of results has been reached.
 func (a *externalLocationsImpl) List(ctx context.Context, request ListExternalLocationsRequest) listing.Iterator[ExternalLocationInfo] {
 
+	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
+
 	getNextPage := func(ctx context.Context, req ListExternalLocationsRequest) (*ListExternalLocationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
@@ -1078,6 +1084,8 @@ func (a *functionsImpl) Get(ctx context.Context, request GetFunctionRequest) (*F
 // indication that the end of results has been reached.
 func (a *functionsImpl) List(ctx context.Context, request ListFunctionsRequest) listing.Iterator[FunctionInfo] {
 
+	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
+
 	getNextPage := func(ctx context.Context, req ListFunctionsRequest) (*ListFunctionsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
@@ -1244,6 +1252,8 @@ func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (
 // continue reading pages until next_page_token is absent, which is the only
 // indication that the end of results has been reached.
 func (a *metastoresImpl) List(ctx context.Context, request ListMetastoresRequest) listing.Iterator[MetastoreInfo] {
+
+	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
 
 	getNextPage := func(ctx context.Context, req ListMetastoresRequest) (*ListMetastoresResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -1986,6 +1996,8 @@ func (a *schemasImpl) Get(ctx context.Context, request GetSchemaRequest) (*Schem
 // indication that the end of results has been reached.
 func (a *schemasImpl) List(ctx context.Context, request ListSchemasRequest) listing.Iterator[SchemaInfo] {
 
+	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
+
 	getNextPage := func(ctx context.Context, req ListSchemasRequest) (*ListSchemasResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
@@ -2097,6 +2109,8 @@ func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCred
 // indication that the end of results has been reached.
 func (a *storageCredentialsImpl) List(ctx context.Context, request ListStorageCredentialsRequest) listing.Iterator[StorageCredentialInfo] {
 
+	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
+
 	getNextPage := func(ctx context.Context, req ListStorageCredentialsRequest) (*ListStorageCredentialsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
@@ -2204,6 +2218,8 @@ func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) e
 // continue reading pages until next_page_token is absent, which is the only
 // indication that the end of results has been reached.
 func (a *systemSchemasImpl) List(ctx context.Context, request ListSystemSchemasRequest) listing.Iterator[SystemSchemaInfo] {
+
+	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
 
 	getNextPage := func(ctx context.Context, req ListSystemSchemasRequest) (*ListSystemSchemasResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -2337,6 +2353,8 @@ func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableIn
 // continue reading pages until next_page_token is absent, which is the only
 // indication that the end of results has been reached.
 func (a *tablesImpl) List(ctx context.Context, request ListTablesRequest) listing.Iterator[TableInfo] {
+
+	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
 
 	getNextPage := func(ctx context.Context, req ListTablesRequest) (*ListTablesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -2644,6 +2662,8 @@ func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBin
 // continue reading pages until next_page_token is absent, which is the only
 // indication that the end of results has been reached.
 func (a *workspaceBindingsImpl) GetBindings(ctx context.Context, request GetBindingsRequest) listing.Iterator[WorkspaceBinding] {
+
+	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
 
 	getNextPage := func(ctx context.Context, req GetBindingsRequest) (*GetWorkspaceBindingsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")

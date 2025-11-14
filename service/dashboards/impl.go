@@ -28,6 +28,17 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 	return &genieMessage, err
 }
 
+func (a *genieImpl) CreateSpace(ctx context.Context, request GenieCreateSpaceRequest) (*GenieSpace, error) {
+	var genieSpace GenieSpace
+	path := "/api/2.0/genie/spaces"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieSpace)
+	return &genieSpace, err
+}
+
 func (a *genieImpl) DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error {
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v", request.SpaceId, request.ConversationId)
 	queryParams := make(map[string]any)
@@ -174,6 +185,17 @@ func (a *genieImpl) TrashSpace(ctx context.Context, request GenieTrashSpaceReque
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
+}
+
+func (a *genieImpl) UpdateSpace(ctx context.Context, request GenieUpdateSpaceRequest) (*GenieSpace, error) {
+	var genieSpace GenieSpace
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v", request.SpaceId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &genieSpace)
+	return &genieSpace, err
 }
 
 // unexported type that holds implementations of just Lakeview API methods

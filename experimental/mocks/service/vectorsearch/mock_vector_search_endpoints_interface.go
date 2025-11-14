@@ -481,6 +481,65 @@ func (_c *MockVectorSearchEndpointsInterface_ListEndpointsAll_Call) RunAndReturn
 	return _c
 }
 
+// RetrieveUserVisibleMetrics provides a mock function with given fields: ctx, request
+func (_m *MockVectorSearchEndpointsInterface) RetrieveUserVisibleMetrics(ctx context.Context, request vectorsearch.RetrieveUserVisibleMetricsRequest) (*vectorsearch.RetrieveUserVisibleMetricsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RetrieveUserVisibleMetrics")
+	}
+
+	var r0 *vectorsearch.RetrieveUserVisibleMetricsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.RetrieveUserVisibleMetricsRequest) (*vectorsearch.RetrieveUserVisibleMetricsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.RetrieveUserVisibleMetricsRequest) *vectorsearch.RetrieveUserVisibleMetricsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.RetrieveUserVisibleMetricsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, vectorsearch.RetrieveUserVisibleMetricsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchEndpointsInterface_RetrieveUserVisibleMetrics_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RetrieveUserVisibleMetrics'
+type MockVectorSearchEndpointsInterface_RetrieveUserVisibleMetrics_Call struct {
+	*mock.Call
+}
+
+// RetrieveUserVisibleMetrics is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request vectorsearch.RetrieveUserVisibleMetricsRequest
+func (_e *MockVectorSearchEndpointsInterface_Expecter) RetrieveUserVisibleMetrics(ctx interface{}, request interface{}) *MockVectorSearchEndpointsInterface_RetrieveUserVisibleMetrics_Call {
+	return &MockVectorSearchEndpointsInterface_RetrieveUserVisibleMetrics_Call{Call: _e.mock.On("RetrieveUserVisibleMetrics", ctx, request)}
+}
+
+func (_c *MockVectorSearchEndpointsInterface_RetrieveUserVisibleMetrics_Call) Run(run func(ctx context.Context, request vectorsearch.RetrieveUserVisibleMetricsRequest)) *MockVectorSearchEndpointsInterface_RetrieveUserVisibleMetrics_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(vectorsearch.RetrieveUserVisibleMetricsRequest))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_RetrieveUserVisibleMetrics_Call) Return(_a0 *vectorsearch.RetrieveUserVisibleMetricsResponse, _a1 error) *MockVectorSearchEndpointsInterface_RetrieveUserVisibleMetrics_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_RetrieveUserVisibleMetrics_Call) RunAndReturn(run func(context.Context, vectorsearch.RetrieveUserVisibleMetricsRequest) (*vectorsearch.RetrieveUserVisibleMetricsResponse, error)) *MockVectorSearchEndpointsInterface_RetrieveUserVisibleMetrics_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateEndpointBudgetPolicy provides a mock function with given fields: ctx, request
 func (_m *MockVectorSearchEndpointsInterface) UpdateEndpointBudgetPolicy(ctx context.Context, request vectorsearch.PatchEndpointBudgetPolicyRequest) (*vectorsearch.PatchEndpointBudgetPolicyResponse, error) {
 	ret := _m.Called(ctx, request)

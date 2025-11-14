@@ -1831,7 +1831,8 @@ type PersonalizationRequest struct {
 	ProviderId string `json:"provider_id,omitempty"`
 
 	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
-
+	// Share information is required for data listings but should be
+	// empty/ignored for non-data listings (MCP and App).
 	Share *ShareInfo `json:"share,omitempty"`
 
 	Status PersonalizationRequestStatus `json:"status,omitempty"`

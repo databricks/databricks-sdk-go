@@ -19,12 +19,7 @@ type CreateTestResourceRequest struct {
 	Resource TestResource `json:"resource"`
 }
 
-// Serialization format for DatabricksServiceException with error details. This
-// message doesn't work for ScalaPB-04 as google.protobuf.Any is only available
-// to ScalaPB-09. Note the definition of this message should be in sync with
-// DatabricksServiceExceptionProto defined in
-// /api-base/proto/legacy/databricks.proto except the later one doesn't have the
-// error details field defined.
+// Databricks Error that is returned by all Databricks APIs.
 type DatabricksServiceExceptionWithDetailsProto struct {
 	// @pbjson-skip
 	Details []json.RawMessage `json:"details,omitempty"`
@@ -350,24 +345,13 @@ type Operation struct {
 	Error *DatabricksServiceExceptionWithDetailsProto `json:"error,omitempty"`
 	// Service-specific metadata associated with the operation. It typically
 	// contains progress information and common metadata such as create time.
-	// Some services might not provide such metadata. Any method that returns a
-	// long-running operation should document the metadata type, if any.
+	// Some services might not provide such metadata.
 	Metadata json.RawMessage `json:"metadata,omitempty"`
 	// The server-assigned name, which is only unique within the same service
 	// that originally returns it. If you use the default HTTP mapping, the
 	// `name` should be a resource name ending with `operations/{unique_id}`.
-	//
-	// Note: multi-segment resource names are not yet supported in the RPC
-	// framework and SDK/TF. Until that support is added, `name` must be string
-	// without internal `/` separators.
 	Name string `json:"name,omitempty"`
-	// The normal, successful response of the operation. If the original method
-	// returns no data on success, such as `Delete`, the response is
-	// `google.protobuf.Empty`. If the original method is standard
-	// `Get`/`Create`/`Update`, the response should be the resource. For other
-	// methods, the response should have the type `XxxResponse`, where `Xxx` is
-	// the original method name. For example, if the original method name is
-	// `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.
+	// The normal, successful response of the operation.
 	Response json.RawMessage `json:"response,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

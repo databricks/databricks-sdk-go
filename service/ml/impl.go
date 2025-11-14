@@ -592,6 +592,17 @@ type featureEngineeringImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *featureEngineeringImpl) BatchCreateMaterializedFeatures(ctx context.Context, request BatchCreateMaterializedFeaturesRequest) (*BatchCreateMaterializedFeaturesResponse, error) {
+	var batchCreateMaterializedFeaturesResponse BatchCreateMaterializedFeaturesResponse
+	path := "/api/2.0/feature-engineering/materialized-features:batchCreate"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &batchCreateMaterializedFeaturesResponse)
+	return &batchCreateMaterializedFeaturesResponse, err
+}
+
 func (a *featureEngineeringImpl) CreateFeature(ctx context.Context, request CreateFeatureRequest) (*Feature, error) {
 	var feature Feature
 	path := "/api/2.0/feature-engineering/features"

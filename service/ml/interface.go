@@ -257,6 +257,9 @@ type ExperimentsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type FeatureEngineeringService interface {
 
+	// Batch create materialized features.
+	BatchCreateMaterializedFeatures(ctx context.Context, request BatchCreateMaterializedFeaturesRequest) (*BatchCreateMaterializedFeaturesResponse, error)
+
 	// Create a Feature.
 	CreateFeature(ctx context.Context, request CreateFeatureRequest) (*Feature, error)
 
