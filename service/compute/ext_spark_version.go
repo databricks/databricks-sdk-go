@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"regexp"
-	"slices"
 	"sort"
 	"strings"
 
@@ -85,7 +84,14 @@ func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, erro
 				// Strip -scala2.12 and -scala2.13 from the version string for uniqueness check
 				v := strings.ReplaceAll(version, "-scala2.12", "")
 				v = strings.ReplaceAll(v, "-scala2.13", "")
-				if !slices.Contains(uniqueVersions, v) {
+				found := false
+				for _, existing := range uniqueVersions {
+					if existing == v {
+						found = true
+						break
+					}
+				}
+				if !found {
 					uniqueVersions = append(uniqueVersions, v)
 				}
 			}
