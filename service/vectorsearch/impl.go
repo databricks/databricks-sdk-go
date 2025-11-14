@@ -88,6 +88,17 @@ func (a *vectorSearchEndpointsImpl) internalListEndpoints(ctx context.Context, r
 	return &listEndpointResponse, err
 }
 
+func (a *vectorSearchEndpointsImpl) RetrieveUserVisibleMetrics(ctx context.Context, request RetrieveUserVisibleMetricsRequest) (*RetrieveUserVisibleMetricsResponse, error) {
+	var retrieveUserVisibleMetricsResponse RetrieveUserVisibleMetricsResponse
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/metrics", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &retrieveUserVisibleMetricsResponse)
+	return &retrieveUserVisibleMetricsResponse, err
+}
+
 func (a *vectorSearchEndpointsImpl) UpdateEndpointBudgetPolicy(ctx context.Context, request PatchEndpointBudgetPolicyRequest) (*PatchEndpointBudgetPolicyResponse, error) {
 	var patchEndpointBudgetPolicyResponse PatchEndpointBudgetPolicyResponse
 	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/budget-policy", request.EndpointName)

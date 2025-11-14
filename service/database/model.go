@@ -721,6 +721,8 @@ func (s ListSyncedDatabaseTablesResponse) MarshalJSON() ([]byte, error) {
 // SyncedDatabaseTable. Note that other fields of pipeline are still inferred by
 // table def internally
 type NewPipelineSpec struct {
+	// Budget policy to set on the newly created pipeline.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
 	// This field needs to be specified if the destination catalog is a managed
 	// postgres catalog.
 	//
