@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 
@@ -19,7 +20,7 @@ type SparkVersionRequest struct {
 	ML              bool   `json:"ml,omitempty" tf:"optional,default:false"`
 	Genomics        bool   `json:"genomics,omitempty" tf:"optional,default:false"`
 	GPU             bool   `json:"gpu,omitempty" tf:"optional,default:false"`
-	Scala           string `json:"scala,omitempty" tf:"optional,default:2.12"`
+	Scala           string `json:"scala,omitempty" tf:"optional,default:2.1"`
 	SparkVersion    string `json:"spark_version,omitempty" tf:"optional,default:"`
 	Photon          bool   `json:"photon,omitempty" tf:"optional,default:false"`
 	Graviton        bool   `json:"graviton,omitempty" tf:"optional,default:false"`
@@ -76,7 +77,21 @@ func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, erro
 		if req.Latest {
 			sort.Sort(sparkVersionsType(versions))
 		} else {
-			return "", fmt.Errorf("spark versions query returned multiple results %#v. Please change your search criteria and try again", versions)
+			sort.Strings(versions)
+			// We need to check for uniqueness of the versions without the scala suffix
+			// This is because we can have multiple instances of the same DBR version but different scala versions
+			uniqueVersions := make([]string, 0, len(versions))
+			for _, version := range versions {
+				// Strip -scala2.12 and -scala2.13 from the version string for uniqueness check
+				v := strings.ReplaceAll(version, "-scala2.12", "")
+				v = strings.ReplaceAll(v, "-scala2.13", "")
+				if !slices.Contains(uniqueVersions, v) {
+					uniqueVersions = append(uniqueVersions, v)
+				}
+			}
+			if len(uniqueVersions) > 1 {
+				return "", fmt.Errorf("spark versions query returned multiple results %#v. Please change your search criteria and try again", uniqueVersions)
+			}
 		}
 	}
 	return versions[0], nil
