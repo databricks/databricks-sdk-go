@@ -13,16 +13,16 @@ import (
 // SparkVersionRequest - filtering request
 type SparkVersionRequest struct {
 	Id              string `json:"id,omitempty"`
-	LongTermSupport bool   `json:"long_term_support,omitempty" tf:"optional,default:false"`
-	Beta            bool   `json:"beta,omitempty" tf:"optional,default:false,conflicts:long_term_support"`
-	Latest          bool   `json:"latest,omitempty" tf:"optional,default:true"`
-	ML              bool   `json:"ml,omitempty" tf:"optional,default:false"`
-	Genomics        bool   `json:"genomics,omitempty" tf:"optional,default:false"`
-	GPU             bool   `json:"gpu,omitempty" tf:"optional,default:false"`
-	Scala           string `json:"scala,omitempty" tf:"optional,default:2.1"`
-	SparkVersion    string `json:"spark_version,omitempty" tf:"optional,default:"`
-	Photon          bool   `json:"photon,omitempty" tf:"optional,default:false"`
-	Graviton        bool   `json:"graviton,omitempty" tf:"optional,default:false"`
+	LongTermSupport bool   `json:"long_term_support,omitempty"`
+	Beta            bool   `json:"beta,omitempty"`
+	Latest          bool   `json:"latest,omitempty"`
+	ML              bool   `json:"ml,omitempty"`
+	Genomics        bool   `json:"genomics,omitempty"`
+	GPU             bool   `json:"gpu,omitempty"`
+	Scala           string `json:"scala,omitempty"`
+	SparkVersion    string `json:"spark_version,omitempty"`
+	Photon          bool   `json:"photon,omitempty"`
+	Graviton        bool   `json:"graviton,omitempty"`
 }
 
 type sparkVersionsType []string
