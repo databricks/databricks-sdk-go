@@ -13,16 +13,16 @@ import (
 // SparkVersionRequest - filtering request
 type SparkVersionRequest struct {
 	Id              string `json:"id,omitempty"`
-	LongTermSupport bool   `json:"long_term_support,omitempty" tf:"optional,default:false"`
-	Beta            bool   `json:"beta,omitempty" tf:"optional,default:false,conflicts:long_term_support"`
-	Latest          bool   `json:"latest,omitempty" tf:"optional,default:true"`
-	ML              bool   `json:"ml,omitempty" tf:"optional,default:false"`
-	Genomics        bool   `json:"genomics,omitempty" tf:"optional,default:false"`
-	GPU             bool   `json:"gpu,omitempty" tf:"optional,default:false"`
-	Scala           string `json:"scala,omitempty" tf:"optional,default:2.12"`
-	SparkVersion    string `json:"spark_version,omitempty" tf:"optional,default:"`
-	Photon          bool   `json:"photon,omitempty" tf:"optional,default:false"`
-	Graviton        bool   `json:"graviton,omitempty" tf:"optional,default:false"`
+	LongTermSupport bool   `json:"long_term_support,omitempty"`
+	Beta            bool   `json:"beta,omitempty"`
+	Latest          bool   `json:"latest,omitempty"`
+	ML              bool   `json:"ml,omitempty"`
+	Genomics        bool   `json:"genomics,omitempty"`
+	GPU             bool   `json:"gpu,omitempty"`
+	Scala           string `json:"scala,omitempty"`
+	SparkVersion    string `json:"spark_version,omitempty"`
+	Photon          bool   `json:"photon,omitempty"`
+	Graviton        bool   `json:"graviton,omitempty"`
 }
 
 type sparkVersionsType []string
@@ -76,7 +76,28 @@ func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, erro
 		if req.Latest {
 			sort.Sort(sparkVersionsType(versions))
 		} else {
-			return "", fmt.Errorf("spark versions query returned multiple results %#v. Please change your search criteria and try again", versions)
+			sort.Strings(versions)
+			// We need to check for uniqueness of the versions without the scala suffix
+			// This is because we can have multiple instances of the same DBR version but different scala versions
+			uniqueVersions := make([]string, 0, len(versions))
+			for _, version := range versions {
+				// Strip -scala2.12 and -scala2.13 from the version string for uniqueness check
+				v := strings.ReplaceAll(version, "-scala2.12", "")
+				v = strings.ReplaceAll(v, "-scala2.13", "")
+				found := false
+				for _, existing := range uniqueVersions {
+					if existing == v {
+						found = true
+						break
+					}
+				}
+				if !found {
+					uniqueVersions = append(uniqueVersions, v)
+				}
+			}
+			if len(uniqueVersions) > 1 {
+				return "", fmt.Errorf("spark versions query returned multiple results %#v. Please change your search criteria and try again", uniqueVersions)
+			}
 		}
 	}
 	return versions[0], nil
