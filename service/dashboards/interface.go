@@ -20,6 +20,9 @@ type GenieService interface {
 	// to respond.
 	CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error)
 
+	// Creates a Genie space from a serialized payload.
+	CreateSpace(ctx context.Context, request GenieCreateSpaceRequest) (*GenieSpace, error)
+
 	// Delete a conversation.
 	DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error
 
@@ -70,6 +73,9 @@ type GenieService interface {
 
 	// Move a Genie Space to the trash.
 	TrashSpace(ctx context.Context, request GenieTrashSpaceRequest) error
+
+	// Updates a Genie space with a serialized payload.
+	UpdateSpace(ctx context.Context, request GenieUpdateSpaceRequest) (*GenieSpace, error)
 }
 
 // These APIs provide specific management operations for Lakeview dashboards.

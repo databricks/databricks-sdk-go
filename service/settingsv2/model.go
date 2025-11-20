@@ -255,6 +255,7 @@ type GetPublicAccountSettingRequest struct {
 }
 
 type GetPublicWorkspaceSettingRequest struct {
+	// Name of the setting
 	Name string `json:"-" url:"-"`
 }
 
@@ -365,6 +366,7 @@ type PatchPublicAccountSettingRequest struct {
 }
 
 type PatchPublicWorkspaceSettingRequest struct {
+	// Name of the setting
 	Name string `json:"-" url:"-"`
 
 	Setting Setting `json:"setting"`
@@ -459,38 +461,64 @@ func (f *RestrictWorkspaceAdminsMessageStatus) Type() string {
 }
 
 type Setting struct {
+	// Setting value for aibi_dashboard_embedding_access_policy setting. This is
+	// the setting value set by consumers, check
+	// effective_aibi_dashboard_embedding_access_policy for final setting value.
 	AibiDashboardEmbeddingAccessPolicy *AibiDashboardEmbeddingAccessPolicy `json:"aibi_dashboard_embedding_access_policy,omitempty"`
-
+	// Setting value for aibi_dashboard_embedding_approved_domains setting. This
+	// is the setting value set by consumers, check
+	// effective_aibi_dashboard_embedding_approved_domains for final setting
+	// value.
 	AibiDashboardEmbeddingApprovedDomains *AibiDashboardEmbeddingApprovedDomains `json:"aibi_dashboard_embedding_approved_domains,omitempty"`
-
+	// Setting value for automatic_cluster_update_workspace setting. This is the
+	// setting value set by consumers, check
+	// effective_automatic_cluster_update_workspace for final setting value.
 	AutomaticClusterUpdateWorkspace *ClusterAutoRestartMessage `json:"automatic_cluster_update_workspace,omitempty"`
-
+	// Setting value for boolean type setting. This is the setting value set by
+	// consumers, check effective_boolean_val for final setting value.
 	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
-
+	// Effective setting value for aibi_dashboard_embedding_access_policy
+	// setting. This is the final effective value of setting. To set a value use
+	// aibi_dashboard_embedding_access_policy.
 	EffectiveAibiDashboardEmbeddingAccessPolicy *AibiDashboardEmbeddingAccessPolicy `json:"effective_aibi_dashboard_embedding_access_policy,omitempty"`
-
+	// Effective setting value for aibi_dashboard_embedding_approved_domains
+	// setting. This is the final effective value of setting. To set a value use
+	// aibi_dashboard_embedding_approved_domains.
 	EffectiveAibiDashboardEmbeddingApprovedDomains *AibiDashboardEmbeddingApprovedDomains `json:"effective_aibi_dashboard_embedding_approved_domains,omitempty"`
-
+	// Effective setting value for automatic_cluster_update_workspace setting.
+	// This is the final effective value of setting. To set a value use
+	// automatic_cluster_update_workspace.
 	EffectiveAutomaticClusterUpdateWorkspace *ClusterAutoRestartMessage `json:"effective_automatic_cluster_update_workspace,omitempty"`
-
+	// Effective setting value for boolean type setting. This is the final
+	// effective value of setting. To set a value use boolean_val.
 	EffectiveBooleanVal *BooleanMessage `json:"effective_boolean_val,omitempty"`
-
+	// Effective setting value for integer type setting. This is the final
+	// effective value of setting. To set a value use integer_val.
 	EffectiveIntegerVal *IntegerMessage `json:"effective_integer_val,omitempty"`
-
+	// Effective setting value for personal_compute setting. This is the final
+	// effective value of setting. To set a value use personal_compute.
 	EffectivePersonalCompute *PersonalComputeMessage `json:"effective_personal_compute,omitempty"`
-
+	// Effective setting value for restrict_workspace_admins setting. This is
+	// the final effective value of setting. To set a value use
+	// restrict_workspace_admins.
 	EffectiveRestrictWorkspaceAdmins *RestrictWorkspaceAdminsMessage `json:"effective_restrict_workspace_admins,omitempty"`
-
+	// Effective setting value for string type setting. This is the final
+	// effective value of setting. To set a value use string_val.
 	EffectiveStringVal *StringMessage `json:"effective_string_val,omitempty"`
-
+	// Setting value for integer type setting. This is the setting value set by
+	// consumers, check effective_integer_val for final setting value.
 	IntegerVal *IntegerMessage `json:"integer_val,omitempty"`
 	// Name of the setting.
 	Name string `json:"name,omitempty"`
-
+	// Setting value for personal_compute setting. This is the setting value set
+	// by consumers, check effective_personal_compute for final setting value.
 	PersonalCompute *PersonalComputeMessage `json:"personal_compute,omitempty"`
-
+	// Setting value for restrict_workspace_admins setting. This is the setting
+	// value set by consumers, check effective_restrict_workspace_admins for
+	// final setting value.
 	RestrictWorkspaceAdmins *RestrictWorkspaceAdminsMessage `json:"restrict_workspace_admins,omitempty"`
-
+	// Setting value for string type setting. This is the setting value set by
+	// consumers, check effective_string_val for final setting value.
 	StringVal *StringMessage `json:"string_val,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -511,8 +539,8 @@ type SettingsMetadata struct {
 	DocsLink string `json:"docs_link,omitempty"`
 	// Name of the setting.
 	Name string `json:"name,omitempty"`
-	// Type of the setting. To set this setting, the value sent must match this
-	// type.
+	// Sample message depicting the type of the setting. To set this setting,
+	// the value sent must match this type.
 	Type string `json:"type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
