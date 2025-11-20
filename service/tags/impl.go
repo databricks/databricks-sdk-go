@@ -47,7 +47,12 @@ func (a *tagPoliciesImpl) GetTagPolicy(ctx context.Context, request GetTagPolicy
 	return &tagPolicy, err
 }
 
-// Lists the tag policies for all governed tags in the account.
+// Lists the tag policies for all governed tags in the account. For Terraform
+// usage, see the [Tag Policy Terraform documentation]. To list granted
+// permissions for tag policies, use the [Account Access Control Proxy API].
+//
+// [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
+// [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policies
 func (a *tagPoliciesImpl) ListTagPolicies(ctx context.Context, request ListTagPoliciesRequest) listing.Iterator[TagPolicy] {
 
 	getNextPage := func(ctx context.Context, req ListTagPoliciesRequest) (*ListTagPoliciesResponse, error) {
@@ -72,7 +77,12 @@ func (a *tagPoliciesImpl) ListTagPolicies(ctx context.Context, request ListTagPo
 	return iterator
 }
 
-// Lists the tag policies for all governed tags in the account.
+// Lists the tag policies for all governed tags in the account. For Terraform
+// usage, see the [Tag Policy Terraform documentation]. To list granted
+// permissions for tag policies, use the [Account Access Control Proxy API].
+//
+// [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
+// [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policies
 func (a *tagPoliciesImpl) ListTagPoliciesAll(ctx context.Context, request ListTagPoliciesRequest) ([]TagPolicy, error) {
 	iterator := a.ListTagPolicies(ctx, request)
 	return listing.ToSlice[TagPolicy](ctx, iterator)

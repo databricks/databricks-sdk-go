@@ -134,8 +134,10 @@ func (a *accountGroupsV2Impl) Get(ctx context.Context, request GetAccountGroupRe
 }
 
 // Gets all details of the groups associated with the Databricks account. As of
-// 08/22/2025, this endpoint will not return members. Instead, members should be
-// retrieved by iterating through `Get group details`.
+// 08/22/2025, this endpoint will no longer return members. Instead, members
+// should be retrieved by iterating through `Get group details`. Existing
+// accounts that rely on this attribute will not be impacted and will continue
+// receiving member data as before.
 func (a *accountGroupsV2Impl) List(ctx context.Context, request ListAccountGroupsRequest) listing.Iterator[AccountGroup] {
 
 	request.StartIndex = 1 // SCIM offset starts from 1
@@ -165,8 +167,10 @@ func (a *accountGroupsV2Impl) List(ctx context.Context, request ListAccountGroup
 }
 
 // Gets all details of the groups associated with the Databricks account. As of
-// 08/22/2025, this endpoint will not return members. Instead, members should be
-// retrieved by iterating through `Get group details`.
+// 08/22/2025, this endpoint will no longer return members. Instead, members
+// should be retrieved by iterating through `Get group details`. Existing
+// accounts that rely on this attribute will not be impacted and will continue
+// receiving member data as before.
 func (a *accountGroupsV2Impl) ListAll(ctx context.Context, request ListAccountGroupsRequest) ([]AccountGroup, error) {
 	iterator := a.List(ctx, request)
 	return listing.ToSliceN[AccountGroup, int64](ctx, iterator, request.Count)
