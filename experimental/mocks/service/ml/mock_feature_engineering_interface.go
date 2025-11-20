@@ -24,6 +24,65 @@ func (_m *MockFeatureEngineeringInterface) EXPECT() *MockFeatureEngineeringInter
 	return &MockFeatureEngineeringInterface_Expecter{mock: &_m.Mock}
 }
 
+// BatchCreateMaterializedFeatures provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) BatchCreateMaterializedFeatures(ctx context.Context, request ml.BatchCreateMaterializedFeaturesRequest) (*ml.BatchCreateMaterializedFeaturesResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for BatchCreateMaterializedFeatures")
+	}
+
+	var r0 *ml.BatchCreateMaterializedFeaturesResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.BatchCreateMaterializedFeaturesRequest) (*ml.BatchCreateMaterializedFeaturesResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.BatchCreateMaterializedFeaturesRequest) *ml.BatchCreateMaterializedFeaturesResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.BatchCreateMaterializedFeaturesResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.BatchCreateMaterializedFeaturesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'BatchCreateMaterializedFeatures'
+type MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call struct {
+	*mock.Call
+}
+
+// BatchCreateMaterializedFeatures is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.BatchCreateMaterializedFeaturesRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) BatchCreateMaterializedFeatures(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call {
+	return &MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call{Call: _e.mock.On("BatchCreateMaterializedFeatures", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call) Run(run func(ctx context.Context, request ml.BatchCreateMaterializedFeaturesRequest)) *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.BatchCreateMaterializedFeaturesRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call) Return(_a0 *ml.BatchCreateMaterializedFeaturesResponse, _a1 error) *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call) RunAndReturn(run func(context.Context, ml.BatchCreateMaterializedFeaturesRequest) (*ml.BatchCreateMaterializedFeaturesResponse, error)) *MockFeatureEngineeringInterface_BatchCreateMaterializedFeatures_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateFeature provides a mock function with given fields: ctx, request
 func (_m *MockFeatureEngineeringInterface) CreateFeature(ctx context.Context, request ml.CreateFeatureRequest) (*ml.Feature, error) {
 	ret := _m.Called(ctx, request)
@@ -79,6 +138,65 @@ func (_c *MockFeatureEngineeringInterface_CreateFeature_Call) Return(_a0 *ml.Fea
 }
 
 func (_c *MockFeatureEngineeringInterface_CreateFeature_Call) RunAndReturn(run func(context.Context, ml.CreateFeatureRequest) (*ml.Feature, error)) *MockFeatureEngineeringInterface_CreateFeature_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateKafkaConfig provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) CreateKafkaConfig(ctx context.Context, request ml.CreateKafkaConfigRequest) (*ml.KafkaConfig, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateKafkaConfig")
+	}
+
+	var r0 *ml.KafkaConfig
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.CreateKafkaConfigRequest) (*ml.KafkaConfig, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.CreateKafkaConfigRequest) *ml.KafkaConfig); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.KafkaConfig)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.CreateKafkaConfigRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_CreateKafkaConfig_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateKafkaConfig'
+type MockFeatureEngineeringInterface_CreateKafkaConfig_Call struct {
+	*mock.Call
+}
+
+// CreateKafkaConfig is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.CreateKafkaConfigRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) CreateKafkaConfig(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_CreateKafkaConfig_Call {
+	return &MockFeatureEngineeringInterface_CreateKafkaConfig_Call{Call: _e.mock.On("CreateKafkaConfig", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateKafkaConfig_Call) Run(run func(ctx context.Context, request ml.CreateKafkaConfigRequest)) *MockFeatureEngineeringInterface_CreateKafkaConfig_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.CreateKafkaConfigRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateKafkaConfig_Call) Return(_a0 *ml.KafkaConfig, _a1 error) *MockFeatureEngineeringInterface_CreateKafkaConfig_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_CreateKafkaConfig_Call) RunAndReturn(run func(context.Context, ml.CreateKafkaConfigRequest) (*ml.KafkaConfig, error)) *MockFeatureEngineeringInterface_CreateKafkaConfig_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -189,6 +307,53 @@ func (_c *MockFeatureEngineeringInterface_DeleteFeature_Call) RunAndReturn(run f
 	return _c
 }
 
+// DeleteKafkaConfig provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) DeleteKafkaConfig(ctx context.Context, request ml.DeleteKafkaConfigRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteKafkaConfig")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.DeleteKafkaConfigRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockFeatureEngineeringInterface_DeleteKafkaConfig_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteKafkaConfig'
+type MockFeatureEngineeringInterface_DeleteKafkaConfig_Call struct {
+	*mock.Call
+}
+
+// DeleteKafkaConfig is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.DeleteKafkaConfigRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) DeleteKafkaConfig(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_DeleteKafkaConfig_Call {
+	return &MockFeatureEngineeringInterface_DeleteKafkaConfig_Call{Call: _e.mock.On("DeleteKafkaConfig", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteKafkaConfig_Call) Run(run func(ctx context.Context, request ml.DeleteKafkaConfigRequest)) *MockFeatureEngineeringInterface_DeleteKafkaConfig_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.DeleteKafkaConfigRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteKafkaConfig_Call) Return(_a0 error) *MockFeatureEngineeringInterface_DeleteKafkaConfig_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_DeleteKafkaConfig_Call) RunAndReturn(run func(context.Context, ml.DeleteKafkaConfigRequest) error) *MockFeatureEngineeringInterface_DeleteKafkaConfig_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteMaterializedFeature provides a mock function with given fields: ctx, request
 func (_m *MockFeatureEngineeringInterface) DeleteMaterializedFeature(ctx context.Context, request ml.DeleteMaterializedFeatureRequest) error {
 	ret := _m.Called(ctx, request)
@@ -291,6 +456,65 @@ func (_c *MockFeatureEngineeringInterface_GetFeature_Call) Return(_a0 *ml.Featur
 }
 
 func (_c *MockFeatureEngineeringInterface_GetFeature_Call) RunAndReturn(run func(context.Context, ml.GetFeatureRequest) (*ml.Feature, error)) *MockFeatureEngineeringInterface_GetFeature_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetKafkaConfig provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) GetKafkaConfig(ctx context.Context, request ml.GetKafkaConfigRequest) (*ml.KafkaConfig, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetKafkaConfig")
+	}
+
+	var r0 *ml.KafkaConfig
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetKafkaConfigRequest) (*ml.KafkaConfig, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetKafkaConfigRequest) *ml.KafkaConfig); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.KafkaConfig)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.GetKafkaConfigRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_GetKafkaConfig_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetKafkaConfig'
+type MockFeatureEngineeringInterface_GetKafkaConfig_Call struct {
+	*mock.Call
+}
+
+// GetKafkaConfig is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.GetKafkaConfigRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) GetKafkaConfig(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_GetKafkaConfig_Call {
+	return &MockFeatureEngineeringInterface_GetKafkaConfig_Call{Call: _e.mock.On("GetKafkaConfig", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_GetKafkaConfig_Call) Run(run func(ctx context.Context, request ml.GetKafkaConfigRequest)) *MockFeatureEngineeringInterface_GetKafkaConfig_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.GetKafkaConfigRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_GetKafkaConfig_Call) Return(_a0 *ml.KafkaConfig, _a1 error) *MockFeatureEngineeringInterface_GetKafkaConfig_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_GetKafkaConfig_Call) RunAndReturn(run func(context.Context, ml.GetKafkaConfigRequest) (*ml.KafkaConfig, error)) *MockFeatureEngineeringInterface_GetKafkaConfig_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -462,6 +686,114 @@ func (_c *MockFeatureEngineeringInterface_ListFeaturesAll_Call) RunAndReturn(run
 	return _c
 }
 
+// ListKafkaConfigs provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) ListKafkaConfigs(ctx context.Context, request ml.ListKafkaConfigsRequest) listing.Iterator[ml.KafkaConfig] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListKafkaConfigs")
+	}
+
+	var r0 listing.Iterator[ml.KafkaConfig]
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListKafkaConfigsRequest) listing.Iterator[ml.KafkaConfig]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[ml.KafkaConfig])
+		}
+	}
+
+	return r0
+}
+
+// MockFeatureEngineeringInterface_ListKafkaConfigs_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListKafkaConfigs'
+type MockFeatureEngineeringInterface_ListKafkaConfigs_Call struct {
+	*mock.Call
+}
+
+// ListKafkaConfigs is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.ListKafkaConfigsRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) ListKafkaConfigs(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_ListKafkaConfigs_Call {
+	return &MockFeatureEngineeringInterface_ListKafkaConfigs_Call{Call: _e.mock.On("ListKafkaConfigs", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_ListKafkaConfigs_Call) Run(run func(ctx context.Context, request ml.ListKafkaConfigsRequest)) *MockFeatureEngineeringInterface_ListKafkaConfigs_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.ListKafkaConfigsRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_ListKafkaConfigs_Call) Return(_a0 listing.Iterator[ml.KafkaConfig]) *MockFeatureEngineeringInterface_ListKafkaConfigs_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_ListKafkaConfigs_Call) RunAndReturn(run func(context.Context, ml.ListKafkaConfigsRequest) listing.Iterator[ml.KafkaConfig]) *MockFeatureEngineeringInterface_ListKafkaConfigs_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListKafkaConfigsAll provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) ListKafkaConfigsAll(ctx context.Context, request ml.ListKafkaConfigsRequest) ([]ml.KafkaConfig, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListKafkaConfigsAll")
+	}
+
+	var r0 []ml.KafkaConfig
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListKafkaConfigsRequest) ([]ml.KafkaConfig, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListKafkaConfigsRequest) []ml.KafkaConfig); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]ml.KafkaConfig)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.ListKafkaConfigsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_ListKafkaConfigsAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListKafkaConfigsAll'
+type MockFeatureEngineeringInterface_ListKafkaConfigsAll_Call struct {
+	*mock.Call
+}
+
+// ListKafkaConfigsAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.ListKafkaConfigsRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) ListKafkaConfigsAll(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_ListKafkaConfigsAll_Call {
+	return &MockFeatureEngineeringInterface_ListKafkaConfigsAll_Call{Call: _e.mock.On("ListKafkaConfigsAll", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_ListKafkaConfigsAll_Call) Run(run func(ctx context.Context, request ml.ListKafkaConfigsRequest)) *MockFeatureEngineeringInterface_ListKafkaConfigsAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.ListKafkaConfigsRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_ListKafkaConfigsAll_Call) Return(_a0 []ml.KafkaConfig, _a1 error) *MockFeatureEngineeringInterface_ListKafkaConfigsAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_ListKafkaConfigsAll_Call) RunAndReturn(run func(context.Context, ml.ListKafkaConfigsRequest) ([]ml.KafkaConfig, error)) *MockFeatureEngineeringInterface_ListKafkaConfigsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListMaterializedFeatures provides a mock function with given fields: ctx, request
 func (_m *MockFeatureEngineeringInterface) ListMaterializedFeatures(ctx context.Context, request ml.ListMaterializedFeaturesRequest) listing.Iterator[ml.MaterializedFeature] {
 	ret := _m.Called(ctx, request)
@@ -625,6 +957,65 @@ func (_c *MockFeatureEngineeringInterface_UpdateFeature_Call) Return(_a0 *ml.Fea
 }
 
 func (_c *MockFeatureEngineeringInterface_UpdateFeature_Call) RunAndReturn(run func(context.Context, ml.UpdateFeatureRequest) (*ml.Feature, error)) *MockFeatureEngineeringInterface_UpdateFeature_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateKafkaConfig provides a mock function with given fields: ctx, request
+func (_m *MockFeatureEngineeringInterface) UpdateKafkaConfig(ctx context.Context, request ml.UpdateKafkaConfigRequest) (*ml.KafkaConfig, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateKafkaConfig")
+	}
+
+	var r0 *ml.KafkaConfig
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateKafkaConfigRequest) (*ml.KafkaConfig, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.UpdateKafkaConfigRequest) *ml.KafkaConfig); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.KafkaConfig)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.UpdateKafkaConfigRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockFeatureEngineeringInterface_UpdateKafkaConfig_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateKafkaConfig'
+type MockFeatureEngineeringInterface_UpdateKafkaConfig_Call struct {
+	*mock.Call
+}
+
+// UpdateKafkaConfig is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.UpdateKafkaConfigRequest
+func (_e *MockFeatureEngineeringInterface_Expecter) UpdateKafkaConfig(ctx interface{}, request interface{}) *MockFeatureEngineeringInterface_UpdateKafkaConfig_Call {
+	return &MockFeatureEngineeringInterface_UpdateKafkaConfig_Call{Call: _e.mock.On("UpdateKafkaConfig", ctx, request)}
+}
+
+func (_c *MockFeatureEngineeringInterface_UpdateKafkaConfig_Call) Run(run func(ctx context.Context, request ml.UpdateKafkaConfigRequest)) *MockFeatureEngineeringInterface_UpdateKafkaConfig_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.UpdateKafkaConfigRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_UpdateKafkaConfig_Call) Return(_a0 *ml.KafkaConfig, _a1 error) *MockFeatureEngineeringInterface_UpdateKafkaConfig_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockFeatureEngineeringInterface_UpdateKafkaConfig_Call) RunAndReturn(run func(context.Context, ml.UpdateKafkaConfigRequest) (*ml.KafkaConfig, error)) *MockFeatureEngineeringInterface_UpdateKafkaConfig_Call {
 	_c.Call.Return(run)
 	return _c
 }

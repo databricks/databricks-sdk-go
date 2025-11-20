@@ -667,11 +667,12 @@ type CreateJob struct {
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// A list of task execution environment specifications that can be
-	// referenced by serverless tasks of this job. An environment is required to
-	// be present for serverless tasks. For serverless notebook tasks, the
-	// environment is accessible in the notebook environment panel. For other
-	// serverless tasks, the task environment is required to be specified using
-	// environment_key in the task settings.
+	// referenced by serverless tasks of this job. For serverless notebook
+	// tasks, if the environment_key is not specified, the notebook environment
+	// will be used if present. If a jobs environment is specified, it will
+	// override the notebook environment. For other serverless tasks, the task
+	// environment is required to be specified using environment_key in the task
+	// settings.
 	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
@@ -2074,11 +2075,12 @@ type JobSettings struct {
 	// begin or complete as well as when this job is deleted.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
 	// A list of task execution environment specifications that can be
-	// referenced by serverless tasks of this job. An environment is required to
-	// be present for serverless tasks. For serverless notebook tasks, the
-	// environment is accessible in the notebook environment panel. For other
-	// serverless tasks, the task environment is required to be specified using
-	// environment_key in the task settings.
+	// referenced by serverless tasks of this job. For serverless notebook
+	// tasks, if the environment_key is not specified, the notebook environment
+	// will be used if present. If a jobs environment is specified, it will
+	// override the notebook environment. For other serverless tasks, the task
+	// environment is required to be specified using environment_key in the task
+	// settings.
 	Environments []JobEnvironment `json:"environments,omitempty"`
 	// Used to tell what is the format of the job. This field is ignored in
 	// Create/Update/Reset calls. When using the Jobs API 2.1 this value is
@@ -2539,6 +2541,77 @@ func (s *ListRunsResponse) UnmarshalJSON(b []byte) error {
 
 func (s ListRunsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ModelTriggerConfiguration struct {
+	// Aliases of the model versions to monitor. Can only be used in conjunction
+	// with condition MODEL_ALIAS_SET.
+	Aliases []string `json:"aliases,omitempty"`
+	// The condition based on which to trigger a job run.
+	Condition ModelTriggerConfigurationCondition `json:"condition"`
+	// If set, the trigger starts a run only after the specified amount of time
+	// has passed since the last time the trigger fired. The minimum allowed
+	// value is 60 seconds.
+	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
+	// Name of the securable to monitor ("mycatalog.myschema.mymodel" in the
+	// case of model-level triggers, "mycatalog.myschema" in the case of
+	// schema-level triggers) or empty in the case of metastore-level triggers.
+	SecurableName string `json:"securable_name,omitempty"`
+	// If set, the trigger starts a run only after no model updates have
+	// occurred for the specified time and can be used to wait for a series of
+	// model updates before triggering a run. The minimum allowed value is 60
+	// seconds.
+	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ModelTriggerConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ModelTriggerConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ModelTriggerConfigurationCondition string
+
+const ModelTriggerConfigurationConditionModelAliasSet ModelTriggerConfigurationCondition = `MODEL_ALIAS_SET`
+
+const ModelTriggerConfigurationConditionModelCreated ModelTriggerConfigurationCondition = `MODEL_CREATED`
+
+const ModelTriggerConfigurationConditionModelVersionReady ModelTriggerConfigurationCondition = `MODEL_VERSION_READY`
+
+// String representation for [fmt.Print]
+func (f *ModelTriggerConfigurationCondition) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ModelTriggerConfigurationCondition) Set(v string) error {
+	switch v {
+	case `MODEL_ALIAS_SET`, `MODEL_CREATED`, `MODEL_VERSION_READY`:
+		*f = ModelTriggerConfigurationCondition(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MODEL_ALIAS_SET", "MODEL_CREATED", "MODEL_VERSION_READY"`, v)
+	}
+}
+
+// Values returns all possible values for ModelTriggerConfigurationCondition.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ModelTriggerConfigurationCondition) Values() []ModelTriggerConfigurationCondition {
+	return []ModelTriggerConfigurationCondition{
+		ModelTriggerConfigurationConditionModelAliasSet,
+		ModelTriggerConfigurationConditionModelCreated,
+		ModelTriggerConfigurationConditionModelVersionReady,
+	}
+}
+
+// Type always returns ModelTriggerConfigurationCondition to satisfy [pflag.Value] interface
+func (f *ModelTriggerConfigurationCondition) Type() string {
+	return "ModelTriggerConfigurationCondition"
 }
 
 type NotebookOutput struct {
@@ -5226,7 +5299,7 @@ type TableUpdateTriggerConfiguration struct {
 	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
 	// A list of tables to monitor for changes. The table name must be in the
 	// format `catalog_name.schema_name.table_name`.
-	TableNames []string `json:"table_names,omitempty"`
+	TableNames []string `json:"table_names"`
 	// If set, the trigger starts a run only after no table updates have
 	// occurred for the specified time and can be used to wait for a series of
 	// table updates before triggering a run. The minimum allowed value is 60
@@ -5809,6 +5882,8 @@ func (s TriggerInfo) MarshalJSON() ([]byte, error) {
 type TriggerSettings struct {
 	// File arrival trigger settings.
 	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
+
+	Model *ModelTriggerConfiguration `json:"model,omitempty"`
 	// Whether this trigger is paused or not.
 	PauseStatus PauseStatus `json:"pause_status,omitempty"`
 	// Periodic trigger settings.
