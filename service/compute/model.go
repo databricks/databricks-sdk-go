@@ -475,8 +475,7 @@ type ClusterAttributes struct {
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
-	// disk space. This feature requires specific AWS permissions to function
-	// correctly - refer to the User Guide for more details.
+	// disk space.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Whether to enable LUKS on cluster VMs' local disks
 	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
@@ -686,8 +685,7 @@ type ClusterDetails struct {
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
-	// disk space. This feature requires specific AWS permissions to function
-	// correctly - refer to the User Guide for more details.
+	// disk space.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Whether to enable LUKS on cluster VMs' local disks
 	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
@@ -1291,8 +1289,7 @@ type ClusterSpec struct {
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
-	// disk space. This feature requires specific AWS permissions to function
-	// correctly - refer to the User Guide for more details.
+	// disk space.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Whether to enable LUKS on cluster VMs' local disks
 	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
@@ -1625,8 +1622,7 @@ type CreateCluster struct {
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
-	// disk space. This feature requires specific AWS permissions to function
-	// correctly - refer to the User Guide for more details.
+	// disk space.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Whether to enable LUKS on cluster VMs' local disks
 	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
@@ -2428,8 +2424,7 @@ type EditCluster struct {
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
-	// disk space. This feature requires specific AWS permissions to function
-	// correctly - refer to the User Guide for more details.
+	// disk space.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Whether to enable LUKS on cluster VMs' local disks
 	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
@@ -6144,8 +6139,7 @@ type UpdateClusterResource struct {
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
-	// disk space. This feature requires specific AWS permissions to function
-	// correctly - refer to the User Guide for more details.
+	// disk space.
 	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
 	// Whether to enable LUKS on cluster VMs' local disks
 	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
