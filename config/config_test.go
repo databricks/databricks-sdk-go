@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"net/http"
+	"net/url"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
@@ -296,6 +297,191 @@ func TestConfig_getOAuthArgument_Unified(t *testing.T) {
 			assert.True(t, ok, "Expected UnifiedOAuthArgument")
 			assert.Equal(t, "https://unified.cloud.databricks.com", got.GetHost())
 			assert.Equal(t, "account-123", got.GetAccountId())
+		})
+	}
+}
+
+func TestConfig_HTTPHeaders(t *testing.T) {
+	c := &Config{
+		Host:  "https://my-workspace.cloud.databricks.com",
+		Token: "test-token",
+		HTTPHeaders: map[string]string{
+			"X-Custom-Header-1": "value1",
+			"X-Custom-Header-2": "value2",
+		},
+	}
+
+	cfg, err := HTTPClientConfigFromConfig(c)
+	require.NoError(t, err)
+
+	// Create a test request and apply only the first two visitors (host/path and headers)
+	// Skip other visitors that require context to be set
+	req, err := http.NewRequestWithContext(context.Background(), "GET", "/api/2.0/clusters/list", nil)
+	require.NoError(t, err)
+	req.URL = &url.URL{Path: "/api/2.0/clusters/list"}
+
+	// Apply only the first two visitors (host/path rewrite and custom headers)
+	for i := 0; i < 2 && i < len(cfg.Visitors); i++ {
+		err = cfg.Visitors[i](req)
+		require.NoError(t, err)
+	}
+
+	// Verify custom headers are set
+	assert.Equal(t, "value1", req.Header.Get("X-Custom-Header-1"))
+	assert.Equal(t, "value2", req.Header.Get("X-Custom-Header-2"))
+}
+
+func TestConfig_HTTPPathPrefix(t *testing.T) {
+	c := &Config{
+		Host:           "https://proxy.example.com",
+		Token:          "test-token",
+		HTTPPathPrefix: "/prefix/path",
+	}
+
+	cfg, err := HTTPClientConfigFromConfig(c)
+	require.NoError(t, err)
+
+	// Create a test request
+	req, err := http.NewRequestWithContext(context.Background(), "GET", "/api/2.0/clusters/list", nil)
+	require.NoError(t, err)
+	req.URL = &url.URL{Path: "/api/2.0/clusters/list"}
+
+	// Apply only the first visitor (host/path rewrite)
+	err = cfg.Visitors[0](req)
+	require.NoError(t, err)
+
+	// Verify path prefix is prepended
+	assert.Equal(t, "/prefix/path/api/2.0/clusters/list", req.URL.Path)
+}
+
+func TestConfig_HTTPHeadersAndPathPrefix(t *testing.T) {
+	c := &Config{
+		Host:  "https://proxy.example.com",
+		Token: "test-token",
+		HTTPHeaders: map[string]string{
+			"X-Custom-Header": "custom-value",
+		},
+		HTTPPathPrefix: "/prefix/path",
+	}
+
+	cfg, err := HTTPClientConfigFromConfig(c)
+	require.NoError(t, err)
+
+	// Create a test request
+	req, err := http.NewRequestWithContext(context.Background(), "GET", "/api/2.0/clusters/list", nil)
+	require.NoError(t, err)
+	req.URL = &url.URL{Path: "/api/2.0/clusters/list"}
+
+	// Apply only the first two visitors (host/path rewrite and custom headers)
+	for i := 0; i < 2 && i < len(cfg.Visitors); i++ {
+		err = cfg.Visitors[i](req)
+		require.NoError(t, err)
+	}
+
+	// Verify both custom header and path prefix
+	assert.Equal(t, "custom-value", req.Header.Get("X-Custom-Header"))
+	assert.Equal(t, "/prefix/path/api/2.0/clusters/list", req.URL.Path)
+}
+
+func TestConfig_HTTPHeadersFromEnvVar(t *testing.T) {
+	t.Setenv("DATABRICKS_HTTP_HEADERS", "X-Custom-Header-1=value1;X-Custom-Header-2=value2")
+	t.Setenv("DATABRICKS_HOST", "https://my-workspace.cloud.databricks.com")
+	t.Setenv("DATABRICKS_TOKEN", "test-token")
+
+	c := &Config{}
+	err := c.EnsureResolved()
+	require.NoError(t, err)
+
+	assert.Equal(t, map[string]string{
+		"X-Custom-Header-1": "value1",
+		"X-Custom-Header-2": "value2",
+	}, c.HTTPHeaders)
+}
+
+func TestConfig_HTTPPathPrefixFromEnvVar(t *testing.T) {
+	t.Setenv("DATABRICKS_HTTP_PATH_PREFIX", "/prefix/path")
+	t.Setenv("DATABRICKS_HOST", "https://my-workspace.cloud.databricks.com")
+	t.Setenv("DATABRICKS_TOKEN", "test-token")
+
+	c := &Config{}
+	err := c.EnsureResolved()
+	require.NoError(t, err)
+
+	assert.Equal(t, "/prefix/path", c.HTTPPathPrefix)
+}
+
+func TestParseMapFromString(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected map[string]string
+		wantErr  bool
+	}{
+		{
+			name:     "empty string",
+			input:    "",
+			expected: map[string]string{},
+		},
+		{
+			name:  "single key-value pair",
+			input: "key1=value1",
+			expected: map[string]string{
+				"key1": "value1",
+			},
+		},
+		{
+			name:  "multiple key-value pairs",
+			input: "key1=value1;key2=value2",
+			expected: map[string]string{
+				"key1": "value1",
+				"key2": "value2",
+			},
+		},
+		{
+			name:  "value with equals sign",
+			input: "key1=value=with=equals",
+			expected: map[string]string{
+				"key1": "value=with=equals",
+			},
+		},
+		{
+			name:  "empty value",
+			input: "key1=",
+			expected: map[string]string{
+				"key1": "",
+			},
+		},
+		{
+			name:  "whitespace around pairs",
+			input: " key1=value1 ; key2=value2 ",
+			expected: map[string]string{
+				"key1": "value1",
+				"key2": "value2",
+			},
+		},
+		{
+			name:  "trailing semicolon",
+			input: "key1=value1;",
+			expected: map[string]string{
+				"key1": "value1",
+			},
+		},
+		{
+			name:    "missing equals sign",
+			input:   "key1value1",
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := parseMapFromString(tt.input)
+			if tt.wantErr {
+				assert.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+			assert.Equal(t, tt.expected, got)
 		})
 	}
 }
