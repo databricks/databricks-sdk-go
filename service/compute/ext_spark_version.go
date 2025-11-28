@@ -48,6 +48,13 @@ func (s sparkVersionsType) Less(i, j int) bool {
 	return semver.Compare("v"+extractDbrVersions(s[i]), "v"+extractDbrVersions(s[j])) > 0
 }
 
+// Strip -scala2.12 and -scala2.13 from the version string for uniqueness check
+func stripScalaVersion(version string) string {
+	v := strings.ReplaceAll(version, "-scala2.12", "")
+	v = strings.ReplaceAll(v, "-scala2.13", "")
+	return v
+}
+
 func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, error) {
 	var versions []string
 	for _, version := range sv.Versions {
@@ -73,31 +80,17 @@ func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, erro
 	if len(versions) < 1 {
 		return "", fmt.Errorf("spark versions query returned no results. Please change your search criteria and try again")
 	} else if len(versions) > 1 {
+		if len(versions) == 2 {
+			if stripScalaVersion(versions[0]) == stripScalaVersion(versions[1]) {
+				sort.Strings(versions) // Sort versions to ensure we return 2.12 first
+				return versions[0], nil
+			}
+			// If the versions are different, we fallthrough to the default behavior below
+		}
 		if req.Latest {
 			sort.Sort(sparkVersionsType(versions))
 		} else {
-			sort.Strings(versions)
-			// We need to check for uniqueness of the versions without the scala suffix
-			// This is because we can have multiple instances of the same DBR version but different scala versions
-			uniqueVersions := make([]string, 0, len(versions))
-			for _, version := range versions {
-				// Strip -scala2.12 and -scala2.13 from the version string for uniqueness check
-				v := strings.ReplaceAll(version, "-scala2.12", "")
-				v = strings.ReplaceAll(v, "-scala2.13", "")
-				found := false
-				for _, existing := range uniqueVersions {
-					if existing == v {
-						found = true
-						break
-					}
-				}
-				if !found {
-					uniqueVersions = append(uniqueVersions, v)
-				}
-			}
-			if len(uniqueVersions) > 1 {
-				return "", fmt.Errorf("spark versions query returned multiple results %#v. Please change your search criteria and try again", uniqueVersions)
-			}
+			return "", fmt.Errorf("spark versions query returned multiple results %#v. Please change your search criteria and try again", versions)
 		}
 	}
 	return versions[0], nil
