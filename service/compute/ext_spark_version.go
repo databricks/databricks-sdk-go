@@ -13,16 +13,16 @@ import (
 // SparkVersionRequest - filtering request
 type SparkVersionRequest struct {
 	Id              string `json:"id,omitempty"`
-	LongTermSupport bool   `json:"long_term_support,omitempty" tf:"optional,default:false"`
-	Beta            bool   `json:"beta,omitempty" tf:"optional,default:false,conflicts:long_term_support"`
-	Latest          bool   `json:"latest,omitempty" tf:"optional,default:true"`
-	ML              bool   `json:"ml,omitempty" tf:"optional,default:false"`
-	Genomics        bool   `json:"genomics,omitempty" tf:"optional,default:false"`
-	GPU             bool   `json:"gpu,omitempty" tf:"optional,default:false"`
-	Scala           string `json:"scala,omitempty" tf:"optional,default:2.12"`
-	SparkVersion    string `json:"spark_version,omitempty" tf:"optional,default:"`
-	Photon          bool   `json:"photon,omitempty" tf:"optional,default:false"`
-	Graviton        bool   `json:"graviton,omitempty" tf:"optional,default:false"`
+	LongTermSupport bool   `json:"long_term_support,omitempty"`
+	Beta            bool   `json:"beta,omitempty"`
+	Latest          bool   `json:"latest,omitempty"`
+	ML              bool   `json:"ml,omitempty"`
+	Genomics        bool   `json:"genomics,omitempty"`
+	GPU             bool   `json:"gpu,omitempty"`
+	Scala           string `json:"scala,omitempty"`
+	SparkVersion    string `json:"spark_version,omitempty"`
+	Photon          bool   `json:"photon,omitempty"`
+	Graviton        bool   `json:"graviton,omitempty"`
 }
 
 type sparkVersionsType []string
@@ -46,6 +46,13 @@ func extractDbrVersions(s string) string {
 
 func (s sparkVersionsType) Less(i, j int) bool {
 	return semver.Compare("v"+extractDbrVersions(s[i]), "v"+extractDbrVersions(s[j])) > 0
+}
+
+// Strip -scala2.12 and -scala2.13 from the version string for uniqueness check
+func stripScalaVersion(version string) string {
+	v := strings.ReplaceAll(version, "-scala2.12", "")
+	v = strings.ReplaceAll(v, "-scala2.13", "")
+	return v
 }
 
 func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, error) {
@@ -73,6 +80,13 @@ func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, erro
 	if len(versions) < 1 {
 		return "", fmt.Errorf("spark versions query returned no results. Please change your search criteria and try again")
 	} else if len(versions) > 1 {
+		if len(versions) == 2 {
+			if stripScalaVersion(versions[0]) == stripScalaVersion(versions[1]) {
+				sort.Strings(versions) // Sort versions to ensure we return 2.12 first
+				return versions[0], nil
+			}
+			// If the versions are different, we fallthrough to the default behavior below
+		}
 		if req.Latest {
 			sort.Sort(sparkVersionsType(versions))
 		} else {

@@ -6,7 +6,9 @@
 
 ### Bug Fixes
 
-### Documentation
+* Support for Spark versions with multiple Scala versions ([#1331](https://github.com/databricks/databricks-sdk-go/pull/1331)).
+
+### documentation
 
 ### Internal Changes
 
