@@ -6909,7 +6909,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: SECRET_EXTERNAL_AWS_SECRETS_MANAGER = 273; Next id:274
+// Latest kind: CREDENTIAL_STORAGE_UC_CONNECTION = 275; Next id:276
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
