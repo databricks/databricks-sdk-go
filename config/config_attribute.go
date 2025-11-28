@@ -5,6 +5,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 type Source struct {
@@ -69,10 +70,42 @@ func (a *ConfigAttribute) SetS(cfg *Config, v string) error {
 			return err
 		}
 		return a.Set(cfg, vv)
+	case reflect.Map:
+		// Parse map from string format: key1=value1;key2=value2
+		vv, err := parseMapFromString(v)
+		if err != nil {
+			return fmt.Errorf("cannot parse %s: %w", a.Name, err)
+		}
+		return a.Set(cfg, vv)
 	default:
 		return fmt.Errorf("cannot set %s of unknown type %s",
 			a.Name, reflectKind(a.Kind))
 	}
+}
+
+// parseMapFromString parses a string of format "key1=value1;key2=value2" into a map.
+// Empty keys or values are allowed. If the string is empty, an empty map is returned.
+func parseMapFromString(s string) (map[string]string, error) {
+	result := make(map[string]string)
+	if s == "" {
+		return result, nil
+	}
+	pairs := strings.Split(s, ";")
+	for _, pair := range pairs {
+		pair = strings.TrimSpace(pair)
+		if pair == "" {
+			continue
+		}
+		// Split only on the first '=' to allow '=' in values
+		idx := strings.Index(pair, "=")
+		if idx == -1 {
+			return nil, fmt.Errorf("invalid key-value pair %q: missing '='", pair)
+		}
+		key := pair[:idx]
+		value := pair[idx+1:]
+		result[key] = value
+	}
+	return result, nil
 }
 
 func (a *ConfigAttribute) Set(cfg *Config, i interface{}) error {
@@ -85,6 +118,8 @@ func (a *ConfigAttribute) Set(cfg *Config, i interface{}) error {
 		field.SetBool(i.(bool))
 	case reflect.Int:
 		field.SetInt(int64(i.(int)))
+	case reflect.Map:
+		field.Set(reflect.ValueOf(i))
 	default:
 		// must extensively test with providerFixture to avoid this one
 		return fmt.Errorf("cannot set %s of unknown type %s", a.Name, reflectKind(a.Kind))
