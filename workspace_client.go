@@ -1297,6 +1297,9 @@ type WorkspaceClient struct {
 	// This API allows updating known workspace settings for advanced users.
 	WorkspaceConf settings.WorkspaceConfInterface
 
+	// Manage tag assignments on workspace-scoped objects.
+	WorkspaceEntityTagAssignments tags.WorkspaceEntityTagAssignmentsInterface
+
 	// These APIs are used to manage identities and the workspace access of
 	// these identities in <Databricks>.
 	WorkspaceIamV2 iamv2.WorkspaceIamV2Interface
@@ -1501,6 +1504,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Workspace:                           workspace.NewWorkspace(databricksClient),
 		WorkspaceBindings:                   catalog.NewWorkspaceBindings(databricksClient),
 		WorkspaceConf:                       settings.NewWorkspaceConf(databricksClient),
+		WorkspaceEntityTagAssignments:       tags.NewWorkspaceEntityTagAssignments(databricksClient),
 		WorkspaceIamV2:                      iamv2.NewWorkspaceIamV2(databricksClient),
 		WorkspaceSettingsV2:                 settingsv2.NewWorkspaceSettingsV2(databricksClient),
 		Groups:                              iam.NewGroups(databricksClient),
