@@ -4,8 +4,10 @@ package ml
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
@@ -592,6 +594,17 @@ type featureEngineeringImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *featureEngineeringImpl) BatchCreateMaterializedFeatures(ctx context.Context, request BatchCreateMaterializedFeaturesRequest) (*BatchCreateMaterializedFeaturesResponse, error) {
+	var batchCreateMaterializedFeaturesResponse BatchCreateMaterializedFeaturesResponse
+	path := "/api/2.0/feature-engineering/materialized-features:batchCreate"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &batchCreateMaterializedFeaturesResponse)
+	return &batchCreateMaterializedFeaturesResponse, err
+}
+
 func (a *featureEngineeringImpl) CreateFeature(ctx context.Context, request CreateFeatureRequest) (*Feature, error) {
 	var feature Feature
 	path := "/api/2.0/feature-engineering/features"
@@ -601,6 +614,17 @@ func (a *featureEngineeringImpl) CreateFeature(ctx context.Context, request Crea
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Feature, &feature)
 	return &feature, err
+}
+
+func (a *featureEngineeringImpl) CreateKafkaConfig(ctx context.Context, request CreateKafkaConfigRequest) (*KafkaConfig, error) {
+	var kafkaConfig KafkaConfig
+	path := "/api/2.0/feature-engineering/features/kafka-configs"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.KafkaConfig, &kafkaConfig)
+	return &kafkaConfig, err
 }
 
 func (a *featureEngineeringImpl) CreateMaterializedFeature(ctx context.Context, request CreateMaterializedFeatureRequest) (*MaterializedFeature, error) {
@@ -616,6 +640,15 @@ func (a *featureEngineeringImpl) CreateMaterializedFeature(ctx context.Context, 
 
 func (a *featureEngineeringImpl) DeleteFeature(ctx context.Context, request DeleteFeatureRequest) error {
 	path := fmt.Sprintf("/api/2.0/feature-engineering/features/%v", request.FullName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *featureEngineeringImpl) DeleteKafkaConfig(ctx context.Context, request DeleteKafkaConfigRequest) error {
+	path := fmt.Sprintf("/api/2.0/feature-engineering/features/kafka-configs/kafka/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -640,6 +673,16 @@ func (a *featureEngineeringImpl) GetFeature(ctx context.Context, request GetFeat
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &feature)
 	return &feature, err
+}
+
+func (a *featureEngineeringImpl) GetKafkaConfig(ctx context.Context, request GetKafkaConfigRequest) (*KafkaConfig, error) {
+	var kafkaConfig KafkaConfig
+	path := fmt.Sprintf("/api/2.0/feature-engineering/features/kafka-configs/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &kafkaConfig)
+	return &kafkaConfig, err
 }
 
 func (a *featureEngineeringImpl) GetMaterializedFeature(ctx context.Context, request GetMaterializedFeatureRequest) (*MaterializedFeature, error) {
@@ -691,6 +734,47 @@ func (a *featureEngineeringImpl) internalListFeatures(ctx context.Context, reque
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFeaturesResponse)
 	return &listFeaturesResponse, err
+}
+
+// List Kafka configs.
+func (a *featureEngineeringImpl) ListKafkaConfigs(ctx context.Context, request ListKafkaConfigsRequest) listing.Iterator[KafkaConfig] {
+
+	getNextPage := func(ctx context.Context, req ListKafkaConfigsRequest) (*ListKafkaConfigsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListKafkaConfigs(ctx, req)
+	}
+	getItems := func(resp *ListKafkaConfigsResponse) []KafkaConfig {
+		return resp.KafkaConfigs
+	}
+	getNextReq := func(resp *ListKafkaConfigsResponse) *ListKafkaConfigsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List Kafka configs.
+func (a *featureEngineeringImpl) ListKafkaConfigsAll(ctx context.Context, request ListKafkaConfigsRequest) ([]KafkaConfig, error) {
+	iterator := a.ListKafkaConfigs(ctx, request)
+	return listing.ToSlice[KafkaConfig](ctx, iterator)
+}
+
+func (a *featureEngineeringImpl) internalListKafkaConfigs(ctx context.Context, request ListKafkaConfigsRequest) (*ListKafkaConfigsResponse, error) {
+	var listKafkaConfigsResponse ListKafkaConfigsResponse
+	path := "/api/2.0/feature-engineering/features/kafka-configs"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listKafkaConfigsResponse)
+	return &listKafkaConfigsResponse, err
 }
 
 // List materialized features.
@@ -749,6 +833,24 @@ func (a *featureEngineeringImpl) UpdateFeature(ctx context.Context, request Upda
 	return &feature, err
 }
 
+func (a *featureEngineeringImpl) UpdateKafkaConfig(ctx context.Context, request UpdateKafkaConfigRequest) (*KafkaConfig, error) {
+	var kafkaConfig KafkaConfig
+	path := fmt.Sprintf("/api/2.0/feature-engineering/features/kafka-configs/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.KafkaConfig, &kafkaConfig)
+	return &kafkaConfig, err
+}
+
 func (a *featureEngineeringImpl) UpdateMaterializedFeature(ctx context.Context, request UpdateMaterializedFeatureRequest) (*MaterializedFeature, error) {
 	var materializedFeature MaterializedFeature
 	path := fmt.Sprintf("/api/2.0/feature-engineering/materialized-features/%v", request.MaterializedFeatureId)
@@ -782,6 +884,15 @@ func (a *featureStoreImpl) CreateOnlineStore(ctx context.Context, request Create
 
 func (a *featureStoreImpl) DeleteOnlineStore(ctx context.Context, request DeleteOnlineStoreRequest) error {
 	path := fmt.Sprintf("/api/2.0/feature-store/online-stores/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *featureStoreImpl) DeleteOnlineTable(ctx context.Context, request DeleteOnlineTableRequest) error {
+	path := fmt.Sprintf("/api/2.0/feature-store/online-tables/%v", request.OnlineTableName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"

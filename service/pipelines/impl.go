@@ -118,7 +118,7 @@ func (a *pipelinesImpl) internalListPipelineEvents(ctx context.Context, request 
 	return &listPipelineEventsResponse, err
 }
 
-// Lists pipelines defined in the Delta Live Tables system.
+// Lists pipelines defined in the Spark Declarative Pipelines system.
 func (a *pipelinesImpl) ListPipelines(ctx context.Context, request ListPipelinesRequest) listing.Iterator[PipelineStateInfo] {
 
 	getNextPage := func(ctx context.Context, req ListPipelinesRequest) (*ListPipelinesResponse, error) {
@@ -143,7 +143,7 @@ func (a *pipelinesImpl) ListPipelines(ctx context.Context, request ListPipelines
 	return iterator
 }
 
-// Lists pipelines defined in the Delta Live Tables system.
+// Lists pipelines defined in the Spark Declarative Pipelines system.
 func (a *pipelinesImpl) ListPipelinesAll(ctx context.Context, request ListPipelinesRequest) ([]PipelineStateInfo, error) {
 	iterator := a.ListPipelines(ctx, request)
 	return listing.ToSlice[PipelineStateInfo](ctx, iterator)

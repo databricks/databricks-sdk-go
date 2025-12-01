@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/stretchr/testify/mock"
 
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/billing"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
@@ -16,6 +15,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settingsv2"
+	"github.com/stretchr/testify/mock"
 )
 
 type MockAccountClient struct {

@@ -329,6 +329,9 @@ type CreateBillingUsageDashboardRequest struct {
 	// workspace ID. Global level usage dashboard shows usage data for all
 	// workspaces in the account.
 	DashboardType UsageDashboardType `json:"dashboard_type,omitempty"`
+	// The major version of the usage dashboard template to use. Defaults to
+	// VERSION_1.
+	MajorVersion UsageDashboardMajorVersion `json:"major_version,omitempty"`
 	// The workspace ID of the workspace in which the usage dashboard is
 	// created.
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
@@ -1185,6 +1188,43 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
 	Status LogDeliveryConfigStatus `json:"status"`
+}
+
+type UsageDashboardMajorVersion string
+
+const UsageDashboardMajorVersionUsageDashboardMajorVersion1 UsageDashboardMajorVersion = `USAGE_DASHBOARD_MAJOR_VERSION_1`
+
+const UsageDashboardMajorVersionUsageDashboardMajorVersion2 UsageDashboardMajorVersion = `USAGE_DASHBOARD_MAJOR_VERSION_2`
+
+// String representation for [fmt.Print]
+func (f *UsageDashboardMajorVersion) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *UsageDashboardMajorVersion) Set(v string) error {
+	switch v {
+	case `USAGE_DASHBOARD_MAJOR_VERSION_1`, `USAGE_DASHBOARD_MAJOR_VERSION_2`:
+		*f = UsageDashboardMajorVersion(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "USAGE_DASHBOARD_MAJOR_VERSION_1", "USAGE_DASHBOARD_MAJOR_VERSION_2"`, v)
+	}
+}
+
+// Values returns all possible values for UsageDashboardMajorVersion.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *UsageDashboardMajorVersion) Values() []UsageDashboardMajorVersion {
+	return []UsageDashboardMajorVersion{
+		UsageDashboardMajorVersionUsageDashboardMajorVersion1,
+		UsageDashboardMajorVersionUsageDashboardMajorVersion2,
+	}
+}
+
+// Type always returns UsageDashboardMajorVersion to satisfy [pflag.Value] interface
+func (f *UsageDashboardMajorVersion) Type() string {
+	return "UsageDashboardMajorVersion"
 }
 
 type UsageDashboardType string

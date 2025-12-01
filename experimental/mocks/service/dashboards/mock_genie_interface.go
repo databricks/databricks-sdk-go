@@ -159,6 +159,65 @@ func (_c *MockGenieInterface_CreateMessageAndWait_Call) RunAndReturn(run func(co
 	return _c
 }
 
+// CreateSpace provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) CreateSpace(ctx context.Context, request dashboards.GenieCreateSpaceRequest) (*dashboards.GenieSpace, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateSpace")
+	}
+
+	var r0 *dashboards.GenieSpace
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieCreateSpaceRequest) (*dashboards.GenieSpace, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieCreateSpaceRequest) *dashboards.GenieSpace); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieSpace)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GenieCreateSpaceRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_CreateSpace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateSpace'
+type MockGenieInterface_CreateSpace_Call struct {
+	*mock.Call
+}
+
+// CreateSpace is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieCreateSpaceRequest
+func (_e *MockGenieInterface_Expecter) CreateSpace(ctx interface{}, request interface{}) *MockGenieInterface_CreateSpace_Call {
+	return &MockGenieInterface_CreateSpace_Call{Call: _e.mock.On("CreateSpace", ctx, request)}
+}
+
+func (_c *MockGenieInterface_CreateSpace_Call) Run(run func(ctx context.Context, request dashboards.GenieCreateSpaceRequest)) *MockGenieInterface_CreateSpace_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieCreateSpaceRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_CreateSpace_Call) Return(_a0 *dashboards.GenieSpace, _a1 error) *MockGenieInterface_CreateSpace_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_CreateSpace_Call) RunAndReturn(run func(context.Context, dashboards.GenieCreateSpaceRequest) (*dashboards.GenieSpace, error)) *MockGenieInterface_CreateSpace_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteConversation provides a mock function with given fields: ctx, request
 func (_m *MockGenieInterface) DeleteConversation(ctx context.Context, request dashboards.GenieDeleteConversationRequest) error {
 	ret := _m.Called(ctx, request)
@@ -1525,6 +1584,65 @@ func (_c *MockGenieInterface_TrashSpaceBySpaceId_Call) Return(_a0 error) *MockGe
 }
 
 func (_c *MockGenieInterface_TrashSpaceBySpaceId_Call) RunAndReturn(run func(context.Context, string) error) *MockGenieInterface_TrashSpaceBySpaceId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateSpace provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) UpdateSpace(ctx context.Context, request dashboards.GenieUpdateSpaceRequest) (*dashboards.GenieSpace, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateSpace")
+	}
+
+	var r0 *dashboards.GenieSpace
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieUpdateSpaceRequest) (*dashboards.GenieSpace, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieUpdateSpaceRequest) *dashboards.GenieSpace); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieSpace)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GenieUpdateSpaceRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_UpdateSpace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateSpace'
+type MockGenieInterface_UpdateSpace_Call struct {
+	*mock.Call
+}
+
+// UpdateSpace is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieUpdateSpaceRequest
+func (_e *MockGenieInterface_Expecter) UpdateSpace(ctx interface{}, request interface{}) *MockGenieInterface_UpdateSpace_Call {
+	return &MockGenieInterface_UpdateSpace_Call{Call: _e.mock.On("UpdateSpace", ctx, request)}
+}
+
+func (_c *MockGenieInterface_UpdateSpace_Call) Run(run func(ctx context.Context, request dashboards.GenieUpdateSpaceRequest)) *MockGenieInterface_UpdateSpace_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieUpdateSpaceRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_UpdateSpace_Call) Return(_a0 *dashboards.GenieSpace, _a1 error) *MockGenieInterface_UpdateSpace_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_UpdateSpace_Call) RunAndReturn(run func(context.Context, dashboards.GenieUpdateSpaceRequest) (*dashboards.GenieSpace, error)) *MockGenieInterface_UpdateSpace_Call {
 	_c.Call.Return(run)
 	return _c
 }
