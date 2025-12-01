@@ -112,3 +112,94 @@ func (a *tagPoliciesImpl) UpdateTagPolicy(ctx context.Context, request UpdateTag
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.TagPolicy, &tagPolicy)
 	return &tagPolicy, err
 }
+
+// unexported type that holds implementations of just WorkspaceEntityTagAssignments API methods
+type workspaceEntityTagAssignmentsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *workspaceEntityTagAssignmentsImpl) CreateTagAssignment(ctx context.Context, request CreateTagAssignmentRequest) (*TagAssignment, error) {
+	var tagAssignment TagAssignment
+	path := "/api/2.0/entity-tag-assignments"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.TagAssignment, &tagAssignment)
+	return &tagAssignment, err
+}
+
+func (a *workspaceEntityTagAssignmentsImpl) DeleteTagAssignment(ctx context.Context, request DeleteTagAssignmentRequest) error {
+	path := fmt.Sprintf("/api/2.0/entity-tag-assignments/%v/%v/tags/%v", request.EntityType, request.EntityId, request.TagKey)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *workspaceEntityTagAssignmentsImpl) GetTagAssignment(ctx context.Context, request GetTagAssignmentRequest) (*TagAssignment, error) {
+	var tagAssignment TagAssignment
+	path := fmt.Sprintf("/api/2.0/entity-tag-assignments/%v/%v/tags/%v", request.EntityType, request.EntityId, request.TagKey)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &tagAssignment)
+	return &tagAssignment, err
+}
+
+// List the tag assignments for an entity
+func (a *workspaceEntityTagAssignmentsImpl) ListTagAssignments(ctx context.Context, request ListTagAssignmentsRequest) listing.Iterator[TagAssignment] {
+
+	getNextPage := func(ctx context.Context, req ListTagAssignmentsRequest) (*ListTagAssignmentsResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListTagAssignments(ctx, req)
+	}
+	getItems := func(resp *ListTagAssignmentsResponse) []TagAssignment {
+		return resp.TagAssignments
+	}
+	getNextReq := func(resp *ListTagAssignmentsResponse) *ListTagAssignmentsRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List the tag assignments for an entity
+func (a *workspaceEntityTagAssignmentsImpl) ListTagAssignmentsAll(ctx context.Context, request ListTagAssignmentsRequest) ([]TagAssignment, error) {
+	iterator := a.ListTagAssignments(ctx, request)
+	return listing.ToSlice[TagAssignment](ctx, iterator)
+}
+
+func (a *workspaceEntityTagAssignmentsImpl) internalListTagAssignments(ctx context.Context, request ListTagAssignmentsRequest) (*ListTagAssignmentsResponse, error) {
+	var listTagAssignmentsResponse ListTagAssignmentsResponse
+	path := fmt.Sprintf("/api/2.0/entity-tag-assignments/%v/%v/tags", request.EntityType, request.EntityId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listTagAssignmentsResponse)
+	return &listTagAssignmentsResponse, err
+}
+
+func (a *workspaceEntityTagAssignmentsImpl) UpdateTagAssignment(ctx context.Context, request UpdateTagAssignmentRequest) (*TagAssignment, error) {
+	var tagAssignment TagAssignment
+	path := fmt.Sprintf("/api/2.0/entity-tag-assignments/%v/%v/tags/%v", request.EntityType, request.EntityId, request.TagKey)
+	queryParams := make(map[string]any)
+
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.TagAssignment, &tagAssignment)
+	return &tagAssignment, err
+}

@@ -58,3 +58,24 @@ type TagPoliciesService interface {
 	// [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
 	UpdateTagPolicy(ctx context.Context, request UpdateTagPolicyRequest) (*TagPolicy, error)
 }
+
+// Manage tag assignments on workspace-scoped objects.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type WorkspaceEntityTagAssignmentsService interface {
+
+	// Create a tag assignment
+	CreateTagAssignment(ctx context.Context, request CreateTagAssignmentRequest) (*TagAssignment, error)
+
+	// Delete a tag assignment
+	DeleteTagAssignment(ctx context.Context, request DeleteTagAssignmentRequest) error
+
+	// Get a tag assignment
+	GetTagAssignment(ctx context.Context, request GetTagAssignmentRequest) (*TagAssignment, error)
+
+	// List the tag assignments for an entity
+	ListTagAssignments(ctx context.Context, request ListTagAssignmentsRequest) (*ListTagAssignmentsResponse, error)
+
+	// Update a tag assignment
+	UpdateTagAssignment(ctx context.Context, request UpdateTagAssignmentRequest) (*TagAssignment, error)
+}
