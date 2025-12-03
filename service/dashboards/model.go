@@ -53,6 +53,26 @@ func (s AuthorizationDetailsGrantRule) MarshalJSON() ([]byte, error) {
 
 type CreateDashboardRequest struct {
 	Dashboard Dashboard `json:"dashboard"`
+	// Sets the default catalog for all datasets in this dashboard. Does not
+	// impact table references that use fully qualified catalog names (ex:
+	// samples.nyctaxi.trips). Leave blank to keep each dataset’s existing
+	// configuration.
+	DatasetCatalog string `json:"-" url:"dataset_catalog,omitempty"`
+	// Sets the default schema for all datasets in this dashboard. Does not
+	// impact table references that use fully qualified schema names (ex:
+	// nyctaxi.trips). Leave blank to keep each dataset’s existing
+	// configuration.
+	DatasetSchema string `json:"-" url:"dataset_schema,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateDashboardRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateScheduleRequest struct {
@@ -1589,6 +1609,26 @@ type UpdateDashboardRequest struct {
 	Dashboard Dashboard `json:"dashboard"`
 	// UUID identifying the dashboard.
 	DashboardId string `json:"-" url:"-"`
+	// Sets the default catalog for all datasets in this dashboard. Does not
+	// impact table references that use fully qualified catalog names (ex:
+	// samples.nyctaxi.trips). Leave blank to keep each dataset’s existing
+	// configuration.
+	DatasetCatalog string `json:"-" url:"dataset_catalog,omitempty"`
+	// Sets the default schema for all datasets in this dashboard. Does not
+	// impact table references that use fully qualified schema names (ex:
+	// nyctaxi.trips). Leave blank to keep each dataset’s existing
+	// configuration.
+	DatasetSchema string `json:"-" url:"dataset_schema,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateDashboardRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateDashboardRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateScheduleRequest struct {

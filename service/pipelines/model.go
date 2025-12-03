@@ -1345,6 +1345,11 @@ type PipelineEvent struct {
 	Sequence *Sequencing `json:"sequence,omitempty"`
 	// The time of the event.
 	Timestamp string `json:"timestamp,omitempty"`
+	// Information about which fields were truncated from this event due to size
+	// constraints. If empty or absent, no truncation occurred. See
+	// https://docs.databricks.com/en/ldp/monitor-event-logs for information on
+	// retrieving complete event data.
+	Truncation *Truncation `json:"truncation,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2185,6 +2190,30 @@ func (f *TableSpecificConfigScdType) Values() []TableSpecificConfigScdType {
 // Type always returns TableSpecificConfigScdType to satisfy [pflag.Value] interface
 func (f *TableSpecificConfigScdType) Type() string {
 	return "TableSpecificConfigScdType"
+}
+
+// Information about truncations applied to this event.
+type Truncation struct {
+	// List of fields that were truncated from this event. If empty or absent,
+	// no truncation occurred.
+	TruncatedFields []TruncationTruncationDetail `json:"truncated_fields,omitempty"`
+}
+
+// Details about a specific field that was truncated.
+type TruncationTruncationDetail struct {
+	// The name of the truncated field (e.g., "error"). Corresponds to field
+	// names in PipelineEvent.
+	FieldName string `json:"field_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TruncationTruncationDetail) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TruncationTruncationDetail) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateInfo struct {
