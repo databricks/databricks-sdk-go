@@ -344,6 +344,8 @@
 //
 // - [settings.WorkspaceConfAPI]: This API allows updating known workspace settings for advanced users.
 //
+// - [tags.WorkspaceEntityTagAssignmentsAPI]: Manage tag assignments on workspace-scoped objects.
+//
 // - [iamv2.WorkspaceIamV2API]: These APIs are used to manage identities and the workspace access of these identities in <Databricks>.
 //
 // - [settings.WorkspaceNetworkConfigurationAPI]: These APIs allow configuration of network settings for Databricks workspaces by selecting which network policy to associate with the workspace.
@@ -560,6 +562,7 @@ var (
 	_ *iam.WorkspaceAssignmentAPI                         = nil
 	_ *catalog.WorkspaceBindingsAPI                       = nil
 	_ *settings.WorkspaceConfAPI                          = nil
+	_ *tags.WorkspaceEntityTagAssignmentsAPI              = nil
 	_ *iamv2.WorkspaceIamV2API                            = nil
 	_ *settings.WorkspaceNetworkConfigurationAPI          = nil
 	_ *settingsv2.WorkspaceSettingsV2API                  = nil

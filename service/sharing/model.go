@@ -1535,6 +1535,8 @@ type SharedDataObjectDataObjectType string
 
 const SharedDataObjectDataObjectTypeFeatureSpec SharedDataObjectDataObjectType = `FEATURE_SPEC`
 
+const SharedDataObjectDataObjectTypeForeignTable SharedDataObjectDataObjectType = `FOREIGN_TABLE`
+
 const SharedDataObjectDataObjectTypeFunction SharedDataObjectDataObjectType = `FUNCTION`
 
 const SharedDataObjectDataObjectTypeMaterializedView SharedDataObjectDataObjectType = `MATERIALIZED_VIEW`
@@ -1551,6 +1553,8 @@ const SharedDataObjectDataObjectTypeTable SharedDataObjectDataObjectType = `TABL
 
 const SharedDataObjectDataObjectTypeView SharedDataObjectDataObjectType = `VIEW`
 
+const SharedDataObjectDataObjectTypeVolume SharedDataObjectDataObjectType = `VOLUME`
+
 // String representation for [fmt.Print]
 func (f *SharedDataObjectDataObjectType) String() string {
 	return string(*f)
@@ -1559,11 +1563,11 @@ func (f *SharedDataObjectDataObjectType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SharedDataObjectDataObjectType) Set(v string) error {
 	switch v {
-	case `FEATURE_SPEC`, `FUNCTION`, `MATERIALIZED_VIEW`, `MODEL`, `NOTEBOOK_FILE`, `SCHEMA`, `STREAMING_TABLE`, `TABLE`, `VIEW`:
+	case `FEATURE_SPEC`, `FOREIGN_TABLE`, `FUNCTION`, `MATERIALIZED_VIEW`, `MODEL`, `NOTEBOOK_FILE`, `SCHEMA`, `STREAMING_TABLE`, `TABLE`, `VIEW`, `VOLUME`:
 		*f = SharedDataObjectDataObjectType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FEATURE_SPEC", "FUNCTION", "MATERIALIZED_VIEW", "MODEL", "NOTEBOOK_FILE", "SCHEMA", "STREAMING_TABLE", "TABLE", "VIEW"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FEATURE_SPEC", "FOREIGN_TABLE", "FUNCTION", "MATERIALIZED_VIEW", "MODEL", "NOTEBOOK_FILE", "SCHEMA", "STREAMING_TABLE", "TABLE", "VIEW", "VOLUME"`, v)
 	}
 }
 
@@ -1573,6 +1577,7 @@ func (f *SharedDataObjectDataObjectType) Set(v string) error {
 func (f *SharedDataObjectDataObjectType) Values() []SharedDataObjectDataObjectType {
 	return []SharedDataObjectDataObjectType{
 		SharedDataObjectDataObjectTypeFeatureSpec,
+		SharedDataObjectDataObjectTypeForeignTable,
 		SharedDataObjectDataObjectTypeFunction,
 		SharedDataObjectDataObjectTypeMaterializedView,
 		SharedDataObjectDataObjectTypeModel,
@@ -1581,6 +1586,7 @@ func (f *SharedDataObjectDataObjectType) Values() []SharedDataObjectDataObjectTy
 		SharedDataObjectDataObjectTypeStreamingTable,
 		SharedDataObjectDataObjectTypeTable,
 		SharedDataObjectDataObjectTypeView,
+		SharedDataObjectDataObjectTypeVolume,
 	}
 }
 

@@ -492,6 +492,19 @@ type DeleteDatabaseTableRequest struct {
 
 type DeleteSyncedDatabaseTableRequest struct {
 	Name string `json:"-" url:"-"`
+	// Optional. When set to true, the actual PostgreSQL table will be dropped
+	// from the database.
+	PurgeData bool `json:"-" url:"purge_data,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteSyncedDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteSyncedDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DeltaTableSyncInfo struct {
