@@ -793,7 +793,8 @@ type ObjectInfo struct {
 	//
 	// - `NOTEBOOK`: document that contains runnable code, visualizations, and
 	// explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`:
-	// file - `REPO`: repository - `DASHBOARD`: Lakeview dashboard
+	// file - `REPO`: repository - `DASHBOARD`: Lakeview dashboard -
+	// `MLFLOW_EXPERIMENT`: MLflow experiment
 	ObjectType ObjectType `json:"object_type,omitempty"`
 	// The absolute path of the object.
 	Path string `json:"path,omitempty"`
@@ -825,6 +826,8 @@ const ObjectTypeFile ObjectType = `FILE`
 
 const ObjectTypeLibrary ObjectType = `LIBRARY`
 
+const ObjectTypeMlflowExperiment ObjectType = `MLFLOW_EXPERIMENT`
+
 const ObjectTypeNotebook ObjectType = `NOTEBOOK`
 
 const ObjectTypeRepo ObjectType = `REPO`
@@ -837,11 +840,11 @@ func (f *ObjectType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ObjectType) Set(v string) error {
 	switch v {
-	case `DASHBOARD`, `DIRECTORY`, `FILE`, `LIBRARY`, `NOTEBOOK`, `REPO`:
+	case `DASHBOARD`, `DIRECTORY`, `FILE`, `LIBRARY`, `MLFLOW_EXPERIMENT`, `NOTEBOOK`, `REPO`:
 		*f = ObjectType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DASHBOARD", "DIRECTORY", "FILE", "LIBRARY", "NOTEBOOK", "REPO"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DASHBOARD", "DIRECTORY", "FILE", "LIBRARY", "MLFLOW_EXPERIMENT", "NOTEBOOK", "REPO"`, v)
 	}
 }
 
@@ -854,6 +857,7 @@ func (f *ObjectType) Values() []ObjectType {
 		ObjectTypeDirectory,
 		ObjectTypeFile,
 		ObjectTypeLibrary,
+		ObjectTypeMlflowExperiment,
 		ObjectTypeNotebook,
 		ObjectTypeRepo,
 	}
