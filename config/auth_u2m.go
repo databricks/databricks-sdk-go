@@ -14,10 +14,8 @@ import (
 
 // u2mCredentials is a credentials strategy that uses the U2M OAuth flow to
 // authenticate with Databricks. It loads a token from the token cache for the
-// given workspace or account, refreshing it if needed. If the user has not
-// authenticated with OAuth U2M, it falls back to the next credentials strategy.
-// If they have but their access and refresh tokens are both invalid, it returns
-// a special error message that instructs the user how to reauthenticate.
+// given workspace or account, refreshing it using the associated refresh token
+// if needed.
 type u2mCredentials struct{}
 
 // Name implements CredentialsStrategy.
@@ -43,8 +41,9 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, err
 	}
 
-	// TODO: Having to handle the CLI error handling here is not ideal. Remove
-	// this wrapping logic as soon as the CLI is able to handle it on its own.
+	// TODO: Having to handle the CLI error here is not ideal as it couples the
+	// SDK logic with the CLI's. Remove this wrapping logic as soon as the CLI
+	// is able to handle it on its own.
 	wts := wrapWithCLIErrorHandling(cfg, arg, ts)
 
 	cts := auth.NewCachedTokenSource(wts) // important
