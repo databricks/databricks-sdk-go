@@ -9,6 +9,24 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+type ConnectionParameters struct {
+	// Source catalog for initial connection. This is necessary for schema
+	// exploration in some database systems like Oracle, and optional but
+	// nice-to-have in some other database systems like Postgres. For Oracle
+	// databases, this maps to a service name.
+	SourceCatalog string `json:"source_catalog,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ConnectionParameters) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ConnectionParameters) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
@@ -567,13 +585,16 @@ type IngestionGatewayPipelineDefinition struct {
 	// Immutable. The Unity Catalog connection that this gateway pipeline uses
 	// to communicate with the source.
 	ConnectionName string `json:"connection_name"`
+	// Optional, Internal. Parameters required to establish an initial
+	// connection with the source.
+	ConnectionParameters *ConnectionParameters `json:"connection_parameters,omitempty"`
 	// Required, Immutable. The name of the catalog for the gateway pipeline's
 	// storage location.
 	GatewayStorageCatalog string `json:"gateway_storage_catalog"`
 	// Optional. The Unity Catalog-compatible name for the gateway storage
 	// location. This is the destination to use for the data that is extracted
-	// by the gateway. Delta Live Tables system will automatically create the
-	// storage location under the catalog and schema.
+	// by the gateway. Spark Declarative Pipelines system will automatically
+	// create the storage location under the catalog and schema.
 	GatewayStorageName string `json:"gateway_storage_name,omitempty"`
 	// Required, Immutable. The name of the schema for the gateway pipelines's
 	// storage location.
@@ -595,6 +616,12 @@ type IngestionPipelineDefinition struct {
 	// to communicate with the source. This is used with connectors for
 	// applications like Salesforce, Workday, and so on.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// Immutable. If set to true, the pipeline will ingest tables from the UC
+	// foreign catalogs directly without the need to specify a UC connection or
+	// ingestion gateway. The `source_catalog` fields in objects of
+	// IngestionConfig are interpreted as the UC foreign catalogs to ingest
+	// from.
+	IngestFromUcForeignCatalog bool `json:"ingest_from_uc_foreign_catalog,omitempty"`
 	// Immutable. Identifier for the gateway that is used by this ingestion
 	// pipeline to communicate with the source database. This is used with
 	// connectors to databases like SQL Server.
@@ -718,23 +745,13 @@ type IngestionSourceType string
 
 const IngestionSourceTypeBigquery IngestionSourceType = `BIGQUERY`
 
-const IngestionSourceTypeConfluence IngestionSourceType = `CONFLUENCE`
-
 const IngestionSourceTypeDynamics365 IngestionSourceType = `DYNAMICS365`
 
 const IngestionSourceTypeForeignCatalog IngestionSourceType = `FOREIGN_CATALOG`
 
 const IngestionSourceTypeGa4RawData IngestionSourceType = `GA4_RAW_DATA`
 
-const IngestionSourceTypeGoogleAds IngestionSourceType = `GOOGLE_ADS`
-
-const IngestionSourceTypeGuidewire IngestionSourceType = `GUIDEWIRE`
-
-const IngestionSourceTypeHubspot IngestionSourceType = `HUBSPOT`
-
 const IngestionSourceTypeManagedPostgresql IngestionSourceType = `MANAGED_POSTGRESQL`
-
-const IngestionSourceTypeMetaMarketing IngestionSourceType = `META_MARKETING`
 
 const IngestionSourceTypeMysql IngestionSourceType = `MYSQL`
 
@@ -744,29 +761,17 @@ const IngestionSourceTypeOracle IngestionSourceType = `ORACLE`
 
 const IngestionSourceTypePostgresql IngestionSourceType = `POSTGRESQL`
 
-const IngestionSourceTypeRedshift IngestionSourceType = `REDSHIFT`
-
 const IngestionSourceTypeSalesforce IngestionSourceType = `SALESFORCE`
-
-const IngestionSourceTypeSalesforceMarketingCloud IngestionSourceType = `SALESFORCE_MARKETING_CLOUD`
 
 const IngestionSourceTypeServicenow IngestionSourceType = `SERVICENOW`
 
 const IngestionSourceTypeSharepoint IngestionSourceType = `SHAREPOINT`
 
-const IngestionSourceTypeSqldw IngestionSourceType = `SQLDW`
-
 const IngestionSourceTypeSqlserver IngestionSourceType = `SQLSERVER`
 
 const IngestionSourceTypeTeradata IngestionSourceType = `TERADATA`
 
-const IngestionSourceTypeTiktokAds IngestionSourceType = `TIKTOK_ADS`
-
-const IngestionSourceTypeWorkdayHcm IngestionSourceType = `WORKDAY_HCM`
-
 const IngestionSourceTypeWorkdayRaas IngestionSourceType = `WORKDAY_RAAS`
-
-const IngestionSourceTypeZendesk IngestionSourceType = `ZENDESK`
 
 // String representation for [fmt.Print]
 func (f *IngestionSourceType) String() string {
@@ -776,11 +781,11 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `CONFLUENCE`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `GOOGLE_ADS`, `GUIDEWIRE`, `HUBSPOT`, `MANAGED_POSTGRESQL`, `META_MARKETING`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_MARKETING_CLOUD`, `SERVICENOW`, `SHAREPOINT`, `SQLDW`, `SQLSERVER`, `TERADATA`, `TIKTOK_ADS`, `WORKDAY_HCM`, `WORKDAY_RAAS`, `ZENDESK`:
+	case `BIGQUERY`, `DYNAMICS365`, `FOREIGN_CATALOG`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "CONFLUENCE", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "GOOGLE_ADS", "GUIDEWIRE", "HUBSPOT", "MANAGED_POSTGRESQL", "META_MARKETING", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "REDSHIFT", "SALESFORCE", "SALESFORCE_MARKETING_CLOUD", "SERVICENOW", "SHAREPOINT", "SQLDW", "SQLSERVER", "TERADATA", "TIKTOK_ADS", "WORKDAY_HCM", "WORKDAY_RAAS", "ZENDESK"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DYNAMICS365", "FOREIGN_CATALOG", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
 	}
 }
 
@@ -790,31 +795,20 @@ func (f *IngestionSourceType) Set(v string) error {
 func (f *IngestionSourceType) Values() []IngestionSourceType {
 	return []IngestionSourceType{
 		IngestionSourceTypeBigquery,
-		IngestionSourceTypeConfluence,
 		IngestionSourceTypeDynamics365,
 		IngestionSourceTypeForeignCatalog,
 		IngestionSourceTypeGa4RawData,
-		IngestionSourceTypeGoogleAds,
-		IngestionSourceTypeGuidewire,
-		IngestionSourceTypeHubspot,
 		IngestionSourceTypeManagedPostgresql,
-		IngestionSourceTypeMetaMarketing,
 		IngestionSourceTypeMysql,
 		IngestionSourceTypeNetsuite,
 		IngestionSourceTypeOracle,
 		IngestionSourceTypePostgresql,
-		IngestionSourceTypeRedshift,
 		IngestionSourceTypeSalesforce,
-		IngestionSourceTypeSalesforceMarketingCloud,
 		IngestionSourceTypeServicenow,
 		IngestionSourceTypeSharepoint,
-		IngestionSourceTypeSqldw,
 		IngestionSourceTypeSqlserver,
 		IngestionSourceTypeTeradata,
-		IngestionSourceTypeTiktokAds,
-		IngestionSourceTypeWorkdayHcm,
 		IngestionSourceTypeWorkdayRaas,
-		IngestionSourceTypeZendesk,
 	}
 }
 
@@ -1351,6 +1345,11 @@ type PipelineEvent struct {
 	Sequence *Sequencing `json:"sequence,omitempty"`
 	// The time of the event.
 	Timestamp string `json:"timestamp,omitempty"`
+	// Information about which fields were truncated from this event due to size
+	// constraints. If empty or absent, no truncation occurred. See
+	// https://docs.databricks.com/en/ldp/monitor-event-logs for information on
+	// retrieving complete event data.
+	Truncation *Truncation `json:"truncation,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1798,6 +1797,50 @@ func (s RestartWindow) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Configuration for rewinding a specific dataset.
+type RewindDatasetSpec struct {
+	// Whether to cascade the rewind to dependent datasets. Must be specified.
+	Cascade bool `json:"cascade,omitempty"`
+	// The identifier of the dataset (e.g., "main.foo.tbl1").
+	Identifier string `json:"identifier,omitempty"`
+	// Whether to reset checkpoints for this dataset.
+	ResetCheckpoints bool `json:"reset_checkpoints,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RewindDatasetSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RewindDatasetSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Information about a rewind being requested for this pipeline or some of the
+// datasets in it.
+type RewindSpec struct {
+	// List of datasets to rewind with specific configuration for each. When not
+	// specified, all datasets will be rewound with cascade = true and
+	// reset_checkpoints = true.
+	Datasets []RewindDatasetSpec `json:"datasets,omitempty"`
+	// If true, this is a dry run and we should emit the RewindSummary but not
+	// perform the rewind.
+	DryRun bool `json:"dry_run,omitempty"`
+	// The base timestamp to rewind to. Must be specified.
+	RewindTimestamp string `json:"rewind_timestamp,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RewindSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RewindSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Write-only setting, available only in Create/Update calls. Specifies the user
 // or service principal that the pipeline runs as. If not specified, the
 // pipeline runs as the user who created the pipeline.
@@ -1948,6 +1991,9 @@ type StartUpdate struct {
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
 	RefreshSelection []string `json:"refresh_selection,omitempty"`
+	// The information about the requested rewind operation. If specified this
+	// is a rewind mode update.
+	RewindSpec *RewindSpec `json:"rewind_spec,omitempty"`
 	// If true, this update only validates the correctness of pipeline source
 	// code but does not materialize or publish any datasets.
 	ValidateOnly bool `json:"validate_only,omitempty"`
@@ -2088,8 +2134,8 @@ type TableSpecificConfig struct {
 	// The SCD type to use to ingest the table.
 	ScdType TableSpecificConfigScdType `json:"scd_type,omitempty"`
 	// The column names specifying the logical order of events in the source
-	// data. Delta Live Tables uses this sequencing to handle change events that
-	// arrive out of order.
+	// data. Spark Declarative Pipelines uses this sequencing to handle change
+	// events that arrive out of order.
 	SequenceBy []string `json:"sequence_by,omitempty"`
 	// (Optional) Additional custom parameters for Workday Report
 	WorkdayReportParameters *IngestionPipelineDefinitionWorkdayReportParameters `json:"workday_report_parameters,omitempty"`
@@ -2144,6 +2190,30 @@ func (f *TableSpecificConfigScdType) Values() []TableSpecificConfigScdType {
 // Type always returns TableSpecificConfigScdType to satisfy [pflag.Value] interface
 func (f *TableSpecificConfigScdType) Type() string {
 	return "TableSpecificConfigScdType"
+}
+
+// Information about truncations applied to this event.
+type Truncation struct {
+	// List of fields that were truncated from this event. If empty or absent,
+	// no truncation occurred.
+	TruncatedFields []TruncationTruncationDetail `json:"truncated_fields,omitempty"`
+}
+
+// Details about a specific field that was truncated.
+type TruncationTruncationDetail struct {
+	// The name of the truncated field (e.g., "error"). Corresponds to field
+	// names in PipelineEvent.
+	FieldName string `json:"field_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TruncationTruncationDetail) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TruncationTruncationDetail) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateInfo struct {

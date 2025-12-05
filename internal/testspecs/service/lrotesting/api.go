@@ -6,12 +6,11 @@ package lrotesting
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"time"
 
 	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/retries"
-	"github.com/databricks/databricks-sdk-go/service/common/lro"
+	"github.com/databricks/databricks-sdk-go/experimental/api"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
 
@@ -46,18 +45,19 @@ func (a *LroTestingAPI) CreateTestResource(ctx context.Context, request CreateTe
 	if err != nil {
 		return nil, err
 	}
-	return &CreateTestResourceOperation{
+	return &createTestResourceOperation{
 		impl:      &a.lroTestingImpl,
 		operation: operation,
 	}, nil
 }
 
 type CreateTestResourceOperationInterface interface {
-	// Wait blocks until the long-running operation is completed with default 20 min
-	// timeout, the timeout can be overridden in the opts. If the operation didn't
-	// finished within the timeout, this function will through an error of type
-	// ErrTimedOut, otherwise successful response and any errors encountered.
-	Wait(ctx context.Context, opts *lro.LroOptions) (*TestResource, error)
+
+	// Wait blocks until the long-running operation is completed. If no timeout is
+	// specified, this will poll indefinitely. If a timeout is provided and the operation
+	// didn't finish within the timeout, this function will return an error, otherwise
+	// returns successful response and any errors encountered.
+	Wait(ctx context.Context, opts ...api.Option) (*TestResource, error)
 
 	// Starts asynchronous cancellation on a long-running operation. The server
 	// makes a best effort to cancel the operation, but success is not guaranteed.
@@ -75,35 +75,33 @@ type CreateTestResourceOperationInterface interface {
 	Done() (bool, error)
 }
 
-type CreateTestResourceOperation struct {
+type createTestResourceOperation struct {
 	impl      *lroTestingImpl
 	operation *Operation
 }
 
-// Wait blocks until the long-running operation is completed with default 20 min
-// timeout, the timeout can be overridden in the opts. If the operation didn't
-// finished within the timeout, this function will through an error of type
-// ErrTimedOut, otherwise successful response and any errors encountered.
-func (a *CreateTestResourceOperation) Wait(ctx context.Context, opts *lro.LroOptions) (*TestResource, error) {
-	timeout := 20 * time.Minute // default timeout per LRO spec
-	if opts != nil && opts.Timeout > 0 {
-		timeout = opts.Timeout
-	}
-
+// Wait blocks until the long-running operation is completed. If no timeout is
+// specified, this will poll indefinitely. If a timeout is provided and the operation
+// didn't finish within the timeout, this function will return an error, otherwise
+// returns successful response and any errors encountered.
+func (a *createTestResourceOperation) Wait(ctx context.Context, opts ...api.Option) (*TestResource, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	val, err := retries.Poll[TestResource](ctx, timeout, func() (*TestResource, *retries.Err) {
+
+	errOperationInProgress := errors.New("operation still in progress")
+	var result *TestResource
+	call := func(ctx context.Context) error {
 		operation, err := a.impl.GetOperation(ctx, GetOperationRequest{
 			Name: a.operation.Name,
 		})
 		if err != nil {
-			return nil, retries.Halt(err)
+			return err
 		}
 
 		// Update local operation state
 		a.operation = operation
 
 		if !operation.Done {
-			return nil, retries.Continues("operation still in progress")
+			return errOperationInProgress
 		}
 
 		if operation.Error != nil {
@@ -118,34 +116,48 @@ func (a *CreateTestResourceOperation) Wait(ctx context.Context, opts *lro.LroOpt
 				errorMsg = fmt.Sprintf("[%s] %s", operation.Error.ErrorCode, errorMsg)
 			}
 
-			return nil, retries.Halt(fmt.Errorf("operation failed: %s", errorMsg))
+			return fmt.Errorf("operation failed: %s", errorMsg)
 		}
 
 		// Operation completed successfully, unmarshal response
 		if operation.Response == nil {
-			return nil, retries.Halt(fmt.Errorf("operation completed but no response available"))
+			return fmt.Errorf("operation completed but no response available")
 		}
 
 		var testResource TestResource
 		err = json.Unmarshal(operation.Response, &testResource)
 		if err != nil {
-			return nil, retries.Halt(fmt.Errorf("failed to unmarshal testResource response: %w", err))
+			return fmt.Errorf("failed to unmarshal testResource response: %w", err)
 		}
 
-		return &testResource, nil
+		result = &testResource
 
+		return nil
+	}
+
+	// Create a retrier that retries on errOperationInProgress with exponential backoff.
+	retrier := api.RetryOn(api.BackoffPolicy{}, func(err error) bool {
+		return errors.Is(err, errOperationInProgress)
 	})
+
+	// Add default retrier.
+	defaultOpts := []api.Option{
+		api.WithRetrier(func() api.Retrier { return retrier }),
+	}
+	allOpts := append(defaultOpts, opts...)
+
+	err := api.Execute(ctx, call, allOpts...)
 
 	if err != nil {
 		return nil, err
 	}
-	return val, nil
+	return result, nil
 
 }
 
 // Starts asynchronous cancellation on a long-running operation. The server
 // makes a best effort to cancel the operation, but success is not guaranteed.
-func (a *CreateTestResourceOperation) Cancel(ctx context.Context) error {
+func (a *createTestResourceOperation) Cancel(ctx context.Context) error {
 	return a.impl.CancelOperation(ctx, CancelOperationRequest{
 		Name: a.operation.Name,
 	})
@@ -153,13 +165,13 @@ func (a *CreateTestResourceOperation) Cancel(ctx context.Context) error {
 
 // Name returns the name of the long-running operation. The name is assigned
 // by the server and is unique within the service from which the operation is created.
-func (a *CreateTestResourceOperation) Name() string {
+func (a *createTestResourceOperation) Name() string {
 	return a.operation.Name
 }
 
 // Metadata returns metadata associated with the long-running operation.
 // If the metadata is not available, the returned metadata and error are both nil.
-func (a *CreateTestResourceOperation) Metadata() (*TestResourceOperationMetadata, error) {
+func (a *createTestResourceOperation) Metadata() (*TestResourceOperationMetadata, error) {
 	if a.operation.Metadata == nil {
 		return nil, nil
 	}
@@ -174,7 +186,7 @@ func (a *CreateTestResourceOperation) Metadata() (*TestResourceOperationMetadata
 }
 
 // Done reports whether the long-running operation has completed.
-func (a *CreateTestResourceOperation) Done() (bool, error) {
+func (a *createTestResourceOperation) Done() (bool, error) {
 	// Refresh the operation state first
 	operation, err := a.impl.GetOperation(context.Background(), GetOperationRequest{
 		Name: a.operation.Name,
@@ -194,18 +206,19 @@ func (a *LroTestingAPI) DeleteTestResource(ctx context.Context, request DeleteTe
 	if err != nil {
 		return nil, err
 	}
-	return &DeleteTestResourceOperation{
+	return &deleteTestResourceOperation{
 		impl:      &a.lroTestingImpl,
 		operation: operation,
 	}, nil
 }
 
 type DeleteTestResourceOperationInterface interface {
-	// Wait blocks until the long-running operation is completed with default 20 min
-	// timeout, the timeout can be overridden in the opts. If the operation didn't
-	// finished within the timeout, this function will through an error of type
-	// ErrTimedOut, otherwise successful response and any errors encountered.
-	Wait(ctx context.Context, opts *lro.LroOptions) error
+
+	// Wait blocks until the long-running operation is completed. If no timeout is
+	// specified, this will poll indefinitely. If a timeout is provided and the operation
+	// didn't finish within the timeout, this function will return an error, otherwise
+	// returns successful response and any errors encountered.
+	Wait(ctx context.Context, opts ...api.Option) error
 
 	// Starts asynchronous cancellation on a long-running operation. The server
 	// makes a best effort to cancel the operation, but success is not guaranteed.
@@ -223,35 +236,33 @@ type DeleteTestResourceOperationInterface interface {
 	Done() (bool, error)
 }
 
-type DeleteTestResourceOperation struct {
+type deleteTestResourceOperation struct {
 	impl      *lroTestingImpl
 	operation *Operation
 }
 
-// Wait blocks until the long-running operation is completed with default 20 min
-// timeout, the timeout can be overridden in the opts. If the operation didn't
-// finished within the timeout, this function will through an error of type
-// ErrTimedOut, otherwise successful response and any errors encountered.
-func (a *DeleteTestResourceOperation) Wait(ctx context.Context, opts *lro.LroOptions) error {
-	timeout := 20 * time.Minute // default timeout per LRO spec
-	if opts != nil && opts.Timeout > 0 {
-		timeout = opts.Timeout
-	}
-
+// Wait blocks until the long-running operation is completed. If no timeout is
+// specified, this will poll indefinitely. If a timeout is provided and the operation
+// didn't finish within the timeout, this function will return an error, otherwise
+// returns successful response and any errors encountered.
+func (a *deleteTestResourceOperation) Wait(ctx context.Context, opts ...api.Option) error {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	_, err := retries.Poll[struct{}](ctx, timeout, func() (*struct{}, *retries.Err) {
+
+	errOperationInProgress := errors.New("operation still in progress")
+
+	call := func(ctx context.Context) error {
 		operation, err := a.impl.GetOperation(ctx, GetOperationRequest{
 			Name: a.operation.Name,
 		})
 		if err != nil {
-			return nil, retries.Halt(err)
+			return err
 		}
 
 		// Update local operation state
 		a.operation = operation
 
 		if !operation.Done {
-			return nil, retries.Continues("operation still in progress")
+			return errOperationInProgress
 		}
 
 		if operation.Error != nil {
@@ -266,17 +277,29 @@ func (a *DeleteTestResourceOperation) Wait(ctx context.Context, opts *lro.LroOpt
 				errorMsg = fmt.Sprintf("[%s] %s", operation.Error.ErrorCode, errorMsg)
 			}
 
-			return nil, retries.Halt(fmt.Errorf("operation failed: %s", errorMsg))
+			return fmt.Errorf("operation failed: %s", errorMsg)
 		}
 
 		// Operation completed successfully, unmarshal response
 		if operation.Response == nil {
-			return nil, retries.Halt(fmt.Errorf("operation completed but no response available"))
+			return fmt.Errorf("operation completed but no response available")
 		}
 
-		return &struct{}{}, nil
+		return nil
+	}
 
+	// Create a retrier that retries on errOperationInProgress with exponential backoff.
+	retrier := api.RetryOn(api.BackoffPolicy{}, func(err error) bool {
+		return errors.Is(err, errOperationInProgress)
 	})
+
+	// Add default retrier.
+	defaultOpts := []api.Option{
+		api.WithRetrier(func() api.Retrier { return retrier }),
+	}
+	allOpts := append(defaultOpts, opts...)
+
+	err := api.Execute(ctx, call, allOpts...)
 
 	return err
 
@@ -284,7 +307,7 @@ func (a *DeleteTestResourceOperation) Wait(ctx context.Context, opts *lro.LroOpt
 
 // Starts asynchronous cancellation on a long-running operation. The server
 // makes a best effort to cancel the operation, but success is not guaranteed.
-func (a *DeleteTestResourceOperation) Cancel(ctx context.Context) error {
+func (a *deleteTestResourceOperation) Cancel(ctx context.Context) error {
 	return a.impl.CancelOperation(ctx, CancelOperationRequest{
 		Name: a.operation.Name,
 	})
@@ -292,13 +315,13 @@ func (a *DeleteTestResourceOperation) Cancel(ctx context.Context) error {
 
 // Name returns the name of the long-running operation. The name is assigned
 // by the server and is unique within the service from which the operation is created.
-func (a *DeleteTestResourceOperation) Name() string {
+func (a *deleteTestResourceOperation) Name() string {
 	return a.operation.Name
 }
 
 // Metadata returns metadata associated with the long-running operation.
 // If the metadata is not available, the returned metadata and error are both nil.
-func (a *DeleteTestResourceOperation) Metadata() (*TestResourceOperationMetadata, error) {
+func (a *deleteTestResourceOperation) Metadata() (*TestResourceOperationMetadata, error) {
 	if a.operation.Metadata == nil {
 		return nil, nil
 	}
@@ -313,7 +336,7 @@ func (a *DeleteTestResourceOperation) Metadata() (*TestResourceOperationMetadata
 }
 
 // Done reports whether the long-running operation has completed.
-func (a *DeleteTestResourceOperation) Done() (bool, error) {
+func (a *deleteTestResourceOperation) Done() (bool, error) {
 	// Refresh the operation state first
 	operation, err := a.impl.GetOperation(context.Background(), GetOperationRequest{
 		Name: a.operation.Name,

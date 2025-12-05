@@ -177,6 +177,53 @@ func (_c *MockFeatureStoreInterface_DeleteOnlineStoreByName_Call) RunAndReturn(r
 	return _c
 }
 
+// DeleteOnlineTable provides a mock function with given fields: ctx, request
+func (_m *MockFeatureStoreInterface) DeleteOnlineTable(ctx context.Context, request ml.DeleteOnlineTableRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteOnlineTable")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.DeleteOnlineTableRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockFeatureStoreInterface_DeleteOnlineTable_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteOnlineTable'
+type MockFeatureStoreInterface_DeleteOnlineTable_Call struct {
+	*mock.Call
+}
+
+// DeleteOnlineTable is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.DeleteOnlineTableRequest
+func (_e *MockFeatureStoreInterface_Expecter) DeleteOnlineTable(ctx interface{}, request interface{}) *MockFeatureStoreInterface_DeleteOnlineTable_Call {
+	return &MockFeatureStoreInterface_DeleteOnlineTable_Call{Call: _e.mock.On("DeleteOnlineTable", ctx, request)}
+}
+
+func (_c *MockFeatureStoreInterface_DeleteOnlineTable_Call) Run(run func(ctx context.Context, request ml.DeleteOnlineTableRequest)) *MockFeatureStoreInterface_DeleteOnlineTable_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.DeleteOnlineTableRequest))
+	})
+	return _c
+}
+
+func (_c *MockFeatureStoreInterface_DeleteOnlineTable_Call) Return(_a0 error) *MockFeatureStoreInterface_DeleteOnlineTable_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockFeatureStoreInterface_DeleteOnlineTable_Call) RunAndReturn(run func(context.Context, ml.DeleteOnlineTableRequest) error) *MockFeatureStoreInterface_DeleteOnlineTable_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetOnlineStore provides a mock function with given fields: ctx, request
 func (_m *MockFeatureStoreInterface) GetOnlineStore(ctx context.Context, request ml.GetOnlineStoreRequest) (*ml.OnlineStore, error) {
 	ret := _m.Called(ctx, request)

@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/experimental/api"
 	"github.com/databricks/databricks-sdk-go/internal/testspecs/service/lrotesting"
 	"github.com/databricks/databricks-sdk-go/qa"
-	"github.com/databricks/databricks-sdk-go/service/common/lro"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 )
@@ -94,7 +94,7 @@ func TestLRO_CreateTestResource_Wait(t *testing.T) {
 				if err != nil {
 					t.Fatalf("CreateTestResource failed: %v", err)
 				}
-				result, err := lroOp.Wait(ctx, &lro.LroOptions{Timeout: 1 * time.Minute})
+				result, err := lroOp.Wait(ctx, api.WithTimeout(1*time.Minute))
 				if diff := cmp.Diff(tt.wantResult, result, cmpopts.IgnoreFields(lrotesting.TestResource{}, "ForceSendFields")); diff != "" {
 					t.Errorf("result mismatch (-expected +actual):\n%s", diff)
 				}

@@ -206,7 +206,7 @@
 //
 // - [settings.PersonalComputeAPI]: The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources.
 //
-// - [pipelines.PipelinesAPI]: The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
+// - [pipelines.PipelinesAPI]: The Lakeflow Spark Declarative Pipelines API allows you to create, edit, delete, start, and view details about pipelines.
 //
 // - [catalog.PoliciesAPI]: Attribute-Based Access Control (ABAC) provides high leverage governance for enforcing compliance policies in Unity Catalog.
 //
@@ -266,7 +266,7 @@
 //
 // - [settings.RestrictWorkspaceAdminsAPI]: The Restrict Workspace Admins setting lets you control the capabilities of workspace admins.
 //
-// - [catalog.RfaAPI]: Request for Access enables customers to request access to and manage access request destinations for Unity Catalog securables.
+// - [catalog.RfaAPI]: Request for Access enables users to request access for Unity Catalog securables.
 //
 // - [catalog.SchemasAPI]: A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace.
 //
@@ -343,6 +343,8 @@
 // - [catalog.WorkspaceBindingsAPI]: A securable in Databricks can be configured as __OPEN__ or __ISOLATED__.
 //
 // - [settings.WorkspaceConfAPI]: This API allows updating known workspace settings for advanced users.
+//
+// - [tags.WorkspaceEntityTagAssignmentsAPI]: Manage tag assignments on workspace-scoped objects.
 //
 // - [iamv2.WorkspaceIamV2API]: These APIs are used to manage identities and the workspace access of these identities in <Databricks>.
 //
@@ -560,6 +562,7 @@ var (
 	_ *iam.WorkspaceAssignmentAPI                         = nil
 	_ *catalog.WorkspaceBindingsAPI                       = nil
 	_ *settings.WorkspaceConfAPI                          = nil
+	_ *tags.WorkspaceEntityTagAssignmentsAPI              = nil
 	_ *iamv2.WorkspaceIamV2API                            = nil
 	_ *settings.WorkspaceNetworkConfigurationAPI          = nil
 	_ *settingsv2.WorkspaceSettingsV2API                  = nil

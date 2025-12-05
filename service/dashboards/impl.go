@@ -10,6 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just Genie API methods
@@ -26,6 +27,17 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieMessage)
 	return &genieMessage, err
+}
+
+func (a *genieImpl) CreateSpace(ctx context.Context, request GenieCreateSpaceRequest) (*GenieSpace, error) {
+	var genieSpace GenieSpace
+	path := "/api/2.0/genie/spaces"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieSpace)
+	return &genieSpace, err
 }
 
 func (a *genieImpl) DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error {
@@ -176,6 +188,17 @@ func (a *genieImpl) TrashSpace(ctx context.Context, request GenieTrashSpaceReque
 	return err
 }
 
+func (a *genieImpl) UpdateSpace(ctx context.Context, request GenieUpdateSpaceRequest) (*GenieSpace, error) {
+	var genieSpace GenieSpace
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v", request.SpaceId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &genieSpace)
+	return &genieSpace, err
+}
+
 // unexported type that holds implementations of just Lakeview API methods
 type lakeviewImpl struct {
 	client *client.DatabricksClient
@@ -185,6 +208,14 @@ func (a *lakeviewImpl) Create(ctx context.Context, request CreateDashboardReques
 	var dashboard Dashboard
 	path := "/api/2.0/lakeview/dashboards"
 	queryParams := make(map[string]any)
+
+	if request.DatasetCatalog != "" || slices.Contains(request.ForceSendFields, "DatasetCatalog") {
+		queryParams["dataset_catalog"] = request.DatasetCatalog
+	}
+
+	if request.DatasetSchema != "" || slices.Contains(request.ForceSendFields, "DatasetSchema") {
+		queryParams["dataset_schema"] = request.DatasetSchema
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
@@ -439,6 +470,14 @@ func (a *lakeviewImpl) Update(ctx context.Context, request UpdateDashboardReques
 	var dashboard Dashboard
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)
+
+	if request.DatasetCatalog != "" || slices.Contains(request.ForceSendFields, "DatasetCatalog") {
+		queryParams["dataset_catalog"] = request.DatasetCatalog
+	}
+
+	if request.DatasetSchema != "" || slices.Contains(request.ForceSendFields, "DatasetSchema") {
+		queryParams["dataset_schema"] = request.DatasetSchema
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"

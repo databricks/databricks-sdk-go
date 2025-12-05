@@ -5,6 +5,7 @@ package ml
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -236,6 +237,40 @@ func (s ApproveTransitionRequest) MarshalJSON() ([]byte, error) {
 type ApproveTransitionRequestResponse struct {
 	// New activity generated as a result of this operation.
 	Activity *Activity `json:"activity,omitempty"`
+}
+
+type AuthConfig struct {
+	// Name of the Unity Catalog service credential. This value will be set
+	// under the option databricks.serviceCredential
+	UcServiceCredentialName string `json:"uc_service_credential_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AuthConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AuthConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type BatchCreateMaterializedFeaturesRequest struct {
+	// The requests to create materialized features.
+	Requests []CreateMaterializedFeatureRequest `json:"requests"`
+}
+
+type BatchCreateMaterializedFeaturesResponse struct {
+	// The created materialized features with assigned IDs.
+	MaterializedFeatures []MaterializedFeature `json:"materialized_features,omitempty"`
+}
+
+type ColumnIdentifier struct {
+	// String representation of the column name or variant expression path. For
+	// nested fields, the leaf value is what will be present in materialized
+	// tables and expected to match at query time. For example, the leaf node of
+	// value:trip_details.location_details.pickup_zip is pickup_zip.
+	VariantExprPath string `json:"variant_expr_path"`
 }
 
 // An action that a user (with sufficient permissions) could take on an activity
@@ -503,6 +538,10 @@ func (s CreateForecastingExperimentResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateKafkaConfigRequest struct {
+	KafkaConfig KafkaConfig `json:"kafka_config"`
+}
+
 type CreateLoggedModelRequest struct {
 	// The ID of the experiment that owns the model.
 	ExperimentId string `json:"experiment_id"`
@@ -736,6 +775,8 @@ type CreateWebhookResponse struct {
 
 type DataSource struct {
 	DeltaTableSource *DeltaTableSource `json:"delta_table_source,omitempty"`
+
+	KafkaSource *KafkaSource `json:"kafka_source,omitempty"`
 }
 
 // Dataset. Represents a reference to data used for training, testing, or
@@ -806,6 +847,11 @@ type DeleteFeatureTagRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
+type DeleteKafkaConfigRequest struct {
+	// Name of the Kafka config to delete.
+	Name string `json:"-" url:"-"`
+}
+
 type DeleteLoggedModelRequest struct {
 	// The ID of the logged model to delete.
 	ModelId string `json:"-" url:"-"`
@@ -856,6 +902,11 @@ type DeleteModelVersionTagRequest struct {
 type DeleteOnlineStoreRequest struct {
 	// Name of the online store to delete.
 	Name string `json:"-" url:"-"`
+}
+
+type DeleteOnlineTableRequest struct {
+	// The full three-part (catalog, schema, table) name of the online table.
+	OnlineTableName string `json:"-" url:"-"`
 }
 
 type DeleteRun struct {
@@ -1160,6 +1211,13 @@ type Feature struct {
 	Function Function `json:"function"`
 	// The input columns from which the feature is computed.
 	Inputs []string `json:"inputs"`
+	// WARNING: This field is primarily intended for internal use by Databricks
+	// systems and is automatically populated when features are created through
+	// Databricks notebooks or jobs. Users should not manually set this field as
+	// incorrect values may lead to inaccurate lineage tracking or unexpected
+	// behavior. This field will be set by feature-engineering client and should
+	// be left unset by SDK and terraform users.
+	LineageContext *LineageContext `json:"lineage_context,omitempty"`
 	// The data source of the feature.
 	Source DataSource `json:"source"`
 	// The time window in which the feature is computed.
@@ -1527,6 +1585,11 @@ func (s GetHistoryRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GetKafkaConfigRequest struct {
+	// Name of the Kafka config to get.
+	Name string `json:"-" url:"-"`
+}
+
 type GetLatestVersionsRequest struct {
 	// Registered model unique name identifier.
 	Name string `json:"name"`
@@ -1727,6 +1790,23 @@ type InputTag struct {
 	Value string `json:"value"`
 }
 
+type JobContext struct {
+	// The job ID where this API invoked.
+	JobId int64 `json:"job_id,omitempty"`
+	// The job run ID where this API was invoked.
+	JobRunId int64 `json:"job_run_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *JobContext) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s JobContext) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type JobSpec struct {
 	// The personal access token used to authorize webhook's job runs.
 	AccessToken string `json:"access_token"`
@@ -1764,6 +1844,58 @@ func (s *JobSpecWithoutSecret) UnmarshalJSON(b []byte) error {
 }
 
 func (s JobSpecWithoutSecret) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type KafkaConfig struct {
+	// Authentication configuration for connection to topics.
+	AuthConfig AuthConfig `json:"auth_config"`
+	// A comma-separated list of host/port pairs pointing to Kafka cluster.
+	BootstrapServers string `json:"bootstrap_servers"`
+	// Catch-all for miscellaneous options. Keys should be source options or
+	// Kafka consumer options (kafka.*)
+	ExtraOptions map[string]string `json:"extra_options,omitempty"`
+	// Schema configuration for extracting message keys from topics. At least
+	// one of key_schema and value_schema must be provided.
+	KeySchema *SchemaConfig `json:"key_schema,omitempty"`
+	// Name that uniquely identifies this Kafka config within the metastore.
+	// This will be the identifier used from the Feature object to reference
+	// these configs for a feature. Can be distinct from topic name.
+	Name string `json:"name"`
+	// Options to configure which Kafka topics to pull data from.
+	SubscriptionMode SubscriptionMode `json:"subscription_mode"`
+	// Schema configuration for extracting message values from topics. At least
+	// one of key_schema and value_schema must be provided.
+	ValueSchema *SchemaConfig `json:"value_schema,omitempty"`
+}
+
+type KafkaSource struct {
+	// The entity column identifiers of the Kafka source.
+	EntityColumnIdentifiers []ColumnIdentifier `json:"entity_column_identifiers"`
+	// Name of the Kafka source, used to identify it. This is used to look up
+	// the corresponding KafkaConfig object. Can be distinct from topic name.
+	Name string `json:"name"`
+	// The timeseries column identifier of the Kafka source.
+	TimeseriesColumnIdentifier ColumnIdentifier `json:"timeseries_column_identifier"`
+}
+
+// Lineage context information for tracking where an API was invoked. This will
+// allow us to track lineage, which currently uses caller entity information for
+// use across the Lineage Client and Observability in Lumberjack.
+type LineageContext struct {
+	// Job context information including job ID and run ID.
+	JobContext *JobContext `json:"job_context,omitempty"`
+	// The notebook ID where this API was invoked.
+	NotebookId int64 `json:"notebook_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LineageContext) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LineageContext) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1945,6 +2077,40 @@ func (s *ListFeaturesResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListFeaturesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListKafkaConfigsRequest struct {
+	// The maximum number of results to return.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page based on a previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListKafkaConfigsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListKafkaConfigsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListKafkaConfigsResponse struct {
+	// List of Kafka configs. Schemas are not included in the response.
+	KafkaConfigs []KafkaConfig `json:"kafka_configs"`
+	// Pagination token to request the next page of results for this query.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListKafkaConfigsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListKafkaConfigsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2411,7 +2577,7 @@ type MaterializedFeature struct {
 
 	OfflineStoreConfig *OfflineStoreConfig `json:"offline_store_config,omitempty"`
 
-	OnlineStoreConfig *OnlineStore `json:"online_store_config,omitempty"`
+	OnlineStoreConfig *OnlineStoreConfig `json:"online_store_config,omitempty"`
 	// The schedule state of the materialization pipeline.
 	PipelineScheduleState MaterializedFeaturePipelineScheduleState `json:"pipeline_schedule_state,omitempty"`
 	// The fully qualified Unity Catalog path to the table containing the
@@ -2798,6 +2964,20 @@ func (s *OnlineStore) UnmarshalJSON(b []byte) error {
 
 func (s OnlineStore) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Configuration for online store destination.
+type OnlineStoreConfig struct {
+	// The Unity Catalog catalog name. This name is also used as the Lakebase
+	// logical database name.
+	CatalogName string `json:"catalog_name"`
+	// The name of the target online store.
+	OnlineStoreName string `json:"online_store_name"`
+	// The Unity Catalog schema name.
+	SchemaName string `json:"schema_name"`
+	// Prefix for Unity Catalog table name. The materialized feature will be
+	// stored in a Lakebase table with this prefix and a generated postfix.
+	TableNamePrefix string `json:"table_name_prefix"`
 }
 
 type OnlineStoreState string
@@ -3612,6 +3792,22 @@ func (s RunTag) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type SchemaConfig struct {
+	// Schema of the JSON object in standard IETF JSON schema format
+	// (https://json-schema.org/)
+	JsonSchema string `json:"json_schema,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SchemaConfig) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SchemaConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type SearchExperiments struct {
 	// String representing a SQL filter condition (e.g. "name ILIKE
 	// 'my-experiment%'")
@@ -4027,6 +4223,29 @@ func (f *Status) Type() string {
 	return "Status"
 }
 
+type SubscriptionMode struct {
+	// A JSON string that contains the specific topic-partitions to consume
+	// from. For example, for '{"topicA":[0,1],"topicB":[2,4]}', topicA's 0'th
+	// and 1st partitions will be consumed from.
+	Assign string `json:"assign,omitempty"`
+	// A comma-separated list of Kafka topics to read from. For example,
+	// 'topicA,topicB,topicC'.
+	Subscribe string `json:"subscribe,omitempty"`
+	// A regular expression matching topics to subscribe to. For example,
+	// 'topic.*' will subscribe to all topics starting with 'topic'.
+	SubscribePattern string `json:"subscribe_pattern,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SubscriptionMode) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SubscriptionMode) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Details required to test a registry webhook.
 type TestRegistryWebhookRequest struct {
 	// If `event` is specified, the test trigger uses the specified event. If
@@ -4202,6 +4421,17 @@ func (s *UpdateFeatureTagRequest) UnmarshalJSON(b []byte) error {
 
 func (s UpdateFeatureTagRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateKafkaConfigRequest struct {
+	// The Kafka config to update.
+	KafkaConfig KafkaConfig `json:"kafka_config"`
+	// Name that uniquely identifies this Kafka config within the metastore.
+	// This will be the identifier used from the Feature object to reference
+	// these configs for a feature. Can be distinct from topic name.
+	Name string `json:"-" url:"-"`
+	// The list of fields to update.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
 }
 
 type UpdateMaterializedFeatureRequest struct {
