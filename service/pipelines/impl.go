@@ -17,6 +17,17 @@ type pipelinesImpl struct {
 	client *client.DatabricksClient
 }
 
+func (a *pipelinesImpl) Clone(ctx context.Context, request ClonePipelineRequest) (*ClonePipelineResponse, error) {
+	var clonePipelineResponse ClonePipelineResponse
+	path := fmt.Sprintf("/api/2.0/pipelines/%v/clone", request.PipelineId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &clonePipelineResponse)
+	return &clonePipelineResponse, err
+}
+
 func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error) {
 	var createPipelineResponse CreatePipelineResponse
 	path := "/api/2.0/pipelines"

@@ -142,6 +142,9 @@ type CreateCustomerManagedKeyRequest struct {
 }
 
 type CreateGcpKeyInfo struct {
+	// Globally unique service account email that has access to the KMS key. The
+	// service account exists within the Databricks CP project.
+	GcpServiceAccount *GcpServiceAccount `json:"gcp_service_account,omitempty"`
 	// Globally unique kms key resource id of the form
 	// projects/testProjectId/locations/us-east4/keyRings/gcpCmkKeyRing/cryptoKeys/cmk-eastus4
 	KmsKeyId string `json:"kms_key_id"`
@@ -636,6 +639,9 @@ func (s GcpCommonNetworkConfig) MarshalJSON() ([]byte, error) {
 }
 
 type GcpKeyInfo struct {
+	// Globally unique service account email that has access to the KMS key. The
+	// service account exists within the Databricks CP project.
+	GcpServiceAccount *GcpServiceAccount `json:"gcp_service_account,omitempty"`
 	// Globally unique kms key resource id of the form
 	// projects/testProjectId/locations/us-east4/keyRings/gcpCmkKeyRing/cryptoKeys/cmk-eastus4
 	KmsKeyId string `json:"kms_key_id"`
@@ -680,6 +686,20 @@ type GcpNetworkInfo struct {
 	SubnetRegion string `json:"subnet_region"`
 	// The customer-provided VPC ID.
 	VpcId string `json:"vpc_id"`
+}
+
+type GcpServiceAccount struct {
+	ServiceAccountEmail string `json:"service_account_email,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GcpServiceAccount) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GcpServiceAccount) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GcpVpcEndpointInfo struct {
