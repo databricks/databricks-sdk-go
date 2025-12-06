@@ -28,6 +28,65 @@ func (_m *MockPipelinesInterface) EXPECT() *MockPipelinesInterface_Expecter {
 	return &MockPipelinesInterface_Expecter{mock: &_m.Mock}
 }
 
+// Clone provides a mock function with given fields: ctx, request
+func (_m *MockPipelinesInterface) Clone(ctx context.Context, request pipelines.ClonePipelineRequest) (*pipelines.ClonePipelineResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Clone")
+	}
+
+	var r0 *pipelines.ClonePipelineResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, pipelines.ClonePipelineRequest) (*pipelines.ClonePipelineResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, pipelines.ClonePipelineRequest) *pipelines.ClonePipelineResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*pipelines.ClonePipelineResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, pipelines.ClonePipelineRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPipelinesInterface_Clone_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Clone'
+type MockPipelinesInterface_Clone_Call struct {
+	*mock.Call
+}
+
+// Clone is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request pipelines.ClonePipelineRequest
+func (_e *MockPipelinesInterface_Expecter) Clone(ctx interface{}, request interface{}) *MockPipelinesInterface_Clone_Call {
+	return &MockPipelinesInterface_Clone_Call{Call: _e.mock.On("Clone", ctx, request)}
+}
+
+func (_c *MockPipelinesInterface_Clone_Call) Run(run func(ctx context.Context, request pipelines.ClonePipelineRequest)) *MockPipelinesInterface_Clone_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(pipelines.ClonePipelineRequest))
+	})
+	return _c
+}
+
+func (_c *MockPipelinesInterface_Clone_Call) Return(_a0 *pipelines.ClonePipelineResponse, _a1 error) *MockPipelinesInterface_Clone_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPipelinesInterface_Clone_Call) RunAndReturn(run func(context.Context, pipelines.ClonePipelineRequest) (*pipelines.ClonePipelineResponse, error)) *MockPipelinesInterface_Clone_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Create provides a mock function with given fields: ctx, request
 func (_m *MockPipelinesInterface) Create(ctx context.Context, request pipelines.CreatePipeline) (*pipelines.CreatePipelineResponse, error) {
 	ret := _m.Called(ctx, request)

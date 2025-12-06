@@ -25,6 +25,12 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PipelinesService interface {
 
+	// Creates a new pipeline using Unity Catalog from a pipeline using Hive
+	// Metastore. This method returns the ID of the newly created clone.
+	// Additionally, this method starts an update for the newly created
+	// pipeline.
+	Clone(ctx context.Context, request ClonePipelineRequest) (*ClonePipelineResponse, error)
+
 	// Creates a new data processing pipeline based on the requested
 	// configuration. If successful, this method returns the ID of the new
 	// pipeline.

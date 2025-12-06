@@ -2567,6 +2567,9 @@ func (s LoggedModelTag) MarshalJSON() ([]byte, error) {
 // A materialized feature represents a feature that is continuously computed and
 // stored.
 type MaterializedFeature struct {
+	// The quartz cron expression that defines the schedule of the
+	// materialization pipeline. The schedule is evaluated in the UTC timezone.
+	CronSchedule string `json:"cron_schedule,omitempty"`
 	// The full name of the feature in Unity Catalog.
 	FeatureName string `json:"feature_name"`
 	// The timestamp when the pipeline last ran and updated the materialized
