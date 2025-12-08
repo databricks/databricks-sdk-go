@@ -16,7 +16,9 @@ import (
 // authenticate with Databricks. It loads a token from the token cache for the
 // given workspace or account, refreshing it using the associated refresh token
 // if needed.
-type u2mCredentials struct{}
+type u2mCredentials struct {
+	testTokenSource oauth2.TokenSource // replace u2m token source
+}
 
 // Name implements CredentialsStrategy.
 func (u u2mCredentials) Name() string {
@@ -33,12 +35,17 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 
 	arg, err := cfg.getOAuthArgument()
 	if err != nil {
-		return nil, fmt.Errorf("oidc: %w", err)
+		return nil, err
 	}
 
-	ts, err := u2m.NewPersistentAuth(ctx, u2m.WithOAuthArgument(arg), u2m.WithPort(cfg.OAuthCallbackPort))
-	if err != nil {
-		return nil, err
+	var ts oauth2.TokenSource
+	if u.testTokenSource != nil {
+		ts = u.testTokenSource
+	} else {
+		ts, err = u2m.NewPersistentAuth(ctx, u2m.WithOAuthArgument(arg), u2m.WithPort(cfg.OAuthCallbackPort))
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// TODO: Having to handle the CLI error here is not ideal as it couples the

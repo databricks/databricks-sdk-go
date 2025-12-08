@@ -85,7 +85,7 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (creden
 			logger.Debugf(ctx, "Failed to configure auth %q: %v", s.Name(), err)
 			continue
 		}
-		// Many credentials providers can only be truely validated after a
+		// Many credentials providers can only be truly validated after a
 		// request is made (e.g. because they need to exercise some hand-shake
 		// or verify that tokens exist in the cache). We perform a dry run to
 		// validate the credentials provider.

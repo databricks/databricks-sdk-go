@@ -4,19 +4,24 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
+	"strings"
 	"testing"
 	"time"
 
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"golang.org/x/oauth2"
 )
 
 type testTokenSource struct {
-	token *oauth2.Token
-	err   error
+	token  *oauth2.Token
+	err    error
+	counts int // number of times Token() is called
 }
 
 func (m *testTokenSource) Token() (*oauth2.Token, error) {
+	m.counts++
 	return m.token, m.err
 }
 
@@ -33,6 +38,14 @@ var testExpiredToken = &oauth2.Token{
 	Expiry:       time.Now().Add(-1 * time.Hour),
 }
 
+func getHeader(cp credentials.CredentialsProvider) (http.Header, error) {
+	req := &http.Request{Header: make(http.Header)} // dummy request
+	if err := cp.SetHeaders(req); err != nil {
+		return nil, err
+	}
+	return req.Header, nil
+}
+
 // Sentinel errors for testing.
 var (
 	errNetwork             = errors.New("network timeout")
@@ -40,212 +53,211 @@ var (
 	errInvalidRefreshToken = &u2m.InvalidRefreshTokenError{}
 )
 
-func TestWrapWithCLIErrorHandling(t *testing.T) {
+func TestU2MCredentials_Configure(t *testing.T) {
 	testCases := []struct {
-		desc             string
-		cfg              *Config
-		arg              u2m.OAuthArgument
-		ts               oauth2.TokenSource
-		wantToken        *oauth2.Token
-		wantErr          bool
-		wantLoginCommand string // if set, check CLI error message
+		desc            string
+		cfg             *Config
+		testTokenSource *testTokenSource
+		wantConfigErr   string // Error from Configure()
+		wantHeaderErr   string // Error from SetHeaders()
+		wantAuthHeader  string // Expected Authorization header
 	}{
 		{
-			desc: "successful token retrieval with workspace arg",
-			cfg:  &Config{Profile: "default"},
-			arg:  mustCreateWorkspaceArg(t, "https://example.cloud.databricks.com"),
-			ts: &testTokenSource{
-				token: testValidToken,
+			desc: "missing host returns error",
+			cfg: &Config{
+				Host: "",
 			},
-			wantToken: testValidToken,
+			wantConfigErr: "host is required",
 		},
 		{
-			desc: "successful token retrieval with account arg",
-			cfg:  &Config{Profile: "prod"},
-			arg:  mustCreateAccountArg(t, "https://accounts.cloud.databricks.com", "abc-123"),
-			ts: &testTokenSource{
+			desc: "successful configuration with workspace host",
+			cfg: &Config{
+				Host: "https://workspace.cloud.databricks.com",
+			},
+			testTokenSource: &testTokenSource{
 				token: testValidToken,
 			},
-			wantToken: testValidToken,
+			wantAuthHeader: "Bearer valid-access-token",
 		},
 		{
-			desc: "successful token retrieval with expired token",
-			cfg:  &Config{},
-			arg:  mustCreateWorkspaceArg(t, "https://workspace.databricks.com"),
-			ts: &testTokenSource{
+			desc: "successful configuration with account host and account ID",
+			cfg: &Config{
+				Host:      "https://accounts.cloud.databricks.com",
+				AccountID: "abc-123",
+			},
+			testTokenSource: &testTokenSource{
+				token: testValidToken,
+			},
+			wantAuthHeader: "Bearer valid-access-token",
+		},
+		{
+			desc: "expired token is accepted",
+			cfg: &Config{
+				Host: "https://workspace.cloud.databricks.com",
+			},
+			testTokenSource: &testTokenSource{
 				token: testExpiredToken,
 			},
-			wantToken: testExpiredToken,
+			wantAuthHeader: "Bearer expired-access-token",
+		},
+		{
+			desc: "token source returns network error",
+			cfg: &Config{
+				Host: "https://workspace.cloud.databricks.com",
+			},
+			testTokenSource: &testTokenSource{
+				err: errNetwork,
+			},
+			wantHeaderErr: "network timeout",
+		},
+		{
+			desc: "token source returns authentication error",
+			cfg: &Config{
+				Host: "https://workspace.cloud.databricks.com",
+			},
+			testTokenSource: &testTokenSource{
+				err: errAuthentication,
+			},
+			wantHeaderErr: "authentication failed",
 		},
 		{
 			desc: "invalid refresh token error - workspace with profile",
-			cfg:  &Config{Profile: "my-workspace"},
-			arg:  mustCreateWorkspaceArg(t, "https://workspace.databricks.com"),
-			ts: &testTokenSource{
+			cfg: &Config{
+				Host:     "https://workspace.cloud.databricks.com",
+				Profile:  "my-workspace",
+				resolved: true,
+			},
+			testTokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
-			wantErr:          true,
-			wantLoginCommand: "databricks auth login --profile my-workspace",
+			wantHeaderErr: "databricks auth login --profile my-workspace",
 		},
 		{
 			desc: "invalid refresh token error - workspace without profile",
-			cfg:  &Config{},
-			arg:  mustCreateWorkspaceArg(t, "https://workspace.databricks.com"),
-			ts: &testTokenSource{
+			cfg: &Config{
+				Host:     "https://workspace.cloud.databricks.com",
+				resolved: true,
+			},
+			testTokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
-			wantErr:          true,
-			wantLoginCommand: "databricks auth login --host https://workspace.databricks.com",
+			wantHeaderErr: "databricks auth login --host https://workspace.cloud.databricks.com",
 		},
 		{
 			desc: "invalid refresh token error - account with profile",
-			cfg:  &Config{Profile: "prod-account"},
-			arg:  mustCreateAccountArg(t, "https://accounts.cloud.databricks.com", "xyz-789"),
-			ts: &testTokenSource{
+			cfg: &Config{
+				Host:      "https://accounts.cloud.databricks.com",
+				AccountID: "xyz-789",
+				Profile:   "prod-account",
+				resolved:  true,
+			},
+			testTokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
-			wantErr:          true,
-			wantLoginCommand: "databricks auth login --profile prod-account",
+			wantHeaderErr: "databricks auth login --profile prod-account",
 		},
 		{
 			desc: "invalid refresh token error - account without profile",
-			cfg:  &Config{},
-			arg:  mustCreateAccountArg(t, "https://accounts.azure.databricks.net", "abc-456"),
-			ts: &testTokenSource{
+			cfg: &Config{
+				Host:      "https://accounts.cloud.databricks.com",
+				AccountID: "abc-123",
+				resolved:  true,
+			},
+			testTokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
-			wantErr:          true,
-			wantLoginCommand: "databricks auth login --host https://accounts.azure.databricks.net --account-id abc-456",
+			wantHeaderErr: "databricks auth login --host https://accounts.cloud.databricks.com --account-id abc-123",
 		},
 		{
 			desc: "wrapped invalid refresh token error",
-			cfg:  &Config{Profile: "test"},
-			arg:  mustCreateWorkspaceArg(t, "https://test.databricks.com"),
-			ts: &testTokenSource{
+			cfg: &Config{
+				Host:     "https://workspace.cloud.databricks.com",
+				Profile:  "test",
+				resolved: true,
+			},
+			testTokenSource: &testTokenSource{
 				err: fmt.Errorf("oauth2: %w", errInvalidRefreshToken),
 			},
-			wantErr:          true,
-			wantLoginCommand: "databricks auth login --profile test",
+			wantHeaderErr: "databricks auth login --profile test",
 		},
 		{
-			desc: "other error is passed through unchanged - network error",
-			cfg:  &Config{Profile: "default"},
-			arg:  mustCreateWorkspaceArg(t, "https://workspace.databricks.com"),
-			ts: &testTokenSource{
-				err: errNetwork,
+			desc: "invalid refresh token error - azure account without profile",
+			cfg: &Config{
+				Host:      "https://accounts.azure.databricks.net",
+				AccountID: "abc-456",
+				resolved:  true,
 			},
-			wantErr: true,
-		},
-		{
-			desc: "other error is passed through unchanged - authentication error",
-			cfg:  &Config{},
-			arg:  mustCreateWorkspaceArg(t, "https://workspace.databricks.com"),
-			ts: &testTokenSource{
-				err: errAuthentication,
-			},
-			wantErr: true,
-		},
-		{
-			desc: "unified auth argument with profile",
-			cfg:  &Config{Profile: "unified-profile"},
-			arg:  mustCreateUnifiedArg(t, "https://unified.databricks.com", "unified-123"),
-			ts: &testTokenSource{
+			testTokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
-			wantErr:          true,
-			wantLoginCommand: "databricks auth login --profile unified-profile",
-		},
-		{
-			desc: "empty profile with workspace",
-			cfg:  &Config{Profile: ""},
-			arg:  mustCreateWorkspaceArg(t, "https://my-workspace.cloud.databricks.com"),
-			ts: &testTokenSource{
-				err: errInvalidRefreshToken,
-			},
-			wantErr:          true,
-			wantLoginCommand: "databricks auth login --host https://my-workspace.cloud.databricks.com",
-		},
-		{
-			desc: "nil config with workspace arg",
-			cfg:  nil,
-			arg:  mustCreateWorkspaceArg(t, "https://workspace.databricks.com"),
-			ts: &testTokenSource{
-				err: errInvalidRefreshToken,
-			},
-			wantErr:          true,
-			wantLoginCommand: "databricks auth login --host https://workspace.databricks.com",
-		},
-		{
-			desc: "nil config with account arg",
-			cfg:  nil,
-			arg:  mustCreateAccountArg(t, "https://accounts.cloud.databricks.com", "test-123"),
-			ts: &testTokenSource{
-				err: errInvalidRefreshToken,
-			},
-			wantErr:          true,
-			wantLoginCommand: "databricks auth login --host https://accounts.cloud.databricks.com --account-id test-123",
+			wantHeaderErr: "databricks auth login --host https://accounts.azure.databricks.net --account-id abc-456",
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			cfg := tc.cfg
-			if cfg == nil {
-				cfg = &Config{}
-			}
+			ctx := context.Background()
+			u := u2mCredentials{testTokenSource: tc.testTokenSource}
 
-			wrapped := wrapWithCLIErrorHandling(cfg, tc.arg, tc.ts)
-			if wrapped == nil {
-				t.Fatal("wrapWithCLIErrorHandling returned nil")
-			}
+			cp, gotConfigErr := u.Configure(ctx, tc.cfg)
 
-			gotToken, gotErr := wrapped.Token(context.Background())
-
-			if tc.wantErr && gotErr == nil {
-				t.Fatal("want error but got none")
-			}
-			if !tc.wantErr && gotErr != nil {
-				t.Fatalf("want no error but got: %v", gotErr)
-			}
-			if tc.wantLoginCommand != "" {
-				var cliErr *CliInvalidRefreshTokenError
-				if !errors.As(gotErr, &cliErr) {
-					t.Fatalf("want CliInvalidRefreshTokenError but got: %T: %v", gotErr, gotErr)
+			if tc.wantConfigErr != "" {
+				if gotConfigErr == nil {
+					t.Fatalf("Configure() want error containing %q, got nil", tc.wantConfigErr)
 				}
-				if cliErr.loginCommand != tc.wantLoginCommand {
-					t.Errorf("login command mismatch:\n  got:  %q\n  want: %q", cliErr.loginCommand, tc.wantLoginCommand)
+				if !strings.Contains(gotConfigErr.Error(), tc.wantConfigErr) {
+					t.Errorf("Configure() error = %q, want error containing %q", gotConfigErr.Error(), tc.wantConfigErr)
 				}
+				return
 			}
-			if tc.wantToken != gotToken {
-				t.Errorf("want token %v, got %v", tc.wantToken, gotToken)
+			if gotConfigErr != nil {
+				t.Fatalf("Configure() unexpected error: %v", gotConfigErr)
+			}
+
+			header, gotHeaderErr := getHeader(cp)
+
+			if tc.wantHeaderErr != "" {
+				if gotHeaderErr == nil {
+					t.Fatalf("SetHeaders() want error containing %q, got nil", tc.wantHeaderErr)
+				}
+				if !strings.Contains(gotHeaderErr.Error(), tc.wantHeaderErr) {
+					t.Errorf("SetHeaders() error = %q, want error containing %q", gotHeaderErr.Error(), tc.wantHeaderErr)
+				}
+				return
+			}
+			if gotHeaderErr != nil {
+				t.Fatalf("SetHeaders() unexpected error: %v", gotHeaderErr)
+			}
+			if gotHeader := header.Get("Authorization"); gotHeader != tc.wantAuthHeader {
+				t.Errorf("Authorization header = %q, want %q", gotHeader, tc.wantAuthHeader)
 			}
 		})
 	}
 }
 
-func mustCreateWorkspaceArg(t *testing.T, host string) u2m.OAuthArgument {
-	t.Helper()
-	arg, err := u2m.NewBasicWorkspaceOAuthArgument(host)
-	if err != nil {
-		t.Fatalf("failed to create workspace arg: %v", err)
-	}
-	return arg
-}
+func TestU2MCredentials_Configure_TokenCaching(t *testing.T) {
+	ts := &testTokenSource{token: testValidToken}
 
-func mustCreateAccountArg(t *testing.T, host, accountID string) u2m.OAuthArgument {
-	t.Helper()
-	arg, err := u2m.NewBasicAccountOAuthArgument(host, accountID)
-	if err != nil {
-		t.Fatalf("failed to create account arg: %v", err)
+	u := u2mCredentials{testTokenSource: ts}
+	cfg := &Config{
+		Host: "https://workspace.cloud.databricks.com",
 	}
-	return arg
-}
 
-func mustCreateUnifiedArg(t *testing.T, host, accountID string) u2m.OAuthArgument {
-	t.Helper()
-	arg, err := u2m.NewBasicUnifiedOAuthArgument(host, accountID)
+	cp, err := u.Configure(context.Background(), cfg)
 	if err != nil {
-		t.Fatalf("failed to create unified arg: %v", err)
+		t.Fatalf("Configure() error = %v", err)
 	}
-	return arg
+
+	// Call the credentials provider twice, only the first call should
+	// actually call the underlying token source.
+	if _, err := getHeader(cp); err != nil {
+		t.Fatalf("First getHeader() error = %v", err)
+	}
+	if _, err := getHeader(cp); err != nil {
+		t.Fatalf("Second getHeader() error = %v", err)
+	}
+
+	if ts.counts != 1 {
+		t.Errorf("token source call count = %d, want 1 (should use cache)", ts.counts)
+	}
 }
