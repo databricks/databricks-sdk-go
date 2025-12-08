@@ -36,12 +36,72 @@ func TestHostType_AwsWorkspace(t *testing.T) {
 }
 
 func TestHostType_Unified(t *testing.T) {
-	t.Skip("Skipping unified host test: IsUnifiedHost() currently returns false as unified hosts are not yet in production")
 	c := &Config{
-		Host:      "https://unified.cloud.databricks.com",
+		Host:      "https://unified.databricks.com",
 		AccountID: "123e4567-e89b-12d3-a456-426614174000",
 	}
 	assert.Equal(t, UnifiedHost, c.HostType())
+}
+
+func TestIsUnifiedHost(t *testing.T) {
+	tests := []struct {
+		name     string
+		host     string
+		expected bool
+	}{
+		{
+			name:     "valid unified host",
+			host:     "workspace.databricks.com",
+			expected: true,
+		},
+		{
+			name:     "valid unified host with subdomain",
+			host:     "abc123.databricks.com",
+			expected: true,
+		},
+		{
+			name:     "valid unified host with hyphen",
+			host:     "my-workspace.databricks.com",
+			expected: true,
+		},
+		{
+			name:     "invalid - no subdomain",
+			host:     "databricks.com",
+			expected: false,
+		},
+		{
+			name:     "invalid - multiple subdomains",
+			host:     "workspace.cloud.databricks.com",
+			expected: false,
+		},
+		{
+			name:     "invalid - wrong TLD",
+			host:     "workspace.databricks.net",
+			expected: false,
+		},
+		{
+			name:     "invalid - accounts host",
+			host:     "accounts.cloud.databricks.com",
+			expected: false,
+		},
+		{
+			name:     "invalid - empty string",
+			host:     "",
+			expected: false,
+		},
+		{
+			name:     "invalid - with https prefix",
+			host:     "https://workspace.databricks.com",
+			expected: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := IsUnifiedHost(tt.host)
+			assert.Equal(t, tt.expected, result, "IsUnifiedHost(%q) = %v, expected %v", tt.host, result, tt.expected)
+		})
+	}
 }
 
 func TestNewWithWorkspaceHost(t *testing.T) {
@@ -151,7 +211,6 @@ func TestConfig_getOidcEndpoints_workspace(t *testing.T) {
 }
 
 func TestConfig_getOidcEndpoints_unified(t *testing.T) {
-	t.Skip("Skipping unified host test: IsUnifiedHost() currently returns false as unified hosts are not yet in production")
 	tests := []struct {
 		name      string
 		host      string
@@ -159,12 +218,12 @@ func TestConfig_getOidcEndpoints_unified(t *testing.T) {
 	}{
 		{
 			name:      "without trailing slash",
-			host:      "https://unified.cloud.databricks.com",
+			host:      "https://unified.databricks.com",
 			accountID: "abc",
 		},
 		{
 			name:      "with trailing slash",
-			host:      "https://unified.cloud.databricks.com/",
+			host:      "https://unified.databricks.com/",
 			accountID: "abc",
 		},
 	}
@@ -179,15 +238,15 @@ func TestConfig_getOidcEndpoints_unified(t *testing.T) {
 						Method:   "GET",
 						Resource: "/oidc/accounts/abc/.well-known/oauth-authorization-server",
 						Status:   200,
-						Response: `{"authorization_endpoint": "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/authorize", "token_endpoint": "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/token"}`,
+						Response: `{"authorization_endpoint": "https://unified.databricks.com/oidc/accounts/abc/v1/authorize", "token_endpoint": "https://unified.databricks.com/oidc/accounts/abc/v1/token"}`,
 					},
 				},
 			}
 			got, err := c.getOidcEndpoints(context.Background())
 			assert.NoError(t, err)
 			assert.Equal(t, &u2m.OAuthAuthorizationServer{
-				AuthorizationEndpoint: "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/authorize",
-				TokenEndpoint:         "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/token",
+				AuthorizationEndpoint: "https://unified.databricks.com/oidc/accounts/abc/v1/authorize",
+				TokenEndpoint:         "https://unified.databricks.com/oidc/accounts/abc/v1/token",
 			}, got)
 		})
 	}
@@ -257,7 +316,6 @@ func TestConfig_getOAuthArgument_workspace(t *testing.T) {
 }
 
 func TestConfig_getOAuthArgument_Unified(t *testing.T) {
-	t.Skip("Skipping unified host test: IsUnifiedHost() currently returns false as unified hosts are not yet in production")
 	tests := []struct {
 		name      string
 		host      string
@@ -265,12 +323,12 @@ func TestConfig_getOAuthArgument_Unified(t *testing.T) {
 	}{
 		{
 			name:      "without trailing slash",
-			host:      "https://unified.cloud.databricks.com",
+			host:      "https://unified.databricks.com",
 			accountID: "account-123",
 		},
 		{
 			name:      "with trailing slash",
-			host:      "https://unified.cloud.databricks.com/",
+			host:      "https://unified.databricks.com/",
 			accountID: "account-123",
 		},
 	}
@@ -285,7 +343,7 @@ func TestConfig_getOAuthArgument_Unified(t *testing.T) {
 			assert.NoError(t, err)
 			got, ok := rawGot.(u2m.UnifiedOAuthArgument)
 			assert.True(t, ok, "Expected UnifiedOAuthArgument")
-			assert.Equal(t, "https://unified.cloud.databricks.com", got.GetHost())
+			assert.Equal(t, "https://unified.databricks.com", got.GetHost())
 			assert.Equal(t, "account-123", got.GetAccountId())
 		})
 	}
