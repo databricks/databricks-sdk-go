@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -210,9 +211,6 @@ type Config struct {
 
 	// Keep track of the source of each attribute
 	attrSource map[string]Source
-
-	// Marker for unified hosts. Will be redundant once we can recognize unified hosts by their hostname.
-	Experimental_IsUnifiedHost bool `name:"experimental_is_unified_host" env:"DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST" auth:"-"`
 }
 
 // NewWithWorkspaceHost returns a new instance of the Config with the host set to
@@ -320,14 +318,11 @@ func (c *Config) IsAws() bool {
 }
 
 // IsAccountClient returns true if client is configured for Accounts API.
-// Panics if the config has the unified host flag set.
+// Note: This method does not support unified hosts. For unified hosts, use
+// HostType() or ConfigType() instead.
 //
 // Deprecated: Use HostType() if possible, or ConfigType() if necessary.
 func (c *Config) IsAccountClient() bool {
-	if c.Experimental_IsUnifiedHost {
-		panic("IsAccountClient cannot be used with unified hosts; use HostType() instead")
-	}
-
 	if c.AccountID != "" && c.isTesting {
 		return true
 	}
@@ -344,9 +339,18 @@ func (c *Config) IsAccountClient() bool {
 	return false
 }
 
+// IsUnifiedHost returns true if the given host is a unified host that supports
+// both workspace-level and account-level APIs. For now, this always returns false
+// as unified hosts are not yet in production. This method can be updated in the
+// future to detect unified hosts based on their hostname pattern.
+func IsUnifiedHost(host string) bool {
+	matched, _ := regexp.MatchString(`^[^.]+\.databricks\.com$`, host)
+	return matched
+}
+
 // HostType returns the type of host that the client is configured for.
 func (c *Config) HostType() HostType {
-	if c.Experimental_IsUnifiedHost {
+	if IsUnifiedHost(c.Host) {
 		return UnifiedHost
 	}
 

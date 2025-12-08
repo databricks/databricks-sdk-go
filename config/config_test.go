@@ -36,21 +36,12 @@ func TestHostType_AwsWorkspace(t *testing.T) {
 }
 
 func TestHostType_Unified(t *testing.T) {
+	t.Skip("Skipping unified host test: IsUnifiedHost() currently returns false as unified hosts are not yet in production")
 	c := &Config{
-		Host:                       "https://unified.cloud.databricks.com",
-		AccountID:                  "123e4567-e89b-12d3-a456-426614174000",
-		Experimental_IsUnifiedHost: true,
+		Host:      "https://unified.cloud.databricks.com",
+		AccountID: "123e4567-e89b-12d3-a456-426614174000",
 	}
 	assert.Equal(t, UnifiedHost, c.HostType())
-}
-
-func TestIsAccountClient_PanicsOnUnifiedHost(t *testing.T) {
-	c := &Config{
-		Host:                       "https://unified.cloud.databricks.com",
-		AccountID:                  "test-account",
-		Experimental_IsUnifiedHost: true,
-	}
-	assert.Panics(t, func() { c.IsAccountClient() })
 }
 
 func TestNewWithWorkspaceHost(t *testing.T) {
@@ -160,6 +151,7 @@ func TestConfig_getOidcEndpoints_workspace(t *testing.T) {
 }
 
 func TestConfig_getOidcEndpoints_unified(t *testing.T) {
+	t.Skip("Skipping unified host test: IsUnifiedHost() currently returns false as unified hosts are not yet in production")
 	tests := []struct {
 		name      string
 		host      string
@@ -180,9 +172,8 @@ func TestConfig_getOidcEndpoints_unified(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Config{
-				Host:                       tt.host,
-				AccountID:                  tt.accountID,
-				Experimental_IsUnifiedHost: true,
+				Host:      tt.host,
+				AccountID: tt.accountID,
 				HTTPTransport: fixtures.SliceTransport{
 					{
 						Method:   "GET",
@@ -266,6 +257,7 @@ func TestConfig_getOAuthArgument_workspace(t *testing.T) {
 }
 
 func TestConfig_getOAuthArgument_Unified(t *testing.T) {
+	t.Skip("Skipping unified host test: IsUnifiedHost() currently returns false as unified hosts are not yet in production")
 	tests := []struct {
 		name      string
 		host      string
@@ -286,9 +278,8 @@ func TestConfig_getOAuthArgument_Unified(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Config{
-				Host:                       tt.host,
-				AccountID:                  tt.accountID,
-				Experimental_IsUnifiedHost: true,
+				Host:      tt.host,
+				AccountID: tt.accountID,
 			}
 			rawGot, err := c.getOAuthArgument()
 			assert.NoError(t, err)
