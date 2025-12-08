@@ -122,7 +122,7 @@ func (cb *callbackServer) getHost() string {
 func (cb *callbackServer) Handler(authCodeURL string) (string, string, error) {
 	err := cb.browser(authCodeURL)
 	if err != nil {
-		fmt.Printf("Please open %s in the browser to continue authentication", authCodeURL)
+		fmt.Printf("Please continue the authentication process in your browser:\n%s\n", authCodeURL)
 	}
 	select {
 	case <-cb.ctx.Done():

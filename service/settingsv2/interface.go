@@ -23,7 +23,10 @@ type AccountSettingsV2Service interface {
 
 	// Patch a setting value at account level. See
 	// :method:settingsv2/listaccountsettingsmetadata for list of setting
-	// available via public APIs at account level.
+	// available via public APIs at account level. To determine the correct
+	// field to include in a patch request, refer to the type field of the
+	// setting returned in the :method:settingsv2/listaccountsettingsmetadata
+	// response.
 	PatchPublicAccountSetting(ctx context.Context, request PatchPublicAccountSettingRequest) (*Setting, error)
 }
 
@@ -44,6 +47,9 @@ type WorkspaceSettingsV2Service interface {
 
 	// Patch a setting value at workspace level. See
 	// :method:settingsv2/listworkspacesettingsmetadata for list of setting
-	// available via public APIs at workspace level.
+	// available via public APIs at workspace level. To determine the correct
+	// field to include in a patch request, refer to the type field of the
+	// setting returned in the :method:settingsv2/listworkspacesettingsmetadata
+	// response.
 	PatchPublicWorkspaceSetting(ctx context.Context, request PatchPublicWorkspaceSettingRequest) (*Setting, error)
 }

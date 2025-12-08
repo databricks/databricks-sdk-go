@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go"
-	"github.com/stretchr/testify/mock"
 
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/agentbricks"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/apps"
@@ -33,6 +32,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/tags"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/vectorsearch"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/workspace"
+	"github.com/stretchr/testify/mock"
 )
 
 type MockWorkspaceClient struct {
@@ -167,6 +167,7 @@ func NewMockWorkspaceClient(t interface {
 			Workspace:                           workspace.NewMockWorkspaceInterface(t),
 			WorkspaceBindings:                   catalog.NewMockWorkspaceBindingsInterface(t),
 			WorkspaceConf:                       settings.NewMockWorkspaceConfInterface(t),
+			WorkspaceEntityTagAssignments:       tags.NewMockWorkspaceEntityTagAssignmentsInterface(t),
 			WorkspaceIamV2:                      iamv2.NewMockWorkspaceIamV2Interface(t),
 			WorkspaceSettingsV2:                 settingsv2.NewMockWorkspaceSettingsV2Interface(t),
 			Groups:                              iam.NewMockGroupsInterface(t),
@@ -1296,6 +1297,14 @@ func (m *MockWorkspaceClient) GetMockWorkspaceConfAPI() *settings.MockWorkspaceC
 	api, ok := m.WorkspaceClient.WorkspaceConf.(*settings.MockWorkspaceConfInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected WorkspaceConf to be *settings.MockWorkspaceConfInterface, actual was %T", m.WorkspaceClient.WorkspaceConf))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockWorkspaceEntityTagAssignmentsAPI() *tags.MockWorkspaceEntityTagAssignmentsInterface {
+	api, ok := m.WorkspaceClient.WorkspaceEntityTagAssignments.(*tags.MockWorkspaceEntityTagAssignmentsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected WorkspaceEntityTagAssignments to be *tags.MockWorkspaceEntityTagAssignmentsInterface, actual was %T", m.WorkspaceClient.WorkspaceEntityTagAssignments))
 	}
 	return api
 }
