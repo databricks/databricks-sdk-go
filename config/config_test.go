@@ -90,8 +90,18 @@ func TestIsUnifiedHost(t *testing.T) {
 			expected: false,
 		},
 		{
-			name:     "invalid - with https prefix",
+			name:     "valid - with https prefix",
 			host:     "https://workspace.databricks.com",
+			expected: true,
+		},
+		{
+			name:     "valid - with http prefix",
+			host:     "http://workspace.databricks.com",
+			expected: true,
+		},
+		{
+			name:     "invalid - with https prefix and multiple subdomains",
+			host:     "https://workspace.cloud.databricks.com",
 			expected: false,
 		},
 	}

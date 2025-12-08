@@ -344,7 +344,28 @@ func (c *Config) IsAccountClient() bool {
 // as unified hosts are not yet in production. This method can be updated in the
 // future to detect unified hosts based on their hostname pattern.
 func IsUnifiedHost(host string) bool {
-	matched, _ := regexp.MatchString(`^[^.]+\.databricks\.com$`, host)
+	if host == "" {
+		return false
+	}
+
+	// Parse the URL to extract just the hostname
+	parsedHost, err := url.Parse(host)
+	if err != nil {
+		return false
+	}
+
+	// If no host was parsed, assume the scheme wasn't included
+	hostname := parsedHost.Hostname()
+	if hostname == "" {
+		parsedHost, err = url.Parse("https://" + host)
+		if err != nil {
+			return false
+		}
+		hostname = parsedHost.Hostname()
+	}
+
+	// Match against the unified host pattern: <subdomain>.databricks.com
+	matched, _ := regexp.MatchString(`^[^.]+\.databricks\.com$`, hostname)
 	return matched
 }
 
