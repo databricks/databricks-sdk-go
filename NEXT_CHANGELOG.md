@@ -5,6 +5,7 @@
 ### New Features and Improvements
 
 ### Bug Fixes
+fix: 1243 returns both resetErr and the request's err on retries.Halt
 
 ### documentation
 
