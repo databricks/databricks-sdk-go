@@ -58,9 +58,9 @@ func TestU2MCredentials_Configure(t *testing.T) {
 		desc            string
 		cfg             *Config
 		testTokenSource *testTokenSource
-		wantConfigErr   string // Error from Configure()
-		wantHeaderErr   string // Error from SetHeaders()
-		wantAuthHeader  string // Expected Authorization header
+		wantConfigErr   string // error message from Configure()
+		wantHeaderErr   string // error message from SetHeaders()
+		wantAuthHeader  string // expected Authorization header
 	}{
 		{
 			desc: "missing host returns error",
