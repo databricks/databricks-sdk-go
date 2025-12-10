@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"io"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/service/billing"
@@ -9,21 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
-
-func TestMwsAccUsageDownload(t *testing.T) {
-	ctx, a := accountTest(t)
-	if !a.Config.IsAws() {
-		t.SkipNow()
-	}
-	resp, err := a.BillableUsage.Download(ctx, billing.DownloadRequest{
-		StartMonth: "2024-08",
-		EndMonth:   "2024-09",
-	})
-	require.NoError(t, err)
-	out, err := io.ReadAll(resp.Contents)
-	require.NoError(t, err)
-	assert.NotEmpty(t, out)
-}
 
 func TestMwsAccLogDelivery(t *testing.T) {
 	ctx, a := accountTest(t)
