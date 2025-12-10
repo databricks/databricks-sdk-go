@@ -163,8 +163,8 @@ type AlertsLegacyInterface interface {
 	// a query, evaluates a condition of its result, and notifies users or
 	// notification destinations if the condition was met.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:alerts/create instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:alerts/create
+	// instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Create(ctx context.Context, request CreateAlert) (*LegacyAlert, error)
@@ -173,8 +173,8 @@ type AlertsLegacyInterface interface {
 	// restored. **Note**: Unlike queries and dashboards, alerts cannot be moved to
 	// the trash.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:alerts/delete instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:alerts/delete
+	// instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Delete(ctx context.Context, request DeleteAlertsLegacyRequest) error
@@ -183,40 +183,40 @@ type AlertsLegacyInterface interface {
 	// restored. **Note**: Unlike queries and dashboards, alerts cannot be moved to
 	// the trash.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:alerts/delete instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:alerts/delete
+	// instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	DeleteByAlertId(ctx context.Context, alertId string) error
 
 	// Gets an alert.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:alerts/get instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:alerts/get instead.
+	// [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Get(ctx context.Context, request GetAlertsLegacyRequest) (*LegacyAlert, error)
 
 	// Gets an alert.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:alerts/get instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:alerts/get instead.
+	// [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	GetByAlertId(ctx context.Context, alertId string) (*LegacyAlert, error)
 
 	// Gets a list of alerts.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:alerts/list instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:alerts/list instead.
+	// [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	List(ctx context.Context) ([]LegacyAlert, error)
 
 	// Updates an alert.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:alerts/update instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:alerts/update
+	// instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Update(ctx context.Context, request EditAlert) error
@@ -236,8 +236,8 @@ func NewAlertsLegacy(client *client.DatabricksClient) *AlertsLegacyAPI {
 // destinations if the condition was met. Alerts can be scheduled using the
 // `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 //
-// **Note**: A new version of the Databricks SQL API is now available. Please
-// see the latest version. [Learn more]
+// **Warning**: This API is deprecated. Please see the latest version of the
+// Databricks SQL API. [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type AlertsLegacyAPI struct {
@@ -248,8 +248,8 @@ type AlertsLegacyAPI struct {
 // restored. **Note**: Unlike queries and dashboards, alerts cannot be moved to
 // the trash.
 //
-// **Note**: A new version of the Databricks SQL API is now available. Please
-// use :method:alerts/delete instead. [Learn more]
+// **Warning**: This API is deprecated. Please use :method:alerts/delete
+// instead. [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 func (a *AlertsLegacyAPI) DeleteByAlertId(ctx context.Context, alertId string) error {
@@ -260,8 +260,8 @@ func (a *AlertsLegacyAPI) DeleteByAlertId(ctx context.Context, alertId string) e
 
 // Gets an alert.
 //
-// **Note**: A new version of the Databricks SQL API is now available. Please
-// use :method:alerts/get instead. [Learn more]
+// **Warning**: This API is deprecated. Please use :method:alerts/get instead.
+// [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 func (a *AlertsLegacyAPI) GetByAlertId(ctx context.Context, alertId string) (*LegacyAlert, error) {
@@ -526,8 +526,8 @@ type DataSourcesInterface interface {
 	// fields that appear in this API response are enumerated for clarity. However,
 	// you need only a SQL warehouse's `id` to create new queries against it.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:warehouses/list instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:warehouses/list
+	// instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	List(ctx context.Context) ([]DataSource, error)
@@ -552,8 +552,8 @@ func NewDataSources(client *client.DatabricksClient) *DataSourcesAPI {
 // client, or `grep` to search the response from this API for the name of your
 // SQL warehouse as it appears in Databricks SQL.
 //
-// **Note**: A new version of the Databricks SQL API is now available. [Learn
-// more]
+// **Warning**: This API is deprecated. Please see the latest version of the
+// Databricks SQL API. [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type DataSourcesAPI struct {
@@ -565,8 +565,8 @@ type DbsqlPermissionsInterface interface {
 	// Gets a JSON representation of the access control list (ACL) for a specified
 	// object.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:workspace/getpermissions instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use
+	// :method:workspace/getpermissions instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Get(ctx context.Context, request GetDbsqlPermissionRequest) (*GetResponse, error)
@@ -574,8 +574,8 @@ type DbsqlPermissionsInterface interface {
 	// Gets a JSON representation of the access control list (ACL) for a specified
 	// object.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:workspace/getpermissions instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use
+	// :method:workspace/getpermissions instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	GetByObjectTypeAndObjectId(ctx context.Context, objectType ObjectTypePlural, objectId string) (*GetResponse, error)
@@ -583,8 +583,8 @@ type DbsqlPermissionsInterface interface {
 	// Sets the access control list (ACL) for a specified object. This operation
 	// will complete rewrite the ACL.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:workspace/setpermissions instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use
+	// :method:workspace/setpermissions instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Set(ctx context.Context, request SetRequest) (*SetResponse, error)
@@ -592,9 +592,9 @@ type DbsqlPermissionsInterface interface {
 	// Transfers ownership of a dashboard, query, or alert to an active user.
 	// Requires an admin API key.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. For
-	// queries and alerts, please use :method:queries/update and
-	// :method:alerts/update respectively instead. [Learn more]
+	// **Warning**: This API is deprecated. For queries and alerts, please use
+	// :method:queries/update and :method:alerts/update respectively instead. [Learn
+	// more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	TransferOwnership(ctx context.Context, request TransferOwnershipRequest) (*Success, error)
@@ -622,8 +622,8 @@ func NewDbsqlPermissions(client *client.DatabricksClient) *DbsqlPermissionsAPI {
 // - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify
 // permissions (superset of `CAN_RUN`)
 //
-// **Note**: A new version of the Databricks SQL API is now available. [Learn
-// more]
+// **Warning**: This API is deprecated. Please see the latest version of the
+// Databricks SQL API. [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type DbsqlPermissionsAPI struct {
@@ -633,8 +633,8 @@ type DbsqlPermissionsAPI struct {
 // Gets a JSON representation of the access control list (ACL) for a specified
 // object.
 //
-// **Note**: A new version of the Databricks SQL API is now available. Please
-// use :method:workspace/getpermissions instead. [Learn more]
+// **Warning**: This API is deprecated. Please use
+// :method:workspace/getpermissions instead. [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 func (a *DbsqlPermissionsAPI) GetByObjectTypeAndObjectId(ctx context.Context, objectType ObjectTypePlural, objectId string) (*GetResponse, error) {
@@ -821,8 +821,8 @@ type QueriesLegacyInterface interface {
 	//
 	// **Note**: You cannot add a visualization until you create the query.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:queries/create instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:queries/create
+	// instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Create(ctx context.Context, request QueryPostContent) (*LegacyQuery, error)
@@ -831,8 +831,8 @@ type QueriesLegacyInterface interface {
 	// searches and list views, and they cannot be used for alerts. The trash is
 	// deleted after 30 days.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:queries/delete instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:queries/delete
+	// instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Delete(ctx context.Context, request DeleteQueriesLegacyRequest) error
@@ -841,8 +841,8 @@ type QueriesLegacyInterface interface {
 	// searches and list views, and they cannot be used for alerts. The trash is
 	// deleted after 30 days.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:queries/delete instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:queries/delete
+	// instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	DeleteByQueryId(ctx context.Context, queryId string) error
@@ -850,8 +850,8 @@ type QueriesLegacyInterface interface {
 	// Retrieve a query object definition along with contextual permissions
 	// information about the currently authenticated user.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:queries/get instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:queries/get instead.
+	// [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Get(ctx context.Context, request GetQueriesLegacyRequest) (*LegacyQuery, error)
@@ -859,8 +859,8 @@ type QueriesLegacyInterface interface {
 	// Retrieve a query object definition along with contextual permissions
 	// information about the currently authenticated user.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:queries/get instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:queries/get instead.
+	// [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	GetByQueryId(ctx context.Context, queryId string) (*LegacyQuery, error)
@@ -871,8 +871,8 @@ type QueriesLegacyInterface interface {
 	// **Warning**: Calling this API concurrently 10 or more times could result in
 	// throttling, service degradation, or a temporary ban.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:queries/list instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:queries/list instead.
+	// [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	//
@@ -885,8 +885,8 @@ type QueriesLegacyInterface interface {
 	// **Warning**: Calling this API concurrently 10 or more times could result in
 	// throttling, service degradation, or a temporary ban.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:queries/list instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:queries/list instead.
+	// [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	//
@@ -896,8 +896,8 @@ type QueriesLegacyInterface interface {
 	// Restore a query that has been moved to the trash. A restored query appears in
 	// list views and searches. You can use restored queries for alerts.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// see the latest version. [Learn more]
+	// **Warning**: This API is deprecated. Please see the latest version. [Learn
+	// more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Restore(ctx context.Context, request RestoreQueriesLegacyRequest) error
@@ -906,8 +906,8 @@ type QueriesLegacyInterface interface {
 	//
 	// **Note**: You cannot undo this operation.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:queries/update instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use :method:queries/update
+	// instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Update(ctx context.Context, request QueryEditContent) (*LegacyQuery, error)
@@ -926,8 +926,8 @@ func NewQueriesLegacy(client *client.DatabricksClient) *QueriesLegacyAPI {
 // tags, parameters, and visualizations. Queries can be scheduled using the
 // `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 //
-// **Note**: A new version of the Databricks SQL API is now available. Please
-// see the latest version. [Learn more]
+// **Warning**: This API is deprecated. Please see the latest version of the
+// Databricks SQL API. [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type QueriesLegacyAPI struct {
@@ -938,8 +938,8 @@ type QueriesLegacyAPI struct {
 // searches and list views, and they cannot be used for alerts. The trash is
 // deleted after 30 days.
 //
-// **Note**: A new version of the Databricks SQL API is now available. Please
-// use :method:queries/delete instead. [Learn more]
+// **Warning**: This API is deprecated. Please use :method:queries/delete
+// instead. [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 func (a *QueriesLegacyAPI) DeleteByQueryId(ctx context.Context, queryId string) error {
@@ -951,8 +951,8 @@ func (a *QueriesLegacyAPI) DeleteByQueryId(ctx context.Context, queryId string) 
 // Retrieve a query object definition along with contextual permissions
 // information about the currently authenticated user.
 //
-// **Note**: A new version of the Databricks SQL API is now available. Please
-// use :method:queries/get instead. [Learn more]
+// **Warning**: This API is deprecated. Please use :method:queries/get instead.
+// [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 func (a *QueriesLegacyAPI) GetByQueryId(ctx context.Context, queryId string) (*LegacyQuery, error) {
@@ -1027,32 +1027,32 @@ type QueryVisualizationsLegacyInterface interface {
 
 	// Creates visualization in the query.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:queryvisualizations/create instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use
+	// :method:queryvisualizations/create instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Create(ctx context.Context, request CreateQueryVisualizationsLegacyRequest) (*LegacyVisualization, error)
 
 	// Removes a visualization from the query.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:queryvisualizations/delete instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use
+	// :method:queryvisualizations/delete instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Delete(ctx context.Context, request DeleteQueryVisualizationsLegacyRequest) error
 
 	// Removes a visualization from the query.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:queryvisualizations/delete instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use
+	// :method:queryvisualizations/delete instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	DeleteById(ctx context.Context, id string) error
 
 	// Updates visualization in the query.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available. Please
-	// use :method:queryvisualizations/update instead. [Learn more]
+	// **Warning**: This API is deprecated. Please use
+	// :method:queryvisualizations/update instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	Update(ctx context.Context, request LegacyVisualization) (*LegacyVisualization, error)
@@ -1070,8 +1070,8 @@ func NewQueryVisualizationsLegacy(client *client.DatabricksClient) *QueryVisuali
 // vizualisations from existing queries within the Databricks Workspace. Data
 // structures may change over time.
 //
-// **Note**: A new version of the Databricks SQL API is now available. Please
-// see the latest version. [Learn more]
+// **Warning**: This API is deprecated. Please see the latest version of the
+// Databricks SQL API. [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type QueryVisualizationsLegacyAPI struct {
@@ -1080,8 +1080,8 @@ type QueryVisualizationsLegacyAPI struct {
 
 // Removes a visualization from the query.
 //
-// **Note**: A new version of the Databricks SQL API is now available. Please
-// use :method:queryvisualizations/delete instead. [Learn more]
+// **Warning**: This API is deprecated. Please use
+// :method:queryvisualizations/delete instead. [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 func (a *QueryVisualizationsLegacyAPI) DeleteById(ctx context.Context, id string) error {
