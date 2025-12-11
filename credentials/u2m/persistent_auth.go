@@ -179,12 +179,6 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 // Token loads the OAuth2 token for the given OAuthArgument from the cache. If
 // the token is expired, it is refreshed using the refresh token.
 func (a *PersistentAuth) Token() (t *oauth2.Token, err error) {
-	err = a.startListener(a.ctx)
-	if err != nil {
-		return nil, fmt.Errorf("starting listener: %w", err)
-	}
-	defer a.Close()
-
 	key := a.oAuthArgument.GetCacheKey()
 	t, err = a.cache.Lookup(key)
 	if err != nil {

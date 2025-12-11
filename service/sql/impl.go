@@ -604,8 +604,8 @@ func (a *queriesLegacyImpl) Get(ctx context.Context, request GetQueriesLegacyReq
 // **Warning**: Calling this API concurrently 10 or more times could result in
 // throttling, service degradation, or a temporary ban.
 //
-// **Note**: A new version of the Databricks SQL API is now available. Please
-// use :method:queries/list instead. [Learn more]
+// **Warning**: This API is deprecated. Please use :method:queries/list instead.
+// [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 func (a *queriesLegacyImpl) List(ctx context.Context, request ListQueriesLegacyRequest) listing.Iterator[LegacyQuery] {
@@ -640,8 +640,8 @@ func (a *queriesLegacyImpl) List(ctx context.Context, request ListQueriesLegacyR
 // **Warning**: Calling this API concurrently 10 or more times could result in
 // throttling, service degradation, or a temporary ban.
 //
-// **Note**: A new version of the Databricks SQL API is now available. Please
-// use :method:queries/list instead. [Learn more]
+// **Warning**: This API is deprecated. Please use :method:queries/list instead.
+// [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 func (a *queriesLegacyImpl) ListAll(ctx context.Context, request ListQueriesLegacyRequest) ([]LegacyQuery, error) {

@@ -928,7 +928,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 48
+// Next Id: 51
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -6909,7 +6909,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CREDENTIAL_STORAGE_UC_CONNECTION = 275; Next id:276
+// Latest kind: CONNECTION_CROWDSTRIKE_EVENT_STREAM_M2M = 281; Next id: 282
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`

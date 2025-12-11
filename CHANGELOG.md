@@ -1,5 +1,22 @@
 # Version changelog
 
+## Release v0.94.0 (2025-12-11)
+
+### Bug Fixes
+
+* Fixed U2M OAuth token caching issue that caused tokens to be read from disk 
+  on every request instead of being cached in memory.
+
+### API Changes
+* Add `Clone` method for [w.Pipelines](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinesAPI) workspace-level service.
+* Add `CronSchedule` field for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature).
+* Add `GcpServiceAccount` field for [provisioning.CreateGcpKeyInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#CreateGcpKeyInfo).
+* Add `GcpServiceAccount` field for [provisioning.GcpKeyInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#GcpKeyInfo).
+* Add `HasDeltaUniformIceberg` field for [sharing.TableInternalAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#TableInternalAttributes).
+* Change `TimeWindow` field for [ml.Feature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Feature) to no longer be required.
+* [Breaking] Change `TimeWindow` field for [ml.Feature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Feature) to no longer be required.
+
+
 ## Release v0.93.0 (2025-12-03)
 
 ### Bug Fixes

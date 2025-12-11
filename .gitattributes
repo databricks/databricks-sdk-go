@@ -180,6 +180,7 @@ experimental/mocks/service/sql/mock_redash_config_interface.go linguist-generate
 experimental/mocks/service/sql/mock_statement_execution_interface.go linguist-generated=true
 experimental/mocks/service/sql/mock_warehouses_interface.go linguist-generated=true
 experimental/mocks/service/tags/mock_tag_policies_interface.go linguist-generated=true
+experimental/mocks/service/tags/mock_workspace_entity_tag_assignments_interface.go linguist-generated=true
 experimental/mocks/service/vectorsearch/mock_vector_search_endpoints_interface.go linguist-generated=true
 experimental/mocks/service/vectorsearch/mock_vector_search_indexes_interface.go linguist-generated=true
 experimental/mocks/service/workspace/mock_git_credentials_interface.go linguist-generated=true

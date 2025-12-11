@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
@@ -81,14 +82,28 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (creden
 		logger.Tracef(ctx, "Attempting to configure auth: %q", s.Name())
 		cp, err := s.Configure(ctx, cfg)
 		if err != nil || cp == nil {
-			logger.Debugf(ctx, "Failed to configure auth: %q", s.Name())
+			logger.Debugf(ctx, "Failed to configure auth %q: %v", s.Name(), err)
+			continue
+		}
+		// Many credentials providers can only be truly validated after a
+		// request is made (e.g. because they need to exercise some hand-shake
+		// or verify that tokens exist in the cache). We perform a dry run to
+		// validate the credentials provider.
+		if err := dryRun(cp); err != nil {
+			logger.Debugf(ctx, "Failed to configure auth %q: %v", s.Name(), err)
 			continue
 		}
 		c.name = s.Name()
-		return cp, nil
+		return cp, nil // success
 	}
 
 	return nil, ErrCannotConfigureDefault
+}
+
+func dryRun(cp credentials.CredentialsProvider) error {
+	req := &http.Request{Header: make(http.Header)} // dummy
+	err := cp.SetHeaders(req)
+	return err
 }
 
 func githubOIDC(cfg *Config) CredentialsStrategy {
