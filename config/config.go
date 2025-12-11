@@ -155,6 +155,14 @@ type Config struct {
 	// Number of seconds for HTTP timeout. Default is 60 (1 minute).
 	HTTPTimeoutSeconds int `name:"http_timeout_seconds" auth:"-"`
 
+	// Custom HTTP headers to be added to each API request.
+	// Format for environment variable: key1=value1;key2=value2
+	HTTPHeaders map[string]string `name:"http_headers" env:"DATABRICKS_HTTP_HEADERS" auth:"-"`
+
+	// Path prefix to be prepended to all API URLs. Useful for HTTP proxies
+	// that require URL path rewriting.
+	HTTPPathPrefix string `name:"http_path_prefix" env:"DATABRICKS_HTTP_PATH_PREFIX" auth:"-"`
+
 	// Truncate JSON fields in JSON above this limit. Default is 96.
 	DebugTruncateBytes int `name:"debug_truncate_bytes" env:"DATABRICKS_DEBUG_TRUNCATE_BYTES" auth:"-"`
 

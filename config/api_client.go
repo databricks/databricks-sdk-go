@@ -38,6 +38,17 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 			}
 			r.URL.Host = url.Host
 			r.URL.Scheme = url.Scheme
+			// Prepend path prefix if configured
+			if cfg.HTTPPathPrefix != "" {
+				r.URL.Path = cfg.HTTPPathPrefix + r.URL.Path
+			}
+			return nil
+		},
+		// Add custom HTTP headers if configured
+		func(r *http.Request) error {
+			for key, value := range cfg.HTTPHeaders {
+				r.Header.Set(key, value)
+			}
 			return nil
 		},
 		authInUserAgentVisitor(cfg),
