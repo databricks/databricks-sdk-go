@@ -23,6 +23,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/ml"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/pipelines"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/postgres"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/serving"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
@@ -118,6 +119,7 @@ func NewMockWorkspaceClient(t interface {
 			PolicyComplianceForClusters:         compute.NewMockPolicyComplianceForClustersInterface(t),
 			PolicyComplianceForJobs:             jobs.NewMockPolicyComplianceForJobsInterface(t),
 			PolicyFamilies:                      compute.NewMockPolicyFamiliesInterface(t),
+			Postgres:                            postgres.NewMockPostgresInterface(t),
 			ProviderExchangeFilters:             marketplace.NewMockProviderExchangeFiltersInterface(t),
 			ProviderExchanges:                   marketplace.NewMockProviderExchangesInterface(t),
 			ProviderFiles:                       marketplace.NewMockProviderFilesInterface(t),
@@ -905,6 +907,14 @@ func (m *MockWorkspaceClient) GetMockPolicyFamiliesAPI() *compute.MockPolicyFami
 	api, ok := m.WorkspaceClient.PolicyFamilies.(*compute.MockPolicyFamiliesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected PolicyFamilies to be *compute.MockPolicyFamiliesInterface, actual was %T", m.WorkspaceClient.PolicyFamilies))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockPostgresAPI() *postgres.MockPostgresInterface {
+	api, ok := m.WorkspaceClient.Postgres.(*postgres.MockPostgresInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Postgres to be *postgres.MockPostgresInterface, actual was %T", m.WorkspaceClient.Postgres))
 	}
 	return api
 }

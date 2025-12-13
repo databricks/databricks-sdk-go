@@ -32,6 +32,8 @@ type App struct {
 	Description string `json:"description,omitempty"`
 
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+
+	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The effective api scopes granted to the user access token.
 	EffectiveUserApiScopes []string `json:"effective_user_api_scopes,omitempty"`
 	// The unique identifier of the app.
@@ -60,6 +62,8 @@ type App struct {
 	Updater string `json:"updater,omitempty"`
 	// The URL of the app once it is deployed.
 	Url string `json:"url,omitempty"`
+
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	UserApiScopes []string `json:"user_api_scopes,omitempty"`
 
