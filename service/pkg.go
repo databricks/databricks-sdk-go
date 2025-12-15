@@ -216,6 +216,8 @@
 //
 // - [compute.PolicyFamiliesAPI]: View available policy families.
 //
+// - [postgres.PostgresAPI]: The Postgres API provides access to a Postgres database via REST API or direct SQL.
+//
 // - [provisioning.PrivateAccessAPI]: These APIs manage private access settings for this account.
 //
 // - [marketplace.ProviderExchangeFiltersAPI]: Marketplace exchanges filters curate which groups can access an exchange.
@@ -373,6 +375,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
+	"github.com/databricks/databricks-sdk-go/service/postgres"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
@@ -498,6 +501,7 @@ var (
 	_ *compute.PolicyComplianceForClustersAPI             = nil
 	_ *jobs.PolicyComplianceForJobsAPI                    = nil
 	_ *compute.PolicyFamiliesAPI                          = nil
+	_ *postgres.PostgresAPI                               = nil
 	_ *provisioning.PrivateAccessAPI                      = nil
 	_ *marketplace.ProviderExchangeFiltersAPI             = nil
 	_ *marketplace.ProviderExchangesAPI                   = nil

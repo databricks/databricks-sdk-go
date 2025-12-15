@@ -777,6 +777,8 @@ type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule struct {
 	// The full target AWS endpoint service name that connects to the
 	// destination resources of the private endpoint.
 	EndpointService string `json:"endpoint_service,omitempty"`
+
+	ErrorMessage string `json:"error_message,omitempty"`
 	// The ID of a network connectivity configuration, which is the parent
 	// resource of this private endpoint rule object.
 	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
@@ -3285,6 +3287,8 @@ type NccAzurePrivateEndpointRule struct {
 	DomainNames []string `json:"domain_names,omitempty"`
 	// The name of the Azure private endpoint resource.
 	EndpointName string `json:"endpoint_name,omitempty"`
+
+	ErrorMessage string `json:"error_message,omitempty"`
 	// Only used by private endpoints to Azure first-party services.
 	//
 	// The sub-resource type (group ID) of the target resource. Note that to
