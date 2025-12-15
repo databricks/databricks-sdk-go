@@ -928,7 +928,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 51
+// Next Id: 52
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -1081,6 +1081,9 @@ type CreateAccessRequestResponse struct {
 }
 
 type CreateAccountsMetastore struct {
+	// Whether to allow non-DBR clients to directly access entities under the
+	// metastore.
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// The user-specified name of the metastore.
 	Name string `json:"name"`
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
@@ -1480,6 +1483,9 @@ func (f *CreateFunctionSqlDataAccess) Type() string {
 }
 
 type CreateMetastore struct {
+	// Whether to allow non-DBR clients to directly access entities under the
+	// metastore.
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// The user-specified name of the metastore.
 	Name string `json:"name"`
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
@@ -6909,7 +6915,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_CROWDSTRIKE_EVENT_STREAM_M2M = 281; Next id: 282
+// Latest kind: CONNECTION_GOOGLE_ADS_OAUTH_U2M_WITH_DT = 284; Next id:285
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -7874,6 +7880,9 @@ type UpdateAccountsMetastore struct {
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
 	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
+	// Whether to allow non-DBR clients to directly access entities under the
+	// metastore.
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// The owner of the metastore.
 	Owner string `json:"owner,omitempty"`
 	// Privilege model version of the metastore, of the form `major.minor`
@@ -8155,6 +8164,9 @@ type UpdateMetastore struct {
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
 	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
+	// Whether to allow non-DBR clients to directly access entities under the
+	// metastore.
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
 	// New name for the metastore.
