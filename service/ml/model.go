@@ -2957,6 +2957,8 @@ type OnlineStore struct {
 	ReadReplicaCount int `json:"read_replica_count,omitempty"`
 	// The current state of the online store.
 	State OnlineStoreState `json:"state,omitempty"`
+	// The usage policy applied to the online store to track billing.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
