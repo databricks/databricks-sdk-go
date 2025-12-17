@@ -1,5 +1,22 @@
 # Version changelog
 
+## Release v0.95.0 (2025-12-17)
+
+### API Changes
+* Add [postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres) package.
+* Add [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service.
+* Add `EffectiveUsagePolicyId` and `UsagePolicyId` fields for [apps.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#App).
+* Add `ExternalAccessEnabled` field for [catalog.CreateAccountsMetastore](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateAccountsMetastore).
+* Add `ExternalAccessEnabled` field for [catalog.CreateMetastore](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateMetastore).
+* Add `ExternalAccessEnabled` field for [catalog.UpdateAccountsMetastore](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateAccountsMetastore).
+* Add `ExternalAccessEnabled` field for [catalog.UpdateMetastore](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateMetastore).
+* Add `UsagePolicyId` field for [ml.OnlineStore](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#OnlineStore).
+* Add `ErrorMessage` field for [settings.CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule).
+* Add `ErrorMessage` field for [settings.NccAzurePrivateEndpointRule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccAzurePrivateEndpointRule).
+* Add `ControlPlaneConnectionFailure` and `ControlPlaneConnectionFailureDueToMisconfig` enum values for [compute.TerminationReasonCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#TerminationReasonCode).
+* Add `ControlPlaneConnectionFailure` and `ControlPlaneConnectionFailureDueToMisconfig` enum values for [sql.TerminationReasonCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#TerminationReasonCode).
+
+
 ## Release v0.94.0 (2025-12-11)
 
 ### Bug Fixes
