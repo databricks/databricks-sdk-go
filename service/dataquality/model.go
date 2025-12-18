@@ -73,6 +73,8 @@ func (f *AggregationGranularity) Type() string {
 
 // Anomaly Detection Configurations.
 type AnomalyDetectionConfig struct {
+	// List of fully qualified table names to exclude from anomaly detection.
+	ExcludedTableFullNames []string `json:"excluded_table_full_names,omitempty"`
 }
 
 // Request to cancel a refresh.

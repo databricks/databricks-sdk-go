@@ -36,6 +36,10 @@ type App struct {
 	EffectiveUsagePolicyId string `json:"effective_usage_policy_id,omitempty"`
 	// The effective api scopes granted to the user access token.
 	EffectiveUserApiScopes []string `json:"effective_user_api_scopes,omitempty"`
+	// Git repository configuration for app deployments. When specified,
+	// deployments can reference code from this repository by providing only the
+	// git reference (branch, tag, or commit).
+	GitRepository *GitRepository `json:"git_repository,omitempty"`
 	// The unique identifier of the app.
 	Id string `json:"id,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
@@ -131,6 +135,8 @@ type AppDeployment struct {
 	DeploymentArtifacts *AppDeploymentArtifacts `json:"deployment_artifacts,omitempty"`
 	// The unique id of the deployment.
 	DeploymentId string `json:"deployment_id,omitempty"`
+	// Git repository to use as the source for the app deployment.
+	GitSource *GitSource `json:"git_source,omitempty"`
 	// The mode of which the deployment will manage the source code.
 	Mode AppDeploymentMode `json:"mode,omitempty"`
 	// The workspace file system path of the source code used to create the app
@@ -292,6 +298,50 @@ func (s AppManifest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type AppManifestAppResourceExperimentSpec struct {
+	Permission AppManifestAppResourceExperimentSpecExperimentPermission `json:"permission"`
+}
+
+type AppManifestAppResourceExperimentSpecExperimentPermission string
+
+const AppManifestAppResourceExperimentSpecExperimentPermissionCanEdit AppManifestAppResourceExperimentSpecExperimentPermission = `CAN_EDIT`
+
+const AppManifestAppResourceExperimentSpecExperimentPermissionCanManage AppManifestAppResourceExperimentSpecExperimentPermission = `CAN_MANAGE`
+
+const AppManifestAppResourceExperimentSpecExperimentPermissionCanRead AppManifestAppResourceExperimentSpecExperimentPermission = `CAN_READ`
+
+// String representation for [fmt.Print]
+func (f *AppManifestAppResourceExperimentSpecExperimentPermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppManifestAppResourceExperimentSpecExperimentPermission) Set(v string) error {
+	switch v {
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`:
+		*f = AppManifestAppResourceExperimentSpecExperimentPermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_READ"`, v)
+	}
+}
+
+// Values returns all possible values for AppManifestAppResourceExperimentSpecExperimentPermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppManifestAppResourceExperimentSpecExperimentPermission) Values() []AppManifestAppResourceExperimentSpecExperimentPermission {
+	return []AppManifestAppResourceExperimentSpecExperimentPermission{
+		AppManifestAppResourceExperimentSpecExperimentPermissionCanEdit,
+		AppManifestAppResourceExperimentSpecExperimentPermissionCanManage,
+		AppManifestAppResourceExperimentSpecExperimentPermissionCanRead,
+	}
+}
+
+// Type always returns AppManifestAppResourceExperimentSpecExperimentPermission to satisfy [pflag.Value] interface
+func (f *AppManifestAppResourceExperimentSpecExperimentPermission) Type() string {
+	return "AppManifestAppResourceExperimentSpecExperimentPermission"
+}
+
 type AppManifestAppResourceJobSpec struct {
 	// Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE",
 	// "IS_OWNER", "CAN_MANAGE_RUN", "CAN_VIEW".
@@ -441,6 +491,8 @@ type AppManifestAppResourceSpec struct {
 	// Description of the App Resource.
 	Description string `json:"description,omitempty"`
 
+	ExperimentSpec *AppManifestAppResourceExperimentSpec `json:"experiment_spec,omitempty"`
+
 	JobSpec *AppManifestAppResourceJobSpec `json:"job_spec,omitempty"`
 	// Name of the App Resource.
 	Name string `json:"name"`
@@ -518,11 +570,15 @@ type AppManifestAppResourceUcSecurableSpec struct {
 
 type AppManifestAppResourceUcSecurableSpecUcSecurablePermission string
 
+const AppManifestAppResourceUcSecurableSpecUcSecurablePermissionExecute AppManifestAppResourceUcSecurableSpecUcSecurablePermission = `EXECUTE`
+
 const AppManifestAppResourceUcSecurableSpecUcSecurablePermissionManage AppManifestAppResourceUcSecurableSpecUcSecurablePermission = `MANAGE`
 
 const AppManifestAppResourceUcSecurableSpecUcSecurablePermissionReadVolume AppManifestAppResourceUcSecurableSpecUcSecurablePermission = `READ_VOLUME`
 
 const AppManifestAppResourceUcSecurableSpecUcSecurablePermissionSelect AppManifestAppResourceUcSecurableSpecUcSecurablePermission = `SELECT`
+
+const AppManifestAppResourceUcSecurableSpecUcSecurablePermissionUseConnection AppManifestAppResourceUcSecurableSpecUcSecurablePermission = `USE_CONNECTION`
 
 const AppManifestAppResourceUcSecurableSpecUcSecurablePermissionWriteVolume AppManifestAppResourceUcSecurableSpecUcSecurablePermission = `WRITE_VOLUME`
 
@@ -534,11 +590,11 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurablePermission) String() st
 // Set raw string value and validate it against allowed values
 func (f *AppManifestAppResourceUcSecurableSpecUcSecurablePermission) Set(v string) error {
 	switch v {
-	case `MANAGE`, `READ_VOLUME`, `SELECT`, `WRITE_VOLUME`:
+	case `EXECUTE`, `MANAGE`, `READ_VOLUME`, `SELECT`, `USE_CONNECTION`, `WRITE_VOLUME`:
 		*f = AppManifestAppResourceUcSecurableSpecUcSecurablePermission(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "MANAGE", "READ_VOLUME", "SELECT", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "EXECUTE", "MANAGE", "READ_VOLUME", "SELECT", "USE_CONNECTION", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -547,9 +603,11 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurablePermission) Set(v strin
 // There is no guarantee on the order of the values in the slice.
 func (f *AppManifestAppResourceUcSecurableSpecUcSecurablePermission) Values() []AppManifestAppResourceUcSecurableSpecUcSecurablePermission {
 	return []AppManifestAppResourceUcSecurableSpecUcSecurablePermission{
+		AppManifestAppResourceUcSecurableSpecUcSecurablePermissionExecute,
 		AppManifestAppResourceUcSecurableSpecUcSecurablePermissionManage,
 		AppManifestAppResourceUcSecurableSpecUcSecurablePermissionReadVolume,
 		AppManifestAppResourceUcSecurableSpecUcSecurablePermissionSelect,
+		AppManifestAppResourceUcSecurableSpecUcSecurablePermissionUseConnection,
 		AppManifestAppResourceUcSecurableSpecUcSecurablePermissionWriteVolume,
 	}
 }
@@ -560,6 +618,10 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurablePermission) Type() stri
 }
 
 type AppManifestAppResourceUcSecurableSpecUcSecurableType string
+
+const AppManifestAppResourceUcSecurableSpecUcSecurableTypeConnection AppManifestAppResourceUcSecurableSpecUcSecurableType = `CONNECTION`
+
+const AppManifestAppResourceUcSecurableSpecUcSecurableTypeFunction AppManifestAppResourceUcSecurableSpecUcSecurableType = `FUNCTION`
 
 const AppManifestAppResourceUcSecurableSpecUcSecurableTypeTable AppManifestAppResourceUcSecurableSpecUcSecurableType = `TABLE`
 
@@ -573,11 +635,11 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) Set(v string) error {
 	switch v {
-	case `TABLE`, `VOLUME`:
+	case `CONNECTION`, `FUNCTION`, `TABLE`, `VOLUME`:
 		*f = AppManifestAppResourceUcSecurableSpecUcSecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "TABLE", "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CONNECTION", "FUNCTION", "TABLE", "VOLUME"`, v)
 	}
 }
 
@@ -586,6 +648,8 @@ func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) Set(v string) err
 // There is no guarantee on the order of the values in the slice.
 func (f *AppManifestAppResourceUcSecurableSpecUcSecurableType) Values() []AppManifestAppResourceUcSecurableSpecUcSecurableType {
 	return []AppManifestAppResourceUcSecurableSpecUcSecurableType{
+		AppManifestAppResourceUcSecurableSpecUcSecurableTypeConnection,
+		AppManifestAppResourceUcSecurableSpecUcSecurableTypeFunction,
 		AppManifestAppResourceUcSecurableSpecUcSecurableTypeTable,
 		AppManifestAppResourceUcSecurableSpecUcSecurableTypeVolume,
 	}
@@ -697,6 +761,8 @@ type AppResource struct {
 	// Description of the App Resource.
 	Description string `json:"description,omitempty"`
 
+	Experiment *AppResourceExperiment `json:"experiment,omitempty"`
+
 	GenieSpace *AppResourceGenieSpace `json:"genie_space,omitempty"`
 
 	Job *AppResourceJob `json:"job,omitempty"`
@@ -762,6 +828,52 @@ func (f *AppResourceDatabaseDatabasePermission) Values() []AppResourceDatabaseDa
 // Type always returns AppResourceDatabaseDatabasePermission to satisfy [pflag.Value] interface
 func (f *AppResourceDatabaseDatabasePermission) Type() string {
 	return "AppResourceDatabaseDatabasePermission"
+}
+
+type AppResourceExperiment struct {
+	ExperimentId string `json:"experiment_id"`
+
+	Permission AppResourceExperimentExperimentPermission `json:"permission"`
+}
+
+type AppResourceExperimentExperimentPermission string
+
+const AppResourceExperimentExperimentPermissionCanEdit AppResourceExperimentExperimentPermission = `CAN_EDIT`
+
+const AppResourceExperimentExperimentPermissionCanManage AppResourceExperimentExperimentPermission = `CAN_MANAGE`
+
+const AppResourceExperimentExperimentPermissionCanRead AppResourceExperimentExperimentPermission = `CAN_READ`
+
+// String representation for [fmt.Print]
+func (f *AppResourceExperimentExperimentPermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceExperimentExperimentPermission) Set(v string) error {
+	switch v {
+	case `CAN_EDIT`, `CAN_MANAGE`, `CAN_READ`:
+		*f = AppResourceExperimentExperimentPermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_READ"`, v)
+	}
+}
+
+// Values returns all possible values for AppResourceExperimentExperimentPermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppResourceExperimentExperimentPermission) Values() []AppResourceExperimentExperimentPermission {
+	return []AppResourceExperimentExperimentPermission{
+		AppResourceExperimentExperimentPermissionCanEdit,
+		AppResourceExperimentExperimentPermissionCanManage,
+		AppResourceExperimentExperimentPermissionCanRead,
+	}
+}
+
+// Type always returns AppResourceExperimentExperimentPermission to satisfy [pflag.Value] interface
+func (f *AppResourceExperimentExperimentPermission) Type() string {
+	return "AppResourceExperimentExperimentPermission"
 }
 
 type AppResourceGenieSpace struct {
@@ -1024,7 +1136,13 @@ type AppResourceUcSecurable struct {
 
 type AppResourceUcSecurableUcSecurablePermission string
 
+const AppResourceUcSecurableUcSecurablePermissionExecute AppResourceUcSecurableUcSecurablePermission = `EXECUTE`
+
 const AppResourceUcSecurableUcSecurablePermissionReadVolume AppResourceUcSecurableUcSecurablePermission = `READ_VOLUME`
+
+const AppResourceUcSecurableUcSecurablePermissionSelect AppResourceUcSecurableUcSecurablePermission = `SELECT`
+
+const AppResourceUcSecurableUcSecurablePermissionUseConnection AppResourceUcSecurableUcSecurablePermission = `USE_CONNECTION`
 
 const AppResourceUcSecurableUcSecurablePermissionWriteVolume AppResourceUcSecurableUcSecurablePermission = `WRITE_VOLUME`
 
@@ -1036,11 +1154,11 @@ func (f *AppResourceUcSecurableUcSecurablePermission) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppResourceUcSecurableUcSecurablePermission) Set(v string) error {
 	switch v {
-	case `READ_VOLUME`, `WRITE_VOLUME`:
+	case `EXECUTE`, `READ_VOLUME`, `SELECT`, `USE_CONNECTION`, `WRITE_VOLUME`:
 		*f = AppResourceUcSecurableUcSecurablePermission(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "READ_VOLUME", "WRITE_VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "EXECUTE", "READ_VOLUME", "SELECT", "USE_CONNECTION", "WRITE_VOLUME"`, v)
 	}
 }
 
@@ -1049,7 +1167,10 @@ func (f *AppResourceUcSecurableUcSecurablePermission) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *AppResourceUcSecurableUcSecurablePermission) Values() []AppResourceUcSecurableUcSecurablePermission {
 	return []AppResourceUcSecurableUcSecurablePermission{
+		AppResourceUcSecurableUcSecurablePermissionExecute,
 		AppResourceUcSecurableUcSecurablePermissionReadVolume,
+		AppResourceUcSecurableUcSecurablePermissionSelect,
+		AppResourceUcSecurableUcSecurablePermissionUseConnection,
 		AppResourceUcSecurableUcSecurablePermissionWriteVolume,
 	}
 }
@@ -1061,6 +1182,12 @@ func (f *AppResourceUcSecurableUcSecurablePermission) Type() string {
 
 type AppResourceUcSecurableUcSecurableType string
 
+const AppResourceUcSecurableUcSecurableTypeConnection AppResourceUcSecurableUcSecurableType = `CONNECTION`
+
+const AppResourceUcSecurableUcSecurableTypeFunction AppResourceUcSecurableUcSecurableType = `FUNCTION`
+
+const AppResourceUcSecurableUcSecurableTypeTable AppResourceUcSecurableUcSecurableType = `TABLE`
+
 const AppResourceUcSecurableUcSecurableTypeVolume AppResourceUcSecurableUcSecurableType = `VOLUME`
 
 // String representation for [fmt.Print]
@@ -1071,11 +1198,11 @@ func (f *AppResourceUcSecurableUcSecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AppResourceUcSecurableUcSecurableType) Set(v string) error {
 	switch v {
-	case `VOLUME`:
+	case `CONNECTION`, `FUNCTION`, `TABLE`, `VOLUME`:
 		*f = AppResourceUcSecurableUcSecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CONNECTION", "FUNCTION", "TABLE", "VOLUME"`, v)
 	}
 }
 
@@ -1084,6 +1211,9 @@ func (f *AppResourceUcSecurableUcSecurableType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *AppResourceUcSecurableUcSecurableType) Values() []AppResourceUcSecurableUcSecurableType {
 	return []AppResourceUcSecurableUcSecurableType{
+		AppResourceUcSecurableUcSecurableTypeConnection,
+		AppResourceUcSecurableUcSecurableTypeFunction,
+		AppResourceUcSecurableUcSecurableTypeTable,
 		AppResourceUcSecurableUcSecurableTypeVolume,
 	}
 }
@@ -1099,6 +1229,8 @@ type AppUpdate struct {
 	ComputeSize ComputeSize `json:"compute_size,omitempty"`
 
 	Description string `json:"description,omitempty"`
+
+	GitRepository *GitRepository `json:"git_repository,omitempty"`
 
 	Resources []AppResource `json:"resources,omitempty"`
 
@@ -1463,6 +1595,49 @@ type GetAppUpdateRequest struct {
 type GetCustomTemplateRequest struct {
 	// The name of the custom template.
 	Name string `json:"-" url:"-"`
+}
+
+// Git repository configuration specifying the location of the repository.
+type GitRepository struct {
+	// Git provider. Case insensitive. Supported values: gitHub,
+	// gitHubEnterprise, bitbucketCloud, bitbucketServer, azureDevOpsServices,
+	// gitLab, gitLabEnterpriseEdition, awsCodeCommit.
+	Provider string `json:"provider"`
+	// URL of the Git repository.
+	Url string `json:"url"`
+}
+
+// Complete git source specification including repository location and
+// reference.
+type GitSource struct {
+	// Git branch to checkout.
+	Branch string `json:"branch,omitempty"`
+	// Git commit SHA to checkout.
+	Commit string `json:"commit,omitempty"`
+	// Git repository configuration. Populated from the app's git_repository
+	// configuration.
+	GitRepository *GitRepository `json:"git_repository,omitempty"`
+	// The resolved commit SHA that was actually used for the deployment. This
+	// is populated by the system after resolving the reference (branch, tag, or
+	// commit). If commit is specified directly, this will match commit. If a
+	// branch or tag is specified, this contains the commit SHA that the branch
+	// or tag pointed to at deployment time.
+	ResolvedCommit string `json:"resolved_commit,omitempty"`
+	// Relative path to the app source code within the Git repository. If not
+	// specified, the root of the repository is used.
+	SourceCodePath string `json:"source_code_path,omitempty"`
+	// Git tag to checkout.
+	Tag string `json:"tag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GitSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GitSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListAppDeploymentsRequest struct {
