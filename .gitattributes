@@ -112,6 +112,13 @@ experimental/mocks/service/oauth2/mock_service_principal_federation_policy_inter
 experimental/mocks/service/oauth2/mock_service_principal_secrets_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_service_principal_secrets_proxy_interface.go linguist-generated=true
 experimental/mocks/service/pipelines/mock_pipelines_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_create_branch_operation_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_create_endpoint_operation_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_create_project_operation_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_postgres_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_update_branch_operation_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_update_endpoint_operation_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_update_project_operation_interface.go linguist-generated=true
 experimental/mocks/service/provisioning/mock_credentials_interface.go linguist-generated=true
 experimental/mocks/service/provisioning/mock_encryption_keys_interface.go linguist-generated=true
 experimental/mocks/service/provisioning/mock_networks_interface.go linguist-generated=true
