@@ -9,6 +9,8 @@ import (
 )
 
 type AnomalyDetectionConfig struct {
+	// List of fully qualified table names to exclude from anomaly detection.
+	ExcludedTableFullNames []string `json:"excluded_table_full_names,omitempty"`
 	// Run id of the last run of the workflow
 	LastRunId string `json:"last_run_id,omitempty"`
 	// The status of the last run of the workflow.
