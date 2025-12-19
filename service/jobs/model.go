@@ -2034,6 +2034,9 @@ type JobPermissionsRequest struct {
 // Either `user_name` or `service_principal_name` should be specified. If not,
 // an error is thrown.
 type JobRunAs struct {
+	// Group name of an account group assigned to the workspace. Setting this
+	// field requires being a member of the group.
+	GroupName string `json:"group_name,omitempty"`
 	// Application ID of an active service principal. Setting this field
 	// requires the `servicePrincipal/user` role.
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`

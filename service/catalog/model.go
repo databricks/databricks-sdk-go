@@ -6838,7 +6838,7 @@ type RunRefreshRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
-// Next ID: 43
+// Next ID: 44
 type SchemaInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -7647,7 +7647,8 @@ type TableInfo struct {
 	// **STREAMING_TABLE**) - when DependencyList is None, the dependency is not
 	// provided; - when DependencyList is an empty list, the dependency is
 	// provided but is empty; - when DependencyList is not an empty list,
-	// dependencies are provided and recorded.
+	// dependencies are provided and recorded. Note: this field is not set in
+	// the output of the __listTables__ API.
 	ViewDependencies *DependencyList `json:"view_dependencies,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
