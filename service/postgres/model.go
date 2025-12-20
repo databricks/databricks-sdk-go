@@ -232,60 +232,18 @@ type DeleteProjectRequest struct {
 }
 
 type Endpoint struct {
-	// The maximum number of Compute Units.
-	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
-	// The minimum number of Compute Units.
-	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
 	// A timestamp indicating when the compute endpoint was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-
-	CurrentState EndpointState `json:"current_state,omitempty"`
-	// Whether to restrict connections to the compute endpoint. Enabling this
-	// option schedules a suspend compute operation. A disabled compute endpoint
-	// cannot be enabled by a connection or console action.
-	Disabled bool `json:"disabled,omitempty"`
-	// The maximum number of Compute Units.
-	EffectiveAutoscalingLimitMaxCu float64 `json:"effective_autoscaling_limit_max_cu,omitempty"`
-	// The minimum number of Compute Units.
-	EffectiveAutoscalingLimitMinCu float64 `json:"effective_autoscaling_limit_min_cu,omitempty"`
-	// Whether to restrict connections to the compute endpoint. Enabling this
-	// option schedules a suspend compute operation. A disabled compute endpoint
-	// cannot be enabled by a connection or console action.
-	EffectiveDisabled bool `json:"effective_disabled,omitempty"`
-
-	EffectivePoolerMode EndpointPoolerMode `json:"effective_pooler_mode,omitempty"`
-
-	EffectiveSettings *EndpointSettings `json:"effective_settings,omitempty"`
-	// Duration of inactivity after which the compute endpoint is automatically
-	// suspended.
-	EffectiveSuspendTimeoutDuration *duration.Duration `json:"effective_suspend_timeout_duration,omitempty"`
-	// The endpoint type. There could be only one READ_WRITE endpoint per
-	// branch.
-	EndpointType EndpointType `json:"endpoint_type"`
-	// The hostname of the compute endpoint. This is the hostname specified when
-	// connecting to a database.
-	Host string `json:"host,omitempty"`
-	// A timestamp indicating when the compute endpoint was last active.
-	LastActiveTime *time.Time `json:"last_active_time,omitempty"`
 	// The resource name of the endpoint. Format:
 	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 	Name string `json:"name,omitempty"`
 	// The branch containing this endpoint. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"parent,omitempty"`
+	// The desired state of an Endpoint.
+	Spec *EndpointSpec `json:"spec,omitempty"`
 
-	PendingState EndpointState `json:"pending_state,omitempty"`
-
-	PoolerMode EndpointPoolerMode `json:"pooler_mode,omitempty"`
-
-	Settings *EndpointSettings `json:"settings,omitempty"`
-	// A timestamp indicating when the compute endpoint was last started.
-	StartTime *time.Time `json:"start_time,omitempty"`
-	// A timestamp indicating when the compute endpoint was last suspended.
-	SuspendTime *time.Time `json:"suspend_time,omitempty"`
-	// Duration of inactivity after which the compute endpoint is automatically
-	// suspended.
-	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
+	Status *EndpointStatus `json:"status,omitempty"`
 	// System generated unique ID for the endpoint.
 	Uid string `json:"uid,omitempty"`
 	// A timestamp indicating when the compute endpoint was last updated.
@@ -349,45 +307,119 @@ type EndpointSettings struct {
 	PgbouncerSettings map[string]string `json:"pgbouncer_settings,omitempty"`
 }
 
+type EndpointSpec struct {
+	// The maximum number of Compute Units.
+	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
+	// The minimum number of Compute Units.
+	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
+	// Whether to restrict connections to the compute endpoint. Enabling this
+	// option schedules a suspend compute operation. A disabled compute endpoint
+	// cannot be enabled by a connection or console action.
+	Disabled bool `json:"disabled,omitempty"`
+	// The endpoint type. A branch can only have one READ_WRITE endpoint.
+	EndpointType EndpointType `json:"endpoint_type"`
+
+	PoolerMode EndpointPoolerMode `json:"pooler_mode,omitempty"`
+
+	Settings *EndpointSettings `json:"settings,omitempty"`
+	// Duration of inactivity after which the compute endpoint is automatically
+	// suspended.
+	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EndpointSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EndpointSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The current status of an Endpoint.
+type EndpointStatus struct {
+	// The maximum number of Compute Units.
+	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
+	// The minimum number of Compute Units.
+	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
+
+	CurrentState EndpointStatusState `json:"current_state,omitempty"`
+	// Whether to restrict connections to the compute endpoint. Enabling this
+	// option schedules a suspend compute operation. A disabled compute endpoint
+	// cannot be enabled by a connection or console action.
+	Disabled bool `json:"disabled,omitempty"`
+	// The endpoint type. A branch can only have one READ_WRITE endpoint.
+	EndpointType EndpointType `json:"endpoint_type,omitempty"`
+	// The hostname of the compute endpoint. This is the hostname specified when
+	// connecting to a database.
+	Host string `json:"host,omitempty"`
+	// A timestamp indicating when the compute endpoint was last active.
+	LastActiveTime *time.Time `json:"last_active_time,omitempty"`
+
+	PendingState EndpointStatusState `json:"pending_state,omitempty"`
+
+	PoolerMode EndpointPoolerMode `json:"pooler_mode,omitempty"`
+
+	Settings *EndpointSettings `json:"settings,omitempty"`
+	// A timestamp indicating when the compute endpoint was last started.
+	StartTime *time.Time `json:"start_time,omitempty"`
+	// A timestamp indicating when the compute endpoint was last suspended.
+	SuspendTime *time.Time `json:"suspend_time,omitempty"`
+	// Duration of inactivity after which the compute endpoint is automatically
+	// suspended.
+	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EndpointStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EndpointStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // The state of the compute endpoint.
-type EndpointState string
+type EndpointStatusState string
 
-const EndpointStateActive EndpointState = `ACTIVE`
+const EndpointStatusStateActive EndpointStatusState = `ACTIVE`
 
-const EndpointStateIdle EndpointState = `IDLE`
+const EndpointStatusStateIdle EndpointStatusState = `IDLE`
 
-const EndpointStateInit EndpointState = `INIT`
+const EndpointStatusStateInit EndpointStatusState = `INIT`
 
 // String representation for [fmt.Print]
-func (f *EndpointState) String() string {
+func (f *EndpointStatusState) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *EndpointState) Set(v string) error {
+func (f *EndpointStatusState) Set(v string) error {
 	switch v {
 	case `ACTIVE`, `IDLE`, `INIT`:
-		*f = EndpointState(v)
+		*f = EndpointStatusState(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "IDLE", "INIT"`, v)
 	}
 }
 
-// Values returns all possible values for EndpointState.
+// Values returns all possible values for EndpointStatusState.
 //
 // There is no guarantee on the order of the values in the slice.
-func (f *EndpointState) Values() []EndpointState {
-	return []EndpointState{
-		EndpointStateActive,
-		EndpointStateIdle,
-		EndpointStateInit,
+func (f *EndpointStatusState) Values() []EndpointStatusState {
+	return []EndpointStatusState{
+		EndpointStatusStateActive,
+		EndpointStatusStateIdle,
+		EndpointStatusStateInit,
 	}
 }
 
-// Type always returns EndpointState to satisfy [pflag.Value] interface
-func (f *EndpointState) Type() string {
-	return "EndpointState"
+// Type always returns EndpointStatusState to satisfy [pflag.Value] interface
+func (f *EndpointStatusState) Type() string {
+	return "EndpointStatusState"
 }
 
 // The compute endpoint type. Either `read_write` or `read_only`.
