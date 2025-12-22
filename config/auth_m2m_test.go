@@ -1,6 +1,7 @@
 package config
 
 import (
+	"net/http"
 	"net/url"
 	"sort"
 	"strings"
@@ -227,13 +228,11 @@ func TestM2M_Scopes(t *testing.T) {
 				cfg.Scopes = tt.scopes
 			}
 
-			assertHeaders(
-				t,
-				cfg,
-				map[string]string{
-					"Authorization": "Bearer " + tt.expectedToken,
-				},
-			)
+			cfg.ConfigFile = "/dev/null"
+			req, _ := http.NewRequest("GET", "http://localhost", nil)
+			err := cfg.Authenticate(req)
+			require.NoError(t, err)
+			require.Equal(t, "Bearer "+tt.expectedToken, req.Header.Get("Authorization"))
 		})
 	}
 }
