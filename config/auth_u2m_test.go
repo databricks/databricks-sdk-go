@@ -5,12 +5,14 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sort"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
+	"github.com/google/go-cmp/cmp"
 	"golang.org/x/oauth2"
 )
 
@@ -53,14 +55,37 @@ var (
 	errInvalidRefreshToken = &u2m.InvalidRefreshTokenError{}
 )
 
+// mockPersistentAuthFactory returns a persistentAuthFactory that returns ts.
+func mockPersistentAuthFactory(ts oauth2.TokenSource) persistentAuthFactory {
+	return func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error) {
+		return ts, nil
+	}
+}
+
+// capturingPersistentAuthFactory returns a persistentAuthFactory that applies
+// options to a real PersistentAuth and calls onCapture, allowing tests to spy
+// on the options passed. It returns ts for token operations.
+func capturingPersistentAuthFactory(ts oauth2.TokenSource, onCapture func(*u2m.PersistentAuth)) persistentAuthFactory {
+	return func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error) {
+		pa, err := u2m.NewPersistentAuth(ctx, opts...)
+		if err != nil {
+			return nil, err
+		}
+		if onCapture != nil {
+			onCapture(pa)
+		}
+		return ts, nil
+	}
+}
+
 func TestU2MCredentials_Configure(t *testing.T) {
 	testCases := []struct {
-		desc            string
-		cfg             *Config
-		testTokenSource *testTokenSource
-		wantConfigErr   string // error message from Configure()
-		wantHeaderErr   string // error message from SetHeaders()
-		wantAuthHeader  string // expected Authorization header
+		desc           string
+		cfg            *Config
+		tokenSource    *testTokenSource
+		wantConfigErr  string // error message from Configure()
+		wantHeaderErr  string // error message from SetHeaders()
+		wantAuthHeader string // expected Authorization header
 	}{
 		{
 			desc: "missing host returns error",
@@ -74,7 +99,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 			cfg: &Config{
 				Host: "https://workspace.cloud.databricks.com",
 			},
-			testTokenSource: &testTokenSource{
+			tokenSource: &testTokenSource{
 				token: testValidToken,
 			},
 			wantAuthHeader: "Bearer valid-access-token",
@@ -85,7 +110,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				Host:      "https://accounts.cloud.databricks.com",
 				AccountID: "abc-123",
 			},
-			testTokenSource: &testTokenSource{
+			tokenSource: &testTokenSource{
 				token: testValidToken,
 			},
 			wantAuthHeader: "Bearer valid-access-token",
@@ -95,7 +120,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 			cfg: &Config{
 				Host: "https://workspace.cloud.databricks.com",
 			},
-			testTokenSource: &testTokenSource{
+			tokenSource: &testTokenSource{
 				token: testExpiredToken,
 			},
 			wantAuthHeader: "Bearer expired-access-token",
@@ -105,7 +130,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 			cfg: &Config{
 				Host: "https://workspace.cloud.databricks.com",
 			},
-			testTokenSource: &testTokenSource{
+			tokenSource: &testTokenSource{
 				err: errNetwork,
 			},
 			wantHeaderErr: "network timeout",
@@ -115,7 +140,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 			cfg: &Config{
 				Host: "https://workspace.cloud.databricks.com",
 			},
-			testTokenSource: &testTokenSource{
+			tokenSource: &testTokenSource{
 				err: errAuthentication,
 			},
 			wantHeaderErr: "authentication failed",
@@ -127,7 +152,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				Profile:  "my-workspace",
 				resolved: true,
 			},
-			testTokenSource: &testTokenSource{
+			tokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
 			wantHeaderErr: "databricks auth login --profile my-workspace",
@@ -138,7 +163,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				Host:     "https://workspace.cloud.databricks.com",
 				resolved: true,
 			},
-			testTokenSource: &testTokenSource{
+			tokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
 			wantHeaderErr: "databricks auth login --host https://workspace.cloud.databricks.com",
@@ -151,7 +176,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				Profile:   "prod-account",
 				resolved:  true,
 			},
-			testTokenSource: &testTokenSource{
+			tokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
 			wantHeaderErr: "databricks auth login --profile prod-account",
@@ -163,7 +188,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				AccountID: "abc-123",
 				resolved:  true,
 			},
-			testTokenSource: &testTokenSource{
+			tokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
 			wantHeaderErr: "databricks auth login --host https://accounts.cloud.databricks.com --account-id abc-123",
@@ -175,7 +200,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				Profile:  "test",
 				resolved: true,
 			},
-			testTokenSource: &testTokenSource{
+			tokenSource: &testTokenSource{
 				err: fmt.Errorf("oauth2: %w", errInvalidRefreshToken),
 			},
 			wantHeaderErr: "databricks auth login --profile test",
@@ -187,7 +212,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				AccountID: "abc-456",
 				resolved:  true,
 			},
-			testTokenSource: &testTokenSource{
+			tokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
 			wantHeaderErr: "databricks auth login --host https://accounts.azure.databricks.net --account-id abc-456",
@@ -197,7 +222,9 @@ func TestU2MCredentials_Configure(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
 			ctx := context.Background()
-			u := u2mCredentials{testTokenSource: tc.testTokenSource}
+			u := u2mCredentials{
+				newPersistentAuth: mockPersistentAuthFactory(tc.tokenSource),
+			}
 
 			cp, gotConfigErr := u.Configure(ctx, tc.cfg)
 
@@ -238,7 +265,9 @@ func TestU2MCredentials_Configure(t *testing.T) {
 func TestU2MCredentials_Configure_TokenCaching(t *testing.T) {
 	ts := &testTokenSource{token: testValidToken}
 
-	u := u2mCredentials{testTokenSource: ts}
+	u := u2mCredentials{
+		newPersistentAuth: mockPersistentAuthFactory(ts),
+	}
 	cfg := &Config{
 		Host: "https://workspace.cloud.databricks.com",
 	}
@@ -259,5 +288,56 @@ func TestU2MCredentials_Configure_TokenCaching(t *testing.T) {
 
 	if ts.counts != 1 {
 		t.Errorf("token source call count = %d, want 1 (should use cache)", ts.counts)
+	}
+}
+
+func TestU2MCredentials_Configure_Scopes(t *testing.T) {
+	testCases := []struct {
+		desc           string
+		configScopes   []string
+		expectedScopes []string
+		sortScopes     bool // whether to sort captured scopes before comparison
+	}{
+		{
+			desc:           "default scopes when not specified",
+			configScopes:   nil,
+			expectedScopes: []string{"all-apis"},
+			sortScopes:     false,
+		},
+		{
+			desc:           "custom scopes are passed through",
+			configScopes:   []string{"sql", "clusters"},
+			expectedScopes: []string{"clusters", "sql"}, // sorted during config resolution
+			sortScopes:     true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			ts := &testTokenSource{token: testValidToken}
+			var capturedScopes []string
+
+			u := u2mCredentials{
+				newPersistentAuth: capturingPersistentAuthFactory(ts, func(pa *u2m.PersistentAuth) {
+					capturedScopes = pa.GetScopes()
+				}),
+			}
+			cfg := &Config{
+				Host:   "https://workspace.cloud.databricks.com",
+				Scopes: tc.configScopes,
+			}
+
+			_, err := u.Configure(context.Background(), cfg)
+			if err != nil {
+				t.Fatalf("Configure() error = %v", err)
+			}
+
+			if tc.sortScopes {
+				sort.Strings(capturedScopes)
+			}
+			if diff := cmp.Diff(tc.expectedScopes, capturedScopes); diff != "" {
+				t.Errorf("scopes mismatch (-want +got):\n%s", diff)
+			}
+		})
 	}
 }

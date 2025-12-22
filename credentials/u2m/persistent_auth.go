@@ -88,6 +88,14 @@ type PersistentAuth struct {
 	// netListen is an optional function to listen on a TCP address. If not set,
 	// it will use net.Listen by default. This is useful for testing.
 	netListen func(network, address string) (net.Listener, error)
+
+	// scopes is the list of OAuth scopes to request.
+	scopes []string
+
+	// disableOfflineAccess controls whether offline_access scope is requested.
+	// When true, offline_access will NOT be automatically added to scopes,
+	// meaning the token will not include a refresh token.
+	disableOfflineAccess bool
 }
 
 type PersistentAuthOption func(*PersistentAuth)
@@ -133,6 +141,26 @@ func WithPort(port int) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.port = port
 	}
+}
+
+// WithScopes sets the OAuth scopes for the PersistentAuth.
+func WithScopes(scopes []string) PersistentAuthOption {
+	return func(a *PersistentAuth) {
+		a.scopes = scopes
+	}
+}
+
+// WithDisableOfflineAccess controls whether offline_access scope is requested.
+// When true, offline_access will NOT be automatically added to scopes.
+func WithDisableOfflineAccess(disable bool) PersistentAuthOption {
+	return func(a *PersistentAuth) {
+		a.disableOfflineAccess = disable
+	}
+}
+
+// GetScopes returns the OAuth scopes configured for this PersistentAuth.
+func (a *PersistentAuth) GetScopes() []string {
+	return a.scopes
 }
 
 // NewPersistentAuth creates a new PersistentAuth with the provided options.
@@ -368,10 +396,13 @@ func (a *PersistentAuth) validateArg() error {
 
 // oauth2Config returns the OAuth2 configuration for the given OAuthArgument.
 func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
-	scopes := []string{
-		"offline_access", // ensures OAuth token includes refresh token
-		"all-apis",       // ensures OAuth token has access to all control-plane APIs
+	scopes := a.scopes
+	if !a.disableOfflineAccess {
+		// Use append to create a new slice with "offline_access" added,
+		// avoiding mutation of the original a.scopes slice.
+		scopes = append(append([]string{}, scopes...), "offline_access")
 	}
+
 	var endpoints *OAuthAuthorizationServer
 	var err error
 	switch argg := a.oAuthArgument.(type) {
