@@ -39,6 +39,9 @@ type DatabricksOIDCTokenSourceConfig struct {
 
 	// IDTokenSource returns the IDToken to be used for the token exchange.
 	IDTokenSource IDTokenSource
+
+	// Scopes is the list of OAuth scopes to request.
+	Scopes []string
 }
 
 // NewDatabricksOIDCTokenSource returns a new Databricks OIDC TokenSource.
@@ -81,7 +84,7 @@ func (w *databricksOIDCTokenSource) Token(ctx context.Context) (*oauth2.Token, e
 		ClientID:  w.cfg.ClientID,
 		AuthStyle: oauth2.AuthStyleInParams,
 		TokenURL:  endpoints.TokenEndpoint,
-		Scopes:    []string{"all-apis"},
+		Scopes:    w.cfg.Scopes,
 		EndpointParams: url.Values{
 			"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
 			"subject_token":      {idToken.Value},
