@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -62,6 +63,8 @@ const (
 	// InvalidConfig is returned when the config is not valid for either workspace-level or account-level APIs.
 	InvalidConfig ConfigType = "INVALID_CONFIG"
 )
+
+var defaultScopes = []string{"all-apis"}
 
 // Config represents configuration for Databricks Connectivity
 type Config struct {
@@ -134,6 +137,25 @@ type Config struct {
 
 	ClientID     string `name:"client_id" env:"DATABRICKS_CLIENT_ID" auth:"oauth" auth_types:"oauth-m2m"`
 	ClientSecret string `name:"client_secret" env:"DATABRICKS_CLIENT_SECRET" auth:"oauth,sensitive" auth_types:"oauth-m2m"`
+
+	// WARNING: Scopes support is EXPERIMENTAL and we don't guarantee backward
+	// compatibility for this feature.
+	//
+	// Scopes is a list of OAuth scopes to request when authenticating.
+	// If not specified, defaults to ["all-apis"] for backwards compatibility.
+	// For U2M authentication, "offline_access" is automatically appended to
+	// include a refresh token (disable via DisableOAuthRefreshToken).
+	//
+	// Note: Setting scopes via environment variables is not supported.
+	// Note: The slice is sorted in-place during config resolution.
+	// Note: U2M flow's token cache does not support scopes yet.
+	Scopes []string `name:"scopes" auth:"-"`
+
+	// DisableOAuthRefreshToken controls whether the offline_access scope is requested
+	// during U2M OAuth authentication.
+	// offline_access is requested by default, causing a refresh token to be included
+	// in the OAuth token.
+	DisableOAuthRefreshToken bool `name:"disable_oauth_refresh_token" env:"DATABRICKS_DISABLE_OAUTH_REFRESH_TOKEN" auth:"-"`
 
 	// Path to the Databricks CLI (version >= 0.100.0).
 	DatabricksCliPath string `name:"databricks_cli_path" env:"DATABRICKS_CLI_PATH" auth_types:"databricks-cli"`
@@ -445,6 +467,11 @@ func (c *Config) EnsureResolved() error {
 			},
 		}
 	}
+	// Sort scopes in-place for better de-duplication in the refresh token cache,
+	// once scopes are supported in its cache key.
+	if len(c.Scopes) > 0 {
+		sort.Strings(c.Scopes)
+	}
 	c.resolved = true
 	return nil
 }
@@ -458,6 +485,13 @@ func (c *Config) CanonicalHostName() string {
 	// Missing host is tolerated here.
 	_ = c.fixHostIfNeeded()
 	return c.Host
+}
+
+func (c *Config) GetScopes() []string {
+	if len(c.Scopes) == 0 {
+		return defaultScopes
+	}
+	return c.Scopes
 }
 
 func (c *Config) wrapDebug(err error) error {

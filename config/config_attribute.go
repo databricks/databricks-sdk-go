@@ -5,6 +5,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 type Source struct {
@@ -69,6 +70,12 @@ func (a *ConfigAttribute) SetS(cfg *Config, v string) error {
 			return err
 		}
 		return a.Set(cfg, vv)
+	case reflect.Slice:
+		parts := strings.Split(v, ",")
+		for i, p := range parts {
+			parts[i] = strings.TrimSpace(p)
+		}
+		return a.Set(cfg, parts)
 	default:
 		return fmt.Errorf("cannot set %s of unknown type %s",
 			a.Name, reflectKind(a.Kind))
@@ -85,6 +92,8 @@ func (a *ConfigAttribute) Set(cfg *Config, i interface{}) error {
 		field.SetBool(i.(bool))
 	case reflect.Int:
 		field.SetInt(int64(i.(int)))
+	case reflect.Slice:
+		field.Set(reflect.ValueOf(i.([]string)))
 	default:
 		// must extensively test with providerFixture to avoid this one
 		return fmt.Errorf("cannot set %s of unknown type %s", a.Name, reflectKind(a.Kind))
