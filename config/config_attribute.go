@@ -71,10 +71,9 @@ func (a *ConfigAttribute) SetS(cfg *Config, v string) error {
 		}
 		return a.Set(cfg, vv)
 	case reflect.Slice:
-		parts := strings.Split(v, ",")
-		for i, p := range parts {
-			parts[i] = strings.TrimSpace(p)
-		}
+		parts := strings.FieldsFunc(v, func(r rune) bool {
+			return r == ',' || r == ' ' || r == '\t' || r == '\n' || r == '\r'
+		})
 		return a.Set(cfg, parts)
 	default:
 		return fmt.Errorf("cannot set %s of unknown type %s",
