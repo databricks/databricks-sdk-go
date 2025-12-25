@@ -201,6 +201,65 @@ func (_c *MockPostgresInterface_CreateProject_Call) RunAndReturn(run func(contex
 	return _c
 }
 
+// CreateRole provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) CreateRole(ctx context.Context, request postgres.CreateRoleRequest) (postgres.CreateRoleOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateRole")
+	}
+
+	var r0 postgres.CreateRoleOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateRoleRequest) (postgres.CreateRoleOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.CreateRoleRequest) postgres.CreateRoleOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.CreateRoleOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.CreateRoleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_CreateRole_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateRole'
+type MockPostgresInterface_CreateRole_Call struct {
+	*mock.Call
+}
+
+// CreateRole is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.CreateRoleRequest
+func (_e *MockPostgresInterface_Expecter) CreateRole(ctx interface{}, request interface{}) *MockPostgresInterface_CreateRole_Call {
+	return &MockPostgresInterface_CreateRole_Call{Call: _e.mock.On("CreateRole", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_CreateRole_Call) Run(run func(ctx context.Context, request postgres.CreateRoleRequest)) *MockPostgresInterface_CreateRole_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.CreateRoleRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateRole_Call) Return(_a0 postgres.CreateRoleOperationInterface, _a1 error) *MockPostgresInterface_CreateRole_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_CreateRole_Call) RunAndReturn(run func(context.Context, postgres.CreateRoleRequest) (postgres.CreateRoleOperationInterface, error)) *MockPostgresInterface_CreateRole_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteBranch provides a mock function with given fields: ctx, request
 func (_m *MockPostgresInterface) DeleteBranch(ctx context.Context, request postgres.DeleteBranchRequest) error {
 	ret := _m.Called(ctx, request)
@@ -338,6 +397,65 @@ func (_c *MockPostgresInterface_DeleteProject_Call) Return(_a0 error) *MockPostg
 }
 
 func (_c *MockPostgresInterface_DeleteProject_Call) RunAndReturn(run func(context.Context, postgres.DeleteProjectRequest) error) *MockPostgresInterface_DeleteProject_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteRole provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) DeleteRole(ctx context.Context, request postgres.DeleteRoleRequest) (postgres.DeleteRoleOperationInterface, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteRole")
+	}
+
+	var r0 postgres.DeleteRoleOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteRoleRequest) (postgres.DeleteRoleOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteRoleRequest) postgres.DeleteRoleOperationInterface); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.DeleteRoleOperationInterface)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.DeleteRoleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_DeleteRole_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteRole'
+type MockPostgresInterface_DeleteRole_Call struct {
+	*mock.Call
+}
+
+// DeleteRole is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.DeleteRoleRequest
+func (_e *MockPostgresInterface_Expecter) DeleteRole(ctx interface{}, request interface{}) *MockPostgresInterface_DeleteRole_Call {
+	return &MockPostgresInterface_DeleteRole_Call{Call: _e.mock.On("DeleteRole", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_DeleteRole_Call) Run(run func(ctx context.Context, request postgres.DeleteRoleRequest)) *MockPostgresInterface_DeleteRole_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.DeleteRoleRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteRole_Call) Return(_a0 postgres.DeleteRoleOperationInterface, _a1 error) *MockPostgresInterface_DeleteRole_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_DeleteRole_Call) RunAndReturn(run func(context.Context, postgres.DeleteRoleRequest) (postgres.DeleteRoleOperationInterface, error)) *MockPostgresInterface_DeleteRole_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -574,6 +692,65 @@ func (_c *MockPostgresInterface_GetProject_Call) Return(_a0 *postgres.Project, _
 }
 
 func (_c *MockPostgresInterface_GetProject_Call) RunAndReturn(run func(context.Context, postgres.GetProjectRequest) (*postgres.Project, error)) *MockPostgresInterface_GetProject_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetRole provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) GetRole(ctx context.Context, request postgres.GetRoleRequest) (*postgres.Role, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetRole")
+	}
+
+	var r0 *postgres.Role
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetRoleRequest) (*postgres.Role, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GetRoleRequest) *postgres.Role); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*postgres.Role)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.GetRoleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_GetRole_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetRole'
+type MockPostgresInterface_GetRole_Call struct {
+	*mock.Call
+}
+
+// GetRole is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.GetRoleRequest
+func (_e *MockPostgresInterface_Expecter) GetRole(ctx interface{}, request interface{}) *MockPostgresInterface_GetRole_Call {
+	return &MockPostgresInterface_GetRole_Call{Call: _e.mock.On("GetRole", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_GetRole_Call) Run(run func(ctx context.Context, request postgres.GetRoleRequest)) *MockPostgresInterface_GetRole_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.GetRoleRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetRole_Call) Return(_a0 *postgres.Role, _a1 error) *MockPostgresInterface_GetRole_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_GetRole_Call) RunAndReturn(run func(context.Context, postgres.GetRoleRequest) (*postgres.Role, error)) *MockPostgresInterface_GetRole_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -898,6 +1075,114 @@ func (_c *MockPostgresInterface_ListProjectsAll_Call) Return(_a0 []postgres.Proj
 }
 
 func (_c *MockPostgresInterface_ListProjectsAll_Call) RunAndReturn(run func(context.Context, postgres.ListProjectsRequest) ([]postgres.Project, error)) *MockPostgresInterface_ListProjectsAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListRoles provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) ListRoles(ctx context.Context, request postgres.ListRolesRequest) listing.Iterator[postgres.Role] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListRoles")
+	}
+
+	var r0 listing.Iterator[postgres.Role]
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListRolesRequest) listing.Iterator[postgres.Role]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[postgres.Role])
+		}
+	}
+
+	return r0
+}
+
+// MockPostgresInterface_ListRoles_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListRoles'
+type MockPostgresInterface_ListRoles_Call struct {
+	*mock.Call
+}
+
+// ListRoles is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListRolesRequest
+func (_e *MockPostgresInterface_Expecter) ListRoles(ctx interface{}, request interface{}) *MockPostgresInterface_ListRoles_Call {
+	return &MockPostgresInterface_ListRoles_Call{Call: _e.mock.On("ListRoles", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListRoles_Call) Run(run func(ctx context.Context, request postgres.ListRolesRequest)) *MockPostgresInterface_ListRoles_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.ListRolesRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListRoles_Call) Return(_a0 listing.Iterator[postgres.Role]) *MockPostgresInterface_ListRoles_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListRoles_Call) RunAndReturn(run func(context.Context, postgres.ListRolesRequest) listing.Iterator[postgres.Role]) *MockPostgresInterface_ListRoles_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListRolesAll provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) ListRolesAll(ctx context.Context, request postgres.ListRolesRequest) ([]postgres.Role, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListRolesAll")
+	}
+
+	var r0 []postgres.Role
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListRolesRequest) ([]postgres.Role, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.ListRolesRequest) []postgres.Role); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]postgres.Role)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.ListRolesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_ListRolesAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListRolesAll'
+type MockPostgresInterface_ListRolesAll_Call struct {
+	*mock.Call
+}
+
+// ListRolesAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.ListRolesRequest
+func (_e *MockPostgresInterface_Expecter) ListRolesAll(ctx interface{}, request interface{}) *MockPostgresInterface_ListRolesAll_Call {
+	return &MockPostgresInterface_ListRolesAll_Call{Call: _e.mock.On("ListRolesAll", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_ListRolesAll_Call) Run(run func(ctx context.Context, request postgres.ListRolesRequest)) *MockPostgresInterface_ListRolesAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.ListRolesRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListRolesAll_Call) Return(_a0 []postgres.Role, _a1 error) *MockPostgresInterface_ListRolesAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_ListRolesAll_Call) RunAndReturn(run func(context.Context, postgres.ListRolesRequest) ([]postgres.Role, error)) *MockPostgresInterface_ListRolesAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -65,6 +65,21 @@ func (a *postgresImpl) CreateProject(ctx context.Context, request CreateProjectR
 	return &operation, err
 }
 
+func (a *postgresImpl) CreateRole(ctx context.Context, request CreateRoleRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v/roles", request.Parent)
+	queryParams := make(map[string]any)
+
+	if request.RoleId != "" {
+		queryParams["role_id"] = request.RoleId
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Role, &operation)
+	return &operation, err
+}
+
 func (a *postgresImpl) DeleteBranch(ctx context.Context, request DeleteBranchRequest) error {
 	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
 	queryParams := make(map[string]any)
@@ -90,6 +105,16 @@ func (a *postgresImpl) DeleteProject(ctx context.Context, request DeleteProjectR
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
+}
+
+func (a *postgresImpl) DeleteRole(ctx context.Context, request DeleteRoleRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
 }
 
 func (a *postgresImpl) GetBranch(ctx context.Context, request GetBranchRequest) (*Branch, error) {
@@ -130,6 +155,16 @@ func (a *postgresImpl) GetProject(ctx context.Context, request GetProjectRequest
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &project)
 	return &project, err
+}
+
+func (a *postgresImpl) GetRole(ctx context.Context, request GetRoleRequest) (*Role, error) {
+	var role Role
+	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &role)
+	return &role, err
 }
 
 // List Branches.
@@ -253,6 +288,47 @@ func (a *postgresImpl) internalListProjects(ctx context.Context, request ListPro
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProjectsResponse)
 	return &listProjectsResponse, err
+}
+
+// List Roles.
+func (a *postgresImpl) ListRoles(ctx context.Context, request ListRolesRequest) listing.Iterator[Role] {
+
+	getNextPage := func(ctx context.Context, req ListRolesRequest) (*ListRolesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListRoles(ctx, req)
+	}
+	getItems := func(resp *ListRolesResponse) []Role {
+		return resp.Roles
+	}
+	getNextReq := func(resp *ListRolesResponse) *ListRolesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List Roles.
+func (a *postgresImpl) ListRolesAll(ctx context.Context, request ListRolesRequest) ([]Role, error) {
+	iterator := a.ListRoles(ctx, request)
+	return listing.ToSlice[Role](ctx, iterator)
+}
+
+func (a *postgresImpl) internalListRoles(ctx context.Context, request ListRolesRequest) (*ListRolesResponse, error) {
+	var listRolesResponse ListRolesResponse
+	path := fmt.Sprintf("/api/2.0/postgres/%v/roles", request.Parent)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listRolesResponse)
+	return &listRolesResponse, err
 }
 
 func (a *postgresImpl) UpdateBranch(ctx context.Context, request UpdateBranchRequest) (*Operation, error) {

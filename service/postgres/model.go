@@ -15,48 +15,15 @@ import (
 type Branch struct {
 	// A timestamp indicating when the branch was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// The branch's state, indicating if it is initializing, ready for use, or
-	// archived.
-	CurrentState BranchState `json:"current_state,omitempty"`
-	// Whether the branch is the project's default branch. This field is only
-	// returned on create/update responses. See effective_default for the value
-	// that is actually applied to the branch.
-	Default bool `json:"default,omitempty"`
-	// Whether the branch is the project's default branch.
-	EffectiveDefault bool `json:"effective_default,omitempty"`
-	// Whether the branch is protected.
-	EffectiveIsProtected bool `json:"effective_is_protected,omitempty"`
-	// The name of the source branch from which this branch was created. Format:
-	// projects/{project_id}/branches/{branch_id}
-	EffectiveSourceBranch string `json:"effective_source_branch,omitempty"`
-	// The Log Sequence Number (LSN) on the source branch from which this branch
-	// was created.
-	EffectiveSourceBranchLsn string `json:"effective_source_branch_lsn,omitempty"`
-	// The point in time on the source branch from which this branch was
-	// created.
-	EffectiveSourceBranchTime *time.Time `json:"effective_source_branch_time,omitempty"`
-	// Whether the branch is protected.
-	IsProtected bool `json:"is_protected,omitempty"`
-	// The logical size of the branch.
-	LogicalSizeBytes int64 `json:"logical_size_bytes,omitempty"`
 	// The resource name of the branch. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Name string `json:"name,omitempty"`
 	// The project containing this branch. Format: projects/{project_id}
 	Parent string `json:"parent,omitempty"`
-	// The pending state of the branch, if a state transition is in progress.
-	PendingState BranchState `json:"pending_state,omitempty"`
-	// The name of the source branch from which this branch was created. Format:
-	// projects/{project_id}/branches/{branch_id}
-	SourceBranch string `json:"source_branch,omitempty"`
-	// The Log Sequence Number (LSN) on the source branch from which this branch
-	// was created.
-	SourceBranchLsn string `json:"source_branch_lsn,omitempty"`
-	// The point in time on the source branch from which this branch was
-	// created.
-	SourceBranchTime *time.Time `json:"source_branch_time,omitempty"`
-	// A timestamp indicating when the `current_state` began.
-	StateChangeTime *time.Time `json:"state_change_time,omitempty"`
+	// The desired state of a Branch.
+	Spec *BranchSpec `json:"spec,omitempty"`
+	// The current status of a Branch.
+	Status *BranchStatus `json:"status,omitempty"`
 	// System generated unique ID for the branch.
 	Uid string `json:"uid,omitempty"`
 	// A timestamp indicating when the branch was last updated.
@@ -76,51 +43,112 @@ func (s Branch) MarshalJSON() ([]byte, error) {
 type BranchOperationMetadata struct {
 }
 
+type BranchSpec struct {
+	// Whether the branch is the project's default branch.
+	Default bool `json:"default,omitempty"`
+	// Whether the branch is protected.
+	IsProtected bool `json:"is_protected,omitempty"`
+	// The name of the source branch from which this branch was created. Format:
+	// projects/{project_id}/branches/{branch_id}
+	SourceBranch string `json:"source_branch,omitempty"`
+	// The Log Sequence Number (LSN) on the source branch from which this branch
+	// was created.
+	SourceBranchLsn string `json:"source_branch_lsn,omitempty"`
+	// The point in time on the source branch from which this branch was
+	// created.
+	SourceBranchTime *time.Time `json:"source_branch_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *BranchSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BranchSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type BranchStatus struct {
+	// The branch's state, indicating if it is initializing, ready for use, or
+	// archived.
+	CurrentState BranchStatusState `json:"current_state,omitempty"`
+	// Whether the branch is the project's default branch.
+	Default bool `json:"default,omitempty"`
+	// Whether the branch is protected.
+	IsProtected bool `json:"is_protected,omitempty"`
+	// The logical size of the branch.
+	LogicalSizeBytes int64 `json:"logical_size_bytes,omitempty"`
+	// The pending state of the branch, if a state transition is in progress.
+	PendingState BranchStatusState `json:"pending_state,omitempty"`
+	// The name of the source branch from which this branch was created. Format:
+	// projects/{project_id}/branches/{branch_id}
+	SourceBranch string `json:"source_branch,omitempty"`
+	// The Log Sequence Number (LSN) on the source branch from which this branch
+	// was created.
+	SourceBranchLsn string `json:"source_branch_lsn,omitempty"`
+	// The point in time on the source branch from which this branch was
+	// created.
+	SourceBranchTime *time.Time `json:"source_branch_time,omitempty"`
+	// A timestamp indicating when the `current_state` began.
+	StateChangeTime *time.Time `json:"state_change_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *BranchStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BranchStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // The state of the database branch.
-type BranchState string
+type BranchStatusState string
 
-const BranchStateArchived BranchState = `ARCHIVED`
+const BranchStatusStateArchived BranchStatusState = `ARCHIVED`
 
-const BranchStateImporting BranchState = `IMPORTING`
+const BranchStatusStateImporting BranchStatusState = `IMPORTING`
 
-const BranchStateInit BranchState = `INIT`
+const BranchStatusStateInit BranchStatusState = `INIT`
 
-const BranchStateReady BranchState = `READY`
+const BranchStatusStateReady BranchStatusState = `READY`
 
-const BranchStateResetting BranchState = `RESETTING`
+const BranchStatusStateResetting BranchStatusState = `RESETTING`
 
 // String representation for [fmt.Print]
-func (f *BranchState) String() string {
+func (f *BranchStatusState) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *BranchState) Set(v string) error {
+func (f *BranchStatusState) Set(v string) error {
 	switch v {
 	case `ARCHIVED`, `IMPORTING`, `INIT`, `READY`, `RESETTING`:
-		*f = BranchState(v)
+		*f = BranchStatusState(v)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ARCHIVED", "IMPORTING", "INIT", "READY", "RESETTING"`, v)
 	}
 }
 
-// Values returns all possible values for BranchState.
+// Values returns all possible values for BranchStatusState.
 //
 // There is no guarantee on the order of the values in the slice.
-func (f *BranchState) Values() []BranchState {
-	return []BranchState{
-		BranchStateArchived,
-		BranchStateImporting,
-		BranchStateInit,
-		BranchStateReady,
-		BranchStateResetting,
+func (f *BranchStatusState) Values() []BranchStatusState {
+	return []BranchStatusState{
+		BranchStatusStateArchived,
+		BranchStatusStateImporting,
+		BranchStatusStateInit,
+		BranchStatusStateReady,
+		BranchStatusStateResetting,
 	}
 }
 
-// Type always returns BranchState to satisfy [pflag.Value] interface
-func (f *BranchState) Type() string {
-	return "BranchState"
+// Type always returns BranchStatusState to satisfy [pflag.Value] interface
+func (f *BranchStatusState) Type() string {
+	return "BranchStatusState"
 }
 
 type CreateBranchRequest struct {
@@ -192,6 +220,20 @@ func (s CreateProjectRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateRoleRequest struct {
+	// The Branch where this Role is created. Format:
+	// projects/{project_id}/branches/{branch_id}
+	Parent string `json:"-" url:"-"`
+	// The desired specification of a Role.
+	Role Role `json:"role"`
+	// The ID to use for the Role, which will become the final component of the
+	// branch's resource name. This ID becomes the role in postgres.
+	//
+	// This value should be 4-63 characters, and only use characters available
+	// in DNS names, as defined by RFC-1123
+	RoleId string `json:"-" url:"role_id"`
+}
+
 // Databricks Error that is returned by all Databricks APIs.
 type DatabricksServiceExceptionWithDetailsProto struct {
 	// @pbjson-skip
@@ -231,6 +273,31 @@ type DeleteProjectRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type DeleteRoleRequest struct {
+	// The resource name of the postgres role. Format:
+	// projects/{project_id}/branch/{branch_id}/roles/{role_id}
+	Name string `json:"-" url:"-"`
+	// Reassign objects. If this is set, all objects owned by the role are
+	// reassigned to the role specified in this parameter.
+	//
+	// NOTE: setting this requires spinning up a compute to succeed, since it
+	// involves running SQL queries.
+	//
+	// TODO: #LKB-7187 implement reassign_owned_to on LBM side. This might
+	// end-up being a synchronous query when this parameter is used.
+	ReassignOwnedTo string `json:"-" url:"reassign_owned_to,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteRoleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteRoleRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type Endpoint struct {
 	// A timestamp indicating when the compute endpoint was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
@@ -242,7 +309,7 @@ type Endpoint struct {
 	Parent string `json:"parent,omitempty"`
 	// The desired state of an Endpoint.
 	Spec *EndpointSpec `json:"spec,omitempty"`
-
+	// The current status of an Endpoint.
 	Status *EndpointStatus `json:"status,omitempty"`
 	// System generated unique ID for the endpoint.
 	Uid string `json:"uid,omitempty"`
@@ -337,7 +404,6 @@ func (s EndpointSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The current status of an Endpoint.
 type EndpointStatus struct {
 	// The maximum number of Compute Units.
 	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
@@ -760,6 +826,12 @@ type GetProjectRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type GetRoleRequest struct {
+	// The name of the Role to retrieve. Format:
+	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
+	Name string `json:"-" url:"-"`
+}
+
 type ListBranchesRequest struct {
 	// Upper bound for items returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
@@ -871,6 +943,44 @@ func (s ListProjectsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListRolesRequest struct {
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of Roles. Requests first page if
+	// absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The Branch that owns this collection of roles. Format:
+	// projects/{project_id}/branches/{branch_id}
+	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListRolesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListRolesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListRolesResponse struct {
+	// Pagination token to request the next page of roles.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// List of roles.
+	Roles []Role `json:"roles,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListRolesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListRolesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // This resource represents a long-running operation that is the result of a
 // network API call.
 type Operation struct {
@@ -903,39 +1013,14 @@ func (s Operation) MarshalJSON() ([]byte, error) {
 }
 
 type Project struct {
-	// The logical size limit for a branch.
-	BranchLogicalSizeLimitBytes int64 `json:"branch_logical_size_limit_bytes,omitempty"`
-	// The most recent time when any endpoint of this project was active.
-	ComputeLastActiveTime *time.Time `json:"compute_last_active_time,omitempty"`
 	// A timestamp indicating when the project was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-
-	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
-	// Human-readable project name.
-	DisplayName string `json:"display_name,omitempty"`
-
-	EffectiveDefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"effective_default_endpoint_settings,omitempty"`
-
-	EffectiveDisplayName string `json:"effective_display_name,omitempty"`
-
-	EffectiveHistoryRetentionDuration *duration.Duration `json:"effective_history_retention_duration,omitempty"`
-
-	EffectivePgVersion int `json:"effective_pg_version,omitempty"`
-
-	EffectiveSettings *ProjectSettings `json:"effective_settings,omitempty"`
-	// The number of seconds to retain the shared history for point in time
-	// recovery for all branches in this project.
-	HistoryRetentionDuration *duration.Duration `json:"history_retention_duration,omitempty"`
 	// The resource name of the project. Format: projects/{project_id}
 	Name string `json:"name,omitempty"`
-	// The major Postgres version number.
-	PgVersion int `json:"pg_version,omitempty"`
-
-	Settings *ProjectSettings `json:"settings,omitempty"`
-	// The current space occupied by the project in storage. Synthetic storage
-	// size combines the logical data size and Write-Ahead Log (WAL) size for
-	// all branches in a project.
-	SyntheticStorageSizeBytes int64 `json:"synthetic_storage_size_bytes,omitempty"`
+	// The desired state of a Project.
+	Spec *ProjectSpec `json:"spec,omitempty"`
+	// The current status of a Project.
+	Status *ProjectStatus `json:"status,omitempty"`
 	// System generated unique ID for the project.
 	Uid string `json:"uid,omitempty"`
 	// A timestamp indicating when the project was last updated.
@@ -995,6 +1080,192 @@ func (s *ProjectSettings) UnmarshalJSON(b []byte) error {
 
 func (s ProjectSettings) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type ProjectSpec struct {
+	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
+	// Human-readable project name.
+	DisplayName string `json:"display_name,omitempty"`
+	// The number of seconds to retain the shared history for point in time
+	// recovery for all branches in this project.
+	HistoryRetentionDuration *duration.Duration `json:"history_retention_duration,omitempty"`
+	// The major Postgres version number.
+	PgVersion int `json:"pg_version,omitempty"`
+
+	Settings *ProjectSettings `json:"settings,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ProjectSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ProjectSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ProjectStatus struct {
+	// The logical size limit for a branch.
+	BranchLogicalSizeLimitBytes int64 `json:"branch_logical_size_limit_bytes,omitempty"`
+	// The most recent time when any endpoint of this project was active.
+	ComputeLastActiveTime *time.Time `json:"compute_last_active_time,omitempty"`
+	// The effective default endpoint settings.
+	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
+	// The effective human-readable project name.
+	DisplayName string `json:"display_name,omitempty"`
+	// The effective number of seconds to retain the shared history for point in
+	// time recovery.
+	HistoryRetentionDuration *duration.Duration `json:"history_retention_duration,omitempty"`
+	// The effective major Postgres version number.
+	PgVersion int `json:"pg_version,omitempty"`
+	// The effective project settings.
+	Settings *ProjectSettings `json:"settings,omitempty"`
+	// The current space occupied by the project in storage.
+	SyntheticStorageSizeBytes int64 `json:"synthetic_storage_size_bytes,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ProjectStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ProjectStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Role represents a Postgres role within a Branch.
+type Role struct {
+	CreateTime *time.Time `json:"create_time,omitempty"`
+	// The resource name of the role. Format:
+	// projects/{project_id}/branch/{branch_id}/roles/{role_id}
+	Name string `json:"name,omitempty"`
+	// The Branch where this Role exists. Format:
+	// projects/{project_id}/branches/{branch_id}
+	Parent string `json:"parent,omitempty"`
+	// The desired state of the Role.
+	Spec *RoleRoleSpec `json:"spec,omitempty"`
+	// The observed state of the Role.
+	Status *RoleRoleStatus `json:"status,omitempty"`
+
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Role) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Role) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// How the role is authenticated when connecting to Postgres.
+type RoleAuthMethod string
+
+const RoleAuthMethodLakebaseOauthV1 RoleAuthMethod = `LAKEBASE_OAUTH_V1`
+
+const RoleAuthMethodNoLogin RoleAuthMethod = `NO_LOGIN`
+
+const RoleAuthMethodPgPasswordScramSha256 RoleAuthMethod = `PG_PASSWORD_SCRAM_SHA_256`
+
+// String representation for [fmt.Print]
+func (f *RoleAuthMethod) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RoleAuthMethod) Set(v string) error {
+	switch v {
+	case `LAKEBASE_OAUTH_V1`, `NO_LOGIN`, `PG_PASSWORD_SCRAM_SHA_256`:
+		*f = RoleAuthMethod(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "LAKEBASE_OAUTH_V1", "NO_LOGIN", "PG_PASSWORD_SCRAM_SHA_256"`, v)
+	}
+}
+
+// Values returns all possible values for RoleAuthMethod.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RoleAuthMethod) Values() []RoleAuthMethod {
+	return []RoleAuthMethod{
+		RoleAuthMethodLakebaseOauthV1,
+		RoleAuthMethodNoLogin,
+		RoleAuthMethodPgPasswordScramSha256,
+	}
+}
+
+// Type always returns RoleAuthMethod to satisfy [pflag.Value] interface
+func (f *RoleAuthMethod) Type() string {
+	return "RoleAuthMethod"
+}
+
+// The type of the Databricks managed identity that this Role represents. Leave
+// empty if you wish to create a regular Postgres role not associated with a
+// Databricks identity.
+type RoleIdentityType string
+
+const RoleIdentityTypeGroup RoleIdentityType = `GROUP`
+
+const RoleIdentityTypeServicePrincipal RoleIdentityType = `SERVICE_PRINCIPAL`
+
+const RoleIdentityTypeUser RoleIdentityType = `USER`
+
+// String representation for [fmt.Print]
+func (f *RoleIdentityType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RoleIdentityType) Set(v string) error {
+	switch v {
+	case `GROUP`, `SERVICE_PRINCIPAL`, `USER`:
+		*f = RoleIdentityType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GROUP", "SERVICE_PRINCIPAL", "USER"`, v)
+	}
+}
+
+// Values returns all possible values for RoleIdentityType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RoleIdentityType) Values() []RoleIdentityType {
+	return []RoleIdentityType{
+		RoleIdentityTypeGroup,
+		RoleIdentityTypeServicePrincipal,
+		RoleIdentityTypeUser,
+	}
+}
+
+// Type always returns RoleIdentityType to satisfy [pflag.Value] interface
+func (f *RoleIdentityType) Type() string {
+	return "RoleIdentityType"
+}
+
+type RoleOperationMetadata struct {
+}
+
+type RoleRoleSpec struct {
+	// If auth_method is left unspecified, a meaningful authentication method is
+	// derived from the identity_type: * For the managed identities, OAUTH is
+	// used. * For the regular postgres roles, authentication based on postgres
+	// passwords is used.
+	//
+	// NOTE: this is ignored for the Databricks identity type GROUP, and
+	// NO_LOGIN is implicitly assumed instead for the GROUP identity type.
+	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
+	// The type of the role.
+	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
+}
+
+type RoleRoleStatus struct {
+	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
+	// The type of the role.
+	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
 }
 
 type UpdateBranchRequest struct {
