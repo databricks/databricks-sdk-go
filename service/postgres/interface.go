@@ -21,6 +21,9 @@ type PostgresService interface {
 	// Create a Project.
 	CreateProject(ctx context.Context, request CreateProjectRequest) (*Operation, error)
 
+	// Create a role for a branch.
+	CreateRole(ctx context.Context, request CreateRoleRequest) (*Operation, error)
+
 	// Delete a Branch.
 	DeleteBranch(ctx context.Context, request DeleteBranchRequest) error
 
@@ -29,6 +32,9 @@ type PostgresService interface {
 
 	// Delete a Project.
 	DeleteProject(ctx context.Context, request DeleteProjectRequest) error
+
+	// Delete a role in a branch.
+	DeleteRole(ctx context.Context, request DeleteRoleRequest) (*Operation, error)
 
 	// Get a Branch.
 	GetBranch(ctx context.Context, request GetBranchRequest) (*Branch, error)
@@ -42,6 +48,9 @@ type PostgresService interface {
 	// Get a Project.
 	GetProject(ctx context.Context, request GetProjectRequest) (*Project, error)
 
+	// Get a Role.
+	GetRole(ctx context.Context, request GetRoleRequest) (*Role, error)
+
 	// List Branches.
 	ListBranches(ctx context.Context, request ListBranchesRequest) (*ListBranchesResponse, error)
 
@@ -50,6 +59,9 @@ type PostgresService interface {
 
 	// List Projects.
 	ListProjects(ctx context.Context, request ListProjectsRequest) (*ListProjectsResponse, error)
+
+	// List Roles.
+	ListRoles(ctx context.Context, request ListRolesRequest) (*ListRolesResponse, error)
 
 	// Update a Branch.
 	UpdateBranch(ctx context.Context, request UpdateBranchRequest) (*Operation, error)

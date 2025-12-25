@@ -13,10 +13,14 @@ type AccessRequestDestinations struct {
 	// lack of permissions. This value is true if the caller does not have
 	// permission to see all destinations.
 	AreAnyDestinationsHidden bool `json:"are_any_destinations_hidden,omitempty"`
+	// The source securable from which the destinations are inherited. Either
+	// the same value as securable (if destination is set directly on the
+	// securable) or the nearest parent securable with destinations set.
+	DestinationSourceSecurable *Securable `json:"destination_source_securable,omitempty"`
 	// The access request destinations for the securable.
 	Destinations []NotificationDestination `json:"destinations,omitempty"`
 	// The securable for which the access request destinations are being
-	// retrieved.
+	// modified or read.
 	Securable Securable `json:"securable"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6915,7 +6919,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_GOOGLE_ADS_OAUTH_U2M_WITH_DT = 284; Next id:285
+// Latest kind: CONNECTION_TIKTOK_ADS_U2M = 285; Next id: 286
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
