@@ -115,6 +115,8 @@ experimental/mocks/service/pipelines/mock_pipelines_interface.go linguist-genera
 experimental/mocks/service/postgres/mock_create_branch_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_create_endpoint_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_create_project_operation_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_create_role_operation_interface.go linguist-generated=true
+experimental/mocks/service/postgres/mock_delete_role_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_postgres_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_update_branch_operation_interface.go linguist-generated=true
 experimental/mocks/service/postgres/mock_update_endpoint_operation_interface.go linguist-generated=true
