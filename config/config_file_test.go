@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/internal/env"
+	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -54,8 +55,12 @@ func TestConfigFile_Scopes(t *testing.T) {
 
 			cfg := &Config{Profile: tt.profile}
 			err := cfg.EnsureResolved()
-			require.NoError(t, err)
-			assert.Equal(t, tt.expected, cfg.GetScopes())
+			if err != nil {
+				t.Fatalf("EnsureResolved failed: %v", err)
+			}
+			if diff := cmp.Diff(tt.expected, cfg.GetScopes()); diff != "" {
+				t.Errorf("GetScopes mismatch (-expected +actual):\n%s", diff)
+			}
 		})
 	}
 }

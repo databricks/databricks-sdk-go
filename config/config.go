@@ -138,8 +138,10 @@ type Config struct {
 	ClientID     string `name:"client_id" env:"DATABRICKS_CLIENT_ID" auth:"oauth" auth_types:"oauth-m2m"`
 	ClientSecret string `name:"client_secret" env:"DATABRICKS_CLIENT_SECRET" auth:"oauth,sensitive" auth_types:"oauth-m2m"`
 
+	// WARNING: This feature is still in development and may not work as expected.
+	//
 	// WARNING: Scopes support is EXPERIMENTAL and we don't guarantee backward
-	// compatibility for this feature.
+	// compatibility for this feature. Don't use this in production workloads.
 	//
 	// Scopes is a list of OAuth scopes to request when authenticating.
 	// If not specified, defaults to ["all-apis"] for backwards compatibility.

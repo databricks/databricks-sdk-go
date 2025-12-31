@@ -72,7 +72,7 @@ func (a *ConfigAttribute) SetS(cfg *Config, v string) error {
 		return a.Set(cfg, vv)
 	case reflect.Slice:
 		rawParts := strings.Split(v, ",")
-		parts := make([]string, 0, len(rawParts))
+		var parts []string
 		for _, part := range rawParts {
 			trimmed := strings.TrimSpace(part)
 			if trimmed != "" {
