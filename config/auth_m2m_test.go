@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"net/http"
 	"net/url"
 	"sort"
@@ -9,7 +10,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
-	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
 )
 
@@ -93,7 +93,9 @@ func TestM2mNotSupported(t *testing.T) {
 			},
 		},
 	})
-	require.ErrorIs(t, err, u2m.ErrOAuthNotSupported)
+	if !errors.Is(err, u2m.ErrOAuthNotSupported) {
+		t.Errorf("got error %v, want %v", err, u2m.ErrOAuthNotSupported)
+	}
 }
 
 func TestM2M_Scopes(t *testing.T) {
@@ -231,8 +233,12 @@ func TestM2M_Scopes(t *testing.T) {
 			cfg.ConfigFile = "/dev/null"
 			req, _ := http.NewRequest("GET", "http://localhost", nil)
 			err := cfg.Authenticate(req)
-			require.NoError(t, err)
-			require.Equal(t, "Bearer "+tt.expectedToken, req.Header.Get("Authorization"))
+			if err != nil {
+				t.Fatalf("Authenticate(): unexpected error: %v", err)
+			}
+			if got, want := req.Header.Get("Authorization"), "Bearer "+tt.expectedToken; got != want {
+				t.Errorf("Authorization header: got %q, want %q", got, want)
+			}
 		})
 	}
 }
