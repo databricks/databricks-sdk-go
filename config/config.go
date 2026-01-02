@@ -138,25 +138,24 @@ type Config struct {
 	ClientID     string `name:"client_id" env:"DATABRICKS_CLIENT_ID" auth:"oauth" auth_types:"oauth-m2m"`
 	ClientSecret string `name:"client_secret" env:"DATABRICKS_CLIENT_SECRET" auth:"oauth,sensitive" auth_types:"oauth-m2m"`
 
-	// WARNING: This feature is still in development and may not work as expected.
-	//
-	// WARNING: Scopes support is EXPERIMENTAL and we don't guarantee backward
-	// compatibility for this feature. Don't use this in production workloads.
-	//
 	// Scopes is a list of OAuth scopes to request when authenticating.
-	// If not specified, defaults to ["all-apis"] for backwards compatibility.
-	// For U2M authentication, "offline_access" is automatically appended to
-	// include a refresh token (disable via DisableOAuthRefreshToken).
 	//
-	// Note: Setting scopes via environment variables is not supported.
-	// Note: The slice is sorted in-place during config resolution.
-	// Note: U2M flow's token cache does not support scopes yet.
+	// WARNING:
+	//   - This feature is still in development and may not work as expected
+	//   - This feature is EXPERIMENTAL and may change or be removed without notice.
+	//   - Do NOT use this feature in production environments.
+	//
+	// Notes:
+	//   - If Scopes is nil or empty, the default ["all-apis"] scope will be used for backward compatibility.
+	//   - For U2M authentication, the "offline_access" scope will automatically be added to obtain a refresh token
+	//     unless you set DisableOAuthRefreshToken to true.
+	//   - You cannot set Scopes via environment variables.
+	//   - The scopes list will be sorted in-place during configuration resolution.
+	//   - The U2M token cache currently does NOT support differentiated caching for scopes.
 	Scopes []string `name:"scopes" auth:"-"`
 
-	// DisableOAuthRefreshToken controls whether the offline_access scope is requested
-	// during U2M OAuth authentication.
-	// offline_access is requested by default, causing a refresh token to be included
-	// in the OAuth token.
+	// DisableOAuthRefreshToken controls whether a refresh token should be requested
+	// during the U2M authentication flow (default to false).
 	DisableOAuthRefreshToken bool `name:"disable_oauth_refresh_token" env:"DATABRICKS_DISABLE_OAUTH_REFRESH_TOKEN" auth:"-"`
 
 	// Path to the Databricks CLI (version >= 0.100.0).
@@ -469,13 +468,27 @@ func (c *Config) EnsureResolved() error {
 			},
 		}
 	}
-	// Sort scopes in-place for better de-duplication in the refresh token cache,
-	// once scopes are supported in its cache key.
-	if len(c.Scopes) > 0 {
-		sort.Strings(c.Scopes)
-	}
+	// Sort and deduplicate scopes in-place for better cache key matching
+	// in the refresh token cache.
+	c.Scopes = sortAndDedupeSlice(c.Scopes)
 	c.resolved = true
 	return nil
+}
+
+// sortAndDedupeSlice sorts a slice of strings and removes duplicates in-place.
+func sortAndDedupeSlice(s []string) []string {
+	sort.Strings(s)
+	if len(s) <= 1 {
+		return s
+	}
+	j := 1
+	for i := 1; i < len(s); i++ {
+		if s[i] != s[i-1] {
+			s[j] = s[i]
+			j++
+		}
+	}
+	return s[:j]
 }
 
 func (c *Config) WithTesting() *Config {
