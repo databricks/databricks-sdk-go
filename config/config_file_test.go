@@ -3,6 +3,7 @@ package config
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -55,6 +56,7 @@ func TestConfigFile_Scopes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			env.CleanupEnvironment(t)
 			t.Setenv("HOME", "testdata")
 
 			cfg := &Config{Profile: tt.profile}
