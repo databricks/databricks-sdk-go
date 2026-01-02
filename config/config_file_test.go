@@ -5,14 +5,16 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/google/go-cmp/cmp"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestConfigFileLoad(t *testing.T) {
 	f, err := LoadFile("testdata/.databrickscfg")
-	require.NoError(t, err)
-	assert.NotNil(t, f)
+	if err != nil {
+		t.Fatalf("LoadFile failed: %v", err)
+	}
+	if f == nil {
+		t.Fatal("expected file to be non-nil")
+	}
 
 	for _, name := range []string{
 		"password-with-double-quotes",
@@ -20,8 +22,12 @@ func TestConfigFileLoad(t *testing.T) {
 		"password-without-quotes",
 	} {
 		section := f.Section(name)
-		require.NotNil(t, section)
-		assert.Equal(t, "%Y#X$Z", section.Key("password").String())
+		if section == nil {
+			t.Fatalf("expected section %q to be non-nil", name)
+		}
+		if got, want := section.Key("password").String(), "%Y#X$Z"; got != want {
+			t.Errorf("password mismatch for %q: got %q, want %q", name, got, want)
+		}
 	}
 }
 
