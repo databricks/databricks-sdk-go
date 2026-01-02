@@ -628,8 +628,7 @@ func (s MiniVectorIndex) MarshalJSON() ([]byte, error) {
 }
 
 type PatchEndpointBudgetPolicyRequest struct {
-	// The budget policy id to be applied (hima-sheth) TODO: remove this once
-	// we've migrated to usage policies
+	// The budget policy id to be applied
 	BudgetPolicyId string `json:"budget_policy_id"`
 	// Name of the vector search endpoint
 	EndpointName string `json:"-" url:"-"`
@@ -746,7 +745,13 @@ type QueryVectorIndexRequest struct {
 	// Query vector. Required for Direct Vector Access Index and Delta Sync
 	// Index using self-managed vectors.
 	QueryVector []float64 `json:"query_vector,omitempty"`
-
+	// If set, the top 50 results are reranked with the Databricks Reranker
+	// model before returning the `num_results` results to the user. The setting
+	// `columns_to_rerank` selects which columns are used for reranking. For
+	// each datapoint, the columns selected are concatenated before being sent
+	// to the reranking model. See
+	// https://docs.databricks.com/aws/en/vector-search/query-vector-search#rerank
+	// for more information.
 	Reranker *RerankerConfig `json:"reranker,omitempty"`
 	// Threshold for the approximate nearest neighbor search. Defaults to 0.0.
 	ScoreThreshold float64 `json:"score_threshold,omitempty"`

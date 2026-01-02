@@ -13,10 +13,14 @@ type AccessRequestDestinations struct {
 	// lack of permissions. This value is true if the caller does not have
 	// permission to see all destinations.
 	AreAnyDestinationsHidden bool `json:"are_any_destinations_hidden,omitempty"`
+	// The source securable from which the destinations are inherited. Either
+	// the same value as securable (if destination is set directly on the
+	// securable) or the nearest parent securable with destinations set.
+	DestinationSourceSecurable *Securable `json:"destination_source_securable,omitempty"`
 	// The access request destinations for the securable.
 	Destinations []NotificationDestination `json:"destinations,omitempty"`
 	// The securable for which the access request destinations are being
-	// retrieved.
+	// modified or read.
 	Securable Securable `json:"securable"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -928,7 +932,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 51
+// Next Id: 53
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -1081,6 +1085,9 @@ type CreateAccessRequestResponse struct {
 }
 
 type CreateAccountsMetastore struct {
+	// Whether to allow non-DBR clients to directly access entities under the
+	// metastore.
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// The user-specified name of the metastore.
 	Name string `json:"name"`
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
@@ -1480,6 +1487,9 @@ func (f *CreateFunctionSqlDataAccess) Type() string {
 }
 
 type CreateMetastore struct {
+	// Whether to allow non-DBR clients to directly access entities under the
+	// metastore.
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// The user-specified name of the metastore.
 	Name string `json:"name"`
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
@@ -6832,7 +6842,7 @@ type RunRefreshRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
-// Next ID: 43
+// Next ID: 44
 type SchemaInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -6909,7 +6919,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_CROWDSTRIKE_EVENT_STREAM_M2M = 281; Next id: 282
+// Latest kind: CONNECTION_ONELAKE = 289; Next id:290
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -7641,7 +7651,8 @@ type TableInfo struct {
 	// **STREAMING_TABLE**) - when DependencyList is None, the dependency is not
 	// provided; - when DependencyList is an empty list, the dependency is
 	// provided but is empty; - when DependencyList is not an empty list,
-	// dependencies are provided and recorded.
+	// dependencies are provided and recorded. Note: this field is not set in
+	// the output of the __listTables__ API.
 	ViewDependencies *DependencyList `json:"view_dependencies,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7874,6 +7885,9 @@ type UpdateAccountsMetastore struct {
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
 	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
+	// Whether to allow non-DBR clients to directly access entities under the
+	// metastore.
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// The owner of the metastore.
 	Owner string `json:"owner,omitempty"`
 	// Privilege model version of the metastore, of the form `major.minor`
@@ -8155,6 +8169,9 @@ type UpdateMetastore struct {
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
 	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
+	// Whether to allow non-DBR clients to directly access entities under the
+	// metastore.
+	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
 	// New name for the metastore.

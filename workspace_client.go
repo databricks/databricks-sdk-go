@@ -25,6 +25,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
+	"github.com/databricks/databricks-sdk-go/service/postgres"
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
@@ -703,6 +704,10 @@ type WorkspaceClient struct {
 	// create cluster policies using a policy family. Cluster policies created
 	// using a policy family inherit the policy family's policy definition.
 	PolicyFamilies compute.PolicyFamiliesInterface
+
+	// The Postgres API provides access to a Postgres database via REST API or
+	// direct SQL.
+	Postgres postgres.PostgresInterface
 
 	// Marketplace exchanges filters curate which groups can access an exchange.
 	ProviderExchangeFilters marketplace.ProviderExchangeFiltersInterface
@@ -1455,6 +1460,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		PolicyComplianceForClusters:         compute.NewPolicyComplianceForClusters(databricksClient),
 		PolicyComplianceForJobs:             jobs.NewPolicyComplianceForJobs(databricksClient),
 		PolicyFamilies:                      compute.NewPolicyFamilies(databricksClient),
+		Postgres:                            postgres.NewPostgres(databricksClient),
 		ProviderExchangeFilters:             marketplace.NewProviderExchangeFilters(databricksClient),
 		ProviderExchanges:                   marketplace.NewProviderExchanges(databricksClient),
 		ProviderFiles:                       marketplace.NewProviderFiles(databricksClient),

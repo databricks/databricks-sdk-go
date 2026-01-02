@@ -1498,10 +1498,30 @@ type SharedDataObject struct {
 	Name string `json:"name"`
 	// Array of partitions for the shared data.
 	Partitions []Partition `json:"partitions,omitempty"`
-	// A user-provided new name for the data object within the share. If this
-	// new name is not provided, the object's original name will be used as the
-	// `shared_as` name. The `shared_as` name must be unique within a share. For
-	// tables, the new name must follow the format of `<schema>.<table>`.
+	// A user-provided alias name for table-like data objects within the share.
+	//
+	// Use this field for table-like objects (for example: TABLE, VIEW,
+	// MATERIALIZED_VIEW, STREAMING_TABLE, FOREIGN_TABLE). For non-table objects
+	// (for example: VOLUME, MODEL, NOTEBOOK_FILE, FUNCTION), use
+	// `string_shared_as` instead.
+	//
+	// Important: For non-table objects, this field must be omitted entirely.
+	//
+	// Format: Must be a 2-part name `<schema_name>.<table_name>` (e.g.,
+	// "sales_schema.orders_table") - Both schema and table names must contain
+	// only alphanumeric characters and underscores - No periods, spaces,
+	// forward slashes, or control characters are allowed within each part - Do
+	// not include the catalog name (use 2 parts, not 3)
+	//
+	// Behavior: - If not provided, the service automatically generates the
+	// alias as `<schema>.<table>` from the object's original name - If you
+	// don't want to specify this field, omit it entirely from the request (do
+	// not pass an empty string) - The `shared_as` name must be unique within
+	// the share
+	//
+	// Examples: - Valid: "analytics_schema.customer_view" - Invalid:
+	// "catalog.analytics_schema.customer_view" (3 parts not allowed) - Invalid:
+	// "analytics-schema.customer-view" (hyphens not allowed)
 	SharedAs string `json:"shared_as,omitempty"`
 	// The start version associated with the object. This allows data providers
 	// to control the lowest object version that is accessible by clients. If
@@ -1513,11 +1533,34 @@ type SharedDataObject struct {
 	StartVersion int64 `json:"start_version,omitempty"`
 	// One of: **ACTIVE**, **PERMISSION_DENIED**.
 	Status SharedDataObjectStatus `json:"status,omitempty"`
-	// A user-provided new name for the shared object within the share. If this
-	// new name is not not provided, the object's original name will be used as
-	// the `string_shared_as` name. The `string_shared_as` name must be unique
-	// for objects of the same type within a Share. For notebooks, the new name
-	// should be the new notebook file name.
+	// A user-provided alias name for non-table data objects within the share.
+	//
+	// Use this field for non-table objects (for example: VOLUME, MODEL,
+	// NOTEBOOK_FILE, FUNCTION). For table-like objects (for example: TABLE,
+	// VIEW, MATERIALIZED_VIEW, STREAMING_TABLE, FOREIGN_TABLE), use `shared_as`
+	// instead.
+	//
+	// Important: For table-like objects, this field must be omitted entirely.
+	//
+	// Format: - For VOLUME: Must be a 2-part name `<schema_name>.<volume_name>`
+	// (e.g., "data_schema.ml_models") - For FUNCTION: Must be a 2-part name
+	// `<schema_name>.<function_name>` (e.g., "udf_schema.calculate_tax") - For
+	// MODEL: Must be a 2-part name `<schema_name>.<model_name>` (e.g.,
+	// "models.prediction_model") - For NOTEBOOK_FILE: Should be the notebook
+	// file name (e.g., "analysis_notebook.py") - All names must contain only
+	// alphanumeric characters and underscores - No periods, spaces, forward
+	// slashes, or control characters are allowed within each part
+	//
+	// Behavior: - If not provided, the service automatically generates the
+	// alias from the object's original name - If you don't want to specify this
+	// field, omit it entirely from the request (do not pass an empty string) -
+	// The `string_shared_as` name must be unique for objects of the same type
+	// within the share
+	//
+	// Examples: - Valid for VOLUME: "data_schema.training_data" - Valid for
+	// FUNCTION: "analytics.calculate_revenue" - Invalid:
+	// "catalog.data_schema.training_data" (3 parts not allowed for volumes) -
+	// Invalid: "data-schema.training-data" (hyphens not allowed)
 	StringSharedAs string `json:"string_shared_as,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1784,6 +1827,9 @@ func (s SharesListRequest) MarshalJSON() ([]byte, error) {
 }
 
 type Table struct {
+	// The access modes supported for this table (e.g., "url", "dir"). Used for
+	// open sharing to indicate how the table can be accessed.
+	AccessModes []string `json:"access_modes,omitempty"`
 	// The comment of the table.
 	Comment string `json:"comment,omitempty"`
 	// The id of the table.
@@ -1803,6 +1849,8 @@ type Table struct {
 	Share string `json:"share,omitempty"`
 	// The id of the share that the table belongs to.
 	ShareId string `json:"share_id,omitempty"`
+	// The cloud storage location of the table for open sharing.
+	StorageLocation string `json:"storage_location,omitempty"`
 	// The Tags of the table.
 	Tags []catalog.TagKeyValue `json:"tags,omitempty"`
 
