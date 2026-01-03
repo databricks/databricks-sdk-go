@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
-	"slices"
 	"sort"
 	"strings"
 	"sync"
@@ -469,11 +468,7 @@ func (c *Config) EnsureResolved() error {
 			},
 		}
 	}
-	// Sort and deduplicate scopes in-place for better cache key matching
-	// in the refresh token cache.
-	// c.Scopes = sortAndDedupeSlice(c.Scopes)
-	sort.Strings(c.Scopes)
-	c.Scopes = slices.Compact(c.Scopes)
+	c.Scopes = sortAndDedupeSlice(c.Scopes)
 	c.resolved = true
 	return nil
 }

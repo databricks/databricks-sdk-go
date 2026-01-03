@@ -1,10 +1,9 @@
 package config
 
 import (
-	"os"
-	"strings"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/internal/env"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -57,16 +56,7 @@ func TestConfigFile_Scopes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var databricksVars []string
-			for _, kv := range os.Environ() {
-				if strings.HasPrefix(kv, "DATABRICKS_") {
-					// Only print the variable name, not the value
-					name, _, _ := strings.Cut(kv, "=")
-					databricksVars = append(databricksVars, name)
-				}
-			}
-			t.Logf("DATABRICKS_* env vars set: %v", databricksVars)
-			// env.CleanupEnvironment(t)
+			env.CleanupEnvironment(t)
 			t.Setenv("HOME", "testdata")
 
 			cfg := &Config{Profile: tt.profile}
