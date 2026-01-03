@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+// getenv is the function used to read environment variables.
+// It defaults to os.Getenv but can be overwritten in tests.
+var getenv = os.Getenv
+
 type Source struct {
 	Type SourceType `json:"type"`
 	Name string     `json:"name,omitempty"`
@@ -45,7 +49,7 @@ type ConfigAttribute struct {
 
 func (a *ConfigAttribute) ReadEnv() (string, string) {
 	for _, envName := range a.EnvVars {
-		v := os.Getenv(envName)
+		v := getenv(envName)
 		if v == "" {
 			continue
 		}
