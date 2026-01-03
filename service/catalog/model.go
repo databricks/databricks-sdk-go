@@ -19,9 +19,15 @@ type AccessRequestDestinations struct {
 	DestinationSourceSecurable *Securable `json:"destination_source_securable,omitempty"`
 	// The access request destinations for the securable.
 	Destinations []NotificationDestination `json:"destinations,omitempty"`
+	// The full name of the securable. Redundant with the name in the securable
+	// object, but necessary for Terraform integration
+	FullName string `json:"full_name,omitempty"`
 	// The securable for which the access request destinations are being
 	// modified or read.
 	Securable Securable `json:"securable"`
+	// The type of the securable. Redundant with the type in the securable
+	// object, but necessary for Terraform integration
+	SecurableType string `json:"securable_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
