@@ -303,49 +303,49 @@ func TestConfig_getOAuthArgument_Unified(t *testing.T) {
 
 func TestSortAndDedupeSlice(t *testing.T) {
 	tests := []struct {
-		name     string
-		input    []string
-		want []string
+		name  string
+		input []string
+		want  []string
 	}{
 		{
-			name:     "nil slice",
-			input:    nil,
-			want: nil,
+			name:  "nil slice",
+			input: nil,
+			want:  nil,
 		},
 		{
-			name:     "empty slice",
-			input:    []string{},
-			want: []string{},
+			name:  "empty slice",
+			input: []string{},
+			want:  []string{},
 		},
 		{
-			name:     "single element",
-			input:    []string{"a"},
-			want: []string{"a"},
+			name:  "single element",
+			input: []string{"a"},
+			want:  []string{"a"},
 		},
 		{
-			name:     "already sorted no duplicates",
-			input:    []string{"a", "b", "c"},
-			want: []string{"a", "b", "c"},
+			name:  "already sorted no duplicates",
+			input: []string{"a", "b", "c"},
+			want:  []string{"a", "b", "c"},
 		},
 		{
-			name:     "unsorted no duplicates",
-			input:    []string{"c", "a", "b"},
-			want: []string{"a", "b", "c"},
+			name:  "unsorted no duplicates",
+			input: []string{"c", "a", "b"},
+			want:  []string{"a", "b", "c"},
 		},
 		{
-			name:     "with duplicates",
-			input:    []string{"b", "a", "b", "c", "a"},
-			want: []string{"a", "b", "c"},
+			name:  "with duplicates",
+			input: []string{"b", "a", "b", "c", "a"},
+			want:  []string{"a", "b", "c"},
 		},
 		{
-			name:     "all duplicates",
-			input:    []string{"a", "a", "a"},
-			want: []string{"a"},
+			name:  "all duplicates",
+			input: []string{"a", "a", "a"},
+			want:  []string{"a"},
 		},
 		{
-			name:     "adjacent duplicates",
-			input:    []string{"a", "a", "b", "b", "c"},
-			want: []string{"a", "b", "c"},
+			name:  "adjacent duplicates",
+			input: []string{"a", "a", "b", "b", "c"},
+			want:  []string{"a", "b", "c"},
 		},
 	}
 
