@@ -127,6 +127,9 @@ func (s AppAccessControlResponse) MarshalJSON() ([]byte, error) {
 }
 
 type AppDeployment struct {
+	// The command with which to run the app. This will override the command
+	// specified in the app.yaml file.
+	Command []string `json:"command,omitempty"`
 	// The creation time of the deployment. Formatted timestamp in ISO 6801.
 	CreateTime string `json:"create_time,omitempty"`
 	// The email of the user creates the deployment.
@@ -135,6 +138,9 @@ type AppDeployment struct {
 	DeploymentArtifacts *AppDeploymentArtifacts `json:"deployment_artifacts,omitempty"`
 	// The unique id of the deployment.
 	DeploymentId string `json:"deployment_id,omitempty"`
+	// The environment variables to set in the app runtime environment. This
+	// will override the environment variables specified in the app.yaml file.
+	EnvVars []EnvVar `json:"env_vars,omitempty"`
 	// Git repository to use as the source for the app deployment.
 	GitSource *GitSource `json:"git_source,omitempty"`
 	// The mode of which the deployment will manage the source code.
@@ -1558,6 +1564,26 @@ type DeleteAppRequest struct {
 type DeleteCustomTemplateRequest struct {
 	// The name of the custom template.
 	Name string `json:"-" url:"-"`
+}
+
+type EnvVar struct {
+	// The name of the environment variable.
+	Name string `json:"name,omitempty"`
+	// The value for the environment variable.
+	Value string `json:"value,omitempty"`
+	// The name of an external Databricks resource that contains the value, such
+	// as a secret or a database table.
+	ValueFrom string `json:"value_from,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnvVar) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnvVar) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GetAppDeploymentRequest struct {
