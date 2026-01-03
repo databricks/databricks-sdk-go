@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
-	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -19,6 +18,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"golang.org/x/exp/slices"
 	"golang.org/x/oauth2"
 )
 
@@ -468,25 +468,10 @@ func (c *Config) EnsureResolved() error {
 			},
 		}
 	}
-	c.Scopes = sortAndDedupeSlice(c.Scopes)
+	slices.Sort(c.Scopes)
+	c.Scopes = slices.Compact(c.Scopes)
 	c.resolved = true
 	return nil
-}
-
-// sortAndDedupeSlice sorts a slice of strings and removes duplicates in-place.
-func sortAndDedupeSlice(s []string) []string {
-	sort.Strings(s)
-	if len(s) <= 1 {
-		return s
-	}
-	j := 1
-	for i := 1; i < len(s); i++ {
-		if s[i] != s[i-1] {
-			s[j] = s[i]
-			j++
-		}
-	}
-	return s[:j]
 }
 
 func (c *Config) WithTesting() *Config {

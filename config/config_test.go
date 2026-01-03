@@ -7,7 +7,6 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
-	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -297,64 +296,6 @@ func TestConfig_getOAuthArgument_Unified(t *testing.T) {
 			assert.True(t, ok, "Expected UnifiedOAuthArgument")
 			assert.Equal(t, "https://unified.cloud.databricks.com", got.GetHost())
 			assert.Equal(t, "account-123", got.GetAccountId())
-		})
-	}
-}
-
-func TestSortAndDedupeSlice(t *testing.T) {
-	tests := []struct {
-		name  string
-		input []string
-		want  []string
-	}{
-		{
-			name:  "nil slice",
-			input: nil,
-			want:  nil,
-		},
-		{
-			name:  "empty slice",
-			input: []string{},
-			want:  []string{},
-		},
-		{
-			name:  "single element",
-			input: []string{"a"},
-			want:  []string{"a"},
-		},
-		{
-			name:  "already sorted no duplicates",
-			input: []string{"a", "b", "c"},
-			want:  []string{"a", "b", "c"},
-		},
-		{
-			name:  "unsorted no duplicates",
-			input: []string{"c", "a", "b"},
-			want:  []string{"a", "b", "c"},
-		},
-		{
-			name:  "with duplicates",
-			input: []string{"b", "a", "b", "c", "a"},
-			want:  []string{"a", "b", "c"},
-		},
-		{
-			name:  "all duplicates",
-			input: []string{"a", "a", "a"},
-			want:  []string{"a"},
-		},
-		{
-			name:  "adjacent duplicates",
-			input: []string{"a", "a", "b", "b", "c"},
-			want:  []string{"a", "b", "c"},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := sortAndDedupeSlice(tt.input)
-			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("mismatch (-want +got):\n%s", diff)
-			}
 		})
 	}
 }
