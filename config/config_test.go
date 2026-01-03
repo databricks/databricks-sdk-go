@@ -305,54 +305,54 @@ func TestSortAndDedupeSlice(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    []string
-		expected []string
+		want []string
 	}{
 		{
 			name:     "nil slice",
 			input:    nil,
-			expected: nil,
+			want: nil,
 		},
 		{
 			name:     "empty slice",
 			input:    []string{},
-			expected: []string{},
+			want: []string{},
 		},
 		{
 			name:     "single element",
 			input:    []string{"a"},
-			expected: []string{"a"},
+			want: []string{"a"},
 		},
 		{
 			name:     "already sorted no duplicates",
 			input:    []string{"a", "b", "c"},
-			expected: []string{"a", "b", "c"},
+			want: []string{"a", "b", "c"},
 		},
 		{
 			name:     "unsorted no duplicates",
 			input:    []string{"c", "a", "b"},
-			expected: []string{"a", "b", "c"},
+			want: []string{"a", "b", "c"},
 		},
 		{
 			name:     "with duplicates",
 			input:    []string{"b", "a", "b", "c", "a"},
-			expected: []string{"a", "b", "c"},
+			want: []string{"a", "b", "c"},
 		},
 		{
 			name:     "all duplicates",
 			input:    []string{"a", "a", "a"},
-			expected: []string{"a"},
+			want: []string{"a"},
 		},
 		{
 			name:     "adjacent duplicates",
 			input:    []string{"a", "a", "b", "b", "c"},
-			expected: []string{"a", "b", "c"},
+			want: []string{"a", "b", "c"},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := sortAndDedupeSlice(tt.input)
-			if diff := cmp.Diff(tt.expected, result); diff != "" {
+			got := sortAndDedupeSlice(tt.input)
+			if diff := cmp.Diff(tt.want, got); diff != "" {
 				t.Errorf("mismatch (-want +got):\n%s", diff)
 			}
 		})
