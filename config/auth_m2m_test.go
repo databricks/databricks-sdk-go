@@ -181,8 +181,7 @@ func TestM2M_Scopes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Scopes are expected as a space-separated string in requests.
-			// We sort scopes in place during config resolution.
+			// Prepare expected scope to match SDK's normalization (sorted, space-separated).
 			expectedScope := "all-apis"
 			if len(tt.scopes) > 0 {
 				sortedScopes := make([]string, len(tt.scopes))
