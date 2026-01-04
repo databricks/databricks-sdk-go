@@ -55,16 +55,17 @@ var (
 	errInvalidRefreshToken = &u2m.InvalidRefreshTokenError{}
 )
 
-// mockPersistentAuthFactory returns a persistentAuthFactory that returns ts.
+// mockPersistentAuthFactory creates a test factory for bypassing real auth setup.
+// Use this when tests only need to control token behavior without caring about auth configuration.
 func mockPersistentAuthFactory(ts oauth2.TokenSource) persistentAuthFactory {
 	return func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error) {
 		return ts, nil
 	}
 }
 
-// capturingPersistentAuthFactory returns a persistentAuthFactory that applies
-// options to a real PersistentAuth and calls onCapture, allowing tests to spy
-// on the options passed. It returns ts for token operations.
+// capturingPersistentAuthFactory creates a test factory for inspecting auth configuration.
+// Use this when tests need to verify what options were passed to PersistentAuth while
+// still controlling token behavior through ts.
 func capturingPersistentAuthFactory(ts oauth2.TokenSource, onCapture func(*u2m.PersistentAuth)) persistentAuthFactory {
 	return func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error) {
 		pa, err := u2m.NewPersistentAuth(ctx, opts...)
@@ -80,12 +81,12 @@ func capturingPersistentAuthFactory(ts oauth2.TokenSource, onCapture func(*u2m.P
 
 func TestU2MCredentials_Configure(t *testing.T) {
 	testCases := []struct {
-		desc           string
-		cfg            *Config
-		tokenSource    *testTokenSource
-		wantConfigErr  string // error message from Configure()
-		wantHeaderErr  string // error message from SetHeaders()
-		wantAuthHeader string // expected Authorization header
+		desc            string
+		cfg             *Config
+		testTokenSource *testTokenSource
+		wantConfigErr   string // error message from Configure()
+		wantHeaderErr   string // error message from SetHeaders()
+		wantAuthHeader  string // expected Authorization header
 	}{
 		{
 			desc: "missing host returns error",
@@ -99,7 +100,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 			cfg: &Config{
 				Host: "https://workspace.cloud.databricks.com",
 			},
-			tokenSource: &testTokenSource{
+			testTokenSource: &testTokenSource{
 				token: testValidToken,
 			},
 			wantAuthHeader: "Bearer valid-access-token",
@@ -110,7 +111,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				Host:      "https://accounts.cloud.databricks.com",
 				AccountID: "abc-123",
 			},
-			tokenSource: &testTokenSource{
+			testTokenSource: &testTokenSource{
 				token: testValidToken,
 			},
 			wantAuthHeader: "Bearer valid-access-token",
@@ -120,7 +121,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 			cfg: &Config{
 				Host: "https://workspace.cloud.databricks.com",
 			},
-			tokenSource: &testTokenSource{
+			testTokenSource: &testTokenSource{
 				token: testExpiredToken,
 			},
 			wantAuthHeader: "Bearer expired-access-token",
@@ -130,7 +131,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 			cfg: &Config{
 				Host: "https://workspace.cloud.databricks.com",
 			},
-			tokenSource: &testTokenSource{
+			testTokenSource: &testTokenSource{
 				err: errNetwork,
 			},
 			wantHeaderErr: "network timeout",
@@ -140,7 +141,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 			cfg: &Config{
 				Host: "https://workspace.cloud.databricks.com",
 			},
-			tokenSource: &testTokenSource{
+			testTokenSource: &testTokenSource{
 				err: errAuthentication,
 			},
 			wantHeaderErr: "authentication failed",
@@ -152,7 +153,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				Profile:  "my-workspace",
 				resolved: true,
 			},
-			tokenSource: &testTokenSource{
+			testTokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
 			wantHeaderErr: "databricks auth login --profile my-workspace",
@@ -163,7 +164,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				Host:     "https://workspace.cloud.databricks.com",
 				resolved: true,
 			},
-			tokenSource: &testTokenSource{
+			testTokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
 			wantHeaderErr: "databricks auth login --host https://workspace.cloud.databricks.com",
@@ -176,7 +177,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				Profile:   "prod-account",
 				resolved:  true,
 			},
-			tokenSource: &testTokenSource{
+			testTokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
 			wantHeaderErr: "databricks auth login --profile prod-account",
@@ -188,7 +189,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				AccountID: "abc-123",
 				resolved:  true,
 			},
-			tokenSource: &testTokenSource{
+			testTokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
 			wantHeaderErr: "databricks auth login --host https://accounts.cloud.databricks.com --account-id abc-123",
@@ -200,7 +201,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				Profile:  "test",
 				resolved: true,
 			},
-			tokenSource: &testTokenSource{
+			testTokenSource: &testTokenSource{
 				err: fmt.Errorf("oauth2: %w", errInvalidRefreshToken),
 			},
 			wantHeaderErr: "databricks auth login --profile test",
@@ -212,7 +213,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 				AccountID: "abc-456",
 				resolved:  true,
 			},
-			tokenSource: &testTokenSource{
+			testTokenSource: &testTokenSource{
 				err: errInvalidRefreshToken,
 			},
 			wantHeaderErr: "databricks auth login --host https://accounts.azure.databricks.net --account-id abc-456",
@@ -223,7 +224,7 @@ func TestU2MCredentials_Configure(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			ctx := context.Background()
 			u := u2mCredentials{
-				newPersistentAuth: mockPersistentAuthFactory(tc.tokenSource),
+				newPersistentAuth: mockPersistentAuthFactory(tc.testTokenSource),
 			}
 
 			cp, gotConfigErr := u.Configure(ctx, tc.cfg)
@@ -296,7 +297,7 @@ func TestU2MCredentials_Configure_Scopes(t *testing.T) {
 		desc           string
 		configScopes   []string
 		expectedScopes []string
-		sortScopes     bool // whether to sort captured scopes before comparison
+		sortScopes     bool
 	}{
 		{
 			desc:           "default scopes when not specified",
@@ -307,7 +308,7 @@ func TestU2MCredentials_Configure_Scopes(t *testing.T) {
 		{
 			desc:           "custom scopes are passed through",
 			configScopes:   []string{"sql", "clusters"},
-			expectedScopes: []string{"clusters", "sql"}, // sorted during config resolution
+			expectedScopes: []string{"clusters", "sql"},
 			sortScopes:     true,
 		},
 	}

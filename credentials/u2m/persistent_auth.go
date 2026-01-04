@@ -16,6 +16,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/pkg/browser"
+	"golang.org/x/exp/slices"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/authhandler"
 )
@@ -151,7 +152,6 @@ func WithScopes(scopes []string) PersistentAuthOption {
 }
 
 // WithDisableOfflineAccess controls whether offline_access scope is requested.
-// When true, offline_access will NOT be automatically added to scopes.
 func WithDisableOfflineAccess(disable bool) PersistentAuthOption {
 	return func(a *PersistentAuth) {
 		a.disableOfflineAccess = disable
@@ -398,9 +398,7 @@ func (a *PersistentAuth) validateArg() error {
 func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
 	scopes := a.scopes
 	if !a.disableOfflineAccess {
-		// Use append to create a new slice with "offline_access" added,
-		// avoiding mutation of the original a.scopes slice.
-		scopes = append(append([]string{}, scopes...), "offline_access")
+		scopes = append(slices.Clone(scopes), "offline_access")
 	}
 
 	var endpoints *OAuthAuthorizationServer
