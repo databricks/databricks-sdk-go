@@ -648,7 +648,7 @@ func (a *featureEngineeringImpl) DeleteFeature(ctx context.Context, request Dele
 }
 
 func (a *featureEngineeringImpl) DeleteKafkaConfig(ctx context.Context, request DeleteKafkaConfigRequest) error {
-	path := fmt.Sprintf("/api/2.0/feature-engineering/features/kafka-configs/kafka/%v", request.Name)
+	path := fmt.Sprintf("/api/2.0/feature-engineering/features/kafka-configs/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -736,7 +736,9 @@ func (a *featureEngineeringImpl) internalListFeatures(ctx context.Context, reque
 	return &listFeaturesResponse, err
 }
 
-// List Kafka configs.
+// List Kafka configs. During PrPr, Kafka configs can be read and used when
+// creating features under the entire metastore. Only the creator of the Kafka
+// config can delete it.
 func (a *featureEngineeringImpl) ListKafkaConfigs(ctx context.Context, request ListKafkaConfigsRequest) listing.Iterator[KafkaConfig] {
 
 	getNextPage := func(ctx context.Context, req ListKafkaConfigsRequest) (*ListKafkaConfigsResponse, error) {
@@ -761,7 +763,9 @@ func (a *featureEngineeringImpl) ListKafkaConfigs(ctx context.Context, request L
 	return iterator
 }
 
-// List Kafka configs.
+// List Kafka configs. During PrPr, Kafka configs can be read and used when
+// creating features under the entire metastore. Only the creator of the Kafka
+// config can delete it.
 func (a *featureEngineeringImpl) ListKafkaConfigsAll(ctx context.Context, request ListKafkaConfigsRequest) ([]KafkaConfig, error) {
 	iterator := a.ListKafkaConfigs(ctx, request)
 	return listing.ToSlice[KafkaConfig](ctx, iterator)
