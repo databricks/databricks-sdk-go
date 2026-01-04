@@ -76,7 +76,7 @@ func TestGithubOIDC_Scopes(t *testing.T) {
 			githubTokenCalled := false
 			tokenExchangeCalled := false
 
-			// Simulates the GitHub Actions OIDC token endpoint.
+			// Mock GitHub server to verify the SDK requests an OIDC token during auth flow.
 			githubServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				githubTokenCalled = true
 				w.Header().Set("Content-Type", "application/json")
@@ -84,8 +84,7 @@ func TestGithubOIDC_Scopes(t *testing.T) {
 			}))
 			defer githubServer.Close()
 
-			// Simulates a Databricks workspace.
-			// Asserts whether the right scopes are passed to the token exchange endpoint.
+			// Mock Databricks server to verify the SDK passes the correct scopes during token exchange.
 			var databricksServer *httptest.Server
 			databricksServer = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				switch r.URL.Path {
@@ -101,7 +100,6 @@ func TestGithubOIDC_Scopes(t *testing.T) {
 					if err := r.ParseForm(); err != nil {
 						t.Fatalf("Failed to parse form: %v", err)
 					}
-					// Verify scope is passed correctly to token exchange.
 					if got := r.Form.Get("scope"); got != tt.expectedScope {
 						t.Errorf("scope: got %q, want %q", got, tt.expectedScope)
 					}
