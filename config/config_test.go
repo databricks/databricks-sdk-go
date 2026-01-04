@@ -7,9 +7,21 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
+	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+// mockLoader is a test helper that implements the Loader interface.
+type mockLoader func(cfg *Config) error
+
+func (m mockLoader) Name() string {
+	return "mockLoader"
+}
+
+func (m mockLoader) Configure(cfg *Config) error {
+	return m(cfg)
+}
 
 func TestHostType_AwsAccount(t *testing.T) {
 	c := &Config{
@@ -296,6 +308,71 @@ func TestConfig_getOAuthArgument_Unified(t *testing.T) {
 			assert.True(t, ok, "Expected UnifiedOAuthArgument")
 			assert.Equal(t, "https://unified.cloud.databricks.com", got.GetHost())
 			assert.Equal(t, "account-123", got.GetAccountId())
+		})
+	}
+}
+
+func TestConfig_EnsureResolved_scopeNormalization(t *testing.T) {
+	testCases := []struct {
+		desc   string
+		scopes []string
+		want   []string
+	}{
+		{
+			desc:   "nil scopes",
+			scopes: nil,
+			want:   nil,
+		},
+		{
+			desc:   "empty scopes",
+			scopes: []string{},
+			want:   []string{},
+		},
+		{
+			desc:   "single scope",
+			scopes: []string{"clusters"},
+			want:   []string{"clusters"},
+		},
+		{
+			desc:   "already sorted no duplicates",
+			scopes: []string{"a", "b", "c"},
+			want:   []string{"a", "b", "c"},
+		},
+		{
+			desc:   "unsorted scopes are sorted",
+			scopes: []string{"jobs", "clusters", "pipelines"},
+			want:   []string{"clusters", "jobs", "pipelines"},
+		},
+		{
+			desc:   "duplicate scopes are removed",
+			scopes: []string{"clusters", "jobs", "clusters", "pipelines:read", "jobs"},
+			want:   []string{"clusters", "jobs", "pipelines:read"},
+		},
+		{
+			desc:   "all duplicates reduced to one",
+			scopes: []string{"all-apis", "all-apis", "all-apis"},
+			want:   []string{"all-apis"},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			cfg := &Config{
+				Host: "https://example.cloud.databricks.com",
+				Loaders: []Loader{mockLoader(func(cfg *Config) error {
+					cfg.Scopes = tc.scopes
+					return nil
+				})},
+			}
+
+			err := cfg.EnsureResolved()
+			if err != nil {
+				t.Fatalf("EnsureResolved() error: %v", err)
+			}
+
+			if diff := cmp.Diff(tc.want, cfg.Scopes); diff != "" {
+				t.Errorf("EnsureResolved() scopes mismatch (-want +got):\n%s", diff)
+			}
 		})
 	}
 }

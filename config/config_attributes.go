@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"os"
 	"reflect"
 	"sort"
 	"strings"
@@ -31,7 +30,7 @@ func (a attributes) DebugString(cfg *Config) string {
 		}
 		attrsUsed = append(attrsUsed, fmt.Sprintf("%s=%s", attr.Name, v))
 		for _, envName := range attr.EnvVars {
-			v := os.Getenv(envName)
+			v := getenv(envName)
 			if v == "" {
 				continue
 			}
