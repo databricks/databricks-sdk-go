@@ -6,13 +6,26 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-// withMockEnv replaces the getenv function with one that returns values from
-// the provided map. The original function is restored when the test completes.
+// withMockEnv mocks environment variables for testing config file loading
+// without relying on the actual system environment or filesystem.
+// getUserHomeDir falls back to the real implementation when HOME is not in
+// the env map, allowing tests to optionally override HOME without breaking
+// tests that don't need to control the home directory path.
 func withMockEnv(t *testing.T, env map[string]string) {
 	original := getenv
-	t.Cleanup(func() { getenv = original })
+	originalUserHomeDir := getUserHomeDir
+	t.Cleanup(func() {
+		getenv = original
+		getUserHomeDir = originalUserHomeDir
+	})
 	getenv = func(key string) string {
 		return env[key]
+	}
+	getUserHomeDir = func() (string, error) {
+		if home, ok := env["HOME"]; ok {
+			return home, nil
+		}
+		return originalUserHomeDir()
 	}
 }
 

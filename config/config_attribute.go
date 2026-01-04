@@ -12,6 +12,10 @@ import (
 // It defaults to os.Getenv but can be overwritten in tests.
 var getenv = os.Getenv
 
+// getUserHomeDir is the function used to get user home directory.
+// It defaults to os.UserHomeDir but can be overwritten in tests.
+var getUserHomeDir = os.UserHomeDir
+
 type Source struct {
 	Type SourceType `json:"type"`
 	Name string     `json:"name,omitempty"`
