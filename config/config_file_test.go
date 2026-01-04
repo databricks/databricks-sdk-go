@@ -65,8 +65,9 @@ func TestConfigFile_Scopes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			withMockEnv(t, map[string]string{})
-			t.Setenv("HOME", "testdata/scopes")
+			withMockEnv(t, map[string]string{
+				"HOME": "testdata/scopes",
+			})
 
 			cfg := &Config{Profile: tt.profile}
 			err := cfg.EnsureResolved()
