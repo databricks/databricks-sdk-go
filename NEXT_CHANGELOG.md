@@ -36,3 +36,4 @@
 * Add `Command` and `EnvVars` fields for [apps.AppDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppDeployment).
 * Add `FullName` and `SecurableType` fields for [catalog.AccessRequestDestinations](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccessRequestDestinations).
 * [Breaking] Change `DeleteKafkaConfig` method for [w.FeatureEngineering](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#FeatureEngineeringAPI) workspace-level service . Method path has changed.
+* [Breaking] Change long-running operation for [PostgresAPI.DeleteRole](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI.DeleteRole) . Long running operation response type changed to empty response.

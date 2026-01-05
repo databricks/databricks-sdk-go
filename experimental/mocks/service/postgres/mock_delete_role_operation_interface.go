@@ -183,7 +183,7 @@ func (_c *MockDeleteRoleOperationInterface_Name_Call) RunAndReturn(run func() st
 }
 
 // Wait provides a mock function with given fields: ctx, opts
-func (_m *MockDeleteRoleOperationInterface) Wait(ctx context.Context, opts ...api.Option) (*postgres.Role, error) {
+func (_m *MockDeleteRoleOperationInterface) Wait(ctx context.Context, opts ...api.Option) error {
 	_va := make([]interface{}, len(opts))
 	for _i := range opts {
 		_va[_i] = opts[_i]
@@ -197,26 +197,14 @@ func (_m *MockDeleteRoleOperationInterface) Wait(ctx context.Context, opts ...ap
 		panic("no return value specified for Wait")
 	}
 
-	var r0 *postgres.Role
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, ...api.Option) (*postgres.Role, error)); ok {
-		return rf(ctx, opts...)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, ...api.Option) *postgres.Role); ok {
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, ...api.Option) error); ok {
 		r0 = rf(ctx, opts...)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*postgres.Role)
-		}
+		r0 = ret.Error(0)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, ...api.Option) error); ok {
-		r1 = rf(ctx, opts...)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
 // MockDeleteRoleOperationInterface_Wait_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Wait'
@@ -245,12 +233,12 @@ func (_c *MockDeleteRoleOperationInterface_Wait_Call) Run(run func(ctx context.C
 	return _c
 }
 
-func (_c *MockDeleteRoleOperationInterface_Wait_Call) Return(_a0 *postgres.Role, _a1 error) *MockDeleteRoleOperationInterface_Wait_Call {
-	_c.Call.Return(_a0, _a1)
+func (_c *MockDeleteRoleOperationInterface_Wait_Call) Return(_a0 error) *MockDeleteRoleOperationInterface_Wait_Call {
+	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockDeleteRoleOperationInterface_Wait_Call) RunAndReturn(run func(context.Context, ...api.Option) (*postgres.Role, error)) *MockDeleteRoleOperationInterface_Wait_Call {
+func (_c *MockDeleteRoleOperationInterface_Wait_Call) RunAndReturn(run func(context.Context, ...api.Option) error) *MockDeleteRoleOperationInterface_Wait_Call {
 	_c.Call.Return(run)
 	return _c
 }
