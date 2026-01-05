@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"sort"
 	"strings"
 	"testing"
 	"time"
@@ -294,27 +293,29 @@ func TestU2MCredentials_Configure_TokenCaching(t *testing.T) {
 
 func TestU2MCredentials_Configure_Scopes(t *testing.T) {
 	testCases := []struct {
-		desc           string
-		configScopes   []string
-		expectedScopes []string
-		sortScopes     bool
+		name   string
+		scopes []string
+		want   []string
 	}{
 		{
-			desc:           "default scopes when not specified",
-			configScopes:   nil,
-			expectedScopes: []string{"all-apis"},
-			sortScopes:     false,
+			name:   "nil scopes uses default",
+			scopes: nil,
+			want:   []string{"all-apis"},
 		},
 		{
-			desc:           "custom scopes are passed through",
-			configScopes:   []string{"sql", "clusters"},
-			expectedScopes: []string{"clusters", "sql"},
-			sortScopes:     true,
+			name:   "empty scopes uses default",
+			scopes: []string{},
+			want:   []string{"all-apis"},
+		},
+		{
+			name:   "multiple scopes are sorted",
+			scopes: []string{"clusters", "jobs", "sql:read"},
+			want:   []string{"clusters", "jobs", "sql:read"},
 		},
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.desc, func(t *testing.T) {
+		t.Run(tc.name, func(t *testing.T) {
 			ts := &testTokenSource{token: testValidToken}
 			var capturedScopes []string
 
@@ -325,7 +326,7 @@ func TestU2MCredentials_Configure_Scopes(t *testing.T) {
 			}
 			cfg := &Config{
 				Host:   "https://workspace.cloud.databricks.com",
-				Scopes: tc.configScopes,
+				Scopes: tc.scopes,
 			}
 
 			_, err := u.Configure(context.Background(), cfg)
@@ -333,10 +334,7 @@ func TestU2MCredentials_Configure_Scopes(t *testing.T) {
 				t.Fatalf("Configure() error = %v", err)
 			}
 
-			if tc.sortScopes {
-				sort.Strings(capturedScopes)
-			}
-			if diff := cmp.Diff(tc.expectedScopes, capturedScopes); diff != "" {
+			if diff := cmp.Diff(tc.want, capturedScopes); diff != "" {
 				t.Errorf("scopes mismatch (-want +got):\n%s", diff)
 			}
 		})

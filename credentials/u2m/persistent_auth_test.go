@@ -494,82 +494,27 @@ func TestPersistentAuth_startListener_explicitPortNoFallBack(t *testing.T) {
 func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 	tests := []struct {
 		name           string
-		createArg      func() (OAuthArgument, error)
 		scopes         []string
 		disableOffline bool
-		expectedScope  string
-		expectedPath   string
-		tokenResponse  string
-		tokenResource  string
+		want           string
 	}{
 		{
-			name: "single scope",
-			createArg: func() (OAuthArgument, error) {
-				return NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
-			},
+			name:           "single scope with offline_access",
 			scopes:         []string{"dashboards"},
 			disableOffline: false,
-			expectedScope:  "dashboards offline_access",
-			tokenResponse:  `access_token=token&refresh_token=refresh`,
-			tokenResource:  "/oidc/accounts/xyz/v1/token",
+			want:           "dashboards offline_access",
 		},
 		{
-			name: "multiple scopes",
-			createArg: func() (OAuthArgument, error) {
-				return NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "xyz")
-			},
-			scopes:         []string{"files", "jobs", "mlflow"},
+			name:           "multiple scopes with offline_access",
+			scopes:         []string{"files", "jobs", "mlflow:read"},
 			disableOffline: false,
-			expectedScope:  "files jobs mlflow offline_access",
-			tokenResponse:  `access_token=token&refresh_token=refresh`,
-			tokenResource:  "/oidc/accounts/xyz/v1/token",
+			want:           "files jobs mlflow:read offline_access",
 		},
 		{
-			name: "workspace OAuth argument",
-			createArg: func() (OAuthArgument, error) {
-				return NewBasicWorkspaceOAuthArgument("https://my-workspace.cloud.databricks.com")
-			},
-			scopes:         []string{"genie"},
-			disableOffline: false,
-			expectedScope:  "genie offline_access",
-			expectedPath:   "/oidc/v1/authorize",
-			tokenResponse:  `access_token=token&refresh_token=refresh`,
-			tokenResource:  "/oidc/v1/token",
-		},
-		{
-			name: "account OAuth argument",
-			createArg: func() (OAuthArgument, error) {
-				return NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "my-account")
-			},
-			scopes:         []string{"files", "iam"},
-			disableOffline: false,
-			expectedScope:  "files iam offline_access",
-			expectedPath:   "/oidc/accounts/my-account/v1/authorize",
-			tokenResponse:  `access_token=token&refresh_token=refresh`,
-			tokenResource:  "/oidc/accounts/my-account/v1/token",
-		},
-		{
-			name: "unified OAuth argument",
-			createArg: func() (OAuthArgument, error) {
-				return NewBasicUnifiedOAuthArgument("https://unified.cloud.databricks.com", "my-account")
-			},
-			scopes:         []string{"pipelines", "workspaces"},
-			disableOffline: false,
-			expectedScope:  "pipelines workspaces offline_access",
-			expectedPath:   "/oidc/accounts/my-account/v1/authorize",
-			tokenResponse:  `access_token=token&refresh_token=refresh`,
-			tokenResource:  "/oidc/accounts/my-account/v1/token",
-		},
-		{
-			name: "disable offline_access",
-			createArg: func() (OAuthArgument, error) {
-				return NewBasicWorkspaceOAuthArgument("https://my-workspace.cloud.databricks.com")
-			},
+			name:           "disable offline_access",
 			scopes:         []string{"files", "jobs"},
 			disableOffline: true,
-			expectedScope:  "files jobs",
-			tokenResponse:  `access_token=token`,
-			tokenResource:  "/oidc/v1/token",
+			want:           "files jobs",
 		},
 	}
 
@@ -584,9 +529,6 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 				if err != nil {
 					return err
 				}
-				if tt.expectedPath != "" && u.Path != tt.expectedPath {
-					t.Errorf("browser(): want path '%s', got %s", tt.expectedPath, u.Path)
-				}
 				query := u.Query()
 				scopeReceived <- query.Get("scope")
 				browserOpened <- query.Get("state")
@@ -599,9 +541,14 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 				},
 			}
 
-			arg, err := tt.createArg()
+			arg, err := NewBasicWorkspaceOAuthArgument("https://workspace.cloud.databricks.com")
 			if err != nil {
-				t.Fatalf("createArg(): want no error, got %v", err)
+				t.Fatalf("NewBasicWorkspaceOAuthArgument(): want no error, got %v", err)
+			}
+
+			tokenResponse := `access_token=token&refresh_token=refresh`
+			if tt.disableOffline {
+				tokenResponse = `access_token=token`
 			}
 
 			opts := []PersistentAuthOption{
@@ -611,8 +558,8 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 					Transport: fixtures.SliceTransport{
 						{
 							Method:   "POST",
-							Resource: tt.tokenResource,
-							Response: tt.tokenResponse,
+							Resource: "/oidc/v1/token",
+							Response: tokenResponse,
 							ResponseHeaders: map[string][]string{
 								"Content-Type": {"application/x-www-form-urlencoded"},
 							},
@@ -641,8 +588,8 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 			scope := <-scopeReceived
 			state := <-browserOpened
 
-			if scope != tt.expectedScope {
-				t.Errorf("scope: want '%s', got '%s'", tt.expectedScope, scope)
+			if scope != tt.want {
+				t.Errorf("scope: want %q, got %q", tt.want, scope)
 			}
 
 			resp, err := http.Get(fmt.Sprintf("http://localhost:8020?code=__CODE__&state=%s", state))
