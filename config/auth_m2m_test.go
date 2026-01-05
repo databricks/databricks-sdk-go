@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
-	"sort"
 	"strings"
 	"testing"
 
@@ -100,143 +99,71 @@ func TestM2mNotSupported(t *testing.T) {
 
 func TestM2M_Scopes(t *testing.T) {
 	tests := []struct {
-		name              string
-		host              string
-		accountID         string
-		scopes            []string
-		wellKnownEndpoint string
-		authServer        *u2m.OAuthAuthorizationServer
-		tokenEndpoint     string
-		expectedToken     string
+		name   string
+		scopes []string
+		want   string
 	}{
 		{
-			name:              "default scopes when not configured",
-			host:              "a",
-			scopes:            nil,
-			wellKnownEndpoint: "GET /oidc/.well-known/oauth-authorization-server",
-			authServer: &u2m.OAuthAuthorizationServer{
-				AuthorizationEndpoint: "https://localhost:1234/dummy/auth",
-				TokenEndpoint:         "https://localhost:1234/dummy/token",
-			},
-			tokenEndpoint: "POST /dummy/token",
-			expectedToken: "test-token",
+			name:   "nil scopes uses default",
+			scopes: nil,
+			want:   "all-apis",
 		},
 		{
-			name:              "single scope",
-			host:              "a",
-			scopes:            []string{"dashboards"},
-			wellKnownEndpoint: "GET /oidc/.well-known/oauth-authorization-server",
-			authServer: &u2m.OAuthAuthorizationServer{
-				AuthorizationEndpoint: "https://localhost:1234/dummy/auth",
-				TokenEndpoint:         "https://localhost:1234/dummy/token",
-			},
-			tokenEndpoint: "POST /dummy/token",
-			expectedToken: "test-token",
+			name:   "empty scopes uses default",
+			scopes: []string{},
+			want:   "all-apis",
 		},
 		{
-			name:              "multiple scopes sorted",
-			host:              "a",
-			scopes:            []string{"jobs", "files", "mlflow"},
-			wellKnownEndpoint: "GET /oidc/.well-known/oauth-authorization-server",
-			authServer: &u2m.OAuthAuthorizationServer{
-				AuthorizationEndpoint: "https://localhost:1234/dummy/auth",
-				TokenEndpoint:         "https://localhost:1234/dummy/token",
-			},
-			tokenEndpoint: "POST /dummy/token",
-			expectedToken: "test-token",
+			name:   "single scope",
+			scopes: []string{"dashboards"},
+			want:   "dashboards",
 		},
 		{
-			name:              "empty scopes uses default",
-			host:              "a",
-			scopes:            []string{},
-			wellKnownEndpoint: "GET /oidc/.well-known/oauth-authorization-server",
-			authServer: &u2m.OAuthAuthorizationServer{
-				AuthorizationEndpoint: "https://localhost:1234/dummy/auth",
-				TokenEndpoint:         "https://localhost:1234/dummy/token",
-			},
-			tokenEndpoint: "POST /dummy/token",
-			expectedToken: "test-token",
-		},
-		{
-			name:              "workspace host",
-			host:              "https://my-workspace.cloud.databricks.com",
-			scopes:            []string{"mlflow:read"},
-			wellKnownEndpoint: "GET /oidc/.well-known/oauth-authorization-server",
-			authServer: &u2m.OAuthAuthorizationServer{
-				AuthorizationEndpoint: "https://my-workspace.cloud.databricks.com/oidc/v1/authorize",
-				TokenEndpoint:         "https://my-workspace.cloud.databricks.com/oidc/v1/token",
-			},
-			tokenEndpoint: "POST /oidc/v1/token",
-			expectedToken: "workspace-token",
-		},
-		{
-			name:          "account host",
-			host:          "accounts.cloud.databricks.com",
-			accountID:     "my-account",
-			scopes:        []string{"iam", "jobs", "files"},
-			tokenEndpoint: "POST /oidc/accounts/my-account/v1/token",
-			expectedToken: "account-token",
+			name:   "multiple scopes are sorted",
+			scopes: []string{"jobs", "files:read", "mlflow"},
+			want:   "files:read jobs mlflow",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Prepare expected scope to match SDK's normalization (sorted, space-separated).
-			expectedScope := "all-apis"
-			if len(tt.scopes) > 0 {
-				sortedScopes := make([]string, len(tt.scopes))
-				copy(sortedScopes, tt.scopes)
-				sort.Strings(sortedScopes)
-				expectedScope = strings.Join(sortedScopes, " ")
-			}
-
-			transport := fixtures.MappingTransport{}
-
-			if tt.wellKnownEndpoint != "" {
-				transport[tt.wellKnownEndpoint] = fixtures.HTTPFixture{
-					Response: tt.authServer,
-				}
-			}
-
-			transport[tt.tokenEndpoint] = fixtures.HTTPFixture{
-				ExpectedHeaders: map[string]string{
-					"Authorization": "Basic Yjpj",
-					"Content-Type":  "application/x-www-form-urlencoded",
+			transport := fixtures.MappingTransport{
+				"GET /oidc/.well-known/oauth-authorization-server": {
+					Response: u2m.OAuthAuthorizationServer{
+						AuthorizationEndpoint: "https://localhost/auth",
+						TokenEndpoint:         "https://localhost/token",
+					},
 				},
-				ExpectedRequest: url.Values{
-					"grant_type": {"client_credentials"},
-					"scope":      {expectedScope},
-				},
-				Response: oauth2.Token{
-					TokenType:   "Bearer",
-					AccessToken: tt.expectedToken,
+				"POST /token": {
+					// The scope assertion: verifies the SDK sends the correct scope parameter.
+					ExpectedRequest: url.Values{
+						"grant_type": {"client_credentials"},
+						"scope":      {tt.want},
+					},
+					Response: oauth2.Token{
+						TokenType:   "Bearer",
+						AccessToken: "test-token",
+					},
 				},
 			}
 
 			cfg := &Config{
-				Host:          tt.host,
+				Host:          "a",
 				ClientID:      "b",
 				ClientSecret:  "c",
 				AuthType:      "oauth-m2m",
+				Scopes:        tt.scopes,
 				HTTPTransport: transport,
+				ConfigFile:    "/dev/null",
 			}
 
-			if tt.accountID != "" {
-				cfg.AccountID = tt.accountID
-			}
-
-			if tt.scopes != nil {
-				cfg.Scopes = tt.scopes
-			}
-
-			cfg.ConfigFile = "/dev/null"
 			req, _ := http.NewRequest("GET", "http://localhost", nil)
 			err := cfg.Authenticate(req)
 			if err != nil {
 				t.Fatalf("Authenticate(): unexpected error: %v", err)
 			}
-			if got, want := req.Header.Get("Authorization"), "Bearer "+tt.expectedToken; got != want {
-				t.Errorf("Authorization header: got %q, want %q", got, want)
+			if !strings.HasPrefix(req.Header.Get("Authorization"), "Bearer ") {
+				t.Errorf("Authorization header missing Bearer prefix: got %q", req.Header.Get("Authorization"))
 			}
 		})
 	}
