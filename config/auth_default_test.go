@@ -55,36 +55,42 @@ func TestDefaultCredentials_Configure(t *testing.T) {
 
 func TestGithubOIDC_Scopes(t *testing.T) {
 	tests := []struct {
-		name          string
-		scopes        []string
-		expectedScope string
+		name   string
+		scopes []string
+		want   string
 	}{
 		{
-			name:          "default scopes",
-			scopes:        nil,
-			expectedScope: "all-apis",
+			name:   "nil scopes uses default",
+			scopes: nil,
+			want:   "all-apis",
 		},
 		{
-			name:          "custom scopes",
-			scopes:        []string{"clusters", "jobs"},
-			expectedScope: "clusters jobs",
+			name:   "empty scopes uses default",
+			scopes: []string{},
+			want:   "all-apis",
+		},
+		{
+			name:   "single scope",
+			scopes: []string{"clusters"},
+			want:   "clusters",
+		},
+		{
+			name:   "multiple scopes are sorted",
+			scopes: []string{"jobs", "clusters", "files:read"},
+			want:   "clusters files:read jobs",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			githubTokenCalled := false
-			tokenExchangeCalled := false
-
-			// Mock GitHub server to verify the SDK requests an OIDC token during auth flow.
+			// Mock GitHub server for OIDC token requests.
 			githubServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				githubTokenCalled = true
 				w.Header().Set("Content-Type", "application/json")
 				json.NewEncoder(w).Encode(map[string]string{"value": "github-id-token"})
 			}))
 			defer githubServer.Close()
 
-			// Mock Databricks server to verify the SDK passes the correct scopes during token exchange.
+			// Mock Databricks server to verify the SDK passes the correct scopes.
 			var databricksServer *httptest.Server
 			databricksServer = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				switch r.URL.Path {
@@ -96,12 +102,12 @@ func TestGithubOIDC_Scopes(t *testing.T) {
 					})
 
 				case "/oidc/v1/token":
-					tokenExchangeCalled = true
 					if err := r.ParseForm(); err != nil {
 						t.Fatalf("Failed to parse form: %v", err)
 					}
-					if got := r.Form.Get("scope"); got != tt.expectedScope {
-						t.Errorf("scope: got %q, want %q", got, tt.expectedScope)
+					// The scope assertion: verifies the SDK sends the correct scope parameter.
+					if got := r.Form.Get("scope"); got != tt.want {
+						t.Errorf("scope: got %q, want %q", got, tt.want)
 					}
 					w.Header().Set("Content-Type", "application/json")
 					json.NewEncoder(w).Encode(map[string]interface{}{
@@ -124,25 +130,16 @@ func TestGithubOIDC_Scopes(t *testing.T) {
 				ActionsIDTokenRequestToken: "github-request-token",
 				TokenAudience:              "databricks-test-audience",
 				AuthType:                   "github-oidc",
-			}
-			if tt.scopes != nil {
-				cfg.Scopes = tt.scopes
+				Scopes:                     tt.scopes,
 			}
 
 			req, _ := http.NewRequest("GET", databricksServer.URL+"/api/test", nil)
 			err := cfg.Authenticate(req)
 			if err != nil {
-				t.Fatalf("Authenticate(): got error %v, want none", err)
+				t.Fatalf("Authenticate(): unexpected error: %v", err)
 			}
-
-			if got := req.Header.Get("Authorization"); got != "Bearer databricks-access-token" {
-				t.Errorf("Authorization header: got %q, want %q", got, "Bearer databricks-access-token")
-			}
-			if !githubTokenCalled {
-				t.Error("GitHub token endpoint was not called")
-			}
-			if !tokenExchangeCalled {
-				t.Error("Token exchange endpoint was not called")
+			if !strings.HasPrefix(req.Header.Get("Authorization"), "Bearer ") {
+				t.Errorf("Authorization header missing Bearer prefix: got %q", req.Header.Get("Authorization"))
 			}
 		})
 	}

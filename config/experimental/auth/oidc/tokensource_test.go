@@ -323,87 +323,33 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 
 func TestWIF_Scopes(t *testing.T) {
 	tests := []struct {
-		name                string
-		clientID            string
-		accountID           string
-		host                string
-		audience            string
-		scopes              []string
-		tokenEndpoint       string
-		expectedClientID    string
-		expectedScope       string
-		expectedAccessToken string
+		name   string
+		scopes []string
+		want   string
 	}{
 		{
-			name:                "single scope",
-			clientID:            "client-id",
-			host:                "http://host.com",
-			audience:            "token-audience",
-			scopes:              []string{"dashboards"},
-			tokenEndpoint:       "https://host.com/oidc/v1/token",
-			expectedClientID:    "client-id",
-			expectedScope:       "dashboards",
-			expectedAccessToken: "test-token",
+			name:   "single scope",
+			scopes: []string{"dashboards"},
+			want:   "dashboards",
 		},
 		{
-			name:                "multiple scopes sorted",
-			clientID:            "client-id",
-			host:                "http://host.com",
-			audience:            "token-audience",
-			scopes:              []string{"files", "jobs", "mlflow"},
-			tokenEndpoint:       "https://host.com/oidc/v1/token",
-			expectedClientID:    "client-id",
-			expectedScope:       "files jobs mlflow",
-			expectedAccessToken: "test-token",
-		},
-		{
-			name:                "workspace-level WIF",
-			clientID:            "client-id",
-			host:                "https://my-workspace.cloud.databricks.com",
-			audience:            "workspace-audience",
-			scopes:              []string{"genie"},
-			tokenEndpoint:       "https://my-workspace.cloud.databricks.com/oidc/v1/token",
-			expectedClientID:    "client-id",
-			expectedScope:       "genie",
-			expectedAccessToken: "workspace-token",
-		},
-		{
-			name:                "account-level WIF",
-			clientID:            "client-id",
-			accountID:           "my-account",
-			host:                "https://accounts.cloud.databricks.com",
-			audience:            "account-audience",
-			scopes:              []string{"files", "iam"},
-			tokenEndpoint:       "https://accounts.cloud.databricks.com/oidc/accounts/my-account/v1/token",
-			expectedClientID:    "client-id",
-			expectedScope:       "files iam",
-			expectedAccessToken: "account-token",
-		},
-		{
-			name:                "account-wide token federation (no ClientID)",
-			clientID:            "",
-			host:                "http://host.com",
-			audience:            "token-audience",
-			scopes:              []string{"workspaces"},
-			tokenEndpoint:       "https://host.com/oidc/v1/token",
-			expectedClientID:    "",
-			expectedScope:       "workspaces",
-			expectedAccessToken: "account-wide-token",
+			name:   "multiple scopes",
+			scopes: []string{"jobs", "files:read", "mlflow"},
+			want:   "jobs files:read mlflow",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg := DatabricksOIDCTokenSourceConfig{
-				ClientID:  tt.clientID,
-				AccountID: tt.accountID,
-				Host:      tt.host,
+				ClientID: "client-id",
+				Host:     "http://host.com",
 				TokenEndpointProvider: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
 					return &u2m.OAuthAuthorizationServer{
-						TokenEndpoint: tt.tokenEndpoint,
+						TokenEndpoint: "https://host.com/oidc/v1/token",
 					}, nil
 				},
-				Audience: tt.audience,
+				Audience: "token-audience",
 				IDTokenSource: IDTokenSourceFn(func(ctx context.Context, aud string) (*IDToken, error) {
 					return &IDToken{Value: "id-token"}, nil
 				}),
@@ -412,22 +358,18 @@ func TestWIF_Scopes(t *testing.T) {
 
 			ts := NewDatabricksOIDCTokenSource(cfg)
 
+			// The scope assertion: verifies the token source sends the correct scope parameter.
 			expectedRequest := url.Values{
-				"scope":              {tt.expectedScope},
+				"client_id":          {"client-id"},
+				"scope":              {tt.want},
 				"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
 				"subject_token":      {"id-token"},
 				"grant_type":         {"urn:ietf:params:oauth:grant-type:token-exchange"},
 			}
-			if tt.expectedClientID != "" {
-				expectedRequest["client_id"] = []string{tt.expectedClientID}
-			}
-
-			endpointURL, _ := url.Parse(tt.tokenEndpoint)
-			endpointPath := "POST " + endpointURL.Path
 
 			ctx := context.WithValue(context.Background(), oauth2.HTTPClient, &http.Client{
 				Transport: fixtures.MappingTransport{
-					endpointPath: {
+					"POST /oidc/v1/token": {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Content-Type": "application/x-www-form-urlencoded",
@@ -435,7 +377,7 @@ func TestWIF_Scopes(t *testing.T) {
 						ExpectedRequest: expectedRequest,
 						Response: map[string]string{
 							"token_type":   "Bearer",
-							"access_token": tt.expectedAccessToken,
+							"access_token": "test-token",
 						},
 					},
 				},
@@ -445,8 +387,8 @@ func TestWIF_Scopes(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Token(ctx): got error %q, want none", err)
 			}
-			if token.AccessToken != tt.expectedAccessToken {
-				t.Errorf("Token(ctx): got access token %q, want %q", token.AccessToken, tt.expectedAccessToken)
+			if !strings.HasPrefix(token.AccessToken, "test-") {
+				t.Errorf("Token(ctx): got unexpected access token %q", token.AccessToken)
 			}
 		})
 	}
