@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
-	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -360,36 +359,6 @@ func (c *Config) IsAccountClient() bool {
 		}
 	}
 	return false
-}
-
-// IsUnifiedHost returns true if the given host is a unified host that supports
-// both workspace-level and account-level APIs. For now, this always returns false
-// as unified hosts are not yet in production. This method can be updated in the
-// future to detect unified hosts based on their hostname pattern.
-func IsUnifiedHost(host string) bool {
-	if host == "" {
-		return false
-	}
-
-	// Parse the URL to extract just the hostname
-	parsedHost, err := url.Parse(host)
-	if err != nil {
-		return false
-	}
-
-	// If no host was parsed, assume the scheme wasn't included
-	hostname := parsedHost.Hostname()
-	if hostname == "" {
-		parsedHost, err = url.Parse("https://" + host)
-		if err != nil {
-			return false
-		}
-		hostname = parsedHost.Hostname()
-	}
-
-	// Match against the unified host pattern: <subdomain>.databricks.com
-	matched, _ := regexp.MatchString(`^[^.]+\.databricks\.com$`, hostname)
-	return matched
 }
 
 // HostType returns the type of host that the client is configured for.
