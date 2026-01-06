@@ -38,7 +38,7 @@ func LoadFile(path string) (*File, error) {
 
 	// Expand ~ to home directory.
 	if strings.HasPrefix(path, "~") {
-		homedir, err := os.UserHomeDir()
+		homedir, err := getUserHomeDir()
 		if err != nil {
 			return nil, fmt.Errorf("cannot find homedir: %w", err)
 		}

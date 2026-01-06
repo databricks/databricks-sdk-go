@@ -1221,7 +1221,7 @@ type Feature struct {
 	// The data source of the feature.
 	Source DataSource `json:"source"`
 	// The time window in which the feature is computed.
-	TimeWindow TimeWindow `json:"time_window"`
+	TimeWindow *TimeWindow `json:"time_window,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2567,6 +2567,9 @@ func (s LoggedModelTag) MarshalJSON() ([]byte, error) {
 // A materialized feature represents a feature that is continuously computed and
 // stored.
 type MaterializedFeature struct {
+	// The quartz cron expression that defines the schedule of the
+	// materialization pipeline. The schedule is evaluated in the UTC timezone.
+	CronSchedule string `json:"cron_schedule,omitempty"`
 	// The full name of the feature in Unity Catalog.
 	FeatureName string `json:"feature_name"`
 	// The timestamp when the pipeline last ran and updated the materialized
@@ -2954,6 +2957,8 @@ type OnlineStore struct {
 	ReadReplicaCount int `json:"read_replica_count,omitempty"`
 	// The current state of the online store.
 	State OnlineStoreState `json:"state,omitempty"`
+	// The usage policy applied to the online store to track billing.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

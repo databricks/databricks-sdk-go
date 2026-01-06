@@ -19,6 +19,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"golang.org/x/exp/slices"
 	"golang.org/x/oauth2"
 )
 
@@ -63,6 +64,8 @@ const (
 	// InvalidConfig is returned when the config is not valid for either workspace-level or account-level APIs.
 	InvalidConfig ConfigType = "INVALID_CONFIG"
 )
+
+var defaultScopes = []string{"all-apis"}
 
 // Config represents configuration for Databricks Connectivity
 type Config struct {
@@ -135,6 +138,26 @@ type Config struct {
 
 	ClientID     string `name:"client_id" env:"DATABRICKS_CLIENT_ID" auth:"oauth" auth_types:"oauth-m2m"`
 	ClientSecret string `name:"client_secret" env:"DATABRICKS_CLIENT_SECRET" auth:"oauth,sensitive" auth_types:"oauth-m2m"`
+
+	// Scopes is a list of OAuth scopes to request when authenticating.
+	//
+	// WARNING:
+	//   - This feature is still in development and may not work as expected
+	//   - This feature is EXPERIMENTAL and may change or be removed without notice.
+	//   - Do NOT use this feature in production environments.
+	//
+	// Notes:
+	//   - If Scopes is nil or empty, the default ["all-apis"] scope will be used for backward compatibility.
+	//   - For U2M authentication, the "offline_access" scope will automatically be added to obtain a refresh token
+	//     unless you set DisableOAuthRefreshToken to true.
+	//   - You cannot set Scopes via environment variables.
+	//   - The scopes list will be sorted in-place during configuration resolution.
+	//   - The U2M token cache currently does NOT support differentiated caching for scopes.
+	Scopes []string `name:"scopes" auth:"-"`
+
+	// DisableOAuthRefreshToken controls whether a refresh token should be requested
+	// during the U2M authentication flow (default to false).
+	DisableOAuthRefreshToken bool `name:"disable_oauth_refresh_token" env:"DATABRICKS_DISABLE_OAUTH_REFRESH_TOKEN" auth:"-"`
 
 	// Path to the Databricks CLI (version >= 0.100.0).
 	DatabricksCliPath string `name:"databricks_cli_path" env:"DATABRICKS_CLI_PATH" auth_types:"databricks-cli"`
@@ -470,6 +493,8 @@ func (c *Config) EnsureResolved() error {
 			},
 		}
 	}
+	slices.Sort(c.Scopes)
+	c.Scopes = slices.Compact(c.Scopes)
 	c.resolved = true
 	return nil
 }
@@ -483,6 +508,13 @@ func (c *Config) CanonicalHostName() string {
 	// Missing host is tolerated here.
 	_ = c.fixHostIfNeeded()
 	return c.Host
+}
+
+func (c *Config) GetScopes() []string {
+	if len(c.Scopes) == 0 {
+		return defaultScopes
+	}
+	return c.Scopes
 }
 
 func (c *Config) wrapDebug(err error) error {

@@ -25,6 +25,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
+	"github.com/databricks/databricks-sdk-go/service/postgres"
 	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
@@ -68,8 +69,8 @@ type WorkspaceClient struct {
 	// scheduled using the `sql_task` type of the Jobs API, e.g.
 	// :method:jobs/create.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version. [Learn more]
+	// **Warning**: This API is deprecated. Please see the latest version of the
+	// Databricks SQL API. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	AlertsLegacy sql.AlertsLegacyInterface
@@ -261,8 +262,8 @@ type WorkspaceClient struct {
 	// client, or `grep` to search the response from this API for the name of
 	// your SQL warehouse as it appears in Databricks SQL.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available.
-	// [Learn more]
+	// **Warning**: This API is deprecated. Please see the latest version of the
+	// Databricks SQL API. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	DataSources sql.DataSourcesInterface
@@ -289,8 +290,8 @@ type WorkspaceClient struct {
 	// - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify
 	// permissions (superset of `CAN_RUN`)
 	//
-	// **Note**: A new version of the Databricks SQL API is now available.
-	// [Learn more]
+	// **Warning**: This API is deprecated. Please see the latest version of the
+	// Databricks SQL API. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	DbsqlPermissions sql.DbsqlPermissionsInterface
@@ -704,6 +705,10 @@ type WorkspaceClient struct {
 	// using a policy family inherit the policy family's policy definition.
 	PolicyFamilies compute.PolicyFamiliesInterface
 
+	// The Postgres API provides access to a Postgres database via REST API or
+	// direct SQL.
+	Postgres postgres.PostgresInterface
+
 	// Marketplace exchanges filters curate which groups can access an exchange.
 	ProviderExchangeFilters marketplace.ProviderExchangeFiltersInterface
 
@@ -759,8 +764,8 @@ type WorkspaceClient struct {
 	// scheduled using the `sql_task` type of the Jobs API, e.g.
 	// :method:jobs/create.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version. [Learn more]
+	// **Warning**: This API is deprecated. Please see the latest version of the
+	// Databricks SQL API. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueriesLegacy sql.QueriesLegacyInterface
@@ -778,8 +783,8 @@ type WorkspaceClient struct {
 	// vizualisations from existing queries within the Databricks Workspace.
 	// Data structures may change over time.
 	//
-	// **Note**: A new version of the Databricks SQL API is now available.
-	// Please see the latest version. [Learn more]
+	// **Warning**: This API is deprecated. Please see the latest version of the
+	// Databricks SQL API. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueryVisualizationsLegacy sql.QueryVisualizationsLegacyInterface
@@ -1455,6 +1460,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		PolicyComplianceForClusters:         compute.NewPolicyComplianceForClusters(databricksClient),
 		PolicyComplianceForJobs:             jobs.NewPolicyComplianceForJobs(databricksClient),
 		PolicyFamilies:                      compute.NewPolicyFamilies(databricksClient),
+		Postgres:                            postgres.NewPostgres(databricksClient),
 		ProviderExchangeFilters:             marketplace.NewProviderExchangeFilters(databricksClient),
 		ProviderExchanges:                   marketplace.NewProviderExchanges(databricksClient),
 		ProviderFiles:                       marketplace.NewProviderFiles(databricksClient),

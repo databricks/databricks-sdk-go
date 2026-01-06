@@ -9,6 +9,111 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+type ClonePipelineRequest struct {
+	// If false, deployment will fail if name conflicts with that of another
+	// pipeline.
+	AllowDuplicateNames bool `json:"allow_duplicate_names,omitempty"`
+	// Budget policy of this pipeline.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// A catalog in Unity Catalog to publish data from this pipeline to. If
+	// `target` is specified, tables in this pipeline are published to a
+	// `target` schema inside `catalog` (for example,
+	// `catalog`.`target`.`table`). If `target` is not specified, no data is
+	// published to Unity Catalog.
+	Catalog string `json:"catalog,omitempty"`
+	// DLT Release Channel that specifies which version to use.
+	Channel string `json:"channel,omitempty"`
+	// Cluster settings for this pipeline deployment.
+	Clusters []PipelineCluster `json:"clusters,omitempty"`
+	// String-String configuration for this pipeline execution.
+	Configuration map[string]string `json:"configuration,omitempty"`
+	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
+	Continuous bool `json:"continuous,omitempty"`
+	// Deployment type of this pipeline.
+	Deployment *PipelineDeployment `json:"deployment,omitempty"`
+	// Whether the pipeline is in Development mode. Defaults to false.
+	Development bool `json:"development,omitempty"`
+	// Pipeline product edition.
+	Edition string `json:"edition,omitempty"`
+	// Environment specification for this pipeline used to install dependencies.
+	Environment *PipelinesEnvironment `json:"environment,omitempty"`
+	// Event log configuration for this pipeline
+	EventLog *EventLogSpec `json:"event_log,omitempty"`
+	// If present, the last-modified time of the pipeline settings before the
+	// clone. If the settings were modified after that time, then the request
+	// will fail with a conflict.
+	ExpectedLastModified int64 `json:"expected_last_modified,omitempty"`
+	// Filters on which Pipeline packages to include in the deployed graph.
+	Filters *Filters `json:"filters,omitempty"`
+	// The definition of a gateway pipeline to support change data capture.
+	GatewayDefinition *IngestionGatewayPipelineDefinition `json:"gateway_definition,omitempty"`
+	// Unique identifier for this pipeline.
+	Id string `json:"id,omitempty"`
+	// The configuration for a managed ingestion pipeline. These settings cannot
+	// be used with the 'libraries', 'schema', 'target', or 'catalog' settings.
+	IngestionDefinition *IngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
+	// Libraries or code needed by this deployment.
+	Libraries []PipelineLibrary `json:"libraries,omitempty"`
+	// Friendly identifier for this pipeline.
+	Name string `json:"name,omitempty"`
+	// List of notification settings for this pipeline.
+	Notifications []Notifications `json:"notifications,omitempty"`
+	// Whether Photon is enabled for this pipeline.
+	Photon bool `json:"photon,omitempty"`
+	// Source pipeline to clone from
+	PipelineId string `json:"-" url:"-"`
+	// Restart window of this pipeline.
+	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
+	// Root path for this pipeline. This is used as the root directory when
+	// editing the pipeline in the Databricks user interface and it is added to
+	// sys.path when executing Python sources during pipeline execution.
+	RootPath string `json:"root_path,omitempty"`
+	// The default schema (database) where tables are read from or published to.
+	Schema string `json:"schema,omitempty"`
+	// Whether serverless compute is enabled for this pipeline.
+	Serverless bool `json:"serverless,omitempty"`
+	// DBFS root directory for storing checkpoints and tables.
+	Storage string `json:"storage,omitempty"`
+	// A map of tags associated with the pipeline. These are forwarded to the
+	// cluster as cluster tags, and are therefore subject to the same
+	// limitations. A maximum of 25 tags can be added to the pipeline.
+	Tags map[string]string `json:"tags,omitempty"`
+	// Target schema (database) to add tables in this pipeline to. Exactly one
+	// of `schema` or `target` must be specified. To publish to Unity Catalog,
+	// also specify `catalog`. This legacy field is deprecated for pipeline
+	// creation in favor of the `schema` field.
+	Target string `json:"target,omitempty"`
+	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+	Trigger *PipelineTrigger `json:"trigger,omitempty"`
+	// Usage policy of this pipeline.
+	UsagePolicyId string `json:"usage_policy_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ClonePipelineRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClonePipelineRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ClonePipelineResponse struct {
+	// The pipeline id of the cloned pipeline
+	PipelineId string `json:"pipeline_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ClonePipelineResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ClonePipelineResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ConnectionParameters struct {
 	// Source catalog for initial connection. This is necessary for schema
 	// exploration in some database systems like Oracle, and optional but
@@ -2128,6 +2233,10 @@ type TableSpecificConfig struct {
 	PrimaryKeys []string `json:"primary_keys,omitempty"`
 
 	QueryBasedConnectorConfig *IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig `json:"query_based_connector_config,omitempty"`
+	// (Optional, Immutable) The row filter condition to be applied to the
+	// table. It must not contain the WHERE keyword, only the actual filter
+	// condition. It must be in DBSQL format.
+	RowFilter string `json:"row_filter,omitempty"`
 	// If true, formula fields defined in the table are included in the
 	// ingestion. This setting is only valid for the Salesforce connector
 	SalesforceIncludeFormulaFields bool `json:"salesforce_include_formula_fields,omitempty"`

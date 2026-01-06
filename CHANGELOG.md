@@ -1,5 +1,72 @@
 # Version changelog
 
+## Release v0.96.0 (2026-01-06)
+
+### API Changes
+* Add `GitRepository` field for [apps.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#App).
+* Add `GitSource` field for [apps.AppDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppDeployment).
+* Add `ExperimentSpec` field for [apps.AppManifestAppResourceSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppManifestAppResourceSpec).
+* Add `Experiment` field for [apps.AppResource](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppResource).
+* Add `GitRepository` field for [apps.AppUpdate](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppUpdate).
+* Add `ExcludedTableFullNames` field for [dataquality.AnomalyDetectionConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dataquality#AnomalyDetectionConfig).
+* Add `GroupName` field for [jobs.JobRunAs](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobRunAs).
+* Add `RowFilter` field for [pipelines.TableSpecificConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#TableSpecificConfig).
+* Add `ExcludedTableFullNames` field for [qualitymonitorv2.AnomalyDetectionConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/qualitymonitorv2#AnomalyDetectionConfig).
+* Add `Execute` and `UseConnection` enum values for [apps.AppManifestAppResourceUcSecurableSpecUcSecurablePermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppManifestAppResourceUcSecurableSpecUcSecurablePermission).
+* Add `Function` and `Connection` enum values for [apps.AppManifestAppResourceUcSecurableSpecUcSecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppManifestAppResourceUcSecurableSpecUcSecurableType).
+* Add `Select`, `Execute` and `UseConnection` enum values for [apps.AppResourceUcSecurableUcSecurablePermission](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppResourceUcSecurableUcSecurablePermission).
+* Add `Table`, `Function` and `Connection` enum values for [apps.AppResourceUcSecurableUcSecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppResourceUcSecurableUcSecurableType).
+* Add `Spec` and `Status` fields for [postgres.Endpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Endpoint).
+* [Breaking] Remove `AutoscalingLimitMaxCu`, `AutoscalingLimitMinCu`, `CurrentState`, `Disabled`, `EffectiveAutoscalingLimitMaxCu`, `EffectiveAutoscalingLimitMinCu`, `EffectiveDisabled`, `EffectivePoolerMode`, `EffectiveSettings`, `EffectiveSuspendTimeoutDuration`, `EndpointType`, `Host`, `LastActiveTime`, `PendingState`, `PoolerMode`, `Settings`, `StartTime`, `SuspendTime` and `SuspendTimeoutDuration` fields for [postgres.Endpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Endpoint).
+* Add `CreateRole`, `DeleteRole`, `GetRole` and `ListRoles` methods for [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service.
+* Add `DestinationSourceSecurable` field for [catalog.AccessRequestDestinations](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccessRequestDestinations).
+* Add `Spec` and `Status` fields for [postgres.Branch](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Branch).
+* Add `Spec` and `Status` fields for [postgres.Project](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Project).
+* Add `AccessModes` and `StorageLocation` fields for [sharing.Table](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#Table).
+* [Breaking] Remove `CurrentState`, `Default`, `EffectiveDefault`, `EffectiveIsProtected`, `EffectiveSourceBranch`, `EffectiveSourceBranchLsn`, `EffectiveSourceBranchTime`, `IsProtected`, `LogicalSizeBytes`, `PendingState`, `SourceBranch`, `SourceBranchLsn`, `SourceBranchTime` and `StateChangeTime` fields for [postgres.Branch](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Branch).
+* [Breaking] Remove `BranchLogicalSizeLimitBytes`, `ComputeLastActiveTime`, `DefaultEndpointSettings`, `DisplayName`, `EffectiveDefaultEndpointSettings`, `EffectiveDisplayName`, `EffectiveHistoryRetentionDuration`, `EffectivePgVersion`, `EffectiveSettings`, `HistoryRetentionDuration`, `PgVersion`, `Settings` and `SyntheticStorageSizeBytes` fields for [postgres.Project](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#Project).
+* Add `Command` and `EnvVars` fields for [apps.AppDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#AppDeployment).
+* Add `FullName` and `SecurableType` fields for [catalog.AccessRequestDestinations](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#AccessRequestDestinations).
+* [Breaking] Change `DeleteKafkaConfig` method for [w.FeatureEngineering](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#FeatureEngineeringAPI) workspace-level service . Method path has changed.
+* Add `TableDeltasharingOpenDirBased` enum value for [catalog.SecurableKind](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SecurableKind).
+* [Breaking] Change long-running operation for [PostgresAPI.DeleteRole](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI.DeleteRole). Long running operation response type changed to empty response.
+* [Breaking] Remove `AccessModes` and `StorageLocation` fields for [sharing.Table](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#Table).
+
+
+## Release v0.95.0 (2025-12-17)
+
+### API Changes
+* Add [postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres) package.
+* Add [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service.
+* Add `EffectiveUsagePolicyId` and `UsagePolicyId` fields for [apps.App](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#App).
+* Add `ExternalAccessEnabled` field for [catalog.CreateAccountsMetastore](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateAccountsMetastore).
+* Add `ExternalAccessEnabled` field for [catalog.CreateMetastore](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateMetastore).
+* Add `ExternalAccessEnabled` field for [catalog.UpdateAccountsMetastore](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateAccountsMetastore).
+* Add `ExternalAccessEnabled` field for [catalog.UpdateMetastore](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateMetastore).
+* Add `UsagePolicyId` field for [ml.OnlineStore](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#OnlineStore).
+* Add `ErrorMessage` field for [settings.CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule).
+* Add `ErrorMessage` field for [settings.NccAzurePrivateEndpointRule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccAzurePrivateEndpointRule).
+* Add `ControlPlaneConnectionFailure` and `ControlPlaneConnectionFailureDueToMisconfig` enum values for [compute.TerminationReasonCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#TerminationReasonCode).
+* Add `ControlPlaneConnectionFailure` and `ControlPlaneConnectionFailureDueToMisconfig` enum values for [sql.TerminationReasonCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#TerminationReasonCode).
+
+
+## Release v0.94.0 (2025-12-11)
+
+### Bug Fixes
+
+* Fixed U2M OAuth token caching issue that caused tokens to be read from disk 
+  on every request instead of being cached in memory.
+
+### API Changes
+* Add `Clone` method for [w.Pipelines](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinesAPI) workspace-level service.
+* Add `CronSchedule` field for [ml.MaterializedFeature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#MaterializedFeature).
+* Add `GcpServiceAccount` field for [provisioning.CreateGcpKeyInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#CreateGcpKeyInfo).
+* Add `GcpServiceAccount` field for [provisioning.GcpKeyInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/provisioning#GcpKeyInfo).
+* Add `HasDeltaUniformIceberg` field for [sharing.TableInternalAttributes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sharing#TableInternalAttributes).
+* Change `TimeWindow` field for [ml.Feature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Feature) to no longer be required.
+* [Breaking] Change `TimeWindow` field for [ml.Feature](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Feature) to no longer be required.
+
+
 ## Release v0.93.0 (2025-12-03)
 
 ### Bug Fixes

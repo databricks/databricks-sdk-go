@@ -5,7 +5,16 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 )
+
+// getenv is the function used to read environment variables.
+// It defaults to os.Getenv but can be overwritten in tests.
+var getenv = os.Getenv
+
+// getUserHomeDir is the function used to get user home directory.
+// It defaults to os.UserHomeDir but can be overwritten in tests.
+var getUserHomeDir = os.UserHomeDir
 
 type Source struct {
 	Type SourceType `json:"type"`
@@ -44,7 +53,7 @@ type ConfigAttribute struct {
 
 func (a *ConfigAttribute) ReadEnv() (string, string) {
 	for _, envName := range a.EnvVars {
-		v := os.Getenv(envName)
+		v := getenv(envName)
 		if v == "" {
 			continue
 		}
@@ -69,6 +78,16 @@ func (a *ConfigAttribute) SetS(cfg *Config, v string) error {
 			return err
 		}
 		return a.Set(cfg, vv)
+	case reflect.Slice:
+		rawParts := strings.Split(v, ",")
+		var parts []string
+		for _, part := range rawParts {
+			trimmed := strings.TrimSpace(part)
+			if trimmed != "" {
+				parts = append(parts, trimmed)
+			}
+		}
+		return a.Set(cfg, parts)
 	default:
 		return fmt.Errorf("cannot set %s of unknown type %s",
 			a.Name, reflectKind(a.Kind))
@@ -85,6 +104,8 @@ func (a *ConfigAttribute) Set(cfg *Config, i interface{}) error {
 		field.SetBool(i.(bool))
 	case reflect.Int:
 		field.SetInt(int64(i.(int)))
+	case reflect.Slice:
+		field.Set(reflect.ValueOf(i.([]string)))
 	default:
 		// must extensively test with providerFixture to avoid this one
 		return fmt.Errorf("cannot set %s of unknown type %s", a.Name, reflectKind(a.Kind))
