@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
@@ -157,13 +156,16 @@ func TestM2M_Scopes(t *testing.T) {
 				ConfigFile:    "/dev/null",
 			}
 
-			req, _ := http.NewRequest("GET", "http://localhost", nil)
-			err := cfg.Authenticate(req)
+			req, err := http.NewRequest("GET", "http://localhost", nil)
+			if err != nil {
+				t.Fatalf("http.NewRequest(): unexpected error: %v", err)
+			}
+			err = cfg.Authenticate(req)
 			if err != nil {
 				t.Fatalf("Authenticate(): unexpected error: %v", err)
 			}
-			if !strings.HasPrefix(req.Header.Get("Authorization"), "Bearer ") {
-				t.Errorf("Authorization header missing Bearer prefix: got %q", req.Header.Get("Authorization"))
+			if got, want := req.Header.Get("Authorization"), "Bearer test-token"; got != want {
+				t.Errorf("Authorization header: got %q, want %q", got, want)
 			}
 		})
 	}
