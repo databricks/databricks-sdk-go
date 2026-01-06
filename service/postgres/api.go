@@ -725,7 +725,7 @@ type DeleteRoleOperationInterface interface {
 	// specified, this will poll indefinitely. If a timeout is provided and the operation
 	// didn't finish within the timeout, this function will return an error, otherwise
 	// returns successful response and any errors encountered.
-	Wait(ctx context.Context, opts ...api.Option) (*Role, error)
+	Wait(ctx context.Context, opts ...api.Option) error
 
 	// Name returns the name of the long-running operation. The name is assigned
 	// by the server and is unique within the service from which the operation is created.
@@ -748,11 +748,11 @@ type deleteRoleOperation struct {
 // specified, this will poll indefinitely. If a timeout is provided and the operation
 // didn't finish within the timeout, this function will return an error, otherwise
 // returns successful response and any errors encountered.
-func (a *deleteRoleOperation) Wait(ctx context.Context, opts ...api.Option) (*Role, error) {
+func (a *deleteRoleOperation) Wait(ctx context.Context, opts ...api.Option) error {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 
 	errOperationInProgress := errors.New("operation still in progress")
-	var result *Role
+
 	call := func(ctx context.Context) error {
 		operation, err := a.impl.GetOperation(ctx, GetOperationRequest{
 			Name: a.operation.Name,
@@ -788,14 +788,6 @@ func (a *deleteRoleOperation) Wait(ctx context.Context, opts ...api.Option) (*Ro
 			return fmt.Errorf("operation completed but no response available")
 		}
 
-		var role Role
-		err = json.Unmarshal(operation.Response, &role)
-		if err != nil {
-			return fmt.Errorf("failed to unmarshal role response: %w", err)
-		}
-
-		result = &role
-
 		return nil
 	}
 
@@ -812,10 +804,7 @@ func (a *deleteRoleOperation) Wait(ctx context.Context, opts ...api.Option) (*Ro
 
 	err := api.Execute(ctx, call, allOpts...)
 
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
+	return err
 
 }
 

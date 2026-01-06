@@ -1827,9 +1827,6 @@ func (s SharesListRequest) MarshalJSON() ([]byte, error) {
 }
 
 type Table struct {
-	// The access modes supported for this table (e.g., "url", "dir"). Used for
-	// open sharing to indicate how the table can be accessed.
-	AccessModes []string `json:"access_modes,omitempty"`
 	// The comment of the table.
 	Comment string `json:"comment,omitempty"`
 	// The id of the table.
@@ -1849,8 +1846,6 @@ type Table struct {
 	Share string `json:"share,omitempty"`
 	// The id of the share that the table belongs to.
 	ShareId string `json:"share_id,omitempty"`
-	// The cloud storage location of the table for open sharing.
-	StorageLocation string `json:"storage_location,omitempty"`
 	// The Tags of the table.
 	Tags []catalog.TagKeyValue `json:"tags,omitempty"`
 
