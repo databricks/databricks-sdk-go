@@ -492,12 +492,30 @@ func TestPersistentAuth_startListener_explicitPortNoFallBack(t *testing.T) {
 // and sent during the authorization flow, and that the disableOfflineAccess flag
 // correctly controls whether offline_access is added to the scope.
 func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
+	const (
+		testWorkspaceHost = "https://workspace.cloud.databricks.com"
+		testTokenEndpoint = "/oidc/v1/token"
+		testCallbackURL   = "http://localhost:8020"
+	)
+
 	tests := []struct {
 		name           string
 		scopes         []string
 		disableOffline bool
 		want           string
 	}{
+		{
+			name:           "nil scopes uses default with offline_access",
+			scopes:         nil,
+			disableOffline: false,
+			want:           "all-apis offline_access",
+		},
+		{
+			name:           "empty scopes uses default with offline_access",
+			scopes:         []string{},
+			disableOffline: false,
+			want:           "all-apis offline_access",
+		},
 		{
 			name:           "single scope with offline_access",
 			scopes:         []string{"dashboards"},
@@ -515,6 +533,12 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 			scopes:         []string{"files", "jobs"},
 			disableOffline: true,
 			want:           "files jobs",
+		},
+		{
+			name:           "nil scopes with disable offline_access",
+			scopes:         nil,
+			disableOffline: true,
+			want:           "all-apis",
 		},
 	}
 
@@ -541,7 +565,7 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 				},
 			}
 
-			arg, err := NewBasicWorkspaceOAuthArgument("https://workspace.cloud.databricks.com")
+			arg, err := NewBasicWorkspaceOAuthArgument(testWorkspaceHost)
 			if err != nil {
 				t.Fatalf("NewBasicWorkspaceOAuthArgument(): want no error, got %v", err)
 			}
@@ -558,7 +582,7 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 					Transport: fixtures.SliceTransport{
 						{
 							Method:   "POST",
-							Resource: "/oidc/v1/token",
+							Resource: testTokenEndpoint,
 							Response: tokenResponse,
 							ResponseHeaders: map[string][]string{
 								"Content-Type": {"application/x-www-form-urlencoded"},
@@ -592,7 +616,7 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 				t.Errorf("scope: want %q, got %q", tt.want, scope)
 			}
 
-			resp, err := http.Get(fmt.Sprintf("http://localhost:8020?code=__CODE__&state=%s", state))
+			resp, err := http.Get(fmt.Sprintf("%s?code=__CODE__&state=%s", testCallbackURL, state))
 			if err != nil {
 				t.Fatalf("http.Get(): want no error, got %v", err)
 			}

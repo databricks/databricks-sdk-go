@@ -16,7 +16,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/pkg/browser"
-	"golang.org/x/exp/slices"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/authhandler"
 )
@@ -396,9 +395,14 @@ func (a *PersistentAuth) validateArg() error {
 
 // oauth2Config returns the OAuth2 configuration for the given OAuthArgument.
 func (a *PersistentAuth) oauth2Config() (*oauth2.Config, error) {
+	// Default to "all-apis" for backwards compatibility with direct users of PersistentAuth
+	// i.e. people implementing their own U2M authentication.
 	scopes := a.scopes
+	if len(scopes) == 0 {
+		scopes = []string{"all-apis"}
+	}
 	if !a.disableOfflineAccess {
-		scopes = append(slices.Clone(scopes), "offline_access")
+		scopes = append([]string{"offline_access"}, scopes...)
 	}
 
 	var endpoints *OAuthAuthorizationServer
