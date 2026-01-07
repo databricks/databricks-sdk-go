@@ -325,7 +325,8 @@ func TestWIF_Scopes(t *testing.T) {
 		testClientID    = "test-client-id"
 		testIDToken     = "test-id-token"
 		testAccessToken = "test-access-token"
-		testTokenURL    = "https://host.com/oidc/v1/token"
+		testTokenPath   = "/oidc/v1/token"
+		testHost        = "https://host.com"
 	)
 
 	tests := []struct {
@@ -359,10 +360,10 @@ func TestWIF_Scopes(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg := DatabricksOIDCTokenSourceConfig{
 				ClientID: testClientID,
-				Host:     "http://host.com",
+				Host:     testHost,
 				TokenEndpointProvider: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
 					return &u2m.OAuthAuthorizationServer{
-						TokenEndpoint: testTokenURL,
+						TokenEndpoint: testHost + testTokenPath,
 					}, nil
 				},
 				Audience: "token-audience",
@@ -385,7 +386,7 @@ func TestWIF_Scopes(t *testing.T) {
 
 			ctx := context.WithValue(context.Background(), oauth2.HTTPClient, &http.Client{
 				Transport: fixtures.MappingTransport{
-					"POST /oidc/v1/token": {
+					"POST " + testTokenPath: {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Content-Type": "application/x-www-form-urlencoded",

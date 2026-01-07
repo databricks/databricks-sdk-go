@@ -54,6 +54,8 @@ func TestDefaultCredentials_Configure(t *testing.T) {
 }
 
 func TestGithubOIDC_Scopes(t *testing.T) {
+	const oidcTokenPath = "/oidc/v1/token"
+
 	tests := []struct {
 		name   string
 		scopes []string
@@ -98,10 +100,10 @@ func TestGithubOIDC_Scopes(t *testing.T) {
 					w.Header().Set("Content-Type", "application/json")
 					json.NewEncoder(w).Encode(u2m.OAuthAuthorizationServer{
 						AuthorizationEndpoint: "https://host.com/oidc/v1/authorize",
-						TokenEndpoint:         databricksServer.URL + "/oidc/v1/token",
+						TokenEndpoint:         databricksServer.URL + oidcTokenPath,
 					})
 
-				case "/oidc/v1/token":
+				case oidcTokenPath:
 					if err := r.ParseForm(); err != nil {
 						t.Fatalf("Failed to parse form: %v", err)
 					}
