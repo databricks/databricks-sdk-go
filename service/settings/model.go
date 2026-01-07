@@ -3500,6 +3500,10 @@ func (s NccPrivateEndpointRule) MarshalJSON() ([]byte, error) {
 
 type NccPrivateEndpointRulePrivateLinkConnectionState string
 
+const NccPrivateEndpointRulePrivateLinkConnectionStateCreateFailed NccPrivateEndpointRulePrivateLinkConnectionState = `CREATE_FAILED`
+
+const NccPrivateEndpointRulePrivateLinkConnectionStateCreating NccPrivateEndpointRulePrivateLinkConnectionState = `CREATING`
+
 const NccPrivateEndpointRulePrivateLinkConnectionStateDisconnected NccPrivateEndpointRulePrivateLinkConnectionState = `DISCONNECTED`
 
 const NccPrivateEndpointRulePrivateLinkConnectionStateEstablished NccPrivateEndpointRulePrivateLinkConnectionState = `ESTABLISHED`
@@ -3518,11 +3522,11 @@ func (f *NccPrivateEndpointRulePrivateLinkConnectionState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *NccPrivateEndpointRulePrivateLinkConnectionState) Set(v string) error {
 	switch v {
-	case `DISCONNECTED`, `ESTABLISHED`, `EXPIRED`, `PENDING`, `REJECTED`:
+	case `CREATE_FAILED`, `CREATING`, `DISCONNECTED`, `ESTABLISHED`, `EXPIRED`, `PENDING`, `REJECTED`:
 		*f = NccPrivateEndpointRulePrivateLinkConnectionState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DISCONNECTED", "ESTABLISHED", "EXPIRED", "PENDING", "REJECTED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CREATE_FAILED", "CREATING", "DISCONNECTED", "ESTABLISHED", "EXPIRED", "PENDING", "REJECTED"`, v)
 	}
 }
 
@@ -3531,6 +3535,8 @@ func (f *NccPrivateEndpointRulePrivateLinkConnectionState) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *NccPrivateEndpointRulePrivateLinkConnectionState) Values() []NccPrivateEndpointRulePrivateLinkConnectionState {
 	return []NccPrivateEndpointRulePrivateLinkConnectionState{
+		NccPrivateEndpointRulePrivateLinkConnectionStateCreateFailed,
+		NccPrivateEndpointRulePrivateLinkConnectionStateCreating,
 		NccPrivateEndpointRulePrivateLinkConnectionStateDisconnected,
 		NccPrivateEndpointRulePrivateLinkConnectionStateEstablished,
 		NccPrivateEndpointRulePrivateLinkConnectionStateExpired,
