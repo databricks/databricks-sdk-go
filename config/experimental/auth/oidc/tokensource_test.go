@@ -275,7 +275,6 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 				ClientID:              tc.clientID,
 				AccountID:             tc.accountID,
 				Host:                  tc.host,
-				Scopes:                []string{"all-apis"},
 				TokenEndpointProvider: tc.oidcEndpointProvider,
 				Audience:              tc.tokenAudience,
 				IDTokenSource: IDTokenSourceFn(func(ctx context.Context, aud string) (*IDToken, error) {
@@ -322,11 +321,28 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 }
 
 func TestWIF_Scopes(t *testing.T) {
+	const (
+		testClientID    = "test-client-id"
+		testIDToken     = "test-id-token"
+		testAccessToken = "test-access-token"
+		testTokenURL    = "https://host.com/oidc/v1/token"
+	)
+
 	tests := []struct {
 		name   string
 		scopes []string
 		want   string
 	}{
+		{
+			name:   "nil scopes uses default",
+			scopes: nil,
+			want:   "all-apis",
+		},
+		{
+			name:   "empty scopes uses default",
+			scopes: []string{},
+			want:   "all-apis",
+		},
 		{
 			name:   "single scope",
 			scopes: []string{"dashboards"},
@@ -342,16 +358,16 @@ func TestWIF_Scopes(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg := DatabricksOIDCTokenSourceConfig{
-				ClientID: "client-id",
+				ClientID: testClientID,
 				Host:     "http://host.com",
 				TokenEndpointProvider: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
 					return &u2m.OAuthAuthorizationServer{
-						TokenEndpoint: "https://host.com/oidc/v1/token",
+						TokenEndpoint: testTokenURL,
 					}, nil
 				},
 				Audience: "token-audience",
 				IDTokenSource: IDTokenSourceFn(func(ctx context.Context, aud string) (*IDToken, error) {
-					return &IDToken{Value: "id-token"}, nil
+					return &IDToken{Value: testIDToken}, nil
 				}),
 				Scopes: tt.scopes,
 			}
@@ -360,10 +376,10 @@ func TestWIF_Scopes(t *testing.T) {
 
 			// The scope assertion: verifies the token source sends the correct scope parameter.
 			expectedRequest := url.Values{
-				"client_id":          {"client-id"},
+				"client_id":          {testClientID},
 				"scope":              {tt.want},
 				"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
-				"subject_token":      {"id-token"},
+				"subject_token":      {testIDToken},
 				"grant_type":         {"urn:ietf:params:oauth:grant-type:token-exchange"},
 			}
 
@@ -377,7 +393,7 @@ func TestWIF_Scopes(t *testing.T) {
 						ExpectedRequest: expectedRequest,
 						Response: map[string]string{
 							"token_type":   "Bearer",
-							"access_token": "test-token",
+							"access_token": testAccessToken,
 						},
 					},
 				},
@@ -387,8 +403,8 @@ func TestWIF_Scopes(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Token(ctx): got error %q, want none", err)
 			}
-			if !strings.HasPrefix(token.AccessToken, "test-") {
-				t.Errorf("Token(ctx): got unexpected access token %q", token.AccessToken)
+			if token.AccessToken != testAccessToken {
+				t.Errorf("Token(ctx): got access token %q, want %q", token.AccessToken, testAccessToken)
 			}
 		})
 	}

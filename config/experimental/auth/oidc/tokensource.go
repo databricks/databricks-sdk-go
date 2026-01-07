@@ -80,11 +80,17 @@ func (w *databricksOIDCTokenSource) Token(ctx context.Context) (*oauth2.Token, e
 		return nil, err
 	}
 
+	// This nil check is to ensure backwards compatibility for users implementing their own
+	// OIDC token source.
+	scopes := w.cfg.Scopes
+	if len(scopes) == 0 {
+		scopes = []string{"all-apis"}
+	}
 	c := &clientcredentials.Config{
 		ClientID:  w.cfg.ClientID,
 		AuthStyle: oauth2.AuthStyleInParams,
 		TokenURL:  endpoints.TokenEndpoint,
-		Scopes:    w.cfg.Scopes,
+		Scopes:    scopes,
 		EndpointParams: url.Values{
 			"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
 			"subject_token":      {idToken.Value},

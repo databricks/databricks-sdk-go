@@ -133,13 +133,17 @@ func TestGithubOIDC_Scopes(t *testing.T) {
 				Scopes:                     tt.scopes,
 			}
 
-			req, _ := http.NewRequest("GET", databricksServer.URL+"/api/test", nil)
-			err := cfg.Authenticate(req)
+			req, err := http.NewRequest("GET", databricksServer.URL+"/api/test", nil)
+			if err != nil {
+				t.Fatalf("http.NewRequest(): unexpected error: %v", err)
+			}
+			err = cfg.Authenticate(req)
 			if err != nil {
 				t.Fatalf("Authenticate(): unexpected error: %v", err)
 			}
-			if !strings.HasPrefix(req.Header.Get("Authorization"), "Bearer ") {
-				t.Errorf("Authorization header missing Bearer prefix: got %q", req.Header.Get("Authorization"))
+			wantAuthHeader := "Bearer databricks-access-token"
+			if got := req.Header.Get("Authorization"); got != wantAuthHeader {
+				t.Errorf("Authorization header: got %q, want %q", got, wantAuthHeader)
 			}
 		})
 	}
