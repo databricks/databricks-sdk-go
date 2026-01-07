@@ -546,16 +546,17 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := context.Background()
 
-			scopeReceived := make(chan string, 1)
-			browserOpened := make(chan string, 1)
+			var scopeReceived, stateReceived string
+			browserCalled := make(chan struct{})
 			browser := func(redirect string) error {
 				u, err := url.ParseRequestURI(redirect)
 				if err != nil {
 					return err
 				}
 				query := u.Query()
-				scopeReceived <- query.Get("scope")
-				browserOpened <- query.Get("state")
+				scopeReceived = query.Get("scope")
+				stateReceived = query.Get("state")
+				close(browserCalled)
 				return nil
 			}
 
@@ -570,9 +571,11 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 				t.Fatalf("NewBasicWorkspaceOAuthArgument(): want no error, got %v", err)
 			}
 
-			tokenResponse := `access_token=token&refresh_token=refresh`
+			var tokenResponse string
 			if tt.disableOffline {
 				tokenResponse = `access_token=token`
+			} else {
+				tokenResponse = `access_token=token&refresh_token=refresh`
 			}
 
 			opts := []PersistentAuthOption{
@@ -609,14 +612,13 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 				close(errc)
 			}()
 
-			scope := <-scopeReceived
-			state := <-browserOpened
+			<-browserCalled
 
-			if scope != tt.want {
-				t.Errorf("scope: want %q, got %q", tt.want, scope)
+			if scopeReceived != tt.want {
+				t.Errorf("scope: want %q, got %q", tt.want, scopeReceived)
 			}
 
-			resp, err := http.Get(fmt.Sprintf("%s?code=__CODE__&state=%s", testCallbackURL, state))
+			resp, err := http.Get(fmt.Sprintf("%s?code=__CODE__&state=%s", testCallbackURL, stateReceived))
 			if err != nil {
 				t.Fatalf("http.Get(): want no error, got %v", err)
 			}
