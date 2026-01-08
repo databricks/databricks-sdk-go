@@ -370,7 +370,7 @@ func TestWIF_Scopes(t *testing.T) {
 				IDTokenSource: IDTokenSourceFn(func(ctx context.Context, aud string) (*IDToken, error) {
 					return &IDToken{Value: testIDToken}, nil
 				}),
-				Scopes: tt.scopes,
+				scopes: tt.scopes,
 			}
 
 			ts := NewDatabricksOIDCTokenSource(cfg)

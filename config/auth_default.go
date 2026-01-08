@@ -145,11 +145,11 @@ func oidcStrategy(cfg *Config, name string, ts oidc.IDTokenSource) CredentialsSt
 		TokenEndpointProvider: cfg.getOidcEndpoints,
 		Audience:              cfg.TokenAudience,
 		IDTokenSource:         ts,
-		Scopes:                cfg.GetScopes(),
 	}
 	if cfg.HostType() != WorkspaceHost {
 		oidcConfig.AccountID = cfg.AccountID
 	}
+	oidcConfig.SetScopes(cfg.GetScopes())
 	tokenSource := oidc.NewDatabricksOIDCTokenSource(oidcConfig)
 	return NewTokenSourceStrategy(name, tokenSource)
 }
