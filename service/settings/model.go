@@ -3437,7 +3437,10 @@ type NccPrivateEndpointRule struct {
 	// DISCONNECTED: Connection was removed by the private link resource owner,
 	// the private endpoint becomes informative and should be deleted for
 	// clean-up. - EXPIRED: If the endpoint was created but not approved in 14
-	// days, it will be EXPIRED.
+	// days, it will be EXPIRED. - CREATING: The endpoint creation is in
+	// progress. Once successfully created, the state will transition to
+	// PENDING. - CREATE_FAILED: The endpoint creation failed. You can check the
+	// error_message field for more details.
 	ConnectionState NccPrivateEndpointRulePrivateLinkConnectionState `json:"connection_state,omitempty"`
 	// Time in epoch milliseconds when this object was created.
 	CreationTime int64 `json:"creation_time,omitempty"`
@@ -3500,6 +3503,10 @@ func (s NccPrivateEndpointRule) MarshalJSON() ([]byte, error) {
 
 type NccPrivateEndpointRulePrivateLinkConnectionState string
 
+const NccPrivateEndpointRulePrivateLinkConnectionStateCreateFailed NccPrivateEndpointRulePrivateLinkConnectionState = `CREATE_FAILED`
+
+const NccPrivateEndpointRulePrivateLinkConnectionStateCreating NccPrivateEndpointRulePrivateLinkConnectionState = `CREATING`
+
 const NccPrivateEndpointRulePrivateLinkConnectionStateDisconnected NccPrivateEndpointRulePrivateLinkConnectionState = `DISCONNECTED`
 
 const NccPrivateEndpointRulePrivateLinkConnectionStateEstablished NccPrivateEndpointRulePrivateLinkConnectionState = `ESTABLISHED`
@@ -3518,11 +3525,11 @@ func (f *NccPrivateEndpointRulePrivateLinkConnectionState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *NccPrivateEndpointRulePrivateLinkConnectionState) Set(v string) error {
 	switch v {
-	case `DISCONNECTED`, `ESTABLISHED`, `EXPIRED`, `PENDING`, `REJECTED`:
+	case `CREATE_FAILED`, `CREATING`, `DISCONNECTED`, `ESTABLISHED`, `EXPIRED`, `PENDING`, `REJECTED`:
 		*f = NccPrivateEndpointRulePrivateLinkConnectionState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DISCONNECTED", "ESTABLISHED", "EXPIRED", "PENDING", "REJECTED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CREATE_FAILED", "CREATING", "DISCONNECTED", "ESTABLISHED", "EXPIRED", "PENDING", "REJECTED"`, v)
 	}
 }
 
@@ -3531,6 +3538,8 @@ func (f *NccPrivateEndpointRulePrivateLinkConnectionState) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *NccPrivateEndpointRulePrivateLinkConnectionState) Values() []NccPrivateEndpointRulePrivateLinkConnectionState {
 	return []NccPrivateEndpointRulePrivateLinkConnectionState{
+		NccPrivateEndpointRulePrivateLinkConnectionStateCreateFailed,
+		NccPrivateEndpointRulePrivateLinkConnectionStateCreating,
 		NccPrivateEndpointRulePrivateLinkConnectionStateDisconnected,
 		NccPrivateEndpointRulePrivateLinkConnectionStateEstablished,
 		NccPrivateEndpointRulePrivateLinkConnectionStateExpired,

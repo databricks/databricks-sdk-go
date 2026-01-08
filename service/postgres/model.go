@@ -1258,7 +1258,11 @@ type RoleRoleSpec struct {
 	// NOTE: this is ignored for the Databricks identity type GROUP, and
 	// NO_LOGIN is implicitly assumed instead for the GROUP identity type.
 	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
-	// The type of the role.
+	// The type of the role. When specifying a managed-identity, the chosen
+	// role_id must be a valid:
+	//
+	// * application ID for SERVICE_PRINCIPAL * user email for USER * group name
+	// for GROUP
 	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
 }
 
