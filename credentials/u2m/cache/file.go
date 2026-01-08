@@ -103,7 +103,10 @@ func (c *fileTokenCache) Store(key string, t *oauth2.Token) error {
 	if err != nil {
 		return fmt.Errorf("marshal: %w", err)
 	}
-	return c.atomicWriteFile(raw)
+	if err := c.atomicWriteFile(raw); err != nil {
+		return fmt.Errorf("error storing token in local cache: %w", err)
+	}
+	return nil
 }
 
 // Lookup implements the TokenCache interface.
@@ -152,7 +155,7 @@ func (c *fileTokenCache) init() error {
 			return fmt.Errorf("marshal: %w", err)
 		}
 		if err := c.atomicWriteFile(raw); err != nil {
-			return fmt.Errorf("write: %w", err)
+			return fmt.Errorf("error creating token cache file: %w", err)
 		}
 	}
 	return nil
@@ -182,38 +185,29 @@ func (c *fileTokenCache) load() (*tokenCacheFile, error) {
 // temporary file in the same directory and then renaming it to the target.
 // This prevents corruption from interrupted writes.
 func (c *fileTokenCache) atomicWriteFile(data []byte) error {
-	dir := filepath.Dir(c.fileLocation)
-	tmp, err := os.CreateTemp(dir, ".token-cache-*.tmp")
+	tmp, err := c.writeTmpFile(data)
 	if err != nil {
-		return fmt.Errorf("create temp file: %w", err)
+		return err
 	}
-	tmpName := tmp.Name()
+	defer os.Remove(tmp)
+	return os.Rename(tmp, c.fileLocation)
+}
 
-	success := false
-	defer func() {
-		if !success {
-			os.Remove(tmpName)
-		}
-	}()
-
-	if err := tmp.Chmod(ownerReadWrite); err != nil {
-		tmp.Close()
-		return fmt.Errorf("chmod temp file: %w", err)
+func (c *fileTokenCache) writeTmpFile(data []byte) (string, error) {
+	tmp, err := os.CreateTemp(filepath.Dir(c.fileLocation), ".token-cache-*.tmp")
+	if err != nil {
+		return "", fmt.Errorf("create temp file: %w", err)
 	}
+	defer tmp.Close()
 
 	if _, err := tmp.Write(data); err != nil {
-		tmp.Close()
-		return fmt.Errorf("write temp file: %w", err)
+		return "", err
 	}
-
+	if err := tmp.Chmod(ownerReadWrite); err != nil {
+		return "", err
+	}
 	if err := tmp.Close(); err != nil {
-		return fmt.Errorf("close temp file: %w", err)
+		return "", err
 	}
-
-	if err := os.Rename(tmpName, c.fileLocation); err != nil {
-		return fmt.Errorf("rename temp file: %w", err)
-	}
-
-	success = true
-	return nil
+	return tmp.Name(), nil
 }
