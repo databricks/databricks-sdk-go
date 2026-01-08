@@ -12,6 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"golang.org/x/oauth2"
 )
 
@@ -58,22 +59,6 @@ var (
 // Use this when tests only need to control token behavior without caring about auth configuration.
 func mockPersistentAuthFactory(ts oauth2.TokenSource) persistentAuthFactory {
 	return func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error) {
-		return ts, nil
-	}
-}
-
-// capturingPersistentAuthFactory creates a test factory for inspecting auth configuration.
-// Use this when tests need to verify what options were passed to PersistentAuth while
-// still controlling token behavior through ts.
-func capturingPersistentAuthFactory(ts oauth2.TokenSource, onCapture func(*u2m.PersistentAuth)) persistentAuthFactory {
-	return func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error) {
-		pa, err := u2m.NewPersistentAuth(ctx, opts...)
-		if err != nil {
-			return nil, err
-		}
-		if onCapture != nil {
-			onCapture(pa)
-		}
 		return ts, nil
 	}
 }
@@ -292,6 +277,7 @@ func TestU2MCredentials_Configure_TokenCaching(t *testing.T) {
 }
 
 func TestU2MCredentials_Configure_Scopes(t *testing.T) {
+	const workspaceHost = "https://workspace.cloud.databricks.com"
 	testCases := []struct {
 		name   string
 		scopes []string
@@ -317,15 +303,20 @@ func TestU2MCredentials_Configure_Scopes(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			ts := &testTokenSource{token: testValidToken}
-			var capturedScopes []string
+			var capturedPA *u2m.PersistentAuth
 
 			u := u2mCredentials{
-				newPersistentAuth: capturingPersistentAuthFactory(ts, func(pa *u2m.PersistentAuth) {
-					capturedScopes = pa.GetScopes()
-				}),
+				newPersistentAuth: func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error) {
+					pa, err := u2m.NewPersistentAuth(ctx, opts...)
+					if err != nil {
+						return nil, err
+					}
+					capturedPA = pa
+					return ts, nil
+				},
 			}
 			cfg := &Config{
-				Host:   "https://workspace.cloud.databricks.com",
+				Host:   workspaceHost,
 				Scopes: tc.scopes,
 			}
 
@@ -334,8 +325,22 @@ func TestU2MCredentials_Configure_Scopes(t *testing.T) {
 				t.Fatalf("Configure() error = %v", err)
 			}
 
-			if diff := cmp.Diff(tc.want, capturedScopes); diff != "" {
-				t.Errorf("scopes mismatch (-want +got):\n%s", diff)
+			arg, _ := u2m.NewBasicWorkspaceOAuthArgument(workspaceHost)
+			wantPA, err := u2m.NewPersistentAuth(context.Background(),
+				u2m.WithOAuthArgument(arg),
+				u2m.WithScopes(tc.want),
+			)
+			if err != nil {
+				t.Fatalf("NewPersistentAuth() error = %v", err)
+			}
+
+			if diff := cmp.Diff(wantPA, capturedPA,
+				cmp.AllowUnexported(u2m.PersistentAuth{}),
+				cmpopts.IgnoreFields(u2m.PersistentAuth{},
+					"cache", "client", "endpointSupplier", "oAuthArgument",
+					"browser", "ln", "ctx", "redirectAddr", "port", "netListen",
+					"disableOfflineAccess")); diff != "" {
+				t.Errorf("PersistentAuth mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}

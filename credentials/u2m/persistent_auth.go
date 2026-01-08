@@ -157,11 +157,6 @@ func WithDisableOfflineAccess(disable bool) PersistentAuthOption {
 	}
 }
 
-// GetScopes returns the OAuth scopes configured for this PersistentAuth.
-func (a *PersistentAuth) GetScopes() []string {
-	return a.scopes
-}
-
 // NewPersistentAuth creates a new PersistentAuth with the provided options.
 func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*PersistentAuth, error) {
 	p := &PersistentAuth{}
