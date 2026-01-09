@@ -25,14 +25,11 @@ type PostgresInterface interface {
 
 	CreateRole(ctx context.Context, request CreateRoleRequest) (CreateRoleOperationInterface, error)
 
-	// Delete a Branch.
-	DeleteBranch(ctx context.Context, request DeleteBranchRequest) error
+	DeleteBranch(ctx context.Context, request DeleteBranchRequest) (DeleteBranchOperationInterface, error)
 
-	// Delete an Endpoint.
-	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error
+	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) (DeleteEndpointOperationInterface, error)
 
-	// Delete a Project.
-	DeleteProject(ctx context.Context, request DeleteProjectRequest) error
+	DeleteProject(ctx context.Context, request DeleteProjectRequest) (DeleteProjectOperationInterface, error)
 
 	DeleteRole(ctx context.Context, request DeleteRoleRequest) (DeleteRoleOperationInterface, error)
 
@@ -694,6 +691,420 @@ func (a *createRoleOperation) Metadata() (*RoleOperationMetadata, error) {
 
 // Done reports whether the long-running operation has completed.
 func (a *createRoleOperation) Done() (bool, error) {
+	// Refresh the operation state first
+	operation, err := a.impl.GetOperation(context.Background(), GetOperationRequest{
+		Name: a.operation.Name,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	// Update local operation state
+	a.operation = operation
+
+	return operation.Done, nil
+}
+
+func (a *PostgresAPI) DeleteBranch(ctx context.Context, request DeleteBranchRequest) (DeleteBranchOperationInterface, error) {
+	operation, err := a.postgresImpl.DeleteBranch(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return &deleteBranchOperation{
+		impl:      &a.postgresImpl,
+		operation: operation,
+	}, nil
+}
+
+type DeleteBranchOperationInterface interface {
+
+	// Wait blocks until the long-running operation is completed. If no timeout is
+	// specified, this will poll indefinitely. If a timeout is provided and the operation
+	// didn't finish within the timeout, this function will return an error, otherwise
+	// returns successful response and any errors encountered.
+	Wait(ctx context.Context, opts ...api.Option) error
+
+	// Name returns the name of the long-running operation. The name is assigned
+	// by the server and is unique within the service from which the operation is created.
+	Name() string
+
+	// Metadata returns metadata associated with the long-running operation.
+	// If the metadata is not available, the returned metadata and error are both nil.
+	Metadata() (*BranchOperationMetadata, error)
+
+	// Done reports whether the long-running operation has completed.
+	Done() (bool, error)
+}
+
+type deleteBranchOperation struct {
+	impl      *postgresImpl
+	operation *Operation
+}
+
+// Wait blocks until the long-running operation is completed. If no timeout is
+// specified, this will poll indefinitely. If a timeout is provided and the operation
+// didn't finish within the timeout, this function will return an error, otherwise
+// returns successful response and any errors encountered.
+func (a *deleteBranchOperation) Wait(ctx context.Context, opts ...api.Option) error {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	errOperationInProgress := errors.New("operation still in progress")
+
+	call := func(ctx context.Context) error {
+		operation, err := a.impl.GetOperation(ctx, GetOperationRequest{
+			Name: a.operation.Name,
+		})
+		if err != nil {
+			return err
+		}
+
+		// Update local operation state
+		a.operation = operation
+
+		if !operation.Done {
+			return errOperationInProgress
+		}
+
+		if operation.Error != nil {
+			var errorMsg string
+			if operation.Error.Message != "" {
+				errorMsg = operation.Error.Message
+			} else {
+				errorMsg = "unknown error"
+			}
+
+			if operation.Error.ErrorCode != "" {
+				errorMsg = fmt.Sprintf("[%s] %s", operation.Error.ErrorCode, errorMsg)
+			}
+
+			return fmt.Errorf("operation failed: %s", errorMsg)
+		}
+
+		// Operation completed successfully, unmarshal response
+		if operation.Response == nil {
+			return fmt.Errorf("operation completed but no response available")
+		}
+
+		return nil
+	}
+
+	// Create a retrier that retries on errOperationInProgress with exponential backoff.
+	retrier := api.RetryOn(api.BackoffPolicy{}, func(err error) bool {
+		return errors.Is(err, errOperationInProgress)
+	})
+
+	// Add default retrier.
+	defaultOpts := []api.Option{
+		api.WithRetrier(func() api.Retrier { return retrier }),
+	}
+	allOpts := append(defaultOpts, opts...)
+
+	err := api.Execute(ctx, call, allOpts...)
+
+	return err
+
+}
+
+// Name returns the name of the long-running operation. The name is assigned
+// by the server and is unique within the service from which the operation is created.
+func (a *deleteBranchOperation) Name() string {
+	return a.operation.Name
+}
+
+// Metadata returns metadata associated with the long-running operation.
+// If the metadata is not available, the returned metadata and error are both nil.
+func (a *deleteBranchOperation) Metadata() (*BranchOperationMetadata, error) {
+	if a.operation.Metadata == nil {
+		return nil, nil
+	}
+
+	var metadata BranchOperationMetadata
+	err := json.Unmarshal(a.operation.Metadata, &metadata)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal operation metadata: %w", err)
+	}
+
+	return &metadata, nil
+}
+
+// Done reports whether the long-running operation has completed.
+func (a *deleteBranchOperation) Done() (bool, error) {
+	// Refresh the operation state first
+	operation, err := a.impl.GetOperation(context.Background(), GetOperationRequest{
+		Name: a.operation.Name,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	// Update local operation state
+	a.operation = operation
+
+	return operation.Done, nil
+}
+
+func (a *PostgresAPI) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) (DeleteEndpointOperationInterface, error) {
+	operation, err := a.postgresImpl.DeleteEndpoint(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return &deleteEndpointOperation{
+		impl:      &a.postgresImpl,
+		operation: operation,
+	}, nil
+}
+
+type DeleteEndpointOperationInterface interface {
+
+	// Wait blocks until the long-running operation is completed. If no timeout is
+	// specified, this will poll indefinitely. If a timeout is provided and the operation
+	// didn't finish within the timeout, this function will return an error, otherwise
+	// returns successful response and any errors encountered.
+	Wait(ctx context.Context, opts ...api.Option) error
+
+	// Name returns the name of the long-running operation. The name is assigned
+	// by the server and is unique within the service from which the operation is created.
+	Name() string
+
+	// Metadata returns metadata associated with the long-running operation.
+	// If the metadata is not available, the returned metadata and error are both nil.
+	Metadata() (*EndpointOperationMetadata, error)
+
+	// Done reports whether the long-running operation has completed.
+	Done() (bool, error)
+}
+
+type deleteEndpointOperation struct {
+	impl      *postgresImpl
+	operation *Operation
+}
+
+// Wait blocks until the long-running operation is completed. If no timeout is
+// specified, this will poll indefinitely. If a timeout is provided and the operation
+// didn't finish within the timeout, this function will return an error, otherwise
+// returns successful response and any errors encountered.
+func (a *deleteEndpointOperation) Wait(ctx context.Context, opts ...api.Option) error {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	errOperationInProgress := errors.New("operation still in progress")
+
+	call := func(ctx context.Context) error {
+		operation, err := a.impl.GetOperation(ctx, GetOperationRequest{
+			Name: a.operation.Name,
+		})
+		if err != nil {
+			return err
+		}
+
+		// Update local operation state
+		a.operation = operation
+
+		if !operation.Done {
+			return errOperationInProgress
+		}
+
+		if operation.Error != nil {
+			var errorMsg string
+			if operation.Error.Message != "" {
+				errorMsg = operation.Error.Message
+			} else {
+				errorMsg = "unknown error"
+			}
+
+			if operation.Error.ErrorCode != "" {
+				errorMsg = fmt.Sprintf("[%s] %s", operation.Error.ErrorCode, errorMsg)
+			}
+
+			return fmt.Errorf("operation failed: %s", errorMsg)
+		}
+
+		// Operation completed successfully, unmarshal response
+		if operation.Response == nil {
+			return fmt.Errorf("operation completed but no response available")
+		}
+
+		return nil
+	}
+
+	// Create a retrier that retries on errOperationInProgress with exponential backoff.
+	retrier := api.RetryOn(api.BackoffPolicy{}, func(err error) bool {
+		return errors.Is(err, errOperationInProgress)
+	})
+
+	// Add default retrier.
+	defaultOpts := []api.Option{
+		api.WithRetrier(func() api.Retrier { return retrier }),
+	}
+	allOpts := append(defaultOpts, opts...)
+
+	err := api.Execute(ctx, call, allOpts...)
+
+	return err
+
+}
+
+// Name returns the name of the long-running operation. The name is assigned
+// by the server and is unique within the service from which the operation is created.
+func (a *deleteEndpointOperation) Name() string {
+	return a.operation.Name
+}
+
+// Metadata returns metadata associated with the long-running operation.
+// If the metadata is not available, the returned metadata and error are both nil.
+func (a *deleteEndpointOperation) Metadata() (*EndpointOperationMetadata, error) {
+	if a.operation.Metadata == nil {
+		return nil, nil
+	}
+
+	var metadata EndpointOperationMetadata
+	err := json.Unmarshal(a.operation.Metadata, &metadata)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal operation metadata: %w", err)
+	}
+
+	return &metadata, nil
+}
+
+// Done reports whether the long-running operation has completed.
+func (a *deleteEndpointOperation) Done() (bool, error) {
+	// Refresh the operation state first
+	operation, err := a.impl.GetOperation(context.Background(), GetOperationRequest{
+		Name: a.operation.Name,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	// Update local operation state
+	a.operation = operation
+
+	return operation.Done, nil
+}
+
+func (a *PostgresAPI) DeleteProject(ctx context.Context, request DeleteProjectRequest) (DeleteProjectOperationInterface, error) {
+	operation, err := a.postgresImpl.DeleteProject(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	return &deleteProjectOperation{
+		impl:      &a.postgresImpl,
+		operation: operation,
+	}, nil
+}
+
+type DeleteProjectOperationInterface interface {
+
+	// Wait blocks until the long-running operation is completed. If no timeout is
+	// specified, this will poll indefinitely. If a timeout is provided and the operation
+	// didn't finish within the timeout, this function will return an error, otherwise
+	// returns successful response and any errors encountered.
+	Wait(ctx context.Context, opts ...api.Option) error
+
+	// Name returns the name of the long-running operation. The name is assigned
+	// by the server and is unique within the service from which the operation is created.
+	Name() string
+
+	// Metadata returns metadata associated with the long-running operation.
+	// If the metadata is not available, the returned metadata and error are both nil.
+	Metadata() (*ProjectOperationMetadata, error)
+
+	// Done reports whether the long-running operation has completed.
+	Done() (bool, error)
+}
+
+type deleteProjectOperation struct {
+	impl      *postgresImpl
+	operation *Operation
+}
+
+// Wait blocks until the long-running operation is completed. If no timeout is
+// specified, this will poll indefinitely. If a timeout is provided and the operation
+// didn't finish within the timeout, this function will return an error, otherwise
+// returns successful response and any errors encountered.
+func (a *deleteProjectOperation) Wait(ctx context.Context, opts ...api.Option) error {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+
+	errOperationInProgress := errors.New("operation still in progress")
+
+	call := func(ctx context.Context) error {
+		operation, err := a.impl.GetOperation(ctx, GetOperationRequest{
+			Name: a.operation.Name,
+		})
+		if err != nil {
+			return err
+		}
+
+		// Update local operation state
+		a.operation = operation
+
+		if !operation.Done {
+			return errOperationInProgress
+		}
+
+		if operation.Error != nil {
+			var errorMsg string
+			if operation.Error.Message != "" {
+				errorMsg = operation.Error.Message
+			} else {
+				errorMsg = "unknown error"
+			}
+
+			if operation.Error.ErrorCode != "" {
+				errorMsg = fmt.Sprintf("[%s] %s", operation.Error.ErrorCode, errorMsg)
+			}
+
+			return fmt.Errorf("operation failed: %s", errorMsg)
+		}
+
+		// Operation completed successfully, unmarshal response
+		if operation.Response == nil {
+			return fmt.Errorf("operation completed but no response available")
+		}
+
+		return nil
+	}
+
+	// Create a retrier that retries on errOperationInProgress with exponential backoff.
+	retrier := api.RetryOn(api.BackoffPolicy{}, func(err error) bool {
+		return errors.Is(err, errOperationInProgress)
+	})
+
+	// Add default retrier.
+	defaultOpts := []api.Option{
+		api.WithRetrier(func() api.Retrier { return retrier }),
+	}
+	allOpts := append(defaultOpts, opts...)
+
+	err := api.Execute(ctx, call, allOpts...)
+
+	return err
+
+}
+
+// Name returns the name of the long-running operation. The name is assigned
+// by the server and is unique within the service from which the operation is created.
+func (a *deleteProjectOperation) Name() string {
+	return a.operation.Name
+}
+
+// Metadata returns metadata associated with the long-running operation.
+// If the metadata is not available, the returned metadata and error are both nil.
+func (a *deleteProjectOperation) Metadata() (*ProjectOperationMetadata, error) {
+	if a.operation.Metadata == nil {
+		return nil, nil
+	}
+
+	var metadata ProjectOperationMetadata
+	err := json.Unmarshal(a.operation.Metadata, &metadata)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal operation metadata: %w", err)
+	}
+
+	return &metadata, nil
+}
+
+// Done reports whether the long-running operation has completed.
+func (a *deleteProjectOperation) Done() (bool, error) {
 	// Refresh the operation state first
 	operation, err := a.impl.GetOperation(context.Background(), GetOperationRequest{
 		Name: a.operation.Name,

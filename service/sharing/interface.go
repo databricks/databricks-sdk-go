@@ -27,9 +27,11 @@ type ProvidersService interface {
 	Get(ctx context.Context, request GetProviderRequest) (*ProviderInfo, error)
 
 	// Gets an array of available authentication providers. The caller must
-	// either be a metastore admin or the owner of the providers. Providers not
-	// owned by the caller are not included in the response. There is no
-	// guarantee of a specific ordering of the elements in the array.
+	// either be a metastore admin, have the **USE_PROVIDER** privilege on the
+	// providers, or be the owner of the providers. Providers not owned by the
+	// caller and for which the caller does not have the **USE_PROVIDER**
+	// privilege are not included in the response. There is no guarantee of a
+	// specific ordering of the elements in the array.
 	List(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error)
 
 	// Get arrays of assets associated with a specified provider's share. The
