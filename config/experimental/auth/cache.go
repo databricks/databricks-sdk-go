@@ -8,11 +8,9 @@ import (
 	"golang.org/x/oauth2"
 )
 
-const (
-	// Default duration for the stale period. The number as been set arbitrarily
-	// and might be changed in the future.
-	defaultStaleDuration = 3 * time.Minute
-)
+// Default duration for the stale period. This value is chosen to cover the
+// maximum monthly downtime allowed by a 99.99% uptime SLA (~4.38 minutes).
+const defaultStaleDuration = 5 * time.Minute
 
 type Option func(*cachedTokenSource)
 
