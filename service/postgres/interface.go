@@ -25,13 +25,13 @@ type PostgresService interface {
 	CreateRole(ctx context.Context, request CreateRoleRequest) (*Operation, error)
 
 	// Delete a Branch.
-	DeleteBranch(ctx context.Context, request DeleteBranchRequest) error
+	DeleteBranch(ctx context.Context, request DeleteBranchRequest) (*Operation, error)
 
 	// Delete an Endpoint.
-	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error
+	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) (*Operation, error)
 
 	// Delete a Project.
-	DeleteProject(ctx context.Context, request DeleteProjectRequest) error
+	DeleteProject(ctx context.Context, request DeleteProjectRequest) (*Operation, error)
 
 	// Delete a role in a branch.
 	DeleteRole(ctx context.Context, request DeleteRoleRequest) (*Operation, error)

@@ -6925,7 +6925,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: TABLE_DELTASHARING_OPEN_DIR_BASED = 290; Next id:291
+// Latest kind: CONNECTION_WORKDAY_HCM_USERNAME_PASSWORD = 292; Next id: 293
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`

@@ -261,21 +261,33 @@ func (_c *MockPostgresInterface_CreateRole_Call) RunAndReturn(run func(context.C
 }
 
 // DeleteBranch provides a mock function with given fields: ctx, request
-func (_m *MockPostgresInterface) DeleteBranch(ctx context.Context, request postgres.DeleteBranchRequest) error {
+func (_m *MockPostgresInterface) DeleteBranch(ctx context.Context, request postgres.DeleteBranchRequest) (postgres.DeleteBranchOperationInterface, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteBranch")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteBranchRequest) error); ok {
+	var r0 postgres.DeleteBranchOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteBranchRequest) (postgres.DeleteBranchOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteBranchRequest) postgres.DeleteBranchOperationInterface); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.DeleteBranchOperationInterface)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.DeleteBranchRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockPostgresInterface_DeleteBranch_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteBranch'
@@ -297,32 +309,44 @@ func (_c *MockPostgresInterface_DeleteBranch_Call) Run(run func(ctx context.Cont
 	return _c
 }
 
-func (_c *MockPostgresInterface_DeleteBranch_Call) Return(_a0 error) *MockPostgresInterface_DeleteBranch_Call {
-	_c.Call.Return(_a0)
+func (_c *MockPostgresInterface_DeleteBranch_Call) Return(_a0 postgres.DeleteBranchOperationInterface, _a1 error) *MockPostgresInterface_DeleteBranch_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockPostgresInterface_DeleteBranch_Call) RunAndReturn(run func(context.Context, postgres.DeleteBranchRequest) error) *MockPostgresInterface_DeleteBranch_Call {
+func (_c *MockPostgresInterface_DeleteBranch_Call) RunAndReturn(run func(context.Context, postgres.DeleteBranchRequest) (postgres.DeleteBranchOperationInterface, error)) *MockPostgresInterface_DeleteBranch_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeleteEndpoint provides a mock function with given fields: ctx, request
-func (_m *MockPostgresInterface) DeleteEndpoint(ctx context.Context, request postgres.DeleteEndpointRequest) error {
+func (_m *MockPostgresInterface) DeleteEndpoint(ctx context.Context, request postgres.DeleteEndpointRequest) (postgres.DeleteEndpointOperationInterface, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteEndpoint")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteEndpointRequest) error); ok {
+	var r0 postgres.DeleteEndpointOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteEndpointRequest) (postgres.DeleteEndpointOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteEndpointRequest) postgres.DeleteEndpointOperationInterface); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.DeleteEndpointOperationInterface)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.DeleteEndpointRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockPostgresInterface_DeleteEndpoint_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteEndpoint'
@@ -344,32 +368,44 @@ func (_c *MockPostgresInterface_DeleteEndpoint_Call) Run(run func(ctx context.Co
 	return _c
 }
 
-func (_c *MockPostgresInterface_DeleteEndpoint_Call) Return(_a0 error) *MockPostgresInterface_DeleteEndpoint_Call {
-	_c.Call.Return(_a0)
+func (_c *MockPostgresInterface_DeleteEndpoint_Call) Return(_a0 postgres.DeleteEndpointOperationInterface, _a1 error) *MockPostgresInterface_DeleteEndpoint_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockPostgresInterface_DeleteEndpoint_Call) RunAndReturn(run func(context.Context, postgres.DeleteEndpointRequest) error) *MockPostgresInterface_DeleteEndpoint_Call {
+func (_c *MockPostgresInterface_DeleteEndpoint_Call) RunAndReturn(run func(context.Context, postgres.DeleteEndpointRequest) (postgres.DeleteEndpointOperationInterface, error)) *MockPostgresInterface_DeleteEndpoint_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeleteProject provides a mock function with given fields: ctx, request
-func (_m *MockPostgresInterface) DeleteProject(ctx context.Context, request postgres.DeleteProjectRequest) error {
+func (_m *MockPostgresInterface) DeleteProject(ctx context.Context, request postgres.DeleteProjectRequest) (postgres.DeleteProjectOperationInterface, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteProject")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteProjectRequest) error); ok {
+	var r0 postgres.DeleteProjectOperationInterface
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteProjectRequest) (postgres.DeleteProjectOperationInterface, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.DeleteProjectRequest) postgres.DeleteProjectOperationInterface); ok {
 		r0 = rf(ctx, request)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(postgres.DeleteProjectOperationInterface)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.DeleteProjectRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MockPostgresInterface_DeleteProject_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteProject'
@@ -391,12 +427,12 @@ func (_c *MockPostgresInterface_DeleteProject_Call) Run(run func(ctx context.Con
 	return _c
 }
 
-func (_c *MockPostgresInterface_DeleteProject_Call) Return(_a0 error) *MockPostgresInterface_DeleteProject_Call {
-	_c.Call.Return(_a0)
+func (_c *MockPostgresInterface_DeleteProject_Call) Return(_a0 postgres.DeleteProjectOperationInterface, _a1 error) *MockPostgresInterface_DeleteProject_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockPostgresInterface_DeleteProject_Call) RunAndReturn(run func(context.Context, postgres.DeleteProjectRequest) error) *MockPostgresInterface_DeleteProject_Call {
+func (_c *MockPostgresInterface_DeleteProject_Call) RunAndReturn(run func(context.Context, postgres.DeleteProjectRequest) (postgres.DeleteProjectOperationInterface, error)) *MockPostgresInterface_DeleteProject_Call {
 	_c.Call.Return(run)
 	return _c
 }

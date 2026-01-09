@@ -118,6 +118,14 @@ type JobsService interface {
 	// directly without creating a job. Runs submitted using this endpoint
 	// don’t display in the UI. Use the `jobs/runs/get` API to check the run
 	// state after the job is submitted.
+	//
+	// **Important:** Jobs submitted using this endpoint are not saved as a job.
+	// They do not show up in the Jobs UI, and do not retry when they fail.
+	// Because they are not saved, Databricks cannot auto-optimize serverless
+	// compute in case of failure. If your job fails, you may want to use
+	// classic compute to specify the compute needs for the job. Alternatively,
+	// use the `POST /jobs/create` and `POST /jobs/run-now` endpoints to create
+	// and run a saved job.
 	Submit(ctx context.Context, request SubmitRun) (*SubmitRunResponse, error)
 
 	// Add, update, or remove specific settings of an existing job. Use the
