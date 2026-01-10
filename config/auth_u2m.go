@@ -12,12 +12,18 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// persistentAuthFactory is a function that creates a token source for U2M
+// authentication. It can be replaced in tests to spy on the options passed.
+type persistentAuthFactory func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error)
+
 // u2mCredentials is a credentials strategy that uses the U2M OAuth flow to
 // authenticate with Databricks. It loads a token from the token cache for the
 // given workspace or account, refreshing it using the associated refresh token
 // if needed.
 type u2mCredentials struct {
-	testTokenSource oauth2.TokenSource // replace u2m token source
+	// newPersistentAuth is the factory function to create a PersistentAuth.
+	// If nil, the default u2m.NewPersistentAuth is used.
+	newPersistentAuth persistentAuthFactory
 }
 
 // Name implements CredentialsStrategy.
@@ -38,14 +44,22 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, err
 	}
 
-	var ts oauth2.TokenSource
-	if u.testTokenSource != nil {
-		ts = u.testTokenSource
-	} else {
-		ts, err = u2m.NewPersistentAuth(ctx, u2m.WithOAuthArgument(arg), u2m.WithPort(cfg.OAuthCallbackPort))
-		if err != nil {
-			return nil, err
+	var factory persistentAuthFactory
+	if u.newPersistentAuth == nil {
+		factory = func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error) {
+			return u2m.NewPersistentAuth(ctx, opts...)
 		}
+	} else {
+		factory = u.newPersistentAuth
+	}
+	ts, err := factory(ctx,
+		u2m.WithOAuthArgument(arg),
+		u2m.WithPort(cfg.OAuthCallbackPort),
+		u2m.WithScopes(cfg.GetScopes()),
+		u2m.WithDisableOfflineAccess(cfg.DisableOAuthRefreshToken),
+	)
+	if err != nil {
+		return nil, err
 	}
 
 	// TODO: Having to handle the CLI error here is not ideal as it couples the
