@@ -240,7 +240,7 @@
 //
 // - [qualitymonitorv2.QualityMonitorV2API]: [DEPRECATED] This API is deprecated.
 //
-// - [catalog.QualityMonitorsAPI]: A monitor computes and monitors data or model quality metrics for a table over time.
+// - [catalog.QualityMonitorsAPI]: [DEPRECATED] This API is deprecated.
 //
 // - [sql.QueriesAPI]: The queries API can be used to perform CRUD operations on queries.
 //
