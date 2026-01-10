@@ -319,3 +319,94 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 		})
 	}
 }
+
+func TestWIF_Scopes(t *testing.T) {
+	const (
+		testClientID    = "test-client-id"
+		testIDToken     = "test-id-token"
+		testAccessToken = "test-access-token"
+		testTokenPath   = "/oidc/v1/token"
+		testHost        = "https://host.com"
+	)
+
+	tests := []struct {
+		name   string
+		scopes []string
+		want   string
+	}{
+		{
+			name:   "nil scopes uses default",
+			scopes: nil,
+			want:   "all-apis",
+		},
+		{
+			name:   "empty scopes uses default",
+			scopes: []string{},
+			want:   "all-apis",
+		},
+		{
+			name:   "single scope",
+			scopes: []string{"dashboards"},
+			want:   "dashboards",
+		},
+		{
+			name:   "multiple scopes",
+			scopes: []string{"jobs", "files:read", "mlflow"},
+			want:   "jobs files:read mlflow",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cfg := DatabricksOIDCTokenSourceConfig{
+				ClientID: testClientID,
+				Host:     testHost,
+				TokenEndpointProvider: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+					return &u2m.OAuthAuthorizationServer{
+						TokenEndpoint: testHost + testTokenPath,
+					}, nil
+				},
+				Audience: "token-audience",
+				IDTokenSource: IDTokenSourceFn(func(ctx context.Context, aud string) (*IDToken, error) {
+					return &IDToken{Value: testIDToken}, nil
+				}),
+				scopes: tt.scopes,
+			}
+
+			ts := NewDatabricksOIDCTokenSource(cfg)
+
+			// The scope assertion: verifies the token source sends the correct scope parameter.
+			expectedRequest := url.Values{
+				"client_id":          {testClientID},
+				"scope":              {tt.want},
+				"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
+				"subject_token":      {testIDToken},
+				"grant_type":         {"urn:ietf:params:oauth:grant-type:token-exchange"},
+			}
+
+			ctx := context.WithValue(context.Background(), oauth2.HTTPClient, &http.Client{
+				Transport: fixtures.MappingTransport{
+					"POST " + testTokenPath: {
+						Status: http.StatusOK,
+						ExpectedHeaders: map[string]string{
+							"Content-Type": "application/x-www-form-urlencoded",
+						},
+						ExpectedRequest: expectedRequest,
+						Response: map[string]string{
+							"token_type":   "Bearer",
+							"access_token": testAccessToken,
+						},
+					},
+				},
+			})
+
+			token, err := ts.Token(ctx)
+			if err != nil {
+				t.Fatalf("Token(ctx): got error %q, want none", err)
+			}
+			if token.AccessToken != testAccessToken {
+				t.Errorf("Token(ctx): got access token %q, want %q", token.AccessToken, testAccessToken)
+			}
+		})
+	}
+}
