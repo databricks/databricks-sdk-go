@@ -236,7 +236,6 @@ type CreateRoleRequest struct {
 
 // Databricks Error that is returned by all Databricks APIs.
 type DatabricksServiceExceptionWithDetailsProto struct {
-	// @pbjson-skip
 	Details []json.RawMessage `json:"details,omitempty"`
 
 	ErrorCode ErrorCode `json:"error_code,omitempty"`
@@ -330,48 +329,10 @@ func (s Endpoint) MarshalJSON() ([]byte, error) {
 type EndpointOperationMetadata struct {
 }
 
-// The connection pooler mode. Lakebase supports PgBouncer in `transaction` mode
-// only.
-type EndpointPoolerMode string
-
-const EndpointPoolerModeTransaction EndpointPoolerMode = `TRANSACTION`
-
-// String representation for [fmt.Print]
-func (f *EndpointPoolerMode) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *EndpointPoolerMode) Set(v string) error {
-	switch v {
-	case `TRANSACTION`:
-		*f = EndpointPoolerMode(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "TRANSACTION"`, v)
-	}
-}
-
-// Values returns all possible values for EndpointPoolerMode.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *EndpointPoolerMode) Values() []EndpointPoolerMode {
-	return []EndpointPoolerMode{
-		EndpointPoolerModeTransaction,
-	}
-}
-
-// Type always returns EndpointPoolerMode to satisfy [pflag.Value] interface
-func (f *EndpointPoolerMode) Type() string {
-	return "EndpointPoolerMode"
-}
-
 // A collection of settings for a compute endpoint.
 type EndpointSettings struct {
 	// A raw representation of Postgres settings.
 	PgSettings map[string]string `json:"pg_settings,omitempty"`
-	// A raw representation of PgBouncer settings.
-	PgbouncerSettings map[string]string `json:"pgbouncer_settings,omitempty"`
 }
 
 type EndpointSpec struct {
@@ -385,8 +346,6 @@ type EndpointSpec struct {
 	Disabled bool `json:"disabled,omitempty"`
 	// The endpoint type. A branch can only have one READ_WRITE endpoint.
 	EndpointType EndpointType `json:"endpoint_type"`
-
-	PoolerMode EndpointPoolerMode `json:"pooler_mode,omitempty"`
 
 	Settings *EndpointSettings `json:"settings,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
@@ -424,8 +383,6 @@ type EndpointStatus struct {
 	LastActiveTime *time.Time `json:"last_active_time,omitempty"`
 
 	PendingState EndpointStatusState `json:"pending_state,omitempty"`
-
-	PoolerMode EndpointPoolerMode `json:"pooler_mode,omitempty"`
 
 	Settings *EndpointSettings `json:"settings,omitempty"`
 	// A timestamp indicating when the compute endpoint was last started.
@@ -1045,8 +1002,6 @@ type ProjectDefaultEndpointSettings struct {
 	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
 	// A raw representation of Postgres settings.
 	PgSettings map[string]string `json:"pg_settings,omitempty"`
-	// A raw representation of PgBouncer settings.
-	PgbouncerSettings map[string]string `json:"pgbouncer_settings,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
 	// suspended.
 	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
@@ -1258,7 +1213,11 @@ type RoleRoleSpec struct {
 	// NOTE: this is ignored for the Databricks identity type GROUP, and
 	// NO_LOGIN is implicitly assumed instead for the GROUP identity type.
 	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
-	// The type of the role.
+	// The type of the role. When specifying a managed-identity, the chosen
+	// role_id must be a valid:
+	//
+	// * application ID for SERVICE_PRINCIPAL * user email for USER * group name
+	// for GROUP
 	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
 }
 

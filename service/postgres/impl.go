@@ -80,31 +80,34 @@ func (a *postgresImpl) CreateRole(ctx context.Context, request CreateRoleRequest
 	return &operation, err
 }
 
-func (a *postgresImpl) DeleteBranch(ctx context.Context, request DeleteBranchRequest) error {
+func (a *postgresImpl) DeleteBranch(ctx context.Context, request DeleteBranchRequest) (*Operation, error) {
+	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
 }
 
-func (a *postgresImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error {
+func (a *postgresImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) (*Operation, error) {
+	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
 }
 
-func (a *postgresImpl) DeleteProject(ctx context.Context, request DeleteProjectRequest) error {
+func (a *postgresImpl) DeleteProject(ctx context.Context, request DeleteProjectRequest) (*Operation, error) {
+	var operation Operation
 	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
-	return err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
 }
 
 func (a *postgresImpl) DeleteRole(ctx context.Context, request DeleteRoleRequest) (*Operation, error) {

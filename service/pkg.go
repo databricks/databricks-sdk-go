@@ -18,7 +18,7 @@
 //
 // - [sql.AlertsV2API]: New version of SQL Alerts.
 //
-// - [apps.AppsAPI]: Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
+// - [apps.AppsAPI]: Apps run directly on a customer's Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
 //
 // - [apps.AppsSettingsAPI]: Apps Settings manage the settings for the Apps service on a customer's Databricks instance.
 //
@@ -238,9 +238,9 @@
 //
 // - [oauth2.PublishedAppIntegrationAPI]: These APIs enable administrators to manage published OAuth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud.
 //
-// - [qualitymonitorv2.QualityMonitorV2API]: Manage data quality of UC objects (currently support `schema`).
+// - [qualitymonitorv2.QualityMonitorV2API]: [DEPRECATED] This API is deprecated.
 //
-// - [catalog.QualityMonitorsAPI]: A monitor computes and monitors data or model quality metrics for a table over time.
+// - [catalog.QualityMonitorsAPI]: [DEPRECATED] This API is deprecated.
 //
 // - [sql.QueriesAPI]: The queries API can be used to perform CRUD operations on queries.
 //

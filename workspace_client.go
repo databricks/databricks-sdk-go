@@ -78,7 +78,7 @@ type WorkspaceClient struct {
 	// New version of SQL Alerts
 	AlertsV2 sql.AlertsV2Interface
 
-	// Apps run directly on a customer’s Databricks instance, integrate with
+	// Apps run directly on a customer's Databricks instance, integrate with
 	// their data, use and extend Databricks services, and enable users to
 	// interact through single sign-on.
 	Apps apps.AppsInterface
@@ -739,9 +739,15 @@ type WorkspaceClient struct {
 	// contain the shared data.
 	Providers sharing.ProvidersInterface
 
-	// Manage data quality of UC objects (currently support `schema`)
+	// [DEPRECATED] This API is deprecated. Please use the Data Quality
+	// Monitoring API instead (REST: /api/data-quality/v1/monitors). Manage data
+	// quality of UC objects (currently support `schema`).
 	QualityMonitorV2 qualitymonitorv2.QualityMonitorV2Interface
 
+	// [DEPRECATED] This API is deprecated. Please use the Data Quality Monitors
+	// API instead (REST: /api/data-quality/v1/monitors), which manages both
+	// Data Profiling and Anomaly Detection.
+	//
 	// A monitor computes and monitors data or model quality metrics for a table
 	// over time. It generates metrics tables and a dashboard that you can use
 	// to monitor table health and set alerts. Most write operations require the

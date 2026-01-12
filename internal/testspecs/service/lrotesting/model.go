@@ -21,7 +21,6 @@ type CreateTestResourceRequest struct {
 
 // Databricks Error that is returned by all Databricks APIs.
 type DatabricksServiceExceptionWithDetailsProto struct {
-	// @pbjson-skip
 	Details []json.RawMessage `json:"details,omitempty"`
 
 	ErrorCode ErrorCode `json:"error_code,omitempty"`

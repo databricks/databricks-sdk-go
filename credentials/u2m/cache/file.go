@@ -103,7 +103,10 @@ func (c *fileTokenCache) Store(key string, t *oauth2.Token) error {
 	if err != nil {
 		return fmt.Errorf("marshal: %w", err)
 	}
-	return os.WriteFile(c.fileLocation, raw, ownerReadWrite)
+	if err := c.atomicWriteFile(raw); err != nil {
+		return fmt.Errorf("error storing token in local cache: %w", err)
+	}
+	return nil
 }
 
 // Lookup implements the TokenCache interface.
@@ -151,8 +154,8 @@ func (c *fileTokenCache) init() error {
 		if err != nil {
 			return fmt.Errorf("marshal: %w", err)
 		}
-		if err := os.WriteFile(c.fileLocation, raw, ownerReadWrite); err != nil {
-			return fmt.Errorf("write: %w", err)
+		if err := c.atomicWriteFile(raw); err != nil {
+			return fmt.Errorf("error creating token cache file: %w", err)
 		}
 	}
 	return nil
@@ -176,4 +179,35 @@ func (c *fileTokenCache) load() (*tokenCacheFile, error) {
 		return nil, fmt.Errorf("needs version %d, got version %d", tokenCacheVersion, f.Version)
 	}
 	return f, nil
+}
+
+// atomicWriteFile writes data to the file atomically by first writing to a
+// temporary file in the same directory and then renaming it to the target.
+// This prevents corruption from interrupted writes.
+func (c *fileTokenCache) atomicWriteFile(data []byte) error {
+	tmp, err := c.writeTmpFile(data)
+	if err != nil {
+		return err
+	}
+	defer os.Remove(tmp)
+	return os.Rename(tmp, c.fileLocation)
+}
+
+func (c *fileTokenCache) writeTmpFile(data []byte) (string, error) {
+	tmp, err := os.CreateTemp(filepath.Dir(c.fileLocation), ".token-cache-*.tmp")
+	if err != nil {
+		return "", fmt.Errorf("create temp file: %w", err)
+	}
+	defer tmp.Close()
+
+	if _, err := tmp.Write(data); err != nil {
+		return "", err
+	}
+	if err := tmp.Chmod(ownerReadWrite); err != nil {
+		return "", err
+	}
+	if err := tmp.Close(); err != nil {
+		return "", err
+	}
+	return tmp.Name(), nil
 }
