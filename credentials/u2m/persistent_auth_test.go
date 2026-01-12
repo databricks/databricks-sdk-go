@@ -548,6 +548,7 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 
 			var scopeReceived, stateReceived string
 			browserCalled := make(chan struct{})
+			defer close(browserCalled)
 			browser := func(redirect string) error {
 				u, err := url.ParseRequestURI(redirect)
 				if err != nil {
@@ -556,7 +557,7 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 				query := u.Query()
 				scopeReceived = query.Get("scope")
 				stateReceived = query.Get("state")
-				close(browserCalled)
+				browserCalled <- struct{}{}
 				return nil
 			}
 
@@ -606,13 +607,17 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 			defer p.Close()
 
 			errc := make(chan error)
+			defer close(errc)
 			go func() {
 				err := p.Challenge()
 				errc <- err
-				close(errc)
 			}()
 
-			<-browserCalled
+			select {
+			case <-browserCalled:
+			case <-time.After(5 * time.Second):
+				t.Fatal("timed out waiting for browser to be called")
+			}
 
 			if scopeReceived != tt.want {
 				t.Errorf("scope: want %q, got %q", tt.want, scopeReceived)
@@ -624,7 +629,11 @@ func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
 			}
 			defer resp.Body.Close()
 
-			err = <-errc
+			select {
+			case err = <-errc:
+			case <-time.After(5 * time.Second):
+				t.Fatal("timed out waiting for Challenge() to complete")
+			}
 			if err != nil {
 				t.Fatalf("p.Challenge(): want no error, got %v", err)
 			}

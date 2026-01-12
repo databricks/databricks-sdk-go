@@ -325,7 +325,10 @@ func TestU2MCredentials_Configure_Scopes(t *testing.T) {
 				t.Fatalf("Configure() error = %v", err)
 			}
 
-			arg, _ := u2m.NewBasicWorkspaceOAuthArgument(workspaceHost)
+			arg, err := u2m.NewBasicWorkspaceOAuthArgument(workspaceHost)
+			if err != nil {
+				t.Fatalf("NewBasicWorkspaceOAuthArgument() error = %v", err)
+			}
 			wantPA, err := u2m.NewPersistentAuth(context.Background(),
 				u2m.WithOAuthArgument(arg),
 				u2m.WithScopes(tc.want),
@@ -335,11 +338,11 @@ func TestU2MCredentials_Configure_Scopes(t *testing.T) {
 			}
 
 			if diff := cmp.Diff(wantPA, capturedPA,
-				cmp.AllowUnexported(u2m.PersistentAuth{}),
+				cmp.AllowUnexported(u2m.PersistentAuth{}, u2m.BasicWorkspaceOAuthArgument{}),
 				cmpopts.IgnoreFields(u2m.PersistentAuth{},
-					"cache", "client", "endpointSupplier", "oAuthArgument",
-					"browser", "ln", "ctx", "redirectAddr", "port", "netListen",
-					"disableOfflineAccess")); diff != "" {
+					"cache", "client", "endpointSupplier", "browser",
+					"ln", "ctx", "redirectAddr", "port", "netListen", "disableOfflineAccess"),
+			); diff != "" {
 				t.Errorf("PersistentAuth mismatch (-want +got):\n%s", diff)
 			}
 		})
