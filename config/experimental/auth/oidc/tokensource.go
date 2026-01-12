@@ -39,6 +39,23 @@ type DatabricksOIDCTokenSourceConfig struct {
 
 	// IDTokenSource returns the IDToken to be used for the token exchange.
 	IDTokenSource IDTokenSource
+
+	// scopes is the list of OAuth scopes to request.
+	scopes []string
+}
+
+// GetScopes returns the OAuth scopes to request. If no scopes have been set,
+// it returns the default scope "all-apis".
+func (c *DatabricksOIDCTokenSourceConfig) GetScopes() []string {
+	if len(c.scopes) == 0 {
+		return []string{"all-apis"}
+	}
+	return c.scopes
+}
+
+// SetScopes sets the OAuth scopes to request.
+func (c *DatabricksOIDCTokenSourceConfig) SetScopes(scopes []string) {
+	c.scopes = scopes
 }
 
 // NewDatabricksOIDCTokenSource returns a new Databricks OIDC TokenSource.
@@ -77,11 +94,14 @@ func (w *databricksOIDCTokenSource) Token(ctx context.Context) (*oauth2.Token, e
 		return nil, err
 	}
 
+	// This nil check is to ensure backwards compatibility for users implementing their own
+	// OIDC token source.
+	scopes := w.cfg.GetScopes()
 	c := &clientcredentials.Config{
 		ClientID:  w.cfg.ClientID,
 		AuthStyle: oauth2.AuthStyleInParams,
 		TokenURL:  endpoints.TokenEndpoint,
-		Scopes:    []string{"all-apis"},
+		Scopes:    scopes,
 		EndpointParams: url.Values{
 			"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
 			"subject_token":      {idToken.Value},
