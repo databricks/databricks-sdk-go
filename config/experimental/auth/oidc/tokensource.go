@@ -44,6 +44,8 @@ type DatabricksOIDCTokenSourceConfig struct {
 	scopes []string
 }
 
+// GetScopes returns the OAuth scopes to request. If no scopes have been set,
+// it returns the default scope "all-apis".
 func (c *DatabricksOIDCTokenSourceConfig) GetScopes() []string {
 	if len(c.scopes) == 0 {
 		return []string{"all-apis"}
@@ -51,6 +53,7 @@ func (c *DatabricksOIDCTokenSourceConfig) GetScopes() []string {
 	return c.scopes
 }
 
+// SetScopes sets the OAuth scopes to request.
 func (c *DatabricksOIDCTokenSourceConfig) SetScopes(scopes []string) {
 	c.scopes = scopes
 }
