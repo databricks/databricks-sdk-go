@@ -11,6 +11,8 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"golang.org/x/oauth2"
 )
 
@@ -52,6 +54,14 @@ var (
 	errAuthentication      = errors.New("authentication failed")
 	errInvalidRefreshToken = &u2m.InvalidRefreshTokenError{}
 )
+
+// mockPersistentAuthFactory creates a test factory for bypassing real auth setup.
+// Use this when tests only need to control token behavior without caring about auth configuration.
+func mockPersistentAuthFactory(ts oauth2.TokenSource) persistentAuthFactory {
+	return func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error) {
+		return ts, nil
+	}
+}
 
 func TestU2MCredentials_Configure(t *testing.T) {
 	testCases := []struct {
@@ -197,7 +207,9 @@ func TestU2MCredentials_Configure(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
 			ctx := context.Background()
-			u := u2mCredentials{testTokenSource: tc.testTokenSource}
+			u := u2mCredentials{
+				newPersistentAuth: mockPersistentAuthFactory(tc.testTokenSource),
+			}
 
 			cp, gotConfigErr := u.Configure(ctx, tc.cfg)
 
@@ -238,7 +250,9 @@ func TestU2MCredentials_Configure(t *testing.T) {
 func TestU2MCredentials_Configure_TokenCaching(t *testing.T) {
 	ts := &testTokenSource{token: testValidToken}
 
-	u := u2mCredentials{testTokenSource: ts}
+	u := u2mCredentials{
+		newPersistentAuth: mockPersistentAuthFactory(ts),
+	}
 	cfg := &Config{
 		Host: "https://workspace.cloud.databricks.com",
 	}
@@ -259,5 +273,78 @@ func TestU2MCredentials_Configure_TokenCaching(t *testing.T) {
 
 	if ts.counts != 1 {
 		t.Errorf("token source call count = %d, want 1 (should use cache)", ts.counts)
+	}
+}
+
+func TestU2MCredentials_Configure_Scopes(t *testing.T) {
+	const workspaceHost = "https://workspace.cloud.databricks.com"
+	testCases := []struct {
+		name   string
+		scopes []string
+		want   []string
+	}{
+		{
+			name:   "nil scopes uses default",
+			scopes: nil,
+			want:   []string{"all-apis"},
+		},
+		{
+			name:   "empty scopes uses default",
+			scopes: []string{},
+			want:   []string{"all-apis"},
+		},
+		{
+			name:   "multiple scopes are sorted",
+			scopes: []string{"clusters", "jobs", "sql:read"},
+			want:   []string{"clusters", "jobs", "sql:read"},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			ts := &testTokenSource{token: testValidToken}
+			var capturedPA *u2m.PersistentAuth
+
+			u := u2mCredentials{
+				newPersistentAuth: func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error) {
+					pa, err := u2m.NewPersistentAuth(ctx, opts...)
+					if err != nil {
+						return nil, err
+					}
+					capturedPA = pa
+					return ts, nil
+				},
+			}
+			cfg := &Config{
+				Host:   workspaceHost,
+				Scopes: tc.scopes,
+			}
+
+			_, err := u.Configure(context.Background(), cfg)
+			if err != nil {
+				t.Fatalf("Configure() error = %v", err)
+			}
+
+			arg, err := u2m.NewBasicWorkspaceOAuthArgument(workspaceHost)
+			if err != nil {
+				t.Fatalf("NewBasicWorkspaceOAuthArgument() error = %v", err)
+			}
+			wantPA, err := u2m.NewPersistentAuth(context.Background(),
+				u2m.WithOAuthArgument(arg),
+				u2m.WithScopes(tc.want),
+			)
+			if err != nil {
+				t.Fatalf("NewPersistentAuth() error = %v", err)
+			}
+
+			if diff := cmp.Diff(wantPA, capturedPA,
+				cmp.AllowUnexported(u2m.PersistentAuth{}, u2m.BasicWorkspaceOAuthArgument{}),
+				cmpopts.IgnoreFields(u2m.PersistentAuth{},
+					"cache", "client", "endpointSupplier", "browser",
+					"ln", "ctx", "redirectAddr", "port", "netListen", "disableOfflineAccess"),
+			); diff != "" {
+				t.Errorf("PersistentAuth mismatch (-want +got):\n%s", diff)
+			}
+		})
 	}
 }

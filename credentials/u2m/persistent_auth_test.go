@@ -487,3 +487,156 @@ func TestPersistentAuth_startListener_explicitPortNoFallBack(t *testing.T) {
 		t.Fatalf("pa.startListener(): want error %v, got %v", testError, gotErr)
 	}
 }
+
+// TestU2M_ScopesAndOfflineAccess verifies that OAuth scopes are correctly configured
+// and sent during the authorization flow, and that the disableOfflineAccess flag
+// correctly controls whether offline_access is added to the scope.
+func TestU2M_ScopesAndOfflineAccess(t *testing.T) {
+	const (
+		testWorkspaceHost = "https://workspace.cloud.databricks.com"
+		testTokenEndpoint = "/oidc/v1/token"
+		testCallbackURL   = "http://localhost:8020"
+	)
+
+	tests := []struct {
+		name           string
+		scopes         []string
+		disableOffline bool
+		want           string
+	}{
+		{
+			name:           "nil scopes uses default with offline_access",
+			scopes:         nil,
+			disableOffline: false,
+			want:           "offline_access all-apis",
+		},
+		{
+			name:           "empty scopes uses default with offline_access",
+			scopes:         []string{},
+			disableOffline: false,
+			want:           "offline_access all-apis",
+		},
+		{
+			name:           "single scope with offline_access",
+			scopes:         []string{"dashboards"},
+			disableOffline: false,
+			want:           "offline_access dashboards",
+		},
+		{
+			name:           "multiple scopes with offline_access",
+			scopes:         []string{"files", "jobs", "mlflow:read"},
+			disableOffline: false,
+			want:           "offline_access files jobs mlflow:read",
+		},
+		{
+			name:           "disable offline_access",
+			scopes:         []string{"files", "jobs"},
+			disableOffline: true,
+			want:           "files jobs",
+		},
+		{
+			name:           "nil scopes with disable offline_access",
+			scopes:         nil,
+			disableOffline: true,
+			want:           "all-apis",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctx := context.Background()
+
+			var scopeReceived, stateReceived string
+			browserCalled := make(chan struct{})
+			defer close(browserCalled)
+			browser := func(redirect string) error {
+				u, err := url.ParseRequestURI(redirect)
+				if err != nil {
+					return err
+				}
+				query := u.Query()
+				scopeReceived = query.Get("scope")
+				stateReceived = query.Get("state")
+				browserCalled <- struct{}{}
+				return nil
+			}
+
+			cache := &tokenCacheMock{
+				store: func(key string, tok *oauth2.Token) error {
+					return nil
+				},
+			}
+
+			arg, err := NewBasicWorkspaceOAuthArgument(testWorkspaceHost)
+			if err != nil {
+				t.Fatalf("NewBasicWorkspaceOAuthArgument(): want no error, got %v", err)
+			}
+
+			var tokenResponse string
+			if tt.disableOffline {
+				tokenResponse = `access_token=token`
+			} else {
+				tokenResponse = `access_token=token&refresh_token=refresh`
+			}
+
+			opts := []PersistentAuthOption{
+				WithTokenCache(cache),
+				WithBrowser(browser),
+				WithHttpClient(&http.Client{
+					Transport: fixtures.SliceTransport{
+						{
+							Method:   "POST",
+							Resource: testTokenEndpoint,
+							Response: tokenResponse,
+							ResponseHeaders: map[string][]string{
+								"Content-Type": {"application/x-www-form-urlencoded"},
+							},
+						},
+					},
+				}),
+				WithOAuthEndpointSupplier(MockOAuthEndpointSupplier{}),
+				WithOAuthArgument(arg),
+				WithDisableOfflineAccess(tt.disableOffline),
+				WithScopes(tt.scopes),
+			}
+
+			p, err := NewPersistentAuth(ctx, opts...)
+			if err != nil {
+				t.Fatalf("NewPersistentAuth(): want no error, got %v", err)
+			}
+			defer p.Close()
+
+			errc := make(chan error)
+			defer close(errc)
+			go func() {
+				err := p.Challenge()
+				errc <- err
+			}()
+
+			select {
+			case <-browserCalled:
+			case <-time.After(5 * time.Second):
+				t.Fatal("timed out waiting for browser to be called")
+			}
+
+			if scopeReceived != tt.want {
+				t.Errorf("scope: want %q, got %q", tt.want, scopeReceived)
+			}
+
+			resp, err := http.Get(fmt.Sprintf("%s?code=__CODE__&state=%s", testCallbackURL, stateReceived))
+			if err != nil {
+				t.Fatalf("http.Get(): want no error, got %v", err)
+			}
+			defer resp.Body.Close()
+
+			select {
+			case err = <-errc:
+			case <-time.After(5 * time.Second):
+				t.Fatal("timed out waiting for Challenge() to complete")
+			}
+			if err != nil {
+				t.Fatalf("p.Challenge(): want no error, got %v", err)
+			}
+		})
+	}
+}
