@@ -93,3 +93,39 @@ func TestConfigFile_Scopes(t *testing.T) {
 		})
 	}
 }
+
+func TestConfigFile_ServerlessUsagePolicyName(t *testing.T) {
+	tests := []struct {
+		name    string
+		profile string
+		want    string
+	}{
+		{
+			name:    "serverless_usage_policy_name from config file",
+			profile: "serverless-policy",
+			want:    "my-serverless-policy",
+		},
+		{
+			name:    "empty when not specified",
+			profile: "serverless-policy-empty",
+			want:    "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			withMockEnv(t, map[string]string{
+				"HOME": "testdata/serverless",
+			})
+
+			cfg := &Config{Profile: tt.profile}
+			err := cfg.EnsureResolved()
+			if err != nil {
+				t.Fatalf("EnsureResolved failed: %v", err)
+			}
+			if got := cfg.ServerlessUsagePolicyName; got != tt.want {
+				t.Errorf("ServerlessUsagePolicyName mismatch: got %q, want %q", got, tt.want)
+			}
+		})
+	}
+}

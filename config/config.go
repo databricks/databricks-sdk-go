@@ -75,9 +75,12 @@ type Config struct {
 	// Databricks host (either of workspace endpoint or Accounts API endpoint)
 	Host string `name:"host" env:"DATABRICKS_HOST"`
 
-	ClusterID           string `name:"cluster_id" env:"DATABRICKS_CLUSTER_ID"`
-	WarehouseID         string `name:"warehouse_id" env:"DATABRICKS_WAREHOUSE_ID"`
-	ServerlessComputeID string `name:"serverless_compute_id" env:"DATABRICKS_SERVERLESS_COMPUTE_ID"`
+	ClusterID   string `name:"cluster_id" env:"DATABRICKS_CLUSTER_ID"`
+	WarehouseID string `name:"warehouse_id" env:"DATABRICKS_WAREHOUSE_ID"`
+
+	// Serverless Compute ID and Serverless Usage Policy Name are used to set the serverless compute mode when using DB connect.
+	ServerlessComputeID       string `name:"serverless_compute_id" env:"DATABRICKS_SERVERLESS_COMPUTE_ID"`
+	ServerlessUsagePolicyName string `name:"serverless_usage_policy_name" env:"DATABRICKS_SERVERLESS_USAGE_POLICY_NAME"`
 
 	// URL of the metadata service that provides authentication credentials.
 	MetadataServiceURL string `name:"metadata_service_url" env:"DATABRICKS_METADATA_SERVICE_URL" auth:"metadata-service,sensitive"`

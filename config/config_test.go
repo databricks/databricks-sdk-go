@@ -376,3 +376,16 @@ func TestConfig_EnsureResolved_scopeNormalization(t *testing.T) {
 		})
 	}
 }
+
+func TestConfig_ServerlessUsagePolicyNameEnv(t *testing.T) {
+	t.Setenv("DATABRICKS_SERVERLESS_USAGE_POLICY_NAME", "env-serverless-policy")
+
+	cfg := &Config{}
+	err := cfg.EnsureResolved()
+	if err != nil {
+		t.Fatalf("EnsureResolved failed: %v", err)
+	}
+	if got, want := cfg.ServerlessUsagePolicyName, "env-serverless-policy"; got != want {
+		t.Errorf("ServerlessUsagePolicyName mismatch: got %q, want %q", got, want)
+	}
+}
