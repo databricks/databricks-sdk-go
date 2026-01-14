@@ -30,3 +30,8 @@
 * Add `Owner` field for [postgres.ProjectStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#ProjectStatus).
 * Add `ValidityCheckConfigurations` field for [qualitymonitorv2.QualityMonitor](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/qualitymonitorv2#QualityMonitor).
 * Add `BurstScalingEnabled` field for [serving.PtServedModel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#PtServedModel).
+* Add `SystemManaged` enum value for [jobs.JobDeploymentKind](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobDeploymentKind).
+* [Breaking] Change `CreateBranch`, `CreateEndpoint` and `CreateProject` methods for [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service with new required argument order.
+* [Breaking] Change `BranchId` field for [postgres.CreateBranchRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#CreateBranchRequest) to be required.
+* [Breaking] Change `EndpointId` field for [postgres.CreateEndpointRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#CreateEndpointRequest) to be required.
+* [Breaking] Change `ProjectId` field for [postgres.CreateProjectRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#CreateProjectRequest) to be required.
