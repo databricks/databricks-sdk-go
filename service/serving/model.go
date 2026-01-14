@@ -1432,6 +1432,11 @@ type PtEndpointCoreConfig struct {
 }
 
 type PtServedModel struct {
+	// Whether burst scaling is enabled. When enabled (default), the endpoint
+	// can automatically scale up beyond provisioned capacity to handle traffic
+	// spikes. When disabled, the endpoint maintains fixed capacity at
+	// provisioned_model_units.
+	BurstScalingEnabled bool `json:"burst_scaling_enabled,omitempty"`
 	// The name of the entity to be served. The entity may be a model in the
 	// Databricks Model Registry, a model in the Unity Catalog (UC), or a
 	// function of type FEATURE_SPEC in the UC. If it is a UC object, the full

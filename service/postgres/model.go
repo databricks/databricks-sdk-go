@@ -1072,6 +1072,8 @@ type ProjectStatus struct {
 	// The effective number of seconds to retain the shared history for point in
 	// time recovery.
 	HistoryRetentionDuration *duration.Duration `json:"history_retention_duration,omitempty"`
+	// The email of the project owner.
+	Owner string `json:"owner,omitempty"`
 	// The effective major Postgres version number.
 	PgVersion int `json:"pg_version,omitempty"`
 	// The effective project settings.

@@ -133,12 +133,55 @@ func (s ListQualityMonitorResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type PercentNullValidityCheck struct {
+	// List of column names to check for null percentage
+	ColumnNames []string `json:"column_names,omitempty"`
+	// Optional upper bound; we should use auto determined bounds for now
+	UpperBound float64 `json:"upper_bound,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PercentNullValidityCheck) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PercentNullValidityCheck) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type QualityMonitor struct {
 	AnomalyDetectionConfig *AnomalyDetectionConfig `json:"anomaly_detection_config,omitempty"`
 	// The uuid of the request object. For example, schema id.
 	ObjectId string `json:"object_id"`
 	// The type of the monitored object. Can be one of the following: schema.
 	ObjectType string `json:"object_type"`
+	// Validity check configurations for anomaly detection.
+	ValidityCheckConfigurations []ValidityCheckConfiguration `json:"validity_check_configurations,omitempty"`
+}
+
+type RangeValidityCheck struct {
+	// List of column names to check for range validity
+	ColumnNames []string `json:"column_names,omitempty"`
+	// Lower bound for the range
+	LowerBound float64 `json:"lower_bound,omitempty"`
+	// Upper bound for the range
+	UpperBound float64 `json:"upper_bound,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RangeValidityCheck) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RangeValidityCheck) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type UniquenessValidityCheck struct {
+	// List of column names to check for uniqueness
+	ColumnNames []string `json:"column_names,omitempty"`
 }
 
 type UpdateQualityMonitorRequest struct {
@@ -148,4 +191,25 @@ type UpdateQualityMonitorRequest struct {
 	ObjectType string `json:"-" url:"-"`
 
 	QualityMonitor QualityMonitor `json:"quality_monitor"`
+}
+
+type ValidityCheckConfiguration struct {
+	// Can be set by system. Does not need to be user facing.
+	Name string `json:"name,omitempty"`
+
+	PercentNullValidityCheck *PercentNullValidityCheck `json:"percent_null_validity_check,omitempty"`
+
+	RangeValidityCheck *RangeValidityCheck `json:"range_validity_check,omitempty"`
+
+	UniquenessValidityCheck *UniquenessValidityCheck `json:"uniqueness_validity_check,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ValidityCheckConfiguration) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ValidityCheckConfiguration) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }

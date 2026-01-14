@@ -27,3 +27,6 @@
 * [Breaking] Remove `PoolerMode` field for [postgres.EndpointSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#EndpointSpec).
 * [Breaking] Remove `PoolerMode` field for [postgres.EndpointStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#EndpointStatus).
 * [Breaking] Remove `PgbouncerSettings` field for [postgres.ProjectDefaultEndpointSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#ProjectDefaultEndpointSettings).
+* Add `Owner` field for [postgres.ProjectStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#ProjectStatus).
+* Add `ValidityCheckConfigurations` field for [qualitymonitorv2.QualityMonitor](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/qualitymonitorv2#QualityMonitor).
+* Add `BurstScalingEnabled` field for [serving.PtServedModel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#PtServedModel).
