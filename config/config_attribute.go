@@ -122,6 +122,10 @@ func (a *ConfigAttribute) IsZero(cfg *Config) bool {
 func (a *ConfigAttribute) GetString(cfg *Config) string {
 	rv := reflect.ValueOf(cfg)
 	field := rv.Elem().Field(a.num)
+	if a.Kind == reflect.Slice {
+		parts := field.Interface().([]string)
+		return strings.Join(parts, ",")
+	}
 	return fmt.Sprintf("%v", field.Interface())
 }
 
