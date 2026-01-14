@@ -159,20 +159,10 @@ type CreateBranchRequest struct {
 	//
 	// This value should be 4-63 characters, and valid characters are
 	// /[a-z][0-9]-/.
-	BranchId string `json:"-" url:"branch_id,omitempty"`
+	BranchId string `json:"-" url:"branch_id"`
 	// The Project where this Branch will be created. Format:
 	// projects/{project_id}
 	Parent string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *CreateBranchRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateBranchRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateEndpointRequest struct {
@@ -183,20 +173,10 @@ type CreateEndpointRequest struct {
 	//
 	// This value should be 4-63 characters, and valid characters are
 	// /[a-z][0-9]-/.
-	EndpointId string `json:"-" url:"endpoint_id,omitempty"`
+	EndpointId string `json:"-" url:"endpoint_id"`
 	// The Branch where this Endpoint will be created. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"-" url:"-"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *CreateEndpointRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateEndpointRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 type CreateProjectRequest struct {
@@ -207,17 +187,7 @@ type CreateProjectRequest struct {
 	//
 	// This value should be 4-63 characters, and valid characters are
 	// /[a-z][0-9]-/.
-	ProjectId string `json:"-" url:"project_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *CreateProjectRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s CreateProjectRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	ProjectId string `json:"-" url:"project_id"`
 }
 
 type CreateRoleRequest struct {
