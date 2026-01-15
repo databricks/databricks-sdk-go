@@ -1732,7 +1732,8 @@ func (s JobCompliance) MarshalJSON() ([]byte, error) {
 type JobDeployment struct {
 	// The kind of deployment that manages the job.
 	//
-	// * `BUNDLE`: The job is managed by Databricks Asset Bundle.
+	// * `BUNDLE`: The job is managed by Databricks Asset Bundle. *
+	// `SYSTEM_MANAGED`: The job is managed by Databricks and is read-only.
 	Kind JobDeploymentKind `json:"kind"`
 	// Path of the file that contains deployment metadata.
 	MetadataFilePath string `json:"metadata_file_path,omitempty"`
@@ -1748,11 +1749,15 @@ func (s JobDeployment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// * `BUNDLE`: The job is managed by Databricks Asset Bundle.
+// * `BUNDLE`: The job is managed by Databricks Asset Bundle. *
+// `SYSTEM_MANAGED`: The job is managed by Databricks and is read-only.
 type JobDeploymentKind string
 
 // The job is managed by Databricks Asset Bundle.
 const JobDeploymentKindBundle JobDeploymentKind = `BUNDLE`
+
+// The job is managed by <Databricks> and is read-only.
+const JobDeploymentKindSystemManaged JobDeploymentKind = `SYSTEM_MANAGED`
 
 // String representation for [fmt.Print]
 func (f *JobDeploymentKind) String() string {
@@ -1762,11 +1767,11 @@ func (f *JobDeploymentKind) String() string {
 // Set raw string value and validate it against allowed values
 func (f *JobDeploymentKind) Set(v string) error {
 	switch v {
-	case `BUNDLE`:
+	case `BUNDLE`, `SYSTEM_MANAGED`:
 		*f = JobDeploymentKind(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BUNDLE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BUNDLE", "SYSTEM_MANAGED"`, v)
 	}
 }
 
@@ -1776,6 +1781,7 @@ func (f *JobDeploymentKind) Set(v string) error {
 func (f *JobDeploymentKind) Values() []JobDeploymentKind {
 	return []JobDeploymentKind{
 		JobDeploymentKindBundle,
+		JobDeploymentKindSystemManaged,
 	}
 }
 

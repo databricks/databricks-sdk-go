@@ -36,6 +36,8 @@ type AccountSettingsV2Interface interface {
 	// via public APIs at account level. To determine the correct field to include
 	// in a patch request, refer to the type field of the setting returned in the
 	// :method:settingsv2/listaccountsettingsmetadata response.
+	//
+	// Note: Page refresh is required for changes to take effect in UI.
 	PatchPublicAccountSetting(ctx context.Context, request PatchPublicAccountSettingRequest) (*Setting, error)
 }
 
@@ -78,6 +80,8 @@ type WorkspaceSettingsV2Interface interface {
 	// available via public APIs at workspace level. To determine the correct field
 	// to include in a patch request, refer to the type field of the setting
 	// returned in the :method:settingsv2/listworkspacesettingsmetadata response.
+	//
+	// Note: Page refresh is required for changes to take effect in UI.
 	PatchPublicWorkspaceSetting(ctx context.Context, request PatchPublicWorkspaceSettingRequest) (*Setting, error)
 }
 
