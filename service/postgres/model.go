@@ -159,10 +159,20 @@ type CreateBranchRequest struct {
 	//
 	// This value should be 4-63 characters, and valid characters are
 	// /[a-z][0-9]-/.
-	BranchId string `json:"-" url:"branch_id"`
+	BranchId string `json:"-" url:"branch_id,omitempty"`
 	// The Project where this Branch will be created. Format:
 	// projects/{project_id}
 	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateBranchRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateBranchRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateEndpointRequest struct {
@@ -173,10 +183,20 @@ type CreateEndpointRequest struct {
 	//
 	// This value should be 4-63 characters, and valid characters are
 	// /[a-z][0-9]-/.
-	EndpointId string `json:"-" url:"endpoint_id"`
+	EndpointId string `json:"-" url:"endpoint_id,omitempty"`
 	// The Branch where this Endpoint will be created. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateEndpointRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateProjectRequest struct {
@@ -187,7 +207,17 @@ type CreateProjectRequest struct {
 	//
 	// This value should be 4-63 characters, and valid characters are
 	// /[a-z][0-9]-/.
-	ProjectId string `json:"-" url:"project_id"`
+	ProjectId string `json:"-" url:"project_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateProjectRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateProjectRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateRoleRequest struct {
@@ -296,6 +326,25 @@ func (s Endpoint) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Encapsulates various hostnames (r/w or r/o, pooled or not) for an endpoint.
+type EndpointHosts struct {
+	// The hostname to connect to this endpoint. For read-write endpoints, this
+	// is a read-write hostname which connects to the primary compute. For
+	// read-only endpoints, this is a read-only hostname which allows read-only
+	// operations.
+	Host string `json:"host,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EndpointHosts) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EndpointHosts) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type EndpointOperationMetadata struct {
 }
 
@@ -346,19 +395,12 @@ type EndpointStatus struct {
 	Disabled bool `json:"disabled,omitempty"`
 	// The endpoint type. A branch can only have one READ_WRITE endpoint.
 	EndpointType EndpointType `json:"endpoint_type,omitempty"`
-	// The hostname of the compute endpoint. This is the hostname specified when
-	// connecting to a database.
-	Host string `json:"host,omitempty"`
-	// A timestamp indicating when the compute endpoint was last active.
-	LastActiveTime *time.Time `json:"last_active_time,omitempty"`
+	// Contains host information for connecting to the endpoint.
+	Hosts *EndpointHosts `json:"hosts,omitempty"`
 
 	PendingState EndpointStatusState `json:"pending_state,omitempty"`
 
 	Settings *EndpointSettings `json:"settings,omitempty"`
-	// A timestamp indicating when the compute endpoint was last started.
-	StartTime *time.Time `json:"start_time,omitempty"`
-	// A timestamp indicating when the compute endpoint was last suspended.
-	SuspendTime *time.Time `json:"suspend_time,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
 	// suspended.
 	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
@@ -418,9 +460,9 @@ func (f *EndpointStatusState) Type() string {
 // The compute endpoint type. Either `read_write` or `read_only`.
 type EndpointType string
 
-const EndpointTypeReadOnly EndpointType = `READ_ONLY`
+const EndpointTypeEndpointTypeReadOnly EndpointType = `ENDPOINT_TYPE_READ_ONLY`
 
-const EndpointTypeReadWrite EndpointType = `READ_WRITE`
+const EndpointTypeEndpointTypeReadWrite EndpointType = `ENDPOINT_TYPE_READ_WRITE`
 
 // String representation for [fmt.Print]
 func (f *EndpointType) String() string {
@@ -430,11 +472,11 @@ func (f *EndpointType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointType) Set(v string) error {
 	switch v {
-	case `READ_ONLY`, `READ_WRITE`:
+	case `ENDPOINT_TYPE_READ_ONLY`, `ENDPOINT_TYPE_READ_WRITE`:
 		*f = EndpointType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "READ_ONLY", "READ_WRITE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ENDPOINT_TYPE_READ_ONLY", "ENDPOINT_TYPE_READ_WRITE"`, v)
 	}
 }
 
@@ -443,8 +485,8 @@ func (f *EndpointType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *EndpointType) Values() []EndpointType {
 	return []EndpointType{
-		EndpointTypeReadOnly,
-		EndpointTypeReadWrite,
+		EndpointTypeEndpointTypeReadOnly,
+		EndpointTypeEndpointTypeReadWrite,
 	}
 }
 
@@ -1033,8 +1075,6 @@ func (s ProjectSpec) MarshalJSON() ([]byte, error) {
 type ProjectStatus struct {
 	// The logical size limit for a branch.
 	BranchLogicalSizeLimitBytes int64 `json:"branch_logical_size_limit_bytes,omitempty"`
-	// The most recent time when any endpoint of this project was active.
-	ComputeLastActiveTime *time.Time `json:"compute_last_active_time,omitempty"`
 	// The effective default endpoint settings.
 	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
 	// The effective human-readable project name.

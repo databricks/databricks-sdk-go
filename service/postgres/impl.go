@@ -12,6 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just Postgres API methods
@@ -24,7 +25,7 @@ func (a *postgresImpl) CreateBranch(ctx context.Context, request CreateBranchReq
 	path := fmt.Sprintf("/api/2.0/postgres/%v/branches", request.Parent)
 	queryParams := make(map[string]any)
 
-	if request.BranchId != "" {
+	if request.BranchId != "" || slices.Contains(request.ForceSendFields, "BranchId") {
 		queryParams["branch_id"] = request.BranchId
 	}
 	headers := make(map[string]string)
@@ -39,7 +40,7 @@ func (a *postgresImpl) CreateEndpoint(ctx context.Context, request CreateEndpoin
 	path := fmt.Sprintf("/api/2.0/postgres/%v/endpoints", request.Parent)
 	queryParams := make(map[string]any)
 
-	if request.EndpointId != "" {
+	if request.EndpointId != "" || slices.Contains(request.ForceSendFields, "EndpointId") {
 		queryParams["endpoint_id"] = request.EndpointId
 	}
 	headers := make(map[string]string)
@@ -54,7 +55,7 @@ func (a *postgresImpl) CreateProject(ctx context.Context, request CreateProjectR
 	path := "/api/2.0/postgres/projects"
 	queryParams := make(map[string]any)
 
-	if request.ProjectId != "" {
+	if request.ProjectId != "" || slices.Contains(request.ForceSendFields, "ProjectId") {
 		queryParams["project_id"] = request.ProjectId
 	}
 	headers := make(map[string]string)
