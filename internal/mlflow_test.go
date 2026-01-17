@@ -158,8 +158,8 @@ func deleteModelVersion(t *testing.T, w *databricks.WorkspaceClient, ctx context
 		}
 		currentTime := time.Now()
 		elapsedTime := currentTime.Sub(startTime).Seconds()
-		if elapsedTime > 10 {
-			t.Fatalf("Timeout: Model version still has PENDING_REGISTERATION status after 10 seconds")
+		if elapsedTime > 30 {
+			t.Fatalf("Timeout: Model version still has PENDING_REGISTRATION status after 30 seconds")
 		}
 		time.Sleep(2 * time.Second)
 	}
