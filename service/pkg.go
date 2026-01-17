@@ -216,7 +216,7 @@
 //
 // - [compute.PolicyFamiliesAPI]: View available policy families.
 //
-// - [postgres.PostgresAPI]: The Postgres API provides access to a Postgres database via REST API or direct SQL.
+// - [postgres.PostgresAPI]: Use the Postgres API to create and manage Lakebase Autoscaling Postgres infrastructure, including projects, branches, compute endpoints, and roles.
 //
 // - [provisioning.PrivateAccessAPI]: These APIs manage private access settings for this account.
 //

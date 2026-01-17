@@ -9,6 +9,27 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+// Policy for auto full refresh.
+type AutoFullRefreshPolicy struct {
+	// (Required, Mutable) Whether to enable auto full refresh or not.
+	Enabled bool `json:"enabled"`
+	// (Optional, Mutable) Specify the minimum interval in hours between the
+	// timestamp at which a table was last full refreshed and the current
+	// timestamp for triggering auto full If unspecified and autoFullRefresh is
+	// enabled then by default min_interval_hours is 24 hours.
+	MinIntervalHours int `json:"min_interval_hours,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AutoFullRefreshPolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AutoFullRefreshPolicy) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ClonePipelineRequest struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
@@ -721,6 +742,9 @@ type IngestionPipelineDefinition struct {
 	// to communicate with the source. This is used with connectors for
 	// applications like Salesforce, Workday, and so on.
 	ConnectionName string `json:"connection_name,omitempty"`
+	// (Optional) A window that specifies a set of time ranges for snapshot
+	// queries in CDC.
+	FullRefreshWindow *OperationTimeWindow `json:"full_refresh_window,omitempty"`
 	// Immutable. If set to true, the pipeline will ingest tables from the UC
 	// foreign catalogs directly without the need to specify a UC connection or
 	// ingestion gateway. The `source_catalog` fields in objects of
@@ -1140,6 +1164,30 @@ type Notifications struct {
 	Alerts []string `json:"alerts,omitempty"`
 	// A list of email addresses notified when a configured alert is triggered.
 	EmailRecipients []string `json:"email_recipients,omitempty"`
+}
+
+// Proto representing a window
+type OperationTimeWindow struct {
+	// Days of week in which the window is allowed to happen If not specified
+	// all days of the week will be used.
+	DaysOfWeek []DayOfWeek `json:"days_of_week,omitempty"`
+	// An integer between 0 and 23 denoting the start hour for the window in the
+	// 24-hour day.
+	StartHour int `json:"start_hour"`
+	// Time zone id of window. See
+	// https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
+	// for details. If not specified, UTC will be used.
+	TimeZoneId string `json:"time_zone_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *OperationTimeWindow) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s OperationTimeWindow) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type Origin struct {
@@ -2217,6 +2265,13 @@ func (s TableSpec) MarshalJSON() ([]byte, error) {
 }
 
 type TableSpecificConfig struct {
+	// (Optional, Mutable) Policy for auto full refresh, if enabled pipeline
+	// will automatically try to fix issues by doing a full refresh on the table
+	// in the retry run. auto_full_refresh_policy in table configuration will
+	// override the above level auto_full_refresh_policy. For example, {
+	// "auto_full_refresh_policy": { "enabled": true, "min_interval_hours": 23,
+	// } } If unspecified, auto full refresh is disabled.
+	AutoFullRefreshPolicy *AutoFullRefreshPolicy `json:"auto_full_refresh_policy,omitempty"`
 	// A list of column names to be excluded for the ingestion. When not
 	// specified, include_columns fully controls what columns to be ingested.
 	// When specified, all other columns including future ones will be

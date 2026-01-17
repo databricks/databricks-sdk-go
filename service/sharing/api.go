@@ -376,14 +376,14 @@ type RecipientsInterface interface {
 	// owner of the recipient.
 	DeleteByName(ctx context.Context, name string) error
 
-	// Gets a share recipient from the metastore if:
-	//
-	// * the caller is the owner of the share recipient, or: * is a metastore admin
+	// Gets a share recipient from the metastore. The caller must be one of: * A
+	// user with **USE_RECIPIENT** privilege on the metastore * The owner of the
+	// share recipient * A metastore admin
 	Get(ctx context.Context, request GetRecipientRequest) (*RecipientInfo, error)
 
-	// Gets a share recipient from the metastore if:
-	//
-	// * the caller is the owner of the share recipient, or: * is a metastore admin
+	// Gets a share recipient from the metastore. The caller must be one of: * A
+	// user with **USE_RECIPIENT** privilege on the metastore * The owner of the
+	// share recipient * A metastore admin
 	GetByName(ctx context.Context, name string) (*RecipientInfo, error)
 
 	// Gets an array of all share recipients within the current metastore where:
@@ -407,12 +407,12 @@ type RecipientsInterface interface {
 	RotateToken(ctx context.Context, request RotateRecipientToken) (*RecipientInfo, error)
 
 	// Gets the share permissions for the specified Recipient. The caller must have
-	// the USE_RECIPIENT privilege on the metastore or be the owner of the
+	// the **USE_RECIPIENT** privilege on the metastore or be the owner of the
 	// Recipient.
 	SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error)
 
 	// Gets the share permissions for the specified Recipient. The caller must have
-	// the USE_RECIPIENT privilege on the metastore or be the owner of the
+	// the **USE_RECIPIENT** privilege on the metastore or be the owner of the
 	// Recipient.
 	SharePermissionsByName(ctx context.Context, name string) (*GetRecipientSharePermissionsResponse, error)
 
@@ -460,9 +460,9 @@ func (a *RecipientsAPI) DeleteByName(ctx context.Context, name string) error {
 	})
 }
 
-// Gets a share recipient from the metastore if:
-//
-// * the caller is the owner of the share recipient, or: * is a metastore admin
+// Gets a share recipient from the metastore. The caller must be one of: * A
+// user with **USE_RECIPIENT** privilege on the metastore * The owner of the
+// share recipient * A metastore admin
 func (a *RecipientsAPI) GetByName(ctx context.Context, name string) (*RecipientInfo, error) {
 	return a.recipientsImpl.Get(ctx, GetRecipientRequest{
 		Name: name,
@@ -470,7 +470,7 @@ func (a *RecipientsAPI) GetByName(ctx context.Context, name string) (*RecipientI
 }
 
 // Gets the share permissions for the specified Recipient. The caller must have
-// the USE_RECIPIENT privilege on the metastore or be the owner of the
+// the **USE_RECIPIENT** privilege on the metastore or be the owner of the
 // Recipient.
 func (a *RecipientsAPI) SharePermissionsByName(ctx context.Context, name string) (*GetRecipientSharePermissionsResponse, error) {
 	return a.recipientsImpl.SharePermissions(ctx, SharePermissionsRequest{

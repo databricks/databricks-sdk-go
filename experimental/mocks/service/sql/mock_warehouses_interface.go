@@ -161,6 +161,65 @@ func (_c *MockWarehousesInterface_CreateAndWait_Call) RunAndReturn(run func(cont
 	return _c
 }
 
+// CreateDefaultWarehouseOverride provides a mock function with given fields: ctx, request
+func (_m *MockWarehousesInterface) CreateDefaultWarehouseOverride(ctx context.Context, request sql.CreateDefaultWarehouseOverrideRequest) (*sql.DefaultWarehouseOverride, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateDefaultWarehouseOverride")
+	}
+
+	var r0 *sql.DefaultWarehouseOverride
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, sql.CreateDefaultWarehouseOverrideRequest) (*sql.DefaultWarehouseOverride, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, sql.CreateDefaultWarehouseOverrideRequest) *sql.DefaultWarehouseOverride); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*sql.DefaultWarehouseOverride)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, sql.CreateDefaultWarehouseOverrideRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWarehousesInterface_CreateDefaultWarehouseOverride_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateDefaultWarehouseOverride'
+type MockWarehousesInterface_CreateDefaultWarehouseOverride_Call struct {
+	*mock.Call
+}
+
+// CreateDefaultWarehouseOverride is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sql.CreateDefaultWarehouseOverrideRequest
+func (_e *MockWarehousesInterface_Expecter) CreateDefaultWarehouseOverride(ctx interface{}, request interface{}) *MockWarehousesInterface_CreateDefaultWarehouseOverride_Call {
+	return &MockWarehousesInterface_CreateDefaultWarehouseOverride_Call{Call: _e.mock.On("CreateDefaultWarehouseOverride", ctx, request)}
+}
+
+func (_c *MockWarehousesInterface_CreateDefaultWarehouseOverride_Call) Run(run func(ctx context.Context, request sql.CreateDefaultWarehouseOverrideRequest)) *MockWarehousesInterface_CreateDefaultWarehouseOverride_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(sql.CreateDefaultWarehouseOverrideRequest))
+	})
+	return _c
+}
+
+func (_c *MockWarehousesInterface_CreateDefaultWarehouseOverride_Call) Return(_a0 *sql.DefaultWarehouseOverride, _a1 error) *MockWarehousesInterface_CreateDefaultWarehouseOverride_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWarehousesInterface_CreateDefaultWarehouseOverride_Call) RunAndReturn(run func(context.Context, sql.CreateDefaultWarehouseOverrideRequest) (*sql.DefaultWarehouseOverride, error)) *MockWarehousesInterface_CreateDefaultWarehouseOverride_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Delete provides a mock function with given fields: ctx, request
 func (_m *MockWarehousesInterface) Delete(ctx context.Context, request sql.DeleteWarehouseRequest) error {
 	ret := _m.Called(ctx, request)
@@ -251,6 +310,53 @@ func (_c *MockWarehousesInterface_DeleteById_Call) Return(_a0 error) *MockWareho
 }
 
 func (_c *MockWarehousesInterface_DeleteById_Call) RunAndReturn(run func(context.Context, string) error) *MockWarehousesInterface_DeleteById_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteDefaultWarehouseOverride provides a mock function with given fields: ctx, request
+func (_m *MockWarehousesInterface) DeleteDefaultWarehouseOverride(ctx context.Context, request sql.DeleteDefaultWarehouseOverrideRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteDefaultWarehouseOverride")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, sql.DeleteDefaultWarehouseOverrideRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockWarehousesInterface_DeleteDefaultWarehouseOverride_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDefaultWarehouseOverride'
+type MockWarehousesInterface_DeleteDefaultWarehouseOverride_Call struct {
+	*mock.Call
+}
+
+// DeleteDefaultWarehouseOverride is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sql.DeleteDefaultWarehouseOverrideRequest
+func (_e *MockWarehousesInterface_Expecter) DeleteDefaultWarehouseOverride(ctx interface{}, request interface{}) *MockWarehousesInterface_DeleteDefaultWarehouseOverride_Call {
+	return &MockWarehousesInterface_DeleteDefaultWarehouseOverride_Call{Call: _e.mock.On("DeleteDefaultWarehouseOverride", ctx, request)}
+}
+
+func (_c *MockWarehousesInterface_DeleteDefaultWarehouseOverride_Call) Run(run func(ctx context.Context, request sql.DeleteDefaultWarehouseOverrideRequest)) *MockWarehousesInterface_DeleteDefaultWarehouseOverride_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(sql.DeleteDefaultWarehouseOverrideRequest))
+	})
+	return _c
+}
+
+func (_c *MockWarehousesInterface_DeleteDefaultWarehouseOverride_Call) Return(_a0 error) *MockWarehousesInterface_DeleteDefaultWarehouseOverride_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockWarehousesInterface_DeleteDefaultWarehouseOverride_Call) RunAndReturn(run func(context.Context, sql.DeleteDefaultWarehouseOverrideRequest) error) *MockWarehousesInterface_DeleteDefaultWarehouseOverride_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -620,6 +726,65 @@ func (_c *MockWarehousesInterface_GetByName_Call) Return(_a0 *sql.EndpointInfo, 
 }
 
 func (_c *MockWarehousesInterface_GetByName_Call) RunAndReturn(run func(context.Context, string) (*sql.EndpointInfo, error)) *MockWarehousesInterface_GetByName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetDefaultWarehouseOverride provides a mock function with given fields: ctx, request
+func (_m *MockWarehousesInterface) GetDefaultWarehouseOverride(ctx context.Context, request sql.GetDefaultWarehouseOverrideRequest) (*sql.DefaultWarehouseOverride, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetDefaultWarehouseOverride")
+	}
+
+	var r0 *sql.DefaultWarehouseOverride
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, sql.GetDefaultWarehouseOverrideRequest) (*sql.DefaultWarehouseOverride, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, sql.GetDefaultWarehouseOverrideRequest) *sql.DefaultWarehouseOverride); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*sql.DefaultWarehouseOverride)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, sql.GetDefaultWarehouseOverrideRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWarehousesInterface_GetDefaultWarehouseOverride_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDefaultWarehouseOverride'
+type MockWarehousesInterface_GetDefaultWarehouseOverride_Call struct {
+	*mock.Call
+}
+
+// GetDefaultWarehouseOverride is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sql.GetDefaultWarehouseOverrideRequest
+func (_e *MockWarehousesInterface_Expecter) GetDefaultWarehouseOverride(ctx interface{}, request interface{}) *MockWarehousesInterface_GetDefaultWarehouseOverride_Call {
+	return &MockWarehousesInterface_GetDefaultWarehouseOverride_Call{Call: _e.mock.On("GetDefaultWarehouseOverride", ctx, request)}
+}
+
+func (_c *MockWarehousesInterface_GetDefaultWarehouseOverride_Call) Run(run func(ctx context.Context, request sql.GetDefaultWarehouseOverrideRequest)) *MockWarehousesInterface_GetDefaultWarehouseOverride_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(sql.GetDefaultWarehouseOverrideRequest))
+	})
+	return _c
+}
+
+func (_c *MockWarehousesInterface_GetDefaultWarehouseOverride_Call) Return(_a0 *sql.DefaultWarehouseOverride, _a1 error) *MockWarehousesInterface_GetDefaultWarehouseOverride_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWarehousesInterface_GetDefaultWarehouseOverride_Call) RunAndReturn(run func(context.Context, sql.GetDefaultWarehouseOverrideRequest) (*sql.DefaultWarehouseOverride, error)) *MockWarehousesInterface_GetDefaultWarehouseOverride_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1026,6 +1191,114 @@ func (_c *MockWarehousesInterface_ListAll_Call) RunAndReturn(run func(context.Co
 	return _c
 }
 
+// ListDefaultWarehouseOverrides provides a mock function with given fields: ctx, request
+func (_m *MockWarehousesInterface) ListDefaultWarehouseOverrides(ctx context.Context, request sql.ListDefaultWarehouseOverridesRequest) listing.Iterator[sql.DefaultWarehouseOverride] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDefaultWarehouseOverrides")
+	}
+
+	var r0 listing.Iterator[sql.DefaultWarehouseOverride]
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListDefaultWarehouseOverridesRequest) listing.Iterator[sql.DefaultWarehouseOverride]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[sql.DefaultWarehouseOverride])
+		}
+	}
+
+	return r0
+}
+
+// MockWarehousesInterface_ListDefaultWarehouseOverrides_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDefaultWarehouseOverrides'
+type MockWarehousesInterface_ListDefaultWarehouseOverrides_Call struct {
+	*mock.Call
+}
+
+// ListDefaultWarehouseOverrides is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sql.ListDefaultWarehouseOverridesRequest
+func (_e *MockWarehousesInterface_Expecter) ListDefaultWarehouseOverrides(ctx interface{}, request interface{}) *MockWarehousesInterface_ListDefaultWarehouseOverrides_Call {
+	return &MockWarehousesInterface_ListDefaultWarehouseOverrides_Call{Call: _e.mock.On("ListDefaultWarehouseOverrides", ctx, request)}
+}
+
+func (_c *MockWarehousesInterface_ListDefaultWarehouseOverrides_Call) Run(run func(ctx context.Context, request sql.ListDefaultWarehouseOverridesRequest)) *MockWarehousesInterface_ListDefaultWarehouseOverrides_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(sql.ListDefaultWarehouseOverridesRequest))
+	})
+	return _c
+}
+
+func (_c *MockWarehousesInterface_ListDefaultWarehouseOverrides_Call) Return(_a0 listing.Iterator[sql.DefaultWarehouseOverride]) *MockWarehousesInterface_ListDefaultWarehouseOverrides_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockWarehousesInterface_ListDefaultWarehouseOverrides_Call) RunAndReturn(run func(context.Context, sql.ListDefaultWarehouseOverridesRequest) listing.Iterator[sql.DefaultWarehouseOverride]) *MockWarehousesInterface_ListDefaultWarehouseOverrides_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListDefaultWarehouseOverridesAll provides a mock function with given fields: ctx, request
+func (_m *MockWarehousesInterface) ListDefaultWarehouseOverridesAll(ctx context.Context, request sql.ListDefaultWarehouseOverridesRequest) ([]sql.DefaultWarehouseOverride, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDefaultWarehouseOverridesAll")
+	}
+
+	var r0 []sql.DefaultWarehouseOverride
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListDefaultWarehouseOverridesRequest) ([]sql.DefaultWarehouseOverride, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListDefaultWarehouseOverridesRequest) []sql.DefaultWarehouseOverride); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]sql.DefaultWarehouseOverride)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, sql.ListDefaultWarehouseOverridesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWarehousesInterface_ListDefaultWarehouseOverridesAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDefaultWarehouseOverridesAll'
+type MockWarehousesInterface_ListDefaultWarehouseOverridesAll_Call struct {
+	*mock.Call
+}
+
+// ListDefaultWarehouseOverridesAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sql.ListDefaultWarehouseOverridesRequest
+func (_e *MockWarehousesInterface_Expecter) ListDefaultWarehouseOverridesAll(ctx interface{}, request interface{}) *MockWarehousesInterface_ListDefaultWarehouseOverridesAll_Call {
+	return &MockWarehousesInterface_ListDefaultWarehouseOverridesAll_Call{Call: _e.mock.On("ListDefaultWarehouseOverridesAll", ctx, request)}
+}
+
+func (_c *MockWarehousesInterface_ListDefaultWarehouseOverridesAll_Call) Run(run func(ctx context.Context, request sql.ListDefaultWarehouseOverridesRequest)) *MockWarehousesInterface_ListDefaultWarehouseOverridesAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(sql.ListDefaultWarehouseOverridesRequest))
+	})
+	return _c
+}
+
+func (_c *MockWarehousesInterface_ListDefaultWarehouseOverridesAll_Call) Return(_a0 []sql.DefaultWarehouseOverride, _a1 error) *MockWarehousesInterface_ListDefaultWarehouseOverridesAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWarehousesInterface_ListDefaultWarehouseOverridesAll_Call) RunAndReturn(run func(context.Context, sql.ListDefaultWarehouseOverridesRequest) ([]sql.DefaultWarehouseOverride, error)) *MockWarehousesInterface_ListDefaultWarehouseOverridesAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SetPermissions provides a mock function with given fields: ctx, request
 func (_m *MockWarehousesInterface) SetPermissions(ctx context.Context, request sql.WarehousePermissionsRequest) (*sql.WarehousePermissions, error) {
 	ret := _m.Called(ctx, request)
@@ -1394,6 +1667,65 @@ func (_c *MockWarehousesInterface_StopAndWait_Call) Return(_a0 *sql.GetWarehouse
 }
 
 func (_c *MockWarehousesInterface_StopAndWait_Call) RunAndReturn(run func(context.Context, sql.StopRequest, ...retries.Option[sql.GetWarehouseResponse]) (*sql.GetWarehouseResponse, error)) *MockWarehousesInterface_StopAndWait_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateDefaultWarehouseOverride provides a mock function with given fields: ctx, request
+func (_m *MockWarehousesInterface) UpdateDefaultWarehouseOverride(ctx context.Context, request sql.UpdateDefaultWarehouseOverrideRequest) (*sql.DefaultWarehouseOverride, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateDefaultWarehouseOverride")
+	}
+
+	var r0 *sql.DefaultWarehouseOverride
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, sql.UpdateDefaultWarehouseOverrideRequest) (*sql.DefaultWarehouseOverride, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, sql.UpdateDefaultWarehouseOverrideRequest) *sql.DefaultWarehouseOverride); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*sql.DefaultWarehouseOverride)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, sql.UpdateDefaultWarehouseOverrideRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockWarehousesInterface_UpdateDefaultWarehouseOverride_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateDefaultWarehouseOverride'
+type MockWarehousesInterface_UpdateDefaultWarehouseOverride_Call struct {
+	*mock.Call
+}
+
+// UpdateDefaultWarehouseOverride is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sql.UpdateDefaultWarehouseOverrideRequest
+func (_e *MockWarehousesInterface_Expecter) UpdateDefaultWarehouseOverride(ctx interface{}, request interface{}) *MockWarehousesInterface_UpdateDefaultWarehouseOverride_Call {
+	return &MockWarehousesInterface_UpdateDefaultWarehouseOverride_Call{Call: _e.mock.On("UpdateDefaultWarehouseOverride", ctx, request)}
+}
+
+func (_c *MockWarehousesInterface_UpdateDefaultWarehouseOverride_Call) Run(run func(ctx context.Context, request sql.UpdateDefaultWarehouseOverrideRequest)) *MockWarehousesInterface_UpdateDefaultWarehouseOverride_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(sql.UpdateDefaultWarehouseOverrideRequest))
+	})
+	return _c
+}
+
+func (_c *MockWarehousesInterface_UpdateDefaultWarehouseOverride_Call) Return(_a0 *sql.DefaultWarehouseOverride, _a1 error) *MockWarehousesInterface_UpdateDefaultWarehouseOverride_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockWarehousesInterface_UpdateDefaultWarehouseOverride_Call) RunAndReturn(run func(context.Context, sql.UpdateDefaultWarehouseOverrideRequest) (*sql.DefaultWarehouseOverride, error)) *MockWarehousesInterface_UpdateDefaultWarehouseOverride_Call {
 	_c.Call.Return(run)
 	return _c
 }

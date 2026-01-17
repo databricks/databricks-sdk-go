@@ -4,12 +4,15 @@ package sql
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just Alerts API methods
@@ -842,8 +845,32 @@ func (a *warehousesImpl) Create(ctx context.Context, request CreateWarehouseRequ
 	return &createWarehouseResponse, err
 }
 
+func (a *warehousesImpl) CreateDefaultWarehouseOverride(ctx context.Context, request CreateDefaultWarehouseOverrideRequest) (*DefaultWarehouseOverride, error) {
+	var defaultWarehouseOverride DefaultWarehouseOverride
+	path := "/api/warehouses/v1/default-warehouse-overrides"
+	queryParams := make(map[string]any)
+
+	if request.DefaultWarehouseOverrideId != "" {
+		queryParams["default_warehouse_override_id"] = request.DefaultWarehouseOverrideId
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.DefaultWarehouseOverride, &defaultWarehouseOverride)
+	return &defaultWarehouseOverride, err
+}
+
 func (a *warehousesImpl) Delete(ctx context.Context, request DeleteWarehouseRequest) error {
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
+	return err
+}
+
+func (a *warehousesImpl) DeleteDefaultWarehouseOverride(ctx context.Context, request DeleteDefaultWarehouseOverrideRequest) error {
+	path := fmt.Sprintf("/api/warehouses/v1/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -869,6 +896,16 @@ func (a *warehousesImpl) Get(ctx context.Context, request GetWarehouseRequest) (
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getWarehouseResponse)
 	return &getWarehouseResponse, err
+}
+
+func (a *warehousesImpl) GetDefaultWarehouseOverride(ctx context.Context, request GetDefaultWarehouseOverrideRequest) (*DefaultWarehouseOverride, error) {
+	var defaultWarehouseOverride DefaultWarehouseOverride
+	path := fmt.Sprintf("/api/warehouses/v1/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &defaultWarehouseOverride)
+	return &defaultWarehouseOverride, err
 }
 
 func (a *warehousesImpl) GetPermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error) {
@@ -942,6 +979,49 @@ func (a *warehousesImpl) internalList(ctx context.Context, request ListWarehouse
 	return &listWarehousesResponse, err
 }
 
+// Lists all default warehouse overrides in the workspace. Only workspace
+// administrators can list all overrides.
+func (a *warehousesImpl) ListDefaultWarehouseOverrides(ctx context.Context, request ListDefaultWarehouseOverridesRequest) listing.Iterator[DefaultWarehouseOverride] {
+
+	getNextPage := func(ctx context.Context, req ListDefaultWarehouseOverridesRequest) (*ListDefaultWarehouseOverridesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListDefaultWarehouseOverrides(ctx, req)
+	}
+	getItems := func(resp *ListDefaultWarehouseOverridesResponse) []DefaultWarehouseOverride {
+		return resp.DefaultWarehouseOverrides
+	}
+	getNextReq := func(resp *ListDefaultWarehouseOverridesResponse) *ListDefaultWarehouseOverridesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists all default warehouse overrides in the workspace. Only workspace
+// administrators can list all overrides.
+func (a *warehousesImpl) ListDefaultWarehouseOverridesAll(ctx context.Context, request ListDefaultWarehouseOverridesRequest) ([]DefaultWarehouseOverride, error) {
+	iterator := a.ListDefaultWarehouseOverrides(ctx, request)
+	return listing.ToSlice[DefaultWarehouseOverride](ctx, iterator)
+}
+
+func (a *warehousesImpl) internalListDefaultWarehouseOverrides(ctx context.Context, request ListDefaultWarehouseOverridesRequest) (*ListDefaultWarehouseOverridesResponse, error) {
+	var listDefaultWarehouseOverridesResponse ListDefaultWarehouseOverridesResponse
+	path := "/api/warehouses/v1/default-warehouse-overrides"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDefaultWarehouseOverridesResponse)
+	return &listDefaultWarehouseOverridesResponse, err
+}
+
 func (a *warehousesImpl) SetPermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
 	var warehousePermissions WarehousePermissions
 	path := fmt.Sprintf("/api/2.0/permissions/warehouses/%v", request.WarehouseId)
@@ -979,6 +1059,28 @@ func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
 	return err
+}
+
+func (a *warehousesImpl) UpdateDefaultWarehouseOverride(ctx context.Context, request UpdateDefaultWarehouseOverrideRequest) (*DefaultWarehouseOverride, error) {
+	var defaultWarehouseOverride DefaultWarehouseOverride
+	path := fmt.Sprintf("/api/warehouses/v1/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	if request.AllowMissing != false || slices.Contains(request.ForceSendFields, "AllowMissing") {
+		queryParams["allow_missing"] = request.AllowMissing
+	}
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DefaultWarehouseOverride, &defaultWarehouseOverride)
+	return &defaultWarehouseOverride, err
 }
 
 func (a *warehousesImpl) UpdatePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
