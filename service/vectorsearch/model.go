@@ -344,6 +344,8 @@ func (s EndpointStatus) MarshalJSON() ([]byte, error) {
 // Current state of the endpoint
 type EndpointStatusState string
 
+const EndpointStatusStateDeleted EndpointStatusState = `DELETED`
+
 const EndpointStatusStateOffline EndpointStatusState = `OFFLINE`
 
 const EndpointStatusStateOnline EndpointStatusState = `ONLINE`
@@ -362,11 +364,11 @@ func (f *EndpointStatusState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointStatusState) Set(v string) error {
 	switch v {
-	case `OFFLINE`, `ONLINE`, `PROVISIONING`, `RED_STATE`, `YELLOW_STATE`:
+	case `DELETED`, `OFFLINE`, `ONLINE`, `PROVISIONING`, `RED_STATE`, `YELLOW_STATE`:
 		*f = EndpointStatusState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "OFFLINE", "ONLINE", "PROVISIONING", "RED_STATE", "YELLOW_STATE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DELETED", "OFFLINE", "ONLINE", "PROVISIONING", "RED_STATE", "YELLOW_STATE"`, v)
 	}
 }
 
@@ -375,6 +377,7 @@ func (f *EndpointStatusState) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *EndpointStatusState) Values() []EndpointStatusState {
 	return []EndpointStatusState{
+		EndpointStatusStateDeleted,
 		EndpointStatusStateOffline,
 		EndpointStatusStateOnline,
 		EndpointStatusStateProvisioning,

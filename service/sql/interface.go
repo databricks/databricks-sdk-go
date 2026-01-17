@@ -650,14 +650,28 @@ type WarehousesService interface {
 	// Creates a new SQL warehouse.
 	Create(ctx context.Context, request CreateWarehouseRequest) (*CreateWarehouseResponse, error)
 
+	// Creates a new default warehouse override for a user. Users can create
+	// their own override. Admins can create overrides for any user.
+	CreateDefaultWarehouseOverride(ctx context.Context, request CreateDefaultWarehouseOverrideRequest) (*DefaultWarehouseOverride, error)
+
 	// Deletes a SQL warehouse.
 	Delete(ctx context.Context, request DeleteWarehouseRequest) error
+
+	// Deletes the default warehouse override for a user. Users can delete their
+	// own override. Admins can delete overrides for any user. After deletion,
+	// the workspace default warehouse will be used.
+	DeleteDefaultWarehouseOverride(ctx context.Context, request DeleteDefaultWarehouseOverrideRequest) error
 
 	// Updates the configuration for a SQL warehouse.
 	Edit(ctx context.Context, request EditWarehouseRequest) error
 
 	// Gets the information for a single SQL warehouse.
 	Get(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error)
+
+	// Returns the default warehouse override for a user. Users can fetch their
+	// own override. Admins can fetch overrides for any user. If no override
+	// exists, the UI will fallback to the workspace default warehouse.
+	GetDefaultWarehouseOverride(ctx context.Context, request GetDefaultWarehouseOverrideRequest) (*DefaultWarehouseOverride, error)
 
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetWarehousePermissionLevelsRequest) (*GetWarehousePermissionLevelsResponse, error)
@@ -673,6 +687,10 @@ type WarehousesService interface {
 	// Lists all SQL warehouses that a user has access to.
 	List(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error)
 
+	// Lists all default warehouse overrides in the workspace. Only workspace
+	// administrators can list all overrides.
+	ListDefaultWarehouseOverrides(ctx context.Context, request ListDefaultWarehouseOverridesRequest) (*ListDefaultWarehouseOverridesResponse, error)
+
 	// Sets permissions on an object, replacing existing permissions if they
 	// exist. Deletes all direct permissions if none are specified. Objects can
 	// inherit permissions from their root object.
@@ -687,6 +705,10 @@ type WarehousesService interface {
 
 	// Stops a SQL warehouse.
 	Stop(ctx context.Context, request StopRequest) error
+
+	// Updates an existing default warehouse override for a user. Users can
+	// update their own override. Admins can update overrides for any user.
+	UpdateDefaultWarehouseOverride(ctx context.Context, request UpdateDefaultWarehouseOverrideRequest) (*DefaultWarehouseOverride, error)
 
 	// Updates the permissions on a SQL warehouse. SQL warehouses can inherit
 	// permissions from their root object.

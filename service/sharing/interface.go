@@ -176,10 +176,9 @@ type RecipientsService interface {
 	// the owner of the recipient.
 	Delete(ctx context.Context, request DeleteRecipientRequest) error
 
-	// Gets a share recipient from the metastore if:
-	//
-	// * the caller is the owner of the share recipient, or: * is a metastore
-	// admin
+	// Gets a share recipient from the metastore. The caller must be one of: * A
+	// user with **USE_RECIPIENT** privilege on the metastore * The owner of the
+	// share recipient * A metastore admin
 	Get(ctx context.Context, request GetRecipientRequest) (*RecipientInfo, error)
 
 	// Gets an array of all share recipients within the current metastore where:
@@ -194,8 +193,8 @@ type RecipientsService interface {
 	RotateToken(ctx context.Context, request RotateRecipientToken) (*RecipientInfo, error)
 
 	// Gets the share permissions for the specified Recipient. The caller must
-	// have the USE_RECIPIENT privilege on the metastore or be the owner of the
-	// Recipient.
+	// have the **USE_RECIPIENT** privilege on the metastore or be the owner of
+	// the Recipient.
 	SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetRecipientSharePermissionsResponse, error)
 
 	// Updates an existing recipient in the metastore. The caller must be a

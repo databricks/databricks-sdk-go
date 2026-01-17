@@ -15,16 +15,22 @@ import (
 type Branch struct {
 	// A timestamp indicating when the branch was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// The resource name of the branch. Format:
-	// projects/{project_id}/branches/{branch_id}
+	// The resource name of the branch. This field is output-only and
+	// constructed by the system. Format:
+	// `projects/{project_id}/branches/{branch_id}`
 	Name string `json:"name,omitempty"`
-	// The project containing this branch. Format: projects/{project_id}
+	// The project containing this branch (API resource hierarchy). Format:
+	// projects/{project_id}
+	//
+	// Note: This field indicates where the branch exists in the resource
+	// hierarchy. For point-in-time branching from another branch, see
+	// `spec.source_branch`.
 	Parent string `json:"parent,omitempty"`
-	// The desired state of a Branch.
+	// The spec contains the branch configuration.
 	Spec *BranchSpec `json:"spec,omitempty"`
 	// The current status of a Branch.
 	Status *BranchStatus `json:"status,omitempty"`
-	// System generated unique ID for the branch.
+	// System-generated unique ID for the branch.
 	Uid string `json:"uid,omitempty"`
 	// A timestamp indicating when the branch was last updated.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
@@ -44,11 +50,16 @@ type BranchOperationMetadata struct {
 }
 
 type BranchSpec struct {
-	// Whether the branch is the project's default branch.
-	Default bool `json:"default,omitempty"`
-	// Whether the branch is protected.
+	// Absolute expiration timestamp. When set, the branch will expire at this
+	// time.
+	ExpireTime *time.Time `json:"expire_time,omitempty"`
+	// When set to true, protects the branch from deletion and reset. Associated
+	// compute endpoints and the project cannot be deleted while the branch is
+	// protected.
 	IsProtected bool `json:"is_protected,omitempty"`
-	// The name of the source branch from which this branch was created. Format:
+	// The name of the source branch from which this branch was created (data
+	// lineage for point-in-time recovery). If not specified, defaults to the
+	// project's default branch. Format:
 	// projects/{project_id}/branches/{branch_id}
 	SourceBranch string `json:"source_branch,omitempty"`
 	// The Log Sequence Number (LSN) on the source branch from which this branch
@@ -57,6 +68,9 @@ type BranchSpec struct {
 	// The point in time on the source branch from which this branch was
 	// created.
 	SourceBranchTime *time.Time `json:"source_branch_time,omitempty"`
+	// Relative time-to-live duration. When set, the branch will expire at
+	// creation_time + ttl. Set to -1 second to explicitly disable expiration.
+	Ttl *duration.Duration `json:"ttl,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -75,6 +89,8 @@ type BranchStatus struct {
 	CurrentState BranchStatusState `json:"current_state,omitempty"`
 	// Whether the branch is the project's default branch.
 	Default bool `json:"default,omitempty"`
+	// Absolute expiration time for the branch. Empty if expiration is disabled.
+	ExpireTime *time.Time `json:"expire_time,omitempty"`
 	// Whether the branch is protected.
 	IsProtected bool `json:"is_protected,omitempty"`
 	// The logical size of the branch.
@@ -154,11 +170,13 @@ func (f *BranchStatusState) Type() string {
 type CreateBranchRequest struct {
 	// The Branch to create.
 	Branch Branch `json:"branch"`
-	// The ID to use for the Branch, which will become the final component of
-	// the branch's resource name.
-	//
-	// This value should be 4-63 characters, and valid characters are
-	// /[a-z][0-9]-/.
+	// The ID to use for the Branch. This becomes the final component of the
+	// branch's resource name. This value should be 4-63 characters. Valid
+	// characters are lowercase letters, numbers, and hyphens, as defined by RFC
+	// 1123. Examples: - With custom ID: `staging` → name becomes
+	// `projects/{project_id}/branches/staging` - Without custom ID: system
+	// generates slug → name becomes
+	// `projects/{project_id}/branches/br-example-name-x1y2z3a4`
 	BranchId string `json:"-" url:"branch_id"`
 	// The Project where this Branch will be created. Format:
 	// projects/{project_id}
@@ -168,11 +186,13 @@ type CreateBranchRequest struct {
 type CreateEndpointRequest struct {
 	// The Endpoint to create.
 	Endpoint Endpoint `json:"endpoint"`
-	// The ID to use for the Endpoint, which will become the final component of
-	// the endpoint's resource name.
-	//
-	// This value should be 4-63 characters, and valid characters are
-	// /[a-z][0-9]-/.
+	// The ID to use for the Endpoint. This becomes the final component of the
+	// endpoint's resource name. This value should be 4-63 characters. Valid
+	// characters are lowercase letters, numbers, and hyphens, as defined by RFC
+	// 1123. Examples: - With custom ID: `primary` → name becomes
+	// `projects/{project_id}/branches/{branch_id}/endpoints/primary` - Without
+	// custom ID: system generates slug → name becomes
+	// `projects/{project_id}/branches/{branch_id}/endpoints/ep-example-name-x1y2z3a4`
 	EndpointId string `json:"-" url:"endpoint_id"`
 	// The Branch where this Endpoint will be created. Format:
 	// projects/{project_id}/branches/{branch_id}
@@ -182,11 +202,12 @@ type CreateEndpointRequest struct {
 type CreateProjectRequest struct {
 	// The Project to create.
 	Project Project `json:"project"`
-	// The ID to use for the Project, which will become the final component of
-	// the project's resource name.
-	//
-	// This value should be 4-63 characters, and valid characters are
-	// /[a-z][0-9]-/.
+	// The ID to use for the Project. This becomes the final component of the
+	// project's resource name. This value should be 4-63 characters. Valid
+	// characters are lowercase letters, numbers, and hyphens, as defined by RFC
+	// 1123. Examples: - With custom ID: `production` → name becomes
+	// `projects/production` - Without custom ID: system generates UUID → name
+	// becomes `projects/a7f89b2c-3d4e-5f6g-7h8i-9j0k1l2m3n4o`
 	ProjectId string `json:"-" url:"project_id"`
 }
 
@@ -197,10 +218,10 @@ type CreateRoleRequest struct {
 	// The desired specification of a Role.
 	Role Role `json:"role"`
 	// The ID to use for the Role, which will become the final component of the
-	// branch's resource name. This ID becomes the role in postgres.
+	// role's resource name. This ID becomes the role in Postgres.
 	//
-	// This value should be 4-63 characters, and only use characters available
-	// in DNS names, as defined by RFC-1123
+	// This value should be 4-63 characters, and valid characters are lowercase
+	// letters, numbers, and hyphens, as defined by RFC 1123.
 	RoleId string `json:"-" url:"role_id"`
 }
 
@@ -244,7 +265,7 @@ type DeleteProjectRequest struct {
 
 type DeleteRoleRequest struct {
 	// The resource name of the postgres role. Format:
-	// projects/{project_id}/branch/{branch_id}/roles/{role_id}
+	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
 	Name string `json:"-" url:"-"`
 	// Reassign objects. If this is set, all objects owned by the role are
 	// reassigned to the role specified in this parameter.
@@ -270,17 +291,19 @@ func (s DeleteRoleRequest) MarshalJSON() ([]byte, error) {
 type Endpoint struct {
 	// A timestamp indicating when the compute endpoint was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// The resource name of the endpoint. Format:
-	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+	// The resource name of the endpoint. This field is output-only and
+	// constructed by the system. Format:
+	// `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
 	Name string `json:"name,omitempty"`
-	// The branch containing this endpoint. Format:
+	// The branch containing this endpoint (API resource hierarchy). Format:
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"parent,omitempty"`
-	// The desired state of an Endpoint.
+	// The spec contains the compute endpoint configuration, including
+	// autoscaling limits, suspend timeout, and disabled state.
 	Spec *EndpointSpec `json:"spec,omitempty"`
-	// The current status of an Endpoint.
+	// Current operational status of the compute endpoint.
 	Status *EndpointStatus `json:"status,omitempty"`
-	// System generated unique ID for the endpoint.
+	// System-generated unique ID for the endpoint.
 	Uid string `json:"uid,omitempty"`
 	// A timestamp indicating when the compute endpoint was last updated.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
@@ -293,6 +316,25 @@ func (s *Endpoint) UnmarshalJSON(b []byte) error {
 }
 
 func (s Endpoint) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Encapsulates various hostnames (r/w or r/o, pooled or not) for an endpoint.
+type EndpointHosts struct {
+	// The hostname to connect to this endpoint. For read-write endpoints, this
+	// is a read-write hostname which connects to the primary compute. For
+	// read-only endpoints, this is a read-only hostname which allows read-only
+	// operations.
+	Host string `json:"host,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EndpointHosts) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EndpointHosts) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -346,19 +388,12 @@ type EndpointStatus struct {
 	Disabled bool `json:"disabled,omitempty"`
 	// The endpoint type. A branch can only have one READ_WRITE endpoint.
 	EndpointType EndpointType `json:"endpoint_type,omitempty"`
-	// The hostname of the compute endpoint. This is the hostname specified when
-	// connecting to a database.
-	Host string `json:"host,omitempty"`
-	// A timestamp indicating when the compute endpoint was last active.
-	LastActiveTime *time.Time `json:"last_active_time,omitempty"`
+	// Contains host information for connecting to the endpoint.
+	Hosts *EndpointHosts `json:"hosts,omitempty"`
 
 	PendingState EndpointStatusState `json:"pending_state,omitempty"`
 
 	Settings *EndpointSettings `json:"settings,omitempty"`
-	// A timestamp indicating when the compute endpoint was last started.
-	StartTime *time.Time `json:"start_time,omitempty"`
-	// A timestamp indicating when the compute endpoint was last suspended.
-	SuspendTime *time.Time `json:"suspend_time,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
 	// suspended.
 	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
@@ -418,9 +453,9 @@ func (f *EndpointStatusState) Type() string {
 // The compute endpoint type. Either `read_write` or `read_only`.
 type EndpointType string
 
-const EndpointTypeReadOnly EndpointType = `READ_ONLY`
+const EndpointTypeEndpointTypeReadOnly EndpointType = `ENDPOINT_TYPE_READ_ONLY`
 
-const EndpointTypeReadWrite EndpointType = `READ_WRITE`
+const EndpointTypeEndpointTypeReadWrite EndpointType = `ENDPOINT_TYPE_READ_WRITE`
 
 // String representation for [fmt.Print]
 func (f *EndpointType) String() string {
@@ -430,11 +465,11 @@ func (f *EndpointType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EndpointType) Set(v string) error {
 	switch v {
-	case `READ_ONLY`, `READ_WRITE`:
+	case `ENDPOINT_TYPE_READ_ONLY`, `ENDPOINT_TYPE_READ_WRITE`:
 		*f = EndpointType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "READ_ONLY", "READ_WRITE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ENDPOINT_TYPE_READ_ONLY", "ENDPOINT_TYPE_READ_WRITE"`, v)
 	}
 }
 
@@ -443,8 +478,8 @@ func (f *EndpointType) Set(v string) error {
 // There is no guarantee on the order of the values in the slice.
 func (f *EndpointType) Values() []EndpointType {
 	return []EndpointType{
-		EndpointTypeReadOnly,
-		EndpointTypeReadWrite,
+		EndpointTypeEndpointTypeReadOnly,
+		EndpointTypeEndpointTypeReadWrite,
 	}
 }
 
@@ -732,14 +767,14 @@ func (f *ErrorCode) Type() string {
 }
 
 type GetBranchRequest struct {
-	// The name of the Branch to retrieve. Format:
-	// projects/{project_id}/branches/{branch_id}
+	// The resource name of the branch to retrieve. Format:
+	// `projects/{project_id}/branches/{branch_id}`
 	Name string `json:"-" url:"-"`
 }
 
 type GetEndpointRequest struct {
-	// The name of the Endpoint to retrieve. Format:
-	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+	// The resource name of the endpoint to retrieve. Format:
+	// `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
 	Name string `json:"-" url:"-"`
 }
 
@@ -749,7 +784,8 @@ type GetOperationRequest struct {
 }
 
 type GetProjectRequest struct {
-	// The name of the Project to retrieve. Format: projects/{project_id}
+	// The resource name of the project to retrieve. Format:
+	// `projects/{project_id}`
 	Name string `json:"-" url:"-"`
 }
 
@@ -762,8 +798,8 @@ type GetRoleRequest struct {
 type ListBranchesRequest struct {
 	// Upper bound for items returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Pagination token to go to the next page of Branches. Requests first page
-	// if absent.
+	// Page token from a previous response. If not provided, returns the first
+	// page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The Project that owns this collection of branches. Format:
 	// projects/{project_id}
@@ -781,9 +817,9 @@ func (s ListBranchesRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListBranchesResponse struct {
-	// List of branches.
+	// List of database branches in the project.
 	Branches []Branch `json:"branches,omitempty"`
-	// Pagination token to request the next page of branches.
+	// Token to request the next page of database branches.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -800,8 +836,8 @@ func (s ListBranchesResponse) MarshalJSON() ([]byte, error) {
 type ListEndpointsRequest struct {
 	// Upper bound for items returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Pagination token to go to the next page of Endpoints. Requests first page
-	// if absent.
+	// Page token from a previous response. If not provided, returns the first
+	// page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The Branch that owns this collection of endpoints. Format:
 	// projects/{project_id}/branches/{branch_id}
@@ -819,9 +855,9 @@ func (s ListEndpointsRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListEndpointsResponse struct {
-	// List of endpoints.
+	// List of compute endpoints in the branch.
 	Endpoints []Endpoint `json:"endpoints,omitempty"`
-	// Pagination token to request the next page of endpoints.
+	// Token to request the next page of compute endpoints.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -838,8 +874,8 @@ func (s ListEndpointsResponse) MarshalJSON() ([]byte, error) {
 type ListProjectsRequest struct {
 	// Upper bound for items returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Pagination token to go to the next page of Projects. Requests first page
-	// if absent.
+	// Page token from a previous response. If not provided, returns the first
+	// page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -854,9 +890,10 @@ func (s ListProjectsRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListProjectsResponse struct {
-	// Pagination token to request the next page of projects.
+	// Token to request the next page of database projects.
 	NextPageToken string `json:"next_page_token,omitempty"`
-	// List of projects.
+	// List of all database projects in the workspace that the user has
+	// permission to access.
 	Projects []Project `json:"projects,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -873,8 +910,8 @@ func (s ListProjectsResponse) MarshalJSON() ([]byte, error) {
 type ListRolesRequest struct {
 	// Upper bound for items returned.
 	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Pagination token to go to the next page of Roles. Requests first page if
-	// absent.
+	// Page token from a previous response. If not provided, returns the first
+	// page.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The Branch that owns this collection of roles. Format:
 	// projects/{project_id}/branches/{branch_id}
@@ -892,9 +929,9 @@ func (s ListRolesRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListRolesResponse struct {
-	// Pagination token to request the next page of roles.
+	// Token to request the next page of Postgres roles.
 	NextPageToken string `json:"next_page_token,omitempty"`
-	// List of roles.
+	// List of Postgres roles in the branch.
 	Roles []Role `json:"roles,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -942,13 +979,16 @@ func (s Operation) MarshalJSON() ([]byte, error) {
 type Project struct {
 	// A timestamp indicating when the project was created.
 	CreateTime *time.Time `json:"create_time,omitempty"`
-	// The resource name of the project. Format: projects/{project_id}
+	// The resource name of the project. This field is output-only and
+	// constructed by the system. Format: `projects/{project_id}`
 	Name string `json:"name,omitempty"`
-	// The desired state of a Project.
+	// The spec contains the project configuration, including display_name,
+	// pg_version (Postgres version), history_retention_duration, and
+	// default_endpoint_settings.
 	Spec *ProjectSpec `json:"spec,omitempty"`
 	// The current status of a Project.
 	Status *ProjectStatus `json:"status,omitempty"`
-	// System generated unique ID for the project.
+	// System-generated unique ID for the project.
 	Uid string `json:"uid,omitempty"`
 	// A timestamp indicating when the project was last updated.
 	UpdateTime *time.Time `json:"update_time,omitempty"`
@@ -990,23 +1030,6 @@ func (s ProjectDefaultEndpointSettings) MarshalJSON() ([]byte, error) {
 type ProjectOperationMetadata struct {
 }
 
-type ProjectSettings struct {
-	// Sets wal_level=logical for all compute endpoints in this project. All
-	// active endpoints will be suspended. Once enabled, logical replication
-	// cannot be disabled.
-	EnableLogicalReplication bool `json:"enable_logical_replication,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *ProjectSettings) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ProjectSettings) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type ProjectSpec struct {
 	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
 	// Human-readable project name.
@@ -1016,8 +1039,6 @@ type ProjectSpec struct {
 	HistoryRetentionDuration *duration.Duration `json:"history_retention_duration,omitempty"`
 	// The major Postgres version number.
 	PgVersion int `json:"pg_version,omitempty"`
-
-	Settings *ProjectSettings `json:"settings,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1033,8 +1054,6 @@ func (s ProjectSpec) MarshalJSON() ([]byte, error) {
 type ProjectStatus struct {
 	// The logical size limit for a branch.
 	BranchLogicalSizeLimitBytes int64 `json:"branch_logical_size_limit_bytes,omitempty"`
-	// The most recent time when any endpoint of this project was active.
-	ComputeLastActiveTime *time.Time `json:"compute_last_active_time,omitempty"`
 	// The effective default endpoint settings.
 	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
 	// The effective human-readable project name.
@@ -1046,8 +1065,6 @@ type ProjectStatus struct {
 	Owner string `json:"owner,omitempty"`
 	// The effective major Postgres version number.
 	PgVersion int `json:"pg_version,omitempty"`
-	// The effective project settings.
-	Settings *ProjectSettings `json:"settings,omitempty"`
 	// The current space occupied by the project in storage.
 	SyntheticStorageSizeBytes int64 `json:"synthetic_storage_size_bytes,omitempty"`
 
@@ -1066,14 +1083,16 @@ func (s ProjectStatus) MarshalJSON() ([]byte, error) {
 type Role struct {
 	CreateTime *time.Time `json:"create_time,omitempty"`
 	// The resource name of the role. Format:
-	// projects/{project_id}/branch/{branch_id}/roles/{role_id}
+	// projects/{project_id}/branches/{branch_id}/roles/{role_id}
 	Name string `json:"name,omitempty"`
 	// The Branch where this Role exists. Format:
 	// projects/{project_id}/branches/{branch_id}
 	Parent string `json:"parent,omitempty"`
-	// The desired state of the Role.
+	// The spec contains the role configuration, including identity type,
+	// authentication method, and role attributes.
 	Spec *RoleRoleSpec `json:"spec,omitempty"`
-	// The observed state of the Role.
+	// Current status of the role, including its identity type, authentication
+	// method, and role attributes.
 	Status *RoleRoleStatus `json:"status,omitempty"`
 
 	UpdateTime *time.Time `json:"update_time,omitempty"`
@@ -1185,8 +1204,8 @@ type RoleRoleSpec struct {
 	// NOTE: this is ignored for the Databricks identity type GROUP, and
 	// NO_LOGIN is implicitly assumed instead for the GROUP identity type.
 	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
-	// The type of the role. When specifying a managed-identity, the chosen
-	// role_id must be a valid:
+	// The type of role. When specifying a managed-identity, the chosen role_id
+	// must be a valid:
 	//
 	// * application ID for SERVICE_PRINCIPAL * user email for USER * group name
 	// for GROUP
@@ -1205,8 +1224,9 @@ type UpdateBranchRequest struct {
 	// The branch's `name` field is used to identify the branch to update.
 	// Format: projects/{project_id}/branches/{branch_id}
 	Branch Branch `json:"branch"`
-	// The resource name of the branch. Format:
-	// projects/{project_id}/branches/{branch_id}
+	// The resource name of the branch. This field is output-only and
+	// constructed by the system. Format:
+	// `projects/{project_id}/branches/{branch_id}`
 	Name string `json:"-" url:"-"`
 	// The list of fields to update. If unspecified, all fields will be updated
 	// when possible.
@@ -1220,8 +1240,9 @@ type UpdateEndpointRequest struct {
 	// Format:
 	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 	Endpoint Endpoint `json:"endpoint"`
-	// The resource name of the endpoint. Format:
-	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+	// The resource name of the endpoint. This field is output-only and
+	// constructed by the system. Format:
+	// `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
 	Name string `json:"-" url:"-"`
 	// The list of fields to update. If unspecified, all fields will be updated
 	// when possible.
@@ -1229,7 +1250,8 @@ type UpdateEndpointRequest struct {
 }
 
 type UpdateProjectRequest struct {
-	// The resource name of the project. Format: projects/{project_id}
+	// The resource name of the project. This field is output-only and
+	// constructed by the system. Format: `projects/{project_id}`
 	Name string `json:"-" url:"-"`
 	// The Project to update.
 	//

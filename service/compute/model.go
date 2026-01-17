@@ -464,6 +464,8 @@ type ClusterAttributes struct {
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
 	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
+	// Flexible node type configuration for the driver node.
+	DriverNodeTypeFlexibility *NodeTypeFlexibility `json:"driver_node_type_flexibility,omitempty"`
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
@@ -555,6 +557,8 @@ type ClusterAttributes struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
+	// Flexible node type configuration for worker nodes.
+	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
@@ -674,6 +678,8 @@ type ClusterDetails struct {
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
 	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
+	// Flexible node type configuration for the driver node.
+	DriverNodeTypeFlexibility *NodeTypeFlexibility `json:"driver_node_type_flexibility,omitempty"`
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
@@ -808,6 +814,8 @@ type ClusterDetails struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
+	// Flexible node type configuration for worker nodes.
+	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
@@ -1278,6 +1286,8 @@ type ClusterSpec struct {
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
 	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
+	// Flexible node type configuration for the driver node.
+	DriverNodeTypeFlexibility *NodeTypeFlexibility `json:"driver_node_type_flexibility,omitempty"`
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
@@ -1380,6 +1390,8 @@ type ClusterSpec struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
+	// Flexible node type configuration for worker nodes.
+	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
@@ -1611,6 +1623,8 @@ type CreateCluster struct {
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
 	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
+	// Flexible node type configuration for the driver node.
+	DriverNodeTypeFlexibility *NodeTypeFlexibility `json:"driver_node_type_flexibility,omitempty"`
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
@@ -1713,6 +1727,8 @@ type CreateCluster struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
+	// Flexible node type configuration for worker nodes.
+	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
@@ -1800,6 +1816,8 @@ type CreateInstancePool struct {
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
+	// Flexible node type configuration for the pool.
+	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -2413,6 +2431,8 @@ type EditCluster struct {
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
 	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
+	// Flexible node type configuration for the driver node.
+	DriverNodeTypeFlexibility *NodeTypeFlexibility `json:"driver_node_type_flexibility,omitempty"`
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
@@ -2515,6 +2535,8 @@ type EditCluster struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
+	// Flexible node type configuration for worker nodes.
+	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
@@ -2555,6 +2577,8 @@ type EditInstancePool struct {
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
+	// Flexible node type configuration for the pool.
+	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -3279,6 +3303,8 @@ type GetInstancePool struct {
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
+	// Flexible node type configuration for the pool.
+	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -3746,6 +3772,8 @@ type InstancePoolAndStats struct {
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
+	// Flexible node type configuration for the pool.
+	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -4907,6 +4935,14 @@ func (s *NodeType) UnmarshalJSON(b []byte) error {
 
 func (s NodeType) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Configuration for flexible node types, allowing fallback to alternate node
+// types during cluster launch and upscale.
+type NodeTypeFlexibility struct {
+	// A list of node type IDs to use as fallbacks when the primary node type is
+	// unavailable.
+	AlternateNodeTypeIds []string `json:"alternate_node_type_ids,omitempty"`
 }
 
 // Error message of a failed pending instances
@@ -6137,6 +6173,8 @@ type UpdateClusterResource struct {
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
 	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
+	// Flexible node type configuration for the driver node.
+	DriverNodeTypeFlexibility *NodeTypeFlexibility `json:"driver_node_type_flexibility,omitempty"`
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
@@ -6239,6 +6277,8 @@ type UpdateClusterResource struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
+	// Flexible node type configuration for worker nodes.
+	WorkerNodeTypeFlexibility *NodeTypeFlexibility `json:"worker_node_type_flexibility,omitempty"`
 
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 

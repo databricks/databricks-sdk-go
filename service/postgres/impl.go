@@ -169,7 +169,7 @@ func (a *postgresImpl) GetRole(ctx context.Context, request GetRoleRequest) (*Ro
 	return &role, err
 }
 
-// List Branches.
+// Returns a paginated list of database branches in the project.
 func (a *postgresImpl) ListBranches(ctx context.Context, request ListBranchesRequest) listing.Iterator[Branch] {
 
 	getNextPage := func(ctx context.Context, req ListBranchesRequest) (*ListBranchesResponse, error) {
@@ -194,7 +194,7 @@ func (a *postgresImpl) ListBranches(ctx context.Context, request ListBranchesReq
 	return iterator
 }
 
-// List Branches.
+// Returns a paginated list of database branches in the project.
 func (a *postgresImpl) ListBranchesAll(ctx context.Context, request ListBranchesRequest) ([]Branch, error) {
 	iterator := a.ListBranches(ctx, request)
 	return listing.ToSlice[Branch](ctx, iterator)
@@ -210,7 +210,7 @@ func (a *postgresImpl) internalListBranches(ctx context.Context, request ListBra
 	return &listBranchesResponse, err
 }
 
-// List Endpoints.
+// Returns a paginated list of compute endpoints in the branch.
 func (a *postgresImpl) ListEndpoints(ctx context.Context, request ListEndpointsRequest) listing.Iterator[Endpoint] {
 
 	getNextPage := func(ctx context.Context, req ListEndpointsRequest) (*ListEndpointsResponse, error) {
@@ -235,7 +235,7 @@ func (a *postgresImpl) ListEndpoints(ctx context.Context, request ListEndpointsR
 	return iterator
 }
 
-// List Endpoints.
+// Returns a paginated list of compute endpoints in the branch.
 func (a *postgresImpl) ListEndpointsAll(ctx context.Context, request ListEndpointsRequest) ([]Endpoint, error) {
 	iterator := a.ListEndpoints(ctx, request)
 	return listing.ToSlice[Endpoint](ctx, iterator)
@@ -251,7 +251,8 @@ func (a *postgresImpl) internalListEndpoints(ctx context.Context, request ListEn
 	return &listEndpointsResponse, err
 }
 
-// List Projects.
+// Returns a paginated list of database projects in the workspace that the user
+// has permission to access.
 func (a *postgresImpl) ListProjects(ctx context.Context, request ListProjectsRequest) listing.Iterator[Project] {
 
 	getNextPage := func(ctx context.Context, req ListProjectsRequest) (*ListProjectsResponse, error) {
@@ -276,7 +277,8 @@ func (a *postgresImpl) ListProjects(ctx context.Context, request ListProjectsReq
 	return iterator
 }
 
-// List Projects.
+// Returns a paginated list of database projects in the workspace that the user
+// has permission to access.
 func (a *postgresImpl) ListProjectsAll(ctx context.Context, request ListProjectsRequest) ([]Project, error) {
 	iterator := a.ListProjects(ctx, request)
 	return listing.ToSlice[Project](ctx, iterator)
@@ -292,7 +294,7 @@ func (a *postgresImpl) internalListProjects(ctx context.Context, request ListPro
 	return &listProjectsResponse, err
 }
 
-// List Roles.
+// Returns a paginated list of Postgres roles in the branch.
 func (a *postgresImpl) ListRoles(ctx context.Context, request ListRolesRequest) listing.Iterator[Role] {
 
 	getNextPage := func(ctx context.Context, req ListRolesRequest) (*ListRolesResponse, error) {
@@ -317,7 +319,7 @@ func (a *postgresImpl) ListRoles(ctx context.Context, request ListRolesRequest) 
 	return iterator
 }
 
-// List Roles.
+// Returns a paginated list of Postgres roles in the branch.
 func (a *postgresImpl) ListRolesAll(ctx context.Context, request ListRolesRequest) ([]Role, error) {
 	iterator := a.ListRoles(ctx, request)
 	return listing.ToSlice[Role](ctx, iterator)

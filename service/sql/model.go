@@ -5,6 +5,7 @@ package sql
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/fieldmask"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -1084,6 +1085,15 @@ type CreateAlertV2Request struct {
 	Alert AlertV2 `json:"alert"`
 }
 
+type CreateDefaultWarehouseOverrideRequest struct {
+	// Required. The default warehouse override to create.
+	DefaultWarehouseOverride DefaultWarehouseOverride `json:"default_warehouse_override"`
+	// Required. The ID to use for the override, which will become the final
+	// component of the override's resource name. Can be a numeric user ID or
+	// the literal string "me" for the current user.
+	DefaultWarehouseOverrideId string `json:"-" url:"default_warehouse_override_id"`
+}
+
 type CreateQueryRequest struct {
 	// If true, automatically resolve query display name conflicts. Otherwise,
 	// fail the request if the query's display name conflicts with an existing
@@ -1711,6 +1721,71 @@ func (f *DateValueDynamicDate) Type() string {
 	return "DateValueDynamicDate"
 }
 
+// Represents a per-user default warehouse override configuration. This resource
+// allows users or administrators to customize how a user's default warehouse is
+// selected for SQL operations. If no override exists for a user, the workspace
+// default warehouse will be used.
+type DefaultWarehouseOverride struct {
+	// The ID component of the resource name (user ID).
+	DefaultWarehouseOverrideId string `json:"default_warehouse_override_id,omitempty"`
+	// The resource name of the default warehouse override. Format:
+	// default-warehouse-overrides/{default_warehouse_override_id}
+	Name string `json:"name,omitempty"`
+	// The type of override behavior.
+	Type DefaultWarehouseOverrideType `json:"type"`
+	// The specific warehouse ID when type is CUSTOM. Not set for LAST_SELECTED
+	// type.
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DefaultWarehouseOverride) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DefaultWarehouseOverride) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Type of default warehouse override behavior.
+type DefaultWarehouseOverrideType string
+
+const DefaultWarehouseOverrideTypeCustom DefaultWarehouseOverrideType = `CUSTOM`
+
+const DefaultWarehouseOverrideTypeLastSelected DefaultWarehouseOverrideType = `LAST_SELECTED`
+
+// String representation for [fmt.Print]
+func (f *DefaultWarehouseOverrideType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DefaultWarehouseOverrideType) Set(v string) error {
+	switch v {
+	case `CUSTOM`, `LAST_SELECTED`:
+		*f = DefaultWarehouseOverrideType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CUSTOM", "LAST_SELECTED"`, v)
+	}
+}
+
+// Values returns all possible values for DefaultWarehouseOverrideType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DefaultWarehouseOverrideType) Values() []DefaultWarehouseOverrideType {
+	return []DefaultWarehouseOverrideType{
+		DefaultWarehouseOverrideTypeCustom,
+		DefaultWarehouseOverrideTypeLastSelected,
+	}
+}
+
+// Type always returns DefaultWarehouseOverrideType to satisfy [pflag.Value] interface
+func (f *DefaultWarehouseOverrideType) Type() string {
+	return "DefaultWarehouseOverrideType"
+}
+
 type DeleteAlertsLegacyRequest struct {
 	AlertId string `json:"-" url:"-"`
 }
@@ -1722,6 +1797,14 @@ type DeleteDashboardRequest struct {
 type DeleteDashboardWidgetRequest struct {
 	// Widget ID returned by :method:dashboardwidgets/create
 	Id string `json:"-" url:"-"`
+}
+
+type DeleteDefaultWarehouseOverrideRequest struct {
+	// Required. The resource name of the default warehouse override to delete.
+	// Format: default-warehouse-overrides/{default_warehouse_override_id} The
+	// default_warehouse_override_id can be a numeric user ID or the literal
+	// string "me" for the current user.
+	Name string `json:"-" url:"-"`
 }
 
 type DeleteQueriesLegacyRequest struct {
@@ -2489,6 +2572,15 @@ type GetDbsqlPermissionRequest struct {
 	ObjectType ObjectTypePlural `json:"-" url:"-"`
 }
 
+type GetDefaultWarehouseOverrideRequest struct {
+	// Required. The resource name of the default warehouse override to
+	// retrieve. Format:
+	// default-warehouse-overrides/{default_warehouse_override_id} The
+	// default_warehouse_override_id can be a numeric user ID or the literal
+	// string "me" for the current user.
+	Name string `json:"-" url:"-"`
+}
+
 type GetQueriesLegacyRequest struct {
 	QueryId string `json:"-" url:"-"`
 }
@@ -3128,6 +3220,49 @@ func (s *ListDashboardsRequest) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListDashboardsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDefaultWarehouseOverridesRequest struct {
+	// The maximum number of overrides to return. The service may return fewer
+	// than this value. If unspecified, at most 100 overrides will be returned.
+	// The maximum value is 1000; values above 1000 will be coerced to 1000.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous `ListDefaultWarehouseOverrides`
+	// call. Provide this to retrieve the subsequent page.
+	//
+	// When paginating, all other parameters provided to
+	// `ListDefaultWarehouseOverrides` must match the call that provided the
+	// page token.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDefaultWarehouseOverridesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDefaultWarehouseOverridesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response message for ListDefaultWarehouseOverrides.
+type ListDefaultWarehouseOverridesResponse struct {
+	// The default warehouse overrides in the workspace.
+	DefaultWarehouseOverrides []DefaultWarehouseOverride `json:"default_warehouse_overrides,omitempty"`
+	// A token, which can be sent as `page_token` to retrieve the next page. If
+	// this field is omitted, there are no subsequent pages.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDefaultWarehouseOverridesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDefaultWarehouseOverridesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -5907,6 +6042,36 @@ type UpdateAlertV2Request struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	UpdateMask string `json:"-" url:"update_mask"`
+}
+
+type UpdateDefaultWarehouseOverrideRequest struct {
+	// If set to true, and the override is not found, a new override will be
+	// created. In this situation, `update_mask` is ignored and all fields are
+	// applied. Defaults to false.
+	AllowMissing bool `json:"-" url:"allow_missing,omitempty"`
+	// Required. The default warehouse override to update. The name field must
+	// be set in the format:
+	// default-warehouse-overrides/{default_warehouse_override_id} The
+	// default_warehouse_override_id can be a numeric user ID or the literal
+	// string "me" for the current user.
+	DefaultWarehouseOverride DefaultWarehouseOverride `json:"default_warehouse_override"`
+	// The resource name of the default warehouse override. Format:
+	// default-warehouse-overrides/{default_warehouse_override_id}
+	Name string `json:"-" url:"-"`
+	// Required. Field mask specifying which fields to update. Only the fields
+	// specified in the mask will be updated. Use "*" to update all fields. When
+	// allow_missing is true, this field is ignored and all fields are applied.
+	UpdateMask fieldmask.FieldMask `json:"-" url:"update_mask"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateDefaultWarehouseOverrideRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateDefaultWarehouseOverrideRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateQueryRequest struct {
