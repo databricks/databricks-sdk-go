@@ -57,6 +57,10 @@ type BranchSpec struct {
 	// compute endpoints and the project cannot be deleted while the branch is
 	// protected.
 	IsProtected bool `json:"is_protected,omitempty"`
+	// Explicitly disable expiration. When set to true, the branch will not
+	// expire. If set to false, the request is invalid; provide either ttl or
+	// expire_time instead.
+	NoExpiry bool `json:"no_expiry,omitempty"`
 	// The name of the source branch from which this branch was created (data
 	// lineage for point-in-time recovery). If not specified, defaults to the
 	// project's default branch. Format:
@@ -69,7 +73,7 @@ type BranchSpec struct {
 	// created.
 	SourceBranchTime *time.Time `json:"source_branch_time,omitempty"`
 	// Relative time-to-live duration. When set, the branch will expire at
-	// creation_time + ttl. Set to -1 second to explicitly disable expiration.
+	// creation_time + ttl.
 	Ttl *duration.Duration `json:"ttl,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
