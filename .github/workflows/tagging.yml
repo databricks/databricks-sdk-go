@@ -3,9 +3,10 @@ name: tagging
 
 on:
   workflow_dispatch:
-  # Enable for automatic tagging
-  #schedule:
-  #  - cron: '0 0 * * TUE'
+  # Runs at 8:00 UTC on Tuesday, Wednesday, and Thursday.
+  # To disable this flow, simply comment the schedule section.
+  schedule:
+    - cron: '0 8 * * TUE,WED,THU'
 
 # Ensure that only a single instance of the workflow is running at a time.
 concurrency:
