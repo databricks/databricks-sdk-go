@@ -27,6 +27,16 @@ func (a *accountSettingsV2Impl) GetPublicAccountSetting(ctx context.Context, req
 	return &setting, err
 }
 
+func (a *accountSettingsV2Impl) GetPublicAccountUserPreference(ctx context.Context, request GetPublicAccountUserPreferenceRequest) (*UserPreference, error) {
+	var userPreference UserPreference
+	path := fmt.Sprintf("/api/2.1/accounts/%v/users/%v/settings/%v", a.client.ConfiguredAccountID(), request.UserId, request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &userPreference)
+	return &userPreference, err
+}
+
 // List valid setting keys and metadata. These settings are available to be
 // referenced via GET :method:settingsv2/getpublicaccountsetting and PATCH
 // :method:settingsv2/patchpublicaccountsetting APIs
@@ -72,6 +82,55 @@ func (a *accountSettingsV2Impl) internalListAccountSettingsMetadata(ctx context.
 	return &listAccountSettingsMetadataResponse, err
 }
 
+// List valid user preferences and their metadata for a specific user. User
+// preferences are personal settings that allow individual customization without
+// affecting other users. These settings are available to be referenced via GET
+// :method:settingsv2/getpublicaccountuserpreference and PATCH
+// :method:settingsv2/patchpublicaccountuserpreference APIs
+func (a *accountSettingsV2Impl) ListAccountUserPreferencesMetadata(ctx context.Context, request ListAccountUserPreferencesMetadataRequest) listing.Iterator[SettingsMetadata] {
+
+	getNextPage := func(ctx context.Context, req ListAccountUserPreferencesMetadataRequest) (*ListAccountUserPreferencesMetadataResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListAccountUserPreferencesMetadata(ctx, req)
+	}
+	getItems := func(resp *ListAccountUserPreferencesMetadataResponse) []SettingsMetadata {
+		return resp.SettingsMetadata
+	}
+	getNextReq := func(resp *ListAccountUserPreferencesMetadataResponse) *ListAccountUserPreferencesMetadataRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List valid user preferences and their metadata for a specific user. User
+// preferences are personal settings that allow individual customization without
+// affecting other users. These settings are available to be referenced via GET
+// :method:settingsv2/getpublicaccountuserpreference and PATCH
+// :method:settingsv2/patchpublicaccountuserpreference APIs
+func (a *accountSettingsV2Impl) ListAccountUserPreferencesMetadataAll(ctx context.Context, request ListAccountUserPreferencesMetadataRequest) ([]SettingsMetadata, error) {
+	iterator := a.ListAccountUserPreferencesMetadata(ctx, request)
+	return listing.ToSlice[SettingsMetadata](ctx, iterator)
+}
+
+func (a *accountSettingsV2Impl) internalListAccountUserPreferencesMetadata(ctx context.Context, request ListAccountUserPreferencesMetadataRequest) (*ListAccountUserPreferencesMetadataResponse, error) {
+	var listAccountUserPreferencesMetadataResponse ListAccountUserPreferencesMetadataResponse
+	path := fmt.Sprintf("/api/2.1/accounts/%v/users/%v/settings-metadata", a.client.ConfiguredAccountID(), request.UserId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAccountUserPreferencesMetadataResponse)
+	return &listAccountUserPreferencesMetadataResponse, err
+}
+
 func (a *accountSettingsV2Impl) PatchPublicAccountSetting(ctx context.Context, request PatchPublicAccountSettingRequest) (*Setting, error) {
 	var setting Setting
 	path := fmt.Sprintf("/api/2.1/accounts/%v/settings/%v", a.client.ConfiguredAccountID(), request.Name)
@@ -81,6 +140,17 @@ func (a *accountSettingsV2Impl) PatchPublicAccountSetting(ctx context.Context, r
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Setting, &setting)
 	return &setting, err
+}
+
+func (a *accountSettingsV2Impl) PatchPublicAccountUserPreference(ctx context.Context, request PatchPublicAccountUserPreferenceRequest) (*UserPreference, error) {
+	var userPreference UserPreference
+	path := fmt.Sprintf("/api/2.1/accounts/%v/users/%v/settings/%v", a.client.ConfiguredAccountID(), request.UserId, request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Setting, &userPreference)
+	return &userPreference, err
 }
 
 // unexported type that holds implementations of just WorkspaceSettingsV2 API methods

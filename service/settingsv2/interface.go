@@ -16,10 +16,23 @@ type AccountSettingsV2Service interface {
 	// available via public APIs at account level.
 	GetPublicAccountSetting(ctx context.Context, request GetPublicAccountSettingRequest) (*Setting, error)
 
+	// Get a user preference for a specific user. User preferences are personal
+	// settings that allow individual customization without affecting other
+	// users. See :method:settingsv2/listaccountuserpreferencesmetadata for list
+	// of user preferences available via public APIs.
+	GetPublicAccountUserPreference(ctx context.Context, request GetPublicAccountUserPreferenceRequest) (*UserPreference, error)
+
 	// List valid setting keys and metadata. These settings are available to be
 	// referenced via GET :method:settingsv2/getpublicaccountsetting and PATCH
 	// :method:settingsv2/patchpublicaccountsetting APIs
 	ListAccountSettingsMetadata(ctx context.Context, request ListAccountSettingsMetadataRequest) (*ListAccountSettingsMetadataResponse, error)
+
+	// List valid user preferences and their metadata for a specific user. User
+	// preferences are personal settings that allow individual customization
+	// without affecting other users. These settings are available to be
+	// referenced via GET :method:settingsv2/getpublicaccountuserpreference and
+	// PATCH :method:settingsv2/patchpublicaccountuserpreference APIs
+	ListAccountUserPreferencesMetadata(ctx context.Context, request ListAccountUserPreferencesMetadataRequest) (*ListAccountUserPreferencesMetadataResponse, error)
 
 	// Patch a setting value at account level. See
 	// :method:settingsv2/listaccountsettingsmetadata for list of setting
@@ -30,6 +43,14 @@ type AccountSettingsV2Service interface {
 	//
 	// Note: Page refresh is required for changes to take effect in UI.
 	PatchPublicAccountSetting(ctx context.Context, request PatchPublicAccountSettingRequest) (*Setting, error)
+
+	// Update a user preference for a specific user. User preferences are
+	// personal settings that allow individual customization without affecting
+	// other users. See :method:settingsv2/listaccountuserpreferencesmetadata
+	// for list of user preferences available via public APIs.
+	//
+	// Note: Page refresh is required for changes to take effect in UI.
+	PatchPublicAccountUserPreference(ctx context.Context, request PatchPublicAccountUserPreferenceRequest) (*UserPreference, error)
 }
 
 // APIs to manage workspace level settings

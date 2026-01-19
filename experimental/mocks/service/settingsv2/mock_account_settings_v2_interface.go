@@ -83,6 +83,65 @@ func (_c *MockAccountSettingsV2Interface_GetPublicAccountSetting_Call) RunAndRet
 	return _c
 }
 
+// GetPublicAccountUserPreference provides a mock function with given fields: ctx, request
+func (_m *MockAccountSettingsV2Interface) GetPublicAccountUserPreference(ctx context.Context, request settingsv2.GetPublicAccountUserPreferenceRequest) (*settingsv2.UserPreference, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPublicAccountUserPreference")
+	}
+
+	var r0 *settingsv2.UserPreference
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settingsv2.GetPublicAccountUserPreferenceRequest) (*settingsv2.UserPreference, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settingsv2.GetPublicAccountUserPreferenceRequest) *settingsv2.UserPreference); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settingsv2.UserPreference)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settingsv2.GetPublicAccountUserPreferenceRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountSettingsV2Interface_GetPublicAccountUserPreference_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPublicAccountUserPreference'
+type MockAccountSettingsV2Interface_GetPublicAccountUserPreference_Call struct {
+	*mock.Call
+}
+
+// GetPublicAccountUserPreference is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settingsv2.GetPublicAccountUserPreferenceRequest
+func (_e *MockAccountSettingsV2Interface_Expecter) GetPublicAccountUserPreference(ctx interface{}, request interface{}) *MockAccountSettingsV2Interface_GetPublicAccountUserPreference_Call {
+	return &MockAccountSettingsV2Interface_GetPublicAccountUserPreference_Call{Call: _e.mock.On("GetPublicAccountUserPreference", ctx, request)}
+}
+
+func (_c *MockAccountSettingsV2Interface_GetPublicAccountUserPreference_Call) Run(run func(ctx context.Context, request settingsv2.GetPublicAccountUserPreferenceRequest)) *MockAccountSettingsV2Interface_GetPublicAccountUserPreference_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settingsv2.GetPublicAccountUserPreferenceRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountSettingsV2Interface_GetPublicAccountUserPreference_Call) Return(_a0 *settingsv2.UserPreference, _a1 error) *MockAccountSettingsV2Interface_GetPublicAccountUserPreference_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountSettingsV2Interface_GetPublicAccountUserPreference_Call) RunAndReturn(run func(context.Context, settingsv2.GetPublicAccountUserPreferenceRequest) (*settingsv2.UserPreference, error)) *MockAccountSettingsV2Interface_GetPublicAccountUserPreference_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListAccountSettingsMetadata provides a mock function with given fields: ctx, request
 func (_m *MockAccountSettingsV2Interface) ListAccountSettingsMetadata(ctx context.Context, request settingsv2.ListAccountSettingsMetadataRequest) listing.Iterator[settingsv2.SettingsMetadata] {
 	ret := _m.Called(ctx, request)
@@ -191,6 +250,114 @@ func (_c *MockAccountSettingsV2Interface_ListAccountSettingsMetadataAll_Call) Ru
 	return _c
 }
 
+// ListAccountUserPreferencesMetadata provides a mock function with given fields: ctx, request
+func (_m *MockAccountSettingsV2Interface) ListAccountUserPreferencesMetadata(ctx context.Context, request settingsv2.ListAccountUserPreferencesMetadataRequest) listing.Iterator[settingsv2.SettingsMetadata] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListAccountUserPreferencesMetadata")
+	}
+
+	var r0 listing.Iterator[settingsv2.SettingsMetadata]
+	if rf, ok := ret.Get(0).(func(context.Context, settingsv2.ListAccountUserPreferencesMetadataRequest) listing.Iterator[settingsv2.SettingsMetadata]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[settingsv2.SettingsMetadata])
+		}
+	}
+
+	return r0
+}
+
+// MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadata_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListAccountUserPreferencesMetadata'
+type MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadata_Call struct {
+	*mock.Call
+}
+
+// ListAccountUserPreferencesMetadata is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settingsv2.ListAccountUserPreferencesMetadataRequest
+func (_e *MockAccountSettingsV2Interface_Expecter) ListAccountUserPreferencesMetadata(ctx interface{}, request interface{}) *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadata_Call {
+	return &MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadata_Call{Call: _e.mock.On("ListAccountUserPreferencesMetadata", ctx, request)}
+}
+
+func (_c *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadata_Call) Run(run func(ctx context.Context, request settingsv2.ListAccountUserPreferencesMetadataRequest)) *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadata_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settingsv2.ListAccountUserPreferencesMetadataRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadata_Call) Return(_a0 listing.Iterator[settingsv2.SettingsMetadata]) *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadata_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadata_Call) RunAndReturn(run func(context.Context, settingsv2.ListAccountUserPreferencesMetadataRequest) listing.Iterator[settingsv2.SettingsMetadata]) *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadata_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListAccountUserPreferencesMetadataAll provides a mock function with given fields: ctx, request
+func (_m *MockAccountSettingsV2Interface) ListAccountUserPreferencesMetadataAll(ctx context.Context, request settingsv2.ListAccountUserPreferencesMetadataRequest) ([]settingsv2.SettingsMetadata, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListAccountUserPreferencesMetadataAll")
+	}
+
+	var r0 []settingsv2.SettingsMetadata
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settingsv2.ListAccountUserPreferencesMetadataRequest) ([]settingsv2.SettingsMetadata, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settingsv2.ListAccountUserPreferencesMetadataRequest) []settingsv2.SettingsMetadata); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]settingsv2.SettingsMetadata)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settingsv2.ListAccountUserPreferencesMetadataRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadataAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListAccountUserPreferencesMetadataAll'
+type MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadataAll_Call struct {
+	*mock.Call
+}
+
+// ListAccountUserPreferencesMetadataAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settingsv2.ListAccountUserPreferencesMetadataRequest
+func (_e *MockAccountSettingsV2Interface_Expecter) ListAccountUserPreferencesMetadataAll(ctx interface{}, request interface{}) *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadataAll_Call {
+	return &MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadataAll_Call{Call: _e.mock.On("ListAccountUserPreferencesMetadataAll", ctx, request)}
+}
+
+func (_c *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadataAll_Call) Run(run func(ctx context.Context, request settingsv2.ListAccountUserPreferencesMetadataRequest)) *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadataAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settingsv2.ListAccountUserPreferencesMetadataRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadataAll_Call) Return(_a0 []settingsv2.SettingsMetadata, _a1 error) *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadataAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadataAll_Call) RunAndReturn(run func(context.Context, settingsv2.ListAccountUserPreferencesMetadataRequest) ([]settingsv2.SettingsMetadata, error)) *MockAccountSettingsV2Interface_ListAccountUserPreferencesMetadataAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // PatchPublicAccountSetting provides a mock function with given fields: ctx, request
 func (_m *MockAccountSettingsV2Interface) PatchPublicAccountSetting(ctx context.Context, request settingsv2.PatchPublicAccountSettingRequest) (*settingsv2.Setting, error) {
 	ret := _m.Called(ctx, request)
@@ -246,6 +413,65 @@ func (_c *MockAccountSettingsV2Interface_PatchPublicAccountSetting_Call) Return(
 }
 
 func (_c *MockAccountSettingsV2Interface_PatchPublicAccountSetting_Call) RunAndReturn(run func(context.Context, settingsv2.PatchPublicAccountSettingRequest) (*settingsv2.Setting, error)) *MockAccountSettingsV2Interface_PatchPublicAccountSetting_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// PatchPublicAccountUserPreference provides a mock function with given fields: ctx, request
+func (_m *MockAccountSettingsV2Interface) PatchPublicAccountUserPreference(ctx context.Context, request settingsv2.PatchPublicAccountUserPreferenceRequest) (*settingsv2.UserPreference, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PatchPublicAccountUserPreference")
+	}
+
+	var r0 *settingsv2.UserPreference
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, settingsv2.PatchPublicAccountUserPreferenceRequest) (*settingsv2.UserPreference, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, settingsv2.PatchPublicAccountUserPreferenceRequest) *settingsv2.UserPreference); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*settingsv2.UserPreference)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, settingsv2.PatchPublicAccountUserPreferenceRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAccountSettingsV2Interface_PatchPublicAccountUserPreference_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchPublicAccountUserPreference'
+type MockAccountSettingsV2Interface_PatchPublicAccountUserPreference_Call struct {
+	*mock.Call
+}
+
+// PatchPublicAccountUserPreference is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request settingsv2.PatchPublicAccountUserPreferenceRequest
+func (_e *MockAccountSettingsV2Interface_Expecter) PatchPublicAccountUserPreference(ctx interface{}, request interface{}) *MockAccountSettingsV2Interface_PatchPublicAccountUserPreference_Call {
+	return &MockAccountSettingsV2Interface_PatchPublicAccountUserPreference_Call{Call: _e.mock.On("PatchPublicAccountUserPreference", ctx, request)}
+}
+
+func (_c *MockAccountSettingsV2Interface_PatchPublicAccountUserPreference_Call) Run(run func(ctx context.Context, request settingsv2.PatchPublicAccountUserPreferenceRequest)) *MockAccountSettingsV2Interface_PatchPublicAccountUserPreference_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(settingsv2.PatchPublicAccountUserPreferenceRequest))
+	})
+	return _c
+}
+
+func (_c *MockAccountSettingsV2Interface_PatchPublicAccountUserPreference_Call) Return(_a0 *settingsv2.UserPreference, _a1 error) *MockAccountSettingsV2Interface_PatchPublicAccountUserPreference_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAccountSettingsV2Interface_PatchPublicAccountUserPreference_Call) RunAndReturn(run func(context.Context, settingsv2.PatchPublicAccountUserPreferenceRequest) (*settingsv2.UserPreference, error)) *MockAccountSettingsV2Interface_PatchPublicAccountUserPreference_Call {
 	_c.Call.Return(run)
 	return _c
 }

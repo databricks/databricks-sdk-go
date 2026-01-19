@@ -229,6 +229,24 @@ type CreateRoleRequest struct {
 	RoleId string `json:"-" url:"role_id"`
 }
 
+type DatabaseCredential struct {
+	// Timestamp in UTC of when this credential expires.
+	ExpireTime *time.Time `json:"expire_time,omitempty"`
+	// The OAuth token that can be used as a password when connecting to a
+	// database.
+	Token string `json:"token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseCredential) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseCredential) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Databricks Error that is returned by all Databricks APIs.
 type DatabricksServiceExceptionWithDetailsProto struct {
 	Details []json.RawMessage `json:"details,omitempty"`
@@ -771,6 +789,16 @@ func (f *ErrorCode) Type() string {
 	return "ErrorCode"
 }
 
+type GenerateDatabaseCredentialRequest struct {
+	// The returned token will be scoped to UC tables with the specified
+	// permissions.
+	Claims []RequestedClaims `json:"claims,omitempty"`
+	// This field is not yet supported. The endpoint for which this credential
+	// will be generated. Format:
+	// projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+	Endpoint string `json:"endpoint"`
+}
+
 type GetBranchRequest struct {
 	// The resource name of the branch to retrieve. Format:
 	// `projects/{project_id}/branches/{branch_id}`
@@ -1084,6 +1112,62 @@ func (s *ProjectStatus) UnmarshalJSON(b []byte) error {
 }
 
 func (s ProjectStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type RequestedClaims struct {
+	PermissionSet RequestedClaimsPermissionSet `json:"permission_set,omitempty"`
+
+	Resources []RequestedResource `json:"resources,omitempty"`
+}
+
+type RequestedClaimsPermissionSet string
+
+const RequestedClaimsPermissionSetReadOnly RequestedClaimsPermissionSet = `READ_ONLY`
+
+// String representation for [fmt.Print]
+func (f *RequestedClaimsPermissionSet) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *RequestedClaimsPermissionSet) Set(v string) error {
+	switch v {
+	case `READ_ONLY`:
+		*f = RequestedClaimsPermissionSet(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "READ_ONLY"`, v)
+	}
+}
+
+// Values returns all possible values for RequestedClaimsPermissionSet.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RequestedClaimsPermissionSet) Values() []RequestedClaimsPermissionSet {
+	return []RequestedClaimsPermissionSet{
+		RequestedClaimsPermissionSetReadOnly,
+	}
+}
+
+// Type always returns RequestedClaimsPermissionSet to satisfy [pflag.Value] interface
+func (f *RequestedClaimsPermissionSet) Type() string {
+	return "RequestedClaimsPermissionSet"
+}
+
+type RequestedResource struct {
+	TableName string `json:"table_name,omitempty"`
+
+	UnspecifiedResourceName string `json:"unspecified_resource_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RequestedResource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RequestedResource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 

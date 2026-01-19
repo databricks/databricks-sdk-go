@@ -119,6 +119,17 @@ func (a *postgresImpl) DeleteRole(ctx context.Context, request DeleteRoleRequest
 	return &operation, err
 }
 
+func (a *postgresImpl) GenerateDatabaseCredential(ctx context.Context, request GenerateDatabaseCredentialRequest) (*DatabaseCredential, error) {
+	var databaseCredential DatabaseCredential
+	path := "/api/2.0/postgres/credentials"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &databaseCredential)
+	return &databaseCredential, err
+}
+
 func (a *postgresImpl) GetBranch(ctx context.Context, request GetBranchRequest) (*Branch, error) {
 	var branch Branch
 	path := fmt.Sprintf("/api/2.0/postgres/%v", request.Name)
