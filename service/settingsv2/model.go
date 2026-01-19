@@ -254,6 +254,13 @@ type GetPublicAccountSettingRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+type GetPublicAccountUserPreferenceRequest struct {
+	// User Setting name.
+	Name string `json:"-" url:"-"`
+	// User ID of the user whose setting is being retrieved.
+	UserId string `json:"-" url:"-"`
+}
+
 type GetPublicWorkspaceSettingRequest struct {
 	// Name of the setting
 	Name string `json:"-" url:"-"`
@@ -316,6 +323,51 @@ func (s ListAccountSettingsMetadataResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ListAccountUserPreferencesMetadataRequest struct {
+	// The maximum number of settings to return. The service may return fewer
+	// than this value. If unspecified, at most 200 settings will be returned.
+	// The maximum value is 1000; values above 1000 will be coerced to 1000.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// A page token, received from a previous
+	// `ListAccountUserPreferencesMetadataRequest` call. Provide this to
+	// retrieve the subsequent page.
+	//
+	// When paginating, all other parameters provided to
+	// `ListAccountUserPreferencesMetadataRequest` must match the call that
+	// provided the page token.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// User ID of the user whose settings metadata is being retrieved.
+	UserId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListAccountUserPreferencesMetadataRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAccountUserPreferencesMetadataRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListAccountUserPreferencesMetadataResponse struct {
+	// A token that can be sent as `page_token` to retrieve the next page. If
+	// this field is omitted, there are no subsequent pages.
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// List of all settings available via public APIs and their metadata
+	SettingsMetadata []SettingsMetadata `json:"settings_metadata,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListAccountUserPreferencesMetadataResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAccountUserPreferencesMetadataResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListWorkspaceSettingsMetadataRequest struct {
 	// The maximum number of settings to return. The service may return fewer
 	// than this value. If unspecified, at most 200 settings will be returned.
@@ -363,6 +415,14 @@ type PatchPublicAccountSettingRequest struct {
 	Name string `json:"-" url:"-"`
 
 	Setting Setting `json:"setting"`
+}
+
+type PatchPublicAccountUserPreferenceRequest struct {
+	Name string `json:"-" url:"-"`
+
+	Setting UserPreference `json:"setting"`
+	// User ID of the user whose setting is being updated.
+	UserId string `json:"-" url:"-"`
 }
 
 type PatchPublicWorkspaceSettingRequest struct {
@@ -566,5 +626,33 @@ func (s *StringMessage) UnmarshalJSON(b []byte) error {
 }
 
 func (s StringMessage) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// User Preference represents a user-specific setting scoped to an individual
+// user within an account. Unlike workspace or account settings that apply to
+// all users, user preferences allow personal customization (e.g., UI theme,
+// editor preferences) without affecting other users.
+type UserPreference struct {
+	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
+
+	EffectiveBooleanVal *BooleanMessage `json:"effective_boolean_val,omitempty"`
+
+	EffectiveStringVal *StringMessage `json:"effective_string_val,omitempty"`
+	// Name of the setting.
+	Name string `json:"name,omitempty"`
+
+	StringVal *StringMessage `json:"string_val,omitempty"`
+	// User ID of the user.
+	UserId string `json:"user_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UserPreference) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UserPreference) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }

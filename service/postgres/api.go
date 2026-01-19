@@ -54,6 +54,9 @@ type PostgresInterface interface {
 
 	DeleteRole(ctx context.Context, request DeleteRoleRequest) (DeleteRoleOperationInterface, error)
 
+	// Generate OAuth credentials for a Postgres database.
+	GenerateDatabaseCredential(ctx context.Context, request GenerateDatabaseCredentialRequest) (*DatabaseCredential, error)
+
 	// Retrieves information about the specified database branch.
 	GetBranch(ctx context.Context, request GetBranchRequest) (*Branch, error)
 

@@ -496,6 +496,65 @@ func (_c *MockPostgresInterface_DeleteRole_Call) RunAndReturn(run func(context.C
 	return _c
 }
 
+// GenerateDatabaseCredential provides a mock function with given fields: ctx, request
+func (_m *MockPostgresInterface) GenerateDatabaseCredential(ctx context.Context, request postgres.GenerateDatabaseCredentialRequest) (*postgres.DatabaseCredential, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GenerateDatabaseCredential")
+	}
+
+	var r0 *postgres.DatabaseCredential
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GenerateDatabaseCredentialRequest) (*postgres.DatabaseCredential, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.GenerateDatabaseCredentialRequest) *postgres.DatabaseCredential); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*postgres.DatabaseCredential)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.GenerateDatabaseCredentialRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPostgresInterface_GenerateDatabaseCredential_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GenerateDatabaseCredential'
+type MockPostgresInterface_GenerateDatabaseCredential_Call struct {
+	*mock.Call
+}
+
+// GenerateDatabaseCredential is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request postgres.GenerateDatabaseCredentialRequest
+func (_e *MockPostgresInterface_Expecter) GenerateDatabaseCredential(ctx interface{}, request interface{}) *MockPostgresInterface_GenerateDatabaseCredential_Call {
+	return &MockPostgresInterface_GenerateDatabaseCredential_Call{Call: _e.mock.On("GenerateDatabaseCredential", ctx, request)}
+}
+
+func (_c *MockPostgresInterface_GenerateDatabaseCredential_Call) Run(run func(ctx context.Context, request postgres.GenerateDatabaseCredentialRequest)) *MockPostgresInterface_GenerateDatabaseCredential_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(postgres.GenerateDatabaseCredentialRequest))
+	})
+	return _c
+}
+
+func (_c *MockPostgresInterface_GenerateDatabaseCredential_Call) Return(_a0 *postgres.DatabaseCredential, _a1 error) *MockPostgresInterface_GenerateDatabaseCredential_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPostgresInterface_GenerateDatabaseCredential_Call) RunAndReturn(run func(context.Context, postgres.GenerateDatabaseCredentialRequest) (*postgres.DatabaseCredential, error)) *MockPostgresInterface_GenerateDatabaseCredential_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetBranch provides a mock function with given fields: ctx, request
 func (_m *MockPostgresInterface) GetBranch(ctx context.Context, request postgres.GetBranchRequest) (*postgres.Branch, error) {
 	ret := _m.Called(ctx, request)
