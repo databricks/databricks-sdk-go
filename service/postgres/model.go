@@ -175,11 +175,11 @@ type CreateBranchRequest struct {
 	// The Branch to create.
 	Branch Branch `json:"branch"`
 	// The ID to use for the Branch. This becomes the final component of the
-	// branch's resource name. This value should be 4-63 characters. Valid
-	// characters are lowercase letters, numbers, and hyphens, as defined by RFC
-	// 1123. Examples: - With custom ID: `staging` → name becomes
-	// `projects/{project_id}/branches/staging` - Without custom ID: system
-	// generates slug → name becomes
+	// branch's resource name. The ID must be 1-63 characters long, start with a
+	// lowercase letter, and contain only lowercase letters, numbers, and
+	// hyphens (RFC 1123). Examples: - With custom ID: `staging` → name
+	// becomes `projects/{project_id}/branches/staging` - Without custom ID:
+	// system generates slug → name becomes
 	// `projects/{project_id}/branches/br-example-name-x1y2z3a4`
 	BranchId string `json:"-" url:"branch_id"`
 	// The Project where this Branch will be created. Format:
@@ -191,11 +191,11 @@ type CreateEndpointRequest struct {
 	// The Endpoint to create.
 	Endpoint Endpoint `json:"endpoint"`
 	// The ID to use for the Endpoint. This becomes the final component of the
-	// endpoint's resource name. This value should be 4-63 characters. Valid
-	// characters are lowercase letters, numbers, and hyphens, as defined by RFC
-	// 1123. Examples: - With custom ID: `primary` → name becomes
-	// `projects/{project_id}/branches/{branch_id}/endpoints/primary` - Without
-	// custom ID: system generates slug → name becomes
+	// endpoint's resource name. The ID must be 1-63 characters long, start with
+	// a lowercase letter, and contain only lowercase letters, numbers, and
+	// hyphens (RFC 1123). Examples: - With custom ID: `primary` → name
+	// becomes `projects/{project_id}/branches/{branch_id}/endpoints/primary` -
+	// Without custom ID: system generates slug → name becomes
 	// `projects/{project_id}/branches/{branch_id}/endpoints/ep-example-name-x1y2z3a4`
 	EndpointId string `json:"-" url:"endpoint_id"`
 	// The Branch where this Endpoint will be created. Format:
@@ -207,11 +207,11 @@ type CreateProjectRequest struct {
 	// The Project to create.
 	Project Project `json:"project"`
 	// The ID to use for the Project. This becomes the final component of the
-	// project's resource name. This value should be 4-63 characters. Valid
-	// characters are lowercase letters, numbers, and hyphens, as defined by RFC
-	// 1123. Examples: - With custom ID: `production` → name becomes
-	// `projects/production` - Without custom ID: system generates UUID → name
-	// becomes `projects/a7f89b2c-3d4e-5f6g-7h8i-9j0k1l2m3n4o`
+	// project's resource name. The ID must be 1-63 characters long, start with
+	// a lowercase letter, and contain only lowercase letters, numbers, and
+	// hyphens (RFC 1123). Examples: - With custom ID: `production` → name
+	// becomes `projects/production` - Without custom ID: system generates UUID
+	// → name becomes `projects/a7f89b2c-3d4e-5f6g-7h8i-9j0k1l2m3n4o`
 	ProjectId string `json:"-" url:"project_id"`
 }
 
@@ -352,9 +352,9 @@ type EndpointSettings struct {
 }
 
 type EndpointSpec struct {
-	// The maximum number of Compute Units.
+	// The maximum number of Compute Units. Minimum value is 0.5.
 	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
-	// The minimum number of Compute Units.
+	// The minimum number of Compute Units. Minimum value is 0.5.
 	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
 	// Whether to restrict connections to the compute endpoint. Enabling this
 	// option schedules a suspend compute operation. A disabled compute endpoint
@@ -365,7 +365,8 @@ type EndpointSpec struct {
 
 	Settings *EndpointSettings `json:"settings,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
-	// suspended.
+	// suspended. Supported values: -1s (never suspend), 0s (use default), or
+	// value should be between 60s and 604800s (1 minute to 1 week).
 	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -800,7 +801,7 @@ type GetRoleRequest struct {
 }
 
 type ListBranchesRequest struct {
-	// Upper bound for items returned.
+	// Upper bound for items returned. Cannot be negative.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Page token from a previous response. If not provided, returns the first
 	// page.
@@ -838,7 +839,7 @@ func (s ListBranchesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListEndpointsRequest struct {
-	// Upper bound for items returned.
+	// Upper bound for items returned. Cannot be negative.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Page token from a previous response. If not provided, returns the first
 	// page.
@@ -876,7 +877,7 @@ func (s ListEndpointsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListProjectsRequest struct {
-	// Upper bound for items returned.
+	// Upper bound for items returned. Cannot be negative.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Page token from a previous response. If not provided, returns the first
 	// page.
@@ -912,7 +913,7 @@ func (s ListProjectsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListRolesRequest struct {
-	// Upper bound for items returned.
+	// Upper bound for items returned. Cannot be negative.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Page token from a previous response. If not provided, returns the first
 	// page.
@@ -1010,14 +1011,15 @@ func (s Project) MarshalJSON() ([]byte, error) {
 
 // A collection of settings for a compute endpoint.
 type ProjectDefaultEndpointSettings struct {
-	// The maximum number of Compute Units.
+	// The maximum number of Compute Units. Minimum value is 0.5.
 	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
-	// The minimum number of Compute Units.
+	// The minimum number of Compute Units. Minimum value is 0.5.
 	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
 	// A raw representation of Postgres settings.
 	PgSettings map[string]string `json:"pg_settings,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
-	// suspended.
+	// suspended. Supported values: -1s (never suspend), 0s (use default), or
+	// value should be between 60s and 604800s (1 minute to 1 week).
 	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1036,12 +1038,14 @@ type ProjectOperationMetadata struct {
 
 type ProjectSpec struct {
 	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
-	// Human-readable project name.
+	// Human-readable project name. Length should be between 1 and 256
+	// characters.
 	DisplayName string `json:"display_name,omitempty"`
 	// The number of seconds to retain the shared history for point in time
-	// recovery for all branches in this project.
+	// recovery for all branches in this project. Value should be between 0s and
+	// 2592000s (up to 30 days).
 	HistoryRetentionDuration *duration.Duration `json:"history_retention_duration,omitempty"`
-	// The major Postgres version number.
+	// The major Postgres version number. Supported versions are 16 and 17.
 	PgVersion int `json:"pg_version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

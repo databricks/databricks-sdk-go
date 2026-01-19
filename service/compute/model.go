@@ -3648,6 +3648,9 @@ type InitScriptInfoAndExecutionDetails struct {
 	S3 *S3StorageInfo `json:"s3,omitempty"`
 	// The current status of the script
 	Status InitScriptExecutionDetailsInitScriptExecutionStatus `json:"status,omitempty"`
+	// The stderr output from the init script execution. Only populated when
+	// init scripts debug is enabled and script execution fails.
+	Stderr string `json:"stderr,omitempty"`
 	// destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\"
 	// : \"/Volumes/my-init.sh\" } }`
 	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
