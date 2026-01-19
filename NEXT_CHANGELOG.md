@@ -35,3 +35,4 @@
 * [Breaking] Remove `ComputeLastActiveTime` and `Settings` fields for [postgres.ProjectStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#ProjectStatus).
 * [Breaking] Remove `ReadWrite` and `ReadOnly` enum values for [postgres.EndpointType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#EndpointType).
 * Add `NoExpiry` field for [postgres.BranchSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#BranchSpec).
+* Add `Stderr` field for [compute.InitScriptInfoAndExecutionDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InitScriptInfoAndExecutionDetails).
