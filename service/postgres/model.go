@@ -383,8 +383,8 @@ type EndpointSpec struct {
 
 	Settings *EndpointSettings `json:"settings,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
-	// suspended. Supported values: -1s (never suspend), 0s (use default), or
-	// value should be between 60s and 604800s (1 minute to 1 week).
+	// suspended. If specified should be between 60s and 604800s (1 minute to 1
+	// week).
 	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1046,8 +1046,8 @@ type ProjectDefaultEndpointSettings struct {
 	// A raw representation of Postgres settings.
 	PgSettings map[string]string `json:"pg_settings,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
-	// suspended. Supported values: -1s (never suspend), 0s (use default), or
-	// value should be between 60s and 604800s (1 minute to 1 week).
+	// suspended. If specified should be between 60s and 604800s (1 minute to 1
+	// week).
 	SuspendTimeoutDuration *duration.Duration `json:"suspend_timeout_duration,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
