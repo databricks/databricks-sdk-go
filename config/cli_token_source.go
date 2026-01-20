@@ -1,0 +1,129 @@
+package config
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+	"strings"
+	"time"
+
+	"golang.org/x/oauth2"
+)
+
+// databricksCliMinSize distinguishes the new Go CLI (>= 0.100.0) from the
+// legacy Python CLI by file size.
+const databricksCliMinSize = 1024 * 1024
+
+var (
+	ErrCliNotFound       = errors.New("databricks CLI not found")
+	ErrLegacyCliDetected = errors.New("legacy databricks CLI detected; upgrade to >= 0.100.0")
+)
+
+type cliTokenResponse struct {
+	AccessToken string `json:"access_token"`
+	TokenType   string `json:"token_type"`
+	Expiry      string `json:"expiry"`
+}
+
+type CliTokenSource struct {
+	cmd []string
+}
+
+func NewCliTokenSource(cfg *Config) (*CliTokenSource, error) {
+	cliPath, err := findDatabricksCli(cfg.DatabricksCliPath)
+	if err != nil {
+		return nil, err
+	}
+	cmd := []string{cliPath, "auth", "token", "--host", cfg.Host}
+	if cfg.HostType() == AccountHost {
+		cmd = append(cmd, "--account-id", cfg.AccountID)
+	}
+	return &CliTokenSource{cmd: cmd}, nil
+}
+
+func (c *CliTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
+	cmd := exec.CommandContext(ctx, c.cmd[0], c.cmd[1:]...)
+	stdout, err := cmd.Output()
+	if err != nil {
+		var exitErr *exec.ExitError
+		if errors.As(err, &exitErr) {
+			return nil, fmt.Errorf("cannot get access token: %s", strings.TrimSpace(string(exitErr.Stderr)))
+		}
+		return nil, fmt.Errorf("cannot get access token: %w", err)
+	}
+	var resp cliTokenResponse
+	if err := json.Unmarshal(stdout, &resp); err != nil {
+		return nil, fmt.Errorf("cannot parse CLI response: %w", err)
+	}
+	expiry, err := parseExpiry(resp.Expiry)
+	if err != nil {
+		return nil, fmt.Errorf("cannot parse token expiry: %w", err)
+	}
+	return &oauth2.Token{
+		AccessToken: resp.AccessToken,
+		TokenType:   resp.TokenType,
+		Expiry:      expiry,
+	}, nil
+}
+
+func parseExpiry(expiry string) (time.Time, error) {
+	// Go's time.Time marshals to RFC3339Nano
+	if t, err := time.Parse(time.RFC3339Nano, expiry); err == nil {
+		return t, nil
+	}
+	if t, err := time.Parse(time.RFC3339, expiry); err == nil {
+		return t, nil
+	}
+	return time.Time{}, fmt.Errorf("cannot parse expiry %q", expiry)
+}
+
+func findDatabricksCli(cliPath string) (string, error) {
+	if cliPath == "" {
+		path, err := findInPath("databricks")
+		if err != nil && runtime.GOOS == "windows" {
+			return findInPath("databricks.exe")
+		}
+		return path, err
+	}
+	if strings.Contains(cliPath, string(filepath.Separator)) || strings.Contains(cliPath, "/") {
+		return validateCliPath(cliPath)
+	}
+	return findInPath(cliPath)
+}
+
+func findInPath(name string) (string, error) {
+	pathEnv := os.Getenv("PATH")
+	if pathEnv == "" {
+		return "", ErrCliNotFound
+	}
+	lastErr := ErrCliNotFound
+	for _, dir := range filepath.SplitList(pathEnv) {
+		validPath, err := validateCliPath(filepath.Join(dir, name))
+		if err == nil {
+			return validPath, nil
+		}
+		if errors.Is(err, ErrLegacyCliDetected) {
+			lastErr = err
+		}
+	}
+	return "", lastErr
+}
+
+func validateCliPath(path string) (string, error) {
+	info, err := os.Stat(path)
+	if os.IsNotExist(err) || (err == nil && info.IsDir()) {
+		return "", ErrCliNotFound
+	}
+	if err != nil {
+		return "", fmt.Errorf("cannot stat CLI path: %w", err)
+	}
+	if info.Size() < databricksCliMinSize {
+		return "", ErrLegacyCliDetected
+	}
+	return path, nil
+}

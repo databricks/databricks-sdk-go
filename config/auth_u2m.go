@@ -8,129 +8,40 @@ import (
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
-	"github.com/databricks/databricks-sdk-go/credentials/u2m"
-	"golang.org/x/oauth2"
+	"github.com/databricks/databricks-sdk-go/logger"
 )
 
-// persistentAuthFactory is a function that creates a token source for U2M
-// authentication. It can be replaced in tests to spy on the options passed.
-type persistentAuthFactory func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error)
+type u2mCredentials struct{}
 
-// u2mCredentials is a credentials strategy that uses the U2M OAuth flow to
-// authenticate with Databricks. It loads a token from the token cache for the
-// given workspace or account, refreshing it using the associated refresh token
-// if needed.
-type u2mCredentials struct {
-	// newPersistentAuth is the factory function to create a PersistentAuth.
-	// If nil, the default u2m.NewPersistentAuth is used.
-	newPersistentAuth persistentAuthFactory
-}
-
-// Name implements CredentialsStrategy.
 func (u u2mCredentials) Name() string {
-	// When we support allowing users to configure a custom U2M strategy, we
-	// should use a different name here.
 	return "databricks-cli"
 }
 
-// Configure implements CredentialsStrategy.
 func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.Host == "" {
 		return nil, fmt.Errorf("host is required")
 	}
-
-	arg, err := cfg.getOAuthArgument()
+	ts, err := NewCliTokenSource(cfg)
 	if err != nil {
+		if errors.Is(err, ErrCliNotFound) || errors.Is(err, ErrLegacyCliDetected) {
+			logger.Debugf(ctx, "databricks-cli auth: %v", err)
+			return nil, nil
+		}
 		return nil, err
 	}
-
-	var factory persistentAuthFactory
-	if u.newPersistentAuth == nil {
-		factory = func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error) {
-			return u2m.NewPersistentAuth(ctx, opts...)
-		}
-	} else {
-		factory = u.newPersistentAuth
-	}
-	ts, err := factory(ctx,
-		u2m.WithOAuthArgument(arg),
-		u2m.WithPort(cfg.OAuthCallbackPort),
-		u2m.WithScopes(cfg.GetScopes()),
-		u2m.WithDisableOfflineAccess(cfg.DisableOAuthRefreshToken),
-	)
+	_, err = ts.Token(ctx)
 	if err != nil {
+		if strings.Contains(err.Error(), "databricks OAuth is not") {
+			logger.Debugf(ctx, "databricks-cli auth: OAuth not configured: %v", err)
+			return nil, nil
+		}
+		// Pass the CLI error through unchanged. The CLI already provides
+		// helpful error messages with login commands for common cases like
+		// invalid refresh tokens.
 		return nil, err
 	}
-
-	// TODO: Having to handle the CLI error here is not ideal as it couples the
-	// SDK logic with the CLI's. Remove this wrapping logic as soon as the CLI
-	// is able to handle it on its own.
-	wts := wrapWithCLIErrorHandling(cfg, arg, ts)
-
-	cts := auth.NewCachedTokenSource(wts) // important
-	return credentials.NewOAuthCredentialsProviderFromTokenSource(cts), nil
-}
-
-func wrapWithCLIErrorHandling(cfg *Config, arg u2m.OAuthArgument, ts oauth2.TokenSource) auth.TokenSource {
-	cliCmd := buildLoginCommand(cfg.Profile, arg)
-	return auth.TokenSourceFn(func(ctx context.Context) (*oauth2.Token, error) {
-		t, err := ts.Token()
-		if err != nil {
-			// If there is an existing token but the refresh token is invalid,
-			// return a special error message for invalid refresh tokens.
-			// To help users easily reauthenticate, include a command that the
-			// user can run, prepopulating the profile, host and/or account ID.
-			target := &u2m.InvalidRefreshTokenError{}
-			if !errors.As(err, &target) {
-				return nil, err
-			}
-			return nil, &CliInvalidRefreshTokenError{
-				loginCommand: cliCmd,
-				err:          err,
-			}
-		}
-		return t, nil
-	})
-}
-
-// CliInvalidRefreshTokenError is a special error type that is returned when a
-// new access token could not be retrieved because the refresh token is invalid.
-// It is returned only by the `databricks-cli` credentials strategy.
-type CliInvalidRefreshTokenError struct {
-	loginCommand string
-	err          error
-}
-
-func (e *CliInvalidRefreshTokenError) Error() string {
-	return fmt.Sprintf(`a new access token could not be retrieved because the refresh token is invalid. If using the CLI, run the following command to reauthenticate:
-
-  $ %s`, e.loginCommand)
-}
-
-func (e *CliInvalidRefreshTokenError) Unwrap() error {
-	return e.err
-}
-
-// buildLoginCommand returns the `databricks auth login` command that the user
-// can run to reauthenticate. The command is prepopulated with the profile, host
-// and/or account ID.
-func buildLoginCommand(profile string, arg u2m.OAuthArgument) string {
-	cmd := []string{
-		"databricks",
-		"auth",
-		"login",
-	}
-	if profile != "" {
-		cmd = append(cmd, "--profile", profile)
-	} else {
-		switch arg := arg.(type) {
-		case u2m.AccountOAuthArgument:
-			cmd = append(cmd, "--host", arg.GetAccountHost(), "--account-id", arg.GetAccountId())
-		case u2m.WorkspaceOAuthArgument:
-			cmd = append(cmd, "--host", arg.GetWorkspaceHost())
-		}
-	}
-	return strings.Join(cmd, " ")
+	logger.Infof(ctx, "Using Databricks CLI authentication")
+	return credentials.NewOAuthCredentialsProviderFromTokenSource(auth.NewCachedTokenSource(ts)), nil
 }
 
 var DatabricksCliCredentials = u2mCredentials{}

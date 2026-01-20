@@ -2,349 +2,194 @@ package config
 
 import (
 	"context"
-	"errors"
-	"fmt"
-	"net/http"
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
-
-	"github.com/databricks/databricks-sdk-go/config/credentials"
-	"github.com/databricks/databricks-sdk-go/credentials/u2m"
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
-	"golang.org/x/oauth2"
 )
 
-type testTokenSource struct {
-	token  *oauth2.Token
-	err    error
-	counts int // number of times Token() is called
-}
-
-func (m *testTokenSource) Token() (*oauth2.Token, error) {
-	m.counts++
-	return m.token, m.err
-}
-
-var testValidToken = &oauth2.Token{
-	AccessToken: "valid-access-token",
-	TokenType:   "Bearer",
-	Expiry:      time.Now().Add(1 * time.Hour),
-}
-
-var testExpiredToken = &oauth2.Token{
-	AccessToken:  "expired-access-token",
-	RefreshToken: "refresh-token",
-	TokenType:    "Bearer",
-	Expiry:       time.Now().Add(-1 * time.Hour),
-}
-
-func getHeader(cp credentials.CredentialsProvider) (http.Header, error) {
-	req := &http.Request{Header: make(http.Header)} // dummy request
-	if err := cp.SetHeaders(req); err != nil {
-		return nil, err
-	}
-	return req.Header, nil
-}
-
-// Sentinel errors for testing.
-var (
-	errNetwork             = errors.New("network timeout")
-	errAuthentication      = errors.New("authentication failed")
-	errInvalidRefreshToken = &u2m.InvalidRefreshTokenError{}
-)
-
-// mockPersistentAuthFactory creates a test factory for bypassing real auth setup.
-// Use this when tests only need to control token behavior without caring about auth configuration.
-func mockPersistentAuthFactory(ts oauth2.TokenSource) persistentAuthFactory {
-	return func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error) {
-		return ts, nil
+func TestU2MCredentials_Name(t *testing.T) {
+	if got := (u2mCredentials{}).Name(); got != "databricks-cli" {
+		t.Errorf("Name() = %q, want %q", got, "databricks-cli")
 	}
 }
 
 func TestU2MCredentials_Configure(t *testing.T) {
 	testCases := []struct {
-		desc            string
-		cfg             *Config
-		testTokenSource *testTokenSource
-		wantConfigErr   string // error message from Configure()
-		wantHeaderErr   string // error message from SetHeaders()
-		wantAuthHeader  string // expected Authorization header
+		name string
+		// skip is a function that returns true if the test should be skipped.
+		skip func() bool
+		// setup prepares the test environment and returns the config to use.
+		// The cleanup function is called after the test.
+		setup func(t *testing.T) (cfg *Config, cleanup func())
+		// wantErr is a substring expected in the error message, or empty if no error expected.
+		wantErr string
+		// wantSkip is true if Configure should return nil, nil (skip this auth method).
+		wantSkip bool
+		// wantProvider is true if Configure should return a non-nil CredentialsProvider.
+		wantProvider bool
 	}{
 		{
-			desc: "missing host returns error",
-			cfg: &Config{
-				Host: "",
+			name: "missing host returns error",
+			setup: func(t *testing.T) (*Config, func()) {
+				return &Config{}, func() {}
 			},
-			wantConfigErr: "host is required",
+			wantErr: "host is required",
 		},
 		{
-			desc: "successful configuration with workspace host",
-			cfg: &Config{
-				Host: "https://workspace.cloud.databricks.com",
+			name: "CLI not found skips auth",
+			setup: func(t *testing.T) (*Config, func()) {
+				return &Config{
+					Host:              "https://workspace.cloud.databricks.com",
+					DatabricksCliPath: "/nonexistent/path/to/databricks",
+				}, func() {}
 			},
-			testTokenSource: &testTokenSource{
-				token: testValidToken,
-			},
-			wantAuthHeader: "Bearer valid-access-token",
+			wantSkip: true,
 		},
 		{
-			desc: "successful configuration with account host and account ID",
-			cfg: &Config{
-				Host:      "https://accounts.cloud.databricks.com",
-				AccountID: "abc-123",
-			},
-			testTokenSource: &testTokenSource{
-				token: testValidToken,
-			},
-			wantAuthHeader: "Bearer valid-access-token",
-		},
-		{
-			desc: "expired token is accepted",
-			cfg: &Config{
-				Host: "https://workspace.cloud.databricks.com",
-			},
-			testTokenSource: &testTokenSource{
-				token: testExpiredToken,
-			},
-			wantAuthHeader: "Bearer expired-access-token",
-		},
-		{
-			desc: "token source returns network error",
-			cfg: &Config{
-				Host: "https://workspace.cloud.databricks.com",
-			},
-			testTokenSource: &testTokenSource{
-				err: errNetwork,
-			},
-			wantHeaderErr: "network timeout",
-		},
-		{
-			desc: "token source returns authentication error",
-			cfg: &Config{
-				Host: "https://workspace.cloud.databricks.com",
-			},
-			testTokenSource: &testTokenSource{
-				err: errAuthentication,
-			},
-			wantHeaderErr: "authentication failed",
-		},
-		{
-			desc: "invalid refresh token error - workspace with profile",
-			cfg: &Config{
-				Host:     "https://workspace.cloud.databricks.com",
-				Profile:  "my-workspace",
-				resolved: true,
-			},
-			testTokenSource: &testTokenSource{
-				err: errInvalidRefreshToken,
-			},
-			wantHeaderErr: "databricks auth login --profile my-workspace",
-		},
-		{
-			desc: "invalid refresh token error - workspace without profile",
-			cfg: &Config{
-				Host:     "https://workspace.cloud.databricks.com",
-				resolved: true,
-			},
-			testTokenSource: &testTokenSource{
-				err: errInvalidRefreshToken,
-			},
-			wantHeaderErr: "databricks auth login --host https://workspace.cloud.databricks.com",
-		},
-		{
-			desc: "invalid refresh token error - account with profile",
-			cfg: &Config{
-				Host:      "https://accounts.cloud.databricks.com",
-				AccountID: "xyz-789",
-				Profile:   "prod-account",
-				resolved:  true,
-			},
-			testTokenSource: &testTokenSource{
-				err: errInvalidRefreshToken,
-			},
-			wantHeaderErr: "databricks auth login --profile prod-account",
-		},
-		{
-			desc: "invalid refresh token error - account without profile",
-			cfg: &Config{
-				Host:      "https://accounts.cloud.databricks.com",
-				AccountID: "abc-123",
-				resolved:  true,
-			},
-			testTokenSource: &testTokenSource{
-				err: errInvalidRefreshToken,
-			},
-			wantHeaderErr: "databricks auth login --host https://accounts.cloud.databricks.com --account-id abc-123",
-		},
-		{
-			desc: "wrapped invalid refresh token error",
-			cfg: &Config{
-				Host:     "https://workspace.cloud.databricks.com",
-				Profile:  "test",
-				resolved: true,
-			},
-			testTokenSource: &testTokenSource{
-				err: fmt.Errorf("oauth2: %w", errInvalidRefreshToken),
-			},
-			wantHeaderErr: "databricks auth login --profile test",
-		},
-		{
-			desc: "invalid refresh token error - azure account without profile",
-			cfg: &Config{
-				Host:      "https://accounts.azure.databricks.net",
-				AccountID: "abc-456",
-				resolved:  true,
-			},
-			testTokenSource: &testTokenSource{
-				err: errInvalidRefreshToken,
-			},
-			wantHeaderErr: "databricks auth login --host https://accounts.azure.databricks.net --account-id abc-456",
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.desc, func(t *testing.T) {
-			ctx := context.Background()
-			u := u2mCredentials{
-				newPersistentAuth: mockPersistentAuthFactory(tc.testTokenSource),
-			}
-
-			cp, gotConfigErr := u.Configure(ctx, tc.cfg)
-
-			if tc.wantConfigErr != "" {
-				if gotConfigErr == nil {
-					t.Fatalf("Configure() want error containing %q, got nil", tc.wantConfigErr)
+			name: "legacy CLI detected skips auth",
+			setup: func(t *testing.T) (*Config, func()) {
+				tempDir := t.TempDir()
+				cliName := "databricks"
+				if runtime.GOOS == "windows" {
+					cliName = "databricks.exe"
 				}
-				if !strings.Contains(gotConfigErr.Error(), tc.wantConfigErr) {
-					t.Errorf("Configure() error = %q, want error containing %q", gotConfigErr.Error(), tc.wantConfigErr)
+				legacyCliPath := filepath.Join(tempDir, cliName)
+				if err := os.WriteFile(legacyCliPath, make([]byte, 100), 0755); err != nil {
+					t.Fatalf("failed to create legacy CLI file: %v", err)
 				}
-				return
-			}
-			if gotConfigErr != nil {
-				t.Fatalf("Configure() unexpected error: %v", gotConfigErr)
-			}
-
-			header, gotHeaderErr := getHeader(cp)
-
-			if tc.wantHeaderErr != "" {
-				if gotHeaderErr == nil {
-					t.Fatalf("SetHeaders() want error containing %q, got nil", tc.wantHeaderErr)
-				}
-				if !strings.Contains(gotHeaderErr.Error(), tc.wantHeaderErr) {
-					t.Errorf("SetHeaders() error = %q, want error containing %q", gotHeaderErr.Error(), tc.wantHeaderErr)
-				}
-				return
-			}
-			if gotHeaderErr != nil {
-				t.Fatalf("SetHeaders() unexpected error: %v", gotHeaderErr)
-			}
-			if gotHeader := header.Get("Authorization"); gotHeader != tc.wantAuthHeader {
-				t.Errorf("Authorization header = %q, want %q", gotHeader, tc.wantAuthHeader)
-			}
-		})
-	}
-}
-
-func TestU2MCredentials_Configure_TokenCaching(t *testing.T) {
-	ts := &testTokenSource{token: testValidToken}
-
-	u := u2mCredentials{
-		newPersistentAuth: mockPersistentAuthFactory(ts),
-	}
-	cfg := &Config{
-		Host: "https://workspace.cloud.databricks.com",
-	}
-
-	cp, err := u.Configure(context.Background(), cfg)
-	if err != nil {
-		t.Fatalf("Configure() error = %v", err)
-	}
-
-	// Call the credentials provider twice, only the first call should
-	// actually call the underlying token source.
-	if _, err := getHeader(cp); err != nil {
-		t.Fatalf("First getHeader() error = %v", err)
-	}
-	if _, err := getHeader(cp); err != nil {
-		t.Fatalf("Second getHeader() error = %v", err)
-	}
-
-	if ts.counts != 1 {
-		t.Errorf("token source call count = %d, want 1 (should use cache)", ts.counts)
-	}
-}
-
-func TestU2MCredentials_Configure_Scopes(t *testing.T) {
-	const workspaceHost = "https://workspace.cloud.databricks.com"
-	testCases := []struct {
-		name   string
-		scopes []string
-		want   []string
-	}{
-		{
-			name:   "nil scopes uses default",
-			scopes: nil,
-			want:   []string{"all-apis"},
+				return &Config{
+					Host:              "https://workspace.cloud.databricks.com",
+					DatabricksCliPath: legacyCliPath,
+				}, func() {}
+			},
+			wantSkip: true,
 		},
 		{
-			name:   "empty scopes uses default",
-			scopes: []string{},
-			want:   []string{"all-apis"},
+			name: "OAuth not configured skips auth",
+			skip: func() bool { return runtime.GOOS == "windows" },
+			setup: func(t *testing.T) (*Config, func()) {
+				mockCli := createMockCli(t, `#!/bin/sh
+echo "Error: databricks OAuth is not configured for this host" >&2
+exit 1`)
+				return &Config{
+					Host:              "https://workspace.cloud.databricks.com",
+					DatabricksCliPath: mockCli,
+				}, func() {}
+			},
+			wantSkip: true,
 		},
 		{
-			name:   "multiple scopes are sorted",
-			scopes: []string{"clusters", "jobs", "sql:read"},
-			want:   []string{"clusters", "jobs", "sql:read"},
+			name: "token error passes through CLI error",
+			skip: func() bool { return runtime.GOOS == "windows" },
+			setup: func(t *testing.T) (*Config, func()) {
+				mockCli := createMockCli(t, `#!/bin/sh
+cat >&2 << 'EOF'
+A new access token could not be retrieved because the refresh token is invalid. To reauthenticate, run the following command:
+  $ databricks auth login --host https://workspace.cloud.databricks.com
+EOF
+exit 1`)
+				return &Config{
+					Host:              "https://workspace.cloud.databricks.com",
+					DatabricksCliPath: mockCli,
+				}, func() {}
+			},
+			wantErr: "refresh token is invalid",
+		},
+		{
+			name: "successful authentication",
+			skip: func() bool { return runtime.GOOS == "windows" },
+			setup: func(t *testing.T) (*Config, func()) {
+				expiry := time.Now().Add(1 * time.Hour).Format(time.RFC3339)
+				response := cliTokenResponse{
+					AccessToken: "test-access-token",
+					TokenType:   "Bearer",
+					Expiry:      expiry,
+				}
+				jsonResponse, _ := json.Marshal(response)
+				mockCli := createMockCli(t, "#!/bin/sh\necho '"+string(jsonResponse)+"'")
+				return &Config{
+					Host:              "https://workspace.cloud.databricks.com",
+					DatabricksCliPath: mockCli,
+				}, func() {}
+			},
+			wantProvider: true,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			ts := &testTokenSource{token: testValidToken}
-			var capturedPA *u2m.PersistentAuth
-
-			u := u2mCredentials{
-				newPersistentAuth: func(ctx context.Context, opts ...u2m.PersistentAuthOption) (oauth2.TokenSource, error) {
-					pa, err := u2m.NewPersistentAuth(ctx, opts...)
-					if err != nil {
-						return nil, err
-					}
-					capturedPA = pa
-					return ts, nil
-				},
-			}
-			cfg := &Config{
-				Host:   workspaceHost,
-				Scopes: tc.scopes,
+			if tc.skip != nil && tc.skip() {
+				t.Skip("Skipping test on this platform")
 			}
 
-			_, err := u.Configure(context.Background(), cfg)
-			if err != nil {
-				t.Fatalf("Configure() error = %v", err)
-			}
+			cfg, cleanup := tc.setup(t)
+			defer cleanup()
 
-			arg, err := u2m.NewBasicWorkspaceOAuthArgument(workspaceHost)
-			if err != nil {
-				t.Fatalf("NewBasicWorkspaceOAuthArgument() error = %v", err)
-			}
-			wantPA, err := u2m.NewPersistentAuth(context.Background(),
-				u2m.WithOAuthArgument(arg),
-				u2m.WithScopes(tc.want),
-			)
-			if err != nil {
-				t.Fatalf("NewPersistentAuth() error = %v", err)
-			}
+			cp, err := (u2mCredentials{}).Configure(context.Background(), cfg)
 
-			if diff := cmp.Diff(wantPA, capturedPA,
-				cmp.AllowUnexported(u2m.PersistentAuth{}, u2m.BasicWorkspaceOAuthArgument{}),
-				cmpopts.IgnoreFields(u2m.PersistentAuth{},
-					"cache", "client", "endpointSupplier", "browser",
-					"ln", "ctx", "redirectAddr", "port", "netListen", "disableOfflineAccess"),
-			); diff != "" {
-				t.Errorf("PersistentAuth mismatch (-want +got):\n%s", diff)
+			switch {
+			case tc.wantErr != "":
+				if err == nil {
+					t.Fatalf("Configure() error = nil, want error containing %q", tc.wantErr)
+				}
+				if !strings.Contains(err.Error(), tc.wantErr) {
+					t.Errorf("Configure() error = %q, want error containing %q", err, tc.wantErr)
+				}
+			case tc.wantSkip:
+				if err != nil {
+					t.Errorf("Configure() error = %v, want nil (should skip auth)", err)
+				}
+				if cp != nil {
+					t.Errorf("Configure() = %v, want nil (should skip auth)", cp)
+				}
+			case tc.wantProvider:
+				if err != nil {
+					t.Fatalf("Configure() error = %v, want nil", err)
+				}
+				if cp == nil {
+					t.Fatal("Configure() = nil, want CredentialsProvider")
+				}
 			}
 		})
 	}
+}
+
+// createMockCli creates a mock CLI script in a temp directory and returns its path.
+// The script content should be a valid shell script starting with #!/bin/sh.
+func createMockCli(t *testing.T, scriptContent string) string {
+	t.Helper()
+	tempDir := t.TempDir()
+	mockCli := filepath.Join(tempDir, "databricks")
+	if err := os.WriteFile(mockCli, []byte(scriptContent), 0755); err != nil {
+		t.Fatalf("failed to create mock CLI: %v", err)
+	}
+	if err := padFile(mockCli, databricksCliMinSize+1); err != nil {
+		t.Fatalf("failed to pad mock CLI: %v", err)
+	}
+	return mockCli
+}
+
+// padFile appends null bytes to make the file at least minSize bytes.
+// This is needed because the CLI detection checks file size to distinguish
+// the new Go-based CLI from the legacy Python CLI.
+func padFile(path string, minSize int64) error {
+	info, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+	if info.Size() >= minSize {
+		return nil
+	}
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, 0755)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	padding := make([]byte, minSize-info.Size())
+	_, err = f.Write(padding)
+	return err
 }
