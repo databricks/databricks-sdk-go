@@ -47,14 +47,12 @@ func (a *gitCredentialsImpl) Get(ctx context.Context, request GetCredentialsRequ
 	return &getCredentialsResponse, err
 }
 
-// Lists the calling user's Git credentials. One credential per user is
-// supported.
-func (a *gitCredentialsImpl) List(ctx context.Context) listing.Iterator[CredentialInfo] {
-	request := struct{}{}
+// Lists the calling user's Git credentials.
+func (a *gitCredentialsImpl) List(ctx context.Context, request ListCredentialsRequest) listing.Iterator[CredentialInfo] {
 
-	getNextPage := func(ctx context.Context, req struct{}) (*ListCredentialsResponse, error) {
+	getNextPage := func(ctx context.Context, req ListCredentialsRequest) (*ListCredentialsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
-		return a.internalList(ctx)
+		return a.internalList(ctx, req)
 	}
 	getItems := func(resp *ListCredentialsResponse) []CredentialInfo {
 		return resp.Credentials
@@ -68,20 +66,19 @@ func (a *gitCredentialsImpl) List(ctx context.Context) listing.Iterator[Credenti
 	return iterator
 }
 
-// Lists the calling user's Git credentials. One credential per user is
-// supported.
-func (a *gitCredentialsImpl) ListAll(ctx context.Context) ([]CredentialInfo, error) {
-	iterator := a.List(ctx)
+// Lists the calling user's Git credentials.
+func (a *gitCredentialsImpl) ListAll(ctx context.Context, request ListCredentialsRequest) ([]CredentialInfo, error) {
+	iterator := a.List(ctx, request)
 	return listing.ToSlice[CredentialInfo](ctx, iterator)
 }
 
-func (a *gitCredentialsImpl) internalList(ctx context.Context) (*ListCredentialsResponse, error) {
+func (a *gitCredentialsImpl) internalList(ctx context.Context, request ListCredentialsRequest) (*ListCredentialsResponse, error) {
 	var listCredentialsResponse ListCredentialsResponse
 	path := "/api/2.0/git-credentials"
-
+	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listCredentialsResponse)
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listCredentialsResponse)
 	return &listCredentialsResponse, err
 }
 
