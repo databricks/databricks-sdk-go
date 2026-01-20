@@ -38,3 +38,8 @@
 * Add `Stderr` field for [compute.InitScriptInfoAndExecutionDetails](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InitScriptInfoAndExecutionDetails).
 * Add `GenerateDatabaseCredential` method for [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service.
 * Add `GetPublicAccountUserPreference`, `ListAccountUserPreferencesMetadata` and `PatchPublicAccountUserPreference` methods for [a.AccountSettingsV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settingsv2#AccountSettingsV2API) account-level service.
+* Add `PrincipalId` field for [workspace.CreateCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#CreateCredentialsRequest).
+* Add `PrincipalId` field for [workspace.DeleteCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#DeleteCredentialsRequest).
+* Add `PrincipalId` field for [workspace.GetCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#GetCredentialsRequest).
+* Add `PrincipalId` field for [workspace.ListCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#ListCredentialsRequest).
+* Add `PrincipalId` field for [workspace.UpdateCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#UpdateCredentialsRequest).
