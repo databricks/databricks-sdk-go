@@ -50,6 +50,17 @@ func TestU2MCredentials_Configure(t *testing.T) {
 			wantSkip: true,
 		},
 		{
+			name: "CLI not found returns error when auth type explicit",
+			setup: func(t *testing.T) (*Config, func()) {
+				return &Config{
+					Host:              "https://workspace.cloud.databricks.com",
+					DatabricksCliPath: "/nonexistent/path/to/databricks",
+					AuthType:          "databricks-cli",
+				}, func() {}
+			},
+			wantErr: "databricks CLI not found",
+		},
+		{
 			name: "legacy CLI detected skips auth",
 			setup: func(t *testing.T) (*Config, func()) {
 				tempDir := t.TempDir()
@@ -81,6 +92,21 @@ exit 1`)
 				}, func() {}
 			},
 			wantSkip: true,
+		},
+		{
+			name: "OAuth not configured returns error when auth type explicit",
+			skip: func() bool { return runtime.GOOS == "windows" },
+			setup: func(t *testing.T) (*Config, func()) {
+				mockCli := createMockCli(t, `#!/bin/sh
+echo "Error: databricks OAuth is not configured for this host" >&2
+exit 1`)
+				return &Config{
+					Host:              "https://workspace.cloud.databricks.com",
+					DatabricksCliPath: mockCli,
+					AuthType:          "databricks-cli",
+				}, func() {}
+			},
+			wantErr: "databricks OAuth is not",
 		},
 		{
 			name: "token error passes through CLI error",

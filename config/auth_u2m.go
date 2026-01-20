@@ -23,6 +23,11 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	}
 	ts, err := NewCliTokenSource(cfg)
 	if err != nil {
+		// If the user explicitly requested this auth type, return the error.
+		// Otherwise, skip to the next auth method in the chain.
+		if cfg.AuthType == "databricks-cli" {
+			return nil, err
+		}
 		if errors.Is(err, ErrCliNotFound) || errors.Is(err, ErrLegacyCliDetected) {
 			logger.Debugf(ctx, "databricks-cli auth: %v", err)
 			return nil, nil
@@ -31,13 +36,14 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 	}
 	_, err = ts.Token(ctx)
 	if err != nil {
-		if strings.Contains(err.Error(), "databricks OAuth is not") {
-			logger.Debugf(ctx, "databricks-cli auth: OAuth not configured: %v", err)
+		// If user hasn't logged in for this host (no token in cache) and didn't
+		// explicitly request this auth type, skip to the next auth method.
+		if strings.Contains(err.Error(), "databricks OAuth is not") && cfg.AuthType != "databricks-cli" {
+			logger.Debugf(ctx, "databricks-cli auth: %v", err)
 			return nil, nil
 		}
 		// Pass the CLI error through unchanged. The CLI already provides
-		// helpful error messages with login commands for common cases like
-		// invalid refresh tokens.
+		// helpful error messages with login commands for common cases.
 		return nil, err
 	}
 	logger.Infof(ctx, "Using Databricks CLI authentication")
