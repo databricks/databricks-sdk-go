@@ -27,7 +27,7 @@ func TestAccGitCredentials(t *testing.T) {
 
 	// skip-next-line-roll
 	acquireGitCredentialsLock(ctx, t, w)
-	list, err := w.GitCredentials.ListAll(ctx)
+	list, err := w.GitCredentials.ListAll(ctx, workspace.ListCredentialsRequest{})
 	require.NoError(t, err)
 	for _, v := range list {
 		err = w.GitCredentials.DeleteByCredentialId(ctx, v.CredentialId)
@@ -61,7 +61,7 @@ func TestAccGitCredentials(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, byId.GitUsername, byName.GitUsername)
 
-	names, err := w.GitCredentials.CredentialInfoGitProviderToCredentialIdMap(ctx)
+	names, err := w.GitCredentials.CredentialInfoGitProviderToCredentialIdMap(ctx, workspace.ListCredentialsRequest{})
 	require.NoError(t, err)
 	assert.Contains(t, names, byId.GitProvider)
 }

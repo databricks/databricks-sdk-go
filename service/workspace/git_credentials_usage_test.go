@@ -78,7 +78,7 @@ func ExampleGitCredentialsAPI_List_gitCredentials() {
 		panic(err)
 	}
 
-	list, err := w.GitCredentials.ListAll(ctx)
+	list, err := w.GitCredentials.ListAll(ctx, workspace.ListCredentialsRequest{})
 	if err != nil {
 		panic(err)
 	}
