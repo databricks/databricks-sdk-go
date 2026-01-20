@@ -47,30 +47,47 @@ func (a attributes) DebugString(cfg *Config) string {
 }
 
 func (a attributes) Validate(cfg *Config) error {
+	if err := a.validateCliScopes(cfg); err != nil {
+		return err
+	}
 	authsUsed := map[string]bool{}
 	for _, attr := range a {
-		if attr.IsZero(cfg) {
-			continue
-		}
-		if !attr.HasAuthAttribute() {
+		if attr.IsZero(cfg) || !attr.HasAuthAttribute() {
 			continue
 		}
 		authsUsed[attr.Auth] = true
 	}
-	if len(authsUsed) <= 1 {
+	if len(authsUsed) <= 1 || cfg.AuthType != "" {
 		return nil
 	}
-	if cfg.AuthType != "" {
-		// client has auth preference set
-		return nil
-	}
-	names := []string{}
+	names := make([]string, 0, len(authsUsed))
 	for v := range authsUsed {
 		names = append(names, v)
 	}
 	sort.Strings(names)
 	return fmt.Errorf("more than one authorization method configured: %s",
 		strings.Join(names, " and "))
+}
+
+// validateCliScopes returns an error if custom scopes are
+// specified with databricks-cli auth. The CLI's token cache is keyed by host,
+// not by scopes, so custom scopes would be silently ignored otherwise. Scopes
+// from config files are allowed since `databricks auth login` writes them there.
+func (a attributes) validateCliScopes(cfg *Config) error {
+	if cfg.AuthType != "databricks-cli" || len(cfg.Scopes) == 0 {
+		return nil
+	}
+	for _, attr := range a {
+		if attr.Name != "scopes" {
+			continue
+		}
+		if cfg.getSource(&attr).Type == SourceFile {
+			return nil
+		}
+		return fmt.Errorf("custom scopes are not supported with databricks-cli auth; " +
+			"scopes are determined by what was last used when logging in with `databricks auth login`")
+	}
+	return nil
 }
 
 // Name implements Loader interface for environment variables
