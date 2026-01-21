@@ -380,6 +380,9 @@ type EndpointSpec struct {
 	Disabled bool `json:"disabled,omitempty"`
 	// The endpoint type. A branch can only have one READ_WRITE endpoint.
 	EndpointType EndpointType `json:"endpoint_type"`
+	// When set to true, explicitly disables automatic suspension (never
+	// suspend). Should be set to true when provided.
+	NoSuspension bool `json:"no_suspension,omitempty"`
 
 	Settings *EndpointSettings `json:"settings,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
@@ -1043,6 +1046,9 @@ type ProjectDefaultEndpointSettings struct {
 	AutoscalingLimitMaxCu float64 `json:"autoscaling_limit_max_cu,omitempty"`
 	// The minimum number of Compute Units. Minimum value is 0.5.
 	AutoscalingLimitMinCu float64 `json:"autoscaling_limit_min_cu,omitempty"`
+	// When set to true, explicitly disables automatic suspension (never
+	// suspend). Should be set to true when provided.
+	NoSuspension bool `json:"no_suspension,omitempty"`
 	// A raw representation of Postgres settings.
 	PgSettings map[string]string `json:"pg_settings,omitempty"`
 	// Duration of inactivity after which the compute endpoint is automatically
