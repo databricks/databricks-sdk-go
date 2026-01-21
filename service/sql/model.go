@@ -4090,6 +4090,9 @@ type QueryInfo struct {
 	QueryText string `json:"query_text,omitempty"`
 	// The number of results returned by the query.
 	RowsProduced int64 `json:"rows_produced,omitempty"`
+	// The spark session UUID that query ran on. This is either the Spark
+	// Connect, DBSQL, or SDP session ID.
+	SessionId string `json:"session_id,omitempty"`
 	// URL to the Spark UI query plan.
 	SparkUiUrl string `json:"spark_ui_url,omitempty"`
 	// Type of statement for this query

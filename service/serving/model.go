@@ -3,6 +3,7 @@
 package serving
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -1610,6 +1611,8 @@ type QueryEndpointResponse struct {
 	// endpoint, one of [text_completion, chat.completion, list (of
 	// embeddings)].
 	Object QueryEndpointResponseObject `json:"object,omitempty"`
+	// The outputs of the feature serving endpoint.
+	Outputs []json.RawMessage `json:"outputs,omitempty"`
 	// The predictions returned by the serving endpoint.
 	Predictions []any `json:"predictions,omitempty"`
 	// The name of the served model that served the request. This is useful when
