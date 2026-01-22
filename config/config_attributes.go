@@ -49,15 +49,22 @@ func (a attributes) DebugString(cfg *Config) string {
 func (a attributes) Validate(cfg *Config) error {
 	authsUsed := map[string]bool{}
 	for _, attr := range a {
-		if attr.IsZero(cfg) || !attr.HasAuthAttribute() {
+		if attr.IsZero(cfg) {
+			continue
+		}
+		if !attr.HasAuthAttribute() {
 			continue
 		}
 		authsUsed[attr.Auth] = true
 	}
-	if len(authsUsed) <= 1 || cfg.AuthType != "" {
+	if len(authsUsed) <= 1 {
 		return nil
 	}
-	names := make([]string, 0, len(authsUsed))
+	if cfg.AuthType != "" {
+		// client has auth preference set
+		return nil
+	}
+	names := []string{}
 	for v := range authsUsed {
 		names = append(names, v)
 	}
