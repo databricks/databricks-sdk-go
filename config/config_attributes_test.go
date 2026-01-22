@@ -2,84 +2,10 @@ package config
 
 import (
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 )
-
-func TestValidate_ScopesWithDatabricksCli(t *testing.T) {
-	testCases := []struct {
-		name        string
-		cfg         *Config
-		scopeSource *Source
-		wantErr     string
-	}{
-		{
-			name: "error when scopes are explicitly set",
-			cfg: &Config{
-				Host:     "https://workspace.cloud.databricks.com",
-				AuthType: "databricks-cli",
-				Scopes:   []string{"clusters", "jobs"},
-			},
-			wantErr: "custom scopes are not supported with databricks-cli auth",
-		},
-		{
-			name: "no error when scopes are empty",
-			cfg: &Config{
-				Host:     "https://workspace.cloud.databricks.com",
-				AuthType: "databricks-cli",
-				Scopes:   []string{},
-			},
-		},
-		{
-			name: "no error when scopes are nil",
-			cfg: &Config{
-				Host:     "https://workspace.cloud.databricks.com",
-				AuthType: "databricks-cli",
-			},
-		},
-		{
-			name: "no error when auth type is not databricks-cli",
-			cfg: &Config{
-				Host:     "https://workspace.cloud.databricks.com",
-				AuthType: "m2m",
-				Scopes:   []string{"sql"},
-			},
-		},
-		{
-			name: "no error when scopes come from config file",
-			cfg: &Config{
-				Host:     "https://workspace.cloud.databricks.com",
-				AuthType: "databricks-cli",
-				Scopes:   []string{"sql"},
-			},
-			scopeSource: &Source{Type: SourceFile, Name: "~/.databrickscfg"},
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			if tc.scopeSource != nil {
-				for i := range ConfigAttributes {
-					if ConfigAttributes[i].Name == "scopes" {
-						tc.cfg.SetAttrSource(&ConfigAttributes[i], *tc.scopeSource)
-						break
-					}
-				}
-			}
-			err := ConfigAttributes.Validate(tc.cfg)
-			switch {
-			case tc.wantErr == "" && err != nil:
-				t.Errorf("Validate() unexpected error: %v", err)
-			case tc.wantErr != "" && err == nil:
-				t.Fatalf("Validate() expected error containing %q, got nil", tc.wantErr)
-			case tc.wantErr != "" && !strings.Contains(err.Error(), tc.wantErr):
-				t.Errorf("Validate() error = %q, want error containing %q", err, tc.wantErr)
-			}
-		})
-	}
-}
 
 // TestConfigFile_Configure_ListParsing tests that comma-separated list values
 // in configuration files are correctly parsed into slices.

@@ -39,6 +39,10 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, fmt.Errorf("host is required")
 	}
 
+	if err := validateCliScopes(cfg); err != nil {
+		return nil, err
+	}
+
 	arg, err := cfg.getOAuthArgument()
 	if err != nil {
 		return nil, err
@@ -131,6 +135,27 @@ func buildLoginCommand(profile string, arg u2m.OAuthArgument) string {
 		}
 	}
 	return strings.Join(cmd, " ")
+}
+
+// validateCliScopes returns an error if custom scopes are
+// specified with databricks-cli auth. The CLI's token cache is keyed by host,
+// not by scopes, so custom scopes would be silently ignored otherwise. Custom scopes
+// from config files are allowed since `databricks auth login` writes them there.
+func validateCliScopes(cfg *Config) error {
+	if len(cfg.Scopes) == 0 {
+		return nil
+	}
+	for _, attr := range ConfigAttributes {
+		if attr.Name != "scopes" {
+			continue
+		}
+		if cfg.getSource(&attr).Type == SourceFile {
+			return nil
+		}
+		return fmt.Errorf("custom scopes are not supported with databricks-cli auth; " +
+			"scopes are determined by what was last used when logging in with `databricks auth login`")
+	}
+	return nil
 }
 
 var DatabricksCliCredentials = u2mCredentials{}
