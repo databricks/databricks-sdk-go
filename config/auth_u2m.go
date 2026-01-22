@@ -39,6 +39,13 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, fmt.Errorf("host is required")
 	}
 
+	// We only partially support custom scopes with databricks-cli auth.
+	// Users can specify their scopes when logging in with `databricks auth login`,
+	// but not when using `databricks-cli` auth in the SDKs.
+	// The last token matching the host is returned, regardless of the scopes.
+	// This is because the token store is currently keyed only by host.
+	// TODO: remove this validation once the token store can identify scopes based on their permissions. This will
+	// allow users to specify scopes explicitly in the SDKs.
 	if err := validateCliScopes(cfg); err != nil {
 		return nil, err
 	}

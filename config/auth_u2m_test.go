@@ -320,6 +320,19 @@ func TestU2MCredentials_Configure_Scopes(t *testing.T) {
 				Scopes: tc.scopes,
 			}
 
+			// Mark scopes as coming from config file to bypass validation as custom scopes are only
+			// allowed from config files with databricks-cli auth.
+			// TODO: remove this block once the token store can identify scopes based on their identity
+			// and we no longer have to block users from specifying scopes explicitly.
+			if len(tc.scopes) > 0 {
+				for i := range ConfigAttributes {
+					if ConfigAttributes[i].Name == "scopes" {
+						cfg.SetAttrSource(&ConfigAttributes[i], Source{Type: SourceFile, Name: "test"})
+						break
+					}
+				}
+			}
+
 			_, err := u.Configure(context.Background(), cfg)
 			if err != nil {
 				t.Fatalf("Configure() error = %v", err)
