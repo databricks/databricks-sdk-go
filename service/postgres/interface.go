@@ -14,21 +14,11 @@ import (
 //
 // **About resource IDs and names**
 //
-// Lakebase APIs use hierarchical resource names in API paths to identify
-// resources, such as
-// `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`.
-//
-// When creating a resource, you may optionally provide the final ID component
-// (for example, `project_id`, `branch_id`, or `endpoint_id`). If you do not,
-// the system generates an identifier and uses it as the ID component.
-//
-// The `name` field is output-only and represents the full resource path. Note:
-// The term *resource name* in this API refers to this full, hierarchical
-// identifier (for example, `projects/{project_id}`), not the `display_name`
-// field. The `display_name` is a separate, user-visible label shown in the UI.
-//
-// The `uid` field is a system-generated, immutable identifier intended for
-// internal reference and should not be used to address or locate resources.
+// Resources are identified by hierarchical resource names like
+// `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`. The
+// `name` field on each resource contains this full path and is output-only.
+// Note that `name` refers to this resource path, not the user-visible
+// `display_name`.
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PostgresService interface {
