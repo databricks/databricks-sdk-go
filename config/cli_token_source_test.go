@@ -21,6 +21,11 @@ func TestParseExpiry(t *testing.T) {
 		{"RFC3339Nano", "2024-03-20T10:30:00.123456789Z", false},
 		{"RFC3339", "2024-03-20T10:30:00Z", false},
 		{"RFC3339 with offset", "2024-03-20T10:30:00+01:00", false},
+		{"space-separated", "2024-03-20 10:30:00", false},
+		{"space-separated with 1 digit fractional", "2024-03-20 10:30:00.1", false},
+		{"space-separated with 3 digits fractional", "2024-03-20 10:30:00.123", false},
+		{"space-separated with 6 digits fractional", "2024-03-20 10:30:00.123456", false},
+		{"space-separated with 9 digits fractional", "2024-03-20 10:30:00.123456789", false},
 		{"unsupported format", "March 20, 2024", true},
 		{"empty string", "", true},
 	}

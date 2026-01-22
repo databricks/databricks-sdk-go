@@ -71,14 +71,47 @@ func (c *CliTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
 	}, nil
 }
 
+// parseExpiry parses an expiry time string in multiple formats for cross-SDK compatibility.
+//
+// Supported formats:
+//  1. RFC 3339 with nanoseconds (e.g., "2024-03-20T10:30:00.123456789Z")
+//  2. RFC 3339 (e.g., "2024-03-20T10:30:00Z" or "2024-03-20T10:30:00+01:00")
+//  3. Space-separated without fractional seconds (e.g., "2024-03-20 10:30:00")
+//  4. Space-separated with fractional seconds (e.g., "2024-03-20 10:30:00.123")
+//
+// The Databricks CLI outputs time.RFC3339Nano format.
+//
+// Formats 3 and 4 are supported for parity with the Python and Java SDKs, which accept
+// space-separated datetime formats and assume the local timezone.
 func parseExpiry(expiry string) (time.Time, error) {
-	// Go's time.Time marshals to RFC3339Nano
 	if t, err := time.Parse(time.RFC3339Nano, expiry); err == nil {
 		return t, nil
 	}
 	if t, err := time.Parse(time.RFC3339, expiry); err == nil {
 		return t, nil
 	}
+
+	if t, err := time.Parse("2006-01-02 15:04:05", expiry); err == nil {
+		return t, nil
+	}
+
+	layouts := []string{
+		"2006-01-02 15:04:05.9",
+		"2006-01-02 15:04:05.99",
+		"2006-01-02 15:04:05.999",
+		"2006-01-02 15:04:05.9999",
+		"2006-01-02 15:04:05.99999",
+		"2006-01-02 15:04:05.999999",
+		"2006-01-02 15:04:05.9999999",
+		"2006-01-02 15:04:05.99999999",
+		"2006-01-02 15:04:05.999999999",
+	}
+	for _, layout := range layouts {
+		if t, err := time.Parse(layout, expiry); err == nil {
+			return t, nil
+		}
+	}
+
 	return time.Time{}, fmt.Errorf("cannot parse expiry %q", expiry)
 }
 
