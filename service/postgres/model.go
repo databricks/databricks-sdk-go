@@ -1301,12 +1301,41 @@ type RoleRoleSpec struct {
 	// * application ID for SERVICE_PRINCIPAL * user email for USER * group name
 	// for GROUP
 	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
+	// The name of the Postgres role.
+	//
+	// This expects a valid Postgres identifier as specified in the link below.
+	// https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+	//
+	// Required when creating the Role.
+	PostgresRole string `json:"postgres_role,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RoleRoleSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RoleRoleSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type RoleRoleStatus struct {
 	AuthMethod RoleAuthMethod `json:"auth_method,omitempty"`
 	// The type of the role.
 	IdentityType RoleIdentityType `json:"identity_type,omitempty"`
+	// The name of the Postgres role.
+	PostgresRole string `json:"postgres_role,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *RoleRoleStatus) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s RoleRoleStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateBranchRequest struct {
