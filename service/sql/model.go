@@ -5952,6 +5952,19 @@ type TrashAlertRequest struct {
 
 type TrashAlertV2Request struct {
 	Id string `json:"-" url:"-"`
+	// Whether to permanently delete the alert. If not set, the alert will only
+	// be soft deleted.
+	Purge bool `json:"-" url:"purge,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TrashAlertV2Request) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TrashAlertV2Request) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TrashQueryRequest struct {
