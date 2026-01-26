@@ -2,11 +2,10 @@ package pipelines
 
 import (
 	"context"
+	"strings"
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/qa"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestListPipelinesAll(t *testing.T) {
@@ -70,17 +69,39 @@ func TestListPipelinesAll(t *testing.T) {
 
 		allPipelines, err := api.ListPipelinesAll(ctx, ListPipelinesRequest{})
 
-		require.NoError(t, err)
-		assert.Equal(t, 4, len(allPipelines))
-		assert.Equal(t, "pipeline-1", allPipelines[0].Name)
-		assert.Equal(t, "00000000-0000-0000-0000-000000000001", allPipelines[0].PipelineId)
-		assert.Equal(t, "pipeline-2", allPipelines[1].Name)
-		assert.Equal(t, "00000000-0000-0000-0000-000000000002", allPipelines[1].PipelineId)
-		assert.Equal(t, "pipeline-3", allPipelines[2].Name)
-		assert.Equal(t, "00000000-0000-0000-0000-000000000003", allPipelines[2].PipelineId)
-		assert.Equal(t, "pipeline-4", allPipelines[3].Name)
-		assert.Equal(t, "00000000-0000-0000-0000-000000000004", allPipelines[3].PipelineId)
-		assert.Equal(t, PipelineStateIdle, allPipelines[0].State)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if len(allPipelines) != 4 {
+			t.Errorf("expected 4 pipelines, got %d", len(allPipelines))
+		}
+		if allPipelines[0].Name != "pipeline-1" {
+			t.Errorf("expected pipeline-1, got %s", allPipelines[0].Name)
+		}
+		if allPipelines[0].PipelineId != "00000000-0000-0000-0000-000000000001" {
+			t.Errorf("expected 00000000-0000-0000-0000-000000000001, got %s", allPipelines[0].PipelineId)
+		}
+		if allPipelines[1].Name != "pipeline-2" {
+			t.Errorf("expected pipeline-2, got %s", allPipelines[1].Name)
+		}
+		if allPipelines[1].PipelineId != "00000000-0000-0000-0000-000000000002" {
+			t.Errorf("expected 00000000-0000-0000-0000-000000000002, got %s", allPipelines[1].PipelineId)
+		}
+		if allPipelines[2].Name != "pipeline-3" {
+			t.Errorf("expected pipeline-3, got %s", allPipelines[2].Name)
+		}
+		if allPipelines[2].PipelineId != "00000000-0000-0000-0000-000000000003" {
+			t.Errorf("expected 00000000-0000-0000-0000-000000000003, got %s", allPipelines[2].PipelineId)
+		}
+		if allPipelines[3].Name != "pipeline-4" {
+			t.Errorf("expected pipeline-4, got %s", allPipelines[3].Name)
+		}
+		if allPipelines[3].PipelineId != "00000000-0000-0000-0000-000000000004" {
+			t.Errorf("expected 00000000-0000-0000-0000-000000000004, got %s", allPipelines[3].PipelineId)
+		}
+		if allPipelines[0].State != PipelineStateIdle {
+			t.Errorf("expected PipelineStateIdle, got %v", allPipelines[0].State)
+		}
 	})
 }
 
@@ -145,12 +166,24 @@ func TestPipelineStateInfoNameToPipelineIdMap(t *testing.T) {
 
 		nameToIdMap, err := api.PipelineStateInfoNameToPipelineIdMap(ctx, ListPipelinesRequest{})
 
-		require.NoError(t, err)
-		assert.Equal(t, 4, len(nameToIdMap))
-		assert.Equal(t, "00000000-0000-0000-0000-000000000001", nameToIdMap["pipeline-1"])
-		assert.Equal(t, "00000000-0000-0000-0000-000000000002", nameToIdMap["pipeline-2"])
-		assert.Equal(t, "00000000-0000-0000-0000-000000000003", nameToIdMap["pipeline-3"])
-		assert.Equal(t, "00000000-0000-0000-0000-000000000004", nameToIdMap["pipeline-4"])
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if len(nameToIdMap) != 4 {
+			t.Errorf("expected map length 4, got %d", len(nameToIdMap))
+		}
+		if nameToIdMap["pipeline-1"] != "00000000-0000-0000-0000-000000000001" {
+			t.Errorf("expected 00000000-0000-0000-0000-000000000001 for pipeline-1, got %s", nameToIdMap["pipeline-1"])
+		}
+		if nameToIdMap["pipeline-2"] != "00000000-0000-0000-0000-000000000002" {
+			t.Errorf("expected 00000000-0000-0000-0000-000000000002 for pipeline-2, got %s", nameToIdMap["pipeline-2"])
+		}
+		if nameToIdMap["pipeline-3"] != "00000000-0000-0000-0000-000000000003" {
+			t.Errorf("expected 00000000-0000-0000-0000-000000000003 for pipeline-3, got %s", nameToIdMap["pipeline-3"])
+		}
+		if nameToIdMap["pipeline-4"] != "00000000-0000-0000-0000-000000000004" {
+			t.Errorf("expected 00000000-0000-0000-0000-000000000004 for pipeline-4, got %s", nameToIdMap["pipeline-4"])
+		}
 	})
 
 	t.Run("name to pipeline id map detects duplicates", func(t *testing.T) {
@@ -188,8 +221,14 @@ func TestPipelineStateInfoNameToPipelineIdMap(t *testing.T) {
 
 		nameToIdMap, err := api.PipelineStateInfoNameToPipelineIdMap(ctx, ListPipelinesRequest{})
 
-		require.Error(t, err)
-		assert.Nil(t, nameToIdMap)
-		assert.Contains(t, err.Error(), "duplicate .Name: duplicate-pipeline-name")
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if nameToIdMap != nil {
+			t.Errorf("expected nil map, got %v", nameToIdMap)
+		}
+		if !strings.Contains(err.Error(), "duplicate .Name: duplicate-pipeline-name") {
+			t.Errorf("expected error to contain 'duplicate .Name: duplicate-pipeline-name', got: %v", err)
+		}
 	})
 }
