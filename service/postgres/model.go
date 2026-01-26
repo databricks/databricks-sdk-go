@@ -219,7 +219,20 @@ type CreateRoleRequest struct {
 	//
 	// This value should be 4-63 characters, and valid characters are lowercase
 	// letters, numbers, and hyphens, as defined by RFC 1123.
-	RoleId string `json:"-" url:"role_id"`
+	//
+	// If role_id is not specified in the request, it is generated
+	// automatically.
+	RoleId string `json:"-" url:"role_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateRoleRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateRoleRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DatabaseCredential struct {
