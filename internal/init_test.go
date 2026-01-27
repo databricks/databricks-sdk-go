@@ -71,8 +71,8 @@ func unifiedHostAccountTest(t *testing.T) (context.Context, *databricks.AccountC
 	if err != nil {
 		skipf(t)("error: %s", err)
 	}
-	if cfg.HostType() == config.WorkspaceHost {
-		skipf(t)("Not in account env: %s/%s", cfg.AccountID, cfg.Host)
+	if cfg.HostType() != config.UnifiedHost {
+		skipf(t)("Not in unified host env: %s/%s", cfg.AccountID, cfg.Host)
 	}
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 	t.Parallel()
