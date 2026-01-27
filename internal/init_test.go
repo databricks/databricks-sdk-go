@@ -52,6 +52,33 @@ func ucwsTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) {
 	return ctx, databricks.Must(databricks.NewWorkspaceClient())
 }
 
+func unifiedHostAccountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
+	loadDebugEnvIfRunsFromIDE(t, "account")
+	cfg := &config.Config{
+		Host:                       GetEnvOrSkipTest(t, "UNIFIED_HOST"),
+		AccountID:                  GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
+		ClientID:                   GetEnvOrSkipTest(t, "DATABRICKS_CLIENT_ID"),
+		ClientSecret:               GetEnvOrSkipTest(t, "DATABRICKS_CLIENT_SECRET"),
+		Experimental_IsUnifiedHost: true,
+		// Large timeout to support API calls that take long.
+		// For example, the /usage/download API can take more than
+		// 60 seconds to return a response.
+		HTTPTimeoutSeconds: 300,
+	}
+	err := cfg.EnsureResolved()
+	if err != nil {
+		skipf(t)("error: %s", err)
+	}
+	if cfg.HostType() == config.WorkspaceHost {
+		skipf(t)("Not in account env: %s/%s", cfg.AccountID, cfg.Host)
+	}
+	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+	t.Parallel()
+	ctx := context.Background()
+	return ctx, databricks.Must(databricks.NewAccountClient(
+		(*databricks.Config)(cfg)))
+}
+
 // prelude for all account-level tests
 func accountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 	loadDebugEnvIfRunsFromIDE(t, "account")
