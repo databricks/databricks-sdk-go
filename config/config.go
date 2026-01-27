@@ -158,11 +158,6 @@ type Config struct {
 	// during the U2M authentication flow (default to false).
 	DisableOAuthRefreshToken bool `name:"disable_oauth_refresh_token" env:"DATABRICKS_DISABLE_OAUTH_REFRESH_TOKEN" auth:"-"`
 
-	// DisableAsyncTokenRefresh controls whether tokens should be refreshed asynchronously
-	// in the background. When false (the default), tokens are refreshed asynchronously.
-	// When true, tokens are refreshed synchronously on each request that needs them.
-	DisableAsyncTokenRefresh bool `name:"disable_async_token_refresh" env:"DATABRICKS_DISABLE_ASYNC_TOKEN_REFRESH" auth:"-"`
-
 	// Path to the Databricks CLI (version >= 0.100.0).
 	DatabricksCliPath string `name:"databricks_cli_path" env:"DATABRICKS_CLI_PATH" auth_types:"databricks-cli"`
 

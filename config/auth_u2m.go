@@ -47,8 +47,7 @@ func (u u2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		return nil, err
 	}
 	logger.Infof(ctx, "Using Databricks CLI authentication")
-	return credentials.NewOAuthCredentialsProviderFromTokenSource(
-		auth.NewCachedTokenSource(ts, auth.WithAsyncRefresh(!cfg.DisableAsyncTokenRefresh))), nil
+	return credentials.NewOAuthCredentialsProviderFromTokenSource(auth.NewCachedTokenSource(ts)), nil
 }
 
 var DatabricksCliCredentials = u2mCredentials{}
