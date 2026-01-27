@@ -1,5 +1,14 @@
 # Version changelog
 
+## Release v0.101.0 (2026-01-27)
+
+### API Changes
+* Add `Force` field for [pipelines.DeletePipelineRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#DeletePipelineRequest).
+* Add `PostgresRole` field for [postgres.RoleRoleSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#RoleRoleSpec).
+* Add `PostgresRole` field for [postgres.RoleRoleStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#RoleRoleStatus).
+* Add `Purge` field for [sql.TrashAlertV2Request](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#TrashAlertV2Request).
+
+
 ## Release v0.100.0 (2026-01-22)
 
 ### API Changes
