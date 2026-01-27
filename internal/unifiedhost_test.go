@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAccUnifiedHostWorkspace(t *testing.T) {
+func TestAccUnifiedHost(t *testing.T) {
 	ctx, a := unifiedHostAccountTest(t)
 	user, err := a.Users.Create(ctx, iam.User{
 		DisplayName: RandomName("Me "),

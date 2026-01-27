@@ -11,7 +11,7 @@
 ### Documentation
 
 ### Internal Changes
-* Add integration test support for unified host infrastructure ([]())
+* Add integration test support for unified host infrastructure ([#1445](https://github.com/databricks/databricks-sdk-go/pull/1445))
 
 ### API Changes
 * Add `CloneMode` field for [pipelines.ClonePipelineRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ClonePipelineRequest).

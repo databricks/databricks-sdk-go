@@ -52,6 +52,8 @@ func ucwsTest(t *testing.T) (context.Context, *databricks.WorkspaceClient) {
 	return ctx, databricks.Must(databricks.NewWorkspaceClient())
 }
 
+// Once the experimental flag is removed for unified hosts, we can move the test support
+// for unified host to DATABRICKS_HOST as default.
 func unifiedHostAccountTest(t *testing.T) (context.Context, *databricks.AccountClient) {
 	loadDebugEnvIfRunsFromIDE(t, "account")
 	cfg := &config.Config{
