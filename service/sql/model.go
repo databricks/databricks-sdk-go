@@ -4090,6 +4090,9 @@ type QueryInfo struct {
 	QueryText string `json:"query_text,omitempty"`
 	// The number of results returned by the query.
 	RowsProduced int64 `json:"rows_produced,omitempty"`
+	// The spark session UUID that query ran on. This is either the Spark
+	// Connect, DBSQL, or SDP session ID.
+	SessionId string `json:"session_id,omitempty"`
 	// URL to the Spark UI query plan.
 	SparkUiUrl string `json:"spark_ui_url,omitempty"`
 	// Type of statement for this query
@@ -5949,6 +5952,19 @@ type TrashAlertRequest struct {
 
 type TrashAlertV2Request struct {
 	Id string `json:"-" url:"-"`
+	// Whether to permanently delete the alert. If not set, the alert will only
+	// be soft deleted.
+	Purge bool `json:"-" url:"purge,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TrashAlertV2Request) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TrashAlertV2Request) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TrashQueryRequest struct {

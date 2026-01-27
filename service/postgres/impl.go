@@ -12,6 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just Postgres API methods
@@ -69,7 +70,7 @@ func (a *postgresImpl) CreateRole(ctx context.Context, request CreateRoleRequest
 	path := fmt.Sprintf("/api/2.0/postgres/%v/roles", request.Parent)
 	queryParams := make(map[string]any)
 
-	if request.RoleId != "" {
+	if request.RoleId != "" || slices.Contains(request.ForceSendFields, "RoleId") {
 		queryParams["role_id"] = request.RoleId
 	}
 	headers := make(map[string]string)

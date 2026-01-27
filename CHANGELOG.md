@@ -1,5 +1,49 @@
 # Version changelog
 
+## Release v0.101.0 (2026-01-27)
+
+### API Changes
+* Add `Force` field for [pipelines.DeletePipelineRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#DeletePipelineRequest).
+* Add `PostgresRole` field for [postgres.RoleRoleSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#RoleRoleSpec).
+* Add `PostgresRole` field for [postgres.RoleRoleStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#RoleRoleStatus).
+* Add `Purge` field for [sql.TrashAlertV2Request](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#TrashAlertV2Request).
+
+
+## Release v0.100.0 (2026-01-22)
+
+### API Changes
+* Add `Outputs` field for [serving.QueryEndpointResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#QueryEndpointResponse).
+* Add `SessionId` field for [sql.QueryInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryInfo).
+* Add `NoSuspension` field for [postgres.EndpointSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#EndpointSpec).
+* Add `NoSuspension` field for [postgres.ProjectDefaultEndpointSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#ProjectDefaultEndpointSettings).
+
+
+## Release v0.99.0 (2026-01-20)
+
+### Breaking Changes
+
+* **[workspace]** Updated Git Credentials List methods to require `ListCredentialsRequest` parameter. The following methods now require a `workspace.ListCredentialsRequest` parameter instead of no parameters:
+  - `GitCredentialsAPI.List(ctx, request)`
+  - `GitCredentialsAPI.ListAll(ctx, request)`
+  - `GitCredentialsAPI.CredentialInfoGitProviderToCredentialIdMap(ctx, request)`
+
+  **Migration Guide:**
+  ```go
+  // Before
+  credentials, err := w.GitCredentials.ListAll(ctx)
+
+  // After
+  credentials, err := w.GitCredentials.ListAll(ctx, workspace.ListCredentialsRequest{})
+  ```
+
+### API Changes
+* Add `PrincipalId` field for [workspace.CreateCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#CreateCredentialsRequest).
+* Add `PrincipalId` field for [workspace.DeleteCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#DeleteCredentialsRequest).
+* Add `PrincipalId` field for [workspace.GetCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#GetCredentialsRequest).
+* Add `PrincipalId` field for [workspace.ListCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#ListCredentialsRequest).
+* Add `PrincipalId` field for [workspace.UpdateCredentialsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/workspace#UpdateCredentialsRequest).
+
+
 ## Release v0.98.0 (2026-01-20)
 
 ### API Changes
