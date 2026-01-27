@@ -7,10 +7,11 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"golang.org/x/exp/slices"
 	"strings"
 	"testing"
 	"time"
+
+	"golang.org/x/exp/slices"
 )
 
 func TestParseExpiry(t *testing.T) {
@@ -126,12 +127,12 @@ func TestFindDatabricksCli(t *testing.T) {
 
 func TestBuildCliCommand(t *testing.T) {
 	const (
-		cliPath       = "/path/to/databricks"
-		host          = "https://workspace.cloud.databricks.com"
-		accountHost   = "https://accounts.cloud.databricks.com"
-		unifiedHost   = "https://unified.cloud.databricks.com"
-		accountID     = "abc-123"
-		workspaceID   = "456"
+		cliPath     = "/path/to/databricks"
+		host        = "https://workspace.cloud.databricks.com"
+		accountHost = "https://accounts.cloud.databricks.com"
+		unifiedHost = "https://unified.cloud.databricks.com"
+		accountID   = "abc-123"
+		workspaceID = "456"
 	)
 
 	testCases := []struct {
