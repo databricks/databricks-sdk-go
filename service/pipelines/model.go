@@ -30,6 +30,41 @@ func (s AutoFullRefreshPolicy) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Enum to specify which mode of clone to execute
+type CloneMode string
+
+const CloneModeMigrateToUc CloneMode = `MIGRATE_TO_UC`
+
+// String representation for [fmt.Print]
+func (f *CloneMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CloneMode) Set(v string) error {
+	switch v {
+	case `MIGRATE_TO_UC`:
+		*f = CloneMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MIGRATE_TO_UC"`, v)
+	}
+}
+
+// Values returns all possible values for CloneMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CloneMode) Values() []CloneMode {
+	return []CloneMode{
+		CloneModeMigrateToUc,
+	}
+}
+
+// Type always returns CloneMode to satisfy [pflag.Value] interface
+func (f *CloneMode) Type() string {
+	return "CloneMode"
+}
+
 type ClonePipelineRequest struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
@@ -44,6 +79,8 @@ type ClonePipelineRequest struct {
 	Catalog string `json:"catalog,omitempty"`
 	// DLT Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
+	// The type of clone to perform. Currently, only deep copies are supported
+	CloneMode CloneMode `json:"clone_mode,omitempty"`
 	// Cluster settings for this pipeline deployment.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
 	// String-String configuration for this pipeline execution.
