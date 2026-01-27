@@ -48,8 +48,8 @@ func NewCliTokenSource(cfg *Config) (*CliTokenSource, error) {
 // and workspace hosts.
 func buildCliCommand(cliPath string, cfg *Config) []string {
 	cmd := []string{cliPath, "auth", "token", "--host", cfg.Host}
-	if cfg.Experimental_IsUnifiedHost {
-		// For unified hosts, pass account_id, workspace_id, and experimental flag
+	switch cfg.HostType() {
+	case UnifiedHost:
 		cmd = append(cmd, "--experimental-is-unified-host")
 		if cfg.AccountID != "" {
 			cmd = append(cmd, "--account-id", cfg.AccountID)
@@ -57,7 +57,7 @@ func buildCliCommand(cliPath string, cfg *Config) []string {
 		if cfg.WorkspaceId != "" {
 			cmd = append(cmd, "--workspace-id", cfg.WorkspaceId)
 		}
-	} else if cfg.HostType() == AccountHost {
+	case AccountHost:
 		cmd = append(cmd, "--account-id", cfg.AccountID)
 	}
 	return cmd
