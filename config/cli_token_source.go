@@ -39,11 +39,28 @@ func NewCliTokenSource(cfg *Config) (*CliTokenSource, error) {
 	if err != nil {
 		return nil, err
 	}
+	cmd := buildCliCommand(cliPath, cfg)
+	return &CliTokenSource{cmd: cmd}, nil
+}
+
+// buildCliCommand constructs the CLI command arguments for fetching an auth token.
+// It handles unified hosts (with optional account_id and workspace_id), account hosts,
+// and workspace hosts.
+func buildCliCommand(cliPath string, cfg *Config) []string {
 	cmd := []string{cliPath, "auth", "token", "--host", cfg.Host}
-	if cfg.HostType() == AccountHost {
+	if cfg.Experimental_IsUnifiedHost {
+		// For unified hosts, pass account_id, workspace_id, and experimental flag
+		cmd = append(cmd, "--experimental-is-unified-host")
+		if cfg.AccountID != "" {
+			cmd = append(cmd, "--account-id", cfg.AccountID)
+		}
+		if cfg.WorkspaceId != "" {
+			cmd = append(cmd, "--workspace-id", cfg.WorkspaceId)
+		}
+	} else if cfg.HostType() == AccountHost {
 		cmd = append(cmd, "--account-id", cfg.AccountID)
 	}
-	return &CliTokenSource{cmd: cmd}, nil
+	return cmd
 }
 
 func (c *CliTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {

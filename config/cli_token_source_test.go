@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"golang.org/x/exp/slices"
 	"strings"
 	"testing"
 	"time"
@@ -123,6 +124,89 @@ func TestFindDatabricksCli(t *testing.T) {
 	}
 }
 
+func TestBuildCliCommand(t *testing.T) {
+	const (
+		cliPath       = "/path/to/databricks"
+		host          = "https://workspace.cloud.databricks.com"
+		accountHost   = "https://accounts.cloud.databricks.com"
+		unifiedHost   = "https://unified.cloud.databricks.com"
+		accountID     = "abc-123"
+		workspaceID   = "456"
+	)
+
+	testCases := []struct {
+		name    string
+		cfg     *Config
+		wantCmd []string
+	}{
+		{
+			name:    "workspace host",
+			cfg:     &Config{Host: host},
+			wantCmd: []string{cliPath, "auth", "token", "--host", host},
+		},
+		{
+			name:    "account host",
+			cfg:     &Config{Host: accountHost, AccountID: accountID},
+			wantCmd: []string{cliPath, "auth", "token", "--host", accountHost, "--account-id", accountID},
+		},
+		{
+			name: "unified host with account ID and workspace ID",
+			cfg: &Config{
+				Host:                       unifiedHost,
+				Experimental_IsUnifiedHost: true,
+				AccountID:                  accountID,
+				WorkspaceId:                workspaceID,
+			},
+			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost, "--experimental-is-unified-host", "--account-id", accountID, "--workspace-id", workspaceID},
+		},
+		{
+			name: "unified host with account ID only",
+			cfg: &Config{
+				Host:                       unifiedHost,
+				Experimental_IsUnifiedHost: true,
+				AccountID:                  accountID,
+			},
+			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost, "--experimental-is-unified-host", "--account-id", accountID},
+		},
+		{
+			name: "unified host with workspace ID only",
+			cfg: &Config{
+				Host:                       unifiedHost,
+				Experimental_IsUnifiedHost: true,
+				WorkspaceId:                workspaceID,
+			},
+			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost, "--experimental-is-unified-host", "--workspace-id", workspaceID},
+		},
+		{
+			name: "unified host with no account ID or workspace ID",
+			cfg: &Config{
+				Host:                       unifiedHost,
+				Experimental_IsUnifiedHost: true,
+			},
+			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost, "--experimental-is-unified-host"},
+		},
+		{
+			// Explicit false should fall back to the standard host type detection
+			name: "unified host false with account host",
+			cfg: &Config{
+				Host:                       accountHost,
+				Experimental_IsUnifiedHost: false,
+				AccountID:                  accountID,
+			},
+			wantCmd: []string{cliPath, "auth", "token", "--host", accountHost, "--account-id", accountID},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := buildCliCommand(cliPath, tc.cfg)
+			if !slices.Equal(got, tc.wantCmd) {
+				t.Errorf("buildCliCommand() = %v, want %v", got, tc.wantCmd)
+			}
+		})
+	}
+}
+
 func TestNewCliTokenSource(t *testing.T) {
 	tempDir := t.TempDir()
 
@@ -135,48 +219,25 @@ func TestNewCliTokenSource(t *testing.T) {
 		t.Fatalf("failed to create mock CLI: %v", err)
 	}
 
-	testCases := []struct {
-		name    string
-		cfg     *Config
-		wantCmd []string
-		wantErr error
-	}{
-		{
-			name:    "workspace host",
-			cfg:     &Config{DatabricksCliPath: validCliPath, Host: "https://workspace.cloud.databricks.com"},
-			wantCmd: []string{validCliPath, "auth", "token", "--host", "https://workspace.cloud.databricks.com"},
-		},
-		{
-			name:    "account host",
-			cfg:     &Config{DatabricksCliPath: validCliPath, Host: "https://accounts.cloud.databricks.com", AccountID: "abc-123"},
-			wantCmd: []string{validCliPath, "auth", "token", "--host", "https://accounts.cloud.databricks.com", "--account-id", "abc-123"},
-		},
-		{
-			name:    "CLI not found",
-			cfg:     &Config{DatabricksCliPath: filepath.Join(tempDir, "nonexistent"), Host: "https://workspace.cloud.databricks.com"},
-			wantErr: ErrCliNotFound,
-		},
-	}
+	t.Run("success", func(t *testing.T) {
+		cfg := &Config{DatabricksCliPath: validCliPath, Host: "https://example.databricks.com"}
+		ts, err := NewCliTokenSource(cfg)
+		if err != nil {
+			t.Fatalf("NewCliTokenSource() unexpected error: %v", err)
+		}
+		// Verify CLI path was resolved and used
+		if ts.cmd[0] != validCliPath {
+			t.Errorf("cmd[0] = %q, want %q", ts.cmd[0], validCliPath)
+		}
+	})
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			ts, err := NewCliTokenSource(tc.cfg)
-			if tc.wantErr != nil {
-				if !errors.Is(err, tc.wantErr) {
-					t.Errorf("NewCliTokenSource() error = %v, want %v", err, tc.wantErr)
-				}
-				return
-			}
-			if err != nil {
-				t.Fatalf("NewCliTokenSource() unexpected error: %v", err)
-			}
-			for i := range ts.cmd {
-				if ts.cmd[i] != tc.wantCmd[i] {
-					t.Errorf("cmd[%d] = %q, want %q", i, ts.cmd[i], tc.wantCmd[i])
-				}
-			}
-		})
-	}
+	t.Run("CLI not found", func(t *testing.T) {
+		cfg := &Config{DatabricksCliPath: filepath.Join(tempDir, "nonexistent"), Host: "https://example.databricks.com"}
+		_, err := NewCliTokenSource(cfg)
+		if !errors.Is(err, ErrCliNotFound) {
+			t.Errorf("NewCliTokenSource() error = %v, want %v", err, ErrCliNotFound)
+		}
+	})
 }
 
 func TestCliTokenSource_Token(t *testing.T) {
