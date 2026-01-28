@@ -6,6 +6,7 @@ import (
 
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -168,7 +169,7 @@ func TestAccGroups(t *testing.T) {
 
 func TestAccServicePrincipalsOnAWS(t *testing.T) {
 	ctx, w := workspaceTest(t)
-	if !w.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		t.Skip("test only for aws")
 	}
 

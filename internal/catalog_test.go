@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/sql"
@@ -16,7 +17,7 @@ import (
 
 func TestUcAccVolumes(t *testing.T) {
 	ctx, w := ucwsTest(t)
-	if !w.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		skipf(t)("not on aws")
 	}
 
@@ -101,7 +102,7 @@ func TestUcAccVolumes(t *testing.T) {
 
 func TestUcAccTables(t *testing.T) {
 	ctx, w := ucwsTest(t)
-	if w.Config.IsGcp() {
+	if IsCloud(environment.CloudGCP) {
 		skipf(t)("Statement Execution API not available on GCP, skipping")
 	}
 
@@ -185,8 +186,8 @@ func TestUcAccTables(t *testing.T) {
 
 func TestUcAccStorageCredentialsOnAws(t *testing.T) {
 	ctx, w := ucwsTest(t)
-	if !w.Config.IsAws() {
-		skipf(t)("not not aws")
+	if !IsCloud(environment.CloudAWS) {
+		skipf(t)("not on aws")
 	}
 
 	// TODO: OpenAPI: retry protocol on late validation for storage
@@ -223,8 +224,8 @@ func TestUcAccStorageCredentialsOnAws(t *testing.T) {
 
 func TestUcAccExternalLocationsOnAws(t *testing.T) {
 	ctx, w := ucwsTest(t)
-	if !w.Config.IsAws() {
-		skipf(t)("not not aws")
+	if !IsCloud(environment.CloudAWS) {
+		skipf(t)("not on aws")
 	}
 
 	credential, err := w.StorageCredentials.Create(ctx, catalog.CreateStorageCredential{

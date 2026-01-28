@@ -3,6 +3,7 @@ package internal
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/stretchr/testify/assert"
@@ -11,7 +12,7 @@ import (
 
 func TestMwsAccLogDelivery(t *testing.T) {
 	ctx, a := accountTest(t)
-	if !a.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		t.SkipNow()
 	}
 	creds, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
@@ -66,7 +67,7 @@ func TestMwsAccLogDelivery(t *testing.T) {
 
 func TestMwsAccBudgets(t *testing.T) {
 	ctx, a := accountTest(t)
-	if !a.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		t.SkipNow()
 	}
 
@@ -83,7 +84,8 @@ func TestMwsAccBudgets(t *testing.T) {
 							Values:   []string{"all"},
 						},
 					},
-				}},
+				},
+			},
 			AlertConfigurations: []billing.CreateBudgetConfigurationBudgetAlertConfigurations{
 				{
 					TimePeriod:        billing.AlertConfigurationTimePeriodMonth,
@@ -104,7 +106,6 @@ func TestMwsAccBudgets(t *testing.T) {
 	defer a.Budgets.DeleteByBudgetId(ctx, created.Budget.BudgetConfigurationId)
 
 	_, err = a.Budgets.Update(ctx, billing.UpdateBudgetConfigurationRequest{
-
 		BudgetId: created.Budget.BudgetConfigurationId,
 		Budget: billing.UpdateBudgetConfigurationBudget{
 			BudgetConfigurationId: created.Budget.BudgetConfigurationId,
@@ -118,7 +119,8 @@ func TestMwsAccBudgets(t *testing.T) {
 							Values:   []string{"all"},
 						},
 					},
-				}},
+				},
+			},
 			AlertConfigurations: []billing.AlertConfiguration{
 				{
 					AlertConfigurationId: created.Budget.AlertConfigurations[0].AlertConfigurationId,

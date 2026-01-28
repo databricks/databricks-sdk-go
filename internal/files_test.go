@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/common/environment"
 
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/files"
@@ -124,7 +125,7 @@ func TestUcAccFilesGetDirectoryMetadata(t *testing.T) {
 
 func TestAccDbfsOpen(t *testing.T) {
 	ctx, w := workspaceTest(t)
-	if w.Config.IsGcp() {
+	if IsCloud(environment.CloudGCP) {
 		t.Skip("dbfs not available on gcp")
 	}
 
@@ -202,7 +203,7 @@ func TestAccDbfsOpen(t *testing.T) {
 
 func TestAccDbfsOpenDirectory(t *testing.T) {
 	ctx, w := workspaceTest(t)
-	if w.Config.IsGcp() {
+	if IsCloud(environment.CloudGCP) {
 		t.Skip("dbfs not available on gcp")
 	}
 
@@ -231,7 +232,7 @@ func TestAccDbfsOpenDirectory(t *testing.T) {
 
 func TestAccDbfsReadFileWriteFile(t *testing.T) {
 	ctx, w := workspaceTest(t)
-	if w.Config.IsGcp() {
+	if IsCloud(environment.CloudGCP) {
 		t.Skip("dbfs not available on gcp")
 	}
 
@@ -267,7 +268,7 @@ func TestAccDbfsReadFileWriteFile(t *testing.T) {
 
 func TestAccListDbfsIntegration(t *testing.T) {
 	ctx, w := workspaceTest(t)
-	if w.Config.IsGcp() {
+	if IsCloud(environment.CloudGCP) {
 		t.Skip("dbfs not available on gcp")
 	}
 

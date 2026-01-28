@@ -3,6 +3,7 @@ package internal
 import (
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/stretchr/testify/assert"
@@ -11,7 +12,7 @@ import (
 
 func TestAccCreateOboTokenOnAws(t *testing.T) {
 	ctx, w := workspaceTest(t)
-	if !w.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		t.Skip("works only on aws")
 	}
 	groups, err := w.Groups.GroupDisplayNameToIdMap(ctx, iam.ListGroupsRequest{})
