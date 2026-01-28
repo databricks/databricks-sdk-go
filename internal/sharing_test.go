@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 	"github.com/databricks/databricks-sdk-go/service/sql"
@@ -55,7 +56,7 @@ func TestUcAccProviders(t *testing.T) {
 // TODO: remove NoTranspile
 func TestUcAccRecipientActivationNoTranspile(t *testing.T) {
 	ctx, w := ucwsTest(t)
-	if w.Config.IsAzure() {
+	if IsCloud(environment.CloudAzure) {
 		skipf(t)("temporarily skipping this test on Azure until RetrieveToken uses the same host as specified in the activation URL")
 	}
 
@@ -131,7 +132,7 @@ func TestUcAccRecipients(t *testing.T) {
 
 func TestUcAccShares(t *testing.T) {
 	ctx, w := ucwsTest(t)
-	if w.Config.IsGcp() {
+	if IsCloud(environment.CloudGCP) {
 		skipf(t)("Statement Execution API not available on GCP, skipping")
 	}
 

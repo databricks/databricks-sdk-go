@@ -13,13 +13,16 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"github.com/databricks/databricks-sdk-go/qa"
 )
 
-const fullCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-const hexCharset = "0123456789abcdef"
+const (
+	fullCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	hexCharset  = "0123456789abcdef"
+)
 
 func init() {
 	databricks.WithProduct("integration-tests", databricks.Version())
@@ -103,6 +106,13 @@ func GetEnvOrSkipTest(t *testing.T, name string) string {
 		skipf(t)("Environment variable %s is missing", name)
 	}
 	return value
+}
+
+// IsCloud checks if the CLOUD_PROVIDER environment variable matches the specified cloud provider
+func IsCloud(cloud environment.Cloud) bool {
+	cloudProvider := strings.ToUpper(os.Getenv("CLOUD_PROVIDER"))
+	cloudUpper := strings.ToUpper(string(cloud))
+	return cloudProvider == cloudUpper
 }
 
 func MustParseInt64(v string) int64 {

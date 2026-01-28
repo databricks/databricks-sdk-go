@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go"
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/stretchr/testify/assert"
@@ -14,7 +15,8 @@ import (
 )
 
 func sharedRunningCluster(t *testing.T, ctx context.Context,
-	w *databricks.WorkspaceClient) string {
+	w *databricks.WorkspaceClient,
+) string {
 	clusterId := GetEnvOrSkipTest(t, "TEST_GO_SDK_CLUSTER_ID")
 	err := w.Clusters.EnsureClusterIsRunning(ctx, clusterId)
 	require.NoError(t, err)
@@ -64,7 +66,7 @@ func TestAccClustersGetCorrectErrorMessageNoTranspile(t *testing.T) {
 
 func TestAccAwsInstanceProfiles(t *testing.T) {
 	ctx, w := workspaceTest(t)
-	if !w.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		t.Skipf("runs only on AWS")
 	}
 
