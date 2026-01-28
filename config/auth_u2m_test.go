@@ -25,7 +25,6 @@ func TestU2MCredentials_Configure(t *testing.T) {
 		skip         func() bool
 		cfg          func(t *testing.T) *Config
 		wantErr      string
-		wantSkip     bool
 		wantProvider bool
 	}{
 		{
@@ -34,38 +33,27 @@ func TestU2MCredentials_Configure(t *testing.T) {
 			wantErr: "host is required",
 		},
 		{
-			name: "CLI not found skips auth",
+			name: "CLI not found returns error",
 			cfg: func(t *testing.T) *Config {
 				return &Config{
 					Host:              "https://workspace.cloud.databricks.com",
 					DatabricksCliPath: "/nonexistent/path/to/databricks",
-				}
-			},
-			wantSkip: true,
-		},
-		{
-			name: "CLI not found returns error when auth type explicit",
-			cfg: func(t *testing.T) *Config {
-				return &Config{
-					Host:              "https://workspace.cloud.databricks.com",
-					DatabricksCliPath: "/nonexistent/path/to/databricks",
-					AuthType:          "databricks-cli",
 				}
 			},
 			wantErr: "databricks CLI not found",
 		},
 		{
-			name: "legacy CLI detected skips auth",
+			name: "legacy CLI detected returns error",
 			cfg: func(t *testing.T) *Config {
 				return &Config{
 					Host:              "https://workspace.cloud.databricks.com",
 					DatabricksCliPath: createLegacyCli(t),
 				}
 			},
-			wantSkip: true,
+			wantErr: "legacy databricks CLI detected",
 		},
 		{
-			name: "not logged in skips auth",
+			name: "not logged in returns error",
 			skip: func() bool { return runtime.GOOS == "windows" },
 			cfg: func(t *testing.T) *Config {
 				return &Config{
@@ -73,22 +61,10 @@ func TestU2MCredentials_Configure(t *testing.T) {
 					DatabricksCliPath: createMockCli(t, "#!/bin/sh\necho 'databricks OAuth is not configured' >&2; exit 1"),
 				}
 			},
-			wantSkip: true,
+			wantErr: "databricks OAuth is not configured",
 		},
 		{
-			name: "not logged in returns error when auth type explicit",
-			skip: func() bool { return runtime.GOOS == "windows" },
-			cfg: func(t *testing.T) *Config {
-				return &Config{
-					Host:              "https://workspace.cloud.databricks.com",
-					DatabricksCliPath: createMockCli(t, "#!/bin/sh\necho 'databricks OAuth is not configured' >&2; exit 1"),
-					AuthType:          "databricks-cli",
-				}
-			},
-			wantErr: "databricks OAuth is not",
-		},
-		{
-			name: "token error passes through CLI error",
+			name: "token error returns error",
 			skip: func() bool { return runtime.GOOS == "windows" },
 			cfg: func(t *testing.T) *Config {
 				return &Config{
@@ -122,10 +98,6 @@ func TestU2MCredentials_Configure(t *testing.T) {
 			case tc.wantErr != "":
 				if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
 					t.Errorf("got error %v, want error containing %q", err, tc.wantErr)
-				}
-			case tc.wantSkip:
-				if err != nil || cp != nil {
-					t.Errorf("got (%v, %v), want (nil, nil)", cp, err)
 				}
 			case tc.wantProvider:
 				if err != nil || cp == nil {
