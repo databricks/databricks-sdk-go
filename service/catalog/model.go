@@ -6848,7 +6848,7 @@ type RunRefreshRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
-// Next ID: 44
+// Next ID: 45
 type SchemaInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
