@@ -320,6 +320,19 @@ func TestU2MCredentials_Configure_Scopes(t *testing.T) {
 				Scopes: tc.scopes,
 			}
 
+			// Mark scopes as coming from config file to bypass validation as custom scopes are only
+			// allowed from config files with databricks-cli auth.
+			// TODO: remove this block once the token store can identify scopes based on their identity
+			// and we no longer have to block users from specifying scopes explicitly.
+			if len(tc.scopes) > 0 {
+				for i := range ConfigAttributes {
+					if ConfigAttributes[i].Name == "scopes" {
+						cfg.SetAttrSource(&ConfigAttributes[i], Source{Type: SourceFile, Name: "test"})
+						break
+					}
+				}
+			}
+
 			_, err := u.Configure(context.Background(), cfg)
 			if err != nil {
 				t.Fatalf("Configure() error = %v", err)
@@ -344,6 +357,72 @@ func TestU2MCredentials_Configure_Scopes(t *testing.T) {
 					"ln", "ctx", "redirectAddr", "port", "netListen", "disableOfflineAccess"),
 			); diff != "" {
 				t.Errorf("PersistentAuth mismatch (-want +got):\n%s", diff)
+			}
+		})
+	}
+}
+
+func TestU2MCredentials_Configure_CustomScopesError(t *testing.T) {
+	testCases := []struct {
+		name        string
+		cfg         *Config
+		scopeSource *Source
+		wantErr     string
+	}{
+		{
+			name: "error when scopes are explicitly set",
+			cfg: &Config{
+				Host:   "https://workspace.cloud.databricks.com",
+				Scopes: []string{"clusters", "jobs"},
+			},
+			wantErr: "custom scopes are not supported with databricks-cli auth",
+		},
+		{
+			name: "no error when scopes are empty",
+			cfg: &Config{
+				Host:   "https://workspace.cloud.databricks.com",
+				Scopes: []string{},
+			},
+		},
+		{
+			name: "no error when scopes are nil",
+			cfg: &Config{
+				Host: "https://workspace.cloud.databricks.com",
+			},
+		},
+		{
+			name: "no error when scopes come from config file",
+			cfg: &Config{
+				Host:   "https://workspace.cloud.databricks.com",
+				Scopes: []string{"sql"},
+			},
+			scopeSource: &Source{Type: SourceFile, Name: "~/.databrickscfg"},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			if tc.scopeSource != nil {
+				for i := range ConfigAttributes {
+					if ConfigAttributes[i].Name == "scopes" {
+						tc.cfg.SetAttrSource(&ConfigAttributes[i], *tc.scopeSource)
+						break
+					}
+				}
+			}
+			ts := &testTokenSource{token: testValidToken}
+			u := u2mCredentials{
+				newPersistentAuth: mockPersistentAuthFactory(ts),
+			}
+
+			_, err := u.Configure(context.Background(), tc.cfg)
+			switch {
+			case tc.wantErr == "" && err != nil:
+				t.Errorf("Configure() unexpected error: %v", err)
+			case tc.wantErr != "" && err == nil:
+				t.Fatalf("Configure() expected error containing %q, got nil", tc.wantErr)
+			case tc.wantErr != "" && !strings.Contains(err.Error(), tc.wantErr):
+				t.Errorf("Configure() error = %q, want error containing %q", err, tc.wantErr)
 			}
 		})
 	}
