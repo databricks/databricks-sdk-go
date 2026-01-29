@@ -441,15 +441,12 @@ type DatabaseTable struct {
 	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
 	// Target Postgres database object (logical database) name for this table.
 	//
-	// When creating a table in a registered Postgres catalog, the target
-	// Postgres database name is inferred to be that of the registered catalog.
-	// If this field is specified in this scenario, the Postgres database name
-	// MUST match that of the registered catalog (or the request will be
-	// rejected).
-	//
 	// When creating a table in a standard catalog, this field is required. In
 	// this scenario, specifying this field will allow targeting an arbitrary
 	// postgres database.
+	//
+	// Registration of database tables via /database/tables is currently only
+	// supported in standard catalogs.
 	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"name"`

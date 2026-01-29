@@ -255,6 +255,13 @@ func (s AuthConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type BackfillSource struct {
+	// The Delta table source containing the historic data to backfill. Only the
+	// delta table name is used for backfill, the entity columns and timeseries
+	// column are ignored as they are defined by the associated KafkaSource.
+	DeltaTableSource *DeltaTableSource `json:"delta_table_source,omitempty"`
+}
+
 type BatchCreateMaterializedFeaturesRequest struct {
 	// The requests to create materialized features.
 	Requests []CreateMaterializedFeatureRequest `json:"requests"`
@@ -1850,6 +1857,13 @@ func (s JobSpecWithoutSecret) MarshalJSON() ([]byte, error) {
 type KafkaConfig struct {
 	// Authentication configuration for connection to topics.
 	AuthConfig AuthConfig `json:"auth_config"`
+	// A user-provided and managed source for backfilling data. Historical data
+	// is used when creating a training set from streaming features linked to
+	// this Kafka config. In the future, a separate table will be maintained by
+	// Databricks for forward filling data. The schema for this source must
+	// match exactly that of the key and value schemas specified for this Kafka
+	// config.
+	BackfillSource *BackfillSource `json:"backfill_source,omitempty"`
 	// A comma-separated list of host/port pairs pointing to Kafka cluster.
 	BootstrapServers string `json:"bootstrap_servers"`
 	// Catch-all for miscellaneous options. Keys should be source options or
