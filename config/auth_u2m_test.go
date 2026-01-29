@@ -375,7 +375,7 @@ func TestU2MCredentials_Configure_CustomScopesError(t *testing.T) {
 				Host:   "https://workspace.cloud.databricks.com",
 				Scopes: []string{"clusters", "jobs"},
 			},
-			wantErr: "custom scopes are not supported with databricks-cli auth",
+			wantErr: ErrCustomScopesNotSupported,
 		},
 		{
 			name: "no error when scopes are empty",
@@ -416,13 +416,12 @@ func TestU2MCredentials_Configure_CustomScopesError(t *testing.T) {
 			}
 
 			_, err := u.Configure(context.Background(), tc.cfg)
-			switch {
-			case tc.wantErr == "" && err != nil:
-				t.Errorf("Configure() unexpected error: %v", err)
-			case tc.wantErr != "" && err == nil:
-				t.Fatalf("Configure() expected error containing %q, got nil", tc.wantErr)
-			case tc.wantErr != "" && !strings.Contains(err.Error(), tc.wantErr):
-				t.Errorf("Configure() error = %q, want error containing %q", err, tc.wantErr)
+			var gotErr string
+			if err != nil {
+				gotErr = err.Error()
+			}
+			if gotErr != tc.wantErr {
+				t.Errorf("Configure() error = %q, want %q", gotErr, tc.wantErr)
 			}
 		})
 	}
