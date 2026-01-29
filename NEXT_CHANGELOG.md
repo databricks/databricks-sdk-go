@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.103.0
+## Release v0.104.0
 
 ### Breaking Changes
 
@@ -11,6 +11,5 @@
 ### Documentation
 
 ### Internal Changes
-* Add integration test support for unified host infrastructure ([#1445](https://github.com/databricks/databricks-sdk-go/pull/1445))
 
 ### API Changes
