@@ -108,6 +108,82 @@ func TestU2MCredentials_Configure(t *testing.T) {
 	}
 }
 
+func TestU2MCredentials_Configure_CustomScopesError(t *testing.T) {
+	testCases := []struct {
+		name        string
+		cfg         func(t *testing.T) *Config
+		scopeSource *Source
+		wantErr     string
+	}{
+		{
+			name: "error when scopes are explicitly set",
+			cfg: func(t *testing.T) *Config {
+				return &Config{
+					Host:   "https://workspace.cloud.databricks.com",
+					Scopes: []string{"clusters", "jobs"},
+				}
+			},
+			wantErr: ErrCustomScopesNotSupported,
+		},
+		{
+			name: "no error when scopes are empty",
+			cfg: func(t *testing.T) *Config {
+				return &Config{
+					Host:              "https://workspace.cloud.databricks.com",
+					Scopes:            []string{},
+					DatabricksCliPath: createMockCli(t, mockCliTokenResponse(t)),
+				}
+			},
+		},
+		{
+			name: "no error when scopes are nil",
+			cfg: func(t *testing.T) *Config {
+				return &Config{
+					Host:              "https://workspace.cloud.databricks.com",
+					DatabricksCliPath: createMockCli(t, mockCliTokenResponse(t)),
+				}
+			},
+		},
+		{
+			name: "no error when scopes come from config file",
+			cfg: func(t *testing.T) *Config {
+				return &Config{
+					Host:              "https://workspace.cloud.databricks.com",
+					Scopes:            []string{"sql"},
+					DatabricksCliPath: createMockCli(t, mockCliTokenResponse(t)),
+				}
+			},
+			scopeSource: &Source{Type: SourceFile, Name: "~/.databrickscfg"},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			if runtime.GOOS == "windows" {
+				t.Skip("Skipping on Windows")
+			}
+			cfg := tc.cfg(t)
+			if tc.scopeSource != nil {
+				for i := range ConfigAttributes {
+					if ConfigAttributes[i].Name == "scopes" {
+						cfg.SetAttrSource(&ConfigAttributes[i], *tc.scopeSource)
+						break
+					}
+				}
+			}
+
+			_, err := (u2mCredentials{}).Configure(context.Background(), cfg)
+			var gotErr string
+			if err != nil {
+				gotErr = err.Error()
+			}
+			if gotErr != tc.wantErr {
+				t.Errorf("Configure() error = %q, want %q", gotErr, tc.wantErr)
+			}
+		})
+	}
+}
+
 func createMockCli(t *testing.T, script string) string {
 	t.Helper()
 	cli := filepath.Join(t.TempDir(), "databricks")
