@@ -723,7 +723,7 @@ type ListAclsResponse struct {
 }
 
 type ListCredentialsRequest struct {
-	// The ID of the service principal whose credentials will be modified. Only
+	// The ID of the service principal whose credentials will be listed. Only
 	// service principal managers can perform this action.
 	PrincipalId int64 `json:"-" url:"principal_id,omitempty"`
 
