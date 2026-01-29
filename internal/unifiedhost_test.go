@@ -10,7 +10,9 @@ import (
 )
 
 func TestAccUnifiedHost(t *testing.T) {
-	ctx, a := unifiedHostAccountTest(t)
+	ctx, a, w := unifiedHostAccountTest(t)
+
+	// Account level operations
 	user, err := a.Users.Create(ctx, iam.User{
 		DisplayName: RandomName("Me "),
 		UserName:    RandomEmail(),
@@ -39,4 +41,8 @@ func TestAccUnifiedHost(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, user.Id, byId.Id)
 	assert.Equal(t, 1, len(byId.Roles))
+
+	// Workspace level operations
+	_, err = w.CurrentUser.Me(ctx)
+	require.NoError(t, err)
 }

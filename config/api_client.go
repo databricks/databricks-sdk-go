@@ -65,16 +65,6 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 		},
 	}
 
-	// Unified hosts use X-Databricks-Org-Id header to determine which workspace to route the request to.
-	// The header must not be set for account-level API requests, otherwise the request will fail.
-	// This visitor relies on the assumption that cfg.WorkspaceId is only set for workspace client configs.
-	if cfg.HostType() == UnifiedHost && cfg.WorkspaceId != "" {
-		visitors = append(visitors, func(r *http.Request) error {
-			r.Header.Set("X-Databricks-Org-Id", cfg.WorkspaceId)
-			return nil
-		})
-	}
-
 	return httpclient.ClientConfig{
 		AccountID:          cfg.AccountID,
 		Host:               cfg.Host,
