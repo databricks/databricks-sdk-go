@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -23,6 +24,10 @@ func (a *accessControlImpl) CheckPolicy(ctx context.Context, request CheckPolicy
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &checkPolicyResponse)
 	return &checkPolicyResponse, err
 }
@@ -38,6 +43,10 @@ func (a *accountAccessControlImpl) GetAssignableRolesForResource(ctx context.Con
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getAssignableRolesForResourceResponse)
 	return &getAssignableRolesForResourceResponse, err
 }
@@ -48,6 +57,10 @@ func (a *accountAccessControlImpl) GetRuleSet(ctx context.Context, request GetRu
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &ruleSetResponse)
 	return &ruleSetResponse, err
 }
@@ -59,6 +72,10 @@ func (a *accountAccessControlImpl) UpdateRuleSet(ctx context.Context, request Up
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &ruleSetResponse)
 	return &ruleSetResponse, err
 }
@@ -74,6 +91,10 @@ func (a *accountAccessControlProxyImpl) GetAssignableRolesForResource(ctx contex
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getAssignableRolesForResourceResponse)
 	return &getAssignableRolesForResourceResponse, err
 }
@@ -84,6 +105,10 @@ func (a *accountAccessControlProxyImpl) GetRuleSet(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &ruleSetResponse)
 	return &ruleSetResponse, err
 }
@@ -95,6 +120,10 @@ func (a *accountAccessControlProxyImpl) UpdateRuleSet(ctx context.Context, reque
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &ruleSetResponse)
 	return &ruleSetResponse, err
 }
@@ -111,6 +140,10 @@ func (a *accountGroupsV2Impl) Create(ctx context.Context, request CreateAccountG
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountGroup)
 	return &accountGroup, err
 }
@@ -119,6 +152,10 @@ func (a *accountGroupsV2Impl) Delete(ctx context.Context, request DeleteAccountG
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -129,6 +166,10 @@ func (a *accountGroupsV2Impl) Get(ctx context.Context, request GetAccountGroupRe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountGroup)
 	return &accountGroup, err
 }
@@ -183,6 +224,10 @@ func (a *accountGroupsV2Impl) internalList(ctx context.Context, request ListAcco
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAccountGroupsResponse)
 	return &listAccountGroupsResponse, err
 }
@@ -192,6 +237,10 @@ func (a *accountGroupsV2Impl) Patch(ctx context.Context, request PatchAccountGro
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
@@ -202,6 +251,10 @@ func (a *accountGroupsV2Impl) Update(ctx context.Context, request UpdateAccountG
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
@@ -218,6 +271,10 @@ func (a *accountServicePrincipalsV2Impl) Create(ctx context.Context, request Cre
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountServicePrincipal)
 	return &accountServicePrincipal, err
 }
@@ -226,6 +283,10 @@ func (a *accountServicePrincipalsV2Impl) Delete(ctx context.Context, request Del
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -236,6 +297,10 @@ func (a *accountServicePrincipalsV2Impl) Get(ctx context.Context, request GetAcc
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountServicePrincipal)
 	return &accountServicePrincipal, err
 }
@@ -282,6 +347,10 @@ func (a *accountServicePrincipalsV2Impl) internalList(ctx context.Context, reque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAccountServicePrincipalsResponse)
 	return &listAccountServicePrincipalsResponse, err
 }
@@ -292,6 +361,10 @@ func (a *accountServicePrincipalsV2Impl) Patch(ctx context.Context, request Patc
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
@@ -302,6 +375,10 @@ func (a *accountServicePrincipalsV2Impl) Update(ctx context.Context, request Upd
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
@@ -318,6 +395,10 @@ func (a *accountUsersV2Impl) Create(ctx context.Context, request CreateAccountUs
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountUser)
 	return &accountUser, err
 }
@@ -326,6 +407,10 @@ func (a *accountUsersV2Impl) Delete(ctx context.Context, request DeleteAccountUs
 	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -336,6 +421,10 @@ func (a *accountUsersV2Impl) Get(ctx context.Context, request GetAccountUserRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountUser)
 	return &accountUser, err
 }
@@ -382,6 +471,10 @@ func (a *accountUsersV2Impl) internalList(ctx context.Context, request ListAccou
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAccountUsersResponse)
 	return &listAccountUsersResponse, err
 }
@@ -392,6 +485,10 @@ func (a *accountUsersV2Impl) Patch(ctx context.Context, request PatchAccountUser
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
@@ -402,6 +499,10 @@ func (a *accountUsersV2Impl) Update(ctx context.Context, request UpdateAccountUs
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
@@ -417,6 +518,10 @@ func (a *currentUserImpl) Me(ctx context.Context) (*User, error) {
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &user)
 	return &user, err
 }
@@ -433,6 +538,10 @@ func (a *groupsV2Impl) Create(ctx context.Context, request CreateGroupRequest) (
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &group)
 	return &group, err
 }
@@ -441,6 +550,10 @@ func (a *groupsV2Impl) Delete(ctx context.Context, request DeleteGroupRequest) e
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Groups/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -451,6 +564,10 @@ func (a *groupsV2Impl) Get(ctx context.Context, request GetGroupRequest) (*Group
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &group)
 	return &group, err
 }
@@ -497,6 +614,10 @@ func (a *groupsV2Impl) internalList(ctx context.Context, request ListGroupsReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listGroupsResponse)
 	return &listGroupsResponse, err
 }
@@ -507,6 +628,10 @@ func (a *groupsV2Impl) Patch(ctx context.Context, request PatchGroupRequest) err
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
@@ -517,6 +642,10 @@ func (a *groupsV2Impl) Update(ctx context.Context, request UpdateGroupRequest) e
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
@@ -533,6 +662,10 @@ func (a *permissionMigrationImpl) MigratePermissions(ctx context.Context, reques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &migratePermissionsResponse)
 	return &migratePermissionsResponse, err
 }
@@ -548,6 +681,10 @@ func (a *permissionsImpl) Get(ctx context.Context, request GetPermissionRequest)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &objectPermissions)
 	return &objectPermissions, err
 }
@@ -558,6 +695,10 @@ func (a *permissionsImpl) GetPermissionLevels(ctx context.Context, request GetPe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPermissionLevelsResponse)
 	return &getPermissionLevelsResponse, err
 }
@@ -569,6 +710,10 @@ func (a *permissionsImpl) Set(ctx context.Context, request SetObjectPermissions)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &objectPermissions)
 	return &objectPermissions, err
 }
@@ -580,6 +725,10 @@ func (a *permissionsImpl) Update(ctx context.Context, request UpdateObjectPermis
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &objectPermissions)
 	return &objectPermissions, err
 }
@@ -596,6 +745,10 @@ func (a *servicePrincipalsV2Impl) Create(ctx context.Context, request CreateServ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &servicePrincipal)
 	return &servicePrincipal, err
 }
@@ -604,6 +757,10 @@ func (a *servicePrincipalsV2Impl) Delete(ctx context.Context, request DeleteServ
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/ServicePrincipals/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -614,6 +771,10 @@ func (a *servicePrincipalsV2Impl) Get(ctx context.Context, request GetServicePri
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &servicePrincipal)
 	return &servicePrincipal, err
 }
@@ -660,6 +821,10 @@ func (a *servicePrincipalsV2Impl) internalList(ctx context.Context, request List
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listServicePrincipalResponse)
 	return &listServicePrincipalResponse, err
 }
@@ -670,6 +835,10 @@ func (a *servicePrincipalsV2Impl) Patch(ctx context.Context, request PatchServic
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
@@ -680,6 +849,10 @@ func (a *servicePrincipalsV2Impl) Update(ctx context.Context, request UpdateServ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
@@ -696,6 +869,10 @@ func (a *usersV2Impl) Create(ctx context.Context, request CreateUserRequest) (*U
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &user)
 	return &user, err
 }
@@ -704,6 +881,10 @@ func (a *usersV2Impl) Delete(ctx context.Context, request DeleteUserRequest) err
 	path := fmt.Sprintf("/api/2.0/preview/scim/v2/Users/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -714,6 +895,10 @@ func (a *usersV2Impl) Get(ctx context.Context, request GetUserRequest) (*User, e
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &user)
 	return &user, err
 }
@@ -724,6 +909,10 @@ func (a *usersV2Impl) GetPermissionLevels(ctx context.Context, request GetPasswo
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPasswordPermissionLevelsResponse)
 	return &getPasswordPermissionLevelsResponse, err
 }
@@ -734,6 +923,10 @@ func (a *usersV2Impl) GetPermissions(ctx context.Context, request GetPasswordPer
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &passwordPermissions)
 	return &passwordPermissions, err
 }
@@ -780,6 +973,10 @@ func (a *usersV2Impl) internalList(ctx context.Context, request ListUsersRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listUsersResponse)
 	return &listUsersResponse, err
 }
@@ -790,6 +987,10 @@ func (a *usersV2Impl) Patch(ctx context.Context, request PatchUserRequest) error
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, nil)
 	return err
 }
@@ -801,6 +1002,10 @@ func (a *usersV2Impl) SetPermissions(ctx context.Context, request PasswordPermis
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &passwordPermissions)
 	return &passwordPermissions, err
 }
@@ -811,6 +1016,10 @@ func (a *usersV2Impl) Update(ctx context.Context, request UpdateUserRequest) err
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, nil)
 	return err
 }
@@ -822,6 +1031,10 @@ func (a *usersV2Impl) UpdatePermissions(ctx context.Context, request PasswordPer
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &passwordPermissions)
 	return &passwordPermissions, err
 }
@@ -836,6 +1049,10 @@ func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWork
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -846,6 +1063,10 @@ func (a *workspaceAssignmentImpl) Get(ctx context.Context, request GetWorkspaceA
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &workspacePermissions)
 	return &workspacePermissions, err
 }
@@ -883,6 +1104,10 @@ func (a *workspaceAssignmentImpl) internalList(ctx context.Context, request List
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &permissionAssignments)
 	return &permissionAssignments, err
 }
@@ -894,6 +1119,10 @@ func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWork
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &permissionAssignment)
 	return &permissionAssignment, err
 }

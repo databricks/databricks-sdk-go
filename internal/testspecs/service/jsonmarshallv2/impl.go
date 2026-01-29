@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/config"
 )
 
 // unexported type that holds implementations of just JsonMarshallV2 API methods
@@ -21,6 +22,10 @@ func (a *jsonMarshallV2Impl) GetResource(ctx context.Context, request GetResourc
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &resource)
 	return &resource, err
 }

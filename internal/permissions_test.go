@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/workspace"
 	"github.com/stretchr/testify/assert"
@@ -64,7 +65,7 @@ func TestAccGenericPermissions(t *testing.T) {
 
 func TestUcAccWorkspaceAssignmentOnAws(t *testing.T) {
 	ctx, a := ucacctTest(t)
-	if !a.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		t.SkipNow()
 	}
 	workspaceId := MustParseInt64(GetEnvOrSkipTest(t, "DUMMY_WORKSPACE_ID"))

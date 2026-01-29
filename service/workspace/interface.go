@@ -28,9 +28,8 @@ type GitCredentialsService interface {
 	// Gets the Git credential with the specified credential ID.
 	Get(ctx context.Context, request GetCredentialsRequest) (*GetCredentialsResponse, error)
 
-	// Lists the calling user's Git credentials. One credential per user is
-	// supported.
-	List(ctx context.Context) (*ListCredentialsResponse, error)
+	// Lists the calling user's Git credentials.
+	List(ctx context.Context, request ListCredentialsRequest) (*ListCredentialsResponse, error)
 
 	// Updates the specified Git credential.
 	Update(ctx context.Context, request UpdateCredentialsRequest) error

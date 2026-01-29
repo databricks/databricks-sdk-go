@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/config"
 )
 
 // unexported type that holds implementations of just AgentBricks API methods
@@ -21,6 +22,10 @@ func (a *agentBricksImpl) CancelOptimize(ctx context.Context, request CancelCust
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, nil)
 	return err
 }
@@ -32,6 +37,10 @@ func (a *agentBricksImpl) CreateCustomLlm(ctx context.Context, request CreateCus
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &customLlm)
 	return &customLlm, err
 }
@@ -41,6 +50,10 @@ func (a *agentBricksImpl) DeleteCustomLlm(ctx context.Context, request DeleteCus
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -51,6 +64,10 @@ func (a *agentBricksImpl) GetCustomLlm(ctx context.Context, request GetCustomLlm
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &customLlm)
 	return &customLlm, err
 }
@@ -62,6 +79,10 @@ func (a *agentBricksImpl) StartOptimize(ctx context.Context, request StartCustom
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &customLlm)
 	return &customLlm, err
 }
@@ -73,6 +94,10 @@ func (a *agentBricksImpl) UpdateCustomLlm(ctx context.Context, request UpdateCus
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &customLlm)
 	return &customLlm, err
 }

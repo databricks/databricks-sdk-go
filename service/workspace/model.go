@@ -97,6 +97,9 @@ type CreateCredentialsRequest struct {
 	//
 	// [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
+	// The ID of the service principal whose credentials will be modified. Only
+	// service principal managers can perform this action.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -285,6 +288,19 @@ type DeleteAcl struct {
 type DeleteCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
+	// The ID of the service principal whose credentials will be modified. Only
+	// service principal managers can perform this action.
+	PrincipalId int64 `json:"-" url:"principal_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteCredentialsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteCredentialsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type DeleteRepoRequest struct {
@@ -408,6 +424,19 @@ type GetAclRequest struct {
 type GetCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
 	CredentialId int64 `json:"-" url:"-"`
+	// The ID of the service principal whose credentials will be modified. Only
+	// service principal managers can perform this action.
+	PrincipalId int64 `json:"-" url:"principal_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetCredentialsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetCredentialsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type GetCredentialsResponse struct {
@@ -691,6 +720,22 @@ type ListAclsRequest struct {
 type ListAclsResponse struct {
 	// The associated ACLs rule applied to principals in the given scope.
 	Items []AclItem `json:"items,omitempty"`
+}
+
+type ListCredentialsRequest struct {
+	// The ID of the service principal whose credentials will be listed. Only
+	// service principal managers can perform this action.
+	PrincipalId int64 `json:"-" url:"principal_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListCredentialsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListCredentialsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type ListCredentialsResponse struct {
@@ -1201,6 +1246,9 @@ type UpdateCredentialsRequest struct {
 	//
 	// [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
+	// The ID of the service principal whose credentials will be modified. Only
+	// service principal managers can perform this action.
+	PrincipalId int64 `json:"principal_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

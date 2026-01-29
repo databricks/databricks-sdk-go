@@ -30,6 +30,41 @@ func (s AutoFullRefreshPolicy) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Enum to specify which mode of clone to execute
+type CloneMode string
+
+const CloneModeMigrateToUc CloneMode = `MIGRATE_TO_UC`
+
+// String representation for [fmt.Print]
+func (f *CloneMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CloneMode) Set(v string) error {
+	switch v {
+	case `MIGRATE_TO_UC`:
+		*f = CloneMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "MIGRATE_TO_UC"`, v)
+	}
+}
+
+// Values returns all possible values for CloneMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CloneMode) Values() []CloneMode {
+	return []CloneMode{
+		CloneModeMigrateToUc,
+	}
+}
+
+// Type always returns CloneMode to satisfy [pflag.Value] interface
+func (f *CloneMode) Type() string {
+	return "CloneMode"
+}
+
 type ClonePipelineRequest struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
@@ -44,6 +79,8 @@ type ClonePipelineRequest struct {
 	Catalog string `json:"catalog,omitempty"`
 	// DLT Release Channel that specifies which version to use.
 	Channel string `json:"channel,omitempty"`
+	// The type of clone to perform. Currently, only deep copies are supported
+	CloneMode CloneMode `json:"clone_mode,omitempty"`
 	// Cluster settings for this pipeline deployment.
 	Clusters []PipelineCluster `json:"clusters,omitempty"`
 	// String-String configuration for this pipeline execution.
@@ -347,7 +384,21 @@ func (f *DayOfWeek) Type() string {
 }
 
 type DeletePipelineRequest struct {
+	// If true, deletion will proceed even if resource cleanup fails. By
+	// default, deletion will fail if resources cleanup is required but fails.
+	Force bool `json:"-" url:"force,omitempty"`
+
 	PipelineId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeletePipelineRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeletePipelineRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // The deployment method that manages the pipeline: - BUNDLE: The pipeline is
@@ -738,9 +789,16 @@ func (s IngestionGatewayPipelineDefinition) MarshalJSON() ([]byte, error) {
 }
 
 type IngestionPipelineDefinition struct {
-	// Immutable. The Unity Catalog connection that this ingestion pipeline uses
-	// to communicate with the source. This is used with connectors for
-	// applications like Salesforce, Workday, and so on.
+	// The Unity Catalog connection that this ingestion pipeline uses to
+	// communicate with the source. This is used with both connectors for
+	// applications like Salesforce, Workday, and so on, and also database
+	// connectors like Oracle, (connector_type = QUERY_BASED OR connector_type =
+	// CDC). If connection name corresponds to database connectors like Oracle,
+	// and connector_type is not provided then connector_type defaults to
+	// QUERY_BASED. If connector_type is passed as CDC we use Combined Cdc
+	// Managed Ingestion pipeline. Under certain conditions, this can be
+	// replaced with ingestion_gateway_id to change the connector to Cdc Managed
+	// Ingestion Pipeline with Gateway pipeline.
 	ConnectionName string `json:"connection_name,omitempty"`
 	// (Optional) A window that specifies a set of time ranges for snapshot
 	// queries in CDC.
@@ -751,9 +809,11 @@ type IngestionPipelineDefinition struct {
 	// IngestionConfig are interpreted as the UC foreign catalogs to ingest
 	// from.
 	IngestFromUcForeignCatalog bool `json:"ingest_from_uc_foreign_catalog,omitempty"`
-	// Immutable. Identifier for the gateway that is used by this ingestion
-	// pipeline to communicate with the source database. This is used with
-	// connectors to databases like SQL Server.
+	// Identifier for the gateway that is used by this ingestion pipeline to
+	// communicate with the source database. This is used with CDC connectors to
+	// databases like SQL Server using a gateway pipeline (connector_type =
+	// CDC). Under certain conditions, this can be replaced with connection_name
+	// to change the connector to Combined Cdc Managed Ingestion Pipeline.
 	IngestionGatewayId string `json:"ingestion_gateway_id,omitempty"`
 	// Netsuite only configuration. When the field is set for a netsuite
 	// connector, the jar stored in the field will be validated and added to the

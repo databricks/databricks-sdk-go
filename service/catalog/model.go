@@ -888,7 +888,7 @@ func (s ConnectionDependency) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next ID: 23
+// Next ID: 24
 type ConnectionInfo struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -938,7 +938,7 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next Id: 54
+// Next Id: 72
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
@@ -6848,7 +6848,7 @@ type RunRefreshRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
-// Next ID: 44
+// Next ID: 45
 type SchemaInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -6925,7 +6925,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_WORKDAY_HCM_USERNAME_PASSWORD = 292; Next id: 293
+// Latest kind: CONNECTION_WORKDAY_HCM_USERNAME_PASSWORD = 293; Next id: 294
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/apierr"
+	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/retries"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/stretchr/testify/assert"
@@ -13,7 +14,7 @@ import (
 
 func TestMwsAccStorage(t *testing.T) {
 	ctx, a := accountTest(t)
-	if !a.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		t.SkipNow()
 	}
 
@@ -44,7 +45,7 @@ func TestMwsAccStorage(t *testing.T) {
 
 func TestMwsAccNetworks(t *testing.T) {
 	ctx, a := accountTest(t)
-	if !a.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		t.SkipNow()
 	}
 	netw, err := a.Networks.Create(ctx, provisioning.CreateNetworkRequest{
@@ -73,7 +74,7 @@ func TestMwsAccNetworks(t *testing.T) {
 
 func TestMwsAccCredentials(t *testing.T) {
 	ctx, a := accountTest(t)
-	if !a.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		t.SkipNow()
 	}
 	role, err := a.Credentials.Create(ctx, provisioning.CreateCredentialRequest{
@@ -105,7 +106,7 @@ func TestMwsAccCredentials(t *testing.T) {
 
 func TestMwsAccEncryptionKeys(t *testing.T) {
 	ctx, a := accountTest(t)
-	if !a.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		t.SkipNow()
 	}
 
@@ -134,7 +135,7 @@ func TestMwsAccEncryptionKeys(t *testing.T) {
 
 func TestMwsAccPrivateAccess(t *testing.T) {
 	ctx, a := accountTest(t)
-	if !a.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		t.SkipNow()
 	}
 
@@ -175,7 +176,7 @@ func TestMwsAccPrivateAccess(t *testing.T) {
 
 func TestMwsAccVpcEndpoints(t *testing.T) {
 	ctx, a := accountTest(t)
-	if !a.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		t.SkipNow()
 	}
 
@@ -202,7 +203,7 @@ func TestMwsAccVpcEndpoints(t *testing.T) {
 
 func TestMwsAccWorkspaces(t *testing.T) {
 	ctx, a := accountTest(t)
-	if !a.Config.IsAws() {
+	if !IsCloud(environment.CloudAWS) {
 		t.SkipNow()
 	}
 

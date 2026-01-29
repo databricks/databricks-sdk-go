@@ -83,9 +83,9 @@ func (_c *MockGitCredentialsInterface_Create_Call) RunAndReturn(run func(context
 	return _c
 }
 
-// CredentialInfoGitProviderToCredentialIdMap provides a mock function with given fields: ctx
-func (_m *MockGitCredentialsInterface) CredentialInfoGitProviderToCredentialIdMap(ctx context.Context) (map[string]int64, error) {
-	ret := _m.Called(ctx)
+// CredentialInfoGitProviderToCredentialIdMap provides a mock function with given fields: ctx, request
+func (_m *MockGitCredentialsInterface) CredentialInfoGitProviderToCredentialIdMap(ctx context.Context, request workspace.ListCredentialsRequest) (map[string]int64, error) {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CredentialInfoGitProviderToCredentialIdMap")
@@ -93,19 +93,19 @@ func (_m *MockGitCredentialsInterface) CredentialInfoGitProviderToCredentialIdMa
 
 	var r0 map[string]int64
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) (map[string]int64, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.ListCredentialsRequest) (map[string]int64, error)); ok {
+		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) map[string]int64); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.ListCredentialsRequest) map[string]int64); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(map[string]int64)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, workspace.ListCredentialsRequest) error); ok {
+		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -120,13 +120,14 @@ type MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap_Call
 
 // CredentialInfoGitProviderToCredentialIdMap is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockGitCredentialsInterface_Expecter) CredentialInfoGitProviderToCredentialIdMap(ctx interface{}) *MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap_Call {
-	return &MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap_Call{Call: _e.mock.On("CredentialInfoGitProviderToCredentialIdMap", ctx)}
+//   - request workspace.ListCredentialsRequest
+func (_e *MockGitCredentialsInterface_Expecter) CredentialInfoGitProviderToCredentialIdMap(ctx interface{}, request interface{}) *MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap_Call {
+	return &MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap_Call{Call: _e.mock.On("CredentialInfoGitProviderToCredentialIdMap", ctx, request)}
 }
 
-func (_c *MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap_Call) Run(run func(ctx context.Context)) *MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap_Call {
+func (_c *MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap_Call) Run(run func(ctx context.Context, request workspace.ListCredentialsRequest)) *MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(workspace.ListCredentialsRequest))
 	})
 	return _c
 }
@@ -136,7 +137,7 @@ func (_c *MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap
 	return _c
 }
 
-func (_c *MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap_Call) RunAndReturn(run func(context.Context) (map[string]int64, error)) *MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap_Call {
+func (_c *MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap_Call) RunAndReturn(run func(context.Context, workspace.ListCredentialsRequest) (map[string]int64, error)) *MockGitCredentialsInterface_CredentialInfoGitProviderToCredentialIdMap_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -412,17 +413,17 @@ func (_c *MockGitCredentialsInterface_GetByGitProvider_Call) RunAndReturn(run fu
 	return _c
 }
 
-// List provides a mock function with given fields: ctx
-func (_m *MockGitCredentialsInterface) List(ctx context.Context) listing.Iterator[workspace.CredentialInfo] {
-	ret := _m.Called(ctx)
+// List provides a mock function with given fields: ctx, request
+func (_m *MockGitCredentialsInterface) List(ctx context.Context, request workspace.ListCredentialsRequest) listing.Iterator[workspace.CredentialInfo] {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
 	var r0 listing.Iterator[workspace.CredentialInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[workspace.CredentialInfo]); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.ListCredentialsRequest) listing.Iterator[workspace.CredentialInfo]); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(listing.Iterator[workspace.CredentialInfo])
@@ -439,13 +440,14 @@ type MockGitCredentialsInterface_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockGitCredentialsInterface_Expecter) List(ctx interface{}) *MockGitCredentialsInterface_List_Call {
-	return &MockGitCredentialsInterface_List_Call{Call: _e.mock.On("List", ctx)}
+//   - request workspace.ListCredentialsRequest
+func (_e *MockGitCredentialsInterface_Expecter) List(ctx interface{}, request interface{}) *MockGitCredentialsInterface_List_Call {
+	return &MockGitCredentialsInterface_List_Call{Call: _e.mock.On("List", ctx, request)}
 }
 
-func (_c *MockGitCredentialsInterface_List_Call) Run(run func(ctx context.Context)) *MockGitCredentialsInterface_List_Call {
+func (_c *MockGitCredentialsInterface_List_Call) Run(run func(ctx context.Context, request workspace.ListCredentialsRequest)) *MockGitCredentialsInterface_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(workspace.ListCredentialsRequest))
 	})
 	return _c
 }
@@ -455,14 +457,14 @@ func (_c *MockGitCredentialsInterface_List_Call) Return(_a0 listing.Iterator[wor
 	return _c
 }
 
-func (_c *MockGitCredentialsInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[workspace.CredentialInfo]) *MockGitCredentialsInterface_List_Call {
+func (_c *MockGitCredentialsInterface_List_Call) RunAndReturn(run func(context.Context, workspace.ListCredentialsRequest) listing.Iterator[workspace.CredentialInfo]) *MockGitCredentialsInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// ListAll provides a mock function with given fields: ctx
-func (_m *MockGitCredentialsInterface) ListAll(ctx context.Context) ([]workspace.CredentialInfo, error) {
-	ret := _m.Called(ctx)
+// ListAll provides a mock function with given fields: ctx, request
+func (_m *MockGitCredentialsInterface) ListAll(ctx context.Context, request workspace.ListCredentialsRequest) ([]workspace.CredentialInfo, error) {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAll")
@@ -470,19 +472,19 @@ func (_m *MockGitCredentialsInterface) ListAll(ctx context.Context) ([]workspace
 
 	var r0 []workspace.CredentialInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) ([]workspace.CredentialInfo, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.ListCredentialsRequest) ([]workspace.CredentialInfo, error)); ok {
+		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) []workspace.CredentialInfo); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, workspace.ListCredentialsRequest) []workspace.CredentialInfo); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]workspace.CredentialInfo)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, workspace.ListCredentialsRequest) error); ok {
+		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -497,13 +499,14 @@ type MockGitCredentialsInterface_ListAll_Call struct {
 
 // ListAll is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockGitCredentialsInterface_Expecter) ListAll(ctx interface{}) *MockGitCredentialsInterface_ListAll_Call {
-	return &MockGitCredentialsInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx)}
+//   - request workspace.ListCredentialsRequest
+func (_e *MockGitCredentialsInterface_Expecter) ListAll(ctx interface{}, request interface{}) *MockGitCredentialsInterface_ListAll_Call {
+	return &MockGitCredentialsInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx, request)}
 }
 
-func (_c *MockGitCredentialsInterface_ListAll_Call) Run(run func(ctx context.Context)) *MockGitCredentialsInterface_ListAll_Call {
+func (_c *MockGitCredentialsInterface_ListAll_Call) Run(run func(ctx context.Context, request workspace.ListCredentialsRequest)) *MockGitCredentialsInterface_ListAll_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(workspace.ListCredentialsRequest))
 	})
 	return _c
 }
@@ -513,7 +516,7 @@ func (_c *MockGitCredentialsInterface_ListAll_Call) Return(_a0 []workspace.Crede
 	return _c
 }
 
-func (_c *MockGitCredentialsInterface_ListAll_Call) RunAndReturn(run func(context.Context) ([]workspace.CredentialInfo, error)) *MockGitCredentialsInterface_ListAll_Call {
+func (_c *MockGitCredentialsInterface_ListAll_Call) RunAndReturn(run func(context.Context, workspace.ListCredentialsRequest) ([]workspace.CredentialInfo, error)) *MockGitCredentialsInterface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -10,8 +10,10 @@ import (
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
+	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just Postgres API methods
@@ -30,6 +32,10 @@ func (a *postgresImpl) CreateBranch(ctx context.Context, request CreateBranchReq
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Branch, &operation)
 	return &operation, err
 }
@@ -45,6 +51,10 @@ func (a *postgresImpl) CreateEndpoint(ctx context.Context, request CreateEndpoin
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Endpoint, &operation)
 	return &operation, err
 }
@@ -60,6 +70,10 @@ func (a *postgresImpl) CreateProject(ctx context.Context, request CreateProjectR
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Project, &operation)
 	return &operation, err
 }
@@ -69,12 +83,16 @@ func (a *postgresImpl) CreateRole(ctx context.Context, request CreateRoleRequest
 	path := fmt.Sprintf("/api/2.0/postgres/%v/roles", request.Parent)
 	queryParams := make(map[string]any)
 
-	if request.RoleId != "" {
+	if request.RoleId != "" || slices.Contains(request.ForceSendFields, "RoleId") {
 		queryParams["role_id"] = request.RoleId
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Role, &operation)
 	return &operation, err
 }
@@ -85,6 +103,10 @@ func (a *postgresImpl) DeleteBranch(ctx context.Context, request DeleteBranchReq
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
 	return &operation, err
 }
@@ -95,6 +117,10 @@ func (a *postgresImpl) DeleteEndpoint(ctx context.Context, request DeleteEndpoin
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
 	return &operation, err
 }
@@ -105,6 +131,10 @@ func (a *postgresImpl) DeleteProject(ctx context.Context, request DeleteProjectR
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
 	return &operation, err
 }
@@ -115,6 +145,10 @@ func (a *postgresImpl) DeleteRole(ctx context.Context, request DeleteRoleRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
 	return &operation, err
 }
@@ -126,6 +160,10 @@ func (a *postgresImpl) GenerateDatabaseCredential(ctx context.Context, request G
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &databaseCredential)
 	return &databaseCredential, err
 }
@@ -136,6 +174,10 @@ func (a *postgresImpl) GetBranch(ctx context.Context, request GetBranchRequest) 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &branch)
 	return &branch, err
 }
@@ -146,6 +188,10 @@ func (a *postgresImpl) GetEndpoint(ctx context.Context, request GetEndpointReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &endpoint)
 	return &endpoint, err
 }
@@ -156,6 +202,10 @@ func (a *postgresImpl) GetOperation(ctx context.Context, request GetOperationReq
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &operation)
 	return &operation, err
 }
@@ -166,6 +216,10 @@ func (a *postgresImpl) GetProject(ctx context.Context, request GetProjectRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &project)
 	return &project, err
 }
@@ -176,6 +230,10 @@ func (a *postgresImpl) GetRole(ctx context.Context, request GetRoleRequest) (*Ro
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &role)
 	return &role, err
 }
@@ -217,6 +275,10 @@ func (a *postgresImpl) internalListBranches(ctx context.Context, request ListBra
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listBranchesResponse)
 	return &listBranchesResponse, err
 }
@@ -258,6 +320,10 @@ func (a *postgresImpl) internalListEndpoints(ctx context.Context, request ListEn
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listEndpointsResponse)
 	return &listEndpointsResponse, err
 }
@@ -301,6 +367,10 @@ func (a *postgresImpl) internalListProjects(ctx context.Context, request ListPro
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listProjectsResponse)
 	return &listProjectsResponse, err
 }
@@ -342,6 +412,10 @@ func (a *postgresImpl) internalListRoles(ctx context.Context, request ListRolesR
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listRolesResponse)
 	return &listRolesResponse, err
 }
@@ -360,6 +434,10 @@ func (a *postgresImpl) UpdateBranch(ctx context.Context, request UpdateBranchReq
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Branch, &operation)
 	return &operation, err
 }
@@ -378,6 +456,10 @@ func (a *postgresImpl) UpdateEndpoint(ctx context.Context, request UpdateEndpoin
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Endpoint, &operation)
 	return &operation, err
 }
@@ -396,6 +478,10 @@ func (a *postgresImpl) UpdateProject(ctx context.Context, request UpdateProjectR
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
+	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Project, &operation)
 	return &operation, err
 }
