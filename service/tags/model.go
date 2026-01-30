@@ -17,7 +17,7 @@ type CreateTagPolicyRequest struct {
 type DeleteTagAssignmentRequest struct {
 	// The identifier of the entity to which the tag is assigned
 	EntityId string `json:"-" url:"-"`
-	// The type of entity to which the tag is assigned. Allowed values are
+	// The type of entity to which the tag is assigned. Allowed values are apps,
 	// dashboards, geniespaces
 	EntityType string `json:"-" url:"-"`
 	// The key of the tag. The characters , . : / - = and leading/trailing
@@ -32,7 +32,7 @@ type DeleteTagPolicyRequest struct {
 type GetTagAssignmentRequest struct {
 	// The identifier of the entity to which the tag is assigned
 	EntityId string `json:"-" url:"-"`
-	// The type of entity to which the tag is assigned. Allowed values are
+	// The type of entity to which the tag is assigned. Allowed values are apps,
 	// dashboards, geniespaces
 	EntityType string `json:"-" url:"-"`
 	// The key of the tag. The characters , . : / - = and leading/trailing
@@ -47,7 +47,7 @@ type GetTagPolicyRequest struct {
 type ListTagAssignmentsRequest struct {
 	// The identifier of the entity to which the tag is assigned
 	EntityId string `json:"-" url:"-"`
-	// The type of entity to which the tag is assigned. Allowed values are
+	// The type of entity to which the tag is assigned. Allowed values are apps,
 	// dashboards, geniespaces
 	EntityType string `json:"-" url:"-"`
 	// Optional. Maximum number of tag assignments to return in a single page
@@ -123,7 +123,7 @@ func (s ListTagPoliciesResponse) MarshalJSON() ([]byte, error) {
 type TagAssignment struct {
 	// The identifier of the entity to which the tag is assigned
 	EntityId string `json:"entity_id"`
-	// The type of entity to which the tag is assigned. Allowed values are
+	// The type of entity to which the tag is assigned. Allowed values are apps,
 	// dashboards, geniespaces
 	EntityType string `json:"entity_type"`
 	// The key of the tag. The characters , . : / - = and leading/trailing
@@ -171,7 +171,7 @@ func (s TagPolicy) MarshalJSON() ([]byte, error) {
 type UpdateTagAssignmentRequest struct {
 	// The identifier of the entity to which the tag is assigned
 	EntityId string `json:"-" url:"-"`
-	// The type of entity to which the tag is assigned. Allowed values are
+	// The type of entity to which the tag is assigned. Allowed values are apps,
 	// dashboards, geniespaces
 	EntityType string `json:"-" url:"-"`
 

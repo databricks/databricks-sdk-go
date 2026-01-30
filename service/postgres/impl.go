@@ -93,7 +93,7 @@ func (a *postgresImpl) CreateRole(ctx context.Context, request CreateRoleRequest
 	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
 		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
 	}
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Role, &operation)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Role, &operation)
 	return &operation, err
 }
 

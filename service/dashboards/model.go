@@ -402,6 +402,36 @@ func (f *GenieFeedbackRating) Type() string {
 	return "GenieFeedbackRating"
 }
 
+type GenieGenerateDownloadFullQueryResultRequest struct {
+	// Attachment ID
+	AttachmentId string `json:"-" url:"-"`
+	// Conversation ID
+	ConversationId string `json:"-" url:"-"`
+	// Message ID
+	MessageId string `json:"-" url:"-"`
+	// Genie space ID
+	SpaceId string `json:"-" url:"-"`
+}
+
+type GenieGenerateDownloadFullQueryResultResponse struct {
+	// Download ID. Use this ID to track the download request in subsequent
+	// polling calls
+	DownloadId string `json:"download_id,omitempty"`
+	// JWT signature for the download_id to ensure secure access to query
+	// results
+	DownloadIdSignature string `json:"download_id_signature,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieGenerateDownloadFullQueryResultResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieGenerateDownloadFullQueryResultResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type GenieGetConversationMessageRequest struct {
 	// The ID associated with the target conversation.
 	ConversationId string `json:"-" url:"-"`
@@ -411,6 +441,39 @@ type GenieGetConversationMessageRequest struct {
 	// The ID associated with the Genie space where the target conversation is
 	// located.
 	SpaceId string `json:"-" url:"-"`
+}
+
+type GenieGetDownloadFullQueryResultRequest struct {
+	// Attachment ID
+	AttachmentId string `json:"-" url:"-"`
+	// Conversation ID
+	ConversationId string `json:"-" url:"-"`
+	// Download ID. This ID is provided by the [Generate Download
+	// endpoint](:method:genie/generateDownloadFullQueryResult)
+	DownloadId string `json:"-" url:"-"`
+	// JWT signature for the download_id to ensure secure access to query
+	// results
+	DownloadIdSignature string `json:"-" url:"download_id_signature,omitempty"`
+	// Message ID
+	MessageId string `json:"-" url:"-"`
+	// Genie space ID
+	SpaceId string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GenieGetDownloadFullQueryResultRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GenieGetDownloadFullQueryResultRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GenieGetDownloadFullQueryResultResponse struct {
+	// SQL Statement Execution response. See [Get status, manifest, and result
+	// first chunk](:method:statementexecution/getstatement) for more details.
+	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
 }
 
 type GenieGetMessageAttachmentQueryResultRequest struct {
