@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -25,10 +24,6 @@ func (a *tagPoliciesImpl) CreateTagPolicy(ctx context.Context, request CreateTag
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.TagPolicy, &tagPolicy)
 	return &tagPolicy, err
 }
@@ -38,10 +33,6 @@ func (a *tagPoliciesImpl) DeleteTagPolicy(ctx context.Context, request DeleteTag
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -52,10 +43,6 @@ func (a *tagPoliciesImpl) GetTagPolicy(ctx context.Context, request GetTagPolicy
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &tagPolicy)
 	return &tagPolicy, err
 }
@@ -107,10 +94,6 @@ func (a *tagPoliciesImpl) internalListTagPolicies(ctx context.Context, request L
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listTagPoliciesResponse)
 	return &listTagPoliciesResponse, err
 }
@@ -126,10 +109,6 @@ func (a *tagPoliciesImpl) UpdateTagPolicy(ctx context.Context, request UpdateTag
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.TagPolicy, &tagPolicy)
 	return &tagPolicy, err
 }
@@ -146,10 +125,6 @@ func (a *workspaceEntityTagAssignmentsImpl) CreateTagAssignment(ctx context.Cont
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.TagAssignment, &tagAssignment)
 	return &tagAssignment, err
 }
@@ -159,10 +134,6 @@ func (a *workspaceEntityTagAssignmentsImpl) DeleteTagAssignment(ctx context.Cont
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -173,10 +144,6 @@ func (a *workspaceEntityTagAssignmentsImpl) GetTagAssignment(ctx context.Context
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &tagAssignment)
 	return &tagAssignment, err
 }
@@ -218,10 +185,6 @@ func (a *workspaceEntityTagAssignmentsImpl) internalListTagAssignments(ctx conte
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listTagAssignmentsResponse)
 	return &listTagAssignmentsResponse, err
 }
@@ -237,10 +200,6 @@ func (a *workspaceEntityTagAssignmentsImpl) UpdateTagAssignment(ctx context.Cont
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.TagAssignment, &tagAssignment)
 	return &tagAssignment, err
 }

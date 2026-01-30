@@ -3516,6 +3516,47 @@ func (s GlobalInitScriptUpdateRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// HardwareAcceleratorType: The type of hardware accelerator to use for compute
+// workloads. NOTE: This enum is referenced and is intended to be used by other
+// Databricks services that need to specify hardware accelerator requirements
+// for AI compute workloads.
+type HardwareAcceleratorType string
+
+const HardwareAcceleratorTypeGpu1xA10 HardwareAcceleratorType = `GPU_1xA10`
+
+const HardwareAcceleratorTypeGpu8xH100 HardwareAcceleratorType = `GPU_8xH100`
+
+// String representation for [fmt.Print]
+func (f *HardwareAcceleratorType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *HardwareAcceleratorType) Set(v string) error {
+	switch v {
+	case `GPU_1xA10`, `GPU_8xH100`:
+		*f = HardwareAcceleratorType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "GPU_1xA10", "GPU_8xH100"`, v)
+	}
+}
+
+// Values returns all possible values for HardwareAcceleratorType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *HardwareAcceleratorType) Values() []HardwareAcceleratorType {
+	return []HardwareAcceleratorType{
+		HardwareAcceleratorTypeGpu1xA10,
+		HardwareAcceleratorTypeGpu8xH100,
+	}
+}
+
+// Type always returns HardwareAcceleratorType to satisfy [pflag.Value] interface
+func (f *HardwareAcceleratorType) Type() string {
+	return "HardwareAcceleratorType"
+}
+
 type InitScriptEventDetails struct {
 	// The cluster scoped init scripts associated with this cluster event.
 	Cluster []InitScriptInfoAndExecutionDetails `json:"cluster,omitempty"`

@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/databricks/databricks-sdk-go/client"
-	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
 )
@@ -25,10 +24,6 @@ func (a *vectorSearchEndpointsImpl) CreateEndpoint(ctx context.Context, request 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &endpointInfo)
 	return &endpointInfo, err
 }
@@ -38,10 +33,6 @@ func (a *vectorSearchEndpointsImpl) DeleteEndpoint(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -52,10 +43,6 @@ func (a *vectorSearchEndpointsImpl) GetEndpoint(ctx context.Context, request Get
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &endpointInfo)
 	return &endpointInfo, err
 }
@@ -97,10 +84,6 @@ func (a *vectorSearchEndpointsImpl) internalListEndpoints(ctx context.Context, r
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listEndpointResponse)
 	return &listEndpointResponse, err
 }
@@ -112,10 +95,6 @@ func (a *vectorSearchEndpointsImpl) RetrieveUserVisibleMetrics(ctx context.Conte
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &retrieveUserVisibleMetricsResponse)
 	return &retrieveUserVisibleMetricsResponse, err
 }
@@ -127,10 +106,6 @@ func (a *vectorSearchEndpointsImpl) UpdateEndpointBudgetPolicy(ctx context.Conte
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &patchEndpointBudgetPolicyResponse)
 	return &patchEndpointBudgetPolicyResponse, err
 }
@@ -142,10 +117,6 @@ func (a *vectorSearchEndpointsImpl) UpdateEndpointCustomTags(ctx context.Context
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateEndpointCustomTagsResponse)
 	return &updateEndpointCustomTagsResponse, err
 }
@@ -162,10 +133,6 @@ func (a *vectorSearchIndexesImpl) CreateIndex(ctx context.Context, request Creat
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &vectorIndex)
 	return &vectorIndex, err
 }
@@ -176,10 +143,6 @@ func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, req
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDataVectorIndexResponse)
 	return &deleteDataVectorIndexResponse, err
 }
@@ -189,10 +152,6 @@ func (a *vectorSearchIndexesImpl) DeleteIndex(ctx context.Context, request Delet
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, nil)
 	return err
 }
@@ -203,10 +162,6 @@ func (a *vectorSearchIndexesImpl) GetIndex(ctx context.Context, request GetIndex
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &vectorIndex)
 	return &vectorIndex, err
 }
@@ -248,10 +203,6 @@ func (a *vectorSearchIndexesImpl) internalListIndexes(ctx context.Context, reque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listVectorIndexesResponse)
 	return &listVectorIndexesResponse, err
 }
@@ -263,10 +214,6 @@ func (a *vectorSearchIndexesImpl) QueryIndex(ctx context.Context, request QueryV
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &queryVectorIndexResponse)
 	return &queryVectorIndexResponse, err
 }
@@ -278,10 +225,6 @@ func (a *vectorSearchIndexesImpl) QueryNextPage(ctx context.Context, request Que
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &queryVectorIndexResponse)
 	return &queryVectorIndexResponse, err
 }
@@ -293,10 +236,6 @@ func (a *vectorSearchIndexesImpl) ScanIndex(ctx context.Context, request ScanVec
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &scanVectorIndexResponse)
 	return &scanVectorIndexResponse, err
 }
@@ -306,10 +245,6 @@ func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncInd
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, nil)
 	return err
 }
@@ -321,10 +256,6 @@ func (a *vectorSearchIndexesImpl) UpsertDataVectorIndex(ctx context.Context, req
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceId != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceId
-	}
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &upsertDataVectorIndexResponse)
 	return &upsertDataVectorIndexResponse, err
 }

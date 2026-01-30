@@ -22,3 +22,6 @@
 * Add `GenerateDownloadFullQueryResult` and `GetDownloadFullQueryResult` methods for [w.Genie](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAPI) workspace-level service.
 * Add `ActiveInstances` field for [apps.ComputeStatus](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/apps#ComputeStatus).
 * [Breaking] Change `CreateRole` method for [w.Postgres](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/postgres#PostgresAPI) workspace-level service. HTTP method/verb has changed.
+* Add `Compute` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+* Add `Compute` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+* Add `Compute` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
