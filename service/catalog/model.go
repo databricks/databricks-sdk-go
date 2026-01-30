@@ -8589,7 +8589,7 @@ type UpdateWorkspaceBindingsResponse struct {
 	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
 }
 
-// Next ID: 17
+// Next ID: 18
 type ValidateCredentialRequest struct {
 	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
 

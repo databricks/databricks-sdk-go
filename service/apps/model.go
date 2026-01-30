@@ -1484,6 +1484,10 @@ func (f *ComputeState) Type() string {
 }
 
 type ComputeStatus struct {
+	// The number of compute instances currently serving requests for this
+	// application. An instance is considered active if it is reachable and
+	// ready to handle requests.
+	ActiveInstances int `json:"active_instances,omitempty"`
 	// Compute status message
 	Message string `json:"message,omitempty"`
 	// State of the app compute.
