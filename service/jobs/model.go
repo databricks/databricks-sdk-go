@@ -497,6 +497,11 @@ func (s ClusterSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type Compute struct {
+	// Hardware accelerator configuration for Serverless GPU workloads.
+	HardwareAccelerator compute.HardwareAcceleratorType `json:"hardware_accelerator,omitempty"`
+}
+
 type ComputeConfig struct {
 	// IDof the GPU pool to use.
 	GpuNodePoolId string `json:"gpu_node_pool_id,omitempty"`
@@ -4328,6 +4333,8 @@ type RunTask struct {
 	// cluster, this field is set once the Jobs service has requested a cluster
 	// for the run.
 	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
+	// Task level compute configuration.
+	Compute *Compute `json:"compute,omitempty"`
 	// The task evaluates a condition that can be used to control the execution
 	// of other tasks when the `condition_task` field is present. The condition
 	// task does not require a cluster to execute and does not support retries
@@ -5121,6 +5128,8 @@ type SubmitTask struct {
 	//
 	// [clean rooms]: https://docs.databricks.com/clean-rooms/index.html
 	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
+	// Task level compute configuration.
+	Compute *Compute `json:"compute,omitempty"`
 	// The task evaluates a condition that can be used to control the execution
 	// of other tasks when the `condition_task` field is present. The condition
 	// task does not require a cluster to execute and does not support retries
@@ -5334,6 +5343,8 @@ type Task struct {
 	//
 	// [clean rooms]: https://docs.databricks.com/clean-rooms/index.html
 	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
+	// Task level compute configuration.
+	Compute *Compute `json:"compute,omitempty"`
 	// The task evaluates a condition that can be used to control the execution
 	// of other tasks when the `condition_task` field is present. The condition
 	// task does not require a cluster to execute and does not support retries
