@@ -54,8 +54,8 @@ func buildCliCommand(cliPath string, cfg *Config) []string {
 		if cfg.AccountID != "" {
 			cmd = append(cmd, "--account-id", cfg.AccountID)
 		}
-		if cfg.WorkspaceId != "" {
-			cmd = append(cmd, "--workspace-id", cfg.WorkspaceId)
+		if cfg.WorkspaceID != "" {
+			cmd = append(cmd, "--workspace-id", cfg.WorkspaceID)
 		}
 	case AccountHost:
 		cmd = append(cmd, "--account-id", cfg.AccountID)

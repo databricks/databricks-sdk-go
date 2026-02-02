@@ -86,7 +86,7 @@ type Config struct {
 	AccountID string `name:"account_id" env:"DATABRICKS_ACCOUNT_ID"`
 
 	// Databricks Workspace ID for Workspace clients when working with unified hosts
-	WorkspaceId string `name:"workspace_id" env:"DATABRICKS_WORKSPACE_ID"`
+	WorkspaceID string `name:"workspace_id" env:"DATABRICKS_WORKSPACE_ID"`
 
 	Token    string `name:"token" env:"DATABRICKS_TOKEN" auth:"pat,sensitive"`
 	Username string `name:"username" env:"DATABRICKS_USERNAME" auth:"basic"`
@@ -407,7 +407,7 @@ func (c *Config) ConfigType() ConfigType {
 			// All unified host configs must have an account ID
 			return InvalidConfig
 		}
-		if c.WorkspaceId != "" {
+		if c.WorkspaceID != "" {
 			return WorkspaceConfig
 		}
 		return AccountConfig

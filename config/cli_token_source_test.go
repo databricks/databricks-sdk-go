@@ -156,7 +156,7 @@ func TestBuildCliCommand(t *testing.T) {
 				Host:                       unifiedHost,
 				Experimental_IsUnifiedHost: true,
 				AccountID:                  accountID,
-				WorkspaceId:                workspaceID,
+				WorkspaceID:                workspaceID,
 			},
 			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost, "--experimental-is-unified-host", "--account-id", accountID, "--workspace-id", workspaceID},
 		},
@@ -174,7 +174,7 @@ func TestBuildCliCommand(t *testing.T) {
 			cfg: &Config{
 				Host:                       unifiedHost,
 				Experimental_IsUnifiedHost: true,
-				WorkspaceId:                workspaceID,
+				WorkspaceID:                workspaceID,
 			},
 			wantCmd: []string{cliPath, "auth", "token", "--host", unifiedHost, "--experimental-is-unified-host", "--workspace-id", workspaceID},
 		},

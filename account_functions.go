@@ -36,7 +36,7 @@ func (c *AccountClient) GetWorkspaceClient(ws provisioning.Workspace) (*Workspac
 		return nil, err
 	}
 	cfg.AzureResourceID = ws.AzureResourceId()
-	cfg.WorkspaceId = fmt.Sprintf("%d", ws.WorkspaceId)
+	cfg.WorkspaceID = fmt.Sprintf("%d", ws.WorkspaceId)
 	w, err := NewWorkspaceClient((*Config)(cfg))
 	if err != nil {
 		return nil, err
