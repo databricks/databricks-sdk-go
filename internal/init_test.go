@@ -63,7 +63,7 @@ func unifiedHostAccountTest(t *testing.T) (context.Context, *databricks.AccountC
 		Host:                       GetEnvOrSkipTest(t, "UNIFIED_HOST"),
 		AccountID:                  GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID"),
 		ClientID:                   GetEnvOrSkipTest(t, "DATABRICKS_CLIENT_ID"),
-		WorkspaceId:                GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"),
+		WorkspaceID:                GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID"),
 		ClientSecret:               GetEnvOrSkipTest(t, "DATABRICKS_CLIENT_SECRET"),
 		Experimental_IsUnifiedHost: true,
 		// Large timeout to support API calls that take long.
