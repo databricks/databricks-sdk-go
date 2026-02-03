@@ -13,3 +13,4 @@
 ### Internal Changes
 
 ### API Changes
+* Add `BaseEnvironment` field for [compute.Environment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#Environment).

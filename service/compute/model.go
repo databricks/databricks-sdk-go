@@ -2693,6 +2693,15 @@ func (s EnforceClusterComplianceResponse) MarshalJSON() ([]byte, error) {
 // and serverless pipelines. In this minimal environment spec, only pip
 // dependencies are supported.
 type Environment struct {
+	// The `base_environment` key refers to an `env.yaml` file that specifies an
+	// environment version and a collection of dependencies required for the
+	// environment setup. This `env.yaml` file may itself include a
+	// `base_environment` reference pointing to another `env_1.yaml` file.
+	// However, when used as a base environment, `env_1.yaml` (or further nested
+	// references) will not be processed or included in the final environment,
+	// meaning that the resolution of `base_environment` references is not
+	// recursive.
+	BaseEnvironment string `json:"base_environment,omitempty"`
 	// Use `environment_version` instead.
 	Client string `json:"client,omitempty"`
 	// List of pip dependencies, as supported by the version of pip in this

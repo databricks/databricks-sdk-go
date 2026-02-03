@@ -1391,7 +1391,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 	if hostType == config.AccountHost {
 		return nil, ErrNotWorkspaceClient
 	}
-	if hostType == config.UnifiedHost && cfg.WorkspaceId == "" {
+	if hostType == config.UnifiedHost && cfg.WorkspaceID == "" {
 		return nil, ErrWorkspaceIdRequired
 	}
 
