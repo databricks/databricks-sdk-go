@@ -323,8 +323,8 @@ type AwsSqsQueue struct {
 	// resources.
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
 	// The AQS queue url in the format
-	// https://sqs.{region}.amazonaws.com/{account id}/{queue name} Required for
-	// provided_sqs.
+	// https://sqs.{region}.amazonaws.com/{account id}/{queue name}. Only
+	// required for provided_sqs.
 	QueueUrl string `json:"queue_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -441,11 +441,12 @@ type AzureQueueStorage struct {
 	// resources.
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
 	// The AQS queue url in the format https://{storage
-	// account}.queue.core.windows.net/{queue name} Required for provided_aqs.
+	// account}.queue.core.windows.net/{queue name} Only required for
+	// provided_aqs.
 	QueueUrl string `json:"queue_url,omitempty"`
-	// The resource group for the queue, event grid subscription, and external
-	// location storage account. Only required for locations with a service
-	// principal storage credential
+	// Optional resource group for the queue, event grid subscription, and
+	// external location storage account. Only required for locations with a
+	// service principal storage credential
 	ResourceGroup string `json:"resource_group,omitempty"`
 	// Optional subscription id for the queue, event grid subscription, and
 	// external location storage account. Required for locations with a service
@@ -1247,7 +1248,8 @@ type CreateExternalLocation struct {
 	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name"`
-	// Whether to enable file events on this external location.
+	// Whether to enable file events on this external location. Default to
+	// `true`. Set to `false` to disable file events.
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
@@ -1255,8 +1257,8 @@ type CreateExternalLocation struct {
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings. If `enable_file_events` is `true`, must be
-	// defined and have exactly one of the documented properties.
+	// File event queue settings. If `enable_file_events` is not `false`, must
+	// be defined and have exactly one of the documented properties.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Name of the external location.
 	Name string `json:"name"`
@@ -2975,7 +2977,8 @@ type ExternalLocationInfo struct {
 	CredentialId string `json:"credential_id,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name,omitempty"`
-	// Whether to enable file events on this external location.
+	// Whether to enable file events on this external location. Default to
+	// `true`. Set to `false` to disable file events.
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
@@ -2983,8 +2986,8 @@ type ExternalLocationInfo struct {
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings. If `enable_file_events` is `true`, must be
-	// defined and have exactly one of the documented properties.
+	// File event queue settings. If `enable_file_events` is not `false`, must
+	// be defined and have exactly one of the documented properties.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
@@ -3499,7 +3502,7 @@ type GcpPubsub struct {
 	// resources.
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
 	// The Pub/Sub subscription name in the format
-	// projects/{project}/subscriptions/{subscription name} Required for
+	// projects/{project}/subscriptions/{subscription name}. Only required for
 	// provided_pubsub.
 	SubscriptionName string `json:"subscription_name,omitempty"`
 
@@ -6245,13 +6248,12 @@ type PolicyInfo struct {
 	// the policy, set `name` to a different value on update.
 	Name string `json:"name,omitempty"`
 	// Full name of the securable on which the policy is defined. Required on
-	// create and ignored on update.
+	// create.
 	OnSecurableFullname string `json:"on_securable_fullname,omitempty"`
 	// Type of the securable on which the policy is defined. Only `CATALOG`,
-	// `SCHEMA` and `TABLE` are supported at this moment. Required on create and
-	// ignored on update.
+	// `SCHEMA` and `TABLE` are supported at this moment. Required on create.
 	OnSecurableType SecurableType `json:"on_securable_type,omitempty"`
-	// Type of the policy. Required on create and ignored on update.
+	// Type of the policy. Required on create.
 	PolicyType PolicyType `json:"policy_type"`
 	// Options for row filter policies. Valid only if `policy_type` is
 	// `POLICY_TYPE_ROW_FILTER`. Required on create and optional on update. When
@@ -8093,7 +8095,8 @@ type UpdateExternalLocation struct {
 	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name,omitempty"`
-	// Whether to enable file events on this external location.
+	// Whether to enable file events on this external location. Default to
+	// `true`. Set to `false` to disable file events.
 	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
@@ -8101,8 +8104,8 @@ type UpdateExternalLocation struct {
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
-	// File event queue settings. If `enable_file_events` is `true`, must be
-	// defined and have exactly one of the documented properties.
+	// File event queue settings. If `enable_file_events` is not `false`, must
+	// be defined and have exactly one of the documented properties.
 	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.

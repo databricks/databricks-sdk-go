@@ -750,12 +750,6 @@ type GenieSpace struct {
 	// Space](:method:genie/getspace) API to retrieve an example response, which
 	// includes the `serialized_space` field. This field provides the structure
 	// of the JSON string that represents the space's layout and components.
-	// NOTE: Keep example in sync with: -
-	// docs/web/docs/genie/conversation-api.md -
-	// data-rooms/data-rooms/test/unit/entities/testdata/documentation_example_serialized_space.json
-	// NOTE: The proto example below is a simplified subset of the full JSON
-	// testdata file. See the testdata file for a comprehensive example with all
-	// fields.
 	SerializedSpace string `json:"serialized_space,omitempty"`
 	// Genie space ID
 	SpaceId string `json:"space_id"`
