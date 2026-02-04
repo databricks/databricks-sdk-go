@@ -466,7 +466,7 @@ type AccountClient struct {
 }
 
 var ErrNotAccountClient = errors.New("invalid Databricks Account configuration - host incorrect or account_id missing")
-var ErrWorkspaceIdInAccountClient = errors.New("WorkspaceId must not be set when using AccountClient")
+var ErrWorkspaceIDInAccountClient = errors.New("WorkspaceID must not be set when using AccountClient")
 
 // NewAccountClient creates new Databricks SDK client for Accounts or returns
 // error in case configuration is wrong
@@ -486,10 +486,10 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	if cfg.AccountID == "" || cfg.HostType() == config.WorkspaceHost {
 		return nil, ErrNotAccountClient
 	}
-	// WorkspaceId must NOT be present in a config used with account client because
+	// WorkspaceID must NOT be present in a config used with account client because
 	// unified hosts route calls based on the presence of the X-Databricks-Org-Id header.
-	if cfg.WorkspaceId != "" {
-		return nil, ErrWorkspaceIdInAccountClient
+	if cfg.WorkspaceID != "" {
+		return nil, ErrWorkspaceIDInAccountClient
 	}
 	apiClient, err := client.New(cfg)
 	if err != nil {
