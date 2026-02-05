@@ -2693,6 +2693,15 @@ func (s EnforceClusterComplianceResponse) MarshalJSON() ([]byte, error) {
 // and serverless pipelines. In this minimal environment spec, only pip
 // dependencies are supported.
 type Environment struct {
+	// The `base_environment` key refers to an `env.yaml` file that specifies an
+	// environment version and a collection of dependencies required for the
+	// environment setup. This `env.yaml` file may itself include a
+	// `base_environment` reference pointing to another `env_1.yaml` file.
+	// However, when used as a base environment, `env_1.yaml` (or further nested
+	// references) will not be processed or included in the final environment,
+	// meaning that the resolution of `base_environment` references is not
+	// recursive.
+	BaseEnvironment string `json:"base_environment,omitempty"`
 	// Use `environment_version` instead.
 	Client string `json:"client,omitempty"`
 	// List of pip dependencies, as supported by the version of pip in this
@@ -2891,6 +2900,8 @@ const EventTypeStarting EventType = `STARTING`
 
 const EventTypeTerminating EventType = `TERMINATING`
 
+const EventTypeUcVolumeMisconfigured EventType = `UC_VOLUME_MISCONFIGURED`
+
 const EventTypeUnpinned EventType = `UNPINNED`
 
 const EventTypeUpsizeCompleted EventType = `UPSIZE_COMPLETED`
@@ -2903,11 +2914,11 @@ func (f *EventType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *EventType) Set(v string) error {
 	switch v {
-	case `ADD_NODES_FAILED`, `AUTOMATIC_CLUSTER_UPDATE`, `AUTOSCALING_BACKOFF`, `AUTOSCALING_FAILED`, `AUTOSCALING_STATS_REPORT`, `CLUSTER_MIGRATED`, `CREATING`, `DBFS_DOWN`, `DECOMMISSION_ENDED`, `DECOMMISSION_STARTED`, `DID_NOT_EXPAND_DISK`, `DRIVER_HEALTHY`, `DRIVER_NOT_RESPONDING`, `DRIVER_UNAVAILABLE`, `EDITED`, `EXPANDED_DISK`, `FAILED_TO_EXPAND_DISK`, `INIT_SCRIPTS_FINISHED`, `INIT_SCRIPTS_STARTED`, `METASTORE_DOWN`, `NODES_LOST`, `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`, `PINNED`, `RESIZING`, `RESTARTING`, `RUNNING`, `SPARK_EXCEPTION`, `STARTING`, `TERMINATING`, `UNPINNED`, `UPSIZE_COMPLETED`:
+	case `ADD_NODES_FAILED`, `AUTOMATIC_CLUSTER_UPDATE`, `AUTOSCALING_BACKOFF`, `AUTOSCALING_FAILED`, `AUTOSCALING_STATS_REPORT`, `CLUSTER_MIGRATED`, `CREATING`, `DBFS_DOWN`, `DECOMMISSION_ENDED`, `DECOMMISSION_STARTED`, `DID_NOT_EXPAND_DISK`, `DRIVER_HEALTHY`, `DRIVER_NOT_RESPONDING`, `DRIVER_UNAVAILABLE`, `EDITED`, `EXPANDED_DISK`, `FAILED_TO_EXPAND_DISK`, `INIT_SCRIPTS_FINISHED`, `INIT_SCRIPTS_STARTED`, `METASTORE_DOWN`, `NODES_LOST`, `NODE_BLACKLISTED`, `NODE_EXCLUDED_DECOMMISSIONED`, `PINNED`, `RESIZING`, `RESTARTING`, `RUNNING`, `SPARK_EXCEPTION`, `STARTING`, `TERMINATING`, `UC_VOLUME_MISCONFIGURED`, `UNPINNED`, `UPSIZE_COMPLETED`:
 		*f = EventType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ADD_NODES_FAILED", "AUTOMATIC_CLUSTER_UPDATE", "AUTOSCALING_BACKOFF", "AUTOSCALING_FAILED", "AUTOSCALING_STATS_REPORT", "CLUSTER_MIGRATED", "CREATING", "DBFS_DOWN", "DECOMMISSION_ENDED", "DECOMMISSION_STARTED", "DID_NOT_EXPAND_DISK", "DRIVER_HEALTHY", "DRIVER_NOT_RESPONDING", "DRIVER_UNAVAILABLE", "EDITED", "EXPANDED_DISK", "FAILED_TO_EXPAND_DISK", "INIT_SCRIPTS_FINISHED", "INIT_SCRIPTS_STARTED", "METASTORE_DOWN", "NODES_LOST", "NODE_BLACKLISTED", "NODE_EXCLUDED_DECOMMISSIONED", "PINNED", "RESIZING", "RESTARTING", "RUNNING", "SPARK_EXCEPTION", "STARTING", "TERMINATING", "UNPINNED", "UPSIZE_COMPLETED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ADD_NODES_FAILED", "AUTOMATIC_CLUSTER_UPDATE", "AUTOSCALING_BACKOFF", "AUTOSCALING_FAILED", "AUTOSCALING_STATS_REPORT", "CLUSTER_MIGRATED", "CREATING", "DBFS_DOWN", "DECOMMISSION_ENDED", "DECOMMISSION_STARTED", "DID_NOT_EXPAND_DISK", "DRIVER_HEALTHY", "DRIVER_NOT_RESPONDING", "DRIVER_UNAVAILABLE", "EDITED", "EXPANDED_DISK", "FAILED_TO_EXPAND_DISK", "INIT_SCRIPTS_FINISHED", "INIT_SCRIPTS_STARTED", "METASTORE_DOWN", "NODES_LOST", "NODE_BLACKLISTED", "NODE_EXCLUDED_DECOMMISSIONED", "PINNED", "RESIZING", "RESTARTING", "RUNNING", "SPARK_EXCEPTION", "STARTING", "TERMINATING", "UC_VOLUME_MISCONFIGURED", "UNPINNED", "UPSIZE_COMPLETED"`, v)
 	}
 }
 
@@ -2946,6 +2957,7 @@ func (f *EventType) Values() []EventType {
 		EventTypeSparkException,
 		EventTypeStarting,
 		EventTypeTerminating,
+		EventTypeUcVolumeMisconfigured,
 		EventTypeUnpinned,
 		EventTypeUpsizeCompleted,
 	}

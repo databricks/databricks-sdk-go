@@ -488,7 +488,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 	}
 	// WorkspaceId must NOT be present in a config used with account client because
 	// unified hosts route calls based on the presence of the X-Databricks-Org-Id header.
-	if cfg.WorkspaceId != "" {
+	if cfg.WorkspaceID != "" {
 		return nil, ErrWorkspaceIdInAccountClient
 	}
 	apiClient, err := client.New(cfg)

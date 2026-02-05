@@ -192,6 +192,8 @@ type CreateRecipient struct {
 	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
 	// Expiration timestamp of the token, in epoch milliseconds.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
+	// [Create,Update:IGN] common - id of the recipient
+	Id string `json:"id,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// Name of Recipient.
@@ -1235,6 +1237,8 @@ type RecipientInfo struct {
 	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
 	// Expiration timestamp of the token, in epoch milliseconds.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
+	// [Create,Update:IGN] common - id of the recipient
+	Id string `json:"id,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// Unique identifier of recipient's Unity Catalog Metastore. This field is
@@ -1985,6 +1989,8 @@ type UpdateRecipient struct {
 	Comment string `json:"comment,omitempty"`
 	// Expiration timestamp of the token, in epoch milliseconds.
 	ExpirationTime int64 `json:"expiration_time,omitempty"`
+	// [Create,Update:IGN] common - id of the recipient
+	Id string `json:"id,omitempty"`
 	// IP Access List
 	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
 	// Name of the recipient.

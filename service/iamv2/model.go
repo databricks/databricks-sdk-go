@@ -231,7 +231,7 @@ type User struct {
 
 	Name *UserName `json:"name,omitempty"`
 	// Username/email of the user.
-	Username string `json:"username"`
+	Username string `json:"username,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

@@ -53,37 +53,81 @@ type GenieInterface interface {
 	// Query](:method:genie/executemessageattachmentquery) instead.
 	ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Initiates a new SQL execution and returns a `download_id` that you can use to
-	// track the progress of the download. The query result is stored in an external
-	// link and can be retrieved using the [Get Download Full Query
-	// Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks
-	// strongly recommends that you protect the URLs that are returned by the
-	// `EXTERNAL_LINKS` disposition. See [Execute
-	// Statement](:method:statementexecution/executestatement) for more details.
+	// Initiates a new SQL execution and returns a `download_id` and
+	// `download_id_signature` that you can use to track the progress of the
+	// download. The query result is stored in an external link and can be retrieved
+	// using the [Get Download Full Query
+	// Result](:method:genie/getdownloadfullqueryresult) API. Both `download_id` and
+	// `download_id_signature` must be provided when calling the Get endpoint.
+	//
+	// ----
+	//
+	// ### **Warning: Databricks strongly recommends that you protect the URLs that
+	// are returned by the `EXTERNAL_LINKS` disposition.**
+	//
+	// When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is
+	// generated, which can be used to download the results directly from . As a
+	// short-lived is embedded in this URL, you should protect the URL.
+	//
+	// Because URLs are already generated with embedded temporary s, you must not
+	// set an `Authorization` header in the download requests.
+	//
+	// See [Execute Statement](:method:statementexecution/executestatement) for more
+	// details.
+	//
+	// ----
 	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
 
 	// After [Generating a Full Query Result
-	// Download](:method:genie/getdownloadfullqueryresult) and successfully
-	// receiving a `download_id`, use this API to poll the download progress. When
-	// the download is complete, the API returns one or more external links to the
-	// query result files. Warning: Databricks strongly recommends that you protect
-	// the URLs that are returned by the `EXTERNAL_LINKS` disposition. You must not
-	// set an Authorization header in download requests. When using the
-	// `EXTERNAL_LINKS` disposition, Databricks returns presigned URLs that grant
-	// temporary access to data. See [Execute
-	// Statement](:method:statementexecution/executestatement) for more details.
+	// Download](:method:genie/generatedownloadfullqueryresult) and successfully
+	// receiving a `download_id` and `download_id_signature`, use this API to poll
+	// the download progress. Both `download_id` and `download_id_signature` are
+	// required to call this endpoint. When the download is complete, the API
+	// returns the result in the `EXTERNAL_LINKS` disposition, containing one or
+	// more external links to the query result files.
+	//
+	// ----
+	//
+	// ### **Warning: Databricks strongly recommends that you protect the URLs that
+	// are returned by the `EXTERNAL_LINKS` disposition.**
+	//
+	// When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is
+	// generated, which can be used to download the results directly from . As a
+	// short-lived is embedded in this URL, you should protect the URL.
+	//
+	// Because URLs are already generated with embedded temporary s, you must not
+	// set an `Authorization` header in the download requests.
+	//
+	// See [Execute Statement](:method:statementexecution/executestatement) for more
+	// details.
+	//
+	// ----
 	GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error)
 
 	// After [Generating a Full Query Result
-	// Download](:method:genie/getdownloadfullqueryresult) and successfully
-	// receiving a `download_id`, use this API to poll the download progress. When
-	// the download is complete, the API returns one or more external links to the
-	// query result files. Warning: Databricks strongly recommends that you protect
-	// the URLs that are returned by the `EXTERNAL_LINKS` disposition. You must not
-	// set an Authorization header in download requests. When using the
-	// `EXTERNAL_LINKS` disposition, Databricks returns presigned URLs that grant
-	// temporary access to data. See [Execute
-	// Statement](:method:statementexecution/executestatement) for more details.
+	// Download](:method:genie/generatedownloadfullqueryresult) and successfully
+	// receiving a `download_id` and `download_id_signature`, use this API to poll
+	// the download progress. Both `download_id` and `download_id_signature` are
+	// required to call this endpoint. When the download is complete, the API
+	// returns the result in the `EXTERNAL_LINKS` disposition, containing one or
+	// more external links to the query result files.
+	//
+	// ----
+	//
+	// ### **Warning: Databricks strongly recommends that you protect the URLs that
+	// are returned by the `EXTERNAL_LINKS` disposition.**
+	//
+	// When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is
+	// generated, which can be used to download the results directly from . As a
+	// short-lived is embedded in this URL, you should protect the URL.
+	//
+	// Because URLs are already generated with embedded temporary s, you must not
+	// set an `Authorization` header in the download requests.
+	//
+	// See [Execute Statement](:method:statementexecution/executestatement) for more
+	// details.
+	//
+	// ----
 	GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string) (*GenieGetDownloadFullQueryResultResponse, error)
 
 	// Get message from conversation.
@@ -292,15 +336,29 @@ func (a *GenieAPI) DeleteConversationBySpaceIdAndConversationId(ctx context.Cont
 }
 
 // After [Generating a Full Query Result
-// Download](:method:genie/getdownloadfullqueryresult) and successfully
-// receiving a `download_id`, use this API to poll the download progress. When
-// the download is complete, the API returns one or more external links to the
-// query result files. Warning: Databricks strongly recommends that you protect
-// the URLs that are returned by the `EXTERNAL_LINKS` disposition. You must not
-// set an Authorization header in download requests. When using the
-// `EXTERNAL_LINKS` disposition, Databricks returns presigned URLs that grant
-// temporary access to data. See [Execute
-// Statement](:method:statementexecution/executestatement) for more details.
+// Download](:method:genie/generatedownloadfullqueryresult) and successfully
+// receiving a `download_id` and `download_id_signature`, use this API to poll
+// the download progress. Both `download_id` and `download_id_signature` are
+// required to call this endpoint. When the download is complete, the API
+// returns the result in the `EXTERNAL_LINKS` disposition, containing one or
+// more external links to the query result files.
+//
+// ----
+//
+// ### **Warning: Databricks strongly recommends that you protect the URLs that
+// are returned by the `EXTERNAL_LINKS` disposition.**
+//
+// When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is
+// generated, which can be used to download the results directly from . As a
+// short-lived is embedded in this URL, you should protect the URL.
+//
+// Because URLs are already generated with embedded temporary s, you must not
+// set an `Authorization` header in the download requests.
+//
+// See [Execute Statement](:method:statementexecution/executestatement) for more
+// details.
+//
+// ----
 func (a *GenieAPI) GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string) (*GenieGetDownloadFullQueryResultResponse, error) {
 	return a.genieImpl.GetDownloadFullQueryResult(ctx, GenieGetDownloadFullQueryResultRequest{
 		SpaceId:        spaceId,
