@@ -228,10 +228,10 @@ type Config struct {
 	// This mutex is also used for config resolution.
 	mu sync.Mutex
 
-	// resolveAuthOnce ensures authentication happens exactly once
+	// resolveAuthOnce ensures authentication happens exactly once.
 	resolveAuthOnce sync.Once
 
-	// resolveAuthErr stores the error from the authentication attempt
+	// resolveAuthErr stores the error from the authentication attempt.
 	resolveAuthErr error
 
 	// HTTP request interceptor, that assigns Authorization header
