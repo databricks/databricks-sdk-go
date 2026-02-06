@@ -234,7 +234,8 @@ type GenieAttachment struct {
 	Query *GenieQueryAttachment `json:"query,omitempty"`
 	// Follow-up questions suggested by Genie
 	SuggestedQuestions *GenieSuggestedQuestionsAttachment `json:"suggested_questions,omitempty"`
-	// Text Attachment if Genie responds with text
+	// Text Attachment if Genie responds with text. This also contains the final
+	// summary when available.
 	Text *TextAttachment `json:"text,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -750,12 +751,6 @@ type GenieSpace struct {
 	// Space](:method:genie/getspace) API to retrieve an example response, which
 	// includes the `serialized_space` field. This field provides the structure
 	// of the JSON string that represents the space's layout and components.
-	// NOTE: Keep example in sync with: -
-	// docs/web/docs/genie/conversation-api.md -
-	// data-rooms/data-rooms/test/unit/entities/testdata/documentation_example_serialized_space.json
-	// NOTE: The proto example below is a simplified subset of the full JSON
-	// testdata file. See the testdata file for a comprehensive example with all
-	// fields.
 	SerializedSpace string `json:"serialized_space,omitempty"`
 	// Genie space ID
 	SpaceId string `json:"space_id"`
