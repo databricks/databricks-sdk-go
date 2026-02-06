@@ -17,7 +17,7 @@ func TestAuthenticateConcurrency(t *testing.T) {
 		Token: "fake-token",
 	}
 
-	// Ensure config is resolved first
+	// Ensure config is resolved first.
 	if err := cfg.EnsureResolved(); err != nil {
 		t.Fatal(err)
 	}
@@ -25,33 +25,33 @@ func TestAuthenticateConcurrency(t *testing.T) {
 	var wg sync.WaitGroup
 	const numGoroutines = 10
 
-	// Launch multiple goroutines that all try to authenticate concurrently
+	// Launch multiple goroutines that all try to authenticate concurrently.
 	for i := 0; i < numGoroutines; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
 			req, _ := http.NewRequest("GET", "https://test.com", nil)
-			// This should not panic or cause data races
+			// This should not panic or cause data races.
 			_ = cfg.Authenticate(req)
 		}()
 	}
 
 	wg.Wait()
 
-	// Verify authentication happened exactly once
+	// Verify authentication happened exactly once.
 	if cfg.credentialsProvider == nil {
 		t.Error("Expected credentialsProvider to be initialized")
 	}
 }
 
-// TestAuthenticateIfNeededConcurrency tests authenticateIfNeeded directly
+// TestAuthenticateIfNeededConcurrency tests authenticateIfNeeded directly.
 func TestAuthenticateIfNeededConcurrency(t *testing.T) {
 	cfg := &Config{
 		Host:  "https://test.cloud.databricks.com",
 		Token: "fake-token",
 	}
 
-	// Ensure config is resolved first
+	// Ensure config is resolved first.
 	if err := cfg.EnsureResolved(); err != nil {
 		t.Fatal(err)
 	}
@@ -69,11 +69,11 @@ func TestAuthenticateIfNeededConcurrency(t *testing.T) {
 
 	wg.Wait()
 
-	// The important thing is that we didn't panic or hit data races
+	// The important thing is that we didn't panic or hit data races.
 }
 
 // TestAuthenticateOnce verifies that authentication happens exactly once
-// even with concurrent calls
+// even with concurrent calls.
 func TestAuthenticateOnce(t *testing.T) {
 	callCount := 0
 	var mu sync.Mutex
@@ -116,7 +116,7 @@ func TestAuthenticateOnce(t *testing.T) {
 	}
 }
 
-// Test helpers
+// Test helpers.
 type testStrategy struct {
 	configure func(ctx context.Context, c *Config) (credentials.CredentialsProvider, error)
 }
