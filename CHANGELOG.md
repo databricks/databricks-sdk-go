@@ -1,5 +1,11 @@
 # Version changelog
 
+## Release v0.105.0 (2026-02-09)
+
+### Breaking Changes
+* `WorkspaceId` in Config is changed to `WorkspaceID`
+
+
 ## Release v0.104.0 (2026-02-03)
 
 ### New Features and Improvements

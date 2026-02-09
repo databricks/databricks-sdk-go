@@ -1,9 +1,8 @@
 # NEXT CHANGELOG
 
-## Release v0.105.0
+## Release v0.106.0
 
 ### Breaking Changes
-* `WorkspaceId` in Config is changed to `WorkspaceID`
 
 ### New Features and Improvements
 
