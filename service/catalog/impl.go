@@ -26,10 +26,7 @@ func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request Ac
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountsCreateMetastoreAssignmentResponse)
 	return &accountsCreateMetastoreAssignmentResponse, err
 }
@@ -40,10 +37,7 @@ func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request De
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &accountsDeleteMetastoreAssignmentResponse)
 	return &accountsDeleteMetastoreAssignmentResponse, err
 }
@@ -54,10 +48,7 @@ func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAc
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountsMetastoreAssignment)
 	return &accountsMetastoreAssignment, err
 }
@@ -95,10 +86,7 @@ func (a *accountMetastoreAssignmentsImpl) internalList(ctx context.Context, requ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAccountMetastoreAssignmentsResponse)
 	return &listAccountMetastoreAssignmentsResponse, err
 }
@@ -110,10 +98,7 @@ func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request Ac
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &accountsUpdateMetastoreAssignmentResponse)
 	return &accountsUpdateMetastoreAssignmentResponse, err
 }
@@ -130,10 +115,7 @@ func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCrea
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountsCreateMetastoreResponse)
 	return &accountsCreateMetastoreResponse, err
 }
@@ -144,10 +126,7 @@ func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccoun
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &accountsDeleteMetastoreResponse)
 	return &accountsDeleteMetastoreResponse, err
 }
@@ -158,10 +137,7 @@ func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetas
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountsGetMetastoreResponse)
 	return &accountsGetMetastoreResponse, err
 }
@@ -198,10 +174,7 @@ func (a *accountMetastoresImpl) internalList(ctx context.Context) (*AccountsList
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &accountsListMetastoresResponse)
 	return &accountsListMetastoresResponse, err
 }
@@ -213,10 +186,7 @@ func (a *accountMetastoresImpl) Update(ctx context.Context, request AccountsUpda
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &accountsUpdateMetastoreResponse)
 	return &accountsUpdateMetastoreResponse, err
 }
@@ -233,10 +203,7 @@ func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request Acco
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &accountsCreateStorageCredentialInfo)
 	return &accountsCreateStorageCredentialInfo, err
 }
@@ -247,10 +214,7 @@ func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request Dele
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &accountsDeleteStorageCredentialResponse)
 	return &accountsDeleteStorageCredentialResponse, err
 }
@@ -261,10 +225,7 @@ func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAcco
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountsStorageCredentialInfo)
 	return &accountsStorageCredentialInfo, err
 }
@@ -302,10 +263,7 @@ func (a *accountStorageCredentialsImpl) internalList(ctx context.Context, reques
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAccountStorageCredentialsResponse)
 	return &listAccountStorageCredentialsResponse, err
 }
@@ -317,10 +275,7 @@ func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request Acco
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	cfg := a.client.Config
-	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
-		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
-	}
+
 	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &accountsUpdateStorageCredentialResponse)
 	return &accountsUpdateStorageCredentialResponse, err
 }

@@ -661,7 +661,7 @@ type CreateTokenRequest struct {
 	Comment string `json:"comment,omitempty"`
 	// The lifetime of the token, in seconds.
 	//
-	// If the lifetime is not specified, this token remains valid indefinitely.
+	// If the lifetime is not specified, this token remains valid for 2 years.
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

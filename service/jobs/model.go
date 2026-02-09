@@ -831,6 +831,17 @@ func (s DashboardPageSnapshot) MarshalJSON() ([]byte, error) {
 type DashboardTask struct {
 	// The identifier of the dashboard to refresh.
 	DashboardId string `json:"dashboard_id,omitempty"`
+	// Dashboard task parameters. Used to apply dashboard filter values during
+	// dashboard task execution. Parameter values get applied to any dashboard
+	// filters that have a matching URL identifier as the parameter key. The
+	// parameter value format is dependent on the filter type: - For text and
+	// single-select filters, provide a single value (e.g. `"value"`) - For date
+	// and datetime filters, provide the value in ISO 8601 format (e.g.
+	// `"2000-01-01T00:00:00"`) - For multi-select filters, provide a JSON array
+	// of values (e.g. `"[\"value1\",\"value2\"]"`) - For range and date range
+	// filters, provide a JSON object with `start` and `end` (e.g.
+	// `"{\"start\":\"1\",\"end\":\"10\"}"`)
+	Filters map[string]string `json:"filters,omitempty"`
 	// Optional: subscription configuration for sending the dashboard snapshot.
 	Subscription *Subscription `json:"subscription,omitempty"`
 	// Optional: The warehouse id to execute the dashboard with for the
