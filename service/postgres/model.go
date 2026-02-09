@@ -520,10 +520,8 @@ func (f *EndpointType) Type() string {
 	return "EndpointType"
 }
 
-// Legacy definition of the ErrorCode enum. Please keep in sync with
-// api-base/proto/error_code.proto (except status code mapping annotations as
-// this file doesn't have them). Will be removed eventually, pending the ScalaPB
-// 0.4 cleanup.
+// Error codes returned by Databricks APIs to indicate specific failure
+// conditions.
 type ErrorCode string
 
 const ErrorCodeAborted ErrorCode = `ABORTED`
@@ -1320,6 +1318,12 @@ type RoleRoleSpec struct {
 	// https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
 	//
 	// Required when creating the Role.
+	//
+	// If you wish to create a Postgres Role backed by a managed Databricks
+	// identity, then postgres_role must be one of the following:
+	//
+	// 1. user email for IdentityType.USER 2. app ID for
+	// IdentityType.SERVICE_PRINCIPAL 2. group name for IdentityType.GROUP
 	PostgresRole string `json:"postgres_role,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
