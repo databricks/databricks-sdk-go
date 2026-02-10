@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"context"
 	"strconv"
 	"testing"
 
@@ -153,17 +152,13 @@ func TestUcAccWifAuthWorkspace(t *testing.T) {
 }
 
 func TestUcAccWorkspaceOAuthM2MAuth(t *testing.T) {
-	loadDebugEnvIfRunsFromIDE(t, "ucws")
+	ctx, _ := ucwsTest(t)
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 
 	// Get environment variables
 	host := GetEnvOrSkipTest(t, "DATABRICKS_HOST")
 	clientID := GetEnvOrSkipTest(t, "TEST_DATABRICKS_CLIENT_ID")
 	clientSecret := GetEnvOrSkipTest(t, "TEST_DATABRICKS_CLIENT_SECRET")
-
-	t.Parallel()
-	ctx := context.Background()
-
 	// Create workspace client with OAuth M2M authentication
 	wsCfg := &databricks.Config{
 		Host:         host,
@@ -191,7 +186,7 @@ func TestUcAccWorkspaceOAuthM2MAuth(t *testing.T) {
 }
 
 func TestUcAccWorkspaceAzureClientSecretAuth(t *testing.T) {
-	loadDebugEnvIfRunsFromIDE(t, "ucws")
+	ctx, _ := ucwsTest(t)
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 
 	// Get environment variables
@@ -199,9 +194,6 @@ func TestUcAccWorkspaceAzureClientSecretAuth(t *testing.T) {
 	azureClientID := GetEnvOrSkipTest(t, "ARM_CLIENT_ID")
 	azureClientSecret := GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET")
 	azureTenantID := GetEnvOrSkipTest(t, "ARM_TENANT_ID")
-
-	t.Parallel()
-	ctx := context.Background()
 
 	// Create workspace client with Azure client secret authentication
 	wsCfg := &databricks.Config{
@@ -231,7 +223,7 @@ func TestUcAccWorkspaceAzureClientSecretAuth(t *testing.T) {
 }
 
 func TestMwsAccAccountOAuthM2MAuth(t *testing.T) {
-	loadDebugEnvIfRunsFromIDE(t, "account")
+	ctx, _ := accountTest(t)
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 
 	// Get environment variables
@@ -239,9 +231,6 @@ func TestMwsAccAccountOAuthM2MAuth(t *testing.T) {
 	accountID := GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID")
 	clientID := GetEnvOrSkipTest(t, "TEST_DATABRICKS_CLIENT_ID")
 	clientSecret := GetEnvOrSkipTest(t, "TEST_DATABRICKS_CLIENT_SECRET")
-
-	t.Parallel()
-	ctx := context.Background()
 
 	// Create account client with OAuth M2M authentication
 	accCfg := &databricks.Config{
@@ -268,7 +257,7 @@ func TestMwsAccAccountOAuthM2MAuth(t *testing.T) {
 }
 
 func TestMwsAccAccountAzureClientSecretAuth(t *testing.T) {
-	loadDebugEnvIfRunsFromIDE(t, "account")
+	ctx, _ := accountTest(t)
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 
 	// Get environment variables
@@ -277,9 +266,6 @@ func TestMwsAccAccountAzureClientSecretAuth(t *testing.T) {
 	azureClientID := GetEnvOrSkipTest(t, "ARM_CLIENT_ID")
 	azureClientSecret := GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET")
 	azureTenantID := GetEnvOrSkipTest(t, "ARM_TENANT_ID")
-
-	t.Parallel()
-	ctx := context.Background()
 
 	// Create account client with Azure client secret authentication
 	accCfg := &databricks.Config{
