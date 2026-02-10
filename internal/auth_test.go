@@ -182,14 +182,12 @@ func TestUcAccWorkspaceOAuthM2MAuth(t *testing.T) {
 	if me.UserName == "" {
 		t.Errorf("expected non-empty UserName, got empty string")
 	}
-	t.Logf("Successfully authenticated as: %s", me.UserName)
 }
 
 func TestUcAccWorkspaceAzureClientSecretAuth(t *testing.T) {
 	ctx, _ := ucwsTest(t)
 	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
 
-	// Get environment variables
 	host := GetEnvOrSkipTest(t, "DATABRICKS_HOST")
 	azureClientID := GetEnvOrSkipTest(t, "ARM_CLIENT_ID")
 	azureClientSecret := GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET")
@@ -219,7 +217,6 @@ func TestUcAccWorkspaceAzureClientSecretAuth(t *testing.T) {
 	if me.UserName == "" {
 		t.Errorf("expected non-empty UserName, got empty string")
 	}
-	t.Logf("Successfully authenticated as: %s", me.UserName)
 }
 
 func TestMwsAccAccountOAuthM2MAuth(t *testing.T) {
@@ -252,8 +249,6 @@ func TestMwsAccAccountOAuthM2MAuth(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to list service principals: %v", err)
 	}
-
-	t.Logf("Successfully authenticated to account %s", accountID)
 }
 
 func TestMwsAccAccountAzureClientSecretAuth(t *testing.T) {
@@ -288,6 +283,4 @@ func TestMwsAccAccountAzureClientSecretAuth(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to list service principals: %v", err)
 	}
-
-	t.Logf("Successfully authenticated to account %s", accountID)
 }
