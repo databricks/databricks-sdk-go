@@ -5,6 +5,7 @@ package catalog
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -2728,10 +2729,17 @@ type EntityTagAssignment struct {
 	// The type of the entity to which the tag is assigned. Allowed values are:
 	// catalogs, schemas, tables, columns, volumes.
 	EntityType string `json:"entity_type"`
+	// The source type of the tag assignment, e.g., user-assigned or
+	// system-assigned
+	SourceType TagAssignmentSourceType `json:"source_type,omitempty"`
 	// The key of the tag
 	TagKey string `json:"tag_key"`
 	// The value of the tag
 	TagValue string `json:"tag_value,omitempty"`
+	// The timestamp when the tag assignment was last updated
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+	// The user or principal who updated the tag assignment
+	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7801,6 +7809,41 @@ func (f *TableType) Values() []TableType {
 // Type always returns TableType to satisfy [pflag.Value] interface
 func (f *TableType) Type() string {
 	return "TableType"
+}
+
+// Enum representing the source type of a tag assignment
+type TagAssignmentSourceType string
+
+const TagAssignmentSourceTypeTagAssignmentSourceTypeSystemDataClassification TagAssignmentSourceType = `TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION`
+
+// String representation for [fmt.Print]
+func (f *TagAssignmentSourceType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TagAssignmentSourceType) Set(v string) error {
+	switch v {
+	case `TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION`:
+		*f = TagAssignmentSourceType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION"`, v)
+	}
+}
+
+// Values returns all possible values for TagAssignmentSourceType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TagAssignmentSourceType) Values() []TagAssignmentSourceType {
+	return []TagAssignmentSourceType{
+		TagAssignmentSourceTypeTagAssignmentSourceTypeSystemDataClassification,
+	}
+}
+
+// Type always returns TagAssignmentSourceType to satisfy [pflag.Value] interface
+func (f *TagAssignmentSourceType) Type() string {
+	return "TagAssignmentSourceType"
 }
 
 type TagKeyValue struct {

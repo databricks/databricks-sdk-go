@@ -1606,6 +1606,8 @@ type GitSource struct {
 	// is source controlled.
 	JobSource *JobSource `json:"job_source,omitempty"`
 
+	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
+
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
@@ -4676,6 +4678,11 @@ type SparkSubmitTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	Parameters []string `json:"parameters,omitempty"`
+}
+
+type SparseCheckout struct {
+	// List of patterns to include for sparse checkout.
+	Patterns []string `json:"patterns,omitempty"`
 }
 
 type SqlAlertOutput struct {
