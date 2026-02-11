@@ -1225,7 +1225,7 @@ type CreateWarehouseRequest struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -1905,7 +1905,7 @@ type EditWarehouseRequest struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -2060,7 +2060,7 @@ type EndpointInfo struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`
@@ -2666,7 +2666,7 @@ type GetWarehouseResponse struct {
 	// increase the number of concurrent queries, please tune max_num_clusters.
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
-	// - 2X-Large - 3X-Large - 4X-Large
+	// - 2X-Large - 3X-Large - 4X-Large - 5X-Large
 	ClusterSize string `json:"cluster_size,omitempty"`
 	// warehouse creator name
 	CreatorName string `json:"creator_name,omitempty"`

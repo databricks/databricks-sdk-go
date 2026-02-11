@@ -1575,6 +1575,10 @@ type Subscription struct {
 	Etag string `json:"etag,omitempty"`
 	// UUID identifying the schedule to which the subscription belongs.
 	ScheduleId string `json:"schedule_id,omitempty"`
+	// Controls whether notifications are sent to the subscriber for scheduled
+	// dashboard refreshes. If not defined, defaults to false in the backend to
+	// match the current behavior (refresh and notify)
+	SkipNotify bool `json:"skip_notify,omitempty"`
 	// Subscriber details for users and destinations to be added as subscribers
 	// to the schedule.
 	Subscriber Subscriber `json:"subscriber"`

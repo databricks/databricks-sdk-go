@@ -5,6 +5,7 @@ package catalog
 import (
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/common/types/time"
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -1882,12 +1883,14 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
-// Next Id: 15
+// Next Id: 16
 type CredentialType string
 
 const CredentialTypeAnyStaticCredential CredentialType = `ANY_STATIC_CREDENTIAL`
 
 const CredentialTypeBearerToken CredentialType = `BEARER_TOKEN`
+
+const CredentialTypeEdgegridAkamai CredentialType = `EDGEGRID_AKAMAI`
 
 const CredentialTypeOauthAccessToken CredentialType = `OAUTH_ACCESS_TOKEN`
 
@@ -1923,11 +1926,11 @@ func (f *CredentialType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CredentialType) Set(v string) error {
 	switch v {
-	case `ANY_STATIC_CREDENTIAL`, `BEARER_TOKEN`, `OAUTH_ACCESS_TOKEN`, `OAUTH_M2M`, `OAUTH_MTLS`, `OAUTH_REFRESH_TOKEN`, `OAUTH_RESOURCE_OWNER_PASSWORD`, `OAUTH_U2M`, `OAUTH_U2M_MAPPING`, `OIDC_TOKEN`, `PEM_PRIVATE_KEY`, `SERVICE_CREDENTIAL`, `SSWS_TOKEN`, `UNKNOWN_CREDENTIAL_TYPE`, `USERNAME_PASSWORD`:
+	case `ANY_STATIC_CREDENTIAL`, `BEARER_TOKEN`, `EDGEGRID_AKAMAI`, `OAUTH_ACCESS_TOKEN`, `OAUTH_M2M`, `OAUTH_MTLS`, `OAUTH_REFRESH_TOKEN`, `OAUTH_RESOURCE_OWNER_PASSWORD`, `OAUTH_U2M`, `OAUTH_U2M_MAPPING`, `OIDC_TOKEN`, `PEM_PRIVATE_KEY`, `SERVICE_CREDENTIAL`, `SSWS_TOKEN`, `UNKNOWN_CREDENTIAL_TYPE`, `USERNAME_PASSWORD`:
 		*f = CredentialType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ANY_STATIC_CREDENTIAL", "BEARER_TOKEN", "OAUTH_ACCESS_TOKEN", "OAUTH_M2M", "OAUTH_MTLS", "OAUTH_REFRESH_TOKEN", "OAUTH_RESOURCE_OWNER_PASSWORD", "OAUTH_U2M", "OAUTH_U2M_MAPPING", "OIDC_TOKEN", "PEM_PRIVATE_KEY", "SERVICE_CREDENTIAL", "SSWS_TOKEN", "UNKNOWN_CREDENTIAL_TYPE", "USERNAME_PASSWORD"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ANY_STATIC_CREDENTIAL", "BEARER_TOKEN", "EDGEGRID_AKAMAI", "OAUTH_ACCESS_TOKEN", "OAUTH_M2M", "OAUTH_MTLS", "OAUTH_REFRESH_TOKEN", "OAUTH_RESOURCE_OWNER_PASSWORD", "OAUTH_U2M", "OAUTH_U2M_MAPPING", "OIDC_TOKEN", "PEM_PRIVATE_KEY", "SERVICE_CREDENTIAL", "SSWS_TOKEN", "UNKNOWN_CREDENTIAL_TYPE", "USERNAME_PASSWORD"`, v)
 	}
 }
 
@@ -1938,6 +1941,7 @@ func (f *CredentialType) Values() []CredentialType {
 	return []CredentialType{
 		CredentialTypeAnyStaticCredential,
 		CredentialTypeBearerToken,
+		CredentialTypeEdgegridAkamai,
 		CredentialTypeOauthAccessToken,
 		CredentialTypeOauthM2m,
 		CredentialTypeOauthMtls,
@@ -2728,10 +2732,17 @@ type EntityTagAssignment struct {
 	// The type of the entity to which the tag is assigned. Allowed values are:
 	// catalogs, schemas, tables, columns, volumes.
 	EntityType string `json:"entity_type"`
+	// The source type of the tag assignment, e.g., user-assigned or
+	// system-assigned
+	SourceType TagAssignmentSourceType `json:"source_type,omitempty"`
 	// The key of the tag
 	TagKey string `json:"tag_key"`
 	// The value of the tag
 	TagValue string `json:"tag_value,omitempty"`
+	// The timestamp when the tag assignment was last updated
+	UpdateTime *time.Time `json:"update_time,omitempty"`
+	// The user or principal who updated the tag assignment
+	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6930,7 +6941,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_OKTA_SYSTEM_LOGS_SSWS_TOKEN = 295; Next id: 296
+// Latest kind: CONNECTION_AKAMAI_WAF_EDGEGRID = 296; Next id: 297
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
@@ -7801,6 +7812,41 @@ func (f *TableType) Values() []TableType {
 // Type always returns TableType to satisfy [pflag.Value] interface
 func (f *TableType) Type() string {
 	return "TableType"
+}
+
+// Enum representing the source type of a tag assignment
+type TagAssignmentSourceType string
+
+const TagAssignmentSourceTypeTagAssignmentSourceTypeSystemDataClassification TagAssignmentSourceType = `TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION`
+
+// String representation for [fmt.Print]
+func (f *TagAssignmentSourceType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *TagAssignmentSourceType) Set(v string) error {
+	switch v {
+	case `TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION`:
+		*f = TagAssignmentSourceType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION"`, v)
+	}
+}
+
+// Values returns all possible values for TagAssignmentSourceType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TagAssignmentSourceType) Values() []TagAssignmentSourceType {
+	return []TagAssignmentSourceType{
+		TagAssignmentSourceTypeTagAssignmentSourceTypeSystemDataClassification,
+	}
+}
+
+// Type always returns TagAssignmentSourceType to satisfy [pflag.Value] interface
+func (f *TagAssignmentSourceType) Type() string {
+	return "TagAssignmentSourceType"
 }
 
 type TagKeyValue struct {

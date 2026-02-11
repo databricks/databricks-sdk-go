@@ -265,7 +265,8 @@ func (s CreateVpcEndpointRequest) MarshalJSON() ([]byte, error) {
 
 type CreateWorkspaceRequest struct {
 	AwsRegion string `json:"aws_region,omitempty"`
-	// The cloud name. This field always has the value `gcp`.
+	// DEPRECATED: This field is being ignored by the server and will be removed
+	// in the future. The cloud name. This field always has the value `gcp`.
 	Cloud string `json:"cloud,omitempty"`
 
 	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
