@@ -1606,6 +1606,8 @@ type GitSource struct {
 	// is source controlled.
 	JobSource *JobSource `json:"job_source,omitempty"`
 
+	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
+
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
@@ -4369,6 +4371,8 @@ type RunTask struct {
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task.
 	Description string `json:"description,omitempty"`
+	// An option to disable auto optimization in serverless
+	DisableAutoOptimization bool `json:"disable_auto_optimization,omitempty"`
 	// The actual performance target used by the serverless run during
 	// execution. This can differ from the client-set performance target on the
 	// request depending on whether the performance mode is supported by the job
@@ -4421,6 +4425,15 @@ type RunTask struct {
 	// An optional list of libraries to be installed on the cluster. The default
 	// value is an empty list.
 	Libraries []compute.Library `json:"libraries,omitempty"`
+	// An optional maximum number of times to retry an unsuccessful run. A run
+	// is considered to be unsuccessful if it completes with the `FAILED`
+	// result_state or `INTERNAL_ERROR` `life_cycle_state`. The value `-1` means
+	// to retry indefinitely and the value `0` means to never retry.
+	MaxRetries int `json:"max_retries,omitempty"`
+	// An optional minimal interval in milliseconds between the start of the
+	// failed run and the subsequent retry run. The default behavior is that
+	// unsuccessful runs are immediately retried.
+	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
 	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
@@ -4443,6 +4456,9 @@ type RunTask struct {
 	QueueDuration int64 `json:"queue_duration,omitempty"`
 	// Parameter values including resolved references
 	ResolvedValues *ResolvedValues `json:"resolved_values,omitempty"`
+	// An optional policy to specify whether to retry a job when it times out.
+	// The default behavior is to not retry on timeout.
+	RetryOnTimeout bool `json:"retry_on_timeout,omitempty"`
 	// The time in milliseconds it took the job run and all of its repairs to
 	// finish.
 	RunDuration int64 `json:"run_duration,omitempty"`
@@ -4676,6 +4692,11 @@ type SparkSubmitTask struct {
 	//
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	Parameters []string `json:"parameters,omitempty"`
+}
+
+type SparseCheckout struct {
+	// List of patterns to include for sparse checkout.
+	Patterns []string `json:"patterns,omitempty"`
 }
 
 type SqlAlertOutput struct {
@@ -5164,6 +5185,8 @@ type SubmitTask struct {
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task.
 	Description string `json:"description,omitempty"`
+	// An option to disable auto optimization in serverless
+	DisableAutoOptimization bool `json:"disable_auto_optimization,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
 	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
@@ -5186,6 +5209,15 @@ type SubmitTask struct {
 	// An optional list of libraries to be installed on the cluster. The default
 	// value is an empty list.
 	Libraries []compute.Library `json:"libraries,omitempty"`
+	// An optional maximum number of times to retry an unsuccessful run. A run
+	// is considered to be unsuccessful if it completes with the `FAILED`
+	// result_state or `INTERNAL_ERROR` `life_cycle_state`. The value `-1` means
+	// to retry indefinitely and the value `0` means to never retry.
+	MaxRetries int `json:"max_retries,omitempty"`
+	// An optional minimal interval in milliseconds between the start of the
+	// failed run and the subsequent retry run. The default behavior is that
+	// unsuccessful runs are immediately retried.
+	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
 	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
@@ -5204,6 +5236,9 @@ type SubmitTask struct {
 	// The task runs a Python wheel when the `python_wheel_task` field is
 	// present.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
+	// An optional policy to specify whether to retry a job when it times out.
+	// The default behavior is to not retry on timeout.
+	RetryOnTimeout bool `json:"retry_on_timeout,omitempty"`
 	// An optional value indicating the condition that determines whether the
 	// task should be run once its dependencies have been completed. When
 	// omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of
