@@ -141,9 +141,9 @@ type Config struct {
 	// Scopes is a list of OAuth scopes to request when authenticating.
 	//
 	// WARNING:
-	//   - This feature is still in development and may not work as expected
-	//   - This feature is EXPERIMENTAL and may change or be removed without notice.
-	//   - Do NOT use this feature in production environments.
+	//   - Support in the `databricks-cli` auth type is limited as the U2M token
+	// 	   cache currently does NOT support differentiated caching for scopes.
+	// 	   There might be unexpected behaviour if multiple profiles have the same host.
 	//
 	// Notes:
 	//   - If Scopes is nil or empty, the default ["all-apis"] scope will be used for backward compatibility.
@@ -151,7 +151,6 @@ type Config struct {
 	//     unless you set DisableOAuthRefreshToken to true.
 	//   - You cannot set Scopes via environment variables.
 	//   - The scopes list will be sorted in-place during configuration resolution.
-	//   - The U2M token cache currently does NOT support differentiated caching for scopes.
 	Scopes []string `name:"scopes" auth:"-"`
 
 	// DisableOAuthRefreshToken controls whether a refresh token should be requested

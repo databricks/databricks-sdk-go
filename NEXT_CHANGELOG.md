@@ -5,6 +5,8 @@
 ### Breaking Changes
 
 ### New Features and Improvements
+* Add support for fine-grained scopes in OAuth auth types: M2M and OIDC.
+* Partial support for fine-grained scopes in U2M (`databricks-cli`) auth type. Last token minted is used by all profiles sharing the same host, regardless of scopes set in the profile.
 
 ### Bug Fixes
 
