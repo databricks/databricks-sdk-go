@@ -11,6 +11,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iamv2"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/networking"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
@@ -39,6 +40,7 @@ func NewMockAccountClient(t interface {
 			Credentials:                      provisioning.NewMockCredentialsInterface(t),
 			CustomAppIntegration:             oauth2.NewMockCustomAppIntegrationInterface(t),
 			EncryptionKeys:                   provisioning.NewMockEncryptionKeysInterface(t),
+			Endpoints:                        networking.NewMockEndpointsInterface(t),
 			FederationPolicy:                 oauth2.NewMockAccountFederationPolicyInterface(t),
 			GroupsV2:                         iam.NewMockAccountGroupsV2Interface(t),
 			IamV2:                            iamv2.NewMockAccountIamV2Interface(t),
@@ -205,6 +207,14 @@ func (m *MockAccountClient) GetMockEncryptionKeysAPI() *provisioning.MockEncrypt
 	api, ok := m.AccountClient.EncryptionKeys.(*provisioning.MockEncryptionKeysInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected EncryptionKeys to be *provisioning.MockEncryptionKeysInterface, actual was %T", m.AccountClient.EncryptionKeys))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockEndpointsAPI() *networking.MockEndpointsInterface {
+	api, ok := m.AccountClient.Endpoints.(*networking.MockEndpointsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected Endpoints to be *networking.MockEndpointsInterface, actual was %T", m.AccountClient.Endpoints))
 	}
 	return api
 }

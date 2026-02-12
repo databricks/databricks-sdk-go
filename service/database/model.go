@@ -684,7 +684,7 @@ func (s ListDatabaseInstanceRolesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListDatabaseInstancesRequest struct {
-	// Upper bound for items returned.
+	// Upper bound for items returned. The maximum value is 100.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Pagination token to go to the next page of Database Instances. Requests
 	// first page if absent.

@@ -1011,10 +1011,26 @@ type DeleteWebhookRequest struct {
 type DeltaTableSource struct {
 	// The entity columns of the Delta table.
 	EntityColumns []string `json:"entity_columns"`
+	// Single WHERE clause to filter delta table before applying
+	// transformations. Will be row-wise evaluated, so should only include
+	// conditionals and projections.
+	FilterCondition string `json:"filter_condition,omitempty"`
 	// The full three-part (catalog, schema, table) name of the Delta table.
 	FullName string `json:"full_name"`
 	// The timeseries column of the Delta table.
 	TimeseriesColumn string `json:"timeseries_column"`
+	// A series of SQL transformations which forms a DAG (think SQL SELECT).
+	Transformations []SqlTransformation `json:"transformations,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeltaTableSource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeltaTableSource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // An experiment and its metadata.
@@ -4189,6 +4205,14 @@ type SlidingWindow struct {
 	SlideDuration string `json:"slide_duration"`
 	// The duration of the sliding window.
 	WindowDuration string `json:"window_duration"`
+}
+
+type SqlTransformation struct {
+	// The alias of the output column.
+	OutputAlias string `json:"output_alias"`
+	// The SQL expression to evaluate. Will be row-wise evaluated (no
+	// aggregations). Conditionals and projections are supported.
+	Sql string `json:"sql"`
 }
 
 // The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
