@@ -72,7 +72,6 @@ func TestUcAccWifAuth(t *testing.T) {
 	it := wifAccClient.Groups.List(ctx, iam.ListAccountGroupsRequest{})
 	_, err = it.Next(ctx)
 	require.NoError(t, err)
-
 }
 
 func TestUcAccWifAuthWorkspace(t *testing.T) {
@@ -150,4 +149,138 @@ func TestUcAccWifAuthWorkspace(t *testing.T) {
 	require.NoError(t, err)
 	_, err = wifWsClient.CurrentUser.Me(ctx)
 	require.NoError(t, err)
+}
+
+func TestUcAccWorkspaceOAuthM2MAuth(t *testing.T) {
+	ctx, _ := ucwsTest(t)
+	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+
+	// Get environment variables
+	host := GetEnvOrSkipTest(t, "DATABRICKS_HOST")
+	clientID := GetEnvOrSkipTest(t, "TEST_DATABRICKS_CLIENT_ID")
+	clientSecret := GetEnvOrSkipTest(t, "TEST_DATABRICKS_CLIENT_SECRET")
+	// Create workspace client with OAuth M2M authentication
+	wsCfg := &databricks.Config{
+		Host:         host,
+		ClientID:     clientID,
+		ClientSecret: clientSecret,
+		AuthType:     "oauth-m2m",
+	}
+
+	wsClient, err := databricks.NewWorkspaceClient(wsCfg)
+	if err != nil {
+		t.Fatalf("failed to create workspace client: %v", err)
+	}
+
+	// Call the "me" API
+	me, err := wsClient.CurrentUser.Me(ctx)
+	if err != nil {
+		t.Fatalf("failed to call CurrentUser.Me(): %v", err)
+	}
+
+	// Verify we got a valid response
+	if me.UserName == "" {
+		t.Errorf("expected non-empty UserName, got empty string")
+	}
+}
+
+func TestUcAccWorkspaceAzureClientSecretAuth(t *testing.T) {
+	ctx, _ := ucwsTest(t)
+	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+
+	host := GetEnvOrSkipTest(t, "DATABRICKS_HOST")
+	azureClientID := GetEnvOrSkipTest(t, "ARM_CLIENT_ID")
+	azureClientSecret := GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET")
+	azureTenantID := GetEnvOrSkipTest(t, "ARM_TENANT_ID")
+
+	// Create workspace client with Azure client secret authentication
+	wsCfg := &databricks.Config{
+		Host:              host,
+		AzureClientID:     azureClientID,
+		AzureClientSecret: azureClientSecret,
+		AzureTenantID:     azureTenantID,
+		AuthType:          "azure-client-secret",
+	}
+
+	wsClient, err := databricks.NewWorkspaceClient(wsCfg)
+	if err != nil {
+		t.Fatalf("failed to create workspace client: %v", err)
+	}
+
+	// Call the "me" API
+	me, err := wsClient.CurrentUser.Me(ctx)
+	if err != nil {
+		t.Fatalf("failed to call CurrentUser.Me(): %v", err)
+	}
+
+	// Verify we got a valid response
+	if me.UserName == "" {
+		t.Errorf("expected non-empty UserName, got empty string")
+	}
+}
+
+func TestMwsAccAccountOAuthM2MAuth(t *testing.T) {
+	ctx, _ := accountTest(t)
+	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+
+	// Get environment variables
+	host := GetEnvOrSkipTest(t, "DATABRICKS_HOST")
+	accountID := GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID")
+	clientID := GetEnvOrSkipTest(t, "TEST_DATABRICKS_CLIENT_ID")
+	clientSecret := GetEnvOrSkipTest(t, "TEST_DATABRICKS_CLIENT_SECRET")
+
+	// Create account client with OAuth M2M authentication
+	accCfg := &databricks.Config{
+		Host:         host,
+		AccountID:    accountID,
+		ClientID:     clientID,
+		ClientSecret: clientSecret,
+		AuthType:     "oauth-m2m",
+	}
+
+	accClient, err := databricks.NewAccountClient(accCfg)
+	if err != nil {
+		t.Fatalf("failed to create account client: %v", err)
+	}
+
+	// List service principals to verify authentication works
+	it := accClient.ServicePrincipals.List(ctx, iam.ListAccountServicePrincipalsRequest{})
+	_, err = it.Next(ctx)
+	if err != nil {
+		t.Fatalf("failed to list service principals: %v", err)
+	}
+}
+
+func TestMwsAccAccountAzureClientSecretAuth(t *testing.T) {
+	ctx, _ := accountTest(t)
+	t.Log(GetEnvOrSkipTest(t, "CLOUD_ENV"))
+
+	// Get environment variables
+	host := GetEnvOrSkipTest(t, "DATABRICKS_HOST")
+	accountID := GetEnvOrSkipTest(t, "DATABRICKS_ACCOUNT_ID")
+	azureClientID := GetEnvOrSkipTest(t, "ARM_CLIENT_ID")
+	azureClientSecret := GetEnvOrSkipTest(t, "ARM_CLIENT_SECRET")
+	azureTenantID := GetEnvOrSkipTest(t, "ARM_TENANT_ID")
+
+	// Create account client with Azure client secret authentication
+	accCfg := &databricks.Config{
+		Host:              host,
+		AccountID:         accountID,
+		AzureClientID:     azureClientID,
+		AzureClientSecret: azureClientSecret,
+		AzureTenantID:     azureTenantID,
+		AuthType:          "azure-client-secret",
+	}
+
+	accClient, err := databricks.NewAccountClient(accCfg)
+	if err != nil {
+		t.Fatalf("failed to create account client: %v", err)
+	}
+
+	// List service principals to verify authentication works
+	it := accClient.ServicePrincipals.List(ctx, iam.ListAccountServicePrincipalsRequest{})
+	_, err = it.Next(ctx)
+	if err != nil {
+		t.Fatalf("failed to list service principals: %v", err)
+	}
 }
