@@ -12,6 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/iamv2"
+	"github.com/databricks/databricks-sdk-go/service/networking"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
 	"github.com/databricks/databricks-sdk-go/service/settings"
@@ -70,6 +71,9 @@ type AccountClient struct {
 	// on the E2 version of the platform. If you are not sure, contact your
 	// Databricks representative.
 	EncryptionKeys provisioning.EncryptionKeysInterface
+
+	// These APIs manage endpoint configurations for this account.
+	Endpoints networking.EndpointsInterface
 
 	// These APIs manage account federation policies.
 	//
@@ -501,6 +505,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		Credentials:                      provisioning.NewCredentials(apiClient),
 		CustomAppIntegration:             oauth2.NewCustomAppIntegration(apiClient),
 		EncryptionKeys:                   provisioning.NewEncryptionKeys(apiClient),
+		Endpoints:                        networking.NewEndpoints(apiClient),
 		FederationPolicy:                 oauth2.NewAccountFederationPolicy(apiClient),
 		GroupsV2:                         iam.NewAccountGroupsV2(apiClient),
 		IamV2:                            iamv2.NewAccountIamV2(apiClient),

@@ -112,6 +112,8 @@
 //
 // - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
+// - [networking.EndpointsAPI]: These APIs manage endpoint configurations for this account.
+//
 // - [settings.EnhancedSecurityMonitoringAPI]: Controls whether enhanced security monitoring is enabled for the current workspace.
 //
 // - [catalog.EntityTagAssignmentsAPI]: Tags are attributes that include keys and optional values that you can use to organize and categorize entities in Unity Catalog.
@@ -373,6 +375,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
+	"github.com/databricks/databricks-sdk-go/service/networking"
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/service/postgres"
@@ -449,6 +452,7 @@ var (
 	_ *settings.EnableNotebookTableClipboardAPI           = nil
 	_ *settings.EnableResultsDownloadingAPI               = nil
 	_ *provisioning.EncryptionKeysAPI                     = nil
+	_ *networking.EndpointsAPI                            = nil
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil
 	_ *catalog.EntityTagAssignmentsAPI                    = nil
 	_ *settings.EsmEnablementAccountAPI                   = nil

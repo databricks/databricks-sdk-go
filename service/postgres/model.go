@@ -912,7 +912,8 @@ func (s ListEndpointsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListProjectsRequest struct {
-	// Upper bound for items returned. Cannot be negative.
+	// Upper bound for items returned. Cannot be negative. The maximum value is
+	// 100.
 	PageSize int `json:"-" url:"page_size,omitempty"`
 	// Page token from a previous response. If not provided, returns the first
 	// page.
