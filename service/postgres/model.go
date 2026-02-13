@@ -1045,6 +1045,23 @@ func (s Project) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ProjectCustomTag struct {
+	// The key of the custom tag.
+	Key string `json:"key,omitempty"`
+	// The value of the custom tag.
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ProjectCustomTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ProjectCustomTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // A collection of settings for a compute endpoint.
 type ProjectDefaultEndpointSettings struct {
 	// The maximum number of Compute Units. Minimum value is 0.5.
@@ -1076,6 +1093,18 @@ type ProjectOperationMetadata struct {
 }
 
 type ProjectSpec struct {
+	// The desired budget policy to associate with the project. See
+	// status.budget_policy_id for the policy that is actually applied to the
+	// project.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Custom tags to associate with the project. Forwarded to LBM for billing
+	// and cost tracking. To update tags, provide the new tag list and include
+	// "spec.custom_tags" in the update_mask. To clear all tags, provide an
+	// empty list and include "spec.custom_tags" in the update_mask. To preserve
+	// existing tags, omit this field from the update_mask (or use wildcard "*"
+	// which auto-excludes empty tags).
+	CustomTags []ProjectCustomTag `json:"custom_tags,omitempty"`
+
 	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
 	// Human-readable project name. Length should be between 1 and 256
 	// characters.
@@ -1101,6 +1130,10 @@ func (s ProjectSpec) MarshalJSON() ([]byte, error) {
 type ProjectStatus struct {
 	// The logical size limit for a branch.
 	BranchLogicalSizeLimitBytes int64 `json:"branch_logical_size_limit_bytes,omitempty"`
+	// The budget policy that is applied to the project.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// The effective custom tags associated with the project.
+	CustomTags []ProjectCustomTag `json:"custom_tags,omitempty"`
 	// The effective default endpoint settings.
 	DefaultEndpointSettings *ProjectDefaultEndpointSettings `json:"default_endpoint_settings,omitempty"`
 	// The effective human-readable project name.

@@ -104,6 +104,7 @@ experimental/mocks/service/ml/mock_feature_store_interface.go linguist-generated
 experimental/mocks/service/ml/mock_forecasting_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_materialized_features_interface.go linguist-generated=true
 experimental/mocks/service/ml/mock_model_registry_interface.go linguist-generated=true
+experimental/mocks/service/networking/mock_endpoints_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_account_federation_policy_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_custom_app_integration_interface.go linguist-generated=true
 experimental/mocks/service/oauth2/mock_o_auth_published_apps_interface.go linguist-generated=true

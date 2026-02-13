@@ -6941,7 +6941,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_AKAMAI_WAF_EDGEGRID = 296; Next id: 297
+// Latest kind: CONNECTION_M365_AUDIT_LOGS_OAUTH_M2M = 297; Next id: 298
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`
