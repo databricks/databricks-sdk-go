@@ -6941,7 +6941,7 @@ func (s Securable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Latest kind: CONNECTION_M365_AUDIT_LOGS_OAUTH_M2M = 297; Next id: 298
+// Latest kind: CONNECTION_JDBC_OAUTH_M2M = 298; Next id: 299
 type SecurableKind string
 
 const SecurableKindTableDbStorage SecurableKind = `TABLE_DB_STORAGE`

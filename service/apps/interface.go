@@ -16,6 +16,9 @@ type AppsService interface {
 	// Creates a new app.
 	Create(ctx context.Context, request CreateAppRequest) (*App, error)
 
+	// Creates a new app space.
+	CreateSpace(ctx context.Context, request CreateSpaceRequest) (*Operation, error)
+
 	// Creates an app update and starts the update process. The update process
 	// is asynchronous and the status of the update can be checked with the
 	// GetAppUpdate method.
@@ -23,6 +26,9 @@ type AppsService interface {
 
 	// Deletes an app.
 	Delete(ctx context.Context, request DeleteAppRequest) (*App, error)
+
+	// Deletes an app space.
+	DeleteSpace(ctx context.Context, request DeleteSpaceRequest) (*Operation, error)
 
 	// Creates an app deployment for the app with the supplied name.
 	Deploy(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error)
@@ -41,6 +47,12 @@ type AppsService interface {
 	// root object.
 	GetPermissions(ctx context.Context, request GetAppPermissionsRequest) (*AppPermissions, error)
 
+	// Retrieves information for the app space with the supplied name.
+	GetSpace(ctx context.Context, request GetSpaceRequest) (*Space, error)
+
+	// Gets the status of an app space update operation.
+	GetSpaceOperation(ctx context.Context, request GetOperationRequest) (*Operation, error)
+
 	// Gets the status of an app update.
 	GetUpdate(ctx context.Context, request GetAppUpdateRequest) (*AppUpdate, error)
 
@@ -49,6 +61,9 @@ type AppsService interface {
 
 	// Lists all app deployments for the app with the supplied name.
 	ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error)
+
+	// Lists all app spaces in the workspace.
+	ListSpaces(ctx context.Context, request ListSpacesRequest) (*ListSpacesResponse, error)
 
 	// Sets permissions on an object, replacing existing permissions if they
 	// exist. Deletes all direct permissions if none are specified. Objects can
@@ -67,6 +82,10 @@ type AppsService interface {
 	// Updates the permissions on an app. Apps can inherit permissions from
 	// their root object.
 	UpdatePermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error)
+
+	// Updates an app space. The update process is asynchronous and the status
+	// of the update can be checked with the GetSpaceOperation method.
+	UpdateSpace(ctx context.Context, request UpdateSpaceRequest) (*Operation, error)
 }
 
 // Apps Settings manage the settings for the Apps service on a customer's
