@@ -4,8 +4,10 @@ package apps
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/config"
@@ -38,6 +40,21 @@ func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, 
 	return &app, err
 }
 
+func (a *appsImpl) CreateSpace(ctx context.Context, request CreateSpaceRequest) (*Operation, error) {
+	var operation Operation
+	path := "/api/2.0/app-spaces"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Space, &operation)
+	return &operation, err
+}
+
 func (a *appsImpl) CreateUpdate(ctx context.Context, request AsyncUpdateAppRequest) (*AppUpdate, error) {
 	var appUpdate AppUpdate
 	path := fmt.Sprintf("/api/2.0/apps/%v/update", request.AppName)
@@ -65,6 +82,20 @@ func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) (*App, 
 	}
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &app)
 	return &app, err
+}
+
+func (a *appsImpl) DeleteSpace(ctx context.Context, request DeleteSpaceRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/app-spaces/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &operation)
+	return &operation, err
 }
 
 func (a *appsImpl) Deploy(ctx context.Context, request CreateAppDeploymentRequest) (*AppDeployment, error) {
@@ -136,6 +167,34 @@ func (a *appsImpl) GetPermissions(ctx context.Context, request GetAppPermissions
 	}
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &appPermissions)
 	return &appPermissions, err
+}
+
+func (a *appsImpl) GetSpace(ctx context.Context, request GetSpaceRequest) (*Space, error) {
+	var space Space
+	path := fmt.Sprintf("/api/2.0/app-spaces/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &space)
+	return &space, err
+}
+
+func (a *appsImpl) GetSpaceOperation(ctx context.Context, request GetOperationRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/app-spaces/%v/operation", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &operation)
+	return &operation, err
 }
 
 func (a *appsImpl) GetUpdate(ctx context.Context, request GetAppUpdateRequest) (*AppUpdate, error) {
@@ -242,6 +301,51 @@ func (a *appsImpl) internalListDeployments(ctx context.Context, request ListAppD
 	return &listAppDeploymentsResponse, err
 }
 
+// Lists all app spaces in the workspace.
+func (a *appsImpl) ListSpaces(ctx context.Context, request ListSpacesRequest) listing.Iterator[Space] {
+
+	getNextPage := func(ctx context.Context, req ListSpacesRequest) (*ListSpacesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListSpaces(ctx, req)
+	}
+	getItems := func(resp *ListSpacesResponse) []Space {
+		return resp.Spaces
+	}
+	getNextReq := func(resp *ListSpacesResponse) *ListSpacesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// Lists all app spaces in the workspace.
+func (a *appsImpl) ListSpacesAll(ctx context.Context, request ListSpacesRequest) ([]Space, error) {
+	iterator := a.ListSpaces(ctx, request)
+	return listing.ToSlice[Space](ctx, iterator)
+}
+
+func (a *appsImpl) internalListSpaces(ctx context.Context, request ListSpacesRequest) (*ListSpacesResponse, error) {
+	var listSpacesResponse ListSpacesResponse
+	path := "/api/2.0/app-spaces"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSpacesResponse)
+	return &listSpacesResponse, err
+}
+
 func (a *appsImpl) SetPermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error) {
 	var appPermissions AppPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/apps/%v", request.AppName)
@@ -315,6 +419,28 @@ func (a *appsImpl) UpdatePermissions(ctx context.Context, request AppPermissions
 	}
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &appPermissions)
 	return &appPermissions, err
+}
+
+func (a *appsImpl) UpdateSpace(ctx context.Context, request UpdateSpaceRequest) (*Operation, error) {
+	var operation Operation
+	path := fmt.Sprintf("/api/2.0/app-spaces/%v", request.Name)
+	queryParams := make(map[string]any)
+
+	updateMaskJson, updateMaskMarshallError := json.Marshal(request.UpdateMask)
+	if updateMaskMarshallError != nil {
+		return nil, updateMaskMarshallError
+	}
+
+	queryParams["update_mask"] = strings.Trim(string(updateMaskJson), `"`)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	cfg := a.client.Config
+	if cfg.HostType() == config.UnifiedHost && cfg.WorkspaceID != "" {
+		headers["X-Databricks-Org-Id"] = cfg.WorkspaceID
+	}
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Space, &operation)
+	return &operation, err
 }
 
 // unexported type that holds implementations of just AppsSettings API methods
