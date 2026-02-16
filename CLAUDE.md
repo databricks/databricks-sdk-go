@@ -61,9 +61,39 @@ After regenerating, run `make fmt` and `make lint`.
 - Go 1.22+ idioms: range-over-int, `min`/`max` builtins
 - Format with `goimports` (handles import grouping) then `gofmt`
 - All exported functions and types need doc comments: `// FuncName does X.`
-- Error wrapping with context: `fmt.Errorf("failed to create cluster %s: %w", name, err)`
+- Interface doc comments should explain the **contract/lifecycle** — when methods are called,
+  what callers expect, and when errors are appropriate — not just what they do
 - Return early on errors; avoid deeply nested if-else chains
 - Use `context.Context` as the first parameter for functions that do I/O
+
+### Naming
+
+- Acronyms are fully capitalized: `ID` not `Id`, `URL` not `Url`, `HTTP` not `Http`
+- Avoid abbreviations: `authTokenCommand` not `authTokenCmd`
+- Variable names describe content, not origin: `workspaceHost` not `resolvedHost`
+- Use specific names when multiple similar types exist: `httpClient` not `client`
+
+### Error Handling
+
+- Wrap errors with **caller's context**: `fmt.Errorf("resolving workspace host: %w", err)`.
+  Describe what *you* were doing, not what the callee does.
+- Include the specific resource/URL that failed, not just the operation name
+- Define sentinel errors as package-level `var` using `errors.New()` — never `fmt.Errorf`.
+  They must be comparable with `errors.Is()`
+- Use `%q` (not `%s`) for strings in error/log messages — makes empty strings visible as `""`
+
+### API Design
+
+- Minimize exported API surface: if a type is only used through an interface, keep
+  the concrete type unexported
+- Pass specific values, not entire config objects — functions should depend on the narrowest
+  interface possible
+- Prefer new types over modifying existing exported types (additive changes only)
+- Unstable APIs go under `experimental/` with `// Experimental: subject to change.` doc comments
+- When setting default values (timeouts, retries, cache durations), comment the rationale
+- Place helper functions near their callers, not at the top of the file
+- Validate required fields in constructors — validate early, fail fast
+- Extract shared logic into helpers at 3+ duplications, not before
 
 ## Testing
 
@@ -93,6 +123,10 @@ for _, tc := range testCases {
 - HTTP fixtures: `httpclient/fixtures/` for mocking HTTP responses
 - Generated mocks: `experimental/mocks/` (do not hand-write mocks for generated services)
 - Test helpers: `qa/` package for integration test utilities
+- Call `t.Helper()` at the start of test helper functions (correct line numbers in failures)
+- For configurable options, always test three cases: (1) explicit values, (2) nil/unset default, (3) empty value
+- When a feature spans multiple implementations, test the same scenarios consistently in each
+- Inject `time.Now` as `func() time.Time` for time-dependent logic — makes tests deterministic
 
 ### Testing Anti-Patterns (never do these)
 
@@ -100,7 +134,7 @@ for _, tc := range testCases {
 - Over-mocking — prefer HTTP fixtures over deep mock chains
 - Tests depending on execution order or shared mutable state
 - Non-descriptive test names (`TestFoo`, `TestBasic`) — use `TestFunctionName_Scenario_ExpectedBehavior`
-- Sleeping instead of waiting for conditions (`assert.Eventually` over `time.Sleep`)
+- `time.Sleep` in tests — inject a clock or use polling with `assert.Eventually`
 - Testing generated code in `service/` — test your hand-written code that uses it
 
 ## Common Mistakes
@@ -122,6 +156,7 @@ for _, tc := range testCases {
 6. New pagination pattern? → `listing/`
 7. Retry logic change? → `retries/`
 8. Code generation change? → `openapi/` and `.codegen/` templates
+9. Experimental/unstable API? → `experimental/` or `config/experimental/`
 
 ## Pull Requests
 
