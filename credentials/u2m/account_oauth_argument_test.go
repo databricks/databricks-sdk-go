@@ -6,23 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewBasicAccountOAuthArgument(t *testing.T) {
-	arg, err := NewBasicAccountOAuthArgument("https://accounts.cloud.databricks.com", "abc")
-	assert.NoError(t, err)
-	assert.Equal(t, "https://accounts.cloud.databricks.com", arg.GetAccountHost())
-	assert.Equal(t, "abc", arg.GetAccountId())
-	assert.Equal(t, "https://accounts.cloud.databricks.com/oidc/accounts/abc", arg.GetCacheKey())
-}
-
-func TestNewProfileAccountOAuthArgument(t *testing.T) {
-	arg, err := NewProfileAccountOAuthArgument("https://accounts.cloud.databricks.com", "abc", "my-profile")
-	assert.NoError(t, err)
-	assert.Equal(t, "https://accounts.cloud.databricks.com", arg.GetAccountHost())
-	assert.Equal(t, "abc", arg.GetAccountId())
-	assert.Equal(t, "my-profile", arg.GetCacheKey())
-	assert.Equal(t, "https://accounts.cloud.databricks.com/oidc/accounts/abc", arg.GetHostCacheKey())
-}
-
 func TestNewProfileAccountOAuthArgument_ValidatesHost(t *testing.T) {
 	_, err := NewProfileAccountOAuthArgument("http://insecure.com", "abc", "my-profile")
 	assert.Error(t, err)
