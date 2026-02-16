@@ -178,3 +178,12 @@ for _, tc := range testCases {
 PR template requires: Changes (linked issues + functionality) and Tests sections.
 All PRs must have the `DCO` sign-off (`git commit -s`).
 Run `make fmt test lint` before submitting.
+
+### Changelog
+
+Every PR must update `NEXT_CHANGELOG.md` under the appropriate section
+(Breaking Changes, New Features and Improvements, Bug Fixes, Documentation,
+Internal Changes, or API Changes). CI will fail if the file is not modified.
+
+For PRs that don't need a changelog entry (e.g., documentation-only, CI config,
+agentic coding infrastructure), add `NO_CHANGELOG=true` to the PR description body.
