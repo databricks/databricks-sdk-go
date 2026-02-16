@@ -32,10 +32,7 @@ var _ HostCacheKeyProvider = BasicAccountOAuthArgument{}
 
 // NewBasicAccountOAuthArgument creates a new BasicAccountOAuthArgument.
 func NewBasicAccountOAuthArgument(accountsHost, accountID string) (BasicAccountOAuthArgument, error) {
-	if err := validateHost(accountsHost); err != nil {
-		return BasicAccountOAuthArgument{}, err
-	}
-	return BasicAccountOAuthArgument{accountHost: accountsHost, accountID: accountID}, nil
+	return NewProfileAccountOAuthArgument(accountsHost, accountID, "")
 }
 
 // NewProfileAccountOAuthArgument creates a new BasicAccountOAuthArgument with a

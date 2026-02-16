@@ -32,10 +32,7 @@ var _ HostCacheKeyProvider = BasicUnifiedOAuthArgument{}
 
 // NewBasicUnifiedOAuthArgument creates a new BasicUnifiedOAuthArgument.
 func NewBasicUnifiedOAuthArgument(accountsHost, accountID string) (BasicUnifiedOAuthArgument, error) {
-	if err := validateHost(accountsHost); err != nil {
-		return BasicUnifiedOAuthArgument{}, err
-	}
-	return BasicUnifiedOAuthArgument{host: accountsHost, accountID: accountID}, nil
+	return NewProfileUnifiedOAuthArgument(accountsHost, accountID, "")
 }
 
 // NewProfileUnifiedOAuthArgument creates a new BasicUnifiedOAuthArgument with a

@@ -43,10 +43,7 @@ func validateHost(host string) error {
 
 // NewBasicWorkspaceOAuthArgument creates a new BasicWorkspaceOAuthArgument.
 func NewBasicWorkspaceOAuthArgument(host string) (BasicWorkspaceOAuthArgument, error) {
-	if err := validateHost(host); err != nil {
-		return BasicWorkspaceOAuthArgument{}, err
-	}
-	return BasicWorkspaceOAuthArgument{host: host}, nil
+	return NewProfileWorkspaceOAuthArgument(host, "")
 }
 
 // NewProfileWorkspaceOAuthArgument creates a new BasicWorkspaceOAuthArgument
