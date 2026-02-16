@@ -105,7 +105,6 @@ After regenerating, run `make fmt` and `make lint`.
 
 ## Testing
 
-Per the [DECO Go Style Guide](https://databricks.atlassian.net/wiki/spaces/UN/pages/4719935836),
 `testify` is **discouraged in new packages** and **tolerated in existing packages**.
 The SDK aims to minimize third-party dependencies.
 
