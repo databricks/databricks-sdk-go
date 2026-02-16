@@ -76,7 +76,9 @@ After regenerating, run `make fmt` and `make lint`.
 ### Error Handling
 
 - Wrap errors with **caller's context**: `fmt.Errorf("resolving workspace host: %w", err)`.
-  Describe what *you* were doing, not what the callee does.
+  Describe what *you* were doing, not what the callee does
+- Don't add redundant wrapping — if the underlying error already contains the path/resource,
+  add context at the abstraction boundary instead
 - Include the specific resource/URL that failed, not just the operation name
 - Define sentinel errors as package-level `var` using `errors.New()` — never `fmt.Errorf`.
   They must be comparable with `errors.Is()`
@@ -93,7 +95,13 @@ After regenerating, run `make fmt` and `make lint`.
 - When setting default values (timeouts, retries, cache durations), comment the rationale
 - Place helper functions near their callers, not at the top of the file
 - Validate required fields in constructors — validate early, fail fast
+- Validation logic should live near its point of use, not in generic/shared layers
+- Use `switch/case` for type dispatching, not `if/else` chains
+- Split functions with multiple concerns (e.g., create temp file + atomic rename)
+  so each has one clear responsibility. Use `defer` to enforce cleanup invariants
 - Extract shared logic into helpers at 3+ duplications, not before
+- Adding a required field to a public type is a breaking change — use nil checks
+  and defaults to preserve existing behavior
 
 ## Testing
 
@@ -127,6 +135,11 @@ for _, tc := range testCases {
 - For configurable options, always test three cases: (1) explicit values, (2) nil/unset default, (3) empty value
 - When a feature spans multiple implementations, test the same scenarios consistently in each
 - Inject `time.Now` as `func() time.Time` for time-dependent logic — makes tests deterministic
+- Always check errors — never use `_` for error returns in tests
+- Assert on exact expected values, not partial matches (e.g., full header value, not just prefix)
+- Extract repeated test values to shared `const`/`var` to convey intent and avoid silent drift
+- Add explicit timeouts to channel/goroutine-based tests to prevent hanging
+- Use `defer close(ch)` for channel cleanup to handle error paths safely
 
 ### Testing Anti-Patterns (never do these)
 
@@ -136,6 +149,9 @@ for _, tc := range testCases {
 - Non-descriptive test names (`TestFoo`, `TestBasic`) — use `TestFunctionName_Scenario_ExpectedBehavior`
 - `time.Sleep` in tests — inject a clock or use polling with `assert.Eventually`
 - Testing generated code in `service/` — test your hand-written code that uses it
+- Exporting methods solely for test access — use `cmp.Diff` to compare structs,
+  or write internal (`_test.go` in same package) tests instead
+- Unnecessary concurrency in tests — if goroutines/channels aren't clearly needed, don't use them
 
 ## Common Mistakes
 
